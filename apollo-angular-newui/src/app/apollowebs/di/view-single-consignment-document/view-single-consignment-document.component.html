@@ -53,17 +53,20 @@
                                                 Document Type
                                             </th>
                                             <tr>
-                                                <td>{{consignment.cd_details.documentType?consignment.cd_details.documentType:'NA'}}</td>
+                                                <td>{{consignment.cd_details.documentType?consignment.cd_details.cdTypeName:'NA'}}</td>
                                             </tr>
                                         </table>
                                     </div>
                                     <b>Action:</b>
-                                    <button class="btn btn-sm btn-warning" (click)="approveRejectConsignment()">Approve / Reject Consignment</button>
-                                    <a class="btn btn-sm btn-warning" href="{{consignment.summaryPageURL}}" *ngIf="consignment.summaryPageURL" target="_blank">View</a>
+                                    <button *ngIf="configurations" class="btn btn-sm btn-warning" (click)="approveRejectConsignment()">Approve / Reject Consignment</button>
+                                    <button class="btn btn-sm btn-primary" (click)="uploadAttachment()">UPLOAD ATTACHMENT</button>
+                                    <a class="btn btn-sm btn-warning" href="{{consignment.cd_details.summaryPageURL}}" *ngIf="consignment.cd_details.summaryPageURL" target="_blank">View</a>
+                                    <br />
                                     <b>Document Details:</b>
-                                    <button class="btn btn-sm btn-primary">CERTIFICATE OF ROADWORTHINESS</button>
-                                    <button class="btn btn-sm btn-primary">IDF DOCUMENT</button>
-                                    <button class="btn btn-sm btn-primary">DECLARATION DOCUMENT</button>
+                                    <br />
+                                    <button class="btn btn-sm btn-primary" (click)="viewCoR()">CERTIFICATE OF ROADWORTHINESS</button>
+                                    <button class="btn btn-sm btn-primary" (click)="viewIdfDocument()">IDF DOCUMENT</button>
+                                    <button class="btn btn-sm btn-primary" (click)="viewDeclarationDocument()">DECLARATION DOCUMENT</button>
                                 </div>
                             </div>
                             <div class="col-md-9">
@@ -633,6 +636,13 @@
                                                 <app-item-details-list-view [dataSet]="consignmentItems"></app-item-details-list-view>
                                             </ng-template>
                                         </li>
+                                        <li ngbNavItem="cd-attachments" *ngIf="attachments">
+                                            <a ngbNavLink>Attachments</a>
+                                            <ng-template ngbNavContent>
+                                                <b class="text-primary">Attachments</b>
+                                                <app-attachment-list [dataSet]="attachments"></app-attachment-list>
+                                            </ng-template>
+                                        </li>
                                         <li ngbNavItem="other-version-details" *ngIf="consignment.old_versions">
                                             <a ngbNavLink>Other Version Details</a>
                                             <ng-template ngbNavContent>
@@ -640,6 +650,7 @@
                                                 <app-other-version-details [dataSet]="consignment.old_versions"></app-other-version-details>
                                             </ng-template>
                                         </li>
+
                                     </ul>
 
                                     <div [ngbNavOutlet]="nav" class="ml-4"></div>

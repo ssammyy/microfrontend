@@ -150,6 +150,12 @@ import {StandardTaskComponent} from './apollowebs/standards-development/standard
 //import {ModalModule} from "ngb-modal";
 import {ModalModule} from "ngb-modal";
 import {DataTablesModule} from "angular-datatables";
+import {ViewDiDeclarationDocumentsComponent} from "./apollowebs/di/view-single-consignment-document/view-di-declaration-documents/view-di-declaration-documents.component";
+import {ViewIdfDocumentDetailsComponent} from "./apollowebs/di/view-single-consignment-document/view-idf-document-details/view-idf-document-details.component";
+import {ViewDeclarationDocumentsItemDetailsListComponent} from "./apollowebs/di/view-single-consignment-document/view-di-declaration-documents/view-declaration-documents-item-details-list/view-declaration-documents-item-details-list.component";
+import {MvInspectionUploadFileReportComponent} from "./apollowebs/di/motor-vehicle-inspection-single-view/mv-inspection-upload-file-report/mv-inspection-upload-file-report.component";
+import { AttachmentListComponent } from './apollowebs/di/view-single-consignment-document/attachment-list/attachment-list.component';
+import { AttachmentDialogComponent } from './apollowebs/di/view-single-consignment-document/attachment-dialog/attachment-dialog.component';
 
 
 @NgModule({
@@ -288,7 +294,13 @@ import {DataTablesModule} from "angular-datatables";
         ApproveRejectConsignmentComponent,
         MinistryInspectionHomeComponent,
         MotorVehicleInspectionSingleViewComponent,
-        UploadForeignFormComponent
+        UploadForeignFormComponent,
+        ViewDiDeclarationDocumentsComponent,
+        ViewIdfDocumentDetailsComponent,
+        ViewDeclarationDocumentsItemDetailsListComponent,
+        MvInspectionUploadFileReportComponent,
+        AttachmentListComponent,
+        AttachmentDialogComponent
     ]
 
 })

@@ -7,25 +7,43 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionB
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.common.dto.MinistryInspectionListResponseDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
+import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.kebs.app.kotlin.apollo.store.model.CocItemsEntity
+import org.kebs.app.kotlin.apollo.store.model.CocsEntity
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
+import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntity
+import org.kebs.app.kotlin.apollo.store.model.di.DiUploadsEntity
+import org.kebs.app.kotlin.apollo.store.repo.ICocItemsRepository
+import org.kebs.app.kotlin.apollo.store.repo.ICocsRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IConsignmentDocumentTypesEntityRepository
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
+import java.io.File
+import java.io.FileOutputStream
+import java.io.FileReader
+import java.sql.Timestamp
+import java.time.Instant
 
 @Service
 class DestinationInspectionService(
         private val applicationMapProperties: ApplicationMapProperties,
         private val riskProfileDaoService: RiskProfileDaoService,
         private val commonDaoServices: CommonDaoServices,
+        private val service: DaoService,
+        private val cocsRepository: ICocsRepository,
+        private val cocItemsRepository: ICocItemsRepository,
         private val daoServices: DestinationInspectionDaoServices,
         private val cdTypesRepo: IConsignmentDocumentTypesEntityRepository,
         private val importerDaoServices: ImporterDaoServices,
+        private val cdAuditService: ConsignmentDocumentAuditService,
         private val qaDaoServices: QADaoServices,
         private val diBpmn: DestinationInspectionBpmn,
 ) {
@@ -45,6 +63,142 @@ class DestinationInspectionService(
         response.message = "Success"
         response.responseCode = ResponseCodes.SUCCESS_CODE
         return response
+    }
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun saveUploadedCsvFileAndSendToKeSWS(
+            docFile: MultipartFile,
+            upLoads: DiUploadsEntity,
+            loggedInUser: UsersEntity,
+            map: ServiceMapsEntity
+    ) {
+        if (docFile.contentType != "text/csv") {
+            throw InvalidValueException("Incorrect file type received, try again later")
+        }
+
+        daoServices.saveUploads(
+                upLoads,
+                docFile,
+                "File upload",
+                loggedInUser,
+                map,
+                null,
+                null
+        )
+        val file = File(docFile.originalFilename ?: "UploadedFile")
+        file.createNewFile()
+        val fos = FileOutputStream(file)
+        fos.use {
+            it.write(docFile.bytes)
+            it.close()
+        }
+
+        val cocs = service.readCocFileFromController(',', FileReader(file))
+        val uniqueCoc = cocs.map { it.cocNumber }.distinct()
+        uniqueCoc.forEach {
+            it
+                    ?.let { u ->
+                        val coc = cocs.firstOrNull { it.cocNumber == u }
+                        cocsRepository.findByUcrNumber(
+                                coc?.ucrNumber
+                                        ?: throw InvalidValueException("Record with empty UCR Number not allowed")
+                        )
+                                ?.let {
+                                    throw InvalidValueException("CoC with UCR number already exists")
+                                }
+                                ?: run {
+                                    var entity = CocsEntity().apply {
+                                        cocNumber = coc.cocNumber
+                                        idfNumber = coc.idfNumber
+                                        rfiNumber = coc.rfiNumber
+                                        ucrNumber = coc.ucrNumber
+                                        rfcDate = coc.rfcDate
+                                        cocIssueDate = coc.cocIssueDate
+                                        clean = coc.clean
+                                        cocRemarks = coc.cocRemarks
+                                        issuingOffice = coc.issuingOffice
+                                        importerName = coc.importerName
+                                        importerPin = coc.importerPin
+                                        importerAddress1 = coc.importerAddress1
+                                        importerAddress2 = coc.importerAddress2
+                                        importerCity = coc.importerCity
+                                        importerCountry = coc.importerCountry
+                                        importerZipCode = coc.importerZipCode
+                                        importerTelephoneNumber = coc.importerTelephoneNumber
+                                        importerFaxNumber = coc.importerFaxNumber
+                                        importerEmail = coc.importerEmail
+                                        exporterName = coc.exporterName ?: "UNDEFINED"
+                                        exporterPin = coc.exporterPin ?: "UNDEFINED"
+                                        exporterAddress1 = coc.exporterAddress1 ?: "UNDEFINED"
+                                        exporterAddress2 = coc.exporterAddress2 ?: "UNDEFINED"
+                                        exporterCity = coc.exporterCity ?: "UNDEFINED"
+                                        exporterCountry = coc.exporterCountry ?: "UNDEFINED"
+                                        exporterZipCode = coc.exporterZipCode ?: "UNDEFINED"
+                                        exporterTelephoneNumber = coc.exporterTelephoneNumber ?: "UNDEFINED"
+                                        exporterFaxNumber = coc.exporterFaxNumber ?: "UNDEFINED"
+                                        exporterEmail = coc.exporterEmail ?: "UNDEFINED"
+                                        placeOfInspection = coc.placeOfInspection ?: "UNDEFINED"
+                                        dateOfInspection =
+                                                coc.dateOfInspection ?: Timestamp.from(Instant.now())
+                                        portOfDestination = coc.portOfDestination ?: "UNDEFINED"
+                                        shipmentMode = coc.shipmentMode ?: "UNDEFINED"
+                                        countryOfSupply = coc.countryOfSupply ?: "UNDEFINED"
+                                        finalInvoiceFobValue = coc.finalInvoiceFobValue
+                                        finalInvoiceExchangeRate = coc.finalInvoiceExchangeRate
+                                        finalInvoiceCurrency = coc.finalInvoiceCurrency ?: "UNDEFINED"
+                                        finalInvoiceDate =
+                                                coc.finalInvoiceDate ?: Timestamp.from(Instant.now())
+                                        shipmentPartialNumber = coc.shipmentPartialNumber
+                                        shipmentSealNumbers = coc.shipmentSealNumbers ?: "UNDEFINED"
+                                        route = coc.route ?: "UNDEFINED"
+                                        productCategory = coc.productCategory ?: "UNDEFINED"
+                                        productCategory = coc.productCategory ?: "UNDEFINED"
+                                        status = 1L
+                                        createdBy = loggedInUser.userName
+                                        createdOn = Timestamp.from(Instant.now())
+                                        partner = loggedInUser.userName
+                                        pvocPartner = loggedInUser.id
+
+
+                                    }
+                                    entity = cocsRepository.save(entity)
+                                    cocs.filter { dto -> dto.cocNumber == u }.forEach { cocItems ->
+                                        val itemEntity = CocItemsEntity().apply {
+                                            cocId = entity.id
+                                            shipmentLineNumber = cocItems.shipmentLineNumber
+                                            shipmentLineHscode = cocItems.shipmentLineHscode ?: "UNDEFINED"
+                                            shipmentLineQuantity = cocItems.shipmentLineQuantity
+                                            shipmentLineUnitofMeasure = cocItems.shipmentLineUnitofMeasure
+                                                    ?: "UNDEFINED"
+                                            shipmentLineDescription = cocItems.shipmentLineDescription ?: "UNDEFINED"
+                                            shipmentLineVin = cocItems.shipmentLineVin ?: "UNDEFINED"
+                                            shipmentLineStickerNumber = cocItems.shipmentLineStickerNumber
+                                                    ?: "UNDEFINED"
+                                            shipmentLineIcs = cocItems.shipmentLineIcs ?: "UNDEFINED"
+                                            shipmentLineStandardsReference =
+                                                    cocItems.shipmentLineStandardsReference ?: "UNDEFINED"
+                                            shipmentLineRegistration = cocItems.shipmentLineRegistration ?: "UNDEFINED"
+                                            shipmentLineRegistration = cocItems.shipmentLineRegistration ?: "UNDEFINED"
+                                            status = 1
+                                            createdBy = loggedInUser.userName
+                                            createdOn = Timestamp.from(Instant.now())
+                                            cocNumber = entity.cocNumber
+                                            shipmentLineBrandName = "UNDEFINED"
+
+
+                                        }
+                                        cocItemsRepository.save(itemEntity)
+
+                                        service.submitCocToKeSWS(entity)
+
+                                    }
+
+
+                                }
+
+                    }
+                    ?: KotlinLogging.logger { }.info("Empty value")
+        }
     }
 
     fun ministryInspectionList(inspectionChecklistId: Long, comment: String?, docFile: MultipartFile): ApiResponseModel {
@@ -69,6 +223,7 @@ class DestinationInspectionService(
                                                 daoServices.updateCDStatus(cdStd, applicationMapProperties.mapDIStatusTypeMinistryInspectionUploadedId)
                                             }
                                             //daoServices.sendMinistryInspectionReportSubmittedEmail(it, cdItemDetails)
+                                            this.cdAuditService.addHistoryRecord(cdEntity.id, comment, "MINISTRY", "Ministry Inspection Report")
                                             //Complete Generate Ministry Inspection Report & Assign Review Ministry Inspection Report
                                             cdEntity.id?.let {
                                                 cdEntity.assignedInspectionOfficer?.id?.let { it1 ->
@@ -82,6 +237,7 @@ class DestinationInspectionService(
                                 }
                                 response.message = "Report Submitted Successfully"
                                 response.responseCode = ResponseCodes.SUCCESS_CODE
+
 
                             } ?: run {
                         response.message = "No Motor Vehicle Inspection Checklist Found"
@@ -118,6 +274,7 @@ class DestinationInspectionService(
         response.extras = daoServices.motorVehicleMinistryInspectionChecklistName
         response.responseCode = ResponseCodes.SUCCESS_CODE
         response.message = "Success"
+
         return response
     }
 
@@ -126,8 +283,25 @@ class DestinationInspectionService(
         try {
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             val cdDetails = daoServices.findCDWithUuid(cdUuid)
-            KotlinLogging.logger { }.info(ObjectMapper().writeValueAsString(cdDetails))
+//            KotlinLogging.logger { }.info(ObjectMapper().writeValueAsString(cdDetails))
             response.data = loadCDDetails(cdDetails, map)
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+            response.message = "Consignment Document"
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error { ex }
+            response.data = null
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.message = "Record not found"
+        }
+        return response
+    }
+
+    fun consignmentDocumentAttachments(cdUuid: String): ApiResponseModel {
+        val response = ApiResponseModel()
+        try {
+            val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+            val cdDetails = daoServices.findCDWithUuid(cdUuid)
+            response.data = daoServices.findAllAttachmentsByCd(cdDetails)?.let { DiUploadsEntityDao.fromList(it) }
             response.responseCode = ResponseCodes.SUCCESS_CODE
             response.message = "Consignment Document"
         } catch (ex: Exception) {
@@ -341,9 +515,9 @@ class DestinationInspectionService(
             val cdDetails = daoServices.findCDWithUuid(cdUuid)
             val idfDetails = cdDetails.ucrNumber?.let { daoServices.findIdf(it) }
             val dataMap = mutableMapOf<String, Any?>()
-            dataMap.put("configuration", map)
             dataMap.put("idf_details", idfDetails)
-            dataMap.put("consignment_details", cdDetails)
+            dataMap.put("cd_standard", cdDetails.cdStandard?.let { CdStandardsEntityDao.fromEntity(it) })
+            dataMap.put("consignment_details", ConsignmentDocumentDao.fromEntity(cdDetails))
             dataMap.put("item_idf", idfDetails?.let { daoServices.findIdfItemList(it) })
             response.data = dataMap
             response.message = "Success"
@@ -406,7 +580,8 @@ class DestinationInspectionService(
             val declarationDetails = cdDetails.ucrNumber?.let { daoServices.findDeclaration(it) }
             val dataMap = mutableMapOf<String, Any?>()
             dataMap.put("declaration_details", declarationDetails)
-            dataMap.put("cd_details", cdDetails)
+            dataMap.put("cd_details", ConsignmentDocumentDao.fromEntity(cdDetails))
+            dataMap.put("cd_standard", cdDetails.cdStandard)
             dataMap.put("item_declaration", declarationDetails?.let { daoServices.findDeclarationItemList(it) })
             dataMap.put("configuration", map)
             response.data = dataMap

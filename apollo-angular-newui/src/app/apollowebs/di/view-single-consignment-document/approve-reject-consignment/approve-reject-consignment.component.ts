@@ -8,12 +8,14 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
   styleUrls: ['./approve-reject-consignment.component.css']
 })
 export class ApproveRejectConsignmentComponent implements OnInit {
-
+  public statuses: any[]
   public form: FormGroup
   constructor(public dialogRef: MatDialogRef<any>, private fb: FormBuilder,@Inject(MAT_DIALOG_DATA) public data: any) {
   }
 
   ngOnInit(): void {
+    console.log(this.data)
+    this.statuses=this.data.configurations.CDStatusTypes
       this.form=this.fb.group({
         applicable_status: ['', Validators.required],
           productDescription: ['', Validators.required],

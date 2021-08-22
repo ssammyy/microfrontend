@@ -1,15 +1,11 @@
 package org.kebs.app.kotlin.apollo.api.payload
 
-import org.kebs.app.kotlin.apollo.store.model.di.CdInspectionGeneralEntity
-import org.kebs.app.kotlin.apollo.store.model.di.CdInspectionMotorVehicleItemChecklistEntity
-import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
-import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntity
+import org.kebs.app.kotlin.apollo.store.model.di.*
+import java.io.Serializable
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
-import javax.persistence.Basic
-import javax.persistence.Column
-import javax.persistence.Transient
+import javax.persistence.*
 
 class ConsignmentDocumentDao {
     var id: Long? = null
@@ -78,6 +74,7 @@ class ConsignmentDocumentDao {
     var declarationNumber: String? = null
     var applicationRefNo: String? = null
     var summaryPageURL: String? = null
+    var approvalStatus: String? = null
 
     companion object {
         fun fromEntity(doc: ConsignmentDocumentDetailsEntity): ConsignmentDocumentDao {
@@ -104,6 +101,7 @@ class ConsignmentDocumentDao {
             doc.cdStandard?.let {
                 dt.declarationNumber = it.declarationNumber
                 dt.applicationRefNo = it.applicationRefNo
+                dt.approvalStatus = it.approvalStatus
             }
             dt.cdType = dt.cdType
             return dt
@@ -112,6 +110,40 @@ class ConsignmentDocumentDao {
         fun fromList(docs: List<ConsignmentDocumentDetailsEntity>): List<ConsignmentDocumentDao> {
             val documents = mutableListOf<ConsignmentDocumentDao>()
             docs.forEach {
+                documents.add(fromEntity(it))
+            }
+            return documents
+        }
+    }
+}
+
+
+class CdDocumentModificationHistoryDao : Serializable {
+    var id: Long = 0
+    var cdId: Long? = null
+    var comment: String? = null
+    var actionCode: String? = null
+    var description: String? = null
+    var status: Int? = null
+    var createdBy: String? = null
+    var createdOn: Timestamp? = null
+
+    companion object {
+        fun fromEntity(cdHistory: CdDocumentModificationHistory): CdDocumentModificationHistoryDao {
+            val history = CdDocumentModificationHistoryDao()
+            history.actionCode = cdHistory.actionCode
+            history.comment = cdHistory.comment
+            history.description = cdHistory.description
+            history.cdId = cdHistory.cdId
+            history.id = cdHistory.id
+            history.createdBy = cdHistory.createdBy
+            history.createdOn = cdHistory.createdOn
+            return history
+        }
+
+        fun fromList(list: List<CdDocumentModificationHistory>): List<CdDocumentModificationHistoryDao> {
+            val documents = mutableListOf<CdDocumentModificationHistoryDao>()
+            list.forEach {
                 documents.add(fromEntity(it))
             }
             return documents
@@ -305,6 +337,93 @@ class CdInspectionMotorVehicleItemChecklistDao {
                 dtList.add(fromEntity(it))
             }
             return dtList
+        }
+    }
+}
+
+class CdStandardsEntityDao : Serializable {
+    var id: Long = 0
+    var applicationTypeCode: String? = null
+    var applicationTypeDescription: String? = null
+    var documentTypeCode: String? = null
+    var cmsDocumentTypeCode: String? = null
+    var documentTypeDescription: String? = null
+    var consignmentTypeCode: String? = null
+    var consignmentTypeDescription: String? = null
+    var mdaCode: String? = null
+    var expiryDate: String? = null
+    var amendedDate: String? = null
+    var usedStatus: String? = null
+    var usedDate: String? = null
+    var referencedPermitExemptionNo: String? = null
+    var referencedPermitExemptionVersionNo: String? = null
+    var mdaDescription: String? = null
+    var documentCode: String? = null
+    var documentDescription: String? = null
+    var processCode: String? = null
+    var processDescription: String? = null
+    var applicationDate: String? = null
+    var updatedDate: String? = null
+    var approvalStatus: String? = null
+    var approvalDate: String? = null
+    var finalApprovalDate: String? = null
+    var applicationRefNo: String? = null
+    var versionNo: String? = null
+    var ucrNumber: String? = null
+    var declarationNumber: String? = null
+    var description: String? = null
+    var status: Int? = null
+
+    companion object {
+        fun fromEntity(standerd: CdStandardsEntity): CdStandardsEntityDao {
+            return CdStandardsEntityDao()
+                    .apply {
+                        mdaCode = standerd.mdaCode
+                        mdaDescription = standerd.mdaDescription
+                        consignmentTypeCode = standerd.consignmentTypeCode
+                        cmsDocumentTypeCode = standerd.cmsDocumentTypeCode
+                        documentTypeCode = standerd.documentTypeCode
+                        applicationTypeCode = standerd.applicationTypeCode
+                        documentTypeDescription = standerd.documentTypeDescription
+                        applicationTypeDescription = standerd.applicationTypeDescription
+                        documentDescription = standerd.documentDescription
+                        consignmentTypeCode = standerd.consignmentTypeCode
+                        consignmentTypeDescription = standerd.consignmentTypeDescription
+                        applicationRefNo = standerd.applicationRefNo
+                        declarationNumber = standerd.declarationNumber
+                        ucrNumber = standerd.ucrNumber
+                    }
+        }
+    }
+}
+
+class DiUploadsEntityDao : Serializable {
+    var id: Long = 0
+    var filepath: String? = null
+    var description: String? = null
+    var name: String? = null
+    var fileType: String? = null
+    var fileSize: Long? = null
+    var documentType: String? = null
+
+    companion object {
+        fun fromEntity(upload: DiUploadsEntity) = DiUploadsEntityDao()
+                .apply {
+                    id = upload.id
+                    filepath = upload.filepath
+                    description = upload.description
+                    name = upload.name
+                    fileType = upload.fileType
+                    fileSize = upload.fileSize
+                    documentType = upload.documentType
+                }
+
+        fun fromList(uploads: List<DiUploadsEntity>): List<DiUploadsEntityDao> {
+            val data = mutableListOf<DiUploadsEntityDao>()
+            uploads.forEach {
+                data.add(fromEntity(it))
+            }
+            return data
         }
     }
 }

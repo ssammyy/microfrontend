@@ -30,13 +30,13 @@ import {OtpComponent} from "./views/registration/otp/otp.component";
 import {PdfViewComponent} from "./pdf-view/pdf-view.component";
 import {TaskManagerComponent} from "./apollowebs/task-manager/task-manager.component";
 import {AddUserComponent} from "./apollowebs/company/branch/add-user/add-user.component";
-import { ImportInspectionComponent } from './apollowebs/pvoc/import-inspection/import-inspection.component';
-import { ExceptionsApplicationComponent } from './apollowebs/pvoc/exceptions-application/exceptions-application.component';
-import { ImportationWaiverComponent } from './apollowebs/pvoc/importation-waiver/importation-waiver.component';
-import { ConsignmentDocumentListComponent } from './apollowebs/di/consignment-document-list/consignment-document-list.component';
-import { ViewSingleConsignmentDocumentComponent } from './apollowebs/di/view-single-consignment-document/view-single-consignment-document.component';
-import { MinistryInspectionHomeComponent } from './apollowebs/di/ministry-inspection-home/ministry-inspection-home.component';
-import { MotorVehicleInspectionSingleViewComponent } from './apollowebs/di/motor-vehicle-inspection-single-view/motor-vehicle-inspection-single-view.component';
+import {ImportInspectionComponent} from './apollowebs/pvoc/import-inspection/import-inspection.component';
+import {ExceptionsApplicationComponent} from './apollowebs/pvoc/exceptions-application/exceptions-application.component';
+import {ImportationWaiverComponent} from './apollowebs/pvoc/importation-waiver/importation-waiver.component';
+import {ConsignmentDocumentListComponent} from './apollowebs/di/consignment-document-list/consignment-document-list.component';
+import {ViewSingleConsignmentDocumentComponent} from './apollowebs/di/view-single-consignment-document/view-single-consignment-document.component';
+import {MinistryInspectionHomeComponent} from './apollowebs/di/ministry-inspection-home/ministry-inspection-home.component';
+import {MotorVehicleInspectionSingleViewComponent} from './apollowebs/di/motor-vehicle-inspection-single-view/motor-vehicle-inspection-single-view.component';
 import {NwaJustificationFormComponent} from './apollowebs/standards-development/workshop-agreement/nwa-justification-form/nwa-justification-form.component';
 import {NwaJustificationTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-justification-tasks/nwa-justification-tasks.component';
 import {NwaKnwSecTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-knw-sec-tasks/nwa-knw-sec-tasks.component';
@@ -67,6 +67,9 @@ import {StandardTaskComponent} from "./apollowebs/standards-development/standard
 import {InvoiceConsolidateComponent} from "./apollowebs/quality-assurance/invoice-consolidate/invoice-consolidate.component";
 import {FmarkApplicationComponent} from "./apollowebs/quality-assurance/fmark-application/fmark-application.component";
 import {SmarkComponent} from "./apollowebs/quality-assurance/smark/smark.component";
+import {ViewDeclarationDocumentsItemDetailsListComponent} from "./apollowebs/di/view-single-consignment-document/view-di-declaration-documents/view-declaration-documents-item-details-list/view-declaration-documents-item-details-list.component";
+import {ViewDiDeclarationDocumentsComponent} from "./apollowebs/di/view-single-consignment-document/view-di-declaration-documents/view-di-declaration-documents.component";
+import {ViewIdfDocumentDetailsComponent} from "./apollowebs/di/view-single-consignment-document/view-idf-document-details/view-idf-document-details.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -370,7 +373,14 @@ const routes: Routes = [
                 path: '',
                 component: ConsignmentDocumentListComponent
             },
-
+            {
+                path: 'declaration/document/:id',
+                component: ViewDiDeclarationDocumentsComponent
+            },
+            {
+              path: 'idf/details/:id',
+              component: ViewIdfDocumentDetailsComponent
+            },
             {
                 path: ':id',
                 component: ViewSingleConsignmentDocumentComponent

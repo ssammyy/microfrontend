@@ -9,7 +9,7 @@ import javax.persistence.*
 @Table(name = "CFG_KEBS_CONSIGNMENT_DOCUMENT_TYPES")
 class ConsignmentDocumentTypesEntity : Serializable {
     @Column(name = "ID")
-    @SequenceGenerator(name = "CFG_KEBS_CONSIGNMENT_DOCUMENT_TYPES_SEQ_GEN", sequenceName = "CFG_KEBS_CONSIGNMENT_DOCUMENT_TYPES", allocationSize = 1)
+    @SequenceGenerator(name = "CFG_KEBS_CONSIGNMENT_DOCUMENT_TYPES_SEQ_GEN", sequenceName = "CFG_KEBS_CONSIGNMENT_DOCUMENT_TYPES_SEQ", allocationSize = 1)
     @GeneratedValue(generator = "CFG_KEBS_CONSIGNMENT_DOCUMENT_TYPES_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Id
     var id: Long = 0

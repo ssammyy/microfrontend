@@ -6,11 +6,8 @@
             <select id="applicable_status" name="applicable_status"
                     class="waiver-form-input-master"
                     formControlName="applicable_status">
-                <option value="" disabled selected>Select Status</option>
-                <option value="onHold">On-Hold</option>
-                <option value="rejected">Rejected</option>
-                <option value="approved">Approved</option>
-                <option value="rejectedForAmmendment">Rejected for ammendment</option>
+                <option  value="d.id" disabled selected>Select Status</option>
+                <option *ngFor="let d of statuses" [value]="d.statusCode">{{d.typeName}}</option>
             </select>
 
             <label class="waiver-form-label">Please write, in detail, your feedback for this consignment:</label>

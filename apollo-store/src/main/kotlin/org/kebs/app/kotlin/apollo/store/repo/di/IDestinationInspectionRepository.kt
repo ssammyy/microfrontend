@@ -590,6 +590,11 @@ interface IDeclarationDetailsEntityRepository : HazelcastRepository<DeclarationD
 }
 
 @Repository
+interface ICdDocumentModificationHistoryRepository : HazelcastRepository<CdDocumentModificationHistory, Long> {
+    fun findAllByCdId(cdId: Long): List<CdDocumentModificationHistory>
+}
+
+@Repository
 interface IDeclarationItemDetailsEntityRepository : HazelcastRepository<DeclarationItemDetailsEntity, Long> {
     fun findAllByDeclarationDetailsId(declarationDetailsId: DeclarationDetailsEntity): List<DeclarationItemDetailsEntity>?
 

@@ -1671,6 +1671,7 @@ class DestinationInspectionDaoServices(
             name = commonDaoServices.saveDocuments(docFile)
             fileType = docFile.contentType
             documentType = doc
+            fileSize = docFile.size
             document = docFile.bytes
             itemId = itemDetails
             cdId = consignmentDocumentDetailsEntity
@@ -1696,6 +1697,7 @@ class DestinationInspectionDaoServices(
             name = commonDaoServices.saveDocuments(docFile)
             fileType = docFile.contentType
             documentType = doc
+            fileSize = docFile.size
             document = docFile.bytes
             cdId = consignmentDocumentDetailsEntity
             transactionDate = commonDaoServices.getCurrentDate()
@@ -2090,7 +2092,7 @@ class DestinationInspectionDaoServices(
                     cdType.id,
                     page
             )
-        }?:run{
+        } ?: run {
             iConsignmentDocumentDetailsRepo.findByPortOfArrivalAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
                     sectionsEntity.id,
                     page
@@ -2146,7 +2148,7 @@ class DestinationInspectionDaoServices(
                     it.id,
                     page
             )
-        }?: run{
+        } ?: run {
             iConsignmentDocumentDetailsRepo.findByPortOfArrivalAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
                     sectionsEntity.id,
                     page
@@ -2181,12 +2183,12 @@ class DestinationInspectionDaoServices(
     }
 
     fun findAllCdWithNoPortOfEntry(cdType: ConsignmentDocumentTypesEntity?, page: PageRequest): Page<ConsignmentDocumentDetailsEntity> {
-        return cdType?.let{
+        return cdType?.let {
             iConsignmentDocumentDetailsRepo.findByPortOfArrivalIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
-                cdType.id,
+                    cdType.id,
                     page
-        )
-        }?:run{
+            )
+        } ?: run {
             iConsignmentDocumentDetailsRepo.findByPortOfArrivalIsNullAndUcrNumberIsNotNullAndOldCdStatusIsNull(
                     page
             )
@@ -2212,18 +2214,18 @@ class DestinationInspectionDaoServices(
             cdType: ConsignmentDocumentTypesEntity?,
             page: PageRequest
     ): Page<ConsignmentDocumentDetailsEntity> {
-       return cdType?.let {
-           iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
-                   usersEntity,
-                   it.id,
-                   page
-           )
-       }?: run{
-           iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
-                   usersEntity,
-                   page
-           )
-       }
+        return cdType?.let {
+            iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+                    usersEntity,
+                    it.id,
+                    page
+            )
+        } ?: run {
+            iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+                    usersEntity,
+                    page
+            )
+        }
     }
 
     fun findAllCompleteCdWithAssignedIoID(
@@ -2237,7 +2239,7 @@ class DestinationInspectionDaoServices(
                     it.id,
                     page
             )
-        }?:run {
+        } ?: run {
             iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
                     usersEntity,
                     page
@@ -2261,11 +2263,13 @@ class DestinationInspectionDaoServices(
             cdType: ConsignmentDocumentTypesEntity?,
             page: PageRequest
     ): Page<ConsignmentDocumentDetailsEntity> {
-        return cdType?.let{iConsignmentDocumentDetailsRepo.findByFreightStationAndAssignedInspectionOfficerIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
-                cfsEntity.id,
-                it.id,
-                page
-        )}?:run{
+        return cdType?.let {
+            iConsignmentDocumentDetailsRepo.findByFreightStationAndAssignedInspectionOfficerIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
+                    cfsEntity.id,
+                    it.id,
+                    page
+            )
+        } ?: run {
             iConsignmentDocumentDetailsRepo.findByFreightStationAndAssignedInspectionOfficerIsNullAndUcrNumberIsNotNullAndOldCdStatusIsNull(
                     cfsEntity.id,
                     page

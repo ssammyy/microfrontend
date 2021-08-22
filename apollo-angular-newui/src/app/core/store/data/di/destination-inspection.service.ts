@@ -11,19 +11,30 @@ export class DestinationInspectionService {
     constructor(private client: HttpClient) {
     }
 
-    uploadMinistryChecklist(file: File, fileType: string): Observable<any>{
+    getInspectionUiConfigurations(): Observable<any> {
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/cd/inspection/configuration"))
+    }
+    uploadMinistryChecklist(file: File, fileType: string, id: any): Observable<any>{
         let fd=new FormData()
         fd.append("file", file)
         fd.append("file_type", fileType)
-        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di//ministry/inspection/checklist"),fd)
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di//ministry/inspection/checklist/"+id),fd)
     }
 
     uploadForeignDocuments(file: File, fileType: string): Observable<any>{
         let fd=new FormData()
         fd.append("file", file)
         fd.append("file_type", fileType)
-        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/foreign-document"),fd)
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/foreign/cd/upload"),fd)
     }
+
+    uploadConsignmentDocumentAttachment(file: File, description: string, documentUuid: string): Observable<any>{
+        let fd=new FormData()
+        fd.append("file", file)
+        fd.append("description", description)
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/attachments/upload/"+documentUuid),fd)
+    }
+
     listMinistryInspections(status: number, page: number, size: number): Observable<any> {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/ministry/inspections/" + status), {
             params: {
@@ -37,11 +48,19 @@ export class DestinationInspectionService {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/ministry/inspection/details/" + itemId))
     }
 
+    loadCustomsDeclaration(itemId: any): Observable<any> {
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/customs/declaration/" + itemId))
+    }
+
+    loadIdfDocumentDetails(itemId: any): Observable<any> {
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/inspection/idf/details/" + itemId))
+    }
+
     listCompletedCd(documentType: String, page: Number = 0, size: Number = 20): Observable<any> {
-        var params = {
+        let params = {
             'page': page.toString(),
             'size': size.toString(),
-        }
+        };
         if (documentType) {
             params['cdTypeUuid'] = documentType
         }
@@ -103,5 +122,13 @@ export class DestinationInspectionService {
 
     applicationTypes(): Observable<any> {
         return this.client.get("/api/v1/di/application/types")
+    }
+
+    downloadAttachment(id: any) : Observable<any>{
+        return this.client.get("/api/v1/di/cd/download/attachment/"+id)
+    }
+
+    getConsignmentAttachments(consignmentId: string) : Observable<any>{
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/attachments/"+consignmentId))
     }
 }

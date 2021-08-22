@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {DestinationInspectionService} from "../../../core/store/data/di/destination-inspection.service";
-import {ConsignmentStatusComponent} from "../../../core/shared/customs/consignment-status/consignment-status.component";
 import {MatDialog} from "@angular/material/dialog";
 import {UploadForeignFormComponent} from "./upload-foreign-form/upload-foreign-form.component";
 
@@ -43,6 +42,10 @@ export class ConsignmentDocumentListComponent implements OnInit {
                 title: 'UCR No',
                 type: 'string'
             },
+            applicationRefNo: {
+                title: 'Ref No.',
+                type: 'string'
+            },
             applicantName: {
                 title: 'Applicant Name',
                 type: 'string'
@@ -57,10 +60,9 @@ export class ConsignmentDocumentListComponent implements OnInit {
                 type: 'string',
                 filter: false
             },
-            approveRejectCdStatus: {
+            approvalStatus: {
                 title: 'Approval Status',
-                type: 'custom',
-                renderComponent: ConsignmentStatusComponent,
+                type: 'string',
                 filter: false
             },
             assignedTo: {
