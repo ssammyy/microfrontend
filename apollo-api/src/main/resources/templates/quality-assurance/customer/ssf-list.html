@@ -33,7 +33,7 @@
                                         <th>BS NUMBER</th>
                                         <th>PRODUCT NAME</th>
                                         <th>BRAND NAME</th>
-                                        <th>SAMPLE STATUS</th>
+                                        <th>RESULTS ANALYSIS</th>
                                         <th>View Details</th>
                                         <!--                                        <th>View PDF</th>-->
                                     </tr>
@@ -45,7 +45,8 @@
                                         <td th:text="${ssfDetails?.bsNumber}"></td>
                                         <td th:text="${ssfDetails?.productDescription}"></td>
                                         <td th:text="${ssfDetails?.brandName}"></td>
-                                        <td style="color: #0082f3" th:text="${ssfDetails?.sampleStatus}"></td>
+                                        <td style="color: #0082f3"
+                                            th:text="${ssfDetails?.resultsAnalysis} ? 'COMPLIANT' : 'NOT-COMPLIANT'"></td>
                                         <!--                                        <td style="color: #0082f3" th:text="${ssfDetails?.sampleStatus} ? 'PAID' : 'NOT PAID'"></td>-->
                                         <!--                                        <td th:text="${invoice?.awardedPermitNumber}"></td>-->
 
