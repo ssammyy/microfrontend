@@ -239,6 +239,14 @@ interface IQaInvoiceDetailsRepository : HazelcastRepository<QaInvoiceDetailsEnti
 }
 
 @Repository
+interface IQaRemarksEntityRepository : HazelcastRepository<QaRemarksEntity, Long> {
+    //    fun findByStatusAndInvoiceMasterId(status: Int, invoiceMasterId: Long): List<QaRemarksEntity>?
+    fun findByPermitId(invoiceMasterId: Long): List<QaRemarksEntity>?
+//    fun findByProcessStatusNameAndStatus(processStatusName: String, status: Long): QaProcessStatusEntity?
+//    fun findByStatus(status: Int): List<QaInvoiceDetailsEntity>?
+}
+
+@Repository
 interface IQaInvoiceMasterDetailsRepository : HazelcastRepository<QaInvoiceMasterDetailsEntity, Long> {
     fun findByPermitId(permitId: Long): QaInvoiceMasterDetailsEntity?
     fun findAllByBatchInvoiceNo(

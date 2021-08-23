@@ -802,6 +802,10 @@ class QualityAssuranceController(
         var closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetailsDB.id}"
         when (permitFromInterface.hofQamCompletenessStatus) {
             map.activeStatus -> {
+                with(permitDetailsDB) {
+                    resubmitApplicationStatus = null
+                    resubmitRemarks = null
+                }
                 permitDetailsDB = qaDaoServices.permitInsertStatus(
                     permitDetailsFromDB,
                     applicationMapProperties.mapQaStatusPQAOAssign,

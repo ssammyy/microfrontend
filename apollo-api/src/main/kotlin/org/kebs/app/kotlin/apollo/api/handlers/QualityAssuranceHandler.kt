@@ -277,6 +277,7 @@ class QualityAssuranceHandler(
         req.attributes()["batchID"] = batchDetail
         req.attributes()["invoiceDetails"] = QaInvoiceDetailsEntity()
         req.attributes()["sections"] = loadSectionDetails(departmentEntity, map, req)
+        req.attributes()["remarksParameters"] = qaDaoServices.findALlRemarksDetailsPerPermit(permitID)
         req.attributes()["standardsList"] = qaDaoServices.findALlStandardsDetails(map.activeStatus)
         req.attributes().putAll(loadCommonUIComponents(map))
         req.attributes().putAll(loadCommonPermitComponents(map, permit))
@@ -861,6 +862,7 @@ class QualityAssuranceHandler(
             Pair("initStatus", s.initStatus),
             Pair("nullStatus", null),
             Pair("permitRequest", PermitUpdateDetailsRequestsEntity()),
+            Pair("resubmitApplication", ResubmitApplicationDto()),
             Pair("requestDetails", PermitUpdateDetailsRequestsEntity()),
             Pair("fmarkEntityDto", FmarkEntityDto()),
             Pair("SampleSubmissionDetails", QaSampleSubmissionEntity()),
@@ -1966,8 +1968,11 @@ class QualityAssuranceHandler(
             var updatePermit = PermitApplicationsEntity()
             with(updatePermit) {
                 id = permit.id
-                sta10FilledStatus = map.inactiveStatus
-                permitStatus = applicationMapProperties.mapQaStatusDraft
+                sta10FilledStatus = map.activeStatus
+                if (permit.sendApplication != 1) {
+                    permitStatus = applicationMapProperties.mapQaStatusDraft
+                }
+
             }
 
             //update the permit with the created entity values

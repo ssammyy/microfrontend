@@ -52,6 +52,7 @@ class QADaoServices(
     private val iTurnOverRatesRepository: ITurnOverRatesRepository,
     private val iManufacturePaymentDetailsRepository: IManufacturerPaymentDetailsRepository,
     private val sampleStandardsRepo: ISampleStandardsRepository,
+    private val remarksEntityRepo: IQaRemarksEntityRepository,
     private val invoiceDaoService: InvoiceDaoService,
     private val paymentUnitsRepository: ICfgKebsPermitPaymentUnitsRepository,
     private val serviceRequestsRepository: IServiceRequestsRepository,
@@ -205,6 +206,14 @@ class QADaoServices(
                 return it
             }
             ?: throw ExpectedDataNotFound("No Standards Found WIth [status = ${status}]")
+    }
+
+    fun findALlRemarksDetailsPerPermit(permitID: Long): List<QaRemarksEntity> {
+        remarksEntityRepo.findByPermitId(permitID)
+            ?.let { it ->
+                return it
+            }
+            ?: throw ExpectedDataNotFound("No Remarks Found WIth the following Permit ID = ${permitID}")
     }
 
     fun findBatchInvoicesWithID(batchID: Long): QaBatchInvoiceEntity {
@@ -1481,6 +1490,7 @@ class QADaoServices(
         permitDetails: PermitApplicationsEntity,
     ): PermitAllRemarksDetailsDto {
         var hofQamCompleteness: RemarksAndStatusDto? = null
+        var labResultsCompleteness: RemarksAndStatusDto? = null
         var pcmApproval: RemarksAndStatusDto? = null
         var pscMemberApproval: RemarksAndStatusDto? = null
         var pcmReviewApproval: RemarksAndStatusDto? = null
@@ -1498,6 +1508,14 @@ class QADaoServices(
                 pcmApproval = RemarksAndStatusDto(
                     permitDetails.pcmApprovalStatus == 1,
                     permitDetails.pcmApprovalRemarks,
+                )
+            }
+        }
+        when {
+            permitDetails.compliantStatus != null -> {
+                labResultsCompleteness = RemarksAndStatusDto(
+                    permitDetails.compliantStatus == 1,
+                    permitDetails.compliantRemarks,
                 )
             }
         }
@@ -1525,8 +1543,10 @@ class QADaoServices(
                 )
             }
         }
+
         return PermitAllRemarksDetailsDto(
             hofQamCompleteness,
+            labResultsCompleteness,
             pcmApproval,
             pscMemberApproval,
             pcmReviewApproval,
@@ -2100,6 +2120,7 @@ class QADaoServices(
                 saveSSF.permitId ?: throw Exception("MISSING PERMIT ID")
             )
 
+            permitDetails.compliantRemarks = saveSSF.complianceRemarks
             permitDetails.compliantStatus = saveSSF.resultsAnalysis
             permitDetails.testReportId = saveSSF.labReportFileId
             var complianceValue: String? = null
@@ -2976,16 +2997,38 @@ class QADaoServices(
             KotlinLogging.logger { }.info(":::::: RESUBMIT SENT IS = ${permitResubmit.resubmittedDetails} :::::::")
 
             with(updatePermit) {
-                if (permitResubmit.resubmittedDetails == "resubmitLabNonComplianceResults") {
-                    resubmitApplicationStatus = 10
-                    resubmitRemarks = permitResubmit.resubmitRemarks
-                    compliantStatus = null
-                    testReportId = null
-                    userTaskId = applicationMapProperties.mapUserTaskNameQAO
-                    permitStatus = applicationMapProperties.mapQaStatusPendingReInspection
-                    KotlinLogging.logger { }.info(":::::: SELECTED RESUBMIT IS resubmitLabNonComplianceResults :::::::")
-                } else {
-                    throw Exception("NO FUNCTION FOR RESUBMIT EXISTING (${permitResubmit.resubmittedDetails})")
+                when (permitResubmit.resubmittedDetails) {
+                    "resubmitLabNonComplianceResults" -> {
+                        resubmitApplicationStatus = 10
+                        resubmitRemarks = permitResubmit.resubmitRemarks
+//                        compliantStatus = null
+//                        compliantRemarks = null
+                        testReportId = null
+                        userTaskId = applicationMapProperties.mapUserTaskNameQAO
+                        permitStatus = applicationMapProperties.mapQaStatusPendingReInspection
+                        KotlinLogging.logger { }
+                            .info(":::::: SELECTED RESUBMIT IS resubmitLabNonComplianceResults :::::::")
+                    }
+                    "resubmitHofQamCompletenessResults" -> {
+                        resubmitApplicationStatus = 10
+                        resubmitRemarks = permitResubmit.resubmitRemarks
+//                        hofQamCompletenessStatus = null
+//                        hofQamCompletenessRemarks = null
+                        permitStatus = applicationMapProperties.mapQaStatusPApprovalCompletness
+                        userTaskId = when (updatePermit.permitType) {
+                            applicationMapProperties.mapQAPermitTypeIDDmark -> {
+                                applicationMapProperties.mapUserTaskNameHOD
+                            }
+                            else -> {
+                                applicationMapProperties.mapUserTaskNameQAM
+                            }
+                        }
+                        KotlinLogging.logger { }
+                            .info(":::::: SELECTED RESUBMIT IS resubmitHofQamCompletenessResults :::::::")
+                    }
+                    else -> {
+                        throw Exception("NO FUNCTION FOR RESUBMIT EXISTING (${permitResubmit.resubmittedDetails})")
+                    }
                 }
                 modifiedBy = commonDaoServices.concatenateName(user)
                 modifiedOn = commonDaoServices.getTimestamp()

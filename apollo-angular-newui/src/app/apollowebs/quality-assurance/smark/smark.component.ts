@@ -252,9 +252,9 @@ export class SmarkComponent implements OnInit {
     remarksDetails() {
         const formattedArrayRemarks = [];
 
-        if (this.allPermitDetails?.remarksDetails?.hofQamCompleteness !== null) {
-            formattedArrayRemarks.push(['Completeness Remarks By HOD', '', 'hofQamCompletenessRemarks']);
-        }
+        // if (this.allPermitDetails?.remarksDetails?.hofQamCompleteness !== null) {
+        formattedArrayRemarks.push(['Completeness Remarks By HOD', '', 'hofQamCompletenessRemarks']);
+        formattedArrayRemarks.push(['Lab Results Remarks By QAO', '', 'labResultsCompletenessRemarks']);
         // if (this.allPermitDetails.remarksDetails.pcmReviewApprovalRemarks !== null) {
         formattedArrayRemarks.push(['Review Remarks By PCM', '', 'reviewRemarksPCMRemarks']);
         // }
@@ -450,9 +450,9 @@ export class SmarkComponent implements OnInit {
     }
 
     openModalRemarks(divVal: string): void {
-        const arrHead = ['hofQamCompletenessRemarks', 'reviewRemarksPCMRemarks', 'recommendationRemarks', 'pscApprovalRejectionRemarks', 'pcmApprovalRejectionRemarks'];
+        const arrHead = ['hofQamCompletenessRemarks', 'labResultsCompletenessRemarks', 'reviewRemarksPCMRemarks', 'recommendationRemarks', 'pscApprovalRejectionRemarks', 'pcmApprovalRejectionRemarks'];
         // tslint:disable-next-line:max-line-length
-        const arrHeadSave = ['Completeness Remarks', 'PCM Review Remarks', 'Recommendation', 'PSC Remarks', 'PCM Approval/Rejection Remarks'];
+        const arrHeadSave = ['Completeness Remarks', 'Lab Result Compliance Remarks', 'PCM Review Remarks', 'Recommendation', 'PSC Remarks', 'PCM Approval/Rejection Remarks'];
 
         for (let h = 0; h < arrHead.length; h++) {
             if (divVal === arrHead[h]) {

@@ -114,6 +114,7 @@ data class PermitSSFLabResultsDto(
 
 data class PermitAllRemarksDetailsDto(
     var hofQamCompleteness: RemarksAndStatusDto? = null,
+    var labResultsCompleteness: RemarksAndStatusDto? = null,
     var pcmApproval: RemarksAndStatusDto? = null,
     var pscMemberApproval: RemarksAndStatusDto? = null,
     var pcmReviewApproval: RemarksAndStatusDto? = null,

@@ -52,6 +52,7 @@ export class RemarksAndStatusDto {
 
 export class PermitAllRemarksDetailsDto {
     hofQamCompleteness: RemarksAndStatusDto;
+    labResultsCompleteness: RemarksAndStatusDto;
     pcmApproval: RemarksAndStatusDto;
     pscMemberApproval: RemarksAndStatusDto;
     pcmReviewApproval: RemarksAndStatusDto;
