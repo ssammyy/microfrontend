@@ -1,18 +1,18 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpErrorResponse, HttpEvent, HttpParams, HttpRequest} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
 import {Observable, throwError} from "rxjs";
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
 import {catchError, map} from "rxjs/operators";
 import {
-  DISDTTasks, HOPTasks,
-  HoSicTasks,
-  KNWCommittee, KNWDepartment,
-  KnwSecTasks, NWADiSdtJustification,
-  NWAJustification, NWAPreliminaryDraft,
-  NWAStandard, NWAWorkShopDraft, SacSecTasks, SPCSECTasks,
-  UpdateNwaGazette, UploadNwaGazette
+    DiSdtDECISION,
+    DISDTTasks, HOPTasks,
+    HoSicTasks,
+    KNWCommittee, KNWDepartment,
+    KnwSecTasks, NWADiSdtJustification,
+    NWAJustification, NWAJustificationDecision, NWAPDDecision, NWAPreliminaryDraft,
+    NWAStandard, NWAWDDecision, NWAWorkShopDraft, SacSecTasks, SPCSECTasks,
+    UpdateNwaGazette, UploadNwaGazette
 } from "./std.model";
-import {STA10ProductsManufactureDto} from "../qa/qa.model";
 
 @Injectable({
   providedIn: 'root'
@@ -57,10 +57,10 @@ export class StdNwaService {
     const params = new HttpParams();
     return this.http.get<SPCSECTasks[]>(url, {params}).pipe();
   }
-  public decisionOnJustification(nwaJustification: NWAJustification): Observable<any> {
+  public decisionOnJustification(nwaJustificationDecision: NWAJustificationDecision): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_DECISION_ON_JUSTIFICATION);
     const params = new HttpParams();
-    return this.http.post<NWAJustification>(url, nwaJustification, {params}).pipe(
+    return this.http.post<NWAJustification>(url, nwaJustificationDecision, {params}).pipe(
         map(function (response: any) {
           return response;
         }),
@@ -87,10 +87,10 @@ export class StdNwaService {
     const params = new HttpParams();
     return this.http.get<DISDTTasks[]>(url, {params}).pipe();
   }
-  public decisionOnDiSdtJustification(nwaDiSdtJustification: NWADiSdtJustification): Observable<any> {
+  public decisionOnDiSdtJustification(diSdtDecision: DiSdtDECISION): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_DECISION_ON_DISDT_JUSTIFICATION);
     const params = new HttpParams();
-    return this.http.post<NWADiSdtJustification>(url, nwaDiSdtJustification, {params}).pipe(
+    return this.http.post<NWADiSdtJustification>(url, diSdtDecision, {params}).pipe(
         map(function (response: any) {
           return response;
         }),
@@ -111,10 +111,10 @@ export class StdNwaService {
         })
     );
   }
-  public decisionOnPD(nwaPreliminaryDraft: NWAPreliminaryDraft): Observable<any> {
+  public decisionOnPD(nwaPDDecision: NWAPDDecision): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_DECISION_ON_PRELIMINARY_DRAFT);
     const params = new HttpParams();
-    return this.http.post<NWAPreliminaryDraft>(url, nwaPreliminaryDraft, {params}).pipe(
+    return this.http.post<NWAPreliminaryDraft>(url, nwaPDDecision, {params}).pipe(
         map(function (response: any) {
           return response;
         }),
@@ -148,10 +148,10 @@ export class StdNwaService {
     return this.http.get<SacSecTasks[]>(url, {params}).pipe();
   }
 
-  public decisionOnWd(nwaWorkShopDraft: NWAWorkShopDraft): Observable<any> {
+  public decisionOnWd(nwaWDDecision: NWAWDDecision): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_DECISION_ON_WORKSHOP_DRAFT);
     const params = new HttpParams();
-    return this.http.post<NWAWorkShopDraft>(url, nwaWorkShopDraft, {params}).pipe(
+    return this.http.post<NWAWorkShopDraft>(url, nwaWDDecision, {params}).pipe(
         map(function (response: any) {
           return response;
         }),
@@ -219,6 +219,7 @@ export class StdNwaService {
             })
         );
     }
+    //Upload DI SDT Justification
     public uploadDIFileDetails(nwaDiSdtJustificationID: string, data: FormData): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_UPLOAD_DATA_DI);
 
@@ -226,6 +227,56 @@ export class StdNwaService {
             headers: {
                 'enctype': 'multipart/form-data'
             }, params: {'nwaDiSdtJustificationID': nwaDiSdtJustificationID}
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    //Upload Preliminary Draft
+    public uploadPDFileDetails(nwaPDid: string, data: FormData): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_UPLOAD_DATA_PD);
+
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data'
+            }, params: {'nwaPDid': nwaPDid}
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+    public uploadWDFileDetails(nwaWDid: string, data: FormData): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_UPLOAD_DATA_WD);
+
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data'
+            }, params: {'nwaWDid': nwaWDid}
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+    public uploadSTDFileDetails(nwaSTDid: string, data: FormData): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_UPLOAD_DATA_STD);
+
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data'
+            }, params: {'nwaSTDid': nwaSTDid}
         }).pipe(
             map(function (response: any) {
                 return response;

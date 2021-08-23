@@ -62,7 +62,7 @@
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
-                                            <form #editForm="ngForm" >
+                                            <form (ngSubmit)="onEdit()" [formGroup]="prepareWorkShopDraftFormGroup" class="form">
                                                 <div class="modal-body">
                                                     <div class="row col-12">
                                                         <div class="form-group col-6">
@@ -94,11 +94,22 @@
                                                             <input class="form-control"  ngModel="{{actionRequest?.taskData?.special}}" name="special" type="text">
                                                         </div>
                                                     </div>
+                                                    <div class="row col-12">
+                                                        <div class="form-group col-12">
+                                                            <label><b>Upload Workshop Draft  </b> <span style="font-size: xx-small; color: red;">(*)Required</span></label><br>
+                                                            <form #demoForm="ngForm">
+                                                                <input type="file" name="uploadedFiles" [(ngModel)]="uploadedFiles"  multiple>
+                                                                <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles"   fileslimit="2" accept=".pdf, .doc, .docx" ></file-upload>
+                                                            </form>
+                                                        </div>
+
+
+                                                    </div>
                                                 </div>
                                                 <input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskId" >
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-primary btn-sm" (click)="onEdit(editForm.value)" data-dismiss="modal">Edit</button>
+                                                    <button  class="btn btn-sm btn-primary float-right" type="submit">Edit</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -108,12 +119,12 @@
                                     <div class="modal-dialog " role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="uploadExampleModalLabel">Upload KNWA to Standards Database</h5>
+                                                <h5 class="modal-title" id="uploadExampleModalLabel">Upload Kenya National WorkShop Agreement Standard</h5>
                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
-                                            <form #uploadForm="ngForm" >
+                                            <form (ngSubmit)="onNwaUpload()" [formGroup]="prepareStandardFormGroup" class="form">
                                                 <div class="modal-body">
                                                     <div class="row col-12">
                                                         <div class="form-group col-6">
@@ -145,11 +156,22 @@
                                                             <input class="form-control"  ngModel="{{actionRequest?.taskData?.special}}" name="special" type="text">
                                                         </div>
                                                     </div>
+                                                    <div class="row col-12">
+                                                        <div class="form-group col-12">
+                                                            <label><b>Upload Standard  </b> <span style="font-size: xx-small; color: red;">(*)Required</span></label><br>
+                                                            <form #demoForm="ngForm">
+                                                                <input type="file" name="uploadedFiles" [(ngModel)]="uploadedFiles"  multiple>
+                                                                <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles"   fileslimit="2" accept=".pdf, .doc, .docx" ></file-upload>
+                                                            </form>
+                                                        </div>
+
+
+                                                    </div>
                                                 </div>
                                                 <input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskId" >
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-primary btn-sm" (click)="onNwaUpload(uploadForm.value)" data-dismiss="modal">Save</button>
+                                                    <button type="submit" class="btn btn-primary btn-sm"  data-dismiss="modal">Save</button>
                                                 </div>
                                             </form>
                                         </div>

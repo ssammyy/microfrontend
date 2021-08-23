@@ -6,8 +6,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.*
 import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.store.model.std.*
-import org.kebs.app.kotlin.apollo.store.repo.std.NWADISDTJustificationRepository
-import org.kebs.app.kotlin.apollo.store.repo.std.NwaJustificationRepository
+import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -31,7 +30,10 @@ class NWAController(val nwaService: NWAService,
                     val standardReviewFormService: StandardReviewFormService,
                     val nwaJustificationFileService: NwaJustificationFileService,
                     val nwaDiJustificationFileService: NwaDiJustificationFileService,
-                    val nwadisdtJustificationRepository: NWADISDTJustificationRepository
+                    val nwadisdtJustificationRepository: NWADISDTJustificationRepository,
+                    val nwaPreliminaryDraftRepository: NwaPreliminaryDraftRepository,
+                    val nwaWorkshopDraftRepository: NwaWorkShopDraftRepository,
+                    val nwaStandardRepository: NwaStandardRepository
                     ) {
 
     //********************************************************** deployment endpoints **********************************************************
@@ -119,9 +121,9 @@ class NWAController(val nwaService: NWAService,
     //decision
     @PreAuthorize("hasAuthority('SPC_SEC_SD_MODIFY')")
     @PostMapping("/decisionOnJustification")
-    fun decisionOnJustification(@RequestBody nwaJustification: NWAJustification)
+    fun decisionOnJustification(@RequestBody nwaJustificationDecision: NWAJustificationDecision) : List<TaskDetails>
     {
-        nwaService.decisionOnJustification(nwaJustification)
+        return nwaService.decisionOnJustification(nwaJustificationDecision)
     }
 
 
@@ -175,7 +177,7 @@ class NWAController(val nwaService: NWAService,
         return sm
     }
     //********************************************************** get di-sdt Tasks **********************************************************
-    @PreAuthorize("hasAuthority('DI_SDT_SD_READ')")
+    //@PreAuthorize("hasAuthority('DI_SDT_SD_READ')")
     @GetMapping("/getDiSdtTasks")
     fun getDISDTTasks():List<TaskDetails>
     {
@@ -183,11 +185,10 @@ class NWAController(val nwaService: NWAService,
     }
 
     //********************************************************** Decision  on DI-SDT Approval **********************************************************
-    @PreAuthorize("hasAuthority('DI_SDT_SD_MODIFY')")
+    //@PreAuthorize("hasAuthority('DI_SDT_SD_MODIFY')")
     @PostMapping("/decisionOnDiSdtJustification")
-    fun decisionOnDiSdtJustification(@RequestBody nwaDiSdtJustification: NWADiSdtJustification)
-    {
-        nwaService.decisionOnDiSdtJustification(nwaDiSdtJustification)
+    fun decisionOnDiSdtJustification(@RequestBody workshopAgreement: WorkshopAgreement): List<TaskDetails> {
+        return nwaService.decisionOnDiSdtJustification(workshopAgreement)
     }
 
     //********************************************************** process prepare Preliminary Draft **********************************************************
@@ -198,13 +199,45 @@ class NWAController(val nwaService: NWAService,
     {
         return ServerResponse(HttpStatus.OK,"Successfully uploaded Preliminary Draft",nwaService.preparePreliminaryDraft(nwaPreliminaryDraft))
     }
+// upload preliminary draft
+    @PostMapping("/pd-file-upload")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadPDFiles(
+        @RequestParam("nwaPDid") nwaPDid: Long,
+        @RequestParam("docFile") docFile: List<MultipartFile>,
+        model: Model
+    ): CommonDaoServices.MessageSuccessFailDTO {
+
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val nwaPreliminaryDraft = nwaPreliminaryDraftRepository.findByIdOrNull(nwaPDid)?: throw Exception("NWA PRELIMINARY DRAFT  ID DOES NOT EXIST")
+
+        docFile.forEach { u ->
+            val upload = NWAPreliminaryDraftUploads()
+            with(upload) {
+                nwaPDDocumentId = nwaPreliminaryDraft.id
+
+            }
+            nwaService.uploadPDFile(
+                upload,
+                u,
+                "UPLOADS",
+                loggedInUser,
+                "NWA PRELIMINARY DRAFT"
+            )
+        }
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.message = "Document Uploaded successful"
+
+        return sm
+    }
 
     //********************************************************** Decision  on Preliminary Draft **********************************************************
     @PreAuthorize("hasAuthority('KNW_SEC_MODIFY')")
     @PostMapping("/decisionOnPd")
-    fun decisionOnPD(@RequestBody nwaPreliminaryDraft: NWAPreliminaryDraft)
+    fun decisionOnPD(@RequestBody nwaPreliminaryDraftDecision: NWAPreliminaryDraftDecision) : List<TaskDetails>
     {
-        nwaService.decisionOnPD(nwaPreliminaryDraft)
+        return nwaService.decisionOnPD(nwaPreliminaryDraftDecision)
     }
 
     //********************************************************** get Head of Publishing Tasks **********************************************************
@@ -224,6 +257,39 @@ class NWAController(val nwaService: NWAService,
         return ServerResponse(HttpStatus.OK,"Successfully uploaded Workshop Draft",nwaService.editWorkshopDraft(nwaWorkShopDraft))
     }
 
+    // upload Workshop draft
+    @PostMapping("/wd-file-upload")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadWDFiles(
+        @RequestParam("nwaWDid") nwaWDid: Long,
+        @RequestParam("docFile") docFile: List<MultipartFile>,
+        model: Model
+    ): CommonDaoServices.MessageSuccessFailDTO {
+
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val nwaWorkShopDraft = nwaWorkshopDraftRepository.findByIdOrNull(nwaWDid)?: throw Exception("NWA WORK SHOP DRAFT ID DOES NOT EXIST")
+
+        docFile.forEach { u ->
+            val upload = NWAWorkShopDraftUploads()
+            with(upload) {
+                nwaWDDocumentId = nwaWorkShopDraft.id
+
+            }
+            nwaService.uploadWDFile(
+                upload,
+                u,
+                "UPLOADS",
+                loggedInUser,
+                "NWA WORK SHOP  DRAFT"
+            )
+        }
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.message = "Document Uploaded successful"
+
+        return sm
+    }
+
     //********************************************************** get Head of SAC SEC Tasks **********************************************************
     @PreAuthorize("hasAuthority('SAC_SEC_SD_READ')")
     @GetMapping("/getSacSecTasks")
@@ -235,9 +301,9 @@ class NWAController(val nwaService: NWAService,
     //********************************************************** Decision  on Workshop Draft Approval **********************************************************
     @PreAuthorize("hasAuthority('SAC_SEC_SD_MODIFY')")
     @PostMapping("/decisionOnWd")
-    fun decisionOnWd(@RequestBody nwaWorkShopDraft: NWAWorkShopDraft)
+    fun decisionOnWd(@RequestBody nwaWorkshopDraftDecision: NWAWorkshopDraftDecision) : List<TaskDetails>
     {
-        nwaService.decisionOnWD(nwaWorkShopDraft)
+        return nwaService.decisionOnWD(nwaWorkshopDraftDecision)
     }
 
 
@@ -248,6 +314,39 @@ class NWAController(val nwaService: NWAService,
     fun uploadNwaStandard(@RequestBody nWAStandard: NWAStandard): ServerResponse
     {
         return ServerResponse(HttpStatus.OK,"Successfully uploaded Standard",nwaService.uploadNwaStandard(nWAStandard))
+    }
+
+    // upload NWA Standard
+    @PostMapping("/std-file-upload")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadSTDFiles(
+        @RequestParam("nwaSTDid") nwaSTDid: Long,
+        @RequestParam("docFile") docFile: List<MultipartFile>,
+        model: Model
+    ): CommonDaoServices.MessageSuccessFailDTO {
+
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val nWAStandard = nwaStandardRepository.findByIdOrNull(nwaSTDid)?: throw Exception("NWA STANDARD  ID DOES NOT EXIST")
+
+        docFile.forEach { u ->
+            val upload = NWAStandardUploads()
+            with(upload) {
+                nwaStdDocumentId = nWAStandard.id
+
+            }
+            nwaService.uploadSTDFile(
+                upload,
+                u,
+                "UPLOADS",
+                loggedInUser,
+                "NWA STANDARD"
+            )
+        }
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.message = "Document Uploaded successful"
+
+        return sm
     }
 
     //********************************************************** get Head of HO SIC Tasks **********************************************************
@@ -378,7 +477,7 @@ class NWAController(val nwaService: NWAService,
     @ResponseBody
     fun getCDNumber(): String
     {
-        return nwaService.getCDNumber();
+        return nwaService.getCDNumber().first;
     }
 
     @GetMapping("/getKSNumber")

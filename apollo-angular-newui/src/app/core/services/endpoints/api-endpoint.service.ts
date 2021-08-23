@@ -285,6 +285,9 @@ export class ApiEndpointService {
         NWA_UPDATE_GAZETTEMENT_DATE: `${ApiEndpointService.SD_NWA_CONTEXT}/updateGazettementDate`,
         NWA_UPLOAD_DATA: `${ApiEndpointService.SD_NWA_CONTEXT}/file-upload`,
         NWA_UPLOAD_DATA_DI: `${ApiEndpointService.SD_NWA_CONTEXT}/di-file-upload`,
+        NWA_UPLOAD_DATA_PD: `${ApiEndpointService.SD_NWA_CONTEXT}/pd-file-upload`,
+        NWA_UPLOAD_DATA_WD: `${ApiEndpointService.SD_NWA_CONTEXT}/wd-file-upload`,
+        NWA_UPLOAD_DATA_STD: `${ApiEndpointService.SD_NWA_CONTEXT}/std-file-upload`,
 
         // SD INTERNATIONAL STANDARDS
         IST_PREPARE_ADOPTION_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/prepareAdoptionProposal`,
