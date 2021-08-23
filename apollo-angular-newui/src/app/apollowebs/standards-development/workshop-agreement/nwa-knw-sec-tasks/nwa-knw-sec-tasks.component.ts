@@ -1,9 +1,13 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {StdNwaService} from "../../../../core/store/data/std/std-nwa.service";
 import {NgxSpinnerService} from "ngx-spinner";
-import {KnwSecTasks, NWADiSdtJustification, NWAPreliminaryDraft} from "../../../../core/store/data/std/std.model";
+import {
+    KnwSecTasks,
+    NWAPDDecision,
+    NWAPreliminaryDraft
+} from "../../../../core/store/data/std/std.model";
 import {HttpErrorResponse} from "@angular/common/http";
-import {Observable, Subject} from "rxjs";
+import { Subject} from "rxjs";
 import swal from "sweetalert2";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
@@ -24,6 +28,7 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
   public actionRequest: KnwSecTasks | undefined;
     public uploadedFiles:  FileList;
     public prepareDIJustificationFormGroup!: FormGroup;
+    public preparePreliminaryDraftFormGroup!: FormGroup;
   constructor(
       private formBuilder: FormBuilder,
       private stdNwaService: StdNwaService,
@@ -42,14 +47,31 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
           taskId: []
 
       });
+      this.preparePreliminaryDraftFormGroup = this.formBuilder.group({
+          title: ['', Validators.required],
+          scope: ['', Validators.required],
+          normativeReference: ['', Validators.required],
+          symbolsAbbreviatedTerms: ['', Validators.required],
+          clause: ['', Validators.required],
+          special: ['', Validators.required],
+          taskId: []
+
+      });
 
   }
     showToasterSuccess(title:string,message:string){
         this.notifyService.showSuccess(message, title)
 
     }
+    showToasterError(title:string,message:string){
+        this.notifyService.showError(message, title)
+
+    }
     get formPrepareJustification(): any {
         return this.prepareDIJustificationFormGroup.controls;
+    }
+    get formPreparePD(): any {
+        return this.preparePreliminaryDraftFormGroup.controls;
     }
   public knwtasks(): void{
     this.SpinnerService.show();
@@ -112,36 +134,44 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();
+                this.showToasterError('Error', `Justification Was Not Prepared`);
+                console.log(error.message);
+            }
+        );
+    }
+
+    uploadPreliminaryDraft(): void {
+        this.SpinnerService.show();
+        this.stdNwaService.preparePreliminaryDraft(this.preparePreliminaryDraftFormGroup.value).subscribe(
+            (response ) => {
+                console.log(response);
+                this.SpinnerService.hide();
+                this.showToasterSuccess(response.httpStatus, `Preliminary Draft Preparation Process Started`);
+                this.onClickPDUPLOADs(response.body.savedRowID)
+                this.preparePreliminaryDraftFormGroup.reset();
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Preliminary Draft Was Not Prepared`);
                 console.log(error.message);
             }
         );
     }
 
 
-  public uploadPreliminaryDraft(nwaPreliminaryDraft: NWAPreliminaryDraft): void{
+  public approvePreliminaryDraft(nwaPDDecision: NWAPDDecision): void{
     this.SpinnerService.show();
-    this.stdNwaService.preparePreliminaryDraft(nwaPreliminaryDraft).subscribe(
+    this.stdNwaService.decisionOnPD(nwaPDDecision).subscribe(
         (response: NWAPreliminaryDraft) => {
           console.log(response);
+            this.showToasterSuccess('Success', `Preliminary Draft Approved`);
           this.SpinnerService.hide();
           this.knwtasks();
         },
         (error: HttpErrorResponse) => {
             this.SpinnerService.hide();
-          alert(error.message);
-        }
-    );
-  }
-  public approvePreliminaryDraft(nwaPreliminaryDraft: NWAPreliminaryDraft): void{
-    this.SpinnerService.show();
-    this.stdNwaService.decisionOnPD(nwaPreliminaryDraft).subscribe(
-        (response: NWAPreliminaryDraft) => {
-          console.log(response);
-          this.SpinnerService.hide();
-          this.knwtasks();
-        },
-        (error: HttpErrorResponse) => {
-            this.SpinnerService.hide();
+            this.showToasterError('Error', `Preliminary Draft Was Not Approved`);
+            this.knwtasks();
           alert(error.message);
         }
     );
@@ -164,6 +194,7 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
             this.stdNwaService.uploadDIFileDetails(nwaDiSdtJustificationID, formData).subscribe(
                 (data: any) => {
                     this.SpinnerService.hide();
+                    this.showToasterSuccess(data.httpStatus, `Justification For Di-SDT Approval Prepared`);
                     this.uploadedFiles = null;
                     console.log(data);
                     swal.fire({
@@ -180,7 +211,36 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
         }
 
     }
+    onClickPDUPLOADs(nwaPDid: string) {
+        if (this.uploadedFiles.length > 0) {
+            const file = this.uploadedFiles;
+            const formData = new FormData();
+            for (let i = 0; i < file.length; i++) {
+                console.log(file[i]);
+                formData.append('docFile', file[i], file[i].name);
+            }
 
+            this.SpinnerService.show();
+            this.stdNwaService.uploadPDFileDetails(nwaPDid, formData).subscribe(
+                (data: any) => {
+                    this.SpinnerService.hide();
+                    this.showToasterSuccess(data.httpStatus, `Preliminary Draft Prepared`);
+                    this.uploadedFiles = null;
+                    console.log(data);
+                    swal.fire({
+                        title: 'Preliminary Draft Prepared.',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success ',
+                        },
+                        icon: 'success'
+                    });
+
+                },
+            );
+        }
+
+    }
 
 
     // onClickSaveUPLOADS(nwaJustificationID: string) {
@@ -226,7 +286,7 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
                 '<span data-notify="title"></span> ' +
                 '<span data-notify="message">Ensure all required fields and items have been filled</span>' +
                 '<div class="progress" data-notify="progressbar">' +
-                '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
+                '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" ></div>' +
                 '</div>' +
                 '<a href="{3}" target="{4}" data-notify="url"></a>' +
                 '</div>'

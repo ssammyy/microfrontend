@@ -45,7 +45,6 @@ import {ReviewStandardsComponent} from './apollowebs/standards-development/syste
 import {CsRequestFormComponent} from './apollowebs/standards-development/company-standard/company-standard-request/cs-request-form/cs-request-form.component';
 import {InformationcheckComponent} from './apollowebs/standards-development/informationcheck/informationcheck.component';
 import {DivisionresponseComponent} from './apollowebs/standards-development/divisionresponse/divisionresponse.component';
-import {NationalEnquiryPointComponent} from './apollowebs/standards-development/national-enquiry-point/national-enquiry-point.component';
 import {MakeEnquiryComponent} from './apollowebs/standards-development/national-enquiry-point/make-enquiry/make-enquiry.component';
 import {ComStdRequestListComponent} from "./apollowebs/standards-development/company-standard/com-std-request-list/com-std-request-list.component";
 import {IntStdResponsesListComponent} from "./apollowebs/standards-development/international-standard/int-std-responses-list/int-std-responses-list.component";
@@ -356,7 +355,7 @@ export const routes: Routes = [
     },
     {
         path: 'nwaDirStTasks', component: AdminLayoutComponent,
-        canActivate: [RouteGuard],
+        //canActivate: [RouteGuard],
         children: [{path: '', component: NwaDiSdtTasksComponent}]
     },
     {

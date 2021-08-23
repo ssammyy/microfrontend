@@ -91,7 +91,8 @@
                                                     </div>
                                                 </div>
                                                 <input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskId" >
-                                                <input type="hidden" ngModel="true" name="approved"  >
+                                                <input type="hidden" ngModel="true" name="accentTo"  >
+                                                <input type="hidden" name="approvalID" ngModel="{{actionRequest?.taskData.ID}}" >
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
                                                     <button type="submit" class="btn btn-primary btn-sm" (click)="decisionOnWd(approveForm.value)" data-dismiss="modal">Approve</button>
@@ -111,7 +112,7 @@
                                             </div>
                                             <form #rejectForm="ngForm" >
                                                 <input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskId" >
-                                                <input type="hidden" ngModel="false" name="approved"  >
+                                                <input type="hidden" ngModel="true" name="accentTo"  >
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
                                                     <button type="submit" class="btn btn-primary btn-sm" (click)="decisionOnWd(rejectForm.value)" data-dismiss="modal">Submit</button>

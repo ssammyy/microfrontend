@@ -116,6 +116,7 @@ export interface KnwSecTasks{
 }
 
 export interface KnwSecTaskData {
+    ID: number;
     requestedBy: string;
     requestNumber: string;
     referenceMaterial: string;
@@ -159,6 +160,7 @@ export interface SPCTaskData {
     knwCommittee: string;
     departmentName: string;
     knwSecretary: string;
+    ID: number;
 }
 
 export interface NWADiSdtJustification{
@@ -188,6 +190,7 @@ export interface DisDTTaskData {
     knwAcceptanceDate: Date;
     knwCommittee: string;
     departmentName: string;
+    ID: number;
 
 }
 
@@ -218,7 +221,7 @@ export interface SacSecTasks{
 }
 
 export interface SacSeCTaskData {
-
+    ID: number;
     title: number;
     scope: number;
     normativeReference: string;
@@ -737,6 +740,28 @@ export interface SubmitApplication
     qualifications:string;
     commitment:string;
     taskId:string;
+}
+export interface DiSdtDECISION{
+    taskId: string;
+    accentTo: boolean;
+    approvalID: bigint;
+}
+
+export interface NWAJustificationDecision{
+    taskId: string;
+    accentTo: boolean;
+    approvalID: bigint;
+}
+
+export interface NWAPDDecision{
+    taskId: string;
+    accentTo: boolean;
+    approvalID: bigint;
+}
+export interface NWAWDDecision{
+    taskId: string;
+    accentTo: boolean;
+    approvalID: bigint;
 }
 
 

@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.model.std
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.io.Serializable
 import java.sql.Timestamp
 import javax.persistence.*
 import kotlin.jvm.Transient
@@ -8,28 +9,28 @@ import kotlin.jvm.Transient
 
 @Entity
 @Table(name = "SD_NWA_JUSTIFICATION")
-class NWAJustification {
+class NWAJustification : Serializable {
 
     @Id
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0
+    var id: Long = 0
 
     @Column(name = "MEETING_DATE")
     @Basic
-    val meetingDate: String? = null
+    var meetingDate: String? = null
 
     @Column(name = "KNW")
     @Basic
-    val knw: String? = null
+    var knw: String? = null
 
     @Column(name = "KNW_SEC")
     @Basic
-    val knwSecretary: String? = null
+    var knwSecretary: String? = null
 
     @Column(name = "SL_NUMBER")
     @Basic
-    val sl: String? = null
+    var sl: String? = null
 
     @Column(name = "REQUEST_NUMBER")
     @Basic
@@ -37,31 +38,31 @@ class NWAJustification {
 
     @Column(name = "REQUESTED_BY")
     @Basic
-    val requestedBy: String? = null
+    var requestedBy: String? = null
 
     @Column(name = "ISSUES_ADDRESSED")
     @Basic
-    val issuesAddressed: String? = null
+    var issuesAddressed: String? = null
 
     @Column(name = "KNW_ACCEPTANCE_DATE")
     @Basic
-    val knwAcceptanceDate: String? = null
+    var knwAcceptanceDate: String? = null
 
     @Column(name = "REFERENCE_MATERIAL")
     @Basic
-    val referenceMaterial: String? = null
+    var referenceMaterial: String? = null
 
     @Column(name = "DEPARTMENT")
     @Basic
-    val department: String? = null
+    var department: String? = null
 
     @Column(name = "STATUS")
     @Basic
-    val status: String? = null
+    var status: String? = null
 
     @Column(name = "REMARKS")
     @Basic
-    val remarks: String? = null
+    var remarks: String? = null
 
     @Column(name="SUBMISSION_DATE")
     @Basic
@@ -78,7 +79,7 @@ class NWAJustification {
     @Transient
     @Column(name = "ACCENT_TO")
     @Basic
-    val accentTo: Boolean = false
+    var accentTo: Boolean = false
 
     @Column(name = "TASKID")
     @Basic
