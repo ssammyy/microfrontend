@@ -45,10 +45,14 @@ class NWAPreliminaryDraft {
     @Basic
     var special: String? = null
 
+    @Column(name="CD_APP_NUMBER")
+    @Basic
+    var cdAppNumber: String? = null
+
     @Transient
     @Column(name = "ACCENT_TO")
     @Basic
-    val accentTo: Boolean = false
+    var accentTo: Boolean = false
 
 
 }

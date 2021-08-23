@@ -7,14 +7,12 @@ import org.flowable.engine.TaskService
 import org.flowable.engine.repository.Deployment
 import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
-import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceDISDT
-import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponse
-import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponseValue
-import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
+import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.sql.Timestamp
@@ -38,7 +36,10 @@ class NWAService(private val runtimeService: RuntimeService,
                  private val nwaStandardRepository: NwaStandardRepository,
                  private val nwaGazettementRepository: NwaGazettementRepository,
                  private val nwaGazetteNoticeRepository: NwaGazetteNoticeRepository,
-                 private val sdDiJustificationUploadsRepository: SDDIJustificationUploadsRepository
+                 private val sdDiJustificationUploadsRepository: SDDIJustificationUploadsRepository,
+                 private val nwaPreliminaryDraftUploadsRepository: NWAPreliminaryDraftUploadsRepository,
+                 private val nwaStandardUploadsRepository: NWAStandardUploadsRepository,
+                 private val nwaWorkShopDraftUploadsRepository: NWAWorkShopDraftUploadsRepository
 
 
 ) {
@@ -119,7 +120,7 @@ class NWAService(private val runtimeService: RuntimeService,
 
 
         val nwaDetails = nwaJustificationRepository.save(nwaJustification)
-
+        variables["ID"] = nwaDetails.id
         val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
         return ProcessInstanceResponseValue(nwaDetails.id, processInstance.id, processInstance.isEnded,
             nwaJustification.requestNumber!!
@@ -181,11 +182,23 @@ class NWAService(private val runtimeService: RuntimeService,
 
 
     // Decision
-    fun decisionOnJustification(nwaJustification: NWAJustification)
-    {
+
+    fun decisionOnJustification(nwaJustificationDecision: NWAJustificationDecision) : List<TaskDetails> {
         val variables: MutableMap<String, Any> = java.util.HashMap()
-        variables["Yes"] = nwaJustification.accentTo
-        taskService.complete(nwaJustification.taskId, variables)
+        variables["Yes"] = nwaJustificationDecision.accentTo
+        if(variables["Yes"]==true){
+            nwaJustificationRepository.findByIdOrNull(nwaJustificationDecision.approvalID)?.let { nwaJustification->
+
+                with(nwaJustification){
+
+                    accentTo = true
+                }
+                nwaJustificationRepository.save(nwaJustification)
+            }?: throw Exception("TASK NOT FOUND")
+
+        }
+        taskService.complete(nwaJustificationDecision.taskId, variables)
+        return  getSPCSECTasks()
     }
 
 
@@ -206,6 +219,7 @@ class NWAService(private val runtimeService: RuntimeService,
 
 
         val nwaDetails = nwaDisDtJustificationRepository.save(nwaDiSdtJustification)
+        variable["ID"] = nwaDetails.id
         taskService.complete(nwaDiSdtJustification.taskId, variable)
         println("Justification for DI-SDT prepared")
         val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variable)
@@ -246,21 +260,29 @@ class NWAService(private val runtimeService: RuntimeService,
     }
 
     //Decision on DI-SDT
-    fun decisionOnDiSdtJustification(nwaDiSdtJustification: NWADiSdtJustification)
-    {
+    fun decisionOnDiSdtJustification(workshopAgreement: WorkshopAgreement) : List<TaskDetails> {
         val variables: MutableMap<String, Any> = java.util.HashMap()
-        variables["Yes"] = nwaDiSdtJustification.accentTo
+        variables["Yes"] = workshopAgreement.accentTo
         if(variables["Yes"]==true){
-            nwaDiSdtJustification.cdAppNumber = getCDNumber()
+            nwaDisDtJustificationRepository.findByIdOrNull(workshopAgreement.approvalID)?.let { nwaDiSdtJustification->
+                val valueFound =getCDNumber()
+                with(nwaDiSdtJustification){
+                    cdAppNumber = valueFound.first
+                    cdn = valueFound.second
+                    accentTo = true
+                }
+                nwaDisDtJustificationRepository.save(nwaDiSdtJustification)
+            }?: throw Exception("TASK NOT FOUND")
 
-            variables["cdAppNumber"] = nwaDiSdtJustification.cdAppNumber!!
-            nwaDisDtJustificationRepository.save(nwaDiSdtJustification)
         }
-        taskService.complete(nwaDiSdtJustification.taskId, variables)
+        taskService.complete(workshopAgreement.taskId, variables)
+      return  getDISDTTasks()
     }
 
+
+
     // Prepare Preliminary Draft
-    fun preparePreliminaryDraft(nwaPreliminaryDraft: NWAPreliminaryDraft)
+    fun preparePreliminaryDraft(nwaPreliminaryDraft: NWAPreliminaryDraft) : ProcessInstancePD
     {
         val variable:MutableMap<String, Any> = HashMap()
         nwaPreliminaryDraft.title?.let{variable.put("title", it)}
@@ -269,22 +291,62 @@ class NWAService(private val runtimeService: RuntimeService,
         nwaPreliminaryDraft.symbolsAbbreviatedTerms?.let{variable.put("symbolsAbbreviatedTerms", it)}
         nwaPreliminaryDraft.clause?.let{variable.put("clause", it)}
         nwaPreliminaryDraft.special?.let{variable.put("special", it)}
-        nwaPreliminaryDraft.datePdPrepared = Timestamp(System.currentTimeMillis())
-        variable["datePdPrepared"] = nwaPreliminaryDraft.datePdPrepared!!
-        print(nwaPreliminaryDraft.toString())
+        nwaPreliminaryDraft.datePdPrepared = commonDaoServices.getTimestamp()
 
-        nwaPreliminaryDraftRepository.save(nwaPreliminaryDraft)
+
+        variable["datePdPrepared"] = nwaPreliminaryDraft.datePdPrepared!!
+
+        val nwaDetails = nwaPreliminaryDraftRepository.save(nwaPreliminaryDraft)
+        variable["ID"] = nwaDetails.id
         taskService.complete(nwaPreliminaryDraft.taskId, variable)
         println("Preliminary Draft Prepared")
+        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variable)
+        return ProcessInstancePD(nwaDetails.id, processInstance.id, processInstance.isEnded,nwaPreliminaryDraft.datePdPrepared!!)
 
+    }
+    fun uploadPDFile(
+        uploads: NWAPreliminaryDraftUploads,
+        docFile: MultipartFile,
+        doc: String,
+        user: UsersEntity,
+        DocDescription: String
+    ): NWAPreliminaryDraftUploads {
+
+        with(uploads) {
+//            filepath = docFile.path
+            name = commonDaoServices.saveDocuments(docFile)
+//            fileType = docFile.contentType
+            fileType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(docFile.name)
+            documentType = doc
+            description=DocDescription
+            document = docFile.bytes
+            transactionDate = commonDaoServices.getCurrentDate()
+            status = 1
+            createdBy = commonDaoServices.concatenateName(user)
+            createdOn = commonDaoServices.getTimestamp()
+        }
+
+        return nwaPreliminaryDraftUploadsRepository.save(uploads)
     }
 
     //Decision on Preliminary Draft
-    fun decisionOnPD(nwaPreliminaryDraft: NWAPreliminaryDraft)
-    {
+
+    fun decisionOnPD(nwaPreliminaryDraftDecision: NWAPreliminaryDraftDecision) : List<TaskDetails> {
         val variables: MutableMap<String, Any> = java.util.HashMap()
-        variables["Yes"] = nwaPreliminaryDraft.accentTo
-        taskService.complete(nwaPreliminaryDraft.taskId, variables)
+        variables["Yes"] = nwaPreliminaryDraftDecision.accentTo
+        if(variables["Yes"]==true){
+            nwaPreliminaryDraftRepository.findByIdOrNull(nwaPreliminaryDraftDecision.approvalID)?.let { nwaPreliminaryDraft->
+
+                with(nwaPreliminaryDraft){
+
+                    accentTo = true
+                }
+                nwaPreliminaryDraftRepository.save(nwaPreliminaryDraft)
+            }?: throw Exception("TASK NOT FOUND")
+
+        }
+        taskService.complete(nwaPreliminaryDraftDecision.taskId, variables)
+        return  getKNWTasks()
     }
 
     //Return task details for Head of Publishing
@@ -295,7 +357,7 @@ class NWAService(private val runtimeService: RuntimeService,
     }
 
     // Edit Workshop  Draft
-    fun editWorkshopDraft(nwaWorkShopDraft: NWAWorkShopDraft)
+    fun editWorkshopDraft(nwaWorkShopDraft: NWAWorkShopDraft) : ProcessInstanceWD
     {
         val variable:MutableMap<String, Any> = HashMap()
         nwaWorkShopDraft.title?.let{variable.put("title", it)}
@@ -307,12 +369,40 @@ class NWAService(private val runtimeService: RuntimeService,
         nwaWorkShopDraft.dateWdPrepared = Timestamp(System.currentTimeMillis())
         variable["dateWdPrepared"] = nwaWorkShopDraft.dateWdPrepared!!
 
-        print(nwaWorkShopDraft.toString())
+        //print(nwaWorkShopDraft.toString())
 
-        nwaWorkshopDraftRepository.save(nwaWorkShopDraft)
+        val nwaDetails = nwaWorkshopDraftRepository.save(nwaWorkShopDraft)
+        variable["ID"] = nwaDetails.id
         taskService.complete(nwaWorkShopDraft.taskId, variable)
         println("Workshop Draft Edited")
+        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variable)
+        return ProcessInstanceWD(nwaDetails.id, processInstance.id, processInstance.isEnded,nwaWorkShopDraft.dateWdPrepared!!)
 
+    }
+    //upload Workshop draft Document
+    fun uploadWDFile(
+        uploads: NWAWorkShopDraftUploads,
+        docFile: MultipartFile,
+        doc: String,
+        user: UsersEntity,
+        DocDescription: String
+    ): NWAWorkShopDraftUploads {
+
+        with(uploads) {
+//            filepath = docFile.path
+            name = commonDaoServices.saveDocuments(docFile)
+//            fileType = docFile.contentType
+            fileType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(docFile.name)
+            documentType = doc
+            description=DocDescription
+            document = docFile.bytes
+            transactionDate = commonDaoServices.getCurrentDate()
+            status = 1
+            createdBy = commonDaoServices.concatenateName(user)
+            createdOn = commonDaoServices.getTimestamp()
+        }
+
+        return nwaWorkShopDraftUploadsRepository.save(uploads)
     }
 
     //Return task details for SAC SEC
@@ -323,15 +413,26 @@ class NWAService(private val runtimeService: RuntimeService,
     }
 
     //Decision on WorkShop Draft
-    fun decisionOnWD(nwaWorkShopDraft: NWAWorkShopDraft)
-    {
+    fun decisionOnWD(nwaWorkshopDraftDecision: NWAWorkshopDraftDecision) : List<TaskDetails> {
         val variables: MutableMap<String, Any> = java.util.HashMap()
-        variables["Yes"] = nwaWorkShopDraft.accentTo
-        taskService.complete(nwaWorkShopDraft.taskId, variables)
+        variables["Yes"] = nwaWorkshopDraftDecision.accentTo
+        if(variables["Yes"]==true){
+            nwaWorkshopDraftRepository.findByIdOrNull(nwaWorkshopDraftDecision.approvalID)?.let { nwaWorkShopDraft->
+
+                with(nwaWorkShopDraft){
+
+                    accentTo = true
+                }
+                nwaWorkshopDraftRepository.save(nwaWorkShopDraft)
+            }?: throw Exception("TASK NOT FOUND")
+
+        }
+        taskService.complete(nwaWorkshopDraftDecision.taskId, variables)
+        return  getSacSecTasks()
     }
 
     // Upload NWA Standard
-    fun uploadNwaStandard(nWAStandard: NWAStandard)
+    fun uploadNwaStandard(nWAStandard: NWAStandard) : ProcessInstanceUS
     {
         val variable:MutableMap<String, Any> = HashMap()
         nWAStandard.title?.let{variable.put("title", it)}
@@ -346,13 +447,43 @@ class NWAService(private val runtimeService: RuntimeService,
         nWAStandard.ksNumber = getKSNumber()
 
         variable["ksNumber"] = nWAStandard.ksNumber!!
-        print(nWAStandard.toString())
+        //print(nWAStandard.toString())
 
-        nwaStandardRepository.save(nWAStandard)
+
+        val nwaDetails = nwaStandardRepository.save(nWAStandard)
+        variable["ID"] = nwaDetails.id
         taskService.complete(nWAStandard.taskId, variable)
         println("NWA Standard Uploaded")
+        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variable)
+        return ProcessInstanceUS(nwaDetails.id, processInstance.id, processInstance.isEnded,nWAStandard.ksNumber!!)
 
     }
+    // Upload nwa Standard Document
+    fun uploadSTDFile(
+        uploads: NWAStandardUploads,
+        docFile: MultipartFile,
+        doc: String,
+        user: UsersEntity,
+        DocDescription: String
+    ): NWAStandardUploads {
+
+        with(uploads) {
+//            filepath = docFile.path
+            name = commonDaoServices.saveDocuments(docFile)
+//            fileType = docFile.contentType
+            fileType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(docFile.name)
+            documentType = doc
+            description=DocDescription
+            document = docFile.bytes
+            transactionDate = commonDaoServices.getCurrentDate()
+            status = 1
+            createdBy = commonDaoServices.concatenateName(user)
+            createdOn = commonDaoServices.getTimestamp()
+        }
+
+        return nwaStandardUploadsRepository.save(uploads)
+    }
+
 
     //Return task details for HO SIC
     fun getHoSiCTasks():List<TaskDetails>
@@ -372,8 +503,9 @@ class NWAService(private val runtimeService: RuntimeService,
         variable["dateUploaded"] = nWAGazetteNotice.dateUploaded!!
 
         print(nWAGazetteNotice.toString())
+        val nwaDetails = nwaGazetteNoticeRepository.save(nWAGazetteNotice)
+        variable["ID"] = nwaDetails.id
 
-        nwaGazetteNoticeRepository.save(nWAGazetteNotice)
         taskService.complete(nWAGazetteNotice.taskId, variable)
         println("NWA Gazette Notice has been uploaded")
 
@@ -445,42 +577,31 @@ class NWAService(private val runtimeService: RuntimeService,
 
         val year = Calendar.getInstance()[Calendar.YEAR]
 
-        return "$startId/$finalValue:$year";
+        return "$startId/$finalValue:$year"
     }
 
-    fun getCDNumber(): String
+    fun getCDNumber(): Pair<String, Long>
     {
-        val allRequests =nwaDisDtJustificationRepository.findAllByOrderByIdDesc()
+        //val allRequests: Int
+        var allRequests =nwaDisDtJustificationRepository.getMaxCDN()
 
-        var lastId:String?="0"
+       // var lastId:String?="0"
         var finalValue =1
-        var startId="CDN"
+        var startId="CD"
+
+        allRequests = allRequests.plus(1)
+//        for(item in allRequests){
+//            println(item)
+//            lastId = item.cdAppNumber
+//            break
+//        }
 
 
-        for(item in allRequests){
-            println(item)
-            lastId = item.cdAppNumber
-            break
-        }
-
-        if(lastId != "0")
-        {
-            val strs = lastId?.split(":")?.toTypedArray()
-
-            val firstPortion = strs?.get(0)
-
-            val lastPortArray = firstPortion?.split("/")?.toTypedArray()
-
-            val intToIncrement =lastPortArray?.get(1)
-
-            finalValue = (intToIncrement?.toInt()!!)
-            finalValue += 1
-        }
 
 
         val year = Calendar.getInstance()[Calendar.YEAR]
 
-        return "$startId/$finalValue:$year";
+        return Pair("$startId/$allRequests:$year", allRequests)
     }
 
     fun getKSNumber(): String
@@ -515,6 +636,6 @@ class NWAService(private val runtimeService: RuntimeService,
 
         val year = Calendar.getInstance()[Calendar.YEAR]
 
-        return "$startId/$finalValue:$year";
+        return "$startId/$finalValue:$year"
     }
 }

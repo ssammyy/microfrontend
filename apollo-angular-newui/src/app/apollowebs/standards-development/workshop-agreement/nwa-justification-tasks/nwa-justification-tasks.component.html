@@ -64,7 +64,7 @@ type="ball-scale-multiple"
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                    <form (ngSubmit)="onDecision()" [formGroup]="approveFormGroup" class="form">
+                <form #approveForm="ngForm" >
                     <div class="modal-body">
                         <div class="row">
                             <div class=" col-12">
@@ -84,11 +84,12 @@ type="ball-scale-multiple"
                     </div>
 
 
-                    <input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskId" formControlName="taskId">
-                    <input type="hidden" ngModel="true" name="accentTo" formControlName="accentTo" >
+                    <input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskId" >
+                    <input type="hidden" ngModel="true" name="accentTo"  >
+                    <input type="hidden" name="approvalID" ngModel="{{actionRequest?.taskData.ID}}" >
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary btn-sm" >Approve</button>
+                        <button type="button" class="btn btn-sm btn-info" (click)="onDecision(approveForm.value)" data-dismiss="modal">Approve</button>
                     </div>
                 </form>
             </div>

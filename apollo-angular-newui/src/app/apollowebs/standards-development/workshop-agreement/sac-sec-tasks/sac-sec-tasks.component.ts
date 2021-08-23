@@ -2,8 +2,9 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subject} from "rxjs";
 import {StdNwaService} from "../../../../core/store/data/std/std-nwa.service";
 import {NgxSpinnerService} from "ngx-spinner";
-import {NWAWorkShopDraft, SacSecTasks} from "../../../../core/store/data/std/std.model";
+import {NWAWDDecision, NWAWorkShopDraft, SacSecTasks} from "../../../../core/store/data/std/std.model";
 import {HttpErrorResponse} from "@angular/common/http";
+import {NotificationService} from "../../../../core/store/data/std/notification.service";
 
 @Component({
   selector: 'app-sac-sec-tasks',
@@ -18,10 +19,19 @@ export class SacSecTasksComponent implements OnInit,OnDestroy {
   constructor(
       private stdNwaService: StdNwaService,
       private SpinnerService: NgxSpinnerService,
+      private notifyService : NotificationService
   ) { }
 
   ngOnInit(): void {
     this.getSacSecTasks();
+  }
+  showToasterError(title:string,message:string){
+    this.notifyService.showError(message, title)
+
+  }
+  showToasterSuccess(title:string,message:string){
+    this.notifyService.showSuccess(message, title)
+
   }
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
@@ -60,17 +70,20 @@ export class SacSecTasksComponent implements OnInit,OnDestroy {
     button.click();
 
   }
-  public decisionOnWd(nwaWorkShopDraft: NWAWorkShopDraft): void{
+  public decisionOnWd(nwaWDDecision: NWAWDDecision): void{
     this.SpinnerService.show();
-    this.stdNwaService.decisionOnWd(nwaWorkShopDraft).subscribe(
+    this.stdNwaService.decisionOnWd(nwaWDDecision).subscribe(
         (response: NWAWorkShopDraft) => {
           this.SpinnerService.hide();
+          this.showToasterSuccess('Success', `Workshop Draft Approved`);
           console.log(response);
           this.getSacSecTasks();
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
-          alert(error.message);
+          this.showToasterError('Error', `Workshop Draft Was Not Approved`);
+          this.getSacSecTasks();
+          console.log(error.message);
         }
     );
   }
