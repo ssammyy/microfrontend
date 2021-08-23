@@ -2984,6 +2984,55 @@ class QADaoServices(
         return Pair(sr, updatePermit)
     }
 
+    fun permitAddRemarksDetails(
+        permitID: Long,
+        remarksDesc: String?,
+        remarksStat: Int?,
+        prBy: String,
+        prName: String,
+        s: ServiceMapsEntity,
+        user: UsersEntity
+    ): ServiceRequestsEntity {
+
+        var sr = commonDaoServices.createServiceRequest(s)
+        try {
+
+            var remarksDetails = QaRemarksEntity().apply {
+                permitId = permitID
+                remarksDescription = remarksDesc
+                remarksStatus = remarksStat
+                processBy = prBy
+                processName = prName
+                userId = user.id
+                createdBy = commonDaoServices.concatenateName(user)
+                createdOn = commonDaoServices.getTimestamp()
+            }
+            remarksDetails = remarksEntityRepo.save(remarksDetails)
+
+            sr.payload = "Remarks added [Permit ID= ${permitID}]"
+            sr.names = "${remarksDetails.createdBy}} ${remarksDetails.processName}"
+            sr.varField1 = "${permitID}"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = s.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return sr
+    }
+
     fun permitResubmitDetails(
         permits: PermitApplicationsEntity,
         permitResubmit: ResubmitApplicationDto,

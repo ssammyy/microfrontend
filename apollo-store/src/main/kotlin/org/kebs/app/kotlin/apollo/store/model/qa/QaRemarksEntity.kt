@@ -33,7 +33,7 @@ class QaRemarksEntity : Serializable {
 
     @Column(name = "REMARKS_STATUS")
     @Basic
-    var remarksStatus: Long? = null
+    var remarksStatus: Int? = null
 
     @Column(name = "DESCRIPTION")
     @Basic

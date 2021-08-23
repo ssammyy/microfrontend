@@ -290,7 +290,7 @@ class QualityAssuranceController(
             }
             //ADD Recommendation
             permit.recommendationRemarks != null -> {
-                returnDetails = addRecommendation(permitDetails, loggedInUser)
+                returnDetails = addRecommendation(map, permitDetails, loggedInUser)
                 permitDetails = returnDetails.first
             }
             //APPROVE RECOMMENDATION
@@ -472,6 +472,16 @@ class QualityAssuranceController(
             }
         }
 
+        qaDaoServices.permitAddRemarksDetails(
+            permitDetailsDB.id ?: throw Exception("ID NOT FOUND"),
+            permitDetailsDB.hodApproveAssessmentRemarks,
+            permitDetailsDB.hodApproveAssessmentStatus,
+            "HOD",
+            "APPROVE/REJECT ASSESSMENT REPORT",
+            map,
+            loggedInUser
+        )
+
         val closeLink =
             "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permitDetailsDB.permitType}"
         return Pair(permitDetailsDB, closeLink)
@@ -518,6 +528,16 @@ class QualityAssuranceController(
                 qaDaoServices.sendNotificationForDeferredPermitToAssessorFromPCM(permitDetailsDB)
             }
         }
+
+        qaDaoServices.permitAddRemarksDetails(
+            permitDetailsDB.id ?: throw Exception("ID NOT FOUND"),
+            permitDetailsDB.pacDecisionRemarks,
+            permitDetailsDB.pacDecisionStatus,
+            "PAC",
+            "APPROVE/DEFER APPLICATION",
+            map,
+            loggedInUser
+        )
 
         val closeLink =
             "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permitDetailsDB.permitType}"
@@ -598,6 +618,15 @@ class QualityAssuranceController(
                 qaDaoServices.justificationReportSendEmail(permitDetails, reasonValue)
             }
         }
+        qaDaoServices.permitAddRemarksDetails(
+            permitDetailsDB.id ?: throw Exception("ID NOT FOUND"),
+            permitDetailsDB.justificationReportRemarks,
+            permitDetailsDB.justificationReportStatus,
+            "HOD",
+            "APPROVE/REJECT JUSTIFICATION REPORT",
+            map,
+            loggedInUser
+        )
 
         val closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetailsDB.id}"
         return Pair(permitDetailsDB, closeLink)
@@ -652,6 +681,16 @@ class QualityAssuranceController(
 
             }
         }
+
+        qaDaoServices.permitAddRemarksDetails(
+            permitDetailsDB.id ?: throw Exception("ID NOT FOUND"),
+            permitDetailsDB.pscMemberApprovalRemarks,
+            permitDetailsDB.pscMemberApprovalStatus,
+            "PSC",
+            "APPROVE/REJECT APPLICATION",
+            map,
+            loggedInUser
+        )
         val closeLink =
             "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permitDetailsDB.permitType}"
         return Pair(permitDetailsDB, closeLink)
@@ -700,12 +739,24 @@ class QualityAssuranceController(
                 qaDaoServices.sendNotificationForRecommendationCorrectness(permitDetailsDB)
             }
         }
+
+        qaDaoServices.permitAddRemarksDetails(
+            permitDetailsDB.id ?: throw Exception("ID NOT FOUND"),
+            permitDetailsDB.recommendationApprovalRemarks,
+            permit.recommendationApprovalStatus,
+            "HOD/QAM",
+            "APPROVE/REJECT RECOMMENDATION",
+            map,
+            loggedInUser
+        )
+
         val closeLink =
             "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permitDetailsDB.permitType}"
         return Pair(permitDetailsDB, closeLink)
     }
 
     fun addRecommendation(
+        map: ServiceMapsEntity,
         permitDetails: PermitApplicationsEntity,
         loggedInUser: UsersEntity
     ): Pair<PermitApplicationsEntity, String> {
@@ -725,6 +776,11 @@ class QualityAssuranceController(
             loggedInUser
         )
         qaDaoServices.sendNotificationForRecommendation(permitDetails)
+
+        qaDaoServices.permitAddRemarksDetails(
+            permitDetailsDB.id ?: throw Exception("ID NOT FOUND"),
+            permitDetailsDB.recommendationRemarks, null, "QAO", "QAO RECOMMENDATION", map, loggedInUser
+        )
 
         val closeLink =
             "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permitDetailsDB.permitType}"
@@ -831,6 +887,17 @@ class QualityAssuranceController(
             }
         }
 
+        //Add Remarks Details to table
+        qaDaoServices.permitAddRemarksDetails(
+            permitDetailsDB.id ?: throw Exception("ID NOT FOUND"),
+            permitFromInterface.hofQamCompletenessRemarks,
+            permitFromInterface.hofQamCompletenessStatus,
+            "HOF/QAM",
+            "HOF/QAM REVIEW COMPLETNESS",
+            map,
+            loggedInUser
+        )
+
 
         return Pair(permitDetailsDB, closeLink)
     }
@@ -930,6 +997,16 @@ class QualityAssuranceController(
             }
         }
 
+        qaDaoServices.permitAddRemarksDetails(
+            permitDetailsDB.id ?: throw Exception("ID NOT FOUND"),
+            permitDetailsDB.pcmApprovalRemarks,
+            permitDetailsDB.pcmApprovalStatus,
+            "PCM",
+            "APPROVE/DEFER APPLICATION",
+            map,
+            loggedInUser
+        )
+
         val closeLink =
             "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permitDetailsDB.permitType}"
         return Pair(permitDetailsDB, closeLink)
@@ -962,6 +1039,7 @@ class QualityAssuranceController(
                     invoiceDetails,
                     permitDetailsDB.permitType ?: throw Exception("ID NOT FOUND")
                 )
+
 //
 //                val permitUser = commonDaoServices.findUserByID(
 //                    permitDetailsDB.userId ?: throw ExpectedDataNotFound("Permit USER Id Not found")
@@ -991,10 +1069,10 @@ class QualityAssuranceController(
                     applicationMapProperties.mapQaStatusPendingCorrectionManf,
                     loggedInUser
                 )
-                //Rejected Permit creates a new version
-                permitDetailsDB = qaDaoServices.permitRejectedVersionCreation(
-                    permitDetailsDB.id ?: throw Exception("MISSING PERMIT ID"), map, loggedInUser
-                ).second
+//                //Rejected Permit creates a new version
+//                permitDetailsDB = qaDaoServices.permitRejectedVersionCreation(
+//                    permitDetailsDB.id ?: throw Exception("MISSING PERMIT ID"), map, loggedInUser
+//                ).second
 
                 with(permitDetailsDB) {
                     resubmitApplicationStatus = map.activeStatus
@@ -1010,9 +1088,22 @@ class QualityAssuranceController(
 //                )
 
                 //Application complete and successful
-                qualityAssuranceBpmn.qaDmCheckApplicationComplete(permitDetailsDB.id ?: throw Exception("MISSING PERMIT ID"), false)
+                qualityAssuranceBpmn.qaDmCheckApplicationComplete(
+                    permitDetailsDB.id ?: throw Exception("MISSING PERMIT ID"), false
+                )
             }
         }
+        //Add Remarks Details to table
+        qaDaoServices.permitAddRemarksDetails(
+            permitDetailsDB.id ?: throw Exception("ID NOT FOUND"),
+            permitFromInterface.pcmReviewApprovalRemarks,
+            permitFromInterface.pcmReviewApprovalStatus,
+            "PCM",
+            "PCM REVIEW",
+            map,
+            loggedInUser
+        )
+
         val closeLink =
             "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permitDetailsDB.permitType}"
         return Pair(permitDetailsDB, closeLink)
