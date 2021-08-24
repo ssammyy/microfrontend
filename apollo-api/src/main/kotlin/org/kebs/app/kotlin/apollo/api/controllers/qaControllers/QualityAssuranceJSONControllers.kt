@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.controllers.qaControllers
 
+import com.google.gson.Gson
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
@@ -9,6 +10,7 @@ import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapPrope
 import org.kebs.app.kotlin.apollo.store.model.ServiceRequestsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaUploadsEntity
 import org.springframework.core.io.ResourceLoader
+import org.springframework.http.MediaType
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
@@ -39,6 +41,7 @@ class QualityAssuranceJSONControllers(
 
     private val fMarkImageResource = resourceLoader.getResource(applicationMapProperties.mapFmarkImagePath)
     val fMarkImageFile = fMarkImageResource.file.toString()
+
 
     @GetMapping("/view/attached")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)

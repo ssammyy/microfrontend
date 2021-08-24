@@ -52,6 +52,7 @@ class QADaoServices(
     private val iTurnOverRatesRepository: ITurnOverRatesRepository,
     private val iManufacturePaymentDetailsRepository: IManufacturerPaymentDetailsRepository,
     private val sampleStandardsRepo: ISampleStandardsRepository,
+    private val remarksEntityRepo: IQaRemarksEntityRepository,
     private val invoiceDaoService: InvoiceDaoService,
     private val paymentUnitsRepository: ICfgKebsPermitPaymentUnitsRepository,
     private val serviceRequestsRepository: IServiceRequestsRepository,
@@ -205,6 +206,22 @@ class QADaoServices(
                 return it
             }
             ?: throw ExpectedDataNotFound("No Standards Found WIth [status = ${status}]")
+    }
+
+    fun findALlRemarksDetailsPerPermit(permitID: Long): List<QaRemarksEntity> {
+        remarksEntityRepo.findByPermitId(permitID)
+            ?.let { it ->
+                return it
+            }
+            ?: throw ExpectedDataNotFound("No Remarks Found WIth the following Permit ID = ${permitID}")
+    }
+
+    fun findRemarksDetailsByID(remarksID: Long): QaRemarksEntity {
+        remarksEntityRepo.findByIdOrNull(remarksID)
+            ?.let { it ->
+                return it
+            }
+            ?: throw ExpectedDataNotFound("No Remarks Found With the following Permit ID = ${remarksID}")
     }
 
     fun findBatchInvoicesWithID(batchID: Long): QaBatchInvoiceEntity {
@@ -801,17 +818,26 @@ class QADaoServices(
         } ?: throw ExpectedDataNotFound("No Permit List found with the following user [ID=$userId]")
     }
 
-    fun getALLLabResultsForCertainPermit(permitID: Long, permitRefNumber: String): List<SSFPDFListDetailsDto> {
+    fun getALLLabResultsForCertainPermit(
+        permit: PermitApplicationsEntity,
+        permitRefNumber: String
+    ): PermitSSFLabResultsDto {
+
+
+        val complianceResult = mutableListOf<SSFComplianceStatusDetailsDto>()
         val result = mutableListOf<SSFPDFListDetailsDto>()
 
-        findSampleSubmittedListBYPermitRefNumberAndPermitID(permitRefNumber, 1, permitID)
-            .forEach { ssf ->
+        if (permit.compliantStatus != null) {
+            findSampleSubmittedListBYPermitRefNumberAndPermitID(
+                permitRefNumber,
+                1,
+                permit.id ?: throw Exception("Missing Permit ID")
+            )
+                .forEach { ssf ->
 
-                val pdfs = findSampleSubmittedListPdfBYSSFidANdSentToManufacture(
-                    ssf.id ?: throw Exception("Missing SSF ID"),
-                    1
-                )
-                    .map { ssfPdfRemarks ->
+                    val pdfs = findSampleSubmittedListPdfBYSSFidANdSentToManufacture(
+                        ssf.id ?: throw Exception("Missing SSF ID"), 1
+                    ).map { ssfPdfRemarks ->
                         SSFPDFListDetailsDto(
                             ssfPdfRemarks.pdfSavedId,
                             ssfPdfRemarks.pdfName,
@@ -821,11 +847,21 @@ class QADaoServices(
                         )
 
                     }
-                result.addAll(pdfs)
+                    result.addAll(pdfs)
 
-
-            }
-        return result
+                    val complianceResults = SSFComplianceStatusDetailsDto(
+                        ssf.id,
+                        ssf.bsNumber,
+                        ssf.complianceRemarks,
+                        ssf.resultsAnalysis == 1
+                    )
+                    complianceResult.add(complianceResults)
+                }
+        }
+        return PermitSSFLabResultsDto(
+            complianceResult,
+            result
+        )
     }
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -1462,6 +1498,7 @@ class QADaoServices(
         permitDetails: PermitApplicationsEntity,
     ): PermitAllRemarksDetailsDto {
         var hofQamCompleteness: RemarksAndStatusDto? = null
+        var labResultsCompleteness: RemarksAndStatusDto? = null
         var pcmApproval: RemarksAndStatusDto? = null
         var pscMemberApproval: RemarksAndStatusDto? = null
         var pcmReviewApproval: RemarksAndStatusDto? = null
@@ -1479,6 +1516,14 @@ class QADaoServices(
                 pcmApproval = RemarksAndStatusDto(
                     permitDetails.pcmApprovalStatus == 1,
                     permitDetails.pcmApprovalRemarks,
+                )
+            }
+        }
+        when {
+            permitDetails.compliantStatus != null -> {
+                labResultsCompleteness = RemarksAndStatusDto(
+                    permitDetails.compliantStatus == 1,
+                    permitDetails.compliantRemarks,
                 )
             }
         }
@@ -1506,8 +1551,10 @@ class QADaoServices(
                 )
             }
         }
+
         return PermitAllRemarksDetailsDto(
             hofQamCompleteness,
+            labResultsCompleteness,
             pcmApproval,
             pscMemberApproval,
             pcmReviewApproval,
@@ -1669,7 +1716,7 @@ class QADaoServices(
                 1
             ).let { listFilesDto(it) },
             getALLLabResultsForCertainPermit(
-                permit.id ?: throw Exception("Missing Permit ID"),
+                permit,
                 permit.permitRefNumber ?: throw Exception("Missing Permit Ref Number")
             ),
             permit.sscId?.let { findUploadedFileBYId(it).let { f -> filesDtoDetails(f) } },
@@ -2077,10 +2124,11 @@ class QADaoServices(
 
             saveSSF = SampleSubmissionRepo.save(saveSSF)
 
-            val permitDetails = findPermitWithPermitRefNumberLatest(
-                saveSSF.permitRefNumber ?: throw Exception("MISSING permit Ref Number")
+            val permitDetails = findPermitBYID(
+                saveSSF.permitId ?: throw Exception("MISSING PERMIT ID")
             )
 
+            permitDetails.compliantRemarks = saveSSF.complianceRemarks
             permitDetails.compliantStatus = saveSSF.resultsAnalysis
             permitDetails.testReportId = saveSSF.labReportFileId
             var complianceValue: String? = null
@@ -2180,50 +2228,50 @@ class QADaoServices(
             val permitDetails = findPermitWithPermitRefNumberLatest(
                 savedSSF.permitRefNumber ?: throw Exception("MISSING permit Ref Number")
             )
+//
+////            var complianceValue: String? = null
+//            when (saveSSFPdf.complianceStatus) {
+//                map.activeStatus -> {
+////                    complianceValue = "COMPLIANT"
+//                    if (permitDetails.permitType == applicationMapProperties.mapQAPermitTypeIDDmark) {
+//                        permitInsertStatus(
+//                            permitDetails,
+//                            applicationMapProperties.mapQaStatusPGeneJustCationReport,
+//                            user
+//                        )
+//                    } else {
+//                        permitInsertStatus(permitDetails, applicationMapProperties.mapQaStatusPRecommendation, user)
+//                    }
+//                }
+//                map.inactiveStatus -> {
+////                    complianceValue = "NON-COMPLIANT"
+//                    permitDetails.userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
+//                    permitInsertStatus(permitDetails, applicationMapProperties.mapQaStatusPendingCorrectionManf, user)
+//                }
+//            }
 
-            var complianceValue: String? = null
-            when (saveSSFPdf.complianceStatus) {
-                map.activeStatus -> {
-                    complianceValue = "COMPLIANT"
-                    if (permitDetails.permitType == applicationMapProperties.mapQAPermitTypeIDDmark) {
-                        permitInsertStatus(
-                            permitDetails,
-                            applicationMapProperties.mapQaStatusPGeneJustCationReport,
-                            user
-                        )
-                    } else {
-                        permitInsertStatus(permitDetails, applicationMapProperties.mapQaStatusPRecommendation, user)
-                    }
-                }
-                map.inactiveStatus -> {
-                    complianceValue = "NON-COMPLIANT"
-                    permitDetails.userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
-                    permitInsertStatus(permitDetails, applicationMapProperties.mapQaStatusPendingCorrectionManf, user)
-                }
-            }
-
-            val fileUploaded = findUploadedFileBYId(
-                saveSSFPdf.pdfSavedId ?: throw ExpectedDataNotFound("MISSING LAB REPORT FILE ID STATUS")
-            )
-            val fileContent = limsServices.mainFunctionLimsGetPDF(
-                savedSSF.bsNumber ?: throw ExpectedDataNotFound("MISSING LBS NUMBER"),
-                saveSSFPdf.pdfName ?: throw ExpectedDataNotFound("MISSING FILE NAME")
-            )
-            val mappedFileClass = commonDaoServices.mapClass(fileUploaded)
-            sendComplianceStatusAndLabReport(
-                permitDetails,
-                complianceValue ?: throw ExpectedDataNotFound("MISSING COMPLIANCE STATUS"),
-                saveSSFPdf.complianceRemarks ?: throw ExpectedDataNotFound("MISSING COMPLIANCE REMARKS"),
-                mappedFileClass.document.toString()
-            )
-
-            sendEmailWithLabResults(
-                commonDaoServices.findUserByID(
-                    permitDetails.userId ?: throw ExpectedDataNotFound("MISSING USER ID")
-                ).email ?: throw ExpectedDataNotFound("MISSING USER ID"),
-                mappedFileClass.document.toString(),
-                permitDetails.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
-            )
+//            val fileUploaded = findUploadedFileBYId(
+//                saveSSFPdf.pdfSavedId ?: throw ExpectedDataNotFound("MISSING LAB REPORT FILE ID STATUS")
+//            )
+//            val fileContent = limsServices.mainFunctionLimsGetPDF(
+//                savedSSF.bsNumber ?: throw ExpectedDataNotFound("MISSING LBS NUMBER"),
+//                saveSSFPdf.pdfName ?: throw ExpectedDataNotFound("MISSING FILE NAME")
+//            )
+//            val mappedFileClass = commonDaoServices.mapClass(fileUploaded)
+//            sendComplianceStatusAndLabReport(
+//                permitDetails,
+//                complianceValue ?: throw ExpectedDataNotFound("MISSING COMPLIANCE STATUS"),
+//                saveSSFPdf.complianceRemarks ?: throw ExpectedDataNotFound("MISSING COMPLIANCE REMARKS"),
+//                mappedFileClass.document.toString()
+//            )
+//
+//            sendEmailWithLabResults(
+//                commonDaoServices.findUserByID(
+//                    permitDetails.userId ?: throw ExpectedDataNotFound("MISSING USER ID")
+//                ).email ?: throw ExpectedDataNotFound("MISSING USER ID"),
+//                mappedFileClass.document.toString(),
+//                permitDetails.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
+//            )
 
 
             sr.payload = "New SSF Saved [BRAND name${savedSSF.brandName} and ${savedSSF.id}]"
@@ -2943,9 +2991,208 @@ class QADaoServices(
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
         return Pair(sr, updatePermit)
     }
+
+    fun permitAddRemarksDetails(
+        permitID: Long,
+        remarksDesc: String?,
+        remarksStat: Int?,
+        prBy: String,
+        prName: String,
+        s: ServiceMapsEntity,
+        user: UsersEntity
+    ): ServiceRequestsEntity {
+
+        var sr = commonDaoServices.createServiceRequest(s)
+        try {
+
+            var remarksDetails = QaRemarksEntity().apply {
+                permitId = permitID
+                remarksDescription = remarksDesc
+                remarksStatus = remarksStat
+                processBy = prBy
+                processName = prName
+                userId = user.id
+                createdBy = commonDaoServices.concatenateName(user)
+                createdOn = commonDaoServices.getTimestamp()
+            }
+            remarksDetails = remarksEntityRepo.save(remarksDetails)
+
+            sr.payload = "Remarks added [Permit ID= ${permitID}]"
+            sr.names = "${remarksDetails.createdBy}} ${remarksDetails.processName}"
+            sr.varField1 = "${permitID}"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = s.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return sr
+    }
+
+    fun permitResubmitDetails(
+        permits: PermitApplicationsEntity,
+        permitResubmit: ResubmitApplicationDto,
+        s: ServiceMapsEntity,
+        user: UsersEntity
+    ): Pair<ServiceRequestsEntity, PermitApplicationsEntity> {
+
+        var sr = commonDaoServices.createServiceRequest(s)
+        var updatePermit = permits
+        try {
+            KotlinLogging.logger { }.info(":::::: RESUBMIT SENT IS = ${permitResubmit.resubmittedDetails} :::::::")
+
+            with(updatePermit) {
+                when (permitResubmit.resubmittedDetails) {
+                    "resubmitLabNonComplianceResults" -> {
+                        resubmitApplicationStatus = 10
+                        resubmitRemarks = permitResubmit.resubmitRemarks
+//                        compliantStatus = null
+//                        compliantRemarks = null
+                        testReportId = null
+                        userTaskId = applicationMapProperties.mapUserTaskNameQAO
+                        permitStatus = applicationMapProperties.mapQaStatusPendingReInspection
+
+                        KotlinLogging.logger { }
+                            .info(":::::: SELECTED RESUBMIT IS resubmitLabNonComplianceResults :::::::")
+                        permitAddRemarksDetails(
+                            updatePermit.id ?: throw Exception("ID NOT FOUND"),
+                            permitResubmit.resubmitRemarks,
+                            null,
+                            "MANUFACTURE",
+                            "RESUBMIT APPLICATION FOR RE-SAMPLING",
+                            s,
+                            user
+                        )
+                    }
+                    "resubmitHofQamCompletenessResults" -> {
+                        resubmitApplicationStatus = 10
+                        resubmitRemarks = permitResubmit.resubmitRemarks
+//                        hofQamCompletenessStatus = null
+//                        hofQamCompletenessRemarks = null
+                        permitStatus = applicationMapProperties.mapQaStatusPApprovalCompletness
+                        userTaskId = when (updatePermit.permitType) {
+                            applicationMapProperties.mapQAPermitTypeIDDmark -> {
+                                applicationMapProperties.mapUserTaskNameHOD
+                            }
+                            else -> {
+                                applicationMapProperties.mapUserTaskNameQAM
+                            }
+                        }
+                        KotlinLogging.logger { }
+                            .info(":::::: SELECTED RESUBMIT IS resubmitHofQamCompletenessResults :::::::")
+                        permitAddRemarksDetails(
+                            updatePermit.id ?: throw Exception("ID NOT FOUND"),
+                            permitResubmit.resubmitRemarks,
+                            null,
+                            "MANUFACTURE",
+                            "RESUBMIT APPLICATION FOR RE-REVIEW COMPLETNESS",
+                            s,
+                            user
+                        )
+                    }
+                    else -> {
+                        throw Exception("NO FUNCTION FOR RESUBMIT EXISTING (${permitResubmit.resubmittedDetails})")
+                    }
+                }
+                modifiedBy = commonDaoServices.concatenateName(user)
+                modifiedOn = commonDaoServices.getTimestamp()
+            }
+            updatePermit = permitRepo.save(permits)
+
+            sr.payload = "Permit Updated [updatePermit= ${updatePermit.id}]"
+            sr.names = "${updatePermit.permitRefNumber}} ${updatePermit.userId}"
+            sr.varField1 = "${updatePermit.id}"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = s.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return Pair(sr, updatePermit)
+    }
     //Todo: check why method does not create new version
 
     fun permitRejectedVersionCreation(
+        permitID: Long,
+        s: ServiceMapsEntity,
+        user: UsersEntity
+    ): Pair<ServiceRequestsEntity, PermitApplicationsEntity> {
+
+        var sr = commonDaoServices.createServiceRequest(s)
+        var createNewVersionPermit: PermitApplicationsEntity? = null
+        try {
+            val pm = findPermitBYID(permitID)
+            var oldPermit =
+                findPermitWithPermitRefNumberLatest(pm.permitRefNumber ?: throw Exception("INVALID PERMIT NUMBER"))
+            KotlinLogging.logger { }
+                .info { "::::::::::::::::::PERMIT With PERMIT NUMBER = ${pm.permitRefNumber}, DOES Exists::::::::::::::::::::: " }
+            val versionNumberOld =
+                oldPermit.versionNumber ?: throw ExpectedDataNotFound("Permit Version Number is Empty")
+
+            oldPermit.oldPermitStatus = 1
+            //update last previous version permit old status
+            oldPermit = permitUpdateDetails(oldPermit, s, user).second
+
+            createNewVersionPermit = SerializationUtils.clone(oldPermit)
+
+            with(createNewVersionPermit) {
+                id = null
+                oldPermitStatus = null
+                versionNumber = versionNumberOld.plus(1)
+            }
+
+            createNewVersionPermit = permitRepo.save(createNewVersionPermit)
+
+            sr.payload = "Permit Renewed Updated [updatePermit= ${createNewVersionPermit.id}]"
+            sr.names = "${createNewVersionPermit.permitRefNumber}} ${createNewVersionPermit.userId}"
+            sr.varField1 = "${createNewVersionPermit.id}"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = s.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return Pair(sr, createNewVersionPermit ?: throw ExpectedDataNotFound("MISSING SAVED PERMIT"))
+    }
+
+
+    fun permitRejectedVersionCreateTiedFiles(
         permitID: Long,
         s: ServiceMapsEntity,
         user: UsersEntity
@@ -3278,12 +3525,13 @@ class QADaoServices(
         s: ServiceMapsEntity,
         user: UsersEntity,
         permit: PermitApplicationsEntity,
+        invoiceDetails: QaInvoiceDetailsEntity?,
         permitTypeID: Long
     ) {
         val permitType = findPermitType(permitTypeID)
         val permitUser =
             commonDaoServices.findUserByID(permit.userId ?: throw ExpectedDataNotFound("Permit USER Id Not found"))
-        permitInvoiceCalculation(s, permitUser, permit)
+        permitInvoiceCalculation(s, permitUser, permit, invoiceDetails)
         with(permit) {
             sendApplication = s.activeStatus
             invoiceGenerated = s.activeStatus
@@ -3930,6 +4178,7 @@ class QADaoServices(
         s: ServiceMapsEntity,
         user: UsersEntity,
         permit: PermitApplicationsEntity,
+        invoiceDetails: QaInvoiceDetailsEntity?,
     ): Pair<ServiceRequestsEntity, QaInvoiceMasterDetailsEntity?> {
 
         var sr = commonDaoServices.createServiceRequest(s)
@@ -3966,6 +4215,17 @@ class QADaoServices(
                 }
                 applicationMapProperties.mapQAPermitTypeIDDmark -> {
                     invoiceGenerated = qaInvoiceCalculation.calculatePaymentDMark(permit, user, permitType)
+
+                    if (invoiceDetails != null) {
+                        qaInvoiceCalculation.calculatePaymentOtherDetails(
+                            permit,
+                            user,
+                            invoiceDetails,
+                            invoiceGenerated
+                        )
+                        invoiceGenerated = qaInvoiceCalculation.calculateTotalInvoiceAmountToPay(invoiceGenerated, user)
+                    }
+
                 }
                 applicationMapProperties.mapQAPermitTypeIdFmark -> {
                     invoiceGenerated = qaInvoiceCalculation.calculatePaymentFMark(permit, user, permitType)
@@ -4083,8 +4343,7 @@ class QADaoServices(
     fun permitGenerateFmark(
         s: ServiceMapsEntity,
         user: UsersEntity,
-        permit: PermitApplicationsEntity,
-        auth: Authentication
+        permit: PermitApplicationsEntity
     ): Pair<ServiceRequestsEntity, PermitApplicationsEntity> {
 
         var sr = commonDaoServices.createServiceRequest(s)

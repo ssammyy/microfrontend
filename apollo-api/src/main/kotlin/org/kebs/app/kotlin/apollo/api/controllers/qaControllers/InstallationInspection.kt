@@ -4,7 +4,7 @@ import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.export.ExportFile
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.QualityAssuranceBpmn
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QualityAssuranceDaoServices
+//import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QualityAssuranceDaoServices
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.InvoiceEntity
@@ -30,7 +30,7 @@ class InstallationInspection(
         private val qualityAssuranceBpmn: QualityAssuranceBpmn,
         private val invoiceRepo: IInvoiceRepository,
         private val installationInspectionDataRepository: IPetroleumFieldInspectionDataRepository,
-        private val qualityAssuranceDaoServices: QualityAssuranceDaoServices,
+//        private val qualityAssuranceDaoServices: QualityAssuranceDaoServices,
         applicationMapProperties: ApplicationMapProperties,
         private val serviceMapsRepository: IServiceMapsRepository,
         private val notifications: Notifications,
@@ -83,7 +83,7 @@ class InstallationInspection(
                                                                     ids.add(taskDetail.objectId)
                                                                 }
                                                                 var tasks = installationInspectionRepository.findByIdIsIn(ids).toMutableList()
-                                                                tasks.sortByDescending { pa-> pa?.id }
+                                                                tasks.sortByDescending { pa -> pa.id }
 
                                                                 model.addAttribute("iiNewStation", PetroleumInstallationInspectionEntity())
                                                                 model.addAttribute("usr", userRepository.findByIdOrNull(petroleumManager))
@@ -109,7 +109,6 @@ class InstallationInspection(
                                                                 result = "quality-assurance/InstallationInspection/task_details"
                                                             }
                                                     model.addAttribute("usr", userRepository.findByIdOrNull(qaoId))
-                                                            ?: throw NullValueNotAllowedException("Data not found.")
                                                 }
                                                 "schedule" -> {
                                                     installationInspectionRepository.findByIdOrNull(id)
@@ -156,7 +155,7 @@ class InstallationInspection(
                                                 "invoice" -> {
                                                     installationInspectionRepository.findByIdOrNull(id)
                                                             ?.let { iiData ->
-                                                                val invoice = qualityAssuranceDaoServices.invoiceGen(invoiceEntity, null, iiData, null, 199)
+//                                                                val invoice = qualityAssuranceDaoServices.invoiceGen(invoiceEntity, null, iiData, null, 199)
 
                                                                 with(iiData) {
                                                                     invoiceStatus = 1
@@ -164,16 +163,25 @@ class InstallationInspection(
                                                                 }
                                                                 installationInspectionRepository.save(iiData)
 
-                                                                exportFile.parseThymeleafTemplate("templates/TestPdf/proforma-invoice", "invoice", invoice)?.let { htmlString ->
+                                                                exportFile.parseThymeleafTemplate(
+                                                                    "templates/TestPdf/proforma-invoice",
+                                                                    "invoice",
+                                                                    null
+                                                                )?.let { htmlString ->
                                                                     exportFile.generatePdfFromHtml(htmlString)
                                                                     iiData.contactEmail?.let {
-                                                                        notifications.processEmail(it, "INVOICE", "Dear esteemed customer,\n" +
-                                                                                "A proforma invoice has been generated for your petrol station.\n" +
-                                                                                "${invoice?.amount}\n" +
-                                                                                "Payment instructions\n" +
-                                                                                "Paybill: 1234, account no: 4321.\n" +
-                                                                                "Regards," +
-                                                                                "The KIMS team", "${uploadDir}pdf_output.pdf")
+                                                                        notifications.processEmail(
+                                                                            it,
+                                                                            "INVOICE",
+                                                                            "Dear esteemed customer,\n" +
+                                                                                    "A proforma invoice has been generated for your petrol station.\n" +
+//                                                                                "${invoice?.amount}\n" +
+                                                                                    "Payment instructions\n" +
+                                                                                    "Paybill: 1234, account no: 4321.\n" +
+                                                                                    "Regards," +
+                                                                                    "The KIMS team",
+                                                                            "${uploadDir}pdf_output.pdf"
+                                                                        )
                                                                     }
                                                                 }
 

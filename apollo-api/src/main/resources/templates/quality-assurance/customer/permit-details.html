@@ -217,55 +217,96 @@
                                     </ul>
                                 </div>
 
-
                                 <button class="accordion">Remarks Details</button>
                                 <div class="panel">
-                                    <ul class="w-list-unstyled">
-                                        <li th:if="${permitDetails?.hofQamCompletenessStatus != null}"
-                                            class="list-item-accordion">
-                                            <div class="list-title-accordion">Completeness Remarks BY QAM/HOD</div>
-                                            <div class="list-text-accordion"><a class="btn btn-primary itemViewBtn"
-                                                                                onclick="popUpRemarksFunction('permitRemarksCompleteness');">VIEW</a>
-                                            </div>
-                                        </li>
-                                        <li th:if="${permitDetails?.pcmApprovalStatus != null}"
-                                            class="list-item-accordion">
-                                            <div class="list-title-accordion">Review Remarks BY PCM</div>
-                                            <div class="list-text-accordion"><a class="btn btn-primary itemViewBtn"
-                                                                                onclick="popUpRemarksFunction('permitRemarksPCMReview');">VIEW</a>
-                                            </div>
-                                        </li>
-                                        <li th:if="${permitDetails?.recommendationApprovalStatus != null}"
-                                            class="list-item-accordion">
-                                            <div class="list-title-accordion">Recommendation Review Remarks BY QAO</div>
-                                            <div class="list-text-accordion"><a class="btn btn-primary itemViewBtn"
-                                                                                onclick="popUpRemarksFunction('permitRemarksRecommendationReview');">VIEW</a>
-                                            </div>
-                                        </li>
-                                        <li th:if="${permitDetails?.justificationReportStatus != null}"
-                                            class="list-item-accordion">
-                                            <div class="list-title-accordion">Justification Review Remarks BY HOD</div>
-                                            <div class="list-text-accordion"><a class="btn btn-primary itemViewBtn"
-                                                                                onclick="popUpRemarksFunction('permitRemarksJustificationReview');">VIEW</a>
-                                            </div>
-                                        </li>
-                                        <li th:if="${permitDetails?.pscMemberApprovalStatus != null}"
-                                            class="list-item-accordion">
-                                            <div class="list-title-accordion">PSC members approval/rejection Remarks
-                                            </div>
-                                            <div class="list-text-accordion"><a class="btn btn-primary itemViewBtn"
-                                                                                onclick="popUpRemarksFunction('permitRemarksPscApproval');">VIEW</a>
-                                            </div>
-                                        </li>
-                                        <li th:if="${permitDetails?.pcmApprovalStatus != null}"
-                                            class="list-item-accordion">
-                                            <div class="list-title-accordion">PCM approval/rejection Remarks</div>
-                                            <div class="list-text-accordion"><a class="btn btn-primary itemViewBtn"
-                                                                                onclick="popUpRemarksFunction('permitRemarksPCMApproval');">VIEW</a>
-                                            </div>
-                                        </li>
-                                    </ul>
+                                    <div class="row-table ">
+                                        <table class="table table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th>Process Name</th>
+                                                <th>Process By</th>
+                                                <th>Remarks By</th>
+                                                <th>Status</th>
+                                                <th>View</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr class="list" th:each="remarksParam: ${remarksParameters}"
+                                                style="cursor: pointer">
+
+                                                <td th:text="${remarksParam?.processName}"></td>
+                                                <td th:text="${remarksParam?.processBy}"></td>
+                                                <td th:text="${remarksParam?.createdBy}"></td>
+                                                <td th:if="${remarksParam?.remarksStatus == null}">N/A</td>
+                                                <td th:if="${remarksParam?.remarksStatus != null}"
+                                                    th:text="${remarksParam?.remarksStatus} ? 'APPROVED/COMPLIANT' : 'REJECTED/NON-COMPLIANT'"></td>
+                                                <td>
+                                                    <button class="btn btn-primary"
+                                                            th:value="${remarksParam.remarksDescription}"
+                                                            onclick="popUpFunctionView('viewRemarks', this);"
+                                                            type="button"> VIEW
+                                                    </button>
+                                                    <!--                                                    <a th:href="@{/api/qa/kebs/view/attached(fileID=${fileParam.id})}"-->
+                                                    <!--                                                       class="btn btn-primary itemViewBtn">view</a>-->
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
+
+
+                                <!--                                <button class="accordion">Remarks Details</button>-->
+                                <!--                                <div class="panel">-->
+                                <!--                                    <ul class="w-list-unstyled">-->
+                                <!--                                        <li th:if="${permitDetails?.hofQamCompletenessStatus != null}"-->
+                                <!--                                            class="list-item-accordion">-->
+                                <!--                                            <div class="list-title-accordion">Completeness Remarks BY QAM/HOD</div>-->
+                                <!--                                            <div class="list-text-accordion"><a class="btn btn-primary itemViewBtn" onclick="popUpRemarksFunction('permitRemarksCompleteness');">VIEW</a>-->
+                                <!--                                            </div>-->
+                                <!--                                        </li>-->
+                                <!--                                        <li th:if="${permitDetails?.resubmitApplicationStatus == 10}" class="list-item-accordion">-->
+                                <!--                                            <div class="list-title-accordion">Resubmit Remarks BY Manufacture/QAO</div>-->
+                                <!--                                            <div class="list-text-accordion"><a class="btn btn-primary itemViewBtn" onclick="popUpRemarksFunction('permitResubmitRemarks');">VIEW</a>-->
+                                <!--                                            </div>-->
+                                <!--                                        </li>-->
+                                <!--                                        <li th:if="${permitDetails?.pcmApprovalStatus != null}"-->
+                                <!--                                            class="list-item-accordion">-->
+                                <!--                                            <div class="list-title-accordion">Review Remarks BY PCM</div>-->
+                                <!--                                            <div class="list-text-accordion"><a class="btn btn-primary itemViewBtn" onclick="popUpRemarksFunction('permitRemarksPCMReview');">VIEW</a>-->
+                                <!--                                            </div>-->
+                                <!--                                        </li>-->
+                                <!--                                        <li th:if="${permitDetails?.recommendationApprovalStatus != null}"-->
+                                <!--                                            class="list-item-accordion">-->
+                                <!--                                            <div class="list-title-accordion">Recommendation Review Remarks BY QAO</div>-->
+                                <!--                                            <div class="list-text-accordion"><a class="btn btn-primary itemViewBtn"-->
+                                <!--                                                                                onclick="popUpRemarksFunction('permitRemarksRecommendationReview');">VIEW</a>-->
+                                <!--                                            </div>-->
+                                <!--                                        </li>-->
+                                <!--                                        <li th:if="${permitDetails?.justificationReportStatus != null}"-->
+                                <!--                                            class="list-item-accordion">-->
+                                <!--                                            <div class="list-title-accordion">Justification Review Remarks BY HOD</div>-->
+                                <!--                                            <div class="list-text-accordion"><a class="btn btn-primary itemViewBtn"-->
+                                <!--                                                                                onclick="popUpRemarksFunction('permitRemarksJustificationReview');">VIEW</a>-->
+                                <!--                                            </div>-->
+                                <!--                                        </li>-->
+                                <!--                                        <li th:if="${permitDetails?.pscMemberApprovalStatus != null}"-->
+                                <!--                                            class="list-item-accordion">-->
+                                <!--                                            <div class="list-title-accordion">PSC members approval/rejection Remarks-->
+                                <!--                                            </div>-->
+                                <!--                                            <div class="list-text-accordion"><a class="btn btn-primary itemViewBtn"-->
+                                <!--                                                                                onclick="popUpRemarksFunction('permitRemarksPscApproval');">VIEW</a>-->
+                                <!--                                            </div>-->
+                                <!--                                        </li>-->
+                                <!--                                        <li th:if="${permitDetails?.pcmApprovalStatus != null}"-->
+                                <!--                                            class="list-item-accordion">-->
+                                <!--                                            <div class="list-title-accordion">PCM approval/rejection Remarks</div>-->
+                                <!--                                            <div class="list-text-accordion"><a class="btn btn-primary itemViewBtn"-->
+                                <!--                                                                                onclick="popUpRemarksFunction('permitRemarksPCMApproval');">VIEW</a>-->
+                                <!--                                            </div>-->
+                                <!--                                        </li>-->
+                                <!--                                    </ul>-->
+                                <!--                                </div>-->
 
 
                                 <button class="accordion">Recommendation Details</button>
@@ -305,6 +346,7 @@
                                         </table>
                                     </div>
                                 </div>
+
                                 <div th:if="${permitType?.id == dmarkPermit}">
                                     <button class="accordion">STA 3 Attached Details</button>
                                     <div class="panel">
@@ -673,6 +715,10 @@
                                                th:href="@{/api/qa/inspection/ssf-list(permitID=${permitDetails?.id})}"
                                                style="color: white">CHECK SAMPLES SUBMITTED DETAILS</a>
 
+                                            <div th:if="${permitDetails?.resubmitApplicationStatus == 1}">
+
+                                            </div>
+
 
                                         </div>
 
@@ -868,6 +914,10 @@
                                                onclick="popUpResubmitFunction('addRecommendation');"
                                                class="filter-link">RE-WRITE RECOMMENDATION REMARKS</a>
 
+                                            <div th:if="${permitDetails?.resubmitApplicationStatus == 1}">
+
+                                            </div>
+
                                         </div>
 
                                         <div sec:authorize="hasAuthority('QA_PSC_MEMBERS_READ')">
@@ -892,7 +942,6 @@
                                         </div>
 
                                     </div>
-
 
                                     <!--                                Div for DmarkPermit actions-->
                                     <div th:if="${permitType?.id == dmarkPermit}">
@@ -1645,6 +1694,23 @@
                                                           cols="65" rows="5"
                                                           th:text="${permitDetails?.recommendationApprovalRemarks}"></textarea>
                                             </div>
+                                            <div id="permitResubmitRemarks">
+                                                <!--                                                <label for="recommendationRemarks" class="col-form-label">RECOMMENDATION:</label>-->
+                                                <!--                                                <textarea name="name" disabled id="recommendationRemarks"-->
+                                                <!--                                                          class="input-field w-input" cols="65" rows="5"-->
+                                                <!--                                                          th:text="${permitDetails?.recommendationRemarks}"></textarea>-->
+                                                <!--                                                <label for="recommendationApprovalStatus" class="col-form-label">Recommendation-->
+                                                <!--                                                    Review Status:</label>-->
+                                                <!--                                                <input type="text" disabled class="form-control" maxlength="256"-->
+                                                <!--                                                       name="entryPoint" data-name="entry Point"-->
+                                                <!--                                                       id="recommendationApprovalStatus"-->
+                                                <!--                                                       th:value="${permitDetails?.recommendationApprovalStatus} ? 'APPROVED' : 'REJECTED'">-->
+                                                <label for="resubmitRemarks" class="col-form-label">Feedback for this
+                                                    Permit:</label>
+                                                <textarea name="resubmitRemarks" disabled id="resubmitRemarks"
+                                                          class="input-field w-input" cols="65" rows="5"
+                                                          th:text="${permitDetails?.resubmitRemarks}"></textarea>
+                                            </div>
 
                                         </div>
                                     </div>
@@ -2011,25 +2077,40 @@
                                     </div>
                                     <div class="modal-body">
                                         <div class="form-group">
-                                            <div id="viewNotification">
-                                                <input type="hidden" id="requestID" name="requestID">
-                                                <label for="description" class="col-form-label">REQUEST MESSAGE:</label>
-                                                <textarea readonly name="description" id="descriptionValue"
-                                                          class="input-field w-input" cols="65" rows="10"></textarea>
-                                                <label for="requestStatus" class="col-form-label">Select Status:</label>
-                                                <select id="requestStatus" required class="form-control"
-                                                        th:field="*{requestStatus}">
-                                                    <option th:text="'Select one.....'"
-                                                            th:value="${nullStatus}"></option>
-                                                    <option th:text="'APPROVE'" th:value="1"></option>
-                                                    <option th:text="'REJECT'" th:value="0"></option>
-                                                </select>
-                                                <label for="approvalRejectionReason" class="col-form-label">Please
-                                                    write, in
-                                                    detail, your reason for approving/rejecting:</label>
-                                                <textarea name="name" id="approvalRejectionReason" required="required"
-                                                          class="input-field w-input" cols="65" rows="5"
-                                                          th:field="*{approvalRejectionReason}"></textarea>
+                                            <!--                                            <div id="viewNotification">-->
+                                            <!--                                                <input type="hidden" id="requestID" name="requestID">-->
+                                            <!--                                                <label for="description" class="col-form-label">REQUEST MESSAGE:</label>-->
+                                            <!--                                                <textarea readonly name="description" id="descriptionValue"-->
+                                            <!--                                                          class="input-field w-input" cols="65" rows="10"></textarea>-->
+                                            <!--                                                <label for="requestStatus" class="col-form-label">Select Status:</label>-->
+                                            <!--                                                <select id="requestStatus" required class="form-control"-->
+                                            <!--                                                        th:field="*{requestStatus}">-->
+                                            <!--                                                    <option th:text="'Select one.....'"-->
+                                            <!--                                                            th:value="${nullStatus}"></option>-->
+                                            <!--                                                    <option th:text="'APPROVE'" th:value="1"></option>-->
+                                            <!--                                                    <option th:text="'REJECT'" th:value="0"></option>-->
+                                            <!--                                                </select>-->
+                                            <!--                                                <label for="approvalRejectionReason" class="col-form-label">Please-->
+                                            <!--                                                    write, in detail, your reason for approving/rejecting:</label>-->
+                                            <!--                                                <textarea name="name" id="approvalRejectionReason" required="required"-->
+                                            <!--                                                          class="input-field w-input" cols="65" rows="5"-->
+                                            <!--                                                          th:field="*{approvalRejectionReason}"></textarea>-->
+                                            <!--                                            </div>-->
+                                            <div id="viewRemarks">
+                                                <!--                                                <label for="remarksStatus" class="col-form-label">Selected Status:</label>-->
+                                                <!--                                                <input type="text" id="remarksStatus" disabled name="remarksStatus">-->
+                                                <!--                                                <select id="remarksStatus" required class="form-control"-->
+                                                <!--                                                        th:field="*{requestStatus}">-->
+                                                <!--                                                    <option th:text="'Select one.....'"-->
+                                                <!--                                                            th:value="${nullStatus}"></option>-->
+                                                <!--                                                    <option th:text="'APPROVE/COMPLIANT'" th:value="1"></option>-->
+                                                <!--                                                    <option th:text="'REJECT/NON-COMPLIANT'" th:value="0"></option>-->
+                                                <!--                                                </select>-->
+                                                <label for="remarksDescription" class="col-form-label">Feed
+                                                    Back:</label>
+                                                <textarea name="remarksDescription" id="remarksDescription"
+                                                          required="required" class="input-field w-input" cols="65"
+                                                          rows="5"></textarea>
                                             </div>
 
                                         </div>
@@ -2038,13 +2119,14 @@
                                         <button class="btn btn-secondary" data-dismiss="modal"
                                                 onClick="window.location.reload()" type="button">Close
                                         </button>
-                                        <input type="submit" id="upload" class="btn btn-primary" value="Save"/>
+                                        <!--                                        <input type="submit" id="upload" class="btn btn-primary" value="Save"/>-->
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </form>
                 </div>
+
             </div>
         </section>
     </div>
@@ -2178,21 +2260,23 @@
 </script>
 <script>
 
-    function popUpFunctionView(eventAction, valueDescription, valueRequestID) {
-        let arrHead = ['viewRequest'];
-        let arrHeadSave = ['Request Approval/Rejection'];
-        let paramValue = valueDescription.value
-        let paramID = valueRequestID.value
-
+    function popUpFunctionView(eventAction, paramID) {
+        let arrHead = ['viewRemarks'];
+        let arrHeadSave = ['Remarks Details'];
+        let paramValue = paramID.value;
+        console.log(paramValue);
         for (let h = 0; h < arrHead.length; h++) {
             if (eventAction !== arrHead[h]) {
                 document.getElementById(arrHead[h]).remove();
             } else {
                 if (eventAction === arrHead[h]) {
                     // var labParameters = getLabResultsPerParam(paramValue)
+                    if (eventAction === 'viewRemarks') {
+                        // document.getElementById("remarksStatus").value = response[i].remarksStatus;
+                        document.getElementById("remarksDescription").value = paramValue;
+                    }
                     document.getElementById('uploadSpan').innerHTML = arrHeadSave[h];
-                    document.getElementById('descriptionValue').value = paramValue;
-                    document.getElementById('requestID').value = paramID;
+                    // document.getElementById('descriptionValue').value = paramValue;
                     // document.getElementById("upload").value = 'Done';
 
 
@@ -2201,6 +2285,30 @@
         }
 
         $('.viewRequestForm #viewRequestModal').modal();
+    }
+
+    function getRemarksParam(paramID) {
+        let paramValue = paramID
+        var myReturn = null
+        // console.log(categories.length)
+        $.ajax({
+            method: "GET",
+            url: `/report/view/remarks/${paramValue}`,
+            success(response) {
+                console.log(response)
+                let s = '';
+                for (let i = 0; i < response.length; i++) {
+                    // response.push('Select one')
+
+                    document.getElementById("remarksStatus").value = response[i].remarksStatus;
+                    document.getElementById("remarksDescription").value = response[i].remarksDescription;
+
+                }
+                myReturn = s
+            }
+        })
+
+        return myReturn
     }
 
     function popUpFunction(eventAction) {
@@ -2301,13 +2409,13 @@
 
 
     function popUpRemarksFunction(eventAction) {
-        let arrHead = [ 'permitRemarksCompleteness', 'permitRemarksRecommendationReview', 'permitRemarksPCMReview', 'permitRemarksPscApproval', 'permitRemarksPCMApproval', 'permitRemarksJustificationReview'];
-        let arrHeadSave = [ 'Completeness Remarks Details', 'Permit Application Recommendation Review Remarks', 'Dmark Permit Application Review Remarks', 'Permit Application PSC Members Status and Remarks','Permit Application PCM Status and Remarks','Permit Application Justification Status and Remarks'];
+        let arrHead = ['permitRemarksCompleteness', 'permitResubmitRemarks', 'permitRemarksRecommendationReview', 'permitRemarksPCMReview', 'permitRemarksPscApproval', 'permitRemarksPCMApproval', 'permitRemarksJustificationReview'];
+        let arrHeadSave = ['Completeness Remarks Details', 'Permit Application Resubmit Review Remarks', 'Permit Application Recommendation Review Remarks', 'Dmark Permit Application Review Remarks', 'Permit Application PSC Members Status and Remarks', 'Permit Application PCM Status and Remarks', 'Permit Application Justification Status and Remarks'];
 
         for (let h = 0; h < arrHead.length; h++) {
-            if(eventAction !== arrHead[h]){
+            if (eventAction !== arrHead[h]) {
                 document.getElementById(arrHead[h]).remove();
-            }else {
+            } else {
                 if (eventAction === arrHead[h]) {
                     document.getElementById('spanRemarksValue').innerHTML = arrHeadSave[h];
                     // document.getElementById("saveValue").value = 'Save';

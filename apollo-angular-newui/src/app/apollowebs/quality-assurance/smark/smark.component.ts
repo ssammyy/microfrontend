@@ -5,7 +5,7 @@ import {
     AllSTA10DetailsDto, FilesListDto,
     PermitEntityDetails, PermitEntityDto,
     PlantDetailsDto,
-    SectionDto, SSFPDFListDetailsDto,
+    SectionDto, SSFComplianceStatusDetailsDto, SSFPDFListDetailsDto,
     STA1,
     Sta10Dto,
     STA10MachineryAndPlantDto,
@@ -36,6 +36,7 @@ export class SmarkComponent implements OnInit {
     labResultsStatus!: string;
     labResultsRemarks!: string;
     approveRejectSSCForm!: FormGroup;
+    resubmitForm!: FormGroup;
     uploadForm!: FormGroup;
     uploadedFile: File;
     uploadedFiles: FileList;
@@ -77,12 +78,16 @@ export class SmarkComponent implements OnInit {
     sta10FileList: FilesListDto[];
     ordinaryFilesList: FilesListDto[];
     labResultsDetailsList: SSFPDFListDetailsDto[];
+    complianceResultsDetailsList: SSFComplianceStatusDetailsDto[];
     olderVersionDetailsList: PermitEntityDto[];
     sta10ManufacturingProcessDetail: STA10ManufacturingProcessDto;
     stepSoFar: | undefined;
     step = 1;
-    public permitID!: string;
+    resubmitDetail!: string;
+    permitID!: string;
     batchID!: bigint;
+    COMPLIANTSTATUS = 'COMPLIANT';
+    NONCOMPLIANT = 'NON-COMPLIANT';
 
     private filesControl = new FormControl(null, FileUploadValidators.filesLimit(2));
 
@@ -94,6 +99,7 @@ export class SmarkComponent implements OnInit {
     public tableData2: TableData;
     public tableData3: TableData;
     public tableData4: TableData;
+    public tableData6: TableData;
     public tableData5: TableData;
     public tableData12: TableData;
     blob: Blob;
@@ -199,13 +205,20 @@ export class SmarkComponent implements OnInit {
         });
 
         this.approveRejectSSCForm = this.formBuilder.group({
-            approvedRejectedScheme: [{value: '', disabled: true}, Validators.required],
+            approvedRejectedScheme: ['', Validators.required],
             approvedRejectedSchemeRemarks: [''],
+            // approvedRemarks: [{value: '', disabled: true}, Validators.required],
+        });
+        this.resubmitForm = this.formBuilder.group({
+            resubmitRemarks: ['', Validators.required],
+            resubmittedDetails: ['', Validators.required],
+            // resubmittedDetails: ['']
+            // resubmittedDetails: [this.resubmitDetail, Validators.required]
             // approvedRemarks: [{value: '', disabled: true}, Validators.required],
         });
 
         this.uploadForm = this.formBuilder.group({
-            upLoadDescription: [{value: '', disabled: true}, Validators.required],
+            upLoadDescription: ['', Validators.required],
             uploadedFile: this.filesControl
             // approvedRemarks: [{value: '', disabled: true}, Validators.required],
         });
@@ -239,9 +252,9 @@ export class SmarkComponent implements OnInit {
     remarksDetails() {
         const formattedArrayRemarks = [];
 
-        if (this.allPermitDetails?.remarksDetails?.hofQamCompleteness !== null) {
-            formattedArrayRemarks.push(['Completeness Remarks By HOD', '', 'hofQamCompletenessRemarks']);
-        }
+        // if (this.allPermitDetails?.remarksDetails?.hofQamCompleteness !== null) {
+        formattedArrayRemarks.push(['Completeness Remarks By HOD', '', 'hofQamCompletenessRemarks']);
+        formattedArrayRemarks.push(['Lab Results Remarks By QAO', '', 'labResultsCompletenessRemarks']);
         // if (this.allPermitDetails.remarksDetails.pcmReviewApprovalRemarks !== null) {
         formattedArrayRemarks.push(['Review Remarks By PCM', '', 'reviewRemarksPCMRemarks']);
         // }
@@ -264,6 +277,11 @@ export class SmarkComponent implements OnInit {
 
     get formApproveRejectSSC(): any {
         return this.approveRejectSSCForm.controls;
+    }
+
+    get formResubmitRemarks(): any {
+        this.resubmitForm.controls['resubmittedDetails'].setValue(this.resubmitDetail);
+        return this.resubmitForm.controls;
     }
 
     get formSta1Form(): any {
@@ -307,6 +325,7 @@ export class SmarkComponent implements OnInit {
             let formattedArraySta10 = [];
             let formattedArrayOrdinaryFiles = [];
             let formattedArrayLabResultsList = [];
+            let formattedArrayComplianceResultsList = [];
             let formattedArrayOlderVersionList = [];
             const formattedArrayInvoiceDetailsList = [];
             this.SpinnerService.show();
@@ -357,13 +376,21 @@ export class SmarkComponent implements OnInit {
                             dataRows: formattedArrayOrdinaryFiles
                         };
                     }
-                    if (this.allPermitDetails.labResultsList !== []) {
-                        this.labResultsDetailsList = this.allPermitDetails.labResultsList;
+                    if (this.allPermitDetails.labResultsList.labResultsList !== []) {
+                        this.labResultsDetailsList = this.allPermitDetails.labResultsList.labResultsList;
                         // tslint:disable-next-line:max-line-length
                         formattedArrayLabResultsList = this.labResultsDetailsList.map(i => [i.pdfName, i.complianceStatus, i.sffId, i.complianceRemarks, i.pdfSavedId]);
                         this.tableData4 = {
                             headerRow: ['File Name', 'Compliant Status', 'View Remarks', 'View PDF'],
                             dataRows: formattedArrayLabResultsList
+                        };
+
+                        this.complianceResultsDetailsList = this.allPermitDetails.labResultsList.ssfResultsList;
+                        // tslint:disable-next-line:max-line-length
+                        formattedArrayComplianceResultsList = this.complianceResultsDetailsList.map(i => [i.sffId, i.bsNumber, i.complianceStatus, i.complianceRemarks]);
+                        this.tableData6 = {
+                            headerRow: ['BS Number', 'Compliant Status', 'View Remarks', 'Action'],
+                            dataRows: formattedArrayComplianceResultsList
                         };
                     }
                     if (this.allPermitDetails.oldVersionList !== []) {
@@ -423,9 +450,9 @@ export class SmarkComponent implements OnInit {
     }
 
     openModalRemarks(divVal: string): void {
-        const arrHead = ['hofQamCompletenessRemarks', 'reviewRemarksPCMRemarks', 'recommendationRemarks', 'pscApprovalRejectionRemarks', 'pcmApprovalRejectionRemarks'];
+        const arrHead = ['hofQamCompletenessRemarks', 'labResultsCompletenessRemarks', 'reviewRemarksPCMRemarks', 'recommendationRemarks', 'pscApprovalRejectionRemarks', 'pcmApprovalRejectionRemarks'];
         // tslint:disable-next-line:max-line-length
-        const arrHeadSave = ['Completeness Remarks', 'PCM Review Remarks', 'Recommendation', 'PSC Remarks', 'PCM Approval/Rejection Remarks'];
+        const arrHeadSave = ['Completeness Remarks', 'Lab Result Compliance Remarks', 'PCM Review Remarks', 'Recommendation', 'PSC Remarks', 'PCM Approval/Rejection Remarks'];
 
         for (let h = 0; h < arrHead.length; h++) {
             if (divVal === arrHead[h]) {
@@ -505,6 +532,26 @@ export class SmarkComponent implements OnInit {
                 // this.router.navigate(['/invoiceDetails'], {fragment: this.allPermitDetails.batchID.toString()});
 
                 // this.onUpdateReturnToList();
+            },
+        );
+    }
+
+    reSubmitWithRemarks(): void {
+        console.log(this.resubmitForm.value);
+        this.SpinnerService.show();
+        // tslint:disable-next-line:max-line-length
+        this.qaService.resubmitApplicationBack(String(this.allPermitDetails.permitDetails.id), this.resubmitForm.value).subscribe(
+            (data: PermitEntityDetails) => {
+                this.allPermitDetails.permitDetails = data;
+                this.SpinnerService.hide();
+                swal.fire({
+                    title: 'PERMIT APPLICATION RE-SUBMITTED SUCCESSFULLY!',
+                    buttonsStyling: false,
+                    customClass: {
+                        confirmButton: 'btn btn-success form-wizard-next-btn ',
+                    },
+                    icon: 'success'
+                });
             },
         );
     }
@@ -627,39 +674,6 @@ export class SmarkComponent implements OnInit {
                 );
             }
         });
-
-        // this.SpinnerService.show();
-        // this.qaService.submitPermitApplication(String(this.allPermitDetails.permitDetails.id)).subscribe(
-        //     (data: AllPermitDetailsDto) => {
-        //         this.allPermitDetails = data;
-        //         this.SpinnerService.hide();
-        //         this.reloadCurrentRoute();
-        //         if (this.allPermitDetails.permitDetails.permitTypeID === this.FMarkTypeID) {
-        //             swal.fire({
-        //                 title: 'FMARK SUBMITTED SUCCESSFULLY PENDING PAYMENT!',
-        //                 buttonsStyling: false,
-        //                 customClass: {
-        //                     confirmButton: 'btn btn-success form-wizard-next-btn ',
-        //                 },
-        //                 icon: 'success'
-        //             });
-        //         } else {
-        //             swal.fire({
-        //                 title: 'SMARK SUBMITTED SUCCESSFULLY PENDING PAYMENT!',
-        //                 buttonsStyling: false,
-        //                 customClass: {
-        //                     confirmButton: 'btn btn-success form-wizard-next-btn ',
-        //                 },
-        //                 icon: 'success'
-        //             });
-        //         }
-        //
-        //
-        //         // this.router.navigate(['/invoiceDetails'], {fragment: this.allPermitDetails.batchID.toString()});
-        //
-        //         // this.onUpdateReturnToList();
-        //     },
-        // );
     }
 
     submitRenewalApplication() {
@@ -746,24 +760,42 @@ export class SmarkComponent implements OnInit {
 
     }
 
-    viewLabRemarks(status: string, remarksValue: string) {
-        this.currDiv = 'viewLabResultsRemarks';
-        this.currDivLabel = 'LAB RESULTS DETAILS';
+    viewLabRemarks(status: boolean, remarksValue: string, viewDiv: string) {
+        const arrHead = ['viewLabResultsRemarks', 'viewLabComplianceRemarks'];
+        const arrHeadSave = ['LAB RESULTS DETAILS', 'Inspection Compliance Status'];
+
+        for (let h = 0; h < arrHead.length; h++) {
+            if (viewDiv === arrHead[h]) {
+                this.currDivLabel = arrHeadSave[h];
+            }
+        }
+        this.currDiv = viewDiv;
+
         switch (status) {
-            case 'true':
-                this.labResultsStatus = 'COMPLIANT';
+            case true:
+                this.labResultsStatus = this.COMPLIANTSTATUS;
                 break;
-            case 'false':
-                this.labResultsStatus = 'NOT-COMPLIANT';
+            case false:
+                this.labResultsStatus = this.NONCOMPLIANT;
                 break;
         }
 
         this.labResultsRemarks = remarksValue;
     }
 
-    openModalUpload(viewDiv: string) {
+    openModalUpload(viewDiv: string, resubmit: string) {
+        const arrHeadResubmit = ['resubmitLabNonComplianceResults', 'schemeModal', 'resubmitDetails'];
+        const arrHead = ['uploadModal', 'schemeModal', 'resubmitDetails'];
+        const arrHeadSave = ['Upload PDF Documents Only', 'Agree/Consent to SSC', 'Resubmit Details With Remarks'];
+
+        for (let h = 0; h < arrHead.length; h++) {
+            if (viewDiv === arrHead[h]) {
+                this.currDivLabel = arrHeadSave[h];
+            }
+        }
         this.currDiv = viewDiv;
-        this.currDivLabel = 'Upload PDF Documents Only';
+        this.resubmitDetail = resubmit;
+        console.log(this.resubmitDetail);
     }
 
     openModalViewUpload(viewDiv: string) {

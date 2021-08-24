@@ -28,6 +28,7 @@ type="ball-scale-multiple"
     <table  class="table table-striped table-bordered table-hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
         <thead>
         <tr>
+            <th>#</th>
         <th class="knw">KNW Committee</th>
         <th class="sl">SL</th>
         <th class="requestNumber">Request Number</th>
@@ -41,7 +42,8 @@ type="ball-scale-multiple"
         </tr>
         </thead>
         <tbody>
-        <tr  *ngFor="let task of tasks ">
+        <tr  *ngFor="let task of tasks  let i=index">
+            <td>{{i+1}}</td>
             <td>{{task.taskData.knwCommittee}}</td>
             <td>{{task.taskData.sl}}</td>
             <td>{{task.taskData.requestNumber}}</td>
@@ -136,53 +138,69 @@ type="ball-scale-multiple"
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form #preliminaryDraftForm="ngForm" >
+                <form (ngSubmit)="uploadPreliminaryDraft()" [formGroup]="preparePreliminaryDraftFormGroup" class="form">
                     <div class="modal-body">
                         <div class="row col-12">
                             <div class="form-group col-6">
-                                <label>Title</label>
-                                <input class="form-control"  ngModel name="title" type="text">
+                                <label>Title <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <input [class.is-invalid]="formPreparePD.title.invalid && formPreparePD.title.touched"
+                                       class="form-control"  formControlName="title" name="title" type="text">
                             </div>
                             <div class="form-group col-6">
-                                <label>Scope</label>
-                                <input class="form-control"  ngModel name="scope" type="text">
+                                <label>Scope <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <input [class.is-invalid]="formPreparePD.scope.invalid && formPreparePD.scope.touched"
+                                       class="form-control"  formControlName="scope" name="scope" type="text">
                             </div>
+
                         </div>
                         <div class="row col-12">
                             <div class="form-group col-6">
-                                <label>Normative Reference</label>
-                                <input class="form-control"  ngModel name="normativeReference" type="text">
+                                <label>Normative Reference <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <input [class.is-invalid]="formPreparePD.normativeReference.invalid && formPreparePD.normativeReference.touched"
+                                       class="form-control"  formControlName="normativeReference" name="normativeReference" type="text">
                             </div>
                             <div class="form-group col-6">
-                                <label>Symbols Abbreviated Terms</label>
-                                <input class="form-control"  ngModel name="symbolsAbbreviatedTerms" type="text">
+                                <label>Symbols Abbreviated Terms<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <input [class.is-invalid]="formPreparePD.symbolsAbbreviatedTerms.invalid && formPreparePD.symbolsAbbreviatedTerms.touched"
+                                       class="form-control"  formControlName="symbolsAbbreviatedTerms" name="symbolsAbbreviatedTerms" type="text">
                             </div>
+
                         </div>
                         <div class="row col-12">
+
                             <div class="form-group col-6">
-                                <label>Clause</label>
-                                <input class="form-control"  ngModel name="clause" type="text">
+                                <label>Clause<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <input [class.is-invalid]="formPreparePD.clause.invalid && formPreparePD.clause.touched"
+                                       class="form-control"  formControlName="clause" name="clause" type="text">
                             </div>
                             <div class="form-group col-6">
-                                <label>Special</label>
-                                <input class="form-control"  ngModel name="special" type="text">
+                                <label>Special<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <input [class.is-invalid]="formPreparePD.special.invalid && formPreparePD.special.touched"
+                                       class="form-control"  formControlName="special" name="special" type="text">
                             </div>
+
                         </div>
                         <div class="row col-12">
                             <div class="form-group col-12">
-                                <label><b>Upload Justification for Di Approval</b></label>
-
-                                <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles" fileslimit="2" accept=".pdf, .doc, .docx"></file-upload>
+                                <label><b>Upload Preliminary Draft  </b> <span style="font-size: xx-small; color: red;">(*)Required</span></label><br>
+                                <form #demoForm="ngForm">
+                                    <input type="file" name="uploadedFiles" [(ngModel)]="uploadedFiles"  multiple>
+                                    <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles"   fileslimit="2" accept=".pdf, .doc, .docx" ></file-upload>
+                                </form>
                             </div>
+
+
                         </div>
                     </div>
-
-                    <input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskId" >
-
+                    <input type="hidden" ngModel="{{actionRequest?.taskId}}" formControlName="taskId" name="taskId" >
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary btn-sm" (click)="uploadPreliminaryDraft(preliminaryDraftForm.value)" data-dismiss="modal">Save</button>
+                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+                        <button *ngIf="preparePreliminaryDraftFormGroup.valid" [disabled]="!preparePreliminaryDraftFormGroup.valid" class="btn btn-sm btn-primary float-right" type="submit">Save</button>
+                        <button *ngIf="!preparePreliminaryDraftFormGroup.valid" class="btn btn-sm btn-primary float-right"
+                                (click)="showNotification('top','right')">Save
+                        </button>
                     </div>
+
                 </form>
             </div>
         </div>
@@ -229,6 +247,7 @@ type="ball-scale-multiple"
                         </div>
                         <input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskId" >
                         <input type="hidden" ngModel="true" name="accentTo"  >
+                        <input type="hidden" name="approvalID" ngModel="{{actionRequest?.taskData.ID}}" >
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>

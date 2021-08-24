@@ -44,7 +44,7 @@ class NWAWorkShopDraft {
     @Transient
     @Column(name = "ACCENT_TO")
     @Basic
-    val accentTo: Boolean = false
+    var accentTo: Boolean = false
 
     @Column(name="DATE_WD_PREPARED")
     @Basic

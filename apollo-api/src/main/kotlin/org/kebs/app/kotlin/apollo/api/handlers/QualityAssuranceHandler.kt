@@ -22,6 +22,7 @@
 package org.kebs.app.kotlin.apollo.api.handlers
 
 //import org.kebs.app.kotlin.apollo.api.ports.provided.createUserAlert
+import com.google.gson.Gson
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.QualityAssuranceBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
@@ -277,6 +278,7 @@ class QualityAssuranceHandler(
         req.attributes()["batchID"] = batchDetail
         req.attributes()["invoiceDetails"] = QaInvoiceDetailsEntity()
         req.attributes()["sections"] = loadSectionDetails(departmentEntity, map, req)
+        req.attributes()["remarksParameters"] = qaDaoServices.findALlRemarksDetailsPerPermit(permitID)
         req.attributes()["standardsList"] = qaDaoServices.findALlStandardsDetails(map.activeStatus)
         req.attributes().putAll(loadCommonUIComponents(map))
         req.attributes().putAll(loadCommonPermitComponents(map, permit))
@@ -861,6 +863,7 @@ class QualityAssuranceHandler(
             Pair("initStatus", s.initStatus),
             Pair("nullStatus", null),
             Pair("permitRequest", PermitUpdateDetailsRequestsEntity()),
+            Pair("resubmitApplication", ResubmitApplicationDto()),
             Pair("requestDetails", PermitUpdateDetailsRequestsEntity()),
             Pair("fmarkEntityDto", FmarkEntityDto()),
             Pair("SampleSubmissionDetails", QaSampleSubmissionEntity()),
@@ -1359,6 +1362,33 @@ class QualityAssuranceHandler(
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun permitResubmitMigration(req: ServerRequest): ServerResponse {
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val permitID = req.paramOrNull("permitID")?.toLong()
+                ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
+            val permitDetails = qaDaoServices.findPermitBYID(permitID)
+
+            val dto = req.body<ResubmitApplicationDto>()
+
+            //updating of Details in DB
+            val updateResults = qaDaoServices.permitResubmitDetails(permitDetails, dto, map, loggedInUser)
+
+            qaDaoServices.permitDetails(updateResults.second, map).let {
+                return ok().body(it)
+            }
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun permitUpdateSTA1Migration(req: ServerRequest): ServerResponse {
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
@@ -1423,8 +1453,13 @@ class QualityAssuranceHandler(
                 permit.permitType ?: throw ExpectedDataNotFound("Permit Type Id Not found")
             )
 
+            //Create FMARK From SMark
+            if (permit.fmarkGenerateStatus == 1) {
+                qaDaoServices.permitGenerateFmark(map, loggedInUser, permit).first
+            }
+
             //Calculate Invoice Details
-            val invoiceCreated = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit).second
+            val invoiceCreated = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, null).second
 
             //Update Permit Details
             with(permit) {
@@ -1484,7 +1519,7 @@ class QualityAssuranceHandler(
                     map,
                     applicationMapProperties.mapQADesignationIDForPCMId
                 )?.id
-                permitStatus = applicationMapProperties.mapQaStatusPPCMAwarding
+                permitStatus = applicationMapProperties.mapQaStatusPPCMReview
                 userTaskId = applicationMapProperties.mapUserTaskNamePCM
             }
             permit = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).second
@@ -1934,8 +1969,11 @@ class QualityAssuranceHandler(
             var updatePermit = PermitApplicationsEntity()
             with(updatePermit) {
                 id = permit.id
-                sta10FilledStatus = map.inactiveStatus
-                permitStatus = applicationMapProperties.mapQaStatusDraft
+                sta10FilledStatus = map.activeStatus
+                if (permit.sendApplication != 1) {
+                    permitStatus = applicationMapProperties.mapQaStatusDraft
+                }
+
             }
 
             //update the permit with the created entity values
@@ -2563,7 +2601,7 @@ class QualityAssuranceHandler(
                 dto.smarkPermitID ?: throw ExpectedDataNotFound("Smark Permit id not found")
             )
 
-            val fmarkGenerated = qaDaoServices.permitGenerateFmark(map, loggedInUser, permitDetails, auth)
+            val fmarkGenerated = qaDaoServices.permitGenerateFmark(map, loggedInUser, permitDetails)
 
             qaDaoServices.mapAllPermitDetailsTogether(fmarkGenerated.second, null, map).let {
                 return ok().body(it)

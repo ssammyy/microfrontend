@@ -13,3 +13,9 @@ class ProcessInstanceDISDT (val savedRowID: Long?,val processId: String, val isE
 class ProcessInstanceProposal (val savedRowID: Long?,val processId: String, val isEnded: Boolean,val proposalNumber: String) {
 
 }
+class ProcessInstancePD (val savedRowID: Long?,val processId: String, val isEnded: Boolean, val datePdPrepared: Timestamp) {
+}
+class ProcessInstanceWD (val savedRowID: Long?,val processId: String, val isEnded: Boolean, val datePdPrepared: Timestamp) {
+}
+class ProcessInstanceUS (val savedRowID: Long?,val processId: String, val isEnded: Boolean, val ksNumber: String) {
+}

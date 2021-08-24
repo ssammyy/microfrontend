@@ -52,6 +52,7 @@ export class RemarksAndStatusDto {
 
 export class PermitAllRemarksDetailsDto {
     hofQamCompleteness: RemarksAndStatusDto;
+    labResultsCompleteness: RemarksAndStatusDto;
     pcmApproval: RemarksAndStatusDto;
     pscMemberApproval: RemarksAndStatusDto;
     pcmReviewApproval: RemarksAndStatusDto;
@@ -69,6 +70,18 @@ export class SSFPDFListDetailsDto {
     pdfSavedId: bigint;
     pdfName: string;
     sffId: bigint;
+    complianceRemarks: string;
+    complianceStatus: boolean;
+}
+
+export class PermitSSFLabResultsDto {
+    ssfResultsList: SSFComplianceStatusDetailsDto[];
+    labResultsList: SSFPDFListDetailsDto[];
+}
+
+export class SSFComplianceStatusDetailsDto {
+    sffId: bigint;
+    bsNumber: string;
     complianceRemarks: string;
     complianceStatus: boolean;
 }
@@ -103,6 +116,11 @@ export class PermitProcessStepDto {
 export class SSCApprovalRejectionDto {
     approvedRejectedScheme: number;
     approvedRejectedSchemeRemarks: string;
+}
+
+export class ResubmitApplicationDto {
+    resubmitRemarks: string;
+    resubmittedDetails: string;
 }
 
 
@@ -242,7 +260,7 @@ export class AllPermitDetailsDto {
     ordinaryFilesList: FilesListDto[];
     sta3FilesList: FilesListDto[];
     sta10FilesList: FilesListDto[];
-    labResultsList: SSFPDFListDetailsDto[];
+    labResultsList: PermitSSFLabResultsDto;
     schemeOfSuperVision: FilesListDto;
     batchID: bigint;
 }

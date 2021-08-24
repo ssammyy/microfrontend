@@ -256,7 +256,7 @@
 
                                 <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_ASSESSORS_READ')">
                                     <!--                                    <a th:if="${ssfDetails.labResultsStatus == 0}" th:href="@{/api/qa/inspection/check-results(bsNumber=${ssfDetails?.bsNumber})}" class="filter-link" style="color: white">CHECK RESULTS</a>-->
-                                    <a th:if="${ssfDetails.labResultsStatus == 1}"
+                                    <a th:if="${ssfDetails.labResultsStatus == 1 and ssfDetails.resultsAnalysis == null}"
                                        onclick="popUpComplianceFunction('addComplianceStatusDetailsSSF');"
                                        class="filter-link" style="color: white">ADD COMPLIANCE DETAILS</a>
                                 </div>

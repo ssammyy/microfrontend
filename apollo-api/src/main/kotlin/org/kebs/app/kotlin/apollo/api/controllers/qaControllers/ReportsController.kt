@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.controllers.qaControllers
 
+import com.google.gson.Gson
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
@@ -10,10 +11,8 @@ import org.kebs.app.kotlin.apollo.store.model.InvoiceEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaInvoiceMasterDetailsEntity
 import org.kebs.app.kotlin.apollo.store.repo.ISampleStandardsRepository
 import org.springframework.core.io.ResourceLoader
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.http.MediaType
+import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletResponse
 
 @RestController
@@ -36,6 +35,16 @@ class ReportsController(
 
     final val fMarkImageResource = resourceLoader.getResource(applicationMapProperties.mapFmarkImagePath)
     val fMarkImageFile = fMarkImageResource.file.toString()
+
+    @GetMapping("view/remarks/{id}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun userRemarks(
+        @PathVariable(value = "id", required = false) id: Long
+    ): String? {
+        val remarks = qaDaoServices.findRemarksDetailsByID(id)
+        val gson = Gson()
+        return gson.toJson(remarks)
+
+    }
 
     @RequestMapping(value = ["pac_summary"], method = [RequestMethod.GET])
     @Throws(Exception::class)

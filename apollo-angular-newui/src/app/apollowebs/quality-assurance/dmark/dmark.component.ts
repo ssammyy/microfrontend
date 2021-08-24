@@ -5,7 +5,7 @@ import {
     AllPermitDetailsDto, FilesListDto,
     PermitEntityDetails, PermitEntityDto,
     PlantDetailsDto,
-    SectionDto, SSFPDFListDetailsDto,
+    SectionDto, SSFComplianceStatusDetailsDto, SSFPDFListDetailsDto,
     STA1,
     STA3
 } from '../../../core/store/data/qa/qa.model';
@@ -16,6 +16,7 @@ import {TableData} from '../../../md/md-table/md-table.component';
 import {FileUploadValidators} from '@iplab/ngx-file-upload';
 import {LoadingService} from '../../../core/services/loader/loadingservice.service';
 import {NgxSpinnerService} from 'ngx-spinner';
+import Swal from 'sweetalert2';
 // import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 // import {ModalComponent} from "ngb-modal";
 
@@ -63,11 +64,14 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     sta3FileList: FilesListDto[];
     ordinaryFilesList: FilesListDto[];
     labResultsDetailsList: SSFPDFListDetailsDto[];
+    complianceResultsDetailsList: SSFComplianceStatusDetailsDto[];
     olderVersionDetailsList: PermitEntityDto[];
     permitEntityDetails: PermitEntityDetails;
     public dataTable: DataTable;
     public permitID!: string;
     allPermitDetails!: AllPermitDetailsDto;
+    COMPLIANTSTATUS = 'COMPLIANT';
+    NONCOMPLIANT = 'NON-COMPLIANT';
 
     private filesControl = new FormControl(null, FileUploadValidators.filesLimit(2));
 
@@ -79,6 +83,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     public tableData2: TableData;
     public tableData3: TableData;
     public tableData4: TableData;
+    public tableData6: TableData;
     public tableData5: TableData;
     public tableData12: TableData;
     blob: Blob;
@@ -250,6 +255,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
             let formattedArraySta3 = [];
             let formattedArrayOrdinaryFiles = [];
             let formattedArrayLabResultsList = [];
+            let formattedArrayComplianceResultsList = [];
             let formattedArrayOlderVersionList = [];
             const formattedArrayInvoiceDetailsList = [];
             this.SpinnerService.show();
@@ -290,13 +296,21 @@ export class DmarkComponent implements OnInit, AfterViewInit {
                             dataRows: formattedArrayOrdinaryFiles
                         };
                     }
-                    if (this.allPermitDetails.labResultsList !== []) {
-                        this.labResultsDetailsList = this.allPermitDetails.labResultsList;
+                    if (this.allPermitDetails.labResultsList.labResultsList !== []) {
+                        this.labResultsDetailsList = this.allPermitDetails.labResultsList.labResultsList;
                         // tslint:disable-next-line:max-line-length
                         formattedArrayLabResultsList = this.labResultsDetailsList.map(i => [i.pdfName, i.complianceStatus, i.sffId, i.complianceRemarks, i.pdfSavedId]);
                         this.tableData4 = {
                             headerRow: ['File Name', 'Compliant Status', 'View Remarks', 'View PDF'],
                             dataRows: formattedArrayLabResultsList
+                        };
+
+                        this.complianceResultsDetailsList = this.allPermitDetails.labResultsList.ssfResultsList;
+                        // tslint:disable-next-line:max-line-length
+                        formattedArrayComplianceResultsList = this.complianceResultsDetailsList.map(i => [i.sffId, i.bsNumber, i.complianceStatus, i.complianceRemarks]);
+                        this.tableData6 = {
+                            headerRow: ['BS Number', 'Compliant Status', 'View Remarks', 'Action'],
+                            dataRows: formattedArrayComplianceResultsList
                         };
                     }
                     if (this.allPermitDetails.oldVersionList !== []) {
@@ -317,11 +331,20 @@ export class DmarkComponent implements OnInit, AfterViewInit {
                         );
                     }
                     if (this.allPermitDetails.permitDetails.invoiceGenerated === true) {
+                        const invoiceDetailsList = this.allPermitDetails.invoiceDetails.invoiceDetailsList;
+                        let permitFee = 0;
+
+                        for (let h = 0; h < invoiceDetailsList.length; h++) {
+                            if (invoiceDetailsList[h].permitStatus === true) {
+                                permitFee = invoiceDetailsList[h].itemAmount;
+                            }
+                        }
                         this.tableData12 = {
                             headerRow: ['Item', 'Details/Fee'],
                             dataRows: [
                                 ['Invoice Ref No', this.allPermitDetails.invoiceDetails.invoiceRef],
-                                ['Description', this.allPermitDetails.invoiceDetails.description],
+                                ['DMARK Permit', `KSH ${permitFee}`],
+                                // ['Description', this.allPermitDetails.invoiceDetails.description],
                                 ['Sub Total Before Tax', `KSH ${this.allPermitDetails.invoiceDetails.subTotalBeforeTax}`],
                                 ['Tax Amount', `KSH ${this.allPermitDetails.invoiceDetails.taxAmount}`],
                                 ['Total Amount', `KSH ${this.allPermitDetails.invoiceDetails.totalAmount}`]
@@ -488,25 +511,51 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     }
 
     submitApplication(): void {
-        this.SpinnerService.show();
-        this.qaService.submitPermitApplication(String(this.allPermitDetails.permitDetails.id)).subscribe(
-            (data: AllPermitDetailsDto) => {
-                this.allPermitDetails = data;
-                this.SpinnerService.hide();
-                swal.fire({
-                    title: 'DMARK SUBMITTED SUCCESSFULLY PENDING PAYMENT!',
-                    buttonsStyling: false,
-                    customClass: {
-                        confirmButton: 'btn btn-success form-wizard-next-btn ',
-                    },
-                    icon: 'success'
-                });
-                this.reloadCurrentRoute();
-                // this.router.navigate(['/invoiceDetails'], {fragment: this.allPermitDetails.batchID.toString()});
-
-                // this.onUpdateReturnToList();
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger'
             },
-        );
+            buttonsStyling: false
+        });
+
+        swalWithBootstrapButtons.fire({
+            title: 'Are you sure your application is complete?',
+            text: 'You won\'t be able to make changes after submission!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes!',
+            cancelButtonText: 'No!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.SpinnerService.show();
+                this.qaService.submitPermitApplication(String(this.allPermitDetails.permitDetails.id)).subscribe(
+                    (data: AllPermitDetailsDto) => {
+                        this.allPermitDetails = data;
+                        this.SpinnerService.hide();
+                        swalWithBootstrapButtons.fire(
+                            'Submitted!',
+                            'DMARK SUBMITTED SUCCESSFULLY PENDING PAYMENT!',
+                            'success'
+                        );
+                        this.reloadCurrentRoute();
+                        // this.router.navigate(['/invoiceDetails'], {fragment: this.allPermitDetails.batchID.toString()});
+
+                        // this.onUpdateReturnToList();
+                    },
+                );
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire(
+                    'Cancelled',
+                    'You can click the \'UPDATE APPLICATION DETAILS\' button to complete.',
+                    'error'
+                );
+            }
+        });
     }
 
     submitApprovalRejectionSSC(): void {

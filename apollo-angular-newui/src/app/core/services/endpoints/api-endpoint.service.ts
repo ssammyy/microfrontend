@@ -20,7 +20,7 @@ export class ApiEndpointService {
        LOCAL_DEV: 'localhost:8006'
         // LOCAL_DEV: '12:8006'
         // LOCAL_DEV: '41.72.209.58:8006'
-        //LOCAL_DEV: `kimsint.kebs.org:8006`
+        // LOCAL_DEV: `kimsint.kebs.org:8006`
         // LOCAL_DEV: `kims.kebs.org:8006`
     };
 
@@ -204,6 +204,7 @@ export class ApiEndpointService {
         PERMIT_SUBMIT_DETAILS_FOR_HOD_QAM_REVIEW: `${ApiEndpointService.QA_CONTEXT_APPLY}/submit-application-qam-hod-review`,
         PERMIT_SUBMIT_APPLICATION: `${ApiEndpointService.QA_CONTEXT_APPLY}/submit-application`,
         PERMIT_SUBMIT_SSC_APPROVAL_REJECTION: `${ApiEndpointService.QA_CONTEXT_APPLY}/submit-application-ssc-approval-rejection`,
+        PERMIT_RE_SUBMIT_APPLICATION: `${ApiEndpointService.QA_CONTEXT_APPLY}/re-submit-application`,
 
         PERMIT_RENEW: `${ApiEndpointService.QA_CONTEXT}/permit/renew/`,
         PLANT_LIST: `${ApiEndpointService.QA_CONTEXT}/branch-list`,
@@ -285,6 +286,9 @@ export class ApiEndpointService {
         NWA_UPDATE_GAZETTEMENT_DATE: `${ApiEndpointService.SD_NWA_CONTEXT}/updateGazettementDate`,
         NWA_UPLOAD_DATA: `${ApiEndpointService.SD_NWA_CONTEXT}/file-upload`,
         NWA_UPLOAD_DATA_DI: `${ApiEndpointService.SD_NWA_CONTEXT}/di-file-upload`,
+        NWA_UPLOAD_DATA_PD: `${ApiEndpointService.SD_NWA_CONTEXT}/pd-file-upload`,
+        NWA_UPLOAD_DATA_WD: `${ApiEndpointService.SD_NWA_CONTEXT}/wd-file-upload`,
+        NWA_UPLOAD_DATA_STD: `${ApiEndpointService.SD_NWA_CONTEXT}/std-file-upload`,
 
         // SD INTERNATIONAL STANDARDS
         IST_PREPARE_ADOPTION_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/prepareAdoptionProposal`,

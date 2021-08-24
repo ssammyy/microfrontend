@@ -57,7 +57,7 @@
             <i class="material-icons">preview</i> Scheme of Supervision
         </a>
     </li>
-    <li *ngIf="allPermitDetails?.labResultsList.length > 0" class="nav-item">
+    <li *ngIf="allPermitDetails?.labResultsList?.ssfResultsList?.length> 0" class="nav-item">
         <a class="nav-link" data-toggle="tab" href="#link17" role="tablist">
             <i class="material-icons">summarize</i> Lab Results
         </a>
@@ -959,6 +959,46 @@ placeholder=""
         <div id="main17">
             <div class="container">
                 <div class="container">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th class="text-left">{{ tableData6?.headerRow[0] }}</th>
+                                <th>{{ tableData6?.headerRow[1] }}</th>
+                                <th class="text-right">{{ tableData6?.headerRow[2] }}</th>
+                                <th class="text-right">{{ tableData6?.headerRow[3] }}</th>
+                                <!--                                <th class="text-right">{{ tableData3?.headerRow[4] }}</th>-->
+
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let row of tableData6?.dataRows">
+                                <td class="text-left">{{row[1]}}</td>
+                                <td *ngIf="row[2] == true">{{COMPLIANTSTATUS}}</td>
+                                <td *ngIf="row[2] == false">{{NONCOMPLIANT}}</td>
+                                <!--                                <td>{{row[2]}}</td>-->
+                                <!--                                <td>{{row[3]}}</td>-->
+
+                                <td class="td-actions text-right">
+                                    <button mat-raised-button type="button" data-toggle="modal" data-target="#myModal2"
+                                            (click)="viewLabRemarks(row[2], row[3])" class="btn btn-info {{row[3]}}">
+                                        <i class="material-icons">visibility</i>
+
+                                    </button>
+                                </td>
+                                <td class="td-actions text-right">
+                                    <!--                                    <button mat-raised-button type="button" data-toggle="modal"-->
+                                    <!--                                            (click)="viewPdfFile(row[4], row[0], 'application/pdf')"-->
+                                    <!--                                            class="btn btn-info {{row[4]}}">-->
+                                    <!--                                        <i class="material-icons">visibility</i>-->
+
+                                    <!--                                    </button>-->
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                     <div class="table-responsive">
                         <table class="table">
                             <thead>

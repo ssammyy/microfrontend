@@ -431,6 +431,7 @@ class AngularRoutes {
                     POST("/submit-application-review", handler::permitSubmitApplicationReviewMigration)
                     POST("/submit-application-qam-hod-review", handler::permitSubmitApplicationQAMHODReviewMigration)
                     POST("/submit-application-ssc-approval-rejection", handler::permitApproveRejectSSCMigration)
+                    POST("/re-submit-application", handler::permitResubmitMigration)
                     POST("/sta3", handler::permitApplySTA3Migration)
                     PUT("/sta3-update", handler::permitUpdateSTA3Migration)
 //                    POST(
