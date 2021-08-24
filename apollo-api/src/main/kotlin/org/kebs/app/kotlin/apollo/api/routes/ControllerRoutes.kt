@@ -263,6 +263,8 @@ class ControllerRoutes {
         "/api/v1/user".nest {
             GET("/notifications", handler::notificationList)
             GET("/profile", handler::userProfile)
+            GET("/blacklist/types",handler::loadBlacklistTypes)
+            GET("/officers/{cdUuid}", handler::listInspectionOfficers)
             GET("/add/plant-details/save", handler::userProfile)
         }
     }

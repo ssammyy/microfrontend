@@ -4,26 +4,40 @@ import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.CdDocumentModificationHistoryDao
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.store.model.di.CdDocumentModificationHistory
-import org.kebs.app.kotlin.apollo.store.repo.di.ICdDocumentModificationHistoryRepository;
+import org.kebs.app.kotlin.apollo.store.repo.di.ICdDocumentModificationHistoryRepository
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Service
+import java.sql.Date
+import java.sql.Timestamp
+import java.time.LocalDateTime
 
 @Service
 class ConsignmentDocumentAuditService(
         private val cdHistory: ICdDocumentModificationHistoryRepository,
-        private val daoServices: DestinationInspectionDaoServices,
+        private val commonDaoServices: CommonDaoServices
 ) {
     fun addHistoryRecord(cdId: Long?, comment: String?, action: String, narration: String) {
-        val history = CdDocumentModificationHistory()
-        SecurityContextHolder.getContext().authentication.principal.let {
-            history.createdBy = it.toString()
-            history.actionCode = action
-            history.cdId = cdId
-            history.comment = comment
-            history.description = narration
-            this.cdHistory.save(history)
+        try {
+            val history = CdDocumentModificationHistory()
+            commonDaoServices.getLoggedInUser()?.let {
+                history.name="${it.firstName} ${it.lastName}"
+                history.createdBy = it.toString()
+                history.modifiedBy = it.toString()
+                history.createdOn = Timestamp.valueOf(LocalDateTime.now())
+                history.modifiedOn = Timestamp.valueOf(LocalDateTime.now())
+                history.actionCode = action
+                history.cdId = cdId
+                history.status = 1
+                history.comment = comment
+                history.description = narration
+                // SAVE RECORD
+                KotlinLogging.logger { }.info { history }
+                this.cdHistory.save(history)
+            }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error { ex }
         }
     }
 

@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import mu.KotlinLogging
+import org.flowable.idm.engine.impl.persistence.entity.UserEntity
 import org.json.JSONException
 import org.json.JSONObject
 import org.json.XML
@@ -36,6 +37,8 @@ import java.sql.Timestamp
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
+import kotlin.collections.HashMap
 
 
 @Service
@@ -2145,7 +2148,7 @@ class DestinationInspectionDaoServices(
         return cdType?.let {
             iConsignmentDocumentDetailsRepo.findByPortOfArrivalAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
                     sectionsEntity.id,
-                    it.id,
+                    it,
                     page
             )
         } ?: run {
@@ -2185,7 +2188,7 @@ class DestinationInspectionDaoServices(
     fun findAllCdWithNoPortOfEntry(cdType: ConsignmentDocumentTypesEntity?, page: PageRequest): Page<ConsignmentDocumentDetailsEntity> {
         return cdType?.let {
             iConsignmentDocumentDetailsRepo.findByPortOfArrivalIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
-                    cdType.id,
+                    cdType,
                     page
             )
         } ?: run {
@@ -2217,7 +2220,7 @@ class DestinationInspectionDaoServices(
         return cdType?.let {
             iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
                     usersEntity,
-                    it.id,
+                    it,
                     page
             )
         } ?: run {
@@ -2236,7 +2239,7 @@ class DestinationInspectionDaoServices(
         return cdType?.let {
             iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
                     usersEntity,
-                    it.id,
+                    it,
                     page
             )
         } ?: run {
@@ -2266,7 +2269,7 @@ class DestinationInspectionDaoServices(
         return cdType?.let {
             iConsignmentDocumentDetailsRepo.findByFreightStationAndAssignedInspectionOfficerIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
                     cfsEntity.id,
-                    it.id,
+                    it,
                     page
             )
         } ?: run {
@@ -2322,6 +2325,12 @@ class DestinationInspectionDaoServices(
 //                ?: throw Exception("The Port of arrival for freight Station with name = ${freightStation.subSection}, does not Exist")
 //    }
 
+    fun findUserById(officerId: Long?): Optional<UsersEntity> {
+        if(officerId!=null) {
+            return iUserRepository.findById(officerId)
+        }
+        return Optional.empty()
+    }
 
     fun findOfficersList(consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity): List<UserProfilesEntity> {
         consignmentDocumentDetailsEntity.freightStation

@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.routes
 
 import org.kebs.app.kotlin.apollo.api.handlers.ApiDestinationInspectionHandler
+import org.kebs.app.kotlin.apollo.api.handlers.DestinationInspectionActionsHandler
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.bind.annotation.CrossOrigin
@@ -11,6 +12,27 @@ class DestinationInspectionRoutes {
 
     @Bean
     @CrossOrigin
+    fun destinationInspectionActionsRoute(handler: DestinationInspectionActionsHandler) = router {
+        "/api/v1/di".nest {
+            POST("/consignment/document/approve-reject/{cdUuid}", handler::approveRejectConsignment)
+            POST("/consignment/document/assign-port/{cdUuid}", handler::assignPort)
+            POST("/consignment/document/assign-io/{cdUuid}", handler::assignInspectionOfficer)
+            POST("/consignment/document/reassign-io/{cdUuid}", handler::assignInspectionOfficer)
+            POST("/consignment/document/manual-pick/{cdUuid}", handler::pickConsignmentInspectionOfficer)
+            POST("/consignment/document/send-coi/{cdUuid}", handler::sendCertificateOfInspection)
+            POST("/consignment/document/blacklist/{cdUuid}", handler::blacklistConsignment)
+            POST("/consignment/document/approve-blacklist/{cdUuid}", handler::approveBlacklistConsignment)
+            POST("/consignment/document/generate-coc/{cdUuid}", handler::generateLocalCoc)
+            POST("/consignment/document/generate-cor/{cdUuid}", handler::generateLocalCor)
+            POST("/consignment/document/compliant-vehicle/{inspectionChecklistId}", handler::updateMotorVehicleComplianceStatus)
+            POST("/consignment/document/target/{cdUuid}", handler::targetConsignment)
+            POST("/consignment/document/target-approval/{cdUuid}", handler::approveTargetConsignment)
+            POST("/consignment/document/target-supervisor/{cdUuid}", handler::supervisorTargetConsignment)
+        }
+    }
+
+    @Bean
+    @CrossOrigin
     fun destinationInspectionRoute2(handler: ApiDestinationInspectionHandler) = router {
         "/api/v1/di".nest {
             // Configurations
@@ -18,6 +40,9 @@ class DestinationInspectionRoutes {
             GET("/consignment/document/types", handler::listConsignmentDocumentTypes)
             GET("/consignment/document/configuration", handler::consignmentDocumentConfiguration)
             GET("/cd/inspection/configuration", handler::loadCommonUIComponents)
+            GET("/ports", handler::loadPortOfArrival)
+            GET("/port/freight/stations/{portId}", handler::listPortFreightStations)
+            GET("/blacklist/users", handler::listBlackListedUser)
             // OTHERS
             GET("/consignment/document/details/{coUuid}", handler::consignmentDocumentDetails)
             GET("/consignment/document/attachments/{coUuid}", handler::consignmentDocumentAttachments)

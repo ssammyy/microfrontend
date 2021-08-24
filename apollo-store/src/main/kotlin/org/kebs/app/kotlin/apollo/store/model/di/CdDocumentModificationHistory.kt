@@ -17,15 +17,19 @@ class CdDocumentModificationHistory : Serializable {
     @Basic
     var cdId: Long? = null
 
-    @Column(name = "COMMENT")
+    @Column(name = "USER_COMMENT")
     @Basic
     var comment: String? = null
+
+    @Column(name = "COMMENTER")
+    @Basic
+    var name: String? = null
 
     @Column(name = "ACTION_CODE")
     @Basic
     var actionCode: String? = null
 
-    @Column(name = "DESCRIPTION")
+    @Column(name = "USER_DESCRIPTION")
     @Basic
     var description: String? = null
 
@@ -52,6 +56,7 @@ class CdDocumentModificationHistory : Serializable {
     @Column(name = "VAR_FIELD_5")
     @Basic
     var varField5: String? = null
+
     @Column(name = "CREATED_BY")
     @Basic
     var createdBy: String? = null

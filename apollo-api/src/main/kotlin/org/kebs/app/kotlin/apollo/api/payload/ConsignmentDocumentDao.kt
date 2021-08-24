@@ -121,6 +121,7 @@ class ConsignmentDocumentDao {
 class CdDocumentModificationHistoryDao : Serializable {
     var id: Long = 0
     var cdId: Long? = null
+    var name:String?=null
     var comment: String? = null
     var actionCode: String? = null
     var description: String? = null
@@ -136,6 +137,7 @@ class CdDocumentModificationHistoryDao : Serializable {
             history.description = cdHistory.description
             history.cdId = cdHistory.cdId
             history.id = cdHistory.id
+            history.name=cdHistory.name
             history.createdBy = cdHistory.createdBy
             history.createdOn = cdHistory.createdOn
             return history

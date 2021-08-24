@@ -2,33 +2,38 @@ package org.kebs.app.kotlin.apollo.api.handlers
 
 import mu.KotlinLogging
 import okhttp3.internal.toLongOrDefault
-import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
-import org.kebs.app.kotlin.apollo.api.payload.ConsignmentDocumentDao
-import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
-import org.kebs.app.kotlin.apollo.api.payload.extractPage
+import org.kebs.app.kotlin.apollo.api.payload.*
+import org.kebs.app.kotlin.apollo.api.payload.request.ConsignmentUpdateRequest
+import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
 import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentAuditService
 import org.kebs.app.kotlin.apollo.api.service.DestinationInspectionService
+import org.kebs.app.kotlin.apollo.common.dto.FreightStationsDto
+import org.kebs.app.kotlin.apollo.common.dto.SectionsDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
+import org.kebs.app.kotlin.apollo.store.model.di.CdStatusTypesEntity
+import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentTypesEntity
 import org.kebs.app.kotlin.apollo.store.model.di.DiUploadsEntity
+import org.springframework.core.io.ByteArrayResource
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartHttpServletRequest
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
-import org.springframework.web.servlet.function.bodyWithType
 import org.springframework.web.servlet.function.paramOrNull
-import javax.servlet.http.HttpServletResponse
+import java.sql.Date
+import java.time.LocalDateTime
 
-@Component
+@Service
 class ApiDestinationInspectionHandler(
         private val destinationInspectionService: DestinationInspectionService,
         private val daoServices: DestinationInspectionDaoServices,
@@ -36,6 +41,68 @@ class ApiDestinationInspectionHandler(
         private val consignmentAuditService: ConsignmentDocumentAuditService,
         private val applicationMapProperties: ApplicationMapProperties
 ) {
+
+
+    fun listBlackListedUser(req: ServerRequest): ServerResponse {
+        val response = ApiResponseModel()
+        try {
+            // Load active blacklisted users
+            commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+                    .let { map ->
+                        response.data = daoServices.findAllBlackListUsers(map.activeStatus)
+                    }
+            response.message = "Success"
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error { ex }
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.message = "Failed to list blacklisted users"
+        }
+        return ServerResponse.ok().body(response)
+    }
+
+    fun listPortFreightStations(req: ServerRequest): ServerResponse {
+        val response = ApiResponseModel()
+        try {
+            // Load active ports
+            val portId = req.pathVariable("portId").toLongOrDefault(0L)
+            val section = commonDaoServices.findSectionWIthId(portId)
+
+            commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+                    .let { map ->
+                        response.data = SectionL2EntityDao.fromList(commonDaoServices.findAllFreightStationOnPortOfArrival(section, map.activeStatus))
+                    }
+            response.message = "Success"
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error { ex }
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.message = "Failed to list ports"
+        }
+        return ServerResponse.ok().body(response)
+    }
+
+    fun loadPortOfArrival(req: ServerRequest): ServerResponse {
+        val response = ApiResponseModel()
+        try {
+            // Load active ports
+            commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+                    .let { map ->
+                        val ports = commonDaoServices.findAllSectionsListWithDivision(
+                                commonDaoServices.findDivisionWIthId(commonDaoServices.pointOfEntries.toLong()),
+                                map.activeStatus
+                        )
+                        response.data = SectionEntityDao.fromList(ports)
+                    }
+            response.message = "Success"
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error { ex }
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.message = "Failed to list ports"
+        }
+        return ServerResponse.ok().body(response)
+    }
 
     fun loadCommonUIComponents(req: ServerRequest): ServerResponse {
         val s: ServiceMapsEntity = this.commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
@@ -108,15 +175,15 @@ class ApiDestinationInspectionHandler(
     fun downloadMinistryCheckList(req: ServerRequest): ServerResponse {
         val itemId = req.pathVariable("itemId")
                 .toLongOrDefault(0L)
-        daoServices.findInspectionMotorVehicleById(itemId)
-                ?.let { cdInspectionMotorVehicleItemChecklistEntity ->
-                    cdInspectionMotorVehicleItemChecklistEntity.ministryReportFile?.let {
-                        return ServerResponse.ok()
-                                .header("Content-Disposition", "inline; filename=${cdInspectionMotorVehicleItemChecklistEntity.chassisNo}_inspection_report;")
-                                .contentType(MediaType.APPLICATION_PDF)
-                                .body(it)
-                    } ?: throw ExpectedDataNotFound("Inspection Report file not found")
-                }
+        daoServices.findInspectionMotorVehicleById(itemId)?.let { cdInspectionMotorVehicleItemChecklistEntity ->
+            cdInspectionMotorVehicleItemChecklistEntity.ministryReportFile?.let {
+                val resource = ByteArrayResource(it)
+                return ServerResponse.ok()
+                        .header("Content-Disposition", "inline; filename=${cdInspectionMotorVehicleItemChecklistEntity.chassisNo}_inspection_report;")
+                        .contentType(MediaType.APPLICATION_PDF)
+                        .body(resource)
+            } ?: throw ExpectedDataNotFound("Inspection Report file not found")
+        }
                 ?: throw ExpectedDataNotFound("Motor Vehicle Inspection checklist with ID: $itemId not found")
     }
 

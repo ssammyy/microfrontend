@@ -1,0 +1,27 @@
+<h2 mat-dialog-title>Generate CoC</h2>
+<mat-dialog-content>
+    <div class="row no_margin" [formGroup]="form">
+        <div class="col-sm-12 col-md-8">
+            <label class="waiver-form-label">Select Type</label>
+            <select id="localCoi" name="localCoi" class="waiver-form-input-master"
+                formControlName="localCoi">
+                <option value="" disabled selected>Select Type</option>
+                <option value="1">Local COC</option>
+                <option value="0">Local COI</option>
+            </select>
+            <label for="localCocOrCorRemarks" class="waiver-form-label">Please write, in detail, your feedback for this
+                consignment:</label>
+            <textarea id="localCocOrCorRemarks" class="waiver-form-input-master" placeholder=""
+                formControlName="localCocOrCorRemarks"></textarea>
+            <mat-error *ngIf="message">{{message}}</mat-error>
+        </div>
+
+
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <div class="row no_margin master-list-new-btn">
+        <button [disabled]="form.invalid" class="next-btn btn-gen new-btn" (click)="saveRecord()">SAVE
+        </button>
+    </div>
+</mat-dialog-actions>

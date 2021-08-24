@@ -46,6 +46,11 @@ export class MotorVehicleInspectionSingleViewComponent implements OnInit {
             )
     }
 
+    downloadReport() {
+        this.diService.downloadMinistryCheckList()
+
+    }
+
     loadData(itemId: any) {
         this.diService.getMinistryInspections(itemId)
             .subscribe(

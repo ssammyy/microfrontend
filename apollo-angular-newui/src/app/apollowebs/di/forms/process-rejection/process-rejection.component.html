@@ -1,0 +1,37 @@
+<h2 mat-dialog-title>Process Rejection</h2>
+<mat-dialog-content>
+    <div class="row no_margin" [formGroup]="form">
+        <div class="col-sm-12 col-md-8">
+            <label class="waiver-form-label">Rejection Status</label>
+            <select id="processRejectionStatus" name="processRejectionStatus" class="waiver-form-input-master"
+                formControlName="processRejectionStatus">
+                <option value="" disabled selected>Select Status</option>
+                <option value="active">Active</option>
+                <option value="inactive">InActive</option>
+            </select>
+
+
+            <label for="processRejectionDate"  class="waiver-form-label">Rejection Date </label>
+            <input type="date" class="form-control" formControlName="processRejectionDate" name="processRejectionDate"
+                class="form-control" id="processRejectionDate" placeholder="Rejection Date">
+
+
+            <label for="processRejectionRemarks" class="waiver-form-label">Please write, in detail, your feedback for this
+                consignment:</label>
+            <textarea name="processRejectionRemarks" class="waiver-form-input-master" placeholder=""
+                formControlName="processRejectionRemarks"></textarea>
+
+
+
+        </div>
+
+
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <div class="row no_margin master-list-new-btn">
+        <!--        [disabled]="!productDetails.valid"-->
+        <button class="next-btn btn-gen new-btn" (click)="saveRecord()">SAVE
+        </button>
+    </div>
+</mat-dialog-actions>

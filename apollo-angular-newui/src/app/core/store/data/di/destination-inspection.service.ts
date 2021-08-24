@@ -10,7 +10,35 @@ export class DestinationInspectionService {
 
     constructor(private client: HttpClient) {
     }
+    listOfficersForConsignment(consignmentUuid: any): Observable<any>{
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/user/officers/"+consignmentUuid))
+    }
+    approveReject(data: any, consignmentUuid: any):  Observable<any> {
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/approve-reject/"+consignmentUuid),data)
+    }
+    getAllPorts(): Observable<any>{
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/ports"))
+    }
 
+    userBlacklistTypes(): Observable<any>{
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/user/blacklist/types"))
+    }
+    getAllPortFreightStations(portId:any): Observable<any>{
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/port/freight/stations/"+portId))
+    }
+    assignPort(data: any, consignmentUuid: any): Observable<any>{
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/assign-port/"+consignmentUuid),data)
+    }
+    sendCertificateOfInspection(data: any, consignmentUuid: any): Observable<any>{
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/send-coi/"+consignmentUuid),data)
+    }
+
+    sendConsignmentDocumentAction(data: any, consignmentUuid: any,actionName: string): Observable<any>{
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/"+actionName+"/"+consignmentUuid),data)
+    }
+    assignInspectionOfficer(data: any, consignmentUuid: any):  Observable<any> {
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/assign-io/"+consignmentUuid),data)
+    }
     getInspectionUiConfigurations(): Observable<any> {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/cd/inspection/configuration"))
     }
@@ -45,6 +73,9 @@ export class DestinationInspectionService {
     }
 
     getMinistryInspections(itemId: number): Observable<any> {
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/ministry/inspection/details/" + itemId))
+    }
+    downloadMinistryCheckList(itemId: number): Observable<any>{
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/ministry/inspection/details/" + itemId))
     }
 
@@ -122,6 +153,10 @@ export class DestinationInspectionService {
 
     applicationTypes(): Observable<any> {
         return this.client.get("/api/v1/di/application/types")
+    }
+
+    getAuditComments(id: any): Observable<any>{
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/audit/"+id))
     }
 
     downloadAttachment(id: any) : Observable<any>{

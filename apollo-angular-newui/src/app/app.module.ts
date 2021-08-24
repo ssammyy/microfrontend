@@ -156,6 +156,21 @@ import {ViewDeclarationDocumentsItemDetailsListComponent} from "./apollowebs/di/
 import {MvInspectionUploadFileReportComponent} from "./apollowebs/di/motor-vehicle-inspection-single-view/mv-inspection-upload-file-report/mv-inspection-upload-file-report.component";
 import { AttachmentListComponent } from './apollowebs/di/view-single-consignment-document/attachment-list/attachment-list.component';
 import { AttachmentDialogComponent } from './apollowebs/di/view-single-consignment-document/attachment-dialog/attachment-dialog.component';
+import {AssignOfficerComponent} from "./apollowebs/di/forms/assign-officer/assign-officer.component";
+import {AssignPortComponent} from "./apollowebs/di/forms/assign-port/assign-port.component";
+import {SendCoiComponent} from "./apollowebs/di/forms/send-coi/send-coi.component";
+import {GenerateLocalCocComponent} from "./apollowebs/di/forms/generate-local-coc/generate-local-coc.component";
+import {GenerateLocalCorComponent} from "./apollowebs/di/forms/generate-local-cor/generate-local-cor.component";
+import {CompliantComponent} from "./apollowebs/di/forms/compliant/compliant.component";
+import {ReAssignOfficerComponent} from "./apollowebs/di/forms/re-assign-officer/re-assign-officer.component";
+import {BlacklistComponent} from "./apollowebs/di/forms/blacklist/blacklist.component";
+import {BlacklistApproveComponent} from "./apollowebs/di/forms/blacklist-approve/blacklist-approve.component";
+import {TargetItemComponent} from "./apollowebs/di/forms/target-item/target-item.component";
+import {TargetSupervisorComponent} from "./apollowebs/di/forms/target-supervisor/target-supervisor.component";
+import {ManualAssignOfficerComponent} from "./apollowebs/di/forms/manual-assign-officer/manual-assign-officer.component";
+import {TargetApproveItemComponent} from "./apollowebs/di/forms/target-approve-item/target-approve-item.component";
+import {SendDemandNoteTokwsComponent} from "./apollowebs/di/forms/send-demand-note-tokws/send-demand-note-tokws.component";
+import { ViewRemarksHistoryComponent } from './apollowebs/di/view-single-consignment-document/view-remarks-history/view-remarks-history.component';
 
 
 @NgModule({
@@ -300,9 +315,23 @@ import { AttachmentDialogComponent } from './apollowebs/di/view-single-consignme
         ViewDeclarationDocumentsItemDetailsListComponent,
         MvInspectionUploadFileReportComponent,
         AttachmentListComponent,
-        AttachmentDialogComponent
+        AttachmentDialogComponent,
+        AssignOfficerComponent,
+        AssignPortComponent,
+        SendCoiComponent,
+        GenerateLocalCocComponent,
+        GenerateLocalCorComponent,
+        CompliantComponent,
+        ReAssignOfficerComponent,
+        BlacklistComponent,
+        BlacklistApproveComponent,
+        TargetItemComponent,
+        TargetSupervisorComponent,
+        TargetApproveItemComponent,
+        ManualAssignOfficerComponent,
+        SendDemandNoteTokwsComponent,
+        ViewRemarksHistoryComponent
     ]
-
 })
 export class MaterialModule {}
 

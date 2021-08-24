@@ -1,25 +1,22 @@
 package org.kebs.app.kotlin.apollo.api.handlers
 
-import mu.KotlinLogging
-import org.kebs.app.kotlin.apollo.adaptor.kafka.producer.service.SendToKafkaQueue
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
+import org.kebs.app.kotlin.apollo.api.payload.BlacklistTypeDto
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
-import org.kebs.app.kotlin.apollo.common.dto.UserRequestEntityDto
-import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
+import org.kebs.app.kotlin.apollo.api.payload.UserProfileDao
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.MasterDataDaoService
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
-import org.kebs.app.kotlin.apollo.store.model.NotificationsBufferEntity
-import org.kebs.app.kotlin.apollo.store.model.qa.ManufacturePlantDetailsEntity
-import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileCommoditiesManufactureEntity
-import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileContractsUndertakenEntity
-import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
-import org.kebs.app.kotlin.apollo.store.repo.*
+import org.kebs.app.kotlin.apollo.store.repo.IBusinessLinesRepository
+import org.kebs.app.kotlin.apollo.store.repo.IBusinessNatureRepository
+import org.kebs.app.kotlin.apollo.store.repo.ICountiesRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.function.ServerResponse.ok
-import org.springframework.web.servlet.function.paramOrNull
 
 
 @Service
@@ -29,26 +26,55 @@ class UserHandler(
         private val businessLinesRepository: IBusinessLinesRepository,
         private val commonDaoServices: CommonDaoServices,
         private val qaDaoServices: QADaoServices,
+        private val daoServices: DestinationInspectionDaoServices,
         private val applicationMapProperties: ApplicationMapProperties,
         private val businessNatureRepository: IBusinessNatureRepository
 ) {
 
     final val appId: Int = applicationMapProperties.mapUserRegistration
 
-    private val usersNotificationListPage = "auth/user-notifications"
-    private val userProfilePage = "auth/user-profile"
+    fun loadBlacklistTypes(req: ServerRequest): ServerResponse {
+        val response = ApiResponseModel()
+        try {
+            val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+            val blackLists = this.daoServices.findAllBlackListUsers(map.activeStatus)
+            response.data = BlacklistTypeDto.fromList(blackLists)
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+            response.message = "Success"
+        } catch (ex: Exception) {
+            response.message = ex.localizedMessage
+            response.responseCode = ResponseCodes.FAILED_CODE
+        }
+        return ok()
+                .body(response)
+    }
+    fun listInspectionOfficers(req: ServerRequest): ServerResponse {
+        val response = ApiResponseModel()
+        try {
+            req.pathVariable("cdUuid").let { cdUuid ->
+                val cdDetails = daoServices.findCDWithUuid(cdUuid)
+                response.data = UserProfileDao.fromList(daoServices.findOfficersList(cdDetails))
+                response.message = "Success"
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+            }
+        } catch (ex: Exception) {
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.message = "Request failed"
+        }
+        return ok().body(response)
+    }
 
     fun notificationList(req: ServerRequest): ServerResponse {
-        val response=ApiResponseModel()
+        val response = ApiResponseModel()
         commonDaoServices.loggedInUserDetails()
                 .let { userDetails ->
                     userDetails.email?.let {
-                        response.data=commonDaoServices.findAllUserNotification(it)
-                        response.message="Success"
-                        response.responseCode=ResponseCodes.SUCCESS_CODE
-                    }?:run {
-                        response.message="Email not configured"
-                        response.responseCode=ResponseCodes.NOT_FOUND
+                        response.data = commonDaoServices.findAllUserNotification(it)
+                        response.message = "Success"
+                        response.responseCode = ResponseCodes.SUCCESS_CODE
+                    } ?: run {
+                        response.message = "Email not configured"
+                        response.responseCode = ResponseCodes.NOT_FOUND
                     }
                 }
         return ok().body(response)

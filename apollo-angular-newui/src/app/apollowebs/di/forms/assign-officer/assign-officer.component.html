@@ -1,0 +1,31 @@
+<h2 mat-dialog-title>Assign Officer</h2>
+<mat-dialog-content>
+    <div class="row no_margin" [formGroup]="form">
+        <div class="col-sm-12 col-md-8">
+            <label for="assignedStatus" class="waiver-form-label">Select Applicable Status</label>
+            <select id="assignedStatus" name="assignedStatus" class="waiver-form-input-master"
+                    formControlName="assignedStatus">
+                <option value="" disabled selected>Select Status</option>
+                <option value="1">Active</option>
+                <option value="0">InActive</option>
+            </select>
+
+            <label for="officer" class="waiver-form-label">Select Officer</label>
+            <select id="officer" class="waiver-form-input-master" formControlName="officerId">
+                <option value="" disabled selected>Select Officer</option>
+                <option *ngFor="let officer of officers" [value]="officer.profileId">{{officer.firstName+" "+(officer.lastName?officer.lastName:'')}} </option>
+            </select>
+
+            <label for="remarks" class="waiver-form-label">Please write, in detail, your feedback for this
+                consignment:</label>
+            <textarea id="remarks" class="waiver-form-input-master"
+                      formControlName="remarks"></textarea>
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <div class="row no_margin master-list-new-btn">
+        <button [disabled]="form.invalid" class="next-btn btn-gen new-btn" (click)="assignOfficer()">SAVE
+        </button>
+    </div>
+</mat-dialog-actions>
