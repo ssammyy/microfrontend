@@ -142,6 +142,7 @@ export const routes: Routes = [
     {
         path: 'login',
         component: RegistrationComponent,
+
         children: [
             {
                 path: '',

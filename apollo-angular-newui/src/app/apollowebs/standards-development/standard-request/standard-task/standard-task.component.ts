@@ -41,7 +41,9 @@ export class StandardTaskComponent implements OnInit {
     this.standardDevelopmentService.getHOFTasks().subscribe(
         (response: StandardTasks[]) => {
           this.tasks = response;
-          console.log(response)
+            this.dtTrigger.next();
+
+            console.log(response)
           this.hideModel()
         },
         (error: HttpErrorResponse) => {
