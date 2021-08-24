@@ -216,6 +216,14 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Remarks Found WIth the following Permit ID = ${permitID}")
     }
 
+    fun findRemarksDetailsByID(remarksID: Long): QaRemarksEntity {
+        remarksEntityRepo.findByIdOrNull(remarksID)
+            ?.let { it ->
+                return it
+            }
+            ?: throw ExpectedDataNotFound("No Remarks Found With the following Permit ID = ${remarksID}")
+    }
+
     fun findBatchInvoicesWithID(batchID: Long): QaBatchInvoiceEntity {
         invoiceQaBatchRepo.findByIdOrNull(batchID)
             ?.let { it ->
@@ -3055,8 +3063,18 @@ class QADaoServices(
                         testReportId = null
                         userTaskId = applicationMapProperties.mapUserTaskNameQAO
                         permitStatus = applicationMapProperties.mapQaStatusPendingReInspection
+
                         KotlinLogging.logger { }
                             .info(":::::: SELECTED RESUBMIT IS resubmitLabNonComplianceResults :::::::")
+                        permitAddRemarksDetails(
+                            updatePermit.id ?: throw Exception("ID NOT FOUND"),
+                            permitResubmit.resubmitRemarks,
+                            null,
+                            "MANUFACTURE",
+                            "RESUBMIT APPLICATION FOR RE-SAMPLING",
+                            s,
+                            user
+                        )
                     }
                     "resubmitHofQamCompletenessResults" -> {
                         resubmitApplicationStatus = 10
@@ -3074,6 +3092,15 @@ class QADaoServices(
                         }
                         KotlinLogging.logger { }
                             .info(":::::: SELECTED RESUBMIT IS resubmitHofQamCompletenessResults :::::::")
+                        permitAddRemarksDetails(
+                            updatePermit.id ?: throw Exception("ID NOT FOUND"),
+                            permitResubmit.resubmitRemarks,
+                            null,
+                            "MANUFACTURE",
+                            "RESUBMIT APPLICATION FOR RE-REVIEW COMPLETNESS",
+                            s,
+                            user
+                        )
                     }
                     else -> {
                         throw Exception("NO FUNCTION FOR RESUBMIT EXISTING (${permitResubmit.resubmittedDetails})")

@@ -893,7 +893,7 @@ class QualityAssuranceController(
             permitFromInterface.hofQamCompletenessRemarks,
             permitFromInterface.hofQamCompletenessStatus,
             "HOF/QAM",
-            "HOF/QAM REVIEW COMPLETNESS",
+            "REVIEW COMPLETENESS",
             map,
             loggedInUser
         )
