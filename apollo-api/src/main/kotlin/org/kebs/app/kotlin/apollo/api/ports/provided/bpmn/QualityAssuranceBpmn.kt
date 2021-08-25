@@ -1453,6 +1453,8 @@ class QualityAssuranceBpmn(
                 variables["reportCompliant"] = 0
                 variables["pacApproval"] = 0
                 variables["pcmApproval"] = 0
+                variables["manufacturerCorrectionRequired"] = 0
+                variables["manufacturerAssessorCorrectionRequired"] = 0
 
                 bpmnCommonFunctions.startBpmnProcess(qaDmAssessmentProcessDefinitionKey, qaDmAssessmentBusinessKey, variables, assigneeId)?.let {
                     permit.dmAssessmentProcessInstanceId = it["processInstanceId"]
@@ -1535,13 +1537,6 @@ class QualityAssuranceBpmn(
         fetchTaskByPermitId(permitId, qaDmAssessmentProcessDefinitionKey)?.let { taskDetails ->
             currAssigneeId = taskDetails[0].task.assignee.toLong()
         }
-        /*
-        if (!assessmentReportApproved){
-            userRepo.findByIdOrNull(assessorAssigneeId)?.let { usersEntity ->
-                updateTaskVariableByPermitIdAndKey(permitId,"qaDmasApproveAssessmentReport",qaSfPermitAwardProcessDefinitionKey,"email",usersEntity.email.toString())
-            }
-        }
-         */
         updateTaskVariableByObjectIdAndKey(permitId, "qaDmasApproveAssessmentReport", qaDmAssessmentProcessDefinitionKey, "assessmentReportApproved", bpmnCommonFunctions.booleanToInt(assessmentReportApproved).toString())
 
         qaCompleteTask(permitId, "qaDmasApproveAssessmentReport", qaDmAssessmentProcessDefinitionKey)?.let {
@@ -1567,16 +1562,30 @@ class QualityAssuranceBpmn(
         return false
     }
 
-    fun qaDmasCorrectiveActionComplete(permitId: Long, assessorAssigneeId: Long): Boolean {
-        KotlinLogging.logger { }.info("PermitId : $permitId : QA DM Corrective action complete")
+    fun qaDmasCorrectiveActionComplete(permitId: Long, assigneeId: Long, manufacturerId:Long, manufacturerCorrectionRequired:Boolean): Boolean {
+        KotlinLogging.logger { }.info("PermitId : $permitId :  QA DM Assessment perform corrective action complete")
+        updateTaskVariableByObjectIdAndKey(permitId, "qaDmasCorrectiveAction", qaDmAssessmentProcessDefinitionKey, "manufacturerCorrectionRequired", bpmnCommonFunctions.booleanToInt(manufacturerCorrectionRequired).toString())
         qaCompleteTask(permitId, "qaDmasCorrectiveAction", qaDmAssessmentProcessDefinitionKey)?.let {
-            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmasScheduleFactoryVisit", assessorAssigneeId)
+            return if (manufacturerCorrectionRequired) {
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmasManufacturerCorrectiveAction", manufacturerId)
+            } else {
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmasScheduleFactoryVisit", assigneeId)
+            }
         }
         return false
     }
 
-    fun qaDmasPacApprovalComplete(permitId: Long, assessorAssigneeId: Long, qaoAssigneeId: Long, pcmAssigneeId: Long,pacApproval: Boolean): Boolean {
+    fun qaDmasManufacturerCorrectionComplete(permitId: Long, assigneeId: Long): Boolean {
+        KotlinLogging.logger { }.info("PermitId : $permitId : QA DM Manufacturer Corrective Action complete")
+        qaCompleteTask(permitId, "qaDmasManufacturerCorrectiveAction", qaDmAssessmentProcessDefinitionKey)?.let {
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmasCorrectiveAction", assigneeId)
+        }
+        return false
+    }
+
+    fun qaDmasPacApprovalComplete(permitId: Long, assessorAssigneeId: Long, pcmAssigneeId: Long,pacApproval: Boolean): Boolean {
         KotlinLogging.logger { }.info("PermitId : $permitId :  QA DM Assessment PAC Approval complete")
+        /*
         if (!pacApproval) {
             userRepo.findByIdOrNull(assessorAssigneeId)?.let { usersEntity ->
                 updateTaskVariableByObjectIdAndKey(permitId, "qaDmasPacApproval", qaDmAssessmentProcessDefinitionKey, "assessorEmail", usersEntity.email.toString())
@@ -1585,20 +1594,45 @@ class QualityAssuranceBpmn(
                 updateTaskVariableByObjectIdAndKey(permitId, "qaDmasPacApproval", qaDmAssessmentProcessDefinitionKey, "qaoEmail", usersEntity.email.toString())
             }
         }
+         */
+
         updateTaskVariableByObjectIdAndKey(permitId, "qaDmasPacApproval", qaDmAssessmentProcessDefinitionKey, "pacApproval", bpmnCommonFunctions.booleanToInt(pacApproval).toString())
 
         qaCompleteTask(permitId, "qaDmasPacApproval", qaDmAssessmentProcessDefinitionKey)?.let {
             return if (pacApproval) {
                 qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmasPcmApproval", pcmAssigneeId)
             } else {
-                return true
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmasAssessorCorrection", assessorAssigneeId)
             }
         }
         return false
     }
 
-    fun qaDmasPcmApprovalComplete(permitId: Long, assessorAssigneeId: Long, qaoAssigneeId: Long, pcmApproval: Boolean): Boolean {
+    fun qaDmasAssessorCorrectionComplete(permitId: Long, pacAssigneeId: Long, manufacturerId:Long, manufacturerAssessorCorrectionRequired:Boolean): Boolean {
+        KotlinLogging.logger { }.info("PermitId : $permitId :  QA DM Assessor Correction complete")
+        updateTaskVariableByObjectIdAndKey(permitId, "qaDmasAssessorCorrection", qaDmAssessmentProcessDefinitionKey, "manufacturerAssessorCorrectionRequired", bpmnCommonFunctions.booleanToInt(manufacturerAssessorCorrectionRequired).toString())
+        qaCompleteTask(permitId, "qaDmasAssessorCorrection", qaDmAssessmentProcessDefinitionKey)?.let {
+            return if (manufacturerAssessorCorrectionRequired) {
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmasManufacturerAssessorCorrection", manufacturerId)
+            } else {
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmasPacApproval", pacAssigneeId)
+            }
+        }
+        return false
+    }
+
+    fun qaDmasAssessorManufacturerCorrectionComplete(permitId: Long, assessorAssigneeId: Long): Boolean {
+        KotlinLogging.logger { }.info("PermitId : $permitId : QA DM Manufacturer Assessor Correction complete")
+        qaCompleteTask(permitId, "qaDmasManufacturerAssessorCorrection", qaDmAssessmentProcessDefinitionKey)?.let {
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmasCorrectiveAction", assessorAssigneeId)
+        }
+        return false
+    }
+
+
+    fun qaDmasPcmApprovalComplete(permitId: Long, assessorAssigneeId: Long, pcmApproval: Boolean): Boolean {
         KotlinLogging.logger { }.info("PermitId : $permitId :  QA DM Assessment PAC Approval complete")
+        /*
         if (!pcmApproval) {
             userRepo.findByIdOrNull(assessorAssigneeId)?.let { usersEntity ->
                 updateTaskVariableByObjectIdAndKey(permitId, "qaDmasPcmApproval", qaDmAssessmentProcessDefinitionKey, "assessorEmail", usersEntity.email.toString())
@@ -1607,13 +1641,14 @@ class QualityAssuranceBpmn(
                 updateTaskVariableByObjectIdAndKey(permitId, "qaDmasPcmApproval", qaDmAssessmentProcessDefinitionKey, "qaoEmail", usersEntity.email.toString())
             }
         }
+         */
         updateTaskVariableByObjectIdAndKey(permitId, "qaDmasPcmApproval", qaDmAssessmentProcessDefinitionKey, "pcmApproval", bpmnCommonFunctions.booleanToInt(pcmApproval).toString())
 
         qaCompleteTask(permitId, "qaDmasPcmApproval", qaDmAssessmentProcessDefinitionKey)?.let {
             return if (pcmApproval) {
                 qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmasSurveillanceWorkplan", 0)
             } else {
-                return true
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmasAssessorCorrection", assessorAssigneeId)
             }
         }
         return false
