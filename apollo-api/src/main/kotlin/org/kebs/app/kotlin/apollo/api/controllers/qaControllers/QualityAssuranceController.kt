@@ -730,6 +730,8 @@ class QualityAssuranceController(
 
             }
             map.inactiveStatus -> {
+
+                permitDetailsDB.resubmitApplicationStatus = 1
                 permitDetailsDB.userTaskId = applicationMapProperties.mapUserTaskNameQAO
                 permitDetailsDB = qaDaoServices.permitInsertStatus(
                     permitDetailsDB,
@@ -761,26 +763,57 @@ class QualityAssuranceController(
         loggedInUser: UsersEntity
     ): Pair<PermitApplicationsEntity, String> {
         var permitDetailsDB = permitDetails
+        var userAssigned: UsersEntity
         when (permitDetailsDB.permitType) {
             applicationMapProperties.mapQAPermitTypeIDDmark -> {
                 permitDetailsDB.userTaskId = applicationMapProperties.mapUserTaskNameHOD
+                userAssigned = commonDaoServices.findUserByID(
+                    permitDetailsDB.hodId ?: throw ExpectedDataNotFound("MISSING HOD ID")
+                )
             }
             else -> {
                 permitDetailsDB.userTaskId = applicationMapProperties.mapUserTaskNameQAM
+                userAssigned = commonDaoServices.findUserByID(
+                    permitDetailsDB.qamId ?: throw ExpectedDataNotFound("MISSING QAM ID")
+                )
             }
         }
-        permitDetailsDB.recommendationApprovalStatus = null
-        permitDetailsDB = qaDaoServices.permitInsertStatus(
-            permitDetailsDB,
-            applicationMapProperties.mapQaStatusPRecommendationApproval,
-            loggedInUser
-        )
-        qaDaoServices.sendNotificationForRecommendation(permitDetails)
 
-        qaDaoServices.permitAddRemarksDetails(
-            permitDetailsDB.id ?: throw Exception("ID NOT FOUND"),
-            permitDetailsDB.recommendationRemarks, null, "QAO", "QAO RECOMMENDATION", map, loggedInUser
+
+        if (permitDetailsDB.resubmitApplicationStatus == 1) {
+            permitDetailsDB.resubmitApplicationStatus = 10
+            permitDetailsDB = qaDaoServices.permitInsertStatus(
+                permitDetailsDB,
+                applicationMapProperties.mapQaStatusPRecommendationApproval,
+                loggedInUser
+            )
+            qaDaoServices.permitAddRemarksDetails(
+                permitDetailsDB.id ?: throw Exception("ID NOT FOUND"),
+                permitDetailsDB.recommendationRemarks, null, "QAO", "QAO RE-WRITE RECOMMENDATION", map, loggedInUser
+            )
+
+        } else {
+            permitDetailsDB.recommendationApprovalStatus = null
+            permitDetailsDB = qaDaoServices.permitInsertStatus(
+                permitDetailsDB,
+                applicationMapProperties.mapQaStatusPInspectionReportApproval,
+                loggedInUser
+            )
+
+
+            sendInspectionReport(permitDetailsDB)
+            qaDaoServices.permitAddRemarksDetails(
+                permitDetailsDB.id ?: throw Exception("ID NOT FOUND"),
+                permitDetailsDB.recommendationRemarks, null, "QAO", "QAO RECOMMENDATION", map, loggedInUser
+            )
+        }
+
+        qaDaoServices.sendNotificationForRecommendation(permitDetails)
+        qaDaoServices.sendEmailWithTaskDetails(
+            userAssigned.email ?: throw ExpectedDataNotFound("Missing Email address"),
+            permitDetailsDB.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
         )
+
 
         val closeLink =
             "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permitDetailsDB.permitType}"
@@ -1264,16 +1297,18 @@ class QualityAssuranceController(
 
         val result: ServiceRequestsEntity?
 
-        result = qaDaoServices.permitAddNewInspectionReportDetailsTechnical(
+        val myresult = qaDaoServices.permitAddNewInspectionReportDetailsTechnical(
             map,
             loggedInUser,
             permitID,
             QaInspectionTechnicalEntity
         )
 
+        result = myresult.first
+
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink =
-            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details?permitID=${result.varField1}"
+            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details?inspectionReportID=${myresult.second.inspectionRecommendationId}"
         sm.message = "Inspection Report has Been Generated(DRAFT)"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -1284,6 +1319,7 @@ class QualityAssuranceController(
     fun permitAddInspectionReportRecommendationDetails(
         @ModelAttribute("QaInspectionReportRecommendationEntity") QaInspectionReportRecommendationEntity: QaInspectionReportRecommendationEntity,
         @RequestParam("permitID") permitID: Long,
+        @RequestParam("inspectionReportID") inspectionReportID: Long,
         model: Model,
     ): String? {
 
@@ -1294,12 +1330,12 @@ class QualityAssuranceController(
         var permitFound = qaDaoServices.findPermitBYID(permitID)
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitFound.id}"
+        sm.closeLink =
+            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details?inspectionReportID=${inspectionReportID}"
         sm.message = "Inspection Report has Been updated successfully"
 
-        var qaInspectionReportRecommendation = qaDaoServices.findQaInspectionReportRecommendationBYPermitRefNumber(
-            permitFound.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER FOUND")
-        )
+        var qaInspectionReportRecommendation =
+            qaDaoServices.findQaInspectionReportRecommendationBYID(inspectionReportID)
 
         qaInspectionReportRecommendation = commonDaoServices.updateDetails(
             QaInspectionReportRecommendationEntity,
@@ -1307,37 +1343,72 @@ class QualityAssuranceController(
         ) as QaInspectionReportRecommendationEntity
 
         result = qaDaoServices.inspectionRecommendationUpdate(qaInspectionReportRecommendation, map, loggedInUser)
-        var userAssigned: UsersEntity
+        val userAssigned: UsersEntity
         when {
             //Todo: Create jasper inspection report
 
             QaInspectionReportRecommendationEntity.submittedInspectionReportStatus == 1 -> {
                 permitFound.inspectionReportGenerated = 1
-                when (permitFound.permitType) {
-                    applicationMapProperties.mapQAPermitTypeIDDmark -> {
-                        permitFound.userTaskId = applicationMapProperties.mapUserTaskNameHOD
-                        userAssigned = commonDaoServices.findUserByID(
-                            permitFound.hodId ?: throw ExpectedDataNotFound("MISSING HOD ID")
+
+
+                when (permitFound.resubmitApplicationStatus) {
+                    1 -> {
+
+                        when (permitFound.permitType) {
+                            applicationMapProperties.mapQAPermitTypeIDDmark -> {
+                                permitFound.userTaskId = applicationMapProperties.mapUserTaskNameHOD
+                                userAssigned = commonDaoServices.findUserByID(
+                                    permitFound.hodId ?: throw ExpectedDataNotFound("MISSING HOD ID")
+                                )
+                            }
+                            else -> {
+                                permitFound.userTaskId = applicationMapProperties.mapUserTaskNameQAM
+                                userAssigned = commonDaoServices.findUserByID(
+                                    permitFound.qamId ?: throw ExpectedDataNotFound("MISSING QAM ID")
+                                )
+                            }
+                        }
+                        permitFound.resubmitApplicationStatus = 10
+                        permitFound = qaDaoServices.permitInsertStatus(
+                            permitFound,
+                            applicationMapProperties.mapQaStatusPInspectionReportApproval,
+                            loggedInUser
                         )
+
+                        qaDaoServices.permitAddRemarksDetails(
+                            permitFound.id ?: throw Exception("ID NOT FOUND"),
+                            QaInspectionReportRecommendationEntity.inspectorComments,
+                            null,
+                            "QAO",
+                            "RE-SUBMITTING INSPECTION REPORT",
+                            map,
+                            loggedInUser
+                        )
+
+                        qaDaoServices.sendEmailWithTaskDetails(
+                            userAssigned.email ?: throw ExpectedDataNotFound("Missing Email address"),
+                            permitFound.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
+                        )
+                        sendInspectionReport(permitFound)
+
                     }
                     else -> {
-                        permitFound.userTaskId = applicationMapProperties.mapUserTaskNameQAM
-                        userAssigned = commonDaoServices.findUserByID(
-                            permitFound.qamId ?: throw ExpectedDataNotFound("MISSING QAM ID")
+                        qaDaoServices.permitAddRemarksDetails(
+                            permitFound.id ?: throw Exception("ID NOT FOUND"),
+                            QaInspectionReportRecommendationEntity.inspectorComments,
+                            null,
+                            "QAO",
+                            "SUBMITTING INSPECTION REPORT",
+                            map,
+                            loggedInUser
                         )
                     }
                 }
-                permitFound = qaDaoServices.permitInsertStatus(
-                    permitFound,
-                    applicationMapProperties.mapQaStatusPInspectionReportApproval,
-                    loggedInUser
-                )
-                sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitFound.id}"
-                qaDaoServices.sendEmailWithTaskDetails(
-                    userAssigned.email ?: throw ExpectedDataNotFound("Missing Email address"),
-                    permitFound.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
-                )
-                sendInspectionReport(permitFound)
+
+//
+                sm.closeLink =
+                    "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details?inspectionReportID=${inspectionReportID}"
+
             }
             QaInspectionReportRecommendationEntity.supervisorFilledStatus == 1 -> {
                 permitFound.userTaskId = applicationMapProperties.mapUserTaskNameQAO
@@ -1346,15 +1417,14 @@ class QualityAssuranceController(
                         permitFound.factoryInspectionReportApprovedRejectedStatus = map.activeStatus
                         permitFound = qaDaoServices.permitInsertStatus(
                             permitFound,
-                            applicationMapProperties.mapQaStatusPGenSSC,
+                            applicationMapProperties.mapQaStatusPRecommendationApproval,
                             loggedInUser
                         )
+                        sm.closeLink =
+                            "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitFound.id}"
                     }
                     0 -> {
-                        with(qaInspectionReportRecommendation) {
-                            supervisorFilledStatus = null
-                            submittedInspectionReportStatus = null
-                        }
+
                         qaDaoServices.inspectionRecommendationUpdate(
                             qaInspectionReportRecommendation,
                             map,
@@ -1363,19 +1433,34 @@ class QualityAssuranceController(
                         with(permitFound) {
                             //                        inspectionReportGenerated = map.inactiveStatus
                             factoryInspectionReportApprovedRejectedStatus = map.inactiveStatus
+                            resubmitApplicationStatus = map.activeStatus
                         }
                         permitFound = qaDaoServices.permitInsertStatus(
                             permitFound,
-                            applicationMapProperties.mapQaStatusPendingCorrectionManf,
+                            applicationMapProperties.mapQaStatusInspectionReportRejected,
                             loggedInUser
                         )
+
+                        sm.closeLink =
+                            "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permitFound.permitType}"
                     }
                 }
+
+
+                qaDaoServices.permitAddRemarksDetails(
+                    permitFound.id ?: throw Exception("ID NOT FOUND"),
+                    QaInspectionReportRecommendationEntity.supervisorComments,
+                    QaInspectionReportRecommendationEntity.approvedRejectedStatus,
+                    "QAM",
+                    "APPROVE/REJECT INSPECTION REPORT",
+                    map,
+                    loggedInUser
+                )
+
                 userAssigned =
                     commonDaoServices.findUserByID(permitFound.qaoId ?: throw ExpectedDataNotFound("MISSING QAO ID"))
                 //Todo: CHECK IF SSC to be generated
-                sm.closeLink =
-                    "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permitFound.permitType}"
+
                 qaDaoServices.sendEmailWithTaskDetails(
                     userAssigned.email ?: throw ExpectedDataNotFound("Missing Email address"),
                     permitFound.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
@@ -1393,6 +1478,7 @@ class QualityAssuranceController(
     fun permitAddInspectionReportHACCPImplimantationDetails(
         @ModelAttribute("QaInspectionHaccpImplementationEntity") QaInspectionHaccpImplementationEntity: QaInspectionHaccpImplementationEntity,
         @RequestParam("permitID") permitID: Long,
+        @RequestParam("inspectionReportID") inspectionReportID: Long,
         model: Model,
     ): String? {
 
@@ -1401,16 +1487,20 @@ class QualityAssuranceController(
 
         val result: ServiceRequestsEntity?
 
+        val qaInspectionReportRecommendation =
+            qaDaoServices.findQaInspectionReportRecommendationBYID(inspectionReportID)
+
         result = qaDaoServices.permitAddNewInspectionReportDetailsHaccp(
             map,
             loggedInUser,
             permitID,
-            QaInspectionHaccpImplementationEntity
+            QaInspectionHaccpImplementationEntity,
+            qaInspectionReportRecommendation
         )
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink =
-            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details?permitID=${result.varField1}"
+            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details?inspectionReportID=${inspectionReportID}"
         sm.message = "Inspection Report Details have Been added Successful"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -1421,6 +1511,7 @@ class QualityAssuranceController(
     fun permitAddInspectionReportOPCDetails(
         @ModelAttribute("QaInspectionOpcEntity") QaInspectionOpcEntity: QaInspectionOpcEntity,
         @RequestParam("permitID") permitID: Long,
+        @RequestParam("inspectionReportID") inspectionReportID: Long,
         model: Model,
     ): String? {
 
@@ -1428,13 +1519,20 @@ class QualityAssuranceController(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
         val result: ServiceRequestsEntity?
+        val qaInspectionReportRecommendation =
+            qaDaoServices.findQaInspectionReportRecommendationBYID(inspectionReportID)
 
-        result =
-            qaDaoServices.permitAddNewInspectionReportDetailsOPC(map, loggedInUser, permitID, QaInspectionOpcEntity)
+        result = qaDaoServices.permitAddNewInspectionReportDetailsOPC(
+            map,
+            loggedInUser,
+            permitID,
+            QaInspectionOpcEntity,
+            qaInspectionReportRecommendation
+        )
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink =
-            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details?permitID=${result.varField1}"
+            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details?inspectionReportID=${inspectionReportID}"
         sm.message = "Inspection Report Details have Been added Successful"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -1988,6 +2086,7 @@ class QualityAssuranceController(
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadFilesQA(
         @RequestParam("permitID") permitID: Long,
+        @RequestParam("inspectionReportID") inspectionReportID: Long?,
         @RequestParam("manufactureNonStatus") manufactureNonStatus: Int,
         @RequestParam("ordinaryStatus") ordinaryStatus: Int,
         @RequestParam("inspectionReportStatus") inspectionReportStatus: Int?,
@@ -2118,6 +2217,7 @@ class QualityAssuranceController(
                         val pair = uloadsForInspectionReport(
                             uploads,
                             inspectionReportStatus,
+                            inspectionReportID,
                             uploadResults,
                             docFile,
                             docFileName,
@@ -2130,7 +2230,7 @@ class QualityAssuranceController(
                         permitDetails = pair.first
                         uploadResults = pair.second
                         sm.closeLink =
-                            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details?permitID=${permitDetails.id}"
+                            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details?inspectionReportID$inspectionReportID"
 //                        qaDaoServices.permitInsertStatus(permitDetails, applicationMapProperties.mapQaStatusPApprSSC, loggedInUser)
 
                     }
@@ -2182,6 +2282,7 @@ class QualityAssuranceController(
             permitDetails1.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
             map.activeStatus
         ).size.toLong().plus(versionNumber1)
+
         uploadResults1 = qaDaoServices.saveQaFileUploads(
             docFile,
             docFileName,
@@ -2193,18 +2294,18 @@ class QualityAssuranceController(
             manufactureNonStatus
         )
         permitDetails1.generateSchemeStatus = map.activeStatus
+        permitDetails1.approvedRejectedScheme = map.activeStatus
         permitDetails1.sscId = uploadResults1.second.id
         permitDetails1 = qaDaoServices.permitUpdateDetails(permitDetails1, map, loggedInUser).second
-        qaDaoServices.permitInsertStatus(
-            permitDetails1,
-            applicationMapProperties.mapQaStatusPApprSSC,
-            loggedInUser
-        )
+//        qaDaoServices.permitInsertStatus(
+//            permitDetails1,
+//            applicationMapProperties.mapQaStatusPApprSSC,
+//            loggedInUser
+//        )
         qaDaoServices.sendEmailWithSSC(
             commonDaoServices.findUserByID(
                 permitDetails1.userId ?: throw ExpectedDataNotFound("MISSING USER ID")
             ).email ?: throw ExpectedDataNotFound("MISSING USER ID"),
-            commonDaoServices.convertMultipartFileToFile(docFile).path,
             permitDetails1.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
         )
 
@@ -2218,6 +2319,7 @@ class QualityAssuranceController(
     fun uloadsForInspectionReport(
         uploads: QaUploadsEntity,
         inspectionReportStatus: Int?,
+        inspectionReportID: Long?,
         uploadResults: Pair<ServiceRequestsEntity, QaUploadsEntity>?,
         docFile: MultipartFile,
         docFileName: String,
@@ -2230,6 +2332,7 @@ class QualityAssuranceController(
         var uploadResults1 = uploadResults
         var permitDetails1 = permitDetails
         uploads.inspectionReportStatus = inspectionReportStatus
+        uploads.inspectionReportId = inspectionReportID
         //                        versionNumber = qaDaoServices.findAllUploadedFileBYPermitIDAndSscStatus(permitID, map.activeStatus).size.toLong().plus(versionNumber)
         uploadResults1 = qaDaoServices.saveQaFileUploads(
             docFile,

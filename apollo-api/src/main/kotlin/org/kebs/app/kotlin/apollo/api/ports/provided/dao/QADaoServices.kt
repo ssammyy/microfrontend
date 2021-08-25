@@ -326,6 +326,19 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
     }
 
+    fun findAllUserTasksByTaskID(
+        user: UsersEntity,
+        taskID: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByUserIdAndOldPermitStatusIsNullAndUserTaskId(userId, taskID)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
     fun findAllUserPermitWithPermitTypeAwarded(
         user: UsersEntity,
         permitType: Long,
@@ -633,6 +646,12 @@ class QADaoServices(
         } ?: throw ExpectedDataNotFound("No inspection details for OPC with PERMIT REF NO =$permitRefNumber")
     }
 
+    fun findAllQaInspectionOPCWithInspectReportID(inspectReportID: Long): List<QaInspectionOpcEntity> {
+        qaInspectionOPCRepo.findByInspectionRecommendationId(inspectReportID)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No inspection details for OPC with inspect Report ID =$inspectReportID")
+    }
+
     fun findPermitBYID(id: Long): PermitApplicationsEntity {
         permitRepo.findByIdOrNull(id)?.let {
             return it
@@ -677,6 +696,17 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No sample submission found with the following [PERMIT REF NO =$permitRefNumber]")
     }
 
+    fun findInspectionReportListBYPermitRefNumberAndPermitID(
+        permitRefNumber: String,
+        status: Int,
+        permitID: Long
+    ): List<QaInspectionReportRecommendationEntity> {
+        qaInspectionReportRecommendationRepo.findByPermitRefNumberAndPermitId(permitRefNumber, permitID)?.let {
+            return it
+        }
+            ?: throw ExpectedDataNotFound("No Inspection Report Recommendation found with the following PERMIT REF NO =$permitRefNumber")
+    }
+
     fun findSampleSubmittedListPdfBYSSFid(
         ssfID: Long
     ): List<QaSampleSubmittedPdfListDetailsEntity> {
@@ -709,11 +739,25 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Inspection Haccp Implementation found with the following [PERMIT REF NO =$permitRefNumber]")
     }
 
+    fun findQaInspectionHaccpImplementationBYInspectReportID(inspectReportID: Long): QaInspectionHaccpImplementationEntity {
+        qaInspectionHaccpImplementationRepo.findByInspectionRecommendationId(inspectReportID)?.let {
+            return it
+        }
+            ?: throw ExpectedDataNotFound("No Inspection Haccp Implementation found with the following inspect Report ID =$inspectReportID")
+    }
+
     fun findQaInspectionReportRecommendationBYPermitRefNumber(permitRefNumber: String): QaInspectionReportRecommendationEntity {
         qaInspectionReportRecommendationRepo.findTopByPermitRefNumberOrderByIdDesc(permitRefNumber)?.let {
             return it
         }
             ?: throw ExpectedDataNotFound("No Inspection Report Recommendation found with the following [PERMIT REF NO =$permitRefNumber]")
+    }
+
+    fun findQaInspectionReportRecommendationBYID(inspectionReportID: Long): QaInspectionReportRecommendationEntity {
+        qaInspectionReportRecommendationRepo.findByIdOrNull(inspectionReportID)?.let {
+            return it
+        }
+            ?: throw ExpectedDataNotFound("No Inspection Report Recommendation found with the following ID = $inspectionReportID")
     }
 
     fun findQaInspectionOpcBYPermitRefNumber(permitRefNumber: String): List<QaInspectionOpcEntity> {
@@ -722,11 +766,25 @@ class QADaoServices(
         } ?: throw ExpectedDataNotFound("No Inspection OPC found with the following [PERMIT REF NO =$permitRefNumber]")
     }
 
+    fun findQaInspectionOpcBYInspectReportID(inspectReportID: Long): List<QaInspectionOpcEntity> {
+        qaInspectionOPCRepo.findByInspectionRecommendationId(inspectReportID)?.let {
+            return it
+        }
+            ?: throw ExpectedDataNotFound("No Inspection OPC found with the following inspect Report ID =$inspectReportID")
+    }
+
     fun findQaInspectionTechnicalBYPermitRefNumber(permitRefNumber: String): QaInspectionTechnicalEntity {
         qaInspectionTechnicalRepo.findTopByPermitRefNumberOrderByIdDesc(permitRefNumber)?.let {
             return it
         }
             ?: throw ExpectedDataNotFound("No Inspection Technical found with the following [PERMIT REF NO =$permitRefNumber]")
+    }
+
+    fun findQaInspectionTechnicalBYInspectReportID(inspectReportID: Long): QaInspectionTechnicalEntity {
+        qaInspectionTechnicalRepo.findByInspectionRecommendationId(inspectReportID)?.let {
+            return it
+        }
+            ?: throw ExpectedDataNotFound("No Inspection Technical found with the following inspect Report ID =$inspectReportID")
     }
 
     fun findSampleLabTestResultsRepoBYBSNumber(bsNumber: String): List<QaSampleLabTestResultsEntity> {
@@ -1168,13 +1226,13 @@ class QADaoServices(
         } ?: throw ExpectedDataNotFound("No File found with the following [ PERMIT REF NO =$permitRefNumber]")
     }
 
-    fun findAllUploadedFileBYPermitRefNumberAndInspectionReportStatus(
-        permitRefNumber: String,
+    fun findAllUploadedFileBYInspectionReportIDAndInspectionReportStatus(
+        inspectReportID: Long,
         status: Int
     ): List<QaUploadsEntity> {
-        qaUploadsRepo.findByPermitRefNumberAndInspectionReportStatus(permitRefNumber, status)?.let {
+        qaUploadsRepo.findByInspectionReportIdAndInspectionReportStatus(inspectReportID, status)?.let {
             return it
-        } ?: throw ExpectedDataNotFound("No File found with the following [ PERMIT REF NO =$permitRefNumber]")
+        } ?: throw ExpectedDataNotFound("No File found with the following [ inspect Report ID =$inspectReportID]")
     }
 
     fun findAllUploadedFileBYPermitRefNumberAndSta10Status(
@@ -2237,8 +2295,7 @@ class QADaoServices(
 //                        permitInsertStatus(
 //                            permitDetails,
 //                            applicationMapProperties.mapQaStatusPGeneJustCationReport,
-//                            user
-//                        )
+//                            user )
 //                    } else {
 //                        permitInsertStatus(permitDetails, applicationMapProperties.mapQaStatusPRecommendation, user)
 //                    }
@@ -3462,13 +3519,11 @@ class QADaoServices(
         }
     }
 
-    fun sendEmailWithSSC(recipient: String, attachment: String?, permitRefNumber: String): Boolean {
+    fun sendEmailWithSSC(recipient: String, permitRefNumber: String): Boolean {
         val subject = "SSC GENERATED"
-        val messageBody =
-            "Check The attached SCHEME OF SUPERVISION AND CONTROL for permit with Ref number $permitRefNumber" +
-                    "and Approve or reject it on KIMS system for your application to continue being processesd"
+        val messageBody = "SCHEME OF SUPERVISION AND CONTROL for permit with Ref number $permitRefNumber, Has been Sent"
 
-        notifications.processEmail(recipient, subject, messageBody, attachment)
+        notifications.processEmail(recipient, subject, messageBody, null)
 
         return true
     }
@@ -3545,13 +3600,12 @@ class QADaoServices(
         user: UsersEntity,
         permitID: Long,
         inspectionTechnical: QaInspectionTechnicalEntity,
-    ): ServiceRequestsEntity {
+    ): Pair<ServiceRequestsEntity, QaInspectionTechnicalEntity> {
 
         var sr = commonDaoServices.createServiceRequest(s)
+        val permitFound = findPermitBYID(permitID)
+        var inspectionTechnicalDetails = inspectionTechnical
         try {
-
-            val permitFound = findPermitBYID(permitID)
-            var inspectionTechnicalDetails = inspectionTechnical
 
             qaInspectionTechnicalRepo.findByIdOrNull(inspectionTechnical.id ?: -1L)
                 ?.let { iTDetails ->
@@ -3566,18 +3620,16 @@ class QADaoServices(
                     inspectionTechnicalDetails = qaInspectionTechnicalRepo.save(inspectionTechnicalDetails)
                 }
                 ?: kotlin.run {
-
-                    with(inspectionTechnicalDetails) {
-                        permitId = permitFound.id
-                        permitRefNumber = permitFound.permitRefNumber
-                        status = s.activeStatus
-                        createdBy = commonDaoServices.concatenateName(user)
-                        createdOn = commonDaoServices.getTimestamp()
-                    }
-                    inspectionTechnicalDetails = qaInspectionTechnicalRepo.save(inspectionTechnicalDetails)
-
                     var qaInspectionReportRecommendation = QaInspectionReportRecommendationEntity()
                     with(qaInspectionReportRecommendation) {
+                        refNo = "REF${
+                            generateRandomText(
+                                5,
+                                s.secureRandom,
+                                s.messageDigestAlgorithm,
+                                true
+                            )
+                        }".toUpperCase()
                         permitId = permitFound.id
                         permitRefNumber = permitFound.permitRefNumber
                         filledQpsmsStatus = s.activeStatus
@@ -3587,6 +3639,19 @@ class QADaoServices(
                     }
                     qaInspectionReportRecommendation =
                         qaInspectionReportRecommendationRepo.save(qaInspectionReportRecommendation)
+
+
+                    with(inspectionTechnicalDetails) {
+                        inspectionRecommendationId = qaInspectionReportRecommendation.id
+                        permitId = permitFound.id
+                        permitRefNumber = permitFound.permitRefNumber
+                        status = s.activeStatus
+                        createdBy = commonDaoServices.concatenateName(user)
+                        createdOn = commonDaoServices.getTimestamp()
+                    }
+                    inspectionTechnicalDetails = qaInspectionTechnicalRepo.save(inspectionTechnicalDetails)
+
+
                 }
 
             permitFound.inspectionReportGenerated = s.activeStatus
@@ -3616,7 +3681,7 @@ class QADaoServices(
         }
 
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
-        return sr
+        return Pair(sr, inspectionTechnicalDetails)
     }
 
     fun permitAddNewInspectionReportDetailsHaccp(
@@ -3624,6 +3689,7 @@ class QADaoServices(
         user: UsersEntity,
         permitID: Long,
         haccpImplementation: QaInspectionHaccpImplementationEntity,
+        qaInspectionReportRecommendation: QaInspectionReportRecommendationEntity,
     ): ServiceRequestsEntity {
 
         var sr = commonDaoServices.createServiceRequest(s)
@@ -3649,6 +3715,7 @@ class QADaoServices(
                 ?: kotlin.run {
 
                     with(haccpAddedDetails) {
+                        inspectionRecommendationId = qaInspectionReportRecommendation.id
                         permitId = permitFound.id
                         permitRefNumber = permitFound.permitRefNumber
                         status = s.activeStatus
@@ -3657,9 +3724,9 @@ class QADaoServices(
                     }
                     haccpAddedDetails = qaInspectionHaccpImplementationRepo.save(haccpAddedDetails)
 
-                    var qaInspectionReportRecommendation = findQaInspectionReportRecommendationBYPermitRefNumber(
-                        permitFound.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER FOUND")
-                    )
+//                    var qaInspectionReportRecommendation = findQaInspectionReportRecommendationBYPermitRefNumber(
+//                        permitFound.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER FOUND")
+//                    )
                     with(qaInspectionReportRecommendation) {
                         filledHaccpImplementationStatus = s.activeStatus
                     }
@@ -3738,6 +3805,7 @@ class QADaoServices(
         user: UsersEntity,
         permitID: Long,
         opc: QaInspectionOpcEntity,
+        qaInspectionReportRecommendation: QaInspectionReportRecommendationEntity,
     ): ServiceRequestsEntity {
 
         var sr = commonDaoServices.createServiceRequest(s)
@@ -3760,6 +3828,7 @@ class QADaoServices(
                 ?: kotlin.run {
 
                     with(opcAddedDetails) {
+                        inspectionRecommendationId = qaInspectionReportRecommendation.id
                         permitId = permitFound.id
                         permitRefNumber = permitFound.permitRefNumber
                         status = s.activeStatus
@@ -3768,9 +3837,9 @@ class QADaoServices(
                     }
                     opcAddedDetails = qaInspectionOPCRepo.save(opcAddedDetails)
 
-                    var qaInspectionReportRecommendation = findQaInspectionReportRecommendationBYPermitRefNumber(
-                        permitFound.permitRefNumber ?: throw Exception("INVALID PERMIT ID FOUND")
-                    )
+//                    var qaInspectionReportRecommendation = findQaInspectionReportRecommendationBYPermitRefNumber(
+//                        permitFound.permitRefNumber ?: throw Exception("INVALID PERMIT ID FOUND")
+//                    )
                     with(qaInspectionReportRecommendation) {
                         filledOpcStatus = s.activeStatus
                     }

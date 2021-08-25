@@ -29,7 +29,8 @@ export class RouteGuard implements CanActivate {
             return false;
         }
 
-        console.log(`canActivate( Yes. Navigate the user to the requested route. )`);
+          console.log(`Authd = ${authed} redirecting to Dashboard`);
+          console.log(`canActivate( Yes. Navigate the user to the requested route. )`);
         return true;
       }),
       first()

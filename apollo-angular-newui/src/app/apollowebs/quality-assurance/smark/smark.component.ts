@@ -83,6 +83,7 @@ export class SmarkComponent implements OnInit {
     sta10ManufacturingProcessDetail: STA10ManufacturingProcessDto;
     stepSoFar: | undefined;
     step = 1;
+    labResults = false;
     resubmitDetail!: string;
     permitID!: string;
     batchID!: bigint;
@@ -254,6 +255,10 @@ export class SmarkComponent implements OnInit {
 
         // if (this.allPermitDetails?.remarksDetails?.hofQamCompleteness !== null) {
         formattedArrayRemarks.push(['Completeness Remarks By HOD', '', 'hofQamCompletenessRemarks']);
+        if (this.allPermitDetails?.remarksDetails?.labResultsCompleteness.remarksStatus === true) {
+            this.labResults = true;
+            console.log(this.labResults);
+        }
         formattedArrayRemarks.push(['Lab Results Remarks By QAO', '', 'labResultsCompletenessRemarks']);
         // if (this.allPermitDetails.remarksDetails.pcmReviewApprovalRemarks !== null) {
         formattedArrayRemarks.push(['Review Remarks By PCM', '', 'reviewRemarksPCMRemarks']);
@@ -389,7 +394,7 @@ export class SmarkComponent implements OnInit {
                         // tslint:disable-next-line:max-line-length
                         formattedArrayComplianceResultsList = this.complianceResultsDetailsList.map(i => [i.sffId, i.bsNumber, i.complianceStatus, i.complianceRemarks]);
                         this.tableData6 = {
-                            headerRow: ['BS Number', 'Compliant Status', 'View Remarks', 'Action'],
+                            headerRow: ['BS Number', 'Compliant Status', 'View Remarks', 'Add Remarks'],
                             dataRows: formattedArrayComplianceResultsList
                         };
                     }

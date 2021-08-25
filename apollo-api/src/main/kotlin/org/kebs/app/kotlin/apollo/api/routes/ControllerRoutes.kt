@@ -355,6 +355,7 @@ class ControllerRoutes {
             }
             "/inspection".nest {
                 GET("/new-inspection-report", handler::newInspectionReport)
+                GET("/inspection-report-list", handler::getInspectionListDetails)
                 GET("/inspection-report-details", handler::inspectionReportDetails)
                 GET("/check-results", handler::checkLabResults)
                 GET("/ssf-list", handler::getSSfListDetails)

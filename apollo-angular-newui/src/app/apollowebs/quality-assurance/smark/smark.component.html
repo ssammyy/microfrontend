@@ -1479,7 +1479,7 @@ enctype="multipart/form-data" method="post">
                                     </button>
                                 </td>
                                 <td *ngIf="row[2] == true" class="td-actions text-right"></td>
-                                <td *ngIf="row[2] == false" class="td-actions text-right">
+                                <td *ngIf="row[2] == false && labResults == false" class="td-actions text-right">
                                     <button mat-raised-button type="button" data-toggle="modal" data-target="#myModal1"
                                             (click)="openModalUpload('resubmitDetails', 'resubmitLabNonComplianceResults')"
                                             class="btn btn-info {{row[3]}}">
@@ -1702,13 +1702,13 @@ enctype="multipart/form-data" method="post">
         </div>
 
 
-        <button *ngIf="allPermitDetails?.permitDetails?.generateSchemeStatus == true && allPermitDetails?.permitDetails?.approvedRejectedScheme == false"
-                (click)="openModalUpload('schemeModal', 'schemeModal')" mat-raised-button="" data-toggle="modal"
-                data-target="#myModal1"
-                class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">AGREE/CONSENT TO SSC</span>
-            <div matripple="" class="mat-ripple mat-button-ripple"></div>
-            <div class="mat-button-focus-overlay"></div>
-        </button>
+        <!--        <button *ngIf="allPermitDetails?.permitDetails?.generateSchemeStatus == true && allPermitDetails?.permitDetails?.approvedRejectedScheme == false"-->
+        <!--                (click)="openModalUpload('schemeModal', 'schemeModal')" mat-raised-button="" data-toggle="modal"-->
+        <!--                data-target="#myModal1"-->
+        <!--                class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">AGREE/CONSENT TO SSC</span>-->
+        <!--            <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
+        <!--            <div class="mat-button-focus-overlay"></div>-->
+        <!--        </button>-->
         <!--    <button *ngIf="allPermitDetails?.permitDetails?.permitAwardStatus == true"-->
         <!--            (click)="submitApplication()" mat-raised-button=""-->
         <!--            class="btn btn-kebs mat-raised-button mat-button-base"><span-->

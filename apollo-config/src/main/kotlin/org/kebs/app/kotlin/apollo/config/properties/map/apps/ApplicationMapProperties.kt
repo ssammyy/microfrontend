@@ -259,6 +259,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_inspection_report_approval}")
     val mapQaStatusPInspectionReportApproval: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_new_inspection_Report}")
+    val mapQaStatusInspectionReportRejected: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_bs_number}")
     val mapQaStatusPBSNumber: Long = 0L
 
