@@ -71,6 +71,11 @@ export class ConsignmentDocumentListComponent implements OnInit {
             },
             cdTypeName: {
                 title: 'Document Type',
+                type: 'string',
+                hidden: true
+            },
+            cdTypeDescription: {
+                title: 'Document Description',
                 type: 'string'
             },
             cdTypeCategory: {

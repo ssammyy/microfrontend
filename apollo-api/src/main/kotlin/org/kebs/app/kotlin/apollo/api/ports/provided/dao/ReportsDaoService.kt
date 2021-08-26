@@ -96,10 +96,9 @@ class ReportsDaoService(
 
     fun extractReport(
         map: HashMap<String, Any>,
-        response: HttpServletResponse,
         filePath: String,
         listCollect: List<Any>
-    ) {
+    ): ByteArrayOutputStream{
         map["imagePath"] = logoImageFile
         val dataSource = JRBeanCollectionDataSource(listCollect)
         val file = ResourceUtils.getFile(filePath)
@@ -111,25 +110,14 @@ class ReportsDaoService(
         pdfExporter.setExporterInput(SimpleExporterInput(jasperPrint))
         pdfExporter.exporterOutput = SimpleOutputStreamExporterOutput(pdfReportStream)
         pdfExporter.exportReport()
-//        response.contentType = "text/html"
-        response.contentType = "application/pdf"
-        response.setHeader("Content-Length", pdfReportStream.size().toString())
-        response.addHeader("Content-Dispostion", "inline; filename=jasper.html;")
-        response.outputStream
-            .let { responseOutputStream ->
-                responseOutputStream.write(pdfReportStream.toByteArray())
-                responseOutputStream.close()
-                pdfReportStream.close()
-            }
-
-
+        return pdfReportStream
     }
 
     /*
     Note: Use this method if your report contains multiple data bands and you have not set any fields in the report,
     i.e you're using Parameters only.
      */
-    fun extractReportEmptyDataSource(map: HashMap<String, Any>, response: HttpServletResponse, filePath: String) {
+    fun extractReportEmptyDataSource(map: HashMap<String, Any>, filePath: String): ByteArrayOutputStream {
         map["imagePath"] = logoImageFile
         val file = ResourceUtils.getFile(filePath)
         val design = JRXmlLoader.load(file)
@@ -140,15 +128,9 @@ class ReportsDaoService(
         pdfExporter.setExporterInput(SimpleExporterInput(jasperPrint))
         pdfExporter.exporterOutput = SimpleOutputStreamExporterOutput(pdfReportStream)
         pdfExporter.exportReport()
-        response.contentType = "text/html"
-        response.contentType = "application/pdf"
-        response.setHeader("Content-Length", pdfReportStream.size().toString())
-        response.addHeader("Content-Dispostion", "inline; filename=file.pdf;")
-        response.outputStream.let { responseOutputStream ->
-            responseOutputStream.write(pdfReportStream.toByteArray())
-            responseOutputStream.close()
-            pdfReportStream.close()
-        }
+
+
+        return pdfReportStream
 
     }
 

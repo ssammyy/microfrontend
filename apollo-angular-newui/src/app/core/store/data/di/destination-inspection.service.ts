@@ -76,7 +76,7 @@ export class DestinationInspectionService {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/ministry/inspection/details/" + itemId))
     }
     downloadMinistryCheckList(itemId: number): Observable<any>{
-        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/ministry/inspection/details/" + itemId))
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/ministry/inspection/download/" + itemId))
     }
 
     loadCustomsDeclaration(itemId: any): Observable<any> {
@@ -159,11 +159,16 @@ export class DestinationInspectionService {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/audit/"+id))
     }
 
+    // Download attachment
     downloadAttachment(id: any) : Observable<any>{
-        return this.client.get("/api/v1/di/cd/download/attachment/"+id)
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/cd/download/attachments/"+id))
     }
 
     getConsignmentAttachments(consignmentId: string) : Observable<any>{
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/attachments/"+consignmentId))
+    }
+
+    loadItemDetails(itemId: any): Observable<any>{
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/item/"+itemId))
     }
 }

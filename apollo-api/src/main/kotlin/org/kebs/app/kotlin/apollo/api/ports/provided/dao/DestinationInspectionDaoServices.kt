@@ -893,6 +893,7 @@ class DestinationInspectionDaoServices(
                 ?: throw Exception("cd Status Details with status = ${status}, do not Exist")
     }
 
+
     fun findDemandNoteListFromCdItemList(
             cdItemList: List<CdItemDetailsEntity>,
             status: Int

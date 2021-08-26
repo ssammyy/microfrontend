@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import java.io.ByteArrayOutputStream
 import java.math.BigDecimal
 import javax.servlet.http.HttpServletResponse
 
@@ -212,12 +213,20 @@ class QualityAssuranceJSONControllers(
 
         map = reportsDaoService.addBankAndMPESADetails(map)
 
-        reportsDaoService.extractReport(
+        val pdfReportStream=reportsDaoService.extractReport(
             map,
-            response,
             applicationMapProperties.mapReportProfomaInvoiceWithItemsPath,
             batchInvoiceList
         )
+        response.contentType = "text/html"
+        response.contentType = "application/pdf"
+        response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Dispostion", "inline; PROFOMA-${ID}.pdf;")
+        response.outputStream.let { responseOutputStream ->
+            responseOutputStream.write(pdfReportStream.toByteArray())
+            responseOutputStream.close()
+            pdfReportStream.close()
+        }
     }
 
     @RequestMapping(value = ["/report/braked-down-invoice-with-Item"], method = [RequestMethod.GET])
@@ -261,12 +270,20 @@ class QualityAssuranceJSONControllers(
 
         map = reportsDaoService.addBankAndMPESADetails(map)
 
-        reportsDaoService.extractReport(
+        val pdfReportStream=reportsDaoService.extractReport(
             map,
-            response,
             applicationMapProperties.mapReportBreakDownInvoiceWithItemsPath,
             invoiceDetailsList
         )
+        response.contentType = "text/html"
+        response.contentType = "application/pdf"
+        response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Dispostion", "inline; filename=BRAKE_DOWN_INVOICE.pdf;")
+        response.outputStream.let { responseOutputStream ->
+            responseOutputStream.write(pdfReportStream.toByteArray())
+            responseOutputStream.close()
+            pdfReportStream.close()
+        }
     }
 
     /*
@@ -303,32 +320,39 @@ class QualityAssuranceJSONControllers(
         map["EmailAddress"] = foundPermitDetails.email.toString()
         map["phoneNumber"] = foundPermitDetails.telephoneNo.toString()
         map["QrCode"] = foundPermitDetails.permitNumber.toString()
-
-
+        var pdfReportStream: ByteArrayOutputStream?=null
         when (foundPermitDetails.permitTypeID) {
             applicationMapProperties.mapQAPermitTypeIDDmark -> {
                 map["DmarkLogo"] = dMarkImageFile
-                reportsDaoService.extractReportEmptyDataSource(
+                pdfReportStream=reportsDaoService.extractReportEmptyDataSource(
                     map,
-                    response,
                     applicationMapProperties.mapReportDmarkPermitReportPath
                 )
             }
             applicationMapProperties.mapQAPermitTypeIdSmark -> {
                 map["SmarkLogo"] = sMarkImageFile
-                reportsDaoService.extractReportEmptyDataSource(
+                pdfReportStream=reportsDaoService.extractReportEmptyDataSource(
                     map,
-                    response,
                     applicationMapProperties.mapReportSmarkPermitReportPath
                 )
             }
             applicationMapProperties.mapQAPermitTypeIdFmark -> {
                 map["FmarkLogo"] = fMarkImageFile
-                reportsDaoService.extractReportEmptyDataSource(
+                pdfReportStream=reportsDaoService.extractReportEmptyDataSource(
                     map,
-                    response,
                     applicationMapProperties.mapReportFmarkPermitReportPath
                 )
+            }
+        }
+        if(pdfReportStream!=null) {
+            response.contentType = "text/html"
+            response.contentType = "application/pdf"
+            response.setHeader("Content-Length", pdfReportStream.size().toString())
+            response.addHeader("Content-Dispostion", "inline; filename=file.pdf;")
+            response.outputStream.let { responseOutputStream ->
+                responseOutputStream.write(pdfReportStream.toByteArray())
+                responseOutputStream.close()
+                pdfReportStream.close()
             }
         }
     }

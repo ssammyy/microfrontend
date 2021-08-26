@@ -3,35 +3,25 @@ package org.kebs.app.kotlin.apollo.api.handlers
 import mu.KotlinLogging
 import okhttp3.internal.toLongOrDefault
 import org.kebs.app.kotlin.apollo.api.payload.*
-import org.kebs.app.kotlin.apollo.api.payload.request.ConsignmentUpdateRequest
-import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
 import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentAuditService
 import org.kebs.app.kotlin.apollo.api.service.DestinationInspectionService
-import org.kebs.app.kotlin.apollo.common.dto.FreightStationsDto
-import org.kebs.app.kotlin.apollo.common.dto.SectionsDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
-import org.kebs.app.kotlin.apollo.store.model.di.CdStatusTypesEntity
-import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentTypesEntity
 import org.kebs.app.kotlin.apollo.store.model.di.DiUploadsEntity
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartHttpServletRequest
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.function.paramOrNull
-import java.sql.Date
-import java.time.LocalDateTime
 
 @Service
 class ApiDestinationInspectionHandler(
@@ -265,11 +255,11 @@ class ApiDestinationInspectionHandler(
         req.pathVariable("uploadId").let { diUploadsId ->
             val diUpload: DiUploadsEntity = daoServices.findDiUploadById(diUploadsId.toLongOrDefault(0L))
             diUpload.document?.let {
+                val resource=ByteArrayResource(it)
                 return ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_PDF)
                         .header("Content-Disposition", "inline; filename=${diUpload.name};")
-                        .body("")
-//                        .bodyWithType(diUpload.document)
+                        .body(resource)
             } ?: throw ExpectedDataNotFound("Attachment file not found")
         }
     }

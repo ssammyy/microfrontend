@@ -55,61 +55,23 @@
                                             <tr>
                                                 <td>{{consignment.cd_details.documentType ? consignment.cd_details.cdTypeName : 'NA'}}</td>
                                             </tr>
+                                            <th>
+                                                Assigned To
+                                            </th>
+                                            <tr>
+                                                <td>{{consignment.cd_details.assignedTo}}</td>
+                                            </tr>
+                                            <th>
+                                                Assigned On
+                                            </th>
+                                            <tr>
+                                                <td>{{consignment.cd_details.assignedOn| date}}</td>
+                                            </tr>
                                         </table>
                                     </div>
-                                    <b>Action:</b>
-                                    <button *ngIf="configurations" class="btn btn-sm btn-warning"
-                                            (click)="approveRejectConsignment()">Approve / Reject Consignment
-                                    </button>
-                                    <button *ngIf="configurations" class="btn btn-sm btn-warning"
-                                            (click)="generateLocalCoC()">GENERATE LOCAL COC
-                                    </button>
-                                    <button *ngIf="configurations" class="btn btn-sm btn-warning"
-                                            (click)="generateLocalCoR()">GENERATE LOCAL COR
-                                    </button>
-                                    <button *ngIf="configurations" class="btn btn-sm btn-warning"
-                                            (click)="assignInspectionOfficer()">ASSIGN IO
-                                    </button>
-                                    <button *ngIf="configurations" class="btn btn-sm btn-warning"
-                                            (click)="manualAssignInspectionOfficer()">MANUAL ASSIGN IO
-                                    </button>
-                                    <button *ngIf="configurations" class="btn btn-sm btn-warning"
-                                            (click)="reassignInspectionOfficer()">REASSIGN IO
-                                    </button>
-                                    <button *ngIf="configurations" class="btn btn-sm btn-warning"
-                                            (click)="assignConsignmentPort()">ASSIGN PORT
-                                    </button>
-                                    <button *ngIf="configurations" class="btn btn-sm btn-warning"
-                                            (click)="markAsCompliant()">COMPLIANT
-                                    </button>
-                                    <button *ngIf="configurations" class="btn btn-sm btn-warning"
-                                            (click)="sendCertificateOfCompliance()">SEND COI
-                                    </button>
-                                    <button *ngIf="configurations" class="btn btn-sm btn-warning"
-                                            (click)="targetConsignment()">TARGET
-                                    </button>
-                                    <button *ngIf="configurations" class="btn btn-sm btn-warning"
-                                            (click)="supervisorTargetConsignment()">SUPERVISOR TARGET
-                                    </button>
-                                    <button class="btn btn-sm btn-primary" (click)="uploadAttachment()">UPLOAD
-                                        ATTACHMENT
-                                    </button>
-                                    <a class="btn btn-sm btn-warning" href="{{consignment.cd_details.summaryPageURL}}"
-                                       *ngIf="consignment.cd_details.summaryPageURL" target="_blank">View</a>
-                                    <br/>
-                                    <b>Document Details:</b>
-                                    <br/>
-                                    <button class="btn btn-sm btn-primary" (click)="viewCoR()">CERTIFICATE OF
-                                        ROADWORTHINESS
-                                    </button>
-                                    <button class="btn btn-sm btn-primary" (click)="viewIdfDocument()">IDF DOCUMENT
-                                    </button>
-                                    <button class="btn btn-sm btn-primary" (click)="viewDeclarationDocument()">
-                                        DECLARATION DOCUMENT
-                                    </button>
                                 </div>
                             </div>
-                            <div class="col-md-9">
+                            <div class="col-md-8">
                                 <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
                                     <li ngbNavItem="consignee" *ngIf="consignment.cd_consignee">
                                         <a ngbNavLink>Consignee Details</a>
@@ -185,7 +147,8 @@
                                         <a ngbNavLink>Remarks History</a>
                                         <ng-template ngbNavContent>
                                             <b class="text-primary">Remarks history</b>
-                                            <app-view-remarks-history [remarks]="comments"></app-view-remarks-history>
+                                            <app-view-remarks-history
+                                                    [remarks]="comments"></app-view-remarks-history>
                                         </ng-template>
                                     </li>
                                     <li ngbNavItem="importer" *ngIf="consignment.cd_importer">
@@ -708,14 +671,89 @@
                                 <div [ngbNavOutlet]="nav" class="ml-4"></div>
                                 <!-- </div>  -->
                             </div>
-
+                            <div class="col-md-2">
+                                <b>Action:</b>
+                                <div *ngIf="consignment.ui.inspectionActive && configurations">
+                                    <div *ngIf="consignment.ui.completed">
+                                        <button *ngIf="consignment.ui.cocRequest" class="btn btn-sm btn-warning"
+                                                (click)="generateLocalCoC()">GENERATE LOCAL COC
+                                        </button>
+                                        <button *ngIf="consignment.ui.corRequest" class="btn btn-sm btn-warning"
+                                                (click)="generateLocalCoR()">GENERATE LOCAL COR
+                                        </button>
+                                        <button *ngIf="configurations" class="btn btn-sm btn-warning"
+                                                (click)="markAsCompliant()">COMPLIANT
+                                        </button>
+                                        <button *ngIf="configurations" class="btn btn-sm btn-warning"
+                                                (click)="sendCertificateOfCompliance()">SEND COI
+                                        </button>
+                                    </div>
+                                    <div *ngIf="!consignment.ui.completed">
+                                        <button *ngIf="consignment.ui.attachments" class="btn btn-sm btn-primary"
+                                                (click)="uploadAttachment()">UPLOAD
+                                            ATTACHMENT
+                                        </button>
+                                        <button class="btn btn-sm btn-warning"
+                                                (click)="approveRejectConsignment()">Approve / Reject Consignment
+                                        </button>
+                                        <button *ngIf="!consignment.ui.assigned " class="btn btn-sm btn-warning"
+                                                (click)="assignInspectionOfficer()">ASSIGN IO
+                                        </button>
+                                        <button *ngIf="!consignment.ui.assigned" class="btn btn-sm btn-warning"
+                                                (click)="manualAssignInspectionOfficer()">PICK CD(MANUAL ASSIGN IO)
+                                        </button>
+                                        <button *ngIf="consignment.ui.assigned" class="btn btn-sm btn-warning"
+                                                (click)="reassignInspectionOfficer()">REASSIGN IO
+                                        </button>
+                                        <button *ngIf="!consignment.ui.hasPort" class="btn btn-sm btn-warning"
+                                                (click)="assignConsignmentPort()">ASSIGN PORT
+                                        </button>
+                                        <button *ngIf="consignment.ui.targetItem" class="btn btn-sm btn-warning"
+                                                (click)="targetConsignment()">TARGET
+                                        </button>
+                                        <button *ngIf="consignment.ui.supervisorTarget"
+                                                class="btn btn-sm btn-warning"
+                                                (click)="supervisorTargetConsignment()">SUPERVISOR TARGET
+                                        </button>
+                                    </div>
+                                </div>
+                                <a class="btn btn-sm btn-warning"
+                                   href="{{consignment.cd_details.summaryPageURL}}"
+                                   *ngIf="consignment.cd_details.summaryPageURL" target="_blank">View</a>
+                                <br/>
+                                <b>Document Details:</b>
+                                <br/>
+                                <button *ngIf="consignment.ui.demandNote" class="btn btn-sm btn-primary"
+                                        (click)="downloadDemandNote()">DEMAND NOTE PDF
+                                </button>
+                                <button *ngIf="isVehicle()" class="btn btn-sm btn-primary" (click)="viewCoR()">
+                                    CERTIFICATE OF
+                                    ROADWORTHINESS
+                                </button>
+                                <button *ngIf="!isVehicle() &&  consignment.ui.cocRequest && consignment.cd_details.localCocOrCorStatus==1"
+                                        class="btn btn-sm btn-primary" (click)="viewCoR()">CERTIFICATE OF COMPLIANCE
+                                </button>
+                                <button *ngIf="!isVehicle() &&  consignment.ui.corRequest && consignment.cd_details.localCocOrCorStatus==1"
+                                        class="btn btn-sm btn-primary" (click)="viewCoR()">CERTIFICATE OF COMPLIANCE
+                                </button>
+                                <button *ngIf="isVehicle() &&consignment.cd_details.localCocOrCorStatus==1"
+                                        class="btn btn-sm btn-primary" (click)="viewCoR()">CERTIFICATE OF
+                                    ROADWORTHINESS
+                                </button>
+                                <button class="btn btn-sm btn-primary" (click)="viewIdfDocument()">IDF DOCUMENT
+                                </button>
+                                <button class="btn btn-sm btn-primary" (click)="viewDeclarationDocument()">
+                                    DECLARATION DOCUMENT
+                                </button>
+                            </div>
                         </div>
-                        <!-- end content-->
                     </div>
-                    <!--  end card  -->
+                    <!-- end content-->
                 </div>
-                <!-- end col-md-12 -->
+                <!--  end card  -->
             </div>
-            <!-- end row -->
+            <!-- end col-md-12 -->
         </div>
+        <!-- end row -->
     </div>
+</div>

@@ -171,6 +171,7 @@ import {ManualAssignOfficerComponent} from "./apollowebs/di/forms/manual-assign-
 import {TargetApproveItemComponent} from "./apollowebs/di/forms/target-approve-item/target-approve-item.component";
 import {SendDemandNoteTokwsComponent} from "./apollowebs/di/forms/send-demand-note-tokws/send-demand-note-tokws.component";
 import { ViewRemarksHistoryComponent } from './apollowebs/di/view-single-consignment-document/view-remarks-history/view-remarks-history.component';
+import { ItemDetailsComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/item-details/item-details.component';
 
 
 @NgModule({
@@ -330,7 +331,8 @@ import { ViewRemarksHistoryComponent } from './apollowebs/di/view-single-consign
         TargetApproveItemComponent,
         ManualAssignOfficerComponent,
         SendDemandNoteTokwsComponent,
-        ViewRemarksHistoryComponent
+        ViewRemarksHistoryComponent,
+        ItemDetailsComponent
     ]
 })
 export class MaterialModule {}

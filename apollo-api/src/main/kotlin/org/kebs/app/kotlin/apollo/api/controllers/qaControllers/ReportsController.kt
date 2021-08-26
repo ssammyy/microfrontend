@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.controllers.qaControllers
 
+import org.apache.http.HttpStatus
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import java.io.ByteArrayOutputStream
 import javax.servlet.http.HttpServletResponse
 
 @RestController
@@ -43,7 +45,7 @@ class ReportsController(
         response: HttpServletResponse,
         @RequestParam(value = "permit_id") id: Long
     ) {
-        var map = hashMapOf<String, Any>()
+        val map = hashMapOf<String, Any>()
         val permit = qaDaoServices.findPermitBYID(id)
 
         map["FirmName"] = "Test"
@@ -53,11 +55,19 @@ class ReportsController(
         map["AssessmentDate"] = "Test"
         map["Assessors"] = "Test"
 
-        reportsDaoService.extractReportEmptyDataSource(
+        val pdfReportStream=reportsDaoService.extractReportEmptyDataSource(
             map,
-            response,
             applicationMapProperties.mapReportPacSummaryReportPath
         )
+        response.contentType = "text/html"
+        response.contentType = "application/pdf"
+        response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Dispostion", "inline; filename=file.pdf;")
+        response.outputStream.let { responseOutputStream ->
+            responseOutputStream.write(pdfReportStream.toByteArray())
+            responseOutputStream.close()
+            pdfReportStream.close()
+        }
     }
 
 
@@ -106,12 +116,22 @@ class ReportsController(
 
         map = reportsDaoService.addBankAndMPESADetails(map)
 
-        reportsDaoService.extractReport(
-            map,
-            response,
-            applicationMapProperties.mapReportProfomaInvoiceWithItemsPath,
-            batchInvoiceList
+        val extractReport = reportsDaoService.extractReport(
+                map,
+                applicationMapProperties.mapReportProfomaInvoiceWithItemsPath,
+                batchInvoiceList
         )
+
+//        response.contentType = "text/html"
+        response.contentType = "application/pdf"
+        response.setHeader("Content-Length", extractReport.size().toString())
+        response.addHeader("Content-Dispostion", "inline; filename=jasper.html;")
+        response.outputStream
+                .let { responseOutputStream ->
+                    responseOutputStream.write(extractReport.toByteArray())
+                    responseOutputStream.close()
+                    extractReport.close()
+                }
     }
 //    /*
 //    GetDemand Note with all list of Items In It
@@ -262,33 +282,42 @@ class ReportsController(
         map["EmailAddress"] = foundPermitDetails.email.toString()
         map["phoneNumber"] = foundPermitDetails.telephoneNo.toString()
         map["QrCode"] = foundPermitDetails.permitNumber.toString()
-
-
+        var pdfReportStream:ByteArrayOutputStream?=null
         when (foundPermitDetails.permitTypeID) {
             applicationMapProperties.mapQAPermitTypeIDDmark -> {
                 map["DmarkLogo"] = dMarkImageFile
-                reportsDaoService.extractReportEmptyDataSource(
+                pdfReportStream=reportsDaoService.extractReportEmptyDataSource(
                     map,
-                    response,
                     applicationMapProperties.mapReportDmarkPermitReportPath
                 )
             }
             applicationMapProperties.mapQAPermitTypeIdSmark -> {
                 map["SmarkLogo"] = sMarkImageFile
-                reportsDaoService.extractReportEmptyDataSource(
+                pdfReportStream=reportsDaoService.extractReportEmptyDataSource(
                     map,
-                    response,
                     applicationMapProperties.mapReportSmarkPermitReportPath
                 )
             }
             applicationMapProperties.mapQAPermitTypeIdFmark -> {
                 map["FmarkLogo"] = fMarkImageFile
-                reportsDaoService.extractReportEmptyDataSource(
+                pdfReportStream=reportsDaoService.extractReportEmptyDataSource(
                     map,
-                    response,
                     applicationMapProperties.mapReportFmarkPermitReportPath
                 )
             }
+        }
+        if(pdfReportStream!=null) {
+            response.contentType = "text/html"
+            response.contentType = "application/pdf"
+            response.setHeader("Content-Length", pdfReportStream.size().toString())
+            response.addHeader("Content-Dispostion", "inline; filename=file.pdf;")
+            response.outputStream.let { responseOutputStream ->
+                responseOutputStream.write(pdfReportStream.toByteArray())
+                responseOutputStream.close()
+                pdfReportStream.close()
+            }
+        } else {
+            response.status=HttpStatus.SC_BAD_REQUEST
         }
 
     }

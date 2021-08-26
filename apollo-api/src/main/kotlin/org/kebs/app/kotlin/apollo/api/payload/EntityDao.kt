@@ -96,3 +96,7 @@ class FreightStationsDto {
         }
     }
 }
+
+class CheckListItem{
+    
+}

@@ -1,7 +1,9 @@
 package org.kebs.app.kotlin.apollo.api.routes
 
 import org.kebs.app.kotlin.apollo.api.handlers.ApiDestinationInspectionHandler
+import org.kebs.app.kotlin.apollo.api.handlers.ChecklistHandler
 import org.kebs.app.kotlin.apollo.api.handlers.DestinationInspectionActionsHandler
+import org.kebs.app.kotlin.apollo.api.handlers.InvoiceHandlers
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.bind.annotation.CrossOrigin
@@ -9,6 +11,25 @@ import org.springframework.web.servlet.function.router
 
 @Configuration
 class DestinationInspectionRoutes {
+
+    @Bean
+    @CrossOrigin
+    fun invoicing(handlers: InvoiceHandlers)= router{
+        "/api/v1/di".nest {
+            GET("/demand/note/{demandNoteId}",handlers::downloadDemandNote)
+            GET("/demand/notes/{cdUuid}",handlers::cdInvoiceDetails)
+            POST("/generate/demand/note/{demandNoteId}",handlers::generateDemandNote)
+        }
+    }
+
+    @Bean
+    @CrossOrigin
+    fun checkLists(handlers: ChecklistHandler)= router{
+        "/api/v1/di".nest {
+            GET("/ministry/checklist/{checklistId}",handlers::downloadMinistryChecklist)
+            GET("/ministry/checklists/{checklistId}",handlers::listMinistryChecklists)
+        }
+    }
 
     @Bean
     @CrossOrigin

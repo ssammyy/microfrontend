@@ -33,10 +33,14 @@ class DestinationInspectionActionsHandler(
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             val cdUuid = req.pathVariable("cdUuid")
             val consignmentDocument = daoServices.findCDWithUuid(cdUuid)
+            if(consignmentDocument.blacklistId==null){
+                response.responseCode=ResponseCodes.FAILED_CODE
+                response.message="Invalid blacklist identifier or not requested"
+                return ServerResponse.ok().body(response)
+            }
             val form = req.body(ConsignmentUpdateRequest::class.java)
             with(consignmentDocument) {
                 blacklistApprovedRemarks = form.remarks
-                blacklistId = form.blacklistId
                 blacklistApprovedDate = Date(java.util.Date().time)
                 blacklistApprovedStatus = form.blacklistStatus
             }
@@ -98,6 +102,7 @@ class DestinationInspectionActionsHandler(
                     }
                 }
             }
+
             val processStages = commonDaoServices.findProcesses(applicationMapProperties.mapImportInspection)
             consignmentDocument.blacklistApprovedRemarks?.let {
                 processStages.process1?.let { it1 ->
@@ -108,10 +113,10 @@ class DestinationInspectionActionsHandler(
                             it,
                             it1
                     )
+                    response.responseCode = ResponseCodes.SUCCESS_CODE
+                    response.message = "Success"
                 }
             }
-            response.responseCode = ResponseCodes.SUCCESS_CODE
-            response.message = "Success"
         } catch (ex: Exception) {
             response.message = ex.localizedMessage
             response.responseCode = ResponseCodes.EXCEPTION_STATUS

@@ -118,7 +118,15 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
             )
     }
 
+    isVehicle(): Boolean {
+        if (this.consignment) {
+            return this.consignment.cd_details.cdTypeCategory === "VEHICLES"
+        }
+        return false
+    }
+    downloadDemandNote(){
 
+    }
     loadConsignmentDetails() {
         this.diService.getConsignmentDetails(this.consignmentId)
             .subscribe(

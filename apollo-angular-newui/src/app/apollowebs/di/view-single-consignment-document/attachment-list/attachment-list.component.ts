@@ -62,10 +62,12 @@ export class AttachmentListComponent implements OnInit {
         this.diService.downloadAttachment(event.data.id)
             .subscribe(
                 res=>{
-
+                  const blob = new Blob([res.data]);
+                  const url= window.URL.createObjectURL(blob);
+                  window.open(url);
                 },
                 error => {
-
+                  console.log(error)
                 }
             )
         break

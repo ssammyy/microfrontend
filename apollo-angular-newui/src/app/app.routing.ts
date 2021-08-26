@@ -70,6 +70,7 @@ import {SmarkComponent} from "./apollowebs/quality-assurance/smark/smark.compone
 import {ViewDeclarationDocumentsItemDetailsListComponent} from "./apollowebs/di/view-single-consignment-document/view-di-declaration-documents/view-declaration-documents-item-details-list/view-declaration-documents-item-details-list.component";
 import {ViewDiDeclarationDocumentsComponent} from "./apollowebs/di/view-single-consignment-document/view-di-declaration-documents/view-di-declaration-documents.component";
 import {ViewIdfDocumentDetailsComponent} from "./apollowebs/di/view-single-consignment-document/view-idf-document-details/view-idf-document-details.component";
+import {ItemDetailsComponent} from "./apollowebs/di/view-single-consignment-document/item-details-list-view/item-details/item-details.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -380,6 +381,10 @@ const routes: Routes = [
             {
               path: 'idf/details/:id',
               component: ViewIdfDocumentDetailsComponent
+            },
+            {
+                path: 'item/:cdUuid/:id',
+                component: ItemDetailsComponent
             },
             {
                 path: ':id',

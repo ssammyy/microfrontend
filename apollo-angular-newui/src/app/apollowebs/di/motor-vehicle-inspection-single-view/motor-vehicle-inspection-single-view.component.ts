@@ -47,7 +47,18 @@ export class MotorVehicleInspectionSingleViewComponent implements OnInit {
     }
 
     downloadReport() {
-        this.diService.downloadMinistryCheckList()
+        this.diService.downloadMinistryCheckList(this.itemId)
+            .subscribe(
+                res=>{
+                    if(res.responseCode==="00"){
+                        const blob = new Blob([res.data]);
+                        const url= window.URL.createObjectURL(blob);
+                        window.open(url);
+                    }else {
+                        console.log(res.message)
+                    }
+                }
+            )
 
     }
 

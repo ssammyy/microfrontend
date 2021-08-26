@@ -94,7 +94,16 @@ class DIReportsControllers(
                 }
             }
         }
-        reportsDaoService.extractReport(map, response, "classpath:reports/$docType.jrxml", sampCollect)
+        val pdfReportStream=reportsDaoService.extractReport(map, "classpath:reports/$docType.jrxml", sampCollect)
+        response.contentType = "text/html"
+        response.contentType = "application/pdf"
+        response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Dispostion", "inline; filename=CHECKLIST-${docType.toUpperCase()}-${id}.pdf;")
+        response.outputStream.let { responseOutputStream ->
+            responseOutputStream.write(pdfReportStream.toByteArray())
+            responseOutputStream.close()
+            pdfReportStream.close()
+        }
 
     }
 
@@ -138,7 +147,16 @@ class DIReportsControllers(
             }
         } ?: throw Exception("Id does not exist")
 
-        reportsDaoService.extractReport(map, response, "classpath:reports/reconciliationReport.jrxml", listOf<Any>())
+        val pdfReportStream=reportsDaoService.extractReport(map, "classpath:reports/reconciliationReport.jrxml", listOf<Any>())
+        response.contentType = "text/html"
+        response.contentType = "application/pdf"
+        response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Dispostion", "inline; filename=RECONCILIATION-${id}.pdf;")
+        response.outputStream.let { responseOutputStream ->
+            responseOutputStream.write(pdfReportStream.toByteArray())
+            responseOutputStream.close()
+            pdfReportStream.close()
+        }
     }
 
 
@@ -171,7 +189,16 @@ class DIReportsControllers(
 
         map = reportsDaoService.addBankAndMPESADetails(map)
 
-        reportsDaoService.extractReportEmptyDataSource(map, response, applicationMapProperties.mapReportDemandNotePath)
+        val pdfReportStream=reportsDaoService.extractReportEmptyDataSource(map, applicationMapProperties.mapReportDemandNotePath)
+        response.contentType = "text/html"
+        response.contentType = "application/pdf"
+        response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Dispostion", "inline; filename=DEMAND_NOTE-${id}.pdf;")
+        response.outputStream.let { responseOutputStream ->
+            responseOutputStream.write(pdfReportStream.toByteArray())
+            responseOutputStream.close()
+            pdfReportStream.close()
+        }
     }
 
 
@@ -209,12 +236,20 @@ class DIReportsControllers(
 
         map = reportsDaoService.addBankAndMPESADetails(map)
 
-        reportsDaoService.extractReport(
+        val pdfReportStream=reportsDaoService.extractReport(
             map,
-            response,
             applicationMapProperties.mapReportDemandNoteWithItemsPath,
             demandNoteItemList
         )
+        response.contentType = "text/html"
+        response.contentType = "application/pdf"
+        response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Disposition", "inline; filename=DEMAND-NOTE-${id}.pdf;")
+        response.outputStream.let { responseOutputStream ->
+            responseOutputStream.write(pdfReportStream.toByteArray())
+            responseOutputStream.close()
+            pdfReportStream.close()
+        }
     }
 
     /*
@@ -239,7 +274,16 @@ class DIReportsControllers(
 
             } ?: throw ExpectedDataNotFound("Motor Vehicle Inspection Checklist does not exist")
 
-            reportsDaoService.extractReportEmptyDataSource(map, response, applicationMapProperties.mapReportMinistryChecklistPath)
+            val pdfReportStream=reportsDaoService.extractReportEmptyDataSource(map, applicationMapProperties.mapReportMinistryChecklistPath)
+            response.contentType = "text/html"
+            response.contentType = "application/pdf"
+            response.setHeader("Content-Length", pdfReportStream.size().toString())
+            response.addHeader("Content-Dispostion", "inline; filename=MINISTRY-CHECKLIS-${mvInspectionChecklistid}.pdf;")
+            response.outputStream.let { responseOutputStream ->
+                responseOutputStream.write(pdfReportStream.toByteArray())
+                responseOutputStream.close()
+                pdfReportStream.close()
+            }
         }
     }
 
@@ -288,7 +332,16 @@ class DIReportsControllers(
 
             } ?: throw ExpectedDataNotFound("Motor Vehicle Inspection Checklist does not exist")
 
-            reportsDaoService.extractReportEmptyDataSource(map, response, applicationMapProperties.mapReportMotorVehicleChecklistPath)
+            val pdfReportStream=reportsDaoService.extractReportEmptyDataSource(map, applicationMapProperties.mapReportMotorVehicleChecklistPath)
+            response.contentType = "text/html"
+            response.contentType = "application/pdf"
+            response.setHeader("Content-Length", pdfReportStream.size().toString())
+            response.addHeader("Content-Dispostion", "inline; filename=VEHICLE-INSPECTION-REPORT-${mvInspectionChecklistid}.pdf;")
+            response.outputStream.let { responseOutputStream ->
+                responseOutputStream.write(pdfReportStream.toByteArray())
+                responseOutputStream.close()
+                pdfReportStream.close()
+            }
         }
     }
 

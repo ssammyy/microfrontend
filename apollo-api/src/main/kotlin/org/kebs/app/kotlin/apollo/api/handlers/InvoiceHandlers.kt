@@ -1,19 +1,26 @@
 package org.kebs.app.kotlin.apollo.api.handlers
 
+import okhttp3.internal.toLongOrDefault
+import org.apache.http.HttpStatus
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.request.ConsignmentUpdateRequest
+import org.kebs.app.kotlin.apollo.api.ports.provided.createUserAlert
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.repo.IInvoiceRepository
 import org.kebs.app.kotlin.apollo.store.repo.IServiceMapsRepository
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
+import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
+import org.springframework.web.servlet.function.paramOrNull
 import java.util.stream.Collectors
 import java.util.stream.IntStream
 
@@ -24,11 +31,39 @@ class InvoiceHandlers(
         private val commonDaoServices: CommonDaoServices,
         private val applicationMapProperties: ApplicationMapProperties,
         private val daoServices: DestinationInspectionDaoServices,
-        private val invoiceDaoService: InvoiceDaoService
+        private val invoiceDaoService: InvoiceDaoService,
+        private val reportsDaoService: ReportsDaoService
 ) {
     final val appId = applicationMapProperties.mapPermitApplication
     private final val invoiceHomePage = "quality-assurance/customer/my-invoices"
     final val errors = mutableMapOf<String, String>()
+
+    fun cdInvoiceDetails(req: ServerRequest): ServerResponse {
+        val response = ApiResponseModel()
+        try {
+            req.paramOrNull("cdUuid")
+                    ?.let { cdUuid ->
+                        val map = commonDaoServices.serviceMapDetails(appId)
+                        val cdDetails = daoServices.findCDWithUuid(cdUuid)
+                        val itemListWithDemandNote = daoServices.findCDItemsListWithCDIDAndDemandNoteStatus(cdDetails, map)
+                        response.data = daoServices.findDemandNoteListFromCdItemList(itemListWithDemandNote, map.inactiveStatus)
+                        response.message = "Success"
+                        response.responseCode = ResponseCodes.SUCCESS_CODE
+                        response
+                    }
+                    ?: run {
+                        response.message = "Required uuid, check config"
+                        response.responseCode = ResponseCodes.FAILED_CODE
+                        response
+                    }
+        } catch (e: Exception) {
+            response.message = e.localizedMessage
+            response.responseCode = ResponseCodes.FAILED_CODE
+        }
+        return ServerResponse.ok()
+                .body(response)
+    }
+
     fun generateDemandNote(req: ServerRequest): ServerResponse {
         val response = ApiResponseModel()
         try {
@@ -42,7 +77,7 @@ class InvoiceHandlers(
                 sendDemandNote = map.activeStatus
                 sendDemandNoteRemarks = form.remarks
             }
-            this.daoServices.updateCdDetailsInDB(consignmentDocument,loggedInUser)
+            this.daoServices.updateCdDetailsInDB(consignmentDocument, loggedInUser)
             //Send Demand Note
             val demandNote = consignmentDocument.id?.let {
                 daoServices.findDemandNoteWithCDID(
@@ -107,6 +142,10 @@ class InvoiceHandlers(
         return ServerResponse.ok().body(response)
     }
 
+//    fun listDemandNotes(req: ServerRequest): ServerResponse {
+//
+//    }
+
     fun getAllInvoices(req: ServerRequest): ServerResponse {
         return serviceMapsRepo.findByIdAndStatus(appId, 1)
                 ?.let { map ->
@@ -142,6 +181,48 @@ class InvoiceHandlers(
                 }
                 ?: throw Exception("Missing application mapping for [id=$appId], recheck configuration")
 
+    }
+
+    fun downloadDemandNote(req: ServerRequest): ServerResponse {
+        val response = ApiResponseModel()
+        try {
+            req.pathVariable("demandNoteId").let {
+                var map = hashMapOf<String, Any>()
+
+                val demandNote = daoServices.findDemandNoteWithCdID(it.toLongOrDefault(0L))
+                val demandNoteItemList = demandNote?.id?.let { daoServices.findDemandNoteItemDetails(it) }
+                        ?: throw ExpectedDataNotFound("No List Of Details Available does not exist")
+
+                map["preparedBy"] = demandNote.generatedBy.toString()
+                map["datePrepared"] = demandNote.dateGenerated.toString()
+                map["demandNoteNo"] = demandNote.demandNoteNumber.toString()
+                map["importerName"] = demandNote.nameImporter.toString()
+                map["importerAddress"] = demandNote.address.toString()
+                map["importerTelephone"] = demandNote.telephone.toString()
+                map["ablNo"] = demandNote.entryAblNumber.toString()
+                map["totalAmount"] = demandNote.totalAmount.toString()
+                map["receiptNo"] = demandNote.receiptNo.toString()
+
+                map = reportsDaoService.addBankAndMPESADetails(map)
+
+                val extractReport = reportsDaoService.extractReport(
+                        map,
+                        applicationMapProperties.mapReportDemandNoteWithItemsPath,
+                        demandNoteItemList
+                )
+                // Response with file
+                return ServerResponse.ok()
+                        .header("Content-Disposition", "inline; filename=NOTE-${it}.pdf;")
+                        .contentType(MediaType.APPLICATION_PDF)
+                        .contentLength(extractReport.size().toLong())
+                        .body(extractReport)
+            }
+        } catch (ex: Exception) {
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.message = "Failed to generate demand note"
+        }
+        return ServerResponse.status(HttpStatus.SC_INTERNAL_SERVER_ERROR)
+                .body(response)
     }
 }
 

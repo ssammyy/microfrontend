@@ -67,13 +67,11 @@
                                             <tr>
                                                 <td>{{declaration.cd_standard.mdaDescription}}</td>
                                             </tr>
-                                            <b>Action:</b>
-                                            <button class="btn btn-sm btn-primary" >MANIFEST DOCUMENT</button>
                                         </table>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-9">
+                            <div class="col-md-8">
                               
                                 <!-- <div class="d-flex"> -->
                                     <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
@@ -351,7 +349,11 @@
                                     <div [ngbNavOutlet]="nav" class="ml-4"></div>
                                 <!-- </div>  -->
                             </div>
-                           
+                            <div class="col-md-2">
+                                <b>Action:</b>
+                                <br/>
+                                <button class="btn btn-sm btn-primary" >MANIFEST DOCUMENT</button>
+                            </div>
                         </div>
                         <!-- end content-->
                     </div>

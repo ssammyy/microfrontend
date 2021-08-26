@@ -190,7 +190,7 @@ class ConsignmentDocumentDetailsEntity : Serializable {
     var clusterId: Long? = null
 
     @JoinColumn(name = "ASSIGNED_INSPECTION_OFFICER", referencedColumnName = "ID")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     var assignedInspectionOfficer: UsersEntity? = null
 
     @JoinColumn(name = "CD_STANDARD", referencedColumnName = "ID")

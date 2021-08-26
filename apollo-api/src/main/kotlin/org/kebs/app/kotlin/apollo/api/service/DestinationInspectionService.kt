@@ -1,6 +1,5 @@
 package org.kebs.app.kotlin.apollo.api.service
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.payload.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
@@ -59,7 +58,7 @@ class DestinationInspectionService(
 
     fun loadCDTypes(): ApiResponseModel {
         val response = ApiResponseModel()
-        response.data = this.cdTypesRepo.findByStatus(1)
+        response.data = this.cdTypesRepo.findByStatus(1)?.let { ConsignmentDocumentTypesEntityDao.fromList(it) }
         response.message = "Success"
         response.responseCode = ResponseCodes.SUCCESS_CODE
         return response
@@ -299,7 +298,6 @@ class DestinationInspectionService(
     fun consignmentDocumentAttachments(cdUuid: String): ApiResponseModel {
         val response = ApiResponseModel()
         try {
-            val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             val cdDetails = daoServices.findCDWithUuid(cdUuid)
             response.data = daoServices.findAllAttachmentsByCd(cdDetails)?.let { DiUploadsEntityDao.fromList(it) }
             response.responseCode = ResponseCodes.SUCCESS_CODE
@@ -318,9 +316,9 @@ class DestinationInspectionService(
         try {
             val dataMap = mutableMapOf<String, Any?>()
             val cdItemDetails = daoServices.findItemWithUuid(cdItemUuid)
-            dataMap.put("cd_type", cdItemDetails.cdDocId)
-            dataMap.put("item_non_standard", daoServices.findCdItemNonStandardByItemID(cdItemDetails))
-            dataMap.put("demand_notes", daoServices.findDemandNote(cdItemDetails))
+            dataMap.put("cd_type", cdItemDetails.cdDocId?.cdType?.let { ConsignmentDocumentTypesEntityDao.fromEntity(it) })
+            dataMap.put("item_non_standard", daoServices.findCdItemNonStandardByItemID(cdItemDetails)?.let { CdItemNonStandardEntityDto.fromEntity(it) })
+            dataMap.put("cd_item",CdItemDetailsDao.fromEntity(cdItemDetails))
             // Check Certificate of Roadworthiness(CoR)
             cdItemDetails.cdDocId?.let { itemType ->
                 if (itemType.equals(corCdType)) {
@@ -328,10 +326,11 @@ class DestinationInspectionService(
                         dataMap.put("cor", daoServices.findCORById(it))
                     }
                 }
+                dataMap.put("cd_details", ConsignmentDocumentDao.fromEntity(itemType))
                 // Add vehicle inspection result
                 daoServices.findMotorVehicleInspectionByCdItem(cdItemDetails)?.let {
                     KotlinLogging.logger { }.info { "Motor vehicle inspection returned = ${it.id}" }
-                    dataMap.put("vehicle_inspection_checklist", it)
+                    dataMap.put("vehicle_inspection_checklist", CdInspectionMotorVehicleItemChecklistDao.fromEntity(it))
                 }
             }
 
@@ -482,7 +481,12 @@ class DestinationInspectionService(
         }
         dataMap.put("cd_details", ConsignmentDocumentDao.fromEntity(cdDetails))
         dataMap.put("items_cd", CdItemDetailsDao.fromList(daoServices.findCDItemsListWithCDID(cdDetails)))
-
+        // Consignment UI controllers
+        try {
+            dataMap.put("ui", ConsignmentEnableUI.fromEntity(cdDetails, map, commonDaoServices.loggedInUserAuthentication()))
+        }catch (ex: Exception){
+            KotlinLogging.logger { }.error { ex }
+        }
         return dataMap
     }
 

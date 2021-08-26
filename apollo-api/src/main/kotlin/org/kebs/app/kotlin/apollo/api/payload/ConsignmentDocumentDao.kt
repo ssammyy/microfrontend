@@ -1,80 +1,101 @@
 package org.kebs.app.kotlin.apollo.api.payload
 
+import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.*
+import org.springframework.security.core.Authentication
 import java.io.Serializable
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
 import javax.persistence.*
 
+fun checkHasAuthority(role: String, auth: Authentication): Boolean {
+    return auth.authorities.stream().anyMatch { authority -> authority.authority == role }
+}
+
+class ConsignmentEnableUI {
+    var csApproval: Boolean? = null
+    var demandNote: Boolean? = null
+    var sendCoi: Boolean? = null
+    var targetItem: Boolean? = null
+    var supervisorTarget: Boolean? = null
+    var attachments: Boolean? = null
+    var approveReject: Boolean? = null
+    var compliant: Boolean? = null
+    var corRequest: Boolean? = null
+    var cocRequest: Boolean? = null
+    var assigned: Boolean? = null
+    var completed: Boolean? = null
+    var inspectionActive: Boolean? = null
+    var hasPort: Boolean? = null
+
+    companion object {
+        fun fromEntity(cd: ConsignmentDocumentDetailsEntity, map: ServiceMapsEntity, authentication: Authentication): ConsignmentEnableUI {
+            val modify = checkHasAuthority("DI_INSPECTION_OFFICER_MODIFY", authentication)
+            val change = checkHasAuthority("DI_OFFICER_CHARGE_MODIFY", authentication)
+
+            val ui = ConsignmentEnableUI().apply {
+                csApproval = modify && (cd.csApprovalStatus == map.activeStatus)
+                demandNote = modify && (cd.sendDemandNote != null)
+                sendCoi = modify && cd.localCoi == map.activeStatus && cd.sendCoiStatus != map.activeStatus
+                targetItem = modify && cd.targetStatus != map.activeStatus && cd.assignedStatus == map.activeStatus
+                supervisorTarget = change && cd.targetApproveStatus != map.activeStatus && cd.targetStatus == map.activeStatus
+                attachments = (change || modify)
+                hasPort = cd.portOfArrival != null
+                completed = cd.approveRejectCdStatusType != null
+                approveReject = (cd.targetApproveStatus == null || cd.inspectionDateSetStatus == map.activeStatus) && modify
+            }
+            cd.cdType?.let {
+                ui.corRequest = it.localCorStatus == map.activeStatus
+                ui.cocRequest = it.localCocStatus == map.activeStatus
+                ui.inspectionActive = it.inspectionStatus == map.activeStatus
+            }
+            return ui
+        }
+    }
+}
+
 class ConsignmentDocumentDao {
     var id: Long? = null
     var uuid: String? = null
-    var issuedDateTime: String? = null
-    var localCoiRemarks: String? = null
-    var sendCoiRemarks: String? = null
     var ucrNumber: String? = null
     var version: Long? = null
     var idfNumber: String? = null
     var cocNumber: String? = null
-    var sendDemandNoteRemarks: String? = null
     var sendDemandNote: Int? = null
     var localCoi: Int? = null
-    var oldCdStatus: Int? = null
-    var sendCoiStatus: Int? = null
-    var localCocOrCorStatus: Int? = null
-    var localCocOrCorRemarks: String? = null
-    var localCocOrCorDate: Date? = null
     var compliantStatus: Int? = null
     var compliantRemarks: String? = null
-    var compliantDate: Date? = null
-    var blacklistApprovedStatus: Int? = null
-    var blacklistApprovedRemarks: String? = null
-    var blacklistApprovedDate: Date? = null
     var blacklistStatus: Int? = null
     var blacklistRemarks: String? = null
     var blacklistDate: Date? = null
     var blacklistId: Int? = null
     var assignedStatus: Int? = null
-    var assignedRemarks: String? = null
-    var assignPortRemarks: String? = null
-    var assignedDate: Date? = null
-    var reassignedStatus: Int? = null
-    var reassignedRemarks: String? = null
-    var reassignedDate: Date? = null
-    var processRejectionStatus: Int? = null
-    var processRejectionDate: Date? = null
-    var processRejectionRemarks: String? = null
     var docTypeId: Long? = null
     var cdType: Long? = null
     var cdTypeCategory: String? = null
     var cdTypeName: String? = null
+    var cdTypeDescription: String? = null
     var portOfArrival: Long? = null
     var freightStation: Long? = null
     var cdImporter: Long? = null
     var csApprovalStatus: Int? = null
     var approveRejectCdStatus: Int? = null
     var approveRejectCdDate: Date? = null
-    var approveRejectCdRemarks: String? = null
     var cdRefNumber: String? = null
-    var inspectionNotificationStatus: Int? = null
-    var inspectionRemarks: String? = null
     var inspectionDate: Date? = null
-    var targetApproveStatus: Int? = null
     var targetStatus: Int? = null
-    var targetApproveRemarks: String? = null
-    var targetApproveDate: Date? = null
-    var targetDate: Date? = null
-    var targetReason: String? = null
     var description: String? = null
     var status: Int? = null
     var applicantName: String? = null
     var applicationDate: Timestamp? = null
     var assignedTo: String? = null
+    var assignedOn: Date? = null
     var declarationNumber: String? = null
     var applicationRefNo: String? = null
     var summaryPageURL: String? = null
     var approvalStatus: String? = null
+    var enabledFunctions: ConsignmentEnableUI? = null
 
     companion object {
         fun fromEntity(doc: ConsignmentDocumentDetailsEntity): ConsignmentDocumentDao {
@@ -86,7 +107,11 @@ class ConsignmentDocumentDao {
                 dt.cdType = it.id
                 dt.cdTypeCategory = it.category
                 dt.cdTypeName = it.typeName
+                dt.cdTypeDescription = it.description
             }
+            dt.localCoi = doc.localCoi
+            dt.sendDemandNote = doc.sendDemandNote
+            dt.docTypeId = doc.docTypeId
             dt.cocNumber = doc.cocNumber
             dt.cdRefNumber = doc.cdRefNumber
             dt.ucrNumber = doc.ucrNumber
@@ -97,6 +122,7 @@ class ConsignmentDocumentDao {
             dt.assignedStatus = doc.assignedStatus
             doc.assignedInspectionOfficer?.let {
                 dt.assignedTo = it.firstName + " " + it.lastName
+                dt.assignedOn = doc.assignedDate
             }
             doc.cdStandard?.let {
                 dt.declarationNumber = it.declarationNumber
@@ -121,7 +147,7 @@ class ConsignmentDocumentDao {
 class CdDocumentModificationHistoryDao : Serializable {
     var id: Long = 0
     var cdId: Long? = null
-    var name:String?=null
+    var name: String? = null
     var comment: String? = null
     var actionCode: String? = null
     var description: String? = null
@@ -137,7 +163,7 @@ class CdDocumentModificationHistoryDao : Serializable {
             history.description = cdHistory.description
             history.cdId = cdHistory.cdId
             history.id = cdHistory.id
-            history.name=cdHistory.name
+            history.name = cdHistory.name
             history.createdBy = cdHistory.createdBy
             history.createdOn = cdHistory.createdOn
             return history
@@ -422,6 +448,76 @@ class DiUploadsEntityDao : Serializable {
 
         fun fromList(uploads: List<DiUploadsEntity>): List<DiUploadsEntityDao> {
             val data = mutableListOf<DiUploadsEntityDao>()
+            uploads.forEach {
+                data.add(fromEntity(it))
+            }
+            return data
+        }
+    }
+}
+
+
+class ConsignmentDocumentTypesEntityDao : Serializable {
+    var id: Long = 0
+    var uuid: String? = null
+    var demandNotePrefix: String? = null
+    var typeName: String? = null
+    var description: String? = null
+    var status: Int? = null
+    var inspectionStatus: Int? = null
+    var localCocStatus: Int? = null
+    var localCorStatus: Int? = null
+    var category: String? = null
+
+    companion object {
+        fun fromEntity(upload: ConsignmentDocumentTypesEntity) = ConsignmentDocumentTypesEntityDao()
+                .apply {
+                    id = upload.id
+                    uuid = upload.uuid
+                    demandNotePrefix = upload.demandNotePrefix
+                    typeName = upload.typeName
+                    description = upload.description
+                    status = upload.status
+                    inspectionStatus = upload.inspectionStatus
+                    localCocStatus = upload.localCocStatus
+                    localCorStatus = upload.localCorStatus
+                    category = upload.category
+                }
+
+        fun fromList(uploads: List<ConsignmentDocumentTypesEntity>): List<ConsignmentDocumentTypesEntityDao> {
+            val data = mutableListOf<ConsignmentDocumentTypesEntityDao>()
+            uploads.forEach {
+                data.add(fromEntity(it))
+            }
+            return data
+        }
+    }
+}
+
+class CdItemNonStandardEntityDto : Serializable {
+    var id: Long? = null
+    var chassisNo: String? = null
+    var usedIndicator: String? = null
+    var vehicleYear: String? = null
+    var vehicleModel: String? = null
+    var vehicleMake: String? = null
+    var description: String? = null
+    var status: Long? = null
+
+    companion object {
+        fun fromEntity(upload: CdItemNonStandardEntity) = CdItemNonStandardEntityDto()
+                .apply {
+                    id = upload.id
+                    chassisNo = upload.chassisNo
+                    usedIndicator = upload.usedIndicator
+                    vehicleYear = upload.vehicleYear
+                    vehicleMake = upload.vehicleMake
+                    description = upload.description
+                    status = upload.status
+                }
+
+        fun fromList(uploads: List<CdItemNonStandardEntity>): List<CdItemNonStandardEntityDto> {
+            val data = mutableListOf<CdItemNonStandardEntityDto>()
             uploads.forEach {
                 data.add(fromEntity(it))
             }
