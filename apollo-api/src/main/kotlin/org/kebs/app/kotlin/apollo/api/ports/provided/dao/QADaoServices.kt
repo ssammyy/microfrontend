@@ -3382,7 +3382,7 @@ class QADaoServices(
     ): Pair<ServiceRequestsEntity, PermitApplicationsEntity> {
 
         var sr = commonDaoServices.createServiceRequest(s)
-        var savePermit = PermitApplicationsEntity()
+        var saveNewPermit = PermitApplicationsEntity()
         try {
             val pm = findPermitBYID(permitID)
             var oldPermit =
@@ -3399,7 +3399,7 @@ class QADaoServices(
 
             val permitTypeDetails = findPermitType(oldPermit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
 
-            with(savePermit) {
+            with(saveNewPermit) {
                 renewalStatus = s.activeStatus
                 userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
                 userId = user.id
@@ -3433,18 +3433,21 @@ class QADaoServices(
                 createdBy = commonDaoServices.concatenateName(user)
                 createdOn = commonDaoServices.getTimestamp()
             }
-            savePermit = permitRepo.save(savePermit)
+            saveNewPermit = permitRepo.save(saveNewPermit)
 
             when (oldPermit.permitType) {
                 applicationMapProperties.mapQAPermitTypeIdSmark -> {
-                    val sta10 = findSTA10WithPermitRefNumberANdPermitID(
+                    val oldSta10 = findSTA10WithPermitRefNumberANdPermitID(
                         oldPermit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
                         oldPermit.id ?: throw Exception("INVALID PERMIT ID")
                     )
                     var newSta10 = QaSta10Entity()
-                    newSta10 = commonDaoServices.updateDetails(sta10, newSta10) as QaSta10Entity
+                    newSta10 = commonDaoServices.updateDetails(oldSta10, newSta10) as QaSta10Entity
                     newSta10.id = null
-                    sta10NewSave(savePermit, newSta10, user, s)
+                    sta10NewSave(saveNewPermit, newSta10, user, s)
+
+                    regenerateSameDetailsForClonedSTA10(newSta10, oldSta10, oldPermit, saveNewPermit)
+
                 }
                 applicationMapProperties.mapQAPermitTypeIDDmark -> {
                     val sta3 = findSTA3WithPermitIDAndRefNumber(
@@ -3455,18 +3458,31 @@ class QADaoServices(
                     newSta3 = commonDaoServices.updateDetails(sta3, newSta3) as QaSta3Entity
                     newSta3.id = null
                     sta3NewSave(
-                        savePermit.id ?: throw Exception("INVALID PERMITID"),
-                        savePermit.permitRefNumber ?: throw Exception("INVALID PERMITID"),
+                        saveNewPermit.id ?: throw Exception("INVALID PERMIT ID"),
+                        saveNewPermit.permitRefNumber ?: throw Exception("INVALID PERMIT ID"),
                         newSta3,
                         user,
                         s
                     )
+
+                    val sta3FileList = findAllUploadedFileBYPermitIDAndSta3Status(
+                        oldPermit.id ?: throw Exception("MISSING PERMIT ID"),
+                        1
+                    )
+                    sta3FileList.forEach { fileList ->
+                        val newFileList = SerializationUtils.clone(fileList)
+                        with(newFileList) {
+                            id = null
+                            permitId = saveNewPermit.id
+                        }
+                        qaUploadsRepo.save(newFileList)
+                    }
                 }
             }
 
-            sr.payload = "Permit Renewed Updated [updatePermit= ${savePermit.id}]"
-            sr.names = "${savePermit.permitRefNumber}} ${savePermit.userId}"
-            sr.varField1 = "${savePermit.id}"
+            sr.payload = "Permit Renewed Updated [updatePermit= ${saveNewPermit.id}]"
+            sr.names = "${saveNewPermit.permitRefNumber}} ${saveNewPermit.userId}"
+            sr.varField1 = "${saveNewPermit.id}"
 
             sr.responseStatus = sr.serviceMapsId?.successStatusCode
             sr.responseMessage = "Success ${sr.payload}"
@@ -3485,7 +3501,85 @@ class QADaoServices(
         }
 
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
-        return Pair(sr, savePermit)
+        return Pair(sr, saveNewPermit)
+    }
+
+    fun regenerateSameDetailsForClonedSTA10(
+        newSta10: QaSta10Entity,
+        oldSta10: QaSta10Entity,
+        oldPermit: PermitApplicationsEntity,
+        newPermit: PermitApplicationsEntity
+    ) {
+        //Find all STA 10 related Tables
+        val qaSta10ID = newSta10.id ?: throw ExpectedDataNotFound("MISSING STA 10 ID")
+        val qaOldSta10ID = oldSta10.id ?: throw ExpectedDataNotFound("MISSING STA 10 ID")
+        val sta10Personnel = findPersonnelWithSTA10ID(qaOldSta10ID) ?: throw ExpectedDataNotFound("EMPTY RESULTS")
+        sta10Personnel.forEach { personnel ->
+            val newPersonnel = SerializationUtils.clone(personnel)
+            with(newPersonnel) {
+                id = null
+                sta10Id = qaSta10ID
+            }
+            qaPersonnelInchargeRepo.save(newPersonnel)
+
+        }
+
+
+        val sta10Products =
+            findProductsManufactureWithSTA10ID(qaOldSta10ID) ?: throw ExpectedDataNotFound("EMPTY RESULTS")
+        sta10Products.forEach { products ->
+            val newProducts = SerializationUtils.clone(products)
+            with(newProducts) {
+                id = null
+                sta10Id = qaSta10ID
+            }
+            productsManufactureSTA10Repo.save(newProducts)
+
+        }
+
+        val sta10Raw = findRawMaterialsWithSTA10ID(qaOldSta10ID) ?: throw ExpectedDataNotFound("EMPTY RESULTS")
+        sta10Raw.forEach { raw ->
+            val newRaw = SerializationUtils.clone(raw)
+            with(newRaw) {
+                id = null
+                sta10Id = qaSta10ID
+            }
+            rawMaterialsSTA10Repo.save(newRaw)
+
+        }
+
+        val sta10MachinePlant =
+            findMachinePlantsWithSTA10ID(qaOldSta10ID) ?: throw ExpectedDataNotFound("EMPTY RESULTS")
+        sta10MachinePlant.forEach { machinaryPlant ->
+            val newMachinaryPlant = SerializationUtils.clone(machinaryPlant)
+            with(newMachinaryPlant) {
+                id = null
+                sta10Id = qaSta10ID
+            }
+            machinePlantsSTA10Repo.save(newMachinaryPlant)
+
+        }
+        val sta10ManufacturingProcess =
+            findManufacturingProcessesWithSTA10ID(qaOldSta10ID) ?: throw ExpectedDataNotFound("EMPTY RESULTS")
+        sta10ManufacturingProcess.forEach { manufacturingProcess ->
+            val newManufacturingProcess = SerializationUtils.clone(manufacturingProcess)
+            with(newManufacturingProcess) {
+                id = null
+                sta10Id = qaSta10ID
+            }
+            manufacturingProcessSTA10Repo.save(newManufacturingProcess)
+
+        }
+        val sta10FileList =
+            findAllUploadedFileBYPermitIDAndSta10Status(oldPermit.id ?: throw Exception("MISSING PERMIT ID"), 1)
+        sta10FileList.forEach { fileList ->
+            val newFileList = SerializationUtils.clone(fileList)
+            with(newFileList) {
+                id = null
+                permitId = newPermit.id
+            }
+            qaUploadsRepo.save(newFileList)
+        }
     }
 
     fun getFileInvoicePDFForm(batchID: Long): File {
