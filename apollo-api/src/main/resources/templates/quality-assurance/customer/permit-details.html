@@ -974,8 +974,8 @@
                                                th:href="@{/api/qa/inspection/inspection-report-list(permitID=${permitDetails?.id})}"
                                                class="filter-link">APPROVE/REJECT GENERATED INSPECTION REPORT </a>
 
-                                            <div th:if="${permitFound?.resubmitApplicationStatus == 10 }">
-                                                <a th:if="${ permitDetails?.recommendationRemarks != null and permitDetails?.recommendationApprovalStatus == null  and permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1  }"
+                                            <div th:if="${permitDetails?.resubmitApplicationStatus == 10 }">
+                                                <a th:if="${ permitDetails?.recommendationRemarks != null and permitDetails?.recommendationApprovalStatus == 0  and permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1  }"
                                                    style="color: white"
                                                    onclick="popUpFunction('approveRecommendation');"
                                                    class="filter-link">RE-APPROVE/REJECT RECOMMENDATION</a>
@@ -983,8 +983,7 @@
                                                 <a th:if="${permitDetails?.inspectionReportGenerated == 1 and permitDetails?.factoryInspectionReportApprovedRejectedStatus == 0 }"
                                                    style="color: white"
                                                    th:href="@{/api/qa/inspection/inspection-report-list(permitID=${permitDetails?.id})}"
-                                                   class="filter-link">RE-APPROVE/REJECT GENERATED INSPECTION
-                                                    REPORT </a>
+                                                   class="filter-link">RE-APPROVE/REJECT GENERATED INSPECTION REPORT</a>
                                             </div>
 
 

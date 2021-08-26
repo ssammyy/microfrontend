@@ -1417,8 +1417,19 @@ class QualityAssuranceController(
                             loggedInUser
                         )
 
+                        userAssigned = commonDaoServices.findUserByID(
+                            permitFound.qaoId ?: throw ExpectedDataNotFound("MISSING QAO ID")
+                        )
+                        //Todo: CHECK IF SSC to be generated
+
+                        qaDaoServices.sendEmailWithTaskDetails(
+                            userAssigned.email ?: throw ExpectedDataNotFound("Missing Email address"),
+                            permitFound.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
+                        )
+
                         sm.closeLink =
                             "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permitFound.permitType}"
+
                     }
                 }
 
@@ -1433,14 +1444,6 @@ class QualityAssuranceController(
                     loggedInUser
                 )
 
-                userAssigned =
-                    commonDaoServices.findUserByID(permitFound.qaoId ?: throw ExpectedDataNotFound("MISSING QAO ID"))
-                //Todo: CHECK IF SSC to be generated
-
-                qaDaoServices.sendEmailWithTaskDetails(
-                    userAssigned.email ?: throw ExpectedDataNotFound("Missing Email address"),
-                    permitFound.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
-                )
             }
         }
 
