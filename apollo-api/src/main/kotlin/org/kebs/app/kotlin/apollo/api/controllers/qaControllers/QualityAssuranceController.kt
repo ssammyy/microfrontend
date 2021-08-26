@@ -667,8 +667,7 @@ class QualityAssuranceController(
             }
             map.inactiveStatus -> {
                 with(permitDetailsDB) {
-                    compliantStatus = 0
-                    recommendationApprovalStatus = 0
+                    resubmitApplicationStatus = 1
                 }
 
                 permitDetailsDB.userTaskId = applicationMapProperties.mapUserTaskNameQAO
@@ -1002,23 +1001,28 @@ class QualityAssuranceController(
                 ).second
 
                 permitDetailsDB.userTaskId = null
-                qaDaoServices.permitInsertStatus(
+                permitDetailsDB = qaDaoServices.permitInsertStatus(
                     permitDetailsDB,
                     applicationMapProperties.mapQaStatusPermitAwarded,
                     loggedInUser
                 )
 
                 val permitID = permitDetailsDB.id ?: throw ExpectedDataNotFound("MISSING Permit ID, check config")
-                val fileDetails = qaDaoServices.getFileCertificateIssuedPDFForm(permitID)
+//                val fileDetails = qaDaoServices.getFileCertificateIssuedPDFForm(permitID)
 
-                qaDaoServices.sendNotificationForAwardedPermitToManufacture(permitDetailsDB, fileDetails.path)
+                //Generate FMARK AFTER SMARK IS AWAREDED
+                if (permitDetailsDB.fmarkGenerateStatus == 1 && permitDetailsDB.permitType == applicationMapProperties.mapQAPermitTypeIdSmark) {
+                    qaDaoServices.permitGenerateFMarkFromAwardedPermit(map, loggedInUser, permitDetailsDB)
+                }
+
+
+                qaDaoServices.sendNotificationForAwardedPermitToManufacture(permitDetailsDB)
 
             }
             map.inactiveStatus -> {
                 with(permitDetailsDB) {
                     userTaskId = applicationMapProperties.mapUserTaskNameQAO
-                    compliantStatus = 0
-                    recommendationApprovalStatus = 0
+                    resubmitApplicationStatus = 1
                 }
                 permitDetailsDB = qaDaoServices.permitInsertStatus(
                     permitDetailsDB,
@@ -1149,7 +1153,6 @@ class QualityAssuranceController(
     @PostMapping("/apply/update-permit-resubmit")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updateResubmitPermitDetails(
-        @ModelAttribute("permit") permit: PermitApplicationsEntity,
         @ModelAttribute("resubmitApplication") resubmitApplication: ResubmitApplicationDto,
         @RequestParam("permitID") permitID: Long,
         model: Model
@@ -1158,56 +1161,21 @@ class QualityAssuranceController(
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
-        var result: ServiceRequestsEntity?
+        val result: ServiceRequestsEntity?
 
         //Find Permit with permit ID
         var permitDetails = qaDaoServices.findPermitBYID(permitID)
 
-        //Add Permit ID THAT was Fetched so That it wont create a new record while updating with the methode
-        permit.id = permitDetails.id
-
-        //updating of Details in DB
-        val updateResults = qaDaoServices.permitUpdateDetails(
-            commonDaoServices.updateDetails(
-                permit,
-                permitDetails
-            ) as PermitApplicationsEntity, map, loggedInUser
-        )
+        val updateResults = qaDaoServices.permitResubmitDetails(permitDetails, resubmitApplication, map, loggedInUser)
 
         result = updateResults.first
 
         permitDetails = updateResults.second
 
-        when {
-
-            permit.recommendationRemarks != null -> {
-                with(permitDetails) {
-                    recommendationApprovalStatus = null
-                    recommendationApprovalRemarks = null
-                }
-                qaDaoServices.permitInsertStatus(
-                    permitDetails,
-                    applicationMapProperties.mapQaStatusPRecommendationApproval,
-                    loggedInUser
-                )
-                qaDaoServices.sendNotificationForRecommendation(permitDetails)
-            }
-
-        }
-
-        //updating of Details in DB
-        result = qaDaoServices.permitUpdateDetails(
-            commonDaoServices.updateDetails(
-                permit,
-                permitDetails
-            ) as PermitApplicationsEntity, map, loggedInUser
-        ).first
-
-
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink =
             "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permitDetails.permitType}"
-        sm.message = "${permit.description}"
+        sm.message = "PERMIT APPLICATION RESUBMITTED SUCCESSFULLY"
 
         return commonDaoServices.returnValues(result, map, sm)
     }
@@ -1451,7 +1419,7 @@ class QualityAssuranceController(
                     permitFound.id ?: throw Exception("ID NOT FOUND"),
                     QaInspectionReportRecommendationEntity.supervisorComments,
                     QaInspectionReportRecommendationEntity.approvedRejectedStatus,
-                    "QAM",
+                    "QAM/HOD",
                     "APPROVE/REJECT INSPECTION REPORT",
                     map,
                     loggedInUser

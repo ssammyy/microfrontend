@@ -25,7 +25,6 @@ import org.kebs.app.kotlin.apollo.store.repo.qa.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -35,7 +34,6 @@ import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
-import java.time.temporal.ChronoUnit
 import java.util.stream.Collectors
 
 
@@ -3159,6 +3157,79 @@ class QADaoServices(
                             user
                         )
                     }
+                    "resubmitHofQamPSCRejectionResults" -> {
+                        resubmitApplicationStatus = 10
+                        resubmitRemarks = permitResubmit.resubmitRemarks
+//                        hofQamCompletenessStatus = null
+//                        hofQamCompletenessRemarks = null
+                        permitStatus = applicationMapProperties.mapQaStatusResubmitted
+                        userTaskId = applicationMapProperties.mapUserTaskNameQAM
+                        KotlinLogging.logger { }
+                            .info(":::::: SELECTED RESUBMIT IS resubmitHofQamPSCRejectionResults :::::::")
+                        permitAddRemarksDetails(
+                            updatePermit.id ?: throw Exception("ID NOT FOUND"),
+                            permitResubmit.resubmitRemarks,
+                            null,
+                            "QAO",
+                            "RESUBMIT APPLICATION, DEFERRED BY PSC",
+                            s,
+                            user
+                        )
+                    }
+                    "resubmitHofQamPCMRejectionResults" -> {
+                        resubmitApplicationStatus = 10
+                        resubmitRemarks = permitResubmit.resubmitRemarks
+//                        hofQamCompletenessStatus = null
+//                        hofQamCompletenessRemarks = null
+                        permitStatus = applicationMapProperties.mapQaStatusResubmitted
+                        userTaskId = applicationMapProperties.mapUserTaskNameQAM
+                        KotlinLogging.logger { }
+                            .info(":::::: SELECTED RESUBMIT IS resubmitHofQamPCMRejectionResults :::::::")
+                        permitAddRemarksDetails(
+                            updatePermit.id ?: throw Exception("ID NOT FOUND"),
+                            permitResubmit.resubmitRemarks,
+                            null,
+                            "QAO",
+                            "RESUBMIT APPLICATION, DEFERRED BY PCM",
+                            s,
+                            user
+                        )
+                    }
+                    "resubmitHofQamToPSCResults" -> {
+                        resubmitApplicationStatus = 10
+                        resubmitRemarks = permitResubmit.resubmitRemarks
+                        pscMemberApprovalStatus = 10
+                        permitStatus = applicationMapProperties.mapQaStatusPPSCMembersAward
+                        userTaskId = applicationMapProperties.mapUserTaskNamePSC
+                        KotlinLogging.logger { }.info(":::::: SELECTED RESUBMIT IS resubmitHofQamToPSCResults :::::::")
+                        permitAddRemarksDetails(
+                            updatePermit.id ?: throw Exception("ID NOT FOUND"),
+                            permitResubmit.resubmitRemarks,
+                            null,
+                            "HOF/QAM",
+                            "RESUBMIT APPLICATION, DEFERRED BY PSC",
+                            s,
+                            user
+                        )
+                    }
+                    "resubmitHofQamToPCMResults" -> {
+                        resubmitApplicationStatus = 10
+                        resubmitRemarks = permitResubmit.resubmitRemarks
+                        pcmApprovalStatus = 10
+                        pscMemberApprovalStatus = 20
+                        permitStatus = applicationMapProperties.mapQaStatusPPSCMembersAward
+                        userTaskId = applicationMapProperties.mapUserTaskNamePSC
+                        KotlinLogging.logger { }.info(":::::: SELECTED RESUBMIT IS resubmitHofQamToPSCResults :::::::")
+                        permitAddRemarksDetails(
+                            updatePermit.id ?: throw Exception("ID NOT FOUND"),
+                            permitResubmit.resubmitRemarks,
+                            null,
+                            "HOF/QAM",
+                            "RESUBMIT APPLICATION, DEFERRED BY PCM",
+                            s,
+                            user
+                        )
+                    }
                     else -> {
                         throw Exception("NO FUNCTION FOR RESUBMIT EXISTING (${permitResubmit.resubmittedDetails})")
                     }
@@ -4506,6 +4577,68 @@ class QADaoServices(
         return Pair(sr, fmarkPermit)
     }
 
+
+    fun permitGenerateFMarkFromAwardedPermit(
+        s: ServiceMapsEntity,
+        user: UsersEntity,
+        permit: PermitApplicationsEntity
+    ): Pair<ServiceRequestsEntity, PermitApplicationsEntity> {
+
+        var sr = commonDaoServices.createServiceRequest(s)
+        var fmarkPermit = PermitApplicationsEntity()
+        try {
+
+            val permitTypeDetails = findPermitType(applicationMapProperties.mapQAPermitTypeIdFmark)
+            fmarkPermit = SerializationUtils.clone(permit)
+
+            with(fmarkPermit) {
+                id = null
+                permitType = permitTypeDetails.id
+                permitRefNumber = "REF${permitTypeDetails.markNumber}${
+                    generateRandomText(
+                        5,
+                        s.secureRandom,
+                        s.messageDigestAlgorithm,
+                        true
+                    )
+                }".toUpperCase()
+
+            }
+
+            fmarkPermit = permitRepo.save(fmarkPermit)
+
+            val savedSMarkFMarkId = generateSmarkFmarkEntity(permit, fmarkPermit, user)
+
+            with(permit) {
+                fmarkGenerated = 1
+            }
+
+            permitUpdateDetails(permit, s, user)
+
+            sr.payload = "savedSmarkFmarkId [id= ${savedSMarkFMarkId.id}]"
+            sr.names = " Fmark created ID = ${fmarkPermit.id} SMARK TIED ID = ${permit.id}"
+            sr.varField1 = "${fmarkPermit.id}"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = s.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return Pair(sr, fmarkPermit)
+    }
+
     fun generateSmarkFmarkEntity(
         smark: PermitApplicationsEntity,
         fmarkPermit: PermitApplicationsEntity,
@@ -4918,7 +5051,7 @@ class QADaoServices(
         manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
     }
 
-    fun sendNotificationForAwardedPermitToManufacture(permitDetails: PermitApplicationsEntity, attachment: String) {
+    fun sendNotificationForAwardedPermitToManufacture(permitDetails: PermitApplicationsEntity) {
         val manufacturer = permitDetails.userId?.let { commonDaoServices.findUserByID(it) }
         val subject = "PERMIT AWARDED"
         val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
@@ -4926,7 +5059,7 @@ class QADaoServices(
                 "The following permit application with REF NUMBER ${permitDetails.permitRefNumber}, has been awarded" +
                 "Find attached permit certificate issued"
 
-        manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody, attachment) }
+        manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody, null) }
     }
 
     fun sendNotificationPCMForAwardingPermit(permitDetails: PermitApplicationsEntity) {
