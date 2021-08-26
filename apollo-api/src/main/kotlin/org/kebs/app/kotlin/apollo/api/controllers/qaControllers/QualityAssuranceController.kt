@@ -1361,6 +1361,11 @@ class QualityAssuranceController(
 
                     }
                     else -> {
+                        permitFound = qaDaoServices.permitInsertStatus(
+                            permitFound,
+                            applicationMapProperties.mapQaStatusPGenSSC,
+                            loggedInUser
+                        )
                         qaDaoServices.permitAddRemarksDetails(
                             permitFound.id ?: throw Exception("ID NOT FOUND"),
                             QaInspectionReportRecommendationEntity.inspectorComments,
@@ -1378,6 +1383,7 @@ class QualityAssuranceController(
                     "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details?inspectionReportID=${inspectionReportID}"
 
             }
+
             QaInspectionReportRecommendationEntity.supervisorFilledStatus == 1 -> {
                 permitFound.userTaskId = applicationMapProperties.mapUserTaskNameQAO
                 when (QaInspectionReportRecommendationEntity.approvedRejectedStatus) {
@@ -1400,6 +1406,8 @@ class QualityAssuranceController(
                         )
                         with(permitFound) {
                             //                        inspectionReportGenerated = map.inactiveStatus
+                            factoryInspectionReportApprovedRejectedRemarks =
+                                QaInspectionReportRecommendationEntity.supervisorComments
                             factoryInspectionReportApprovedRejectedStatus = map.inactiveStatus
                             resubmitApplicationStatus = map.activeStatus
                         }
@@ -2198,7 +2206,7 @@ class QualityAssuranceController(
                         permitDetails = pair.first
                         uploadResults = pair.second
                         sm.closeLink =
-                            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details?inspectionReportID$inspectionReportID"
+                            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details?inspectionReportID=${inspectionReportID}"
 //                        qaDaoServices.permitInsertStatus(permitDetails, applicationMapProperties.mapQaStatusPApprSSC, loggedInUser)
 
                     }
@@ -2265,11 +2273,11 @@ class QualityAssuranceController(
         permitDetails1.approvedRejectedScheme = map.activeStatus
         permitDetails1.sscId = uploadResults1.second.id
         permitDetails1 = qaDaoServices.permitUpdateDetails(permitDetails1, map, loggedInUser).second
-//        qaDaoServices.permitInsertStatus(
-//            permitDetails1,
-//            applicationMapProperties.mapQaStatusPApprSSC,
-//            loggedInUser
-//        )
+        qaDaoServices.permitInsertStatus(
+            permitDetails1,
+            applicationMapProperties.mapQaStatusPSSF,
+            loggedInUser
+        )
         qaDaoServices.sendEmailWithSSC(
             commonDaoServices.findUserByID(
                 permitDetails1.userId ?: throw ExpectedDataNotFound("MISSING USER ID")

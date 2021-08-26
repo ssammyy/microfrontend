@@ -1040,14 +1040,13 @@ class QADaoServices(
         permitTypeID: Long,
         plantID: Long
     ): List<PermitApplicationsEntity> {
-
-        val permitFoundInAwardedStatus =
-            permitRepo.findByPermitTypeAndEndOfProductionStatusAndPermitAwardStatusAndAttachedPlantIdAndOldPermitStatusIsNull(
-                permitTypeID,
-                endProductionStatus,
-                permitAwardedStatus,
-                plantID
-            )
+//
+//        val permitFoundInAwardedStatus = permitRepo.findByPermitTypeAndEndOfProductionStatusAndPermitAwardStatusAndAttachedPlantIdAndOldPermitStatusIsNull(
+//                permitTypeID,
+//                endProductionStatus,
+//                permitAwardedStatus,
+//                plantID
+//            )
         val permitFoundInApplicationStatus =
             permitRepo.findByPermitTypeAndEndOfProductionStatusAndApplicationStatusAndAttachedPlantIdAndOldPermitStatusIsNull(
                 permitTypeID,
@@ -1057,7 +1056,7 @@ class QADaoServices(
             )
 
         val detailsList = mutableListOf<PermitApplicationsEntity>()
-        permitFoundInAwardedStatus?.let { detailsList.addAll(it) }
+//        permitFoundInAwardedStatus?.let { detailsList.addAll(it) }
         permitFoundInApplicationStatus?.let { detailsList.addAll(it) }
         return detailsList
     }
@@ -2027,7 +2026,7 @@ class QADaoServices(
                     sectionId ?: throw ExpectedDataNotFound("SECTION ID IS MISSING")
                 ).divisionId?.id
                 versionNumber = 1
-                endOfProductionStatus = map.initStatus
+                endOfProductionStatus = map.inactiveStatus
                 companyId = user.companyId
                 status = map.activeStatus
                 fmarkGenerated = map.inactiveStatus
