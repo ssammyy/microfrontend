@@ -17,8 +17,9 @@ export const getCompanyInfoDtoFeatureState = createFeatureSelector<CompanyInfoDt
 
 
 export const selectIsAuthenticated = createSelector(
-  getAuthFeatureState,
-  (state: AuthState) => state.loggedIn && new Date(state.profile.expiry).getTime() > Date.now()
+    getAuthFeatureState,
+    // (state: AuthState) => state.loggedIn && state.profile.expiry > new Date()
+    (state: AuthState) => state.loggedIn
 );
 export const selectUserInfo = createSelector(
   getAuthFeatureState,

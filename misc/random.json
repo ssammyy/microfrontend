@@ -1,31 +1,24 @@
 {
-  "id": null,
-  "firstName": "DANIEL",
-  "lastName": "TINEGA",
-  "userName": "tinegad@kebs.org",
-  "userPinIdNumber": null,
-  "personalContactNumber": "254725279260",
-  "typeOfUser": null,
-  "email": "tinegad@kebs.org",
-  "userRegNo": "KEBS#EMP20210812255D7",
-  "enabled": false,
-  "accountExpired": false,
-  "accountLocked": false,
-  "credentialsExpired": false,
-  "status": false,
-  "registrationDate": null,
-  "userType": null,
-  "title": 1,
-  "directorate": 1,
-  "department": 2,
-  "division": 4,
-  "section": null,
-  "l1SubSubSection": null,
-  "l2SubSubSection": null,
-  "designation": 410,
-  "profileId": null,
-  "region": 4,
-  "county": 26,
-  "town": 579,
-  "subRegion": null
+  "profile": {
+    "accesstoken": "eyjhbgcioijiuzuxmij9.eyjzdwiioijlyxrlv2luiiwiaxnzijoia2ltcy5rzwjzlm9yzyisimlhdci6mtyyotk3nza2miwizxhwijoxnji5otgzmdyylcjhzgryzxnzijoimtaumtaumc4yntqilcj1c2vyqwdlbnqioijbtw96awxsys81ljagkfdpbmrvd3mgtlqgmtaumdsgv2lunjq7ihg2ndsgcny6oteumckgr2vja28vmjaxmdaxmdegrmlyzwzvec85ms4wxsisimz1bgxoyw1lijois2f0zsbxaw4ilcjyb2xlcyi6ilbfuk1jvf9bufbmsunbvelptixqrvjnsvrfukvorvdbtcxqvk9dx0fquexjq0fusu9ox1jfquqsteltvf9dt01qqu5zle1prelgwv9dt01qqu5zin0.9upiazihn4xl9xcu6cw5j3fnwp-zkkfdaze0jq5nudrhiupqbms01fnuwvbzaju21lf-efhbx-nxcjtr7w6q5a",
+    "id": 2361,
+    "username": "katewin",
+    "email": "trialjuma1@gmail.com",
+    "fullname": "kate win",
+    "roles": [
+      "permit_application",
+      "permit_renewal",
+      "pvoc_application_read",
+      "list_company",
+      "modify_company"
+    ],
+    "tokentype": "bearer",
+    "expiry": "26/08/2021 16:41:43.367",
+    "companyid": null,
+    "branchid": null,
+    "turnover": null
+  },
+  "loggedin": true
 }
+
+

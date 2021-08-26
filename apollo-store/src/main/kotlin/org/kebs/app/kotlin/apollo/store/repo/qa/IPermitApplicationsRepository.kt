@@ -428,12 +428,6 @@ interface IQaProductBrandEntityRepository : HazelcastRepository<QaProductManufac
 
 
 @Repository
-interface ITurnOverRatesRepository : HazelcastRepository<TurnOverRatesEntity, Long> {
-    fun findByIdAndFirmType(id: Long, firmType: String): TurnOverRatesEntity?
-    fun findAllByStatus(status: Int): List<TurnOverRatesEntity>?
-}
-
-@Repository
 interface IPermitRatingRepository : HazelcastRepository<PermitRatingEntity, Long> {
     fun findByIdAndFirmType(id: Long, firmType: String): PermitRatingEntity?
     fun findAllByStatus(status: Int): List<PermitRatingEntity>?

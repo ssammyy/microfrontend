@@ -47,7 +47,6 @@ class QADaoServices(
 //    private val qualityAssuranceBpmn: QualityAssuranceBpmn,
     private val workPlanCreatedRepo: IQaWorkplanRepository,
     private val iPermitRatingRepo: IPermitRatingRepository,
-    private val iTurnOverRatesRepository: ITurnOverRatesRepository,
     private val iManufacturePaymentDetailsRepository: IManufacturerPaymentDetailsRepository,
     private val sampleStandardsRepo: ISampleStandardsRepository,
     private val remarksEntityRepo: IQaRemarksEntityRepository,
