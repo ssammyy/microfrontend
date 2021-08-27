@@ -5066,6 +5066,17 @@ class QADaoServices(
         manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
     }
 
+    fun sendNotificationForPermitCorrectnessFromQamHod(permitDetails: PermitApplicationsEntity) {
+        val manufacturer = permitDetails.qaoId?.let { commonDaoServices.findUserByID(it) }
+        val subject = "AWARDING OF PERMIT CORRECTION"
+        val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
+                "\n " +
+                "The following permit with REF number ${permitDetails.permitRefNumber}, Has been rejected due to the following reasons: ${permitDetails.hodQamApproveRejectRemarks} \n" +
+                "Please do some correction and send it back for approval : ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id} \n"
+
+        manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
+    }
+
     fun sendNotificationForDeferredPermitToQaoFromPSC(permitDetails: PermitApplicationsEntity) {
         val manufacturer = permitDetails.qaoId?.let { commonDaoServices.findUserByID(it) }
         val subject = "AWARDING OF PERMIT DEFERRED "

@@ -974,6 +974,11 @@
                                                th:href="@{/api/qa/inspection/inspection-report-list(permitID=${permitDetails?.id})}"
                                                class="filter-link">APPROVE/REJECT GENERATED INSPECTION REPORT </a>
 
+                                            <a th:if="${permitDetails?.hodQamApproveRejectStatus == null }"
+                                               style="color: white" onclick="popUpFunction('approvePermitQAMHOD');"
+                                               class="filter-link">APPROVE/REJECT PERMIT</a>
+
+
                                             <div th:if="${permitDetails?.resubmitApplicationStatus == 10 }">
                                                 <a th:if="${ permitDetails?.recommendationRemarks != null and permitDetails?.recommendationApprovalStatus == 0  and permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1  }"
                                                    style="color: white"
@@ -984,6 +989,10 @@
                                                    style="color: white"
                                                    th:href="@{/api/qa/inspection/inspection-report-list(permitID=${permitDetails?.id})}"
                                                    class="filter-link">RE-APPROVE/REJECT GENERATED INSPECTION REPORT</a>
+
+                                                <a th:if="${permitDetails?.hodQamApproveRejectStatus == 0 }"
+                                                   style="color: white" onclick="popUpFunction('approvePermitQAMHOD');"
+                                                   class="filter-link">APPROVE/REJECT PERMIT</a>
                                             </div>
 
 
@@ -1100,7 +1109,7 @@
                                                style="color: white" onclick="popUpFunction('pscMemberApproval');"
                                                class="filter-link">RE-APPROVE/REJECT PERMIT AWARDING</a>
 
-                                            <a th:if="${ permitDetails?.pcmApprovalStatus == 10 and permitDetails?.resubmitApplicationStatus == 10 and pscMemberApprovalStatus == 20}"
+                                            <a th:if="${ permitDetails?.pcmApprovalStatus == 10 and permitDetails?.resubmitApplicationStatus == 10 and permitDetails?.pscMemberApprovalStatus == 20}"
                                                style="color: white" onclick="popUpFunction('pscMemberApproval');"
                                                class="filter-link">RE-APPROVE/REJECT PERMIT AWARDING</a>
                                         </div>
@@ -1324,7 +1333,7 @@
 
                                             <div id="permitCompleteness">
                                                 <input type="hidden" id="description2" name="description"
-                                                       th:value="'Permit has been Updated Succesfull'">
+                                                       th:value="'Permit has been Updated Succesfully'">
                                                 <input type="hidden" id="varField1" name="varField1"
                                                        th:value="'Permit Is Incomplete'">
                                                 <label for="attachedPlantId" class="col-form-label">Select a
@@ -1342,6 +1351,29 @@
                                                 <textarea name="name" id="hofQamCompletenessRemarks"
                                                           class="input-field w-input" cols="65" rows="5"
                                                           th:field="*{hofQamCompletenessRemarks}"></textarea>
+                                            </div>
+
+                                            <div id="approvePermitQAMHOD">
+                                                <input type="hidden" id="description2" name="description"
+                                                       th:value="'Permit has been Updated Succesfully'">
+                                                <input type="hidden" id="varField1" name="varField1"
+                                                       th:value="'Permit Is Incomplete'">
+                                                <label for="hodQamApproveRejectStatus" class="col-form-label">Select a
+                                                    completeness status:</label>
+                                                <select id="hodQamApproveRejectStatus" required
+                                                        class="form-control"
+                                                        th:field="*{hodQamApproveRejectStatus}">
+                                                    <option th:text="'Select one.....'"
+                                                            th:value="${nullStatus}"></option>
+                                                    <option th:text="'Approve'" th:value="1"></option>
+                                                    <option th:text="'Reject'" th:value="0"></option>
+                                                </select>
+                                                <label for="hodQamApproveRejectRemarks" class="col-form-label">Please
+                                                    write, in detail, your feedback for this Permit:</label>
+                                                <textarea name="hodQamApproveRejectRemarks"
+                                                          id="hodQamApproveRejectRemarks"
+                                                          class="input-field w-input" cols="65" rows="5"
+                                                          th:field="*{hodQamApproveRejectRemarks}"></textarea>
                                             </div>
 
 
@@ -1418,9 +1450,9 @@
 
                                             <div id="approveInspectionReport">
                                                 <input type="hidden" id="description7" name="description"
-                                                       th:value="'Factory Inspection Report Approved Succesfull'">
+                                                       th:value="'Factory Inspection Report Approved Succesfully'">
                                                 <input type="hidden" id="varField7" name="varField1"
-                                                       th:value="'Factory Inspection Report Rejected Succesfull'">
+                                                       th:value="'Factory Inspection Report Rejected Succesfully'">
                                                 <label for="attachedPlantId" class="col-form-label">View
                                                     Report: </label>
                                                 <button><a
@@ -1448,8 +1480,8 @@
 
                                             <div id="complianceStatus">
                                                 <input type="hidden" id="description9" name="description"
-                                                       th:value="'Compliance status Was added Succesfull'">
-                                                <!--                                            <input type="hidden" id="varField8" name="varField1" th:value="'Factory Inspection Report Rejected Succesfull'">-->
+                                                       th:value="'Compliance status Was added Succesfully'">
+                                                <!--                                            <input type="hidden" id="varField8" name="varField1" th:value="'Factory Inspection Report Rejected Succesfully'">-->
                                                 <label for="attachedPlantId" class="col-form-label">View
                                                     Report: </label>
                                                 <button><a
@@ -1472,8 +1504,8 @@
                                             </div>
                                             <div id="addRecommendation">
                                                 <input type="hidden" id="description10" name="description"
-                                                       th:value="'Recommendation has been added Succesfull'">
-                                                <!--                                            <input type="hidden" id="varField8" name="varField1" th:value="'Factory Inspection Report Rejected Succesfull'">-->
+                                                       th:value="'Recommendation has been added Succesfully'">
+                                                <!--                                            <input type="hidden" id="varField8" name="varField1" th:value="'Factory Inspection Report Rejected Succesfully'">-->
                                                 <label for="recommendationRemarks" class="col-form-label">Please write,
                                                     in detail, your Recommendation for this Permit:</label>
                                                 <textarea name="name" id="recommendationRemarks"
@@ -1654,7 +1686,7 @@
                                                        th:value="'Permit application has been Succesfully resubmitted'">
                                                 <input type="hidden" id="resubmitApplicationStatus2"
                                                        name="resubmitApplicationStatus" th:value="${activeStatus}">
-                                                <!--                                            <input type="hidden" id="varField8" name="varField1" th:value="'Factory Inspection Report Rejected Succesfull'">-->
+                                                <!--                                            <input type="hidden" id="varField8" name="varField1" th:value="'Factory Inspection Report Rejected Succesfully'">-->
                                                 <label for="resubmitRemarks2" class="col-form-label">Please write, in
                                                     detail, your reason for this Permit:</label>
                                                 <textarea name="name" id="resubmitRemarks2" class="input-field w-input"
@@ -1689,9 +1721,9 @@
                                             </div>
                                             <div id="agreeTOSSC">
                                                 <input type="hidden" id="description22" name="description"
-                                                       th:value="'SSC Approved Succesfull'">
+                                                       th:value="'SSC Approved Succesfully'">
                                                 <input type="hidden" id="varField22" name="varField1"
-                                                       th:value="'SSC Rejected Succesfull'">
+                                                       th:value="'SSC Rejected Succesfully'">
                                                 <label for="attachedPlantId" class="col-form-label">View SCC: </label>
                                                 <button><a
                                                         th:href="@{/api/qa/kebs/view/attached(fileID=${permitDetails.sscId})}"
@@ -1746,7 +1778,7 @@
                                             <div id="resubmitDetailsBackQAMRejectedPSC">
                                                 <input type="hidden" id="resubmittedDetails" name="resubmittedDetails"
                                                        th:value="'resubmitHofQamPSCRejectionResults'">
-                                                <!--                                            <input type="hidden" id="varField8" name="varField1" th:value="'Factory Inspection Report Rejected Succesfull'">-->
+                                                <!--                                            <input type="hidden" id="varField8" name="varField1" th:value="'Factory Inspection Report Rejected Succesfully'">-->
                                                 <label for="resubmitRemarks" class="col-form-label">Please write,
                                                     in detail, your Feed Back for this Permit:</label>
                                                 <textarea name="resubmitRemarks" id="resubmitRemarks"
@@ -1756,7 +1788,7 @@
                                             <div id="resubmitDetailsBackQAMRejectedPCM">
                                                 <input type="hidden" id="resubmittedDetails" name="resubmittedDetails"
                                                        th:value="'resubmitHofQamPCMRejectionResults'">
-                                                <!--                                            <input type="hidden" id="varField8" name="varField1" th:value="'Factory Inspection Report Rejected Succesfull'">-->
+                                                <!--                                            <input type="hidden" id="varField8" name="varField1" th:value="'Factory Inspection Report Rejected Succesfully'">-->
                                                 <label for="resubmitRemarks" class="col-form-label">Please write,
                                                     in detail, your Feed Back for this Permit:</label>
                                                 <textarea name="resubmitRemarks" id="resubmitRemarks"
@@ -1766,7 +1798,7 @@
                                             <div id="resubmitDetailsBackPSC">
                                                 <input type="hidden" id="resubmittedDetails" name="resubmittedDetails"
                                                        th:value="'resubmitHofQamToPSCResults'">
-                                                <!--                                            <input type="hidden" id="varField8" name="varField1" th:value="'Factory Inspection Report Rejected Succesfull'">-->
+                                                <!--                                            <input type="hidden" id="varField8" name="varField1" th:value="'Factory Inspection Report Rejected Succesfully'">-->
                                                 <label for="resubmitRemarks" class="col-form-label">Please write,
                                                     in detail, your Feed Back for this Permit:</label>
                                                 <textarea name="resubmitRemarks" id="resubmitRemarks"
@@ -1776,7 +1808,7 @@
                                             <div id="resubmitDetailsBackPCM">
                                                 <input type="hidden" id="resubmittedDetails" name="resubmittedDetails"
                                                        th:value="'resubmitHofQamToPCMResults'">
-                                                <!--                                            <input type="hidden" id="varField8" name="varField1" th:value="'Factory Inspection Report Rejected Succesfull'">-->
+                                                <!--                                            <input type="hidden" id="varField8" name="varField1" th:value="'Factory Inspection Report Rejected Succesfully'">-->
                                                 <label for="resubmitRemarks" class="col-form-label">Please write,
                                                     in detail, your Feed Back for this Permit:</label>
                                                 <textarea name="resubmitRemarks" id="resubmitRemarks"
@@ -2518,6 +2550,7 @@
 
     function popUpFunction(eventAction) {
         let arrHead = ['agreeTOSSC',
+            'approvePermitQAMHOD',
             'addStandardsDetails',
             'updateSection',
             'permitResubmitApplicationForReview',
@@ -2539,6 +2572,7 @@
             'hodApprovalAssessmentReport', 'permitEditApplication'];
 
         let arrHeadSave = ['AGREE/CONSENT TO SSC',
+            'Approve/Reject Permit with Remarks',
             'Add Standard details',
             'Update Section',
             'Resubmit Permit Your Application for Review',

@@ -298,6 +298,11 @@ class QualityAssuranceController(
                 returnDetails = approveRecommendationPermit(permit, map, permitDetails, loggedInUser)
                 permitDetails = returnDetails.first
             }
+            //APPROVE/REJECT PERMIT
+            permit.hodQamApproveRejectStatus != null -> {
+                returnDetails = qamHodApproveRejectPermit(permit, map, permitDetails, loggedInUser)
+                permitDetails = returnDetails.first
+            }
             //Permit awarded PSC review
             permit.pscMemberApprovalStatus != null -> {
                 returnDetails = permitPSCApprovalProcess(permit, map, permitDetails, loggedInUser)
@@ -704,6 +709,67 @@ class QualityAssuranceController(
         var permitDetailsDB = permitDetails
         when (permit.recommendationApprovalStatus) {
             map.activeStatus -> {
+//                with(permit) {
+//                    pscMemberId = qaDaoServices.assignNextOfficerAfterPayment(
+//                        permitDetailsDB,
+//                        map,
+//                        applicationMapProperties.mapQADesignationIDForPSCId
+//                    )?.id
+//                    userTaskId = applicationMapProperties.mapUserTaskNamePSC
+//                }
+                //updating of Details in DB
+//                permitDetailsDB = qaDaoServices.permitUpdateDetails(
+//                    commonDaoServices.updateDetails(
+//                        permit,
+//                        permitDetailsDB
+//                    ) as PermitApplicationsEntity, map, loggedInUser
+//                ).second
+
+                permitDetailsDB = qaDaoServices.permitInsertStatus(
+                    permitDetailsDB,
+                    applicationMapProperties.mapQaStatusPHodQamApproval,
+                    loggedInUser
+                )
+//                qaDaoServices.sendNotificationPSCForAwardingPermit(permitDetailsDB)
+
+            }
+            map.inactiveStatus -> {
+
+                permitDetailsDB.resubmitApplicationStatus = 1
+                permitDetailsDB.userTaskId = applicationMapProperties.mapUserTaskNameQAO
+                permitDetailsDB = qaDaoServices.permitInsertStatus(
+                    permitDetailsDB,
+                    applicationMapProperties.mapQaStatusDeferredRecommendationQAM,
+                    loggedInUser
+                )
+                qaDaoServices.sendNotificationForRecommendationCorrectness(permitDetailsDB)
+            }
+        }
+
+        qaDaoServices.permitAddRemarksDetails(
+            permitDetailsDB.id ?: throw Exception("ID NOT FOUND"),
+            permitDetailsDB.recommendationApprovalRemarks,
+            permit.recommendationApprovalStatus,
+            "HOD/QAM",
+            "APPROVE/REJECT RECOMMENDATION",
+            map,
+            loggedInUser
+        )
+
+        val closeLink =
+            "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permitDetailsDB.permitType}"
+        return Pair(permitDetailsDB, closeLink)
+    }
+
+    fun qamHodApproveRejectPermit(
+        permit: PermitApplicationsEntity,
+        map: ServiceMapsEntity,
+        permitDetails: PermitApplicationsEntity,
+        loggedInUser: UsersEntity
+    ): Pair<PermitApplicationsEntity, String> {
+        var permitDetailsDB = permitDetails
+        when (permit.hodQamApproveRejectStatus) {
+            map.activeStatus -> {
                 with(permit) {
                     pscMemberId = qaDaoServices.assignNextOfficerAfterPayment(
                         permitDetailsDB,
@@ -734,25 +800,24 @@ class QualityAssuranceController(
                 permitDetailsDB.userTaskId = applicationMapProperties.mapUserTaskNameQAO
                 permitDetailsDB = qaDaoServices.permitInsertStatus(
                     permitDetailsDB,
-                    applicationMapProperties.mapQaStatusDeferredRecommendationQAM,
+                    applicationMapProperties.mapQaStatusRejectedByHodQam,
                     loggedInUser
                 )
-                qaDaoServices.sendNotificationForRecommendationCorrectness(permitDetailsDB)
+                qaDaoServices.sendNotificationForPermitCorrectnessFromQamHod(permitDetailsDB)
             }
         }
 
         qaDaoServices.permitAddRemarksDetails(
             permitDetailsDB.id ?: throw Exception("ID NOT FOUND"),
-            permitDetailsDB.recommendationApprovalRemarks,
-            permit.recommendationApprovalStatus,
+            permit.hodQamApproveRejectRemarks,
+            permit.hodQamApproveRejectStatus,
             "HOD/QAM",
-            "APPROVE/REJECT RECOMMENDATION",
+            "APPROVE/REJECT PERMIT",
             map,
             loggedInUser
         )
 
-        val closeLink =
-            "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permitDetailsDB.permitType}"
+        val closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetailsDB.id}"
         return Pair(permitDetailsDB, closeLink)
     }
 

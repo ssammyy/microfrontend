@@ -286,6 +286,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_psc_members_awarding}")
     val mapQaStatusPPSCMembersAward: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_qam_hod_approval}")
+    val mapQaStatusPHodQamApproval: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.deferred_by_psc_members}")
     val mapQaStatusDeferredPSCMembers: Long = 0L
 
@@ -309,6 +312,9 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_correction}")
     val mapQaStatusPendingCorrectionManf: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_qam_hod_rejected}")
+    val mapQaStatusRejectedByHodQam: Long = 0L
 
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.permit_expired}")
     val mapQaStatusPermitExpired: Long = 0L

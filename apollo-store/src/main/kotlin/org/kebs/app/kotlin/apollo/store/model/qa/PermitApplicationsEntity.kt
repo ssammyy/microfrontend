@@ -401,6 +401,14 @@ class PermitApplicationsEntity : Serializable {
     @Basic
     var endOfProductionRemarks: String? = null
 
+    @Column(name = "HOD_QAM_APPROVE_REJECT_STATUS")
+    @Basic
+    var hodQamApproveRejectStatus: Int? = null
+
+    @Column(name = "HOD_QAM_APPROVE_REJECT_REMARKS")
+    @Basic
+    var hodQamApproveRejectRemarks: String? = null
+
     @Column(name = "TITLE")
     @Basic
     var title: String? = null
@@ -819,6 +827,8 @@ class PermitApplicationsEntity : Serializable {
         return id == that.id && cocId == that.cocId
                 && factoryVisit == that.factoryVisit
                 && processStep == that.processStep
+                && hodQamApproveRejectStatus == that.hodQamApproveRejectStatus
+                && hodQamApproveRejectRemarks == that.hodQamApproveRejectRemarks
                 && fmarkGenerateStatus == that.fmarkGenerateStatus
                 && ssfCompletedStatus == that.ssfCompletedStatus
                 && permitFeeToken == that.permitFeeToken
@@ -839,6 +849,8 @@ class PermitApplicationsEntity : Serializable {
     override fun hashCode(): Int {
         return Objects.hash(
             id,
+            hodQamApproveRejectStatus,
+            hodQamApproveRejectRemarks,
             companyId,
             applicationStatus,
             permitFeeToken,
