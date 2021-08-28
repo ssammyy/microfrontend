@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {DestinationInspectionService} from "../../../../core/store/data/di/destination-inspection.service";
-
+import * as fileSaver from 'file-saver';
 @Component({
   selector: 'app-attachment-list',
   templateUrl: './attachment-list.component.html',
@@ -62,9 +62,12 @@ export class AttachmentListComponent implements OnInit {
         this.diService.downloadAttachment(event.data.id)
             .subscribe(
                 res=>{
-                  const blob = new Blob([res.data]);
-                  const url= window.URL.createObjectURL(blob);
-                  window.open(url);
+                  console.log(res)
+                  let blob: any = new Blob([res], { type: 'application/pdf' });
+                  const url = window.URL.createObjectURL(blob);
+                  //window.open(url);
+                  //window.location.href = response.url;
+                  fileSaver.saveAs(blob, 'davy.pdf');
                 },
                 error => {
                   console.log(error)

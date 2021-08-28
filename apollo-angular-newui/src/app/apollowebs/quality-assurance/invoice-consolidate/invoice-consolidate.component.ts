@@ -33,7 +33,7 @@ export class InvoiceConsolidateComponent implements OnInit {
   submittedValue: any;
   final_array = [];
   selected = [];
-
+  messages=[]
     // permitInvoicesIDS = [];
 
 

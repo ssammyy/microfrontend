@@ -311,7 +311,7 @@ interface ICdConsignorEntityRepository : HazelcastRepository<CdConsignorDetailsE
 interface IDemandNoteRepository : HazelcastRepository<CdDemandNoteEntity, Long> {
     fun findByUcrNumber(ucrNumber: String): CdDemandNoteEntity?
     fun findByCdId(cdId: Long): CdDemandNoteEntity?
-
+    fun findAllByCdId(cdId: Long): List<CdDemandNoteEntity>
     fun findByDemandNoteNumber(demandNoteNumber: String): CdDemandNoteEntity?
 
 //    fun findFirstByItemIdNo(itemIdNo: Long): List<CdDemandNoteEntity>
@@ -328,7 +328,7 @@ interface IDemandNoteRepository : HazelcastRepository<CdDemandNoteEntity, Long> 
 
 @Repository
 interface IDemandNoteItemsDetailsRepository : HazelcastRepository<CdDemandNoteItemsDetailsEntity, Long> {
-    //    fun findByIdAndStatus(id: Long, status: Int): CdChecklistCategoryEntity?
+//    fun findByCdId(id: Long, status: Int): CdChecklistCategoryEntity?
     fun findByDemandNoteId(demandNoteId: Long): List<CdDemandNoteItemsDetailsEntity>?
 }
 
@@ -371,6 +371,7 @@ interface ICdInspectionGeneralRepository : HazelcastRepository<CdInspectionGener
     fun findByCheckListType(checkListType: CdChecklistTypesEntity): CdInspectionGeneralEntity?
 
     fun findFirstByCdItemDetails(cdItemDetails: CdItemDetailsEntity): CdInspectionGeneralEntity?
+    fun findAllByCdItemDetails(cdItemDetails: CdItemDetailsEntity): List<CdInspectionGeneralEntity>
 //    fun findFirstBycdDocId_uuid(docId: String): List<CdInspectionGeneralEntity>
 }
 
@@ -508,6 +509,7 @@ interface IConsignmentItemsRepository : HazelcastRepository<CdItemDetailsEntity,
     fun findByCdDocId(cdDocId: ConsignmentDocumentDetailsEntity): List<CdItemDetailsEntity>?
     fun findByCdDocIdAndDnoteStatus(cdDocId: ConsignmentDocumentDetailsEntity, dnoteStatus: Int): List<CdItemDetailsEntity>?
     fun findByUuid(uuid: String): CdItemDetailsEntity?
+    fun findByCdDocIdAndId(cdType: ConsignmentDocumentDetailsEntity, id: Long?) :CdItemDetailsEntity
     fun findByMinistrySubmissionStatus(status: Int): List<CdItemDetailsEntity>?
 
     @Query(

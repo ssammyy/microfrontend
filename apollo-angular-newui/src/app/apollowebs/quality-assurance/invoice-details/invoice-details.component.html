@@ -21,12 +21,12 @@
                                         <i class="material-icons">assignment_turned_in</i> Invoices Attached Details
                                     </a>
                                 </li>
-                                <li class="nav-item" *ngIf="allBatchInvoiceDetails.batchDetails.paidStatus != 10">
+                                <li class="nav-item" *ngIf="allBatchInvoiceDetails.batchDetails.paidStatus !== 10">
                                     <a class="nav-link" data-toggle="tab" href="#link11" role="tablist">
                                         <i class="material-icons">assignment_turned_in</i> Bank Details
                                     </a>
                                 </li>
-                                <li class="nav-item" *ngIf="allBatchInvoiceDetails.batchDetails.paidStatus != 10">
+                                <li class="nav-item" *ngIf="allBatchInvoiceDetails.batchDetails.paidStatus !== 10">
                                     <a class="nav-link" data-toggle="tab" href="#link13" role="tablist">
                                         <i class="material-icons">assignment_turned_in</i>MPESA PAYMENT Details
                                     </a>
@@ -44,7 +44,7 @@
                             <div class="tab-content">
                                 <div class="tab-pane active" id="link10">
                                     <h3>Invoice Details</h3>
-                                    <button *ngIf="allBatchInvoiceDetails.batchDetails.paidStatus != 10"
+                                    <button *ngIf="allBatchInvoiceDetails.batchDetails.paidStatus !== 10"
                                             (click)="reloadPage()" mat-raised-button=""
                                             class="btn btn-kebs mat-raised-button mat-button-base"><span
                                             class="mat-button-wrapper">CHECK PAYMENT MADE</span>
@@ -133,9 +133,9 @@
                                                         <td><strong>
                                                             Status</strong></td>
                                                         <td>
-                                                            <span *ngIf="allBatchInvoiceDetails.batchDetails.paidStatus == 10"
+                                                            <span *ngIf="allBatchInvoiceDetails.batchDetails.paidStatus === 10"
                                                                   class="badge badge-success">PAID</span>
-                                                            <span *ngIf="allBatchInvoiceDetails.batchDetails.paidStatus != 10"
+                                                            <span *ngIf="allBatchInvoiceDetails.batchDetails.paidStatus !== 10"
                                                                   class="badge badge-danger">NOT PAID</span>
                                                         </td>
                                                     </tr>

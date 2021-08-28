@@ -15,6 +15,7 @@ import {CompliantComponent} from "../forms/compliant/compliant.component";
 import {SendCoiComponent} from "../forms/send-coi/send-coi.component";
 import {TargetItemComponent} from "../forms/target-item/target-item.component";
 import {TargetSupervisorComponent} from "../forms/target-supervisor/target-supervisor.component";
+import {SendDemandNoteTokwsComponent} from "../forms/send-demand-note-tokws/send-demand-note-tokws.component";
 
 @Component({
     selector: 'app-view-single-consignment-document',
@@ -45,6 +46,15 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
             }
         )
 
+    }
+
+    generateDemandNote() {
+        this.dialog.open(SendDemandNoteTokwsComponent, {
+            data: {
+                uuid: this.consignmentId,
+                items: this.consignmentItems
+            }
+        })
     }
 
     viewCoR() {
@@ -124,9 +134,11 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
         }
         return false
     }
-    downloadDemandNote(){
 
+    downloadDemandNote() {
+        this.diService.downloadDocument("/api/v1/di/demand/note/"+this.consignment.cd_details.id)
     }
+
     loadConsignmentDetails() {
         this.diService.getConsignmentDetails(this.consignmentId)
             .subscribe(

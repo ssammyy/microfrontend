@@ -1,10 +1,12 @@
 package org.kebs.app.kotlin.apollo.api.handlers
 
+import mu.KotlinLogging
 import okhttp3.internal.toLongOrDefault
 import org.apache.http.HttpStatus
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.request.ConsignmentUpdateRequest
+import org.kebs.app.kotlin.apollo.api.payload.request.DemandNoteForm
 import org.kebs.app.kotlin.apollo.api.ports.provided.createUserAlert
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
@@ -12,8 +14,11 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
 import org.kebs.app.kotlin.apollo.store.repo.IInvoiceRepository
 import org.kebs.app.kotlin.apollo.store.repo.IServiceMapsRepository
+import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteItemsDetailsRepository
+import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteRepository
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.http.MediaType
@@ -27,6 +32,7 @@ import java.util.stream.IntStream
 @Component
 class InvoiceHandlers(
         private val invoiceRepository: IInvoiceRepository,
+        private val demandNoteRepository: IDemandNoteRepository,
         private val serviceMapsRepo: IServiceMapsRepository,
         private val commonDaoServices: CommonDaoServices,
         private val applicationMapProperties: ApplicationMapProperties,
@@ -65,6 +71,69 @@ class InvoiceHandlers(
     }
 
     fun generateDemandNote(req: ServerRequest): ServerResponse {
+        val response = ApiResponseModel()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        try {
+            val cdUuid = req.pathVariable("cdUuid")
+            val cdDetails = daoServices.findCDWithUuid(cdUuid)
+            val invoiceForm = req.body(DemandNoteForm::class.java)
+            val itemList = mutableListOf<CdItemDetailsEntity>()
+            if (invoiceForm.includeAll) {
+                itemList.addAll(daoServices.findCDItemsListWithCDID(cdDetails))
+            } else {
+                invoiceForm.items.forEach {
+                    val item = daoServices.findItemWithItemIDAndDocument(cdDetails, it.itemId)
+                    // Add to list
+                    itemList.add(item)
+                }
+            }
+            // Reject for consignment with no items?
+            if(itemList.isEmpty()){
+                response.responseCode = ResponseCodes.FAILED_CODE
+                response.message = "Consignment does not have items or none was selected"
+                return ServerResponse.ok().body(response)
+            }
+            // Update if required
+            itemList.forEach{item->
+                //Values before update of item Details
+                if (item.confirmFeeIdSelected != null) {
+                    item.apply {
+                        paymentFeeIdSelected = confirmFeeIdSelected?.let { daoServices.findDIFee(it) }
+                    }
+                } else {
+                    item.paymentFeeIdSelected=daoServices.findDIFee(1)
+                }
+                // Update item details
+                if (!invoiceForm.presentment) {
+                    val updatedItemDetails = daoServices.updateCdItemDetailsInDB(
+                            commonDaoServices.updateDetails(
+                                    item,
+                                    item
+                            ) as CdItemDetailsEntity, loggedInUser
+                    )
+                }
+            }
+            // Calculate demand note amount and save
+            val demandNote = daoServices.generateDemandNoteWithItemList(
+                    itemList,
+                    map,
+                    cdDetails,
+                    invoiceForm.presentment,
+                    loggedInUser
+            )
+            response.data = demandNote
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+            response.message = "Success"
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error { ex }
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.message = ex.localizedMessage
+        }
+        return ServerResponse.ok().body(response)
+    }
+
+    fun simulateDemandNotePayment(req: ServerRequest): ServerResponse {
         val response = ApiResponseModel()
         try {
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
@@ -142,45 +211,14 @@ class InvoiceHandlers(
         return ServerResponse.ok().body(response)
     }
 
-//    fun listDemandNotes(req: ServerRequest): ServerResponse {
-//
-//    }
-
-    fun getAllInvoices(req: ServerRequest): ServerResponse {
-        return serviceMapsRepo.findByIdAndStatus(appId, 1)
-                ?.let { map ->
-
-
-                    var currentPage: Int? = null
-                    var pageSize: Int? = null
-                    req.param("page").ifPresent { p -> currentPage = p.toIntOrNull() }
-                    req.param("size").ifPresent { p -> pageSize = p.toIntOrNull() }
-                    val pages: Pageable? = (pageSize ?: map.uiPageSize)?.let { PageRequest.of(currentPage ?: 0, it) }
-                    req.attributes()["invoiceEntity"] = pages?.let { invoiceRepository.findByStatus(0, it) }
-
-                    val totalRecords: Int? = invoiceRepository.findAllByStatus(0)?.size
-//                    var pageNumbers: List<Int>? = null
-
-
-//                            ?.let { pages ->
-
-                    val pageNumbers = totalRecords?.let {
-                        IntStream.rangeClosed(1, it)
-                                .boxed().collect(Collectors.toList())
-                    }
-                    req.attributes()["totalPages"] = pageNumbers ?: 1
-//                    req.attributes()["pageNumbers"] = pageNumbers
-
-//                            }
-                    req.attributes()["errors"] = errors
-                    req.attributes()["hasErrors"] = errors.isEmpty()
-
-                    ServerResponse.ok().render(
-                            invoiceHomePage, req.attributes()
-                    )
-                }
-                ?: throw Exception("Missing application mapping for [id=$appId], recheck configuration")
-
+    fun listDemandNotes(req: ServerRequest): ServerResponse {
+        val response = ApiResponseModel()
+        req.pathVariable("cdId").let {
+            response.data = demandNoteRepository.findAllByCdId(it.toLongOrDefault(0L))
+            response.message = "Success"
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+            return ServerResponse.ok().body(response)
+        }
     }
 
     fun downloadDemandNote(req: ServerRequest): ServerResponse {
@@ -189,7 +227,7 @@ class InvoiceHandlers(
             req.pathVariable("demandNoteId").let {
                 var map = hashMapOf<String, Any>()
 
-                val demandNote = daoServices.findDemandNoteWithCdID(it.toLongOrDefault(0L))
+                val demandNote = daoServices.findDemandNoteWithID(it.toLongOrDefault(0L))
                 val demandNoteItemList = demandNote?.id?.let { daoServices.findDemandNoteItemDetails(it) }
                         ?: throw ExpectedDataNotFound("No List Of Details Available does not exist")
 
@@ -218,6 +256,7 @@ class InvoiceHandlers(
                         .body(extractReport)
             }
         } catch (ex: Exception) {
+            KotlinLogging.logger {  }.error { ex }
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
             response.message = "Failed to generate demand note"
         }

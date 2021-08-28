@@ -17,8 +17,9 @@ class DestinationInspectionRoutes {
     fun invoicing(handlers: InvoiceHandlers)= router{
         "/api/v1/di".nest {
             GET("/demand/note/{demandNoteId}",handlers::downloadDemandNote)
-            GET("/demand/notes/{cdUuid}",handlers::cdInvoiceDetails)
-            POST("/generate/demand/note/{demandNoteId}",handlers::generateDemandNote)
+            GET("/demand/note/details/{cdUuid}",handlers::cdInvoiceDetails)
+            GET("/demand/note/list/{cdId}",handlers::listDemandNotes)
+            POST("/demand/note/generate/{cdUuid}",handlers::generateDemandNote)
         }
     }
 
@@ -27,7 +28,8 @@ class DestinationInspectionRoutes {
     fun checkLists(handlers: ChecklistHandler)= router{
         "/api/v1/di".nest {
             GET("/ministry/checklist/{checklistId}",handlers::downloadMinistryChecklist)
-            GET("/ministry/checklists/{checklistId}",handlers::listMinistryChecklists)
+            GET("/checklists/{itemUuid}",handlers::listAllChecklists)
+            GET("/checklist/download/{checklistId}",handlers::downloadChecklist)
         }
     }
 
@@ -59,6 +61,7 @@ class DestinationInspectionRoutes {
             // Configurations
             GET("/application/types", handler::listApplicationTypes)
             GET("/consignment/document/types", handler::listConsignmentDocumentTypes)
+            GET("/consignment/document/ministry/stations", handler::listMinistryStations)
             GET("/consignment/document/configuration", handler::consignmentDocumentConfiguration)
             GET("/cd/inspection/configuration", handler::loadCommonUIComponents)
             GET("/ports", handler::loadPortOfArrival)
@@ -89,6 +92,7 @@ class DestinationInspectionRoutes {
             GET("/inspection/cor/details/{coUuid}", handler::certificateOfRoadWorthines)
             // Ministry
             GET("/ministry/inspections/{inspectionStatus}", handler::ministryInspections)
+            POST("/ministry/inspections/request/{itemId}", handler::ministryInspectionRequest)
             GET("/ministry/inspection/details/{itemId}", handler::motorVehicleInspection)
             POST("/ministry/inspection/checklist/{itemId}", handler::uploadMinistryCheckList)
             GET("/ministry/inspection/checklist/download/{itemId}", handler::downloadMinistryCheckList)

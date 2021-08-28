@@ -100,6 +100,10 @@ class CdItemDetailsEntity : Serializable {
     @Basic
     var ministrySubmissionStatus: Int? = null
 
+    @JoinColumn(name = "MINISTRY_STATION_ID", referencedColumnName = "ID")
+    @ManyToOne
+    var ministryStationId: MinistryStationEntity? = null
+
     @Column(name = "CHECKLIST_STATUS")
     @Basic
     var checklistStatus: Int? = null

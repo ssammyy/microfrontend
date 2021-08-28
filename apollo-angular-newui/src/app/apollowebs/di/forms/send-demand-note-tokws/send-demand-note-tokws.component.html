@@ -4,15 +4,42 @@
         <div class="col-sm-12 col-md-8">
             <label for="sendDemandNoteRemarks" class="waiver-form-label">Please write, in detail, your feedback for this
                 consignment:</label>
-            <textarea  id="sendDemandNoteRemarks" class="waiver-form-input-master" placeholder=""
-                formControlName="sendDemandNoteRemarks"></textarea>
+            <textarea id="sendDemandNoteRemarks" class="waiver-form-input-master" placeholder=""
+                      formControlName="sendDemandNoteRemarks"></textarea>
+        </div>
+        <div class="col-sm-12 col-md-8">
+            <mat-checkbox formControlName="includeAll" class="example-margin">Check to exclude some items
+            </mat-checkbox>
+        </div>
+        <br/>
+        <div class="col-sm-6 col-md-4 example-container" [hidden]="!this.form.value.includeAll">
+            <h2 [hidden]="!this.form.value.includeAll">Items</h2>
+            <div class="example-list" cdkDropList
+                 [hidden]="!this.form.value.includeAll"
+                 #itemList="cdkDropList"
+                 [cdkDropListData]="items"
+                 [cdkDropListConnectedTo]="includedItemList"
+                 (cdkDropListDropped)="drop($event)">
+                <div class="example-box" cdkDrag *ngFor="let item of items">{{item.itemDescription}}
+                    -{{item.hsCode}}</div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4 example-container" [hidden]="!this.form.value.includeAll">
+            <h2 [hidden]="!this.form.value.includeAll">Selected Items</h2>
+            <div class="example-list" cdkDropList
+                 [hidden]="!this.form.value.includeAll"
+                 #includedItemList="cdkDropList"
+                 [cdkDropListData]="selectedItems"
+                 [cdkDropListConnectedTo]="itemList" (cdkDropListDropped)="drop($event)">
+                <div class="example-box" cdkDrag *ngFor="let item of selectedItems">{{item.itemDescription}}
+                    -{{item.hsCode}}</div>
+            </div>
         </div>
     </div>
 </mat-dialog-content>
 <mat-dialog-actions>
     <div class="row no_margin master-list-new-btn">
-        <!--        [disabled]="!productDetails.valid"-->
-        <button class="next-btn btn-gen new-btn" (click)="saveRecord()">SAVE
+        <button [disabled]="form.invalid" class="next-btn btn-gen new-btn" (click)="saveRecord()">SAVE
         </button>
     </div>
 </mat-dialog-actions>

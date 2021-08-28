@@ -895,11 +895,11 @@ class MarketSurveillanceDaoServices(
                     iConsignmentItemsRepo.findByIdOrNull(demand.itemIdNo)
                             ?.let { itemUpdate ->
                                 demand.destinationFeeId = fee
-                                demand.rate = fee.rate
+                                demand.rate = fee.rate?.toString()
                                 KotlinLogging.logger { }.info { "FEE RATE VALUE" + fee.rate?.toLong() }
 
                                 val percentage = 100
-                                demand.amountPayable = demand.cfvalue?.multiply(fee.rate?.toBigDecimal())?.divide(percentage.toBigDecimal())
+                                demand.amountPayable = demand.cfvalue?.multiply(fee.rate)?.divide(percentage.toBigDecimal())
 
                                 demand.createdOn = Timestamp.from(Instant.now())
 

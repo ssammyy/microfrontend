@@ -290,7 +290,7 @@ export class InvoiceDto {
     receiptNo: string;
     paidDate: Date;
     totalAmount: any;
-    paidStatus: boolean;
+    paidStatus: any;
     submittedStatus: boolean;
     plantId: bigint;
 }

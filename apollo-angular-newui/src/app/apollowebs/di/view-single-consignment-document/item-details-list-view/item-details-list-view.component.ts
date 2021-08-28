@@ -1,5 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
+import {MinistryInspectionRequestComponent} from "./ministry-inspection-request/ministry-inspection-request.component";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
     selector: 'app-item-details-list-view',
@@ -17,7 +19,7 @@ export class ItemDetailsListViewComponent implements OnInit {
             edit: false,
             delete: false,
             custom: [
-                //  { name: 'editRecord', title: '<i class="btn btn-sm btn-primary">View More</i>' },
+                {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
                 {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View More</i>'}
             ],
             position: 'right' // left|right
@@ -67,8 +69,9 @@ export class ItemDetailsListViewComponent implements OnInit {
         }
     };
     @Input() dataSet: any = [];
+    @Input() consignmentId: any;
 
-    constructor(private router: Router) {
+    constructor(private router: Router, private dialog: MatDialog) {
     }
 
     ngOnInit(): void {
@@ -77,7 +80,15 @@ export class ItemDetailsListViewComponent implements OnInit {
     onCustomAction(event: any) {
         switch (event.action) {
             case 'viewRecord':
-                this.router.navigate(["/di/item/:id", event.data.uuid])
+                this.router.navigate(["/di/item/", this.consignmentId, event.data.uuid])
+                break
+            case 'requestMinistryChecklist':
+                this.dialog.open(MinistryInspectionRequestComponent, {
+                    data: {
+                        uuid: event.data.uuid,
+                        reinspection: false,
+                    }
+                })
                 break
             default:
                 console.log("Custom: " + event.action)

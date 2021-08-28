@@ -7,5 +7,8 @@ data class DemandNoteItem(
 
 data class DemandNoteForm(
         val items: List<DemandNoteItem>,
-        val remarks: String?
+        val remarks: String?,
+        val presentment: Boolean,
+        val amount: Double, // For Foreign COC/COR
+        var includeAll: Boolean
 )

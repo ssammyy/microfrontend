@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.api.handlers
 import mu.KotlinLogging
 import okhttp3.internal.toLongOrDefault
 import org.kebs.app.kotlin.apollo.api.payload.*
+import org.kebs.app.kotlin.apollo.api.payload.request.MinistryRequestForm
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentAuditService
@@ -182,9 +183,22 @@ class ApiDestinationInspectionHandler(
                 .body(this.destinationInspectionService.loadCDTypes())
     }
 
+    fun listMinistryStations(req: ServerRequest): ServerResponse {
+        return ServerResponse.ok()
+                .body(this.destinationInspectionService.loadMinistryStations())
+    }
+
     fun listApplicationTypes(req: ServerRequest): ServerResponse {
         return ServerResponse.ok()
                 .body(this.destinationInspectionService.applicationTypes())
+    }
+
+    fun ministryInspectionRequest(req: ServerRequest): ServerResponse {
+        req.pathVariable("itemId").let {
+            val form = req.body(MinistryRequestForm::class.java)
+            return ServerResponse.ok()
+                    .body(this.destinationInspectionService.requestMinistryInspection(it, form.stationId))
+        }
     }
 
     fun ministryInspections(req: ServerRequest): ServerResponse {
@@ -255,7 +269,7 @@ class ApiDestinationInspectionHandler(
         req.pathVariable("uploadId").let { diUploadsId ->
             val diUpload: DiUploadsEntity = daoServices.findDiUploadById(diUploadsId.toLongOrDefault(0L))
             diUpload.document?.let {
-                val resource=ByteArrayResource(it)
+                val resource = ByteArrayResource(it)
                 return ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_PDF)
                         .header("Content-Disposition", "inline; filename=${diUpload.name};")

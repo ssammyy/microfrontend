@@ -186,6 +186,7 @@ class CdItemDetailsDao {
     var uuid: String? = null
     var itemDescription: String? = null
     var itemHsCode: String? = null
+    var itemHsCodeDescription: String? = null
     var ownerPin: String? = null
     var ownerName: String? = null
     var internalFileNumber: String? = null
@@ -225,9 +226,10 @@ class CdItemDetailsDao {
     var ucrNumber: String? = null
     var localCoi: Int? = null
     var inspectionNotificationStatus: Int? = null
+    var inspectionDate: Date? = null
 
     companion object {
-        fun fromEntity(item: CdItemDetailsEntity): CdItemDetailsDao {
+        fun fromEntity(item: CdItemDetailsEntity, details: Boolean = false): CdItemDetailsDao {
             val dt = CdItemDetailsDao()
             dt.id = item.id
             dt.uuid = item.uuid
@@ -243,14 +245,37 @@ class CdItemDetailsDao {
             item.cdDocId?.let { cd ->
                 dt.localCoi = cd.localCoi
                 dt.inspectionNotificationStatus = cd.inspectionNotificationStatus
+                dt.inspectionDate=cd.inspectionDate
+            }
+            // Other details
+            if (details) {
+                dt.apply {
+                    itemHsCodeDescription=item.hsDescription
+                    unitOfQuantity = item.unitOfQuantity
+                    packageQuantity = item.packageQuantity
+                    totalPriceFcy = item.totalPriceFcy
+                    unitPriceFcy = item.unitPriceFcy
+                    supplimentaryQuantity = item.supplimentaryQuantity
+                    unitPriceNcy = item.unitPriceNcy
+                    totalPriceNcy = item.totalPriceNcy
+                    marksAndContainers = item.marksAndContainers
+                    itemNetWeight = item.itemNetWeight
+                    itemGrossWeight=item.itemGrossWeight
+                    packageType = item.packageType
+                    packageTypeDesc = item.packageTypeDesc
+                    applicantRemarks = item.applicantRemarks
+                    productClassCode = item.productClassCode
+                    productClassDescription = item.productClassDescription
+                    foreignCurrencyCode = item.foreignCurrencyCode
+                }
             }
             return dt
         }
 
-        fun fromList(items: List<CdItemDetailsEntity>): List<CdItemDetailsDao> {
+        fun fromList(items: List<CdItemDetailsEntity>, details: Boolean = false): List<CdItemDetailsDao> {
             val dtList = mutableListOf<CdItemDetailsDao>()
             items.forEach {
-                dtList.add(fromEntity(it))
+                dtList.add(fromEntity(it, details))
             }
             return dtList
         }
@@ -522,6 +547,41 @@ class CdItemNonStandardEntityDto : Serializable {
                 data.add(fromEntity(it))
             }
             return data
+        }
+    }
+}
+
+class CdStandardTwoEntityDao : Serializable {
+    var id: Long = 0
+    var purposeOfImport: String? = null
+    var cocType: String? = null
+    var localCocType: String? = null
+    var description: String? = null
+    var status: Int? = null
+    var conditionsOfApproval: String? = null
+    var applicantRemarks: String? = null
+    var mdaRemarks: String? = null
+    var customsRemarks: String? = null
+    var cdProcessingFeeId: Long? = null
+    var cdDocumentFeeId: Long? = null
+
+    companion object {
+        fun fromEntity(standerd: CdStandardsTwoEntity): CdStandardTwoEntityDao {
+            return CdStandardTwoEntityDao()
+                    .apply {
+                        id = standerd.id
+                        purposeOfImport = standerd.purposeOfImport
+                        cocType = standerd.cocType
+                        localCocType = standerd.localCocType
+                        description = standerd.description
+                        status = standerd.status
+                        conditionsOfApproval = standerd.conditionsOfApproval
+                        applicantRemarks = standerd.applicantRemarks
+                        mdaRemarks = standerd.mdaRemarks
+                        customsRemarks = standerd.customsRemarks
+                        cdProcessingFeeId = standerd.cdProcessingFeeId
+                        cdDocumentFeeId = standerd.cdDocumentFeeId
+                    }
         }
     }
 }

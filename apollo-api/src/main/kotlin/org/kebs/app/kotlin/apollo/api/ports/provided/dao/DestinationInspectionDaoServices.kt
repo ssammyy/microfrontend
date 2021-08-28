@@ -1027,7 +1027,7 @@ class DestinationInspectionDaoServices(
             itemDetails: CdItemDetailsEntity
     ): BigDecimal? {
         val percentage = 100
-        var amount = (diInspectionFeeId.rate?.toBigDecimal())?.multiply(cfiValue)?.divide(percentage.toBigDecimal())
+        var amount = (diInspectionFeeId.rate)?.multiply(cfiValue)?.divide(percentage.toBigDecimal())
 
         KotlinLogging.logger { }.info { "MY AMOUNT BEFORE CALCULATION = $amount" }
 
@@ -1117,6 +1117,7 @@ class DestinationInspectionDaoServices(
 
     fun addItemDetailsToDemandNote(
             itemDetails: CdItemDetailsEntity, demandNote: CdDemandNoteEntity, map: ServiceMapsEntity,
+            presentment: Boolean,
             user: UsersEntity
     ) {
         val fee = itemDetails.paymentFeeIdSelected
@@ -1127,7 +1128,7 @@ class DestinationInspectionDaoServices(
             demandNoteId = demandNote.id
             product = itemDetails.itemDescription
             cfvalue = itemDetails.totalPriceNcy
-            rate = fee.rate
+            rate = fee.rate?.toString()
             // Demand note Calculation Details
             amountPayable = cfvalue?.let { demandNoteCalculation(it, fee, itemDetails) }
                     ?: throw Exception("Item details with Id = ${itemDetails.id}, does not Have any Details For total Price Ncy")
@@ -1135,13 +1136,16 @@ class DestinationInspectionDaoServices(
             createdOn = commonDaoServices.getTimestamp()
             createdBy = commonDaoServices.getUserName(user)
         }
-        iDemandNoteItemRepo.save(demandNoteItem)
+        if (!presentment) {
+            iDemandNoteItemRepo.save(demandNoteItem)
+        }
     }
 
     fun calculateTotalAmountDemandNote(
             demandNote: CdDemandNoteEntity,
             map: ServiceMapsEntity,
-            user: UsersEntity
+            user: UsersEntity,
+            presentment: Boolean
     ): CdDemandNoteEntity {
         /* todo: Discuss with KEN on how to go with the bigDecimal not to be null when initializing */
         var totalAmountPayable: BigDecimal = 0.00.toBigDecimal()
@@ -1156,38 +1160,44 @@ class DestinationInspectionDaoServices(
             totalAmount = totalAmountPayable
         }
         //Update Demand Note Details
+        if (presentment) {
+            return demandNote
+        }
         return upDateDemandNoteWithUser(demandNote, user)
     }
 
 
     fun generateDemandNoteWithItemList(
-            itemDetails: CdItemDetailsEntity,
+            itemList: List<CdItemDetailsEntity>,
             map: ServiceMapsEntity,
+            consignmentDocument: ConsignmentDocumentDetailsEntity,
+            presentment: Boolean,
             user: UsersEntity
     ): CdDemandNoteEntity {
-
-        /* todo: Discuss with KEN on how the function works */
-        val itemCdId = itemDetails.cdDocId?.id
-                ?: throw Exception("Item details with Id = ${itemDetails.id}, does not Have any Details For CD attached ")
-        iDemandNoteRepo.findByCdId(itemCdId)
+        return iDemandNoteRepo.findByCdId(consignmentDocument.id!!)
                 ?.let { demandNote ->
                     var demandNoteDetails = demandNote
                     //Call Function to add Item Details To be attached To The Demand note
-                    addItemDetailsToDemandNote(itemDetails, demandNoteDetails, map, user)
+                    itemList.forEach {
+                        addItemDetailsToDemandNote(it, demandNoteDetails, map, presentment, user)
+                        it.dnoteStatus = map.activeStatus
+                        if (!presentment) {
+                            demandNoteDetails = demandNoteUpDatingCDAndItem(it, user, demandNoteDetails)
+                        }
+                    }
                     //Calculate the total Amount for Items In one Cd Tobe paid For
-                    demandNoteDetails = calculateTotalAmountDemandNote(demandNoteDetails, map, user)
-                    itemDetails.dnoteStatus = map.activeStatus
-                    return demandNoteUpDatingCDAndItem(itemDetails, user, demandNoteDetails)
+                    demandNoteDetails = calculateTotalAmountDemandNote(demandNoteDetails, map, user, presentment)
+                    demandNoteDetails
                 }
                 ?: kotlin.run {
                     var demandNote = CdDemandNoteEntity()
                     with(demandNote) {
-                        cdId = itemDetails.cdDocId?.id
-                        val cdImporter = itemDetails.cdDocId?.cdImporter?.let { findCDImporterDetails(it) }
+                        cdId = consignmentDocument.id
+                        val cdImporter = consignmentDocument.cdImporter?.let { findCDImporterDetails(it) }
                         nameImporter = cdImporter?.name
                         address = cdImporter?.physicalAddress
                         telephone = cdImporter?.telephone
-                        cdRefNo = itemDetails.cdDocId?.cdStandard?.applicationRefNo
+                        cdRefNo = consignmentDocument.cdStandard?.applicationRefNo
                         //todo: Entry Number
                         entryAblNumber = "UNKNOWN"
                         amountPayable = 0.00.toBigDecimal()
@@ -1199,7 +1209,7 @@ class DestinationInspectionDaoServices(
 
                         //Generate Demand note number
                         demandNoteNumber =
-                                "KIMS${itemDetails.cdDocId?.cdType?.demandNotePrefix}${
+                                "KIMS${consignmentDocument.cdType?.demandNotePrefix}${
                                     generateRandomText(
                                             5,
                                             map.secureRandom,
@@ -1214,16 +1224,22 @@ class DestinationInspectionDaoServices(
                         createdOn = commonDaoServices.getTimestamp()
                         createdBy = commonDaoServices.getUserName(user)
                     }
-                    demandNote = iDemandNoteRepo.save(demandNote)
+                    if (!presentment) {
+                        demandNote = iDemandNoteRepo.save(demandNote)
+                    }
                     //Call Function to add Item Details To be attached To The Demand note
-                    addItemDetailsToDemandNote(itemDetails, demandNote, map, user)
-                    //Calculate the total Amount for Items In one Cd Tobe paid For
-                    demandNote = calculateTotalAmountDemandNote(demandNote, map, user)
-                    itemDetails.dnoteStatus = map.activeStatus
-                    return demandNoteUpDatingCDAndItem(itemDetails, user, demandNote)
+                    itemList.forEach {
+                        addItemDetailsToDemandNote(it, demandNote, map, presentment, user)
+                        //Calculate the total Amount for Items In one Cd Tobe paid For
+                        demandNote = calculateTotalAmountDemandNote(demandNote, map, user, presentment)
+                        it.dnoteStatus = map.activeStatus
+                        if (!presentment) {
+                            demandNoteUpDatingCDAndItem(it, user, demandNote)
+                        }
+                    }
+                    return demandNote
 
                 }
-
     }
 
 
@@ -1325,7 +1341,9 @@ class DestinationInspectionDaoServices(
 //                }
 //                ?: throw Exception("Demand Note Details with [Item ID = ${item.id}], does not Exist")
     }
-
+    fun findDemandNoteWithID(cdID: Long): CdDemandNoteEntity? {
+        return iDemandNoteRepo.findByIdOrNull(cdID)
+    }
     fun findDemandNoteWithCdID(cdID: Long): CdDemandNoteEntity? {
         return iDemandNoteRepo.findByCdId(cdID)
 //                ?.let { demandNoteDetails ->
@@ -1395,6 +1413,15 @@ class DestinationInspectionDaoServices(
                 }
                 ?: throw Exception("CD Item Details with the following CD ID= ${consignmentDocumentDetailsEntity.id} and  demand note status = ${map.activeStatus}, do not Exist")
     }
+//    fun findCDItemsListWithCDID(
+//            consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity
+//    ): List<CdItemDetailsEntity> {
+//        iCdItemsRepo.findByCdDocId(consignmentDocumentDetailsEntity)
+//                ?.let { cdItemsDetailsList ->
+//                    return cdItemsDetailsList
+//                }
+//                ?: throw Exception("CD Item Details with the following CD ID= ${consignmentDocumentDetailsEntity.id} and  demand note status = ${map.activeStatus}, do not Exist")
+//    }
 
     fun saveCheckListDetails(
             checklistEntity: CdInspectionChecklistEntity,
@@ -1731,6 +1758,10 @@ class DestinationInspectionDaoServices(
                     return cdItemDetails
                 }
                 ?: throw Exception("CD Item Details with the following ID= ${cdItemId}, do not Exist")
+    }
+
+    fun findItemWithItemIDAndDocument(cd: ConsignmentDocumentDetailsEntity, cdItemId: Long?): CdItemDetailsEntity {
+        return iCdItemsRepo.findByCdDocIdAndId(cd, cdItemId)
     }
 
     fun findItemWithUuid(uuid: String): CdItemDetailsEntity {
@@ -2327,7 +2358,7 @@ class DestinationInspectionDaoServices(
 //    }
 
     fun findUserById(officerId: Long?): Optional<UsersEntity> {
-        if(officerId!=null) {
+        if (officerId != null) {
             return iUserRepository.findById(officerId)
         }
         return Optional.empty()

@@ -645,7 +645,7 @@
                                         <a ngbNavLink>Item Details</a>
                                         <ng-template ngbNavContent>
                                             <b class="text-primary">Item Details</b>
-                                            <app-item-details-list-view
+                                            <app-item-details-list-view [consignmentId]="consignmentId"
                                                     [dataSet]="consignmentItems"></app-item-details-list-view>
                                         </ng-template>
                                     </li>
@@ -675,20 +675,23 @@
                                 <b>Action:</b>
                                 <div *ngIf="consignment.ui.inspectionActive && configurations">
                                     <div *ngIf="consignment.ui.completed">
-                                        <button *ngIf="consignment.ui.cocRequest" class="btn btn-sm btn-warning"
+                                        <button *ngIf="consignment.ui.cocRequest" class="btn btn-sm btn-primary"
                                                 (click)="generateLocalCoC()">GENERATE LOCAL COC
                                         </button>
-                                        <button *ngIf="consignment.ui.corRequest" class="btn btn-sm btn-warning"
+                                        <button *ngIf="consignment.ui.corRequest" class="btn btn-sm btn-primary"
                                                 (click)="generateLocalCoR()">GENERATE LOCAL COR
                                         </button>
-                                        <button *ngIf="configurations" class="btn btn-sm btn-warning"
+                                        <button *ngIf="configurations" class="btn btn-sm btn-primary"
                                                 (click)="markAsCompliant()">COMPLIANT
                                         </button>
-                                        <button *ngIf="configurations" class="btn btn-sm btn-warning"
+                                        <button *ngIf="configurations" class="btn btn-sm btn-primary"
                                                 (click)="sendCertificateOfCompliance()">SEND COI
                                         </button>
                                     </div>
                                     <div *ngIf="!consignment.ui.completed">
+                                        <button class="btn btn-sm btn-warning"
+                                                (click)="generateDemandNote()">GENERATE DEMAND NOTE
+                                        </button>
                                         <button *ngIf="consignment.ui.attachments" class="btn btn-sm btn-primary"
                                                 (click)="uploadAttachment()">UPLOAD
                                             ATTACHMENT
@@ -696,16 +699,16 @@
                                         <button class="btn btn-sm btn-warning"
                                                 (click)="approveRejectConsignment()">Approve / Reject Consignment
                                         </button>
-                                        <button *ngIf="!consignment.ui.assigned " class="btn btn-sm btn-warning"
+                                        <button *ngIf="!consignment.ui.assigned " class="btn btn-sm btn-primary"
                                                 (click)="assignInspectionOfficer()">ASSIGN IO
                                         </button>
-                                        <button *ngIf="!consignment.ui.assigned" class="btn btn-sm btn-warning"
+                                        <button *ngIf="!consignment.ui.assigned" class="btn btn-sm btn-primary"
                                                 (click)="manualAssignInspectionOfficer()">PICK CD(MANUAL ASSIGN IO)
                                         </button>
-                                        <button *ngIf="consignment.ui.assigned" class="btn btn-sm btn-warning"
+                                        <button *ngIf="consignment.ui.assigned" class="btn btn-sm btn-primary"
                                                 (click)="reassignInspectionOfficer()">REASSIGN IO
                                         </button>
-                                        <button *ngIf="!consignment.ui.hasPort" class="btn btn-sm btn-warning"
+                                        <button *ngIf="!consignment.ui.hasPort" class="btn btn-sm btn-primary"
                                                 (click)="assignConsignmentPort()">ASSIGN PORT
                                         </button>
                                         <button *ngIf="consignment.ui.targetItem" class="btn btn-sm btn-warning"
@@ -723,7 +726,8 @@
                                 <br/>
                                 <b>Document Details:</b>
                                 <br/>
-                                <button *ngIf="consignment.ui.demandNote" class="btn btn-sm btn-primary"
+                                <button
+                                        class="btn btn-sm btn-primary"
                                         (click)="downloadDemandNote()">DEMAND NOTE PDF
                                 </button>
                                 <button *ngIf="isVehicle()" class="btn btn-sm btn-primary" (click)="viewCoR()">

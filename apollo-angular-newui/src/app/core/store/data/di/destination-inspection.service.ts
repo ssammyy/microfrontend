@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
 import {Observable} from "rxjs";
+import * as fileSaver from 'file-saver';
 
 @Injectable({
     providedIn: 'root'
@@ -9,6 +10,12 @@ import {Observable} from "rxjs";
 export class DestinationInspectionService {
 
     constructor(private client: HttpClient) {
+    }
+    loadChecklists(itemUuid: any): Observable<any>{
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/checklists/"+itemUuid))
+    }
+    downloadChecklist(checkListId: any): Observable<any>{
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/checklist/download/"+checkListId))
     }
     listOfficersForConsignment(consignmentUuid: any): Observable<any>{
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/user/officers/"+consignmentUuid))
@@ -18,6 +25,9 @@ export class DestinationInspectionService {
     }
     getAllPorts(): Observable<any>{
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/ports"))
+    }
+    loadMinistryStations(): Observable<any>{
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/ministry/stations"))
     }
 
     userBlacklistTypes(): Observable<any>{
@@ -46,9 +56,12 @@ export class DestinationInspectionService {
         let fd=new FormData()
         fd.append("file", file)
         fd.append("file_type", fileType)
-        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di//ministry/inspection/checklist/"+id),fd)
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/ministry/inspection/checklist/"+id),fd)
     }
 
+    requestMinistryChecklist(data: any,id: any): Observable<any>{
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/ministry/inspections/request/"+id),data)
+    }
     uploadForeignDocuments(file: File, fileType: string): Observable<any>{
         let fd=new FormData()
         fd.append("file", file)
@@ -115,6 +128,22 @@ export class DestinationInspectionService {
 
     getConsignmentDetails(consignmentUiid: string): Observable<any> {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/details/" + consignmentUiid))
+    }
+
+    downloadDocument(url){
+        this.client.get(ApiEndpointService.getEndpoint(url),{responseType: 'blob'})
+            .subscribe(
+                res=>{
+                    console.log(res)
+                    // @ts-ignore
+                    let blob: any = new Blob([res], { type: 'application/pdf' });
+                    const url = window.URL.createObjectURL(blob);
+                    //window.open(url);
+                    //window.location.href = response.url;
+                    fileSaver.saveAs(blob, 'davy.pdf');
+                }
+            )
+
     }
 
     listAssignedCd(documentType: String, page: Number = 0, size: Number = 20): Observable<any> {

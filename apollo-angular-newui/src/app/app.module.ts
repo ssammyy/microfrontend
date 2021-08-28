@@ -1,50 +1,25 @@
 import {NgModule} from '@angular/core';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
-import {HttpClientModule} from '@angular/common/http';
 import {CommonModule} from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
-import {MatNativeDateModule} from '@angular/material/core';
-import {MatButtonModule} from '@angular/material/button';
+import {MatNativeDateModule, MatOptionModule} from '@angular/material/core';
 import {MatInputModule} from '@angular/material/input';
-import {MatAutocompleteModule} from '@angular/material/autocomplete';
-import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MatRadioModule} from '@angular/material/radio';
 import {MatSelectModule} from '@angular/material/select';
-import {MatSliderModule} from '@angular/material/slider';
-import {MatSlideToggleModule} from '@angular/material/slide-toggle';
-import {MatMenuModule} from '@angular/material/menu';
-import {MatSidenavModule} from '@angular/material/sidenav';
-import {MatToolbarModule} from '@angular/material/toolbar';
-import {MatListModule} from '@angular/material/list';
-import {MatGridListModule} from '@angular/material/grid-list';
-import {MatCardModule} from '@angular/material/card';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatStepperModule} from '@angular/material/stepper';
-import {MatTabsModule} from '@angular/material/tabs';
-import {MatExpansionModule} from '@angular/material/expansion';
-import {MatButtonToggleModule} from '@angular/material/button-toggle';
-import {MatChipsModule} from '@angular/material/chips';
 import {MatIconModule} from '@angular/material/icon';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatDialogModule} from '@angular/material/dialog';
-import {MatTooltipModule} from '@angular/material/tooltip';
-import {MatSnackBarModule} from '@angular/material/snack-bar';
-import {MatTableModule} from '@angular/material/table';
-import {MatSortModule} from '@angular/material/sort';
-import {MatPaginatorModule} from '@angular/material/paginator';
+
 
 import {AppComponent} from './app.component';
 
 import {SidebarModule} from './sidebar/sidebar.module';
-import {FooterModule} from './shared/footer/footer.module';
 import {NavbarModule} from './shared/navbar/navbar.module';
 import {AdminLayoutComponent} from './layouts/admin/admin-layout.component';
 import {AuthLayoutComponent} from './layouts/auth/auth-layout.component';
 
-// import {routes} from './app.routing';
 import {DashboardComponent} from './apollowebs/dashboard/dashboard.component';
 import {InvoiceComponent} from './apollowebs/quality-assurance/invoice/invoice.component';
 import {AppRoutingModule} from './app.routing';
@@ -54,7 +29,6 @@ import {DmarkComponent} from './apollowebs/quality-assurance/dmark/dmark.compone
 import {SmarkComponent} from './apollowebs/quality-assurance/smark/smark.component';
 import {FmarkallappsComponent} from './apollowebs/quality-assurance/fmarkallapps/fmarkallapps.component';
 import {St10FormComponent} from './apollowebs/quality-assurance/st10-form/st10-form.component';
-import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {NgxPaginationModule} from 'ngx-pagination';
 import {CoreModule} from './core/core.module';
 import {ToastrModule} from 'ngx-toastr';
@@ -90,27 +64,27 @@ import {AddUserComponent} from './apollowebs/company/branch/add-user/add-user.co
 import {FmarkApplicationComponent} from './apollowebs/quality-assurance/fmark-application/fmark-application.component';
 import {LoaderComponent} from './shared/loader/loader.component';
 import {NgbModule, NgbNavModule} from '@ng-bootstrap/ng-bootstrap';
-import { ImportInspectionComponent } from './apollowebs/pvoc/import-inspection/import-inspection.component';
-import { ExceptionsApplicationComponent } from './apollowebs/pvoc/exceptions-application/exceptions-application.component';
-import { WaiverApplicationComponent } from './apollowebs/pvoc/waiver-application/waiver-application.component';
-import { GoodsDetailsComponent } from './apollowebs/pvoc/exceptions-application/goods-details/goods-details.component';
-import { WaiverSubmittedDialogComponent } from './apollowebs/pvoc/waivers/waiver-submitted-dialog/waiver-submitted-dialog.component';
-import { ManufacturerDetailsComponent } from './apollowebs/pvoc/waivers/manufacturer-details/manufacturer-details.component';
-import { ProductDetailsComponent } from './apollowebs/pvoc/waiver-application/product-details/product-details.component';
+import {ImportInspectionComponent} from './apollowebs/pvoc/import-inspection/import-inspection.component';
+import {ExceptionsApplicationComponent} from './apollowebs/pvoc/exceptions-application/exceptions-application.component';
+import {WaiverApplicationComponent} from './apollowebs/pvoc/waiver-application/waiver-application.component';
+import {GoodsDetailsComponent} from './apollowebs/pvoc/exceptions-application/goods-details/goods-details.component';
+import {WaiverSubmittedDialogComponent} from './apollowebs/pvoc/waivers/waiver-submitted-dialog/waiver-submitted-dialog.component';
+import {ManufacturerDetailsComponent} from './apollowebs/pvoc/waivers/manufacturer-details/manufacturer-details.component';
+import {ProductDetailsComponent} from './apollowebs/pvoc/waiver-application/product-details/product-details.component';
 import {ImportationWaiverComponent} from "./apollowebs/pvoc/importation-waiver/importation-waiver.component";
 import {MainProductionMachineryComponent} from "./apollowebs/pvoc/waivers/main-production-machinery/main-production-machinery.component";
 import {RawMaterialsComponent} from "./apollowebs/pvoc/waivers/raw-materials/raw-materials.component";
 import {WaiverProductComponent} from "./apollowebs/pvoc/waivers/waiver-product/waiver-product.component";
 import {IndustrialSparesComponent} from "./apollowebs/pvoc/waivers/industrial-spares/industrial-spares.component";
-import { ConsignmentDocumentListComponent } from './apollowebs/di/consignment-document-list/consignment-document-list.component';
-import { Ng2SmartTableModule } from 'ng2-smart-table';
-import { ViewSingleConsignmentDocumentComponent } from './apollowebs/di/view-single-consignment-document/view-single-consignment-document.component';
-import { ItemDetailsListViewComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/item-details-list-view.component';
-import { OtherVersionDetailsComponent } from './apollowebs/di/view-single-consignment-document/other-version-details/other-version-details.component';
-import { ApproveRejectConsignmentComponent } from './apollowebs/di/view-single-consignment-document/approve-reject-consignment/approve-reject-consignment.component';
-import { MinistryInspectionHomeComponent } from './apollowebs/di/ministry-inspection-home/ministry-inspection-home.component';
-import { MotorVehicleInspectionSingleViewComponent } from './apollowebs/di/motor-vehicle-inspection-single-view/motor-vehicle-inspection-single-view.component';
-import { UploadForeignFormComponent } from './apollowebs/di/consignment-document-list/upload-foreign-form/upload-foreign-form.component';
+import {ConsignmentDocumentListComponent} from './apollowebs/di/consignment-document-list/consignment-document-list.component';
+import {Ng2SmartTableModule} from 'ng2-smart-table';
+import {ViewSingleConsignmentDocumentComponent} from './apollowebs/di/view-single-consignment-document/view-single-consignment-document.component';
+import {ItemDetailsListViewComponent} from './apollowebs/di/view-single-consignment-document/item-details-list-view/item-details-list-view.component';
+import {OtherVersionDetailsComponent} from './apollowebs/di/view-single-consignment-document/other-version-details/other-version-details.component';
+import {ApproveRejectConsignmentComponent} from './apollowebs/di/view-single-consignment-document/approve-reject-consignment/approve-reject-consignment.component';
+import {MinistryInspectionHomeComponent} from './apollowebs/di/ministry-inspection-home/ministry-inspection-home.component';
+import {MotorVehicleInspectionSingleViewComponent} from './apollowebs/di/motor-vehicle-inspection-single-view/motor-vehicle-inspection-single-view.component';
+import {UploadForeignFormComponent} from './apollowebs/di/consignment-document-list/upload-foreign-form/upload-foreign-form.component';
 import {FormsComponent} from './apollowebs/forms/forms.component';
 import {FieldErrorDisplayComponent} from './apollowebs/forms/field-error-display/field-error-display.component';
 import {NwaJustificationFormComponent} from "./apollowebs/standards-development/workshop-agreement/nwa-justification-form/nwa-justification-form.component";
@@ -147,15 +121,14 @@ import {StandardRequestComponent} from './apollowebs/standards-development/stand
 import {RequestStandardFormComponent} from './apollowebs/standards-development/standard-request/request-standard-form/request-standard-form.component';
 import {ReviewApplicationsComponent} from './apollowebs/standards-development/standard-request/review-applications/review-applications.component';
 import {StandardTaskComponent} from './apollowebs/standards-development/standard-request/standard-task/standard-task.component';
-//import {ModalModule} from "ngb-modal";
 import {ModalModule} from "ngb-modal";
 import {DataTablesModule} from "angular-datatables";
 import {ViewDiDeclarationDocumentsComponent} from "./apollowebs/di/view-single-consignment-document/view-di-declaration-documents/view-di-declaration-documents.component";
 import {ViewIdfDocumentDetailsComponent} from "./apollowebs/di/view-single-consignment-document/view-idf-document-details/view-idf-document-details.component";
 import {ViewDeclarationDocumentsItemDetailsListComponent} from "./apollowebs/di/view-single-consignment-document/view-di-declaration-documents/view-declaration-documents-item-details-list/view-declaration-documents-item-details-list.component";
 import {MvInspectionUploadFileReportComponent} from "./apollowebs/di/motor-vehicle-inspection-single-view/mv-inspection-upload-file-report/mv-inspection-upload-file-report.component";
-import { AttachmentListComponent } from './apollowebs/di/view-single-consignment-document/attachment-list/attachment-list.component';
-import { AttachmentDialogComponent } from './apollowebs/di/view-single-consignment-document/attachment-dialog/attachment-dialog.component';
+import {AttachmentListComponent} from './apollowebs/di/view-single-consignment-document/attachment-list/attachment-list.component';
+import {AttachmentDialogComponent} from './apollowebs/di/view-single-consignment-document/attachment-dialog/attachment-dialog.component';
 import {AssignOfficerComponent} from "./apollowebs/di/forms/assign-officer/assign-officer.component";
 import {AssignPortComponent} from "./apollowebs/di/forms/assign-port/assign-port.component";
 import {SendCoiComponent} from "./apollowebs/di/forms/send-coi/send-coi.component";
@@ -170,52 +143,29 @@ import {TargetSupervisorComponent} from "./apollowebs/di/forms/target-supervisor
 import {ManualAssignOfficerComponent} from "./apollowebs/di/forms/manual-assign-officer/manual-assign-officer.component";
 import {TargetApproveItemComponent} from "./apollowebs/di/forms/target-approve-item/target-approve-item.component";
 import {SendDemandNoteTokwsComponent} from "./apollowebs/di/forms/send-demand-note-tokws/send-demand-note-tokws.component";
-import { ViewRemarksHistoryComponent } from './apollowebs/di/view-single-consignment-document/view-remarks-history/view-remarks-history.component';
-import { ItemDetailsComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/item-details/item-details.component';
+import {ViewRemarksHistoryComponent} from './apollowebs/di/view-single-consignment-document/view-remarks-history/view-remarks-history.component';
+import {ItemDetailsComponent} from './apollowebs/di/view-single-consignment-document/item-details-list-view/item-details/item-details.component';
+import {ProcessRejectionComponent} from "./apollowebs/di/forms/process-rejection/process-rejection.component";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import { ChecklistsComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/checklists/checklists.component';
+import { MinistryInspectionRequestComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/ministry-inspection-request/ministry-inspection-request.component';
+import {DragDropModule} from "@angular/cdk/drag-drop";
 
 
 @NgModule({
-    exports: [
-        MatAutocompleteModule,
-        MatButtonToggleModule,
-        MatCardModule,
-        MatChipsModule,
-        MatCheckboxModule,
-        MatStepperModule,
-        MatDialogModule,
-        MatExpansionModule,
-        MatGridListModule,
-        MatIconModule,
-        MatInputModule,
-        MatListModule,
-        MatMenuModule,
-        MatPaginatorModule,
-        MatProgressBarModule,
-        MatProgressSpinnerModule,
-        MatRadioModule,
-        MatSelectModule,
-        MatDatepickerModule,
-        MatButtonModule,
-        MatSidenavModule,
-        MatSliderModule,
-        MatSlideToggleModule,
-        MatSnackBarModule,
-        MatSortModule,
-        MatTableModule,
-        MatTabsModule,
-        MatToolbarModule,
-        MatTooltipModule,
-        MatNativeDateModule
-    ],
     imports: [
+        AppRoutingModule,
+        RouterModule,
+        BrowserAnimationsModule,
+        FormsModule,
+        ReactiveFormsModule,
+        DragDropModule,
         MdModule,
         CommonModule,
         BrowserModule,
         ModalModule,
-        ReactiveFormsModule,
         RouterModule,
         CoreModule,
-        FormsModule,
         PdfViewerModule,
         NgxExtendedPdfViewerModule,
         FileUploadModule,
@@ -223,9 +173,29 @@ import { ItemDetailsComponent } from './apollowebs/di/view-single-consignment-do
         DataTablesModule,
         NgxPaginationModule,
         Ng2SmartTableModule,
-        NgbNavModule
+        NgbNavModule,
+        MatDialogModule,
+        MatCheckboxModule,
+        MatSelectModule,
+        MatIconModule,
+        MatStepperModule,
+        MatOptionModule,
+        MatInputModule,
+        NavbarModule,
+        ToastrModule.forRoot({
+            timeOut: 10000,
+            enableHtml: true,
+            newestOnTop: false,
+            maxOpened: 1,
+            autoDismiss: false,
+            positionClass: 'toast-top-right',
+            preventDuplicates: true,
+        }),
+        SidebarModule,
+        MatFormFieldModule,
     ],
     declarations: [
+        AppComponent,
         LoginComponent,
         ResetCredentialsComponent,
         SignUpComponent,
@@ -332,43 +302,8 @@ import { ItemDetailsComponent } from './apollowebs/di/view-single-consignment-do
         ManualAssignOfficerComponent,
         SendDemandNoteTokwsComponent,
         ViewRemarksHistoryComponent,
-        ItemDetailsComponent
-    ]
-})
-export class MaterialModule {}
-
-@NgModule({
-    imports: [
-        CommonModule,
-        BrowserAnimationsModule,
-        FormsModule,
-        PdfViewerModule,
-        HttpClientModule,
-        MaterialModule,
-        SidebarModule,
-        NavbarModule,
-        FooterModule,
-        RouterModule,
-        AppRoutingModule,
-        CoreModule,
-        ToastrModule.forRoot({
-            timeOut: 10000,
-            enableHtml: true,
-            newestOnTop: false,
-            maxOpened: 1,
-            autoDismiss: false,
-            positionClass: 'toast-top-right',
-            preventDuplicates: true,
-        }),
-        ReactiveFormsModule,
-        FormsModule,
-        NgbModule,
-        NgxPaginationModule,
-        FontAwesomeModule,
-        NgxSpinnerModule,
-    ],
-    declarations: [
-        AppComponent,
+        ItemDetailsComponent,
+        ProcessRejectionComponent,
         AdminLayoutComponent,
         AuthLayoutComponent,
         ImportInspectionComponent,
@@ -376,12 +311,14 @@ export class MaterialModule {}
         WaiverApplicationComponent,
         GoodsDetailsComponent,
         WaiverSubmittedDialogComponent,
-        ManufacturerDetailsComponent
+        ManufacturerDetailsComponent,
+        ChecklistsComponent,
+        MinistryInspectionRequestComponent
     ],
-    providers : [
+    providers: [
         MatNativeDateModule,
-        // {provide: APP_BASE_HREF, useValue: '/migration/'}
     ],
-    bootstrap:    [ AppComponent ]
+    bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

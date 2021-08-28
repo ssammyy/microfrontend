@@ -12,15 +12,17 @@ import org.kebs.app.kotlin.apollo.store.model.CocItemsEntity
 import org.kebs.app.kotlin.apollo.store.model.CocsEntity
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
+import org.kebs.app.kotlin.apollo.store.model.di.CdInspectionGeneralEntity
 import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.DiUploadsEntity
 import org.kebs.app.kotlin.apollo.store.repo.ICocItemsRepository
 import org.kebs.app.kotlin.apollo.store.repo.ICocsRepository
-import org.kebs.app.kotlin.apollo.store.repo.di.IConsignmentDocumentTypesEntityRepository
+import org.kebs.app.kotlin.apollo.store.repo.di.*
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -33,6 +35,9 @@ import java.time.Instant
 
 @Service
 class DestinationInspectionService(
+        private val ministryStationRepo: IMinistryStationEntityRepository,
+        private val inspectionGeneralRepo: ICdInspectionGeneralRepository,
+        private val iCdInspectionMotorVehicleItemChecklistRepo: ICdInspectionMotorVehicleItemChecklistRepository,
         private val applicationMapProperties: ApplicationMapProperties,
         private val riskProfileDaoService: RiskProfileDaoService,
         private val commonDaoServices: CommonDaoServices,
@@ -48,6 +53,34 @@ class DestinationInspectionService(
 ) {
     @Value("\${destination.inspection.cd.type.cor}")
     lateinit var corCdType: String
+    fun lisAllChecklists(cdItemUuid: String): ApiResponseModel {
+        val response = ApiResponseModel()
+        try {
+            val cdItemDetails = daoServices.findItemWithUuid(cdItemUuid)
+            response.data = InspectionGeneralDetailsDto.fromList(this.inspectionGeneralRepo.findAllByCdItemDetails(cdItemDetails))
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+            response.message = "Success";
+        } catch (ex: Exception) {
+            response.message = "Invalid inspection item"
+            response.responseCode = ResponseCodes.FAILED_CODE
+        }
+        return response
+    }
+
+    fun lisMinistryChecklists(cdItemUuid: String): ApiResponseModel {
+        val response = ApiResponseModel()
+        try {
+            val cdItemDetails = daoServices.findItemWithUuid(cdItemUuid)
+            response.data = null
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+            response.message = "Success";
+        } catch (ex: Exception) {
+            response.message = "Invalid inspection item"
+            response.responseCode = ResponseCodes.FAILED_CODE
+        }
+        return response
+    }
+
     fun applicationConfigurations(appId: Int): ApiResponseModel {
         val response = ApiResponseModel()
         response.data = this.commonDaoServices.serviceMapDetails(appId)
@@ -59,6 +92,14 @@ class DestinationInspectionService(
     fun loadCDTypes(): ApiResponseModel {
         val response = ApiResponseModel()
         response.data = this.cdTypesRepo.findByStatus(1)?.let { ConsignmentDocumentTypesEntityDao.fromList(it) }
+        response.message = "Success"
+        response.responseCode = ResponseCodes.SUCCESS_CODE
+        return response
+    }
+
+    fun loadMinistryStations(): ApiResponseModel {
+        val response = ApiResponseModel()
+        response.data = this.ministryStationRepo.findByStatus(1)?.let { MinistryStationEntityDao.fromList(it) }
         response.message = "Success"
         response.responseCode = ResponseCodes.SUCCESS_CODE
         return response
@@ -200,6 +241,42 @@ class DestinationInspectionService(
         }
     }
 
+    fun requestMinistryInspection(cdItemUuid: String, stationId: Long): ApiResponseModel {
+        val response = ApiResponseModel()
+        val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        val cdItemDetails = daoServices.findItemWithUuid(cdItemUuid)
+        val cdItemID: Long = cdItemDetails.id?.let { commonDaoServices.makeAnyNotBeNull(it) } as Long
+
+        cdItemDetails.ministrySubmissionStatus = map.activeStatus
+        val ministryStation = this.ministryStationRepo.findById(stationId)
+        if (ministryStation.isPresent) {
+            cdItemDetails.ministryStationId = ministryStation.get()
+
+            daoServices.updateCDItemDetails(cdItemDetails, cdItemID, loggedInUser, map)
+
+            val cdDetails = cdItemDetails.cdDocId
+            commonDaoServices.findAllUsersWithMinistryUserType()?.let { ministryUsers ->
+                cdDetails?.id?.let { cdDetailsId ->
+                    ministryUsers.get(0).id?.let {
+                        diBpmn.diMinistryInspectionRequiredComplete(
+                                cdDetailsId,
+                                it, true
+                        )
+                    }
+                }
+            }
+            //
+            response.message = "Data Submitted Successfully"
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+        } else {
+            response.message = "Invalid ministry station request"
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+        }
+        return response
+    }
+
     fun ministryInspectionList(inspectionChecklistId: Long, comment: String?, docFile: MultipartFile): ApiResponseModel {
         val response = ApiResponseModel()
         val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
@@ -318,7 +395,7 @@ class DestinationInspectionService(
             val cdItemDetails = daoServices.findItemWithUuid(cdItemUuid)
             dataMap.put("cd_type", cdItemDetails.cdDocId?.cdType?.let { ConsignmentDocumentTypesEntityDao.fromEntity(it) })
             dataMap.put("item_non_standard", daoServices.findCdItemNonStandardByItemID(cdItemDetails)?.let { CdItemNonStandardEntityDto.fromEntity(it) })
-            dataMap.put("cd_item",CdItemDetailsDao.fromEntity(cdItemDetails))
+            dataMap.put("cd_item", CdItemDetailsDao.fromEntity(cdItemDetails, true))
             // Check Certificate of Roadworthiness(CoR)
             cdItemDetails.cdDocId?.let { itemType ->
                 if (itemType.equals(corCdType)) {
@@ -327,6 +404,10 @@ class DestinationInspectionService(
                     }
                 }
                 dataMap.put("cd_details", ConsignmentDocumentDao.fromEntity(itemType))
+                // Standard
+                itemType.cdStandard?.let {
+                    dataMap.put("cd_standards", CdStandardsEntityDao.fromEntity(it))
+                }
                 // Add vehicle inspection result
                 daoServices.findMotorVehicleInspectionByCdItem(cdItemDetails)?.let {
                     KotlinLogging.logger { }.info { "Motor vehicle inspection returned = ${it.id}" }
@@ -459,11 +540,11 @@ class DestinationInspectionService(
         }
         // CdType details
         cdDetails.cdType?.let {
-            dataMap.put("cd_type", it)
+            dataMap.put("cd_type", ConsignmentDocumentTypesEntityDao.fromEntity(it))
         }
         // Standard
         cdDetails.cdStandardsTwo?.let {
-            dataMap.put("cd_standards_two", it)
+            dataMap.put("cd_standards_two", CdStandardTwoEntityDao.fromEntity(it))
         }
         // Transporter
         cdDetails.cdTransport?.let {
@@ -477,14 +558,14 @@ class DestinationInspectionService(
             dataMap.put("cd_service_provider", it)
         }
         cdDetails.ucrNumber?.let {
-            dataMap.put("old_versions", daoServices.findAllOlderVersionCDsWithSameUcrNumber(it, map))
+            dataMap.put("old_versions", daoServices.findAllOlderVersionCDsWithSameUcrNumber(it, map)?.let { it1 -> ConsignmentDocumentDao.fromList(it1) })
         }
         dataMap.put("cd_details", ConsignmentDocumentDao.fromEntity(cdDetails))
         dataMap.put("items_cd", CdItemDetailsDao.fromList(daoServices.findCDItemsListWithCDID(cdDetails)))
         // Consignment UI controllers
         try {
             dataMap.put("ui", ConsignmentEnableUI.fromEntity(cdDetails, map, commonDaoServices.loggedInUserAuthentication()))
-        }catch (ex: Exception){
+        } catch (ex: Exception) {
             KotlinLogging.logger { }.error { ex }
         }
         return dataMap
