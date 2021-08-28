@@ -1,7 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.security.config
 
 import mu.KotlinLogging
-import org.apache.catalina.filters.CorsFilter
 import org.flowable.engine.TaskService
 import org.kebs.app.kotlin.apollo.api.security.filters.CustomUsernamePasswordAuthenticationFilter
 import org.kebs.app.kotlin.apollo.api.security.filters.JWTAuthorizationFilter
@@ -22,7 +21,6 @@ import org.springframework.core.annotation.Order
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.AuthenticationManager
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -42,7 +40,6 @@ import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 import java.time.Duration
 import java.util.*
-import kotlin.jvm.Throws
 
 
 @EnableWebSecurity
@@ -78,11 +75,13 @@ class WebSecurityConfig {
         fun corsConfigurationSource(): CorsConfigurationSource? {
             val configuration = CorsConfiguration()
             configuration.allowedOrigins = listOf(
-                    "http://localhost:4200",
-                    "https://kimsint.kebs.org",
-                    "https://kimsint.kebs.org:8006",
-                    "https://kims.kebs.org",
-                    "https://kims.kebs.org:8006"
+                "http://localhost:4200",
+                "https://kimsint.kebs.org",
+                "https://kimsint.kebs.org:8006",
+                "https://kimsfluxint.kebs.org:8001",
+                "https://kimsfluxint.kebs.org:8005",
+                "https://kims.kebs.org",
+                "https://kims.kebs.org:8006"
             )
             configuration.applyPermitDefaultValues()
             configuration.allowedMethods = listOf(
