@@ -328,6 +328,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.rejected_justification_report}")
     val mapQaStatusRejectedJustCationReport: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.rejected_assessment_report}")
+    val mapQaStatusRejectedAssessmentReport: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_approval_of_justification_report}")
     val mapQaStatusPApprovalustCationReport: Long = 0L
 

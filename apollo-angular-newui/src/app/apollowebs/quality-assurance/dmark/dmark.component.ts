@@ -89,6 +89,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     public tableData5: TableData;
     public tableData12: TableData;
     blob: Blob;
+    labResults = false;
 
 
     constructor(
@@ -210,9 +211,13 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     remarksDetails() {
         const formattedArrayRemarks = [];
 
-        if (this.allPermitDetails?.remarksDetails?.hofQamCompleteness !== null) {
-            formattedArrayRemarks.push(['Completeness Remarks By HOD', '', 'hofQamCompletenessRemarks']);
+        // if (this.allPermitDetails?.remarksDetails?.hofQamCompleteness !== null) {
+        formattedArrayRemarks.push(['Completeness Remarks By HOD', '', 'hofQamCompletenessRemarks']);
+        if (this.allPermitDetails?.remarksDetails?.labResultsCompleteness.remarksStatus === true) {
+            this.labResults = true;
+            console.log(this.labResults);
         }
+        formattedArrayRemarks.push(['Lab Results Remarks By QAO', '', 'labResultsCompletenessRemarks']);
         // if (this.allPermitDetails.remarksDetails.pcmReviewApprovalRemarks !== null) {
         formattedArrayRemarks.push(['Review Remarks By PCM', '', 'reviewRemarksPCMRemarks']);
         // }
@@ -348,23 +353,23 @@ export class DmarkComponent implements OnInit, AfterViewInit {
                     if (this.allPermitDetails.permitDetails.invoiceGenerated === true) {
                         const invoiceDetailsList = this.allPermitDetails.invoiceDetails.invoiceDetailsList;
                         let permitFee = 0;
+                        const formattedArrayInvoiceDetails = [];
+                        formattedArrayInvoiceDetails.push(['Invoice Ref No', this.allPermitDetails.invoiceDetails.invoiceRef]);
 
                         for (let h = 0; h < invoiceDetailsList.length; h++) {
                             if (invoiceDetailsList[h].permitStatus === true) {
                                 permitFee = invoiceDetailsList[h].itemAmount;
+                                formattedArrayInvoiceDetails.push(['DMARK Permit', `KSH ${permitFee}`]);
+                            } else {
+                                formattedArrayInvoiceDetails.push([invoiceDetailsList[h].itemDescName, `KSH ${invoiceDetailsList[h].itemAmount}`]);
                             }
                         }
+                        formattedArrayInvoiceDetails.push(['Sub Total Before Tax', `KSH ${this.allPermitDetails.invoiceDetails.subTotalBeforeTax}`]);
+                        formattedArrayInvoiceDetails.push(['Tax Amount', `KSH ${this.allPermitDetails.invoiceDetails.taxAmount}`]);
+                        formattedArrayInvoiceDetails.push(['Total Amount', `KSH ${this.allPermitDetails.invoiceDetails.totalAmount}`]);
                         this.tableData12 = {
                             headerRow: ['Item', 'Details/Fee'],
-                            dataRows: [
-                                ['Invoice Ref No', this.allPermitDetails.invoiceDetails.invoiceRef],
-                                ['DMARK Permit', `KSH ${permitFee}`],
-                                // ['Description', this.allPermitDetails.invoiceDetails.description],
-                                ['Sub Total Before Tax', `KSH ${this.allPermitDetails.invoiceDetails.subTotalBeforeTax}`],
-                                ['Tax Amount', `KSH ${this.allPermitDetails.invoiceDetails.taxAmount}`],
-                                ['Total Amount', `KSH ${this.allPermitDetails.invoiceDetails.totalAmount}`]
-
-                            ]
+                            dataRows: formattedArrayInvoiceDetails
                         };
                     }
                 },
@@ -375,9 +380,9 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     }
 
     openModalRemarks(divVal: string): void {
-        const arrHead = ['hofQamCompletenessRemarks', 'reviewRemarksPCMRemarks', 'recommendationRemarks', 'pscApprovalRejectionRemarks', 'pcmApprovalRejectionRemarks'];
+        const arrHead = ['hofQamCompletenessRemarks', 'labResultsCompletenessRemarks', 'reviewRemarksPCMRemarks', 'recommendationRemarks', 'pscApprovalRejectionRemarks', 'pcmApprovalRejectionRemarks'];
         // tslint:disable-next-line:max-line-length
-        const arrHeadSave = ['Completeness Remarks', 'PCM Review Remarks', 'Recommendation', 'PSC Remarks', 'PCM Approval/Rejection Remarks'];
+        const arrHeadSave = ['Completeness Remarks', 'Lab Result Compliance Remarks', 'PCM Review Remarks', 'Recommendation', 'PSC Remarks', 'PCM Approval/Rejection Remarks'];
 
         for (let h = 0; h < arrHead.length; h++) {
             if (divVal === arrHead[h]) {
@@ -804,20 +809,29 @@ export class DmarkComponent implements OnInit, AfterViewInit {
         this.router.navigate(['/invoiceDetails'], {fragment: String(this.allPermitDetails.batchID)});
     }
 
-    viewLabRemarks(status: string, remarksValue: string) {
-        this.currDiv = 'viewLabResultsRemarks';
-        this.currDivLabel = 'LAB RESULTS DETAILS';
+    viewLabRemarks(status: boolean, remarksValue: string, viewDiv: string) {
+        const arrHead = ['viewLabResultsRemarks', 'viewLabComplianceRemarks'];
+        const arrHeadSave = ['LAB RESULTS DETAILS', 'Inspection Compliance Status'];
+
+        for (let h = 0; h < arrHead.length; h++) {
+            if (viewDiv === arrHead[h]) {
+                this.currDivLabel = arrHeadSave[h];
+            }
+        }
+        this.currDiv = viewDiv;
+
         switch (status) {
-            case 'true':
-                this.labResultsStatus = 'COMPLIANT';
+            case true:
+                this.labResultsStatus = this.COMPLIANTSTATUS;
                 break;
-            case 'false':
-                this.labResultsStatus = 'NOT-COMPLIANT';
+            case false:
+                this.labResultsStatus = this.NONCOMPLIANT;
                 break;
         }
 
         this.labResultsRemarks = remarksValue;
     }
+
 
     openModalUpload(viewDiv: string, resubmit: string) {
         const arrHeadResubmit = ['resubmitLabNonComplianceResults', 'schemeModal', 'resubmitDetails'];

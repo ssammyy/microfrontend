@@ -6,6 +6,7 @@ import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.QualityAssuranceBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QaInvoiceCalculationDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
 import org.kebs.app.kotlin.apollo.common.dto.FmarkEntityDto
@@ -40,6 +41,7 @@ class QualityAssuranceController(
     private val SampleSubmissionRepo: IQaSampleSubmissionRepository,
     private val notifications: Notifications,
     private val limsServices: LimsServices,
+    private val qaInvoiceCalculation: QaInvoiceCalculationDaoServices,
     private val commonDaoServices: CommonDaoServices,
 ) {
 
@@ -200,6 +202,49 @@ class QualityAssuranceController(
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${result.varField1}"
         sm.message = "Your Request has been Successful Submitted"
+
+        return commonDaoServices.returnValues(result, map, sm)
+    }
+
+    @PreAuthorize("hasAuthority('QA_PCM_MODIFY')")
+    @PostMapping("/kebs/add-amount-details")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun permitAddAmountUpdates(
+        @ModelAttribute("invoiceDetails") invoiceDetails: QaInvoiceDetailsEntity,
+        @RequestParam("permitID") permitID: Long,
+        model: Model
+    ): String? {
+        val result: ServiceRequestsEntity?
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val permitDetails = qaDaoServices.findPermitBYID(permitID)
+
+
+        val invoiceGenerated =
+            qaInvoiceCalculation.calculatePaymentOtherDetails(permitDetails, loggedInUser, invoiceDetails)
+        //Calculate total amout to be paid after adding another detail to list
+        qaInvoiceCalculation.calculateTotalInvoiceAmountToPay(invoiceGenerated.second, loggedInUser)
+
+        //updating of Details in DB
+        permitDetails.permitStatus = applicationMapProperties.mapQaStatusPPayment
+        val updateResults = qaDaoServices.permitUpdateDetails(permitDetails, map, loggedInUser)
+
+        //Add Remarks Details to table
+        qaDaoServices.permitAddRemarksDetails(
+            updateResults.second.id ?: throw Exception("ID NOT FOUND"),
+            invoiceDetails.description,
+            null,
+            "PCM",
+            "ADDING AMOUNT TO INVOICE",
+            map,
+            loggedInUser
+        )
+
+        result = updateResults.first
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitID}"
+        sm.message = "Amount was added succesfully"
 
         return commonDaoServices.returnValues(result, map, sm)
     }
@@ -456,14 +501,16 @@ class QualityAssuranceController(
             map.inactiveStatus -> {
                 complianceValue = "REJECTED"
                 with(permitDetailsDB) {
-                    assessmentScheduledStatus = null
-                    hodApproveAssessmentStatus = null
+                    resubmitApplicationStatus = 1
+                    userTaskId = applicationMapProperties.mapUserTaskNameASSESSORS
+//                    assessmentScheduledStatus = null
+//                    hodApproveAssessmentStatus = null
 //                    permitAwardStatus = null
                 }
 
                 permitDetailsDB = qaDaoServices.permitInsertStatus(
                     permitDetailsDB,
-                    applicationMapProperties.mapQaStatusPermitAwarded,
+                    applicationMapProperties.mapQaStatusRejectedAssessmentReport,
                     loggedInUser
                 )
 
@@ -519,7 +566,8 @@ class QualityAssuranceController(
             }
             map.inactiveStatus -> {
                 with(permitDetailsDB) {
-                    assessmentScheduledStatus = null
+                    resubmitApplicationStatus = 1
+//                    assessmentScheduledStatus = null
 //                    permitAwardStatus = null
                     userTaskId = applicationMapProperties.mapUserTaskNameASSESSORS
                 }
@@ -612,6 +660,7 @@ class QualityAssuranceController(
             map.inactiveStatus -> {
                 reasonValue = "REJECTED"
                 with(permitDetails) {
+                    resubmitApplicationStatus = 1
                     justificationReportStatus = 0
                     userTaskId = applicationMapProperties.mapUserTaskNameQAO
                 }
@@ -1149,7 +1198,7 @@ class QualityAssuranceController(
                     map,
                     loggedInUser,
                     permitDetailsDB,
-                    invoiceDetails,
+                    null,
                     permitDetailsDB.permitType ?: throw Exception("ID NOT FOUND")
                 )
 
@@ -1216,8 +1265,7 @@ class QualityAssuranceController(
             loggedInUser
         )
 
-        val closeLink =
-            "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permitDetailsDB.permitType}"
+        val closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetailsDB.id}"
         return Pair(permitDetailsDB, closeLink)
     }
 
@@ -1460,15 +1508,30 @@ class QualityAssuranceController(
             }
 
             QaInspectionReportRecommendationEntity.supervisorFilledStatus == 1 -> {
-                permitFound.userTaskId = applicationMapProperties.mapUserTaskNameQAO
+//                permitFound.userTaskId = applicationMapProperties.mapUserTaskNameQAO
                 when (QaInspectionReportRecommendationEntity.approvedRejectedStatus) {
                     1 -> {
                         permitFound.factoryInspectionReportApprovedRejectedStatus = map.activeStatus
-                        permitFound = qaDaoServices.permitInsertStatus(
-                            permitFound,
-                            applicationMapProperties.mapQaStatusPRecommendationApproval,
-                            loggedInUser
-                        )
+
+                        when (permitFound.permitType) {
+                            applicationMapProperties.mapQAPermitTypeIDDmark -> {
+                                permitFound.userTaskId = applicationMapProperties.mapUserTaskNameHOD
+                                permitFound = qaDaoServices.permitInsertStatus(
+                                    permitFound,
+                                    applicationMapProperties.mapQaStatusPApprovalustCationReport,
+                                    loggedInUser
+                                )
+                            }
+                            else -> {
+                                permitFound.userTaskId = applicationMapProperties.mapUserTaskNameQAO
+                                permitFound = qaDaoServices.permitInsertStatus(
+                                    permitFound,
+                                    applicationMapProperties.mapQaStatusPRecommendationApproval,
+                                    loggedInUser
+                                )
+                            }
+                        }
+
                         sm.closeLink =
                             "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitFound.id}"
                     }
@@ -1485,6 +1548,7 @@ class QualityAssuranceController(
                                 QaInspectionReportRecommendationEntity.supervisorComments
                             factoryInspectionReportApprovedRejectedStatus = map.inactiveStatus
                             resubmitApplicationStatus = map.activeStatus
+                            userTaskId = applicationMapProperties.mapUserTaskNameQAO
                         }
                         permitFound = qaDaoServices.permitInsertStatus(
                             permitFound,
@@ -1976,6 +2040,7 @@ class QualityAssuranceController(
         result = qaDaoServices.ssfSave(permit, sampleSubmissionDetails, loggedInUser, map).first
         with(permit) {
             ssfCompletedStatus = map.activeStatus
+            compliantStatus = null
         }
         qaDaoServices.permitInsertStatus(permit, applicationMapProperties.mapQaStatusPLABResults, loggedInUser)
 
@@ -2251,6 +2316,9 @@ class QualityAssuranceController(
 
 
                         with(permitDetails) {
+                            if (resubmitApplicationStatus == 1) {
+                                resubmitApplicationStatus == 10
+                            }
                             assessmentScheduledStatus = map.successStatus
                             assessmentReportRemarks = assessmentRecommendations
                             hodId = hodDetails?.id
@@ -2582,7 +2650,8 @@ class QualityAssuranceController(
 
         with(permit) {
             justificationReportStatus = map.initStatus
-            permitStatus = applicationMapProperties.mapQaStatusPApprovalustCationReport
+            permitStatus = applicationMapProperties.mapQaStatusPInspectionReportApproval
+//            permitStatus = applicationMapProperties.mapQaStatusPApprovalustCationReport
             userTaskId = applicationMapProperties.mapUserTaskNameHOD
         }
         val myResults = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser)

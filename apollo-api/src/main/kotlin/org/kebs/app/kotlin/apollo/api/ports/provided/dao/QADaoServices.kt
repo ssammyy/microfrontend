@@ -3113,6 +3113,7 @@ class QADaoServices(
                 when (permitResubmit.resubmittedDetails) {
                     "resubmitLabNonComplianceResults" -> {
                         resubmitApplicationStatus = 10
+                        compliantStatus = 10
                         resubmitRemarks = permitResubmit.resubmitRemarks
 //                        compliantStatus = null
 //                        compliantRemarks = null
@@ -3198,6 +3199,44 @@ class QADaoServices(
                             user
                         )
                     }
+                    "resubmitHodRmPACRejectionResults" -> {
+                        resubmitApplicationStatus = 10
+                        resubmitRemarks = permitResubmit.resubmitRemarks
+//                        hofQamCompletenessStatus = null
+//                        hofQamCompletenessRemarks = null
+                        permitStatus = applicationMapProperties.mapQaStatusResubmitted
+                        userTaskId = applicationMapProperties.mapUserTaskNameHOD
+                        KotlinLogging.logger { }
+                            .info(":::::: SELECTED RESUBMIT IS resubmitHodRmPACRejectionResults :::::::")
+                        permitAddRemarksDetails(
+                            updatePermit.id ?: throw Exception("ID NOT FOUND"),
+                            permitResubmit.resubmitRemarks,
+                            null,
+                            "QAO/ASSESSOR",
+                            "RESUBMIT APPLICATION, DEFERRED BY PAC",
+                            s,
+                            user
+                        )
+                    }
+                    "resubmitHodRmPCMRejectionResults" -> {
+                        resubmitApplicationStatus = 10
+                        resubmitRemarks = permitResubmit.resubmitRemarks
+//                        hofQamCompletenessStatus = null
+//                        hofQamCompletenessRemarks = null
+                        permitStatus = applicationMapProperties.mapQaStatusResubmitted
+                        userTaskId = applicationMapProperties.mapUserTaskNameHOD
+                        KotlinLogging.logger { }
+                            .info(":::::: SELECTED RESUBMIT IS resubmitHodRmPCMRejectionResults :::::::")
+                        permitAddRemarksDetails(
+                            updatePermit.id ?: throw Exception("ID NOT FOUND"),
+                            permitResubmit.resubmitRemarks,
+                            null,
+                            "QAO/ASSESSOR",
+                            "RESUBMIT APPLICATION, DEFERRED BY PCM",
+                            s,
+                            user
+                        )
+                    }
                     "resubmitHofQamPCMRejectionResults" -> {
                         resubmitApplicationStatus = 10
                         resubmitRemarks = permitResubmit.resubmitRemarks
@@ -3234,6 +3273,23 @@ class QADaoServices(
                             user
                         )
                     }
+                    "resubmitHodRmToPACResults" -> {
+                        resubmitApplicationStatus = 10
+                        resubmitRemarks = permitResubmit.resubmitRemarks
+                        pacDecisionStatus = 10
+                        permitStatus = applicationMapProperties.mapQaStatusPPACSecretaryAwarding
+                        userTaskId = applicationMapProperties.mapUserTaskNamePACSECRETARY
+                        KotlinLogging.logger { }.info(":::::: SELECTED RESUBMIT IS resubmitHofQamToPSCResults :::::::")
+                        permitAddRemarksDetails(
+                            updatePermit.id ?: throw Exception("ID NOT FOUND"),
+                            permitResubmit.resubmitRemarks,
+                            null,
+                            "HOD/RM",
+                            "RESUBMIT APPLICATION, DEFERRED BY PAC",
+                            s,
+                            user
+                        )
+                    }
                     "resubmitHofQamToPCMResults" -> {
                         resubmitApplicationStatus = 10
                         resubmitRemarks = permitResubmit.resubmitRemarks
@@ -3247,6 +3303,24 @@ class QADaoServices(
                             permitResubmit.resubmitRemarks,
                             null,
                             "HOF/QAM",
+                            "RESUBMIT APPLICATION, DEFERRED BY PCM",
+                            s,
+                            user
+                        )
+                    }
+                    "resubmitHodRmToPCMResults" -> {
+                        resubmitApplicationStatus = 10
+                        resubmitRemarks = permitResubmit.resubmitRemarks
+                        pcmApprovalStatus = 10
+                        pacDecisionStatus = 20
+                        permitStatus = applicationMapProperties.mapQaStatusPPACSecretaryAwarding
+                        userTaskId = applicationMapProperties.mapUserTaskNamePACSECRETARY
+                        KotlinLogging.logger { }.info(":::::: SELECTED RESUBMIT IS resubmitHodRmToPCMResults :::::::")
+                        permitAddRemarksDetails(
+                            updatePermit.id ?: throw Exception("ID NOT FOUND"),
+                            permitResubmit.resubmitRemarks,
+                            null,
+                            "HOD/RM",
                             "RESUBMIT APPLICATION, DEFERRED BY PCM",
                             s,
                             user
@@ -4471,16 +4545,6 @@ class QADaoServices(
                 }
                 applicationMapProperties.mapQAPermitTypeIDDmark -> {
                     invoiceGenerated = qaInvoiceCalculation.calculatePaymentDMark(permit, user, permitType)
-
-                    if (invoiceDetails != null) {
-                        qaInvoiceCalculation.calculatePaymentOtherDetails(
-                            permit,
-                            user,
-                            invoiceDetails,
-                            invoiceGenerated
-                        )
-                        invoiceGenerated = qaInvoiceCalculation.calculateTotalInvoiceAmountToPay(invoiceGenerated, user)
-                    }
 
                 }
                 applicationMapProperties.mapQAPermitTypeIdFmark -> {

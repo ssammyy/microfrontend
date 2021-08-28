@@ -332,24 +332,26 @@ class QaInvoiceCalculationDaoServices(
     fun calculatePaymentOtherDetails(
         permit: PermitApplicationsEntity,
         user: UsersEntity,
-        invoiceDetailsOthers: QaInvoiceDetailsEntity,
-        invoiceMaster: QaInvoiceMasterDetailsEntity
-    ): QaInvoiceDetailsEntity {
+        invoiceDetailsOthers: QaInvoiceDetailsEntity
+    ): Pair<QaInvoiceDetailsEntity, QaInvoiceMasterDetailsEntity> {
 
-        var invoiceDetails = invoiceDetailsOthers.apply {
-            invoiceMasterId = invoiceMaster.id
-            generatedDate = Timestamp.from(Instant.now())
-            umo = "PER"
-            itemQuantity = BigDecimal.ZERO
-            status = 1
-            createdOn = Timestamp.from(Instant.now())
-            createdBy = commonDaoServices.concatenateName(user)
-        }
+        qaInvoiceMasterDetailsRepo.findByPermitId(permit.id ?: throw Exception("PERMIT ID MISSING"))
+            ?.let { invoiceMaster ->
+                var invoiceDetails = invoiceDetailsOthers.apply {
+                    invoiceMasterId = invoiceMaster.id
+                    generatedDate = Timestamp.from(Instant.now())
+                    umo = "PER"
+                    itemQuantity = BigDecimal.ZERO
+                    status = 1
+                    createdOn = Timestamp.from(Instant.now())
+                    createdBy = commonDaoServices.concatenateName(user)
+                }
+                invoiceDetails = qaInvoiceDetailsRepo.save(invoiceDetails)
 
-        invoiceDetails = qaInvoiceDetailsRepo.save(invoiceDetails)
+                return Pair(invoiceDetails, invoiceMaster)
+            } ?: throw ExpectedDataNotFound("NO INVOICE MASTER FOUND WITH PERMIT REF NUMBER ${permit.permitRefNumber}")
 
 
-        return invoiceDetails
     }
 
 
