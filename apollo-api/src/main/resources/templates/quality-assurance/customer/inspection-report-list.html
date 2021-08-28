@@ -72,7 +72,8 @@
                                 <div class="filter-title">Action:</div>
                             </div>
                             <div>
-                                <a th:if="${permitDetails?.inspectionScheduledStatus == 1 and permitDetails?.inspectionReportGenerated == 1}"
+                                <a sec:authorize="hasAuthority('QA_OFFICER_MODIFY')"
+                                   th:if="${permitDetails?.inspectionScheduledStatus == 1 and permitDetails?.inspectionReportGenerated == 1}"
                                    style="color: white"
                                    th:href="@{/api/qa/inspection/new-inspection-report(permitID=${permitDetails?.id})}"
                                    class="filter-link">GENERATE NEW INSPECTION REPORT</a>

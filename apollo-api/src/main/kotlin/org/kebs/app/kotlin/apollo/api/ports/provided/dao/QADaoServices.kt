@@ -1732,6 +1732,10 @@ class QADaoServices(
             resubmitApplicationStatus = permit.resubmitApplicationStatus == 1
             processStep = permit.processStep
             processStatusID = permit.permitStatus
+            if (permit.fmarkGenerated == 1) {
+                fmarkGeneratedID = permit.id?.let { findFmarkWithSmarkId(it).fmarkId }
+            }
+
 
         }
         return p
@@ -3014,7 +3018,6 @@ class QADaoServices(
         var sr = commonDaoServices.createServiceRequest(s)
         var updatePermit = permits
         try {
-
             with(updatePermit) {
                 modifiedBy = commonDaoServices.concatenateName(user)
                 modifiedOn = commonDaoServices.getTimestamp()
@@ -3125,6 +3128,27 @@ class QADaoServices(
                             null,
                             "MANUFACTURE",
                             "RESUBMIT APPLICATION FOR RE-SAMPLING",
+                            s,
+                            user
+                        )
+                    }
+                    "resubmitPCMReviewCompletenessResults" -> {
+                        resubmitApplicationStatus = 10
+                        resubmitRemarks = permitResubmit.resubmitRemarks
+//                        compliantStatus = null
+//                        compliantRemarks = null
+                        testReportId = null
+                        userTaskId = applicationMapProperties.mapUserTaskNamePCM
+                        permitStatus = applicationMapProperties.mapQaStatusPPCMReview
+
+                        KotlinLogging.logger { }
+                            .info(":::::: SELECTED RESUBMIT IS resubmitPCMReviewCompletenessResults :::::::")
+                        permitAddRemarksDetails(
+                            updatePermit.id ?: throw Exception("ID NOT FOUND"),
+                            permitResubmit.resubmitRemarks,
+                            null,
+                            "MANUFACTURE",
+                            "RESUBMIT APPLICATION FOR REVIEW",
                             s,
                             user
                         )
@@ -4681,11 +4705,17 @@ class QADaoServices(
         try {
 
             val permitTypeDetails = findPermitType(applicationMapProperties.mapQAPermitTypeIdFmark)
-            fmarkPermit = SerializationUtils.clone(permit)
+//            fmarkPermit = SerializationUtils.clone(permit)
+
+            fmarkPermit = commonDaoServices.updateDetails(
+                permit,
+                fmarkPermit
+            ) as PermitApplicationsEntity
 
             with(fmarkPermit) {
                 id = null
                 permitType = permitTypeDetails.id
+                permitStatus = applicationMapProperties.mapQaStatusPermitAwarded
                 permitRefNumber = "REF${permitTypeDetails.markNumber}${
                     generateRandomText(
                         5,
@@ -4694,6 +4724,15 @@ class QADaoServices(
                         true
                     )
                 }".toUpperCase()
+                awardedPermitNumber = "${permitTypeDetails.markNumber}${
+                    generateRandomText(
+                        6,
+                        s.secureRandom,
+                        s.messageDigestAlgorithm,
+                        false
+                    )
+                }".toUpperCase()
+
 
             }
 
@@ -5213,7 +5252,7 @@ class QADaoServices(
         return sta3
     }
 
-    fun mapDtoSTA3View(sta3: QaSta3Entity): STA3Dto {
+    fun mapDtoSTA3View(sta3: QaSta3Entity, permitID: Long): STA3Dto {
         val sta3ViewDto = STA3Dto()
         with(sta3ViewDto) {
             produceOrdersOrStock = sta3.produceOrdersOrStock
@@ -5244,6 +5283,7 @@ class QADaoServices(
             levelClaimsComplaints = sta3.levelClaimsComplaints
             independentTests = sta3.independentTests
             indicateStageManufacture = sta3.indicateStageManufacture
+            sta3FilesList = findAllUploadedFileBYPermitIDAndSta3Status(permitID, 1).let { listFilesDto(it) }
         }
 
         return sta3ViewDto

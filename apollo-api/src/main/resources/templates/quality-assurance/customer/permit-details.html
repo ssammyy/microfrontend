@@ -151,7 +151,8 @@
                                                     <div class="list-text-accordion"
                                                          th:text="${permit?.versionNumber}"></div>
                                                 </li>
-                                                <li th:if="${permit?.fmarkGenerated == 1}" class="list-item-accordion">
+                                                <li th:if="${permit?.fmarkGenerated == true}"
+                                                    class="list-item-accordion">
                                                     <div class="list-title-accordion">FMARK VIEW</div>
                                                     <div class="list-text-accordion"><a
                                                             class="btn btn-primary itemViewBtn"
@@ -974,7 +975,7 @@
                                                th:href="@{/api/qa/inspection/inspection-report-list(permitID=${permitDetails?.id})}"
                                                class="filter-link">APPROVE/REJECT GENERATED INSPECTION REPORT </a>
 
-                                            <a th:if="${permitDetails?.hodQamApproveRejectStatus == null }"
+                                            <a th:if="${permitDetails?.hodQamApproveRejectStatus == null and permitDetails?.inspectionReportGenerated == 1 and permitDetails?.recommendationApprovalStatus == 1}"
                                                style="color: white" onclick="popUpFunction('approvePermitQAMHOD');"
                                                class="filter-link">APPROVE/REJECT PERMIT</a>
 
@@ -1193,7 +1194,7 @@
                                         </div>
 
                                         <div sec:authorize="hasAuthority('QA_PCM_MODIFY')">
-                                            <a th:if="${ permitDetails?.pcmApprovalStatus == null and permitDetails?.sendForPcmReview == 1}"
+                                            <a th:if="${ permitDetails?.pcmReviewApprovalStatus == null and permitDetails?.sendForPcmReview == 1}"
                                                style="color: white" onclick="popUpFunction('pcmReviewApproval');"
                                                class="filter-link">APPROVE/REJECT PERMIT REVIEW</a>
                                         </div>
@@ -1212,8 +1213,7 @@
                                             <a th:if="${permitDetails?.compliantStatus == 1 and permitDetails?.justificationReportStatus == 0}"
                                                th:href="@{/api/qa/product-quality-status(permitID=${permitDetails?.id})}"
                                                style="color: white" class="filter-link">RE-Generate
-                                                Justification
-                                                for Diamond Mark Assessment</a>
+                                                Justification for Diamond Mark Assessment</a>
 
                                             <a th:if="${permitDetails?.assignAssessorStatus == null}"
                                                style="color: white" onclick="popUpFunction('assignAssessor');"
@@ -1516,7 +1516,7 @@
 
                                             <div id="approveRecommendation">
                                                 <input type="hidden" id="description11" name="description"
-                                                       th:value="'Recommendation Status Updated succesfull'">
+                                                       th:value="'Recommendation Status Updated succesfully'">
                                                 <label for="recommendationRemarks2" class="col-form-label">Recommendation
                                                     for this Permit Application:</label>
                                                 <textarea name="name" disabled id="recommendationRemarks2"
@@ -1540,7 +1540,7 @@
                                             </div>
                                             <div id="pscMemberApproval">
                                                 <input type="hidden" id="description12" name="description"
-                                                       th:value="'Permit Application Status Updated succesfull'">
+                                                       th:value="'Permit Application Status Updated succesfully'">
                                                 <label for="pscMemberApprovalStatus" class="col-form-label">Select
                                                     Status:</label>
                                                 <select id="pscMemberApprovalStatus" required
@@ -1559,7 +1559,7 @@
                                             </div>
                                             <div id="hodApprovalAssessmentReport">
                                                 <input type="hidden" id="description14" name="description"
-                                                       th:value="'Permit Status Updated succesfull'">
+                                                       th:value="'Permit Status Updated succesfully'">
                                                 <label for="hodApproveAssessmentStatus" class="col-form-label">Select
                                                     Status:</label>
                                                 <select id="hodApproveAssessmentStatus" required
@@ -1576,18 +1576,23 @@
                                                           class="input-field w-input" cols="65" rows="5"
                                                           th:field="*{hodApproveAssessmentRemarks}"></textarea>
                                             </div>
-
-                                            <div id="pcmReviewApproval">
+                                            <div id="pcmAddAmountToInvoice">
+                                                <input type="hidden" id="description40" name="description"
+                                                       th:value="'Permit Amount Updated succesfully'">
                                                 <div th:object="${invoiceDetails}">
                                                     <label for="itemDescName" class="field-label">Desc Name</label>
                                                     <input type="text" class="form-control" id="itemDescName"
-                                                           th:field="*{itemDescName}" required="required">
+                                                           th:field="*{itemDescName}">
                                                     <label for="itemAmount" class="field-label">Amount</label>
                                                     <input type="number" class="form-control" id="itemAmount"
-                                                           th:field="*{itemAmount}" required="required">
+                                                           th:field="*{itemAmount}">
                                                 </div>
+                                            </div>
+
+                                            <div id="pcmReviewApproval">
+
                                                 <input type="hidden" id="description13" name="description"
-                                                       th:value="'Permit Status Updated succesfull'">
+                                                       th:value="'Permit Status Updated succesfully'">
                                                 <label for="pcmReviewApprovalStatus" class="col-form-label">Select
                                                     Status:</label>
                                                 <select id="pcmReviewApprovalStatus" required class="form-control"
@@ -1606,7 +1611,7 @@
 
                                             <div id="pcmApproval">
                                                 <input type="hidden" id="description13" name="description"
-                                                       th:value="'Permit Status Updated succesfull'">
+                                                       th:value="'Permit Status Updated succesfully'">
                                                 <label for="pcmApprovalStatus" class="col-form-label">Select
                                                     Status:</label>
                                                 <select id="pcmApprovalStatus" required class="form-control"
@@ -2551,6 +2556,7 @@
     function popUpFunction(eventAction) {
         let arrHead = ['agreeTOSSC',
             'approvePermitQAMHOD',
+            'pcmAddAmountToInvoice',
             'addStandardsDetails',
             'updateSection',
             'permitResubmitApplicationForReview',
@@ -2573,6 +2579,7 @@
 
         let arrHeadSave = ['AGREE/CONSENT TO SSC',
             'Approve/Reject Permit with Remarks',
+            'Add other payment Details',
             'Add Standard details',
             'Update Section',
             'Resubmit Permit Your Application for Review',

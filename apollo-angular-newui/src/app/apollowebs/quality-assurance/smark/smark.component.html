@@ -112,7 +112,9 @@ Permit Ref No.</strong></td>
 </td>
 <td><strong>Firm type
 </strong></td>
-<td></td>
+<td>
+    {{allPermitDetails?.permitDetails?.firmTypeName}}
+</td>
 </tr>
 <tr>
 <td>
@@ -1434,20 +1436,6 @@ enctype="multipart/form-data" method="post">
         <div id="main17">
             <div class="container">
                 <div class="container">
-                    <!--                    <button (click)="viewPdfFile((allPermitDetails?.schemeOfSuperVision?.id).toString(),(allPermitDetails?.schemeOfSuperVision?.name).toString(),(allPermitDetails?.schemeOfSuperVision?.fileType).toString())"-->
-                    <!--                            mat-raised-button=""-->
-                    <!--                            class="btn btn-kebs mat-raised-button mat-button-base"><span-->
-                    <!--                            class="mat-button-wrapper">VIEW REMARKS</span>-->
-                    <!--                        <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
-                    <!--                        <div class="mat-button-focus-overlay"></div>-->
-                    <!--                    </button>-->
-                    <!--                    <button (click)="viewPdfFile((allPermitDetails?.schemeOfSuperVision?.id).toString(),(allPermitDetails?.schemeOfSuperVision?.name).toString(),(allPermitDetails?.schemeOfSuperVision?.fileType).toString())"-->
-                    <!--                            mat-raised-button=""-->
-                    <!--                            class="btn btn-kebs mat-raised-button mat-button-base"><span-->
-                    <!--                            class="mat-button-wrapper">RE-SUBMIT</span>-->
-                    <!--                        <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
-                    <!--                        <div class="mat-button-focus-overlay"></div>-->
-                    <!--                    </button>-->
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
@@ -1477,14 +1465,6 @@ enctype="multipart/form-data" method="post">
 
                                     </button>
                                 </td>
-                                <!--                                <td *ngIf="row[2] == true" class="td-actions text-right"></td>-->
-                                <!--                                <td *ngIf="row[2] == false && labResults == false" class="td-actions text-right">-->
-                                <!--                                    <button mat-raised-button type="button" data-toggle="modal" data-target="#myModal1"-->
-                                <!--                                            (click)="openModalUpload('resubmitDetails', 'resubmitLabNonComplianceResults')"-->
-                                <!--                                            class="btn btn-info {{row[3]}}">-->
-                                <!--                                        <i class="material-icons">visibility</i>-->
-                                <!--                                    </button>-->
-                                <!--                                </td>-->
                             </tr>
                             </tbody>
                         </table>
@@ -1524,7 +1504,6 @@ enctype="multipart/form-data" method="post">
                                             (click)="viewPdfFile(row[4], row[0], 'application/pdf')"
                                             class="btn btn-info {{row[4]}}">
                                         <i class="material-icons">visibility</i>
-
                                     </button>
                                 </td>
                             </tr>
@@ -1585,47 +1564,6 @@ enctype="multipart/form-data" method="post">
         </div>
     </div>
 
-    <!--                        <div class="tab-pane" id="link12">-->
-    <!--                            <div class="material-datatables">-->
-    <!--                                <table id="datatables" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">-->
-    <!--                                    <thead>-->
-    <!--                                    <tr>-->
-    <!--                                        <th>{{ dataTable.headerRow[0] }}</th>-->
-    <!--                                        <th>{{ dataTable.headerRow[1] }}</th>-->
-    <!--                                        <th>{{ dataTable.headerRow[2] }}</th>-->
-<!--                                        <th>{{ dataTable.headerRow[3] }}</th>-->
-<!--                                        <th>{{ dataTable.headerRow[4] }}</th>-->
-<!--                                        <th class="disabled-sorting text-right">{{ dataTable.headerRow[5] }}</th>-->
-<!--                                    </tr>-->
-<!--                                    </thead>-->
-<!--                                    <tfoot>-->
-<!--                                    <tr>-->
-<!--                                        <th>{{ dataTable.footerRow[0] }}</th>-->
-<!--                                        <th>{{ dataTable.footerRow[1] }}</th>-->
-<!--                                        <th>{{ dataTable.footerRow[2] }}</th>-->
-<!--                                        <th>{{ dataTable.footerRow[3] }}</th>-->
-<!--                                        <th>{{ dataTable.footerRow[4] }}</th>-->
-<!--                                        <th class="text-right">{{ dataTable.footerRow[5] }}</th>-->
-<!--                                    </tr>-->
-<!--                                    </tfoot>-->
-<!--                                    <tbody>-->
-<!--                                    <tr *ngFor="let row of dataTable.dataRows">-->
-<!--                                        <td>{{row[0]}}</td>-->
-<!--                                        <td>{{row[1]}}</td>-->
-<!--                                        <td>{{row[2]}}</td>-->
-<!--                                        <td>{{row[3]}}</td>-->
-<!--                                        <td>{{row[4]}}</td>-->
-<!--                                        <td class="text-right">-->
-<!--                                            <a href="javascript:void(0)" class="btn btn-link btn-info btn-just-icon like"><i class="material-icons">download</i></a>-->
-<!--                                        </td>-->
-<!--                                    </tr>-->
-<!--                                    </tbody>-->
-<!--                                </table>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="tab-pane" id="link13">-->
-
-<!--                        </div>-->
 </div>
 </div>
 </div>
@@ -1646,6 +1584,14 @@ enctype="multipart/form-data" method="post">
             <div matripple="" class="mat-ripple mat-button-ripple"></div>
             <div class="mat-button-focus-overlay"></div>
         </button>
+
+        <a *ngIf="allPermitDetails?.permitDetails?.fmarkGenerated == true && allPermitDetails?.permitDetails?.fmarkGeneratedID != null"
+           href="/smark/newSmarkPermit#{{allPermitDetails?.permitDetails?.fmarkGeneratedID}}" mat-raised-button=""
+           class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">FMARK APPLICATION DETAILS</span>
+            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+            <div class="mat-button-focus-overlay"></div>
+        </a>
+
         <div *ngIf="allPermitDetails?.permitDetails?.hofQamCompletenessStatus == false && allPermitDetails?.permitDetails?.resubmitApplicationStatus == true">
             <a href="/smark/newSmarkPermit#{{sta1?.id}}" mat-raised-button=""
                class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">UPDATE APPLICATION DETAILS</span>
@@ -1689,7 +1635,7 @@ enctype="multipart/form-data" method="post">
             <div class="mat-button-focus-overlay"></div>
         </button>
 
-        <button *ngIf="allPermitDetails?.remarksDetails?.labResultsCompleteness?.remarksStatus == true"
+        <button *ngIf="allPermitDetails?.remarksDetails?.labResultsCompleteness?.remarksStatus == false"
                 (click)="openModalUpload('resubmitDetails', 'resubmitLabNonComplianceResults')"
                 mat-raised-button="" data-toggle="modal"
                 data-target="#myModal1"

@@ -269,11 +269,16 @@ class QualityAssuranceHandler(
                 loggedInUser.companyId ?: throw ExpectedDataNotFound("Missing COMPANY ID")
             )
         }
-        val batchDetail = qaDaoServices.findPermitInvoiceByPermitRefNumberANdPermitID(
-            permit.permitRefNumber ?: throw ExpectedDataNotFound("PERMIT REF NUMBER NOT FOUND"),
-            permit.userId ?: throw ExpectedDataNotFound("MISSING USER ID"),
-            permitID
-        ).batchInvoiceNo
+
+        var batchDetail: Long? = null
+        if (permit.invoiceGenerated == 1) {
+            batchDetail = qaDaoServices.findPermitInvoiceByPermitRefNumberANdPermitID(
+                permit.permitRefNumber ?: throw ExpectedDataNotFound("PERMIT REF NUMBER NOT FOUND"),
+                permit.userId ?: throw ExpectedDataNotFound("MISSING USER ID"),
+                permitID
+            ).batchInvoiceNo
+        }
+
 
         req.attributes()["batchID"] = batchDetail
         req.attributes()["invoiceDetails"] = QaInvoiceDetailsEntity()
@@ -1490,9 +1495,9 @@ class QualityAssuranceHandler(
             )
 
             //Create FMARK From SMark
-            if (permit.fmarkGenerateStatus == 1) {
-                qaDaoServices.permitGenerateFmark(map, loggedInUser, permit).first
-            }
+//            if (permit.fmarkGenerateStatus == 1) {
+//                qaDaoServices.permitGenerateFmark(map, loggedInUser, permit).first
+//            }
 
             //Calculate Invoice Details
             val invoiceCreated = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, null).second
@@ -1770,7 +1775,7 @@ class QualityAssuranceHandler(
             ).second
 
 
-            qaDaoServices.mapDtoSTA3View(savedSta3).let {
+            qaDaoServices.mapDtoSTA3View(savedSta3, permitID).let {
                 return ok().body(it)
             }
 
@@ -1826,7 +1831,7 @@ class QualityAssuranceHandler(
             ).second
 
 
-            qaDaoServices.mapDtoSTA3View(sta3Found).let {
+            qaDaoServices.mapDtoSTA3View(sta3Found, permitID).let {
                 return ok().body(it)
             }
 
@@ -1876,7 +1881,7 @@ class QualityAssuranceHandler(
                 permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID
             )
 
-            qaDaoServices.mapDtoSTA3View(sta3).let {
+            qaDaoServices.mapDtoSTA3View(sta3, permitID).let {
                 return ok().body(it)
             }
 

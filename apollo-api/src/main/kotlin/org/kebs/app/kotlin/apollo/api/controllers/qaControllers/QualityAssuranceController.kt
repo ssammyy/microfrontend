@@ -725,6 +725,7 @@ class QualityAssuranceController(
 //                    ) as PermitApplicationsEntity, map, loggedInUser
 //                ).second
 
+                permitDetailsDB.userTaskId = applicationMapProperties.mapUserTaskNameQAM
                 permitDetailsDB = qaDaoServices.permitInsertStatus(
                     permitDetailsDB,
                     applicationMapProperties.mapQaStatusPHodQamApproval,
@@ -807,6 +808,7 @@ class QualityAssuranceController(
             }
         }
 
+//        KotlinLogging.logger { }.info { "Saved field data with DETAILS BEFOR ADDING REMARKS" }
         qaDaoServices.permitAddRemarksDetails(
             permitDetailsDB.id ?: throw Exception("ID NOT FOUND"),
             permit.hodQamApproveRejectRemarks,
@@ -817,7 +819,10 @@ class QualityAssuranceController(
             loggedInUser
         )
 
-        val closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetailsDB.id}"
+//        KotlinLogging.logger { }.info { "Saved field data with DETAILS AFTER ADDING REMARKS" }
+
+        val closeLink =
+            "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permitDetailsDB.permitType}"
         return Pair(permitDetailsDB, closeLink)
     }
 
@@ -1078,6 +1083,12 @@ class QualityAssuranceController(
                 //Generate FMARK AFTER SMARK IS AWAREDED
                 if (permitDetailsDB.fmarkGenerateStatus == 1 && permitDetailsDB.permitType == applicationMapProperties.mapQAPermitTypeIdSmark) {
                     qaDaoServices.permitGenerateFMarkFromAwardedPermit(map, loggedInUser, permitDetailsDB)
+                    permitDetailsDB.fmarkGenerated = 1
+                    permitDetailsDB = qaDaoServices.permitInsertStatus(
+                        permitDetailsDB,
+                        applicationMapProperties.mapQaStatusPermitAwarded,
+                        loggedInUser
+                    )
                 }
 
 
@@ -1158,13 +1169,12 @@ class QualityAssuranceController(
 //                    true
 //                )
                 //Application complete and successful
-                qualityAssuranceBpmn.qaDmCheckApplicationComplete(
-                    permitDetailsDB.id ?: throw Exception("MISSING PERMIT ID"), true
-                )
+//                qualityAssuranceBpmn.qaDmCheckApplicationComplete(
+//                    permitDetailsDB.id ?: throw Exception("MISSING PERMIT ID"), true
+//                )
 
             }
             map.inactiveStatus -> {
-
 
                 qaDaoServices.permitInsertStatus(
                     permitDetailsDB,
@@ -1190,9 +1200,9 @@ class QualityAssuranceController(
 //                )
 
                 //Application complete and successful
-                qualityAssuranceBpmn.qaDmCheckApplicationComplete(
-                    permitDetailsDB.id ?: throw Exception("MISSING PERMIT ID"), false
-                )
+//                qualityAssuranceBpmn.qaDmCheckApplicationComplete(
+//                    permitDetailsDB.id ?: throw Exception("MISSING PERMIT ID"), false
+//                )
             }
         }
         //Add Remarks Details to table
