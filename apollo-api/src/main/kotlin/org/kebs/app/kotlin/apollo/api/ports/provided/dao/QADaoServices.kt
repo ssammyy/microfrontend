@@ -1622,7 +1622,23 @@ class QADaoServices(
     ): InvoiceDetailsDto? {
         return when (permitDetails.invoiceGenerated) {
             1 -> {
-                val v = findPermitInvoiceByPermitID(permitDetails.id ?: throw ExpectedDataNotFound("MISSING PERMIT ID"))
+                var v: QaInvoiceMasterDetailsEntity
+                v = when {
+                    permitDetails.permitType == applicationMapProperties.mapQAPermitTypeIdFmark && permitDetails.smarkGeneratedFrom == 1 -> {
+                        val findSMarkID =
+                            findSmarkWithFmarkId(permitDetails.id ?: throw Exception("MISSING PERMIT ID")).smarkId
+                        val findSMark = findPermitBYUserIDAndId(
+                            findSMarkID ?: throw Exception("NO SMARK ID FOUND WITH FMARK ID"),
+                            permitDetails.userId ?: throw ExpectedDataNotFound("MISSING USER ID")
+                        )
+                        findPermitInvoiceByPermitID(findSMark.id ?: throw ExpectedDataNotFound("MISSING PERMIT ID"))
+
+                    }
+                    else -> {
+                        findPermitInvoiceByPermitID(permitDetails.id ?: throw ExpectedDataNotFound("MISSING PERMIT ID"))
+                    }
+                }
+
                 val myList = findALlInvoicesPermitWithMasterInvoiceID(v.id, 1)
                 InvoiceDetailsDto(
                     v.id,
@@ -4778,6 +4794,7 @@ class QADaoServices(
 
             with(fmarkPermit) {
                 id = null
+                smarkGeneratedFrom = 1
                 permitType = permitTypeDetails.id
                 permitStatus = applicationMapProperties.mapQaStatusPermitAwarded
                 permitRefNumber = "REF${permitTypeDetails.markNumber}${

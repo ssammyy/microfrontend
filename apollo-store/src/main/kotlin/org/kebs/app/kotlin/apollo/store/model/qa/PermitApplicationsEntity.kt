@@ -204,6 +204,10 @@ class PermitApplicationsEntity : Serializable {
     @Basic
     var permitType: Long? = null
 
+    @Column(name = "SMARK_GENERATED_FROM")
+    @Basic
+    var smarkGeneratedFrom: Int? = null
+
     @Column(name = "DIVISION_ID")
     @Basic
     var divisionId: Long? = null

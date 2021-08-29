@@ -1714,11 +1714,26 @@ class QualityAssuranceHandler(
             var batchDetail: Long? = null
 
             if (permit.sendApplication == map.activeStatus) {
-                batchDetail = qaDaoServices.findPermitInvoiceByPermitRefNumberANdPermitID(
-                    permit.permitRefNumber ?: throw ExpectedDataNotFound("PERMIT REF NUMBER NOT FOUND"),
-                    loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID"),
-                    permitID
-                ).batchInvoiceNo
+                if (permit.permitType == applicationMapProperties.mapQAPermitTypeIdFmark && permit.smarkGeneratedFrom == 1) {
+                    val findSMarkID = qaDaoServices.findSmarkWithFmarkId(permitID).smarkId
+                    val findSMark = qaDaoServices.findPermitBYUserIDAndId(
+                        findSMarkID ?: throw Exception("NO SMARK ID FOUND WITH FMARK ID"),
+                        loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
+                    )
+                    batchDetail = qaDaoServices.findPermitInvoiceByPermitRefNumberANdPermitID(
+                        findSMark.permitRefNumber ?: throw ExpectedDataNotFound("PERMIT REF NUMBER NOT FOUND"),
+                        loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID"),
+                        findSMarkID
+                    ).batchInvoiceNo
+
+                } else {
+                    batchDetail = qaDaoServices.findPermitInvoiceByPermitRefNumberANdPermitID(
+                        permit.permitRefNumber ?: throw ExpectedDataNotFound("PERMIT REF NUMBER NOT FOUND"),
+                        loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID"),
+                        permitID
+                    ).batchInvoiceNo
+                }
+
             }
 
             qaDaoServices.mapAllPermitDetailsTogether(permit, batchDetail, map).let {
