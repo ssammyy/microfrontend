@@ -9,6 +9,7 @@ import {
   tokenValidatedFeatureKey,
   TokenValidatedState
 } from './auth.reducer';
+import {RouteGuard} from '../../../route-guard/route.guard';
 
 export const getAuthFeatureState = createFeatureSelector<AuthState>(authFeatureKey);
 export const getTokenFeatureState = createFeatureSelector<TokenValidatedState>(tokenValidatedFeatureKey);
@@ -18,7 +19,7 @@ export const getCompanyInfoDtoFeatureState = createFeatureSelector<CompanyInfoDt
 
 export const selectIsAuthenticated = createSelector(
     getAuthFeatureState,
-    // (state: AuthState) => state.loggedIn && state.profile.expiry > new Date()
+    // (state: AuthState) => state.loggedIn &&  RouteGuard.tokenExpired(state.profile.accessToken)
     (state: AuthState) => state.loggedIn
 );
 export const selectUserInfo = createSelector(

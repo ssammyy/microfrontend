@@ -16,48 +16,67 @@ export class RouteGuard implements CanActivate {
     ) {
     }
 
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    static tokenExpired(token: string) {
+        const expiry = (JSON.parse(atob(token.split('.')[1]))).exp;
+        console.log(`MY TOKEN VALUE = ${expiry}`);
+        return (Math.floor((new Date).getTime() / 1000)) >= expiry;
+    }
+
+    canActivate(
+        route: ActivatedRouteSnapshot,
+        state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
 
-    return this.checkStoreAuthentication().pipe(
-      map((authed) => {
-          if (!authed) {
-              // this.store$.dispatch(fromStore.logout({payload: ''}));
-              console.log(`Authd = ${authed} redirecting to login date =${Date.now()} expiry = ${new Date('26/08/2021 16:41:43.367').getTime()}`);
-              this.store$.dispatch(Go({link: 'login', payload: null, redirectUrl: null}));
-              // this.store$.dispatch(Go({link: 'login', payload: null, redirectUrl: state.url}));
-              console.log(`canActivate( No. Redirect the user back to login. )`);
-              return false;
-          }
+        return this.checkStoreAuthentication().pipe(
+            map((authed) => {
+                if (!authed) {
+                    // this.store$.dispatch(fromStore.logout({payload: ''}));
+                    console.log(`Authd = ${authed} redirecting to login date =${Date.now()}`);
+                    this.store$.dispatch(Go({link: 'login', payload: null, redirectUrl: null}));
+                    // this.store$.dispatch(Go({link: 'login', payload: null, redirectUrl: state.url}));
+                    console.log(`canActivate( No. Redirect the user back to login. )`);
+                    return false;
+                }
 
-          console.log(`canActivate( Yes. Navigate the user to the requested route. )`);
-        return true;
-      }),
-      first()
-    );
-  }
+                console.log(`Authd = ${authed} redirecting Dashboard =${Date.now()}`);
+                console.log(`canActivate( Yes. Navigate the user to the requested route. )`);
+                return true;
+            }),
+            first()
+        );
+    }
 
-  /**
-   * Determine if the user is logged by checking the Redux store.
-   */
-  private checkStoreAuthentication(): Observable<boolean> {
-      let auth = false;
-      this.store$.select(selectIsAuthenticated).subscribe(
-          (a) => {
-              console.log(`Authd = ${a} redirecting to login`);
-              return auth = a;
-          }
-      );
-      this.store$.select(selectUserInfo).subscribe(
-          (a) => {
-              console.log(`login date =${Date.now()} expiry = ${(new Date(a.expiry)).getTime()}`);
-              console.log(`login date =${Date.now()} expiry = ${new Date(a.expiry).getTime()}`);
-          }
-      );
-      return of(auth);
-      // return this.store$.pipe(select(selectIsAuthenticated)).pipe(first());
-  }
+    /**
+     * Determine if the user is logged by checking the Redux store.
+     */
+    private checkStoreAuthentication(): Observable<boolean> {
+        let auth = false;
+        this.store$.select(selectIsAuthenticated).subscribe(
+            (a) => {
+                console.log(`Authd = ${a} redirecting to login`);
+                return auth = a;
+            }
+        );
+        // this.store$.select(selectUserInfo).subscribe(
+        //     (a) => {
+        //         return auth = RouteGuard.tokenExpired(a.accessToken);
+        //     }
+        // );
+        // return of(auth);
+        this.store$.select(selectUserInfo).subscribe(
+            (a) => {
+                if (RouteGuard.tokenExpired(a.accessToken)) {
+                    console.log(`TOKEN INVALID}`);
+                    return auth;
+                } else {
+                    console.log(`Token VALID`);
+                    return auth = true;
+                }
+            }
+        );
+        return of(auth);
+        // return this.store$.pipe(select(selectIsAuthenticated)).pipe(first());
+    }
+
 
 }
