@@ -32,8 +32,8 @@ export class RouteGuard implements CanActivate {
                 if (!authed) {
                     // this.store$.dispatch(fromStore.logout({payload: ''}));
                     console.log(`Authd = ${authed} redirecting to login date =${Date.now()}`);
-                    this.store$.dispatch(Go({link: 'login', payload: null, redirectUrl: null}));
-                    // this.store$.dispatch(Go({link: 'login', payload: null, redirectUrl: state.url}));
+                    // this.store$.dispatch(Go({link: 'login', payload: null, redirectUrl: null}));
+                    this.store$.dispatch(Go({link: 'login', payload: null, redirectUrl: state.url}));
                     console.log(`canActivate( No. Redirect the user back to login. )`);
                     return false;
                 }
