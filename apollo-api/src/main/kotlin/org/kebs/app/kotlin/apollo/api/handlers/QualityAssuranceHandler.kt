@@ -1506,20 +1506,21 @@ class QualityAssuranceHandler(
             with(permit) {
                 sendApplication = map.activeStatus
                 applicationStatus = map.activeStatus
+                endOfProductionStatus = map.inactiveStatus
                 invoiceGenerated = map.activeStatus
                 permitStatus = applicationMapProperties.mapQaStatusPPayment
             }
             permit = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).second
 
 
-            //Start DMARK PROCESS
-            qualityAssuranceBpmn.startQADmAppPaymentProcess(
-                permit.id ?: throw Exception("MISSING PERMIT ID"), null
-            )
-
-            //Complete Submit Application
-            qualityAssuranceBpmn.qaDmSubmitApplicationComplete(permit.id ?: throw Exception("MISSING PERMIT ID"), permit.renewalStatus == 1,
-                permit.permitForeignStatus == 1)
+//            //Start DMARK PROCESS
+//            qualityAssuranceBpmn.startQADmAppPaymentProcess(
+//                permit.id ?: throw Exception("MISSING PERMIT ID"), null
+//            )
+//
+//            //Complete Submit Application
+//            qualityAssuranceBpmn.qaDmSubmitApplicationComplete(permit.id ?: throw Exception("MISSING PERMIT ID"), permit.renewalStatus == 1,
+//                permit.permitForeignStatus == 1)
 
             qaDaoServices.mapAllPermitDetailsTogether(
                 permit,

@@ -6,7 +6,7 @@
               name="DiamondMarkPermit" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20"
               rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed21babd-bc90-4f45-a015-31c53503a62e">
     <property name="background.image.path"
-              value="D:\\apollo\\conf\\test/reports/images/kebs_dmark_background_image.png"/>
+              value="/app/apps_home/apollo/conf/test/reports/images/kebs_dmark_background_image.png"/>
     <property name="background.image.x" value="10"/>
     <property name="background.image.y" value="10"/>
     <property name="background.image.widht" value="595"/>
@@ -22,25 +22,25 @@
     <parameter name="PhysicalAddress" class="java.lang.String"/>
     <parameter name="CommodityDesc" class="java.lang.String"/>
     <parameter name="TradeMark" class="java.lang.String"/>
-	<parameter name="StandardTitle" class="java.lang.String"/>
-	<parameter name="QrCode" class="java.lang.String"/>
-	<queryString>
-		<![CDATA[]]>
-	</queryString>
+    <parameter name="StandardTitle" class="java.lang.String"/>
+    <parameter name="QrCode" class="java.lang.String"/>
+    <queryString>
+        <![CDATA[]]>
+    </queryString>
     <background>
         <band splitType="Stretch">
             <property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
         </band>
     </background>
-	<title>
-		<band height="90" splitType="Stretch">
-			<staticText>
-				<reportElement x="0" y="-10" width="163" height="20" uuid="06ac078c-12b8-4df5-a224-4b0284ecea4f"/>
-				<textElement>
-					<font size="8"/>
-				</textElement>
-				<text><![CDATA[ORIGINAL FORM STA/2]]></text>
-			</staticText>
+    <title>
+        <band height="90" splitType="Stretch">
+            <staticText>
+                <reportElement x="0" y="-10" width="163" height="20" uuid="06ac078c-12b8-4df5-a224-4b0284ecea4f"/>
+                <textElement>
+                    <font size="8"/>
+                </textElement>
+                <text><![CDATA[ORIGINAL FORM STA/2]]></text>
+            </staticText>
             <staticText>
                 <reportElement x="61" y="40" width="390" height="20" uuid="2e60ab76-bf15-4408-8c78-8101c30ea384"/>
                 <textElement>

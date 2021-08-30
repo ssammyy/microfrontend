@@ -827,7 +827,7 @@ class QualityAssuranceController(
         when (permit.hodQamApproveRejectStatus) {
             map.activeStatus -> {
                 with(permit) {
-                    pscMemberId = qaDaoServices.assignNextOfficerAfterPayment(
+                    pscMemberId = qaDaoServices.assignNextOfficerWithDesignation(
                         permitDetailsDB,
                         map,
                         applicationMapProperties.mapQADesignationIDForPSCId

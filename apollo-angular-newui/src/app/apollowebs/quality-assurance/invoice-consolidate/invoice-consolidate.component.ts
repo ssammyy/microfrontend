@@ -2,14 +2,16 @@ import {Component, OnInit} from '@angular/core';
 import {QaService} from '../../../core/store/data/qa/qa.service';
 import {Router} from '@angular/router';
 import {
-    AllPermitDetailsDto,
-    ConsolidatedInvoiceDto,
-    GenerateInvoiceDto,
-    PermitEntityDto, PermitInvoiceDto
+  AllPermitDetailsDto,
+  ConsolidatedInvoiceDto,
+  GenerateInvoiceDto,
+  PermitEntityDto, PermitInvoiceDto
 } from '../../../core/store/data/qa/qa.model';
 import {FormArray, FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {Subscription} from 'rxjs';
 import swal from 'sweetalert2';
+import Swal from 'sweetalert2';
+import {NgxSpinnerService} from 'ngx-spinner';
 
 declare interface DataTable {
   headerRow: string[];
@@ -41,6 +43,7 @@ export class InvoiceConsolidateComponent implements OnInit {
       private qaService: QaService,
       private router: Router,
       private fb: FormBuilder,
+      private SpinnerService: NgxSpinnerService,
   ) { }
 
   ngOnInit() {
@@ -58,8 +61,8 @@ export class InvoiceConsolidateComponent implements OnInit {
           formattedArray = data.map(i => [i.permitRefNumber, i.commodityDescription, i.brandName, i.totalAmount, i.invoiceNumber, i.permitID]);
 
           this.dataTable = {
-            headerRow: ['Permit Ref N0', 'Commodity Description', 'Brand Name', 'Total Amount', 'Reference Number', 'Select'],
-            footerRow: ['Permit Ref N0', 'Commodity Description', 'Brand Name', 'Total Amount', 'Reference Number', 'Select'],
+            headerRow: ['Permit Ref N0', 'Commodity Description', 'Brand Name', 'Total Amount', 'Reference Number', 'Action', 'Select'],
+            footerRow: ['Permit Ref N0', 'Commodity Description', 'Brand Name', 'Total Amount', 'Reference Number', 'Action', 'Select'],
             dataRows: formattedArray
 
           };
@@ -137,43 +140,131 @@ export class InvoiceConsolidateComponent implements OnInit {
     }
   }
 
-  submit() {
-    this.final_array.push(this.selected.sort());
-    console.log(this.final_array);
-    const selectedRows = this.final_array;
-    const permitInvoicesIDS: number[] = [];
-    selectedRows.forEach(function (dataValue) {
-      for (let i = 0; i <= dataValue.length - 1; i++) {
-        const pickedI = dataValue[i];
-        const idIndex = dataValue[i].length;
-        console.log(`VALUE OF I =${dataValue[i][5]}`);
-        const myData = dataValue[i][5];
-        console.log(`DATA ADDED ${myData}`);
-        permitInvoicesIDS.push(myData);
+  payNowForOneInvoice(invoicesID: any) {
+
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: 'btn btn-success',
+        cancelButton: 'btn btn-danger'
+      },
+      buttonsStyling: false
+    });
+
+    swalWithBootstrapButtons.fire({
+      title: 'Are you sure you want to pay for only this invoice?',
+      text: 'You won\'t be able to make changes after submission!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes!',
+      cancelButtonText: 'No!',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.SpinnerService.show();
+        const permitInvoicesIDS: number[] = [];
+        permitInvoicesIDS.push(invoicesID);
+        const consolidatedInvoice = new GenerateInvoiceDto;
+        consolidatedInvoice.batchID = null;
+        consolidatedInvoice.plantID = null;
+        consolidatedInvoice.permitRefNumber = null;
+        consolidatedInvoice.permitInvoicesID = permitInvoicesIDS;
+        this.qaService.createInvoiceConsolidatedDetails(consolidatedInvoice).subscribe(
+            (data) => {
+              console.log(data);
+              this.SpinnerService.hide();
+              swal.fire({
+                title: 'INVOICE GENERATED SUCCESSFULLY!, PROCEED TO PAY',
+                buttonsStyling: false,
+                customClass: {
+                  confirmButton: 'btn btn-success form-wizard-next-btn ',
+                },
+                icon: 'success'
+              });
+              this.router.navigate(['/invoiceDetails'], {fragment: String(data.batchDetails.batchID)});
+            },
+        );
+      } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === swal.DismissReason.cancel
+      ) {
+        swalWithBootstrapButtons.fire(
+            'Cancelled',
+            'You can click the \'On the side Check Box for Consolidating\' more than one invoice.',
+            'error'
+        );
       }
     });
-    console.log(permitInvoicesIDS);
-    const consolidatedInvoice = new GenerateInvoiceDto;
-    consolidatedInvoice.batchID = null;
-    consolidatedInvoice.plantID = null;
-    consolidatedInvoice.permitRefNumber = null;
-    consolidatedInvoice.permitInvoicesID = permitInvoicesIDS;
-    console.log('TEST CONSOLIDATE' + consolidatedInvoice);
-    console.log(consolidatedInvoice.permitInvoicesID);
-      this.qaService.createInvoiceConsolidatedDetails(consolidatedInvoice).subscribe(
-          (data) => {
-            console.log(data);
-            swal.fire({
-              title: 'INVOICE CONSOLIDATED SUCCESSFULLY!',
-              buttonsStyling: false,
-              customClass: {
-                confirmButton: 'btn btn-success form-wizard-next-btn ',
-              },
-              icon: 'success'
-            });
+  }
+
+  submit() {
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: 'btn btn-success',
+        cancelButton: 'btn btn-danger'
+      },
+      buttonsStyling: false
+    });
+
+    swalWithBootstrapButtons.fire({
+      title: 'Are you sure you want to pay for the selected invoice\'s?',
+      text: 'You won\'t be able to make changes after submission!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes!',
+      cancelButtonText: 'No!',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.SpinnerService.show();
+        this.final_array.push(this.selected.sort());
+        console.log(this.final_array);
+        const selectedRows = this.final_array;
+        const permitInvoicesIDS: number[] = [];
+        selectedRows.forEach(function (dataValue) {
+          for (let i = 0; i <= dataValue.length - 1; i++) {
+            const pickedI = dataValue[i];
+            const idIndex = dataValue[i].length;
+            console.log(`VALUE OF I =${dataValue[i][5]}`);
+            const myData = dataValue[i][5];
+            console.log(`DATA ADDED ${myData}`);
+            permitInvoicesIDS.push(myData);
+          }
+        });
+        console.log(permitInvoicesIDS);
+        const consolidatedInvoice = new GenerateInvoiceDto;
+        consolidatedInvoice.batchID = null;
+        consolidatedInvoice.plantID = null;
+        consolidatedInvoice.permitRefNumber = null;
+        consolidatedInvoice.permitInvoicesID = permitInvoicesIDS;
+        console.log('TEST CONSOLIDATE' + consolidatedInvoice);
+        console.log(consolidatedInvoice.permitInvoicesID);
+        this.qaService.createInvoiceConsolidatedDetails(consolidatedInvoice).subscribe(
+            (data) => {
+              this.SpinnerService.hide();
+              swal.fire({
+                title: 'INVOICE CONSOLIDATED SUCCESSFULLY!',
+                buttonsStyling: false,
+                customClass: {
+                  confirmButton: 'btn btn-success form-wizard-next-btn ',
+                },
+                icon: 'success'
+              });
               this.router.navigate(['/invoiceDetails'], {fragment: String(data.batchDetails.batchID)});
-          },
-      );
+            },
+        );
+      } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === swal.DismissReason.cancel
+      ) {
+        swalWithBootstrapButtons.fire(
+            'Cancelled',
+            'You can click the \'On the side Check Box for Consolidating\' more than one invoice.',
+            'error'
+        );
+      }
+    });
+
+
   }
 
 }

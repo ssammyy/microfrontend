@@ -3521,7 +3521,7 @@ class QADaoServices(
                 permitRefNumber = oldPermit.permitRefNumber
                 enabled = s.initStatus
                 versionNumber = versionNumberOld.plus(1)
-                endOfProductionStatus = s.initStatus
+                endOfProductionStatus = s.inactiveStatus
                 commodityDescription = oldPermit.commodityDescription
                 firmName = oldPermit.firmName
                 postalAddress = oldPermit.postalAddress
@@ -4542,6 +4542,7 @@ class QADaoServices(
             KotlinLogging.logger { }.info { "PLANT ID = ${plantDetail.id}" }
             val manufactureTurnOver =
                 companyDetails.yearlyTurnover ?: throw Exception("MISSING COMPANY TURNOVER DETAILS")
+            //Todo ask ken why list comming back does not have the product that is being generated for.
             val productsManufacture = findAllProductManufactureInPlantWithPlantID(
                 s.activeStatus,
                 s.activeStatus,
@@ -4549,14 +4550,15 @@ class QADaoServices(
                 permitType.id ?: throw Exception("MISSING PERMIT TYPE ID"),
                 plantDetail.id
             )
-            KotlinLogging.logger { }.info { "PRODUCT SIZE = ${productsManufacture.size}" }
+
+            KotlinLogging.logger { }.info { "PRODUCT SIZE = ${productsManufacture.size.plus(1)}" }
             when (permitType.id) {
                 applicationMapProperties.mapQAPermitTypeIdSmark -> {
                     invoiceGenerated = qaInvoiceCalculation.calculatePaymentSMark(
                         permit,
                         user,
                         manufactureTurnOver,
-                        productsManufacture.size.toLong(),
+                        productsManufacture.size.plus(1).toLong(),
                         plantDetail
                     )
                 }

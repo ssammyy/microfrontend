@@ -26,6 +26,7 @@
                                     <th>{{ dataTable.headerRow[3] }}</th>
                                     <th>{{ dataTable.headerRow[4] }}</th>
                                     <th>{{ dataTable.headerRow[5] }}</th>
+                                    <th>{{ dataTable.headerRow[6] }}</th>
                                 </tr>
                                 </thead>
                                 <tfoot>
@@ -36,19 +37,29 @@
                                     <th>{{ dataTable.footerRow[3] }}</th>
                                     <th>{{ dataTable.footerRow[4] }}</th>
                                     <th>{{ dataTable.footerRow[5] }}</th>
+                                    <th>{{ dataTable.footerRow[6] }}</th>
                                 </tr>
                                 </tfoot>
                                 <tbody>
                                 <tr *ngFor="let row of dataTable.dataRows">
+
                                     <td>{{row[0]}}</td>
                                     <td>{{row[1]}}</td>
                                     <td>{{row[2]}}</td>
                                     <td>{{row[3]}}</td>
                                     <td>{{row[4]}}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-primary"
+                                                (click)="payNowForOneInvoice(row[5])">
+                                            PAY NOW
+                                        </button>
+                                    </td>
+                                    <br>
                                     <td><input class="form-check-input" type="checkbox" value="{{row[5]}}"
                                                id="defaultCheck1" (change)="onChange($event.target.checked, row)"
                                                [checked]="checked(row)">
                                     </td>
+
                                 </tr>
                                 </tbody>
                             </table>
