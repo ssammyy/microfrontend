@@ -2217,8 +2217,10 @@ class QualityAssuranceController(
         @RequestParam("inspectionReportStatus") inspectionReportStatus: Int?,
         @RequestParam("sta10Status") sta10Status: Int?,
         @RequestParam("sscUploadStatus") sscUploadStatus: Int?,
+        @RequestParam("justificationReportUploadStatus") justificationReportUploadStatus: Int?,
         @RequestParam("scfStatus") scfStatus: Int?,
         @RequestParam("ssfStatus") ssfStatus: Int?,
+        @RequestParam("justificationReportStatus") justificationReportStatus: Int?,
         @RequestParam("cocStatus") cocStatus: Int?,
         @RequestParam("assessmentReportStatus") assessmentReportStatus: Int?,
         @RequestParam("labResultsStatus") labResultsStatus: Int?,
@@ -2249,7 +2251,8 @@ class QualityAssuranceController(
                     loggedInUser,
                     map,
                     uploads,
-                    permitDetails.permitRefNumber?: throw Exception("INVALID PERMIT REF NUMBER"),
+                    permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+                    permitDetails.id ?: throw Exception("INVALID PERMIT ID"),
                     versionNumber,
                     manufactureNonStatus
                 )
@@ -2269,7 +2272,8 @@ class QualityAssuranceController(
                             loggedInUser,
                             map,
                             uploads,
-                            permitDetails.permitRefNumber?: throw Exception("INVALID PERMIT REF NUMBER"),
+                            permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+                            permitDetails.id ?: throw Exception("INVALID PERMIT ID"),
                             versionNumber,
                             manufactureNonStatus
                         )
@@ -2297,10 +2301,26 @@ class QualityAssuranceController(
                         )
 
                     }
+
+                    justificationReportUploadStatus != null -> {
+                        uploads.justificationReportStatus = justificationReportUploadStatus
+                        uploadResults = uploadedJustificationReport(
+                            versionNumber,
+                            permitDetails,
+                            map,
+                            uploadResults,
+                            docFile,
+                            docFileName,
+                            loggedInUser,
+                            uploads,
+                            manufactureNonStatus
+                        )
+
+                    }
                     assessmentReportStatus != null -> {
                         uploads.assessmentReportStatus = assessmentReportStatus
                         versionNumber = qaDaoServices.findAllUploadedFileBYPermitRefNumberAndAssessmentReportStatus(
-                            permitDetails.permitRefNumber?: throw Exception("INVALID PERMIT REF NUMBER"),
+                            permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
                             map.activeStatus
                         ).size.toLong().plus(versionNumber)
                         uploadResults = qaDaoServices.saveQaFileUploads(
@@ -2309,7 +2329,8 @@ class QualityAssuranceController(
                             loggedInUser,
                             map,
                             uploads,
-                            permitDetails.permitRefNumber?: throw Exception("INVALID PERMIT REF NUMBER"),
+                            permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+                            permitDetails.id ?: throw Exception("INVALID PERMIT ID"),
                             versionNumber,
                             manufactureNonStatus
                         )
@@ -2323,13 +2344,16 @@ class QualityAssuranceController(
 
                         with(permitDetails) {
                             if (resubmitApplicationStatus == 1) {
-                                resubmitApplicationStatus == 10
+                                resubmitApplicationStatus = 10
+//                                userTaskId = applicationMapProperties.mapUserTaskName
+                            } else {
+                                userTaskId = applicationMapProperties.mapUserTaskNameHOD
                             }
                             assessmentScheduledStatus = map.successStatus
                             assessmentReportRemarks = assessmentRecommendations
                             hodId = hodDetails?.id
                             permitStatus = applicationMapProperties.mapQaStatusPApprovalAssesmentReport
-                            userTaskId = applicationMapProperties.mapUserTaskNameHOD
+
                         }
                         permitDetails = qaDaoServices.permitUpdateDetails(permitDetails, map, loggedInUser).second
 
@@ -2371,7 +2395,8 @@ class QualityAssuranceController(
                             loggedInUser,
                             map,
                             uploads,
-                            permitDetails.permitRefNumber?: throw Exception("INVALID PERMIT REF NUMBER"),
+                            permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+                            permitDetails.id ?: throw Exception("INVALID PERMIT ID"),
                             versionNumber,
                             manufactureNonStatus
                         )
@@ -2418,6 +2443,7 @@ class QualityAssuranceController(
             map,
             uploads,
             permitDetails1.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+            permitDetails1.id ?: throw Exception("INVALID PERMIT ID"),
             versionNumber1,
             manufactureNonStatus
         )
@@ -2436,6 +2462,53 @@ class QualityAssuranceController(
             ).email ?: throw ExpectedDataNotFound("MISSING USER ID"),
             permitDetails1.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
         )
+
+//        qaDaoServices.sendEmailWithSSCAttached(commonDaoServices.findUserByID(
+//            permitDetails1.userId ?: throw ExpectedDataNotFound("MISSING USER ID")
+//        ).email ?: throw ExpectedDataNotFound("MISSING USER ID"),docFile.bytes.toString(), permitDetails1.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER"))
+
+        return uploadResults1
+    }
+
+    fun uploadedJustificationReport(
+        versionNumber: Long,
+        permitDetails: PermitApplicationsEntity,
+        map: ServiceMapsEntity,
+        uploadResults: Pair<ServiceRequestsEntity, QaUploadsEntity>?,
+        docFile: MultipartFile,
+        docFileName: String,
+        loggedInUser: UsersEntity,
+        uploads: QaUploadsEntity,
+        manufactureNonStatus: Int
+    ): Pair<ServiceRequestsEntity, QaUploadsEntity>? {
+        var versionNumber1 = versionNumber
+        var permitDetails1 = permitDetails
+        var uploadResults1 = uploadResults
+        versionNumber1 = qaDaoServices.findAllUploadedFileBYPermitRefNumberAndJustificationReportStatusAndPermitId(
+            permitDetails1.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+            map.activeStatus, permitDetails1.id ?: throw Exception("INVALID PERMIT ID"),
+        ).size.toLong().plus(versionNumber1)
+
+        uploadResults1 = qaDaoServices.saveQaFileUploads(
+            docFile,
+            docFileName,
+            loggedInUser,
+            map,
+            uploads,
+            permitDetails1.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+            permitDetails1.id ?: throw Exception("INVALID PERMIT ID"),
+            versionNumber1,
+            manufactureNonStatus
+        )
+        permitDetails1.justificationReportStatus = map.initStatus
+//        permitDetails1.permitStatus = applicationMapProperties.mapQaStatusPApprovalustCationReport
+        permitDetails1.permitStatus = applicationMapProperties.mapQaStatusPInspectionReportApproval
+//            permitStatus = applicationMapProperties.mapQaStatusPApprovalustCationReport
+        permitDetails1.userTaskId = applicationMapProperties.mapUserTaskNameHOD
+        permitDetails1 = qaDaoServices.permitUpdateDetails(permitDetails1, map, loggedInUser).second
+
+
+        qaDaoServices.sendNotificationForJustification(permitDetails1)
 
 //        qaDaoServices.sendEmailWithSSCAttached(commonDaoServices.findUserByID(
 //            permitDetails1.userId ?: throw ExpectedDataNotFound("MISSING USER ID")
@@ -2469,6 +2542,7 @@ class QualityAssuranceController(
             map,
             uploads,
             permitDetails1.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+            permitDetails1.id ?: throw Exception("INVALID PERMIT ID"),
             versionNumber,
             manufactureNonStatus
         )
@@ -2696,7 +2770,8 @@ class QualityAssuranceController(
             loggedInUser,
             map,
             uploads,
-            permitDetails.permitRefNumber?: throw Exception("INVALID PERMIT REF NUMBER"),
+            permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+            permitDetails.id ?: throw Exception("INVALID PERMIT ID"),
             versionNumber,
             null
         ).first

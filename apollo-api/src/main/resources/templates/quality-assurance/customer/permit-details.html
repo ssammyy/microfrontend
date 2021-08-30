@@ -381,6 +381,36 @@
                                             </table>
                                         </div>
                                     </div>
+
+                                    <button class="accordion">Justification Report Attached Details</button>
+                                    <div class="panel">
+                                        <div class="row-table ">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                <tr>
+                                                    <th>File Name</th>
+                                                    <th>File Type</th>
+                                                    <th>Document Description</th>
+                                                    <th>Version Number</th>
+                                                    <th>View</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr class="list" th:each="fileParam: ${justificationReportParameters}"
+                                                    style="cursor: pointer">
+
+                                                    <td th:text="${fileParam.name}"></td>
+                                                    <td th:text="${fileParam.fileType}"></td>
+                                                    <td th:text="${fileParam.documentType}"></td>
+                                                    <td th:text="${fileParam.versionNumber}"></td>
+                                                    <td>
+                                                        <a th:href="@{/api/qa/kebs/view/attached(fileID=${fileParam.id})}"
+                                                           class="btn btn-primary itemViewBtn">view</a></td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div th:if="${permitType?.id == smarkPermit || permitType?.id == fmarkPermit }">
                                     <button class="accordion">STA 10 Attached Details</button>
@@ -620,10 +650,10 @@
                                            th:href="@{/api/qa/inspection/ssf-list(permitID=${permitDetails?.id})}"
                                            style="color: white">CHECK SAMPLES SUBMITTED DETAILS</a>
 
-                                        <a th:if="${permitDetails?.compliantStatus == 1 and permitDetails?.justificationReportStatus == 1 and permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1}"
-                                           th:href="@{/api/qa/product-quality-status(permitID=${permitDetails?.id})}"
-                                           style="color: white" class="filter-link">Justification
-                                            for Diamond Mark Assessment</a>
+                                        <!--                                        <a th:if="${permitDetails?.compliantStatus == 1 and permitDetails?.justificationReportStatus == 1 and permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1}"-->
+                                        <!--                                           th:href="@{/api/qa/product-quality-status(permitID=${permitDetails?.id})}"-->
+                                        <!--                                           style="color: white" class="filter-link">Justification-->
+                                        <!--                                            for Diamond Mark Assessment</a>-->
 
 
                                     </div>
@@ -1228,7 +1258,7 @@
                                                class="filter-link">APPROVE/REJECT GENERATED INSPECTION REPORT </a>
 
                                             <a th:if="${permitDetails?.compliantStatus == 1 and permitDetails?.justificationReportStatus == 10 and permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1}"
-                                               th:href="@{/api/qa/product-quality-status(permitID=${permitDetails?.id})}"
+                                               onclick="popUpFunction('approveRejectJustification');"
                                                style="color: white" class="filter-link">Approve/Reject Justification
                                                 for Diamond Mark Assessment</a>
 
@@ -1271,6 +1301,11 @@
                                                onclick="popUpFunction('hodApprovalAssessmentReport');"
                                                class="filter-link">Re-Approve/Reject Assessment Report</a>
 
+                                            <a th:if="${permitDetails?.compliantStatus == 1 and permitDetails?.justificationReportStatus == 10 and permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 and permitDetails?.resubmitApplicationStatus == 10}"
+                                               onclick="popUpFunction('approveRejectJustification');"
+                                               style="color: white" class="filter-link">RE-Approve/Reject Justification
+                                                for Diamond Mark Assessment</a>
+
                                             <!-- PAC REJECTS PERMIT ACTIVE BUTTONS-->
                                             <div th:if="${ permitDetails?.pacDecisionStatus == 0 and permitDetails?.resubmitApplicationStatus == 10}">
                                                 <a style="color: white"
@@ -1281,6 +1316,11 @@
                                                 <a style="color: white"
                                                    onclick="popUpFunction('hodApprovalAssessmentReport');"
                                                    class="filter-link">Re-Approve/Reject Assessment Report</a>
+
+                                                <a onclick="popUpFunction('approveRejectJustification');"
+                                                   style="color: white" class="filter-link">RE-Approve/Reject
+                                                    Justification
+                                                    for Diamond Mark Assessment</a>
 
                                                 <a style="color: white"
                                                    onclick="popUpResubmitFunction('resubmitDetailsBackPAC');"
@@ -1298,6 +1338,11 @@
                                                 <a style="color: white"
                                                    onclick="popUpFunction('hodApprovalAssessmentReport');"
                                                    class="filter-link">Re-Approve/Reject Assessment Report</a>
+
+                                                <a onclick="popUpFunction('approveRejectJustification');"
+                                                   style="color: white" class="filter-link">RE-Approve/Reject
+                                                    Justification
+                                                    for Diamond Mark Assessment</a>
 
                                                 <a style="color: white"
                                                    onclick="popUpResubmitFunction('resubmitDetailsBackPCM');"
@@ -1322,10 +1367,21 @@
                                                class="filter-link">UPLOAD SCHEME OF SUPERVISION AND CONTROL</a>
 
 
-                                            <a th:if="${permitDetails?.compliantStatus == 1 and permitDetails?.justificationReportStatus == null}"
-                                               th:href="@{/api/qa/product-quality-status(permitID=${permitDetails?.id})}"
-                                               style="color: white" class="filter-link">Justification for Diamond Mark
-                                                Assessment</a>
+                                            <!--                                            <a th:if="${permitDetails?.compliantStatus == 1 and permitDetails?.justificationReportStatus == null}"-->
+                                            <!--                                               th:href="@{/api/qa/product-quality-status(permitID=${permitDetails?.id})}"-->
+                                            <!--                                               style="color: white" class="filter-link">Justification for Diamond Mark-->
+                                            <!--                                                Assessment</a>-->
+
+                                            <a th:if="${ permitDetails?.compliantStatus == 1 and permitDetails?.justificationReportStatus == null}"
+                                               style="color: white"
+                                               onclick="popUpUploadFunction('uploadJustificationReport');"
+                                               class="filter-link">UPLOAD JUSTIFICATION FOR DIAMOND MARK ASSESSMENT</a>
+
+                                            <a th:if="${ permitDetails?.compliantStatus == 1 and permitDetails?.justificationReportStatus == 0}"
+                                               style="color: white"
+                                               onclick="popUpUploadFunction('uploadJustificationReport');"
+                                               class="filter-link">RE-UPLOAD JUSTIFICATION FOR DIAMOND MARK
+                                                ASSESSMENT</a>
 
                                             <div th:if="${permitDetails?.resubmitApplicationStatus == 1}">
                                                 <!--PAC Rejected-->
@@ -1337,6 +1393,11 @@
                                                     <a style="color: white" onclick="popUpUploadFunction('uploadSSC');"
                                                        class="filter-link">RE-UPLOAD SCHEME OF SUPERVISION AND
                                                         CONTROL</a>
+
+                                                    <a style="color: white"
+                                                       onclick="popUpUploadFunction('uploadJustificationReport');"
+                                                       class="filter-link">RE-UPLOAD JUSTIFICATION FOR DIAMOND MARK
+                                                        ASSESSMENT</a>
 
                                                     <a style="color: white" onclick="popUpSSFFunction('addSSFDetails');"
                                                        class="filter-link">RE-INSPECT ADD SSF & BS NUMBER</a>
@@ -1359,6 +1420,11 @@
                                                     <a style="color: white" onclick="popUpUploadFunction('uploadSSC');"
                                                        class="filter-link">RE-UPLOAD SCHEME OF SUPERVISION AND
                                                         CONTROL</a>
+
+                                                    <a style="color: white"
+                                                       onclick="popUpUploadFunction('uploadJustificationReport');"
+                                                       class="filter-link">RE-UPLOAD JUSTIFICATION FOR DIAMOND MARK
+                                                        ASSESSMENT</a>
 
                                                     <a style="color: white" onclick="popUpSSFFunction('addSSFDetails');"
                                                        class="filter-link">RE-INSPECT ADD SSF & BS NUMBER</a>
@@ -1397,8 +1463,7 @@
                                             <a th:if="${permitDetails?.resubmitApplicationStatus == 1 and permitDetails?.hodApproveAssessmentStatus == 0}"
                                                style="color: white"
                                                onclick="popUpUploadFunction('uploadAssessmetReport');"
-                                               class="filter-link">RE-UPLOAD
-                                                ASSESSMENT REPORT</a>
+                                               class="filter-link">RE-UPLOAD ASSESSMENT REPORT</a>
 
                                             <div th:if="${permitDetails?.resubmitApplicationStatus == 1}">
                                                 <!--PAC Rejected-->
@@ -1528,6 +1593,25 @@
                                                 <textarea name="name" id="hofQamCompletenessRemarks"
                                                           class="input-field w-input" cols="65" rows="5"
                                                           th:field="*{hofQamCompletenessRemarks}"></textarea>
+                                            </div>
+
+                                            <div id="approveRejectJustification">
+                                                <input type="hidden" id="description" name="description"
+                                                       th:value="'Justification report status successfully updated'">
+                                                <label for="justificationReportStatus" class="col-form-label">Select
+                                                    approval status:</label>
+                                                <select id="justificationReportStatus" required
+                                                        class="select-field w-select"
+                                                        th:field="*{justificationReportStatus}">
+                                                    <option th:text="'Select one.....'" th:value="null"></option>
+                                                    <option th:text="'Approve'" th:value="1"></option>
+                                                    <option th:text="'Reject'" th:value="0"></option>
+                                                </select>
+                                                <label for="hofQamCompletenessRemarks" class="col-form-label">Please
+                                                    write, in detail, your feedback for this report:</label>
+                                                <textarea name="name" id="hofQamCompletenessRemarks"
+                                                          class="input-field w-input" cols="65"
+                                                          rows="5" th:field="*{justificationReportRemarks}"></textarea>
                                             </div>
 
                                             <div id="approvePermitQAMHOD">
@@ -2451,6 +2535,26 @@
                                                        data-name="doc_file" id="doc_file1" required="required">
                                             </div>
 
+                                            <div id="uploadJustificationReport">
+                                                <input type="hidden" id="manufactureNonStatus5"
+                                                       name="manufactureNonStatus" th:value="${inActiveStatus}">
+                                                <input type="hidden" id="ordinaryStatus6" name="ordinaryStatus"
+                                                       th:value="${inActiveStatus}">
+                                                <input type="hidden" id="justificationReportUploadStatus"
+                                                       name="justificationReportUploadStatus"
+                                                       th:value="${activeStatus}">
+                                                <input type="hidden" id="justificationReportStatus"
+                                                       name="justificationReportStatus"
+                                                       th:value="${activeStatus}">
+                                                <!--                                            <label for="docFileName" class="col-form-label">Description Of Attachment(s):</label>-->
+                                                <input type="hidden" id="docFileName9" name="docFileName"
+                                                       th:value="JUSTIFICATION_REPORT_DMARK_ASSESSMENT">
+                                                <label for="doc_file">Upload your justification Report Dmark
+                                                    assessment</label>
+                                                <input type="file" class="form-control" multiple name="doc_file"
+                                                       data-name="doc_file" id="doc_file1" required="required">
+                                            </div>
+
                                             <div id="uploadCOC">
                                                 <input type="hidden" id="manufactureNonStatus6"
                                                        name="manufactureNonStatus"
@@ -2805,6 +2909,7 @@
 
     function popUpFunction(eventAction) {
         let arrHead = ['agreeTOSSC',
+            'approveRejectJustification',
             'approvePermitQAMHOD',
             'addStandardsDetails',
             'updateSection',
@@ -2827,6 +2932,7 @@
             'hodApprovalAssessmentReport', 'permitEditApplication'];
 
         let arrHeadSave = ['AGREE/CONSENT TO SSC',
+            'Approve or Reject Justification Report',
             'Approve/Reject Permit with Remarks',
             'Add Standard details',
             'Update Section',
@@ -2971,8 +3077,8 @@
     }
 
     function popUpUploadFunction(eventAction) {
-        let arrHead = ['uploadAssessmetReport', 'uploadAttachments', 'uploadSSC', 'uploadCOC', 'uploadInspectionReport', 'uploadSCF', 'uploadSSF', 'uploadLabResults'];
-        let arrHeadSave = ['Upload assessment report', 'Upload document And Give The Name', 'Upload scheme of supervision', 'Upload Certificate of Conformity', 'Upload A Generated Inspection Report', 'Upload filled and signed sample collection form', 'Upload filled and signed sample submission form', 'Upload Final Lab Results Report'];
+        let arrHead = ['uploadJustificationReport', 'uploadAssessmetReport', 'uploadAttachments', 'uploadSSC', 'uploadCOC', 'uploadInspectionReport', 'uploadSCF', 'uploadSSF', 'uploadLabResults'];
+        let arrHeadSave = ['Upload Justification Report', 'Upload assessment report', 'Upload document And Give The Name', 'Upload scheme of supervision', 'Upload Certificate of Conformity', 'Upload A Generated Inspection Report', 'Upload filled and signed sample collection form', 'Upload filled and signed sample submission form', 'Upload Final Lab Results Report'];
 
         for (let h = 0; h < arrHead.length; h++) {
             if (eventAction !== arrHead[h]) {

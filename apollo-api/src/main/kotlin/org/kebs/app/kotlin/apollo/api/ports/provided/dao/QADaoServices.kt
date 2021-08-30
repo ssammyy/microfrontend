@@ -1222,6 +1222,18 @@ class QADaoServices(
         } ?: throw ExpectedDataNotFound("No File found with the following [ PERMIT REF NO =$permitRefNumber]")
     }
 
+    fun findAllUploadedFileBYPermitRefNumberAndJustificationReportStatusAndPermitId(
+        permitRefNumber: String,
+        status: Int,
+        permitID: Long
+    ): List<QaUploadsEntity> {
+        qaUploadsRepo.findByPermitRefNumberAndJustificationReportStatusAndPermitId(permitRefNumber, status, permitID)
+            ?.let {
+                return it
+            }
+            ?: throw ExpectedDataNotFound("No File found with the following [ PERMIT REF NO =$permitRefNumber and Permit ID = $permitID]")
+    }
+
     fun findAllUploadedFileBYInspectionReportIDAndInspectionReportStatus(
         inspectReportID: Long,
         status: Int
@@ -2808,6 +2820,7 @@ class QADaoServices(
         map: ServiceMapsEntity,
         qaUploads: QaUploadsEntity,
         permitRefNUMBER: String,
+        permitID: Long,
         versionNumberAdded: Long,
         manufactureNonStatus: Int?,
     ): Pair<ServiceRequestsEntity, QaUploadsEntity> {
@@ -2820,6 +2833,7 @@ class QADaoServices(
                 fileType = docFile.contentType
                 documentType = doc
                 document = docFile.bytes
+                permitId = permitID
                 permitRefNumber = permitRefNUMBER
                 transactionDate = commonDaoServices.getCurrentDate()
                 versionNumber = versionNumberAdded

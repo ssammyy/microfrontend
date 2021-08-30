@@ -955,7 +955,16 @@ class QualityAssuranceHandler(
             Pair(
                 "sscParameters",
                 qaDaoServices.findAllUploadedFileBYPermitRefNumberAndSscStatus(
-                    permit.permitRefNumber?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"), s.activeStatus
+                    permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"), s.activeStatus
+                )
+            ),
+
+            Pair(
+                "justificationReportParameters",
+                qaDaoServices.findAllUploadedFileBYPermitRefNumberAndJustificationReportStatusAndPermitId(
+                    permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"),
+                    s.activeStatus,
+                    permit.id ?: throw ExpectedDataNotFound("INVALID PERMIT ID"),
                 )
             ),
 //            Pair("statusName", qaDaoServices.findPermitStatus(permit.permitStatus?:throw Exception("INVALID PERMIT STATUS VALUE"))),

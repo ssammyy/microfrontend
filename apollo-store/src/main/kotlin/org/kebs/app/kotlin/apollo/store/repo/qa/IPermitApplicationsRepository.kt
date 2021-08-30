@@ -443,9 +443,19 @@ interface IQaUploadsRepository : HazelcastRepository<QaUploadsEntity, Long> {
     fun findByPermitIdAndCocStatus(permitId: Long, cocStatus: Int): List<QaUploadsEntity>?
     fun findByPermitRefNumberAndCocStatus(permitRefNumber: String, cocStatus: Int): List<QaUploadsEntity>?
     fun findByPermitIdAndAssessmentReportStatus(permitId: Long, assessmentReportStatus: Int): List<QaUploadsEntity>?
-    fun findByPermitRefNumberAndAssessmentReportStatus(permitRefNumber: String, assessmentReportStatus: Int): List<QaUploadsEntity>?
+    fun findByPermitRefNumberAndAssessmentReportStatus(
+        permitRefNumber: String,
+        assessmentReportStatus: Int
+    ): List<QaUploadsEntity>?
+
     fun findByPermitIdAndSscStatus(permitId: Long, sscStatus: Int): List<QaUploadsEntity>?
     fun findByPermitRefNumberAndSscStatus(permitRefNumber: String, sscStatus: Int): List<QaUploadsEntity>?
+    fun findByPermitRefNumberAndJustificationReportStatusAndPermitId(
+        permitRefNumber: String,
+        justificationReportStatus: Int,
+        permitId: Long
+    ): List<QaUploadsEntity>?
+
     fun findByPermitIdAndInspectionReportStatus(permitId: Long, inspectionReportStatus: Int): List<QaUploadsEntity>?
     fun findByPermitRefNumberAndInspectionReportStatus(
         permitRefNumber: String,

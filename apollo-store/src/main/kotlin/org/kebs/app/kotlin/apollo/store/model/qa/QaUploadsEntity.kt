@@ -59,6 +59,10 @@ class QaUploadsEntity : Serializable {
     @Basic
     var sscStatus: Int? = null
 
+    @Column(name = "JUSTIFICATION_REPORT_STATUS")
+    @Basic
+    var justificationReportStatus: Int? = null
+
     @Column(name = "STA10_STATUS")
     @Basic
     var sta10Status: Int? = null
