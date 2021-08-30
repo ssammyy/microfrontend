@@ -99,7 +99,7 @@ class QaInvoiceCalculationDaoServices(
         }
 
 
-        invoiceMaster = calculateTotalInvoiceAmountToPay(invoiceMaster, user)
+        invoiceMaster = calculateTotalInvoiceAmountToPay(invoiceMaster, permitType, user)
 
 
         KotlinLogging.logger { }.info { "invoice Master total Amount = ${invoiceMaster.totalAmount}" }
@@ -109,6 +109,7 @@ class QaInvoiceCalculationDaoServices(
 
     fun calculateTotalInvoiceAmountToPay(
         invoiceMaster: QaInvoiceMasterDetailsEntity,
+        permitType: PermitTypesEntity,
         user: UsersEntity
     ): QaInvoiceMasterDetailsEntity {
         var totalAmountPayable: BigDecimal = BigDecimal.ZERO
@@ -121,7 +122,7 @@ class QaInvoiceCalculationDaoServices(
                 }
             } ?: throw ExpectedDataNotFound("NO QA INVOICE DETAILS FOUND")
 
-        val totalAmountTaxPayable = totalAmountPayable.multiply(applicationMapProperties.mapKebsTaxRate)
+        val totalAmountTaxPayable = totalAmountPayable.multiply(permitType.taxRate)
 
         with(invoiceMaster) {
             paymentStatus = 0

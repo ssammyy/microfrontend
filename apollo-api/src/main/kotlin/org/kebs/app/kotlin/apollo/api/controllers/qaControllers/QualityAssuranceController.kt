@@ -218,12 +218,15 @@ class QualityAssuranceController(
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val permitDetails = qaDaoServices.findPermitBYID(permitID)
+        val permitType = qaDaoServices.findPermitType(
+            permitDetails.permitType ?: throw Exception("MISSING PERMIT TYPE ID IN THE PERMIT VIEWED")
+        )
 
 
         val invoiceGenerated =
             qaInvoiceCalculation.calculatePaymentOtherDetails(permitDetails, loggedInUser, invoiceDetails)
         //Calculate total amout to be paid after adding another detail to list
-        qaInvoiceCalculation.calculateTotalInvoiceAmountToPay(invoiceGenerated.second, loggedInUser)
+        qaInvoiceCalculation.calculateTotalInvoiceAmountToPay(invoiceGenerated.second, permitType, loggedInUser)
 
         //updating of Details in DB
         permitDetails.permitStatus = applicationMapProperties.mapQaStatusPPayment
