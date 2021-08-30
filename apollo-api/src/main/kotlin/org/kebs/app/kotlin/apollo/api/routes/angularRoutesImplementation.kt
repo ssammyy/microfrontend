@@ -411,6 +411,15 @@ class AngularRoutes {
     }
 
     @Bean
+    fun ApiBackGroundImageRoute(handler: ImagesHandlers) = router {
+        "/api/v1/migration/anonymous".nest {
+            GET("/background/smark/image", handler::smarkBackGroundImage)
+            GET("/background/dmark/image", handler::dmarkBackGroundImage)
+            GET("/background/fmark/image", handler::fmarkBackGroundImage)
+        }
+    }
+
+    @Bean
     fun migrationQualityAssuranceRoutes(handler: QualityAssuranceHandler) = router {
         "/api/v1/migration/qa".nest {
             GET("/sections-list", handler::sectionListMigration)

@@ -756,6 +756,7 @@ class QualityAssuranceController(
         loggedInUser: UsersEntity
     ): Pair<PermitApplicationsEntity, String> {
         var permitDetailsDB = permitDetails
+        var closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetailsDB.id}"
         when (permit.recommendationApprovalStatus) {
             map.activeStatus -> {
 //                with(permit) {
@@ -780,6 +781,7 @@ class QualityAssuranceController(
                     applicationMapProperties.mapQaStatusPHodQamApproval,
                     loggedInUser
                 )
+                closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetailsDB.id}"
 //                qaDaoServices.sendNotificationPSCForAwardingPermit(permitDetailsDB)
 
             }
@@ -793,6 +795,8 @@ class QualityAssuranceController(
                     loggedInUser
                 )
                 qaDaoServices.sendNotificationForRecommendationCorrectness(permitDetailsDB)
+                closeLink =
+                    "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permitDetailsDB.permitType}"
             }
         }
 
@@ -806,8 +810,7 @@ class QualityAssuranceController(
             loggedInUser
         )
 
-        val closeLink =
-            "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permitDetailsDB.permitType}"
+
         return Pair(permitDetailsDB, closeLink)
     }
 

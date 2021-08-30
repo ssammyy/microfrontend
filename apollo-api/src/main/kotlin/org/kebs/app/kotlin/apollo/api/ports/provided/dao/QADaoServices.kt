@@ -2222,6 +2222,7 @@ class QADaoServices(
                 }
                 map.inactiveStatus -> {
                     complianceValue = "NON-COMPLIANT"
+                    permitDetails.resubmitApplicationStatus = 1
                     permitDetails.userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
                     permitInsertStatus(permitDetails, applicationMapProperties.mapQaStatusPendingCorrectionManf, user)
                 }
@@ -4820,6 +4821,51 @@ class QADaoServices(
             fmarkPermit = permitRepo.save(fmarkPermit)
 
             val savedSMarkFMarkId = generateSmarkFmarkEntity(permit, fmarkPermit, user)
+
+            when (permit.permitType) {
+                applicationMapProperties.mapQAPermitTypeIdSmark -> {
+                    val oldSta10 = findSTA10WithPermitRefNumberANdPermitID(
+                        permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+                        permit.id ?: throw Exception("INVALID PERMIT ID")
+                    )
+                    var newSta10 = QaSta10Entity()
+                    newSta10 = commonDaoServices.updateDetails(oldSta10, newSta10) as QaSta10Entity
+                    newSta10.id = null
+                    sta10NewSave(fmarkPermit, newSta10, user, s)
+
+                    regenerateSameDetailsForClonedSTA10(newSta10, oldSta10, permit, fmarkPermit)
+
+                }
+                applicationMapProperties.mapQAPermitTypeIDDmark -> {
+                    val sta3 = findSTA3WithPermitIDAndRefNumber(
+                        permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+                        permit.id ?: throw Exception("INVALID PERMIT ID")
+                    )
+                    var newSta3 = QaSta3Entity()
+                    newSta3 = commonDaoServices.updateDetails(sta3, newSta3) as QaSta3Entity
+                    newSta3.id = null
+                    sta3NewSave(
+                        fmarkPermit.id ?: throw Exception("INVALID PERMIT ID"),
+                        fmarkPermit.permitRefNumber ?: throw Exception("INVALID PERMIT ID"),
+                        newSta3,
+                        user,
+                        s
+                    )
+
+                    val sta3FileList = findAllUploadedFileBYPermitIDAndSta3Status(
+                        permit.id ?: throw Exception("MISSING PERMIT ID"),
+                        1
+                    )
+                    sta3FileList.forEach { fileList ->
+                        val newFileList = SerializationUtils.clone(fileList)
+                        with(newFileList) {
+                            id = null
+                            permitId = fmarkPermit.id
+                        }
+                        qaUploadsRepo.save(newFileList)
+                    }
+                }
+            }
 
             with(permit) {
                 fmarkGenerated = 1

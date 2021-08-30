@@ -509,6 +509,15 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.proforma.invoice.with.item.path}")
     val mapReportProfomaInvoiceWithItemsPath: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.qa.smark.permit.background.image.path}")
+    val mapSmarkBackgroundImagePath: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.qa.fmark.permit.background.image.path}")
+    val mapFmarkBackgroundImagePath: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.qa.dmark.permit.background.image.path}")
+    val mapDmarkBackgroundImagePath: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.break.down.invoice.with.item.path}")
     val mapReportBreakDownInvoiceWithItemsPath: String = ""
 

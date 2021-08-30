@@ -205,6 +205,13 @@ class ControllerRoutes {
         }
     }
 
+//     @Bean
+//    fun ApiBackGroundImageRoute(handler: ImagesHandlers) = router {
+//        "/api/v1".nest {
+//            POST("/smark/backgroud/image", handler::smarkBackGroundImage)
+//        }
+//    }
+
     @Bean
     fun utilitiesRoute(handler: UtilitiesHandler) = router {
         "/api/utilities".nest {

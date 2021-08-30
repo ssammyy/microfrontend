@@ -97,7 +97,8 @@
                                                 </li>
                                                 <li th:if="${permitType?.localForeignStatus == 1}" class="list-item-accordion">
                                                     <div class="list-title-accordion">APPLICATION TYPE</div>
-                                                    <div class="list-text-accordion" th:text="${permit?.permitForeignStatus} ? 'FOREGIN' : 'DOMESTIC'" ></div>
+                                                    <div class="list-text-accordion"
+                                                         th:text="${permit?.permitForeignStatus} ? 'FOREIGN' : 'DOMESTIC'"></div>
                                                 </li>
 
                                             </ul>
@@ -568,10 +569,14 @@
                                        th:href="@{/api/qa/view-sta10(permitID=${permitDetails?.id}, userID=${permitDetails?.userId})}"
                                        class="filter-link" style="color: white">STA 10</a>
 
+                                    <a th:if="${permitDetails?.invoiceGenerated == 1}"
+                                       th:href="@{/api/qa/report/braked-down-invoice-with-Item(ID=${permitDetails?.id})}"
+                                       class="filter-link" style="color: white">INVOICE GENERATED DETAILS</a>
+
                                     <a th:if="${permitDetails?.sendApplication == 1 and permitDetails?.invoiceGenerated == 1 and batchID != null}"
 
                                        th:href="@{/api/qa/report/proforma-invoice-with-Item(ID=${batchID})}"
-                                       class="filter-link" style="color: white">GENERATED INVOICE</a>
+                                       class="filter-link" style="color: white">CONSOLIDATED INVOICE PAID</a>
 
 
                                     <!--                                    <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1  and permitDetails?.bsNumber != null}"-->
