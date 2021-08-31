@@ -100,6 +100,7 @@ export class UsermanagementComponent implements OnInit {
         this.masterService.loadUsers().subscribe(
             (data: any) => {
                 formattedArray = data.map(i => [i.id, i.firstName, i.lastName, i.userName, i.email, i.registrationDate, i.status]);
+                this.SpinnerService.hide();
 
                 this.dataTable = {
                     headerRow: ['Full Name', 'User name', 'Email', 'Date Registered', 'Status', 'Actions'],
