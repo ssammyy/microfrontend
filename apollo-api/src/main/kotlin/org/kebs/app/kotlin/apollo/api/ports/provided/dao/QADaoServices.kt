@@ -1274,7 +1274,7 @@ class QADaoServices(
     }
 
     fun findAllOldPermitWithPermitRefNumber(permitRefNumber: String): List<PermitApplicationsEntity>? {
-        return permitRepo.findByPermitRefNumberAndOldPermitStatus(permitRefNumber, 1)
+        return permitRepo.findByPermitRefNumber(permitRefNumber)
     }
 
     fun companyDtoDetails(
@@ -1763,6 +1763,7 @@ class QADaoServices(
             if (permit.fmarkGenerated == 1) {
                 fmarkGeneratedID = permit.id?.let { findFmarkWithSmarkId(it).fmarkId }
             }
+            oldPermitStatus = permit.oldPermitStatus == 1
 
 
         }
@@ -3226,6 +3227,25 @@ class QADaoServices(
                             null,
                             "QAO",
                             "RESUBMIT APPLICATION, DEFERRED BY PSC",
+                            s,
+                            user
+                        )
+                    }
+                    "resubmitHofQamRejectionResults" -> {
+                        resubmitApplicationStatus = 10
+                        resubmitRemarks = permitResubmit.resubmitRemarks
+//                        hofQamCompletenessStatus = null
+//                        hofQamCompletenessRemarks = null
+                        permitStatus = applicationMapProperties.mapQaStatusResubmitted
+                        userTaskId = applicationMapProperties.mapUserTaskNameQAM
+                        KotlinLogging.logger { }
+                            .info(":::::: SELECTED RESUBMIT IS resubmitHofQamRejectionResults :::::::")
+                        permitAddRemarksDetails(
+                            updatePermit.id ?: throw Exception("ID NOT FOUND"),
+                            permitResubmit.resubmitRemarks,
+                            null,
+                            "QAO",
+                            "RESUBMIT APPLICATION, REJECTED BY QAM",
                             s,
                             user
                         )

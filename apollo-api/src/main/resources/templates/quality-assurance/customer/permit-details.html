@@ -1101,6 +1101,11 @@
                                                    onclick="popUpFunction('addRecommendation');"
                                                    class="filter-link">RE-WRITE RECOMMENDATION REMARKS</a>
 
+                                                <a style="color: white"
+                                                   th:if="${permitDetails?.hodQamApproveRejectStatus == 0}"
+                                                   onclick="popUpResubmitFunction('resubmitDetailsBackQAMRejectedQam');"
+                                                   class="filter-link">RE-SUBMIT WITH REMARKS</a>
+
 
                                                 <!-- PSC REJECTS PERMIT ACTIVE BUTTONS-->
                                                 <div th:if="${ permitDetails?.pscMemberApprovalStatus == 0}">
@@ -2039,6 +2044,16 @@
                                                           class="input-field w-input" cols="65" rows="5"
                                                           th:field="*{resubmitRemarks}"></textarea>
                                             </div>
+                                            <div id="resubmitDetailsBackQAMRejectedQam">
+                                                <input type="hidden" id="resubmittedDetails" name="resubmittedDetails"
+                                                       th:value="'resubmitHofQamRejectionResults'">
+                                                <!--                                            <input type="hidden" id="varField8" name="varField1" th:value="'Factory Inspection Report Rejected Succesfully'">-->
+                                                <label for="resubmitRemarks" class="col-form-label">Please write,
+                                                    in detail, your Feed Back for this Permit:</label>
+                                                <textarea name="resubmitRemarks" id="resubmitRemarks"
+                                                          class="input-field w-input" cols="65" rows="5"
+                                                          th:field="*{resubmitRemarks}"></textarea>
+                                            </div>
                                             <div id="resubmitDetailsBackQAMRejectedPCM">
                                                 <input type="hidden" id="resubmittedDetails" name="resubmittedDetails"
                                                        th:value="'resubmitHofQamPCMRejectionResults'">
@@ -2970,6 +2985,7 @@
 
     function popUpResubmitFunction(eventAction) {
         let arrHead = ['resubmitDetailsBackQAMRejectedPSC',
+            'resubmitDetailsBackQAMRejectedQam',
             'resubmitDetailsBackPSC',
             'resubmitDetailsBackPAC',
             'resubmitDetailsBackHODRejectedPAC',
@@ -2978,6 +2994,7 @@
             'resubmitDetailsBackPCM'
         ];
         let arrHeadSave = ['Write Remarks for re-submitting the application For re-approval By PSC',
+            'Write Remarks for re-approving the application',
             'Write Remarks for re-approving the application',
             'Write Remarks for re-approving the application',
             'Write Remarks for re-submitting the application For re-approval By PAC',

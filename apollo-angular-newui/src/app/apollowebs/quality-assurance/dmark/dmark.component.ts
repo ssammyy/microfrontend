@@ -801,7 +801,8 @@ export class DmarkComponent implements OnInit, AfterViewInit {
                     },
                     icon: 'success'
                 });
-                this.reloadCurrentRoute();
+                // this.reloadCurrentRoute();
+                this.router.navigate(['/permitdetails'], {fragment: String(this.allPermitDetails.batchID)});
             },
         );
     }
