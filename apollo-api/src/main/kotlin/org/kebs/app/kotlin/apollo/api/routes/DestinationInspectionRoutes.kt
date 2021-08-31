@@ -44,13 +44,12 @@ class DestinationInspectionRoutes {
             POST("/consignment/document/manual-pick/{cdUuid}", handler::pickConsignmentInspectionOfficer)
             POST("/consignment/document/send-coi/{cdUuid}", handler::sendCertificateOfInspection)
             POST("/consignment/document/blacklist/{cdUuid}", handler::blacklistConsignment)
-            POST("/consignment/document/approve-blacklist/{cdUuid}", handler::approveBlacklistConsignment)
             POST("/consignment/document/generate-coc/{cdUuid}", handler::generateLocalCoc)
             POST("/consignment/document/generate-cor/{cdUuid}", handler::generateLocalCor)
             POST("/consignment/document/compliant-vehicle/{inspectionChecklistId}", handler::updateMotorVehicleComplianceStatus)
             POST("/consignment/document/target/{cdUuid}", handler::targetConsignment)
-            POST("/consignment/document/target-approval/{cdUuid}", handler::approveTargetConsignment)
-            POST("/consignment/document/target-supervisor/{cdUuid}", handler::supervisorTargetConsignment)
+            POST("/consignment/document/process/approve-reject/{taskId}/{cdUuid}", handler::approveRejectTask)
+            GET("/my/tasks", handler::supervisorTasks)
         }
     }
 

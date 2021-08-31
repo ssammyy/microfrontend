@@ -568,7 +568,7 @@ VEHICLE]]></text>
 			<textField>
 				<reportElement x="11" y="130" width="15" height="59" uuid="8225ec80-5d6a-421d-9d04-1ef698e1867c"/>
 				<textElement rotation="Left"/>
-				<textFieldExpression><![CDATA[$P{SerialNo}]]></textFieldExpression>
+				<textFieldExpression>-</textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="45" y="116" width="33" height="85" uuid="bdd113a1-ad90-4199-80ff-5134fd8e70ca"/>

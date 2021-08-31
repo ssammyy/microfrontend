@@ -712,7 +712,7 @@ class DITest {
                     val importerDetails =
                         itemDetails.cdDocId?.cdImporter?.let { destinationInspectionDaoServices.findCDImporterDetails(it) }
                     val demandNote =
-                        destinationInspectionDaoServices.generateDemandNoteWithItemList(itemDetails, map, loggedInUser)
+                        destinationInspectionDaoServices.generateDemandNoteWithItemList(itemDetails, map,itemDetails.c,false,0.0, loggedInUser)
 //                    val demandNoteNumber = destinationInspectionDaoServices.demandNotePayment(demandNote, map, loggedInUser, itemDetails)
                     KotlinLogging.logger { }.info { "DEMAND NOTE GENERATED WITH ID = ${demandNote.id} " }
 //                    demandNotes.add(demandNote1)

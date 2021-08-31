@@ -11,6 +11,9 @@ export class DestinationInspectionService {
 
     constructor(private client: HttpClient) {
     }
+    loadMyTasks(): Observable<any>{
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/my/tasks"))
+    }
     loadChecklists(itemUuid: any): Observable<any>{
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/checklists/"+itemUuid))
     }

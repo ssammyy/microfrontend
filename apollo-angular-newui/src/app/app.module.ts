@@ -63,7 +63,7 @@ import {FileUploadModule} from '@iplab/ngx-file-upload';
 import {AddUserComponent} from './apollowebs/company/branch/add-user/add-user.component';
 import {FmarkApplicationComponent} from './apollowebs/quality-assurance/fmark-application/fmark-application.component';
 import {LoaderComponent} from './shared/loader/loader.component';
-import {NgbModule, NgbNavModule} from '@ng-bootstrap/ng-bootstrap';
+import {NgbNavModule} from '@ng-bootstrap/ng-bootstrap';
 import {ImportInspectionComponent} from './apollowebs/pvoc/import-inspection/import-inspection.component';
 import {ExceptionsApplicationComponent} from './apollowebs/pvoc/exceptions-application/exceptions-application.component';
 import {WaiverApplicationComponent} from './apollowebs/pvoc/waiver-application/waiver-application.component';
@@ -150,6 +150,10 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import { ChecklistsComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/checklists/checklists.component';
 import { MinistryInspectionRequestComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/ministry-inspection-request/ministry-inspection-request.component';
 import {DragDropModule} from "@angular/cdk/drag-drop";
+import {DiCorComponent} from "./apollowebs/di/view-single-consignment-document/di-cor/di-cor.component";
+import {DiCocItemDetailsComponent} from "./apollowebs/di/view-single-consignment-document/di-coc/di-coc-item-details/di-coc-item-details.component";
+import {DiCocComponent} from "./apollowebs/di/view-single-consignment-document/di-coc/di-coc.component";
+import { ViewTasksComponent } from './apollowebs/di/view-tasks/view-tasks.component';
 
 
 @NgModule({
@@ -313,7 +317,11 @@ import {DragDropModule} from "@angular/cdk/drag-drop";
         WaiverSubmittedDialogComponent,
         ManufacturerDetailsComponent,
         ChecklistsComponent,
-        MinistryInspectionRequestComponent
+        MinistryInspectionRequestComponent,
+        DiCorComponent,
+        DiCocComponent,
+        DiCocItemDetailsComponent,
+        ViewTasksComponent
     ],
     providers: [
         MatNativeDateModule,

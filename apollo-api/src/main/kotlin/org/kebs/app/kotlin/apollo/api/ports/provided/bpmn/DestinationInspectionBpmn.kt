@@ -4,30 +4,47 @@ import mu.KotlinLogging
 import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
+import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
+import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
+import org.kebs.app.kotlin.apollo.api.payload.request.ConsignmentUpdateRequest
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.di.BpmnTaskDetails
-import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SchedulerImpl
+import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.di.DiTaskDetails
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
+import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentAuditService
+import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.kebs.app.kotlin.apollo.store.model.CdDemandNoteEntity
 import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntity
-import org.kebs.app.kotlin.apollo.store.repo.*
+import org.kebs.app.kotlin.apollo.store.repo.ICdItemDetailsRepo
+import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IConsignmentDocumentDetailsRepository
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.sql.Timestamp
 import java.time.Instant
+import java.util.*
 import kotlin.collections.HashMap
+import kotlin.collections.List
+import kotlin.collections.MutableList
+import kotlin.collections.MutableMap
+import kotlin.collections.mutableMapOf
+import kotlin.collections.set
+
 
 @Service
 class DestinationInspectionBpmn(
-    private val taskService: TaskService,
-    private val runtimeService: RuntimeService,
-    private val userRepo: IUserRepository,
-    private val diRepo: IDestinationInspectionRepository,
-    private val schedulerRepo: ISchedulerRepository,
-    private val schedulerImpl: SchedulerImpl,
-    private val bpmnCommonFunctions: BpmnCommonFunctions,
-    private val notifications: Notifications,
-    private val iConsignmentDocumentDetailsRepo: IConsignmentDocumentDetailsRepository,
-    private val iCdItemDetailsRepo: ICdItemDetailsRepo
+        private val taskService: TaskService,
+        private val runtimeService: RuntimeService,
+        private val userRepo: IUserRepository,
+        private val bpmnCommonFunctions: BpmnCommonFunctions,
+        private val notifications: Notifications,
+        private val iConsignmentDocumentDetailsRepo: IConsignmentDocumentDetailsRepository,
+        private val iCdItemDetailsRepo: ICdItemDetailsRepo,
+        private val daoServices: DestinationInspectionDaoServices,
+        private val auditService: ConsignmentDocumentAuditService,
+        private val applicationMapProperties: ApplicationMapProperties,
+        private val commonDaoServices: CommonDaoServices,
 ) {
 
     @Value("\${bpmn.di.coc.process.definition.key}")
@@ -51,10 +68,126 @@ class DestinationInspectionBpmn(
     @Value("\${bpmn.task.default.duration}")
     lateinit var defaultDuration: Integer
 
+    @Value("\${destination.inspection.cd.type.cor}")
+    lateinit var corCdType: String
     val successMessage: String = "success"
     val processStarted: Int = 1
     val processCompleted: Int = 2
     val pidPrefix = "di"
+
+    fun startApprovalConsignment(cdUuid: String, form: ConsignmentUpdateRequest): ApiResponseModel {
+        val response = ApiResponseModel()
+        val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
+        // Check already approved
+        commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+                .let { map ->
+                    KotlinLogging.logger { }.info { "approveRejectCdStatusType = ${form.cdStatusTypeId}" }
+                    val cdStatusType = form.cdStatusTypeId?.let { daoServices.findCdStatusValue(it) }
+                    if (cdStatusType != null) {
+                        cdStatusType.let {
+                            val processProperties = mutableMapOf<String, Any?>()
+                            processProperties.put("cdUuid", cdUuid)
+                            processProperties.put("remarks", form.remarks)
+                            processProperties.put("activeStatus", map.activeStatus)
+                            processProperties.put("cdStatusTypeId", it.id)
+                            processProperties.put("consignmentDocumentApproved", it.category == "APPROVED")
+                            // Attach Process to consignment
+                            val processInstance = runtimeService.startProcessInstanceByKey("updateConsignmentStatus", processProperties)
+                            consignmentDocument.varField9=processInstance.processDefinitionId
+                            consignmentDocument.varField8=processInstance.id
+                            this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
+                            response.responseCode = ResponseCodes.SUCCESS_CODE
+                            response.message = "Success"
+                        }
+                    } else {
+                        response.responseCode = ResponseCodes.FAILED_CODE
+                        response.message = "Please select approval status"
+                    }
+                }
+        return response
+    }
+    fun consignmentDocumentProcessUpdate(taskId: String, data: MutableMap<String, Any?>, consignmentDocument: ConsignmentDocumentDetailsEntity): ApiResponseModel {
+        val response = ApiResponseModel()
+        // Check already approved
+        if(consignmentDocument.varField9!=null){
+            taskService.complete(taskId, data)
+            response.responseCode=ResponseCodes.SUCCESS_CODE
+            response.message="Task updated successfully"
+        } else {
+            response.responseCode=ResponseCodes.FAILED_CODE
+            response.message="Document does not have any tasks remaining"
+        }
+        return response
+    }
+
+    fun startTargetConsignment(data: MutableMap<String, Any?>, consignmentDocument: ConsignmentDocumentDetailsEntity) {
+        val processInstance=runtimeService.startProcessInstanceByKey("targetConsignmentDocument", data)
+        consignmentDocument.varField9=processInstance.processDefinitionId
+        consignmentDocument.varField8=processInstance.id
+        consignmentDocument.targetReason= data.get("remarks") as String?
+        // Save process details
+        this.auditService.addHistoryRecord(consignmentDocument.id!!, data["remarks"] as String?,"REQUEST CONSIGNMENT TARGETING","Consignment targeting request")
+        this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
+    }
+
+    fun startBlacklist(data: MutableMap<String, Any?>, consignmentDocument: ConsignmentDocumentDetailsEntity) {
+        val processInstance=runtimeService.startProcessInstanceByKey("blacklistUser", data)
+        consignmentDocument.varField9=processInstance.processDefinitionId
+        consignmentDocument.varField8=processInstance.id
+        // Save process details
+        this.auditService.addHistoryRecord(consignmentDocument.id!!, data["remarks"] as String?,"REQUEST CONSIGNMENT BLACKLISTING","Consignment blacklist request")
+        // Update current process
+        this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
+    }
+
+    fun startGenerateCoC(data: MutableMap<String, Any?>, consignmentDocument: ConsignmentDocumentDetailsEntity) {
+        val processInstance=runtimeService.startProcessInstanceByKey("cocApprovalProcess", data)
+        consignmentDocument.varField9=processInstance.processDefinitionId
+        consignmentDocument.varField8=processInstance.id
+        consignmentDocument.targetReason= data.get("remarks") as String?
+        // Save process details
+        this.auditService.addHistoryRecord(consignmentDocument.id!!, data["remarks"] as String?,"REQUEST CONSIGNMENT COC/COI","Consignment CoC/CoI request")
+        this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
+    }
+    fun startGenerateCor(data: MutableMap<String, Any?>, consignmentDocument: ConsignmentDocumentDetailsEntity) {
+        val processInstance=runtimeService.startProcessInstanceByKey("corApprovalProcess", data)
+        consignmentDocument.varField9=processInstance.processDefinitionId
+        consignmentDocument.varField8=processInstance.id
+        consignmentDocument.targetReason= data.get("remarks") as String?
+        // Save process details
+        this.auditService.addHistoryRecord(consignmentDocument.id!!, data["remarks"] as String?,"REQUEST CONSIGNMENT COR","Consignment CoR request")
+        this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
+    }
+
+    fun startGenerateDemandNote(data: MutableMap<String, Any?>, consignmentDocument: ConsignmentDocumentDetailsEntity) {
+        val processInstance=runtimeService.startProcessInstanceByKey("demandNoteGenerationProcess", data)
+        consignmentDocument.varField9=processInstance.processDefinitionId
+        consignmentDocument.varField8=processInstance.id
+        consignmentDocument.targetReason= data.get("remarks") as String?
+        // Save process details
+        this.auditService.addHistoryRecord(consignmentDocument.id!!, data["remarks"] as String?,"DEMAND NOTE CONSIGNMENT","Consignment demand note request")
+        this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
+    }
+
+    private fun getTaskDetails(tasks: MutableList<org.flowable.task.api.Task>?): List<DiTaskDetails> {
+        val taskDetails: MutableList<DiTaskDetails> = ArrayList()
+        if (tasks != null) {
+            for (task in tasks) {
+                taskDetails.add(DiTaskDetails(task.id, task.name,task.createTime,task.description, task.processVariables))
+            }
+        }
+        return taskDetails
+    }
+
+    fun listUserTasks(): ApiResponseModel {
+        val response=ApiResponseModel()
+        val loggedInUser = this.commonDaoServices.getLoggedInUser()
+        val tasks: MutableList<org.flowable.task.api.Task>? = taskService.createTaskQuery().taskAssignee(loggedInUser?.userName).list()
+        response.data=getTaskDetails(tasks)
+        response.message="Success"
+        response.responseCode=ResponseCodes.SUCCESS_CODE
+        return response
+    }
 
     fun fetchTaskByObjectId(objectId: Long, process: String): List<BpmnTaskDetails>? {
         try {
@@ -101,23 +234,86 @@ class DestinationInspectionBpmn(
     fun fetchAllTasks(): List<BpmnTaskDetails>? {
         return bpmnCommonFunctions.fetchAllTasks(pidPrefix)
     }
+    //Trigger demand note paid bpm task
+    fun triggerDemandNotePaidBpmTask(demandNote: CdDemandNoteEntity): Boolean {
+        //Get Item from Demand Note
+        demandNote.itemId?.let { cdItemDetailsEntity ->
+            //Get the CD details entity
+            cdItemDetailsEntity.cdDocId?.let { consignmentDocumentDetailsEntity ->
+                consignmentDocumentDetailsEntity.id?.let {
+                    consignmentDocumentDetailsEntity.assignedInspectionOfficer?.id?.let { it1 ->
+                        return diReceivePaymentConfirmation(
+                                it,
+                                it1
+                        )
+                    }
+                }
+            }
+        }
+        return false
+    }
+
+    //Start relevant BPMN process
+    fun startDiBpmProcessByCdType(consignmentDoc: ConsignmentDocumentDetailsEntity) {
+        consignmentDoc.cdType?.let {
+            it.uuid?.let { cdTypeUuid ->
+                when (cdTypeUuid) {
+                    corCdType -> consignmentDoc.id?.let { it1 ->
+                        consignmentDoc.assignedInspectionOfficer?.id?.let { it2 ->
+                            startImportedVehiclesWithCorProcess(
+                                    it1,
+                                    it2
+                            )
+                        }
+                    }
+                    else -> {
+                        KotlinLogging.logger { }.error("CD type uuid not found for CD: $consignmentDoc.id")
+                    }
+                }
+            }
+        }
+    }
+
+    //BPM: Assign officer
+    fun assignIOBpmTask(consignmentDoc: ConsignmentDocumentDetailsEntity) {
+        //Check if any item in consignment has been targeted
+        var supervisorTargetStatus = 0
+//        iCdItemsRepo.findByCdDocId(consignmentDoc)?.let { cdItemDetailsList ->
+//            val itemsTargeted =
+//                cdItemDetailsList.filter { item -> item.targetStatus == commonDaoServices.activeStatus.toInt() }
+//            KotlinLogging.logger { }.info("No of targeted items: ${itemsTargeted.size}")
+//            if (itemsTargeted.isNotEmpty()) {
+//                supervisorTargetStatus = 1
+//            }
+//        }
+        // Assign IO complete task
+        consignmentDoc.id?.let { it1 ->
+            consignmentDoc.assignedInspectionOfficer?.id?.let { it2 ->
+                diAssignIOComplete(
+                        it1,
+                        it2,
+                        supervisorTargetStatus
+                )
+            }
+        }
+    }
 
     //Update task variable by object Id and task Key
     fun updateTaskVariableByObjectIdAndKey(
-        objectId: Long,
-        taskDefinitionKey: String,
-        process: String,
-        parameterName: String,
-        parameterValue: String
+            objectId: Long,
+            taskDefinitionKey: String,
+            process: String,
+            parameterName: String,
+            parameterValue: String
     ): Boolean {
         try {
             getPIdByObjectAndProcess(objectId, process)?.let {
                 bpmnCommonFunctions.getTaskByTaskDefinitionKey(it["processInstanceId"].toString(), taskDefinitionKey)
-                    ?.let { task ->
-                        bpmnCommonFunctions.updateVariable(task.id, parameterName, parameterValue).let {
-                            return true
+                        ?.let { task ->
+                            bpmnCommonFunctions.updateVariable(task.id, parameterName, parameterValue).let {
+                                return true
+                            }
                         }
-                    }
             }
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)
@@ -163,12 +359,11 @@ class DestinationInspectionBpmn(
                     }
 
                 }
-            }
-            else if (processKey == diMvInspectionProcessDefinitionKey) {
-                iCdItemDetailsRepo.findByIdOrNull(objectId)?.let{ cdItemDetailsEntity ->
+            } else if (processKey == diMvInspectionProcessDefinitionKey) {
+                iCdItemDetailsRepo.findByIdOrNull(objectId)?.let { cdItemDetailsEntity ->
                     variables["cdItemDetailsEntity"] = cdItemDetailsEntity
                     when (processKey) {
-                        diMvInspectionProcessDefinitionKey-> {
+                        diMvInspectionProcessDefinitionKey -> {
                             cdItemDetailsEntity.inspectionProcessStatus?.let { status ->
                                 /*
                                 if (status != 0) {
@@ -235,15 +430,15 @@ class DestinationInspectionBpmn(
     * IMPORTED VEHICLES WITH COR PROCESS
     ***********************************************************************************
      */
-    //Start the process
+//Start the process
     fun startImportedVehiclesWithCorProcess(objectId: Long, assigneeId: Long): HashMap<String, String>? {
-        var variables: HashMap<String, Any> = HashMap()
+        val variables: HashMap<String, Any> = HashMap()
         KotlinLogging.logger { }.info("objectid : $objectId : Starting Imported Vehicles with cor process")
         try {
             checkStartProcessInputs(objectId, assigneeId, diMvWithCorProcessDefinitionKey)?.let { checkVariables ->
 
                 val consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity =
-                    checkVariables["cd"] as ConsignmentDocumentDetailsEntity
+                        checkVariables["cd"] as ConsignmentDocumentDetailsEntity
                 variables["objectId"] = consignmentDocumentDetailsEntity.id.toString()
                 variables["inspectionOfficerUserId"] = assigneeId
                 variables["cdDecision"] = ""
@@ -254,10 +449,10 @@ class DestinationInspectionBpmn(
 
 
                 bpmnCommonFunctions.startBpmnProcess(
-                    diMvWithCorProcessDefinitionKey,
-                    diMvWithCorBusinessKey,
-                    variables,
-                    assigneeId
+                        diMvWithCorProcessDefinitionKey,
+                        diMvWithCorBusinessKey,
+                        variables,
+                        assigneeId
                 )?.let {
                     consignmentDocumentDetailsEntity.diProcessInstanceId = it["processInstanceId"]
                     consignmentDocumentDetailsEntity.diProcessStartedOn = Timestamp.from(Instant.now())
@@ -279,18 +474,18 @@ class DestinationInspectionBpmn(
     fun diAssignIOComplete(objectId: Long, assigneeId: Long, supervisorTarget: Int, cdItemId: Long = 0): Boolean {
         KotlinLogging.logger { }.info("objectId : $objectId :  CD assigned to Inspection Officer")
         updateTaskVariableByObjectIdAndKey(objectId, "ImportedVehiclesWithCoRAssignIo", diMvWithCorProcessDefinitionKey,
-            "supervisorTarget", supervisorTarget.toString())
+                "supervisorTarget", supervisorTarget.toString())
         updateTaskVariableByObjectIdAndKey(objectId, "ImportedVehiclesWithCoRAssignIo", diMvWithCorProcessDefinitionKey,
-            "itemId", cdItemId.toString())
+                "itemId", cdItemId.toString())
         fetchTaskByObjectId(objectId, diMvWithCorProcessDefinitionKey)?.let { taskDetails ->
             dICompleteTask(objectId, "ImportedVehiclesWithCoRAssignIo", diMvWithCorProcessDefinitionKey)?.let {
-                return if (supervisorTarget == 1){
+                return if (supervisorTarget == 1) {
                     true
                 } else {
                     bpmnCommonFunctions.assignTask(
-                        it["processInstanceId"].toString(),
-                        "ImportedVehiclesWithCoRCheckCdComplete",
-                        assigneeId
+                            it["processInstanceId"].toString(),
+                            "ImportedVehiclesWithCoRCheckCdComplete",
+                            assigneeId
                     )
                 }
             }
@@ -302,21 +497,21 @@ class DestinationInspectionBpmn(
     fun diCheckCdComplete(objectId: Long, assigneeId: Long, cdDecision: String): Boolean {
         KotlinLogging.logger { }.info("objectId : $objectId :  Check CD complete")
         updateTaskVariableByObjectIdAndKey(
-            objectId,
-            "ImportedVehiclesWithCoRCheckCdComplete",
-            diMvWithCorProcessDefinitionKey,
-            "cdDecision",
-            cdDecision
+                objectId,
+                "ImportedVehiclesWithCoRCheckCdComplete",
+                diMvWithCorProcessDefinitionKey,
+                "cdDecision",
+                cdDecision
         )
         fetchTaskByObjectId(objectId, diMvWithCorProcessDefinitionKey)?.let { taskDetails ->
             dICompleteTask(objectId, "ImportedVehiclesWithCoRCheckCdComplete", diMvWithCorProcessDefinitionKey)?.let {
-                return if (cdDecision == "APPROVE" || cdDecision == "REJECT"){
+                return if (cdDecision == "APPROVE" || cdDecision == "REJECT") {
                     true
                 } else {
                     bpmnCommonFunctions.assignTask(
-                        it["processInstanceId"].toString(),
-                        "ImportedVehiclesWithCoRReviewTargetApprovalRequest",
-                        assigneeId
+                            it["processInstanceId"].toString(),
+                            "ImportedVehiclesWithCoRReviewTargetApprovalRequest",
+                            assigneeId
                     )
                 }
             }
@@ -328,11 +523,11 @@ class DestinationInspectionBpmn(
     fun diReviewTargetRequestComplete(objectId: Long, assigneeId: Long, targetApprovalStatus: Boolean, cdItemId: Long): Boolean {
         KotlinLogging.logger { }.info("objectId : $objectId :  Target Request Complete")
         updateTaskVariableByObjectIdAndKey(objectId,
-            "ImportedVehiclesWithCoRReviewTargetApprovalRequest", diMvWithCorProcessDefinitionKey,
-            "supervisorTargetApproved", bpmnCommonFunctions.booleanToInt(targetApprovalStatus).toString()).let {
-            updateTaskVariableByObjectIdAndKey(objectId,
                 "ImportedVehiclesWithCoRReviewTargetApprovalRequest", diMvWithCorProcessDefinitionKey,
-                "itemId", cdItemId.toString())
+                "supervisorTargetApproved", bpmnCommonFunctions.booleanToInt(targetApprovalStatus).toString()).let {
+            updateTaskVariableByObjectIdAndKey(objectId,
+                    "ImportedVehiclesWithCoRReviewTargetApprovalRequest", diMvWithCorProcessDefinitionKey,
+                    "itemId", cdItemId.toString())
         }
         fetchTaskByObjectId(objectId, diMvWithCorProcessDefinitionKey)?.let { taskDetails ->
             dICompleteTask(objectId, "ImportedVehiclesWithCoRReviewTargetApprovalRequest", diMvWithCorProcessDefinitionKey)?.let {
@@ -344,22 +539,22 @@ class DestinationInspectionBpmn(
 
     fun endImportedVehiclesWithCorProcess(objectId: String) {
         KotlinLogging.logger { }.info("End Motor Vehicle With CoR process for objectId $objectId")
-        try{
+        try {
             iConsignmentDocumentDetailsRepo.findByIdOrNull(objectId.toLong())?.let { consignmentDocumentDetailsEntity ->
                 consignmentDocumentDetailsEntity.diProcessCompletedOn = Timestamp.from(Instant.now())
                 consignmentDocumentDetailsEntity.diProcessStatus = processCompleted
                 iConsignmentDocumentDetailsRepo.save(consignmentDocumentDetailsEntity)
             }
-        } catch (e: Exception){
+        } catch (e: Exception) {
             KotlinLogging.logger { }.error("$objectId : Unable to complete Motor Vehicle With CoR process for $objectId")
         }
     }
 
-    /*
-    ***********************************************************************************
-    * MOTOR VEHICLE INSPECTION PROCESS
-    ***********************************************************************************
-     */
+/*
+***********************************************************************************
+* MOTOR VEHICLE INSPECTION PROCESS
+***********************************************************************************
+ */
 
     //Receive KESWS inspection schedule
     fun diReceiveInspectionScheduleComplete(objectId: Long, assigneeId: Long) {
@@ -368,42 +563,42 @@ class DestinationInspectionBpmn(
         //Get the process instance ID
         var processInstanceId: String? = null
         iConsignmentDocumentDetailsRepo.findByIdOrNull(objectId)?.let { cdEntity ->
-            KotlinLogging.logger { }.info (  "CD : $objectId : Valid CD found" )
+            KotlinLogging.logger { }.info("CD : $objectId : Valid CD found")
             cdEntity.diProcessInstanceId?.let { it ->
                 processInstanceId = it
             }
         }
-        KotlinLogging.logger { }.info ("Process Instance ID: $processInstanceId")
+        KotlinLogging.logger { }.info("Process Instance ID: $processInstanceId")
 
         processInstanceId?.let {
             try {
                 val ex = runtimeService.createExecutionQuery().processInstanceId(it)
-                    .activityId("MotorInspectionReceiveSchedule")
-                    .singleResult()
+                        .activityId("MotorInspectionReceiveSchedule")
+                        .singleResult()
                 KotlinLogging.logger { }.info("Execution ID: ${ex.id} & activityID: ${ex.activityId}")
                 runtimeService.trigger(ex.getId())
                 bpmnCommonFunctions.assignTask(
-                    it,
-                    "MotorInspectionPaymentRequired",
-                    assigneeId
+                        it,
+                        "MotorInspectionPaymentRequired",
+                        assigneeId
                 )
-            } catch (e: Exception){
+            } catch (e: Exception) {
                 KotlinLogging.logger { }.error("An error occurred on Trigger Inspection schedule request task to complete ", e)
             }
         }
     }
 
     //Check payment required
-    fun diPaymentRequiredComplete(objectId: Long, assigneeId: Long, paymentRequired:Boolean): Boolean {
+    fun diPaymentRequiredComplete(objectId: Long, assigneeId: Long, paymentRequired: Boolean): Boolean {
         KotlinLogging.logger { }.info("objectId : $objectId :  Payment Required Complete")
         updateTaskVariableByObjectIdAndKey(
-            objectId,
-            "MotorInspectionPaymentRequired", diMvWithCorProcessDefinitionKey,
-            "paymentRequired", bpmnCommonFunctions.booleanToInt(paymentRequired).toString()
+                objectId,
+                "MotorInspectionPaymentRequired", diMvWithCorProcessDefinitionKey,
+                "paymentRequired", bpmnCommonFunctions.booleanToInt(paymentRequired).toString()
         )
         fetchTaskByObjectId(objectId, diMvWithCorProcessDefinitionKey)?.let { taskDetails ->
             dICompleteTask(objectId, "MotorInspectionPaymentRequired", diMvWithCorProcessDefinitionKey)?.let {
-                return if (paymentRequired){
+                return if (paymentRequired) {
 //                    bpmnCommonFunctions.assignTask(it["processInstanceId"].toString(), "MotorInspectionGenerateDemandNote", assigneeId)
                     return true
                 } else {
@@ -421,34 +616,34 @@ class DestinationInspectionBpmn(
         //Get the process instance ID
         var processInstanceId: String? = null
         iConsignmentDocumentDetailsRepo.findByIdOrNull(objectId)?.let { cdEntity ->
-            KotlinLogging.logger { }.info (  "CD : $objectId : Valid CD found" )
+            KotlinLogging.logger { }.info("CD : $objectId : Valid CD found")
             cdEntity.diProcessInstanceId?.let { it ->
                 processInstanceId = it
             }
         }
-        KotlinLogging.logger { }.info ("Process Instance ID: $processInstanceId")
+        KotlinLogging.logger { }.info("Process Instance ID: $processInstanceId")
         processInstanceId?.let {
             //Notify Single Window of payment
             bpmnCommonFunctions.sendSwPaymentComplete(objectId.toString())
             try {
                 val ex = runtimeService.createExecutionQuery().processInstanceId(it)
-                    .activityId("MotorInspectionReceivePaymentConfirmation")
-                    .singleResult()
+                        .activityId("MotorInspectionReceivePaymentConfirmation")
+                        .singleResult()
                 KotlinLogging.logger { }.info("Execution ID: ${ex.id} & activityID: ${ex.activityId}")
                 runtimeService.trigger(ex.getId())
                 bpmnCommonFunctions.assignTask(
-                    it,
-                    "MotorInspectionFillInspectionForms",
-                    assigneeId
+                        it,
+                        "MotorInspectionFillInspectionForms",
+                        assigneeId
                 )
-            } catch (e: Exception){
+            } catch (e: Exception) {
                 KotlinLogging.logger { }.error("An error occurred on Trigger receive payment confirmation task to complete ", e)
             }
         }
         return false
     }
 
-    //After payment complete notification sent to SW
+//After payment complete notification sent to SW
 //    fun diSendPaymentNotificationToSWComplete(objectId: Long, inspectionOfficerUserId: Long): Boolean {
 //        KotlinLogging.logger { }.info("objectId : $objectId : Send Payment to SW Complete")
 //        KotlinLogging.logger { }.info(":::::::::::::: Assignee ID: $inspectionOfficerUserId")
@@ -473,16 +668,16 @@ class DestinationInspectionBpmn(
     }
 
     //Check Ministry Inspection Required
-    fun diMinistryInspectionRequiredComplete(objectId: Long, assigneeId: Long, forwardToMinistry:Boolean): Boolean {
+    fun diMinistryInspectionRequiredComplete(objectId: Long, assigneeId: Long, forwardToMinistry: Boolean): Boolean {
         KotlinLogging.logger { }.info("objectId : $objectId :  Check Ministry Inspection Required Complete")
         updateTaskVariableByObjectIdAndKey(
-            objectId,
-            "MotorInspectionMinistryInspectionRequired", diMvWithCorProcessDefinitionKey,
-            "forwardToMinistry", bpmnCommonFunctions.booleanToInt(forwardToMinistry).toString()
+                objectId,
+                "MotorInspectionMinistryInspectionRequired", diMvWithCorProcessDefinitionKey,
+                "forwardToMinistry", bpmnCommonFunctions.booleanToInt(forwardToMinistry).toString()
         )
         fetchTaskByObjectId(objectId, diMvWithCorProcessDefinitionKey)?.let { taskDetails ->
             dICompleteTask(objectId, "MotorInspectionMinistryInspectionRequired", diMvWithCorProcessDefinitionKey)?.let {
-                return if (forwardToMinistry){
+                return if (forwardToMinistry) {
                     bpmnCommonFunctions.assignTask(it["processInstanceId"].toString(), "MotorInspectionMinistryGenerateReport", assigneeId)
                 } else {
                     bpmnCommonFunctions.assignTask(it["processInstanceId"].toString(), "MotorInspectionGenerateMotorInspectionReport", assigneeId)
@@ -520,16 +715,16 @@ class DestinationInspectionBpmn(
     }
 
     //Check Ministry Inspection Required
-    fun diReviewMotorInspectionReportComplete(objectId: Long, assigneeId: Long, motorInspectionReportApproved:Boolean): Boolean {
+    fun diReviewMotorInspectionReportComplete(objectId: Long, assigneeId: Long, motorInspectionReportApproved: Boolean): Boolean {
         KotlinLogging.logger { }.info("objectId : $objectId : Review Motor Inspection Report Complete")
         updateTaskVariableByObjectIdAndKey(
-            objectId,
-            "MotorInspectionReviewMotorInspectionReport", diMvWithCorProcessDefinitionKey,
-            "motorInspectionReportApproved", bpmnCommonFunctions.booleanToInt(motorInspectionReportApproved).toString()
+                objectId,
+                "MotorInspectionReviewMotorInspectionReport", diMvWithCorProcessDefinitionKey,
+                "motorInspectionReportApproved", bpmnCommonFunctions.booleanToInt(motorInspectionReportApproved).toString()
         )
         fetchTaskByObjectId(objectId, diMvWithCorProcessDefinitionKey)?.let { taskDetails ->
             dICompleteTask(objectId, "MotorInspectionReviewMotorInspectionReport", diMvWithCorProcessDefinitionKey)?.let {
-                return if (motorInspectionReportApproved){
+                return if (motorInspectionReportApproved) {
                     return true
                 } else {
                     bpmnCommonFunctions.assignTask(it["processInstanceId"].toString(), "MotorInspectionGenerateMotorInspectionReport", assigneeId)
@@ -538,5 +733,7 @@ class DestinationInspectionBpmn(
         }
         return false
     }
+
+
 
 }

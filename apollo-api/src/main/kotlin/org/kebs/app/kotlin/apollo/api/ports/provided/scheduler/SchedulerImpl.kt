@@ -4,6 +4,7 @@ import mu.KotlinLogging
 import org.joda.time.DateTime
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.BpmnCommonFunctions
+import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.QualityAssuranceBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
@@ -33,6 +34,7 @@ class SchedulerImpl(
     private val notifications: Notifications,
     private val bpmnCommonFunctions: BpmnCommonFunctions,
     private val userRepo: IUserRepository,
+    private val diBpmn: DestinationInspectionBpmn,
     private val applicationMapProperties: ApplicationMapProperties,
 //    private val qualityAssuranceBpmn: QualityAssuranceBpmn,
     private val sampleSubmissionRepo: IQaSampleSubmissionRepository,
@@ -222,7 +224,7 @@ class SchedulerImpl(
                 demandNote.id?.let { diDaoServices.sendDemandNotePayedStatusToKWIS(it) }
 
                 //Trigger the payment received BPM task
-                diDaoServices.triggerDemandNotePaidBpmTask(demandNote)
+                diBpmn.triggerDemandNotePaidBpmTask(demandNote)
                 //Update the demandNote status
                 demandNote.paymentStatus = map.initStatus
                 val demandNoteDetails = diDaoServices.upDateDemandNote(demandNote)

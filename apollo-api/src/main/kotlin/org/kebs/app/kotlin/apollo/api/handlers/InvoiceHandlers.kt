@@ -7,7 +7,7 @@ import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.request.ConsignmentUpdateRequest
 import org.kebs.app.kotlin.apollo.api.payload.request.DemandNoteForm
-import org.kebs.app.kotlin.apollo.api.ports.provided.createUserAlert
+import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
@@ -17,17 +17,12 @@ import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapPrope
 import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
 import org.kebs.app.kotlin.apollo.store.repo.IInvoiceRepository
 import org.kebs.app.kotlin.apollo.store.repo.IServiceMapsRepository
-import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteItemsDetailsRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteRepository
-import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Pageable
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.function.paramOrNull
-import java.util.stream.Collectors
-import java.util.stream.IntStream
 
 @Component
 class InvoiceHandlers(
@@ -38,10 +33,10 @@ class InvoiceHandlers(
         private val applicationMapProperties: ApplicationMapProperties,
         private val daoServices: DestinationInspectionDaoServices,
         private val invoiceDaoService: InvoiceDaoService,
-        private val reportsDaoService: ReportsDaoService
+        private val reportsDaoService: ReportsDaoService,
+        private val diBpmn: DestinationInspectionBpmn
 ) {
     final val appId = applicationMapProperties.mapPermitApplication
-    private final val invoiceHomePage = "quality-assurance/customer/my-invoices"
     final val errors = mutableMapOf<String, String>()
 
     fun cdInvoiceDetails(req: ServerRequest): ServerResponse {
@@ -49,10 +44,8 @@ class InvoiceHandlers(
         try {
             req.paramOrNull("cdUuid")
                     ?.let { cdUuid ->
-                        val map = commonDaoServices.serviceMapDetails(appId)
                         val cdDetails = daoServices.findCDWithUuid(cdUuid)
-                        val itemListWithDemandNote = daoServices.findCDItemsListWithCDIDAndDemandNoteStatus(cdDetails, map)
-                        response.data = daoServices.findDemandNoteListFromCdItemList(itemListWithDemandNote, map.inactiveStatus)
+                        response.data = daoServices.findDemandNoteWithCdID(cdDetails.id!!)
                         response.message = "Success"
                         response.responseCode = ResponseCodes.SUCCESS_CODE
                         response
@@ -79,17 +72,23 @@ class InvoiceHandlers(
             val cdDetails = daoServices.findCDWithUuid(cdUuid)
             val invoiceForm = req.body(DemandNoteForm::class.java)
             val itemList = mutableListOf<CdItemDetailsEntity>()
+            var hasAllItems=false
+            var totalItems=0
             if (invoiceForm.includeAll) {
                 itemList.addAll(daoServices.findCDItemsListWithCDID(cdDetails))
+                totalItems=itemList.size
+                hasAllItems=true
             } else {
                 invoiceForm.items.forEach {
                     val item = daoServices.findItemWithItemIDAndDocument(cdDetails, it.itemId)
                     // Add to list
                     itemList.add(item)
                 }
+                totalItems=daoServices.findCDItemsListWithCDID(cdDetails).size
+                hasAllItems=itemList.size==totalItems
             }
             // Reject for consignment with no items?
-            if(itemList.isEmpty()){
+            if(itemList.isEmpty() && totalItems>0){
                 response.responseCode = ResponseCodes.FAILED_CODE
                 response.message = "Consignment does not have items or none was selected"
                 return ServerResponse.ok().body(response)
@@ -120,11 +119,23 @@ class InvoiceHandlers(
                     map,
                     cdDetails,
                     invoiceForm.presentment,
+                    invoiceForm.amount,
                     loggedInUser
             )
-            response.data = demandNote
-            response.responseCode = ResponseCodes.SUCCESS_CODE
-            response.message = "Success"
+            if(invoiceForm.presentment){
+                response.data = demandNote
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+                response.message = "Success"
+            } else {
+                val data = mutableMapOf<String, Any?>()
+                data.put("demandNoteId", demandNote.id)
+                data.put("amount", invoiceForm.amount)
+                data.put("remarks", invoiceForm.remarks)
+                data.put("hasAllItems", hasAllItems)
+                data.put("cdUuid",cdUuid)
+                this.diBpmn.startGenerateDemandNote(data, cdDetails)
+            }
+
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error { ex }
             response.responseCode = ResponseCodes.EXCEPTION_STATUS

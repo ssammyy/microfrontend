@@ -6,7 +6,6 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.MvInspectionNotificationDTO
 import org.kebs.app.kotlin.apollo.api.service.DestinationInspectionService
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
-import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -25,11 +24,6 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.bind.support.SessionStatus
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
-import java.io.File
-import java.io.FileOutputStream
-import java.io.FileReader
-import java.sql.Timestamp
-import java.time.Instant
 import java.util.*
 import javax.servlet.http.HttpServletResponse
 
@@ -269,8 +263,8 @@ class DestinationInspectionController(
                                 daoServices.updateCDStatus(cdStd, applicationMapProperties.mapDIStatusTypeAssignIoId)
                             }
                             //Start the relevant BPM
-                            daoServices.startDiBpmProcessByCdType(updatedCDDetails)
-                            daoServices.assignIOBpmTask(updatedCDDetails)
+                            diBpmn.startDiBpmProcessByCdType(updatedCDDetails)
+                            diBpmn.assignIOBpmTask(updatedCDDetails)
                         }
                         //Function for reassigning IO
                         cdDetails.reassignedStatus == map.activeStatus -> {
@@ -286,8 +280,8 @@ class DestinationInspectionController(
                                 daoServices.updateCDStatus(cdStd, applicationMapProperties.mapDIStatusTypeReassignIoId)
                             }
                             //Start the relevant BPM
-                            daoServices.startDiBpmProcessByCdType(updatedCDDetails)
-                            daoServices.assignIOBpmTask(updatedCDDetails)
+                            diBpmn.startDiBpmProcessByCdType(updatedCDDetails)
+                            diBpmn.assignIOBpmTask(updatedCDDetails)
                         }
                         //Function for blackList awaiting approval
                         cdDetails.blacklistStatus == map.activeStatus -> {
@@ -459,6 +453,7 @@ class DestinationInspectionController(
                             }
 
                         }
+
                         //Send LOCAL COI/COC/COR Data to Single Window
                         cdDetails.localCocOrCorStatus == map.activeStatus -> {
                             if (updatedCDDetails.cdType?.localCocStatus == map.activeStatus) {
@@ -603,6 +598,7 @@ class DestinationInspectionController(
                                                             map,
                                                             updatedItemDetails.cdDocId!!,
                                                             false,
+                                                            0.0,
                                                             loggedInUser
                                                     )
                                                 }

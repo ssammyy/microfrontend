@@ -2,12 +2,10 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import mu.KotlinLogging
-import org.flowable.idm.engine.impl.persistence.entity.UserEntity
 import org.json.JSONException
 import org.json.JSONObject
 import org.json.XML
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
-import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.SftpServiceImpl
 import org.kebs.app.kotlin.apollo.common.dto.MinistryInspectionListResponseDto
@@ -109,7 +107,7 @@ class DestinationInspectionDaoServices(
         private val iCdInspectionOtherItemChecklistRepo: ICdInspectionOtherItemChecklistRepository,
         private val iCdInspectionMotorVehicleItemChecklistRepo: ICdInspectionMotorVehicleItemChecklistRepository,
         private val iPvocPartnersCountriesRepository: IPvocPartnersCountriesRepository,
-        private val diBpmn: DestinationInspectionBpmn
+//        private val diBpmn: DestinationInspectionBpmn
 
 ) {
 
@@ -1145,7 +1143,7 @@ class DestinationInspectionDaoServices(
             demandNote: CdDemandNoteEntity,
             map: ServiceMapsEntity,
             user: UsersEntity,
-            presentment: Boolean
+            presentment: Boolean,
     ): CdDemandNoteEntity {
         /* todo: Discuss with KEN on how to go with the bigDecimal not to be null when initializing */
         var totalAmountPayable: BigDecimal = 0.00.toBigDecimal()
@@ -1172,6 +1170,7 @@ class DestinationInspectionDaoServices(
             map: ServiceMapsEntity,
             consignmentDocument: ConsignmentDocumentDetailsEntity,
             presentment: Boolean,
+            amount: Double,
             user: UsersEntity
     ): CdDemandNoteEntity {
         return iDemandNoteRepo.findByCdId(consignmentDocument.id!!)
@@ -1184,6 +1183,10 @@ class DestinationInspectionDaoServices(
                         if (!presentment) {
                             demandNoteDetails = demandNoteUpDatingCDAndItem(it, user, demandNoteDetails)
                         }
+                    }
+                    // Foreign CoR without Items
+                    if(itemList.isEmpty()){
+                        demandNoteDetails.amountPayable=amount.toBigDecimal()
                     }
                     //Calculate the total Amount for Items In one Cd Tobe paid For
                     demandNoteDetails = calculateTotalAmountDemandNote(demandNoteDetails, map, user, presentment)
@@ -1220,7 +1223,7 @@ class DestinationInspectionDaoServices(
                         paymentStatus = map.inactiveStatus
                         dateGenerated = commonDaoServices.getCurrentDate()
                         generatedBy = commonDaoServices.concatenateName(user)
-                        status = map.activeStatus
+                        status = map.inactiveStatus
                         createdOn = commonDaoServices.getTimestamp()
                         createdBy = commonDaoServices.getUserName(user)
                     }
@@ -1236,6 +1239,10 @@ class DestinationInspectionDaoServices(
                         if (!presentment) {
                             demandNoteUpDatingCDAndItem(it, user, demandNote)
                         }
+                    }
+                    // Foreign CoR/CoC without Items
+                    if(itemList.isEmpty()){
+                        demandNote.amountPayable=amount.toBigDecimal()
                     }
                     return demandNote
 
@@ -3135,50 +3142,7 @@ class DestinationInspectionDaoServices(
         return map
     }
 
-    //Start relevant BPMN process
-    fun startDiBpmProcessByCdType(consignmentDoc: ConsignmentDocumentDetailsEntity) {
-        consignmentDoc.cdType?.let {
-            it.uuid?.let { cdTypeUuid ->
-                when (cdTypeUuid) {
-                    corCdType -> consignmentDoc.id?.let { it1 ->
-                        consignmentDoc.assignedInspectionOfficer?.id?.let { it2 ->
-                            diBpmn.startImportedVehiclesWithCorProcess(
-                                    it1,
-                                    it2
-                            )
-                        }
-                    }
-                    else -> {
-                        KotlinLogging.logger { }.error("CD type uuid not found for CD: $consignmentDoc.id")
-                    }
-                }
-            }
-        }
-    }
 
-    //BPM: Assign officer
-    fun assignIOBpmTask(consignmentDoc: ConsignmentDocumentDetailsEntity) {
-        //Check if any item in consignment has been targeted
-        var supervisorTargetStatus = 0
-//        iCdItemsRepo.findByCdDocId(consignmentDoc)?.let { cdItemDetailsList ->
-//            val itemsTargeted =
-//                cdItemDetailsList.filter { item -> item.targetStatus == commonDaoServices.activeStatus.toInt() }
-//            KotlinLogging.logger { }.info("No of targeted items: ${itemsTargeted.size}")
-//            if (itemsTargeted.isNotEmpty()) {
-//                supervisorTargetStatus = 1
-//            }
-//        }
-        // Assign IO complete task
-        consignmentDoc.id?.let { it1 ->
-            consignmentDoc.assignedInspectionOfficer?.id?.let { it2 ->
-                diBpmn.diAssignIOComplete(
-                        it1,
-                        it2,
-                        supervisorTargetStatus
-                )
-            }
-        }
-    }
 
     //Update Inspection Notification status & date after KRA submission
 //    fun updateInspectionNotificationSent(cdItemId: Long) {
@@ -3203,25 +3167,6 @@ class DestinationInspectionDaoServices(
     //Find all demand notes by payment status
     fun findAllDemandNotesWithPaidStatus(paymentStatus: Int): List<CdDemandNoteEntity>? {
         return iDemandNoteRepo.findAllByPaymentStatus(paymentStatus)
-    }
-
-    //Trigger demand note paid bpm task
-    fun triggerDemandNotePaidBpmTask(demandNote: CdDemandNoteEntity): Boolean {
-        //Get Item from Demand Note
-        demandNote.itemId?.let { cdItemDetailsEntity ->
-            //Get the CD details entity
-            cdItemDetailsEntity.cdDocId?.let { consignmentDocumentDetailsEntity ->
-                consignmentDocumentDetailsEntity.id?.let {
-                    consignmentDocumentDetailsEntity.assignedInspectionOfficer?.id?.let { it1 ->
-                        return diBpmn.diReceivePaymentConfirmation(
-                                it,
-                                it1
-                        )
-                    }
-                }
-            }
-        }
-        return false
     }
 
     //Send CD status to KeSWS

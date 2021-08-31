@@ -71,6 +71,7 @@ import {ViewDeclarationDocumentsItemDetailsListComponent} from "./apollowebs/di/
 import {ViewDiDeclarationDocumentsComponent} from "./apollowebs/di/view-single-consignment-document/view-di-declaration-documents/view-di-declaration-documents.component";
 import {ViewIdfDocumentDetailsComponent} from "./apollowebs/di/view-single-consignment-document/view-idf-document-details/view-idf-document-details.component";
 import {ItemDetailsComponent} from "./apollowebs/di/view-single-consignment-document/item-details-list-view/item-details/item-details.component";
+import {ViewTasksComponent} from "./apollowebs/di/view-tasks/view-tasks.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -363,6 +364,16 @@ const routes: Routes = [
                 path: 'exceptions',
                 component: ExceptionsApplicationComponent
 
+            }
+        ]
+    },
+    {
+        path: 'tasks',
+        component: AdminLayoutComponent,
+        children: [
+            {
+                path: '',
+                component: ViewTasksComponent
             }
         ]
     },
