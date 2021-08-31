@@ -1,6 +1,13 @@
 <h2 mat-dialog-title>Upload Foreign COC/COR</h2>
 <mat-dialog-content>
     <div class="form-group row">
+        <label for="fileType" class="waiver-form-label">Select File Type</label>
+        <select id="fileType" name="fileType" class="waiver-form-input-master"
+                formControlName="fileType">
+            <option value="" disabled selected>Select One</option>
+            <option value="CSV">Comma Separated</option>
+            <option value="TSV">Tab Separated</option>
+        </select>
         <label for="select-file" class="col-5 col-form-label">SELECT UPLOAD DOCUMENT</label>
         <div class="col-7">
             <input id="select-file" type="file" accept="image/*" (change)="uploadForeignCoROrCor($event)"

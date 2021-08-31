@@ -2,7 +2,7 @@ package org.kebs.app.kotlin.apollo.api.payload.request
 
 data class DemandNoteItem(
         val itemId: Long?,
-        val amount: Double
+        val feeId: Long=0
 )
 
 data class DemandNoteForm(

@@ -29,7 +29,7 @@ class PostInvoiceToSageServices(
     private val daoService: DaoService,
     private val invoiceDaoService: InvoiceDaoService
 ) {
-    fun postInvoiceTransactionToSage(stgID: Long, user: UsersEntity, map: ServiceMapsEntity) {
+    fun postInvoiceTransactionToSage(stgID: Long, user: String, map: ServiceMapsEntity) {
         val config =
             commonDaoServices.findIntegrationConfigurationEntity(applicationMapProperties.mapSageConfigIntegration)
         val configUrl = config.url ?: throw Exception("URL CANNOT BE NULL")
@@ -82,7 +82,7 @@ class PostInvoiceToSageServices(
                 taxable = rootRequest.request?.taxable.toString()
                 invoiceAmnt = rootRequest.request?.invoiceAmnt.toString()
                 status = 0
-                createdBy = commonDaoServices.concatenateName(user)
+                createdBy = user
                 createdOn = commonDaoServices.getTimestamp()
             }
 
@@ -118,7 +118,7 @@ class PostInvoiceToSageServices(
                 responseDocumentNo = response.second?.response?.documentNo
                 responseDate = response.second?.response?.responseDate
                 status = 1
-                modifiedBy = commonDaoServices.concatenateName(user)
+                modifiedBy = user
                 modifiedOn = commonDaoServices.getTimestamp()
             }
 

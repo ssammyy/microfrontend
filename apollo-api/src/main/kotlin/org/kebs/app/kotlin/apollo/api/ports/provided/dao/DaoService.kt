@@ -58,6 +58,7 @@ import org.springframework.web.servlet.function.remoteAddressOrNull
 import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
+import java.io.Reader
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
 import java.sql.Timestamp
@@ -411,20 +412,21 @@ class DaoService(
         registerModule(KotlinModule())
     }
 
-    fun readCocFileFromController(separator: Char, reader: FileReader) =
+    fun readCocFileFromController(separator: Char, reader: Reader) =
         readCsvFile<CocsItemsEntityDto>(separator, reader)
 
     fun readCorFileFromController(separator: Char, reader: FileReader) = readCsvFile<CorsBakEntity>(separator, reader)
 
-    private inline fun <reified T> readCsvFile(separator: Char, reader: FileReader): List<T> {
+    private inline fun <reified T> readCsvFile(separator: Char, reader: Reader): List<T> {
 //        FileReader(fileName).use { reader ->
         return csvMapper
             .readerFor(T::class.java)
             .with(
-                CsvSchema
-                    .emptySchema()
-                    .withColumnSeparator(separator)
-                    .withHeader()
+                    CsvSchema
+                            .emptySchema()
+                            .withColumnSeparator(separator)
+                            .withLineSeparator("\n")
+                            .withHeader()
             )
             .readValues<T>(reader)
             .readAll()

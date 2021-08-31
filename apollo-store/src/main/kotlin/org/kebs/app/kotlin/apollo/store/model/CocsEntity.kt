@@ -208,12 +208,12 @@ class CocsEntity : Serializable {
     @NotNull(message = "Required field")
     @Column(name = "FINAL_INVOICE_FOB_VALUE", nullable = false, precision = 2)
     @Basic
-    var finalInvoiceFobValue: Long = 0
+    var finalInvoiceFobValue: Double = 0.0
 
     @NotNull(message = "Required field")
     @Column(name = "FINAL_INVOICE_EXCHANGE_RATE", nullable = false, precision = 2)
     @Basic
-    var finalInvoiceExchangeRate: Long = 0
+    var finalInvoiceExchangeRate: Double = 0.0
 
     @NotEmpty(message = "Required field")
     @Column(name = "FINAL_INVOICE_CURRENCY", nullable = false, length = 10)

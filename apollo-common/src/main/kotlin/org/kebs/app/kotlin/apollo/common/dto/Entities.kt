@@ -22,6 +22,7 @@
 package org.kebs.app.kotlin.apollo.common.dto
 
 
+import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
@@ -781,6 +782,7 @@ class CocsItemsEntityDto {
 
     @NotEmpty(message = "Required field")
     @JsonProperty("Clean")
+    @JsonAlias("Clean?(Y/N)")
     var clean: String? = null
 
     @JsonProperty("CoC remarks")
@@ -891,14 +893,14 @@ class CocsItemsEntityDto {
 
     @NotNull(message = "Required field")
     @JsonProperty("Final Invoice FOB Value")
-    var finalInvoiceFobValue: Long = 0
+    var finalInvoiceFobValue: Double = 0.0
 
     @NotNull(message = "Required field")
-    @JsonProperty("Final Invoice currency")
-    var finalInvoiceExchangeRate: Long = 0
+    @JsonProperty("Final Invoice Exchange Rate")
+    var finalInvoiceExchangeRate: Double = 0.0
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("Final Invoice Exchange Rate")
+    @JsonProperty("Final Invoice currency")
     var finalInvoiceCurrency: String? = null
 
     @NotEmpty(message = "Required field")
@@ -939,7 +941,7 @@ class CocsItemsEntityDto {
 
     @NotNull(message = "Required field")
     @JsonProperty("Shipment Line Quantity")
-    var shipmentLineQuantity: Long = 0
+    var shipmentLineQuantity: Double = 0.0
 
     @NotEmpty(message = "Required field")
     @JsonProperty("Shipment Line Unit of Measure")

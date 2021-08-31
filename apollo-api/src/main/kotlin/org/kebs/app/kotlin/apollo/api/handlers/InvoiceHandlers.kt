@@ -12,6 +12,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
+import org.kebs.app.kotlin.apollo.api.service.InvoicePaymentService
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
@@ -26,7 +27,7 @@ import org.springframework.web.servlet.function.paramOrNull
 
 @Component
 class InvoiceHandlers(
-        private val invoiceRepository: IInvoiceRepository,
+        private val invoiceService: InvoicePaymentService,
         private val demandNoteRepository: IDemandNoteRepository,
         private val serviceMapsRepo: IServiceMapsRepository,
         private val commonDaoServices: CommonDaoServices,
@@ -38,6 +39,19 @@ class InvoiceHandlers(
 ) {
     final val appId = applicationMapProperties.mapPermitApplication
     final val errors = mutableMapOf<String, String>()
+
+    fun applicationFee(req: ServerRequest): ServerResponse {
+        val response = ApiResponseModel()
+        try {
+            response.data = daoServices.listDIFee()
+            response.message = "Success"
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+        } catch (e: Exception) {
+            response.message = e.localizedMessage
+            response.responseCode = ResponseCodes.FAILED_CODE
+        }
+        return ServerResponse.ok().body(response)
+    }
 
     fun cdInvoiceDetails(req: ServerRequest): ServerResponse {
         val response = ApiResponseModel()
@@ -72,37 +86,34 @@ class InvoiceHandlers(
             val cdDetails = daoServices.findCDWithUuid(cdUuid)
             val invoiceForm = req.body(DemandNoteForm::class.java)
             val itemList = mutableListOf<CdItemDetailsEntity>()
-            var hasAllItems=false
-            var totalItems=0
+            var hasAllItems = false
+            var totalItems = 0
             if (invoiceForm.includeAll) {
-                itemList.addAll(daoServices.findCDItemsListWithCDID(cdDetails))
-                totalItems=itemList.size
-                hasAllItems=true
+                daoServices.findCDItemsListWithCDID(cdDetails).forEach { item ->
+                    val fees = invoiceForm.items.filter { it.itemId == item.id }
+                    item.paymentFeeIdSelected = daoServices.findDIFee(fees[0].feeId)
+                    itemList.add(item)
+                }
+                totalItems = itemList.size
+                hasAllItems = true
             } else {
                 invoiceForm.items.forEach {
                     val item = daoServices.findItemWithItemIDAndDocument(cdDetails, it.itemId)
                     // Add to list
+                    item.paymentFeeIdSelected = daoServices.findDIFee(it.feeId)
                     itemList.add(item)
                 }
-                totalItems=daoServices.findCDItemsListWithCDID(cdDetails).size
-                hasAllItems=itemList.size==totalItems
+                totalItems = daoServices.findCDItemsListWithCDID(cdDetails).size
+                hasAllItems = itemList.size == totalItems
             }
             // Reject for consignment with no items?
-            if(itemList.isEmpty() && totalItems>0){
+            if (itemList.isEmpty() && totalItems > 0) {
                 response.responseCode = ResponseCodes.FAILED_CODE
                 response.message = "Consignment does not have items or none was selected"
                 return ServerResponse.ok().body(response)
             }
             // Update if required
-            itemList.forEach{item->
-                //Values before update of item Details
-                if (item.confirmFeeIdSelected != null) {
-                    item.apply {
-                        paymentFeeIdSelected = confirmFeeIdSelected?.let { daoServices.findDIFee(it) }
-                    }
-                } else {
-                    item.paymentFeeIdSelected=daoServices.findDIFee(1)
-                }
+            itemList.forEach { item ->
                 // Update item details
                 if (!invoiceForm.presentment) {
                     val updatedItemDetails = daoServices.updateCdItemDetailsInDB(
@@ -122,7 +133,7 @@ class InvoiceHandlers(
                     invoiceForm.amount,
                     loggedInUser
             )
-            if(invoiceForm.presentment){
+            if (invoiceForm.presentment) {
                 response.data = demandNote
                 response.responseCode = ResponseCodes.SUCCESS_CODE
                 response.message = "Success"
@@ -132,7 +143,7 @@ class InvoiceHandlers(
                 data.put("amount", invoiceForm.amount)
                 data.put("remarks", invoiceForm.remarks)
                 data.put("hasAllItems", hasAllItems)
-                data.put("cdUuid",cdUuid)
+                data.put("cdUuid", cdUuid)
                 this.diBpmn.startGenerateDemandNote(data, cdDetails)
             }
 
@@ -166,7 +177,7 @@ class InvoiceHandlers(
             }
             //TODO: DemandNote Simulate payment Status
             demandNote?.demandNoteNumber?.let {
-                invoiceDaoService.createBatchInvoiceDetails(loggedInUser, it)
+                invoiceDaoService.createBatchInvoiceDetails(loggedInUser.userName!!, it)
                         .let { batchInvoiceDetail ->
                             invoiceDaoService.addInvoiceDetailsToBatchInvoice(
                                     demandNote,
@@ -189,7 +200,7 @@ class InvoiceHandlers(
                                                     applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
                                         }
                                         invoiceDaoService.createPaymentDetailsOnStgReconciliationTable(
-                                                loggedInUser,
+                                                loggedInUser.userName!!,
                                                 updateBatchInvoiceDetail,
                                                 myAccountDetails
                                         )
@@ -267,7 +278,7 @@ class InvoiceHandlers(
                         .body(extractReport)
             }
         } catch (ex: Exception) {
-            KotlinLogging.logger {  }.error { ex }
+            KotlinLogging.logger { }.error { ex }
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
             response.message = "Failed to generate demand note"
         }

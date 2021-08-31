@@ -289,7 +289,7 @@ interface ICdStandardsEntityRepository : HazelcastRepository<CdStandardsEntity, 
 
 @Repository
 interface IDestinationInspectionFeeRepository : HazelcastRepository<DestinationInspectionFeeEntity, Long> {
-    fun findByStatus(status: Int): List<DestinationInspectionFeeEntity>?
+    fun findByStatus(status: Int): List<DestinationInspectionFeeEntity>
 }
 
 @Repository

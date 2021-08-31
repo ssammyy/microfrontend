@@ -11,6 +11,9 @@ export class DestinationInspectionService {
 
     constructor(private client: HttpClient) {
     }
+    sendDemandNote(data: any, consignmentUuid: any): Observable<any>{
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/demand/note/generate/"+consignmentUuid),data)
+    }
     loadMyTasks(): Observable<any>{
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/my/tasks"))
     }
@@ -65,9 +68,10 @@ export class DestinationInspectionService {
     requestMinistryChecklist(data: any,id: any): Observable<any>{
         return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/ministry/inspections/request/"+id),data)
     }
-    uploadForeignDocuments(file: File, fileType: string): Observable<any>{
+    uploadForeignDocuments(file: File, fileType: string, documentType:any): Observable<any>{
         let fd=new FormData()
         fd.append("file", file)
+        fd.append("docType",documentType)
         fd.append("file_type", fileType)
         return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/foreign/cd/upload"),fd)
     }

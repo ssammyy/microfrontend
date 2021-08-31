@@ -44,14 +44,14 @@ class InvoiceDaoService(
     final val appId = applicationMapProperties.mapInvoiceTransactions
     val map = commonDaoServices.serviceMapDetails(appId)
 
-    fun createBatchInvoiceDetails(user: UsersEntity, invoiceNumber: String): InvoiceBatchDetailsEntity {
+    fun createBatchInvoiceDetails(user: String, invoiceNumber: String): InvoiceBatchDetailsEntity {
         val map = commonDaoServices.serviceMapDetails(appId)
         var batchInvoice = InvoiceBatchDetailsEntity()
         with(batchInvoice) {
 //            batchNumber = "KEBS/INVOICE-${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
             batchNumber = invoiceNumber
             status = map.inactiveStatus
-            createdBy = commonDaoServices.concatenateName(user)
+            createdBy = user
             createdOn = commonDaoServices.getTimestamp()
         }
         batchInvoice = invoiceBatchDetailsRepo.save(batchInvoice)
@@ -147,11 +147,11 @@ class InvoiceDaoService(
     }
 
 
-    fun createPaymentDetailsOnStgReconciliationTable(user: UsersEntity, invoiceBatchDetails: InvoiceBatchDetailsEntity, invoiceAccountDetails: InvoiceAccountDetails): StagingPaymentReconciliation {
+    fun createPaymentDetailsOnStgReconciliationTable(user: String, invoiceBatchDetails: InvoiceBatchDetailsEntity, invoiceAccountDetails: InvoiceAccountDetails): StagingPaymentReconciliation {
         val map = commonDaoServices.serviceMapDetails(appId)
         var invoiceDetails = StagingPaymentReconciliation()
         with(invoiceDetails) {
-            customerName = user.firstName + " " + user.lastName
+            customerName = user
             statusCode = map.initStage
             statusDescription = "Initial Stage"
             additionalInformation = invoiceBatchDetails.description
@@ -173,7 +173,7 @@ class InvoiceDaoService(
             extras = " "
             status = map.inactiveStatus
             createdOn = commonDaoServices.getTimestamp()
-            createdBy = commonDaoServices.concatenateName(user)
+            createdBy = user
         }
         invoiceDetails = invoicePaymentRepo.save(invoiceDetails)
 

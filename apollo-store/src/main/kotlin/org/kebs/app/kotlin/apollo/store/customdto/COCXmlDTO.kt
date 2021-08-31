@@ -34,8 +34,8 @@ class CustomCocXmlDto(cocNumber: String, idfNumber: String, rfiNumber: String, u
                       importerFaxNumber: String, importerEmail: String, exporterName: String, exporterPin: String, exporterAddress1: String,
                       exporterAddress2: String, exporterCity: String, exporterCountry: String, exporterZipCode: String, exporterTelephoneNumber: String,
                       exporterFaxNumber: String, exporterEmail: String, placeOfInspection: String, dateOfInspection: Timestamp, portOfDestination: String,
-                      shipmentMode: String, countryOfSupply: String, finalInvoiceFobValue: Long, finalInvoiceExchangeRate: Long, finalInvoiceCurrency: String,
-                      finalInvoiceDate: Timestamp, shipmentPartialNumber: Long, shipmentSealNumbers: String, shipmentContainerNumber: String,
+                      shipmentMode: String, countryOfSupply: String, finalInvoiceFobValue: Double, finalInvoiceExchangeRate: Double, finalInvoiceCurrency: String,
+                      finalInvoiceDate: Timestamp, shipmentPartialNumber: Double, shipmentSealNumbers: String, shipmentContainerNumber: String,
                       shipmentGrossWeight: String, shipmentQuantityDelivered: String, route: String, productCategory: String, partner: String) {
 
     @JacksonXmlProperty(localName = "COC_NUMBER")
@@ -153,7 +153,7 @@ class CustomCocXmlDto(cocNumber: String, idfNumber: String, rfiNumber: String, u
     var finalInvoiceDate: String? = this.convertTimestampToKeswsValidDate(finalInvoiceDate)
 
     @JacksonXmlProperty(localName = "SHIPMENT_PARTIAL_NUMBER")
-    var shipmentPartialNumber: Long? = shipmentPartialNumber
+    var shipmentPartialNumber: Long? = shipmentPartialNumber.toLong()
 
     @JacksonXmlProperty(localName = "SHIPMENT_SEAL_NUMBERS")
     var shipmentSealNumbers: String? = shipmentSealNumbers

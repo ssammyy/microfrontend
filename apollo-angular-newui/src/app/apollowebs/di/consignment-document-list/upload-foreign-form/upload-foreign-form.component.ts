@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {DestinationInspectionService} from "../../../../core/store/data/di/destination-inspection.service";
 import {MatDialogRef} from "@angular/material/dialog";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 
 @Component({
     selector: 'app-upload-foreign-form',
@@ -10,11 +11,14 @@ import {MatDialogRef} from "@angular/material/dialog";
 export class UploadForeignFormComponent implements OnInit {
     selectedFile: File
     message: String
-
-    constructor(private dialogRef: MatDialogRef<any>, private diService: DestinationInspectionService) {
+    form: FormGroup
+    constructor(private fb: FormBuilder,private dialogRef: MatDialogRef<any>, private diService: DestinationInspectionService) {
     }
 
     ngOnInit(): void {
+        this.form=this.fb.group({
+            fileType: ["",Validators.required]
+        })
     }
 
     uploadForeignCoROrCor(event: any) {
@@ -27,7 +31,7 @@ export class UploadForeignFormComponent implements OnInit {
     }
 
     saveForeignDocument() {
-        this.diService.uploadForeignDocuments(this.selectedFile, "coc")
+        this.diService.uploadForeignDocuments(this.selectedFile, this.form.value.fileType,"coc")
             .subscribe(
                 res => {
                     if (res.responseCode === "000") {

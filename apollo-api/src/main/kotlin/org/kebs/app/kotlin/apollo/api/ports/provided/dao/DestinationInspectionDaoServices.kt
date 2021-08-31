@@ -1333,6 +1333,10 @@ class DestinationInspectionDaoServices(
         return item
     }
 
+    fun listDIFee(): List<DestinationInspectionFeeEntity> {
+        return iDIFeeDetailsRepo.findByStatus(1)
+    }
+
     fun findDIFee(feeId: Long): DestinationInspectionFeeEntity {
         iDIFeeDetailsRepo.findByIdOrNull(feeId)
                 ?.let { diFeeDetails ->

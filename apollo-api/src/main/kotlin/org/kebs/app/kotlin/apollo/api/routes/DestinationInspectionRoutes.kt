@@ -19,6 +19,7 @@ class DestinationInspectionRoutes {
             GET("/demand/note/{demandNoteId}",handlers::downloadDemandNote)
             GET("/demand/note/details/{cdUuid}",handlers::cdInvoiceDetails)
             GET("/demand/note/list/{cdId}",handlers::listDemandNotes)
+            GET("/demand-note/fees",handlers::applicationFee)
             POST("/demand/note/generate/{cdUuid}",handlers::generateDemandNote)
         }
     }
@@ -85,10 +86,12 @@ class DestinationInspectionRoutes {
             GET("/consignment/documents/ongoing", handler::outgoingConsignmentDocuments)
             GET("/consignment/documents/manual/assigned", handler::manualAssignedConsignmentDocuments)
             GET("/consignment/documents/completed", handler::completedConsignmentDocuments)
-            //
+            // CD Extra Details
             GET("/inspection/coc/details/{coUuid}", handler::certificateOfConformance)
             GET("/inspection/idf/details/{coUuid}", handler::importDeclarationFormDetails)
             GET("/inspection/cor/details/{coUuid}", handler::certificateOfRoadWorthines)
+            GET("/inspection/coc/download/{coUuid}", handler::downloadCertificateOfConformance)
+            GET("/inspection/cor/download/{coUuid}", handler::downloadCertificateOfRoadWorthines)
             // Ministry
             GET("/ministry/inspections/{inspectionStatus}", handler::ministryInspections)
             POST("/ministry/inspections/request/{itemId}", handler::ministryInspectionRequest)

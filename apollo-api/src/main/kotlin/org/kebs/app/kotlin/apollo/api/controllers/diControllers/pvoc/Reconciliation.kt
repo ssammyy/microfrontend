@@ -428,7 +428,7 @@ class Reconciliation(
         }
     }
 
-    fun calculateRoyaltyToKebs(certificateNo: String, fobValue: Long): Long? {
+    fun calculateRoyaltyToKebs(certificateNo: String, fobValue: Double): Long? {
         //find coc document details
         iCocsRepository.findFirstByCocNumber(certificateNo)?.let { cocDetails ->
             pvocPartnersRepository.findByIdOrNull(cocDetails.pvocPartner).let { partinerDetails ->

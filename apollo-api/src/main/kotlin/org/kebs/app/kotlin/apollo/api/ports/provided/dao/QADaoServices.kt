@@ -3870,7 +3870,7 @@ class QADaoServices(
 
 
             val batchInvoiceDetail = invoiceDaoService.createBatchInvoiceDetails(
-                user,
+                user.userName!!,
                 invoiceDetails.invoiceNumber ?: throw Exception("MISSING INVOICE NUMBER")
             )
             val updateBatchInvoiceDetail = invoiceDaoService.addInvoiceDetailsToBatchInvoice(
@@ -3891,7 +3891,7 @@ class QADaoServices(
             }
 
             invoiceDaoService.createPaymentDetailsOnStgReconciliationTable(
-                user,
+                user.userName!!,
                 updateBatchInvoiceDetail,
                 myAccountDetails
             )

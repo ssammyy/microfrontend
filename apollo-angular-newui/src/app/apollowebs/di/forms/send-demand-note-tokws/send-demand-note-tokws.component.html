@@ -35,6 +35,7 @@
                     -{{item.hsCode}}</div>
             </div>
         </div>
+        <mat-error *ngIf="message">{{message}}</mat-error>
     </div>
 </mat-dialog-content>
 <mat-dialog-actions>

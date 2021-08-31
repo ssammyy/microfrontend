@@ -120,7 +120,7 @@ class ApiDestinationInspectionHandler(
                         "Request is not a multipart request"
                 )
         val multipartFile = multipartRequest.getFile("file")
-        val fileType = multipartRequest.getAttribute("file_type")
+        val fileType = multipartRequest.getParameter("file_type")
         val response = ApiResponseModel()
         if (multipartFile != null) {
             commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
@@ -129,11 +129,14 @@ class ApiDestinationInspectionHandler(
                                 .let { loggedInUser ->
 
                                     try {
-                                        this.destinationInspectionService.saveUploadedCsvFileAndSendToKeSWS(multipartFile, DiUploadsEntity(), loggedInUser, map)
+                                        val uploads = DiUploadsEntity()
+                                        uploads.fileType = fileType as String?
+                                        this.destinationInspectionService.saveUploadedCsvFileAndSendToKeSWS(multipartFile,uploads , loggedInUser, map)
                                         response.data = fileType
                                         response.message = "Request received"
                                         response.responseCode = ResponseCodes.SUCCESS_CODE
                                     } catch (e: Exception) {
+                                        KotlinLogging.logger {  }.error("FAILED TO UPLOAD COCs",e)
                                         response.responseCode = ResponseCodes.FAILED_CODE
                                         response.message = e.localizedMessage
                                     }
@@ -476,6 +479,38 @@ class ApiDestinationInspectionHandler(
 
     fun certificateOfConformance(req: ServerRequest): ServerResponse {
         req.pathVariable("coUuid").let {
+            return ServerResponse.ok().body(this.destinationInspectionService.certificateOfConformanceDetails(it))
+        }
+    }
+
+    fun downloadCertificateOfRoadWorthines(req: ServerRequest): ServerResponse {
+        req.pathVariable("corId").let {
+            daoServices.findCorById(it.toLongOrDefault(0L))?.let { coc ->
+                coc.localCorFile?.let { file ->
+                    //Create FileDTO Object
+                    val resource = ByteArrayResource(file)
+                    return ServerResponse.ok()
+                            .contentType(MediaType.APPLICATION_PDF)
+                            .header("Content-Disposition", "inline; filename=LOCAL_COR_${coc.corNumber};")
+                            .body(resource)
+                }
+            }
+            return ServerResponse.ok().body(this.destinationInspectionService.certificateOfConformanceDetails(it))
+        }
+    }
+
+    fun downloadCertificateOfConformance(req: ServerRequest): ServerResponse {
+        req.pathVariable("cocId").let {
+            daoServices.findCOCById(it.toLongOrDefault(0L))?.let { coc ->
+                coc.localCocFile?.let { file ->
+                    //Create FileDTO Object
+                    val resource = ByteArrayResource(file)
+                    return ServerResponse.ok()
+                            .contentType(MediaType.APPLICATION_PDF)
+                            .header("Content-Disposition", "inline; filename=LOCAL_COC_${coc.cocNumber};")
+                            .body(resource)
+                }
+            }
             return ServerResponse.ok().body(this.destinationInspectionService.certificateOfConformanceDetails(it))
         }
     }

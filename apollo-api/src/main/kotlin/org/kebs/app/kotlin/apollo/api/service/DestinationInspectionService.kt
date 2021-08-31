@@ -2,7 +2,6 @@ package org.kebs.app.kotlin.apollo.api.service
 
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.payload.*
-import org.kebs.app.kotlin.apollo.api.payload.request.ConsignmentUpdateRequest
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.common.dto.MinistryInspectionListResponseDto
@@ -20,19 +19,19 @@ import org.kebs.app.kotlin.apollo.store.repo.di.*
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
-import java.io.File
-import java.io.FileOutputStream
-import java.io.FileReader
+import java.io.ByteArrayInputStream
+import java.io.InputStreamReader
+import java.io.Reader
 import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
 import java.util.*
 import kotlin.collections.ArrayList
+
 
 @Service("diService")
 class DestinationInspectionService(
@@ -55,6 +54,22 @@ class DestinationInspectionService(
 ) {
     @Value("\${destination.inspection.cd.type.cor}")
     lateinit var corCdType: String
+
+    fun checkForAutoTarget(cdUuid: String) {
+        val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
+        val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+        //If CD without COR, auto-target
+        //Todo: Use the method for saving details
+        if (consignmentDocument.cdType?.uuid == daoServices.noCorCdType) {
+            with(consignmentDocument) {
+                targetStatus = map.activeStatus
+                targetReason = "CD without CoR"
+                targetApproveStatus = map.activeStatus
+            }
+            this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
+        }
+    }
+
     fun generateCorForDocument(cdUuid: String, supervisor: String, remarks: String): Boolean {
         try {
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
@@ -91,7 +106,8 @@ class DestinationInspectionService(
 
         return false
     }
-    fun rejectCorGeneration(cdUuid: String, blacklistId: Long, supervisor: String, remarks: String): Boolean{
+
+    fun rejectCorGeneration(cdUuid: String, blacklistId: Long, supervisor: String, remarks: String): Boolean {
         KotlinLogging.logger { }.info("UPDATE COR GENERATION REJECTION: ${cdUuid}")
         try {
             val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
@@ -466,8 +482,16 @@ class DestinationInspectionService(
             loggedInUser: UsersEntity,
             map: ServiceMapsEntity
     ) {
-        if (docFile.contentType != "text/csv") {
+        val endsWith = docFile.originalFilename?.endsWith(".txt")
+        if (!(docFile.contentType == "text/csv" || endsWith == true)) {
             throw InvalidValueException("Incorrect file type received, try again later")
+        }
+        var separator = ','
+        if ("TSV".equals(upLoads.fileType)) {
+            KotlinLogging.logger { }.info("TAB SEPARATED DATA")
+            separator = '\t'
+        } else {
+            KotlinLogging.logger { }.info("COMMA SEPARATED DATA")
         }
 
         daoServices.saveUploads(
@@ -479,15 +503,8 @@ class DestinationInspectionService(
                 null,
                 null
         )
-        val file = File(docFile.originalFilename ?: "UploadedFile")
-        file.createNewFile()
-        val fos = FileOutputStream(file)
-        fos.use {
-            it.write(docFile.bytes)
-            it.close()
-        }
-
-        val cocs = service.readCocFileFromController(',', FileReader(file))
+        val targetReader: Reader = InputStreamReader(ByteArrayInputStream(docFile.bytes))
+        val cocs = service.readCocFileFromController(separator, targetReader)
         val uniqueCoc = cocs.map { it.cocNumber }.distinct()
         uniqueCoc.forEach {
             it
@@ -538,6 +555,7 @@ class DestinationInspectionService(
                                         shipmentMode = coc.shipmentMode ?: "UNDEFINED"
                                         countryOfSupply = coc.countryOfSupply ?: "UNDEFINED"
                                         finalInvoiceFobValue = coc.finalInvoiceFobValue
+                                        finalInvoiceCurrency = coc.finalInvoiceCurrency
                                         finalInvoiceExchangeRate = coc.finalInvoiceExchangeRate
                                         finalInvoiceCurrency = coc.finalInvoiceCurrency ?: "UNDEFINED"
                                         finalInvoiceDate =
@@ -561,7 +579,7 @@ class DestinationInspectionService(
                                             cocId = entity.id
                                             shipmentLineNumber = cocItems.shipmentLineNumber
                                             shipmentLineHscode = cocItems.shipmentLineHscode ?: "UNDEFINED"
-                                            shipmentLineQuantity = cocItems.shipmentLineQuantity
+                                            shipmentLineQuantity = cocItems.shipmentLineQuantity.toLong()
                                             shipmentLineUnitofMeasure = cocItems.shipmentLineUnitofMeasure
                                                     ?: "UNDEFINED"
                                             shipmentLineDescription = cocItems.shipmentLineDescription ?: "UNDEFINED"

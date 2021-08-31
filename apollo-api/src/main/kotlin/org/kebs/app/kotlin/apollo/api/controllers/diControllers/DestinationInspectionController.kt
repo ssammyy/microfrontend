@@ -319,7 +319,7 @@ class DestinationInspectionController(
                             }
                             //TODO: DemandNote Simulate payment Status
                             demandNote?.demandNoteNumber?.let {
-                                invoiceDaoService.createBatchInvoiceDetails(loggedInUser, it)
+                                invoiceDaoService.createBatchInvoiceDetails(loggedInUser.userName!!, it)
                                         .let { batchInvoiceDetail ->
                                             invoiceDaoService.addInvoiceDetailsToBatchInvoice(
                                                     demandNote,
@@ -342,7 +342,7 @@ class DestinationInspectionController(
                                                                     applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
                                                         }
                                                         invoiceDaoService.createPaymentDetailsOnStgReconciliationTable(
-                                                                loggedInUser,
+                                                                loggedInUser.userName!!,
                                                                 updateBatchInvoiceDetail,
                                                                 myAccountDetails
                                                         )
