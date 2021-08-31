@@ -20,9 +20,8 @@ export class BlacklistComponent implements OnInit {
   ngOnInit(): void {
     this.loadBlackLists()
     this.form = this.fb.group({
-      blacklistStatus: ['', Validators.required],
       blacklistId:  ['', Validators.required],
-      blacklistRemarks: ['', Validators.required]
+      remarks: ['', [Validators.required,Validators.minLength(10)]]
     })
   }
 
@@ -41,6 +40,15 @@ export class BlacklistComponent implements OnInit {
  
   saveRecord() {
     this.diService.sendConsignmentDocumentAction(this.form.value,this.data.uuid,"blacklist")
-    this.dialogRef.close(this.form.value)
+        .subscribe(
+            res=>{
+              if(res.responseCode=="00"){
+                this.dialogRef.close(false)
+              } else {
+                this.message=res.message
+              }
+            }
+        )
+
   }
 }

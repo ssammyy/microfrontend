@@ -16,6 +16,8 @@ import {SendCoiComponent} from "../forms/send-coi/send-coi.component";
 import {TargetItemComponent} from "../forms/target-item/target-item.component";
 import {TargetSupervisorComponent} from "../forms/target-supervisor/target-supervisor.component";
 import {SendDemandNoteTokwsComponent} from "../forms/send-demand-note-tokws/send-demand-note-tokws.component";
+import {BlacklistApproveComponent} from "../forms/blacklist-approve/blacklist-approve.component";
+import {BlacklistComponent} from "../forms/blacklist/blacklist.component";
 
 @Component({
     selector: 'app-view-single-consignment-document',
@@ -29,6 +31,7 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
     attachments: any[];
     comments: any[];
     consignmentItems: any[]
+    paymentFees: any[]
     configurations: any[]
 
     constructor(private diService: DestinationInspectionService,
@@ -42,7 +45,9 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
             rs => {
                 this.consignmentId = rs.get("id")
                 this.loadConsignmentDetails()
+                this.loadFees()
                 this.loadUiConfigurations()
+
             }
         )
 
@@ -52,12 +57,17 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
         this.dialog.open(SendDemandNoteTokwsComponent, {
             data: {
                 uuid: this.consignmentId,
-                items: this.consignmentItems
+                items: this.consignmentItems,
+                paymentFees: this.paymentFees
             }
         })
     }
 
     viewCoR() {
+
+    }
+
+    viewCoC() {
 
     }
 
@@ -69,6 +79,19 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
                         this.configurations = res.data
                     } else {
                         this.configurations = null
+                    }
+                }
+            )
+    }
+
+    loadFees() {
+        this.diService.demandNoteFees()
+            .subscribe(
+                res => {
+                    if (res.responseCode === "00") {
+                        this.paymentFees = res.data
+                    } else {
+                        this.paymentFees = []
                     }
                 }
             )
@@ -225,6 +248,23 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
             .subscribe(
                 res => {
 
+                }
+            )
+    }
+
+    blacklistUser(){
+        let ref = this.dialog.open(BlacklistComponent, {
+            data: {
+                uuid: this.consignmentId,
+                configurations: this.configurations,
+            }
+        })
+        ref.afterClosed()
+            .subscribe(
+                res => {
+                    if (res) {
+                        this.loadConsignmentDetails()
+                    }
                 }
             )
     }

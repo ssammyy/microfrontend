@@ -526,6 +526,9 @@ class DestinationInspectionService(
                                         rfcDate = coc.rfcDate
                                         cocIssueDate = coc.cocIssueDate
                                         clean = coc.clean
+                                        shipmentGrossWeight=coc.shipmentGrossWeight?:"0.0"
+                                        importerPin=coc.importerPin?:"NA"
+                                        shipmentQuantityDelivered=coc.shipmentQuantityDelivered?:"0"
                                         cocRemarks = coc.cocRemarks
                                         issuingOffice = coc.issuingOffice
                                         importerName = coc.importerName

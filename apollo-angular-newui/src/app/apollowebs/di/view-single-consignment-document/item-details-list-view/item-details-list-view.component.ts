@@ -19,7 +19,7 @@ export class ItemDetailsListViewComponent implements OnInit {
             edit: false,
             delete: false,
             custom: [
-                {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
+                // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
                 {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View More</i>'}
             ],
             position: 'right' // left|right

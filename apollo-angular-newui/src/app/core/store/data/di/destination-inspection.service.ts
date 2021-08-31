@@ -58,6 +58,9 @@ export class DestinationInspectionService {
     getInspectionUiConfigurations(): Observable<any> {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/cd/inspection/configuration"))
     }
+    demandNoteFees(): Observable<any> {
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/demand-note/fees"))
+    }
     uploadMinistryChecklist(file: File, fileType: string, id: any): Observable<any>{
         let fd=new FormData()
         fd.append("file", file)

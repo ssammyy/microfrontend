@@ -30,6 +30,9 @@ export class UploadForeignFormComponent implements OnInit {
         }
     }
 
+    isValid(): Boolean{
+        return this.selectedFile && this.form.valid
+    }
     saveForeignDocument() {
         this.diService.uploadForeignDocuments(this.selectedFile, this.form.value.fileType,"coc")
             .subscribe(

@@ -4,29 +4,24 @@
         <div class="col-sm-12 col-md-8">
             <label for="sendCoiStatus" class="waiver-form-label">CoI Status</label>
             <select id="sendCoiStatus" name="sendCoiStatus" class="waiver-form-input-master"
-                formControlName="sendCoiStatus">
+                    formControlName="sendCoiStatus">
                 <option value="" disabled selected>Select Status</option>
                 <option value="1">Active</option>
                 <option value="0">InActive</option>
             </select>
-
-
+        </div>
+        <div class="col-sm-12 col-md-8">
             <label for="sendCoiRemarks" class="waiver-form-label">Please write, in detail, your feedback for this
                 consignment:</label>
             <textarea id="sendCoiRemarks" class="waiver-form-input-master"
-                formControlName="remarks"></textarea>
-
-
-
+                      formControlName="remarks"></textarea>
         </div>
-
-
+        <mat-error *ngIf="message">{{message}}</mat-error>
     </div>
 </mat-dialog-content>
 <mat-dialog-actions>
     <div class="row no_margin master-list-new-btn">
-        <!--        [disabled]="!productDetails.valid"-->
-        <button class="next-btn btn-gen new-btn" (click)="saveRecord()">SAVE
+        <button [disabled]="form.invalid" class="next-btn btn-gen new-btn" (click)="saveRecord()">SAVE
         </button>
     </div>
 </mat-dialog-actions>

@@ -1,6 +1,6 @@
 <h2 mat-dialog-title>Upload Foreign COC/COR</h2>
 <mat-dialog-content>
-    <div class="form-group row">
+    <div class="form-group row" [formGroup]="form">
         <label for="fileType" class="waiver-form-label">Select File Type</label>
         <select id="fileType" name="fileType" class="waiver-form-input-master"
                 formControlName="fileType">
@@ -10,7 +10,7 @@
         </select>
         <label for="select-file" class="col-5 col-form-label">SELECT UPLOAD DOCUMENT</label>
         <div class="col-7">
-            <input id="select-file" type="file" accept="image/*" (change)="uploadForeignCoROrCor($event)"
+            <input id="select-file" type="file" accept="text/*" (change)="uploadForeignCoROrCor($event)"
                    class="display-nothing" #cocFiles>
             <button type="button" (click)="cocFiles.click()"
                     class="btn btn-sm btn-primary mr-2">Select File
@@ -26,7 +26,7 @@
 <mat-dialog-actions>
     <div class="btn-group btn-group pull-right" role="group" aria-label="Foreign COC/COR Buttons">
         <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
-        <button [disabled]="!selectedFile" name="submit" type="button" class="btn btn-primary"
+        <button [disabled]="!isValid()" name="submit" type="button" class="btn btn-primary"
                 (click)="saveForeignDocument()">SAVE
         </button>
     </div>

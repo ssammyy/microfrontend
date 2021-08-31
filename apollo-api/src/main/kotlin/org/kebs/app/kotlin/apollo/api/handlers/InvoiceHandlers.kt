@@ -19,6 +19,7 @@ import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
 import org.kebs.app.kotlin.apollo.store.repo.IInvoiceRepository
 import org.kebs.app.kotlin.apollo.store.repo.IServiceMapsRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteRepository
+import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.function.ServerRequest
@@ -272,13 +273,13 @@ class InvoiceHandlers(
                 )
                 // Response with file
                 return ServerResponse.ok()
-                        .header("Content-Disposition", "inline; filename=NOTE-${it}.pdf;")
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=NOTE-${it}-${demandNote.demandNoteNumber}.pdf")
                         .contentType(MediaType.APPLICATION_PDF)
                         .contentLength(extractReport.size().toLong())
                         .body(extractReport)
             }
         } catch (ex: Exception) {
-            KotlinLogging.logger { }.error { ex }
+            KotlinLogging.logger { }.error("Download failed", ex)
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
             response.message = "Failed to generate demand note"
         }

@@ -9,6 +9,7 @@ import swal from "sweetalert2";
     styleUrls: ['./view-di-declaration-documents.component.css']
 })
 export class ViewDiDeclarationDocumentsComponent implements OnInit {
+    active='declarationGeneralDetails'
     documentId: string
     declaration: any;
     message: string;

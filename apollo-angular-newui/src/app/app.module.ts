@@ -154,6 +154,7 @@ import {DiCorComponent} from "./apollowebs/di/view-single-consignment-document/d
 import {DiCocItemDetailsComponent} from "./apollowebs/di/view-single-consignment-document/di-coc/di-coc-item-details/di-coc-item-details.component";
 import {DiCocComponent} from "./apollowebs/di/view-single-consignment-document/di-coc/di-coc.component";
 import { ViewTasksComponent } from './apollowebs/di/view-tasks/view-tasks.component';
+import {MatButtonModule} from "@angular/material/button";
 
 
 @NgModule({
@@ -197,6 +198,7 @@ import { ViewTasksComponent } from './apollowebs/di/view-tasks/view-tasks.compon
         }),
         SidebarModule,
         MatFormFieldModule,
+        MatButtonModule,
     ],
     declarations: [
         AppComponent,

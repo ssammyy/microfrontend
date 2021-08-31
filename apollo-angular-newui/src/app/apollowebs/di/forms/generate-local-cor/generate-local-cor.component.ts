@@ -19,8 +19,7 @@ export class GenerateLocalCorComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this.fb.group({
-      localCoi: ['', Validators.required],
-      remarks: ['', Validators.required]
+      remarks: ['', [Validators.required,Validators.minLength(10)]]
     })
   }
  

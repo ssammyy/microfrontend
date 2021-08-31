@@ -31,8 +31,13 @@
                  #includedItemList="cdkDropList"
                  [cdkDropListData]="selectedItems"
                  [cdkDropListConnectedTo]="itemList" (cdkDropListDropped)="drop($event)">
-                <div class="example-box" cdkDrag *ngFor="let item of selectedItems">{{item.itemDescription}}
-                    -{{item.hsCode}}</div>
+                <div class="example-box" cdkDrag *ngFor="let item of selectedItems">
+                    {{item.itemDescription}}-{{item.hsCode}}
+                    <mat-select>
+                        <mat-option *ngFor="let fee of paymentFees" [value]="fee.id">{{fee.description}}</mat-option>
+                    </mat-select>
+                </div>
+
             </div>
         </div>
         <mat-error *ngIf="message">{{message}}</mat-error>
@@ -40,7 +45,7 @@
 </mat-dialog-content>
 <mat-dialog-actions>
     <div class="row no_margin master-list-new-btn">
-        <button [disabled]="form.invalid" class="next-btn btn-gen new-btn" (click)="saveRecord()">SAVE
+        <button [disabled]="form.invalid" class="next-btn btn-gen new-btn" (click)="saveRecord(false)">SAVE
         </button>
     </div>
 </mat-dialog-actions>

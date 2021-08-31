@@ -14,6 +14,7 @@ export class SendDemandNoteTokwsComponent implements OnInit {
         {id: 'Items', desc: 'List of items'},
         {id: 'Included', desc: 'done', items: []}];
     @Input() items: any[]
+    paymentFees:any[]
     selectedItems: any[]
     presentmentData: any
     message: any
@@ -30,6 +31,7 @@ export class SendDemandNoteTokwsComponent implements OnInit {
         })
         this.selectedItems = []
         this.items = this.data.items
+        this.paymentFees=this.data.paymentFees
     }
 
     getItems() {
@@ -52,6 +54,7 @@ export class SendDemandNoteTokwsComponent implements OnInit {
                 event.previousIndex,
                 event.currentIndex);
         }
+        this.saveRecord(true)
     }
 
     saveRecord(presentment: Boolean) {

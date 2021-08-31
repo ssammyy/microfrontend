@@ -2,18 +2,18 @@
 <mat-dialog-content>
     <div class="row no_margin" [formGroup]="form">
         <div class="col-sm-12 col-md-8">
-            <input type="hidden" value="1" formControlName="blacklistStatus">
-            <label for="blacklistId" class="waiver-form-label">Blacklist</label>
+            <label for="blacklistId" class="waiver-form-label">Select Blacklist</label>
             <select id="blacklistId" name="blacklistId" class="waiver-form-input-master"
                 formControlName="blacklistId">
                 <option value="" disabled selected>Select One</option>
                 <option *ngFor="let blacklist of blacklists" [value]="blacklist.id">{{blacklist.typeName}}-{{blacklist.description}}</option>
             </select>
-
+        </div>
+        <div class="col-sm-12 col-md-8">
             <label for="blacklistRemarks" class="waiver-form-label">Please write, in detail, your feedback for this
                 consignment:</label>
             <textarea id="blacklistRemarks" class="waiver-form-input-master"
-                formControlName="blacklistRemarks"></textarea>
+                formControlName="remarks"></textarea>
         </div>
         <mat-error *ngIf="message">{{message}}</mat-error>
 
@@ -21,8 +21,7 @@
 </mat-dialog-content>
 <mat-dialog-actions>
     <div class="row no_margin master-list-new-btn">
-        <!--        [disabled]="!productDetails.valid"-->
-        <button class="next-btn btn-gen new-btn" (click)="saveRecord()">SAVE
+        <button [disabled]="form.invalid"  class="next-btn btn-gen new-btn" (click)="saveRecord()">SAVE
         </button>
     </div>
 </mat-dialog-actions>

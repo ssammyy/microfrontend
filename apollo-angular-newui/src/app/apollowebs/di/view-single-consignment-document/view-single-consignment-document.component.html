@@ -674,21 +674,25 @@
                             <div class="col-md-2">
                                 <b>Action:</b>
                                 <div *ngIf="consignment.ui.inspectionActive && configurations">
-                                    <div *ngIf="consignment.ui.completed">
-                                        <button *ngIf="consignment.ui.cocRequest" class="btn btn-sm btn-primary"
+                                    <div >
+                                        <button  class="btn btn-sm btn-primary"
                                                 (click)="generateLocalCoC()">GENERATE LOCAL COC
                                         </button>
-                                        <button *ngIf="consignment.ui.corRequest" class="btn btn-sm btn-primary"
+                                        <button class="btn btn-sm btn-primary"
                                                 (click)="generateLocalCoR()">GENERATE LOCAL COR
                                         </button>
-                                        <button *ngIf="configurations" class="btn btn-sm btn-primary"
+                                        <button class="btn btn-sm btn-primary"
                                                 (click)="markAsCompliant()">COMPLIANT
                                         </button>
-                                        <button *ngIf="configurations" class="btn btn-sm btn-primary"
+                                        <button  class="btn btn-sm btn-primary"
                                                 (click)="sendCertificateOfCompliance()">SEND COI
                                         </button>
                                     </div>
-                                    <div *ngIf="!consignment.ui.completed">
+                                    <div >
+                                        <button
+                                                class="btn btn-sm btn-warning"
+                                                (click)="blacklistUser()">BLACKLIST USER
+                                        </button>
                                         <button class="btn btn-sm btn-warning"
                                                 (click)="generateDemandNote()">GENERATE DEMAND NOTE
                                         </button>
@@ -718,6 +722,7 @@
                                                 class="btn btn-sm btn-warning"
                                                 (click)="supervisorTargetConsignment()">SUPERVISOR TARGET
                                         </button>
+
                                     </div>
                                 </div>
                                 <a class="btn btn-sm btn-warning"
@@ -734,15 +739,8 @@
                                     CERTIFICATE OF
                                     ROADWORTHINESS
                                 </button>
-                                <button *ngIf="!isVehicle() &&  consignment.ui.cocRequest && consignment.cd_details.localCocOrCorStatus==1"
-                                        class="btn btn-sm btn-primary" (click)="viewCoR()">CERTIFICATE OF COMPLIANCE
-                                </button>
-                                <button *ngIf="!isVehicle() &&  consignment.ui.corRequest && consignment.cd_details.localCocOrCorStatus==1"
-                                        class="btn btn-sm btn-primary" (click)="viewCoR()">CERTIFICATE OF COMPLIANCE
-                                </button>
-                                <button *ngIf="isVehicle() &&consignment.cd_details.localCocOrCorStatus==1"
-                                        class="btn btn-sm btn-primary" (click)="viewCoR()">CERTIFICATE OF
-                                    ROADWORTHINESS
+                                <button
+                                        class="btn btn-sm btn-primary" (click)="viewCoC()">CERTIFICATE OF COMPLIANCE
                                 </button>
                                 <button class="btn btn-sm btn-primary" (click)="viewIdfDocument()">IDF DOCUMENT
                                 </button>
