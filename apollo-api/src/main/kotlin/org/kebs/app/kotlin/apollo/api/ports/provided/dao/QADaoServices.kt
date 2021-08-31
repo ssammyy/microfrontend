@@ -4763,19 +4763,31 @@ class QADaoServices(
 
 //            when (oldPermit.permitType) {
 //                applicationMapProperties.mapQAPermitTypeIdSmark -> {
-            val sta10 = findSTA10WithPermitRefNumberBYPPermitID(
+
+            val oldSta10 = findSTA10WithPermitRefNumberANdPermitID(
                 permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
-                permit.id ?: throw Exception("INVALID PERMIT REF NUMBER")
+                permit.id ?: throw Exception("INVALID PERMIT ID")
             )
             var newSta10 = QaSta10Entity()
-            newSta10 = commonDaoServices.updateDetails(sta10, newSta10) as QaSta10Entity
-            with(newSta10) {
-                id = null
-                permitRefNumber = fmarkPermit.permitRefNumber
-                permitId = fmarkPermit.id
-            }
-
+            newSta10 = commonDaoServices.updateDetails(oldSta10, newSta10) as QaSta10Entity
+            newSta10.id = null
             sta10NewSave(fmarkPermit, newSta10, user, s)
+
+            regenerateSameDetailsForClonedSTA10(newSta10, oldSta10, permit, fmarkPermit)
+
+//            val sta10 = findSTA10WithPermitRefNumberBYPPermitID(
+//                permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+//                permit.id ?: throw Exception("INVALID PERMIT REF NUMBER")
+//            )
+//            var newSta10 = QaSta10Entity()
+//            newSta10 = commonDaoServices.updateDetails(sta10, newSta10) as QaSta10Entity
+//            with(newSta10) {
+//                id = null
+//                permitRefNumber = fmarkPermit.permitRefNumber
+//                permitId = fmarkPermit.id
+//            }
+//
+//            sta10NewSave(fmarkPermit, newSta10, user, s)
 //                }
 //                applicationMapProperties.mapQAPermitTypeIDDmark -> {
 //                    val sta3 = findSTA3WithPermitRefNumber(oldPermit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"))
