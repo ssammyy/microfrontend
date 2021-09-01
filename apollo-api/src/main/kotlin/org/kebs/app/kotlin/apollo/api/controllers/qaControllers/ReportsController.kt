@@ -30,11 +30,23 @@ class ReportsController(
     final val dMarkImageResource = resourceLoader.getResource(applicationMapProperties.mapDmarkImagePath)
     val dMarkImageFile = dMarkImageResource.file.toString()
 
+    final val dMarkImageBackGroundResource =
+        resourceLoader.getResource(applicationMapProperties.mapDmarkBackgroundImagePath)
+    val dMarkImageBackGroundFile = dMarkImageBackGroundResource.file.toString()
+
     final val sMarkImageResource = resourceLoader.getResource(applicationMapProperties.mapSmarkImagePath)
     val sMarkImageFile = sMarkImageResource.file.toString()
 
+    final val sMarkImageBackGroundResource =
+        resourceLoader.getResource(applicationMapProperties.mapSmarkBackgroundImagePath)
+    val sMarkImageBackGroundFile = sMarkImageBackGroundResource.file.toString()
+
     final val fMarkImageResource = resourceLoader.getResource(applicationMapProperties.mapFmarkImagePath)
     val fMarkImageFile = fMarkImageResource.file.toString()
+
+    final val fMarkImageBackGroundResource =
+        resourceLoader.getResource(applicationMapProperties.mapFmarkBackgroundImagePath)
+    val fMarkImageBackGroundFile = fMarkImageBackGroundResource.file.toString()
 
     @GetMapping("view/remarks/{id}", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun userRemarks(
@@ -210,16 +222,19 @@ class ReportsController(
         when (foundPermitDetails.permitTypeID) {
             applicationMapProperties.mapQAPermitTypeIDDmark -> {
                 map["DmarkLogo"] = dMarkImageFile
+                map["backGroundImage"] = dMarkImageBackGroundFile
                 filePath = applicationMapProperties.mapReportDmarkPermitReportPath
 
             }
             applicationMapProperties.mapQAPermitTypeIdSmark -> {
                 map["SmarkLogo"] = sMarkImageFile
+                map["backGroundImage"] = sMarkImageBackGroundFile
                 filePath = applicationMapProperties.mapReportSmarkPermitReportPath
 
             }
             applicationMapProperties.mapQAPermitTypeIdFmark -> {
                 map["FmarkLogo"] = fMarkImageFile
+                map["backGroundImage"] = fMarkImageBackGroundFile
                 filePath = applicationMapProperties.mapReportFmarkPermitReportPath
 
             }

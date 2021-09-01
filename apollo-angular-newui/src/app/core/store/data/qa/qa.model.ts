@@ -180,6 +180,7 @@ export class PermitEntityDetails {
     processStep: number;
     processStatusID: number;
     fmarkGeneratedID: number;
+    oldPermitStatus: number;
 }
 
 

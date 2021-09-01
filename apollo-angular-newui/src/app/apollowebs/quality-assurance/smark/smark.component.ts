@@ -687,7 +687,7 @@ export class SmarkComponent implements OnInit {
             (data: AllPermitDetailsDto) => {
                 this.allPermitDetails = data;
                 this.SpinnerService.hide();
-                this.reloadCurrentRoute();
+                // this.reloadCurrentRoute();
                 console.log(AllPermitDetailsDto);
                 if (this.allPermitDetails.permitDetails.permitTypeID === this.FMarkTypeID) {
                     swal.fire({
@@ -709,7 +709,7 @@ export class SmarkComponent implements OnInit {
                     });
                 }
 
-                // this.router.navigate(['/permitdetails'], {fragment: String(this.AllPermitDetailsDto.permitDetails.id)});
+                this.router.navigate(['/smarkpermitdetails'], {fragment: String(this.allPermitDetails.permitDetails.id)});
             },
         );
     }

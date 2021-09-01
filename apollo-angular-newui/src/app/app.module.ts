@@ -128,6 +128,10 @@ import {ReviewApplicationsComponent} from './apollowebs/standards-development/st
 import {StandardTaskComponent} from './apollowebs/standards-development/standard-request/standard-task/standard-task.component';
 //import {ModalModule} from "ngb-modal";
 import {ModalModule} from "ngb-modal";
+import {SmarkAllAwardedApplicationsComponent} from './apollowebs/quality-assurance/smark-all-awarded-applications/smark-all-awarded-applications.component';
+import {DmarkAllAwardedApplicationsComponent} from './apollowebs/quality-assurance/dmark-all-awarded-applications/dmark-all-awarded-applications.component';
+import {FmarkAllAwardedApplicationsComponent} from './apollowebs/quality-assurance/fmark-all-awarded-applications/fmark-all-awarded-applications.component';
+import {QaTaskDetailsComponent} from './apollowebs/quality-assurance/qa-task-details/qa-task-details.component';
 
 
 // import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -258,7 +262,11 @@ import {ModalModule} from "ngb-modal";
         StandardRequestComponent,
         RequestStandardFormComponent,
         ReviewApplicationsComponent,
-        StandardTaskComponent
+        StandardTaskComponent,
+        SmarkAllAwardedApplicationsComponent,
+        DmarkAllAwardedApplicationsComponent,
+        FmarkAllAwardedApplicationsComponent,
+        QaTaskDetailsComponent
 
     ]
 

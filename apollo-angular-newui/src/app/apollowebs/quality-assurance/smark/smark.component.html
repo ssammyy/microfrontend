@@ -1628,7 +1628,8 @@ enctype="multipart/form-data" method="post">
         </div>
 
 
-        <button *ngIf="allPermitDetails?.permitDetails?.permitAwardStatus == true" mat-raised-button=""
+        <button *ngIf="allPermitDetails?.permitDetails?.permitAwardStatus == true and allPermitDetails?.permitDetails?.oldPermitStatus == false"
+                mat-raised-button=""
                 (click)="submitRenewalApplication()" class="btn btn-kebs mat-raised-button mat-button-base"><span
                 class="mat-button-wrapper">RE-NEW</span>
             <div matripple="" class="mat-ripple mat-button-ripple"></div>

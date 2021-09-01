@@ -140,10 +140,11 @@ class ReportsDaoService(
         pdfExporter.setExporterInput(SimpleExporterInput(jasperPrint))
         pdfExporter.exporterOutput = SimpleOutputStreamExporterOutput(pdfReportStream)
         pdfExporter.exportReport()
-        response.contentType = "text/html"
+//        response.contentType = "text/html"
         response.contentType = "application/pdf"
         response.setHeader("Content-Length", pdfReportStream.size().toString())
         response.addHeader("Content-Dispostion", "inline; filename=file.pdf;")
+//        response.setHeader("Content-Disposition","inline, filename=myReport.html");
         response.outputStream.let { responseOutputStream ->
             responseOutputStream.write(pdfReportStream.toByteArray())
             responseOutputStream.close()

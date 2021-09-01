@@ -79,6 +79,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
 
     DMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DMARK_TYPE_ID;
     SMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.SMARK_TYPE_ID;
+    PendingPaymentStatusID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.PAYMENT_PENDING_STATUS;
     draftID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DRAFT_ID;
 
     public tableData1: TableData;
@@ -800,7 +801,8 @@ export class DmarkComponent implements OnInit, AfterViewInit {
                     },
                     icon: 'success'
                 });
-                this.reloadCurrentRoute();
+                // this.reloadCurrentRoute();
+                this.router.navigate(['/permitdetails'], {fragment: String(this.allPermitDetails.batchID)});
             },
         );
     }
