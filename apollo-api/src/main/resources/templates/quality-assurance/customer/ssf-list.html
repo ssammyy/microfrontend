@@ -45,7 +45,8 @@
                                         <td th:text="${ssfDetails?.bsNumber}"></td>
                                         <td th:text="${ssfDetails?.productDescription}"></td>
                                         <td th:text="${ssfDetails?.brandName}"></td>
-                                        <td style="color: #0082f3"
+                                        <td th:if="${ssfDetails?.resultsAnalysis == null}">N/A</td>
+                                        <td style="color: #0082f3" th:if="${ssfDetails?.resultsAnalysis != null}"
                                             th:text="${ssfDetails?.resultsAnalysis} ? 'COMPLIANT' : 'NOT-COMPLIANT'"></td>
                                         <!--                                        <td style="color: #0082f3" th:text="${ssfDetails?.sampleStatus} ? 'PAID' : 'NOT PAID'"></td>-->
                                         <!--                                        <td th:text="${invoice?.awardedPermitNumber}"></td>-->

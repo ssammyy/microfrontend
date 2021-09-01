@@ -314,7 +314,8 @@ data class STA3Dto(
     var levelDefectivesFound: String? = null,
     var levelClaimsComplaints: String? = null,
     var independentTests: String? = null,
-    var indicateStageManufacture: String? = null
+    var indicateStageManufacture: String? = null,
+    var sta3FilesList: List<FilesListDto>? = null
 )
 
 data class FilesListDto(
@@ -436,6 +437,7 @@ data class PermitDetailsDto(
     var resubmitApplicationStatus: Boolean? = null,
     var processStep: Int? = null,
     var processStatusID: Long? = null,
+    var fmarkGeneratedID: Long? = null,
 )
 
 data class AllPermitDetailsDto(

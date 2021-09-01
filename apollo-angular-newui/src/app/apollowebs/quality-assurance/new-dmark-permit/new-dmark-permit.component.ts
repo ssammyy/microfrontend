@@ -5,7 +5,7 @@ import {Store} from '@ngrx/store';
 import {ActivatedRoute, Router} from '@angular/router';
 import {QaService} from '../../../core/store/data/qa/qa.service';
 import {
-    AllPermitDetailsDto,
+    AllPermitDetailsDto, FilesListDto,
     PermitEntityDetails,
     PermitProcessStepDto,
     PlantDetailsDto,
@@ -35,9 +35,12 @@ export class NewDmarkPermitComponent implements OnInit {
     sta3FormB: FormGroup;
     sta3FormC: FormGroup;
     sta3FormD: FormGroup;
+    sta3FormG: FormGroup;
+
     public credential: LoginCredentials;
     returnUrl: string;
     sections: SectionDto[];
+    sta3FilesList: FilesListDto[] = [];
     plants: PlantDetailsDto[];
     sta1: STA1;
     sta3: STA3;
@@ -133,6 +136,8 @@ export class NewDmarkPermitComponent implements OnInit {
 
         });
 
+        this.sta3FormG = this.formBuilder.group({});
+
 
         this.qaService.loadSectionList().subscribe(
             (data: any) => {
@@ -175,6 +180,7 @@ export class NewDmarkPermitComponent implements OnInit {
                                 this.sta3FormB.patchValue(this.sta3);
                                 this.sta3FormC.patchValue(this.sta3);
                                 this.sta3FormD.patchValue(this.sta3);
+                                this.sta3FilesList = this.sta3.sta3FilesList;
                             },
                         );
                     },
@@ -485,4 +491,53 @@ export class NewDmarkPermitComponent implements OnInit {
             });
     }
 
+    onClickSaveSTA3G() {
+        if (this.sta3FilesList.length > 0) {
+            if (this.uploadedFiles) {
+                this.fileListSaveDetails();
+            } else {
+                this.step += 1;
+                swal.fire({
+                    title: 'STA10 Form Completed! Proceed to submit application.',
+                    buttonsStyling: false,
+                    customClass: {
+                        confirmButton: 'btn btn-success form-wizard-next-btn ',
+                    },
+                    icon: 'success'
+                });
+                this.router.navigate(['/permitdetails'], {fragment: String(this.sta1.id)});
+            }
+        } else if (this.uploadedFiles.length > 0) {
+            this.fileListSaveDetails();
+        }
+    }
+
+    fileListSaveDetails() {
+        const file = this.uploadedFiles;
+        const formData = new FormData();
+        for (let i = 0; i < file.length; i++) {
+            console.log(file[i]);
+            formData.append('docFile', file[i], file[i].name);
+        }
+
+        this.SpinnerService.show();
+        this.qaService.uploadSTA3File(this.sta1.id.toString(), formData).subscribe(
+            (data: any) => {
+                this.onClickUpdateStep(this.step);
+                this.SpinnerService.hide();
+                console.log(data);
+                this.step += 1;
+                swal.fire({
+                    title: 'STA3 Form Completed! Proceed to submit application.',
+                    buttonsStyling: false,
+                    customClass: {
+                        confirmButton: 'btn btn-success form-wizard-next-btn ',
+                    },
+                    icon: 'success'
+                });
+                // this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
+            },
+        );
+        this.router.navigate(['/permitdetails'], {fragment: String(this.sta1.id)});
+    }
 }

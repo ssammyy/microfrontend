@@ -40,6 +40,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     labResultsStatus!: string;
     labResultsRemarks!: string;
     approveRejectSSCForm!: FormGroup;
+    resubmitForm!: FormGroup;
     uploadForm!: FormGroup;
     uploadedFile: File;
     uploadedFiles: FileList;
@@ -70,6 +71,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     public dataTable: DataTable;
     public permitID!: string;
     allPermitDetails!: AllPermitDetailsDto;
+    resubmitDetail!: string;
     COMPLIANTSTATUS = 'COMPLIANT';
     NONCOMPLIANT = 'NON-COMPLIANT';
 
@@ -87,6 +89,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     public tableData5: TableData;
     public tableData12: TableData;
     blob: Blob;
+    labResults = false;
 
 
     constructor(
@@ -114,55 +117,55 @@ export class DmarkComponent implements OnInit, AfterViewInit {
         this.remarksDetails();
 
         this.sta1Form = this.formBuilder.group({
-            commodityDescription: ['', Validators.required],
-            applicantName: ['', Validators.required],
-            sectionId: ['', Validators.required],
-            permitForeignStatus: ['', Validators.required],
-            attachedPlant: ['', Validators.required],
-            tradeMark: ['', Validators.required]
+            commodityDescription: [{value: '', disabled: true}, Validators.required],
+            applicantName: [{value: '', disabled: true}, Validators.required],
+            sectionId: [{value: '', disabled: true}, Validators.required],
+            permitForeignStatus: [{value: '', disabled: true}, Validators.required],
+            attachedPlant: [{value: '', disabled: true}, Validators.required],
+            tradeMark: [{value: '', disabled: true}, Validators.required]
 
         });
         this.sta3FormA = this.formBuilder.group({
-            produceOrdersOrStock: ['', Validators.required],
-            issueWorkOrderOrEquivalent: ['', Validators.required],
-            identifyBatchAsSeparate: ['', Validators.required],
-            productsContainersCarryWorksOrder: ['', Validators.required],
-            isolatedCaseDoubtfulQuality: ['', Validators.required]
+            produceOrdersOrStock: [{value: '', disabled: true}, Validators.required],
+            issueWorkOrderOrEquivalent: [{value: '', disabled: true}, Validators.required],
+            identifyBatchAsSeparate: [{value: '', disabled: true}, Validators.required],
+            productsContainersCarryWorksOrder: [{value: '', disabled: true}, Validators.required],
+            isolatedCaseDoubtfulQuality: [{value: '', disabled: true}, Validators.required]
 
         });
 
         this.sta3FormB = this.formBuilder.group({
-            headQaQualificationsTraining: ['', Validators.required],
-            reportingTo: ['', Validators.required],
-            separateQcid: ['', Validators.required],
-            testsRelevantStandard: ['', Validators.required],
-            spoComingMaterials: ['', Validators.required],
-            spoProcessOperations: ['', Validators.required],
-            spoFinalProducts: ['', Validators.required],
-            monitoredQcs: ['', Validators.required],
-            qauditChecksCarried: ['', Validators.required],
-            informationQcso: ['', Validators.required],
+            headQaQualificationsTraining: [{value: '', disabled: true}, Validators.required],
+            reportingTo: [{value: '', disabled: true}, Validators.required],
+            separateQcid: [{value: '', disabled: true}, Validators.required],
+            testsRelevantStandard: [{value: '', disabled: true}, Validators.required],
+            spoComingMaterials: [{value: '', disabled: true}, Validators.required],
+            spoProcessOperations: [{value: '', disabled: true}, Validators.required],
+            spoFinalProducts: [{value: '', disabled: true}, Validators.required],
+            monitoredQcs: [{value: '', disabled: true}, Validators.required],
+            qauditChecksCarried: [{value: '', disabled: true}, Validators.required],
+            informationQcso: [{value: '', disabled: true}, Validators.required],
 
         });
 
         this.sta3FormC = this.formBuilder.group({
-            mainMaterialsPurchasedSpecification: ['', Validators.required],
-            adoptedReceiptMaterials: ['', Validators.required],
-            storageFacilitiesExist: ['', Validators.required],
+            mainMaterialsPurchasedSpecification: [{value: '', disabled: true}, Validators.required],
+            adoptedReceiptMaterials: [{value: '', disabled: true}, Validators.required],
+            storageFacilitiesExist: [{value: '', disabled: true}, Validators.required],
 
         });
 
         this.sta3FormD = this.formBuilder.group({
-            stepsManufacture: ['', Validators.required],
-            maintenanceSystem: ['', Validators.required],
-            qcsSupplement: ['', Validators.required],
-            qmInstructions: ['', Validators.required],
-            testEquipmentUsed: ['', Validators.required],
-            indicateExternalArrangement: ['', Validators.required],
-            levelDefectivesFound: ['', Validators.required],
-            levelClaimsComplaints: ['', Validators.required],
-            independentTests: ['', Validators.required],
-            indicateStageManufacture: ['', Validators.required],
+            stepsManufacture: [{value: '', disabled: true}, Validators.required],
+            maintenanceSystem: [{value: '', disabled: true}, Validators.required],
+            qcsSupplement: [{value: '', disabled: true}, Validators.required],
+            qmInstructions: [{value: '', disabled: true}, Validators.required],
+            testEquipmentUsed: [{value: '', disabled: true}, Validators.required],
+            indicateExternalArrangement: [{value: '', disabled: true}, Validators.required],
+            levelDefectivesFound: [{value: '', disabled: true}, Validators.required],
+            levelClaimsComplaints: [{value: '', disabled: true}, Validators.required],
+            independentTests: [{value: '', disabled: true}, Validators.required],
+            indicateStageManufacture: [{value: '', disabled: true}, Validators.required],
 
         });
 
@@ -171,6 +174,14 @@ export class DmarkComponent implements OnInit, AfterViewInit {
             approvedRejectedScheme: ['', Validators.required],
             approvedRejectedSchemeRemarks: [''],
             // approvedRemarks: ['', Validators.required],
+        });
+
+        this.resubmitForm = this.formBuilder.group({
+            resubmitRemarks: ['', Validators.required],
+            resubmittedDetails: ['', Validators.required],
+            // resubmittedDetails: ['']
+            // resubmittedDetails: [this.resubmitDetail, Validators.required]
+            // approvedRemarks: [{value: '', disabled: true}, Validators.required],
         });
 
         this.uploadForm = this.formBuilder.group({
@@ -200,9 +211,13 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     remarksDetails() {
         const formattedArrayRemarks = [];
 
-        if (this.allPermitDetails?.remarksDetails?.hofQamCompleteness !== null) {
-            formattedArrayRemarks.push(['Completeness Remarks By HOD', '', 'hofQamCompletenessRemarks']);
+        // if (this.allPermitDetails?.remarksDetails?.hofQamCompleteness !== null) {
+        formattedArrayRemarks.push(['Completeness Remarks By HOD', '', 'hofQamCompletenessRemarks']);
+        if (this.allPermitDetails?.remarksDetails?.labResultsCompleteness.remarksStatus === true) {
+            this.labResults = true;
+            console.log(this.labResults);
         }
+        formattedArrayRemarks.push(['Lab Results Remarks By QAO', '', 'labResultsCompletenessRemarks']);
         // if (this.allPermitDetails.remarksDetails.pcmReviewApprovalRemarks !== null) {
         formattedArrayRemarks.push(['Review Remarks By PCM', '', 'reviewRemarksPCMRemarks']);
         // }
@@ -229,6 +244,11 @@ export class DmarkComponent implements OnInit, AfterViewInit {
 
     get formSta1Form(): any {
         return this.sta1Form.controls;
+    }
+
+    get formResubmitRemarks(): any {
+        this.resubmitForm.controls['resubmittedDetails'].setValue(this.resubmitDetail);
+        return this.resubmitForm.controls;
     }
 
     get formSta3FormA(): any {
@@ -333,23 +353,23 @@ export class DmarkComponent implements OnInit, AfterViewInit {
                     if (this.allPermitDetails.permitDetails.invoiceGenerated === true) {
                         const invoiceDetailsList = this.allPermitDetails.invoiceDetails.invoiceDetailsList;
                         let permitFee = 0;
+                        const formattedArrayInvoiceDetails = [];
+                        formattedArrayInvoiceDetails.push(['Invoice Ref No', this.allPermitDetails.invoiceDetails.invoiceRef]);
 
                         for (let h = 0; h < invoiceDetailsList.length; h++) {
                             if (invoiceDetailsList[h].permitStatus === true) {
                                 permitFee = invoiceDetailsList[h].itemAmount;
+                                formattedArrayInvoiceDetails.push(['DMARK Permit', `KSH ${permitFee}`]);
+                            } else {
+                                formattedArrayInvoiceDetails.push([invoiceDetailsList[h].itemDescName, `KSH ${invoiceDetailsList[h].itemAmount}`]);
                             }
                         }
+                        formattedArrayInvoiceDetails.push(['Sub Total Before Tax', `KSH ${this.allPermitDetails.invoiceDetails.subTotalBeforeTax}`]);
+                        formattedArrayInvoiceDetails.push(['Tax Amount', `KSH ${this.allPermitDetails.invoiceDetails.taxAmount}`]);
+                        formattedArrayInvoiceDetails.push(['Total Amount', `KSH ${this.allPermitDetails.invoiceDetails.totalAmount}`]);
                         this.tableData12 = {
                             headerRow: ['Item', 'Details/Fee'],
-                            dataRows: [
-                                ['Invoice Ref No', this.allPermitDetails.invoiceDetails.invoiceRef],
-                                ['DMARK Permit', `KSH ${permitFee}`],
-                                // ['Description', this.allPermitDetails.invoiceDetails.description],
-                                ['Sub Total Before Tax', `KSH ${this.allPermitDetails.invoiceDetails.subTotalBeforeTax}`],
-                                ['Tax Amount', `KSH ${this.allPermitDetails.invoiceDetails.taxAmount}`],
-                                ['Total Amount', `KSH ${this.allPermitDetails.invoiceDetails.totalAmount}`]
-
-                            ]
+                            dataRows: formattedArrayInvoiceDetails
                         };
                     }
                 },
@@ -360,9 +380,9 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     }
 
     openModalRemarks(divVal: string): void {
-        const arrHead = ['hofQamCompletenessRemarks', 'reviewRemarksPCMRemarks', 'recommendationRemarks', 'pscApprovalRejectionRemarks', 'pcmApprovalRejectionRemarks'];
+        const arrHead = ['hofQamCompletenessRemarks', 'labResultsCompletenessRemarks', 'reviewRemarksPCMRemarks', 'recommendationRemarks', 'pscApprovalRejectionRemarks', 'pcmApprovalRejectionRemarks'];
         // tslint:disable-next-line:max-line-length
-        const arrHeadSave = ['Completeness Remarks', 'PCM Review Remarks', 'Recommendation', 'PSC Remarks', 'PCM Approval/Rejection Remarks'];
+        const arrHeadSave = ['Completeness Remarks', 'Lab Result Compliance Remarks', 'PCM Review Remarks', 'Recommendation', 'PSC Remarks', 'PCM Approval/Rejection Remarks'];
 
         for (let h = 0; h < arrHead.length; h++) {
             if (divVal === arrHead[h]) {
@@ -789,24 +809,43 @@ export class DmarkComponent implements OnInit, AfterViewInit {
         this.router.navigate(['/invoiceDetails'], {fragment: String(this.allPermitDetails.batchID)});
     }
 
-    viewLabRemarks(status: string, remarksValue: string) {
-        this.currDiv = 'viewLabResultsRemarks';
-        this.currDivLabel = 'LAB RESULTS DETAILS';
+    viewLabRemarks(status: boolean, remarksValue: string, viewDiv: string) {
+        const arrHead = ['viewLabResultsRemarks', 'viewLabComplianceRemarks'];
+        const arrHeadSave = ['LAB RESULTS DETAILS', 'Inspection Compliance Status'];
+
+        for (let h = 0; h < arrHead.length; h++) {
+            if (viewDiv === arrHead[h]) {
+                this.currDivLabel = arrHeadSave[h];
+            }
+        }
+        this.currDiv = viewDiv;
+
         switch (status) {
-            case 'true':
-                this.labResultsStatus = 'COMPLIANT';
+            case true:
+                this.labResultsStatus = this.COMPLIANTSTATUS;
                 break;
-            case 'false':
-                this.labResultsStatus = 'NOT-COMPLIANT';
+            case false:
+                this.labResultsStatus = this.NONCOMPLIANT;
                 break;
         }
 
         this.labResultsRemarks = remarksValue;
     }
 
-    openModalUpload(viewDiv: string) {
+
+    openModalUpload(viewDiv: string, resubmit: string) {
+        const arrHeadResubmit = ['resubmitLabNonComplianceResults', 'schemeModal', 'resubmitDetails'];
+        const arrHead = ['uploadModal', 'schemeModal', 'resubmitDetails'];
+        const arrHeadSave = ['Upload PDF Documents Only', 'Agree/Consent to SSC', 'Resubmit Details With Remarks'];
+
+        for (let h = 0; h < arrHead.length; h++) {
+            if (viewDiv === arrHead[h]) {
+                this.currDivLabel = arrHeadSave[h];
+            }
+        }
         this.currDiv = viewDiv;
-        this.currDivLabel = 'Upload PDF Documents Only';
+        this.resubmitDetail = resubmit;
+        console.log(this.resubmitDetail);
     }
 
     openModalViewUpload(viewDiv: string) {
@@ -849,5 +888,25 @@ export class DmarkComponent implements OnInit, AfterViewInit {
 
     goToNewApplication() {
         this.router.navigate(['/dmark/newDmarkPermit']);
+    }
+
+    reSubmitWithRemarks(): void {
+        console.log(this.resubmitForm.value);
+        this.SpinnerService.show();
+        // tslint:disable-next-line:max-line-length
+        this.qaService.resubmitApplicationBack(String(this.allPermitDetails.permitDetails.id), this.resubmitForm.value).subscribe(
+            (data: PermitEntityDetails) => {
+                this.allPermitDetails.permitDetails = data;
+                this.SpinnerService.hide();
+                swal.fire({
+                    title: 'PERMIT APPLICATION RE-SUBMITTED SUCCESSFULLY!',
+                    buttonsStyling: false,
+                    customClass: {
+                        confirmButton: 'btn btn-success form-wizard-next-btn ',
+                    },
+                    icon: 'success'
+                });
+            },
+        );
     }
 }

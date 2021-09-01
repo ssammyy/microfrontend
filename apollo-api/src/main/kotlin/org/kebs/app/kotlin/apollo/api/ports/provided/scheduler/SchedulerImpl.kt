@@ -10,8 +10,10 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDa
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
+import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.SchedulerEntity
+import org.kebs.app.kotlin.apollo.store.repo.ICompanyProfileRepository
 import org.kebs.app.kotlin.apollo.store.repo.ISchedulerRepository
 import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IPermitApplicationsRepository
@@ -33,6 +35,7 @@ class SchedulerImpl(
     private val notifications: Notifications,
     private val bpmnCommonFunctions: BpmnCommonFunctions,
     private val userRepo: IUserRepository,
+    private val companyRepo: ICompanyProfileRepository,
     private val applicationMapProperties: ApplicationMapProperties,
 //    private val qualityAssuranceBpmn: QualityAssuranceBpmn,
     private val sampleSubmissionRepo: IQaSampleSubmissionRepository,
@@ -237,6 +240,17 @@ class SchedulerImpl(
         return false
     }
 
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updateFirmTypeStatus() {
+        companyRepo.findAll().forEach { cp ->
+            val firmType = qaDaoServices.manufactureType(
+                cp.yearlyTurnover ?: throw NullValueNotAllowedException("Invalid Record")
+            ).id
+            cp.firmCategory = firmType
+            companyRepo.save(cp)
+        }
+
+    }
 
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)

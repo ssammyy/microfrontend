@@ -640,6 +640,7 @@ class JwtResponse(
     var tokenType = "Bearer"
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss.SSS")
+//var expiry: Timestamp? = null
     var expiry: LocalDateTime? = null
     var companyID: Long? = null
     var branchID: Long? = null

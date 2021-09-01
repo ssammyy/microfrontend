@@ -99,7 +99,7 @@ class QaInvoiceCalculationDaoServices(
         }
 
 
-        invoiceMaster = calculateTotalInvoiceAmountToPay(invoiceMaster, user)
+        invoiceMaster = calculateTotalInvoiceAmountToPay(invoiceMaster, permitType, user)
 
 
         KotlinLogging.logger { }.info { "invoice Master total Amount = ${invoiceMaster.totalAmount}" }
@@ -107,8 +107,10 @@ class QaInvoiceCalculationDaoServices(
         return invoiceMaster
     }
 
+
     fun calculateTotalInvoiceAmountToPay(
         invoiceMaster: QaInvoiceMasterDetailsEntity,
+        permitType: PermitTypesEntity,
         user: UsersEntity
     ): QaInvoiceMasterDetailsEntity {
         var totalAmountPayable: BigDecimal = BigDecimal.ZERO
@@ -121,7 +123,7 @@ class QaInvoiceCalculationDaoServices(
                 }
             } ?: throw ExpectedDataNotFound("NO QA INVOICE DETAILS FOUND")
 
-        val totalAmountTaxPayable = totalAmountPayable.multiply(applicationMapProperties.mapKebsTaxRate)
+        val totalAmountTaxPayable = totalAmountPayable.multiply(permitType.taxRate)
 
         with(invoiceMaster) {
             paymentStatus = 0
@@ -332,24 +334,26 @@ class QaInvoiceCalculationDaoServices(
     fun calculatePaymentOtherDetails(
         permit: PermitApplicationsEntity,
         user: UsersEntity,
-        invoiceDetailsOthers: QaInvoiceDetailsEntity,
-        invoiceMaster: QaInvoiceMasterDetailsEntity
-    ): QaInvoiceDetailsEntity {
+        invoiceDetailsOthers: QaInvoiceDetailsEntity
+    ): Pair<QaInvoiceDetailsEntity, QaInvoiceMasterDetailsEntity> {
 
-        var invoiceDetails = invoiceDetailsOthers.apply {
-            invoiceMasterId = invoiceMaster.id
-            generatedDate = Timestamp.from(Instant.now())
-            umo = "PER"
-            itemQuantity = BigDecimal.ZERO
-            status = 1
-            createdOn = Timestamp.from(Instant.now())
-            createdBy = commonDaoServices.concatenateName(user)
-        }
+        qaInvoiceMasterDetailsRepo.findByPermitId(permit.id ?: throw Exception("PERMIT ID MISSING"))
+            ?.let { invoiceMaster ->
+                var invoiceDetails = invoiceDetailsOthers.apply {
+                    invoiceMasterId = invoiceMaster.id
+                    generatedDate = Timestamp.from(Instant.now())
+                    umo = "PER"
+                    itemQuantity = BigDecimal.ZERO
+                    status = 1
+                    createdOn = Timestamp.from(Instant.now())
+                    createdBy = commonDaoServices.concatenateName(user)
+                }
+                invoiceDetails = qaInvoiceDetailsRepo.save(invoiceDetails)
 
-        invoiceDetails = qaInvoiceDetailsRepo.save(invoiceDetails)
+                return Pair(invoiceDetails, invoiceMaster)
+            } ?: throw ExpectedDataNotFound("NO INVOICE MASTER FOUND WITH PERMIT REF NUMBER ${permit.permitRefNumber}")
 
 
-        return invoiceDetails
     }
 
 
@@ -484,57 +488,26 @@ class QaInvoiceCalculationDaoServices(
             "TOKEN${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
         val maxProductNumber = selectedRate.countBeforeFree ?: throw Exception("MISSING COUNT BEFORE FEE VALUE")
 
-        when {
-            productNumber <= maxProductNumber -> {
-                when {
-                    plantDetail.tokenGiven == null && plantDetail.invoiceSharedId == null -> {
-                        generateInvoice4SmallAndMedium(
-                            invoiceMaster,
-                            tokenGenerated,
-                            selectedRate,
-                            user,
-                            plantDetail,
-                            map,
-                            permit
-                        )
-                    }
-                    plantDetail.tokenGiven != null && plantDetail.invoiceSharedId != null -> {
-                        val invoiceDetailsPermitFee = QaInvoiceDetailsEntity().apply {
-                            invoiceMasterId = invoiceMaster.id
-                            umo = "PER"
-                            generatedDate = Timestamp.from(Instant.now())
-                            tokenValue = plantDetail.tokenGiven
-                            itemDescName = selectedRate.invoiceDesc
-                            itemQuantity = BigDecimal.valueOf(1)
-                            itemAmount = selectedRate.productFee?.multiply(selectedRate.validity?.toBigDecimal())
-                            permitStatus = 1
-                            status = 1
-                            createdOn = Timestamp.from(Instant.now())
-                            createdBy = commonDaoServices.concatenateName(user)
-                        }
-
-                        qaInvoiceDetailsRepo.save(invoiceDetailsPermitFee)
-
-                        permit.apply {
-                            permitFeeToken = plantDetail.tokenGiven
-                        }
-                        qaDaoServices.permitUpdateDetails(permit, map, user)
-
-                    }
-                    else -> {
-                        throw ExpectedDataNotFound("INVALID INVOICE CALCULATION DETAILS FOR MEDIUM/SMALL FIRM")
-                    }
-                }
-            }
-            productNumber > maxProductNumber -> {
+        if (productNumber <= maxProductNumber) {
+            if (plantDetail.tokenGiven == null && plantDetail.invoiceSharedId == null) {
+                generateInvoice4SmallAndMedium(
+                    invoiceMaster,
+                    tokenGenerated,
+                    selectedRate,
+                    user,
+                    plantDetail,
+                    map,
+                    permit
+                )
+            } else if (plantDetail.tokenGiven != null && plantDetail.invoiceSharedId != null) {
                 val invoiceDetailsPermitFee = QaInvoiceDetailsEntity().apply {
                     invoiceMasterId = invoiceMaster.id
                     umo = "PER"
                     generatedDate = Timestamp.from(Instant.now())
                     tokenValue = plantDetail.tokenGiven
-                    itemDescName = "EXTRA PRODUCT"
+                    itemDescName = selectedRate.invoiceDesc
                     itemQuantity = BigDecimal.valueOf(1)
-                    itemAmount = selectedRate.extraProductFee?.multiply(selectedRate.validity?.toBigDecimal())
+                    itemAmount = selectedRate.productFee?.multiply(selectedRate.validity?.toBigDecimal())
                     permitStatus = 1
                     status = 1
                     createdOn = Timestamp.from(Instant.now())
@@ -547,7 +520,31 @@ class QaInvoiceCalculationDaoServices(
                     permitFeeToken = plantDetail.tokenGiven
                 }
                 qaDaoServices.permitUpdateDetails(permit, map, user)
+
+            } else {
+                throw ExpectedDataNotFound("INVALID INVOICE CALCULATION DETAILS FOR MEDIUM/SMALL FIRM")
             }
+        } else if (productNumber > maxProductNumber) {
+            val invoiceDetailsPermitFee = QaInvoiceDetailsEntity().apply {
+                invoiceMasterId = invoiceMaster.id
+                umo = "PER"
+                generatedDate = Timestamp.from(Instant.now())
+                tokenValue = plantDetail.tokenGiven
+                itemDescName = "EXTRA PRODUCT"
+                itemQuantity = BigDecimal.valueOf(1)
+                itemAmount = selectedRate.extraProductFee?.multiply(selectedRate.validity?.toBigDecimal())
+                permitStatus = 1
+                status = 1
+                createdOn = Timestamp.from(Instant.now())
+                createdBy = commonDaoServices.concatenateName(user)
+            }
+
+            qaInvoiceDetailsRepo.save(invoiceDetailsPermitFee)
+
+            permit.apply {
+                permitFeeToken = plantDetail.tokenGiven
+            }
+            qaDaoServices.permitUpdateDetails(permit, map, user)
         }
 
 

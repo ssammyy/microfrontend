@@ -133,8 +133,11 @@ class ApiAuthenticationHandler(
                         roles
                     ).apply {
                         /**
-                         * TODO: Set expiry padding configuration
+                         * TODO: Set expiry padding configuration  check this time stamp is false
                          */
+//                        val localDate = LocalDateTime.now().plusMinutes(authenticationProperties.jwtExpirationMs).minusSeconds(20L)
+//                        val timestamp: Timestamp = Timestamp.valueOf(localDate)
+//                        expiry = timestamp
                         expiry =
                             LocalDateTime.now().plusMinutes(authenticationProperties.jwtExpirationMs).minusSeconds(20L)
                     }
