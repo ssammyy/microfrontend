@@ -776,11 +776,13 @@
 
         <div class="form-group">
             <label style="color: white; font-size: 14px" class="input-placeholder" for="username"><strong>Enter
-                OTP</strong></label
+                OTP</strong>(Numbers only)</label
             ><input style="color: white;font-size: 20px;" class="form-control two-column-input"
                     formControlName="username" id="username" name="username"
                     placeholder="Please Enter The OTP Sent To Your Phone"
-                    required="required" type="text">
+                    required="required"
+                    oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');"
+                    type="text">
         </div>
 
 

@@ -772,7 +772,8 @@
                            aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                            class="form-control two-column-input" formControlName="registrationNumber"
                            id="compRegistrationNumber" name="registrationNumber"
-                           placeholder="Company registration number" style="width: 60%" type="text">
+                           placeholder="Company registration number" style="width: 60%;color: white;font-size: 14px;"
+                           type="text">
                     <div *ngIf="submitted && formStepZeroForm.registrationNumber.errors" class="invalid-feedback">
                         <div *ngIf="formStepZeroForm.registrationNumber.errors.required">Company registration number is
                             required
@@ -786,7 +787,8 @@
                            aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                            class="form-control two-column-input" formControlName="directorIdNumber"
                            id="compDirectorIdNumber" name="directorIdNumber"
-                           placeholder="The id number of one director" style="width: 60%" type="text">
+                           placeholder="The id number of one director" style="width: 60%;color: white;font-size: 14px;"
+                           type="text">
                     <div *ngIf="submitted && formStepZeroForm.directorIdNumber.errors" class="invalid-feedback">
                         <div *ngIf="formStepZeroForm.directorIdNumber.errors.required">The id number of one director is
                             required
@@ -822,7 +824,8 @@
 
                             <div class="form-group">
                                 <label class="input-placeholder"><b>Company Registration Number</b></label>
-                                <input [ngClass]="{ 'is-invalid': submitted && formStepOneForm.registrationNumber.errors }"
+                                <input style="color: white;font-size: 14px;"
+                                       [ngClass]="{ 'is-invalid': submitted && formStepOneForm.registrationNumber.errors }"
                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                                        class="form-control two-column-input" formControlName="registrationNumber"
                                        id="registrationNumber"
@@ -842,7 +845,8 @@
 
                             <div class="form-group">
                                 <label class="input-placeholder"><b>Director's Id Number</b></label>
-                                <input [ngClass]="{ 'is-invalid': submitted && formStepOneForm.directorIdNumber.errors }"
+                                <input style="color: white;font-size: 14px;"
+                                       [ngClass]="{ 'is-invalid': submitted && formStepOneForm.directorIdNumber.errors }"
                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                                        class="form-control two-column-input" formControlName="directorIdNumber"
                                        id="directorIdNumber"
@@ -865,7 +869,8 @@
                         <div class="col">
                             <div class="form-group">
                                 <label class="input-placeholder"><b>Company Name</b></label>
-                                <input [ngClass]="{ 'is-invalid': submitted && formStepOneForm.name.errors }"
+                                <input style="color: white;font-size: 14px;"
+                                       [ngClass]="{ 'is-invalid': submitted && formStepOneForm.name.errors }"
                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                                        class="form-control two-column-input" formControlName="name" id="name"
                                        name="name"
@@ -879,7 +884,8 @@
                         <div class="col">
                             <div class="form-group">
                                 <label class="input-placeholder"><b>KRA Pin</b></label>
-                                <input [ngClass]="{ 'is-invalid': submitted && formStepOneForm.kraPin.errors }"
+                                <input style="color: white;font-size: 14px;"
+                                       [ngClass]="{ 'is-invalid': submitted && formStepOneForm.kraPin.errors }"
                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                                        class="form-control two-column-input" formControlName="kraPin" id="kraPin"
                                        name="kraPin"
@@ -898,11 +904,14 @@
 
                             <div class="form-group">
                                 <label class="input-placeholder"><b>Yearly Turnover</b></label>
-                                <input [ngClass]="{ 'is-invalid': submitted && formStepOneForm.yearlyTurnover.errors }"
+                                <input style="color: white;font-size: 14px;"
+                                       [ngClass]="{ 'is-invalid': submitted && formStepOneForm.yearlyTurnover.errors }"
                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                                        class="form-control two-column-input" formControlName="yearlyTurnover"
                                        id="yearlyTurnover"
-                                       name="yearlyTurnover" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" placeholder="The yearly Turnover"
+                                       name="yearlyTurnover"
+                                       oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');"
+                                       placeholder="The yearly Turnover"
                                        required="required"
                                        type="number"/>
 
@@ -1008,7 +1017,8 @@
                         <div class="col">
                             <div class="form-group" style="margin-top: 3%">
                                 <label class="input-placeholder"><b>Postal Address</b></label>
-                                <input [ngClass]="{ 'is-invalid': submitted && formStepTwoForm.postalAddress.errors }"
+                                <input style="color: white;font-size: 14px;"
+                                       [ngClass]="{ 'is-invalid': submitted && formStepTwoForm.postalAddress.errors }"
                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                                        class="form-control two-column-input" formControlName="postalAddress"
                                        id="postalAddress"
@@ -1025,7 +1035,8 @@
                         <div class="col">
                             <div class="form-group" style="margin-top: 3%">
                                 <label class="input-placeholder"><b>Physical Address</b></label>
-                                <input [ngClass]="{ 'is-invalid': submitted && formStepTwoForm.physicalAddress.errors }"
+                                <input style="color: white;font-size: 14px;"
+                                       [ngClass]="{ 'is-invalid': submitted && formStepTwoForm.physicalAddress.errors }"
                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                                        class="form-control two-column-input" formControlName="physicalAddress"
                                        id="physicalAddress"
@@ -1047,7 +1058,8 @@
                         <div class="col">
                             <div class="form-group" style="margin-top: 3%">
                                 <label class="input-placeholder"><b>Plot Number</b></label>
-                                <input [ngClass]="{ 'is-invalid': submitted && formStepTwoForm.plotNumber.errors }"
+                                <input style="color: white;font-size: 14px;"
+                                       [ngClass]="{ 'is-invalid': submitted && formStepTwoForm.plotNumber.errors }"
                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                                        class="form-control two-column-input" formControlName="plotNumber"
                                        id="plotNumber"
@@ -1062,7 +1074,8 @@
                         <div class="col">
                             <div class="form-group" style="margin-top: 3%">
                                 <label class="input-placeholder"><b>Company Email</b></label>
-                                <input [ngClass]="{ 'is-invalid': submitted && formStepTwoForm.companyEmail.errors }"
+                                <input style="color: white;font-size: 14px;"
+                                       [ngClass]="{ 'is-invalid': submitted && formStepTwoForm.companyEmail.errors }"
                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                                        class="form-control two-column-input" formControlName="companyEmail"
                                        id="companyEmail"
@@ -1083,7 +1096,8 @@
                         <div class="col">
                             <div class="form-group" style="margin-top: 3%">
                                 <label class="input-placeholder"><b>Company Phone</b></label>
-                                <input [ngClass]="{ 'is-invalid': submitted && formStepTwoForm.companyTelephone.errors }"
+                                <input style="color: white;font-size: 14px;"
+                                       [ngClass]="{ 'is-invalid': submitted && formStepTwoForm.companyTelephone.errors }"
                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                                        class="form-control two-column-input" formControlName="companyTelephone"
                                        id="companyTelephone"
@@ -1129,7 +1143,8 @@
                     <div class="col">
                         <div class="form-group" style="margin-top: 3%">
                             <label class="input-placeholder"><b>Building Name</b></label>
-                            <input [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.buildingName.errors }"
+                            <input style="color: white;font-size: 14px;"
+                                   [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.buildingName.errors }"
                                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                                    class="form-control two-column-input" formControlName="buildingName"
                                    id="buildingName"
@@ -1144,7 +1159,8 @@
 
                     <div class="col">
                         <label class="input-placeholder"><b>Street Name</b></label>
-                        <input [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.streetName.errors }"
+                        <input style="color: white;font-size: 14px;"
+                               [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.streetName.errors }"
                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                                class="form-control two-column-input" formControlName="streetName" id="streetName"
                                name="streetName" placeholder="The street name" required="required" type="text">
@@ -1253,7 +1269,8 @@
                             First Name
                         </label>
                         <br>
-                        <input [ngClass]="{ 'is-invalid': submitted && formStepFourForm.firstName.errors }"
+                        <input style="color: white;font-size: 14px;"
+                               [ngClass]="{ 'is-invalid': submitted && formStepFourForm.firstName.errors }"
                                class="form-control two-column-input" formControlName="firstName" id="firstName"
                                name="firstName"
                                placeholder="" required="required" type="text">
@@ -1266,7 +1283,8 @@
                             Last Name
                         </label>
                         <br>
-                        <input [ngClass]="{ 'is-invalid': submitted && formStepFourForm.lastName.errors }"
+                        <input style="color: white;font-size: 14px;"
+                               [ngClass]="{ 'is-invalid': submitted && formStepFourForm.lastName.errors }"
                                class="form-control two-column-input" formControlName="lastName" id="lastName"
                                name="lastName"
                                placeholder="" required="required" type="text">
@@ -1283,7 +1301,8 @@
                             User Name
                         </label>
                         <br>
-                        <input [ngClass]="{ 'is-invalid': submitted && formStepFourForm.userName.errors }"
+                        <input style="color: white;font-size: 14px;"
+                               [ngClass]="{ 'is-invalid': submitted && formStepFourForm.userName.errors }"
                                class="form-control two-column-input" formControlName="userName" id="userName"
                                name="userName"
                                placeholder="" required="required" type="text">
@@ -1296,7 +1315,8 @@
                             Email address
                         </label>
                         <br>
-                        <input [ngClass]="{ 'is-invalid': submitted && formStepFourForm.email.errors }"
+                        <input style="color: white;font-size: 14px;"
+                               [ngClass]="{ 'is-invalid': submitted && formStepFourForm.email.errors }"
                                class="form-control two-column-input" formControlName="email" id="email"
                                name="email"
                                placeholder="" required="required" type="email">
@@ -1312,7 +1332,8 @@
                             Password
                         </label>
                         <br>
-                        <input [ngClass]="{ 'is-invalid': submitted && formStepFourForm.credentials.errors }"
+                        <input style="color: white;font-size: 14px;"
+                               [ngClass]="{ 'is-invalid': submitted && formStepFourForm.credentials.errors }"
                                class="form-control two-column-input" formControlName="credentials" id="credentials"
                                name="credentials"
                                placeholder="enter password" required="required" type="password">
@@ -1325,7 +1346,8 @@
                             Confirm Password
                         </label>
                         <br>
-                        <input [ngClass]="{ 'is-invalid': submitted && formStepFourForm.confirmCredentials.errors }"
+                        <input style="color: white;font-size: 14px;"
+                               [ngClass]="{ 'is-invalid': submitted && formStepFourForm.confirmCredentials.errors }"
                                class="form-control two-column-input" formControlName="confirmCredentials"
                                id="confirmCredentials"
                                name="confirmCredentials"
@@ -1426,10 +1448,21 @@
                             Enter Your Phonenumber
                         </label>
                         <br>
-                        <input [ngClass]="{ 'is-invalid': submitted && formStepFiveForm.cellphone.errors }"
-                               class="form-control two-column-input" formControlName="cellphone" id="cellphone"
-                               name="cellphone"
-                               placeholder="e.g 254xxxxxx" required="required" type="tel">
+                        <table>
+                            <tr>
+                                <td>
+                                    <input   class="form-control" style="color: white;font-size: 14px; width: 35px;" value="+254" required="required" disabled>
+                                </td>
+                                <td>  <input style="color: white;font-size: 14px;"
+                                             [ngClass]="{ 'is-invalid': submitted && formStepFiveForm.cellphone.errors }"
+                                             class="form-control two-column-input" formControlName="cellphone" id="cellphone"
+                                             name="cellphone"
+                                             placeholder="xxxxxxxxx" required="required" type="tel">
+
+                                </td>
+                            </tr>
+                        </table>
+
                         <div *ngIf="submitted && formStepFiveForm.cellphone.errors" class="invalid-feedback">
                             <div *ngIf="formStepFiveForm.cellphone.errors.required">The cell phone is required</div>
                         </div>
@@ -1453,7 +1486,8 @@
                             OTP
                         </label>
                         <br>
-                        <input class="form-control two-column-input" formControlName="otp" id="otp"
+                        <input style="color: white;font-size: 14px;" class="form-control two-column-input"
+                               formControlName="otp" id="otp"
                                name="otp"
                                placeholder="The OTP" required="required" type="text">
                         <br>
