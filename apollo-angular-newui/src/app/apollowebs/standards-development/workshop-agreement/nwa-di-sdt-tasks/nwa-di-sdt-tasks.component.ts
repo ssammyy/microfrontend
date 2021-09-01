@@ -90,6 +90,24 @@ export class NwaDiSdtTasksComponent implements OnInit ,OnDestroy{
         }
     );
   }
+  public onDecisionReject(diSdtDecision: DiSdtDECISION): void{
+    this.SpinnerService.show();
+    this.stdNwaService.decisionOnDiSdtJustification(diSdtDecision).subscribe(
+        (response: NWADiSdtJustification) => {
+          this.SpinnerService.hide();
+          this.showToasterSuccess('Success', `Justification Rejected`);
+          console.log(response);
+          this.getDiSdtTasks();
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          this.showToasterError('Error', `Justification Was Not Approved`);
+          console.log(error.message);
+          this.getDiSdtTasks();
+          //alert(error.message);
+        }
+    );
+  }
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
   }

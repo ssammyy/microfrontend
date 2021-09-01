@@ -64,6 +64,7 @@ class NWAJustification : Serializable {
     @Basic
     var remarks: String? = null
 
+
     @Column(name="SUBMISSION_DATE")
     @Basic
     var submissionDate: Timestamp?=null

@@ -11,6 +11,7 @@ import { Subject} from "rxjs";
 import swal from "sweetalert2";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
+import {Router} from "@angular/router";
 
 declare const $: any;
 
@@ -30,6 +31,7 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
     public prepareDIJustificationFormGroup!: FormGroup;
     public preparePreliminaryDraftFormGroup!: FormGroup;
   constructor(
+      private router: Router,
       private formBuilder: FormBuilder,
       private stdNwaService: StdNwaService,
       private SpinnerService: NgxSpinnerService,
@@ -44,7 +46,8 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
           numberOfMeetings: ['', Validators.required],
           identifiedNeed: ['', Validators.required],
           dateOfApproval: ['', Validators.required],
-          taskId: []
+          taskId: [],
+          kID: ['']
 
       });
       this.preparePreliminaryDraftFormGroup = this.formBuilder.group({
@@ -205,7 +208,7 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
                         },
                         icon: 'success'
                     });
-
+                    this.router.navigate(['/nwaKnwSecTasks']);
                 },
             );
         }

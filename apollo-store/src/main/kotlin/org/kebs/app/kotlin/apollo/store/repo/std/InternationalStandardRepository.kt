@@ -106,6 +106,15 @@ interface NWAWorkShopDraftUploadsRepository : JpaRepository<NWAWorkShopDraftUplo
 }
 interface NWAStandardUploadsRepository : JpaRepository<NWAStandardUploads, Long> {
 }
+interface DepartmentListRepository : JpaRepository<Department,Long>{
+    @Query("SELECT name FROM SD_DEPARTMENT WHERE id=:id", nativeQuery = true)
+    fun findNameById(@Param("id") id: Long?): String
+}
+
+interface TechnicalComListRepository : JpaRepository<TechnicalCommittee,Long>{
+    @Query("SELECT TC_TITLE FROM SD_TECHNICAL_COMMITTEE  WHERE id=:id", nativeQuery = true)
+    fun findNameById(@Param("id") id: Long?): String
+}
 //interface UserNameRepository : JpaRepository<UsersEntity,Long>{
 //    fun findByUserId(assignedTo: Long?) : MutableList<UsersEntity>
 //    @Query("SELECT u.firstName,u.lastName FROM UsersEntity u WHERE u.id =:id")
