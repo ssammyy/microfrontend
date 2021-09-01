@@ -122,7 +122,7 @@ export class CompanyComponent implements OnInit {
 
     updateSelectedTown() {
         this.selectedTown = this.stepThreeForm?.get('town')?.value;
-        // console.log(`town set to ${this.selectedTown}`)
+        console.log(`town set to ${this.selectedTown}`);
     }
 
     updateSelectedBusinessLine() {

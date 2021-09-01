@@ -48,7 +48,8 @@ class ApiAuthenticationHandler(
         return reqBody.username?.let {
             usersRepo.findByUserName(it)
                 ?.let { user ->
-                    val otp = generateTransactionReference(8).toUpperCase()
+//                    val otp = generateTransactionReference(8).toUpperCase()
+                    val otp = commonDaoServices.randomNumber(6)
                     val token = generateVerificationToken(otp, user)
                     KotlinLogging.logger { }.info { "Token: ${token.token}" }
 
