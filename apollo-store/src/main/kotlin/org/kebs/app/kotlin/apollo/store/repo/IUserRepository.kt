@@ -230,6 +230,7 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     fun findByManufactureStatus(status: Int): List<CompanyProfileEntity>?
     fun findAllByOrderByIdDesc(pageable: Pageable): List<CompanyProfileEntity>?
     fun findAllByUserId(userId: Long): List<CompanyProfileEntity>
+    fun findAllByFirmCategoryAndStatus(firmCategory: Long, status: Int): List<CompanyProfileEntity>?
 
 }
 
