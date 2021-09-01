@@ -1526,6 +1526,12 @@ class QualityAssuranceHandler(
 //            if (permit.fmarkGenerateStatus == 1) {
 //                qaDaoServices.permitGenerateFmark(map, loggedInUser, permit).first
 //            }
+            //Update Permit Details
+            with(permit) {
+                applicationStatus = map.activeStatus
+            }
+
+            permit = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).second
 
             //Calculate Invoice Details
             val invoiceCreated = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, null).second
@@ -1533,7 +1539,6 @@ class QualityAssuranceHandler(
             //Update Permit Details
             with(permit) {
                 sendApplication = map.activeStatus
-                applicationStatus = map.activeStatus
                 endOfProductionStatus = map.inactiveStatus
                 invoiceGenerated = map.activeStatus
                 permitStatus = applicationMapProperties.mapQaStatusPPayment

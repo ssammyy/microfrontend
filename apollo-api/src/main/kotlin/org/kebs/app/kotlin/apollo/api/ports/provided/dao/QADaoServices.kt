@@ -4585,14 +4585,15 @@ class QADaoServices(
                 plantDetail.id
             )
 
-            KotlinLogging.logger { }.info { "PRODUCT SIZE = ${productsManufacture.size.plus(1)}" }
+            KotlinLogging.logger { }.info { "PRODUCT SIZE BEFORE ADDING ONE = ${productsManufacture.size}" }
+//            KotlinLogging.logger { }.info { "PRODUCT SIZE = ${productsManufacture.size.plus(1)}" }
             when (permitType.id) {
                 applicationMapProperties.mapQAPermitTypeIdSmark -> {
                     invoiceGenerated = qaInvoiceCalculation.calculatePaymentSMark(
                         permit,
                         user,
                         manufactureTurnOver,
-                        productsManufacture.size.plus(1).toLong(),
+                        productsManufacture.size.toLong(),
                         plantDetail
                     )
                 }

@@ -54,11 +54,6 @@ export class CompanyComponent implements OnInit {
         this.region$ = regionService.entities$;
         this.county$ = countyService.entities$;
         this.town$ = townService.entities$;
-        regionService.getAll().subscribe();
-        countyService.getAll().subscribe();
-        townService.getAll().subscribe();
-        naturesService.getAll().subscribe();
-        linesService.getAll().subscribe();
     }
 
 
@@ -95,7 +90,28 @@ export class CompanyComponent implements OnInit {
         this.stepOneForm.patchValue(this.company);
         this.stepTwoForm.patchValue(this.company);
         this.stepThreeForm.patchValue(this.company);
+        console.log(`Select town ID inside is ${this.company.town}`);
         this.companySoFar = this.company;
+
+        this.regionService.getAll().subscribe();
+        this.countyService.getAll().subscribe();
+        // townService.getAll().subscribe();
+        this.naturesService.getAll().subscribe();
+        this.linesService.getAll().subscribe();
+        this.selectedCounty = this.company.county;
+        // console.log(`county set to ${this.selectedCounty}`)
+        this.store$.dispatch(loadCountyId({payload: this.company.county}));
+        this.store$.select(selectCountyIdData).subscribe(
+            (d) => {
+                if (d) {
+                    console.log(`Select county inside is ${d}`);
+                    return this.townService.getAll();
+                } else {
+                    return throwError('Invalid request, Company id is required');
+                }
+            }
+        );
+        console.log(`Select town ID inside is ${this.company.town}`);
     }
 
     updateSelectedRegion() {
@@ -107,17 +123,19 @@ export class CompanyComponent implements OnInit {
 
         this.selectedCounty = this.stepThreeForm?.get('county')?.value;
         // console.log(`county set to ${this.selectedCounty}`)
-        this.store$.dispatch(loadCountyId({payload: this.selectedCounty}));
+        this.store$.dispatch(loadCountyId({payload: this.company.county}));
         this.store$.select(selectCountyIdData).subscribe(
             (d) => {
                 if (d) {
-                    // console.log(`Select county inside is ${d}`);
+                    console.log(`Select county inside is ${d}`);
                     return this.townService.getAll();
                 } else {
                     return throwError('Invalid request, Company id is required');
                 }
             }
         );
+        console.log(`Select town ID inside is ${this.company.town}`);
+        this.stepThreeForm?.get('town').setValue(this.company.town);
     }
 
     updateSelectedTown() {
