@@ -17,6 +17,10 @@ class NWADiSdtJustification : Serializable{
     @Basic
     var cdn: Long? = 0
 
+    @Column(name = "K_ID")
+    @Basic
+    var kID: String? = null
+
     @Column(name = "COST")
     @Basic
     val cost: String? = null
@@ -44,6 +48,10 @@ class NWADiSdtJustification : Serializable{
     @Column(name="CD_APP_NUMBER")
     @Basic
     var cdAppNumber: String? = null
+
+    @Column(name = "REMARKS")
+    @Basic
+    var remarks: String? = null
 
     @Transient
     @Column(name = "ACCENT_TO")
