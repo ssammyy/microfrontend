@@ -18,6 +18,7 @@ import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.AuthenticationManager
@@ -93,6 +94,7 @@ class WebSecurityConfig {
                     HttpMethod.OPTIONS.name,
                     HttpMethod.HEAD.name,
             )
+            configuration.exposedHeaders= listOf(HttpHeaders.CONTENT_DISPOSITION,HttpHeaders.CONTENT_TYPE)
             configuration.setMaxAge(Duration.ofMinutes(60))
             val source = UrlBasedCorsConfigurationSource()
             source.registerCorsConfiguration("/api/**", configuration)

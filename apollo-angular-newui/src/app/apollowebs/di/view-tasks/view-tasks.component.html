@@ -26,14 +26,14 @@
                             </div>
                             <div class="col-md-8">
                                 <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
-                                    <li ngbNavItem="consignment" *ngIf="consignment.cd_consignee">
-                                        <a ngbNavLink>Confignment Details</a>
+                                    <li ngbNavItem="consignment" [hidden]="!consignment">
+                                        <a ngbNavLink>Consignment Details</a>
                                     </li>
-                                    <li ngbNavItem="consignee" *ngIf="consignment.cd_consignee">
+                                    <li ngbNavItem="consignee" [hidden]="!(consignment && consignment.cd_consignee)">
                                         <a ngbNavLink>Consignee Details</a>
                                         <ng-template ngbNavContent>
                                             <b class="text-primary">Consignee Details</b>
-                                            <ul class="w-list-unstyled">
+                                            <ul class="w-list-unstyled" *ngIf="consignment.cd_consignee">
                                                 <li class="list-item-accordion ">
                                                     <div class="list-title-accordion">Name</div>
                                                     <div class="list-text-accordion">{{consignment.cd_consignee.name}}</div>
@@ -99,11 +99,11 @@
                                             </ul>
                                         </ng-template>
                                     </li>
-                                    <li ngbNavItem="importer" *ngIf="consignment.cd_importer">
+                                    <li ngbNavItem="importer" [hidden]="!(consignment&&consignment.cd_importer)">
                                         <a ngbNavLink>Importer Details</a>
                                         <ng-template ngbNavContent>
                                             <b class="text-primary">Importer Details</b>
-                                            <ul class="w-list-unstyled">
+                                            <ul class="w-list-unstyled" *ngIf="consignment && consignment.cd_importer">
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Name</div>
                                                     <div class="list-text-accordion">{{consignment.cd_importer.name}}</div>
@@ -173,11 +173,11 @@
                                             </ul>
                                         </ng-template>
                                     </li>
-                                    <li ngbNavItem="exporter" *ngIf="consignment.cd_exporter">
-                                        <a ngbNavLink>Exporter Details</a>
+                                    <li ngbNavItem="exporter" [hidden]="!(consignment&&consignment.cd_exporter)">
+                                        <a ngbNavLink >Exporter Details</a>
                                         <ng-template ngbNavContent>
                                             <b class="text-primary">Exporter Details</b>
-                                            <ul class="w-list-unstyled">
+                                            <ul class="w-list-unstyled" *ngIf="consignment&&consignment.cd_exporter">
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Name</div>
                                                     <div class="list-text-accordion">{{consignment.cd_exporter.name}}</div>
@@ -243,12 +243,12 @@
                                             </ul>
                                         </ng-template>
                                     </li>
-                                    <li ngbNavItem="consignor" *ngIf="consignment.cd_consignor">
+                                    <li ngbNavItem="consignor" [hidden]="!(consignment&&consignment.cd_consignor)">
                                         <a ngbNavLink>Consignor Details</a>
                                         <ng-template ngbNavContent>
                                             <b class="text-primary">Consignor Details</b>
                                             <div class="panel" style="max-height: 388px;">
-                                                <ul class="w-list-unstyled">
+                                                <ul class="w-list-unstyled" *ngIf="consignment&&consignment.cd_consignor">
                                                     <li class="list-item-accordion">
                                                         <div class="list-title-accordion">Name</div>
                                                         <div class="list-text-accordion">{{consignment.cd_consignor.name}}</div>
@@ -316,12 +316,12 @@
                                             </div>
                                         </ng-template>
                                     </li>
-                                    <li ngbNavItem="values">
+                                    <li ngbNavItem="values" [hidden]="!(consignment&&consignment.cd_header_one)">
                                         <a ngbNavLink>Values - Header Levels</a>
                                         <ng-template ngbNavContent>
                                             <b class="text-primary">Values - Header Levels</b>
                                             <div class="panel" style="max-height: 487px;" >
-                                                <ul class="w-list-unstyled" *ngIf="consignment.cd_header_one">
+                                                <ul class="w-list-unstyled" *ngIf="consignment&&consignment.cd_header_one">
                                                     <li class="list-item-accordion">
                                                         <div class="list-title-accordion">Foreign Currency Code
                                                         </div>
@@ -404,11 +404,11 @@
                                             </div>
                                         </ng-template>
                                     </li>
-                                    <li ngbNavItem="standards-two">
+                                    <li ngbNavItem="standards-two" [hidden]="!(consignment&&consignment.cd_standards_two)">
                                         <a ngbNavLink>Standards Two</a>
                                         <ng-template ngbNavContent>
                                             <b class="text-primary">Standards Two</b>
-                                            <ul class="w-list-unstyled" *ngIf="consignment.cd_standards_two">
+                                            <ul class="w-list-unstyled" *ngIf="consignment&&consignment.cd_standards_two">
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Conditions Of Approval</div>
                                                     <div class="list-text-accordion">{{consignment.cd_standards_two.conditionsOfApproval}}</div>
@@ -440,11 +440,11 @@
                                             </ul>
                                         </ng-template>
                                     </li>
-                                    <li ngbNavItem="service-providers" >
+                                    <li ngbNavItem="service-providers" [hidden]="!(consignment&&consignment.cd_service_provider)">
                                         <a ngbNavLink>Service Providers</a>
                                         <ng-template ngbNavContent>
                                             <b class="text-primary">Service Providers</b>
-                                            <ul class="w-list-unstyled" *ngIf="consignment.cd_service_provider">
+                                            <ul class="w-list-unstyled" *ngIf="consignment&&consignment.cd_service_provider">
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Application Code</div>
                                                     <div class="list-text-accordion">{{consignment.cd_service_provider.applicationCode}}</div>
@@ -468,12 +468,12 @@
                                             </ul>
                                         </ng-template>
                                     </li>
-                                    <li ngbNavItem="transport-details" >
+                                    <li ngbNavItem="transport-details" [hidden]="!(consignment&&consignment.cd_transport)">
                                         <a ngbNavLink>Transport Details</a>
                                         <ng-template ngbNavContent>
                                             <b class="text-primary">Transport Details</b>
                                             <div class="panel" style="max-height: 636px;">
-                                                <ul class="w-list-unstyled" *ngIf="consignment.cd_transport">
+                                                <ul class="w-list-unstyled" *ngIf="consignment&&consignment.cd_transport">
                                                     <li class="list-item-accordion">
                                                         <div class="list-title-accordion">Mode Of Transport</div>
                                                         <div class="list-text-accordion">{{consignment.cd_transport.modeOfTransport}}</div>
@@ -589,19 +589,19 @@
                                             </div>
                                         </ng-template>
                                     </li>
-                                    <li ngbNavItem="item-details">
+                                    <li ngbNavItem="item-details" [hidden]="!(consignment&&consignment.cd_items)">
                                         <a ngbNavLink>Item Details</a>
                                         <ng-template ngbNavContent>
                                             <b class="text-primary">Item Details</b>
-                                            <app-item-details-list-view [consignmentId]="consignmentId"
+                                            <app-item-details-list-view *ngIf="consignment&&consignment.cd_items" [consignmentId]="consignmentId"
                                                                         [dataSet]="consignment.cd_items"></app-item-details-list-view>
                                         </ng-template>
                                     </li>
-                                    <li ngbNavItem="cd-attachments" *ngIf="attachments">
+                                    <li ngbNavItem="cd-attachments" [hidden]="!(consignment&&attachments)">
                                         <a ngbNavLink>Attachments</a>
                                         <ng-template ngbNavContent>
                                             <b class="text-primary">Attachments</b>
-                                            <app-attachment-list [dataSet]="attachments"></app-attachment-list>
+                                            <app-attachment-list *ngIf="consignment&&attachments" [dataSet]="attachments"></app-attachment-list>
                                         </ng-template>
                                     </li>
 
@@ -610,7 +610,7 @@
                                 <div [ngbNavOutlet]="nav" class="ml-4"></div>
                                 <!-- </div>  -->
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-2" *ngIf="consignment">
                                 <b>Action:</b>
                                 <a class="btn btn-sm btn-warning"
                                    href="/di/{{consignment.cd_details.uuid}}" target="_blank">View Consignment</a>

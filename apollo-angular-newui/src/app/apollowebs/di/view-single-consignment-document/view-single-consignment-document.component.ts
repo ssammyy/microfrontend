@@ -16,7 +16,6 @@ import {SendCoiComponent} from "../forms/send-coi/send-coi.component";
 import {TargetItemComponent} from "../forms/target-item/target-item.component";
 import {TargetSupervisorComponent} from "../forms/target-supervisor/target-supervisor.component";
 import {SendDemandNoteTokwsComponent} from "../forms/send-demand-note-tokws/send-demand-note-tokws.component";
-import {BlacklistApproveComponent} from "../forms/blacklist-approve/blacklist-approve.component";
 import {BlacklistComponent} from "../forms/blacklist/blacklist.component";
 
 @Component({
@@ -159,7 +158,8 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
     }
 
     downloadDemandNote() {
-        this.diService.downloadDocument("/api/v1/di/demand/note/"+this.consignment.cd_details.id)
+        // let d=341
+        this.diService.downloadDocument("/api/v1/download/demand/note/"+this.consignment.cd_details.id)
     }
 
     loadConsignmentDetails() {

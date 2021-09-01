@@ -16,7 +16,7 @@ class DestinationInspectionRoutes {
     @CrossOrigin
     fun invoicing(handlers: InvoiceHandlers)= router{
         "/api/v1/di".nest {
-            GET("/demand/note/{demandNoteId}",handlers::downloadDemandNote)
+//            GET("/demand/note/{demandNoteId}",handlers::downloadDemandNote)
             GET("/demand/note/details/{cdUuid}",handlers::cdInvoiceDetails)
             GET("/demand/note/list/{cdId}",handlers::listDemandNotes)
             GET("/demand-note/fees",handlers::applicationFee)
@@ -71,7 +71,6 @@ class DestinationInspectionRoutes {
             GET("/consignment/document/details/{coUuid}", handler::consignmentDocumentDetails)
             GET("/consignment/document/attachments/{coUuid}", handler::consignmentDocumentAttachments)
             POST("/consignment/document/attachments/upload/{cdUuid}", handler::uploadConsignmentDocumentAttachment)
-            GET("/cd/download/attachments/{uploadId}", handler::downloadConsignmentDocumentAttachment)
             GET("/consignment/document/manifest/{coUuid}", handler::consignmentDocumentManifest)
             GET("/consignment/document/audit/{cdId}", handler::consignmentDocumentHistory)
             GET("/consignment/document/customs/declaration/{coUuid}", handler::consignmentDocumentCustomsDeclaration)

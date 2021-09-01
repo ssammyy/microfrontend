@@ -1,8 +1,9 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpResponse} from "@angular/common/http";
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
 import {Observable} from "rxjs";
 import * as fileSaver from 'file-saver';
+import {map} from "rxjs/operators";
 
 @Injectable({
     providedIn: 'root'
@@ -139,21 +140,41 @@ export class DestinationInspectionService {
     getConsignmentDetails(consignmentUiid: string): Observable<any> {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/details/" + consignmentUiid))
     }
-
+    getFileName(response: HttpResponse<Blob>) {
+        let filename: string;
+        try {
+            const contentDisposition: string = response.headers.get('content-disposition');
+            console.log(contentDisposition)
+            const r = /(?:filename=")(.+)(?:")/
+            filename = r.exec(contentDisposition)[1];
+        }
+        catch (e) {
+            console.error(e)
+            filename = 'myfile.pdf'
+        }
+        return filename
+    }
     downloadDocument(url){
-        this.client.get(ApiEndpointService.getEndpoint(url),{responseType: 'blob'})
-            .subscribe(
-                res=>{
-                    console.log(res)
+        this.client.get(ApiEndpointService.getEndpoint(url),{ observe: 'response',responseType: 'blob'})
+            .pipe(map((res: HttpResponse<Blob>)=>{
+                    let fileName=this.getFileName(res)
+                    if(!fileName){
+                        fileName="sample.pdf"
+                    }
                     // @ts-ignore
-                    let blob: any = new Blob([res], { type: 'application/pdf' });
+                    let blob: any = new Blob([res.body], { type: res.headers.get("content-type") });
                     const url = window.URL.createObjectURL(blob);
                     //window.open(url);
                     //window.location.href = response.url;
-                    fileSaver.saveAs(blob, 'davy.pdf');
+                    fileSaver.saveAs(blob, fileName);
+                    return fileName
+                }
+            ))
+            .subscribe(
+                res=>{
+                    console.log(res)
                 }
             )
-
     }
 
     listAssignedCd(documentType: String, page: Number = 0, size: Number = 20): Observable<any> {

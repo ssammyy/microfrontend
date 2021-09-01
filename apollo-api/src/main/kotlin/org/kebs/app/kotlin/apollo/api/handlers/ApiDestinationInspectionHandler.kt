@@ -268,18 +268,7 @@ class ApiDestinationInspectionHandler(
                 .body(response)
     }
 
-    fun downloadConsignmentDocumentAttachment(req: ServerRequest): ServerResponse {
-        req.pathVariable("uploadId").let { diUploadsId ->
-            val diUpload: DiUploadsEntity = daoServices.findDiUploadById(diUploadsId.toLongOrDefault(0L))
-            diUpload.document?.let {
-                val resource = ByteArrayResource(it)
-                return ServerResponse.ok()
-                        .contentType(MediaType.APPLICATION_PDF)
-                        .header("Content-Disposition", "inline; filename=${diUpload.name};")
-                        .body(resource)
-            } ?: throw ExpectedDataNotFound("Attachment file not found")
-        }
-    }
+
 
     fun consignmentDocumentAttachments(req: ServerRequest): ServerResponse {
         req.pathVariable("coUuid").let {

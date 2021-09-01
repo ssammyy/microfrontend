@@ -35,7 +35,6 @@ class InvoiceHandlers(
         private val applicationMapProperties: ApplicationMapProperties,
         private val daoServices: DestinationInspectionDaoServices,
         private val invoiceDaoService: InvoiceDaoService,
-        private val reportsDaoService: ReportsDaoService,
         private val diBpmn: DestinationInspectionBpmn
 ) {
     final val appId = applicationMapProperties.mapPermitApplication
@@ -242,49 +241,6 @@ class InvoiceHandlers(
             response.responseCode = ResponseCodes.SUCCESS_CODE
             return ServerResponse.ok().body(response)
         }
-    }
-
-    fun downloadDemandNote(req: ServerRequest): ServerResponse {
-        val response = ApiResponseModel()
-        try {
-            req.pathVariable("demandNoteId").let {
-                var map = hashMapOf<String, Any>()
-
-                val demandNote = daoServices.findDemandNoteWithID(it.toLongOrDefault(0L))
-                val demandNoteItemList = demandNote?.id?.let { daoServices.findDemandNoteItemDetails(it) }
-                        ?: throw ExpectedDataNotFound("No List Of Details Available does not exist")
-
-                map["preparedBy"] = demandNote.generatedBy.toString()
-                map["datePrepared"] = demandNote.dateGenerated.toString()
-                map["demandNoteNo"] = demandNote.demandNoteNumber.toString()
-                map["importerName"] = demandNote.nameImporter.toString()
-                map["importerAddress"] = demandNote.address.toString()
-                map["importerTelephone"] = demandNote.telephone.toString()
-                map["ablNo"] = demandNote.entryAblNumber.toString()
-                map["totalAmount"] = demandNote.totalAmount.toString()
-                map["receiptNo"] = demandNote.receiptNo.toString()
-
-                map = reportsDaoService.addBankAndMPESADetails(map)
-
-                val extractReport = reportsDaoService.extractReport(
-                        map,
-                        applicationMapProperties.mapReportDemandNoteWithItemsPath,
-                        demandNoteItemList
-                )
-                // Response with file
-                return ServerResponse.ok()
-                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=NOTE-${it}-${demandNote.demandNoteNumber}.pdf")
-                        .contentType(MediaType.APPLICATION_PDF)
-                        .contentLength(extractReport.size().toLong())
-                        .body(extractReport)
-            }
-        } catch (ex: Exception) {
-            KotlinLogging.logger { }.error("Download failed", ex)
-            response.responseCode = ResponseCodes.EXCEPTION_STATUS
-            response.message = "Failed to generate demand note"
-        }
-        return ServerResponse.status(HttpStatus.SC_INTERNAL_SERVER_ERROR)
-                .body(response)
     }
 }
 

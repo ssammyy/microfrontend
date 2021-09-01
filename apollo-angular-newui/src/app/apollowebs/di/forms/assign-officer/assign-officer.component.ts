@@ -23,7 +23,7 @@ export class AssignOfficerComponent implements OnInit {
         this.loadOfficers();
         this.officers=[]
         this.form = this.fb.group({
-            assignedStatus: ['', Validators.required],
+            assignedStatus: ['1', Validators.required],
             officerId: ['', Validators.required],
             remarks: ['', Validators.required]
         })

@@ -38,7 +38,6 @@ class DestinationInspectionBpmn(
         private val runtimeService: RuntimeService,
         private val userRepo: IUserRepository,
         private val bpmnCommonFunctions: BpmnCommonFunctions,
-        private val notifications: Notifications,
         private val iConsignmentDocumentDetailsRepo: IConsignmentDocumentDetailsRepository,
         private val iCdItemDetailsRepo: ICdItemDetailsRepo,
         private val daoServices: DestinationInspectionDaoServices,
@@ -173,7 +172,8 @@ class DestinationInspectionBpmn(
         val taskDetails: MutableList<DiTaskDetails> = ArrayList()
         if (tasks != null) {
             for (task in tasks) {
-                taskDetails.add(DiTaskDetails(task.id, task.name,task.createTime,task.description, task.processVariables))
+                val properties=this.taskService.getVariables(task.id)
+                taskDetails.add(DiTaskDetails(task.id, task.name,task.createTime,task.description, properties))
             }
         }
         return taskDetails

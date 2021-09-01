@@ -59,20 +59,7 @@ export class AttachmentListComponent implements OnInit {
   onCustomAction(event){
     switch (event.action) {
       case "download":
-        this.diService.downloadAttachment(event.data.id)
-            .subscribe(
-                res=>{
-                  console.log(res)
-                  let blob: any = new Blob([res], { type: 'application/pdf' });
-                  const url = window.URL.createObjectURL(blob);
-                  //window.open(url);
-                  //window.location.href = response.url;
-                  fileSaver.saveAs(blob, 'davy.pdf');
-                },
-                error => {
-                  console.log(error)
-                }
-            )
+        this.diService.downloadDocument("/api/v1/download/attachments/"+event.data.id)
         break
       default:
         console.log("Unsupported action: "+event.action)
