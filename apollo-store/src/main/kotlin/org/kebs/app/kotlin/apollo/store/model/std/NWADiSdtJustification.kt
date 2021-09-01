@@ -11,7 +11,7 @@ class NWADiSdtJustification : Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
-    val id: Long = 0
+    var id: Long = 0
 
     @Column(name = "CDN")
     @Basic
@@ -23,23 +23,23 @@ class NWADiSdtJustification : Serializable{
 
     @Column(name = "COST")
     @Basic
-    val cost: String? = null
+    var cost: String? = null
 
     @Column(name = "NUMBER_OF_MEETINGS")
     @Basic
-    val numberOfMeetings: String? = null
+    var numberOfMeetings: String? = null
 
     @Column(name = "IDENTIFIED_NEED")
     @Basic
-    val identifiedNeed: String? = null
+    var identifiedNeed: String? = null
 
     @Column(name = "DATE_APPROVAL_MADE")
     @Basic
-    val dateApprovalMade: String? = null
+    var dateApprovalMade: String? = null
 
     @Column(name = "DATE_OF_APPROVAL")
     @Basic
-    val dateOfApproval: String? = null
+    var dateOfApproval: String? = null
 
     @Column(name="DATE_PREPARED")
     @Basic

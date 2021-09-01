@@ -168,7 +168,16 @@ export interface SPCTaskData {
 
 export interface NWADiSdtJustification{
     id: number;
-    cost: number;
+    cost: string;
+    numberOfMeetings: number;
+    identifiedNeed: string;
+    dateOfApproval: string;
+    taskId: string;
+    kID: number;
+}
+export interface NWADiJustification{
+    id: number;
+    cost: string;
     numberOfMeetings: number;
     identifiedNeed: string;
     dateOfApproval: string;
