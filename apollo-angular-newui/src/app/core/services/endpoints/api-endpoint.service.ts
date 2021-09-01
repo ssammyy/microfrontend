@@ -37,6 +37,7 @@ export class ApiEndpointService {
         SMARK_TYPE_ID: 2,
         FMARK_TYPE_ID: 3,
         DRAFT_ID: 1,
+        PAYMENT_PENDING_STATUS: 5,
     };
 
     /**

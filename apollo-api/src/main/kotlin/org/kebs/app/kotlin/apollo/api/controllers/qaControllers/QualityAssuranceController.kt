@@ -975,14 +975,14 @@ class QualityAssuranceController(
             applicationMapProperties.mapQAPermitTypeIdSmark -> {
                 permitDetailsDB = qaDaoServices.permitInsertStatus(
                     permitDetailsDB,
-                    applicationMapProperties.mapQaStatusPFactoryVisitSchedule,
+                    applicationMapProperties.mapQaStatusPShedulvisit,
                     loggedInUser
                 )
             }
             applicationMapProperties.mapQAPermitTypeIdFmark -> {
                 permitDetailsDB = qaDaoServices.permitInsertStatus(
                     permitDetailsDB,
-                    applicationMapProperties.mapQaStatusPFactoryVisitSchedule,
+                    applicationMapProperties.mapQaStatusPShedulvisit,
                     loggedInUser
                 )
             }

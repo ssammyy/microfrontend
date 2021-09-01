@@ -216,6 +216,11 @@ data class RemarksAndStatusDto(
     var remarksValue: String? = null,
 )
 
+data class LimsFilesFoundDto(
+    var fileSavedStatus: Boolean? = null,
+    var fileName: String? = null,
+)
+
 data class InvoiceDetailsDto(
     var invoiceMasterId: Long? = null,
     var invoiceRef: String? = null,
@@ -438,6 +443,7 @@ data class PermitDetailsDto(
     var processStep: Int? = null,
     var processStatusID: Long? = null,
     var fmarkGeneratedID: Long? = null,
+    var oldPermitStatus: Boolean? = null,
 )
 
 data class AllPermitDetailsDto(

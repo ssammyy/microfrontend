@@ -60,6 +60,10 @@ import {UserManagementProfileComponent} from "./apollowebs/usermanagement/user-m
 import {RequestStandardFormComponent} from "./apollowebs/standards-development/standard-request/request-standard-form/request-standard-form.component";
 import {StandardRequestComponent} from "./apollowebs/standards-development/standard-request/standard-request.component";
 import {StandardTaskComponent} from "./apollowebs/standards-development/standard-request/standard-task/standard-task.component";
+import {SmarkAllAwardedApplicationsComponent} from './apollowebs/quality-assurance/smark-all-awarded-applications/smark-all-awarded-applications.component';
+import {FmarkAllAwardedApplicationsComponent} from './apollowebs/quality-assurance/fmark-all-awarded-applications/fmark-all-awarded-applications.component';
+import {DmarkAllAwardedApplicationsComponent} from './apollowebs/quality-assurance/dmark-all-awarded-applications/dmark-all-awarded-applications.component';
+import {QaTaskDetailsComponent} from './apollowebs/quality-assurance/qa-task-details/qa-task-details.component';
 
 // export const AppRoutes: Routes = [
 //     {
@@ -267,6 +271,12 @@ export const routes: Routes = [
         children: [{path: '', component: FmarkallappsComponent}]
     },
     {
+        path: 'fmark/all_fmark_awarded', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
+        children: [{path: '', component: FmarkAllAwardedApplicationsComponent}]
+    },
+    {
         path: 'st10Form', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
 
@@ -303,6 +313,12 @@ export const routes: Routes = [
         children: [{path: '', component: DmarkApplicationsAllComponent}]
     },
     {
+        path: 'dmark/all_dmark_awarded', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
+        children: [{path: '', component: DmarkAllAwardedApplicationsComponent}]
+    },
+    {
         path: 'profile', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
 
@@ -315,6 +331,12 @@ export const routes: Routes = [
         children: [{path: '', component: SmarkApplicationsAllComponent}]
     },
     {
+        path: 'smark/all_smark_awarded', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
+        children: [{path: '', component: SmarkAllAwardedApplicationsComponent}]
+    },
+    {
         path: 'invoice/consolidate_invoice', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [{path: '', component: InvoiceConsolidateComponent}]
@@ -324,6 +346,12 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
 
         children: [{path: '', component: TaskManagerComponent}]
+    },
+    {
+        path: 'all_qa_tasks_list', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
+        children: [{path: '', component: QaTaskDetailsComponent}]
     },
     {
         path: 'fmark/application', component: AdminLayoutComponent,

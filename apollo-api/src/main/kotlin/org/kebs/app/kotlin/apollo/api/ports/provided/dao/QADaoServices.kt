@@ -1274,7 +1274,7 @@ class QADaoServices(
     }
 
     fun findAllOldPermitWithPermitRefNumber(permitRefNumber: String): List<PermitApplicationsEntity>? {
-        return permitRepo.findByPermitRefNumberAndOldPermitStatus(permitRefNumber, 1)
+        return permitRepo.findByPermitRefNumber(permitRefNumber)
     }
 
     fun companyDtoDetails(
@@ -1763,6 +1763,7 @@ class QADaoServices(
             if (permit.fmarkGenerated == 1) {
                 fmarkGeneratedID = permit.id?.let { findFmarkWithSmarkId(it).fmarkId }
             }
+            oldPermitStatus = permit.oldPermitStatus == 1
 
 
         }
@@ -3226,6 +3227,25 @@ class QADaoServices(
                             null,
                             "QAO",
                             "RESUBMIT APPLICATION, DEFERRED BY PSC",
+                            s,
+                            user
+                        )
+                    }
+                    "resubmitHofQamRejectionResults" -> {
+                        resubmitApplicationStatus = 10
+                        resubmitRemarks = permitResubmit.resubmitRemarks
+//                        hofQamCompletenessStatus = null
+//                        hofQamCompletenessRemarks = null
+                        permitStatus = applicationMapProperties.mapQaStatusResubmitted
+                        userTaskId = applicationMapProperties.mapUserTaskNameQAM
+                        KotlinLogging.logger { }
+                            .info(":::::: SELECTED RESUBMIT IS resubmitHofQamRejectionResults :::::::")
+                        permitAddRemarksDetails(
+                            updatePermit.id ?: throw Exception("ID NOT FOUND"),
+                            permitResubmit.resubmitRemarks,
+                            null,
+                            "QAO",
+                            "RESUBMIT APPLICATION, REJECTED BY QAM",
                             s,
                             user
                         )
@@ -4743,19 +4763,31 @@ class QADaoServices(
 
 //            when (oldPermit.permitType) {
 //                applicationMapProperties.mapQAPermitTypeIdSmark -> {
-            val sta10 = findSTA10WithPermitRefNumberBYPPermitID(
+
+            val oldSta10 = findSTA10WithPermitRefNumberANdPermitID(
                 permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
-                permit.id ?: throw Exception("INVALID PERMIT REF NUMBER")
+                permit.id ?: throw Exception("INVALID PERMIT ID")
             )
             var newSta10 = QaSta10Entity()
-            newSta10 = commonDaoServices.updateDetails(sta10, newSta10) as QaSta10Entity
-            with(newSta10) {
-                id = null
-                permitRefNumber = fmarkPermit.permitRefNumber
-                permitId = fmarkPermit.id
-            }
-
+            newSta10 = commonDaoServices.updateDetails(oldSta10, newSta10) as QaSta10Entity
+            newSta10.id = null
             sta10NewSave(fmarkPermit, newSta10, user, s)
+
+            regenerateSameDetailsForClonedSTA10(newSta10, oldSta10, permit, fmarkPermit)
+
+//            val sta10 = findSTA10WithPermitRefNumberBYPPermitID(
+//                permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+//                permit.id ?: throw Exception("INVALID PERMIT REF NUMBER")
+//            )
+//            var newSta10 = QaSta10Entity()
+//            newSta10 = commonDaoServices.updateDetails(sta10, newSta10) as QaSta10Entity
+//            with(newSta10) {
+//                id = null
+//                permitRefNumber = fmarkPermit.permitRefNumber
+//                permitId = fmarkPermit.id
+//            }
+//
+//            sta10NewSave(fmarkPermit, newSta10, user, s)
 //                }
 //                applicationMapProperties.mapQAPermitTypeIDDmark -> {
 //                    val sta3 = findSTA3WithPermitRefNumber(oldPermit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"))

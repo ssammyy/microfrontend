@@ -54,7 +54,7 @@ export const ROUTES: RouteInfo[] = [
         children: [
             {path: 'newDmarkPermit', title: 'Make Application', ab: 'MA'},
             {path: 'all_dmark', title: 'All My Applications', ab: 'AMA'},
-            {path: 'panels', title: 'Awarded Applications', ab: 'AA'}
+            {path: 'all_dmark_awarded', title: 'Awarded Applications', ab: 'AA'}
         ]
     }, {
         path: '/smark',
@@ -65,7 +65,7 @@ export const ROUTES: RouteInfo[] = [
         children: [
             {path: 'newSmarkPermit', title: 'Make Application', ab: 'MA'},
             {path: 'all_smark', title: 'All My Applications', ab: 'AMA'},
-            {path: 'panels', title: 'Awarded Applications', ab: 'AA'}
+            {path: 'all_smark_awarded', title: 'Awarded Applications', ab: 'AA'}
         ]
     }, {
         path: '/fmark',
@@ -76,7 +76,7 @@ export const ROUTES: RouteInfo[] = [
         children: [
             {path: 'application', title: 'Make Application', ab: 'MA'},
             {path: 'fMarkAllApp', title: 'All My Applications', ab: 'AMA'},
-            {path: 'panels', title: 'Awarded Applications', ab: 'AA'}
+            {path: 'all_fmark_awarded', title: 'Awarded Applications', ab: 'AA'}
         ]
     }, {
         path: '/invoice',
@@ -90,7 +90,7 @@ export const ROUTES: RouteInfo[] = [
         ]
     },
     {
-        path: '/all_tasks_list',
+        path: '/all_qa_tasks_list',
         title: 'My Tasks',
         type: 'link',
         icontype: 'task'
