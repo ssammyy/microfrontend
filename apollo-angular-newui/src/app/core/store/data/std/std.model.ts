@@ -93,6 +93,7 @@ export interface NWAJustification{
     submissionDate: string;
     knwCommittee: string;
     departmentName: string;
+    comments: string;
 
 
 }
@@ -136,6 +137,7 @@ export interface KnwSecTaskData {
     special: string;
     knwCommittee: string;
     departmentName: string;
+    comments: string;
 }
 
 
@@ -161,6 +163,7 @@ export interface SPCTaskData {
     departmentName: string;
     knwSecretary: string;
     ID: number;
+    comments: string;
 }
 
 export interface NWADiSdtJustification{
@@ -170,6 +173,7 @@ export interface NWADiSdtJustification{
     identifiedNeed: string;
     dateOfApproval: string;
     taskId: string;
+    kID: number;
 }
 
 export interface DISDTTasks{
@@ -178,7 +182,11 @@ export interface DISDTTasks{
     taskData: DisDTTaskData;
 }
 export interface DisDTTaskData {
-
+    cost: number;
+    numberOfMeetings: number;
+    identifiedNeed: string;
+    dateOfApproval: string;
+    taskId: string;
     requestedBy: string;
     requestNumber: string;
     referenceMaterial: string;
@@ -191,6 +199,8 @@ export interface DisDTTaskData {
     knwCommittee: string;
     departmentName: string;
     ID: number;
+    comments: string;
+    kID: number;
 
 }
 
@@ -230,6 +240,7 @@ export interface SacSeCTaskData {
     taskId: string;
     clause: string;
     referenceMaterial: string;
+    comments: string;
 
 }
 
@@ -246,6 +257,7 @@ export interface HOPTaskData{
     issuesAddressed: string;
     clause: string;
     special:string;
+    comments: string;
 }
 export interface NWAStandard{
     id: number;
@@ -274,6 +286,7 @@ export interface HoSicTaskData{
     ksNumber: number;
     description: string;
     dateUploaded: string;
+    comments: string;
 }
 export interface UploadNwaGazette{
     id: number;
@@ -745,23 +758,28 @@ export interface DiSdtDECISION{
     taskId: string;
     accentTo: boolean;
     approvalID: bigint;
+    comments: string;
+    kID: bigint;
 }
 
 export interface NWAJustificationDecision{
     taskId: string;
     accentTo: boolean;
     approvalID: bigint;
+    comments: string;
 }
 
 export interface NWAPDDecision{
     taskId: string;
     accentTo: boolean;
     approvalID: bigint;
+    comments: string;
 }
 export interface NWAWDDecision{
     taskId: string;
     accentTo: boolean;
     approvalID: bigint;
+    comments: string;
 }
 
 

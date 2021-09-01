@@ -114,6 +114,24 @@ export class NwaJustificationTasksComponent implements OnInit , OnDestroy {
             }
         );
     }
+    public rejectDecision(nwaJustificationDecision: NWAJustificationDecision): void{
+        this.SpinnerService.show();
+        this.stdNwaService.decisionOnJustification(nwaJustificationDecision).subscribe(
+            (response: NWAJustification) => {
+                this.SpinnerService.hide();
+                this.showToasterSuccess('Success', `Justification Was Declined`);
+                console.log(response);
+                this.getSPCSECTasks();
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                console.log(error.message);
+                this.showToasterError('Error', `Justification Was Not Approved`);
+                this.getSPCSECTasks();
+                //alert(error.message);
+            }
+        );
+    }
 
 
 
