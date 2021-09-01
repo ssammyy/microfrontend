@@ -1,23 +1,32 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao.std
 
-import com.beust.klaxon.Klaxon
-import org.kebs.app.kotlin.apollo.common.dto.std.ID
-import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponse
-import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
 //import com.apollo.standardsdevelopment.models.*
 //import com.apollo.standardsdevelopment.repositories.*
-import com.beust.klaxon.JsonReader
 //import com.beust.klaxon.Klaxon
 
 //import com.google.gson.stream.JsonReader
+
+import com.beust.klaxon.JsonReader
+import com.beust.klaxon.Klaxon
+import org.flowable.common.engine.api.delegate.event.FlowableEventDispatcher
 import org.flowable.engine.ProcessEngine
 import org.flowable.engine.RepositoryService
 import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
+import org.flowable.engine.delegate.event.FlowableActivityCancelledEvent
+import org.flowable.engine.delegate.event.impl.FlowableEventBuilder
+import org.flowable.engine.history.DeleteReason
 import org.flowable.engine.history.HistoricActivityInstance
+import org.flowable.engine.impl.persistence.entity.ExecutionEntity
+import org.flowable.engine.impl.util.CommandContextUtil
+import org.flowable.engine.impl.util.TaskHelper
 import org.flowable.engine.repository.Deployment
 import org.flowable.task.api.Task
+import org.flowable.task.service.impl.persistence.entity.TaskEntity
 import org.kebs.app.kotlin.apollo.api.web.config.EmailConfig
+import org.kebs.app.kotlin.apollo.common.dto.std.ID
+import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponse
+import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.beans.factory.annotation.Qualifier
@@ -29,6 +38,21 @@ import java.io.StringReader
 import java.sql.Timestamp
 import java.util.*
 import kotlin.collections.HashMap
+import org.flowable.engine.impl.util.TaskHelper.deleteHistoricTaskEventLogEntries
+
+import org.flowable.engine.impl.util.TaskHelper.deleteHistoricTask
+
+import org.flowable.engine.impl.util.Flowable5Util
+
+import org.flowable.engine.compatibility.Flowable5CompatibilityHandler
+
+import org.flowable.common.engine.api.FlowableException
+
+import org.flowable.common.engine.impl.interceptor.CommandContext
+
+
+
+
 
 @Service
 class StandardRequestService(
@@ -162,7 +186,7 @@ class StandardRequestService(
         mailMessage.setText("$toName, $body")
 
         // Send mail
-      //  mailSender.send(mailMessage)
+        //  mailSender.send(mailMessage)
     }
 
 
@@ -418,4 +442,38 @@ class StandardRequestService(
     }
 
 
+    fun deleteTask(taskId: String?) {
+        val deleteReason = "test"
+        val cascade = true
+
+        val commandContext = CommandContextUtil.getCommandContext()
+        val task = CommandContextUtil.getTaskService(commandContext).getTask(taskId)
+        if (task != null) {
+            if (task.executionId != null) {
+                throw FlowableException("The task cannot be deleted because is part of a running process")
+            }
+            if (Flowable5Util.isFlowable5ProcessDefinitionId(commandContext, task.processDefinitionId)) {
+                val compatibilityHandler = Flowable5Util.getFlowable5CompatibilityHandler()
+                compatibilityHandler.deleteTask(taskId, deleteReason, cascade)
+                return
+            }
+            deleteTask(task, deleteReason, cascade, true, true)
+        } else if (cascade) {
+            deleteHistoricTask(taskId)
+            deleteHistoricTaskEventLogEntries(taskId)
+        }
+
+    }
+
+    fun deleteTask(task: TaskEntity, deleteReason: String?, cascade: Boolean, b: Boolean, b1: Boolean) {
+        TaskHelper.deleteTask(task.toString(), deleteReason, cascade)
+
+    }
+    fun closeTask(taskId: String) {
+        taskService.complete(taskId)
+//        taskService.deleteTask(taskId)
+    }
 }
+
+
+
