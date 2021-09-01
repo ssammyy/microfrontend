@@ -375,6 +375,7 @@ class QualityAssuranceJSONControllers(
                     map,
                     uploads,
                     permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+                    permitDetails.id ?: throw Exception("INVALID PERMIT ID"),
                     versionNumber,
                     manufactureNonStatus
                 )
@@ -395,6 +396,7 @@ class QualityAssuranceJSONControllers(
                             map,
                             uploads,
                             permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+                            permitDetails.id ?: throw Exception("INVALID PERMIT ID"),
                             versionNumber,
                             manufactureNonStatus
                         )
@@ -420,6 +422,7 @@ class QualityAssuranceJSONControllers(
                             map,
                             uploads,
                             permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+                            permitDetails.id ?: throw Exception("INVALID PERMIT ID"),
                             versionNumber,
                             manufactureNonStatus
                         )
@@ -446,6 +449,7 @@ class QualityAssuranceJSONControllers(
                             map,
                             uploads,
                             permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+                            permitDetails.id ?: throw Exception("INVALID PERMIT ID"),
                             versionNumber,
                             manufactureNonStatus
                         )
@@ -490,6 +494,7 @@ class QualityAssuranceJSONControllers(
                             map,
                             uploads,
                             permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+                            permitDetails.id ?: throw Exception("INVALID PERMIT ID"),
                             versionNumber,
                             manufactureNonStatus
                         )
@@ -509,6 +514,7 @@ class QualityAssuranceJSONControllers(
                             map,
                             uploads,
                             permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+                            permitDetails.id ?: throw Exception("INVALID PERMIT ID"),
                             versionNumber,
                             manufactureNonStatus
                         )

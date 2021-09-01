@@ -25,7 +25,6 @@ import org.kebs.app.kotlin.apollo.store.repo.qa.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -35,7 +34,6 @@ import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
-import java.time.temporal.ChronoUnit
 import java.util.stream.Collectors
 
 
@@ -49,7 +47,6 @@ class QADaoServices(
 //    private val qualityAssuranceBpmn: QualityAssuranceBpmn,
     private val workPlanCreatedRepo: IQaWorkplanRepository,
     private val iPermitRatingRepo: IPermitRatingRepository,
-    private val iTurnOverRatesRepository: ITurnOverRatesRepository,
     private val iManufacturePaymentDetailsRepository: IManufacturerPaymentDetailsRepository,
     private val sampleStandardsRepo: ISampleStandardsRepository,
     private val remarksEntityRepo: IQaRemarksEntityRepository,
@@ -319,6 +316,19 @@ class QADaoServices(
     ): List<PermitApplicationsEntity> {
         val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
         permitRepo.findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndUserTaskId(userId, permitType, taskID)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+    fun findAllUserTasksByTaskID(
+        user: UsersEntity,
+        taskID: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByUserIdAndOldPermitStatusIsNullAndUserTaskId(userId, taskID)
             ?.let { permitList ->
                 return permitList
             }
@@ -633,6 +643,12 @@ class QADaoServices(
         } ?: throw ExpectedDataNotFound("No inspection details for OPC with PERMIT REF NO =$permitRefNumber")
     }
 
+    fun findAllQaInspectionOPCWithInspectReportID(inspectReportID: Long): List<QaInspectionOpcEntity> {
+        qaInspectionOPCRepo.findByInspectionRecommendationId(inspectReportID)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No inspection details for OPC with inspect Report ID =$inspectReportID")
+    }
+
     fun findPermitBYID(id: Long): PermitApplicationsEntity {
         permitRepo.findByIdOrNull(id)?.let {
             return it
@@ -677,6 +693,17 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No sample submission found with the following [PERMIT REF NO =$permitRefNumber]")
     }
 
+    fun findInspectionReportListBYPermitRefNumberAndPermitID(
+        permitRefNumber: String,
+        status: Int,
+        permitID: Long
+    ): List<QaInspectionReportRecommendationEntity> {
+        qaInspectionReportRecommendationRepo.findByPermitRefNumberAndPermitId(permitRefNumber, permitID)?.let {
+            return it
+        }
+            ?: throw ExpectedDataNotFound("No Inspection Report Recommendation found with the following PERMIT REF NO =$permitRefNumber")
+    }
+
     fun findSampleSubmittedListPdfBYSSFid(
         ssfID: Long
     ): List<QaSampleSubmittedPdfListDetailsEntity> {
@@ -709,11 +736,25 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Inspection Haccp Implementation found with the following [PERMIT REF NO =$permitRefNumber]")
     }
 
+    fun findQaInspectionHaccpImplementationBYInspectReportID(inspectReportID: Long): QaInspectionHaccpImplementationEntity {
+        qaInspectionHaccpImplementationRepo.findByInspectionRecommendationId(inspectReportID)?.let {
+            return it
+        }
+            ?: throw ExpectedDataNotFound("No Inspection Haccp Implementation found with the following inspect Report ID =$inspectReportID")
+    }
+
     fun findQaInspectionReportRecommendationBYPermitRefNumber(permitRefNumber: String): QaInspectionReportRecommendationEntity {
         qaInspectionReportRecommendationRepo.findTopByPermitRefNumberOrderByIdDesc(permitRefNumber)?.let {
             return it
         }
             ?: throw ExpectedDataNotFound("No Inspection Report Recommendation found with the following [PERMIT REF NO =$permitRefNumber]")
+    }
+
+    fun findQaInspectionReportRecommendationBYID(inspectionReportID: Long): QaInspectionReportRecommendationEntity {
+        qaInspectionReportRecommendationRepo.findByIdOrNull(inspectionReportID)?.let {
+            return it
+        }
+            ?: throw ExpectedDataNotFound("No Inspection Report Recommendation found with the following ID = $inspectionReportID")
     }
 
     fun findQaInspectionOpcBYPermitRefNumber(permitRefNumber: String): List<QaInspectionOpcEntity> {
@@ -722,11 +763,25 @@ class QADaoServices(
         } ?: throw ExpectedDataNotFound("No Inspection OPC found with the following [PERMIT REF NO =$permitRefNumber]")
     }
 
+    fun findQaInspectionOpcBYInspectReportID(inspectReportID: Long): List<QaInspectionOpcEntity> {
+        qaInspectionOPCRepo.findByInspectionRecommendationId(inspectReportID)?.let {
+            return it
+        }
+            ?: throw ExpectedDataNotFound("No Inspection OPC found with the following inspect Report ID =$inspectReportID")
+    }
+
     fun findQaInspectionTechnicalBYPermitRefNumber(permitRefNumber: String): QaInspectionTechnicalEntity {
         qaInspectionTechnicalRepo.findTopByPermitRefNumberOrderByIdDesc(permitRefNumber)?.let {
             return it
         }
             ?: throw ExpectedDataNotFound("No Inspection Technical found with the following [PERMIT REF NO =$permitRefNumber]")
+    }
+
+    fun findQaInspectionTechnicalBYInspectReportID(inspectReportID: Long): QaInspectionTechnicalEntity {
+        qaInspectionTechnicalRepo.findByInspectionRecommendationId(inspectReportID)?.let {
+            return it
+        }
+            ?: throw ExpectedDataNotFound("No Inspection Technical found with the following inspect Report ID =$inspectReportID")
     }
 
     fun findSampleLabTestResultsRepoBYBSNumber(bsNumber: String): List<QaSampleLabTestResultsEntity> {
@@ -985,14 +1040,13 @@ class QADaoServices(
         permitTypeID: Long,
         plantID: Long
     ): List<PermitApplicationsEntity> {
-
-        val permitFoundInAwardedStatus =
-            permitRepo.findByPermitTypeAndEndOfProductionStatusAndPermitAwardStatusAndAttachedPlantIdAndOldPermitStatusIsNull(
-                permitTypeID,
-                endProductionStatus,
-                permitAwardedStatus,
-                plantID
-            )
+//
+//        val permitFoundInAwardedStatus = permitRepo.findByPermitTypeAndEndOfProductionStatusAndPermitAwardStatusAndAttachedPlantIdAndOldPermitStatusIsNull(
+//                permitTypeID,
+//                endProductionStatus,
+//                permitAwardedStatus,
+//                plantID
+//            )
         val permitFoundInApplicationStatus =
             permitRepo.findByPermitTypeAndEndOfProductionStatusAndApplicationStatusAndAttachedPlantIdAndOldPermitStatusIsNull(
                 permitTypeID,
@@ -1002,7 +1056,7 @@ class QADaoServices(
             )
 
         val detailsList = mutableListOf<PermitApplicationsEntity>()
-        permitFoundInAwardedStatus?.let { detailsList.addAll(it) }
+//        permitFoundInAwardedStatus?.let { detailsList.addAll(it) }
         permitFoundInApplicationStatus?.let { detailsList.addAll(it) }
         return detailsList
     }
@@ -1168,13 +1222,25 @@ class QADaoServices(
         } ?: throw ExpectedDataNotFound("No File found with the following [ PERMIT REF NO =$permitRefNumber]")
     }
 
-    fun findAllUploadedFileBYPermitRefNumberAndInspectionReportStatus(
+    fun findAllUploadedFileBYPermitRefNumberAndJustificationReportStatusAndPermitId(
         permitRefNumber: String,
+        status: Int,
+        permitID: Long
+    ): List<QaUploadsEntity> {
+        qaUploadsRepo.findByPermitRefNumberAndJustificationReportStatusAndPermitId(permitRefNumber, status, permitID)
+            ?.let {
+                return it
+            }
+            ?: throw ExpectedDataNotFound("No File found with the following [ PERMIT REF NO =$permitRefNumber and Permit ID = $permitID]")
+    }
+
+    fun findAllUploadedFileBYInspectionReportIDAndInspectionReportStatus(
+        inspectReportID: Long,
         status: Int
     ): List<QaUploadsEntity> {
-        qaUploadsRepo.findByPermitRefNumberAndInspectionReportStatus(permitRefNumber, status)?.let {
+        qaUploadsRepo.findByInspectionReportIdAndInspectionReportStatus(inspectReportID, status)?.let {
             return it
-        } ?: throw ExpectedDataNotFound("No File found with the following [ PERMIT REF NO =$permitRefNumber]")
+        } ?: throw ExpectedDataNotFound("No File found with the following [ inspect Report ID =$inspectReportID]")
     }
 
     fun findAllUploadedFileBYPermitRefNumberAndSta10Status(
@@ -1568,7 +1634,23 @@ class QADaoServices(
     ): InvoiceDetailsDto? {
         return when (permitDetails.invoiceGenerated) {
             1 -> {
-                val v = findPermitInvoiceByPermitID(permitDetails.id ?: throw ExpectedDataNotFound("MISSING PERMIT ID"))
+                var v: QaInvoiceMasterDetailsEntity
+                v = when {
+                    permitDetails.permitType == applicationMapProperties.mapQAPermitTypeIdFmark && permitDetails.smarkGeneratedFrom == 1 -> {
+                        val findSMarkID =
+                            findSmarkWithFmarkId(permitDetails.id ?: throw Exception("MISSING PERMIT ID")).smarkId
+                        val findSMark = findPermitBYUserIDAndId(
+                            findSMarkID ?: throw Exception("NO SMARK ID FOUND WITH FMARK ID"),
+                            permitDetails.userId ?: throw ExpectedDataNotFound("MISSING USER ID")
+                        )
+                        findPermitInvoiceByPermitID(findSMark.id ?: throw ExpectedDataNotFound("MISSING PERMIT ID"))
+
+                    }
+                    else -> {
+                        findPermitInvoiceByPermitID(permitDetails.id ?: throw ExpectedDataNotFound("MISSING PERMIT ID"))
+                    }
+                }
+
                 val myList = findALlInvoicesPermitWithMasterInvoiceID(v.id, 1)
                 InvoiceDetailsDto(
                     v.id,
@@ -1678,6 +1760,10 @@ class QADaoServices(
             resubmitApplicationStatus = permit.resubmitApplicationStatus == 1
             processStep = permit.processStep
             processStatusID = permit.permitStatus
+            if (permit.fmarkGenerated == 1) {
+                fmarkGeneratedID = permit.id?.let { findFmarkWithSmarkId(it).fmarkId }
+            }
+
 
         }
         return p
@@ -1972,7 +2058,7 @@ class QADaoServices(
                     sectionId ?: throw ExpectedDataNotFound("SECTION ID IS MISSING")
                 ).divisionId?.id
                 versionNumber = 1
-                endOfProductionStatus = map.initStatus
+                endOfProductionStatus = map.inactiveStatus
                 companyId = user.companyId
                 status = map.activeStatus
                 fmarkGenerated = map.inactiveStatus
@@ -2148,6 +2234,7 @@ class QADaoServices(
                 }
                 map.inactiveStatus -> {
                     complianceValue = "NON-COMPLIANT"
+                    permitDetails.resubmitApplicationStatus = 1
                     permitDetails.userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
                     permitInsertStatus(permitDetails, applicationMapProperties.mapQaStatusPendingCorrectionManf, user)
                 }
@@ -2237,8 +2324,7 @@ class QADaoServices(
 //                        permitInsertStatus(
 //                            permitDetails,
 //                            applicationMapProperties.mapQaStatusPGeneJustCationReport,
-//                            user
-//                        )
+//                            user )
 //                    } else {
 //                        permitInsertStatus(permitDetails, applicationMapProperties.mapQaStatusPRecommendation, user)
 //                    }
@@ -2734,6 +2820,7 @@ class QADaoServices(
         map: ServiceMapsEntity,
         qaUploads: QaUploadsEntity,
         permitRefNUMBER: String,
+        permitID: Long,
         versionNumberAdded: Long,
         manufactureNonStatus: Int?,
     ): Pair<ServiceRequestsEntity, QaUploadsEntity> {
@@ -2746,6 +2833,7 @@ class QADaoServices(
                 fileType = docFile.contentType
                 documentType = doc
                 document = docFile.bytes
+                permitId = permitID
                 permitRefNumber = permitRefNUMBER
                 transactionDate = commonDaoServices.getCurrentDate()
                 versionNumber = versionNumberAdded
@@ -2961,7 +3049,6 @@ class QADaoServices(
         var sr = commonDaoServices.createServiceRequest(s)
         var updatePermit = permits
         try {
-
             with(updatePermit) {
                 modifiedBy = commonDaoServices.concatenateName(user)
                 modifiedOn = commonDaoServices.getTimestamp()
@@ -3057,6 +3144,7 @@ class QADaoServices(
                 when (permitResubmit.resubmittedDetails) {
                     "resubmitLabNonComplianceResults" -> {
                         resubmitApplicationStatus = 10
+                        compliantStatus = 10
                         resubmitRemarks = permitResubmit.resubmitRemarks
 //                        compliantStatus = null
 //                        compliantRemarks = null
@@ -3072,6 +3160,27 @@ class QADaoServices(
                             null,
                             "MANUFACTURE",
                             "RESUBMIT APPLICATION FOR RE-SAMPLING",
+                            s,
+                            user
+                        )
+                    }
+                    "resubmitPCMReviewCompletenessResults" -> {
+                        resubmitApplicationStatus = 10
+                        resubmitRemarks = permitResubmit.resubmitRemarks
+//                        compliantStatus = null
+//                        compliantRemarks = null
+                        testReportId = null
+                        userTaskId = applicationMapProperties.mapUserTaskNamePCM
+                        permitStatus = applicationMapProperties.mapQaStatusPPCMReview
+
+                        KotlinLogging.logger { }
+                            .info(":::::: SELECTED RESUBMIT IS resubmitPCMReviewCompletenessResults :::::::")
+                        permitAddRemarksDetails(
+                            updatePermit.id ?: throw Exception("ID NOT FOUND"),
+                            permitResubmit.resubmitRemarks,
+                            null,
+                            "MANUFACTURE",
+                            "RESUBMIT APPLICATION FOR REVIEW",
                             s,
                             user
                         )
@@ -3098,6 +3207,152 @@ class QADaoServices(
                             null,
                             "MANUFACTURE",
                             "RESUBMIT APPLICATION FOR RE-REVIEW COMPLETNESS",
+                            s,
+                            user
+                        )
+                    }
+                    "resubmitHofQamPSCRejectionResults" -> {
+                        resubmitApplicationStatus = 10
+                        resubmitRemarks = permitResubmit.resubmitRemarks
+//                        hofQamCompletenessStatus = null
+//                        hofQamCompletenessRemarks = null
+                        permitStatus = applicationMapProperties.mapQaStatusResubmitted
+                        userTaskId = applicationMapProperties.mapUserTaskNameQAM
+                        KotlinLogging.logger { }
+                            .info(":::::: SELECTED RESUBMIT IS resubmitHofQamPSCRejectionResults :::::::")
+                        permitAddRemarksDetails(
+                            updatePermit.id ?: throw Exception("ID NOT FOUND"),
+                            permitResubmit.resubmitRemarks,
+                            null,
+                            "QAO",
+                            "RESUBMIT APPLICATION, DEFERRED BY PSC",
+                            s,
+                            user
+                        )
+                    }
+                    "resubmitHodRmPACRejectionResults" -> {
+                        resubmitApplicationStatus = 10
+                        resubmitRemarks = permitResubmit.resubmitRemarks
+//                        hofQamCompletenessStatus = null
+//                        hofQamCompletenessRemarks = null
+                        permitStatus = applicationMapProperties.mapQaStatusResubmitted
+                        userTaskId = applicationMapProperties.mapUserTaskNameHOD
+                        KotlinLogging.logger { }
+                            .info(":::::: SELECTED RESUBMIT IS resubmitHodRmPACRejectionResults :::::::")
+                        permitAddRemarksDetails(
+                            updatePermit.id ?: throw Exception("ID NOT FOUND"),
+                            permitResubmit.resubmitRemarks,
+                            null,
+                            "QAO/ASSESSOR",
+                            "RESUBMIT APPLICATION, DEFERRED BY PAC",
+                            s,
+                            user
+                        )
+                    }
+                    "resubmitHodRmPCMRejectionResults" -> {
+                        resubmitApplicationStatus = 10
+                        resubmitRemarks = permitResubmit.resubmitRemarks
+//                        hofQamCompletenessStatus = null
+//                        hofQamCompletenessRemarks = null
+                        permitStatus = applicationMapProperties.mapQaStatusResubmitted
+                        userTaskId = applicationMapProperties.mapUserTaskNameHOD
+                        KotlinLogging.logger { }
+                            .info(":::::: SELECTED RESUBMIT IS resubmitHodRmPCMRejectionResults :::::::")
+                        permitAddRemarksDetails(
+                            updatePermit.id ?: throw Exception("ID NOT FOUND"),
+                            permitResubmit.resubmitRemarks,
+                            null,
+                            "QAO/ASSESSOR",
+                            "RESUBMIT APPLICATION, DEFERRED BY PCM",
+                            s,
+                            user
+                        )
+                    }
+                    "resubmitHofQamPCMRejectionResults" -> {
+                        resubmitApplicationStatus = 10
+                        resubmitRemarks = permitResubmit.resubmitRemarks
+//                        hofQamCompletenessStatus = null
+//                        hofQamCompletenessRemarks = null
+                        permitStatus = applicationMapProperties.mapQaStatusResubmitted
+                        userTaskId = applicationMapProperties.mapUserTaskNameQAM
+                        KotlinLogging.logger { }
+                            .info(":::::: SELECTED RESUBMIT IS resubmitHofQamPCMRejectionResults :::::::")
+                        permitAddRemarksDetails(
+                            updatePermit.id ?: throw Exception("ID NOT FOUND"),
+                            permitResubmit.resubmitRemarks,
+                            null,
+                            "QAO",
+                            "RESUBMIT APPLICATION, DEFERRED BY PCM",
+                            s,
+                            user
+                        )
+                    }
+                    "resubmitHofQamToPSCResults" -> {
+                        resubmitApplicationStatus = 10
+                        resubmitRemarks = permitResubmit.resubmitRemarks
+                        pscMemberApprovalStatus = 10
+                        permitStatus = applicationMapProperties.mapQaStatusPPSCMembersAward
+                        userTaskId = applicationMapProperties.mapUserTaskNamePSC
+                        KotlinLogging.logger { }.info(":::::: SELECTED RESUBMIT IS resubmitHofQamToPSCResults :::::::")
+                        permitAddRemarksDetails(
+                            updatePermit.id ?: throw Exception("ID NOT FOUND"),
+                            permitResubmit.resubmitRemarks,
+                            null,
+                            "HOF/QAM",
+                            "RESUBMIT APPLICATION, DEFERRED BY PSC",
+                            s,
+                            user
+                        )
+                    }
+                    "resubmitHodRmToPACResults" -> {
+                        resubmitApplicationStatus = 10
+                        resubmitRemarks = permitResubmit.resubmitRemarks
+                        pacDecisionStatus = 10
+                        permitStatus = applicationMapProperties.mapQaStatusPPACSecretaryAwarding
+                        userTaskId = applicationMapProperties.mapUserTaskNamePACSECRETARY
+                        KotlinLogging.logger { }.info(":::::: SELECTED RESUBMIT IS resubmitHofQamToPSCResults :::::::")
+                        permitAddRemarksDetails(
+                            updatePermit.id ?: throw Exception("ID NOT FOUND"),
+                            permitResubmit.resubmitRemarks,
+                            null,
+                            "HOD/RM",
+                            "RESUBMIT APPLICATION, DEFERRED BY PAC",
+                            s,
+                            user
+                        )
+                    }
+                    "resubmitHofQamToPCMResults" -> {
+                        resubmitApplicationStatus = 10
+                        resubmitRemarks = permitResubmit.resubmitRemarks
+                        pcmApprovalStatus = 10
+                        pscMemberApprovalStatus = 20
+                        permitStatus = applicationMapProperties.mapQaStatusPPSCMembersAward
+                        userTaskId = applicationMapProperties.mapUserTaskNamePSC
+                        KotlinLogging.logger { }.info(":::::: SELECTED RESUBMIT IS resubmitHofQamToPSCResults :::::::")
+                        permitAddRemarksDetails(
+                            updatePermit.id ?: throw Exception("ID NOT FOUND"),
+                            permitResubmit.resubmitRemarks,
+                            null,
+                            "HOF/QAM",
+                            "RESUBMIT APPLICATION, DEFERRED BY PCM",
+                            s,
+                            user
+                        )
+                    }
+                    "resubmitHodRmToPCMResults" -> {
+                        resubmitApplicationStatus = 10
+                        resubmitRemarks = permitResubmit.resubmitRemarks
+                        pcmApprovalStatus = 10
+                        pacDecisionStatus = 20
+                        permitStatus = applicationMapProperties.mapQaStatusPPACSecretaryAwarding
+                        userTaskId = applicationMapProperties.mapUserTaskNamePACSECRETARY
+                        KotlinLogging.logger { }.info(":::::: SELECTED RESUBMIT IS resubmitHodRmToPCMResults :::::::")
+                        permitAddRemarksDetails(
+                            updatePermit.id ?: throw Exception("ID NOT FOUND"),
+                            permitResubmit.resubmitRemarks,
+                            null,
+                            "HOD/RM",
+                            "RESUBMIT APPLICATION, DEFERRED BY PCM",
                             s,
                             user
                         )
@@ -3254,7 +3509,7 @@ class QADaoServices(
     ): Pair<ServiceRequestsEntity, PermitApplicationsEntity> {
 
         var sr = commonDaoServices.createServiceRequest(s)
-        var savePermit = PermitApplicationsEntity()
+        var saveNewPermit = PermitApplicationsEntity()
         try {
             val pm = findPermitBYID(permitID)
             var oldPermit =
@@ -3271,7 +3526,7 @@ class QADaoServices(
 
             val permitTypeDetails = findPermitType(oldPermit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
 
-            with(savePermit) {
+            with(saveNewPermit) {
                 renewalStatus = s.activeStatus
                 userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
                 userId = user.id
@@ -3280,7 +3535,7 @@ class QADaoServices(
                 permitRefNumber = oldPermit.permitRefNumber
                 enabled = s.initStatus
                 versionNumber = versionNumberOld.plus(1)
-                endOfProductionStatus = s.initStatus
+                endOfProductionStatus = s.inactiveStatus
                 commodityDescription = oldPermit.commodityDescription
                 firmName = oldPermit.firmName
                 postalAddress = oldPermit.postalAddress
@@ -3305,18 +3560,21 @@ class QADaoServices(
                 createdBy = commonDaoServices.concatenateName(user)
                 createdOn = commonDaoServices.getTimestamp()
             }
-            savePermit = permitRepo.save(savePermit)
+            saveNewPermit = permitRepo.save(saveNewPermit)
 
             when (oldPermit.permitType) {
                 applicationMapProperties.mapQAPermitTypeIdSmark -> {
-                    val sta10 = findSTA10WithPermitRefNumberANdPermitID(
+                    val oldSta10 = findSTA10WithPermitRefNumberANdPermitID(
                         oldPermit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
                         oldPermit.id ?: throw Exception("INVALID PERMIT ID")
                     )
                     var newSta10 = QaSta10Entity()
-                    newSta10 = commonDaoServices.updateDetails(sta10, newSta10) as QaSta10Entity
+                    newSta10 = commonDaoServices.updateDetails(oldSta10, newSta10) as QaSta10Entity
                     newSta10.id = null
-                    sta10NewSave(savePermit, newSta10, user, s)
+                    sta10NewSave(saveNewPermit, newSta10, user, s)
+
+                    regenerateSameDetailsForClonedSTA10(newSta10, oldSta10, oldPermit, saveNewPermit)
+
                 }
                 applicationMapProperties.mapQAPermitTypeIDDmark -> {
                     val sta3 = findSTA3WithPermitIDAndRefNumber(
@@ -3327,18 +3585,31 @@ class QADaoServices(
                     newSta3 = commonDaoServices.updateDetails(sta3, newSta3) as QaSta3Entity
                     newSta3.id = null
                     sta3NewSave(
-                        savePermit.id ?: throw Exception("INVALID PERMITID"),
-                        savePermit.permitRefNumber ?: throw Exception("INVALID PERMITID"),
+                        saveNewPermit.id ?: throw Exception("INVALID PERMIT ID"),
+                        saveNewPermit.permitRefNumber ?: throw Exception("INVALID PERMIT ID"),
                         newSta3,
                         user,
                         s
                     )
+
+                    val sta3FileList = findAllUploadedFileBYPermitIDAndSta3Status(
+                        oldPermit.id ?: throw Exception("MISSING PERMIT ID"),
+                        1
+                    )
+                    sta3FileList.forEach { fileList ->
+                        val newFileList = SerializationUtils.clone(fileList)
+                        with(newFileList) {
+                            id = null
+                            permitId = saveNewPermit.id
+                        }
+                        qaUploadsRepo.save(newFileList)
+                    }
                 }
             }
 
-            sr.payload = "Permit Renewed Updated [updatePermit= ${savePermit.id}]"
-            sr.names = "${savePermit.permitRefNumber}} ${savePermit.userId}"
-            sr.varField1 = "${savePermit.id}"
+            sr.payload = "Permit Renewed Updated [updatePermit= ${saveNewPermit.id}]"
+            sr.names = "${saveNewPermit.permitRefNumber}} ${saveNewPermit.userId}"
+            sr.varField1 = "${saveNewPermit.id}"
 
             sr.responseStatus = sr.serviceMapsId?.successStatusCode
             sr.responseMessage = "Success ${sr.payload}"
@@ -3357,7 +3628,85 @@ class QADaoServices(
         }
 
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
-        return Pair(sr, savePermit)
+        return Pair(sr, saveNewPermit)
+    }
+
+    fun regenerateSameDetailsForClonedSTA10(
+        newSta10: QaSta10Entity,
+        oldSta10: QaSta10Entity,
+        oldPermit: PermitApplicationsEntity,
+        newPermit: PermitApplicationsEntity
+    ) {
+        //Find all STA 10 related Tables
+        val qaSta10ID = newSta10.id ?: throw ExpectedDataNotFound("MISSING STA 10 ID")
+        val qaOldSta10ID = oldSta10.id ?: throw ExpectedDataNotFound("MISSING STA 10 ID")
+        val sta10Personnel = findPersonnelWithSTA10ID(qaOldSta10ID) ?: throw ExpectedDataNotFound("EMPTY RESULTS")
+        sta10Personnel.forEach { personnel ->
+            val newPersonnel = SerializationUtils.clone(personnel)
+            with(newPersonnel) {
+                id = null
+                sta10Id = qaSta10ID
+            }
+            qaPersonnelInchargeRepo.save(newPersonnel)
+
+        }
+
+
+        val sta10Products =
+            findProductsManufactureWithSTA10ID(qaOldSta10ID) ?: throw ExpectedDataNotFound("EMPTY RESULTS")
+        sta10Products.forEach { products ->
+            val newProducts = SerializationUtils.clone(products)
+            with(newProducts) {
+                id = null
+                sta10Id = qaSta10ID
+            }
+            productsManufactureSTA10Repo.save(newProducts)
+
+        }
+
+        val sta10Raw = findRawMaterialsWithSTA10ID(qaOldSta10ID) ?: throw ExpectedDataNotFound("EMPTY RESULTS")
+        sta10Raw.forEach { raw ->
+            val newRaw = SerializationUtils.clone(raw)
+            with(newRaw) {
+                id = null
+                sta10Id = qaSta10ID
+            }
+            rawMaterialsSTA10Repo.save(newRaw)
+
+        }
+
+        val sta10MachinePlant =
+            findMachinePlantsWithSTA10ID(qaOldSta10ID) ?: throw ExpectedDataNotFound("EMPTY RESULTS")
+        sta10MachinePlant.forEach { machinaryPlant ->
+            val newMachinaryPlant = SerializationUtils.clone(machinaryPlant)
+            with(newMachinaryPlant) {
+                id = null
+                sta10Id = qaSta10ID
+            }
+            machinePlantsSTA10Repo.save(newMachinaryPlant)
+
+        }
+        val sta10ManufacturingProcess =
+            findManufacturingProcessesWithSTA10ID(qaOldSta10ID) ?: throw ExpectedDataNotFound("EMPTY RESULTS")
+        sta10ManufacturingProcess.forEach { manufacturingProcess ->
+            val newManufacturingProcess = SerializationUtils.clone(manufacturingProcess)
+            with(newManufacturingProcess) {
+                id = null
+                sta10Id = qaSta10ID
+            }
+            manufacturingProcessSTA10Repo.save(newManufacturingProcess)
+
+        }
+        val sta10FileList =
+            findAllUploadedFileBYPermitIDAndSta10Status(oldPermit.id ?: throw Exception("MISSING PERMIT ID"), 1)
+        sta10FileList.forEach { fileList ->
+            val newFileList = SerializationUtils.clone(fileList)
+            with(newFileList) {
+                id = null
+                permitId = newPermit.id
+            }
+            qaUploadsRepo.save(newFileList)
+        }
     }
 
     fun getFileInvoicePDFForm(batchID: Long): File {
@@ -3462,13 +3811,11 @@ class QADaoServices(
         }
     }
 
-    fun sendEmailWithSSC(recipient: String, attachment: String?, permitRefNumber: String): Boolean {
+    fun sendEmailWithSSC(recipient: String, permitRefNumber: String): Boolean {
         val subject = "SSC GENERATED"
-        val messageBody =
-            "Check The attached SCHEME OF SUPERVISION AND CONTROL for permit with Ref number $permitRefNumber" +
-                    "and Approve or reject it on KIMS system for your application to continue being processesd"
+        val messageBody = "SCHEME OF SUPERVISION AND CONTROL for permit with Ref number $permitRefNumber, Has been Sent"
 
-        notifications.processEmail(recipient, subject, messageBody, attachment)
+        notifications.processEmail(recipient, subject, messageBody, null)
 
         return true
     }
@@ -3545,13 +3892,12 @@ class QADaoServices(
         user: UsersEntity,
         permitID: Long,
         inspectionTechnical: QaInspectionTechnicalEntity,
-    ): ServiceRequestsEntity {
+    ): Pair<ServiceRequestsEntity, QaInspectionTechnicalEntity> {
 
         var sr = commonDaoServices.createServiceRequest(s)
+        val permitFound = findPermitBYID(permitID)
+        var inspectionTechnicalDetails = inspectionTechnical
         try {
-
-            val permitFound = findPermitBYID(permitID)
-            var inspectionTechnicalDetails = inspectionTechnical
 
             qaInspectionTechnicalRepo.findByIdOrNull(inspectionTechnical.id ?: -1L)
                 ?.let { iTDetails ->
@@ -3566,18 +3912,16 @@ class QADaoServices(
                     inspectionTechnicalDetails = qaInspectionTechnicalRepo.save(inspectionTechnicalDetails)
                 }
                 ?: kotlin.run {
-
-                    with(inspectionTechnicalDetails) {
-                        permitId = permitFound.id
-                        permitRefNumber = permitFound.permitRefNumber
-                        status = s.activeStatus
-                        createdBy = commonDaoServices.concatenateName(user)
-                        createdOn = commonDaoServices.getTimestamp()
-                    }
-                    inspectionTechnicalDetails = qaInspectionTechnicalRepo.save(inspectionTechnicalDetails)
-
                     var qaInspectionReportRecommendation = QaInspectionReportRecommendationEntity()
                     with(qaInspectionReportRecommendation) {
+                        refNo = "REF${
+                            generateRandomText(
+                                5,
+                                s.secureRandom,
+                                s.messageDigestAlgorithm,
+                                true
+                            )
+                        }".toUpperCase()
                         permitId = permitFound.id
                         permitRefNumber = permitFound.permitRefNumber
                         filledQpsmsStatus = s.activeStatus
@@ -3587,6 +3931,19 @@ class QADaoServices(
                     }
                     qaInspectionReportRecommendation =
                         qaInspectionReportRecommendationRepo.save(qaInspectionReportRecommendation)
+
+
+                    with(inspectionTechnicalDetails) {
+                        inspectionRecommendationId = qaInspectionReportRecommendation.id
+                        permitId = permitFound.id
+                        permitRefNumber = permitFound.permitRefNumber
+                        status = s.activeStatus
+                        createdBy = commonDaoServices.concatenateName(user)
+                        createdOn = commonDaoServices.getTimestamp()
+                    }
+                    inspectionTechnicalDetails = qaInspectionTechnicalRepo.save(inspectionTechnicalDetails)
+
+
                 }
 
             permitFound.inspectionReportGenerated = s.activeStatus
@@ -3616,7 +3973,7 @@ class QADaoServices(
         }
 
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
-        return sr
+        return Pair(sr, inspectionTechnicalDetails)
     }
 
     fun permitAddNewInspectionReportDetailsHaccp(
@@ -3624,6 +3981,7 @@ class QADaoServices(
         user: UsersEntity,
         permitID: Long,
         haccpImplementation: QaInspectionHaccpImplementationEntity,
+        qaInspectionReportRecommendation: QaInspectionReportRecommendationEntity,
     ): ServiceRequestsEntity {
 
         var sr = commonDaoServices.createServiceRequest(s)
@@ -3649,6 +4007,7 @@ class QADaoServices(
                 ?: kotlin.run {
 
                     with(haccpAddedDetails) {
+                        inspectionRecommendationId = qaInspectionReportRecommendation.id
                         permitId = permitFound.id
                         permitRefNumber = permitFound.permitRefNumber
                         status = s.activeStatus
@@ -3657,9 +4016,9 @@ class QADaoServices(
                     }
                     haccpAddedDetails = qaInspectionHaccpImplementationRepo.save(haccpAddedDetails)
 
-                    var qaInspectionReportRecommendation = findQaInspectionReportRecommendationBYPermitRefNumber(
-                        permitFound.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER FOUND")
-                    )
+//                    var qaInspectionReportRecommendation = findQaInspectionReportRecommendationBYPermitRefNumber(
+//                        permitFound.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER FOUND")
+//                    )
                     with(qaInspectionReportRecommendation) {
                         filledHaccpImplementationStatus = s.activeStatus
                     }
@@ -3738,6 +4097,7 @@ class QADaoServices(
         user: UsersEntity,
         permitID: Long,
         opc: QaInspectionOpcEntity,
+        qaInspectionReportRecommendation: QaInspectionReportRecommendationEntity,
     ): ServiceRequestsEntity {
 
         var sr = commonDaoServices.createServiceRequest(s)
@@ -3760,6 +4120,7 @@ class QADaoServices(
                 ?: kotlin.run {
 
                     with(opcAddedDetails) {
+                        inspectionRecommendationId = qaInspectionReportRecommendation.id
                         permitId = permitFound.id
                         permitRefNumber = permitFound.permitRefNumber
                         status = s.activeStatus
@@ -3768,9 +4129,9 @@ class QADaoServices(
                     }
                     opcAddedDetails = qaInspectionOPCRepo.save(opcAddedDetails)
 
-                    var qaInspectionReportRecommendation = findQaInspectionReportRecommendationBYPermitRefNumber(
-                        permitFound.permitRefNumber ?: throw Exception("INVALID PERMIT ID FOUND")
-                    )
+//                    var qaInspectionReportRecommendation = findQaInspectionReportRecommendationBYPermitRefNumber(
+//                        permitFound.permitRefNumber ?: throw Exception("INVALID PERMIT ID FOUND")
+//                    )
                     with(qaInspectionReportRecommendation) {
                         filledOpcStatus = s.activeStatus
                     }
@@ -4195,6 +4556,7 @@ class QADaoServices(
             KotlinLogging.logger { }.info { "PLANT ID = ${plantDetail.id}" }
             val manufactureTurnOver =
                 companyDetails.yearlyTurnover ?: throw Exception("MISSING COMPANY TURNOVER DETAILS")
+            //Todo ask ken why list comming back does not have the product that is being generated for.
             val productsManufacture = findAllProductManufactureInPlantWithPlantID(
                 s.activeStatus,
                 s.activeStatus,
@@ -4202,29 +4564,20 @@ class QADaoServices(
                 permitType.id ?: throw Exception("MISSING PERMIT TYPE ID"),
                 plantDetail.id
             )
-            KotlinLogging.logger { }.info { "PRODUCT SIZE = ${productsManufacture.size}" }
+
+            KotlinLogging.logger { }.info { "PRODUCT SIZE = ${productsManufacture.size.plus(1)}" }
             when (permitType.id) {
                 applicationMapProperties.mapQAPermitTypeIdSmark -> {
                     invoiceGenerated = qaInvoiceCalculation.calculatePaymentSMark(
                         permit,
                         user,
                         manufactureTurnOver,
-                        productsManufacture.size.toLong(),
+                        productsManufacture.size.plus(1).toLong(),
                         plantDetail
                     )
                 }
                 applicationMapProperties.mapQAPermitTypeIDDmark -> {
                     invoiceGenerated = qaInvoiceCalculation.calculatePaymentDMark(permit, user, permitType)
-
-                    if (invoiceDetails != null) {
-                        qaInvoiceCalculation.calculatePaymentOtherDetails(
-                            permit,
-                            user,
-                            invoiceDetails,
-                            invoiceGenerated
-                        )
-                        invoiceGenerated = qaInvoiceCalculation.calculateTotalInvoiceAmountToPay(invoiceGenerated, user)
-                    }
 
                 }
                 applicationMapProperties.mapQAPermitTypeIdFmark -> {
@@ -4414,6 +4767,129 @@ class QADaoServices(
 //            }
 
             sr.payload = "savedSmarkFmarkId [id= ${savedSmarkFmarkId.id}]"
+            sr.names = " Fmark created ID = ${fmarkPermit.id} SMARK TIED ID = ${permit.id}"
+            sr.varField1 = "${fmarkPermit.id}"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = s.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return Pair(sr, fmarkPermit)
+    }
+
+
+    fun permitGenerateFMarkFromAwardedPermit(
+        s: ServiceMapsEntity,
+        user: UsersEntity,
+        permit: PermitApplicationsEntity
+    ): Pair<ServiceRequestsEntity, PermitApplicationsEntity> {
+
+        var sr = commonDaoServices.createServiceRequest(s)
+        var fmarkPermit = PermitApplicationsEntity()
+        try {
+
+            val permitTypeDetails = findPermitType(applicationMapProperties.mapQAPermitTypeIdFmark)
+//            fmarkPermit = SerializationUtils.clone(permit)
+
+            fmarkPermit = commonDaoServices.updateDetails(
+                permit,
+                fmarkPermit
+            ) as PermitApplicationsEntity
+
+            with(fmarkPermit) {
+                id = null
+                smarkGeneratedFrom = 1
+                permitType = permitTypeDetails.id
+                permitStatus = applicationMapProperties.mapQaStatusPermitAwarded
+                permitRefNumber = "REF${permitTypeDetails.markNumber}${
+                    generateRandomText(
+                        5,
+                        s.secureRandom,
+                        s.messageDigestAlgorithm,
+                        true
+                    )
+                }".toUpperCase()
+                awardedPermitNumber = "${permitTypeDetails.markNumber}${
+                    generateRandomText(
+                        6,
+                        s.secureRandom,
+                        s.messageDigestAlgorithm,
+                        false
+                    )
+                }".toUpperCase()
+
+
+            }
+
+            fmarkPermit = permitRepo.save(fmarkPermit)
+
+            val savedSMarkFMarkId = generateSmarkFmarkEntity(permit, fmarkPermit, user)
+
+            when (permit.permitType) {
+                applicationMapProperties.mapQAPermitTypeIdSmark -> {
+                    val oldSta10 = findSTA10WithPermitRefNumberANdPermitID(
+                        permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+                        permit.id ?: throw Exception("INVALID PERMIT ID")
+                    )
+                    var newSta10 = QaSta10Entity()
+                    newSta10 = commonDaoServices.updateDetails(oldSta10, newSta10) as QaSta10Entity
+                    newSta10.id = null
+                    sta10NewSave(fmarkPermit, newSta10, user, s)
+
+                    regenerateSameDetailsForClonedSTA10(newSta10, oldSta10, permit, fmarkPermit)
+
+                }
+                applicationMapProperties.mapQAPermitTypeIDDmark -> {
+                    val sta3 = findSTA3WithPermitIDAndRefNumber(
+                        permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+                        permit.id ?: throw Exception("INVALID PERMIT ID")
+                    )
+                    var newSta3 = QaSta3Entity()
+                    newSta3 = commonDaoServices.updateDetails(sta3, newSta3) as QaSta3Entity
+                    newSta3.id = null
+                    sta3NewSave(
+                        fmarkPermit.id ?: throw Exception("INVALID PERMIT ID"),
+                        fmarkPermit.permitRefNumber ?: throw Exception("INVALID PERMIT ID"),
+                        newSta3,
+                        user,
+                        s
+                    )
+
+                    val sta3FileList = findAllUploadedFileBYPermitIDAndSta3Status(
+                        permit.id ?: throw Exception("MISSING PERMIT ID"),
+                        1
+                    )
+                    sta3FileList.forEach { fileList ->
+                        val newFileList = SerializationUtils.clone(fileList)
+                        with(newFileList) {
+                            id = null
+                            permitId = fmarkPermit.id
+                        }
+                        qaUploadsRepo.save(newFileList)
+                    }
+                }
+            }
+
+            with(permit) {
+                fmarkGenerated = 1
+            }
+
+            permitUpdateDetails(permit, s, user)
+
+            sr.payload = "savedSmarkFmarkId [id= ${savedSMarkFMarkId.id}]"
             sr.names = " Fmark created ID = ${fmarkPermit.id} SMARK TIED ID = ${permit.id}"
             sr.varField1 = "${fmarkPermit.id}"
 
@@ -4772,6 +5248,17 @@ class QADaoServices(
         manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
     }
 
+    fun sendNotificationForPermitCorrectnessFromQamHod(permitDetails: PermitApplicationsEntity) {
+        val manufacturer = permitDetails.qaoId?.let { commonDaoServices.findUserByID(it) }
+        val subject = "AWARDING OF PERMIT CORRECTION"
+        val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
+                "\n " +
+                "The following permit with REF number ${permitDetails.permitRefNumber}, Has been rejected due to the following reasons: ${permitDetails.hodQamApproveRejectRemarks} \n" +
+                "Please do some correction and send it back for approval : ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id} \n"
+
+        manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
+    }
+
     fun sendNotificationForDeferredPermitToQaoFromPSC(permitDetails: PermitApplicationsEntity) {
         val manufacturer = permitDetails.qaoId?.let { commonDaoServices.findUserByID(it) }
         val subject = "AWARDING OF PERMIT DEFERRED "
@@ -4849,7 +5336,7 @@ class QADaoServices(
         manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
     }
 
-    fun sendNotificationForAwardedPermitToManufacture(permitDetails: PermitApplicationsEntity, attachment: String) {
+    fun sendNotificationForAwardedPermitToManufacture(permitDetails: PermitApplicationsEntity) {
         val manufacturer = permitDetails.userId?.let { commonDaoServices.findUserByID(it) }
         val subject = "PERMIT AWARDED"
         val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
@@ -4857,7 +5344,7 @@ class QADaoServices(
                 "The following permit application with REF NUMBER ${permitDetails.permitRefNumber}, has been awarded" +
                 "Find attached permit certificate issued"
 
-        manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody, attachment) }
+        manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody, null) }
     }
 
     fun sendNotificationPCMForAwardingPermit(permitDetails: PermitApplicationsEntity) {
@@ -4908,7 +5395,7 @@ class QADaoServices(
         return sta3
     }
 
-    fun mapDtoSTA3View(sta3: QaSta3Entity): STA3Dto {
+    fun mapDtoSTA3View(sta3: QaSta3Entity, permitID: Long): STA3Dto {
         val sta3ViewDto = STA3Dto()
         with(sta3ViewDto) {
             produceOrdersOrStock = sta3.produceOrdersOrStock
@@ -4939,6 +5426,7 @@ class QADaoServices(
             levelClaimsComplaints = sta3.levelClaimsComplaints
             independentTests = sta3.independentTests
             indicateStageManufacture = sta3.indicateStageManufacture
+            sta3FilesList = findAllUploadedFileBYPermitIDAndSta3Status(permitID, 1).let { listFilesDto(it) }
         }
 
         return sta3ViewDto

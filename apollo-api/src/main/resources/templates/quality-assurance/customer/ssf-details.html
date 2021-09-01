@@ -332,8 +332,7 @@
                         <div class="qaSSFForm">
                             <form id="qa-ssf-form" name="qa-ssf-form" enctype="multipart/form-data"
                                   th:action="@{/api/qa/kebs/ssf-results-compliance-status/save(ssfID = ${ssfDetails?.id})}"
-                                  method="post"
-                                  th:object="${SampleSubmissionDetails}">
+                                  method="post" th:object="${SampleSubmissionDetails}">
                                 <div class="modal fade" id="qaSSFModal" tabindex="-1" role="dialog"
                                      aria-labelledby="qaSSFModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
@@ -341,7 +340,7 @@
                                             <div class="modal-header">
                                                 <h5 style="font-weight: bold; " class="modal-title"
                                                     id="qaSSFModalLabel"><span
-                                                        id="spanSSFValue">none</span></h5>
+                                                        id="spanSSFValue">Add Compliance Status</span></h5>
                                                 <button type="button" class="close" data-dismiss="modal"
                                                         onClick="refreshPage()"
                                                         aria-label="Close">
@@ -350,7 +349,6 @@
                                             </div>
                                             <div class="modal-body">
                                                 <div class="form-group">
-
 
                                                     <div id="addComplianceStatusDetailsSSF">
                                                         <label for="resultsAnalysis" class="col-form-label">Select a
@@ -375,8 +373,7 @@
                                             </div>
                                             <div class="modal-footer">
                                                 <button class="btn btn-secondary" data-dismiss="modal"
-                                                        onClick="refreshPage()"
-                                                        type="button">Close
+                                                        onClick="refreshPage()" type="button">Close
                                                 </button>
                                                 <input type="submit" id="saveSSfValue" class="btn btn-primary"
                                                        value="Save"/>
@@ -542,8 +539,8 @@
                 document.getElementById(arrHead[h]).remove();
             } else {
                 if (eventAction === arrHead[h]) {
-                    document.getElementById('spanValueCommodity').innerHTML = arrHeadSave[h];
-                    document.getElementById("saveValueCommodity").value = 'Submit';
+                    document.getElementById('spanSSFValue').innerHTML = arrHeadSave[h];
+                    document.getElementById("saveSSfValue").value = 'Submit';
                 }
             }
         }

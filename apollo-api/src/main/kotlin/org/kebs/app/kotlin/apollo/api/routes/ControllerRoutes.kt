@@ -205,6 +205,13 @@ class ControllerRoutes {
         }
     }
 
+//     @Bean
+//    fun ApiBackGroundImageRoute(handler: ImagesHandlers) = router {
+//        "/api/v1".nest {
+//            POST("/smark/backgroud/image", handler::smarkBackGroundImage)
+//        }
+//    }
+
     @Bean
     fun utilitiesRoute(handler: UtilitiesHandler) = router {
         "/api/utilities".nest {
@@ -355,6 +362,7 @@ class ControllerRoutes {
             }
             "/inspection".nest {
                 GET("/new-inspection-report", handler::newInspectionReport)
+                GET("/inspection-report-list", handler::getInspectionListDetails)
                 GET("/inspection-report-details", handler::inspectionReportDetails)
                 GET("/check-results", handler::checkLabResults)
                 GET("/ssf-list", handler::getSSfListDetails)

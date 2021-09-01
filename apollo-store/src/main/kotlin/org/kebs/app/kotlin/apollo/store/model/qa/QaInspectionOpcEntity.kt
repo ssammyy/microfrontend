@@ -26,6 +26,10 @@ class QaInspectionOpcEntity : Serializable {
     @Basic
     var operations: String? = null
 
+    @Column(name = "INSPECTION_RECOMMENDATION_ID")
+    @Basic
+    var inspectionRecommendationId: Long? = null
+
     @Column(name = "QUALITY_CHECKS")
     @Basic
     var qualityChecks: String? = null
@@ -127,14 +131,16 @@ class QaInspectionOpcEntity : Serializable {
         val that = other as QaInspectionOpcEntity
         return id == that.id && processFlow == that.processFlow &&
                 permitRefNumber == that.permitRefNumber &&
+                inspectionRecommendationId == that.inspectionRecommendationId &&
                 operations == that.operations && qualityChecks == that.qualityChecks && frequency == that.frequency && records == that.records && findings == that.findings && description == that.description && permitId == that.permitId && status == that.status && varField1 == that.varField1 && varField2 == that.varField2 && varField3 == that.varField3 && varField4 == that.varField4 && varField5 == that.varField5 && varField6 == that.varField6 && varField7 == that.varField7 && varField8 == that.varField8 && varField9 == that.varField9 && varField10 == that.varField10 && createdBy == that.createdBy && createdOn == that.createdOn && modifiedBy == that.modifiedBy && modifiedOn == that.modifiedOn && deleteBy == that.deleteBy && deletedOn == that.deletedOn
     }
 
     override fun hashCode(): Int {
         return Objects.hash(
             id,
+            inspectionRecommendationId,
             processFlow,
-             permitRefNumber,
+            permitRefNumber,
             operations,
             qualityChecks,
             frequency,

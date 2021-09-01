@@ -204,6 +204,10 @@ class PermitApplicationsEntity : Serializable {
     @Basic
     var permitType: Long? = null
 
+    @Column(name = "SMARK_GENERATED_FROM")
+    @Basic
+    var smarkGeneratedFrom: Int? = null
+
     @Column(name = "DIVISION_ID")
     @Basic
     var divisionId: Long? = null
@@ -400,6 +404,14 @@ class PermitApplicationsEntity : Serializable {
     @Column(name = "END_OF_PRODUCTION_REMARKS")
     @Basic
     var endOfProductionRemarks: String? = null
+
+    @Column(name = "HOD_QAM_APPROVE_REJECT_STATUS")
+    @Basic
+    var hodQamApproveRejectStatus: Int? = null
+
+    @Column(name = "HOD_QAM_APPROVE_REJECT_REMARKS")
+    @Basic
+    var hodQamApproveRejectRemarks: String? = null
 
     @Column(name = "TITLE")
     @Basic
@@ -819,6 +831,8 @@ class PermitApplicationsEntity : Serializable {
         return id == that.id && cocId == that.cocId
                 && factoryVisit == that.factoryVisit
                 && processStep == that.processStep
+                && hodQamApproveRejectStatus == that.hodQamApproveRejectStatus
+                && hodQamApproveRejectRemarks == that.hodQamApproveRejectRemarks
                 && fmarkGenerateStatus == that.fmarkGenerateStatus
                 && ssfCompletedStatus == that.ssfCompletedStatus
                 && permitFeeToken == that.permitFeeToken
@@ -839,6 +853,8 @@ class PermitApplicationsEntity : Serializable {
     override fun hashCode(): Int {
         return Objects.hash(
             id,
+            hodQamApproveRejectStatus,
+            hodQamApproveRejectRemarks,
             companyId,
             applicationStatus,
             permitFeeToken,

@@ -680,9 +680,9 @@ class DITest {
     @Test
     fun generateQaRandomInvoice() {
         val appId = applicationMapProperties.mapImportInspection
-       val loggedInUser =  usersRepo.findByUserName("0715668934")
+        val loggedInUser = usersRepo.findByUserName("KateWin")
         val map = commonDaoServices.serviceMapDetails(appId)
-        val permit = qaDaoServices.findPermitBYID(2)
+        val permit = qaDaoServices.findPermitBYID(1669)
         val permitType = qaDaoServices.findPermitType(2)
         if (loggedInUser != null) {
             qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, null)

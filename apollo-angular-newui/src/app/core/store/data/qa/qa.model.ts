@@ -179,6 +179,7 @@ export class PermitEntityDetails {
     resubmitApplicationStatus: boolean;
     processStep: number;
     processStatusID: number;
+    fmarkGeneratedID: number;
 }
 
 
@@ -212,6 +213,7 @@ export class STA3 {
     levelClaimsComplaints: string;
     independentTests: string;
     indicateStageManufacture: string;
+    sta3FilesList: FilesListDto[];
 }
 
 export class SectionDto {

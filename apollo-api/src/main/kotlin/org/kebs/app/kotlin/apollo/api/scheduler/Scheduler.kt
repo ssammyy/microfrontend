@@ -1,6 +1,5 @@
 package org.kebs.app.kotlin.apollo.api.scheduler
 
-import mu.KotlinLogging
 import org.joda.time.DateTime
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SchedulerImpl
@@ -47,6 +46,7 @@ class Scheduler(
         schedulerImpl.updatePaidDemandNotesStatus()
         qaDaoServices.assignPermitApplicationAfterPayment()
         schedulerImpl.updateLabResultsWithDetails()
+        schedulerImpl.updateFirmTypeStatus()
     }
 
     @Scheduled(fixedDelay = 600000)

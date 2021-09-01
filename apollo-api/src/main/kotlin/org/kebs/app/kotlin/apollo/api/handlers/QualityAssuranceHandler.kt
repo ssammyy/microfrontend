@@ -22,7 +22,6 @@
 package org.kebs.app.kotlin.apollo.api.handlers
 
 //import org.kebs.app.kotlin.apollo.api.ports.provided.createUserAlert
-import com.google.gson.Gson
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.QualityAssuranceBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
@@ -102,6 +101,7 @@ class QualityAssuranceHandler(
     private val qaSSFListDetailesPage = "quality-assurance/customer/ssf-list"
     private val qaAllWorkPlanCreatedListPage = "quality-assurance/created-workPlan-list.html"
     private val qaInspectionReportPage = "quality-assurance/customer/inspection-report-new-details"
+    private val qaInspectionReportListsPage = "quality-assurance/customer/inspection-report-list"
 
     //Inspection details
     private val cdSampleCollectPage = "destination-inspection/cd-Inspection-documents/cd-inspection-sample-collect.html"
@@ -269,11 +269,16 @@ class QualityAssuranceHandler(
                 loggedInUser.companyId ?: throw ExpectedDataNotFound("Missing COMPANY ID")
             )
         }
-        val batchDetail = qaDaoServices.findPermitInvoiceByPermitRefNumberANdPermitID(
-            permit.permitRefNumber ?: throw ExpectedDataNotFound("PERMIT REF NUMBER NOT FOUND"),
-            permit.userId ?: throw ExpectedDataNotFound("MISSING USER ID"),
-            permitID
-        ).batchInvoiceNo
+
+        var batchDetail: Long? = null
+        if (permit.invoiceGenerated == 1) {
+            batchDetail = qaDaoServices.findPermitInvoiceByPermitRefNumberANdPermitID(
+                permit.permitRefNumber ?: throw ExpectedDataNotFound("PERMIT REF NUMBER NOT FOUND"),
+                permit.userId ?: throw ExpectedDataNotFound("MISSING USER ID"),
+                permitID
+            ).batchInvoiceNo
+        }
+
 
         req.attributes()["batchID"] = batchDetail
         req.attributes()["invoiceDetails"] = QaInvoiceDetailsEntity()
@@ -730,6 +735,26 @@ class QualityAssuranceHandler(
         return ok().render(qaSSFListDetailesPage, req.attributes())
     }
 
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
+    fun getInspectionListDetails(req: ServerRequest): ServerResponse {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+
+        val permitID =
+            req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+        val permit = qaDaoServices.findPermitBYID(permitID)
+        val allInspectionReportDetailsList = qaDaoServices.findInspectionReportListBYPermitRefNumberAndPermitID(
+            permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"),
+            map.activeStatus,
+            permitID
+        )
+
+        req.attributes()["allInspectionReportDetailsList"] = allInspectionReportDetailsList
+        req.attributes()["permitDetails"] = permit
+
+        return ok().render(qaInspectionReportListsPage, req.attributes())
+    }
+
 
     @PreAuthorize(" hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_ASSESSORS_READ')")
     fun checkLabResults(req: ServerRequest): ServerResponse {
@@ -757,25 +782,30 @@ class QualityAssuranceHandler(
     fun inspectionReportDetails(req: ServerRequest): ServerResponse {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
-        val permitID =
-            req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
-        val permit = qaDaoServices.findPermitBYID(permitID)
-        val inspectionReportRecommendation = qaDaoServices.findQaInspectionReportRecommendationBYPermitRefNumber(permit.permitRefNumber?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"))
+//        val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+//
+        val inspectReportID = req.paramOrNull("inspectionReportID")?.toLong()
+            ?: throw ExpectedDataNotFound("Required Inspection ID, check config")
+        val inspectionReportRecommendation = qaDaoServices.findQaInspectionReportRecommendationBYID(inspectReportID)
+        val permit = qaDaoServices.findPermitBYID(
+            inspectionReportRecommendation.permitId ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+        )
 
-        req.attributes()["OPCDetailsList"] = qaDaoServices.findAllQaInspectionOPCWithPermitRefNumber(permit.permitRefNumber?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"))
-        req.attributes()["QaInspectionTechnicalEntity"] = qaDaoServices.findQaInspectionTechnicalBYPermitRefNumber(permit.permitRefNumber?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"))
+        req.attributes()["OPCDetailsList"] = qaDaoServices.findAllQaInspectionOPCWithInspectReportID(inspectReportID)
+        req.attributes()["QaInspectionTechnicalEntity"] =
+            qaDaoServices.findQaInspectionTechnicalBYInspectReportID(inspectReportID)
         req.attributes()["QaInspectionReportRecommendationEntity"] = inspectionReportRecommendation
 
         when (inspectionReportRecommendation.filledOpcStatus) {
             map.activeStatus -> {
-                req.attributes()["OPCDetailsList"] = qaDaoServices.findQaInspectionOpcBYPermitRefNumber(permit.permitRefNumber?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"))
+                req.attributes()["OPCDetailsList"] = qaDaoServices.findQaInspectionOpcBYInspectReportID(inspectReportID)
             }
         }
 
         when (inspectionReportRecommendation.filledHaccpImplementationStatus) {
             map.activeStatus -> {
                 req.attributes()["QaInspectionHaccpImplementationEntity"] =
-                    qaDaoServices.findQaInspectionHaccpImplementationBYPermitRefNumber(permit.permitRefNumber?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"))
+                    qaDaoServices.findQaInspectionHaccpImplementationBYInspectReportID(inspectReportID)
             }
             else -> {
                 req.attributes()["QaInspectionHaccpImplementationEntity"] = QaInspectionHaccpImplementationEntity()
@@ -789,7 +819,11 @@ class QualityAssuranceHandler(
         }
 
         req.attributes().putAll(loadCommonUIComponents(map))
-        req.attributes()["fileParameters"] = qaDaoServices.findAllUploadedFileBYPermitRefNumberAndInspectionReportStatus(permit.permitRefNumber?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"), map.activeStatus)
+        req.attributes()["fileParameters"] =
+            qaDaoServices.findAllUploadedFileBYInspectionReportIDAndInspectionReportStatus(
+                inspectReportID,
+                map.activeStatus
+            )
         req.attributes()["QaInspectionOpcEntity"] = QaInspectionOpcEntity()
         req.attributes()["permit"] = qaDaoServices.permitDetails(permit, map)
         return ok().render(qaInspectionReportPage, req.attributes())
@@ -921,7 +955,16 @@ class QualityAssuranceHandler(
             Pair(
                 "sscParameters",
                 qaDaoServices.findAllUploadedFileBYPermitRefNumberAndSscStatus(
-                    permit.permitRefNumber?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"), s.activeStatus
+                    permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"), s.activeStatus
+                )
+            ),
+
+            Pair(
+                "justificationReportParameters",
+                qaDaoServices.findAllUploadedFileBYPermitRefNumberAndJustificationReportStatusAndPermitId(
+                    permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"),
+                    s.activeStatus,
+                    permit.id ?: throw ExpectedDataNotFound("INVALID PERMIT ID"),
                 )
             ),
 //            Pair("statusName", qaDaoServices.findPermitStatus(permit.permitStatus?:throw Exception("INVALID PERMIT STATUS VALUE"))),
@@ -1178,12 +1221,19 @@ class QualityAssuranceHandler(
     fun permitTaskListMigration(req: ServerRequest): ServerResponse {
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
-            val allMyTasks =
-                qaDaoServices.getTaskListPermit(loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID"))
+            val map = commonDaoServices.serviceMapDetails(appId)
+//            val allMyTasks = qaDaoServices.getTaskListPermit(loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID"))
+            var permitListMyTasks: List<PermitEntityDto>? = null
+            permitListMyTasks = qaDaoServices.listPermits(
+                qaDaoServices.findAllUserTasksByTaskID(
+                    loggedInUser,
+                    applicationMapProperties.mapUserTaskNameMANUFACTURE
+                ), map
+            )
 
-            allMyTasks?.let {
+            permitListMyTasks.let {
                 return ok().body(it)
-            } ?: throw ExpectedDataNotFound("NO TASK AVAILABLE")
+            }
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
@@ -1454,9 +1504,9 @@ class QualityAssuranceHandler(
             )
 
             //Create FMARK From SMark
-            if (permit.fmarkGenerateStatus == 1) {
-                qaDaoServices.permitGenerateFmark(map, loggedInUser, permit).first
-            }
+//            if (permit.fmarkGenerateStatus == 1) {
+//                qaDaoServices.permitGenerateFmark(map, loggedInUser, permit).first
+//            }
 
             //Calculate Invoice Details
             val invoiceCreated = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, null).second
@@ -1465,20 +1515,21 @@ class QualityAssuranceHandler(
             with(permit) {
                 sendApplication = map.activeStatus
                 applicationStatus = map.activeStatus
+                endOfProductionStatus = map.inactiveStatus
                 invoiceGenerated = map.activeStatus
                 permitStatus = applicationMapProperties.mapQaStatusPPayment
             }
             permit = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).second
 
 
-            //Start DMARK PROCESS
-            qualityAssuranceBpmn.startQADmAppPaymentProcess(
-                permit.id ?: throw Exception("MISSING PERMIT ID"), null
-            )
-
-            //Complete Submit Application
-            qualityAssuranceBpmn.qaDmSubmitApplicationComplete(permit.id ?: throw Exception("MISSING PERMIT ID"), permit.renewalStatus == 1,
-                permit.permitForeignStatus == 1)
+//            //Start DMARK PROCESS
+//            qualityAssuranceBpmn.startQADmAppPaymentProcess(
+//                permit.id ?: throw Exception("MISSING PERMIT ID"), null
+//            )
+//
+//            //Complete Submit Application
+//            qualityAssuranceBpmn.qaDmSubmitApplicationComplete(permit.id ?: throw Exception("MISSING PERMIT ID"), permit.renewalStatus == 1,
+//                permit.permitForeignStatus == 1)
 
             qaDaoServices.mapAllPermitDetailsTogether(
                 permit,
@@ -1673,11 +1724,26 @@ class QualityAssuranceHandler(
             var batchDetail: Long? = null
 
             if (permit.sendApplication == map.activeStatus) {
-                batchDetail = qaDaoServices.findPermitInvoiceByPermitRefNumberANdPermitID(
-                    permit.permitRefNumber ?: throw ExpectedDataNotFound("PERMIT REF NUMBER NOT FOUND"),
-                    loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID"),
-                    permitID
-                ).batchInvoiceNo
+                if (permit.permitType == applicationMapProperties.mapQAPermitTypeIdFmark && permit.smarkGeneratedFrom == 1) {
+                    val findSMarkID = qaDaoServices.findSmarkWithFmarkId(permitID).smarkId
+                    val findSMark = qaDaoServices.findPermitBYUserIDAndId(
+                        findSMarkID ?: throw Exception("NO SMARK ID FOUND WITH FMARK ID"),
+                        loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
+                    )
+                    batchDetail = qaDaoServices.findPermitInvoiceByPermitRefNumberANdPermitID(
+                        findSMark.permitRefNumber ?: throw ExpectedDataNotFound("PERMIT REF NUMBER NOT FOUND"),
+                        loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID"),
+                        findSMarkID
+                    ).batchInvoiceNo
+
+                } else {
+                    batchDetail = qaDaoServices.findPermitInvoiceByPermitRefNumberANdPermitID(
+                        permit.permitRefNumber ?: throw ExpectedDataNotFound("PERMIT REF NUMBER NOT FOUND"),
+                        loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID"),
+                        permitID
+                    ).batchInvoiceNo
+                }
+
             }
 
             qaDaoServices.mapAllPermitDetailsTogether(permit, batchDetail, map).let {
@@ -1734,7 +1800,7 @@ class QualityAssuranceHandler(
             ).second
 
 
-            qaDaoServices.mapDtoSTA3View(savedSta3).let {
+            qaDaoServices.mapDtoSTA3View(savedSta3, permitID).let {
                 return ok().body(it)
             }
 
@@ -1790,7 +1856,7 @@ class QualityAssuranceHandler(
             ).second
 
 
-            qaDaoServices.mapDtoSTA3View(sta3Found).let {
+            qaDaoServices.mapDtoSTA3View(sta3Found, permitID).let {
                 return ok().body(it)
             }
 
@@ -1840,7 +1906,7 @@ class QualityAssuranceHandler(
                 permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID
             )
 
-            qaDaoServices.mapDtoSTA3View(sta3).let {
+            qaDaoServices.mapDtoSTA3View(sta3, permitID).let {
                 return ok().body(it)
             }
 
