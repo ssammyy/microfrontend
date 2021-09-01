@@ -213,7 +213,7 @@ class QualityAssuranceJSONControllers(
 //                    map["amountInWords"] = demandNote?.
         map["receiptNo"] = batchInvoice.receiptNo.toString()
 
-        map = reportsDaoService.addBankAndMPESADetails(map)
+        map = reportsDaoService.addBankAndMPESADetails(map, batchInvoice.invoiceNumber.toString())
 
         reportsDaoService.extractReport(
             map,
@@ -262,7 +262,7 @@ class QualityAssuranceJSONControllers(
 //                    map["amountInWords"] = demandNote?.
         map["receiptNo"] = masterInvoice.receiptNo.toString()
 
-        map = reportsDaoService.addBankAndMPESADetails(map)
+        map = reportsDaoService.addBankAndMPESADetails(map, masterInvoice.invoiceRef.toString())
 
         reportsDaoService.extractReport(
             map,

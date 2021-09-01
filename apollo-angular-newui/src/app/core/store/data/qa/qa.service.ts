@@ -22,7 +22,7 @@ import {
     STA10PersonnelDto,
     STA10ProductsManufactureDto,
     STA10RawMaterialsDto,
-    STA3,
+    STA3, StgInvoiceBalanceDto,
     TaskDto
 } from './qa.model';
 
@@ -96,6 +96,21 @@ export class QaService {
             .set('batchID', batchID);
         return this.http.get<any>(url, {params}).pipe(
             map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public loadInvoiceDetailsBalance(batchID: string): Observable<StgInvoiceBalanceDto> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_DETAILS_BALANCE);
+        const params = new HttpParams()
+            .set('batchID', batchID);
+        return this.http.get<StgInvoiceBalanceDto>(url, {params}).pipe(
+            map(function (response: StgInvoiceBalanceDto) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {

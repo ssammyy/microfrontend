@@ -298,6 +298,11 @@ export class PlantDetailsDto {
     contactPerson: string;
 }
 
+export class StgInvoiceBalanceDto {
+    batchID: bigint;
+    balance: any;
+}
+
 
 export class InvoiceDto {
     batchID: bigint;

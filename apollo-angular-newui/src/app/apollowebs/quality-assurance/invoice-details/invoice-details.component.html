@@ -21,12 +21,12 @@
                                         <i class="material-icons">assignment_turned_in</i> Invoices Attached Details
                                     </a>
                                 </li>
-                                <li class="nav-item" *ngIf="allBatchInvoiceDetails.batchDetails.paidStatus != 10">
+                                <li class="nav-item" *ngIf="allBatchInvoiceDetails?.batchDetails?.paidStatus != 10">
                                     <a class="nav-link" data-toggle="tab" href="#link11" role="tablist">
                                         <i class="material-icons">assignment_turned_in</i> Bank Details
                                     </a>
                                 </li>
-                                <li class="nav-item" *ngIf="allBatchInvoiceDetails.batchDetails.paidStatus != 10">
+                                <li class="nav-item" *ngIf="allBatchInvoiceDetails?.batchDetails?.paidStatus != 10">
                                     <a class="nav-link" data-toggle="tab" href="#link13" role="tablist">
                                         <i class="material-icons">assignment_turned_in</i>MPESA PAYMENT Details
                                     </a>
@@ -44,7 +44,7 @@
                             <div class="tab-content">
                                 <div class="tab-pane active" id="link10">
                                     <h3>Invoice Details</h3>
-                                    <button *ngIf="allBatchInvoiceDetails.batchDetails.paidStatus != 10"
+                                    <button *ngIf="allBatchInvoiceDetails?.batchDetails?.paidStatus != 10"
                                             (click)="reloadPage()" mat-raised-button=""
                                             class="btn btn-kebs mat-raised-button mat-button-base"><span
                                             class="mat-button-wrapper">CHECK PAYMENT MADE</span>
@@ -62,7 +62,7 @@
                                                     </td>
                                                     <td><strong>
                                                         Invoice Number</strong></td>
-                                                    <td>{{allBatchInvoiceDetails.batchDetails.invoiceNumber}}</td>
+                                                    <td>{{allBatchInvoiceDetails?.batchDetails?.invoiceNumber}}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
@@ -70,14 +70,14 @@
                                                     </td>
                                                     <td><strong>Name of firm
                                                     </strong></td>
-                                                    <td>{{allBatchInvoiceDetails.batchDetails.firmName}}</td>
+                                                    <td>{{allBatchInvoiceDetails?.batchDetails?.firmName}}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
                                                         <i class="material-icons">room_preferences</i>
                                                     </td>
                                                     <td><strong>Postal address</strong></td>
-                                                    <td>{{allBatchInvoiceDetails.batchDetails.postalAddress}}
+                                                    <td>{{allBatchInvoiceDetails?.batchDetails?.postalAddress}}
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -86,7 +86,7 @@
                                                     </td>
                                                     <td><strong>Physical address
                                                     </strong></td>
-                                                    <td>{{allBatchInvoiceDetails.batchDetails.physicalAddress}}</td>
+                                                    <td>{{allBatchInvoiceDetails?.batchDetails?.physicalAddress}}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
@@ -94,7 +94,7 @@
                                                     </td>
                                                     <td><strong>Telephone number
                                                     </strong></td>
-                                                    <td>{{allBatchInvoiceDetails.batchDetails.telephoneNo}}
+                                                    <td>{{allBatchInvoiceDetails?.batchDetails?.telephoneNo}}
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -103,7 +103,7 @@
                                                     </td>
                                                     <td><strong>Email address
                                                     </strong></td>
-                                                    <td>{{allBatchInvoiceDetails.batchDetails.email}}</td>
+                                                    <td>{{allBatchInvoiceDetails?.batchDetails?.email}}</td>
                                                 </tr>
 
                                                 </tbody>
@@ -116,26 +116,32 @@
                                                     <tbody>
                                                     <tr>
                                                         <td><strong>Receipt No</strong></td>
-                                                        <td>{{allBatchInvoiceDetails.batchDetails.receiptNo}}</td>
+                                                        <td>{{allBatchInvoiceDetails?.batchDetails?.receiptNo}}</td>
                                                     </tr>
                                                     <tr>
                                                         <td><strong>
                                                             Paid Date</strong></td>
-                                                        <td>{{allBatchInvoiceDetails.batchDetails.paidDate}}</td>
+                                                        <td>{{allBatchInvoiceDetails?.batchDetails?.paidDate}}</td>
                                                     </tr>
                                                     <tr>
                                                         <td><strong>
                                                             Total Amount
                                                         </strong></td>
-                                                        <td>{{allBatchInvoiceDetails.batchDetails.totalAmount}}</td>
+                                                        <td>{{allBatchInvoiceDetails?.batchDetails?.totalAmount}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>
+                                                            Amount Balance
+                                                        </strong></td>
+                                                        <td>{{invoiceBalance?.balance}}</td>
                                                     </tr>
                                                     <tr>
                                                         <td><strong>
                                                             Status</strong></td>
                                                         <td>
-                                                            <span *ngIf="allBatchInvoiceDetails.batchDetails.paidStatus == 10"
+                                                            <span *ngIf="allBatchInvoiceDetails?.batchDetails?.paidStatus == 10"
                                                                   class="badge badge-success">PAID</span>
-                                                            <span *ngIf="allBatchInvoiceDetails.batchDetails.paidStatus != 10"
+                                                            <span *ngIf="allBatchInvoiceDetails?.batchDetails?.paidStatus != 10"
                                                                   class="badge badge-danger">NOT PAID</span>
                                                         </td>
                                                     </tr>
@@ -397,23 +403,23 @@
                                         <!--                                                    <tbody>-->
                                         <!--                                                    <tr>-->
                                         <!--                                                        <td><strong>Receipt No</strong></td>-->
-                                        <!--                                                        <td>{{allBatchInvoiceDetails.batchDetails.receiptNo}}</td>-->
+                                        <!--                                                        <td>{{allBatchInvoiceDetails?.batchDetails?.receiptNo}}</td>-->
                                         <!--                                                    </tr>-->
                                         <!--                                                    <tr>-->
                                         <!--                                                        <td><strong>-->
                                         <!--                                                            Paid Date</strong></td>-->
-                                        <!--                                                        <td>{{allBatchInvoiceDetails.batchDetails.paidDate}}</td>-->
+                                        <!--                                                        <td>{{allBatchInvoiceDetails?.batchDetails?.paidDate}}</td>-->
                                         <!--                                                    </tr>-->
                                         <!--                                                    <tr>-->
                                         <!--                                                        <td><strong>-->
                                         <!--                                                            Total Amount-->
                                         <!--                                                        </strong></td>-->
-                                        <!--                                                        <td>{{allBatchInvoiceDetails.batchDetails.totalAmount}}</td>-->
+                                        <!--                                                        <td>{{allBatchInvoiceDetails?.batchDetails?.totalAmount}}</td>-->
                                         <!--                                                    </tr>-->
                                         <!--                                                    <tr>-->
                                         <!--                                                        <td><strong>-->
                                         <!--                                                            Status</strong></td>-->
-                                        <!--                                                        <td><span class="badge badge-primary">{{allBatchInvoiceDetails.batchDetails.paidStatus}}</span></td>-->
+                                        <!--                                                        <td><span class="badge badge-primary">{{allBatchInvoiceDetails?.batchDetails?.paidStatus}}</span></td>-->
                                         <!--                                                    </tr>-->
 
                                         <!--                                                    </tbody>-->
@@ -459,7 +465,7 @@
                                                     <!--                                                                        <i class="material-icons">tag</i>-->
                                                     <!--                                                                    </td>-->
                                                     <!--                                                                    <td><strong>A/C No</strong></td>-->
-                                                    <!--                                                                    <td>{{allBatchInvoiceDetails.batchDetails.invoiceNumber}}-->
+                                                    <!--                                                                    <td>{{allBatchInvoiceDetails?.batchDetails?.invoiceNumber}}-->
                                                     <!--                                                                    </td>-->
                                                     <!--                                                                </tr>-->
                                                     <!--                                                                &lt;!&ndash;                                                                <tr>&ndash;&gt;-->

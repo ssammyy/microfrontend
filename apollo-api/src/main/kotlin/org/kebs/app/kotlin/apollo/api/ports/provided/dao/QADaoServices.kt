@@ -5672,6 +5672,25 @@ class QADaoServices(
         )
     }
 
+    fun mapBatchInvoiceDetailsBalance(
+        batchInvoiceEntity: QaBatchInvoiceEntity,
+        loggedInUser: UsersEntity,
+        map: ServiceMapsEntity
+    ): StgInvoiceBalanceDto {
+
+        val invoiceBatchID = invoiceDaoService.findInvoiceBatchDetails(
+            batchInvoiceEntity.invoiceBatchNumberId ?: throw Exception("MISSING INVOICE BATCH ID")
+        )
+        val stgPayment = invoiceDaoService.findInvoiceStgReconciliationDetails(
+            invoiceBatchID.batchNumber ?: throw Exception("MISSING BATCH NUMBER")
+        )
+
+        return StgInvoiceBalanceDto(
+            batchInvoiceEntity.id,
+            stgPayment.invoiceAmount
+        )
+    }
+
     fun mapBatchInvoiceList(batchInvoiceList: List<QaBatchInvoiceEntity>): List<ConsolidatedInvoiceDto> {
 
         return batchInvoiceList.map { p ->

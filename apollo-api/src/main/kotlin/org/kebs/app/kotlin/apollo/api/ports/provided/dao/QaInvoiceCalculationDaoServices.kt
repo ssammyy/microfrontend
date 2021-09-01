@@ -635,21 +635,26 @@ class QaInvoiceCalculationDaoServices(
                                 //update all permit details found with that company details
                                 for (pd in permitsWithToken) {
                                     if (pd.paidStatus != 10) {
-                                        //Update permit paid status to 1
-                                        with(pd) {
-                                            paidStatus = 1
-                                        }
-                                        permitRepo.save(pd)
                                         //find masterDetails invoice with id of permit
                                         val masterInvoiceDetails = qaDaoServices.findPermitInvoiceByPermitID(
                                             pd.id ?: throw Exception("Missing Permit ID")
                                         )
-                                        with(masterInvoiceDetails) {
-                                            receiptNo = masterDetails.receiptNo
-                                            batchInvoiceNo = masterDetails.batchInvoiceNo
-                                            paymentStatus = masterDetails.paymentStatus
+                                        if (masterInvoiceDetails.totalAmount == BigDecimal.ZERO) {
+                                            //Update permit paid status to 1
+                                            with(pd) {
+                                                paidStatus = 1
+                                                permitStatus = applicationMapProperties.mapQaStatusPaymentDone
+                                            }
+                                            permitRepo.save(pd)
+
+                                            with(masterInvoiceDetails) {
+                                                receiptNo = masterDetails.receiptNo
+                                                batchInvoiceNo = masterDetails.batchInvoiceNo
+                                                paymentStatus = masterDetails.paymentStatus
+                                            }
+                                            qaInvoiceMasterDetailsRepo.save(masterInvoiceDetails)
                                         }
-                                        qaInvoiceMasterDetailsRepo.save(masterInvoiceDetails)
+
                                     }
                                 }
                             } catch (e: Exception) {
