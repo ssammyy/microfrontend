@@ -43,6 +43,7 @@ import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaBatchInvoiceRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -1171,13 +1172,19 @@ class QualityAssuranceHandler(
             val permitType = qaDaoServices.findPermitType(permitTypeID)
 
             var permitListAllApplications: List<PermitEntityDto>? = null
-            when {
-                auth.authorities.stream().anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
-                    permitListAllApplications = qaDaoServices.listPermits(
-                        qaDaoServices.findAllUserPermitWithPermitType(
-                            loggedInUser,
-                            permitTypeID
-                        ), map
+            permitListAllApplications = when {
+                auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority != "MODIFY_COMPANY" } && auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                    qaDaoServices.listBranchListWithPermitType(
+                        loggedInUser.plantId ?: throw Exception("MISSING PLANT ID"), permitTypeID, map
+                    )
+                }
+                auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "MODIFY_COMPANY" } && auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                    qaDaoServices.listFirmPermitListWithPermitType(
+                        loggedInUser.companyId ?: throw Exception("MISSING COMPANY ID"), permitTypeID, map
                     )
                 }
                 else -> {
@@ -1268,31 +1275,51 @@ class QualityAssuranceHandler(
     )
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun firmPermitListMigration(req: ServerRequest): ServerResponse {
-        try {
+        return try {
             val auth = commonDaoServices.loggedInUserAuthentication()
             val map = commonDaoServices.serviceMapDetails(appId)
-            val companyID = req.paramOrNull("companyID")?.toLong() ?: throw ExpectedDataNotFound("Required COMPANY ID, check config")
+            val companyID = req.paramOrNull("companyID")?.toLong()
+                ?: throw ExpectedDataNotFound("Required COMPANY ID, check config")
             val companyEntity = commonDaoServices.findCompanyProfileWithID(companyID)
 
-            var permitListAllApplications: List<PermitEntityDto>? = null
-            when {
-                auth.authorities.stream().anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
-                    permitListAllApplications = qaDaoServices.listPermits(qaDaoServices.findAllFirmPermits(companyID), map)
-                }
-                else -> {
-                    throw ExpectedDataNotFound("UNAUTHORISED LOGGED IN USER (ACCESS DENIED)")
-                }
-            }
+            val permitListAllApplications: List<PermitEntityDto> = qaDaoServices.listFirmPermitList(companyID, map)
 
-            return ok().body(permitListAllApplications)
+            ok().body(permitListAllApplications)
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
+
+
+    @PreAuthorize(
+        "hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ')" +
+                " or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')"
+    )
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun firmBranchPermitListMigration(req: ServerRequest): ServerResponse {
+        return try {
+            val auth = commonDaoServices.loggedInUserAuthentication()
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val branchID =
+                req.paramOrNull("branchID")?.toLong() ?: throw ExpectedDataNotFound("Required branch ID, check config")
+            val branchEntity = qaDaoServices.findPlantDetails(branchID)
+
+            var permitListAllApplications: List<PermitEntityDto> = qaDaoServices.listBranchList(branchID, map)
+
+            ok().body(permitListAllApplications)
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)

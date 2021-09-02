@@ -25,6 +25,7 @@ import org.kebs.app.kotlin.apollo.store.repo.qa.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -274,13 +275,39 @@ class QADaoServices(
     }
 
     fun findAllFirmPermits(companyID: Long): List<PermitApplicationsEntity> {
-
         permitRepo.findByCompanyIdAndOldPermitStatusIsNull(companyID)
             ?.let { permitList ->
                 return permitList
             }
 
             ?: throw ExpectedDataNotFound("No Permits Found for the following COMPANY ID = ${companyID}")
+    }
+
+    fun findAllFirmPermitsWithPermitType(companyID: Long, permitTypeID: Long): List<PermitApplicationsEntity> {
+        permitRepo.findByCompanyIdAndPermitTypeAndOldPermitStatusIsNull(companyID, permitTypeID)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permits Found for the following COMPANY ID = ${companyID} and permitType ID ${permitTypeID}")
+    }
+
+    fun findAllBranchPermits(branchID: Long): List<PermitApplicationsEntity> {
+        permitRepo.findByAttachedPlantIdAndOldPermitStatusIsNull(branchID)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permits Found for the following BRANCH ID = ${branchID}")
+    }
+
+    fun findAllBranchPermitsWithPermitType(branchID: Long, permitTypeID: Long): List<PermitApplicationsEntity> {
+        permitRepo.findByAttachedPlantIdAndPermitTypeAndOldPermitStatusIsNull(branchID, permitTypeID)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permits Found for the following BRANCH ID = ${branchID} and permitType ID ${permitTypeID}")
     }
 
     fun findAllUserPermitWithPermitTypeAwardedStatusIsNotNull(
@@ -1392,6 +1419,36 @@ class QADaoServices(
             null
 
         )
+    }
+
+    fun listBranchList(
+        branchID: Long,
+        map: ServiceMapsEntity
+    ): List<PermitEntityDto> {
+        return listPermits(findAllBranchPermits(branchID), map)
+    }
+
+    fun listBranchListWithPermitType(
+        branchID: Long,
+        permitType: Long,
+        map: ServiceMapsEntity
+    ): List<PermitEntityDto> {
+        return listPermits(findAllBranchPermitsWithPermitType(branchID, permitType), map)
+    }
+
+    fun listFirmPermitList(
+        companyID: Long,
+        map: ServiceMapsEntity
+    ): List<PermitEntityDto> {
+        return listPermits(findAllFirmPermits(companyID), map)
+    }
+
+    fun listFirmPermitListWithPermitType(
+        companyID: Long,
+        permitType: Long,
+        map: ServiceMapsEntity
+    ): List<PermitEntityDto> {
+        return listPermits(findAllFirmPermitsWithPermitType(companyID, permitType), map)
     }
 
     fun listPermits(permits: List<PermitApplicationsEntity>, map: ServiceMapsEntity): List<PermitEntityDto> {

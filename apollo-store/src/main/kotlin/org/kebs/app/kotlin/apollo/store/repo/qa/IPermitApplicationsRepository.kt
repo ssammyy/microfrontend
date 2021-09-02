@@ -30,6 +30,17 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         companyID: Long
     ): List<PermitApplicationsEntity>?
 
+    fun findByCompanyIdAndPermitTypeAndOldPermitStatusIsNull(
+        companyId: Long, permitType: Long
+    ): List<PermitApplicationsEntity>?
+
+    fun findByAttachedPlantIdAndOldPermitStatusIsNull(attachedPlantId: Long): List<PermitApplicationsEntity>?
+
+    fun findByAttachedPlantIdAndPermitTypeAndOldPermitStatusIsNull(
+        attachedPlantId: Long,
+        permitType: Long
+    ): List<PermitApplicationsEntity>?
+
     fun findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatus(
         userId: Long,
         permitType: Long,

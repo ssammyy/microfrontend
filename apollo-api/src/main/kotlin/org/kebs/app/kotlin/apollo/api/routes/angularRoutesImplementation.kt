@@ -431,6 +431,7 @@ class AngularRoutes {
                 GET("/list", handler::permitListMigration)
                 GET("/awarded-list", handler::permitListAwardedMigration)
                 GET("/firm-list", handler::firmPermitListMigration)
+                GET("/firm-branch-list", handler::firmBranchPermitListMigration)
                 "/apply".nest {
                     POST("/fmark", handler::permitFMARKGenerateMigration)
                     POST("/sta1", handler::permitApplySTA1Migration)
