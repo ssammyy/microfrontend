@@ -227,7 +227,8 @@ class RegistrationManagementDaoService(
         try {
             usersRepo.findByUserName(request.username)
                 ?.let { user ->
-                    val otp = commonDaoServices.generateTransactionReference(8).toUpperCase()
+//                    val otp = commonDaoServices.generateTransactionReference(8).toUpperCase()
+                    val otp = commonDaoServices.randomNumber(6)
                     val token = commonDaoServices.generateVerificationToken(
                         otp,
                         user.cellphone ?: throw NullValueNotAllowedException("Valid Cellphone is required")
