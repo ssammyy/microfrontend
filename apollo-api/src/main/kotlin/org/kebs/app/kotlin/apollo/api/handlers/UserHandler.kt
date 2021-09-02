@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.handlers
 
+import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.BlacklistTypeDto
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
@@ -58,6 +59,7 @@ class UserHandler(
                 response.responseCode = ResponseCodes.SUCCESS_CODE
             }
         } catch (ex: Exception) {
+            KotlinLogging.logger {  }.error("LIST OFFICERS",ex)
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
             response.message = "Request failed"
         }

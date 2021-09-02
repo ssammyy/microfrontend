@@ -313,6 +313,7 @@ class ApiDestinationInspectionHandler(
                 response.data = ConsignmentDocumentDao.fromList(data.toList())
                 response.pageNo = data.number
                 response.totalPages = data.totalPages
+                response.totalCount=data.totalElements
                 response.message = "Assigned CD"
                 response.responseCode = ResponseCodes.SUCCESS_CODE
             }
@@ -341,6 +342,7 @@ class ApiDestinationInspectionHandler(
                         response.data = ConsignmentDocumentDao.fromList(pp.toList())
                         response.totalPages = pp.totalPages
                         response.pageNo = pp.number
+                        response.totalCount=pp.totalElements
                         response.responseCode = ResponseCodes.SUCCESS_CODE
                         response.message = "Success"
                     }
@@ -355,6 +357,7 @@ class ApiDestinationInspectionHandler(
                             response.data = ConsignmentDocumentDao.fromList(pp.toList())
                             response.pageNo = pp.number
                             response.totalPages = pp.totalPages
+                            response.totalCount=pp.totalElements
                             response.message = "Manual Assigned CD"
                             response.responseCode = ResponseCodes.SUCCESS_CODE
                         } ?: run {
@@ -394,6 +397,7 @@ class ApiDestinationInspectionHandler(
                             response.data = ConsignmentDocumentDao.fromList(pp.toList())
                             response.totalPages = pp.totalPages
                             response.pageNo = pp.number
+                            response.totalCount=pp.totalElements
                             response.responseCode = ResponseCodes.SUCCESS_CODE
                             response.message = "Success"
                         } ?: run {
@@ -406,6 +410,7 @@ class ApiDestinationInspectionHandler(
                         response.data = ConsignmentDocumentDao.fromList(pp.toList())
                         response.pageNo = pp.number
                         response.totalPages = pp.totalPages
+                        response.totalCount=pp.totalElements
                         response.message = "Completed CD"
                         response.responseCode = ResponseCodes.SUCCESS_CODE
                     }
@@ -440,6 +445,7 @@ class ApiDestinationInspectionHandler(
                             response.data = ConsignmentDocumentDao.fromList(pp.toList())
                             response.totalPages = pp.totalPages
                             response.pageNo = pp.number
+                            response.totalCount=pp.totalElements
                             response.message = "Success"
                             response.responseCode = ResponseCodes.SUCCESS_CODE
                         } ?: run {
@@ -453,6 +459,7 @@ class ApiDestinationInspectionHandler(
                             response.data = ConsignmentDocumentDao.fromList(pp.toList())
                             response.totalPages = pp.totalPages
                             response.pageNo = pp.number
+                            response.totalCount=pp.totalElements
                             response.message = "Auto Assigned CD at section"
                             response.responseCode = ResponseCodes.SUCCESS_CODE
                         } ?: run {

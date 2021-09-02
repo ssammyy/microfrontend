@@ -698,14 +698,15 @@
                             <div class="col-md-2">
                                 <b>Action:</b>
                                 <div>
-                                    <button *ngIf="!consignment.ui.assigned" class="btn btn-sm btn-primary"
-                                            (click)="manualAssignInspectionOfficer()">SELF ASSIGN
-                                    </button>
-                                    <button class="btn btn-sm btn-primary"
-                                            (click)="uploadAttachment()">UPLOAD
-                                        ATTACHMENT
-                                    </button>
+
                                     <div *ngIf="consignment.ui.inspector">
+                                        <button class="btn btn-sm btn-primary"
+                                                (click)="uploadAttachment()">UPLOAD
+                                            ATTACHMENT
+                                        </button>
+                                        <button *ngIf="!consignment.ui.assigned" class="btn btn-sm btn-primary"
+                                                (click)="manualAssignInspectionOfficer()">SELF ASSIGN
+                                        </button>
                                         <button *ngIf="consignment.ui.owner"  class="btn btn-sm btn-primary"
                                                 (click)="generateLocalCoC()">GENERATE LOCAL COC/COI
                                         </button>

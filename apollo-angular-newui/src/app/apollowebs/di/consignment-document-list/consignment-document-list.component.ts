@@ -3,6 +3,7 @@ import {Router} from '@angular/router';
 import {DestinationInspectionService} from "../../../core/store/data/di/destination-inspection.service";
 import {MatDialog} from "@angular/material/dialog";
 import {UploadForeignFormComponent} from "./upload-foreign-form/upload-foreign-form.component";
+import {LocalDataSource} from "ng2-smart-table";
 
 @Component({
     selector: 'app-consignment-document-list',
@@ -12,6 +13,9 @@ import {UploadForeignFormComponent} from "./upload-foreign-form/upload-foreign-f
 export class ConsignmentDocumentListComponent implements OnInit {
     activeStatus: string = 'my-tasks';
     defaultPageSize: number = 20
+    currentPage: number=0
+    currentPageInternal: number=0
+    totalCount: number=0
     public settings = {
         selectMode: 'single',  // single|multi
         hideHeader: false,
@@ -93,7 +97,7 @@ export class ConsignmentDocumentListComponent implements OnInit {
             perPage: 20
         }
     };
-    dataSet: any = [];
+    dataSet: LocalDataSource = new LocalDataSource();
     documentTypes: any[];
     private documentTypeUuid: string
 
@@ -107,7 +111,13 @@ export class ConsignmentDocumentListComponent implements OnInit {
         })
 
     }
-
+    pageChange(pageIndex?:any){
+        if(pageIndex) {
+            this.currentPageInternal = pageIndex-1
+            this.currentPage=pageIndex
+            this.loadData(this.documentTypeUuid, this.currentPageInternal, this.defaultPageSize)
+        }
+    }
     private loadData(documentTypeUuid: string, page: number, size: number): any {
 
         let data = this.diService.listAssignedCd(documentTypeUuid, page, size);
@@ -123,14 +133,8 @@ export class ConsignmentDocumentListComponent implements OnInit {
             result => {
                 if (result.responseCode === "00") {
                     let listD: any[] = result.data;
-                    // for (let i in listD) {
-                    //     let docTpe = this.documentTypes.filter(dd => listD[i].cdType == dd.id)
-                    //     if (docTpe.length > 0) {
-                    //         // console.log(i)
-                    //         listD[i]["documentType"] = docTpe[0].typeName
-                    //     }
-                    // }
-                    this.dataSet = listD
+                    this.totalCount=result.totalCount
+                    this.dataSet.load(listD)
                 } else {
                     console.log(result)
                 }

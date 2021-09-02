@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {DestinationInspectionService} from "../../../core/store/data/di/destination-inspection.service";
 import swal from "sweetalert2";
+import {LocalDataSource} from "ng2-smart-table";
 
 @Component({
     selector: 'app-ministry-inspection-home',
@@ -65,13 +66,23 @@ export class MinistryInspectionHomeComponent implements OnInit {
             perPage: 20
         }
     };
-    dataSet: any = [];
+    dataSet: LocalDataSource = new LocalDataSource();
+    currentPage: number=0
+    defaultPageSize: number=20
+    totalCount: number=0
 
     constructor(private router: Router, private diService: DestinationInspectionService) {
     }
 
     ngOnInit(): void {
         this.loadData(0, 20);
+    }
+
+    pageChange(pageIndex?:number){
+        if(pageIndex){
+            this.currentPage=pageIndex-1;
+            this.loadData(this.currentPage, this.defaultPageSize)
+        }
     }
 
     private loadData(page: number, size: number): any {
@@ -83,7 +94,7 @@ export class MinistryInspectionHomeComponent implements OnInit {
             .subscribe(
                 result => {
                     if (result.responseCode === "00") {
-                        this.dataSet = result.data;
+                        this.dataSet.load(result.data);
                     } else {
                         swal.fire({
                             title: result.message,

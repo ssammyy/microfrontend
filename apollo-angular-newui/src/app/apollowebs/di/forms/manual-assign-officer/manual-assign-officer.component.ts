@@ -18,7 +18,7 @@ export class ManualAssignOfficerComponent implements OnInit {
 
     ngOnInit(): void {
         this.form = this.fb.group({
-            assignedStatus: ['', Validators.required],
+            supervisorId: ['', Validators.required],
             remarks: ['', Validators.required]
         })
     }

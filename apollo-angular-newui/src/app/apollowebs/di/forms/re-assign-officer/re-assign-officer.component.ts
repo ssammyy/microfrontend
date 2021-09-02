@@ -21,7 +21,6 @@ export class ReAssignOfficerComponent implements OnInit {
     ngOnInit(): void {
         this.loadOfficers();
         this.form = this.fb.group({
-            assignedStatus: ['', Validators.required],
             officerId: ['', Validators.required],
             remarks: ['', Validators.required]
         })

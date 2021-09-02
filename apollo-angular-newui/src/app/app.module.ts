@@ -63,7 +63,7 @@ import {FileUploadModule} from '@iplab/ngx-file-upload';
 import {AddUserComponent} from './apollowebs/company/branch/add-user/add-user.component';
 import {FmarkApplicationComponent} from './apollowebs/quality-assurance/fmark-application/fmark-application.component';
 import {LoaderComponent} from './shared/loader/loader.component';
-import {NgbNavModule} from '@ng-bootstrap/ng-bootstrap';
+import {NgbNavModule, NgbPaginationModule} from '@ng-bootstrap/ng-bootstrap';
 import {ImportInspectionComponent} from './apollowebs/pvoc/import-inspection/import-inspection.component';
 import {ExceptionsApplicationComponent} from './apollowebs/pvoc/exceptions-application/exceptions-application.component';
 import {WaiverApplicationComponent} from './apollowebs/pvoc/waiver-application/waiver-application.component';
@@ -199,6 +199,7 @@ import {MatButtonModule} from "@angular/material/button";
         SidebarModule,
         MatFormFieldModule,
         MatButtonModule,
+        NgbPaginationModule,
     ],
     declarations: [
         AppComponent,

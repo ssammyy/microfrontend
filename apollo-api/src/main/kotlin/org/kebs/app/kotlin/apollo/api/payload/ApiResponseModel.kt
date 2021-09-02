@@ -5,6 +5,7 @@ import org.springframework.data.domain.Sort
 import org.springframework.web.servlet.function.ServerRequest
 
 class ApiResponseModel {
+    var totalCount: Long?=null
     var extras: Any? = null
     lateinit var message: String
     lateinit var responseCode: String
