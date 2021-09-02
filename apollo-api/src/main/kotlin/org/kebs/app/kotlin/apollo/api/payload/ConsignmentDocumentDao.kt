@@ -20,6 +20,7 @@ class ConsignmentEnableUI {
     var demandNote: Boolean? = null
     var sendCoi: Boolean? = null
     var targetItem: Boolean? = null
+    var targeted: Boolean = false
     var supervisorTarget: Boolean? = null
     var attachments: Boolean? = null
     var approveReject: Boolean? = null
@@ -28,9 +29,11 @@ class ConsignmentEnableUI {
     var cocRequest: Boolean? = null
     var assigned: Boolean? = null
     var completed: Boolean? = null
-    var riskProfileImporter: Boolean=false
-    var riskProfileConsignor: Boolean=false
-    var riskProfileConsignee: Boolean=false
+    var idfAvailable: Boolean = false
+    var declarationDocument: Boolean = false
+    var riskProfileImporter: Boolean = false
+    var riskProfileConsignor: Boolean = false
+    var riskProfileConsignee: Boolean = false
     var inspectionActive: Boolean? = null
     var hasPort: Boolean? = null
 
@@ -42,8 +45,10 @@ class ConsignmentEnableUI {
             val ui = ConsignmentEnableUI().apply {
                 supervisor = modify
                 inspector = change
+                targeted = cd.targetStatus == map.activeStatus
+                idfAvailable = cd.idfNumber != null
                 owner = cd.assignedInspectionOfficer?.userName == authentication.name
-                demandNote = modify && (cd.targetStatus == map.activeStatus)
+                demandNote = cd.sendDemandNote == map.activeStatus
                 sendCoi = modify && cd.localCoi == map.activeStatus
                 targetItem = modify && cd.targetStatus != map.activeStatus && cd.assignedStatus == map.activeStatus
                 supervisorTarget = change && cd.targetStatus != map.activeStatus

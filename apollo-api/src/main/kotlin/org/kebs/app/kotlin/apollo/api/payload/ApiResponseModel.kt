@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.payload
 
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.web.servlet.function.ServerRequest
 
 class ApiResponseModel {
@@ -13,7 +14,7 @@ class ApiResponseModel {
     var totalPages: Int? = null
 }
 
-fun extractPage(req: ServerRequest): PageRequest {
+fun extractPage(req: ServerRequest, field: String = "id"): PageRequest {
     var page = 0
     var size = 20
     // get page
@@ -30,5 +31,14 @@ fun extractPage(req: ServerRequest): PageRequest {
             }
         }
     }
-    return PageRequest.of(page, size)
+    var direction = "desc"
+    req.param("direction").ifPresent {
+        if ("asc".equals(it)) {
+            direction = it
+        }
+    }
+    if ("asc".equals(direction)) {
+        return PageRequest.of(page, size, Sort.by(Sort.Order.asc(field)))
+    }
+    return PageRequest.of(page, size, Sort.by(Sort.Order.desc(field)))
 }

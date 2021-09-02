@@ -673,41 +673,50 @@
                             </div>
                             <div class="col-md-2">
                                 <b>Action:</b>
-                                <div *ngIf="consignment.ui.inspectionActive && configurations">
-                                    <div >
-                                        <button  class="btn btn-sm btn-primary"
+                                <div>
+                                    <div *ngIf="consignment.ui.inspector">
+                                        <button *ngIf="consignment.ui.owner"  class="btn btn-sm btn-primary"
                                                 (click)="generateLocalCoC()">GENERATE LOCAL COC/COI
                                         </button>
-                                        <button class="btn btn-sm btn-primary"
+                                        <button *ngIf="consignment.ui.owner" class="btn btn-sm btn-primary"
                                                 (click)="generateLocalCoR()">GENERATE LOCAL COR
                                         </button>
-                                        <button class="btn btn-sm btn-primary"
+                                        <button *ngIf="consignment.ui.owner" class="btn btn-sm btn-primary"
                                                 (click)="markAsCompliant()">COMPLIANT
                                         </button>
-                                        <button  class="btn btn-sm btn-primary"
+                                        <button *ngIf="consignment.ui.owner"  class="btn btn-sm btn-primary"
                                                 (click)="sendCertificateOfCompliance()">SEND COI
                                         </button>
-                                    </div>
-                                    <div >
-                                        <button
+                                        <button *ngIf="consignment.ui.owner"
                                                 class="btn btn-sm btn-warning"
                                                 (click)="blacklistUser()">BLACKLIST USER
                                         </button>
-                                        <button class="btn btn-sm btn-warning"
+                                        <button *ngIf="consignment.ui.owner && consignment.ui.targeted" class="btn btn-sm btn-warning"
                                                 (click)="generateDemandNote()">GENERATE DEMAND NOTE
                                         </button>
-                                        <button *ngIf="consignment.ui.attachments" class="btn btn-sm btn-primary"
+                                        <button *ngIf="consignment.ui.owner" class="btn btn-sm btn-primary"
                                                 (click)="uploadAttachment()">UPLOAD
                                             ATTACHMENT
                                         </button>
-                                        <button class="btn btn-sm btn-warning"
+                                        <button *ngIf="!consignment.ui.assigned" class="btn btn-sm btn-primary"
+                                                (click)="manualAssignInspectionOfficer()">PICK CD(MANUAL ASSIGN IO)
+                                        </button>
+                                        <button *ngIf="consignment.ui.owner" class="btn btn-sm btn-warning"
                                                 (click)="approveRejectConsignment()">Approve / Reject Consignment
+                                        </button>
+                                        <button *ngIf="consignment.ui.targetItem" class="btn btn-sm btn-warning"
+                                                (click)="targetConsignment()">TARGET
+                                        </button>
+                                    </div>
+                                    <div *ngIf="consignment.ui.supervisor">
+                                        <button *ngIf="consignment.ui.owner"  class="btn btn-sm btn-primary"
+                                                (click)="generateLocalCoC()">GENERATE LOCAL COC/COI
+                                        </button>
+                                        <button *ngIf="consignment.ui.owner" class="btn btn-sm btn-primary"
+                                                (click)="generateLocalCoR()">GENERATE LOCAL COR
                                         </button>
                                         <button *ngIf="!consignment.ui.assigned " class="btn btn-sm btn-primary"
                                                 (click)="assignInspectionOfficer()">ASSIGN IO
-                                        </button>
-                                        <button *ngIf="!consignment.ui.assigned" class="btn btn-sm btn-primary"
-                                                (click)="manualAssignInspectionOfficer()">PICK CD(MANUAL ASSIGN IO)
                                         </button>
                                         <button *ngIf="consignment.ui.assigned" class="btn btn-sm btn-primary"
                                                 (click)="reassignInspectionOfficer()">REASSIGN IO
@@ -715,14 +724,10 @@
                                         <button *ngIf="!consignment.ui.hasPort" class="btn btn-sm btn-primary"
                                                 (click)="assignConsignmentPort()">ASSIGN PORT
                                         </button>
-                                        <button *ngIf="consignment.ui.targetItem" class="btn btn-sm btn-warning"
-                                                (click)="targetConsignment()">TARGET
-                                        </button>
                                         <button *ngIf="consignment.ui.supervisorTarget"
                                                 class="btn btn-sm btn-warning"
                                                 (click)="supervisorTargetConsignment()">SUPERVISOR TARGET
                                         </button>
-
                                     </div>
                                 </div>
                                 <a class="btn btn-sm btn-warning"
@@ -731,18 +736,16 @@
                                 <br/>
                                 <b>Document Details:</b>
                                 <br/>
-                                <button
-                                        class="btn btn-sm btn-primary"
+                                <button *ngIf="consignment.ui.demandNote" class="btn btn-sm btn-primary"
                                         (click)="downloadDemandNote()">DEMAND NOTE PDF
                                 </button>
                                 <button *ngIf="isVehicle()" class="btn btn-sm btn-primary" (click)="viewCoR()">
                                     CERTIFICATE OF
                                     ROADWORTHINESS
                                 </button>
-                                <button
-                                        class="btn btn-sm btn-primary" (click)="viewCoC()">CERTIFICATE OF COMPLIANCE
+                                <button *ngIf="consignment.ui.cocRequest" class="btn btn-sm btn-primary" (click)="viewCoC()">CERTIFICATE OF COMPLIANCE
                                 </button>
-                                <button class="btn btn-sm btn-primary" (click)="viewIdfDocument()">IDF DOCUMENT
+                                <button *ngIf="consignment.ui.idfAvailable" class="btn btn-sm btn-primary" (click)="viewIdfDocument()">IDF DOCUMENT
                                 </button>
                                 <button class="btn btn-sm btn-primary" (click)="viewDeclarationDocument()">
                                     DECLARATION DOCUMENT
