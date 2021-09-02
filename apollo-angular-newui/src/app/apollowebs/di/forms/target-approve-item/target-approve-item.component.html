@@ -2,24 +2,16 @@
 <mat-dialog-content>
     <div class="row no_margin" [formGroup]="form">
         <div class="col-sm-12 col-md-8">
-        
-
-
             <label for="targetApproveRemarks" class="waiver-form-label">Target Approve Remarks</label>
-            <textarea name="targetApproveRemarks" class="waiver-form-input-master" placeholder=""
+            <textarea id="targetApproveRemarks" class="waiver-form-input-master" placeholder=""
                 formControlName="targetApproveRemarks"></textarea>
-
-
-
         </div>
-
-
     </div>
 </mat-dialog-content>
 <mat-dialog-actions>
     <div class="row no_margin master-list-new-btn">
-        <!--        [disabled]="!productDetails.valid"-->
-        <button class="next-btn btn-gen new-btn" (click)="saveRecord()">SAVE
+        <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
+        <button [disabled]="form.invalid" class="next-btn btn-gen new-btn" (click)="saveRecord()">SAVE
         </button>
     </div>
 </mat-dialog-actions>

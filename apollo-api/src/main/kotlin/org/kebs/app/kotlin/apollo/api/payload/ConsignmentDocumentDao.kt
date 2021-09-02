@@ -14,7 +14,9 @@ fun checkHasAuthority(role: String, auth: Authentication): Boolean {
 }
 
 class ConsignmentEnableUI {
-    var csApproval: Boolean? = null
+    var owner: Boolean? = null
+    var supervisor: Boolean? = null
+    var inspector: Boolean? = null
     var demandNote: Boolean? = null
     var sendCoi: Boolean? = null
     var targetItem: Boolean? = null
@@ -26,6 +28,9 @@ class ConsignmentEnableUI {
     var cocRequest: Boolean? = null
     var assigned: Boolean? = null
     var completed: Boolean? = null
+    var riskProfileImporter: Boolean=false
+    var riskProfileConsignor: Boolean=false
+    var riskProfileConsignee: Boolean=false
     var inspectionActive: Boolean? = null
     var hasPort: Boolean? = null
 
@@ -35,16 +40,19 @@ class ConsignmentEnableUI {
             val change = checkHasAuthority("DI_OFFICER_CHARGE_MODIFY", authentication)
 
             val ui = ConsignmentEnableUI().apply {
-                csApproval = modify && (cd.csApprovalStatus == map.activeStatus)
-                demandNote = modify && (cd.sendDemandNote != null)
-                sendCoi = modify && cd.localCoi == map.activeStatus && cd.sendCoiStatus != map.activeStatus
+                supervisor = modify
+                inspector = change
+                owner = cd.assignedInspectionOfficer?.userName == authentication.name
+                demandNote = modify && (cd.targetStatus == map.activeStatus)
+                sendCoi = modify && cd.localCoi == map.activeStatus
                 targetItem = modify && cd.targetStatus != map.activeStatus && cd.assignedStatus == map.activeStatus
-                supervisorTarget = change && cd.targetApproveStatus != map.activeStatus && cd.targetStatus == map.activeStatus
+                supervisorTarget = change && cd.targetStatus != map.activeStatus
                 attachments = (change || modify)
-                hasPort = cd.portOfArrival != null
-                completed = cd.approveRejectCdStatusType != null
+                hasPort = (cd.portOfArrival != null && cd.freightStation != null)
+                completed = cd.diProcessCompletedOn != null
                 approveReject = (cd.targetApproveStatus == null || cd.inspectionDateSetStatus == map.activeStatus) && modify
             }
+
             cd.cdType?.let {
                 ui.corRequest = it.localCorStatus == map.activeStatus
                 ui.cocRequest = it.localCocStatus == map.activeStatus
@@ -68,18 +76,17 @@ class ConsignmentDocumentDao {
     var compliantRemarks: String? = null
     var blacklistStatus: Int? = null
     var blacklistRemarks: String? = null
-    var blacklistDate: Date? = null
-    var blacklistId: Int? = null
     var assignedStatus: Int? = null
     var docTypeId: Long? = null
+    var docType: Long? = null
     var cdType: Long? = null
     var cdTypeCategory: String? = null
     var cdTypeName: String? = null
     var cdTypeDescription: String? = null
     var portOfArrival: Long? = null
-    var freightStation: Long? = null
+    var freightStation: String? = null
+    var freightStationId: Long? = null
     var cdImporter: Long? = null
-    var csApprovalStatus: Int? = null
     var approveRejectCdStatus: Int? = null
     var approveRejectCdDate: Date? = null
     var cdRefNumber: String? = null
@@ -95,7 +102,7 @@ class ConsignmentDocumentDao {
     var applicationRefNo: String? = null
     var summaryPageURL: String? = null
     var approvalStatus: String? = null
-    var enabledFunctions: ConsignmentEnableUI? = null
+    var assigned: Boolean = false
 
     companion object {
         fun fromEntity(doc: ConsignmentDocumentDetailsEntity): ConsignmentDocumentDao {
@@ -109,8 +116,14 @@ class ConsignmentDocumentDao {
                 dt.cdTypeName = it.typeName
                 dt.cdTypeDescription = it.description
             }
+            doc.freightStation?.let {
+                dt.freightStation = it.cfsName
+                dt.freightStationId = it.id
+            }
+            dt.assigned = doc.assignedInspectionOfficer != null
             dt.localCoi = doc.localCoi
             dt.sendDemandNote = doc.sendDemandNote
+
             dt.docTypeId = doc.docTypeId
             dt.cocNumber = doc.cocNumber
             dt.cdRefNumber = doc.cdRefNumber
@@ -245,12 +258,12 @@ class CdItemDetailsDao {
             item.cdDocId?.let { cd ->
                 dt.localCoi = cd.localCoi
                 dt.inspectionNotificationStatus = cd.inspectionNotificationStatus
-                dt.inspectionDate=cd.inspectionDate
+                dt.inspectionDate = cd.inspectionDate
             }
             // Other details
             if (details) {
                 dt.apply {
-                    itemHsCodeDescription=item.hsDescription
+                    itemHsCodeDescription = item.hsDescription
                     unitOfQuantity = item.unitOfQuantity
                     packageQuantity = item.packageQuantity
                     totalPriceFcy = item.totalPriceFcy
@@ -260,7 +273,7 @@ class CdItemDetailsDao {
                     totalPriceNcy = item.totalPriceNcy
                     marksAndContainers = item.marksAndContainers
                     itemNetWeight = item.itemNetWeight
-                    itemGrossWeight=item.itemGrossWeight
+                    itemGrossWeight = item.itemGrossWeight
                     packageType = item.packageType
                     packageTypeDesc = item.packageTypeDesc
                     applicantRemarks = item.applicantRemarks

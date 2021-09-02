@@ -38,6 +38,11 @@ export class ConsignmentDocumentListComponent implements OnInit {
                 type: 'string',
                 filter: false
             },
+            freightStation: {
+                title: 'Station',
+                type: 'string',
+                filter: false
+            },
             ucrNumber: {
                 title: 'UCR No',
                 type: 'string'

@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.store.model.di
 
+import org.kebs.app.kotlin.apollo.store.model.CocsEntity
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import java.io.Serializable
 import java.sql.Date
@@ -209,9 +210,9 @@ class ConsignmentDocumentDetailsEntity : Serializable {
     @Basic
     var portOfArrival: Long? = null
 
-    @Column(name = "FREIGHT_STATION")
-    @Basic
-    var freightStation: Long? = null
+    @JoinColumn(name = "FREIGHT_STATION", referencedColumnName = "ID")
+    @ManyToOne
+    var freightStation: CfsTypeCodesEntity? = null
 
     @Column(name = "CD_IMPORTER")
     @Basic

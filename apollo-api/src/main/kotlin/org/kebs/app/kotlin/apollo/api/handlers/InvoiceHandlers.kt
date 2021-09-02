@@ -86,7 +86,6 @@ class InvoiceHandlers(
             val cdDetails = daoServices.findCDWithUuid(cdUuid)
             val invoiceForm = req.body(DemandNoteForm::class.java)
             val itemList = mutableListOf<CdItemDetailsEntity>()
-            var hasAllItems = false
             var totalItems = 0
             if (invoiceForm.includeAll) {
                 daoServices.findCDItemsListWithCDID(cdDetails).forEach { item ->
@@ -95,7 +94,6 @@ class InvoiceHandlers(
                     itemList.add(item)
                 }
                 totalItems = itemList.size
-                hasAllItems = true
             } else {
                 invoiceForm.items.forEach {
                     val item = daoServices.findItemWithItemIDAndDocument(cdDetails, it.itemId)
@@ -104,7 +102,6 @@ class InvoiceHandlers(
                     itemList.add(item)
                 }
                 totalItems = daoServices.findCDItemsListWithCDID(cdDetails).size
-                hasAllItems = itemList.size == totalItems
             }
             // Reject for consignment with no items?
             if (itemList.isEmpty() && totalItems > 0) {
@@ -139,11 +136,11 @@ class InvoiceHandlers(
                 response.message = "Success"
             } else {
                 val data = mutableMapOf<String, Any?>()
-                data.put("demandNoteId", demandNote.id)
-                data.put("amount", invoiceForm.amount)
-                data.put("remarks", invoiceForm.remarks)
-                data.put("hasAllItems", hasAllItems)
-                data.put("cdUuid", cdUuid)
+                data["demandNoteId"] = demandNote.id
+                data["amount"] = invoiceForm.amount
+                data["remarks"] = invoiceForm.remarks
+                data["hasAllItems"] = false
+                data["cdUuid"] = cdUuid
                 this.diBpmn.startGenerateDemandNote(data, cdDetails)
             }
 

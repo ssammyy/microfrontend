@@ -19,6 +19,7 @@
 </mat-dialog-content>
 <mat-dialog-actions>
     <div class="row no_margin master-list-new-btn">
+        <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
         <button [disabled]="form.invalid" class="next-btn btn-gen new-btn" (click)="saveRecord()">
             {{this.form.value.approvalStatus==='1'?'Approve':'Reject'}}
         </button>

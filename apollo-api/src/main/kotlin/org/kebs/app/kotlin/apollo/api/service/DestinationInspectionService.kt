@@ -777,7 +777,7 @@ class DestinationInspectionService(
             cdItemDetails.cdDocId?.let { itemType ->
                 if (itemType.equals(corCdType)) {
                     itemType.docTypeId?.let {
-                        dataMap.put("cor", daoServices.findCORById(it))
+                        dataMap.put("doc_type", daoServices.findCORById(it))
                     }
                 }
                 dataMap.put("cd_details", ConsignmentDocumentDao.fromEntity(itemType))
@@ -915,13 +915,23 @@ class DestinationInspectionService(
             dataMap.put("cd_consignor", null)
             dataMap.put("risk_profile_consignor", false)
         }
-        // CdType details
-        cdDetails.cdType?.let {
-            dataMap.put("cd_type", ConsignmentDocumentTypesEntityDao.fromEntity(it))
+        // CdType and CoC details
+        cdDetails.cdType?.let {cdType->
+            dataMap.put("cd_type", ConsignmentDocumentTypesEntityDao.fromEntity(cdType))
+            if(cdType.localCocStatus==map.activeStatus || cdType.localCorStatus==map.activeStatus) {
+                cdDetails.docTypeId?.let { docId ->
+                    dataMap.put("doc_type", daoServices.findCORById(docId))
+                }
+            }
         }
+
         // Standard
         cdDetails.cdStandardsTwo?.let {
             dataMap.put("cd_standards_two", CdStandardTwoEntityDao.fromEntity(it))
+        }
+        // Standard
+        cdDetails.cdStandard?.let {
+            dataMap.put("cd_standard", CdStandardsEntityDao.fromEntity(it))
         }
         // Transporter
         cdDetails.cdTransport?.let {

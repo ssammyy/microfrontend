@@ -9,6 +9,7 @@ import org.kebs.app.kotlin.apollo.api.payload.request.ConsignmentUpdateRequest
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentAuditService
+import org.kebs.app.kotlin.apollo.api.service.DestinationInspectionService
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.di.CdStatusTypesEntity
 import org.kebs.app.kotlin.apollo.store.model.di.DeclarationDetailsEntity
@@ -24,7 +25,7 @@ class DestinationInspectionActionsHandler(
         private val consignmentAuditService: ConsignmentDocumentAuditService,
         private val applicationMapProperties: ApplicationMapProperties,
         private val diBpmn: DestinationInspectionBpmn,
-        private val reportsDaoService: ReportsDaoService,
+        private val diService: DestinationInspectionService
 ) {
     fun blacklistConsignment(req: ServerRequest): ServerResponse {
         val response = ApiResponseModel()
@@ -213,9 +214,9 @@ class DestinationInspectionActionsHandler(
                 val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
                 val processStages = commonDaoServices.findProcesses(applicationMapProperties.mapImportInspection)
                 if (form.freightStation != null && form.portOfArrival != null) {
-
+                    val freignStations = daoServices.findCfsID(form.freightStation!!)
                     with(consignmentDocument) {
-                        freightStation = form.freightStation
+                        freightStation = freignStations
                         portOfArrival = form.portOfArrival
                         assignPortRemarks = form.remarks
                     }

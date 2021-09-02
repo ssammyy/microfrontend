@@ -547,7 +547,7 @@ class ConsignmentDocumentDaoService(
 //                        val cdCfsAndUserCfs = cdCfsEntity?.id?.let { daoServices.findCfsUserFromCdCfs(it) }
 //            val sectionL3 = cdCfsAndUserCfs?.userCfs?.let { daoServices.findFreightStation(it) }
 //                        freightStation = cdCfsAndUserCfs?.userCfs
-                        freightStation = cdCfsEntity?.id
+                        freightStation = cdCfsEntity
 //                        val sectionsLevel2 = freightStation?.let { commonDaoServices.findSectionLevel2WIthId(it) }
 //                        clusterId = sectionsLevel2?.subSectionLevel1Id?.id
 //                        portOfArrival = sectionsLevel2?.sectionId?.id

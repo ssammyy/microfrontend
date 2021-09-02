@@ -2380,7 +2380,7 @@ class DestinationInspectionDaoServices(
                 ?.let { subSectionsLevel2Entity ->
                     iUserProfilesRepo.findBySubSectionL2IdAndStatus(
                             commonDaoServices.findSectionLevel2WIthId(
-                                    subSectionsLevel2Entity
+                                    subSectionsLevel2Entity.id
                             ), commonDaoServices.activeStatus.toInt()
                     )
                             ?.let { userProfileList ->
