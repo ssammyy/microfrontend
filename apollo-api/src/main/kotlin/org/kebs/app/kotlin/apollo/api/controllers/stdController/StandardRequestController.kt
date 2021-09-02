@@ -1,9 +1,12 @@
 package org.kebs.app.kotlin.apollo.api.controllers.stdController
 
 
-import org.kebs.app.kotlin.apollo.store.model.std.*
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.*
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.FilePurposeAnnexService
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.ReferenceMaterialJustificationService
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.RelevantDocumentsNWIService
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.StandardRequestService
 import org.kebs.app.kotlin.apollo.common.dto.std.*
+import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -28,6 +31,25 @@ class StandardRequestController(
         return ServerResponse(HttpStatus.OK, "Successfully deployed server", HttpStatus.OK)
     }
 
+    //********************************************************** deployment endpoints **********************************************************
+    @PostMapping("/anonymous/standard/delete")
+    @ResponseBody
+    fun delete(@RequestBody id: String?): ServerResponse {
+        standardRequestService.deleteTask(id)
+        return ServerResponse(
+            HttpStatus.OK,
+            "Successfully returned process history",
+            HttpStatus.OK
+
+        )
+    }
+
+    @PostMapping("/anonymous/standard/close")
+    fun clos(@RequestBody responseMessage: ResponseMessage) {
+        return standardRequestService.closeTask(responseMessage.message)
+    }
+
+
     //********************************************************** process upload standard request **********************************************************
     @PostMapping("/anonymous/standard/dropdown/request")
     @ResponseBody
@@ -43,13 +65,13 @@ class StandardRequestController(
     @GetMapping("/anonymous/standard/dropdown/getProducts/{technicalCommitteeId}")
     @ResponseBody
     fun getProducts(@PathVariable("technicalCommitteeId") technicalCommitteeId: String?): MutableList<Product> {
-        return standardRequestService.getProducts(technicalCommitteeId?.toLong());
+        return standardRequestService.getProducts(technicalCommitteeId?.toLong())
     }
 
     @GetMapping("/anonymous/standard/getStandardRequest")
     @ResponseBody
     fun getStandardRequests(): String {
-        return standardRequestService.generateSRNumber("ENG");
+        return standardRequestService.generateSRNumber("ENG")
     }
 
     /* @GetMapping("/getProducts")
@@ -62,7 +84,7 @@ class StandardRequestController(
     @GetMapping("/anonymous/standard/dropdown/getProductCategories/{productId}")
     @ResponseBody
     fun getProductCategories(@PathVariable("productId") productId: String?): MutableList<ProductSubCategory> {
-        return standardRequestService.getProductCategories(productId?.toLong());
+        return standardRequestService.getProductCategories(productId?.toLong())
     }
 
     /*@PostMapping("/getProductCategories")
@@ -76,13 +98,13 @@ class StandardRequestController(
     @GetMapping("/anonymous/standard/dropdown/getDepartments")
     @ResponseBody
     fun getDepartments(): MutableList<Department> {
-        return standardRequestService.getDepartments();
+        return standardRequestService.getDepartments()
     }
 
     @GetMapping("/anonymous/standard/getLiaisonOrganizations")
     @ResponseBody
     fun getLiaisonOrganization(): MutableList<LiaisonOrganization> {
-        return standardRequestService.getLiaisonOrganization();
+        return standardRequestService.getLiaisonOrganization()
     }
 
     /*@GetMapping("/getDepartments")
@@ -95,14 +117,14 @@ class StandardRequestController(
     @GetMapping("/anonymous/standard/dropdown/getTechnicalCommittee/{departmentId}")
     @ResponseBody
     fun getTechnicalCommittee(@PathVariable("departmentId") departmentId: String?): MutableList<TechnicalCommittee> {
-        return standardRequestService.getTechnicalCommittee(departmentId?.toLong());
+        return standardRequestService.getTechnicalCommittee(departmentId?.toLong())
     }
 
 
     @GetMapping("/anonymous/standard/getTechnicalCommitteeName/{tcId}")
     @ResponseBody
     fun getTechnicalCommitteeName(@PathVariable("tcId") tcId: String?): String {
-        return standardRequestService.getTechnicalCommitteeName(tcId?.toLong());
+        return standardRequestService.getTechnicalCommitteeName(tcId?.toLong())
     }
 
     /*@GetMapping("/getTechnicalCommittee")
@@ -116,6 +138,7 @@ class StandardRequestController(
     fun getHOFTasks(): List<TaskDetails> {
         return standardRequestService.getHOFTasks()
     }
+
 
     @PostMapping("standard/process")
     @ResponseBody

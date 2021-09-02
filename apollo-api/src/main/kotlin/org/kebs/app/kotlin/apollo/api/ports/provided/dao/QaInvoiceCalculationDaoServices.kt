@@ -8,13 +8,18 @@ import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapPrope
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.*
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.repo.di.ICfgMoneyTypeCodesRepository
+import org.kebs.app.kotlin.apollo.store.repo.qa.IPermitApplicationsRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IPermitRatingRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaInvoiceDetailsRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaInvoiceMasterDetailsRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
 import java.sql.Timestamp
 import java.time.Instant
@@ -25,6 +30,7 @@ class QaInvoiceCalculationDaoServices(
 //    private val iTurnOverRatesRepo: ITurnOverRatesRepository,
     private val iMoneyTypeCodesRepo: ICfgMoneyTypeCodesRepository,
     private val iPermitRatingRepo: IPermitRatingRepository,
+    private val permitRepo: IPermitApplicationsRepository,
     private val qaInvoiceDetailsRepo: IQaInvoiceDetailsRepository,
     private val qaInvoiceMasterDetailsRepo: IQaInvoiceMasterDetailsRepository,
     private val commonDaoServices: CommonDaoServices
@@ -529,7 +535,7 @@ class QaInvoiceCalculationDaoServices(
                 invoiceMasterId = invoiceMaster.id
                 umo = "PER"
                 generatedDate = Timestamp.from(Instant.now())
-                tokenValue = plantDetail.tokenGiven
+                tokenValue = tokenGenerated
                 itemDescName = "EXTRA PRODUCT"
                 itemQuantity = BigDecimal.valueOf(1)
                 itemAmount = selectedRate.extraProductFee?.multiply(selectedRate.validity?.toBigDecimal())
@@ -542,7 +548,7 @@ class QaInvoiceCalculationDaoServices(
             qaInvoiceDetailsRepo.save(invoiceDetailsPermitFee)
 
             permit.apply {
-                permitFeeToken = plantDetail.tokenGiven
+                permitFeeToken = tokenGenerated
             }
             qaDaoServices.permitUpdateDetails(permit, map, user)
         }
@@ -590,5 +596,91 @@ class QaInvoiceCalculationDaoServices(
             permitFeeToken = tokenGenerated
         }
         qaDaoServices.permitUpdateDetails(permit, map, user)
+    }
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updatePermitWithZeroInvoicesAmount() {
+
+        /**
+         *  Find all company with firm category of small and medium and add them together to filter for those with
+         *  same token that acted as promotion or discount so that they can be able to be moved to next process
+         *
+         * */
+        val companyListMediumType =
+            qaDaoServices.findAllCompanyWithTurnOverID(applicationMapProperties.mapQASmarkMediumTurnOverId, 1)
+        val companyListSmallType =
+            qaDaoServices.findAllCompanyWithTurnOverID(applicationMapProperties.mapQASmarkJuakaliTurnOverId, 1)
+
+        val allCompanyTogether = mutableListOf<CompanyProfileEntity>()
+        allCompanyTogether.addAll(companyListSmallType)
+        allCompanyTogether.addAll(companyListMediumType)
+
+        for (cp in allCompanyTogether) {
+            try {
+                //Find all branches per Company Found
+                val allBranches = qaDaoServices.findAllPlantDetailsWithCompanyDetailsAndStatus(
+                    cp.id ?: throw Exception("Missing company ID"), 1
+                )
+                try {
+
+                    for (br in allBranches) {
+                        //find invoice Details associated with that company
+                        val invoiceDetail = qaInvoiceDetailsRepo.findByIdOrNull(br.invoiceSharedId)
+                        val masterDetails = qaInvoiceMasterDetailsRepo.findByIdOrNull(invoiceDetail?.invoiceMasterId)
+                        if (masterDetails?.paymentStatus == 10) {
+                            val permitsWithToken = qaDaoServices.findAllPermitListWithToken(
+                                br.tokenGiven ?: throw Exception("Missing TOKEN")
+                            )
+                            try {
+                                //update all permit details found with that company details
+                                for (pd in permitsWithToken) {
+                                    if (pd.paidStatus != 10) {
+                                        //find masterDetails invoice with id of permit
+                                        val masterInvoiceDetails = qaDaoServices.findPermitInvoiceByPermitID(
+                                            pd.id ?: throw Exception("Missing Permit ID")
+                                        )
+                                        if (masterInvoiceDetails.totalAmount == BigDecimal.ZERO) {
+                                            //Update permit paid status to 1
+                                            with(pd) {
+                                                paidStatus = 1
+                                                permitStatus = applicationMapProperties.mapQaStatusPaymentDone
+                                            }
+                                            permitRepo.save(pd)
+
+                                            with(masterInvoiceDetails) {
+                                                receiptNo = masterDetails.receiptNo
+                                                batchInvoiceNo = masterDetails.batchInvoiceNo
+                                                paymentStatus = masterDetails.paymentStatus
+                                            }
+                                            qaInvoiceMasterDetailsRepo.save(masterInvoiceDetails)
+                                        }
+
+                                    }
+                                }
+                            } catch (e: Exception) {
+                                KotlinLogging.logger { }.error(e.message)
+                                KotlinLogging.logger { }.debug(e.message, e)
+
+                                continue
+                            }
+                        }
+                    }
+                } catch (e: Exception) {
+                    KotlinLogging.logger { }.error(e.message)
+                    KotlinLogging.logger { }.debug(e.message, e)
+
+                    continue
+                }
+
+
+            } catch (e: Exception) {
+                KotlinLogging.logger { }.error(e.message)
+                KotlinLogging.logger { }.debug(e.message, e)
+
+                continue
+            }
+
+        }
+
     }
 }

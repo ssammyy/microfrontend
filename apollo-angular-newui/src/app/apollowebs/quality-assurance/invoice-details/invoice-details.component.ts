@@ -4,7 +4,7 @@ import {
     AllBatchInvoiceDetailsDto,
     PermitInvoiceDto,
     AllPermitDetailsDto,
-    PermitEntityDto, MPesaPushDto
+    PermitEntityDto, MPesaPushDto, StgInvoiceBalanceDto
 } from '../../../core/store/data/qa/qa.model';
 import {QaService} from '../../../core/store/data/qa/qa.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
@@ -33,6 +33,7 @@ export class InvoiceDetailsComponent implements OnInit, AfterViewInit {
     public allBatchInvoiceDetails!: AllBatchInvoiceDetailsDto;
     // pdfSources = "https://s23.q4cdn.com/202968100/files/doc_downloads/test.pdf";
     pdfSources: any;
+    invoiceBalance: StgInvoiceBalanceDto;
     submitted = false;
 
     stkPushForm!: FormGroup;
@@ -88,6 +89,12 @@ export class InvoiceDetailsComponent implements OnInit, AfterViewInit {
             this.qaService.loadInvoiceDetailsPDF(this.batchID).subscribe(
                 (data: any) => {
                     this.pdfSources = data;
+                },
+            );
+
+            this.qaService.loadInvoiceDetailsBalance(this.batchID).subscribe(
+                (data: any) => {
+                    this.invoiceBalance = data;
                 },
             );
         });

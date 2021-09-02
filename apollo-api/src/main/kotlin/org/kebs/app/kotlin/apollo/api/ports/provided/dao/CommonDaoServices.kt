@@ -89,6 +89,7 @@ import org.springframework.web.multipart.MultipartFile
 import java.io.*
 import java.math.BigDecimal
 import java.net.URLConnection
+import java.security.SecureRandom
 import java.sql.Date
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
@@ -402,6 +403,12 @@ class CommonDaoServices(
         calendar.time = Date()
         calendar.add(Calendar.HOUR, expirationTime)
         return Timestamp(calendar.timeInMillis)
+    }
+
+    fun randomNumber(digitSize: Int): String {
+        val random = SecureRandom()
+        val num: Int = random.nextInt(100000)
+        return String.format("%0${digitSize}d", num)
     }
 
     fun serviceMapDetails(appId: Int): ServiceMapsEntity {

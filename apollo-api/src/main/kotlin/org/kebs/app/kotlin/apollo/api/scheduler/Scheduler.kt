@@ -45,6 +45,7 @@ class Scheduler(
     fun runSchedulerAfterEveryFiveMin() {
         schedulerImpl.updatePaidDemandNotesStatus()
         qaDaoServices.assignPermitApplicationAfterPayment()
+        qaDaoServices.updatePermitWithDiscountWithPaymentDetails()
         schedulerImpl.updateLabResultsWithDetails()
         schedulerImpl.updateFirmTypeStatus()
     }

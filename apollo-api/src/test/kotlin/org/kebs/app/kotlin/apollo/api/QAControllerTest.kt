@@ -18,10 +18,9 @@ import org.kebs.app.kotlin.apollo.store.repo.IMpesaTransactionsRepository
 import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.math.BigDecimal
-import java.sql.Date
+import java.security.SecureRandom
 import java.sql.Timestamp
 import java.time.Instant
 
@@ -82,6 +81,15 @@ class QAControllerTest {
 //                commonDaoServices.findUserByID(2046)
 //            )
 //        KotlinLogging.logger { }.info { "complaint = ${complaint.toString()} " }
+    }
+
+    @Test
+    fun randomNumber(digitSize: Int) {
+        val random = SecureRandom()
+        val num: Int = random.nextInt(100000)
+        val formatted = String.format("%0${digitSize}d", num)
+        println(formatted)
+        KotlinLogging.logger { }.info { "complaint = ${formatted} " }
     }
 
     @Test

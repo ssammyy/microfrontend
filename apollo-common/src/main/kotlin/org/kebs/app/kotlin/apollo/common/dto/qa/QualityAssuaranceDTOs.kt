@@ -169,6 +169,11 @@ data class PermitProcessStepDto(
     var processStep: Int? = null
 )
 
+data class StgInvoiceBalanceDto(
+    var batchID: Long? = null,
+    var balance: BigDecimal? = null
+)
+
 data class STA1Dto(
     var id: Long? = null,
     var commodityDescription: String? = null,

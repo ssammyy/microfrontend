@@ -242,13 +242,23 @@ class SchedulerImpl(
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updateFirmTypeStatus() {
-        companyRepo.findAll().forEach { cp ->
-            val firmType = qaDaoServices.manufactureType(
-                cp.yearlyTurnover ?: throw NullValueNotAllowedException("Invalid Record")
-            ).id
-            cp.firmCategory = firmType
-            companyRepo.save(cp)
+
+        val cps = companyRepo.findAll()
+        for (cp in cps) {
+            try {
+                val firmType = qaDaoServices.manufactureType(
+                    cp.yearlyTurnover ?: throw NullValueNotAllowedException("Invalid Record")
+                ).id
+                cp.firmCategory = firmType
+                companyRepo.save(cp)
+            } catch (e: Exception) {
+                KotlinLogging.logger { }.error(e.message)
+                KotlinLogging.logger { }.debug(e.message, e)
+
+                continue
+            }
         }
+
 
     }
 

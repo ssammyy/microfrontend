@@ -210,6 +210,8 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     ): PermitApplicationsEntity?
 
     fun findAllByPaidStatus(paymentStatus: Int): List<PermitApplicationsEntity>?
+    fun findAllByPaidStatusAndPermitFeeToken(paidStatus: Int, permitFeeToken: String): List<PermitApplicationsEntity>?
+    fun findAllByPermitFeeToken(permitFeeToken: String): List<PermitApplicationsEntity>?
     fun findByPermitRefNumberAndOldPermitStatus(
         permitRefNumber: String,
         oldPermitStatus: Int

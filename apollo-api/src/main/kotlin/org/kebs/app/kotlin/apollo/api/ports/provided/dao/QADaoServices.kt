@@ -82,6 +82,7 @@ class QADaoServices(
     private val qaUploadsRepo: IQaUploadsRepository,
     private val manufacturingProcessSTA10Repo: IQaManufactureProcessRepository,
     private val manufacturePlantRepository: IManufacturePlantDetailsRepository,
+    private val companyProfileRepo: ICompanyProfileRepository,
     private val permitTypesRepo: IPermitTypesEntityRepository,
     private val processStatusRepo: IQaProcessStatusRepository,
     private val iMoneyTypeCodesRepo: ICfgMoneyTypeCodesRepository,
@@ -637,6 +638,19 @@ class QADaoServices(
         } ?: throw ExpectedDataNotFound("No Permit Found for the following PAYMENT STATUS = ${paymentStatus}")
     }
 
+    fun findAllPermitListWithPaymentStatusAndToken(paymentStatus: Int, token: String): List<PermitApplicationsEntity> {
+        permitRepo.findAllByPaidStatusAndPermitFeeToken(paymentStatus, token)?.let { permitList ->
+            return permitList
+        }
+            ?: throw ExpectedDataNotFound("No Permit Found for the following PAYMENT STATUS = ${paymentStatus} and TOKEN = ${token}")
+    }
+
+    fun findAllPermitListWithToken(token: String): List<PermitApplicationsEntity> {
+        permitRepo.findAllByPermitFeeToken(token)?.let { permitList ->
+            return permitList
+        } ?: throw ExpectedDataNotFound("No Permit Found for the following  TOKEN = ${token}")
+    }
+
     fun findAllQaInspectionOPCWithPermitRefNumber(permitRefNumber: String): List<QaInspectionOpcEntity> {
         qaInspectionOPCRepo.findTopByPermitRefNumberOrderByIdDesc(permitRefNumber)?.let {
             return it
@@ -855,6 +869,11 @@ class QADaoServices(
             return it
         }
             ?: throw ExpectedDataNotFound("No Permit found with the following [PERMIT Number=$permitNumber and VERSION Number=$versionNumber]")
+    }
+
+
+    fun updatePermitWithDiscountWithPaymentDetails() {
+        qaInvoiceCalculation.updatePermitWithZeroInvoicesAmount()
     }
 
     fun findPermitBYUserIDANDProductionStatus(
@@ -1105,6 +1124,23 @@ class QADaoServices(
         manufacturePlantRepository.findByUserId(userId)?.let {
             return it
         } ?: throw ExpectedDataNotFound("No Plant details found with the following [user id=$userId]")
+    }
+
+    fun findAllPlantDetailsWithCompanyDetailsAndStatus(
+        companyID: Long,
+        status: Int
+    ): List<ManufacturePlantDetailsEntity> {
+        manufacturePlantRepository.findByCompanyProfileIdAndStatus(companyID, status)?.let {
+            return it
+        }
+            ?: throw ExpectedDataNotFound("No Plant details found with the following [company id=$companyID] and [status =$status]")
+    }
+
+    fun findAllCompanyWithTurnOverID(turnOverID: Long, status: Int): List<CompanyProfileEntity> {
+        companyProfileRepo.findAllByFirmCategoryAndStatus(turnOverID, status)?.let {
+            return it
+        }
+            ?: throw ExpectedDataNotFound("No Company details List found with the following  turnOverID=$turnOverID and status=$status")
     }
 
     fun findAllPlantDetailsWithCompanyID(companyID: Long): List<ManufacturePlantDetailsEntity> {
@@ -4585,14 +4621,15 @@ class QADaoServices(
                 plantDetail.id
             )
 
-            KotlinLogging.logger { }.info { "PRODUCT SIZE = ${productsManufacture.size.plus(1)}" }
+            KotlinLogging.logger { }.info { "PRODUCT SIZE BEFORE ADDING ONE = ${productsManufacture.size}" }
+//            KotlinLogging.logger { }.info { "PRODUCT SIZE = ${productsManufacture.size.plus(1)}" }
             when (permitType.id) {
                 applicationMapProperties.mapQAPermitTypeIdSmark -> {
                     invoiceGenerated = qaInvoiceCalculation.calculatePaymentSMark(
                         permit,
                         user,
                         manufactureTurnOver,
-                        productsManufacture.size.plus(1).toLong(),
+                        productsManufacture.size.toLong(),
                         plantDetail
                     )
                 }
@@ -5632,6 +5669,25 @@ class QADaoServices(
         return BatchInvoiceDto(
             populateInvoiceDetails(companyProfile, batchInvoiceEntity, map),
             listPermitsInvoices(allInvoicesInBatch, null, map)
+        )
+    }
+
+    fun mapBatchInvoiceDetailsBalance(
+        batchInvoiceEntity: QaBatchInvoiceEntity,
+        loggedInUser: UsersEntity,
+        map: ServiceMapsEntity
+    ): StgInvoiceBalanceDto {
+
+        val invoiceBatchID = invoiceDaoService.findInvoiceBatchDetails(
+            batchInvoiceEntity.invoiceBatchNumberId ?: throw Exception("MISSING INVOICE BATCH ID")
+        )
+        val stgPayment = invoiceDaoService.findInvoiceStgReconciliationDetails(
+            invoiceBatchID.batchNumber ?: throw Exception("MISSING BATCH NUMBER")
+        )
+
+        return StgInvoiceBalanceDto(
+            batchInvoiceEntity.id,
+            stgPayment.invoiceAmount
         )
     }
 

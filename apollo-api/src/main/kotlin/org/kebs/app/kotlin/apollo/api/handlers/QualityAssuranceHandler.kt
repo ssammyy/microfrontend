@@ -1526,6 +1526,12 @@ class QualityAssuranceHandler(
 //            if (permit.fmarkGenerateStatus == 1) {
 //                qaDaoServices.permitGenerateFmark(map, loggedInUser, permit).first
 //            }
+            //Update Permit Details
+            with(permit) {
+                applicationStatus = map.activeStatus
+            }
+
+            permit = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).second
 
             //Calculate Invoice Details
             val invoiceCreated = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, null).second
@@ -1533,7 +1539,6 @@ class QualityAssuranceHandler(
             //Update Permit Details
             with(permit) {
                 sendApplication = map.activeStatus
-                applicationStatus = map.activeStatus
                 endOfProductionStatus = map.inactiveStatus
                 invoiceGenerated = map.activeStatus
                 permitStatus = applicationMapProperties.mapQaStatusPPayment
@@ -2644,6 +2649,28 @@ class QualityAssuranceHandler(
             val batchInvoiceDetails = qaDaoServices.findBatchInvoicesWithID(batchID)
             KotlinLogging.logger { }.info(":::::: BATCH INVOICE :::::::")
             qaDaoServices.mapBatchInvoiceDetails(batchInvoiceDetails, loggedInUser, map).let {
+                return ok().body(it)
+            }
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun invoiceBatchDetailsBalanceMigration(req: ServerRequest): ServerResponse {
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val batchID =
+                req.paramOrNull("batchID")?.toLong() ?: throw ExpectedDataNotFound("Required batch ID, check config")
+            val batchInvoiceDetails = qaDaoServices.findBatchInvoicesWithID(batchID)
+            KotlinLogging.logger { }.info(":::::: BATCH INVOICE :::::::")
+            qaDaoServices.mapBatchInvoiceDetailsBalance(batchInvoiceDetails, loggedInUser, map).let {
                 return ok().body(it)
             }
 

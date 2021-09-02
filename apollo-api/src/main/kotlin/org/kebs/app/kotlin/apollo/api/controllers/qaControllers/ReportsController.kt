@@ -125,7 +125,7 @@ class ReportsController(
 //                    map["amountInWords"] = demandNote?.
         map["receiptNo"] = batchInvoice.receiptNo.toString()
 
-        map = reportsDaoService.addBankAndMPESADetails(map)
+        map = reportsDaoService.addBankAndMPESADetails(map, batchInvoice.invoiceNumber.toString())
 
         reportsDaoService.extractReport(
             map,
@@ -187,7 +187,7 @@ class ReportsController(
         //                    map["amountInWords"] = demandNote?.
         map["receiptNo"] = batchInvoice.receiptNo.toString()
 
-        map = reportsDaoService.addBankAndMPESADetails(map)
+        map = reportsDaoService.addBankAndMPESADetails(map, batchInvoice.invoiceNumber.toString())
         return Pair(map, batchInvoiceList)
     }
 
@@ -282,7 +282,7 @@ class ReportsController(
 //                    map["amountInWords"] = demandNote?.
         map["receiptNo"] = masterInvoice.receiptNo.toString()
 
-        map = reportsDaoService.addBankAndMPESADetails(map)
+        map = reportsDaoService.addBankAndMPESADetails(map, masterInvoice.invoiceRef.toString())
 
         reportsDaoService.extractReport(
             map,

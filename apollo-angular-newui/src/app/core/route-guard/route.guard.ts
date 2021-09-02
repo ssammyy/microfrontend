@@ -54,7 +54,7 @@ export class RouteGuard implements CanActivate {
         this.store$.select(selectIsAuthenticated).subscribe(
             (a) => {
                 console.log(`Authd = ${a} redirecting to login`);
-                return auth = a;
+                auth = a;
             }
         );
         // this.store$.select(selectUserInfo).subscribe(
@@ -67,10 +67,10 @@ export class RouteGuard implements CanActivate {
             (a) => {
                 if (RouteGuard.tokenExpired(a.accessToken)) {
                     console.log(`TOKEN INVALID}`);
-                    return auth;
+                    auth = false;
                 } else {
                     console.log(`Token VALID`);
-                    return auth = true;
+                    auth = true;
                 }
             }
         );

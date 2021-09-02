@@ -776,17 +776,24 @@
 
         <div class="form-group">
             <label style="color: white; font-size: 14px" class="input-placeholder" for="username"><strong>Enter
-                OTP</strong></label
+                OTP</strong>(Numbers only)</label
             ><input style="color: white;font-size: 20px;" class="form-control two-column-input"
                     formControlName="username" id="username" name="username"
                     placeholder="Please Enter The OTP Sent To Your Phone"
-                    required="required" type="text">
+                    required="required"
+                    oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');"
+                    type="text">
         </div>
 
 
     </div>
     <p></p>
     <button (click)="onClickLogin()" class="login-button" type="submit" value="">CONFIRM OTP</button>
+    <!--    <button (throttledClick)="onClickValidateOtp()" [hidden]="stepZeroForm.get('otp')?.invalid"-->
+    <!--            [throttleTime]="700" appPreventDoubleClick class="btn btn-primary mt-2"-->
+    <!--            type="button"-->
+    <!--    >CONFIRM OTP-->
+    <!--    </button>-->
 
 
 </form>

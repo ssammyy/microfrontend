@@ -169,7 +169,7 @@ class DIReportsControllers(
 //                    map["amountInWords"] = demandNote?.
         map["receiptNo"] = demandNote?.receiptNo.toString()
 
-        map = reportsDaoService.addBankAndMPESADetails(map)
+        map = reportsDaoService.addBankAndMPESADetails(map, demandNote?.demandNoteNumber.toString())
 
         reportsDaoService.extractReportEmptyDataSource(map, response, applicationMapProperties.mapReportDemandNotePath)
     }
@@ -207,7 +207,7 @@ class DIReportsControllers(
 //                    map["amountInWords"] = demandNote?.
         map["receiptNo"] = demandNote.receiptNo.toString()
 
-        map = reportsDaoService.addBankAndMPESADetails(map)
+        map = reportsDaoService.addBankAndMPESADetails(map, demandNote.demandNoteNumber.toString())
 
         reportsDaoService.extractReport(
             map,
