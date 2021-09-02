@@ -132,7 +132,7 @@ export class DestinationInspectionService {
         if (documentType) {
             params['cdTypeUuid'] = documentType
         }
-        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/consignment/documents/completed"), {
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/consignment/documents/ongoing"), {
             params: params
         })
     }

@@ -403,7 +403,7 @@ class DestinationInspectionDaoServices(
 
                             val cdImporter = consignmentDocumentDetailsEntity.cdImporter?.let { findCDImporterDetails(it) }
                             importerName = cdImporter?.name
-                            importerPin = cdImporter?.pin
+                            importerPin = cdImporter?.pin.orEmpty()
                             importerAddress1 = cdImporter?.physicalAddress
                             importerAddress2 = "UNKNOWN"
                             importerCity = "UNKNOWN"
@@ -502,7 +502,7 @@ class DestinationInspectionDaoServices(
 
                         val cdImporter = consignmentDocumentDetailsEntity.cdImporter?.let { findCDImporterDetails(it) }
                         importerName = cdImporter?.name
-                        importerPin = cdImporter?.pin
+                        importerPin = cdImporter?.pin.orEmpty()
                         importerAddress1 = cdImporter?.physicalAddress
                         importerAddress2 = "UNKNOWN"
                         importerCity = "UNKNOWN"
@@ -2158,6 +2158,27 @@ class DestinationInspectionDaoServices(
             return it
         }
                 ?: throw Exception("COC List with the following  Freight STATION = ${cfsEntity.cfsName} and CD Type = ${cdType.typeName}, does not Exist")
+
+    }
+
+    fun findAllOngoingCdWithFreightStationID(
+            cfsEntity: List<UsersCfsAssignmentsEntity>,
+            cdType: ConsignmentDocumentTypesEntity?,
+            page: PageRequest
+    ): Page<ConsignmentDocumentDetailsEntity> {
+        val cfsIds= mutableListOf<Long>()
+        cfsEntity.forEach {
+            it.cfsId?.let { it1 -> cfsIds.add(it1) }
+        }
+        return cdType?.let {
+            return iConsignmentDocumentDetailsRepo.findByFreightStation_IdInAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+                    cfsIds,
+                    cdType, page)
+        }?:run {
+            return iConsignmentDocumentDetailsRepo.findByFreightStation_IdInAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+                    cfsIds
+            ,page)
+        }
 
     }
 

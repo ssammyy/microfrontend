@@ -308,6 +308,7 @@ class ApiDestinationInspectionHandler(
                     cdType = daoServices.findCdTypeDetailsWithUuid(cdTypeUuid)
                 }
                 val usersEntity = commonDaoServices.findUserByUserName(auth.name)
+
                 val data = daoServices.findAllCdWithAssignedIoID(usersEntity, cdType, extractPage(req))
                 response.data = ConsignmentDocumentDao.fromList(data.toList())
                 response.pageNo = data.number
@@ -347,8 +348,10 @@ class ApiDestinationInspectionHandler(
                         val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
                         val usersEntity = commonDaoServices.findUserByUserName(auth.name)
                         val userProfilesEntity = commonDaoServices.findUserProfileByUserID(usersEntity, map.activeStatus)
+                        val allUserCFS = daoServices.findAllCFSUserList(userProfilesEntity.id!!)
+
                         userProfilesEntity.subSectionL2Id?.let { section ->
-                            val pp = daoServices.findAllCdWithNoAssignedIoID(section, cdType, page)
+                            val pp = daoServices.findAllOngoingCdWithFreightStationID(allUserCFS, cdType, page)
                             response.data = ConsignmentDocumentDao.fromList(pp.toList())
                             response.pageNo = pp.number
                             response.totalPages = pp.totalPages
@@ -386,6 +389,7 @@ class ApiDestinationInspectionHandler(
                         val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
                         val userProfilesEntity = commonDaoServices.findUserProfileByUserID(usersEntity, map.activeStatus)
                         userProfilesEntity.sectionId?.let { section ->
+                            val statuses=arrayListOf(map.activeStatus,map.invalidStatus);
                             val pp = daoServices.findAllCompleteCdWithPortOfEntry(section, cdType, page)
                             response.data = ConsignmentDocumentDao.fromList(pp.toList())
                             response.totalPages = pp.totalPages
@@ -415,7 +419,7 @@ class ApiDestinationInspectionHandler(
         return ServerResponse.ok().body(response)
     }
 
-    @PreAuthorize("hasAuthority('DI_OFFICER_CHARGE_READ')|| hasAuthority('DI_OFFICER_CHARGE_READ')")
+    @PreAuthorize("hasAuthority('DI_INSPECTION_OFFICER_READ')|| hasAuthority('DI_OFFICER_CHARGE_READ')")
     fun outgoingConsignmentDocuments(req: ServerRequest): ServerResponse {
         val auth = commonDaoServices.loggedInUserAuthentication()
         val response = ApiResponseModel()

@@ -214,11 +214,11 @@
                             </div>
                             <div class="col-md-2">
                                 <b>Action:</b>
-                                <div *ngIf="itemDetails">
-                                    <button class="btn btn-sm btn-primary"
+                                <div *ngIf="itemDetails && itemDetails.isVehicle">
+                                    <button *ngIf="!itemDetails.ministrySubmitted" class="btn btn-sm btn-primary"
                                             (click)="submitMinistryInspection()">SUBMIT MINISTRY INSPECTION
                                     </button>
-                                    <button class="btn btn-sm btn-primary"
+                                    <button *ngIf="itemDetails.ministrySubmitted" class="btn btn-sm btn-primary"
                                             (click)="resubmitMinistryInspection()">RE-SUBMIT MINISTRY INSPECTION
                                     </button>
                                 </div>

@@ -53,7 +53,31 @@
                                                 Document Type
                                             </th>
                                             <tr>
-                                                <td>{{consignment.cd_standard.documentDescription ? consignment.cd_standard.documentDescription : 'NA'}}</td>
+                                                <td>{{consignment.cd_standard.documentTypeDescription ? consignment.cd_standard.documentTypeDescription : 'NA'}}</td>
+                                            </tr>
+                                            <th>
+                                                MDA
+                                            </th>
+                                            <tr>
+                                                <td>{{consignment.cd_standard.mdaDescription ? consignment.cd_standard.mdaDescription : 'NA'}}</td>
+                                            </tr>
+                                            <th>
+                                                Expiry Date
+                                            </th>
+                                            <tr>
+                                                <td>{{consignment.cd_standard.expiryDate ? consignment.cd_standard.expiryDate : 'NA'}}</td>
+                                            </tr>
+                                            <th>
+                                                Amended Date
+                                            </th>
+                                            <tr>
+                                                <td>{{consignment.cd_standard.amendedDate ? consignment.cd_standard.amendedDate : 'NA'}}</td>
+                                            </tr>
+                                            <th>
+                                                Local CoC Type
+                                            </th>
+                                            <tr>
+                                                <td>{{consignment.cd_standards_two.localCocType ? consignment.cd_standards_two.localCocType : 'NA'}}</td>
                                             </tr>
                                             <th>
                                                 Assigned To
@@ -674,6 +698,13 @@
                             <div class="col-md-2">
                                 <b>Action:</b>
                                 <div>
+                                    <button *ngIf="!consignment.ui.assigned" class="btn btn-sm btn-primary"
+                                            (click)="manualAssignInspectionOfficer()">SELF ASSIGN
+                                    </button>
+                                    <button class="btn btn-sm btn-primary"
+                                            (click)="uploadAttachment()">UPLOAD
+                                        ATTACHMENT
+                                    </button>
                                     <div *ngIf="consignment.ui.inspector">
                                         <button *ngIf="consignment.ui.owner"  class="btn btn-sm btn-primary"
                                                 (click)="generateLocalCoC()">GENERATE LOCAL COC/COI
@@ -687,20 +718,15 @@
                                         <button *ngIf="consignment.ui.owner"  class="btn btn-sm btn-primary"
                                                 (click)="sendCertificateOfCompliance()">SEND COI
                                         </button>
-                                        <button *ngIf="consignment.ui.owner"
+                                        <button *ngIf="consignment.ui.owner && consignment.ui.blacklistEnabled"
                                                 class="btn btn-sm btn-warning"
                                                 (click)="blacklistUser()">BLACKLIST USER
                                         </button>
                                         <button *ngIf="consignment.ui.owner && consignment.ui.targeted" class="btn btn-sm btn-warning"
                                                 (click)="generateDemandNote()">GENERATE DEMAND NOTE
                                         </button>
-                                        <button *ngIf="consignment.ui.owner" class="btn btn-sm btn-primary"
-                                                (click)="uploadAttachment()">UPLOAD
-                                            ATTACHMENT
-                                        </button>
-                                        <button *ngIf="!consignment.ui.assigned" class="btn btn-sm btn-primary"
-                                                (click)="manualAssignInspectionOfficer()">PICK CD(MANUAL ASSIGN IO)
-                                        </button>
+
+
                                         <button *ngIf="consignment.ui.owner" class="btn btn-sm btn-warning"
                                                 (click)="approveRejectConsignment()">Approve / Reject Consignment
                                         </button>
@@ -709,10 +735,10 @@
                                         </button>
                                     </div>
                                     <div *ngIf="consignment.ui.supervisor">
-                                        <button *ngIf="consignment.ui.owner"  class="btn btn-sm btn-primary"
+                                        <button *ngIf="consignment.ui.supervisor"  class="btn btn-sm btn-primary"
                                                 (click)="generateLocalCoC()">GENERATE LOCAL COC/COI
                                         </button>
-                                        <button *ngIf="consignment.ui.owner" class="btn btn-sm btn-primary"
+                                        <button *ngIf="consignment.ui.supervisor" class="btn btn-sm btn-primary"
                                                 (click)="generateLocalCoR()">GENERATE LOCAL COR
                                         </button>
                                         <button *ngIf="!consignment.ui.assigned " class="btn btn-sm btn-primary"
@@ -730,11 +756,12 @@
                                         </button>
                                     </div>
                                 </div>
-                                <a class="btn btn-sm btn-warning"
-                                   href="{{consignment.cd_details.summaryPageURL}}"
-                                   *ngIf="consignment.cd_details.summaryPageURL" target="_blank">View</a>
+
                                 <br/>
                                 <b>Document Details:</b>
+                                <a class="btn btn-sm btn-warning"
+                                   href="{{consignment.cd_details.summaryPageURL}}"
+                                   *ngIf="consignment.cd_details.summaryPageURL" target="_blank">View on KenTrade</a>
                                 <br/>
                                 <button *ngIf="consignment.ui.demandNote" class="btn btn-sm btn-primary"
                                         (click)="downloadDemandNote()">DEMAND NOTE PDF

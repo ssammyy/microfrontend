@@ -88,7 +88,7 @@ class HibernateJpaConfiguration(private val jcp: JpaConnectionProperties) {
             jcp.minimumIdle?.let { config.minimumIdle = it }
             config.maximumPoolSize = jcp.hikariMaximumPoolSize
             config.poolName = jcp.hikariPoolName
-            config.leakDetectionThreshold = jcp.hikariLeakDetectionThreshold
+//            config.leakDetectionThreshold = jcp.hikariLeakDetectionThreshold
             config.addDataSourceProperty("cachePrepStmts", jcp.cachePrepStmts)
             config.addDataSourceProperty("prepStmtCacheSize", jcp.prepStmtCacheSize)
             config.addDataSourceProperty("prepStmtCacheSqlLimit", jcp.prepStmtCacheSqllimit)

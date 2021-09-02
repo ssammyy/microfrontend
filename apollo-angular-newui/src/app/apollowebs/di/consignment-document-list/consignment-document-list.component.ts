@@ -111,9 +111,10 @@ export class ConsignmentDocumentListComponent implements OnInit {
     private loadData(documentTypeUuid: string, page: number, size: number): any {
 
         let data = this.diService.listAssignedCd(documentTypeUuid, page, size);
+        console.log(this.activeStatus)
         if (this.activeStatus === "completed") {
             data = this.diService.listCompletedCd(documentTypeUuid, page, size)
-        } else if (this.activeStatus == "ongoing") {
+        } else if (this.activeStatus === "ongoing") {
             data = this.diService.listSectionOngoingCd(documentTypeUuid, page, size)
         } else if (this.activeStatus === "not-assigned") {
             data = this.diService.listManualAssignedCd(documentTypeUuid, page, size)
@@ -191,6 +192,7 @@ export class ConsignmentDocumentListComponent implements OnInit {
     }
 
     toggleStatus(status: string): void {
+        console.log(status)
         if (status !== this.activeStatus) {
             this.activeStatus = status;
             this.loadData(this.documentTypeUuid, 0, this.defaultPageSize)

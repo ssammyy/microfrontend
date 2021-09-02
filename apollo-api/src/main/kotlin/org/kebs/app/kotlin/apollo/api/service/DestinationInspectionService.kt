@@ -532,7 +532,7 @@ class DestinationInspectionService(
                                         cocRemarks = coc.cocRemarks
                                         issuingOffice = coc.issuingOffice
                                         importerName = coc.importerName
-                                        importerPin = coc.importerPin
+                                        importerPin = coc.importerPin?:"NA"
                                         importerAddress1 = coc.importerAddress1
                                         importerAddress2 = coc.importerAddress2
                                         importerCity = coc.importerCity

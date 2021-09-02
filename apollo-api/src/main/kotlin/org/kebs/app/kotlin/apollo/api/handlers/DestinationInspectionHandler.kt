@@ -223,6 +223,7 @@ private val destinationInspectionHomePage = "destination-inspection/di-home-new"
                             when {
                                 auth.authorities.stream().anyMatch { authority -> authority.authority == "DI_OFFICER_CHARGE_READ" } -> {
                                     val usersEntity = commonDaoServices.findUserByUserName(auth.name)
+                                    // CFS - Flight station
                                     val userProfilesEntity =
                                         commonDaoServices.findUserProfileByUserID(usersEntity, map.activeStatus)
                                     val allUserCFS = daoServices.findAllCFSUserList(

@@ -36,8 +36,19 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
     ): Page<ConsignmentDocumentDetailsEntity>
 
     fun findByFreightStationAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
-        freightStation: Long, cdType: ConsignmentDocumentTypesEntity
+        freightStation: Long,
+        cdType: ConsignmentDocumentTypesEntity
     ): List<ConsignmentDocumentDetailsEntity>?
+
+    fun findByFreightStation_IdInAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+            freightStation: List<Long>,
+            cdType: ConsignmentDocumentTypesEntity,
+            page: Pageable
+    ): Page<ConsignmentDocumentDetailsEntity>
+    fun findByFreightStation_IdInAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+            freightStation: List<Long>,
+            page: Pageable
+    ): Page<ConsignmentDocumentDetailsEntity>
 
     fun findByFreightStationAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(freightStation: Long
     ): List<ConsignmentDocumentDetailsEntity>?

@@ -15,6 +15,7 @@ fun checkHasAuthority(role: String, auth: Authentication): Boolean {
 
 class ConsignmentEnableUI {
     var owner: Boolean? = null
+    var canChange: Boolean=false
     var supervisor: Boolean? = null
     var inspector: Boolean? = null
     var demandNote: Boolean? = null
@@ -36,22 +37,24 @@ class ConsignmentEnableUI {
     var riskProfileConsignee: Boolean = false
     var inspectionActive: Boolean? = null
     var hasPort: Boolean? = null
+    var blacklistEnabled=false
 
     companion object {
         fun fromEntity(cd: ConsignmentDocumentDetailsEntity, map: ServiceMapsEntity, authentication: Authentication): ConsignmentEnableUI {
-            val modify = checkHasAuthority("DI_INSPECTION_OFFICER_MODIFY", authentication)
-            val change = checkHasAuthority("DI_OFFICER_CHARGE_MODIFY", authentication)
+            val modify = checkHasAuthority("DI_OFFICER_CHARGE_READ", authentication)
+            val change = checkHasAuthority("DI_INSPECTION_OFFICER_READ", authentication)
 
             val ui = ConsignmentEnableUI().apply {
                 supervisor = modify
                 inspector = change
+                assigned=cd.assignedInspectionOfficer!=null
                 targeted = cd.targetStatus == map.activeStatus
                 idfAvailable = cd.idfNumber != null
                 owner = cd.assignedInspectionOfficer?.userName == authentication.name
                 demandNote = cd.sendDemandNote == map.activeStatus
                 sendCoi = modify && cd.localCoi == map.activeStatus
-                targetItem = modify && cd.targetStatus != map.activeStatus && cd.assignedStatus == map.activeStatus
-                supervisorTarget = change && cd.targetStatus != map.activeStatus
+                targetItem = change && cd.targetStatus != map.activeStatus
+                supervisorTarget = modify && cd.targetStatus != map.activeStatus
                 attachments = (change || modify)
                 hasPort = (cd.portOfArrival != null && cd.freightStation != null)
                 completed = cd.diProcessCompletedOn != null
@@ -245,6 +248,8 @@ class CdItemDetailsDao {
     var localCoi: Int? = null
     var inspectionNotificationStatus: Int? = null
     var inspectionDate: Date? = null
+    var isVehicle=false
+    var ministrySubmitted=false
 
     companion object {
         fun fromEntity(item: CdItemDetailsEntity, details: Boolean = false): CdItemDetailsDao {
@@ -264,7 +269,12 @@ class CdItemDetailsDao {
                 dt.localCoi = cd.localCoi
                 dt.inspectionNotificationStatus = cd.inspectionNotificationStatus
                 dt.inspectionDate = cd.inspectionDate
+                cd.cdType?.let { cdType->
+                    dt.isVehicle=cdType.category.equals("VEHICLES",true)
+                }
+
             }
+            dt.ministrySubmitted=item.ministrySubmissionStatus==0
             // Other details
             if (details) {
                 dt.apply {
