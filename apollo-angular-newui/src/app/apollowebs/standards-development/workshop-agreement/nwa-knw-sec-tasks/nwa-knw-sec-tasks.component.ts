@@ -47,7 +47,7 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
           identifiedNeed: ['', Validators.required],
           dateOfApproval: ['', Validators.required],
           taskId: [],
-          kID: ['']
+          jstNumber: []
 
       });
       this.preparePreliminaryDraftFormGroup = this.formBuilder.group({
@@ -57,7 +57,8 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
           symbolsAbbreviatedTerms: ['', Validators.required],
           clause: ['', Validators.required],
           special: ['', Validators.required],
-          taskId: []
+          taskId: [],
+          diJNumber: []
 
       });
 
@@ -68,6 +69,10 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
     }
     showToasterError(title:string,message:string){
         this.notifyService.showError(message, title)
+
+    }
+    showToasterWarning(title:string,message:string){
+        this.notifyService.showWarning(message, title)
 
     }
     get formPrepareJustification(): any {
@@ -126,10 +131,12 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
   }
 
     uploadDiSdt(): void {
+
         this.SpinnerService.show();
         this.stdNwaService.prepareDisDtJustification(this.prepareDIJustificationFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
+
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Justification For Di-SDT Approval  Process Started`);
                 this.onClickSaveUPLOADS(response.body.savedRowID)
@@ -145,6 +152,7 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
 
     uploadPreliminaryDraft(): void {
         this.SpinnerService.show();
+        //console.log(this.preparePreliminaryDraftFormGroup.value);
         this.stdNwaService.preparePreliminaryDraft(this.preparePreliminaryDraftFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
@@ -179,6 +187,23 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
         }
     );
   }
+    public rejectPreliminaryDraft(nwaPDDecision: NWAPDDecision): void{
+        this.SpinnerService.show();
+        this.stdNwaService.decisionOnPD(nwaPDDecision).subscribe(
+            (response: NWAPreliminaryDraft) => {
+                console.log(response);
+                this.showToasterWarning('Success', `Preliminary Draft Rejected`);
+                this.SpinnerService.hide();
+                this.knwtasks();
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Try again`);
+                this.knwtasks();
+                alert(error.message);
+            }
+        );
+    }
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
   }

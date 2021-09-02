@@ -138,6 +138,7 @@ export interface KnwSecTaskData {
     knwCommittee: string;
     departmentName: string;
     comments: string;
+    diJNumber: bigint;
 }
 
 
@@ -173,7 +174,7 @@ export interface NWADiSdtJustification{
     identifiedNeed: string;
     dateOfApproval: string;
     taskId: string;
-    kID: number;
+    jstNumber: number;
 }
 export interface NWADiJustification{
     id: number;
@@ -182,7 +183,7 @@ export interface NWADiJustification{
     identifiedNeed: string;
     dateOfApproval: string;
     taskId: string;
-    kID: number;
+    jstNumber: number;
 }
 
 export interface DISDTTasks{
@@ -209,7 +210,8 @@ export interface DisDTTaskData {
     departmentName: string;
     ID: number;
     comments: string;
-    kID: number;
+    jstNumber: number;
+
 
 }
 
@@ -222,6 +224,7 @@ export interface NWAPreliminaryDraft{
     special: string;
     clause: string;
     taskId: string;
+    diJNumber: number;
 }
 
 export interface NWAWorkShopDraft{
@@ -768,7 +771,7 @@ export interface DiSdtDECISION{
     accentTo: boolean;
     approvalID: bigint;
     comments: string;
-    kID: bigint;
+    jstNumber: bigint;
 }
 
 export interface NWAJustificationDecision{
@@ -783,6 +786,7 @@ export interface NWAPDDecision{
     accentTo: boolean;
     approvalID: bigint;
     comments: string;
+    diJNumber: bigint;
 }
 export interface NWAWDDecision{
     taskId: string;

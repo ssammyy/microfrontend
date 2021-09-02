@@ -1,6 +1,8 @@
 package org.kebs.app.kotlin.apollo.api.controllers.stdController
 
+import com.google.gson.Gson
 import com.nhaarman.mockitokotlin2.any
+import mu.KotlinLogging
 import org.apache.commons.io.input.ObservableInputStream
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.*
@@ -142,6 +144,8 @@ class NWAController(val nwaService: NWAService,
     @ResponseBody
     fun prepareDisDtJustification(@RequestBody nwaDiSdtJustification: NWADiSdtJustification): ServerResponse
     {
+//        val gson = Gson()
+//        KotlinLogging.logger { }.info { "INVOICE CALCULATED" + gson.toJson(nwaDiSdtJustification) }
         return ServerResponse(HttpStatus.OK,"Successfully uploaded DI-SDT Justification",nwaService.prepareDisDtJustification(nwaDiSdtJustification))
     }
 
@@ -197,6 +201,7 @@ class NWAController(val nwaService: NWAService,
     @ResponseBody
     fun preparePreliminaryDraft(@RequestBody nwaPreliminaryDraft: NWAPreliminaryDraft): ServerResponse
     {
+
         return ServerResponse(HttpStatus.OK,"Successfully uploaded Preliminary Draft",nwaService.preparePreliminaryDraft(nwaPreliminaryDraft))
     }
 // upload preliminary draft
@@ -254,6 +259,7 @@ class NWAController(val nwaService: NWAService,
     @ResponseBody
     fun editWorkshopDraft(@RequestBody nwaWorkShopDraft: NWAWorkShopDraft): ServerResponse
     {
+
         return ServerResponse(HttpStatus.OK,"Successfully uploaded Workshop Draft",nwaService.editWorkshopDraft(nwaWorkShopDraft))
     }
 
@@ -303,6 +309,8 @@ class NWAController(val nwaService: NWAService,
     @PostMapping("/decisionOnWd")
     fun decisionOnWd(@RequestBody nwaWorkshopDraftDecision: NWAWorkshopDraftDecision) : List<TaskDetails>
     {
+        val gson = Gson()
+        KotlinLogging.logger { }.info { "WORKSHOP DRAFT DECISION" + gson.toJson(nwaWorkshopDraftDecision) }
         return nwaService.decisionOnWD(nwaWorkshopDraftDecision)
     }
 

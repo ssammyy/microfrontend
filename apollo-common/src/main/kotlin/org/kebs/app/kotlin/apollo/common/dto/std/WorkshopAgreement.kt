@@ -8,7 +8,7 @@ class WorkshopAgreement(
     @JsonProperty("accentTo") val accentTo: Boolean,
     @JsonProperty("approvalID")  val approvalID: Long,
     @JsonProperty("comments") val comments: String,
-    @JsonProperty("kID")  val kID: Long
+    @JsonProperty("jstNumber")  val jstNumber: Long
     ) {
 }
 
@@ -24,7 +24,8 @@ class NWAPreliminaryDraftDecision(
     @JsonProperty("taskId") val taskId: String,
     @JsonProperty("accentTo") val accentTo: Boolean,
     @JsonProperty("approvalID")  val approvalID: Long,
-    @JsonProperty("comments") val comments: String
+    @JsonProperty("comments") val comments: String,
+    @JsonProperty("diJNumber")  val diJNumber: Long
     ) {
 }
 class NWAWorkshopDraftDecision(

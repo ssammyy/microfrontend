@@ -24,9 +24,11 @@ type="ball-scale-multiple"
 <div class="toolbar">
 
 </div>
-<div class="material-datatables">
-<table  class="table table-striped table-bordered table-hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+<div class="material-datatables table-responsive">
+    <table  class="table table-striped table-bordered table-hover " datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"  cellspacing="0" width="100%">
 <thead>
+<tr>
+<th>#</th>
 <th class="knw">Title</th>
 <th class="sl">Scope</th>
 <th class="requestNumber">Normative Reference</th>
@@ -35,16 +37,18 @@ type="ball-scale-multiple"
 <th class="referenceMaterial">Special</th>
 <th class="action">Action</th>
 <th></th>
+</tr>
 </thead>
 <tbody>
-<tr  *ngFor="let task of tasks ">
+<tr  *ngFor="let task of tasks let i=index">
+    <td>{{i+1}}</td>
 <td>{{task.taskData.title}}</td>
 <td>{{task.taskData.scope}}</td>
 <td>{{task.taskData.normativeReference}}</td>
 <td>{{task.taskData.symbolsAbbreviatedTerms}}</td>
 <td>{{task.taskData.clause}}</td>
 <td>{{task.taskData.special}}</td>
-<td><a  (click)="onOpenModal(task,'approve')" class="btn btn-primary btn-sm tooltips" data-placement="top"  data-original-title="Approve"> Approve</a></td>
+<td><a  (click)="onOpenModal(task,'approve')" class="btn btn-info btn-sm tooltips" data-placement="top"  data-original-title="Approve"> Approve</a></td>
 <td><button (click)="onOpenModal(task,'reject')" type="submit" class="btn btn-danger btn-sm">Reject</button></td>
 </tr>
 </tbody>
@@ -52,7 +56,7 @@ type="ball-scale-multiple"
 
 
 <div class="modal fade" id="approveModal" tabindex="-1" role="dialog" aria-labelledby="approveExampleModalLabel" aria-hidden="true">a
-<div class="modal-dialog " role="document">
+<div class="modal-dialog modal-lg" role="document">
 <div class="modal-content">
 <div class="modal-header">
 <h5 class="modal-title" id="approveExampleModalLabel">Approve Workshop Draft</h5>
@@ -61,6 +65,7 @@ type="ball-scale-multiple"
 </button>
 </div>
 <form #approveForm="ngForm" >
+    <div class="modal-body">
     <div class="list-group list-group-flush">
         <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
             <div class="d-flex w-100 justify-content-between">
@@ -132,15 +137,15 @@ type="ball-scale-multiple"
     <div class="row">
         <div class="form-group col-12">
             <label><b>Comments/Remarks</b><span style="font-size: xx-small; color: orangered;">(*)Optional</span></label>
-            <textarea class="form-control" name="comments" rows="2" ></textarea>
+            <textarea class="form-control" ngModel name="comments" rows="2" ></textarea>
         </div>
     </div>
-
+    </div>
 <input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskId" >
 <input type="hidden" ngModel="true" name="accentTo"  >
-<input type="hidden" name="approvalID" ngModel="{{actionRequest?.taskData.ID}}" >
+<input type="hidden" name="approvalID" ngModel="{{actionRequest?.taskData?.ID}}" >
 <div class="modal-footer">
-<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+<button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
 <button type="submit" class="btn btn-primary btn-sm" (click)="decisionOnWd(approveForm.value)" data-dismiss="modal">Approve</button>
 </div>
 </form>
@@ -148,7 +153,7 @@ type="ball-scale-multiple"
 </div>
 </div>
 <div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-labelledby="rejectExampleModalLabel" aria-hidden="true">a
-<div class="modal-dialog" role="document">
+<div class="modal-dialog modal-lg" role="document">
 <div class="modal-content">
 <div class="modal-header">
 <h5 class="modal-title" id="rejectExampleModalLabel">Reject Work Shop Draft </h5>
@@ -157,6 +162,7 @@ type="ball-scale-multiple"
 </button>
 </div>
 <form #rejectForm="ngForm" >
+    <div class="modal-body">
     <div class="list-group list-group-flush">
         <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
             <div class="d-flex w-100 justify-content-between">
@@ -228,15 +234,16 @@ type="ball-scale-multiple"
     <div class="row">
         <div class="form-group col-12">
             <label><b>Comments/Remarks</b><span style="font-size: xx-small; color: orangered;">(*)Required</span></label>
-            <textarea class="form-control" name="comments" rows="2" ></textarea>
+            <textarea class="form-control" ngModel name="comments" rows="2" ></textarea>
         </div>
+    </div>
     </div>
     <input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskId" >
 <input type="hidden" ngModel="true" name="accentTo"  >
-    <input type="hidden" name="approvalID" ngModel="{{actionRequest?.taskData.ID}}" >
+    <input type="hidden" name="approvalID" ngModel="{{actionRequest?.taskData?.ID}}" >
 <div class="modal-footer">
-<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
-<button type="submit" class="btn btn-primary btn-sm" (click)="decisionOnWd(rejectForm.value)" data-dismiss="modal">Submit</button>
+<button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+<button type="submit" class="btn btn-primary btn-sm" (click)="decisionRejectWd(rejectForm.value)" data-dismiss="modal">Submit</button>
 </div>
 </form>
 </div>

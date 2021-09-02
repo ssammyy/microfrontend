@@ -11,7 +11,6 @@ import {
     ValidateTokenRequestDto
 } from './auth.model';
 import {ApiResponse} from '../../../domain/response.model';
-import {JwtHelperService} from '@auth0/angular-jwt';
 
 @Injectable({
     providedIn: 'root'

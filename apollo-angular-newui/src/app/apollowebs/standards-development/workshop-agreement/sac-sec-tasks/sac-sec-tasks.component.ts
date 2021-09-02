@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subject} from "rxjs";
 import {StdNwaService} from "../../../../core/store/data/std/std-nwa.service";
 import {NgxSpinnerService} from "ngx-spinner";
-import {NWAWDDecision, NWAWorkShopDraft, SacSecTasks} from "../../../../core/store/data/std/std.model";
+import {HOPTasks, NWAWDDecision, NWAWorkShopDraft, SacSecTasks} from "../../../../core/store/data/std/std.model";
 import {HttpErrorResponse} from "@angular/common/http";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 
@@ -33,19 +33,26 @@ export class SacSecTasksComponent implements OnInit,OnDestroy {
     this.notifyService.showSuccess(message, title)
 
   }
+  showToasterWarning(title:string,message:string){
+    this.notifyService.showWarning(message, title)
+
+  }
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
   }
+
   public getSacSecTasks(): void{
     this.SpinnerService.show();
     this.stdNwaService.getSacSecTasks().subscribe(
         (response: SacSecTasks[])=> {
-          this.SpinnerService.hide();
           this.tasks = response;
+          this.dtTrigger.next();
+          this.SpinnerService.hide();
         },
         (error: HttpErrorResponse)=>{
           this.SpinnerService.hide();
-          alert(error.message);
+          console.log(error.message);
+
         }
     );
   }
@@ -81,7 +88,24 @@ export class SacSecTasksComponent implements OnInit,OnDestroy {
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
-          this.showToasterError('Error', `Workshop Draft Was Not Approved`);
+          this.showToasterError('Error', `Try Again`);
+          this.getSacSecTasks();
+          console.log(error.message);
+        }
+    );
+  }
+  public decisionRejectWd(nwaWDDecision: NWAWDDecision): void{
+    this.SpinnerService.show();
+    this.stdNwaService.decisionOnWd(nwaWDDecision).subscribe(
+        (response: NWAWorkShopDraft) => {
+          this.SpinnerService.hide();
+          this.showToasterWarning('Success', `Workshop Draft Rejected`);
+          console.log(response);
+          this.getSacSecTasks();
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          this.showToasterError('Error', `Try Again`);
           this.getSacSecTasks();
           console.log(error.message);
         }

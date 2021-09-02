@@ -1,25 +1,31 @@
 package org.kebs.app.kotlin.apollo.store.model.std
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.io.Serializable
 import java.sql.Timestamp
 import javax.persistence.*
 
 
 @Entity
 @Table(name = "SD_NWA_PRELIMINARY_DRAFT")
-class NWAPreliminaryDraft {
+class NWAPreliminaryDraft : Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     var id: Long = 0
 
-    @Transient
-    @JsonProperty("TASKID")
-    var taskId: String? = null
 
     @Column(name = "TITLE")
     @Basic
     var title: String? = null
+
+    @Column(name = "DIJST_NUMBER")
+    @Basic
+    var diJNumber: Long? = 0
+
+    @Column(name = "REMARKS")
+    @Basic
+    var remarks: String? = null
 
     @Column(name = "SCOPE")
     @Basic
@@ -53,6 +59,10 @@ class NWAPreliminaryDraft {
     @Column(name = "ACCENT_TO")
     @Basic
     var accentTo: Boolean = false
+    @Column(name = "TASKID")
+    @Basic
+    var taskId: String? = null
+
 
 
 }

@@ -17,9 +17,9 @@ class NWADiSdtJustification : Serializable{
     @Basic
     var cdn: Long? = 0
 
-    @Column(name = "K_ID")
+    @Column(name = "JST_NUMBER")
     @Basic
-    var kID: String? = null
+    var jstNumber: Long? = 0
 
     @Column(name = "COST")
     @Basic
