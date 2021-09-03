@@ -321,7 +321,7 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Permits Found for the following awardedStatus = ${awardedStatus} and permitType ID ${permitTypeID}")
     }
 
-    fun findAllFirmInKenyaPermitsApplicationsWithPermitTypeAndPaidStatus(
+    fun findAllFirmsInKenyaPermitsApplicationsWithPermitTypeAndPaidStatus(
         permitTypeID: Long,
         paidStatus: Int
     ): List<PermitApplicationsEntity> {
