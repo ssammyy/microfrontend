@@ -303,13 +303,14 @@ class RegistrationManagementDaoService(
                                             /**
                                              * TODO: Revisit number validation
                                              */
-                                            personalContactNumber = u.cellphone
+                                            personalContactNumber =
+                                                commonDaoServices.makeKenyanMSISDNFormat(u.cellphone)
                                             registrationDate = Date(Date().time)
                                             typeOfUser = applicationMapProperties.transactionActiveStatus
                                             title = u.title
                                             email = u.email
                                             userName = u.userName
-                                            cellphone = u.cellphone
+                                            cellphone = commonDaoServices.makeKenyanMSISDNFormat(u.cellphone)
                                             userRegNo = "KEBS${generateTransactionReference(5).toUpperCase()}"
                                             credentials = BCryptPasswordEncoder().encode(u.credentials)
                                             enabled = applicationMapProperties.transactionActiveStatus
@@ -361,8 +362,8 @@ class RegistrationManagementDaoService(
                                     /**
                                      * TODO: Revisit number validation
                                      */
-                                    personalContactNumber = u.cellphone
-                                    cellphone = u.cellphone
+                                    personalContactNumber = commonDaoServices.makeKenyanMSISDNFormat(u.cellphone)
+                                    cellphone = commonDaoServices.makeKenyanMSISDNFormat(u.cellphone)
                                     registrationDate = Date(Date().time)
                                     typeOfUser = applicationMapProperties.transactionActiveStatus
                                     title = u.title

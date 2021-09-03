@@ -869,6 +869,19 @@ class QADaoServices(
         } ?: throw ExpectedDataNotFound("No Permit found with the following [ID=$id]")
     }
 
+    fun findPermitBYCompanyIDAndId(id: Long, companyID: Long): PermitApplicationsEntity {
+        permitRepo.findByIdAndCompanyId(id, companyID)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No Permit found with the following [ID=$id] and Company ID = $companyID")
+    }
+
+    fun findPermitBYCompanyIDAndBranchIDAndId(id: Long, companyID: Long, plantID: Long): PermitApplicationsEntity {
+        permitRepo.findByIdAndCompanyIdAndAttachedPlantId(id, companyID, plantID)?.let {
+            return it
+        }
+            ?: throw ExpectedDataNotFound("No Permit found with the following [ID=$id] and Branch ID = $plantID and Company ID = $companyID")
+    }
+
     fun findAllRequestByPermitRefNumber(
         permitRefNumber: String,
         permitID: Long
@@ -1727,8 +1740,7 @@ class QADaoServices(
     ): InvoiceDetailsDto? {
         return when (permitDetails.invoiceGenerated) {
             1 -> {
-                var v: QaInvoiceMasterDetailsEntity
-                v = when {
+                var v: QaInvoiceMasterDetailsEntity = when {
                     permitDetails.permitType == applicationMapProperties.mapQAPermitTypeIdFmark && permitDetails.smarkGeneratedFrom == 1 -> {
                         val findSMarkID =
                             findSmarkWithFmarkId(permitDetails.id ?: throw Exception("MISSING PERMIT ID")).smarkId

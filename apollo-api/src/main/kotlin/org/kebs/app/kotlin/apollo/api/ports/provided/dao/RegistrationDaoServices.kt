@@ -472,6 +472,7 @@ class RegistrationDaoServices(
                 lastName = u.lastName
                 email = u.email
                 personalContactNumber = commonDaoServices.makeKenyanMSISDNFormat(u.personalContactNumber)
+//                cellPhone  = commonDaoServices.makeKenyanMSISDNFormat(u.personalContactNumber)
                 typeOfUser = u.typeOfUser
                 userPinIdNumber = u.userPinIdNumber
                 userName = u.userPinIdNumber

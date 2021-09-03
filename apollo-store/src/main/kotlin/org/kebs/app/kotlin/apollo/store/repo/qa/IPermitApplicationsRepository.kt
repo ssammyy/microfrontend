@@ -215,6 +215,13 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     ): List<PermitApplicationsEntity>?
 
     fun findByIdAndUserId(id: Long, userId: Long): PermitApplicationsEntity?
+    fun findByIdAndCompanyId(id: Long, companyId: Long): PermitApplicationsEntity?
+    fun findByIdAndCompanyIdAndAttachedPlantId(
+        id: Long,
+        companyId: Long,
+        attachedPlantId: Long
+    ): PermitApplicationsEntity?
+
     fun findByAwardedPermitNumberAndVersionNumber(
         awardedPermitNumber: String,
         versionNumber: Long

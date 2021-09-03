@@ -1174,17 +1174,17 @@ class QualityAssuranceHandler(
             var permitListAllApplications: List<PermitEntityDto>? = null
             permitListAllApplications = when {
                 auth.authorities.stream()
-                    .anyMatch { authority -> authority.authority != "MODIFY_COMPANY" } && auth.authorities.stream()
-                    .anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
-                    qaDaoServices.listBranchListWithPermitType(
-                        loggedInUser.plantId ?: throw Exception("MISSING PLANT ID"), permitTypeID, map
-                    )
-                }
-                auth.authorities.stream()
                     .anyMatch { authority -> authority.authority == "MODIFY_COMPANY" } && auth.authorities.stream()
                     .anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
                     qaDaoServices.listFirmPermitListWithPermitType(
                         loggedInUser.companyId ?: throw Exception("MISSING COMPANY ID"), permitTypeID, map
+                    )
+                }
+                auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority != "MODIFY_COMPANY" } && auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                    qaDaoServices.listBranchListWithPermitType(
+                        loggedInUser.plantId ?: throw Exception("MISSING PLANT ID"), permitTypeID, map
                     )
                 }
                 else -> {
@@ -1711,15 +1711,35 @@ class QualityAssuranceHandler(
     fun permitAttachUploadOrdinaryMigration(req: ServerRequest): ServerResponse {
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val auth = commonDaoServices.loggedInUserAuthentication()
             val map = commonDaoServices.serviceMapDetails(appId)
             val permitID =
                 req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
 //            val docFile: MultipartFile = req.paramOrNull("docFile").toMultipartData()
 
-            val permit = qaDaoServices.findPermitBYUserIDAndId(
-                permitID,
-                loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
-            )
+            var permit: PermitApplicationsEntity? = null
+            permit = when {
+                auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "MODIFY_COMPANY" } && auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                    qaDaoServices.findPermitBYCompanyIDAndId(
+                        permitID,
+                        loggedInUser.companyId ?: throw ExpectedDataNotFound("MISSING COMPANY ID")
+                    )
+                }
+                auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority != "MODIFY_COMPANY" } && auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                    qaDaoServices.findPermitBYCompanyIDAndBranchIDAndId(
+                        permitID,
+                        loggedInUser.companyId ?: throw ExpectedDataNotFound("MISSING COMPANY ID"),
+                        loggedInUser.plantId ?: throw ExpectedDataNotFound("MISSING PLANT ID")
+                    )
+                }
+                else -> {
+                    throw ExpectedDataNotFound("UNAUTHORISED LOGGED IN USER (ACCESS DENIED)")
+                }
+            }
 
             qaDaoServices.mapAllPermitDetailsTogether(permit, null, map).let {
                 return ok().body(it)
@@ -1738,15 +1758,35 @@ class QualityAssuranceHandler(
     fun permitAttachGetOrdinaryFilesListMigration(req: ServerRequest): ServerResponse {
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val auth = commonDaoServices.loggedInUserAuthentication()
             val map = commonDaoServices.serviceMapDetails(appId)
             val permitID =
                 req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
 //            val docFile: MultipartFile = req.paramOrNull("docFile").toMultipartData()
             val ordinaryFiles = qaDaoServices.findAllUploadedFileBYPermitIDAndOrdinarStatus(permitID, map.activeStatus)
-            val permit = qaDaoServices.findPermitBYUserIDAndId(
-                permitID,
-                loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
-            )
+            var permit: PermitApplicationsEntity? = null
+            permit = when {
+                auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "MODIFY_COMPANY" } && auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                    qaDaoServices.findPermitBYCompanyIDAndId(
+                        permitID,
+                        loggedInUser.companyId ?: throw ExpectedDataNotFound("MISSING COMPANY ID")
+                    )
+                }
+                auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority != "MODIFY_COMPANY" } && auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                    qaDaoServices.findPermitBYCompanyIDAndBranchIDAndId(
+                        permitID,
+                        loggedInUser.companyId ?: throw ExpectedDataNotFound("MISSING COMPANY ID"),
+                        loggedInUser.plantId ?: throw ExpectedDataNotFound("MISSING PLANT ID")
+                    )
+                }
+                else -> {
+                    throw ExpectedDataNotFound("UNAUTHORISED LOGGED IN USER (ACCESS DENIED)")
+                }
+            }
 
             qaDaoServices.mapAllPermitDetailsTogether(permit, null, map).let {
                 return ok().body(it)
@@ -1765,34 +1805,56 @@ class QualityAssuranceHandler(
     fun permitDetailsMigration(req: ServerRequest): ServerResponse {
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val auth = commonDaoServices.loggedInUserAuthentication()
             val map = commonDaoServices.serviceMapDetails(appId)
             val permitID =
                 req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
-            val permit = qaDaoServices.findPermitBYUserIDAndId(
-                permitID,
-                loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
-            )
+
+            var permit: PermitApplicationsEntity? = null
+            permit = when {
+                auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "MODIFY_COMPANY" } && auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                    qaDaoServices.findPermitBYCompanyIDAndId(
+                        permitID,
+                        loggedInUser.companyId ?: throw ExpectedDataNotFound("MISSING COMPANY ID")
+                    )
+                }
+                auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority != "MODIFY_COMPANY" } && auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                    qaDaoServices.findPermitBYCompanyIDAndBranchIDAndId(
+                        permitID,
+                        loggedInUser.companyId ?: throw ExpectedDataNotFound("MISSING COMPANY ID"),
+                        loggedInUser.plantId ?: throw ExpectedDataNotFound("MISSING PLANT ID")
+                    )
+                }
+                else -> {
+                    throw ExpectedDataNotFound("UNAUTHORISED LOGGED IN USER (ACCESS DENIED)")
+                }
+            }
+
+//            val permit = qaDaoServices.findPermitBYUserIDAndId(permitID, loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID"))
             var batchDetail: Long? = null
 
             if (permit.sendApplication == map.activeStatus) {
-                if (permit.permitType == applicationMapProperties.mapQAPermitTypeIdFmark && permit.smarkGeneratedFrom == 1) {
-                    val findSMarkID = qaDaoServices.findSmarkWithFmarkId(permitID).smarkId
-                    val findSMark = qaDaoServices.findPermitBYUserIDAndId(
-                        findSMarkID ?: throw Exception("NO SMARK ID FOUND WITH FMARK ID"),
-                        loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
-                    )
-                    batchDetail = qaDaoServices.findPermitInvoiceByPermitRefNumberANdPermitID(
-                        findSMark.permitRefNumber ?: throw ExpectedDataNotFound("PERMIT REF NUMBER NOT FOUND"),
-                        loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID"),
-                        findSMarkID
-                    ).batchInvoiceNo
+                batchDetail = when {
+                    permit.permitType == applicationMapProperties.mapQAPermitTypeIdFmark && permit.smarkGeneratedFrom == 1 -> {
+                        val findSMarkID = qaDaoServices.findSmarkWithFmarkId(permitID).smarkId
+                        val findSMark = qaDaoServices.findPermitBYCompanyIDAndId(
+                            findSMarkID ?: throw Exception("NO SMARK ID FOUND WITH FMARK ID"),
+                            loggedInUser.companyId ?: throw ExpectedDataNotFound("MISSING COMPANY ID")
+                        )
+                        qaDaoServices.findPermitInvoiceByPermitID(
+                            findSMarkID
+                        ).batchInvoiceNo
 
-                } else {
-                    batchDetail = qaDaoServices.findPermitInvoiceByPermitRefNumberANdPermitID(
-                        permit.permitRefNumber ?: throw ExpectedDataNotFound("PERMIT REF NUMBER NOT FOUND"),
-                        loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID"),
-                        permitID
-                    ).batchInvoiceNo
+                    }
+                    else -> {
+                        qaDaoServices.findPermitInvoiceByPermitID(
+                            permitID
+                        ).batchInvoiceNo
+                    }
                 }
 
             }
@@ -1814,13 +1876,33 @@ class QualityAssuranceHandler(
     fun permitApplySTA3Migration(req: ServerRequest): ServerResponse {
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val auth = commonDaoServices.loggedInUserAuthentication()
             val map = commonDaoServices.serviceMapDetails(appId)
             val permitID =
                 req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
-            val permit = qaDaoServices.findPermitBYUserIDAndId(
-                permitID,
-                loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
-            )
+            var permit: PermitApplicationsEntity? = null
+            permit = when {
+                auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "MODIFY_COMPANY" } && auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                    qaDaoServices.findPermitBYCompanyIDAndId(
+                        permitID,
+                        loggedInUser.companyId ?: throw ExpectedDataNotFound("MISSING COMPANY ID")
+                    )
+                }
+                auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority != "MODIFY_COMPANY" } && auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                    qaDaoServices.findPermitBYCompanyIDAndBranchIDAndId(
+                        permitID,
+                        loggedInUser.companyId ?: throw ExpectedDataNotFound("MISSING COMPANY ID"),
+                        loggedInUser.plantId ?: throw ExpectedDataNotFound("MISSING PLANT ID")
+                    )
+                }
+                else -> {
+                    throw ExpectedDataNotFound("UNAUTHORISED LOGGED IN USER (ACCESS DENIED)")
+                }
+            }
             val dto = req.body<STA3Dto>()
             val sta3 = qaDaoServices.mapDtoSTA3AndQaSta3Entity(dto)
 
@@ -1869,13 +1951,33 @@ class QualityAssuranceHandler(
     fun permitUpdateSTA3Migration(req: ServerRequest): ServerResponse {
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val auth = commonDaoServices.loggedInUserAuthentication()
             val map = commonDaoServices.serviceMapDetails(appId)
             val permitID =
                 req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
-            val permit = qaDaoServices.findPermitBYUserIDAndId(
-                permitID,
-                loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
-            )
+            var permit: PermitApplicationsEntity? = null
+            permit = when {
+                auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "MODIFY_COMPANY" } && auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                    qaDaoServices.findPermitBYCompanyIDAndId(
+                        permitID,
+                        loggedInUser.companyId ?: throw ExpectedDataNotFound("MISSING COMPANY ID")
+                    )
+                }
+                auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority != "MODIFY_COMPANY" } && auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                    qaDaoServices.findPermitBYCompanyIDAndBranchIDAndId(
+                        permitID,
+                        loggedInUser.companyId ?: throw ExpectedDataNotFound("MISSING COMPANY ID"),
+                        loggedInUser.plantId ?: throw ExpectedDataNotFound("MISSING PLANT ID")
+                    )
+                }
+                else -> {
+                    throw ExpectedDataNotFound("UNAUTHORISED LOGGED IN USER (ACCESS DENIED)")
+                }
+            }
             val dto = req.body<STA3Dto>()
             val sta3 = qaDaoServices.mapDtoSTA3AndQaSta3Entity(dto)
 
@@ -1924,12 +2026,33 @@ class QualityAssuranceHandler(
     fun permitViewSTA1Migration(req: ServerRequest): ServerResponse {
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val auth = commonDaoServices.loggedInUserAuthentication()
             val permitID =
                 req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
-            val permit = qaDaoServices.findPermitBYUserIDAndId(
-                permitID,
-                loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
-            )
+            var permit: PermitApplicationsEntity? = null
+            permit = when {
+                auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "MODIFY_COMPANY" } && auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                    qaDaoServices.findPermitBYCompanyIDAndId(
+                        permitID,
+                        loggedInUser.companyId ?: throw ExpectedDataNotFound("MISSING COMPANY ID")
+                    )
+                }
+                auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority != "MODIFY_COMPANY" } && auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                    qaDaoServices.findPermitBYCompanyIDAndBranchIDAndId(
+                        permitID,
+                        loggedInUser.companyId ?: throw ExpectedDataNotFound("MISSING COMPANY ID"),
+                        loggedInUser.plantId ?: throw ExpectedDataNotFound("MISSING PLANT ID")
+                    )
+                }
+                else -> {
+                    throw ExpectedDataNotFound("UNAUTHORISED LOGGED IN USER (ACCESS DENIED)")
+                }
+            }
+
             qaDaoServices.mapDtoSTA1View(permit).let {
                 return ok().body(it)
             }
@@ -1947,12 +2070,32 @@ class QualityAssuranceHandler(
     fun permitViewSTA3Migration(req: ServerRequest): ServerResponse {
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val auth = commonDaoServices.loggedInUserAuthentication()
             val permitID =
                 req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
-            val permit = qaDaoServices.findPermitBYUserIDAndId(
-                permitID,
-                loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
-            )
+            var permit: PermitApplicationsEntity? = null
+            permit = when {
+                auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "MODIFY_COMPANY" } && auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                    qaDaoServices.findPermitBYCompanyIDAndId(
+                        permitID,
+                        loggedInUser.companyId ?: throw ExpectedDataNotFound("MISSING COMPANY ID")
+                    )
+                }
+                auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority != "MODIFY_COMPANY" } && auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                    qaDaoServices.findPermitBYCompanyIDAndBranchIDAndId(
+                        permitID,
+                        loggedInUser.companyId ?: throw ExpectedDataNotFound("MISSING COMPANY ID"),
+                        loggedInUser.plantId ?: throw ExpectedDataNotFound("MISSING PLANT ID")
+                    )
+                }
+                else -> {
+                    throw ExpectedDataNotFound("UNAUTHORISED LOGGED IN USER (ACCESS DENIED)")
+                }
+            }
             val sta3 = qaDaoServices.findSTA3WithPermitIDAndRefNumber(
                 permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID
             )
@@ -2003,13 +2146,33 @@ class QualityAssuranceHandler(
     fun permitApplySTA10FirmDetailsMigration(req: ServerRequest): ServerResponse {
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val auth = commonDaoServices.loggedInUserAuthentication()
             val map = commonDaoServices.serviceMapDetails(appId)
             val permitID =
                 req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
-            val permit = qaDaoServices.findPermitBYUserIDAndId(
-                permitID,
-                loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
-            )
+            var permit: PermitApplicationsEntity? = null
+            permit = when {
+                auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "MODIFY_COMPANY" } && auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                    qaDaoServices.findPermitBYCompanyIDAndId(
+                        permitID,
+                        loggedInUser.companyId ?: throw ExpectedDataNotFound("MISSING COMPANY ID")
+                    )
+                }
+                auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority != "MODIFY_COMPANY" } && auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                    qaDaoServices.findPermitBYCompanyIDAndBranchIDAndId(
+                        permitID,
+                        loggedInUser.companyId ?: throw ExpectedDataNotFound("MISSING COMPANY ID"),
+                        loggedInUser.plantId ?: throw ExpectedDataNotFound("MISSING PLANT ID")
+                    )
+                }
+                else -> {
+                    throw ExpectedDataNotFound("UNAUTHORISED LOGGED IN USER (ACCESS DENIED)")
+                }
+            }
 //            val qaSta10Entity = qaDaoServices.findSTA10WithPermitRefNumberBY(permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"))
 
             val dto = req.body<STA10SectionADto>()
@@ -2056,13 +2219,33 @@ class QualityAssuranceHandler(
     fun permitUpdateSTA10FirmDetailsMigration(req: ServerRequest): ServerResponse {
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val auth = commonDaoServices.loggedInUserAuthentication()
             val map = commonDaoServices.serviceMapDetails(appId)
             val permitID =
                 req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
-            val permit = qaDaoServices.findPermitBYUserIDAndId(
-                permitID,
-                loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
-            )
+            var permit: PermitApplicationsEntity? = null
+            permit = when {
+                auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "MODIFY_COMPANY" } && auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                    qaDaoServices.findPermitBYCompanyIDAndId(
+                        permitID,
+                        loggedInUser.companyId ?: throw ExpectedDataNotFound("MISSING COMPANY ID")
+                    )
+                }
+                auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority != "MODIFY_COMPANY" } && auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                    qaDaoServices.findPermitBYCompanyIDAndBranchIDAndId(
+                        permitID,
+                        loggedInUser.companyId ?: throw ExpectedDataNotFound("MISSING COMPANY ID"),
+                        loggedInUser.plantId ?: throw ExpectedDataNotFound("MISSING PLANT ID")
+                    )
+                }
+                else -> {
+                    throw ExpectedDataNotFound("UNAUTHORISED LOGGED IN USER (ACCESS DENIED)")
+                }
+            }
             val qaSta10Entity = qaDaoServices.findSTA10WithPermitRefNumberANdPermitID(
                 permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID
             )
@@ -2118,12 +2301,32 @@ class QualityAssuranceHandler(
     fun permitViewSTA10FirmDetailsMigration(req: ServerRequest): ServerResponse {
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val auth = commonDaoServices.loggedInUserAuthentication()
             val permitID =
                 req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
-            val permit = qaDaoServices.findPermitBYUserIDAndId(
-                permitID,
-                loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
-            )
+            var permit: PermitApplicationsEntity? = null
+            permit = when {
+                auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "MODIFY_COMPANY" } && auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                    qaDaoServices.findPermitBYCompanyIDAndId(
+                        permitID,
+                        loggedInUser.companyId ?: throw ExpectedDataNotFound("MISSING COMPANY ID")
+                    )
+                }
+                auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority != "MODIFY_COMPANY" } && auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                    qaDaoServices.findPermitBYCompanyIDAndBranchIDAndId(
+                        permitID,
+                        loggedInUser.companyId ?: throw ExpectedDataNotFound("MISSING COMPANY ID"),
+                        loggedInUser.plantId ?: throw ExpectedDataNotFound("MISSING PLANT ID")
+                    )
+                }
+                else -> {
+                    throw ExpectedDataNotFound("UNAUTHORISED LOGGED IN USER (ACCESS DENIED)")
+                }
+            }
             val qaSta10Entity = qaDaoServices.findSTA10WithPermitRefNumberANdPermitID(
                 permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID
             )
@@ -2145,12 +2348,32 @@ class QualityAssuranceHandler(
     fun permitViewSTA10AllDetailsMigration(req: ServerRequest): ServerResponse {
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val auth = commonDaoServices.loggedInUserAuthentication()
             val permitID =
                 req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
-            val permit = qaDaoServices.findPermitBYUserIDAndId(
-                permitID,
-                loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
-            )
+            var permit: PermitApplicationsEntity? = null
+            permit = when {
+                auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "MODIFY_COMPANY" } && auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                    qaDaoServices.findPermitBYCompanyIDAndId(
+                        permitID,
+                        loggedInUser.companyId ?: throw ExpectedDataNotFound("MISSING COMPANY ID")
+                    )
+                }
+                auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority != "MODIFY_COMPANY" } && auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                    qaDaoServices.findPermitBYCompanyIDAndBranchIDAndId(
+                        permitID,
+                        loggedInUser.companyId ?: throw ExpectedDataNotFound("MISSING COMPANY ID"),
+                        loggedInUser.plantId ?: throw ExpectedDataNotFound("MISSING PLANT ID")
+                    )
+                }
+                else -> {
+                    throw ExpectedDataNotFound("UNAUTHORISED LOGGED IN USER (ACCESS DENIED)")
+                }
+            }
             val qaSta10Entity = qaDaoServices.findSTA10WithPermitRefNumberANdPermitID(
                 permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID
             )

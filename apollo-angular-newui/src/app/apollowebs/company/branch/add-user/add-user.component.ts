@@ -69,6 +69,8 @@ export class AddUserComponent implements OnInit {
         this.store$.select(selectCompanyIdData).subscribe((d) => {
             return this.selectedCompany = d;
         });
+
+        /****We have a bigger issue here why change the selected branch to user main admin branch****/
         this.store$.select(selectBranchIdData).subscribe((d) => {
             return this.selectedBranch = d;
         });
