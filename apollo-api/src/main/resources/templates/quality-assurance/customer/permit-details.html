@@ -633,7 +633,7 @@
                                     <!--                                        SUPERVISION AND-->
                                     <!--                                        CONTROL</a>-->
 
-                                    <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_HOD_MODIFY') or hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY') or hasAuthority('QA_PAC_SECRETARY_MODIFY') or hasAuthority('QA_PSC_MEMBERS_MODIFY') or hasAuthority('QA_PCM_MODIFY')">
+                                    <div sec:authorize="hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')">
 
 
                                         <a th:if="${permitDetails?.inspectionScheduledStatus == 1 and permitDetails?.inspectionReportGenerated != null and permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 }"
@@ -708,7 +708,7 @@
 
                                         </div>
 
-                                        <div sec:authorize="hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_HOD_MODIFY')">
+                                        <div sec:authorize="hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_RM_MODIFY') or hasAuthority('QA_HOD_MODIFY')">
                                             <a style="color: white" onclick="popUpFunction('updateSection');"
                                                class="filter-link">Update Section</a>
 
@@ -742,7 +742,8 @@
                                             <!--                                        <a th:if="${ permitDetails?.recommendationRemarks != null and permitDetails?.recommendationApprovalStatus == null}" style="color: white" onclick="popUpFunction('approveRecommendation');" class="filter-link">APPROVE/REJECT RECOMMENDATION</a>-->
                                         </div>
 
-                                        <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">
+                                        <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')"
+                                             th:if="${permitDetails?.qaoId == loggedInUserID}">
                                             <!--                                        <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 and permitDetails?.scfId == null}" style="color: white" onclick="popUpUploadFunction('uploadSCF');" class="filter-link">UPLOAD SCF</a>-->
 
                                             <!--                                        <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 and permitDetails?.scfId != null and permitDetails?.ssfId == null}" style="color: white" onclick="popUpUploadFunction('uploadSSF');" class="filter-link">UPLOAD SSF</a>-->
@@ -897,7 +898,8 @@
 
                                         </div>
 
-                                        <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">
+                                        <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')"
+                                             th:if="${permitDetails?.qaoId == loggedInUserID}">
                                             <a th:if="${permitDetails?.inspectionScheduledStatus == null and permitDetails?.productStandard != null}"
                                                style="color: white" onclick="popUpFunction('scheduleInspectionDate');"
                                                class="filter-link">SCHEDULE INSPECTION</a>
@@ -1102,7 +1104,8 @@
 
                                         </div>
 
-                                        <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">
+                                        <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')"
+                                             th:if="${permitDetails?.qaoId == loggedInUserID}">
                                             <a th:if="${permitDetails?.inspectionScheduledStatus == null and permitDetails?.productStandard != null}"
                                                style="color: white" onclick="popUpFunction('scheduleInspectionDate');"
                                                class="filter-link">SCHEDULE INSPECTION</a>
@@ -1383,7 +1386,9 @@
                                             </div>
                                         </div>
 
-                                        <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">
+                                        .
+                                        <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')"
+                                             th:if="${permitDetails?.qaoId == loggedInUserID}">
 
                                             <a th:if="${permitDetails?.inspectionScheduledStatus == null and permitDetails?.productStandard != null}"
                                                style="color: white" onclick="popUpFunction('scheduleInspectionDate');"
@@ -1480,7 +1485,8 @@
 
                                         </div>
 
-                                        <div sec:authorize="hasAuthority('QA_ASSESSORS_MODIFY')">
+                                        <div sec:authorize="hasAuthority('QA_ASSESSORS_MODIFY')"
+                                             th:if="${permitDetails?.leadAssessorId == loggedInUserID}">
 
                                             <a th:if="${permitDetails?.assessmentScheduledStatus == null}"
                                                style="color: white" onclick="popUpFunction('scheduleAssessmentDate');"

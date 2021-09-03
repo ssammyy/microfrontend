@@ -68,14 +68,14 @@ class MPesaService(
             val transactionRef = daoService.generateTransactionReference()
             val log = daoService.createTransactionLog(0, transactionRef)
             log.integrationRequest = daoService.mapper().writeValueAsString(transactionsRequest)
-            config.token.let { token ->
-                if (token.isEmpty()) {
-                    config = loginRequest(loginUrl, transactionRef, config)
-                }
-            }
-            if (commonDaoServices.getTimestamp() > config.tokenTimeExpires) {
-                config = loginRequest(loginUrl, transactionRef, config)
-            }
+//            config.token.let { token ->
+//                if (token.isEmpty()) {
+//                    config = loginRequest(loginUrl, transactionRef, config)
+//                }
+//            }
+//            if (commonDaoServices.getTimestamp() > config.tokenTimeExpires) {
+            config = loginRequest(loginUrl, transactionRef, config)
+//            }
 
             val headerParameters = mutableMapOf<String, String>()
             config.token.let { headerParameters["Authorization"] = it }

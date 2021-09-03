@@ -254,7 +254,7 @@ class QualityAssuranceController(
 
     @PreAuthorize(
         "hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_MODIFY') " +
-                "or hasAuthority('QA_HOD_MODIFY') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_PAC_SECRETARY_MODIFY') or hasAuthority('QA_PSC_MEMBERS_MODIFY') or hasAuthority('QA_PCM_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY')"
+                "or hasAuthority('QA_HOD_MODIFY') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_RM_MODIFY') or hasAuthority('QA_PAC_SECRETARY_MODIFY') or hasAuthority('QA_PSC_MEMBERS_MODIFY') or hasAuthority('QA_PCM_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY')"
     )
     @PostMapping("/apply/update-permit")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -476,23 +476,23 @@ class QualityAssuranceController(
         var permitDetailsDB = permitDetails
         when (permit.hodApproveAssessmentStatus) {
             map.activeStatus -> {
-                val appointedPacSec = qaDaoServices.assignNextOfficerWithDesignation(
-                    permitDetailsDB,
-                    map,
-                    applicationMapProperties.mapQADesignationIDForPacSecId
-                )
+//                val appointedPacSec = qaDaoServices.assignNextOfficerWithDesignation(
+//                    permitDetailsDB,
+//                    map,
+//                    applicationMapProperties.mapQADesignationIDForPacSecId
+//                )
 
                 with(permitDetailsDB) {
                     hodApproveAssessmentStatus = map.activeStatus
                     hodApproveAssessmentRemarks = permit.hodApproveAssessmentRemarks
-                    pacSecId = appointedPacSec?.id
+//                    pacSecId = appointedPacSec?.id
                     userTaskId = applicationMapProperties.mapUserTaskNamePACSECRETARY
                 }
                 qaDaoServices.permitUpdateDetails(permitDetailsDB, map, loggedInUser)
 
                 //Send notification to PAC secretary
-                val pacSec = appointedPacSec?.id?.let { commonDaoServices.findUserByID(it) }
-                pacSec?.email?.let { qaDaoServices.sendPacDmarkAssessmentNotificationEmail(it, permitDetailsDB) }
+//                val pacSec = appointedPacSec?.id?.let { commonDaoServices.findUserByID(it) }
+//                pacSec?.email?.let { qaDaoServices.sendPacDmarkAssessmentNotificationEmail(it, permitDetailsDB) }
 
                 qaDaoServices.permitInsertStatus(
                     permitDetailsDB,
@@ -554,18 +554,18 @@ class QualityAssuranceController(
                 with(permitDetailsDB) {
 
                     userTaskId = applicationMapProperties.mapUserTaskNamePCM
-                    pcmId = qaDaoServices.assignNextOfficerWithDesignation(
-                        permit,
-                        map,
-                        applicationMapProperties.mapQADesignationIDForPCMId
-                    )?.id
+//                    pcmId = qaDaoServices.assignNextOfficerWithDesignation(
+//                        permit,
+//                        map,
+//                        applicationMapProperties.mapQADesignationIDForPCMId
+//                    )?.id
                 }
                 permitDetailsDB = qaDaoServices.permitInsertStatus(
                     permitDetails,
                     applicationMapProperties.mapQaStatusPPCMAwarding,
                     loggedInUser
                 )
-                qaDaoServices.sendNotificationPCMForAwardingPermit(permitDetailsDB)
+//                qaDaoServices.sendNotificationPCMForAwardingPermit(permitDetailsDB)
             }
             map.inactiveStatus -> {
                 with(permitDetailsDB) {
@@ -700,11 +700,11 @@ class QualityAssuranceController(
             map.activeStatus -> {
                 with(permit) {
                     userTaskId = applicationMapProperties.mapUserTaskNamePCM
-                    pcmId = qaDaoServices.assignNextOfficerWithDesignation(
-                        permit,
-                        map,
-                        applicationMapProperties.mapQADesignationIDForPCMId
-                    )?.id
+//                    pcmId = qaDaoServices.assignNextOfficerWithDesignation(
+//                        permit,
+//                        map,
+//                        applicationMapProperties.mapQADesignationIDForPCMId
+//                    )?.id
                 }
                 //updating of Details in DB
                 permitDetailsDB = qaDaoServices.permitUpdateDetails(
@@ -827,11 +827,11 @@ class QualityAssuranceController(
         when (permit.hodQamApproveRejectStatus) {
             map.activeStatus -> {
                 with(permit) {
-                    pscMemberId = qaDaoServices.assignNextOfficerWithDesignation(
-                        permitDetailsDB,
-                        map,
-                        applicationMapProperties.mapQADesignationIDForPSCId
-                    )?.id
+//                    pscMemberId = qaDaoServices.assignNextOfficerWithDesignation(
+//                        permitDetailsDB,
+//                        map,
+//                        applicationMapProperties.mapQADesignationIDForPSCId
+//                    )?.id
                     userTaskId = applicationMapProperties.mapUserTaskNamePSC
                 }
                 //updating of Details in DB
@@ -847,7 +847,7 @@ class QualityAssuranceController(
                     applicationMapProperties.mapQaStatusPPSCMembersAward,
                     loggedInUser
                 )
-                qaDaoServices.sendNotificationPSCForAwardingPermit(permitDetailsDB)
+//                qaDaoServices.sendNotificationPSCForAwardingPermit(permitDetailsDB)
 
             }
             map.inactiveStatus -> {
@@ -932,11 +932,11 @@ class QualityAssuranceController(
             )
         }
 
-        qaDaoServices.sendNotificationForRecommendation(permitDetails)
-        qaDaoServices.sendEmailWithTaskDetails(
-            userAssigned.email ?: throw ExpectedDataNotFound("Missing Email address"),
-            permitDetailsDB.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
-        )
+//        qaDaoServices.sendNotificationForRecommendation(permitDetails)
+//        qaDaoServices.sendEmailWithTaskDetails(
+//            userAssigned.email ?: throw ExpectedDataNotFound("Missing Email address"),
+//            permitDetailsDB.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
+//        )
 
 
         val closeLink =
@@ -1277,7 +1277,7 @@ class QualityAssuranceController(
 
     @PreAuthorize(
         "hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_MODIFY') " +
-                "or hasAuthority('QA_HOD_MODIFY') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_PAC_SECRETARY_MODIFY') or hasAuthority('QA_PSC_MEMBERS_MODIFY') or hasAuthority('QA_PCM_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY')"
+                "or hasAuthority('QA_HOD_MODIFY') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_RM_MODIFY') or hasAuthority('QA_PAC_SECRETARY_MODIFY') or hasAuthority('QA_PSC_MEMBERS_MODIFY') or hasAuthority('QA_PCM_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY')"
     )
     @PostMapping("/apply/update-permit-resubmit")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -1753,7 +1753,7 @@ class QualityAssuranceController(
         return commonDaoServices.returnValues(result, map, sm)
     }
 
-    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_ASSESSORS_READ')")
+    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY')")
     @PostMapping("/kebs/lab-results-compliance-status/save")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun complianceStatusLabResults(
@@ -1776,7 +1776,7 @@ class QualityAssuranceController(
         return commonDaoServices.returnValues(result, map, sm)
     }
 
-    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_ASSESSORS_READ')")
+    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY')")
     @PostMapping("/kebs/ssf-results-compliance-status/save")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun complianceStatusSSF(
@@ -1800,7 +1800,10 @@ class QualityAssuranceController(
         return commonDaoServices.returnValues(result, map, sm)
     }
 
-    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_HOD_MODIFY') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_PAC_SECRETARY_MODIFY') or hasAuthority('QA_PSC_MEMBERS_MODIFY') or hasAuthority('QA_PCM_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY')")
+    @PreAuthorize(
+        "hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_MODIFY') " +
+                "or hasAuthority('QA_HOD_MODIFY') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_RM_MODIFY') or hasAuthority('QA_PAC_SECRETARY_MODIFY') or hasAuthority('QA_PSC_MEMBERS_MODIFY') or hasAuthority('QA_PCM_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY')"
+    )
     @PostMapping("/kebs/request-update-details")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun permitRequestForUpdates(
@@ -1823,7 +1826,10 @@ class QualityAssuranceController(
         return commonDaoServices.returnValues(result, map, sm)
     }
 
-    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_HOD_MODIFY') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_PAC_SECRETARY_MODIFY') or hasAuthority('QA_PSC_MEMBERS_MODIFY') or hasAuthority('QA_PCM_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY')")
+    @PreAuthorize(
+        "hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_MODIFY') " +
+                "or hasAuthority('QA_HOD_MODIFY') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_RM_MODIFY') or hasAuthority('QA_PAC_SECRETARY_MODIFY') or hasAuthority('QA_PSC_MEMBERS_MODIFY') or hasAuthority('QA_PCM_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY')"
+    )
     @PostMapping("/kebs/update-request-details")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun permitRequestUpdates(
@@ -2204,8 +2210,8 @@ class QualityAssuranceController(
     }
 
     @PreAuthorize(
-        "hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_HOD_MODIFY') or hasAuthority('QA_MANAGER_ASSESSORS_MODIFY')" +
-                " or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY') or hasAuthority('QA_PAC_SECRETARY_MODIFY') or hasAuthority('QA_PSC_MEMBERS_MODIFY') or hasAuthority('QA_PCM_MODIFY')"
+        "hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_MODIFY') " +
+                "or hasAuthority('QA_HOD_MODIFY') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_RM_MODIFY') or hasAuthority('QA_PAC_SECRETARY_MODIFY') or hasAuthority('QA_PSC_MEMBERS_MODIFY') or hasAuthority('QA_PCM_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY')"
     )
     @PostMapping("/kebs/add/new-upload")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -2648,7 +2654,10 @@ class QualityAssuranceController(
 
     }
 
-    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_ASSESSORS_READ')")
+    @PreAuthorize(
+        "hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') " +
+                "or hasAuthority('QA_HOD_READ') or hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_RM_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ') or hasAuthority('QA_ASSESSORS_READ')"
+    )
     @GetMapping("/factory-assessment")
     fun getFactoryAssesmentReport(response: HttpServletResponse, @RequestParam("permitID") permitID: Long) {
         val permit = qaDaoServices.findPermitBYID(permitID)

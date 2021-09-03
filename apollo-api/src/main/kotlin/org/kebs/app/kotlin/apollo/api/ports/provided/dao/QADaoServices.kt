@@ -1205,59 +1205,59 @@ class QADaoServices(
                 when (permit.permitType) {
 
                     applicationMapProperties.mapQAPermitTypeIDDmark -> {
-                        userAssigned = assignNextOfficerBasedOnRegion(
-                            permit,
-                            map,
-                            applicationMapProperties.mapQADesignationIDForHODId
-                        )
+//                        userAssigned = assignNextOfficerBasedOnRegion(
+//                            permit,
+//                            map,
+//                            applicationMapProperties.mapQADesignationIDForHODId
+//                        )
                         permit.userTaskId = applicationMapProperties.mapUserTaskNameHOD
-                        permit.hodId = userAssigned.id
-                        sendEmailWithTaskDetails(
-                            userAssigned.email ?: throw ExpectedDataNotFound("Missing Email address"),
-                            permit.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
-                        )
+//                        permit.hodId = userAssigned.id
+//                        sendEmailWithTaskDetails(
+//                            userAssigned.email ?: throw ExpectedDataNotFound("Missing Email address"),
+//                            permit.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
+//                        )
 //                        qualityAssuranceBpmn.startQAAppReviewProcess(
 //                            permit.id ?: throw ExpectedDataNotFound("Permit Id Not found"),
 //                            permit.hodId ?: throw ExpectedDataNotFound("HOD Not found")
 //                        )
                         //Trigger Receive payment task BPM
-                        qualityAssuranceBpmn.diReceivePaymentComplete(
-                            permit.id ?: throw ExpectedDataNotFound("MISSING PERMIT")
-                        )
+//                        qualityAssuranceBpmn.diReceivePaymentComplete(
+//                            permit.id ?: throw ExpectedDataNotFound("MISSING PERMIT")
+//                        )
                     }
                     applicationMapProperties.mapQAPermitTypeIdSmark -> {
-                        userAssigned = assignNextOfficerBasedOnRegion(
-                            permit,
-                            map,
-                            applicationMapProperties.mapQADesignationIDForQAMId
-                        )
+//                        userAssigned = assignNextOfficerBasedOnRegion(
+//                            permit,
+//                            map,
+//                            applicationMapProperties.mapQADesignationIDForQAMId
+//                        )
                         permit.userTaskId = applicationMapProperties.mapUserTaskNameQAM
-                        permit.qamId = userAssigned.id
-                        sendEmailWithTaskDetails(
-                            userAssigned.email ?: throw ExpectedDataNotFound("Missing Email address"),
-                            permit.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
-                        )
-                        qualityAssuranceBpmn.startQAAppReviewProcess(
-                            permit.id ?: throw ExpectedDataNotFound("Permit Id Not found"),
-                            permit.qamId ?: throw ExpectedDataNotFound("QAM Not found")
-                        )
+//                        permit.qamId = userAssigned.id
+//                        sendEmailWithTaskDetails(
+//                            userAssigned.email ?: throw ExpectedDataNotFound("Missing Email address"),
+//                            permit.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
+//                        )
+//                        qualityAssuranceBpmn.startQAAppReviewProcess(
+//                            permit.id ?: throw ExpectedDataNotFound("Permit Id Not found"),
+//                            permit.qamId ?: throw ExpectedDataNotFound("QAM Not found")
+//                        )
                     }
                     applicationMapProperties.mapQAPermitTypeIdFmark -> {
-                        userAssigned = assignNextOfficerBasedOnRegion(
-                            permit,
-                            map,
-                            applicationMapProperties.mapQADesignationIDForQAMId
-                        )
+//                        userAssigned = assignNextOfficerBasedOnRegion(
+//                            permit,
+//                            map,
+//                            applicationMapProperties.mapQADesignationIDForQAMId
+//                        )
                         permit.userTaskId = applicationMapProperties.mapUserTaskNameQAM
-                        permit.qamId = userAssigned.id
-                        sendEmailWithTaskDetails(
-                            userAssigned.email ?: throw ExpectedDataNotFound("Missing Email address"),
-                            permit.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
-                        )
-                        qualityAssuranceBpmn.startQAAppReviewProcess(
-                            permit.id ?: throw ExpectedDataNotFound("Permit Id Not found"),
-                            permit.qamId ?: throw ExpectedDataNotFound("QAM Not found")
-                        )
+//                        permit.qamId = userAssigned.id
+//                        sendEmailWithTaskDetails(
+//                            userAssigned.email ?: throw ExpectedDataNotFound("Missing Email address"),
+//                            permit.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
+//                        )
+//                        qualityAssuranceBpmn.startQAAppReviewProcess(
+//                            permit.id ?: throw ExpectedDataNotFound("Permit Id Not found"),
+//                            permit.qamId ?: throw ExpectedDataNotFound("QAM Not found")
+//                        )
                     }
                 }
 
