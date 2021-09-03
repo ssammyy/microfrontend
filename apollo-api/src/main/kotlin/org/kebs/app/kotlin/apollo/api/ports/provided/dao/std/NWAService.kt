@@ -226,7 +226,7 @@ class NWAService(private val runtimeService: RuntimeService,
         nwaDiSdtJustification.numberOfMeetings?.let{variable.put("numberOfMeetings", it)}
         nwaDiSdtJustification.identifiedNeed?.let{variable.put("identifiedNeed", it)}
         nwaDiSdtJustification.dateOfApproval?.let{variable.put("dateOfApproval", it)}
-        nwaDiSdtJustification.kID?.let{variable.put("kID", it)}
+        nwaDiSdtJustification.jstNumber?.let{variable.put("jstNumber", it)}
         nwaDiSdtJustification.datePrepared = commonDaoServices.getTimestamp()
         variable["datePrepared"] = nwaDiSdtJustification.datePrepared!!
 
@@ -275,25 +275,6 @@ class NWAService(private val runtimeService: RuntimeService,
     }
 
     //Decision on DI-SDT
-    fun decisionOnDiSdtJustificationx(workshopAgreement: WorkshopAgreement) : List<TaskDetails> {
-        val variables: MutableMap<String, Any> = java.util.HashMap()
-        variables["Yes"] = workshopAgreement.accentTo
-        if(variables["Yes"]==true){
-            nwaDisDtJustificationRepository.findByIdOrNull(workshopAgreement.approvalID)?.let { nwaDiSdtJustification->
-                val valueFound =getCDNumber()
-                with(nwaDiSdtJustification){
-                    cdAppNumber = valueFound.first
-                    cdn = valueFound.second
-                    accentTo = true
-                }
-                nwaDisDtJustificationRepository.save(nwaDiSdtJustification)
-            }?: throw Exception("TASK NOT FOUND")
-
-        }
-        taskService.complete(workshopAgreement.taskId, variables)
-      return  getDISDTTasks()
-    }
-
     fun decisionOnDiSdtJustification(workshopAgreement: WorkshopAgreement) : List<TaskDetails> {
         val variables: MutableMap<String, Any> = java.util.HashMap()
         variables["Yes"] = workshopAgreement.accentTo
@@ -301,8 +282,10 @@ class NWAService(private val runtimeService: RuntimeService,
         workshopAgreement.comments?.let{ variables.put("comments", it)}
         if(variables["Yes"]==true){
             nwaDisDtJustificationRepository.findByIdOrNull(workshopAgreement.approvalID)?.let { nwaDiSdtJustification->
-
+                val valueFound =getCDNumber()
                 with(nwaDiSdtJustification){
+                    cdAppNumber = valueFound.first
+                    cdn = valueFound.second
                     remarks=workshopAgreement.comments
                     accentTo = true
                 }
@@ -310,7 +293,7 @@ class NWAService(private val runtimeService: RuntimeService,
             }?: throw Exception("TASK NOT FOUND")
 
         }else if(variables["No"]==false) {
-            nwaJustificationRepository.findByIdOrNull(workshopAgreement.kID)?.let { nwaJustification->
+            nwaJustificationRepository.findByIdOrNull(workshopAgreement.jstNumber)?.let { nwaJustification->
 
                 with(nwaJustification){
                     remarks=workshopAgreement.comments
@@ -336,10 +319,10 @@ class NWAService(private val runtimeService: RuntimeService,
         nwaPreliminaryDraft.symbolsAbbreviatedTerms?.let{variable.put("symbolsAbbreviatedTerms", it)}
         nwaPreliminaryDraft.clause?.let{variable.put("clause", it)}
         nwaPreliminaryDraft.special?.let{variable.put("special", it)}
+        nwaPreliminaryDraft.diJNumber?.let{variable.put("diJNumber", it)}
         nwaPreliminaryDraft.datePdPrepared = commonDaoServices.getTimestamp()
-
-
         variable["datePdPrepared"] = nwaPreliminaryDraft.datePdPrepared!!
+
 
         val nwaDetails = nwaPreliminaryDraftRepository.save(nwaPreliminaryDraft)
         variable["ID"] = nwaDetails.id
@@ -379,14 +362,25 @@ class NWAService(private val runtimeService: RuntimeService,
     fun decisionOnPD(nwaPreliminaryDraftDecision: NWAPreliminaryDraftDecision) : List<TaskDetails> {
         val variables: MutableMap<String, Any> = java.util.HashMap()
         variables["Yes"] = nwaPreliminaryDraftDecision.accentTo
+        nwaPreliminaryDraftDecision.comments?.let{ variables.put("comments", it)}
         if(variables["Yes"]==true){
             nwaPreliminaryDraftRepository.findByIdOrNull(nwaPreliminaryDraftDecision.approvalID)?.let { nwaPreliminaryDraft->
 
                 with(nwaPreliminaryDraft){
-
+                    remarks=nwaPreliminaryDraftDecision.comments
                     accentTo = true
                 }
                 nwaPreliminaryDraftRepository.save(nwaPreliminaryDraft)
+            }?: throw Exception("TASK NOT FOUND")
+
+        }else if(variables["No"]==false) {
+            nwaDisDtJustificationRepository.findByIdOrNull(nwaPreliminaryDraftDecision.diJNumber)?.let { nwaDiSdtJustification->
+
+                with(nwaDiSdtJustification){
+                    remarks=nwaPreliminaryDraftDecision.comments
+                    //accentTo = false
+                }
+                nwaDisDtJustificationRepository.save(nwaDiSdtJustification)
             }?: throw Exception("TASK NOT FOUND")
 
         }
@@ -411,7 +405,7 @@ class NWAService(private val runtimeService: RuntimeService,
         nwaWorkShopDraft.symbolsAbbreviatedTerms?.let{variable.put("symbolsAbbreviatedTerms", it)}
         nwaWorkShopDraft.clause?.let{variable.put("clause", it)}
         nwaWorkShopDraft.special?.let{variable.put("special", it)}
-        nwaWorkShopDraft.dateWdPrepared = Timestamp(System.currentTimeMillis())
+        nwaWorkShopDraft.dateWdPrepared = commonDaoServices.getTimestamp()
         variable["dateWdPrepared"] = nwaWorkShopDraft.dateWdPrepared!!
 
         //print(nwaWorkShopDraft.toString())
@@ -461,16 +455,26 @@ class NWAService(private val runtimeService: RuntimeService,
     fun decisionOnWD(nwaWorkshopDraftDecision: NWAWorkshopDraftDecision) : List<TaskDetails> {
         val variables: MutableMap<String, Any> = java.util.HashMap()
         variables["Yes"] = nwaWorkshopDraftDecision.accentTo
+        nwaWorkshopDraftDecision.comments?.let{ variables.put("comments", it)}
         if(variables["Yes"]==true){
             nwaWorkshopDraftRepository.findByIdOrNull(nwaWorkshopDraftDecision.approvalID)?.let { nwaWorkShopDraft->
 
                 with(nwaWorkShopDraft){
-
+                    remarks=nwaWorkshopDraftDecision.comments
                     accentTo = true
                 }
                 nwaWorkshopDraftRepository.save(nwaWorkShopDraft)
             }?: throw Exception("TASK NOT FOUND")
 
+        }else if(variables["No"]==false) {
+            nwaWorkshopDraftRepository.findByIdOrNull(nwaWorkshopDraftDecision.approvalID)?.let { nwaWorkShopDraft->
+
+                with(nwaWorkShopDraft){
+                    remarks=nwaWorkshopDraftDecision.comments
+                   // accentTo = false
+                }
+                nwaWorkshopDraftRepository.save(nwaWorkShopDraft)
+            }?: throw Exception("TASK NOT FOUND")
         }
         taskService.complete(nwaWorkshopDraftDecision.taskId, variables)
         return  getSacSecTasks()
@@ -487,7 +491,7 @@ class NWAService(private val runtimeService: RuntimeService,
         nWAStandard.clause?.let{variable.put("clause", it)}
         nWAStandard.special?.let{variable.put("special", it)}
         //nWAStandard.ksNumber?.let{variable.put("ksNumber", it)}
-        nWAStandard.dateSdUploaded = Timestamp(System.currentTimeMillis())
+        nWAStandard.dateSdUploaded = commonDaoServices.getTimestamp()
         variable["dateSdUploaded"] = nWAStandard.dateSdUploaded!!
         nWAStandard.ksNumber = getKSNumber()
 
@@ -544,7 +548,7 @@ class NWAService(private val runtimeService: RuntimeService,
         nWAGazetteNotice.ksNumber?.let{variable.put("ksNumber", it)}
         //nWAGazetteNotice.dateUploaded?.let{variable.put("dateUploaded", it)}
         nWAGazetteNotice.description?.let{variable.put("description", it)}
-        nWAGazetteNotice.dateUploaded = Timestamp(System.currentTimeMillis())
+        nWAGazetteNotice.dateUploaded = commonDaoServices.getTimestamp()
         variable["dateUploaded"] = nWAGazetteNotice.dateUploaded!!
 
         print(nWAGazetteNotice.toString())

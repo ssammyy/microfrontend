@@ -2,11 +2,13 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subject} from "rxjs";
 import {StdNwaService} from "../../../../core/store/data/std/std-nwa.service";
 import {NgxSpinnerService} from "ngx-spinner";
-import {HOPTasks, NWAStandard} from "../../../../core/store/data/std/std.model";
+import {HOPTasks, KnwSecTasks, NWAStandard} from "../../../../core/store/data/std/std.model";
 import {HttpErrorResponse} from "@angular/common/http";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import swal from "sweetalert2";
+
+declare const $: any;
 
 @Component({
   selector: 'app-nwa-hop-tasks',
@@ -32,23 +34,23 @@ export class NwaHopTasksComponent implements OnInit ,OnDestroy {
   ngOnInit(): void {
     this.getHOPTasks();
       this.prepareWorkShopDraftFormGroup = this.formBuilder.group({
-          title: [],
-          scope: [],
-          normativeReference: [],
-          referenceMaterial: [],
-          clause: [],
-          special: [],
+          title: ['', Validators.required],
+          scope: ['', Validators.required],
+          normativeReference: ['', Validators.required],
+          referenceMaterial: ['', Validators.required],
+          clause: ['', Validators.required],
+          special: ['', Validators.required],
           taskId: []
 
       });
 
       this.prepareStandardFormGroup = this.formBuilder.group({
-          title: [],
-          scope: [],
-          normativeReference: [],
-          referenceMaterial: [],
-          clause: [],
-          special: [],
+          title: ['', Validators.required],
+          scope: ['', Validators.required],
+          normativeReference: ['', Validators.required],
+          referenceMaterial: ['', Validators.required],
+          clause: ['', Validators.required],
+          special: ['', Validators.required],
           taskId: []
 
       });
@@ -70,16 +72,18 @@ export class NwaHopTasksComponent implements OnInit ,OnDestroy {
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
   }
+
   public getHOPTasks(): void{
     this.SpinnerService.show();
     this.stdNwaService.getHOPTasks().subscribe(
         (response: HOPTasks[])=> {
-          this.SpinnerService.hide();
-          this.tasks = response;
+            this.tasks = response;
+            this.dtTrigger.next();
+            this.SpinnerService.hide();
         },
         (error: HttpErrorResponse)=>{
           this.SpinnerService.hide();
-          alert(error.message);
+            console.log(error.message);
         }
     );
   }
@@ -108,6 +112,7 @@ export class NwaHopTasksComponent implements OnInit ,OnDestroy {
   }
     onEdit(): void {
         this.SpinnerService.show();
+        //console.log(this.prepareWorkShopDraftFormGroup.value);
         this.stdNwaService.editWorkshopDraft(this.prepareWorkShopDraftFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
@@ -139,6 +144,7 @@ export class NwaHopTasksComponent implements OnInit ,OnDestroy {
                     this.showToasterSuccess(data.httpStatus, `WorkShop Draft Uploaded`);
                     this.uploadedFiles = null;
                     console.log(data);
+                    this.dtTrigger.next();
                     swal.fire({
                         title: 'WorkShop Draft Uploaded.',
                         buttonsStyling: false,
@@ -189,6 +195,7 @@ export class NwaHopTasksComponent implements OnInit ,OnDestroy {
   // Upload Standard
     onNwaUpload(): void {
         this.SpinnerService.show();
+        //console.log(this.prepareStandardFormGroup.value);
         this.stdNwaService.uploadNwaStandard(this.prepareStandardFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
@@ -221,6 +228,7 @@ export class NwaHopTasksComponent implements OnInit ,OnDestroy {
                     this.showToasterSuccess(data.httpStatus, `Standard Uploaded`);
                     this.uploadedFiles = null;
                     console.log(data);
+                    this.dtTrigger.next();
                     swal.fire({
                         title: 'Standard Uploaded.',
                         buttonsStyling: false,
@@ -234,5 +242,32 @@ export class NwaHopTasksComponent implements OnInit ,OnDestroy {
             );
         }
 
+    }
+    showNotification(from: any, align: any) {
+        const type = ['', 'info', 'success', 'warning', 'danger', 'rose', 'primary'];
+
+        const color = Math.floor((Math.random() * 6) + 1);
+
+        $.notify({
+            icon: 'notifications',
+            message: 'Welcome to <b>Material Dashboard</b> - a beautiful dashboard for every web developer.'
+        }, {
+            type: type[color],
+            timer: 3000,
+            placement: {
+                from: from,
+                align: align
+            },
+            template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0} alert-with-icon" role="alert">' +
+                '<button mat-raised-button type="button" aria-hidden="true" class="close" data-notify="dismiss">  <i class="material-icons">close</i></button>' +
+                '<i class="material-icons" data-notify="icon">notifications</i> ' +
+                '<span data-notify="title"></span> ' +
+                '<span data-notify="message">Ensure all required fields and items have been filled</span>' +
+                '<div class="progress" data-notify="progressbar">' +
+                '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" ></div>' +
+                '</div>' +
+                '<a href="{3}" target="{4}" data-notify="url"></a>' +
+                '</div>'
+        });
     }
 }
