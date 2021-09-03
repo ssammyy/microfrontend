@@ -19,6 +19,22 @@
     "turnover": null
   },
   "loggedin": true
+},
+
+{
+"userId": 2645,
+"user": {
+"id": 2645,
+"firstName": "TEST102",
+"lastName": "TEST102",
+"userName": "TEST102",
+"email": "Test102Email@TEST102.com",
+"enabled": true,
+"status": true,
+"title": null,
+"credentials": null,
+"cellphone": "0715668934",
+"companyId": 664,
+"plantId": 824
 }
-
-
+}

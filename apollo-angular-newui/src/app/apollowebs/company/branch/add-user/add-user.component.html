@@ -143,8 +143,11 @@
                                                                     <div class="col">
                                                                         <label for="branch">Select Branch</label>
                                                                         <mat-form-field>
-                                                                            <mat-select  id="branch" multiple
-                                                                                        placeholder="Select Branch">
+                                                                            <mat-select
+                                                                                    (ngModelChange)="updateSelectedBranch()"
+                                                                                    formControlName="branch"
+                                                                                    id="branch"
+                                                                                    placeholder="Select Branch">
                                                                                 <mat-option
                                                                                         *ngFor="let branch of branches$ | async"
                                                                                         [value]="branch.id">

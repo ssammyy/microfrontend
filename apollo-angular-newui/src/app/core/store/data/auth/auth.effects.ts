@@ -20,6 +20,7 @@ import {catchError, mergeMap, switchMap} from 'rxjs/operators';
 import {Go} from '../route';
 import {AuthService} from './auth.service';
 import {loadResponsesFailure, loadResponsesSuccess} from '../response';
+import {loadBranchIdSuccess, loadCompanyIdSuccess} from '../companies';
 
 
 @Injectable()
@@ -173,6 +174,9 @@ export class AuthEffects {
                         mergeMap((data) => {
                             return [
                                 loadLogoutSuccess({data: data, loggedIn: false, profile: null}),
+                                loadUserCompanyInfoSuccess({data: null}),
+                                loadBranchIdSuccess({branchId: null, branch: null}),
+                                loadCompanyIdSuccess({companyId: null, company: null}),
                                 Go({payload: null, link: action.loginUrl, redirectUrl: ''})
                             ];
                         }),

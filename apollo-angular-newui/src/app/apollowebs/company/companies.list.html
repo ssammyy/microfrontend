@@ -40,9 +40,12 @@
                                         <td>{{row.name}}</td>
                                         <td>{{row.status}}</td>
                                         <td class="text-right">
+                                            <a (click)="viewRecord(row)"
+                                               class="btn btn-link btn-info"><i
+                                                    class="material-icons">remove_red_eye</i> View Details</a>
                                             <a (click)="editRecord(row)"
                                                class="btn btn-link btn-info"><i
-                                                    class="material-icons">remove_red_eye</i> View/Edit Details</a>
+                                                    class="material-icons">remove_red_eye</i> Edit Details</a>
                                             <br>
                                             <a (click)="onClickPlantDetails(row)"
                                                class="btn btn-link btn-warning"><i

@@ -58,6 +58,7 @@ export class AddUserComponent implements OnInit {
                 userName: ['', Validators.required],
                 email: ['', Validators.required],
                 cellphone: ['', Validators.required],
+                branch: ['', Validators.required],
                 // otp: new FormControl('', ),
                 credentials: ['', Validators.required],
                 confirmCredentials: ['', [Validators.required]]
@@ -158,4 +159,8 @@ export class AddUserComponent implements OnInit {
         this.store$.dispatch(Back());
     }
 
+    updateSelectedBranch() {
+        this.selectedBranch = this.stepOneForm?.get('branch')?.value;
+        console.log(`Selected Branch ${this.selectedBranch}`);
+    }
 }
