@@ -1,7 +1,10 @@
 package org.kebs.app.kotlin.apollo.store.repo.qa
 
+import org.kebs.app.kotlin.apollo.store.model.UserRolesEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.*
 import org.springframework.data.hazelcast.repository.HazelcastRepository
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -21,6 +24,69 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         permitType: Long
     ): List<PermitApplicationsEntity>?
 
+//    fun findByRegioAndOldPermitStatusIsNullAndUserTaskId(
+//        companyId: Long,userTaskId: Long
+//    ): List<PermitApplicationsEntity>?
+
+    fun findAllByOldPermitStatusIsNullAndUserTaskId(userTaskId: Long): List<PermitApplicationsEntity>?
+    fun findAllByOldPermitStatusIsNullAndUserTaskIdAndPermitType(
+        userTaskId: Long,
+        permitType: Long
+    ): List<PermitApplicationsEntity>?
+
+    @Query(
+        "SELECT r.* FROM DAT_KEBS_PERMIT_TRANSACTION PR, DAT_KEBS_MANUFACTURE_PLANT_DETAILS B WHERE PR.ATTACHED_PLANT_ID = B.ID AND PR.PAID_STATUS = :paidStatus AND B.REGION = :region order by r.ID",
+        nativeQuery = true
+    )
+    fun findRbacPermitByRegionIDPaymentStatus(
+        @Param("paidStatus") paidStatus: Int,
+        @Param("region") region: Long
+    ): List<PermitApplicationsEntity>?
+
+    @Query(
+        "SELECT r.* FROM DAT_KEBS_PERMIT_TRANSACTION PR, DAT_KEBS_MANUFACTURE_PLANT_DETAILS B WHERE PR.ATTACHED_PLANT_ID = B.ID AND PR.PAID_STATUS = :paidStatus AND PR.PERMIT_TYPE = :permitType AND B.REGION = :region order by r.ID",
+        nativeQuery = true
+    )
+    fun findRbacPermitByRegionIDPaymentStatusAndPermitTypeID(
+        @Param("permitType") permitType: Long,
+        @Param("paidStatus") paidStatus: Int,
+        @Param("region") region: Long
+    ): List<PermitApplicationsEntity>?
+
+    @Query(
+        "SELECT r.* FROM DAT_KEBS_PERMIT_TRANSACTION PR, DAT_KEBS_MANUFACTURE_PLANT_DETAILS B WHERE PR.ATTACHED_PLANT_ID = B.ID AND PR.PAID_STATUS = :paidStatus AND PR.PERMIT_AWARD_STATUS = :permitAwardStatus AND PR.PERMIT_TYPE = :permitType AND B.REGION = :region order by r.ID",
+        nativeQuery = true
+    )
+    fun findRbacPermitByRegionIDPaymentStatusAndPermitTypeIDAndAwardedStatus(
+        @Param("permitType") permitType: Long,
+        @Param("paidStatus") paidStatus: Int,
+        @Param("permitAwardStatus") permitAwardStatus: Int,
+        @Param("region") region: Long
+    ): List<PermitApplicationsEntity>?
+
+    @Query(
+        "SELECT r.* FROM DAT_KEBS_PERMIT_TRANSACTION PR, DAT_KEBS_MANUFACTURE_PLANT_DETAILS B WHERE PR.ATTACHED_PLANT_ID = B.ID AND PR.USER_TASK_ID = :userTaskId AND PR.PAID_STATUS = :paidStatus AND PR.OLD_PERMIT_STATUS = :oldPermitStatus AND B.REGION = :region order by r.ID",
+        nativeQuery = true
+    )
+    fun findRbacPermitByRegionIDPaymentStatusAndUserTaskID(
+        @Param("paidStatus") paidStatus: Int,
+        @Param("region") region: Long,
+        @Param("userTaskId") userTaskId: Long,
+        @Param("oldPermitStatus") oldPermitStatus: Int?
+    ): List<PermitApplicationsEntity>?
+
+    @Query(
+        "SELECT r.* FROM DAT_KEBS_PERMIT_TRANSACTION PR, DAT_KEBS_MANUFACTURE_PLANT_DETAILS B WHERE PR.ATTACHED_PLANT_ID = B.ID AND PR.USER_TASK_ID = :userTaskId AND PR.PERMIT_TYPE = :permitType AND PR.PAID_STATUS = :paidStatus AND PR.OLD_PERMIT_STATUS = :oldPermitStatus AND B.REGION = :region order by r.ID",
+        nativeQuery = true
+    )
+    fun findRbacPermitByRegionIDPaymentStatusAndUserTaskIDAndPermitType(
+        @Param("permitType") permitType: Long,
+        @Param("paidStatus") paidStatus: Int,
+        @Param("region") region: Long,
+        @Param("userTaskId") userTaskId: Long,
+        @Param("oldPermitStatus") oldPermitStatus: Int?
+    ): List<PermitApplicationsEntity>?
+
     fun findByUserIdAndPermitTypeAndOldPermitStatusIsNull(
         userId: Long,
         permitType: Long
@@ -34,11 +100,39 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         companyId: Long, permitType: Long
     ): List<PermitApplicationsEntity>?
 
+    fun findByCompanyIdAndPermitTypeAndPermitAwardStatusAndOldPermitStatusIsNull(
+        companyId: Long, permitType: Long, permitAwardStatus: Int
+    ): List<PermitApplicationsEntity>?
+
+    fun findByPermitTypeAndPermitAwardStatusAndOldPermitStatusIsNull(
+        permitType: Long, permitAwardStatus: Int
+    ): List<PermitApplicationsEntity>?
+
+    fun findByPermitTypeAndPaidStatusAndPermitAwardStatusIsNullAndOldPermitStatusIsNull(
+        permitType: Long, paidStatus: Int
+    ): List<PermitApplicationsEntity>?
+
+    fun findByCompanyIdAndOldPermitStatusIsNullAndUserTaskId(
+        companyId: Long, userTaskId: Long
+    ): List<PermitApplicationsEntity>?
+
+    fun findByCompanyIdAndOldPermitStatusIsNullAndUserTaskIdAndPermitType(
+        companyId: Long, userTaskId: Long, permitType: Long
+    ): List<PermitApplicationsEntity>?
+
     fun findByAttachedPlantIdAndOldPermitStatusIsNull(attachedPlantId: Long): List<PermitApplicationsEntity>?
 
     fun findByAttachedPlantIdAndPermitTypeAndOldPermitStatusIsNull(
         attachedPlantId: Long,
         permitType: Long
+    ): List<PermitApplicationsEntity>?
+
+    fun findByAttachedPlantIdAndOldPermitStatusIsNullAndUserTaskId(
+        attachedPlantId: Long, userTaskId: Long
+    ): List<PermitApplicationsEntity>?
+
+    fun findByAttachedPlantIdAndOldPermitStatusIsNullAndUserTaskIdAndPermitType(
+        attachedPlantId: Long, userTaskId: Long, permitType: Long
     ): List<PermitApplicationsEntity>?
 
     fun findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatus(

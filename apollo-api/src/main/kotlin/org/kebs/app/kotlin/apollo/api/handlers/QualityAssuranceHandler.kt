@@ -22,6 +22,7 @@
 package org.kebs.app.kotlin.apollo.api.handlers
 
 //import org.kebs.app.kotlin.apollo.api.ports.provided.createUserAlert
+
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.QualityAssuranceBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
@@ -43,7 +44,8 @@ import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaBatchInvoiceRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.security.core.Authentication
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -140,8 +142,10 @@ class QualityAssuranceHandler(
         }
     }
 
-    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ')" +
-            " or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
+    @PreAuthorize(
+        "hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ')" +
+                " or hasAuthority('QA_HOF_READ') or hasAuthority('QA_RM_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')"
+    )
     fun permitList(req: ServerRequest): ServerResponse {
         try {
             val auth = commonDaoServices.loggedInUserAuthentication()
@@ -173,73 +177,231 @@ class QualityAssuranceHandler(
             }
 
             var permitListAllApplications: List<PermitEntityDto>? = null
-            var permitListMyTasks: List<PermitEntityDto>? = null
+            val permitListMyTasks: List<PermitEntityDto>? = null
             var permitListAllComplete: List<PermitEntityDto>? = null
-            when {
-                auth.authorities.stream().anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
-                    permitListAllApplications = qaDaoServices.listPermits(
-                        qaDaoServices.findAllUserPermitWithPermitType(
-                            loggedInUser,
-                            permitTypeID
-                        ), map
-                    )
-                    permitListAllComplete = qaDaoServices.listPermits(
-                        qaDaoServices.findAllUserPermitWithPermitTypeAwardedStatusIsNotNull(
-                            loggedInUser,
-                            permitTypeID
-                        ), map
-                    )
-                    permitListMyTasks = qaDaoServices.listPermits(
-                        qaDaoServices.findAllUserPermitWithPermitTypeAwardedStatusIsNullAndTaskID(
+
+            val permitListMyTasksAddedTogether = mutableListOf<PermitEntityDto>()
+            val permitListAllApplicationsAddedTogether = mutableListOf<PermitEntityDto>()
+            val permitListAllCompleteAddedTogether = mutableListOf<PermitEntityDto>()
+
+            //Get logged in user Task required there attention
+            auth.authorities.forEach { a ->
+//                if (a.authority == "PERMIT_APPLICATION"){
+//                    permitListMyTasks =  qaDaoServices.findAllUserTasksManufactureByTaskIDAndPermitType(loggedInUser, auth,permitTypeID, applicationMapProperties.mapUserTaskNameMANUFACTURE)?.let { qaDaoServices.listPermits(it, map) }
+//                    permitListMyTasksAddedTogether.addAll(permitListMyTasks)
+//                    permitListAllApplications = qaDaoServices.findAllFirmPermitsAwardedWithPermitType(loggedInUser.companyId ?: throw Exception("MISSING COMPANY ID"),  map.activeStatus, permitTypeID).let { qaDaoServices.listPermits(it, map) }
+//                }
+
+                if (a.authority == "QA_OFFICER_READ") {
+                    qaDaoServices.listPermits(
+                        qaDaoServices.findAllQAOPermitListWithPermitTypeTaskID(
                             loggedInUser,
                             permitTypeID,
-                            applicationMapProperties.mapUserTaskNameMANUFACTURE
+                            applicationMapProperties.mapUserTaskNameQAO
                         ), map
-                    )
+                    ).let { permitListMyTasksAddedTogether.addAll(it) }
                 }
-                auth.authorities.stream().anyMatch { authority -> authority.authority == "QA_MANAGER_ASSESSORS_READ" } -> {
-                    permitListAllApplications = qaDaoServices.listPermits(qaDaoServices.findAllQAMPermitListWithPermitType(loggedInUser, permitTypeID), map)
-                    permitListAllComplete = qaDaoServices.listPermits(qaDaoServices.findAllQAMPermitListWithPermitTypeAwardedStatusIsNotNull(loggedInUser, permitTypeID), map)
-                    permitListMyTasks = qaDaoServices.listPermits(qaDaoServices.findAllQAMPermitListWithPermitTypeAwardedStatusIsNotNullTaskID(loggedInUser, permitTypeID, applicationMapProperties.mapUserTaskNameQAM), map)
-                }
-                auth.authorities.stream().anyMatch { authority -> authority.authority == "QA_HOD_READ" } -> {
-                    permitListAllApplications = qaDaoServices.listPermits(qaDaoServices.findAllHODPermitListWithPermitType(loggedInUser, permitTypeID), map)
-                    permitListAllComplete = qaDaoServices.listPermits(qaDaoServices.findAllHODPermitListWithPermitTypeAwardedStatusIsNotNull(loggedInUser, permitTypeID), map)
-                    permitListMyTasks = qaDaoServices.listPermits(qaDaoServices.findAllHODPermitListWithPermitTypeTaskID(loggedInUser, permitTypeID, applicationMapProperties.mapUserTaskNameHOD), map)
-                }
-                auth.authorities.stream().anyMatch { authority -> authority.authority == "QA_OFFICER_READ" } -> {
-                    permitListAllApplications = qaDaoServices.listPermits(qaDaoServices.findAllQAOPermitListWithPermitType(loggedInUser, permitTypeID), map)
-                    permitListAllComplete = qaDaoServices.listPermits(qaDaoServices.findAllQAOPermitListWithPermitTypeAwardedStatusIsNotNull(loggedInUser, permitTypeID), map)
-                    permitListMyTasks = qaDaoServices.listPermits(qaDaoServices.findAllQAOPermitListWithPermitTypeTaskID(loggedInUser, permitTypeID, applicationMapProperties.mapUserTaskNameQAO), map)
 
+                if (a.authority == "QA_ASSESSORS_READ") {
+                    qaDaoServices.listPermits(
+                        qaDaoServices.findAllAssessorPermitListWithPermitTypeTaskID(
+                            loggedInUser,
+                            permitTypeID,
+                            applicationMapProperties.mapUserTaskNameASSESSORS
+                        ), map
+                    ).let { permitListMyTasksAddedTogether.addAll(it) }
                 }
-                auth.authorities.stream().anyMatch { authority -> authority.authority == "QA_ASSESSORS_READ" } -> {
-                    permitListAllApplications = qaDaoServices.listPermits(qaDaoServices.findAllAssessorPermitListWithPermitType(loggedInUser, permitTypeID), map)
-                    permitListAllComplete = qaDaoServices.listPermits(qaDaoServices.findAllAssessorPermitListWithPermitTypeAwardedStatusIsNotNull(loggedInUser, permitTypeID), map)
-                    permitListMyTasks = qaDaoServices.listPermits(qaDaoServices.findAllAssessorPermitListWithPermitTypeTaskID(loggedInUser, permitTypeID, applicationMapProperties.mapUserTaskNameASSESSORS), map)
 
+                if (a.authority == "QA_HOD_READ") {
+                    qaDaoServices.findAllUserTasksQAMHODRMHOFByTaskID(
+                        loggedInUser,
+                        auth,
+                        "QA_HOD_READ",
+                        permitTypeID,
+                        map,
+                        applicationMapProperties.mapUserTaskNameHOD
+                    )?.let { qaDaoServices.listPermits(it, map) }?.let { permitListMyTasksAddedTogether.addAll(it) }
                 }
-                auth.authorities.stream().anyMatch { authority -> authority.authority == "QA_PAC_SECRETARY_READ" } -> {
-                    permitListAllApplications = qaDaoServices.listPermits(qaDaoServices.findAllPacSecPermitListWithPermitType(loggedInUser, permitTypeID), map)
-                    permitListAllComplete = qaDaoServices.listPermits(qaDaoServices.findAllPacSecPermitListWithPermitTypeAwardedStatusIsNotNull(loggedInUser, permitTypeID), map)
-                    permitListMyTasks = qaDaoServices.listPermits(qaDaoServices.findAllPacSecPermitListWithPermitTypeTaskID(loggedInUser, permitTypeID, applicationMapProperties.mapUserTaskNamePACSECRETARY), map)
-                }
-                auth.authorities.stream().anyMatch { authority -> authority.authority == "QA_PCM_READ" } -> {
-                    permitListAllApplications = qaDaoServices.listPermits(qaDaoServices.findAllPCMPermitListWithPermitType(loggedInUser, permitTypeID), map)
-                    permitListAllComplete = qaDaoServices.listPermits(qaDaoServices.findAllPCMPermitListWithPermitTypeAwardedStatusIsNotNull(loggedInUser, permitTypeID), map)
-                    permitListMyTasks = qaDaoServices.listPermits(qaDaoServices.findAllPCMPermitListWithPermitTypeTaskID(loggedInUser,permitTypeID, applicationMapProperties.mapUserTaskNamePCM), map)
 
+                if (a.authority == "QA_HOF_READ") {
+                    qaDaoServices.findAllUserTasksQAMHODRMHOFByTaskID(
+                        loggedInUser,
+                        auth,
+                        "QA_HOF_READ",
+                        permitTypeID,
+                        map,
+                        applicationMapProperties.mapUserTaskNameHOF
+                    )?.let { qaDaoServices.listPermits(it, map) }?.let { permitListMyTasksAddedTogether.addAll(it) }
                 }
-                auth.authorities.stream().anyMatch { authority -> authority.authority == "QA_PSC_MEMBERS_READ" } -> {
-                    permitListAllApplications = qaDaoServices.listPermits(qaDaoServices.findAllPSCPermitListWithPermitType(loggedInUser, permitTypeID), map)
-                    permitListAllComplete = qaDaoServices.listPermits(qaDaoServices.findAllPSCPermitListWithPermitTypeAwardedStatusIsNotNull(loggedInUser, permitTypeID), map)
-                    permitListMyTasks = qaDaoServices.listPermits(qaDaoServices.findAllPSCPermitListWithPermitTypeTaskID(loggedInUser, permitTypeID, applicationMapProperties.mapUserTaskNamePSC), map)
+
+                if (a.authority == "QA_RM_READ") {
+                    qaDaoServices.findAllUserTasksQAMHODRMHOFByTaskID(
+                        loggedInUser,
+                        auth,
+                        "QA_RM_READ",
+                        permitTypeID,
+                        map,
+                        applicationMapProperties.mapUserTaskNameRM
+                    )?.let { qaDaoServices.listPermits(it, map) }?.let { permitListMyTasksAddedTogether.addAll(it) }
                 }
-                else -> {
-                    throw ExpectedDataNotFound("UNAUTHORISED LOGGED IN USER (ACCESS DENIED)")
+
+                if (a.authority == "QA_MANAGER_ASSESSORS_READ") {
+                    qaDaoServices.findAllUserTasksQAMHODRMHOFByTaskID(
+                        loggedInUser,
+                        auth,
+                        "QA_MANAGER_ASSESSORS_READ",
+                        permitTypeID,
+                        map,
+                        applicationMapProperties.mapUserTaskNameQAM
+                    )?.let { qaDaoServices.listPermits(it, map) }?.let { permitListMyTasksAddedTogether.addAll(it) }
                 }
+
+                if (a.authority == "QA_PAC_SECRETARY_READ") {
+                    qaDaoServices.findAllUserTasksPACPSCPCMByTaskID(
+                        loggedInUser,
+                        auth,
+                        "QA_PAC_SECRETARY_READ",
+                        permitTypeID,
+                        applicationMapProperties.mapUserTaskNamePACSECRETARY
+                    )?.let { qaDaoServices.listPermits(it, map) }?.let { permitListMyTasksAddedTogether.addAll(it) }
+                }
+
+                if (a.authority == "QA_PSC_MEMBERS_READ") {
+                    qaDaoServices.findAllUserTasksPACPSCPCMByTaskID(
+                        loggedInUser,
+                        auth,
+                        "QA_PSC_MEMBERS_READ",
+                        permitTypeID,
+                        applicationMapProperties.mapUserTaskNamePSC
+                    )?.let { qaDaoServices.listPermits(it, map) }?.let { permitListMyTasksAddedTogether.addAll(it) }
+                }
+
+                if (a.authority == "QA_PCM_READ") {
+                    qaDaoServices.findAllUserTasksPACPSCPCMByTaskID(
+                        loggedInUser,
+                        auth,
+                        "QA_PCM_READ",
+                        permitTypeID,
+                        applicationMapProperties.mapUserTaskNamePCM
+                    )?.let { qaDaoServices.listPermits(it, map) }?.let { permitListMyTasksAddedTogether.addAll(it) }
+                }
+
             }
 
+            //All permit applications List in a region
+            auth.authorities.forEach { a ->
+
+                if (a.authority == "QA_HOD_READ") {
+                    qaDaoServices.findAllApplicationsQAMHODRMHOFByRegion(
+                        loggedInUser,
+                        auth,
+                        "QA_HOD_READ",
+                        permitTypeID,
+                        map
+                    )?.let { qaDaoServices.listPermits(it, map) }
+                        ?.let { permitListAllApplicationsAddedTogether.addAll(it) }
+                    qaDaoServices.findAllApplicationsAwardedQAMHODRMHOFByRegion(
+                        loggedInUser,
+                        auth,
+                        "QA_HOD_READ",
+                        permitTypeID,
+                        map
+                    )?.let { qaDaoServices.listPermits(it, map) }?.let { permitListAllCompleteAddedTogether.addAll(it) }
+                }
+
+                if (a.authority == "QA_HOF_READ") {
+                    qaDaoServices.findAllApplicationsQAMHODRMHOFByRegion(
+                        loggedInUser,
+                        auth,
+                        "QA_HOF_READ",
+                        permitTypeID,
+                        map
+                    )?.let { qaDaoServices.listPermits(it, map) }
+                        ?.let { permitListAllApplicationsAddedTogether.addAll(it) }
+                    qaDaoServices.findAllApplicationsAwardedQAMHODRMHOFByRegion(
+                        loggedInUser,
+                        auth,
+                        "QA_HOF_READ",
+                        permitTypeID,
+                        map
+                    )?.let { qaDaoServices.listPermits(it, map) }?.let { permitListAllCompleteAddedTogether.addAll(it) }
+                }
+
+                if (a.authority == "QA_RM_READ") {
+                    qaDaoServices.findAllApplicationsQAMHODRMHOFByRegion(
+                        loggedInUser,
+                        auth,
+                        "QA_RM_READ",
+                        permitTypeID,
+                        map
+                    )?.let { qaDaoServices.listPermits(it, map) }
+                        ?.let { permitListAllApplicationsAddedTogether.addAll(it) }
+                    qaDaoServices.findAllApplicationsAwardedQAMHODRMHOFByRegion(
+                        loggedInUser,
+                        auth,
+                        "QA_RM_READ",
+                        permitTypeID,
+                        map
+                    )?.let { qaDaoServices.listPermits(it, map) }?.let { permitListAllCompleteAddedTogether.addAll(it) }
+                }
+
+                if (a.authority == "QA_MANAGER_ASSESSORS_READ") {
+                    qaDaoServices.findAllApplicationsQAMHODRMHOFByRegion(
+                        loggedInUser,
+                        auth,
+                        "QA_MANAGER_ASSESSORS_READ",
+                        permitTypeID,
+                        map
+                    )?.let { qaDaoServices.listPermits(it, map) }
+                        ?.let { permitListAllApplicationsAddedTogether.addAll(it) }
+                    qaDaoServices.findAllApplicationsAwardedQAMHODRMHOFByRegion(
+                        loggedInUser,
+                        auth,
+                        "QA_MANAGER_ASSESSORS_READ",
+                        permitTypeID,
+                        map
+                    )?.let { qaDaoServices.listPermits(it, map) }?.let { permitListAllCompleteAddedTogether.addAll(it) }
+                }
+
+            }
+
+
+            //Get Internal users Awarded Permits list in the whole country
+            if (auth.authorities.stream().anyMatch { authority -> authority.authority != "PERMIT_APPLICATION" } ||
+                auth.authorities.stream().anyMatch { authority -> authority.authority != "QA_OFFICER_READ" } ||
+                auth.authorities.stream().anyMatch { authority -> authority.authority != "QA_HOD_READ" } ||
+                auth.authorities.stream().anyMatch { authority -> authority.authority != "QA_HOF_READ" } ||
+                auth.authorities.stream().anyMatch { authority -> authority.authority != "QA_RM_READ" } ||
+                auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority != "QA_MANAGER_ASSESSORS_READ" } ||
+                auth.authorities.stream().anyMatch { authority -> authority.authority != "QA_ASSESSORS_READ" }) {
+                permitListAllComplete =
+                    qaDaoServices.findAllFirmInKenyaPermitsAwardedWithPermitType(map.activeStatus, permitTypeID)
+                        .let { qaDaoServices.listPermits(it, map) }
+                permitListAllApplications =
+                    qaDaoServices.findAllFirmInKenyaPermitsApplicationsWithPermitTypeAndPaidStatus(
+                        permitTypeID,
+                        map.initStatus
+                    ).let { qaDaoServices.listPermits(it, map) }
+            }
+
+            //Get Internal users Awarded Permits list in the whole region
+//            findAllApplicationsAwardedQAMHODRMHOFByRegion
+//            if (auth.authorities.stream().anyMatch { authority -> authority.authority != "PERMIT_APPLICATION" } || auth.authorities.stream().anyMatch { authority -> authority.authority != "QA_OFFICER_READ"} || auth.authorities.stream().anyMatch { authority -> authority.authority != "QA_ASSESSORS_READ" }  ) {
+//                permitListAllComplete = qaDaoServices.findAllFirmInKenyaPermitsAwardedWithPermitType(  map.activeStatus, permitTypeID).let { qaDaoServices.listPermits(it, map) }
+//                permitListAllApplications = qaDaoServices.findAllApplicationsQAMHODRMHOFByRegion(   permitTypeID, map.initStatus).let { qaDaoServices.listPermits(it, map) }
+//            }
+//
+//            //Get Internal users Awarded Permits list with assigned QAO ID
+//            if (auth.authorities.stream().anyMatch { authority -> authority.authority != "PERMIT_APPLICATION" } && auth.authorities.stream().anyMatch { authority -> authority.authority == "QA_OFFICER_READ"}) {
+//                permitListAllComplete = qaDaoServices.listPermits(qaDaoServices.findAllQAOPermitListWithPermitTypeAwardedStatusIsNotNull(loggedInUser, permitTypeID), map)
+//                permitListAllApplications = qaDaoServices.listPermits(qaDaoServices.findAllQAOPermitListWithPermitType(loggedInUser, permitTypeID), map)
+//            }
+//
+//            if (auth.authorities.stream().anyMatch { authority -> authority.authority != "PERMIT_APPLICATION" } && auth.authorities.stream().anyMatch { authority -> authority.authority == "QA_ASSESSORS_READ" }  ) {
+//                permitListAllComplete = qaDaoServices.listPermits(qaDaoServices.findAllAssessorPermitListWithPermitTypeAwardedStatusIsNotNull(loggedInUser, permitTypeID), map)
+//                permitListAllApplications = qaDaoServices.listPermits(qaDaoServices.findAllAssessorPermitListWithPermitType(loggedInUser, permitTypeID), map)
+//            }
 
             req.attributes()["permitListAllApplications"] = permitListAllApplications
             req.attributes()["permitListAllComplete"] = permitListAllComplete
@@ -1247,15 +1409,24 @@ class QualityAssuranceHandler(
     fun permitTaskListMigration(req: ServerRequest): ServerResponse {
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val auth = commonDaoServices.loggedInUserAuthentication()
             val map = commonDaoServices.serviceMapDetails(appId)
 //            val allMyTasks = qaDaoServices.getTaskListPermit(loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID"))
-            var permitListMyTasks: List<PermitEntityDto>? = null
-            permitListMyTasks = qaDaoServices.listPermits(
-                qaDaoServices.findAllUserTasksByTaskID(
-                    loggedInUser,
-                    applicationMapProperties.mapUserTaskNameMANUFACTURE
-                ), map
-            )
+            val permitListMyTasks = qaDaoServices.findAllUserTasksManufactureByTaskID(
+                loggedInUser,
+                auth,
+                applicationMapProperties.mapUserTaskNameMANUFACTURE
+            )?.let {
+                qaDaoServices.listPermits(
+                    it, map
+                )
+            } ?: throw ExpectedDataNotFound("NO TASK FOUND")
+//            permitListMyTasks = qaDaoServices.listPermits(
+//                qaDaoServices.findAllUserTasksByTaskID(
+//                    loggedInUser,
+//                    applicationMapProperties.mapUserTaskNameMANUFACTURE
+//                ), map
+//            )
 
             permitListMyTasks.let {
                 return ok().body(it)

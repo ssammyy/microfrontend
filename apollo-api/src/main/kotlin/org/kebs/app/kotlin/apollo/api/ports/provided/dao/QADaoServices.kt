@@ -292,6 +292,50 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Permits Found for the following COMPANY ID = ${companyID} and permitType ID ${permitTypeID}")
     }
 
+    fun findAllFirmPermitsAwardedWithPermitType(
+        companyID: Long,
+        awardedStatus: Int,
+        permitTypeID: Long
+    ): List<PermitApplicationsEntity> {
+        permitRepo.findByCompanyIdAndPermitTypeAndPermitAwardStatusAndOldPermitStatusIsNull(
+            companyID,
+            permitTypeID,
+            awardedStatus
+        )
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permits Found for the following COMPANY ID = ${companyID} and permitType ID ${permitTypeID}")
+    }
+
+    fun findAllFirmInKenyaPermitsAwardedWithPermitType(
+        awardedStatus: Int,
+        permitTypeID: Long
+    ): List<PermitApplicationsEntity> {
+        permitRepo.findByPermitTypeAndPermitAwardStatusAndOldPermitStatusIsNull(permitTypeID, awardedStatus)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permits Found for the following awardedStatus = ${awardedStatus} and permitType ID ${permitTypeID}")
+    }
+
+    fun findAllFirmInKenyaPermitsApplicationsWithPermitTypeAndPaidStatus(
+        permitTypeID: Long,
+        paidStatus: Int
+    ): List<PermitApplicationsEntity> {
+        permitRepo.findByPermitTypeAndPaidStatusAndPermitAwardStatusIsNullAndOldPermitStatusIsNull(
+            permitTypeID,
+            paidStatus
+        )
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permits Found for the following paid Status = ${paidStatus} and permitType ID ${permitTypeID}")
+    }
+
     fun findAllBranchPermits(branchID: Long): List<PermitApplicationsEntity> {
         permitRepo.findByAttachedPlantIdAndOldPermitStatusIsNull(branchID)
             ?.let { permitList ->
@@ -363,6 +407,174 @@ class QADaoServices(
 
             ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
     }
+
+    fun findAllUserTasksManufactureByTaskID(
+        user: UsersEntity,
+        auth: Authentication,
+        taskID: Long
+    ): List<PermitApplicationsEntity>? {
+        var permitListAllApplications: List<PermitApplicationsEntity>? = null
+        permitListAllApplications = when {
+            auth.authorities.stream()
+                .anyMatch { authority -> authority.authority == "MODIFY_COMPANY" } && auth.authorities.stream()
+                .anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                permitRepo.findByCompanyIdAndOldPermitStatusIsNullAndUserTaskId(
+                    user.companyId ?: throw Exception("MISSING COMPANY ID"), taskID
+                )
+            }
+            auth.authorities.stream()
+                .anyMatch { authority -> authority.authority != "MODIFY_COMPANY" } && auth.authorities.stream()
+                .anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                permitRepo.findByAttachedPlantIdAndOldPermitStatusIsNullAndUserTaskId(
+                    user.plantId ?: throw Exception("MISSING PLANT ID"), taskID
+                )
+            }
+            else -> {
+                throw ExpectedDataNotFound("UNAUTHORISED LOGGED IN USER (ACCESS DENIED)")
+            }
+        }
+
+        return permitListAllApplications
+    }
+
+    fun findAllUserTasksManufactureByTaskIDAndPermitType(
+        user: UsersEntity,
+        auth: Authentication,
+        permitType: Long,
+        taskID: Long
+    ): List<PermitApplicationsEntity>? {
+        var permitListAllApplications: List<PermitApplicationsEntity>? = null
+        permitListAllApplications = when {
+            auth.authorities.stream()
+                .anyMatch { authority -> authority.authority == "MODIFY_COMPANY" } && auth.authorities.stream()
+                .anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                permitRepo.findByCompanyIdAndOldPermitStatusIsNullAndUserTaskIdAndPermitType(
+                    user.companyId ?: throw Exception("MISSING COMPANY ID"), taskID, permitType
+                )
+            }
+            auth.authorities.stream()
+                .anyMatch { authority -> authority.authority != "MODIFY_COMPANY" } && auth.authorities.stream()
+                .anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                permitRepo.findByAttachedPlantIdAndOldPermitStatusIsNullAndUserTaskIdAndPermitType(
+                    user.plantId ?: throw Exception("MISSING PLANT ID"), taskID, permitType
+                )
+            }
+            else -> {
+                throw ExpectedDataNotFound("UNAUTHORISED LOGGED IN USER (ACCESS DENIED)")
+            }
+        }
+
+        return permitListAllApplications
+    }
+
+
+//    fun findAllUserTasksQAMHODRMHOFByTaskID(
+//        user: UsersEntity,
+//        auth: Authentication,
+//        authToCompareWith: String,
+//        taskID: Long
+//    ): List<PermitApplicationsEntity>? {
+//
+//        val userProfile = commonDaoServices.findUserProfileByUserID(user, 1)
+//
+//        var permitListAllApplications: List<PermitApplicationsEntity>? = null
+//         if (auth.authorities.stream().anyMatch { authority -> authority.authority == authToCompareWith }  }) {
+//            permitListAllApplications =  permitRepo.findByCompanyIdAndOldPermitStatusIsNullAndUserTaskId( user.companyId ?: throw Exception("MISSING COMPANY ID"), taskID)
+//        }
+//
+//        return permitListAllApplications
+//    }
+
+    fun findAllUserTasksPACPSCPCMByTaskID(
+        user: UsersEntity,
+        auth: Authentication,
+        authToCompareWith: String,
+        permitTypeID: Long,
+        taskID: Long
+    ): List<PermitApplicationsEntity>? {
+
+        var permitListAllApplications: List<PermitApplicationsEntity>? = null
+        when {
+            auth.authorities.stream().anyMatch { authority -> authority.authority == authToCompareWith } -> {
+                permitListAllApplications =
+                    permitRepo.findAllByOldPermitStatusIsNullAndUserTaskIdAndPermitType(taskID, permitTypeID)
+            }
+        }
+
+        return permitListAllApplications
+    }
+
+    fun findAllUserTasksQAMHODRMHOFByTaskID(
+        user: UsersEntity,
+        auth: Authentication,
+        authToCompareWith: String,
+        permitTypeID: Long,
+        map: ServiceMapsEntity,
+        taskID: Long
+    ): List<PermitApplicationsEntity>? {
+
+        val userProfile = commonDaoServices.findUserProfileByUserID(user, 1)
+
+        var permitListAllApplications: List<PermitApplicationsEntity>? = null
+        when {
+            auth.authorities.stream().anyMatch { authority -> authority.authority == authToCompareWith } -> {
+                permitListAllApplications = permitRepo.findRbacPermitByRegionIDPaymentStatusAndUserTaskIDAndPermitType(
+                    permitTypeID, map.initStatus,
+                    userProfile.regionId?.id ?: throw Exception("MISSING REGION ID"), taskID, null
+                )
+            }
+        }
+
+        return permitListAllApplications
+    }
+
+    fun findAllApplicationsQAMHODRMHOFByRegion(
+        user: UsersEntity,
+        auth: Authentication,
+        authToCompareWith: String,
+        permitTypeID: Long,
+        map: ServiceMapsEntity
+    ): List<PermitApplicationsEntity>? {
+
+        val userProfile = commonDaoServices.findUserProfileByUserID(user, 1)
+
+        var permitListAllApplications: List<PermitApplicationsEntity>? = null
+        when {
+            auth.authorities.stream().anyMatch { authority -> authority.authority == authToCompareWith } -> {
+                permitListAllApplications = permitRepo.findRbacPermitByRegionIDPaymentStatusAndPermitTypeID(
+                    permitTypeID, map.initStatus,
+                    userProfile.regionId?.id ?: throw Exception("MISSING REGION ID")
+                )
+            }
+        }
+
+        return permitListAllApplications
+    }
+
+    fun findAllApplicationsAwardedQAMHODRMHOFByRegion(
+        user: UsersEntity,
+        auth: Authentication,
+        authToCompareWith: String,
+        permitTypeID: Long,
+        map: ServiceMapsEntity
+    ): List<PermitApplicationsEntity>? {
+
+        val userProfile = commonDaoServices.findUserProfileByUserID(user, 1)
+
+        var permitListAllApplications: List<PermitApplicationsEntity>? = null
+        when {
+            auth.authorities.stream().anyMatch { authority -> authority.authority == authToCompareWith } -> {
+                permitListAllApplications =
+                    permitRepo.findRbacPermitByRegionIDPaymentStatusAndPermitTypeIDAndAwardedStatus(
+                        permitTypeID, map.initStatus, map.activeStatus,
+                        userProfile.regionId?.id ?: throw Exception("MISSING REGION ID")
+                    )
+            }
+        }
+
+        return permitListAllApplications
+    }
+
 
     fun findAllUserPermitWithPermitTypeAwarded(
         user: UsersEntity,

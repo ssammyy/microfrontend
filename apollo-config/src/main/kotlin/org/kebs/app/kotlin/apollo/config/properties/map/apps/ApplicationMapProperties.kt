@@ -99,6 +99,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.PAC_SECRETARY}")
     val mapUserTaskNamePACSECRETARY: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.RM}")
+    val mapUserTaskNameRM: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.department.id.for.users}")
     val mapQADepertmentId: Long = 0L
 
