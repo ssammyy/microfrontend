@@ -32,17 +32,18 @@ class StandardRequestController(
     }
 
     //********************************************************** deployment endpoints **********************************************************
-    @PostMapping("/anonymous/standard/delete")
-    @ResponseBody
-    fun delete(@RequestBody id: String?): ServerResponse {
-        standardRequestService.deleteTask(id)
-        return ServerResponse(
-            HttpStatus.OK,
-            "Successfully returned process history",
-            HttpStatus.OK
-
-        )
-    }
+//    @PostMapping("/anonymous/standard/delete")
+//    @ResponseBody
+//    fun delete(@RequestBody id: ID): ServerResponse {
+//        println("ID passed"+id)
+//        standardRequestService.deleteTask(id)
+//        return ServerResponse(
+//            HttpStatus.OK,
+//            "Successfully returned process history",
+//            HttpStatus.OK
+//
+//        )
+//    }
 
     @PostMapping("/anonymous/standard/close")
     fun clos(@RequestBody responseMessage: ResponseMessage) {
