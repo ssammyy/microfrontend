@@ -445,7 +445,7 @@ fun createLocalCoc(
                     localCoc = cocRepo.save(localCoc)
                     KotlinLogging.logger { }.info { "localCoc = ${localCoc.id}" }
                     localCocItems(consignmentDocumentDetailsEntity, localCoc, user, map)
-                    sendLocalCoc(localCoc.id)
+//                    sendLocalCoc(localCoc.id)
                 } catch (e: Exception) {
                     KotlinLogging.logger { }.debug("Threw error from forward express callback")
                     KotlinLogging.logger { }.debug(e.message)
@@ -652,63 +652,63 @@ fun createLocalCoc(
     }
 
 
-    fun sendLocalCoc(cocId: Long) {
-
-        val cocsEntity: CocsEntity = cocRepo.findById(cocId).get()
-
-        cocsEntity.let {
-            val coc: CustomCocXmlDto = it.toCocXmlRecordRefl()
-            //COC ITEM
-            val cocItem = iCocItemRepository.findByCocId(cocsEntity.id)?.get(0)
-            cocItem?.toCocItemDetailsXmlRecordRefl().let {
-                coc.cocDetals = it
-                val cocFinalDto = COCXmlDTO()
-                cocFinalDto.coc = coc
-
-                val fileName = cocFinalDto.coc?.ucrNumber?.let {
-                    commonDaoServices.createKesWsFileName(
-                        applicationMapProperties.mapKeswsCocDoctype,
-                        it
-                    )
-                }
-
-                val xmlFile = fileName?.let { commonDaoServices.serializeToXml(it, cocFinalDto) }
-
-                xmlFile?.let { it1 -> sftpService.uploadFile(it1) }
-
-            }
-
-        }
-    }
-
-    fun sendLocalCoi(cocId: Long) {
-
-        val cocsEntity: CocsEntity = cocRepo.findById(cocId).get()
-
-        cocsEntity.let {
-            val coi: CustomCoiXmlDto = it.toCoiXmlRecordRefl()
+//    fun sendLocalCoc(cocId: Long) {
+//
+//        val cocsEntity: CocsEntity = cocRepo.findById(cocId).get()
+//
+//        cocsEntity.let {
 //            val coc: CustomCocXmlDto = it.toCocXmlRecordRefl()
-            //COC ITEM
-            val cocItem = iCocItemRepository.findByCocId(cocsEntity.id)?.get(0)
-            cocItem?.toCocItemDetailsXmlRecordRefl().let {
-                val coiFinalDto = COIXmlDTO()
-                coiFinalDto.coi = coi
+//            //COC ITEM
+//            val cocItem = iCocItemRepository.findByCocId(cocsEntity.id)?.get(0)
+//            cocItem?.toCocItemDetailsXmlRecordRefl().let {
+//                coc.cocDetals = it
+//                val cocFinalDto = COCXmlDTO()
+//                cocFinalDto.coc = coc
+//
+//                val fileName = cocFinalDto.coc?.ucrNumber?.let {
+//                    commonDaoServices.createKesWsFileName(
+//                        applicationMapProperties.mapKeswsCocDoctype,
+//                        it
+//                    )
+//                }
+//
+//                val xmlFile = fileName?.let { commonDaoServices.serializeToXml(it, cocFinalDto) }
+//
+//                xmlFile?.let { it1 -> sftpService.uploadFile(it1) }
+//
+//            }
+//
+//        }
+//    }
 
-                val fileName = coiFinalDto.coi?.ucrNumber?.let {
-                    commonDaoServices.createKesWsFileName(
-                        applicationMapProperties.mapKeswsCocDoctype,
-                        it
-                    )
-                }
-
-                val xmlFile = fileName?.let { commonDaoServices.serializeToXml(it, coiFinalDto) }
-
-                xmlFile?.let { it1 -> sftpService.uploadFile(it1) }
-
-            }
-
-        }
-    }
+//    fun sendLocalCoi(cocId: Long) {
+//
+//        val cocsEntity: CocsEntity = cocRepo.findById(cocId).get()
+//
+//        cocsEntity.let {
+//            val coi: CustomCoiXmlDto = it.toCoiXmlRecordRefl()
+////            val coc: CustomCocXmlDto = it.toCocXmlRecordRefl()
+//            //COC ITEM
+//            val cocItem = iCocItemRepository.findByCocId(cocsEntity.id)?.get(0)
+//            cocItem?.toCocItemDetailsXmlRecordRefl().let {
+//                val coiFinalDto = COIXmlDTO()
+//                coiFinalDto.coi = coi
+//
+//                val fileName = coiFinalDto.coi?.ucrNumber?.let {
+//                    commonDaoServices.createKesWsFileName(
+//                        applicationMapProperties.mapKeswsCocDoctype,
+//                        it
+//                    )
+//                }
+//
+//                val xmlFile = fileName?.let { commonDaoServices.serializeToXml(it, coiFinalDto) }
+//
+//                xmlFile?.let { it1 -> sftpService.uploadFile(it1) }
+//
+//            }
+//
+//        }
+//    }
 
     //TODO: Figure out where to get the null details
     fun generateLocalCor(
@@ -965,34 +965,34 @@ fun createLocalCoc(
 //                ?: throw Exception("IDF ITEM(s) Details with IDF ID = ${idfId}, do not Exist")
     }
 
-    fun sendDemandNotGeneratedToKWIS(demandNoteId: Long) {
-        val demandNoteEntity: CdDemandNoteEntity = iDemandNoteRepo.findById(demandNoteId).get()
-        demandNoteEntity.let {
-            val mpesaDetails = invoiceDaoService.findPaymentMethodtype(applicationMapProperties.mapMpesaDetails)
-            val bank1Details = invoiceDaoService.findPaymentMethodtype(applicationMapProperties.mapBankOneDetails)
-            val bank2Details = invoiceDaoService.findPaymentMethodtype(applicationMapProperties.mapBankTwoDetails)
-            val bank3Details = invoiceDaoService.findPaymentMethodtype(applicationMapProperties.mapBankThreeDetails)
-
-            val demandNote: CustomDemandNoteXmlDto = it.toCdDemandNoteXmlRecordRefl()
-            demandNote.paymentInstruction1 = PaymenInstruction1(bank1Details)
-            demandNote.paymentInstruction2 = PaymenInstruction2(bank2Details)
-            demandNote.paymentInstruction3 = PaymenInstruction3(bank3Details)
-            demandNote.paymentInstructionMpesa = PaymenInstructionMpesa(mpesaDetails)
-            demandNote.paymentInstructionOther = PaymenInstructionOther(mpesaDetails)
-
-            val demandNoteFinalDto = DemandNoteXmlDTO()
-            demandNoteFinalDto.customDemandNote = demandNote
-
-            val fileName = demandNoteFinalDto.customDemandNote?.demandNoteNumber?.let {
-                commonDaoServices.createKesWsFileName(applicationMapProperties.mapKeswsDemandNoteDoctype, it)
-            }
-
-            val xmlFile = fileName?.let { commonDaoServices.serializeToXml(it, demandNoteFinalDto) }
-
-            xmlFile?.let { it1 -> sftpService.uploadFile(it1) }
-
-        }
-    }
+//    fun sendDemandNotGeneratedToKWIS(demandNoteId: Long) {
+//        val demandNoteEntity: CdDemandNoteEntity = iDemandNoteRepo.findById(demandNoteId).get()
+//        demandNoteEntity.let {
+//            val mpesaDetails = invoiceDaoService.findPaymentMethodtype(applicationMapProperties.mapMpesaDetails)
+//            val bank1Details = invoiceDaoService.findPaymentMethodtype(applicationMapProperties.mapBankOneDetails)
+//            val bank2Details = invoiceDaoService.findPaymentMethodtype(applicationMapProperties.mapBankTwoDetails)
+//            val bank3Details = invoiceDaoService.findPaymentMethodtype(applicationMapProperties.mapBankThreeDetails)
+//
+////            val demandNote: CustomDemandNoteXmlDto = it.toCdDemandNoteXmlRecordRefl()
+//            demandNote.paymentInstruction1 = PaymenInstruction1(bank1Details)
+//            demandNote.paymentInstruction2 = PaymenInstruction2(bank2Details)
+//            demandNote.paymentInstruction3 = PaymenInstruction3(bank3Details)
+//            demandNote.paymentInstructionMpesa = PaymenInstructionMpesa(mpesaDetails)
+//            demandNote.paymentInstructionOther = PaymenInstructionOther(mpesaDetails)
+//
+//            val demandNoteFinalDto = DemandNoteXmlDTO()
+//            demandNoteFinalDto.customDemandNote = demandNote
+//
+//            val fileName = demandNoteFinalDto.customDemandNote?.demandNoteNumber?.let {
+//                commonDaoServices.createKesWsFileName(applicationMapProperties.mapKeswsDemandNoteDoctype, it)
+//            }
+//
+//            val xmlFile = fileName?.let { commonDaoServices.serializeToXml(it, demandNoteFinalDto) }
+//
+//            xmlFile?.let { it1 -> sftpService.uploadFile(it1) }
+//
+//        }
+//    }
 
 
     fun sendDemandNotePayedStatusToKWIS(demandNoteId: Long) {
@@ -3195,7 +3195,8 @@ fun createLocalCoc(
         cdVerificationRequestXmlDTO.cdVerificationRequestHeader = cdVerificationRequestHeader
         cdVerificationRequestXmlDTO.cdVerificationRequestData = cdVerificationRequestData
 
-        val fileName = commonDaoServices.createKesWsFileName(applicationMapProperties.mapKeswsOnHoldDoctype, declarationRefNo)
+        val fileName =
+            commonDaoServices.createKesWsFileName(applicationMapProperties.mapKeswsOnHoldDoctype, declarationRefNo)
 
         val xmlFile = fileName.let { commonDaoServices.serializeToXml(fileName, cdVerificationRequestXmlDTO) }
 
@@ -3203,19 +3204,19 @@ fun createLocalCoc(
     }
 
     //Send CD status to KeSWS
-    fun submitCoRToKesWS(corsBakEntity: CorsBakEntity) {
-        val cor: CustomCorXmlDto = corsBakEntity.toCorXmlRecordRefl()
-        val corDto = CORXmlDTO()
-        corDto.cor = cor
-        val fileName = corDto.cor?.chasisNumber?.let {
-            commonDaoServices.createKesWsFileName(
-                applicationMapProperties.mapKeswsCorDoctype,
-                it
-            )
-        }
-        val xmlFile = fileName?.let { commonDaoServices.serializeToXml(it, corDto) }
-        xmlFile?.let { it1 -> sftpService.uploadFile(it1) }
-    }
+//    fun submitCoRToKesWS(corsBakEntity: CorsBakEntity) {
+//        val cor: CustomCorXmlDto = corsBakEntity.toCorXmlRecordRefl()
+//        val corDto = CORXmlDTO()
+//        corDto.cor = cor
+//        val fileName = corDto.cor?.chasisNumber?.let {
+//            commonDaoServices.createKesWsFileName(
+//                applicationMapProperties.mapKeswsCorDoctype,
+//                it
+//            )
+//        }
+//        val xmlFile = fileName?.let { commonDaoServices.serializeToXml(it, corDto) }
+//        xmlFile?.let { it1 -> sftpService.uploadFile(it1) }
+//    }
 
     /*
     Update CD After receiving verification schedule from KeSWS/KRA

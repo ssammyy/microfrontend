@@ -759,8 +759,10 @@
 </h4>
 
 
-<form (ngSubmit)="onClickLogin()" [formGroup]="loginForm" action="" class="form"
-      enctype="multipart/form-data" method="post">
+<form (ngSubmit)="onClickLogin()" [formGroup]="loginForm" action="" class="form" enctype="multipart/form-data"
+      method="post">
+    <!--<form (ngSubmit)="onClickValidateOtp()" [formGroup]="loginForm" action="" class="form"-->
+
 
     <div class="form-body">
         <!--        <div class="form-group">-->
@@ -775,14 +777,14 @@
         <!--        <button class="login-button" type="submit" value="">SEND OTP</button>-->
 
         <div class="form-group">
-            <label style="color: white; font-size: 14px" class="input-placeholder" for="username"><strong>Enter
+            <label style="color: white; font-size: 14px" class="input-placeholder" for="otp"><strong>Enter
                 OTP</strong>(Numbers only)</label
             ><input style="color: white;font-size: 20px;" class="form-control two-column-input"
-                    formControlName="username" id="username" name="username"
+                    formControlName="otp" id="otp" name="otp"
                     placeholder="Please Enter The OTP Sent To Your Phone"
                     required="required"
                     oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');"
-                    type="text">
+                    type="number">
         </div>
 
 

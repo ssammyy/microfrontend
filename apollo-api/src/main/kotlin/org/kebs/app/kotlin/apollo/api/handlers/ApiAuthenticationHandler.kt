@@ -142,6 +142,17 @@ class ApiAuthenticationHandler(
                         expiry =
                             LocalDateTime.now().plusMinutes(authenticationProperties.jwtExpirationMs).minusSeconds(20L)
                     }
+
+                    /**
+                     *SEND OTP TO USER LOGIN throw phone number
+                     */
+                    val otp = commonDaoServices.randomNumber(6)
+                    val tokenValidation = commonDaoServices.generateVerificationToken(
+                        otp,
+                        user.cellphone ?: throw NullValueNotAllowedException("Valid Cellphone is required")
+                    )
+                    commonDaoServices.sendOtpViaSMS(tokenValidation)
+
                     ServerResponse.ok().body(response)
                 }
                 ?: throw NullValueNotAllowedException("Empty authentication after authentication attempt")

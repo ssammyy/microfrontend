@@ -274,7 +274,7 @@ class DestinationInspectionController(
                                 }
                                 cocItemsRepository.save(itemEntity)
 
-                                service.submitCocToKeSWS(entity)
+//                                service.submitCocToKeSWS(entity)
 
                             }
 
@@ -485,7 +485,7 @@ class DestinationInspectionController(
                                                 myAccountDetails
                                             )
                                             demandNote.id?.let { it1 ->
-                                                daoServices.sendDemandNotGeneratedToKWIS(it1)
+//                                                daoServices.sendDemandNotGeneratedToKWIS(it1)
                                                 updatedCDDetails.cdStandard?.let { cdStd ->
                                                     daoServices.updateCDStatus(
                                                         cdStd,
@@ -581,7 +581,7 @@ class DestinationInspectionController(
                         val localCoi = updatedCDDetails.ucrNumber?.let { daoServices.findCOC(it) }
                         if (localCoi != null) {
                             daoServices.localCoiItems(updatedCDDetails, localCoi, loggedInUser, map)
-                            daoServices.sendLocalCoi(localCoi.id)
+//                            daoServices.sendLocalCoi(localCoi.id)
                             updatedCDDetails.cdStandard?.let { cdStd ->
                                 daoServices.updateCDStatus(
                                     cdStd,
@@ -620,7 +620,7 @@ class DestinationInspectionController(
                             }
                         } else if (updatedCDDetails.cdType?.localCorStatus == map.activeStatus) {
                             daoServices.generateCor(updatedCDDetails, map, loggedInUser).let { corDetails ->
-                                daoServices.submitCoRToKesWS(corDetails)
+//                                daoServices.submitCoRToKesWS(corDetails)
                                 updatedCDDetails.cdStandard?.let { cdStd ->
                                     daoServices.updateCDStatus(
                                         cdStd,
