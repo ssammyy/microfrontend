@@ -12,7 +12,7 @@ import {
     MPesaPushDto,
     PermitEntityDetails,
     PermitEntityDto,
-    PermitProcessStepDto,
+    PermitProcessStepDto, PlantDetailsDto,
     ResubmitApplicationDto,
     SSCApprovalRejectionDto,
     STA1,
@@ -150,10 +150,10 @@ export class QaService {
         );
     }
 
-    public loadPlantList(): Observable<any> {
+    public loadPlantList(): Observable<PlantDetailsDto> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PLANT_LIST);
-        return this.http.get<any>(url).pipe(
-            map(function (response: any) {
+        return this.http.get<PlantDetailsDto>(url).pipe(
+            map(function (response: PlantDetailsDto) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {

@@ -470,6 +470,7 @@ class RegistrationManagementDaoService(
                 street = dto.street
                 location = dto.location
                 buildingName = dto.buildingName
+                branchName = dto.branchName
                 nearestLandMark = dto.nearestLandMark
                 postalAddress = dto.postalAddress
                 telephone = dto.telephone
@@ -496,6 +497,7 @@ class RegistrationManagementDaoService(
                         physicalAddress = dto.physicalAddress
                         street = dto.street
                         buildingName = dto.buildingName
+                        branchName = dto.branchName
                         nearestLandMark = dto.nearestLandMark
                         postalAddress = dto.postalAddress
                         telephone = dto.telephone
@@ -696,6 +698,7 @@ class RegistrationManagementDaoService(
             location = it.location
             street = it.street
             buildingName = it.buildingName
+            branchName = it.branchName
             nearestLandMark = it.nearestLandMark
             postalAddress = it.postalAddress
             telephone = it.telephone

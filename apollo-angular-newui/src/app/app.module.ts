@@ -133,6 +133,7 @@ import {DmarkAllAwardedApplicationsComponent} from './apollowebs/quality-assuran
 import {FmarkAllAwardedApplicationsComponent} from './apollowebs/quality-assurance/fmark-all-awarded-applications/fmark-all-awarded-applications.component';
 import {QaTaskDetailsComponent} from './apollowebs/quality-assurance/qa-task-details/qa-task-details.component';
 import {CompanyViewComponent} from './apollowebs/company/company-view/company-view.component';
+import {BranchViewComponent} from './apollowebs/company/branch/branch-view/branch-view.component';
 
 
 // import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -268,7 +269,8 @@ import {CompanyViewComponent} from './apollowebs/company/company-view/company-vi
         DmarkAllAwardedApplicationsComponent,
         FmarkAllAwardedApplicationsComponent,
         QaTaskDetailsComponent,
-        CompanyViewComponent
+        CompanyViewComponent,
+        BranchViewComponent
 
     ]
 

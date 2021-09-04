@@ -1,40 +1,26 @@
 import {Component, OnInit} from '@angular/core';
-
-
+import {Observable, of, Subject, throwError} from 'rxjs';
 import {
   Branches,
   BranchesService,
   Company,
   County,
-  CountyService,
-  Go,
-  loadBranchId,
-  loadCompanyId,
-  loadCountyId,
-  loadResponsesFailure,
-  loadResponsesSuccess,
+  CountyService, Go, loadBranchId, loadCompanyId, loadCountyId, loadResponsesFailure, loadResponsesSuccess,
   Region,
-  RegionService,
-  selectCompanyData,
-  selectCompanyIdData,
-  selectCountyIdData,
-  Town,
-  TownService
-} from 'src/app/core/store';
+  RegionService, selectBranchData, selectCompanyData, selectCompanyIdData, selectCountyIdData,
+  Town, TownService
+} from '../../../../core/store';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Store} from '@ngrx/store';
-import {Observable, of, Subject, throwError} from 'rxjs';
 import {catchError} from 'rxjs/internal/operators/catchError';
 import {HttpErrorResponse} from '@angular/common/http';
-import swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-add-branch',
-  templateUrl: './add-branch.component.html',
-  styleUrls: ['../../company.component.css']
+  selector: 'app-branch-view',
+  templateUrl: './branch-view.component.html',
+  styleUrls: ['./branch-view.component.css']
 })
-export class AddBranchComponent implements OnInit {
-
+export class BranchViewComponent implements OnInit {
 
   branches$: Observable<Branches[]>;
   filterName = '';
@@ -72,8 +58,7 @@ export class AddBranchComponent implements OnInit {
     this.region$ = regionService.entities$;
     this.county$ = countyService.entities$;
     this.town$ = townService.entities$;
-    regionService.getAll().subscribe();
-    countyService.getAll().subscribe();
+
     // townService.getAll().subscribe();
 
   }
@@ -98,6 +83,8 @@ export class AddBranchComponent implements OnInit {
           }
         }
     );
+    // console.log(`Select town ID inside is ${this.branch.town}`);
+    this.stepTwoForm?.get('town').setValue(this.branch.town);
   }
 
   updateSelectedTown() {
@@ -107,28 +94,28 @@ export class AddBranchComponent implements OnInit {
 
   ngOnInit(): void {
     this.stepTwoForm = new FormGroup({
-      branchName: new FormControl('', [Validators.required]),
-      buildingName: new FormControl('', [Validators.required]),
-      physicalAddress: new FormControl('', [Validators.required]),
-      location: new FormControl('', [Validators.required]),
-      postalAddress: new FormControl(),
-      street: new FormControl('', [Validators.required]),
-      plotNo: new FormControl('', [Validators.required]),
-      nearestLandMark: new FormControl('', [Validators.required]),
-      region: new FormControl('', [Validators.required]),
-      county: new FormControl('', [Validators.required]),
-      town: new FormControl('', [Validators.required]),
+      branchName: new FormControl({value: '', disabled: true}, [Validators.required]),
+      buildingName: new FormControl({value: '', disabled: true}, [Validators.required]),
+      physicalAddress: new FormControl({value: '', disabled: true}, [Validators.required]),
+      location: new FormControl({value: '', disabled: true}),
+      postalAddress: new FormControl({value: '', disabled: true}),
+      street: new FormControl({value: '', disabled: true}, [Validators.required]),
+      plotNo: new FormControl({value: '', disabled: true}, [Validators.required]),
+      nearestLandMark: new FormControl({value: '', disabled: true}, [Validators.required]),
+      region: new FormControl({value: '', disabled: true}, [Validators.required]),
+      county: new FormControl({value: '', disabled: true}, [Validators.required]),
+      town: new FormControl({value: '', disabled: true}, [Validators.required]),
     });
     this.stepThreeForm = new FormGroup({
       companyProfileId: new FormControl(),
       id: new FormControl(),
-      status: new FormControl(false, [Validators.required]),
-      descriptions: new FormControl(),
-      contactPerson: new FormControl('', [Validators.required]),
-      emailAddress: new FormControl('', [Validators.required]),
-      telephone: new FormControl('', [Validators.required]),
-      faxNo: new FormControl(),
-      designation: new FormControl('', [Validators.required])
+      status: new FormControl({value: false, disabled: true}, [Validators.required]),
+      descriptions: new FormControl({value: '', disabled: true}),
+      contactPerson: new FormControl({value: '', disabled: true}, [Validators.required]),
+      emailAddress: new FormControl({value: '', disabled: true}, [Validators.required]),
+      telephone: new FormControl({value: '', disabled: true}, [Validators.required]),
+      faxNo: new FormControl({value: '', disabled: true}),
+      designation: new FormControl({value: '', disabled: true}, [Validators.required])
     });
 
     this.store$.select(selectCompanyIdData).subscribe((d) => {
@@ -139,6 +126,28 @@ export class AddBranchComponent implements OnInit {
       return this.company$ = d;
     });
 
+    this.store$.select(selectBranchData).subscribe((u) => {
+      return this.branch = u;
+    });
+    this.stepTwoForm.patchValue(this.branch);
+    this.stepThreeForm.patchValue(this.branch);
+    console.log(`Select town ID inside is ${this.branch.town}`);
+
+    this.regionService.getAll().subscribe();
+    this.countyService.getAll().subscribe();
+
+    this.selectedCounty = this.branch.county;
+    this.store$.dispatch(loadCountyId({payload: this.branch.county}));
+    this.store$.select(selectCountyIdData).subscribe(
+        (d) => {
+          if (d) {
+            console.log(`Select county inside is ${d}`);
+            return this.townService.getAll();
+          } else {
+            return throwError('Invalid request, Company id is required');
+          }
+        }
+    );
 
   }
 
@@ -168,17 +177,17 @@ export class AddBranchComponent implements OnInit {
   }
 
   onClickNext(valid: boolean) {
-    if (valid) {
-      switch (this.step) {
-        case 1:
-          this.branchSoFar = {...this.branchSoFar, ...this.stepTwoForm?.value};
-          break;
-        case 2:
-          this.branchSoFar = {...this.branchSoFar, ...this.stepThreeForm?.value};
-          break;
-      }
-      this.step += 1;
+    // if (valid) {
+    switch (this.step) {
+      case 1:
+        this.branchSoFar = {...this.branchSoFar, ...this.stepTwoForm?.value};
+        break;
+      case 2:
+        this.branchSoFar = {...this.branchSoFar, ...this.stepThreeForm?.value};
+        break;
     }
+    this.step += 1;
+    // }
   }
 
   onClickSave(valid: boolean) {
@@ -191,15 +200,18 @@ export class AddBranchComponent implements OnInit {
         this.branch.companyProfileId = this.selectedCompany;
         this.service.add(this.branch).subscribe(
             (a) => {
-
-              this.store$.dispatch(loadResponsesSuccess({
+              this.stepTwoForm.markAsPristine();
+              this.stepTwoForm.reset();
+              this.stepThreeForm.markAsPristine();
+              this.stepThreeForm.reset();
+              this.step = 0;
+              return of(loadResponsesSuccess({
                 message: {
                   response: '00',
                   payload: `Successfully saved ${a.buildingName}`,
                   status: 200
                 }
               }));
-              this.store$.dispatch(Go({link: 'company/branches', redirectUrl: 'company/branches', payload: null}));
             },
             catchError(
                 (err: HttpErrorResponse) => {
@@ -248,14 +260,11 @@ export class AddBranchComponent implements OnInit {
                   status: 200
                 }
               }));
-              swal.fire('Thank you...', 'New Branch Successfully Added', 'success').then(r =>
-                  this.store$.dispatch(Go({
-                    payload: null,
-                    link: 'company/companies/branches',
-                    redirectUrl: 'company/companies/branches'
-                  }))
-              )
-              ;
+              return this.store$.dispatch(Go({
+                payload: null,
+                link: 'company/companies/branches',
+                redirectUrl: 'company/companies/branches'
+              }));
             },
             catchError(
                 (err: HttpErrorResponse) => {
@@ -287,7 +296,7 @@ export class AddBranchComponent implements OnInit {
     this.store$.dispatch(loadCompanyId({payload: record.companyProfileId, company: this?.company$}));
 
     this.store$.dispatch(loadBranchId({payload: record.id, branch: record}));
-    this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'dashboard/branches/users'}));
+    this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'company/branches/users'}));
 
   }
 
@@ -298,9 +307,4 @@ export class AddBranchComponent implements OnInit {
   onClickAddBranch() {
     this.step = 1;
   }
-
-  showsuccess() {
-    swal.fire('Thank you...', 'New Branch Successfully Added', 'success');
-  }
-
 }

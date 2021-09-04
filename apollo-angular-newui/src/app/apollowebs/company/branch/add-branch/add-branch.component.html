@@ -44,6 +44,19 @@
                                                                 <div class="row input-row">
                                                                     <div class="col">
                                                                         <label class="input-placeholder-required"
+                                                                               for="branchName">
+                                                                            Branch Name
+                                                                        </label>
+                                                                        <br>
+                                                                        <input class="form-control two-column-input"
+                                                                               formControlName="branchName"
+                                                                               id="branchName"
+                                                                               name="branchName"
+                                                                               placeholder="Branch name"
+                                                                               required="required" type="text">
+                                                                    </div>
+                                                                    <div class="col">
+                                                                        <label class="input-placeholder-required"
                                                                                for="buildingName">
                                                                             Building Name
                                                                         </label>
@@ -55,6 +68,10 @@
                                                                                placeholder="Company building name"
                                                                                required="required" type="text">
                                                                     </div>
+                                                                </div>
+
+                                                                <div class="row input-row">
+
                                                                     <div class="col">
                                                                         <label class="input-placeholder-required"
                                                                                for="physicalAddress">
@@ -68,9 +85,6 @@
                                                                                placeholder="Company physical address"
                                                                                required="required" type="text">
                                                                     </div>
-                                                                </div>
-
-                                                                <div class="row input-row">
                                                                     <div class="col">
                                                                         <label class="input-placeholder-required"
                                                                                for="location">
@@ -83,6 +97,11 @@
                                                                                placeholder="Company location"
                                                                                required="required" type="text">
                                                                     </div>
+
+                                                                </div>
+
+                                                                <div class="row input-row">
+
                                                                     <div class="col">
                                                                         <label class="input-placeholder-required"
                                                                                for="postalAddress">
@@ -96,8 +115,6 @@
                                                                                placeholder="Company postal address"
                                                                                required="required" type="text">
                                                                     </div>
-                                                                </div>
-                                                                <div class="row input-row">
                                                                     <div class="col">
                                                                         <label class="input-placeholder-required"
                                                                                for="plotNo">
@@ -111,6 +128,9 @@
                                                                                required="required" type="text">
 
                                                                     </div>
+                                                                </div>
+                                                                <div class="row input-row">
+
                                                                     <div class="col">
 
                                                                         <label class="input-placeholder-required"
@@ -124,9 +144,6 @@
                                                                                placeholder="Street name"
                                                                                required="required" type="text">
                                                                     </div>
-
-                                                                </div>
-                                                                <div class="row input-row">
                                                                     <div class="col">
                                                                         <label class="input-placeholder-required"
                                                                                for="nearestLandMark">
@@ -141,6 +158,9 @@
                                                                                required="required" type="text">
 
                                                                     </div>
+                                                                </div>
+                                                                <div class="row input-row">
+
                                                                     <div class="col">
                                                                         <label class="input-placeholder-required"
                                                                                for="region">
@@ -163,9 +183,6 @@
 
                                                                         </ng-container>
                                                                     </div>
-
-                                                                </div>
-                                                                <div class="row input-row">
                                                                     <div class="col">
                                                                         <label class="input-placeholder-required"
                                                                                for="county">
@@ -190,6 +207,8 @@
                                                                         </ng-container>
                                                                     </div>
 
+                                                                </div>
+                                                                <div class="row input-row">
                                                                     <div class="col">
                                                                         <label class="input-placeholder-required"
                                                                                for="town">
@@ -210,6 +229,29 @@
                                                                             </select>
 
                                                                         </ng-container>
+                                                                    </div>
+                                                                    <div class="col">
+                                                                        <!--                                                                        <label class="input-placeholder-required"-->
+                                                                        <!--                                                                               for="county">-->
+                                                                        <!--                                                                            County-->
+                                                                        <!--                                                                        </label>-->
+                                                                        <!--                                                                        <br>-->
+                                                                        <!--                                                                        <ng-container *ngIf="county$ | async as apps">-->
+                                                                        <!--                                                                            <select-->
+                                                                        <!--                                                                                    (ngModelChange)="updateSelectedCounty()"-->
+                                                                        <!--                                                                                    formControlName="county" id="county"-->
+                                                                        <!--                                                                                    name="county" required="required"-->
+                                                                        <!--                                                                                    class="form-control">-->
+                                                                        <!--                                                                                <option ngValue="null" selected>Please-->
+                                                                        <!--                                                                                    select-->
+                                                                        <!--                                                                                </option>-->
+                                                                        <!--                                                                                <option-->
+                                                                        <!--                                                                                        *ngFor="let app of apps| filterPipe: {status: true, regionId: selectedRegion}"-->
+                                                                        <!--                                                                                        [ngValue]="app.id"-->
+                                                                        <!--                                                                                >{{app.county}}</option>-->
+                                                                        <!--                                                                            </select>-->
+
+                                                                        <!--                                                                        </ng-container>-->
                                                                     </div>
 
                                                                 </div>

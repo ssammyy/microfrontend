@@ -6023,6 +6023,7 @@ class QADaoServices(
                 p.location,
                 p.street,
                 p.buildingName,
+                p.branchName,
                 p.nearestLandMark,
                 p.postalAddress,
                 p.telephone,

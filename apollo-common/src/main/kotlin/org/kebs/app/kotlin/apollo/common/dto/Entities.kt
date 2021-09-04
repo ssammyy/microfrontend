@@ -704,6 +704,7 @@ class PlantEntityDto {
     var location: String? = null
     var street: String? = null
     var buildingName: String? = null
+    var branchName: String? = null
     var nearestLandMark: String? = null
     var postalAddress: String? = null
     var telephone: String? = null

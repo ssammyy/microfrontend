@@ -60,9 +60,12 @@
                                             <ng-template #false_span><span id="false">Inactive</span></ng-template>
                                         </td>
                                         <td class="text-right">
-                                            <a (click)="editRecord(theRecord)"
+                                            <a (click)="viewRecord(theRecord)"
                                                class="btn btn-link btn-info"><i
                                                     class="material-icons">remove_red_eye</i>View Details</a>
+                                            <a (click)="editRecord(theRecord)"
+                                               class="btn btn-link btn-info"><i
+                                                    class="material-icons">remove_red_eye</i>Edit Details</a>
                                             <!--                                            <a (click)="onClickUsers(theRecord)"-->
                                             <!--                                               class="btn btn-link btn-warning btn-just-icon edit"><i-->
                                             <!--                                                    class="material-icons">dvr</i></a>-->

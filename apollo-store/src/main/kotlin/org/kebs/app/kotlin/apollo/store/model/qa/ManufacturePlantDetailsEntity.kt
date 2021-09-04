@@ -55,6 +55,10 @@ class ManufacturePlantDetailsEntity : Serializable {
     @Basic
     var location: String? = null
 
+    @Column(name = "BRANCH_NAME")
+    @Basic
+    var branchName: String? = null
+
     @Column(name = "TOKEN_GIVEN")
     @Basic
     var tokenGiven: String? = null
@@ -217,6 +221,7 @@ class ManufacturePlantDetailsEntity : Serializable {
                 paidDate == that.paidDate &&
                 endingDate == that.endingDate &&
                 tokenGiven == that.tokenGiven &&
+                branchName == that.branchName &&
                 location == that.location &&
                 street == that.street &&
                 buildingName == that.buildingName &&
@@ -265,6 +270,7 @@ class ManufacturePlantDetailsEntity : Serializable {
             physicalAddress,
             faxNo,
             plotNo,
+            branchName,
             designation,
             county,
             invoiceSharedId,

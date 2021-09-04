@@ -65,6 +65,7 @@ import {FmarkAllAwardedApplicationsComponent} from './apollowebs/quality-assuran
 import {DmarkAllAwardedApplicationsComponent} from './apollowebs/quality-assurance/dmark-all-awarded-applications/dmark-all-awarded-applications.component';
 import {QaTaskDetailsComponent} from './apollowebs/quality-assurance/qa-task-details/qa-task-details.component';
 import {CompanyViewComponent} from './apollowebs/company/company-view/company-view.component';
+import {BranchViewComponent} from './apollowebs/company/branch/branch-view/branch-view.component';
 
 // export const AppRoutes: Routes = [
 //     {
@@ -202,6 +203,12 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
 
         children: [{path: '', component: BranchList}]
+    },
+    {
+        path: 'companies/view/branch', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
+        children: [{path: '', component: BranchViewComponent}]
     },
     {
         path: 'branches', component: AdminLayoutComponent,

@@ -287,6 +287,7 @@ export class PlantDetailsDto {
     location: string;
     street: string;
     buildingName: string;
+    branchName: string;
     nearestLandMark: string;
     postalAddress: string;
     telephone: string;

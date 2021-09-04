@@ -128,7 +128,7 @@ export class CompanyViewComponent implements OnInit {
     this.store$.select(selectCountyIdData).subscribe(
         (d) => {
           if (d) {
-            console.log(`Select county inside is ${d}`);
+            // console.log(`Select county inside is ${d}`);
             return this.townService.getAll();
           } else {
             return throwError('Invalid request, Company id is required');
@@ -141,7 +141,7 @@ export class CompanyViewComponent implements OnInit {
 
   updateSelectedTown() {
     this.selectedTown = this.stepThreeForm?.get('town')?.value;
-    console.log(`town set to ${this.selectedTown}`);
+      // console.log(`town set to ${this.selectedTown}`);
   }
 
   updateSelectedBusinessLine() {
