@@ -1680,7 +1680,11 @@ class QADaoServices(
         return permits.map { p ->
             PermitEntityDto(
                 p.id,
-                p.firmName,
+                p.attachedPlantId?.let {
+                    commonDaoServices.findCompanyProfileWithID(
+                        findPlantDetails(it).companyProfileId ?: -1L
+                    ).name
+                },
                 p.permitRefNumber,
                 p.commodityDescription,
                 p.tradeMark,

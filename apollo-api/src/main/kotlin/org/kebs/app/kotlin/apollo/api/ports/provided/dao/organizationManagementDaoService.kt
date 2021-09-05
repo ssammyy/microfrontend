@@ -913,9 +913,10 @@ class RegistrationManagementDaoService(
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun registerCompany(dto: UserCompanyEntityDto, user: UsersEntity, map: ServiceMapsEntity): UserCompanyEntityDto? {
         try {
+            companyRepo.findByKraPin(dto.kraPin ?: throw NullValueNotAllowedException("KRA  Pin Number is required"))
+                ?.let { throw ExpectedDataNotFound("A Company with this [KRA Pin Number : ${dto.kraPin}] already exists") }
             companyRepo.findByRegistrationNumber(
-                dto.registrationNumber
-                    ?: throw NullValueNotAllowedException("Registration Number is required")
+                dto.registrationNumber ?: throw NullValueNotAllowedException("Registration Number is required")
             )
                 ?.let { throw ExpectedDataNotFound("The Company with this [Registration Number : ${dto.registrationNumber}] already exists") }
                 ?: run {

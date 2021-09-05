@@ -270,8 +270,8 @@ class SystemsAdminDaoService(
                 user.lastName = dto.lastName
                 user.userName = dto.userName
                 user.userPinIdNumber = dto.userPinIdNumber
-                user.personalContactNumber = dto.personalContactNumber
-                user.cellphone = dto.personalContactNumber
+                user.personalContactNumber = commonDaoServices.makeKenyanMSISDNFormat(dto.personalContactNumber)
+                user.cellphone = commonDaoServices.makeKenyanMSISDNFormat(dto.personalContactNumber)
                 user.typeOfUser = dto.typeOfUser
                 user.email = dto.email
                 user.enabled = when (dto.enabled) {

@@ -223,14 +223,14 @@ class QualityAssuranceHandler(
 
             if (a.authority == "QA_OFFICER_READ") {
                 qaDaoServices.listPermits(
-                    qaDaoServices.findAllAssessorPermitListWithPermitType(
+                    qaDaoServices.findAllQAOPermitListWithPermitType(
                         loggedInUser,
                         permitTypeID
                     ), map
                 ).let { permitListAllApplicationsAddedTogether.addAll(it) }
 
                 qaDaoServices.listPermits(
-                    qaDaoServices.findAllAssessorPermitListWithPermitTypeAwardedStatusIsNotNull(
+                    qaDaoServices.findAllQAOPermitListWithPermitTypeAwardedStatusIsNotNull(
                         loggedInUser,
                         permitTypeID
                     ), map
@@ -940,29 +940,67 @@ class QualityAssuranceHandler(
         )
         KotlinLogging.logger { }.info { ssfDetails.bsNumber }
 
-        val foundPDFFiles =
-            limsServices.checkPDFFiles(ssfDetails.bsNumber ?: throw ExpectedDataNotFound("MISSING BS NUMBER"))
         val savedPDFFiles = qaDaoServices.findSampleSubmittedListPdfBYSSFid(ssfID)
 
         val result = mutableListOf<LimsFilesFoundDto>()
+        val finalResult = mutableListOf<LimsFilesFoundDto>()
 
-//        if (foundPDFFiles != null) {
-//            foundPDFFiles.forEach {fpdf->
-//                savedPDFFiles.forEach { spdf->
-//                    if (fpdf.equals(spdf.pdfName)){
-//                        result
-//                    }
+        limsServices.checkPDFFiles(ssfDetails.bsNumber ?: throw ExpectedDataNotFound("MISSING BS NUMBER"))
+            ?.forEach { fpdf ->
+
+                if (savedPDFFiles.isNotEmpty()) {
+                    savedPDFFiles.forEach { spdf ->
+                        if (fpdf.equals(spdf.pdfName)) {
+                            val limsDto = LimsFilesFoundDto(
+                                true,
+                                fpdf
+                            )
+                            result.add(limsDto)
+                        } else {
+                            val limsDto = LimsFilesFoundDto(
+                                false,
+                                fpdf
+                            )
+                            result.add(limsDto)
+                        }
+                    }
+                } else {
+                    val limsDto = LimsFilesFoundDto(
+                        false,
+                        fpdf
+                    )
+                    result.add(limsDto)
+                }
+
+            }
+
+        result.distinct()
+
+//        result.forEach { r->
+        savedPDFFiles.forEach { spdf ->
+            val limsDto = LimsFilesFoundDto(
+                false,
+                spdf.pdfName
+            )
+            result.remove(limsDto)
+//                if (r.fileName.equals(spdf.pdfName)) {
+//                    val limsDto = LimsFilesFoundDto(
+//                        true,
+//                        r.fileName
+//                    )
+//                    finalResult.add(limsDto)
+//                } else {
+//                    val limsDto = LimsFilesFoundDto(
+//                        false,
+//                        r.fileName
+//                    )
+//                    finalResult.add(limsDto)
 //                }
-//
-//            }
+        }
 //        }
-
         req.attributes()["LabResultsParameters"] = labResultsParameters
-        req.attributes()["savedPDFFiles"] = qaDaoServices.findSampleSubmittedListPdfBYSSFid(ssfID)
-
-
-        req.attributes()["foundPDFFiles"] =
-            limsServices.checkPDFFiles(ssfDetails.bsNumber ?: throw ExpectedDataNotFound("MISSING BS NUMBER"))
+        req.attributes()["savedPDFFiles"] = savedPDFFiles
+        req.attributes()["foundPDFFiles"] = result.distinct()
         req.attributes()["complianceDetails"] = QaSampleSubmittedPdfListDetailsEntity()
         req.attributes()["SampleSubmissionDetails"] = QaSampleSubmissionEntity()
 
@@ -1869,24 +1907,24 @@ class QualityAssuranceHandler(
             with(permit) {
                 resubmitApplicationStatus = map.initStatus
                 sendForPcmReview = map.activeStatus
-                pcmId = qaDaoServices.assignNextOfficerWithDesignation(
-                    permit,
-                    map,
-                    applicationMapProperties.mapQADesignationIDForPCMId
-                )?.id
+//                pcmId = qaDaoServices.assignNextOfficerWithDesignation(
+//                    permit,
+//                    map,
+//                    applicationMapProperties.mapQADesignationIDForPCMId
+//                )?.id
                 permitStatus = applicationMapProperties.mapQaStatusPPCMReview
                 userTaskId = applicationMapProperties.mapUserTaskNamePCM
             }
             permit = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).second
 
             //Start DMARK PROCESS
-            qualityAssuranceBpmn.startQADmAppPaymentProcess(
-                permit.id ?: throw Exception("MISSING PERMIT ID"), null
-            )
-
-            //Complete Submit Application
-            qualityAssuranceBpmn.qaDmSubmitApplicationComplete(permit.id ?: throw Exception("MISSING PERMIT ID"), permit.renewalStatus == 1,
-                permit.permitForeignStatus == 1)
+//            qualityAssuranceBpmn.startQADmAppPaymentProcess(
+//                permit.id ?: throw Exception("MISSING PERMIT ID"), null
+//            )
+//
+//            //Complete Submit Application
+//            qualityAssuranceBpmn.qaDmSubmitApplicationComplete(permit.id ?: throw Exception("MISSING PERMIT ID"), permit.renewalStatus == 1,
+//                permit.permitForeignStatus == 1)
 
             qaDaoServices.mapAllPermitDetailsTogether(permit, null, map).let {
                 return ok().body(it)
@@ -1931,21 +1969,21 @@ class QualityAssuranceHandler(
             }
             permit = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).second
 
-            val userDetailEmail = when (permit.permitType) {
-                applicationMapProperties.mapQAPermitTypeIDDmark -> {
-                    commonDaoServices.findUserByID(permit.hodId ?: throw ExpectedDataNotFound("MISSING HOD ID")).email
-                        ?: throw ExpectedDataNotFound("MISSING HOD EMAIL")
-                }
-                else -> {
-                    commonDaoServices.findUserByID(permit.qamId ?: throw ExpectedDataNotFound("MISSING QAM ID")).email
-                        ?: throw ExpectedDataNotFound("MISSING QAM EMAIL")
-                }
-            }
+//            val userDetailEmail = when (permit.permitType) {
+//                applicationMapProperties.mapQAPermitTypeIDDmark -> {
+//                    commonDaoServices.findUserByID(permit.hodId ?: throw ExpectedDataNotFound("MISSING HOD ID")).email
+//                        ?: throw ExpectedDataNotFound("MISSING HOD EMAIL")
+//                }
+//                else -> {
+//                    commonDaoServices.findUserByID(permit.qamId ?: throw ExpectedDataNotFound("MISSING QAM ID")).email
+//                        ?: throw ExpectedDataNotFound("MISSING QAM EMAIL")
+//                }
+//            }
 
-            qaDaoServices.sendEmailWithTaskDetails(
-                userDetailEmail,
-                permit.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
-            )
+//            qaDaoServices.sendEmailWithTaskDetails(
+//                userDetailEmail,
+//                permit.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
+//            )
 
             qaDaoServices.mapAllPermitDetailsTogether(permit, null, map).let {
                 return ok().body(it)
