@@ -24,8 +24,8 @@
     </sequenceFlow>
     <serviceTask id="servicetask2" name="Reject Approval" activiti:expression="#{diService.consignmentChecks(cdUuid)}"></serviceTask>
     <sequenceFlow id="flow12" sourceRef="startevent1" targetRef="exclusivegateway1"></sequenceFlow>
-    <serviceTask id="servicetask3" name="Update CD Status" activiti:expression="#{diService.updateStatus(cdUuid,cdStatusTypeId,remarks)}"></serviceTask>
-    <serviceTask id="servicetask4" name="Update SW" activiti:expression="#{diService.updateBpmCompletionStatus(cdUuid)}"></serviceTask>
+    <serviceTask id="servicetask3" name="Update CD Status" activiti:expression="#{diService.updateStatus(cdUuid,cdStatusTypeId,supervisor,remarks)}"></serviceTask>
+    <serviceTask id="servicetask4" name="Update SW" activiti:expression="#{diService.updateBpmCompletionStatus(cdUuid,supervisor,remarks)}"></serviceTask>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_updateConsignmentStatus">
     <bpmndi:BPMNPlane bpmnElement="updateConsignmentStatus" id="BPMNPlane_updateConsignmentStatus">

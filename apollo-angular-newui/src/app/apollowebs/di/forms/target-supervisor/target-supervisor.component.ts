@@ -24,7 +24,7 @@ export class TargetSupervisorComponent implements OnInit {
   }
 
   saveRecord() {
-    this.diService.sendConsignmentDocumentAction(this.form.value,this.data.uuid,"target-supervisor")
+    this.diService.sendConsignmentDocumentAction(this.form.value,this.data.uuid,"supervisor-target")
         .subscribe(
             res=>{
               if(res.responseCode==="00"){

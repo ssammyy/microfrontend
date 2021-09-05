@@ -56,6 +56,7 @@ class DestinationInspectionDaoServices(
         private val iLocalCocTypeRepo: ILocalCocTypesRepository,
         private val cocRepo: ICocsRepository,
         private val coisRep: ICoisRepository,
+        private val userRolesRepository: IUserRolesRepository,
         private val usersCfsRepo: IUsersCfsAssignmentsRepository,
         private val iCdInspectionChecklistRepo: ICdInspectionChecklistRepository,
         private val cdTypesRepo: IConsignmentDocumentTypesEntityRepository,
@@ -369,7 +370,7 @@ class DestinationInspectionDaoServices(
         consignmentDocumentDetailsEntity.ucrNumber?.let {
             cocRepo.findByUcrNumber(it)
                     ?.let { coc ->
-                        throw Exception("There is an Existing COC with the following UCR No = ${coc.ucrNumber}")
+                        return coc
                     }
         }
                 ?: kotlin.run {
@@ -922,6 +923,14 @@ class DestinationInspectionDaoServices(
                 ?: throw Exception("Status Details with id = ${statusID}, does not Exist")
     }
 
+    fun findCdStatusCategory(status: String): CdStatusTypesEntity {
+        iCdStatusTypesDetailsRepo.findByCategoryAndStatus(status, 1)
+                ?.let { cdStatusDetails ->
+                    return cdStatusDetails
+                }
+                ?: throw Exception("Status Details with id = ${status}, does not Exist")
+    }
+
     fun findDIFeeList(status: Int): List<DestinationInspectionFeeEntity>? {
         iDIFeeDetailsRepo.findByStatus(status)
                 ?.let { diFeeDetails ->
@@ -1185,8 +1194,8 @@ class DestinationInspectionDaoServices(
                         }
                     }
                     // Foreign CoR without Items
-                    if(itemList.isEmpty()){
-                        demandNoteDetails.amountPayable=amount.toBigDecimal()
+                    if (itemList.isEmpty()) {
+                        demandNoteDetails.amountPayable = amount.toBigDecimal()
                     }
                     //Calculate the total Amount for Items In one Cd Tobe paid For
                     demandNoteDetails = calculateTotalAmountDemandNote(demandNoteDetails, map, user, presentment)
@@ -1241,8 +1250,8 @@ class DestinationInspectionDaoServices(
                         }
                     }
                     // Foreign CoR/CoC without Items
-                    if(itemList.isEmpty()){
-                        demandNote.amountPayable=amount.toBigDecimal()
+                    if (itemList.isEmpty()) {
+                        demandNote.amountPayable = amount.toBigDecimal()
                     }
                     return demandNote
 
@@ -1352,9 +1361,11 @@ class DestinationInspectionDaoServices(
 //                }
 //                ?: throw Exception("Demand Note Details with [Item ID = ${item.id}], does not Exist")
     }
+
     fun findDemandNoteWithID(cdID: Long): CdDemandNoteEntity? {
         return iDemandNoteRepo.findByIdOrNull(cdID)
     }
+
     fun findDemandNoteWithCdID(cdID: Long): CdDemandNoteEntity? {
         return iDemandNoteRepo.findByCdId(cdID)
 //                ?.let { demandNoteDetails ->
@@ -2127,20 +2138,25 @@ class DestinationInspectionDaoServices(
                 ?: throw Exception("CD Type Details with the following uuid = ${uuid}, does not Exist")
     }
 
-    fun findAllOngoingCdWithPortOfEntry(
-            sectionsEntity: SectionsEntity,
+    fun findAllAvailableCdWithPortOfEntry(
+            cfs: List<UsersCfsAssignmentsEntity>,
             cdType: ConsignmentDocumentTypesEntity?,
+            statuses: List<Int?>,
             page: PageRequest
     ): Page<ConsignmentDocumentDetailsEntity> {
+        val cfsIds = mutableListOf<Long>()
+        cfs.forEach {
+            it.cfsId?.let { it1 -> cfsIds.add(it1) }
+        }
         return cdType?.let {
-            iConsignmentDocumentDetailsRepo.findByPortOfArrivalAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
-                    sectionsEntity.id,
-                    cdType.id,
+            iConsignmentDocumentDetailsRepo.findByFreightStation_IdInAndCdTypeAndAssignedInspectionOfficerIsNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+                    cfsIds,
+                    cdType,
                     page
             )
         } ?: run {
-            iConsignmentDocumentDetailsRepo.findByPortOfArrivalAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
-                    sectionsEntity.id,
+            iConsignmentDocumentDetailsRepo.findByFreightStation_IdInAndAssignedInspectionOfficerIsNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+                    cfsIds,
                     page
             )
         }
@@ -2164,20 +2180,20 @@ class DestinationInspectionDaoServices(
     fun findAllOngoingCdWithFreightStationID(
             cfsEntity: List<UsersCfsAssignmentsEntity>,
             cdType: ConsignmentDocumentTypesEntity?,
+            statuses: List<Int?>,
             page: PageRequest
     ): Page<ConsignmentDocumentDetailsEntity> {
-        val cfsIds= mutableListOf<Long>()
+        val cfsIds = mutableListOf<Long>()
         cfsEntity.forEach {
             it.cfsId?.let { it1 -> cfsIds.add(it1) }
         }
         return cdType?.let {
-            return iConsignmentDocumentDetailsRepo.findByFreightStation_IdInAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+            return iConsignmentDocumentDetailsRepo.findByFreightStation_IdInAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIn(
                     cfsIds,
-                    cdType, page)
-        }?:run {
-            return iConsignmentDocumentDetailsRepo.findByFreightStation_IdInAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
-                    cfsIds
-            ,page)
+                    cdType, statuses, page)
+        } ?: run {
+            return iConsignmentDocumentDetailsRepo.findByFreightStation_IdInAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIn(
+                    cfsIds, statuses, page)
         }
 
     }
@@ -2314,6 +2330,25 @@ class DestinationInspectionDaoServices(
         }
     }
 
+    fun findAllCompleteCdWithAssigner(
+            usersEntity: UsersEntity,
+            cdType: ConsignmentDocumentTypesEntity?,
+            page: PageRequest
+    ): Page<ConsignmentDocumentDetailsEntity> {
+        return cdType?.let {
+            iConsignmentDocumentDetailsRepo.findAllByAssignerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
+                    usersEntity,
+                    it,
+                    page
+            )
+        } ?: run {
+            iConsignmentDocumentDetailsRepo.findAllByAssignerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
+                    usersEntity,
+                    page
+            )
+        }
+    }
+
     fun findAllCompleteCdWithAssignedIoID(
             usersEntity: UsersEntity,
             page: PageRequest
@@ -2412,6 +2447,21 @@ class DestinationInspectionDaoServices(
                 ?: throw ServiceMapNotFoundException("Freight Station details on consignment with ID = ${consignmentDocumentDetailsEntity.id}, is Empty")
     }
 
+
+    fun findOfficersList(freightStation: CfsTypeCodesEntity?, designationId: Long): List<UserProfilesEntity> {
+        freightStation?.let { fs ->
+
+            val profilesAssignment = findByCFSId(fs.id)
+            val userProfiles = mutableListOf<UserProfilesEntity>()
+            profilesAssignment.forEach { p ->
+                iUserProfilesRepo.findByIdAndDesignationId_IdAndStatus(p.userProfileId!!, designationId, 1)
+                        .ifPresent { pp -> userProfiles.add(pp) }
+
+            }
+            return userProfiles
+        } ?: throw ServiceMapNotFoundException("Freight Station details on consignment with ID = null, is Empty")
+    }
+
     fun convertEntityToJsonObject(entityToConvert: Any): Any {
         return JSONObject(entityToConvert)
     }
@@ -2474,6 +2524,9 @@ class DestinationInspectionDaoServices(
         return iSampleSubmissionParamRepo.save(sampleSubmitParamEntity)
     }
 
+    fun findAllCFSUserCodes(userProfileID: Long): List<String> {
+        return usersCfsRepo.findAllUserCfsCodes(userProfileID)
+    }
 
     fun findAllCFSUserList(userProfileID: Long): List<UsersCfsAssignmentsEntity> {
         usersCfsRepo.findByUserProfileId(userProfileID)
@@ -2481,6 +2534,14 @@ class DestinationInspectionDaoServices(
                     return it
                 }
                 ?: throw ServiceMapNotFoundException("NO USER CFS FOUND WITH PROFILE ID = ${userProfileID}")
+    }
+
+    fun findByCFSId(cfsId: Long): List<UsersCfsAssignmentsEntity> {
+        usersCfsRepo.findAllByCfsId(cfsId)
+                ?.let {
+                    return it
+                }
+                ?: throw ServiceMapNotFoundException("NO USER CFS FOUND WITH PROFILE ID = ${cfsId}")
     }
 
     fun findSavedChecklist(itemId: Long): CdInspectionChecklistEntity {
@@ -2831,11 +2892,13 @@ class DestinationInspectionDaoServices(
 
     fun updateCdDetailsInDB(
             updateCD: ConsignmentDocumentDetailsEntity,
-            user: UsersEntity
+            user: UsersEntity?
     ): ConsignmentDocumentDetailsEntity {
-        with(updateCD) {
-            modifiedBy = commonDaoServices.getUserName(user)
-            modifiedOn = commonDaoServices.getTimestamp()
+        if (user != null) {
+            with(updateCD) {
+                modifiedBy = commonDaoServices.getUserName(user)
+                modifiedOn = commonDaoServices.getTimestamp()
+            }
         }
         KotlinLogging.logger { }.info { "MY UPDATED CD ID =  ${updateCD.id}" }
         return iConsignmentDocumentDetailsRepo.save(updateCD)
@@ -3166,7 +3229,6 @@ class DestinationInspectionDaoServices(
 
         return map
     }
-
 
 
     //Update Inspection Notification status & date after KRA submission

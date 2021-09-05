@@ -54,7 +54,7 @@ class UserHandler(
         try {
             req.pathVariable("cdUuid").let { cdUuid ->
                 val cdDetails = daoServices.findCDWithUuid(cdUuid)
-                response.data = UserProfileDao.fromList(daoServices.findOfficersList(cdDetails))
+                response.data = UserProfileDao.fromList(daoServices.findOfficersList(cdDetails.freightStation,applicationMapProperties.mapDiInspectionOfficerDesignationId))
                 response.message = "Success"
                 response.responseCode = ResponseCodes.SUCCESS_CODE
             }

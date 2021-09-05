@@ -46,6 +46,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
+import java.util.*
 
 
 @Repository
@@ -177,7 +178,8 @@ interface IUserRoleAssignmentsRepository : HazelcastRepository<UserRoleAssignmen
     fun findByRoleIdAndStatus(roleId: Long, status: Int): List<UserRoleAssignmentsEntity>?
     fun findByRoleId(roleId: Long): List<UserRoleAssignmentsEntity>
     fun findByUserId(userId: Long): UserRoleAssignmentsEntity?
-
+    @Query("select  count(*)  from DAT_KEBS_USER_PROFILES DKUP left join CFG_USER_ROLES_ASSIGNMENTS CURA on(DKUP.USER_ID=CURA.USER_ID) left join CFG_USER_ROLES CUR on (CURA.ROLE_ID = CUR.ID) where upper(ROLE_NAME)=upper(:roleName) and CURA.STATUS=:assignmentStatus and DKUP.USER_ID=:userId", nativeQuery =true)
+    fun checkUserHasRole(@Param("roleName")roleName: String,@Param("assignmentStatus") status: Int,@Param("userId") userId: Long): Int
 
     @Query(
         "SELECT * FROM CFG_USER_ROLES_ASSIGNMENTS cura WHERE CURA.USER_ID = :userId AND STATUS = :status",
@@ -269,6 +271,12 @@ interface IUserProfilesRepository : HazelcastRepository<UserProfilesEntity, Long
         sectionId: SectionsEntity,
         status: Int
     ): UserProfilesEntity?
+
+    fun findByIdAndDesignationId_IdAndStatus(
+            id: Long,
+            designationId: Long,
+            status: Int
+    ): Optional<UserProfilesEntity>
 
     fun findByRegionIdAndDesignationId(
         regionId: RegionsEntity,

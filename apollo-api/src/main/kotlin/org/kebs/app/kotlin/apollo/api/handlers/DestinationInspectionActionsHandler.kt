@@ -52,6 +52,32 @@ class DestinationInspectionActionsHandler(
         return ServerResponse.ok().body(response)
     }
 
+    fun markConsignmentCompliant(req: ServerRequest): ServerResponse {
+        val response = ApiResponseModel()
+        try {
+            val cdUuid = req.pathVariable("cdUuid")
+            val consignmentDocument = daoServices.findCDWithUuid(cdUuid)
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val form = req.body(ConsignmentUpdateRequest::class.java)
+            val data = mutableMapOf<String, Any?>()
+            data.put("remarks", form.remarks)
+            data.put("owner", loggedInUser.userName)
+            data.put("documentType", form.documentType)
+            data.put("cdUuid", cdUuid)
+            data.put("compliantStatus",form.compliantStatus)
+            data.put("supervisor", consignmentDocument.assigner?.userName)
+            // Start blacklisting process
+            this.diBpmn.startCompliantProcess(data, consignmentDocument)
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+            response.message = "Success"
+        } catch (ex: Exception) {
+            response.message = ex.localizedMessage
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+        }
+
+        return ServerResponse.ok().body(response)
+    }
+
     fun generateLocalCoc(req: ServerRequest): ServerResponse {
         val response = ApiResponseModel()
         try {
@@ -95,16 +121,16 @@ class DestinationInspectionActionsHandler(
                 data.put("owner", loggedInUser.userName)
                 data.put("supervisor", consignmentDocument.assigner?.userName)
                 this.diBpmn.startGenerateCor(data, consignmentDocument)
-                response.responseCode=ResponseCodes.SUCCESS_CODE
-                response.message="Local CoR request received"
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+                response.message = "Local CoR request received"
             } else {
                 response.responseCode = ResponseCodes.FAILED_CODE
                 response.message = "Local COR is not yet approved"
             }
-        }catch (ex: Exception) {
-            KotlinLogging.logger {  }.error("COR REQUEST FAILED",ex)
-            response.responseCode=ResponseCodes.EXCEPTION_STATUS
-            response.message="Local COR request failed, please try again later"
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("COR REQUEST FAILED", ex)
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.message = "Local COR request failed, please try again later"
         }
 
         return ServerResponse.ok().body(response)
@@ -247,6 +273,14 @@ class DestinationInspectionActionsHandler(
 
 
     fun targetConsignment(req: ServerRequest): ServerResponse {
+       return targetConsignment(req, false)
+    }
+
+    fun supervisorTargetConsignment(req: ServerRequest): ServerResponse {
+        return targetConsignment(req, true)
+    }
+
+    fun targetConsignment(req: ServerRequest, isSupervisor: Boolean): ServerResponse {
         val response = ApiResponseModel()
         try {
             req.pathVariable("cdUuid").let { cdUuid ->
@@ -260,7 +294,7 @@ class DestinationInspectionActionsHandler(
                     data["cdUuid"] = cdUuid
                     val loggedInUser = commonDaoServices.loggedInUserDetails()
                     // Supervisor can request targeting
-                    data["isSupervisor"]=(loggedInUser.userName==consignmentDocument.assigner?.userName)
+                    data["isSupervisor"] = isSupervisor
                     // update consignment
                     data["supervisor"] = consignmentDocument.assigner?.userName
                     daoServices.updateCdDetailsInDB(consignmentDocument, loggedInUser)
@@ -383,6 +417,7 @@ class DestinationInspectionActionsHandler(
                 val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
                 val processStages = commonDaoServices.findProcesses(applicationMapProperties.mapImportInspection)
                 val loggedInUser = commonDaoServices.loggedInUserDetails()
+
                 // Assign consignment to this user
                 with(consignmentDocument) {
                     assignedRemarks = form.remarks
@@ -422,42 +457,18 @@ class DestinationInspectionActionsHandler(
                 val officer = daoServices.findUserById(form.officerId)
                 if (officer.isPresent) {
                     val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
-
-                    val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-                    val processStages = commonDaoServices.findProcesses(applicationMapProperties.mapImportInspection)
                     val loggedInUser = commonDaoServices.loggedInUserDetails()
-                    if (form.reassign) {
-                        with(consignmentDocument) {
-                            reassignedRemarks = form.remarks
-                            reassignedDate = Date(java.util.Date().time)
-                            reassignedStatus = map.activeStatus
-                            assignedInspectionOfficer = officer.get()
-                        }
-                    } else {
-                        with(consignmentDocument) {
-                            assignedRemarks = form.remarks
-                            assignedDate = Date(java.util.Date().time)
-                            assignedStatus = map.activeStatus
-                            assignedInspectionOfficer = officer.get()
-                        }
-                    }
-                    this.daoServices.updateCdDetailsInDB(consignmentDocument, loggedInUser)
-                    consignmentDocument.assignedRemarks?.let {
-                        processStages.process2?.let { it1 ->
-                            daoServices.createCDTransactionLog(map, loggedInUser, consignmentDocument.id!!, it, it1)
-                        }
-                    }
-                    consignmentDocument.cdStandard?.let { cdStd ->
-                        daoServices.updateCDStatus(cdStd, applicationMapProperties.mapDIStatusTypeAssignIoId)
-                    }
-                    //Start the relevant BPM
-                    diBpmn.startDiBpmProcessByCdType(consignmentDocument)
-                    diBpmn.assignIOBpmTask(consignmentDocument)
-                    if (form.reassign) {
-                        consignmentAuditService.addHistoryRecord(consignmentDocument.id, form.remarks, "KEBS_REASSIGN_IO", "Re-Assign inspection officer to consignment")
-                    } else {
-                        consignmentAuditService.addHistoryRecord(consignmentDocument.id, form.remarks, "KEBS_ASSIGN_IO", "Assign inspection officer to consignment")
-                    }
+                    val data = mutableMapOf<String, Any?>()
+                    data["remarks"] = form.remarks
+                    data["reassign"] = form.reassign
+                    data["officerId"] = form.officerId
+                    data["owner"] = officer.get().userName
+                    data["supervisor"] = loggedInUser.userName
+                    data["isAutoTargeted"] = consignmentDocument.cdType?.uuid == daoServices.noCorCdType
+                    data["cdUuid"] = cdUuid
+                    // Start BPM process
+                    this.diBpmn.startAssignmentProcesses(data, consignmentDocument);
+                    // Prepare response
                     response.responseCode = ResponseCodes.SUCCESS_CODE
                     response.message = "Inspection officer assigned"
                 } else {

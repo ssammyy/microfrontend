@@ -1,15 +1,15 @@
 package org.kebs.app.kotlin.apollo.api.service;
 
 import mu.KotlinLogging
+import org.flowable.idm.engine.impl.persistence.entity.UserEntity
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.CdDocumentModificationHistoryDao
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
+import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.di.CdDocumentModificationHistory
 import org.kebs.app.kotlin.apollo.store.repo.di.ICdDocumentModificationHistoryRepository
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
-import java.sql.Date
 import java.sql.Timestamp
 import java.time.LocalDateTime
 
@@ -18,11 +18,14 @@ class ConsignmentDocumentAuditService(
         private val cdHistory: ICdDocumentModificationHistoryRepository,
         private val commonDaoServices: CommonDaoServices
 ) {
-    fun addHistoryRecord(cdId: Long?, comment: String?, action: String, narration: String) {
+    fun addHistoryRecord(cdId: Long?, comment: String?, action: String, narration: String, username: String? = null) {
         try {
             val history = CdDocumentModificationHistory()
-            commonDaoServices.getLoggedInUser()?.let {
-                history.name="${it.firstName} ${it.lastName}"
+            val user: UsersEntity? = username?.let {
+                commonDaoServices.findUserByUserName(username)
+            } ?: commonDaoServices.getLoggedInUser()
+            user?.let {
+                history.name = "${it.firstName} ${it.lastName}"
                 history.createdBy = it.toString()
                 history.modifiedBy = it.toString()
                 history.createdOn = Timestamp.valueOf(LocalDateTime.now())
@@ -37,7 +40,7 @@ class ConsignmentDocumentAuditService(
                 this.cdHistory.save(history)
             }
         } catch (ex: Exception) {
-            KotlinLogging.logger { }.error { ex }
+            KotlinLogging.logger { }.error("FAILED TO ADD", ex)
         }
     }
 

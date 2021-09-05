@@ -9,7 +9,14 @@
                 <option value="1">Compliant</option>
                 <option value="0">Not Compliant</option>
             </select>
+            <label for="documentType" class="waiver-form-label">Document Type</label>
+            <select id="documentType" name="compliantStatus" class="waiver-form-input-master"
+                    formControlName="documentType">
+                <option value="" disabled selected>Select Certificate</option>
+                <option value="COC">CoC/COI</option>
+                <option value="COR">Certificate Of Roadworthiness</option>
 
+            </select>
             <label for="compliantRemarks" class="waiver-form-label">Please write, in detail, your feedback for this
                 consignment:</label>
             <textarea id="compliantRemarks" class="waiver-form-input-master" placeholder=""

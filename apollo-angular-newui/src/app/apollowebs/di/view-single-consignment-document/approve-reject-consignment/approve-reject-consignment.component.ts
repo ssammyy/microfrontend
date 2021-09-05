@@ -12,6 +12,7 @@ export class ApproveRejectConsignmentComponent implements OnInit {
     public statuses: any[]
     public form: FormGroup
     message: String;
+    complianceStatus: number
 
     constructor(public dialogRef: MatDialogRef<any>, private fb: FormBuilder,
                 @Inject(MAT_DIALOG_DATA) public data: any,
@@ -20,7 +21,26 @@ export class ApproveRejectConsignmentComponent implements OnInit {
 
     ngOnInit(): void {
         console.log(this.data)
-        this.statuses = this.data.configurations.CDStatusTypes
+        this.complianceStatus=this.data.complianceStatus
+        this.statuses = []
+        this.data.configurations.CDStatusTypes.forEach(item=>{
+            if(this.complianceStatus===1){
+                switch (item.category) {
+                    case 'QUERY':
+                        break
+                    case 'ONHOLD':
+                        break
+                    case "REJECT":
+                        break
+                    default:
+                        this.statuses.push(item)
+                }
+            }else {
+                if(item.category!=="APPROVE"){
+                    this.statuses.push(item)
+                }
+            }
+        })
         this.form = this.fb.group({
             cdStatusTypeId: ['', Validators.required],
             remarks: ['', Validators.required]

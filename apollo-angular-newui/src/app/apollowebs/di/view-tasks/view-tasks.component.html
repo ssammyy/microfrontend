@@ -13,13 +13,15 @@
                     <div class="card-body" *ngIf="tasks">
                         <div class="row">
                             <div class="col-md-2">
-                                <div widget class="border-0 box-shadow" *ngFor="let task of tasks">
+                                <div widget class="border-0 box-shadow" *ngFor="let task of tasks" (click)="loadSelectedConsignmentDetails(task)">
                                     <div class="text-center pt-2" style="color: green;">
                                         {{task.task}}
                                     </div>
                                     <div class="card-body pt-0 widget-body" >
-                                        <p><b>DESCRIPTION:</b> {{task.description}}</p>
+                                        <p *ngIf="task.description"><b>DESCRIPTION:</b> {{task.description}}</p>
                                         <p><b>REMARKS:</b> {{task.map.remarks}}</p>
+                                        <p *ngIf="task.map.documentType"><b>GENERATED DOCUMENT:</b> {{task.map.documentType}}</p>
+                                        <p *ngIf="task.map.compliantStatus"><b>COMPLIANCE:</b> {{task.map.compliantStatus==1?'COMPLIANT':'NON-COMPLIANT'}}</p>
                                         <button (click)="approveRejectTasks(task.objectId,task.map.cdUuid)">Approve/Reject</button>
                                     </div>
                                 </div>

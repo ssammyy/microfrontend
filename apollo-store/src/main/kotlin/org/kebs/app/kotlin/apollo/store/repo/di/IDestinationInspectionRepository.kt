@@ -40,13 +40,28 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
         cdType: ConsignmentDocumentTypesEntity
     ): List<ConsignmentDocumentDetailsEntity>?
 
-    fun findByFreightStation_IdInAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+
+    fun findByFreightStation_IdInAndCdTypeAndAssignedInspectionOfficerIsNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
             freightStation: List<Long>,
             cdType: ConsignmentDocumentTypesEntity,
             page: Pageable
     ): Page<ConsignmentDocumentDetailsEntity>
-    fun findByFreightStation_IdInAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+    fun findByFreightStation_IdInAndAssignedInspectionOfficerIsNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
             freightStation: List<Long>,
+            page: Pageable
+    ): Page<ConsignmentDocumentDetailsEntity>
+
+
+    fun findByFreightStation_IdInAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIn(
+            freightStation: List<Long>,
+            cdType: ConsignmentDocumentTypesEntity,
+            statuses: List<Int?>,
+            page: Pageable
+    ): Page<ConsignmentDocumentDetailsEntity>
+
+    fun findByFreightStation_IdInAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIn(
+            freightStation: List<Long>,
+            statuses: List<Int?>,
             page: Pageable
     ): Page<ConsignmentDocumentDetailsEntity>
 
@@ -117,6 +132,16 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
             page: Pageable
     ): Page<ConsignmentDocumentDetailsEntity>
 
+    fun findAllByAssignerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
+            assignedInspectionOfficer: UsersEntity,
+            cdType: ConsignmentDocumentTypesEntity,
+            page: Pageable
+    ): Page<ConsignmentDocumentDetailsEntity>
+    fun findAllByAssignerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
+            assignedInspectionOfficer: UsersEntity,
+            page: Pageable
+    ): Page<ConsignmentDocumentDetailsEntity>
+
     fun findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
         assignedInspectionOfficer: UsersEntity,
             cdType: Long,
@@ -159,7 +184,7 @@ interface IConsignmentDocumentTypesEntityRepository : HazelcastRepository<Consig
 @Repository
 interface ICdStatusTypesEntityRepository : HazelcastRepository<CdStatusTypesEntity, Long> {
     fun findByTypeNameAndStatus(typeName: String, status: Long): CdStatusTypesEntity?
-
+    fun findByCategoryAndStatus(category: String, status: Int): CdStatusTypesEntity?
     fun findByStatus(status: Int): List<CdStatusTypesEntity>?
 //    fun findAllById(Id: Long): List<ConsignmentDocumentTypesEntity>?
 }
@@ -462,6 +487,9 @@ interface ICdValuesHeaderLevelEntityRepository : HazelcastRepository<CdValuesHea
 @Repository
 interface IUsersCfsAssignmentsRepository : HazelcastRepository<UsersCfsAssignmentsEntity, Long> {
     fun findAllById(Id: Long): List<UsersCfsAssignmentsEntity>?
+    fun findAllByCfsId(Id: Long): List<UsersCfsAssignmentsEntity>?
+    @Query("select CKCTC.CFS_CODE from CFG_USERS_CFS_ASSIGNMENTS CCA left join CFG_KEBS_CFS_TYPE_CODES CKCTC on CCA.CFS_ID = CKCTC.ID where CCA.STATUS=1 and CCA.USER_PROFILE_ID=:profileId", nativeQuery = true)
+    fun findAllUserCfsCodes(@Param("profileId") Id: Long): List<String>
     fun findByUserProfileId(userProfileId: Long): List<UsersCfsAssignmentsEntity>?
     fun findByUserProfileIdAndCfsId(userProfileId: Long, cfsId: Long): UsersCfsAssignmentsEntity?
     fun findByUserProfileIdAndCfsIdAndStatus(userProfileId: Long, cfsId: Long, status: Int): UsersCfsAssignmentsEntity?

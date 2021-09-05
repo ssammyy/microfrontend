@@ -18,7 +18,7 @@ export class ManualAssignOfficerComponent implements OnInit {
 
     ngOnInit(): void {
         this.form = this.fb.group({
-            supervisorId: ['', Validators.required],
+            // supervisorId: ['', Validators.required],
             remarks: ['', Validators.required]
         })
     }
@@ -28,7 +28,7 @@ export class ManualAssignOfficerComponent implements OnInit {
             .subscribe(
                 res => {
                     if (res.responseCode === "00") {
-                        this.dialogRef.close(this.form.value)
+                        this.dialogRef.close(true)
                     } else {
                         this.message = res.message
                     }

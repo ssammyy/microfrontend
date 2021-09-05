@@ -26,6 +26,12 @@
                                                 <td>{{ consignment.cd_details.applicationRefNo ? consignment.cd_details.applicationRefNo : 'NA' }}</td>
                                             </tr>
                                             <th>
+                                                Application Status
+                                            </th>
+                                            <tr>
+                                                <td>{{ consignment.cd_details.applicationStatus ? consignment.cd_details.applicationStatus : 'NA' }}</td>
+                                            </tr>
+                                            <th>
                                                 Application Date
                                             </th>
                                             <tr>
@@ -707,17 +713,8 @@
                                         <button *ngIf="!consignment.ui.assigned" class="btn btn-sm btn-primary"
                                                 (click)="manualAssignInspectionOfficer()">SELF ASSIGN
                                         </button>
-                                        <button *ngIf="consignment.ui.owner"  class="btn btn-sm btn-primary"
-                                                (click)="generateLocalCoC()">GENERATE LOCAL COC/COI
-                                        </button>
-                                        <button *ngIf="consignment.ui.owner" class="btn btn-sm btn-primary"
-                                                (click)="generateLocalCoR()">GENERATE LOCAL COR
-                                        </button>
                                         <button *ngIf="consignment.ui.owner" class="btn btn-sm btn-primary"
                                                 (click)="markAsCompliant()">COMPLIANT
-                                        </button>
-                                        <button *ngIf="consignment.ui.owner"  class="btn btn-sm btn-primary"
-                                                (click)="sendCertificateOfCompliance()">SEND COI
                                         </button>
                                         <button *ngIf="consignment.ui.owner && consignment.ui.blacklistEnabled"
                                                 class="btn btn-sm btn-warning"
@@ -736,20 +733,11 @@
                                         </button>
                                     </div>
                                     <div *ngIf="consignment.ui.supervisor">
-                                        <button *ngIf="consignment.ui.supervisor"  class="btn btn-sm btn-primary"
-                                                (click)="generateLocalCoC()">GENERATE LOCAL COC/COI
-                                        </button>
-                                        <button *ngIf="consignment.ui.supervisor" class="btn btn-sm btn-primary"
-                                                (click)="generateLocalCoR()">GENERATE LOCAL COR
-                                        </button>
                                         <button *ngIf="!consignment.ui.assigned " class="btn btn-sm btn-primary"
                                                 (click)="assignInspectionOfficer()">ASSIGN IO
                                         </button>
                                         <button *ngIf="consignment.ui.assigned" class="btn btn-sm btn-primary"
                                                 (click)="reassignInspectionOfficer()">REASSIGN IO
-                                        </button>
-                                        <button *ngIf="!consignment.ui.hasPort" class="btn btn-sm btn-primary"
-                                                (click)="assignConsignmentPort()">ASSIGN PORT
                                         </button>
                                         <button *ngIf="consignment.ui.supervisorTarget"
                                                 class="btn btn-sm btn-warning"

@@ -44,11 +44,13 @@ class DestinationInspectionRoutes {
             POST("/consignment/document/reassign-io/{cdUuid}", handler::assignInspectionOfficer)
             POST("/consignment/document/manual-pick/{cdUuid}", handler::pickConsignmentInspectionOfficer)
             POST("/consignment/document/send-coi/{cdUuid}", handler::sendCertificateOfInspection)
+            POST("/consignment/document/mark-compliant/{cdUuid}", handler::markConsignmentCompliant)
             POST("/consignment/document/blacklist/{cdUuid}", handler::blacklistConsignment)
             POST("/consignment/document/generate-coc/{cdUuid}", handler::generateLocalCoc)
             POST("/consignment/document/generate-cor/{cdUuid}", handler::generateLocalCor)
             POST("/consignment/document/compliant-vehicle/{inspectionChecklistId}", handler::updateMotorVehicleComplianceStatus)
             POST("/consignment/document/target/{cdUuid}", handler::targetConsignment)
+            POST("/consignment/document/supervisor-target/{cdUuid}", handler::supervisorTargetConsignment)
             POST("/consignment/document/process/approve-reject/{taskId}/{cdUuid}", handler::approveRejectTask)
             GET("/my/tasks", handler::supervisorTasks)
         }
@@ -82,8 +84,8 @@ class DestinationInspectionRoutes {
             POST("/foreign/cd/upload", handler::uploadForeignConsignmentDocument)
             // CD Listing
             GET("/consignment/documents/assigned", handler::assignedConsignmentDocuments)
-            GET("/consignment/documents/ongoing", handler::outgoingConsignmentDocuments)
-            GET("/consignment/documents/manual/assigned", handler::manualAssignedConsignmentDocuments)
+            GET("/consignment/documents/ongoing", handler::ongoingAssignedConsignmentDocuments)
+            GET("/consignment/documents/manual/assigned", handler::availableConsignmentDocuments)
             GET("/consignment/documents/completed", handler::completedConsignmentDocuments)
             // CD Extra Details
             GET("/inspection/coc/details/{coUuid}", handler::certificateOfConformance)

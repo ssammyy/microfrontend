@@ -2,7 +2,7 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
   <process id="targetConsignmentDocument" name="Target Consignment Documet" isExecutable="true" activiti:candidateStarterUsers="supervisor">
     <startEvent id="startTargetConsignmentDocument" name="Start Targeting"></startEvent>
-    <userTask id="usertask1" name="ApproveTargeting" activiti:assignee="${supervisor}" activiti:candidateUsers="supervisor"></userTask>
+    <userTask id="usertask1" name="ApproveTargeting" activiti:assignee="${supervisor}" activiti:candidateUsers="supervisor" activiti:category="${cfs_code}"></userTask>
     <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
     <sequenceFlow id="flow2" sourceRef="usertask1" targetRef="exclusivegateway1"></sequenceFlow>
     <sequenceFlow id="flow3" name="Approved" sourceRef="exclusivegateway1" targetRef="targetingApprovedStatus">
@@ -13,10 +13,10 @@
     </sequenceFlow>
     <userTask id="targetingScheduledKra" name="Consignment Target Update" activiti:assignee="${supervisor}"></userTask>
     <sequenceFlow id="flow5" sourceRef="targetingApprovedStatus" targetRef="targetingScheduledKra"></sequenceFlow>
-    <serviceTask id="targetingApprovedStatus" name="Target Consignment" activiti:expression="#{diService.swScheduledTargeting(cdUuid,remarks,supervisor)}"></serviceTask>
-    <serviceTask id="updateTargetRejectionStatus" name="Update  Rejection Status" activiti:expression="#{diService.rejectTargeting(cdUuid,remarks,supervisor)}"></serviceTask>
+    <serviceTask id="targetingApprovedStatus" name="Target Consignment" activiti:async="true" activiti:expression="#{diService.swScheduledTargeting(cdUuid,remarks,supervisor)}"></serviceTask>
+    <serviceTask id="updateTargetRejectionStatus" name="Update  Rejection Status" activiti:async="true" activiti:expression="#{diService.rejectTargeting(cdUuid,remarks,supervisor)}"></serviceTask>
     <sequenceFlow id="flow6" sourceRef="updateTargetRejectionStatus" targetRef="updateConsignmentDocumentProcessFields"></sequenceFlow>
-    <serviceTask id="updateConsignmentDocumentProcessFields" name="Update Consignment Document" activiti:expression="${diService.clearCurrentProcess(cdUuid)}"></serviceTask>
+    <serviceTask id="updateConsignmentDocumentProcessFields" name="Update Consignment Document" activiti:async="true" activiti:expression="${diService.clearCurrentProcess(cdUuid)}"></serviceTask>
     <sequenceFlow id="flow7" sourceRef="targetingScheduledKra" targetRef="updateConsignmentDocumentProcessFields"></sequenceFlow>
     <endEvent id="endTargetConsignmentDocument" name="End"></endEvent>
     <sequenceFlow id="flow8" sourceRef="updateConsignmentDocumentProcessFields" targetRef="endTargetConsignmentDocument"></sequenceFlow>
@@ -106,7 +106,7 @@
         <omgdi:waypoint x="622.0" y="91.0"></omgdi:waypoint>
         <omgdi:waypoint x="622.0" y="245.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="39.0" width="100.0" x="130.0" y="191.0"></omgdc:Bounds>
+          <omgdc:Bounds height="13.0" width="98.0" x="130.0" y="191.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>

@@ -110,6 +110,7 @@ class ConsignmentDocumentDao {
     var applicationRefNo: String? = null
     var summaryPageURL: String? = null
     var approvalStatus: String? = null
+    var applicationStatus: String?=null
     var assigned: Boolean = false
 
     companion object {
@@ -128,6 +129,7 @@ class ConsignmentDocumentDao {
                 dt.freightStation = it.cfsName
                 dt.freightStationId = it.id
             }
+            dt.applicationStatus=doc.varField10
             dt.assigned = doc.assignedInspectionOfficer != null
             dt.localCoi = doc.localCoi
             dt.sendDemandNote = doc.sendDemandNote

@@ -712,13 +712,13 @@ class DITest {
                     val importerDetails =
                         itemDetails.cdDocId?.cdImporter?.let { destinationInspectionDaoServices.findCDImporterDetails(it) }
                     val demandNote =
-                        destinationInspectionDaoServices.generateDemandNoteWithItemList(itemDetails, map,itemDetails.c,false,0.0, loggedInUser)
+                            itemDetails.cdDocId?.let { destinationInspectionDaoServices.generateDemandNoteWithItemList(listOf(itemDetails), map, it,false,0.0, loggedInUser) }
 //                    val demandNoteNumber = destinationInspectionDaoServices.demandNotePayment(demandNote, map, loggedInUser, itemDetails)
-                    KotlinLogging.logger { }.info { "DEMAND NOTE GENERATED WITH ID = ${demandNote.id} " }
+                    KotlinLogging.logger { }.info { "DEMAND NOTE GENERATED WITH ID = ${demandNote?.id} " }
 //                    demandNotes.add(demandNote1)
 
-                    demandNote.demandNoteNumber?.let {
-                        val batchInvoiceDetail = invoiceDaoService.createBatchInvoiceDetails(loggedInUser, it)
+                    demandNote?.demandNoteNumber?.let {
+                        val batchInvoiceDetail = invoiceDaoService.createBatchInvoiceDetails(loggedInUser.userName!!, it)
                         itemDetails.cdDocId?.cdType?.let { it1 ->
                             destinationInspectionDaoServices.findCdTypeDetails(it1.id).demandNotePrefix?.let { myPrefix ->
                                 val updateBatchInvoiceDetail = invoiceDaoService.addInvoiceDetailsToBatchInvoice(
@@ -735,7 +735,7 @@ class DITest {
                                     currency = applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
                                 }
                                 val invoiceDetail = invoiceDaoService.createPaymentDetailsOnStgReconciliationTable(
-                                    loggedInUser,
+                                    loggedInUser.userName!!,
                                     updateBatchInvoiceDetail,
                                     myAccountDetails
                                 )

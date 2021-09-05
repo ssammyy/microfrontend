@@ -5,6 +5,7 @@ class ConsignmentUpdateRequest {
     var remarks: String? = null
     var officerId: Long? = null
     var status: Int? = null
+    var documentType: String?=null
     var confirmRequest: Boolean? = null
     var portOfArrival: Long? = null
     var cdStatusTypeId: Long? = null

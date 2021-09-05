@@ -15,7 +15,7 @@
     <sequenceFlow id="flow9" sourceRef="servicetask3" targetRef="endevent1"></sequenceFlow>
     <serviceTask id="sendBlacklistToSingleWindow" name="Update On Single Window" activiti:expression="#{diService.swUpdateBlacklistStatus(cdUuid,blacklistId,supervisor,remarks)}"></serviceTask>
     <serviceTask id="rejectBlacklist" name="Rejected blacklist" activiti:expression="#{diService.rejectUserBlacklisting(cdUuid,blacklistId,supervisor,remarks)}"></serviceTask>
-    <userTask id="requestApproval" name="Approve Balcklist" activiti:assignee="${supervisor}"></userTask>
+    <userTask id="requestApproval" name="Approve Balcklist" activiti:assignee="${supervisor}" activiti:category="${cfs_code}"></userTask>
     <sequenceFlow id="flow12" sourceRef="startevent1" targetRef="requestApproval"></sequenceFlow>
     <sequenceFlow id="flow13" sourceRef="requestApproval" targetRef="exclusivegateway1"></sequenceFlow>
     <sequenceFlow id="flow14" sourceRef="processLocalBlacklist" targetRef="sendBlacklistToSingleWindow"></sequenceFlow>

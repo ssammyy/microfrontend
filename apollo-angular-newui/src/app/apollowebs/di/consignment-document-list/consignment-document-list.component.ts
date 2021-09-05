@@ -4,6 +4,7 @@ import {DestinationInspectionService} from "../../../core/store/data/di/destinat
 import {MatDialog} from "@angular/material/dialog";
 import {UploadForeignFormComponent} from "./upload-foreign-form/upload-foreign-form.component";
 import {LocalDataSource} from "ng2-smart-table";
+import {DatePipe} from "@angular/common";
 
 @Component({
     selector: 'app-consignment-document-list',
@@ -13,9 +14,9 @@ import {LocalDataSource} from "ng2-smart-table";
 export class ConsignmentDocumentListComponent implements OnInit {
     activeStatus: string = 'my-tasks';
     defaultPageSize: number = 20
-    currentPage: number=0
-    currentPageInternal: number=0
-    totalCount: number=0
+    currentPage: number = 0
+    currentPageInternal: number = 0
+    totalCount: number = 0
     public settings = {
         selectMode: 'single',  // single|multi
         hideHeader: false,
@@ -55,22 +56,37 @@ export class ConsignmentDocumentListComponent implements OnInit {
                 title: 'Ref No.',
                 type: 'string'
             },
-            applicantName: {
-                title: 'Applicant Name',
-                type: 'string'
-            },
             applicationDate: {
                 title: 'Application Date',
-                type: 'string',
+                type: 'date',
+                valuePrepareFunction: (date) => {
+                    if(date){
+                        // return new DatePipe('he-IL').transform(date, 'dd/MM/yyyy hh:mm');
+                        return date
+                    }
+                    return ""
+                },
                 filter: false
             },
             approveRejectCdDate: {
                 title: 'Approval Date',
-                type: 'string',
+                type: 'data',
+                valuePrepareFunction: (date) => {
+                    if(date){
+                        // return new DatePipe('en-GB').transform(date, 'dd/MM/yyyy hh:mm');
+                        return date
+                    }
+                    return ""
+                },
                 filter: false
             },
             approvalStatus: {
-                title: 'Approval Status',
+                title: 'CD Status',
+                type: 'string',
+                filter: false
+            },
+            applicationStatus: {
+                title: 'Application Status',
                 type: 'string',
                 filter: false
             },
@@ -79,12 +95,12 @@ export class ConsignmentDocumentListComponent implements OnInit {
                 type: 'string'
             },
             cdTypeName: {
-                title: 'Document Type',
+                title: 'CD Type',
                 type: 'string',
                 hidden: true
             },
             cdTypeDescription: {
-                title: 'Document Description',
+                title: 'CD Description',
                 type: 'string'
             },
             cdTypeCategory: {
@@ -111,17 +127,22 @@ export class ConsignmentDocumentListComponent implements OnInit {
         })
 
     }
-    pageChange(pageIndex?:any){
-        if(pageIndex) {
-            this.currentPageInternal = pageIndex-1
-            this.currentPage=pageIndex
+
+    pageChange(pageIndex?: any) {
+        if (pageIndex) {
+            this.currentPageInternal = pageIndex - 1
+            this.currentPage = pageIndex
             this.loadData(this.documentTypeUuid, this.currentPageInternal, this.defaultPageSize)
         }
     }
+
     private loadData(documentTypeUuid: string, page: number, size: number): any {
 
         let data = this.diService.listAssignedCd(documentTypeUuid, page, size);
         console.log(this.activeStatus)
+        // Clear list before loading
+        this.dataSet.load([])
+        // Switch
         if (this.activeStatus === "completed") {
             data = this.diService.listCompletedCd(documentTypeUuid, page, size)
         } else if (this.activeStatus === "ongoing") {
@@ -133,7 +154,7 @@ export class ConsignmentDocumentListComponent implements OnInit {
             result => {
                 if (result.responseCode === "00") {
                     let listD: any[] = result.data;
-                    this.totalCount=result.totalCount
+                    this.totalCount = result.totalCount
                     this.dataSet.load(listD)
                 } else {
                     console.log(result)

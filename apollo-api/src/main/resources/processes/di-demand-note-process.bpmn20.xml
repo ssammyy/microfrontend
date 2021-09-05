@@ -16,7 +16,7 @@
     <endEvent id="endTargetConsignmentDocument" name="End"></endEvent>
     <sequenceFlow id="flow8" sourceRef="updateConsignmentDocumentProcessFields" targetRef="endTargetConsignmentDocument"></sequenceFlow>
     <sequenceFlow id="flow10" sourceRef="demandNoteApprovedStatus" targetRef="updateConsignmentDocumentProcessFields"></sequenceFlow>
-    <userTask id="requestApprovalOfExcludedItems" name="Approve Exclusion Of Items"></userTask>
+    <userTask id="requestApprovalOfExcludedItems" name="Approve Exclusion Of Items" activiti:category="${cfs_code}"></userTask>
     <sequenceFlow id="flow11" sourceRef="exclusivegateway1" targetRef="requestApprovalOfExcludedItems">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!hasAllItems}]]></conditionExpression>
     </sequenceFlow>
@@ -93,7 +93,7 @@
         <omgdi:waypoint x="590.0" y="381.0"></omgdi:waypoint>
         <omgdi:waypoint x="590.0" y="313.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="13.0" width="100.0" x="590.0" y="381.0"></omgdc:Bounds>
+          <omgdc:Bounds height="13.0" width="46.0" x="590.0" y="381.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow14" id="BPMNEdge_flow14">

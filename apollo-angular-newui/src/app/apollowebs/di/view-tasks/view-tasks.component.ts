@@ -28,7 +28,10 @@ export class ViewTasksComponent implements OnInit {
                 cdUuid: docUuid,
                 taskId: taskId
             }
-        })
+        }).afterClosed()
+            .subscribe(res=>{
+                this.loadMyTasks()
+            })
     }
     loadMyTasks() {
         this.diService.loadMyTasks()
@@ -43,7 +46,10 @@ export class ViewTasksComponent implements OnInit {
             })
     }
 
-    loadSelectedConsignmentDetails(){
+    loadSelectedConsignmentDetails(task?:any){
+        if(task){
+            this.consignmentId=task.map.cdUuid
+        }
         if(this.consignmentId) {
             this.diService.getConsignmentDetails(this.consignmentId)
                 .subscribe(

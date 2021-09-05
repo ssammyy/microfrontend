@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+    <process id="assignInspectionOfficer" name="Assign Inspection Officer" isExecutable="true">
+        <startEvent id="startAssignIo" name="Start"></startEvent>
+        <sequenceFlow id="flow1" sourceRef="exclusivegateway1" targetRef="servicetask1">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!reassign}]]></conditionExpression>
+        </sequenceFlow>
+        <serviceTask id="servicetask1" name="Assign Inspection Officer" activiti:async="true" activiti:expression="#{diService.assignInspectionOfficer(cdUuid,officerId,supervisor,remarks)}"></serviceTask>
+        <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
+        <sequenceFlow id="flow2" sourceRef="startAssignIo" targetRef="exclusivegateway1"></sequenceFlow>
+        <sequenceFlow id="flow3" sourceRef="exclusivegateway1" targetRef="reassignInspectionOfficer">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${reassign}]]></conditionExpression>
+        </sequenceFlow>
+        <serviceTask id="reassignInspectionOfficer" name="Reassign Inspection Officer" activiti:async="true" activiti:expression="#{diService.reassignInspectionOfficer(cdUuid,officerId,supervisor,remarks)}"></serviceTask>
+        <sequenceFlow id="flow4" sourceRef="exclusivegateway2" targetRef="servicetask3">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${isAutoTargeted}]]></conditionExpression>
+        </sequenceFlow>
+        <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"></exclusiveGateway>
+        <sequenceFlow id="flow5" sourceRef="servicetask1" targetRef="exclusivegateway2"></sequenceFlow>
+        <sequenceFlow id="flow6" sourceRef="reassignInspectionOfficer" targetRef="exclusivegateway2"></sequenceFlow>
+        <serviceTask id="servicetask3" name="Auto Target NCR" activiti:async="true" activiti:expression="#{diService.checkForAutoTarget(cdUuid)}"></serviceTask>
+        <sequenceFlow id="flow8" sourceRef="exclusivegateway2" targetRef="servicetask4">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!isAutoTargeted}]]></conditionExpression>
+        </sequenceFlow>
+        <serviceTask id="servicetask4" name="Complete Assignment" activiti:async="true" activiti:expression="#{diService.completeIOAssignment(cdUuid,officerId,supervisor)}"></serviceTask>
+        <sequenceFlow id="flow9" sourceRef="servicetask3" targetRef="servicetask4"></sequenceFlow>
+        <endEvent id="endevent1" name="End"></endEvent>
+        <sequenceFlow id="flow10" sourceRef="servicetask4" targetRef="endevent1"></sequenceFlow>
+    </process>
+    <bpmndi:BPMNDiagram id="BPMNDiagram_assignInspectionOfficer">
+        <bpmndi:BPMNPlane bpmnElement="assignInspectionOfficer" id="BPMNPlane_assignInspectionOfficer">
+            <bpmndi:BPMNShape bpmnElement="startAssignIo" id="BPMNShape_startAssignIo">
+                <omgdc:Bounds height="35.0" width="35.0" x="180.0" y="230.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="servicetask1" id="BPMNShape_servicetask1">
+                <omgdc:Bounds height="55.0" width="105.0" x="440.0" y="221.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+                <omgdc:Bounds height="40.0" width="40.0" x="260.0" y="228.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="reassignInspectionOfficer" id="BPMNShape_reassignInspectionOfficer">
+                <omgdc:Bounds height="55.0" width="105.0" x="430.0" y="70.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="exclusivegateway2" id="BPMNShape_exclusivegateway2">
+                <omgdc:Bounds height="40.0" width="40.0" x="680.0" y="230.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="servicetask3" id="BPMNShape_servicetask3">
+                <omgdc:Bounds height="55.0" width="105.0" x="648.0" y="380.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="servicetask4" id="BPMNShape_servicetask4">
+                <omgdc:Bounds height="55.0" width="105.0" x="850.0" y="226.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+                <omgdc:Bounds height="35.0" width="35.0" x="1090.0" y="232.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+                <omgdi:waypoint x="300.0" y="248.0"></omgdi:waypoint>
+                <omgdi:waypoint x="440.0" y="248.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+                <omgdi:waypoint x="215.0" y="247.0"></omgdi:waypoint>
+                <omgdi:waypoint x="260.0" y="248.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+                <omgdi:waypoint x="280.0" y="228.0"></omgdi:waypoint>
+                <omgdi:waypoint x="280.0" y="97.0"></omgdi:waypoint>
+                <omgdi:waypoint x="430.0" y="97.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+                <omgdi:waypoint x="700.0" y="270.0"></omgdi:waypoint>
+                <omgdi:waypoint x="700.0" y="380.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+                <omgdi:waypoint x="545.0" y="248.0"></omgdi:waypoint>
+                <omgdi:waypoint x="680.0" y="250.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+                <omgdi:waypoint x="535.0" y="97.0"></omgdi:waypoint>
+                <omgdi:waypoint x="700.0" y="97.0"></omgdi:waypoint>
+                <omgdi:waypoint x="700.0" y="230.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+                <omgdi:waypoint x="720.0" y="250.0"></omgdi:waypoint>
+                <omgdi:waypoint x="850.0" y="253.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
+                <omgdi:waypoint x="753.0" y="407.0"></omgdi:waypoint>
+                <omgdi:waypoint x="902.0" y="407.0"></omgdi:waypoint>
+                <omgdi:waypoint x="902.0" y="281.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
+                <omgdi:waypoint x="955.0" y="253.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1090.0" y="249.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</definitions>

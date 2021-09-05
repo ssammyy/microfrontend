@@ -247,6 +247,9 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
         ref.afterClosed()
             .subscribe(
                 res => {
+                    if(res){
+                        this.loadConsignmentDetails()
+                    }
 
                 }
             )
@@ -376,6 +379,7 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
             data: {
                 uuid: this.consignmentId,
                 configurations: this.configurations,
+                complianceStatus: this.consignment.cd_details.complianceStatus
             }
         });
         ref.afterClosed()
