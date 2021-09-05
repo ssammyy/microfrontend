@@ -42,6 +42,7 @@ import java.util.stream.Collectors
 class QADaoServices(
     private val applicationMapProperties: ApplicationMapProperties,
     private val commonDaoServices: CommonDaoServices,
+    private val usersRepo: IUserRepository,
     private val qaInvoiceCalculation: QaInvoiceCalculationDaoServices,
     private val limsServices: LimsServices,
     private val productsRepo: IProductsRepository,
@@ -2179,25 +2180,19 @@ class QADaoServices(
         plantID: Long,
         permit: PermitApplicationsEntity,
         map: ServiceMapsEntity,
-        designationID: Long
-    ): List<UserProfilesEntity> {
-        val plantAttached = findPlantDetails(plantID)
-        val region = plantAttached.region?.let { commonDaoServices.findRegionEntityByRegionID(it, map.activeStatus) }
-            ?: throw ExpectedDataNotFound("Plant attached Region Id is Empty, check config")
-        val department = commonDaoServices.findDepartmentByID(applicationMapProperties.mapQADepertmentId)
-        val designation = commonDaoServices.findDesignationByID(designationID)
-        val section = commonDaoServices.findSectionWIthId(
-            permit.sectionId ?: throw ExpectedDataNotFound("SECTION VALUE IS MISSING")
-        )
+        roleID: Long
+    ): List<UsersEntity> {
 
-        //return commonDaoServices.findAllUsersWithinRegionDepartmentDivisionSectionId(region, department, division, section, map.activeStatus)
-        return commonDaoServices.findAllUsersWithDesignationRegionDepartmentSectionAndStatus(
-            designation,
-            region,
-            section,
-            department,
-            map.activeStatus
+        val plantAttached = findPlantDetails(plantID)
+        usersRepo.findOfficerPermitUsersBySectionAndRegion(
+            roleID,
+            permit.sectionId ?: throw ExpectedDataNotFound("MISSING SECTION ID ON PERMIT"),
+            plantAttached.region ?: throw ExpectedDataNotFound("MISSING REGION ID ON BRANCH ATTACHED ON PERMIT"),
+            1
         )
+            ?.let {
+                return it
+            } ?: throw ExpectedDataNotFound("NO USER LIST FOUND")
     }
 
     fun assignNextOfficerAfterPayment(

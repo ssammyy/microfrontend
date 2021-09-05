@@ -1686,8 +1686,8 @@
                                                         th:field="*{qaoId}">
                                                     <option value="0">Select one...</option>
                                                     <option th:each="officer : ${officers}"
-                                                            th:text="${officer.userId?.firstName} + ' ' + ${officer.userId?.lastName}"
-                                                            th:name="qaoId" th:value="${officer.userId?.id}"></option>
+                                                            th:text="${officer?.firstName} + ' ' + ${officer?.lastName}"
+                                                            th:name="qaoId" th:value="${officer?.id}"></option>
                                                 </select>
                                             </div>
                                             <div id="scheduleInspectionDate">
@@ -1717,9 +1717,9 @@
                                                         th:field="*{leadAssessorId}">
                                                     <option value="0">Select one...</option>
                                                     <option th:each="assessor : ${assessorAssigned}"
-                                                            th:text="${assessor.userId?.firstName} + ' ' + ${assessor.userId?.lastName}"
+                                                            th:text="${assessor?.firstName} + ' ' + ${assessor?.lastName}"
                                                             th:name="assessorId"
-                                                            th:value="${assessor.userId?.id}"></option>
+                                                            th:value="${assessor?.id}"></option>
                                                 </select>
                                                 <br>
                                                 <label for="assessorId" class="col-form-label">Select Assessor:</label>
@@ -1727,9 +1727,9 @@
                                                         th:field="*{assessorId}">
                                                     <option value="0">Select one...</option>
                                                     <option th:each="assessor : ${assessorAssigned}"
-                                                            th:text="${assessor.userId?.firstName} + ' ' + ${assessor.userId?.lastName}"
+                                                            th:text="${assessor?.firstName} + ' ' + ${assessor?.lastName}"
                                                             th:name="assessorId"
-                                                            th:value="${assessor.userId?.id}"></option>
+                                                            th:value="${assessor?.id}"></option>
                                                 </select>
                                             </div>
                                             <div id="scheduleAssessmentDate">

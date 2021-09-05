@@ -759,9 +759,9 @@
 </h4>
 
 
-<form (ngSubmit)="onClickLogin()" [formGroup]="loginForm" action="" class="form" enctype="multipart/form-data"
+<!--<form (ngSubmit)="onClickLogin()" [formGroup]="loginForm" action="" class="form" enctype="multipart/form-data" method="post">-->
+<form (ngSubmit)="onClickValidateOtp()" [formGroup]="loginForm" action="" class="form" enctype="multipart/form-data"
       method="post">
-    <!--<form (ngSubmit)="onClickValidateOtp()" [formGroup]="loginForm" action="" class="form"-->
 
 
     <div class="form-body">
@@ -784,18 +784,18 @@
                     placeholder="Please Enter The OTP Sent To Your Phone"
                     required="required"
                     oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');"
-                    type="number">
+                    type="text">
         </div>
 
 
     </div>
     <p></p>
-    <button (click)="onClickLogin()" class="login-button" type="submit" value="">CONFIRM OTP</button>
-    <!--    <button (throttledClick)="onClickValidateOtp()" [hidden]="stepZeroForm.get('otp')?.invalid"-->
-    <!--            [throttleTime]="700" appPreventDoubleClick class="btn btn-primary mt-2"-->
-    <!--            type="button"-->
-    <!--    >CONFIRM OTP-->
-    <!--    </button>-->
+    <!--    <button (click)="onClickLogin()" class="login-button" type="submit" value="">CONFIRM OTP</button>-->
+    <button (throttledClick)="onClickValidateOtp()" [hidden]="loginForm.get('otp')?.invalid"
+            [throttleTime]="700" appPreventDoubleClick class="btn btn-primary mt-2"
+            type="button"
+    >CONFIRM OTP
+    </button>
 
 
 </form>

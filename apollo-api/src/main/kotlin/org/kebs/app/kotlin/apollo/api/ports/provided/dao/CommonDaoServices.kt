@@ -893,6 +893,13 @@ class CommonDaoServices(
 //                }
     }
 
+    fun findCompanyProfileWithKraPin(kraPin: String): CompanyProfileEntity? {
+        return companyProfileRepo.findByKraPin(kraPin)
+//                ?.let { userCompanyDetails ->
+//                     userCompanyDetails
+//                }
+    }
+
     fun findCompanyProfileWhoAreManufactures(status: Int): List<CompanyProfileEntity> {
         companyProfileRepo.findByManufactureStatus(status)
             ?.let { userCompanyDetails ->
@@ -1370,26 +1377,26 @@ class CommonDaoServices(
         }
     }
 
-    fun userListDto(userList: List<UserProfilesEntity>): List<UserEntityDto> {
+    fun userListDto(userList: List<UsersEntity>): List<UserEntityDto> {
         return userList.map { u ->
             UserEntityDto(
-                u.userId?.id,
-                u.userId?.firstName,
-                u.userId?.lastName,
-                u.userId?.userName,
-                u.userId?.userPinIdNumber,
-                u.userId?.personalContactNumber,
-                u.userId?.typeOfUser,
-                u.userId?.email,
-                u.userId?.userRegNo,
-                u.userId?.enabled == 1,
-                u.userId?.accountExpired == 1,
-                u.userId?.accountLocked == 1,
-                u.userId?.credentialsExpired == 1,
-                u.userId?.status == 1,
-                u.userId?.registrationDate,
-                u.userId?.userTypes,
-                u.userId?.title,
+                u.id,
+                u.firstName,
+                u.lastName,
+                u.userName,
+                u.userPinIdNumber,
+                u.personalContactNumber,
+                u.typeOfUser,
+                u.email,
+                u.userRegNo,
+                u.enabled == 1,
+                u.accountExpired == 1,
+                u.accountLocked == 1,
+                u.credentialsExpired == 1,
+                u.status == 1,
+                u.registrationDate,
+                u.userTypes,
+                u.title,
             )
         }
     }

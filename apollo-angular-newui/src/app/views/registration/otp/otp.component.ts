@@ -9,6 +9,7 @@ import {
 import {select, Store} from '@ngrx/store';
 import {ActivatedRoute, Router} from '@angular/router';
 import {throwError} from 'rxjs';
+import swal from 'sweetalert2';
 
 @Component({
   selector: 'app-otp',
@@ -51,6 +52,8 @@ export class OtpComponent implements OnInit {
 
   onClickValidateOtp() {
     console.log(`user name ${this.username}`);
+
+
     this.tokenValidated = true;
     if (
         this.loginForm?.get('otp')?.value === undefined ||
@@ -72,24 +75,28 @@ export class OtpComponent implements OnInit {
           token: this.loginForm?.get('otp')?.value
         }
       }));
+      this.store$.pipe(select(selectTokenValidatedStateValidated)).subscribe((d) => {
+        console.log(`value of inside is ${d}`);
+        if (d) {
+          this.username = this.loginForm?.get('username')?.value;
+          // this.step = 1;
+          this.router.navigate(['dashboard']);
+          return this.tokenValidated = d;
+        } else {
+          this.otpSent = false;
+          this.loginForm?.get('otp')?.reset();
+          this.store$.dispatch(loadResponsesFailure({
+            error: {
+              payload: 'OTP is invalid!, Could not validate token',
+              status: 100,
+              response: '05'
+            }
+          }));
+          // return throwError('Could not validate token');
+        }
 
+      });
     }
-
-    this.store$.pipe(select(selectTokenValidatedStateValidated)).subscribe((d) => {
-      console.log(`value of inside is ${d}`);
-      if (d) {
-        this.username = this.loginForm?.get('username')?.value;
-        // this.step = 1;
-        this.router.navigate(['dashboard']);
-        return this.tokenValidated = d;
-      } else {
-        this.otpSent = false;
-        this.loginForm?.get('otp')?.reset();
-        return throwError('Could not validate token');
-      }
-
-    });
-
     // if (this.tokenValidated) {
     //   console.log(`Token validation ${this.tokenValidated}`);
     // }

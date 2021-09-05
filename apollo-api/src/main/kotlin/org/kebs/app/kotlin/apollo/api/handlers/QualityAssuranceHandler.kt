@@ -949,21 +949,38 @@ class QualityAssuranceHandler(
             ?.forEach { fpdf ->
 
                 if (savedPDFFiles.isNotEmpty()) {
-                    savedPDFFiles.forEach { spdf ->
-                        if (fpdf.equals(spdf.pdfName)) {
+                    savedPDFFiles.firstOrNull { it.pdfName == fpdf }
+                        ?.let {
                             val limsDto = LimsFilesFoundDto(
                                 true,
                                 fpdf
                             )
                             result.add(limsDto)
-                        } else {
+                        }
+                        ?: run {
                             val limsDto = LimsFilesFoundDto(
                                 false,
                                 fpdf
                             )
                             result.add(limsDto)
                         }
-                    }
+
+
+//                    savedPDFFiles.forEach { spdf ->
+//                        if (fpdf == spdf.pdfName) {
+//                            val limsDto = LimsFilesFoundDto(
+//                                true,
+//                                fpdf
+//                            )
+//                            result.add(limsDto)
+//                        } else {
+//                            val limsDto = LimsFilesFoundDto(
+//                                false,
+//                                fpdf
+//                            )
+//                            result.add(limsDto)
+//                        }
+//                    }
                 } else {
                     val limsDto = LimsFilesFoundDto(
                         false,
@@ -974,29 +991,7 @@ class QualityAssuranceHandler(
 
             }
 
-        result.distinct()
 
-//        result.forEach { r->
-        savedPDFFiles.forEach { spdf ->
-            val limsDto = LimsFilesFoundDto(
-                false,
-                spdf.pdfName
-            )
-            result.remove(limsDto)
-//                if (r.fileName.equals(spdf.pdfName)) {
-//                    val limsDto = LimsFilesFoundDto(
-//                        true,
-//                        r.fileName
-//                    )
-//                    finalResult.add(limsDto)
-//                } else {
-//                    val limsDto = LimsFilesFoundDto(
-//                        false,
-//                        r.fileName
-//                    )
-//                    finalResult.add(limsDto)
-//                }
-        }
 //        }
         req.attributes()["LabResultsParameters"] = labResultsParameters
         req.attributes()["savedPDFFiles"] = savedPDFFiles
@@ -1287,7 +1282,7 @@ class QualityAssuranceHandler(
                         it,
                         permit,
                         s,
-                        applicationMapProperties.mapQADesignationIDForQAOId
+                        applicationMapProperties.mapQAUserOfficerRoleId
                     )
                 }),
             Pair(
@@ -1297,7 +1292,7 @@ class QualityAssuranceHandler(
                         it,
                         permit,
                         s,
-                        applicationMapProperties.mapQADesignationIDForAssessorId
+                        applicationMapProperties.mapQAUserAssessorRoleId
                     )
                 })
         )
