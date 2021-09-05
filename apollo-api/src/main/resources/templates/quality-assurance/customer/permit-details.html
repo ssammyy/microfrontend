@@ -2333,7 +2333,8 @@
                                                        th:field="*{ssfSubmissionDate}" th:required="required">
                                                 <label for="bsNumber" class="col-form-label">BS Number:</label>
                                                 <input class="input-field w-input" type="text" max="20" id="bsNumber"
-                                                       name="bsNumber" th:field="*{bsNumber}" th:required="required">
+                                                       name="bsNumber" style="text-transform:uppercase"
+                                                       th:field="*{bsNumber}" th:required="required">
                                                 <label for="brandName" class="col-form-label">Brand Name:</label>
                                                 <input id="brandName" name="brandName"
                                                        th:value="${permitDetails?.tradeMark}" type="hidden">

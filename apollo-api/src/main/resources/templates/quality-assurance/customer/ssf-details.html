@@ -173,14 +173,15 @@
                                         <tr class="list" th:each="pdfFound: ${foundPDFFiles}" style="cursor: pointer">
 
                                             <!--                                            <td th:text="${fileParam.sampleNumber}"></td>-->
-                                            <td th:text="${pdfFound}"></td>
+                                            <td th:text="${pdfFound?.fileName}"></td>
                                             <!--                                            <td th:text="${fileParam.result}"></td>-->
                                             <!--                                            <td th:text="${fileParam.method}"></td>-->
                                             <td>
-                                                <a th:href="@{/api/qa/kebs/view/attached-lab-pdf(fileName=${pdfFound}, bsNumber=${ssfDetails?.bsNumber})}"
+                                                <a th:href="@{/api/qa/kebs/view/attached-lab-pdf(fileName=${pdfFound?.fileName}, bsNumber=${ssfDetails?.bsNumber})}"
                                                    target='_blank' class="btn btn-primary itemViewBtn">view</a></td>
-                                            <td>
-                                                <a th:href="@{/api/qa/kebs/selected/attached-lab-pdf(fileName=${pdfFound}, bsNumber=${ssfDetails?.bsNumber}, ssfID=${ssfDetails?.id})}"
+
+                                            <td th:if="${pdfFound?.fileSavedStatus == false}">
+                                                <a th:href="@{/api/qa/kebs/selected/attached-lab-pdf(fileName=${pdfFound?.fileName}, bsNumber=${ssfDetails?.bsNumber}, ssfID=${ssfDetails?.id})}"
                                                    class="btn btn-primary itemViewBtn">SAVE</a></td>
                                         </tr>
                                         </tbody>
