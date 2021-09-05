@@ -35,7 +35,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     ): List<PermitApplicationsEntity>?
 
     @Query(
-        "SELECT r.* FROM DAT_KEBS_PERMIT_TRANSACTION PR, DAT_KEBS_MANUFACTURE_PLANT_DETAILS B WHERE PR.ATTACHED_PLANT_ID = B.ID AND PR.PAID_STATUS = :paidStatus AND B.REGION = :region order by r.ID",
+        "SELECT pr.* FROM DAT_KEBS_PERMIT_TRANSACTION pr, DAT_KEBS_MANUFACTURE_PLANT_DETAILS B WHERE pr.ATTACHED_PLANT_ID = B.ID AND pr.PAID_STATUS = :paidStatus AND B.REGION = :region order by pr.ID",
         nativeQuery = true
     )
     fun findRbacPermitByRegionIDPaymentStatus(
@@ -44,7 +44,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     ): List<PermitApplicationsEntity>?
 
     @Query(
-        "SELECT r.* FROM DAT_KEBS_PERMIT_TRANSACTION PR, DAT_KEBS_MANUFACTURE_PLANT_DETAILS B WHERE PR.ATTACHED_PLANT_ID = B.ID AND PR.PAID_STATUS = :paidStatus AND PR.PERMIT_TYPE = :permitType AND B.REGION = :region order by r.ID",
+        "SELECT pr.* FROM DAT_KEBS_PERMIT_TRANSACTION pr, DAT_KEBS_MANUFACTURE_PLANT_DETAILS B WHERE pr.ATTACHED_PLANT_ID = B.ID AND pr.PAID_STATUS = :paidStatus AND pr.PERMIT_TYPE = :permitType AND B.REGION = :region order by pr.ID",
         nativeQuery = true
     )
     fun findRbacPermitByRegionIDPaymentStatusAndPermitTypeID(
@@ -54,7 +54,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     ): List<PermitApplicationsEntity>?
 
     @Query(
-        "SELECT r.* FROM DAT_KEBS_PERMIT_TRANSACTION PR, DAT_KEBS_MANUFACTURE_PLANT_DETAILS B WHERE PR.ATTACHED_PLANT_ID = B.ID AND PR.PAID_STATUS = :paidStatus AND PR.PERMIT_AWARD_STATUS = :permitAwardStatus AND PR.PERMIT_TYPE = :permitType AND B.REGION = :region order by r.ID",
+        "SELECT pr.* FROM DAT_KEBS_PERMIT_TRANSACTION pr, DAT_KEBS_MANUFACTURE_PLANT_DETAILS B WHERE pr.ATTACHED_PLANT_ID = B.ID AND pr.PAID_STATUS = :paidStatus AND pr.PERMIT_AWARD_STATUS = :permitAwardStatus AND pr.PERMIT_TYPE = :permitType AND B.REGION = :region order by pr.ID",
         nativeQuery = true
     )
     fun findRbacPermitByRegionIDPaymentStatusAndPermitTypeIDAndAwardedStatus(
@@ -65,26 +65,32 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     ): List<PermitApplicationsEntity>?
 
     @Query(
-        "SELECT r.* FROM DAT_KEBS_PERMIT_TRANSACTION PR, DAT_KEBS_MANUFACTURE_PLANT_DETAILS B WHERE PR.ATTACHED_PLANT_ID = B.ID AND PR.USER_TASK_ID = :userTaskId AND PR.PAID_STATUS = :paidStatus AND PR.OLD_PERMIT_STATUS = :oldPermitStatus AND B.REGION = :region order by r.ID",
+        "SELECT pr.* FROM DAT_KEBS_PERMIT_TRANSACTION pr, DAT_KEBS_MANUFACTURE_PLANT_DETAILS B WHERE pr.ATTACHED_PLANT_ID = B.ID AND pr.USER_TASK_ID = :userTaskId AND pr.PAID_STATUS = :paidStatus AND pr.OLD_PERMIT_STATUS is null AND B.REGION = :region order by pr.ID",
         nativeQuery = true
     )
     fun findRbacPermitByRegionIDPaymentStatusAndUserTaskID(
         @Param("paidStatus") paidStatus: Int,
         @Param("region") region: Long,
-        @Param("userTaskId") userTaskId: Long,
-        @Param("oldPermitStatus") oldPermitStatus: Int?
+        @Param("userTaskId") userTaskId: Long
     ): List<PermitApplicationsEntity>?
 
+    //    @Query(
+//        "SELECT pr.* FROM DAT_KEBS_PERMIT_TRANSACTION pr, DAT_KEBS_MANUFACTURE_PLANT_DETAILS B WHERE " +
+//                "pr.ATTACHED_PLANT_ID = B.ID AND pr.USER_TASK_ID = :userTaskId AND pr.PERMIT_TYPE = :permitType " +
+//                "AND pr.PAID_STATUS = :paidStatus AND pr.OLD_PERMIT_STATUS = :oldPermitStatus AND B.REGION = :region order by pr.ID",
+//        nativeQuery = true
+//    )
     @Query(
-        "SELECT r.* FROM DAT_KEBS_PERMIT_TRANSACTION PR, DAT_KEBS_MANUFACTURE_PLANT_DETAILS B WHERE PR.ATTACHED_PLANT_ID = B.ID AND PR.USER_TASK_ID = :userTaskId AND PR.PERMIT_TYPE = :permitType AND PR.PAID_STATUS = :paidStatus AND PR.OLD_PERMIT_STATUS = :oldPermitStatus AND B.REGION = :region order by r.ID",
+        "SELECT pr.* FROM DAT_KEBS_PERMIT_TRANSACTION pr, DAT_KEBS_MANUFACTURE_PLANT_DETAILS B WHERE " +
+                "pr.ATTACHED_PLANT_ID = B.ID AND pr.USER_TASK_ID = :userTaskId AND pr.PERMIT_TYPE = :permitType " +
+                "AND pr.PAID_STATUS = :paidStatus AND pr.OLD_PERMIT_STATUS is null AND B.REGION = :region order by pr.ID",
         nativeQuery = true
     )
     fun findRbacPermitByRegionIDPaymentStatusAndUserTaskIDAndPermitType(
         @Param("permitType") permitType: Long,
         @Param("paidStatus") paidStatus: Int,
         @Param("region") region: Long,
-        @Param("userTaskId") userTaskId: Long,
-        @Param("oldPermitStatus") oldPermitStatus: Int?
+        @Param("userTaskId") userTaskId: Long
     ): List<PermitApplicationsEntity>?
 
     fun findByUserIdAndPermitTypeAndOldPermitStatusIsNull(

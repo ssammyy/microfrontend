@@ -891,15 +891,15 @@ class QualityAssuranceController(
         when (permitDetailsDB.permitType) {
             applicationMapProperties.mapQAPermitTypeIDDmark -> {
                 permitDetailsDB.userTaskId = applicationMapProperties.mapUserTaskNameHOD
-                userAssigned = commonDaoServices.findUserByID(
-                    permitDetailsDB.hodId ?: throw ExpectedDataNotFound("MISSING HOD ID")
-                )
+//                userAssigned = commonDaoServices.findUserByID(
+//                    permitDetailsDB.hodId ?: throw ExpectedDataNotFound("MISSING HOD ID")
+//                )
             }
             else -> {
                 permitDetailsDB.userTaskId = applicationMapProperties.mapUserTaskNameQAM
-                userAssigned = commonDaoServices.findUserByID(
-                    permitDetailsDB.qamId ?: throw ExpectedDataNotFound("MISSING QAM ID")
-                )
+//                userAssigned = commonDaoServices.findUserByID(
+//                    permitDetailsDB.qamId ?: throw ExpectedDataNotFound("MISSING QAM ID")
+//                )
             }
         }
 
@@ -1454,15 +1454,15 @@ class QualityAssuranceController(
                         when (permitFound.permitType) {
                             applicationMapProperties.mapQAPermitTypeIDDmark -> {
                                 permitFound.userTaskId = applicationMapProperties.mapUserTaskNameHOD
-                                userAssigned = commonDaoServices.findUserByID(
-                                    permitFound.hodId ?: throw ExpectedDataNotFound("MISSING HOD ID")
-                                )
+//                                userAssigned = commonDaoServices.findUserByID(
+//                                    permitFound.hodId ?: throw ExpectedDataNotFound("MISSING HOD ID")
+//                                )
                             }
                             else -> {
                                 permitFound.userTaskId = applicationMapProperties.mapUserTaskNameQAM
-                                userAssigned = commonDaoServices.findUserByID(
-                                    permitFound.qamId ?: throw ExpectedDataNotFound("MISSING QAM ID")
-                                )
+//                                userAssigned = commonDaoServices.findUserByID(
+//                                    permitFound.qamId ?: throw ExpectedDataNotFound("MISSING QAM ID")
+//                                )
                             }
                         }
                         permitFound.resubmitApplicationStatus = 10
@@ -1482,10 +1482,10 @@ class QualityAssuranceController(
                             loggedInUser
                         )
 
-                        qaDaoServices.sendEmailWithTaskDetails(
-                            userAssigned.email ?: throw ExpectedDataNotFound("Missing Email address"),
-                            permitFound.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
-                        )
+//                        qaDaoServices.sendEmailWithTaskDetails(
+//                            userAssigned.email ?: throw ExpectedDataNotFound("Missing Email address"),
+//                            permitFound.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
+//                        )
                         sendInspectionReport(permitFound)
 
                     }
@@ -2329,6 +2329,7 @@ class QualityAssuranceController(
                             permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
                             map.activeStatus
                         ).size.toLong().plus(versionNumber)
+
                         uploadResults = qaDaoServices.saveQaFileUploads(
                             docFile,
                             docFileName,
@@ -2341,11 +2342,11 @@ class QualityAssuranceController(
                             manufactureNonStatus
                         )
 
-                        val hodDetails = qaDaoServices.assignNextOfficerAfterPayment(
-                            permitDetails,
-                            map,
-                            applicationMapProperties.mapQADesignationIDForHODId
-                        )
+//                        val hodDetails = qaDaoServices.assignNextOfficerAfterPayment(
+//                            permitDetails,
+//                            map,
+//                            applicationMapProperties.mapQADesignationIDForHODId
+//                        )
 
 
                         with(permitDetails) {
@@ -2357,15 +2358,16 @@ class QualityAssuranceController(
                             }
                             assessmentScheduledStatus = map.successStatus
                             assessmentReportRemarks = assessmentRecommendations
-                            hodId = hodDetails?.id
+//                            hodId = hodDetails?.id
+                            userTaskId = applicationMapProperties.mapUserTaskNameHOD
                             permitStatus = applicationMapProperties.mapQaStatusPApprovalAssesmentReport
 
                         }
                         permitDetails = qaDaoServices.permitUpdateDetails(permitDetails, map, loggedInUser).second
 
-                        //Send notification to HOD secretary
-                        val hodSec = hodDetails?.id?.let { commonDaoServices.findUserByID(it) }
-                        hodSec?.email?.let { qaDaoServices.sendPacDmarkAssessmentNotificationEmail(it, permitDetails) }
+//                        //Send notification to HOD secretary
+//                        val hodSec = hodDetails?.id?.let { commonDaoServices.findUserByID(it) }
+//                        hodSec?.email?.let { qaDaoServices.sendPacDmarkAssessmentNotificationEmail(it, permitDetails) }
                         sm.closeLink =
                             "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permitDetails.permitType}"
 
@@ -2507,6 +2509,9 @@ class QualityAssuranceController(
             manufactureNonStatus
         )
         permitDetails1.justificationReportStatus = map.initStatus
+        if (permitDetails1.resubmitApplicationStatus == 1) {
+            permitDetails1.resubmitApplicationStatus = 10
+        }
 //        permitDetails1.permitStatus = applicationMapProperties.mapQaStatusPApprovalustCationReport
         permitDetails1.permitStatus = applicationMapProperties.mapQaStatusPInspectionReportApproval
 //            permitStatus = applicationMapProperties.mapQaStatusPApprovalustCationReport

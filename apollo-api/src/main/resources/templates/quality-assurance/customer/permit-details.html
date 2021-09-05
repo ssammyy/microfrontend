@@ -1292,7 +1292,7 @@
                                                th:href="@{/api/qa/inspection/inspection-report-list(permitID=${permitDetails?.id})}"
                                                class="filter-link">APPROVE/REJECT GENERATED INSPECTION REPORT </a>
 
-                                            <a th:if="${permitDetails?.compliantStatus == 1 and permitDetails?.justificationReportStatus == 10 and permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1}"
+                                            <a th:if="${permitDetails?.compliantStatus == 1 and permitDetails?.justificationReportStatus == 10 and permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 and permitDetails?.resubmitApplicationStatus != 10}"
                                                onclick="popUpFunction('approveRejectJustification');"
                                                style="color: white" class="filter-link">Approve/Reject Justification
                                                 for Diamond Mark Assessment</a>
@@ -1336,7 +1336,8 @@
                                                onclick="popUpFunction('hodApprovalAssessmentReport');"
                                                class="filter-link">Re-Approve/Reject Assessment Report</a>
 
-                                            <a th:if="${permitDetails?.compliantStatus == 1 and permitDetails?.justificationReportStatus == 10 and permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 and permitDetails?.resubmitApplicationStatus == 10}"
+                                            <a th:if="${permitDetails?.compliantStatus == 1 and permitDetails?.justificationReportStatus == 10 and permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1
+                                            and permitDetails?.resubmitApplicationStatus == 10 }"
                                                onclick="popUpFunction('approveRejectJustification');"
                                                style="color: white" class="filter-link">RE-Approve/Reject Justification
                                                 for Diamond Mark Assessment</a>

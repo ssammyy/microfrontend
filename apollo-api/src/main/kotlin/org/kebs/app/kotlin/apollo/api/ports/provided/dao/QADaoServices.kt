@@ -521,7 +521,7 @@ class QADaoServices(
             auth.authorities.stream().anyMatch { authority -> authority.authority == authToCompareWith } -> {
                 permitListAllApplications = permitRepo.findRbacPermitByRegionIDPaymentStatusAndUserTaskIDAndPermitType(
                     permitTypeID, map.initStatus,
-                    userProfile.regionId?.id ?: throw Exception("MISSING REGION ID"), taskID, null
+                    userProfile.regionId?.id ?: throw Exception("MISSING REGION ID"), taskID
                 )
             }
         }
