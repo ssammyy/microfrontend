@@ -14,15 +14,11 @@ import org.flowable.engine.RepositoryService
 import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
 import org.flowable.engine.delegate.event.FlowableActivityCancelledEvent
-import org.flowable.engine.delegate.event.impl.FlowableEventBuilder
-import org.flowable.engine.history.DeleteReason
 import org.flowable.engine.history.HistoricActivityInstance
-import org.flowable.engine.impl.persistence.entity.ExecutionEntity
-import org.flowable.engine.impl.util.CommandContextUtil
-import org.flowable.engine.impl.util.TaskHelper
 import org.flowable.engine.repository.Deployment
+import org.flowable.engine.runtime.ProcessInstance
+import org.flowable.engine.task.Attachment
 import org.flowable.task.api.Task
-import org.flowable.task.service.impl.persistence.entity.TaskEntity
 import org.kebs.app.kotlin.apollo.api.web.config.EmailConfig
 import org.kebs.app.kotlin.apollo.common.dto.std.ID
 import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponse
@@ -38,20 +34,6 @@ import java.io.StringReader
 import java.sql.Timestamp
 import java.util.*
 import kotlin.collections.HashMap
-import org.flowable.engine.impl.util.TaskHelper.deleteHistoricTaskEventLogEntries
-
-import org.flowable.engine.impl.util.TaskHelper.deleteHistoricTask
-
-import org.flowable.engine.impl.util.Flowable5Util
-
-import org.flowable.engine.compatibility.Flowable5CompatibilityHandler
-
-import org.flowable.common.engine.api.FlowableException
-
-import org.flowable.common.engine.impl.interceptor.CommandContext
-
-
-
 
 
 @Service
@@ -433,7 +415,7 @@ class StandardRequestService(
             .list()
         for (activity in activities) {
             println(
-                activity.activityId + " took " + activity.durationInMillis + " milliseconds"
+                activity.activityId + " took " + activity.durationInMillis + " milliseconds" + activity.processInstanceId
             )
         }
 
@@ -442,38 +424,53 @@ class StandardRequestService(
     }
 
 
-    fun deleteTask(taskId: String?) {
-        val deleteReason = "test"
-        val cascade = true
+//    fun deleteTask(taskId: ID) {
+//        val deleteReason = "test"
+//        val cascade = true
+//        println("ID passed to services is" + taskId)
+//        val historyService = processEngine.historyService
+//
+//
+//         val activities = historyService
+//            .createHistoricActivityInstanceQuery()
+//            .processInstanceId(taskId.ID)
+////        val taskIdb = taskId.replace("\"", "");
+////        val taskIdbc = taskIdb.replace("{", "").replace("}", "");
+////        val taskIdc = taskIdbc.replace("id:", "");
+//        println("Final ID passed to services is" + taskId.toString())
+//        val tasks = CommandContextUtil.getTaskService().findTasksByProcessInstanceId("b88aa534-d97f-11eb-82cd-fe5c68490b49")
+//        for (task in tasks) {
+//            if (CommandContextUtil.getEventDispatcher().isEnabled && !task.isCanceled) {
+//                task.isCanceled = true
+//                val execution = CommandContextUtil.getExecutionEntityManager().findById(task.executionId)
+//                CommandContextUtil.getEventDispatcher()
+//                    .dispatchEvent(
+//                        FlowableEventBuilder
+//                            .createActivityCancelledEvent(
+//                                execution.activityId, task.name,
+//                                task.executionId, task.processInstanceId,
+//                                task.processDefinitionId, "userTask", deleteReason
+//                            )
+//                    )
+//            }
+//            deleteTask(task, deleteReason, cascade, true, true)
+//        }
+//    }
 
-        val commandContext = CommandContextUtil.getCommandContext()
-        val task = CommandContextUtil.getTaskService(commandContext).getTask(taskId)
-        if (task != null) {
-            if (task.executionId != null) {
-                throw FlowableException("The task cannot be deleted because is part of a running process")
-            }
-            if (Flowable5Util.isFlowable5ProcessDefinitionId(commandContext, task.processDefinitionId)) {
-                val compatibilityHandler = Flowable5Util.getFlowable5CompatibilityHandler()
-                compatibilityHandler.deleteTask(taskId, deleteReason, cascade)
-                return
-            }
-            deleteTask(task, deleteReason, cascade, true, true)
-        } else if (cascade) {
-            deleteHistoricTask(taskId)
-            deleteHistoricTaskEventLogEntries(taskId)
-        }
+    //    fun deleteTask(task: TaskEntity, deleteReason: String?, cascade: Boolean, b: Boolean, b1: Boolean) {
+//        TaskHelper.deleteTask(task.toString(), deleteReason, cascade)
+//
+//    }
+    fun closeTask(taskId: String){
+        // taskService.complete(taskId)
+        // taskService.deleteTask(taskId, true)
 
+        runtimeService.deleteProcessInstance(taskId, "cleaning")
     }
 
-    fun deleteTask(task: TaskEntity, deleteReason: String?, cascade: Boolean, b: Boolean, b1: Boolean) {
-        TaskHelper.deleteTask(task.toString(), deleteReason, cascade)
-
-    }
-    fun closeTask(taskId: String) {
-        taskService.complete(taskId)
-//        taskService.deleteTask(taskId)
-    }
 }
+
+
 
 
 
