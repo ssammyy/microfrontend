@@ -218,7 +218,7 @@ class ReportsController(
         map["faxNumber"] = foundPermitDetails.faxNo.toString()
         map["EmailAddress"] = foundPermitDetails.email.toString()
         map["phoneNumber"] = foundPermitDetails.telephoneNo.toString()
-        map["QrCode"] = foundPermitDetails.permitNumber.toString()
+        map["QrCode"] = applicationMapProperties.baseUrlValue
         when (foundPermitDetails.permitTypeID) {
             applicationMapProperties.mapQAPermitTypeIDDmark -> {
                 map["DmarkLogo"] = dMarkImageFile

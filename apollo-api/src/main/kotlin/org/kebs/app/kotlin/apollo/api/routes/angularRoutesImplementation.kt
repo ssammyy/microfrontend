@@ -416,6 +416,7 @@ class AngularRoutes {
             GET("/background/smark/image", handler::smarkBackGroundImage)
             GET("/background/dmark/image", handler::dmarkBackGroundImage)
             GET("/background/fmark/image", handler::fmarkBackGroundImage)
+            GET("/permit/details", handler::fmarkBackGroundImage)
         }
     }
 

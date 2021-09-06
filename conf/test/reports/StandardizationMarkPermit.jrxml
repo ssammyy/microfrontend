@@ -6,6 +6,15 @@
               name="StandardMarkPermit" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail"
               columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20"
               whenResourceMissingType="Empty" uuid="ed21babd-bc90-4f45-a015-31c53503a62e">
+    <property name="com.jaspersoft.studio.unit." value="pixel"/>
+    <property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+    <property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+    <property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+    <property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+    <property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+    <property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+    <property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+    <property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
     <parameter name="DmarkLogo" class="java.lang.String"/>
     <parameter name="imagePath" class="java.lang.String"/>
     <parameter name="FirmName" class="java.lang.String"/>
@@ -26,83 +35,131 @@
     <queryString>
         <![CDATA[]]>
     </queryString>
-    <background>
-        <band height="802" splitType="Stretch">
-            <property name="com.jaspersoft.studio.unit.height" value="px"/>
+    <detail>
+        <band height="802">
             <image>
-                <reportElement x="3" y="0" width="546" height="800" uuid="3edd0bc8-6b9f-4acb-a623-c057a68c5a36">
+                <reportElement positionType="FixRelativeToBottom" x="0" y="0" width="555" height="802"
+                               uuid="e1382649-ac12-412e-afba-5e814c3459ca">
                     <property name="com.jaspersoft.studio.unit.width" value="px"/>
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
                 </reportElement>
-                <imageExpression><![CDATA[$P{backGroundImage}]]></imageExpression>
+                <imageExpression>
+                    <![CDATA["/app/apps_home/apollo/conf/test/reports/images/kebs_smark_background_image.png"]]></imageExpression>
             </image>
-            <line>
-                <reportElement x="331" y="282" width="221" height="1" uuid="98572c30-01aa-422c-81b5-fc828e7bab14"/>
-            </line>
             <staticText>
-                <reportElement x="350" y="33" width="53" height="18" uuid="4219ce4c-fd2c-4558-863c-17e2ddf628d4"/>
+                <reportElement x="10" y="27" width="454" height="20" uuid="614eea48-cb68-464f-be18-c03f01c3dccf"/>
+                <textElement>
+                    <font fontName="SansSerif" size="14" isBold="true"/>
+                </textElement>
+                <text><![CDATA[PERMIT TO USE THE STANDARDAIZATION MARK OF QUALITY]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="154" y="52" width="180" height="20" uuid="6259121e-fa45-4ca2-bec8-b33aa75718a0"/>
+                <textElement>
+                    <font fontName="SansSerif"/>
+                </textElement>
+                <text><![CDATA[THE STANDARDS ACT (CAP.496)]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="0" y="-13" width="163" height="13" uuid="5b9f4406-659d-4a20-abdf-f0dcd1a68d1e"/>
+                <textElement>
+                    <font size="8"/>
+                </textElement>
+                <text><![CDATA[ORIGINAL FORM STA/2]]></text>
+            </staticText>
+            <textField textAdjust="ScaleFont">
+                <reportElement stretchType="ContainerHeight" x="111" y="193" width="222" height="16"
+                               uuid="2863ffe8-1b42-4366-8ddb-f5cdc3aa4e3b"/>
+                <textFieldExpression><![CDATA[$P{PhysicalAddress}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="348" y="101" width="53" height="18" uuid="5ba87400-bf38-482f-aa47-1dbdfc2de567"/>
                 <textElement verticalAlignment="Middle">
                     <font fontName="SansSerif"/>
                 </textElement>
                 <text><![CDATA[MARK NO:]]></text>
             </staticText>
             <staticText>
-                <reportElement x="329" y="312" width="224" height="20" uuid="f84fcf4f-66fd-443c-8e56-4c3b727137ea"/>
-                <textElement>
-                    <font fontName="SansSerif" size="12" isBold="true"/>
-                </textElement>
-                <text><![CDATA[KENYA BUREAU OF STANDARDS]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="5" y="265" width="309" height="73" uuid="291f955a-a137-4aab-ba96-0284aaa438c4"/>
-                <textElement textAlignment="Justified">
-                    <font fontName="SansSerif" size="9"/>
-                </textElement>
-                <text><![CDATA[1. EVERY STANDARDIZATION MARK HOLDER SHALL PAY AN ANNUAL  FEE IN RESPECT OF EACH PERMIT GRANTED OR RENEWED
-
-2. THIS PERMIT IS ISSUED SUBJECT TO THE CONDITIONS SET OUT IN THE  CONTRACT FOR USE OF THE STANDARDIZATION MARK OF QUALITY]]></text>
-            </staticText>
-            <textField textAdjust="ScaleFont">
-                <reportElement x="94" y="49" width="230" height="15" uuid="365d1ae6-c88d-4008-9774-d7f5e02faf33"/>
-                <textFieldExpression><![CDATA[$P{FirmName}]]></textFieldExpression>
-            </textField>
-            <staticText>
-                <reportElement x="3" y="113" width="120" height="18" uuid="1dec406f-5e2f-4706-a8b7-f221937dac38"/>
-                <textElement>
+                <reportElement x="348" y="156" width="70" height="18" uuid="034b6978-c24f-4eff-b6a2-d70f16cd3c93"/>
+                <textElement verticalAlignment="Middle">
                     <font fontName="SansSerif"/>
                 </textElement>
-                <text><![CDATA[PHYSICAL ADDRESS]]></text>
+                <text><![CDATA[EXPIRES ON:]]></text>
             </staticText>
-            <textField textAdjust="StretchHeight">
-                <reportElement x="216" y="136" width="298" height="57" uuid="72591d5b-6151-478e-8928-697ff7099f2b"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                <textFieldExpression><![CDATA[$P{TradeMark}]]></textFieldExpression>
-            </textField>
+            <line>
+                <reportElement x="85" y="109" width="246" height="1" uuid="ed1ceec0-918c-452b-aac2-a5a3e1678695"/>
+            </line>
+            <line>
+                <reportElement x="111" y="149" width="220" height="1" uuid="401351ac-1713-41ea-81a0-d42db0abdc27"/>
+            </line>
             <textField textAdjust="ScaleFont">
-                <reportElement x="89" y="158" width="195" height="18" uuid="d9acfe1a-feca-49e2-bd0f-2070a9f862b0"/>
+                <reportElement x="86" y="220" width="195" height="18" uuid="0ca99c7d-cd03-45ce-8af4-ee1f539a9f18"/>
                 <box>
                     <bottomPen lineWidth="1.0"/>
                 </box>
                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
                 <textFieldExpression><![CDATA[$P{phoneNumber}]]></textFieldExpression>
             </textField>
-            <image>
-                <reportElement x="234" y="13" width="50" height="50" uuid="bd262951-9d79-4cd2-9751-d6edf8960442"/>
-                <imageExpression><![CDATA[$P{SmarkLogo}]]></imageExpression>
-            </image>
+            <staticText>
+                <reportElement x="348" y="127" width="93" height="18" uuid="a6c24816-960b-441e-b8d0-ddb2b3877db6"/>
+                <textElement verticalAlignment="Middle">
+                    <font fontName="SansSerif"/>
+                </textElement>
+                <text><![CDATA[EFFECTIVE FROM:]]></text>
+            </staticText>
+            <line>
+                <reportElement x="1" y="210" width="330" height="1" uuid="ad573b80-07a2-4bc5-a596-66807e435b88"/>
+            </line>
             <textField textAdjust="ScaleFont">
-                <reportElement x="93" y="206" width="190" height="20" uuid="08eb8087-2932-4841-be99-4d007b42f9a4"/>
+                <reportElement x="91" y="266" width="190" height="20" uuid="66c35fde-acea-4d9a-a976-967f12035faf"/>
                 <box>
                     <bottomPen lineWidth="1.0"/>
                 </box>
                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
                 <textFieldExpression><![CDATA[$P{EmailAddress}]]></textFieldExpression>
             </textField>
+            <textField>
+                <reportElement x="430" y="180" width="120" height="20" uuid="b3039bf3-1961-4bc3-ade8-534b66ed2107"/>
+                <box>
+                    <bottomPen lineWidth="1.0"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$P{DateOfIssue}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="2" y="221" width="89" height="18" uuid="6e37b2b0-51f3-4946-be8a-0ed96e9b7703"/>
+                <textElement verticalAlignment="Middle">
+                    <font fontName="SansSerif"/>
+                </textElement>
+                <text><![CDATA[TELEPHONE NO:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="440" y="126" width="113" height="17" uuid="90be2415-4c25-49b1-a407-285268602525"/>
+                <box>
+                    <bottomPen lineWidth="1.0"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$P{DateOfIssue}]]></textFieldExpression>
+            </textField>
+            <textField textAdjust="ScaleFont">
+                <reportElement x="92" y="111" width="230" height="15" uuid="018036fb-d410-46ca-9770-a311b4fe373a"/>
+                <textFieldExpression><![CDATA[$P{FirmName}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="2" y="244" width="49" height="18" uuid="e149a848-074b-4233-a4ea-b034e39f712f"/>
+                <textElement textAlignment="Left" verticalAlignment="Middle">
+                    <font fontName="SansSerif"/>
+                </textElement>
+                <text><![CDATA[FAX NO:]]></text>
+            </staticText>
             <line>
-                <reportElement x="3" y="106" width="330" height="1" uuid="d02e27e5-f739-4a98-bebe-a2ff869ccd84"/>
+                <reportElement x="1" y="168" width="330" height="1" uuid="1b16546c-463c-4906-a67a-4ef1e2bc9493"/>
+            </line>
+            <line>
+                <reportElement x="1" y="128" width="330" height="1" uuid="6779fcb3-5429-48e7-b4fc-31d999fcf256"/>
             </line>
             <textField textAdjust="ScaleFont">
-                <reportElement x="50" y="181" width="236" height="18" uuid="d4b90aca-f1b9-401a-85c9-1ccc6a88514b"/>
+                <reportElement x="45" y="241" width="236" height="18" uuid="5986622a-68de-4f42-a459-4883863e4601"/>
                 <box>
                     <bottomPen lineWidth="1.0"/>
                 </box>
@@ -110,102 +167,187 @@
                 <textFieldExpression><![CDATA[$P{faxNumber}]]></textFieldExpression>
             </textField>
             <staticText>
-                <reportElement x="3" y="18" width="178" height="18" uuid="b1f2d110-c146-4d73-983c-d0056c3bf2c2"/>
-                <textElement>
-                    <font fontName="SansSerif"/>
-                </textElement>
-                <text><![CDATA[PERMIT IS GRANTED TO :]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="44" y="35" width="440" height="20" uuid="679faa21-1033-46cc-96e3-864e6aec8fe2"/>
-                <textElement>
-                    <font fontName="SansSerif" size="14" isBold="true"/>
-                </textElement>
-                <text><![CDATA[PERMIT TO USE THE STANDARDAIZATION MARK OF QUALITY]]></text>
-            </staticText>
-            <textField textAdjust="StretchHeight">
-                <reportElement x="214" y="70" width="299" height="57" uuid="92cad2e8-6ae0-447e-a042-8ca2455136e3"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                <textFieldExpression><![CDATA[$P{CommodityDesc}]]></textFieldExpression>
-            </textField>
-            <staticText>
-                <reportElement x="34" y="25" width="118" height="16" uuid="fc6f0b42-9302-40d7-a860-873bb03b66b6"/>
-                <textElement>
-                    <font fontName="SansSerif" size="8"/>
-                </textElement>
-                <text><![CDATA[STANDARDIZATION MARK]]></text>
-            </staticText>
-            <textField>
-                <reportElement x="418" y="84" width="135" height="20" uuid="f824debc-75a2-4cf8-9b47-d88f6290691f"/>
-                <box>
-                    <bottomPen lineWidth="1.0"/>
-                </box>
-                <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                <textFieldExpression><![CDATA[$P{ExpiryDate}]]></textFieldExpression>
-            </textField>
-            <textField>
-                <reportElement x="442" y="58" width="113" height="17" uuid="0184ceb0-b038-4f82-b48b-adc9a3778e44"/>
-                <box>
-                    <bottomPen lineWidth="1.0"/>
-                </box>
-                <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                <textFieldExpression><![CDATA[$P{DateOfIssue}]]></textFieldExpression>
-            </textField>
-            <staticText>
-                <reportElement x="34" y="216" width="124" height="30" uuid="790615af-c541-422c-93e9-279c14b2b044"/>
-                <textElement textAlignment="Left">
-                    <font size="8"/>
-                </textElement>
-                <text><![CDATA[STANDARD SPECIFICATION (Number and Title)]]></text>
-            </staticText>
-            <textField>
-                <reportElement x="432" y="112" width="120" height="20" uuid="b20b278a-cd2a-4180-8801-891c5cbe2ca3"/>
-                <box>
-                    <bottomPen lineWidth="1.0"/>
-                </box>
-                <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                <textFieldExpression><![CDATA[$P{DateOfIssue}]]></textFieldExpression>
-            </textField>
-            <staticText>
-                <reportElement x="350" y="59" width="93" height="18" uuid="4d992abe-b50b-45d0-a082-31698874263e"/>
+                <reportElement x="347" y="183" width="86" height="18" uuid="fb33010c-80a1-4287-89a9-ecfdf63f9ecb"/>
                 <textElement verticalAlignment="Middle">
                     <font fontName="SansSerif"/>
                 </textElement>
-                <text><![CDATA[EFFECTIVE FROM:]]></text>
+                <text><![CDATA[DATE OF ISSUE:]]></text>
             </staticText>
-            <line>
-                <reportElement x="3" y="148" width="330" height="1" uuid="38b65948-7acd-4ef7-aacf-96f6b2f28891"/>
-            </line>
-            <line>
-                <reportElement x="3" y="66" width="330" height="1" uuid="eb26c2d2-7d7f-4e36-af02-eb1d440f76fc"/>
-            </line>
             <staticText>
-                <reportElement x="4" y="25" width="16" height="16" uuid="91101dff-31ab-48be-ae6e-7430aaf12834"/>
+                <reportElement x="1" y="97" width="84" height="18" uuid="defd3139-4942-4b1b-b965-087751ee328e"/>
                 <textElement>
-                    <font fontName="SansSerif" size="11" isBold="true"/>
+                    <font fontName="SansSerif"/>
                 </textElement>
-                <text><![CDATA[1]]></text>
+                <text><![CDATA[NAME OF FIRM:]]></text>
             </staticText>
-            <line>
-                <reportElement x="87" y="47" width="246" height="1" uuid="fb548f6e-840a-43c5-ab6c-ced7ee6a74e5"/>
-            </line>
+            <staticText>
+                <reportElement x="2" y="271" width="90" height="18" uuid="01def0cd-7b7f-4e3a-bc12-bad98c699de6"/>
+                <textElement verticalAlignment="Middle">
+                    <font fontName="SansSerif"/>
+                </textElement>
+                <text><![CDATA[EMAIL ADDRESS:]]></text>
+            </staticText>
             <textField>
-                <reportElement x="403" y="28" width="152" height="21" uuid="edf254a9-4d95-4a7e-a678-17c62cbfded6"/>
+                <reportElement x="401" y="96" width="152" height="21" uuid="9b02e4ae-0b5d-48d6-971c-8e4cd24698f0"/>
                 <box>
                     <bottomPen lineWidth="1.0"/>
                 </box>
                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
                 <textFieldExpression><![CDATA[$P{PermitNo}]]></textFieldExpression>
             </textField>
+            <textField>
+                <reportElement x="416" y="152" width="135" height="20" uuid="4463f369-8a6d-4d2e-b744-f7de42d8cec1"/>
+                <box>
+                    <bottomPen lineWidth="1.0"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$P{ExpiryDate}]]></textFieldExpression>
+            </textField>
             <staticText>
-                <reportElement x="4" y="223" width="16" height="16" uuid="c2e6a678-5aa8-49b4-bde5-5ffcfcb23f89"/>
+                <reportElement x="1" y="133" width="120" height="18" uuid="e6bfbd7c-4b72-4e0f-a283-fd85ec1e5a32"/>
+                <textElement>
+                    <font fontName="SansSerif"/>
+                </textElement>
+                <text><![CDATA[POSTAL ADDRESS]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="1" y="80" width="178" height="18" uuid="d83e0899-f5a4-4f25-9d0a-7a60df3628a1"/>
+                <textElement>
+                    <font fontName="SansSerif"/>
+                </textElement>
+                <text><![CDATA[PERMIT IS GRANTED TO :]]></text>
+            </staticText>
+            <textField textAdjust="ScaleFont">
+                <reportElement x="131" y="150" width="200" height="18" uuid="20584da0-6f4d-45b5-ac63-15fe5e90a2f1"/>
+                <textFieldExpression><![CDATA[$P{PostalAddress}]]></textFieldExpression>
+            </textField>
+            <line>
+                <reportElement x="119" y="191" width="212" height="1" uuid="0927c13f-4ff8-4335-955b-b8fca1a04b2e"/>
+            </line>
+            <staticText>
+                <reportElement x="1" y="175" width="120" height="18" uuid="44722a43-a2d7-4f27-bc6b-dec74ea67421"/>
+                <textElement>
+                    <font fontName="SansSerif"/>
+                </textElement>
+                <text><![CDATA[PHYSICAL ADDRESS]]></text>
+            </staticText>
+            <textField textAdjust="StretchHeight">
+                <reportElement x="214" y="536" width="295" height="44" uuid="3cf1320d-44c8-4340-b97b-edcad0fca4f6"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$P{StandardTitle}]]></textFieldExpression>
+            </textField>
+            <textField textAdjust="StretchHeight">
+                <reportElement x="210" y="400" width="299" height="57" uuid="699935b4-4f35-410d-8f56-8083d0cb089f"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$P{CommodityDesc}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="0" y="430" width="16" height="16" uuid="25b3dfdc-e4ea-4703-9d27-9c94c9b23984"/>
+                <textElement>
+                    <font fontName="SansSerif" isBold="true"/>
+                </textElement>
+                <text><![CDATA[2]]></text>
+            </staticText>
+            <line>
+                <reportElement x="1" y="534" width="553" height="1" uuid="0ac6775f-018a-4325-956a-9466c8d27c38"/>
+            </line>
+            <staticText>
+                <reportElement x="1" y="492" width="16" height="16" uuid="7c2b993a-0c04-468f-b0ab-116dbf09a10a"/>
+                <textElement>
+                    <font fontName="SansSerif" isBold="true"/>
+                </textElement>
+                <text><![CDATA[3]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="327" y="635" width="223" height="20" uuid="be9e2b52-05e9-4de7-b45e-e3ee508060c2"/>
+                <textElement>
+                    <font fontName="SansSerif" size="9"/>
+                </textElement>
+                <text><![CDATA[MANAGING DIRECTOR/AUTHORIZED OFFICER]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="0" y="355" width="16" height="16" uuid="1a349212-6fe8-4a4b-ab2a-fac1940c00d2"/>
+                <textElement>
+                    <font fontName="SansSerif" size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[1]]></text>
+            </staticText>
+            <line>
+                <reportElement x="332" y="622" width="221" height="1" uuid="e3afeb30-cf4e-4061-97b2-171debd67cbc"/>
+            </line>
+            <staticText>
+                <reportElement x="30" y="546" width="124" height="30" uuid="3c170396-6ca4-45ed-91ee-2f7861e1c93c"/>
+                <textElement textAlignment="Left">
+                    <font size="8"/>
+                </textElement>
+                <text><![CDATA[STANDARD SPECIFICATION (Number and Title)]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="0" y="297" width="552" height="40" uuid="5bdcaf59-eda3-48c2-95c9-7ba2802c974a"/>
+                <textElement textAlignment="Center">
+                    <font fontName="SansSerif" size="10"/>
+                </textElement>
+                <text><![CDATA[
+                    To use the standardization mark of quality specified in the row hereunder and upon and in respect of the commodity and brand specified in the second and third rows there of, which commodity, conform to the standard specification in the fourth row]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="30" y="355" width="118" height="16" uuid="48f68944-866d-463d-b3cb-82e8e7ea852b"/>
+                <textElement>
+                    <font fontName="SansSerif" size="8"/>
+                </textElement>
+                <text><![CDATA[STANDARDIZATION MARK]]></text>
+            </staticText>
+            <line>
+                <reportElement x="1" y="400" width="553" height="1" uuid="a99cf221-d2b3-4572-8719-2ab30ecfdfa7"/>
+            </line>
+            <staticText>
+                <reportElement x="30" y="486" width="146" height="22" uuid="eb9e663d-ebf9-4879-ae80-7f81008e5753"/>
+                <textElement textAlignment="Left">
+                    <font size="8"/>
+                </textElement>
+                <text><![CDATA[BRAND NAMES]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="327" y="657" width="223" height="20" uuid="eb3d069c-e7e1-4c67-bf2e-9b0ab1742080"/>
+                <textElement>
+                    <font fontName="SansSerif" size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[KENYA BUREAU OF STANDARDS]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="30" y="423" width="152" height="34" uuid="776d80b8-01cb-47e1-bc83-efb04974a505"/>
+                <textElement textAlignment="Left">
+                    <font size="8"/>
+                </textElement>
+                <text><![CDATA[DESCRIPTION OF THE COMMODITY UPON WHICH THE STANDARDIZATION MARK IS TO BE USED]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="1" y="617" width="309" height="73" uuid="909f3c13-aac2-4d4e-9731-91066a0a0f2c"/>
+                <textElement textAlignment="Justified">
+                    <font fontName="SansSerif" size="9"/>
+                </textElement>
+                <text><![CDATA[1. EVERY STANDARDIZATION MARK HOLDER SHALL PAY AN ANNUAL  FEE IN RESPECT OF EACH PERMIT GRANTED OR RENEWED
+
+2. THIS PERMIT IS ISSUED SUBJECT TO THE CONDITIONS SET OUT IN THE  CONTRACT FOR USE OF THE STANDARDIZATION MARK OF QUALITY]]></text>
+            </staticText>
+            <image>
+                <reportElement x="230" y="343" width="50" height="50" uuid="0bf5d339-9145-4306-a6d1-de2437403f27"/>
+                <imageExpression><![CDATA[$P{SmarkLogo}]]></imageExpression>
+            </image>
+            <textField textAdjust="StretchHeight">
+                <reportElement x="212" y="469" width="298" height="51" uuid="41a0736b-c6d5-456c-b2a4-889ab48e29a3"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$P{TradeMark}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="0" y="553" width="16" height="16" uuid="cb131dc1-2733-4603-979d-c727c6790791"/>
                 <textElement>
                     <font fontName="SansSerif" isBold="true"/>
                 </textElement>
                 <text><![CDATA[4]]></text>
             </staticText>
             <image>
-                <reportElement x="489" y="32" width="60" height="57" uuid="daa1852b-0ca6-40f9-a664-c1e4f834f9d2"/>
+                <reportElement x="481" y="27" width="60" height="57" uuid="a62a46c2-87e2-4e1d-bf3a-5b254beacbc9"/>
                 <imageExpression><![CDATA[com.google.zxing.client.j2se.MatrixToImageWriter.toBufferedImage(
     new com.google.zxing.qrcode.QRCodeWriter().encode(
         $P{QrCode},
@@ -213,132 +355,6 @@
     )
 )]]></imageExpression>
             </image>
-            <staticText>
-                <reportElement x="1" y="18" width="552" height="40" uuid="7a1e336a-06cd-4803-a017-05fedfcaf161"/>
-                <textElement>
-                    <font fontName="SansSerif" size="10"/>
-                </textElement>
-                <text><![CDATA[
-                    To use the standardization mark of quality specified in the row hereunder and upon and in respect of the commodity and brand specified in the second and third rows there of, which commodity, conform to the standard specification in the fourth row]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="3" y="35" width="84" height="18" uuid="bc546313-1acb-4c0d-97fd-e24fd2598681"/>
-                <textElement>
-                    <font fontName="SansSerif"/>
-                </textElement>
-                <text><![CDATA[NAME OF FIRM:]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="34" y="93" width="152" height="34" uuid="a25fbef5-8d62-4429-a57e-1854c9f9a984"/>
-                <textElement textAlignment="Left">
-                    <font size="8"/>
-                </textElement>
-                <text><![CDATA[DESCRIPTION OF THE COMMODITY UPON WHICH THE STANDARDIZATION MARK IS TO BE USED]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="3" y="71" width="120" height="18" uuid="de0af24a-b309-4346-af18-d9db222be5ff"/>
-                <textElement>
-                    <font fontName="SansSerif"/>
-                </textElement>
-                <text><![CDATA[POSTAL ADDRESS]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="4" y="209" width="90" height="18" uuid="73089614-be46-45fb-b188-3684e3400028"/>
-                <textElement verticalAlignment="Middle">
-                    <font fontName="SansSerif"/>
-                </textElement>
-                <text><![CDATA[EMAIL ADDRESS:]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="0" y="4" width="163" height="13" uuid="ce7f2eb6-2baf-4834-9e44-e0a15f4afce5"/>
-                <textElement>
-                    <font size="8"/>
-                </textElement>
-                <text><![CDATA[ORIGINAL FORM STA/2]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="329" y="291" width="226" height="20" uuid="e7ed0134-52ed-4427-9500-3869e9e451ad"/>
-                <textElement>
-                    <font fontName="SansSerif" size="9"/>
-                </textElement>
-                <text><![CDATA[MANAGING DIRECTOR/AUTHORIZED OFFICER]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="350" y="88" width="70" height="18" uuid="b8a0d810-56b6-4ad2-83f3-acb130a53ee1"/>
-                <textElement verticalAlignment="Middle">
-                    <font fontName="SansSerif"/>
-                </textElement>
-                <text><![CDATA[EXPIRES ON:]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="4" y="159" width="89" height="18" uuid="1fba8267-e12a-4da6-b7ee-34d276c593e1"/>
-                <textElement verticalAlignment="Middle">
-                    <font fontName="SansSerif"/>
-                </textElement>
-                <text><![CDATA[TELEPHONE NO:]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="4" y="100" width="16" height="16" uuid="089c7cef-c914-4764-8dd7-2081e41a5761"/>
-                <textElement>
-                    <font fontName="SansSerif" isBold="true"/>
-                </textElement>
-                <text><![CDATA[2]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="4" y="182" width="49" height="18" uuid="773a02a7-1d6b-4a7e-be11-5d572406b249"/>
-                <textElement textAlignment="Left" verticalAlignment="Middle">
-                    <font fontName="SansSerif"/>
-                </textElement>
-                <text><![CDATA[FAX NO:]]></text>
-            </staticText>
-            <line>
-                <reportElement x="121" y="129" width="212" height="1" uuid="7a66af1e-adac-4d65-824b-2989941e9129"/>
-            </line>
-            <staticText>
-                <reportElement x="349" y="115" width="86" height="18" uuid="796a9cb7-6a45-48f4-89a5-46c37b872855"/>
-                <textElement verticalAlignment="Middle">
-                    <font fontName="SansSerif"/>
-                </textElement>
-                <text><![CDATA[DATE OF ISSUE:]]></text>
-            </staticText>
-            <textField textAdjust="StretchHeight">
-                <reportElement x="218" y="203" width="295" height="53" uuid="b7e7fe3a-cfd5-4377-a853-e25a6c962e63"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                <textFieldExpression><![CDATA[$P{StandardTitle}]]></textFieldExpression>
-            </textField>
-            <staticText>
-                <reportElement x="174" y="60" width="180" height="20" uuid="41709259-d19f-4ec2-8ac1-a7f4008f18e5"/>
-                <textElement>
-                    <font fontName="SansSerif"/>
-                </textElement>
-                <text><![CDATA[THE STANDARDS ACT (CAP.496)]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="34" y="156" width="146" height="22" uuid="c84832f1-4c2e-4088-8d67-ef29ac7308da"/>
-                <textElement textAlignment="Left">
-                    <font size="8"/>
-                </textElement>
-                <text><![CDATA[BRAND NAMES]]></text>
-            </staticText>
-            <line>
-                <reportElement x="113" y="87" width="220" height="1" uuid="922b4154-dd9f-47b7-b6c0-6277d98f1cc3"/>
-            </line>
-            <textField textAdjust="ScaleFont">
-                <reportElement stretchType="ContainerHeight" x="113" y="132" width="222" height="16"
-                               uuid="94524f8a-1dac-435b-8e8c-f224ba82a184"/>
-                <textFieldExpression><![CDATA[$P{PhysicalAddress}]]></textFieldExpression>
-            </textField>
-            <staticText>
-                <reportElement x="5" y="162" width="16" height="16" uuid="0decdd98-8cf2-4779-a85d-1c951d53f8c1"/>
-                <textElement>
-                    <font fontName="SansSerif" isBold="true"/>
-                </textElement>
-                <text><![CDATA[3]]></text>
-            </staticText>
-            <textField textAdjust="ScaleFont">
-                <reportElement x="133" y="88" width="200" height="18" uuid="a50c81c7-95cd-4b34-b486-225b6915e65a"/>
-                <textFieldExpression><![CDATA[$P{PostalAddress}]]></textFieldExpression>
-            </textField>
         </band>
-    </background>
+    </detail>
 </jasperReport>
