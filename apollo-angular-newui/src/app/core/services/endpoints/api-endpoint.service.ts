@@ -17,11 +17,11 @@ export class ApiEndpointService {
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-        // LOCAL_DEV: 'localhost:8006'
+         LOCAL_DEV: 'localhost:8006'
         // LOCAL_DEV: '12:8006'
         // LOCAL_DEV: '41.72.209.58:8006'
         // LOCAL_DEV: `kimsint.kebs.org:8006`
-        LOCAL_DEV: `kims.kebs.org:8006`
+        // LOCAL_DEV: `kims.kebs.org:8006`
     };
 
     /**
@@ -58,7 +58,7 @@ export class ApiEndpointService {
     public static SD_SCHEME_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/Scheme_membership`;
     public static SD_IST_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/international_standard`;
     public static SD_ICT_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/company_standard`;
-    public static SD_DR_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/standard/dropdown`;
+    public static SD_DR_CONTEXT = `${ApiEndpointService.ANONYMOUS_CONTEXT}/standard/dropdown`;
     public static SD_SR_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/standard_review`;
     public static SD_STD_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/standard`;
     public static SD_PB_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/publishing`;
@@ -186,9 +186,12 @@ export class ApiEndpointService {
         ASSIGN_AUTHORIZATION_TO_ROLE: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/assign/`,
         LIST_ACTIVE_RBAC_USERS: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/fetch/users/`,
         LIST_ACTIVE_RBAC_USERS_ROLES: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/fetch/user-roles/`,
+        LIST_ACTIVE_RBAC_USERS_SECTION: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/fetch/user-section/`,
         LIST_ACTIVE_RBAC_USERS_CFS: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/fetch/user-cfs/`,
         REVOKE_ROLE_FROM_USER: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/role/revoke/`,
         ASSIGN_ROLE_TO_USER: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/role/assign/`,
+        REVOKE_SECTION_FROM_USER: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/section/revoke/`,
+        ASSIGN_SECTION_TO_USER: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/section/assign/`,
         REVOKE_CFS_FROM_USER: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/cfs/revoke/`,
         ASSIGN_CFS_TO_USER: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/cfs/assign/`,
 
@@ -311,7 +314,7 @@ export class ApiEndpointService {
         ICT_GET_PRODUCTS: `${ApiEndpointService.SD_ICT_CONTEXT}/getProducts`,
         // ICT_GET_PRODUCTS_LS: `${ApiEndpointService.SD_DR_CONTEXT}/getProducts/${id}`,
         ICT_GET_PRODUCTS_LS: `${ApiEndpointService.SD_DR_CONTEXT}/getProducts/`,
-        ICT_GET_DEPARTMENTS: `${ApiEndpointService.SD_ICT_CONTEXT}/getDepartments`,
+        ICT_GET_DEPARTMENTS: `${ApiEndpointService.SD_DR_CONTEXT}/getDepartments`,
         ICT_GET_USERS: `${ApiEndpointService.SD_ICT_CONTEXT}/getUserList`,
         ICT_GET_DEPARTMENT: `${ApiEndpointService.SD_DR_CONTEXT}/getDepartments`,
         ICT_GET_TC_COMMITTEE: `${ApiEndpointService.SD_DR_CONTEXT}/getTechnicalCommittee`,

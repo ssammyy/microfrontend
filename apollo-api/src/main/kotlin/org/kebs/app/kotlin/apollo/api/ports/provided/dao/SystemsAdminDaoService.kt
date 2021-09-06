@@ -16,6 +16,7 @@ import org.kebs.app.kotlin.apollo.store.model.qa.ManufacturePlantDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileDirectorsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.UserRequestsEntity
+import org.kebs.app.kotlin.apollo.store.model.registration.UserSectionAssignmentsEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.ICfsTypeCodesRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IUsersCfsAssignmentsRepository
@@ -52,6 +53,7 @@ class SystemsAdminDaoService(
     private val userTypesRepo: IUserTypesEntityRepository,
     private val userRequestRepo: IUserRequestsRepository,
     private val userRolesRepo: IUserRoleAssignmentsRepository,
+    private val userSectionRepo: IUserSectionAssignmentsRepository,
     private val registrationDaoServices: RegistrationDaoServices,
     private val designationsRepo: IDesignationsRepository,
     private val departmentsRepo: IDepartmentsRepository,
@@ -173,16 +175,26 @@ class SystemsAdminDaoService(
     private fun getEmployeeProfileDto(employeeProfile: UserProfilesEntity): EmployeeProfileDetailsDto {
         return EmployeeProfileDetailsDto(
             employeeProfile.directorateId?.id?.let { directoratesRepo.findByIdOrNull(it)?.directorate },
+            employeeProfile.directorateId?.id,
             employeeProfile.departmentId?.id?.let { departmentsRepo.findByIdOrNull(it)?.department },
+            employeeProfile.departmentId?.id,
             employeeProfile.divisionId?.id?.let { divisionsRepo.findByIdOrNull(it)?.division },
+            employeeProfile.divisionId?.id,
             employeeProfile.sectionId?.id?.let { sectionsRepo.findByIdOrNull(it)?.section },
+            employeeProfile.sectionId?.id,
             employeeProfile.subSectionL1Id?.id?.let { subSectionsL1Repo.findByIdOrNull(it)?.subSection },
+            employeeProfile.subSectionL1Id?.id,
             employeeProfile.subSectionL2Id?.id?.let { subSectionsL2Repo.findByIdOrNull(it)?.subSection },
+            employeeProfile.subSectionL2Id?.id,
             employeeProfile.designationId?.id?.let { designationsRepo.findByIdOrNull(it)?.designationName },
+            employeeProfile.designationId?.id,
             employeeProfile.id,
             employeeProfile.regionId?.id?.let { regionsRepo.findByIdOrNull(it)?.region },
+            employeeProfile.regionId?.id,
             employeeProfile.countyID?.id?.let { countiesRepo.findByIdOrNull(it)?.county },
+            employeeProfile.countyID?.id,
             employeeProfile.townID?.id?.let { townsRepo.findByIdOrNull(it)?.town },
+            employeeProfile.townID?.id,
             employeeProfile.status == 1
 
         )
@@ -751,6 +763,39 @@ class SystemsAdminDaoService(
             ?: throw InvalidValueException("Record with id=$roleId not found, check and try again")
     }
 
+    fun assignSectionToUser(userId: Long, sectionId: Long, status: Int): UserSectionAssignmentsEntity? {
+        return usersRepo.findByIdOrNull(userId)
+            ?.let { user ->
+                sectionsRepo.findByIdOrNull(sectionId)
+                    ?.let { section ->
+                        userSectionRepo.findByUserIdAndSectionId(user.id ?: -1L, section.id)
+                            ?.let { usersSection ->
+                                usersSection.status = 1
+                                usersSection.modifiedBy = loggedInUserDetails().userName
+                                usersSection.modifiedOn = Timestamp.from(Instant.now())
+                                usersSection.varField1 = "${usersSection.status}"
+                                userSectionRepo.save(usersSection)
+
+                            }
+                            ?: kotlin.run {
+                                val usersSection = UserSectionAssignmentsEntity()
+                                usersSection.userId = user.id
+                                usersSection.sectionId = section.id
+                                usersSection.status = 1
+                                usersSection.createdBy = loggedInUserDetails().userName
+                                usersSection.createdOn = Timestamp.from(Instant.now())
+                                userSectionRepo.save(usersSection)
+
+                            }
+
+
+                    }
+                    ?: throw InvalidValueException("Record with id=$sectionId not found, check and try again")
+
+            }
+            ?: throw InvalidValueException("Record with id=$userId not found, check and try again")
+    }
+
     fun assignRoleToUser(userId: Long, roleId: Long, status: Int): UserRoleAssignmentsEntity? {
         return usersRepo.findByIdOrNull(userId)
             ?.let { user ->
@@ -805,6 +850,30 @@ class SystemsAdminDaoService(
 
                     }
                     ?: throw InvalidValueException("Record with id=$roleId not found, check and try again")
+
+            }
+            ?: throw InvalidValueException("Record with id=$userId not found, check and try again")
+    }
+
+    fun revokeSectionFromUser(userId: Long, sectionId: Long, status: Int): UserSectionAssignmentsEntity? {
+        return usersRepo.findByIdOrNull(userId)
+            ?.let { user ->
+                sectionsRepo.findByIdOrNull(sectionId)
+                    ?.let { section ->
+
+                        userSectionRepo.findByUserIdAndSectionIdAndStatus(user.id ?: -1L, section.id, status)
+                            ?.let { userSection ->
+                                userSection.status = 0
+                                userSection.modifiedBy = loggedInUserDetails().userName
+                                userSection.modifiedOn = Timestamp.from(Instant.now())
+                                userSection.varField1 = "${userSection.status}"
+                                userSectionRepo.save(userSection)
+                            }
+                            ?: throw InvalidInputException("Revoking Role that does not exist")
+
+
+                    }
+                    ?: throw InvalidValueException("Record with id=$sectionId not found, check and try again")
 
             }
             ?: throw InvalidValueException("Record with id=$userId not found, check and try again")
@@ -1017,6 +1086,9 @@ class SystemsAdminDaoService(
 
     fun listRbacRolesByUsersIdAndByStatus(userId: Long, status: Int): List<UserRolesEntity>? =
         rolesRepo.findRbacRolesByUserId(userId, status)
+
+    fun listRbacSectionByUsersIdAndByStatus(userId: Long, status: Int): List<SectionsEntity>? =
+        sectionsRepo.findRbacSectionByUserId(userId, status)
 
     fun listRbacCfsByUsersProfileIdAndByStatus(userProfileId: Long, status: Int): List<CfsTypeCodesEntity>? =
         iCfsTypeCodesRepo.findRbacCfsByUserProfileID(userProfileId, status)

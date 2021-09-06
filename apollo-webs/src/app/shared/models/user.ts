@@ -33,16 +33,26 @@ export class UserRegister {
 
 export class EmployeeProfile {
   directorate?: string;
+  directorateID?: number;
   department?: string;
+  departmentID?: number;
   division?: string;
+  divisionID?: number;
   section?: string;
+  sectionID?: number;
   l1SubSubSection?: string;
+  l1SubSubSectionID?: number;
   l2SubSubSection?: string;
+  l2SubSubSectionID?: number;
   designation?: string;
+  designationID?: number;
   profileId?: bigint;
   region?: string;
+  regionID?: number;
   county?: string;
+  countyID?: number;
   town?: string;
+  townID?: number;
   status?: boolean;
 }
 

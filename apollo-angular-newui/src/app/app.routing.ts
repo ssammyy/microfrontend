@@ -405,7 +405,7 @@ export const routes: Routes = [
     },
     {
         path: 'nwaDirStTasks', component: AdminLayoutComponent,
-        //canActivate: [RouteGuard],
+        // canActivate: [RouteGuard],
         children: [{path: '', component: NwaDiSdtTasksComponent}]
     },
     {
@@ -467,8 +467,13 @@ export const routes: Routes = [
     },
 
     // SD COMPANY STANDARDS
+    // {
+    //     path: 'comStdRequest', component: AdminLayoutComponent,
+    //     children: [{path: '', component: CsRequestFormComponent}]
+    // },
     {
-        path: 'comStdRequest', component: AdminLayoutComponent,
+        path: 'comStdRequest',
+        component: StandardRequestComponent,
         children: [{path: '', component: CsRequestFormComponent}]
     },
     {

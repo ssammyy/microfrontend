@@ -237,6 +237,20 @@ export class MasterService {
         );
     }
 
+    loadUsersSectionRoles(userId: bigint, status: number): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LIST_ACTIVE_RBAC_USERS_SECTION);
+        const urlAndPathVariables = `${url}${userId}/${status}`;
+        return this.http.get<any>(urlAndPathVariables).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
     loadUsersAssignedCFS(userProfileId: bigint, status: number): any {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LIST_ACTIVE_RBAC_USERS_CFS);
         const urlAndPathVariables = `${url}${userProfileId}/${status}`;
@@ -272,9 +286,37 @@ export class MasterService {
         );
     }
 
+    assignSectionToUser(userId: bigint, sectionId: bigint, status: number): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ASSIGN_SECTION_TO_USER);
+        const urlAndPathVariables = `${url}${userId}/${sectionId}/${status}`;
+        return this.http.post<any>(urlAndPathVariables, null).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
     revokeRoleFromUser(userId: bigint, roleId: string, status: number): any {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.REVOKE_ROLE_FROM_USER);
         const urlAndPathVariables = `${url}${userId}/${roleId}/${status}`;
+        return this.http.post<any>(urlAndPathVariables, null).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    revokeSectionFromUser(userId: bigint, sectionId: string, status: number): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.REVOKE_SECTION_FROM_USER);
+        const urlAndPathVariables = `${url}${userId}/${sectionId}/${status}`;
         return this.http.post<any>(urlAndPathVariables, null).pipe(
             map(function (response: any) {
                 return response;
