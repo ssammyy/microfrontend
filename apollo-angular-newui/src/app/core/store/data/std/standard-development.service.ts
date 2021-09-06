@@ -10,9 +10,10 @@ import {DecisionFeedback, HOFFeedback, StandardTasks} from './request_std.model'
     providedIn: 'root'
 })
 export class StandardDevelopmentService {
-    private apiServerUrl2 = `https://localhost:8006/api/v1/migration/anonymous/standard/dropdown/`;
-    private apiMembershipToTCUrl = 'https://localhost:8006/api/v1/migration/membershipToTC/';
-    private apiServerUrl = `https://localhost:8006/api/v1/migration/standard/`;
+    baseUrl = ApiEndpointService.DOMAIN.LOCAL_DEV
+    private apiServerUrl2 = `${this.baseUrl}/api/v1/migration/anonymous/standard/dropdown/`;
+    private apiMembershipToTCUrl = `${this.baseUrl}/api/v1/migration/membershipToTC/`;
+    private apiServerUrl = `${this.baseUrl}/api/v1/migration/standard/`;
 
     constructor(private http: HttpClient) {
     }
