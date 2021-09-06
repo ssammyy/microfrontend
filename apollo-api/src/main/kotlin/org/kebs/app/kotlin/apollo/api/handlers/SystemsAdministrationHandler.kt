@@ -162,6 +162,31 @@ class SystemsAdministrationHandler(
         }
     }
 
+
+    fun listActiveRbacUserSections(req: ServerRequest): ServerResponse {
+        return try {
+
+            req.pathVariable("userId").toLongOrNull()
+                ?.let { userId ->
+                    req.pathVariable("status").toIntOrNull()
+                        ?.let { status ->
+                            daoService.listRbacSectionByUsersIdAndByStatus(userId, status)
+                                ?.let { ok().body(it) }
+                        }
+                        ?: throw InvalidValueException("Valid value for status required")
+
+                }
+                ?: throw InvalidValueException("Valid value for UserId required")
+
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "Unknown Error")
+
+        }
+    }
+
     fun listActiveRbacUserCfs(req: ServerRequest): ServerResponse {
         return try {
 
@@ -506,6 +531,62 @@ class SystemsAdministrationHandler(
                                         ?: throw NullValueNotAllowedException("No records found")
                                 }
                                 ?: throw InvalidValueException("Valid value for roleId required")
+
+                        }
+                        ?: throw InvalidValueException("Valid value for userId required")
+
+                }
+                ?: throw InvalidValueException("Valid value for status required")
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "Unknown Error")
+        }
+    }
+
+    @PreAuthorize("hasAuthority('RBAC_ASSIGN_SECTION')")
+    fun assignSectionToUser(req: ServerRequest): ServerResponse {
+        return try {
+            req.pathVariable("status").toIntOrNull()
+                ?.let { status ->
+                    req.pathVariable("userId").toLongOrNull()
+                        ?.let { userId ->
+                            req.pathVariable("sectionId").toLongOrNull()
+                                ?.let { sectionId ->
+                                    daoService.assignSectionToUser(userId, sectionId, status)
+                                        ?.let { ok().body(it) }
+                                        ?: throw NullValueNotAllowedException("No records found")
+                                }
+                                ?: throw InvalidValueException("Valid value for sectionId required")
+
+                        }
+                        ?: throw InvalidValueException("Valid value for userId required")
+
+                }
+                ?: throw InvalidValueException("Valid value for status required")
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "Unknown Error")
+        }
+    }
+
+    @PreAuthorize("hasAuthority('RBAC_REVOKE_SECTION')")
+    fun revokeSectionFromUser(req: ServerRequest): ServerResponse {
+        return try {
+            req.pathVariable("status").toIntOrNull()
+                ?.let { status ->
+                    req.pathVariable("userId").toLongOrNull()
+                        ?.let { userId ->
+                            req.pathVariable("sectionId").toLongOrNull()
+                                ?.let { sectionId ->
+                                    daoService.revokeSectionFromUser(userId, sectionId, status)
+                                        ?.let { ok().body(it) }
+                                        ?: throw NullValueNotAllowedException("No records found")
+                                }
+                                ?: throw InvalidValueException("Valid value for sectionId required")
 
                         }
                         ?: throw InvalidValueException("Valid value for userId required")

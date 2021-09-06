@@ -6,6 +6,7 @@ import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
 import org.flowable.engine.repository.Deployment
 import org.flowable.task.api.Task
+import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
@@ -41,7 +42,8 @@ class NWAService(private val runtimeService: RuntimeService,
                  private val sdDiJustificationUploadsRepository: SDDIJustificationUploadsRepository,
                  private val nwaPreliminaryDraftUploadsRepository: NWAPreliminaryDraftUploadsRepository,
                  private val nwaStandardUploadsRepository: NWAStandardUploadsRepository,
-                 private val nwaWorkShopDraftUploadsRepository: NWAWorkShopDraftUploadsRepository
+                 private val nwaWorkShopDraftUploadsRepository: NWAWorkShopDraftUploadsRepository,
+                 private val notifications: Notifications
 
 
 ) {
@@ -189,7 +191,7 @@ class NWAService(private val runtimeService: RuntimeService,
         val variables: MutableMap<String, Any> = java.util.HashMap()
         variables["Yes"] = nwaJustificationDecision.accentTo
         variables["No"] = nwaJustificationDecision.accentTo
-        nwaJustificationDecision.comments?.let{ variables.put("comments", it)}
+        nwaJustificationDecision.comments.let { variables.put("comments", it) }
         if(variables["Yes"]==true){
             nwaJustificationRepository.findByIdOrNull(nwaJustificationDecision.approvalID)?.let { nwaJustification->
 
@@ -279,7 +281,7 @@ class NWAService(private val runtimeService: RuntimeService,
         val variables: MutableMap<String, Any> = java.util.HashMap()
         variables["Yes"] = workshopAgreement.accentTo
         variables["No"] = workshopAgreement.accentTo
-        workshopAgreement.comments?.let{ variables.put("comments", it)}
+        workshopAgreement.comments.let { variables.put("comments", it) }
         if(variables["Yes"]==true){
             nwaDisDtJustificationRepository.findByIdOrNull(workshopAgreement.approvalID)?.let { nwaDiSdtJustification->
                 val valueFound =getCDNumber()
@@ -362,7 +364,7 @@ class NWAService(private val runtimeService: RuntimeService,
     fun decisionOnPD(nwaPreliminaryDraftDecision: NWAPreliminaryDraftDecision) : List<TaskDetails> {
         val variables: MutableMap<String, Any> = java.util.HashMap()
         variables["Yes"] = nwaPreliminaryDraftDecision.accentTo
-        nwaPreliminaryDraftDecision.comments?.let{ variables.put("comments", it)}
+        nwaPreliminaryDraftDecision.comments.let { variables.put("comments", it) }
         if(variables["Yes"]==true){
             nwaPreliminaryDraftRepository.findByIdOrNull(nwaPreliminaryDraftDecision.approvalID)?.let { nwaPreliminaryDraft->
 
@@ -455,7 +457,7 @@ class NWAService(private val runtimeService: RuntimeService,
     fun decisionOnWD(nwaWorkshopDraftDecision: NWAWorkshopDraftDecision) : List<TaskDetails> {
         val variables: MutableMap<String, Any> = java.util.HashMap()
         variables["Yes"] = nwaWorkshopDraftDecision.accentTo
-        nwaWorkshopDraftDecision.comments?.let{ variables.put("comments", it)}
+        nwaWorkshopDraftDecision.comments.let { variables.put("comments", it) }
         if(variables["Yes"]==true){
             nwaWorkshopDraftRepository.findByIdOrNull(nwaWorkshopDraftDecision.approvalID)?.let { nwaWorkShopDraft->
 

@@ -22,9 +22,12 @@ class AngularRoutes {
 //                    GET("/fetch/users/{status}/{criteria}", handler::list)
                     GET("/fetch/users/{status}", handler::listActiveRbacUsers)
                     GET("/fetch/user-roles/{userId}/{status}", handler::listActiveRbacUserRoles)
+                    GET("/fetch/user-section/{userId}/{status}", handler::listActiveRbacUserSections)
                     GET("/fetch/user-cfs/{userProfileId}/{status}", handler::listActiveRbacUserCfs)
                     POST("/role/revoke/{userId}/{roleId}/{status}", handler::revokeRoleFromUser)
                     POST("/role/assign/{userId}/{roleId}/{status}", handler::assignRoleToUser)
+                    POST("/section/revoke/{userId}/{sectionId}/{status}", handler::revokeSectionFromUser)
+                    POST("/section/assign/{userId}/{sectionId}/{status}", handler::assignSectionToUser)
                     POST("/cfs/revoke/{userProfileId}/{cfsId}/{status}", handler::revokeCfsFromUser)
                     POST("/cfs/assign/{userProfileId}/{cfsId}/{status}", handler::assignCfsToUser)
                     POST(

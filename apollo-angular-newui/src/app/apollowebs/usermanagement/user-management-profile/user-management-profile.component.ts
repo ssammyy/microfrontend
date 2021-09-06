@@ -6,7 +6,12 @@ import {MasterService} from '../../../core/store/data/master/master.service';
 import {UserRegister} from '../../../../../../apollo-webs/src/app/shared/models/user';
 import {ActivatedRoute} from '@angular/router';
 import {TableData} from '../../../md/md-table/md-table.component';
-import {FreightStationsDto, RolesEntityDto} from '../../../core/store/data/master/master.model';
+import {
+    FreightStationsDto,
+    RolesEntityDto,
+    SectionEntityDto,
+    SectionsEntityDto
+} from '../../../core/store/data/master/master.model';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import swal from 'sweetalert2';
 
@@ -19,18 +24,23 @@ export class UserManagementProfileComponent implements OnInit {
     currDiv!: string;
     currDivLabel!: string;
     public userID!: string;
+    public divisionId!: bigint;
     public userDetails!: UserRegister;
     public userRoles!: RolesEntityDto[];
+    public userSection!: SectionEntityDto[];
     public userCfs!: FreightStationsDto[];
     public tableData1: TableData;
     public tableData2: TableData;
+    public tableData3: TableData;
 
 
     public assignRoleForm!: FormGroup;
     public assignCfsForm!: FormGroup;
+    public assignSectionForm!: FormGroup;
 
     rolesEntity: RolesEntityDto[] = [];
     cfsEntity: FreightStationsDto[] = [];
+    sectionEntity: SectionsEntityDto[] = [];
 
     constructor(
         private route: ActivatedRoute,
@@ -50,6 +60,11 @@ export class UserManagementProfileComponent implements OnInit {
             // approvedRemarks: ['', Validators.required],
         });
 
+        this.assignSectionForm = this.formBuilder.group({
+            sectionID: ['', Validators.required],
+            // approvedRemarks: ['', Validators.required],
+        });
+
         this.assignCfsForm = this.formBuilder.group({
             cfsID: ['', Validators.required],
             // approvedRemarks: ['', Validators.required],
@@ -58,6 +73,10 @@ export class UserManagementProfileComponent implements OnInit {
 
     get formAssignRole(): any {
         return this.assignRoleForm.controls;
+    }
+
+    get formAssignSection(): any {
+        return this.assignSectionForm.controls;
     }
 
     get formAssignCfs(): any {
@@ -76,6 +95,7 @@ export class UserManagementProfileComponent implements OnInit {
                     this.getUserSelectedRoles();
                     if (this.userDetails.employeeProfile != null) {
                         this.getUserSelectedCFS(this.userDetails?.employeeProfile?.profileId);
+                        this.getUserSelectedSection();
                     }
                 }
             );
@@ -96,6 +116,28 @@ export class UserManagementProfileComponent implements OnInit {
                 this.masterService.loadRolesSystemAdmin().subscribe(
                     (data: any) => {
                         this.rolesEntity = data;
+                    }
+                );
+
+            }
+        );
+    }
+
+    private getUserSelectedSection() {
+        this.masterService.loadUsersSectionRoles(this.userDetails?.id, 1).subscribe(
+            (data1: any) => {
+                let formattedArrayAssignedSectionList = [];
+                this.userSection = data1;
+                formattedArrayAssignedSectionList = this.userSection.map(i => [i.section, i.descriptions, i.id]);
+                this.tableData3 = {
+                    headerRow: ['SECTION_NAME', 'DESCRIPTIONS', 'Action'],
+                    dataRows: formattedArrayAssignedSectionList
+                };
+                this.masterService.loadSectionSystemAdmin().subscribe(
+                    (data: any) => {
+                        this.sectionEntity = data.filter((item) => {
+                            return item.divisionId === Number(this.userDetails?.employeeProfile.divisionID);
+                        });
                     }
                 );
 
@@ -124,8 +166,8 @@ export class UserManagementProfileComponent implements OnInit {
     }
 
     openModalAction(viewDiv: string) {
-        const arrHead = ['addRole', 'addCfs'];
-        const arrHeadSave = ['Assign Role To User', 'Assign CFS To User'];
+        const arrHead = ['addRole', 'addCfs', 'addSection'];
+        const arrHeadSave = ['Assign Role To User', 'Assign CFS To User', 'Assign Section To User'];
 
         for (let h = 0; h < arrHead.length; h++) {
             if (viewDiv === arrHead[h]) {
@@ -144,7 +186,6 @@ export class UserManagementProfileComponent implements OnInit {
 
         this.masterService.assignRoleToUser(userId, this.assignRoleForm.get('roleID')?.value, 1).subscribe(
             (data: any) => {
-                this.reloadCurrentRoute();
                 swal.fire({
                     title: 'User Assigned Role Successfully',
                     buttonsStyling: false,
@@ -153,6 +194,23 @@ export class UserManagementProfileComponent implements OnInit {
                     },
                     icon: 'success'
                 });
+                this.reloadCurrentRoute();
+            });
+    }
+
+    onSubmitAssignedSection(userId: bigint) {
+
+        this.masterService.assignSectionToUser(userId, this.assignSectionForm.get('sectionID')?.value, 1).subscribe(
+            (data: any) => {
+                swal.fire({
+                    title: 'User Assigned Section Successfully',
+                    buttonsStyling: false,
+                    customClass: {
+                        confirmButton: 'btn btn-success form-wizard-next-btn ',
+                    },
+                    icon: 'success'
+                });
+                this.reloadCurrentRoute();
             });
     }
 
@@ -160,7 +218,6 @@ export class UserManagementProfileComponent implements OnInit {
 
         this.masterService.assignCfsToUser(userProfileId, this.assignCfsForm.get('cfsID')?.value, 1).subscribe(
             (data: any) => {
-                this.reloadCurrentRoute();
                 swal.fire({
                     title: 'User Assigned CFS Successfully',
                     buttonsStyling: false,
@@ -169,13 +226,13 @@ export class UserManagementProfileComponent implements OnInit {
                     },
                     icon: 'success'
                 });
+                this.reloadCurrentRoute();
             });
     }
 
     revokeRole(roleId: string, userId: bigint) {
         this.masterService.revokeRoleFromUser(userId, roleId, 1).subscribe(
             (data: any) => {
-                this.reloadCurrentRoute();
                 swal.fire({
                     title: 'Role Revoked Successfully',
                     buttonsStyling: false,
@@ -184,13 +241,28 @@ export class UserManagementProfileComponent implements OnInit {
                     },
                     icon: 'success'
                 });
+                this.reloadCurrentRoute();
+            });
+    }
+
+    revokeSection(sectionID: string, userId: bigint) {
+        this.masterService.revokeSectionFromUser(userId, sectionID, 1).subscribe(
+            (data: any) => {
+                swal.fire({
+                    title: 'Section Revoked Successfully',
+                    buttonsStyling: false,
+                    customClass: {
+                        confirmButton: 'btn btn-success form-wizard-next-btn ',
+                    },
+                    icon: 'success'
+                });
+                this.reloadCurrentRoute();
             });
     }
 
     revokeCfs(cfsId: string, userProfileId: bigint) {
         this.masterService.revokeCfsFromUser(userProfileId, cfsId, 1).subscribe(
             (data: any) => {
-                this.reloadCurrentRoute();
                 swal.fire({
                     title: 'CFS Revoked Successfully',
                     buttonsStyling: false,
@@ -199,6 +271,7 @@ export class UserManagementProfileComponent implements OnInit {
                     },
                     icon: 'success'
                 });
+                this.reloadCurrentRoute();
             });
     }
 }

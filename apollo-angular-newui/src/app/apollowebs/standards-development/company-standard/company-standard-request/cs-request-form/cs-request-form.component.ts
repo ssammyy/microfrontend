@@ -29,13 +29,13 @@ export class CsRequestFormComponent implements OnInit {
       private formBuilder: FormBuilder,
       private route: ActivatedRoute,
       private router: Router,
-      private stdComStandardService:StdComStandardService,
+      private stdComStandardService: StdComStandardService,
       private SpinnerService: NgxSpinnerService,
-      private notifyService : NotificationService
+      private notifyService: NotificationService
   ) { }
 
   ngOnInit(): void {
-    this.getDepartment();
+      this.getDepartments();
 
     this.stdRequestFormGroup = this.formBuilder.group({
       companyName:['', Validators.required],
@@ -50,28 +50,30 @@ export class CsRequestFormComponent implements OnInit {
   get formStdRequest(): any{
     return this.stdRequestFormGroup.controls;
   }
-  public getStandards(): void{
-    this.stdComStandardService.getStandards().subscribe(
-        (response: Product[])=> {
-          this.products = response;
-        },
-        (error: HttpErrorResponse)=>{
-          alert(error.message);
-        }
-    );
-  }
-  public getDepartment(): void{
-    this.stdComStandardService.getDepartment().subscribe(
-        (response: Department[])=> {
-          this.departments = response;
-        },
-        (error: HttpErrorResponse)=>{
-          alert(error.message);
-        }
-    );
-  }
 
-  saveStandard(): void{
+    public getStandards(): void {
+        this.stdComStandardService.getStandards().subscribe(
+            (response: Product[]) => {
+                this.products = response;
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        );
+    }
+
+    public getDepartments(): void {
+        this.stdComStandardService.getDepartments().subscribe(
+            (response: Department[]) => {
+                this.departments = response;
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        );
+    }
+
+    saveStandard(): void {
     this.SpinnerService.show();
     this.stdComStandardService.addStandardRequest(this.stdRequestFormGroup.value).subscribe(
         (response:CompanyStandardRequest) =>{
@@ -80,7 +82,7 @@ export class CsRequestFormComponent implements OnInit {
           console.log(response);
           Swal.fire('Thank you...', 'Standard Request Submitted!', 'success').then(r => this.stdRequestFormGroup.reset());
 
-          ;
+
         },
         (error:HttpErrorResponse) =>{
           this.SpinnerService.hide();
