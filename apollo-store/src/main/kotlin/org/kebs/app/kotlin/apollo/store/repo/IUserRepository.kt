@@ -207,6 +207,28 @@ interface IUserRoleAssignmentsRepository : HazelcastRepository<UserRoleAssignmen
 }
 
 @Repository
+interface IUserSectionAssignmentsRepository : HazelcastRepository<UserSectionAssignmentsEntity, Long> {
+    fun findByUserIdAndStatus(userId: Long, status: Int): List<UserSectionAssignmentsEntity>?
+    fun findBySectionIdAndStatus(sectionId: Long, status: Int): List<UserSectionAssignmentsEntity>?
+    fun findBySectionId(sectionId: Long): List<UserSectionAssignmentsEntity>
+    fun findByUserId(userId: Long): UserSectionAssignmentsEntity?
+
+
+    @Query(
+        "SELECT * FROM CFG_USER_SECTION_ASSIGNMENTS cura WHERE CURA.USER_ID = :userId AND STATUS = :status",
+        nativeQuery = true
+    )
+    fun findUserRoleAssignments(
+        @Param("userId") userId: Long,
+        @Param("status") status: Int
+    ): List<UserSectionAssignmentsEntity>?
+
+    fun findByUserIdAndSectionIdAndStatus(userId: Long, sectionId: Long, status: Int): UserSectionAssignmentsEntity?
+    fun findByUserIdAndSectionId(userId: Long, sectionId: Long): UserSectionAssignmentsEntity?
+
+}
+
+@Repository
 interface IUserTypesEntityRepository : HazelcastRepository<UserTypesEntity, Long> {
     fun findByStatus(status: Int): List<UserTypesEntity>
     fun findByTypeNameAndStatus(typeName: String, status: Int): UserTypesEntity?
