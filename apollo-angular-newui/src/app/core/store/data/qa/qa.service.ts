@@ -12,7 +12,7 @@ import {
     MPesaPushDto,
     PermitEntityDetails,
     PermitEntityDto,
-    PermitProcessStepDto, PlantDetailsDto,
+    PermitProcessStepDto, PlantDetailsDto, QRCodeScannedQADto,
     ResubmitApplicationDto,
     SSCApprovalRejectionDto,
     STA1,
@@ -96,6 +96,21 @@ export class QaService {
             .set('batchID', batchID);
         return this.http.get<any>(url, {params}).pipe(
             map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public loadQRCodeDetails(permitNumber: string): Observable<QRCodeScannedQADto> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_QR_CODE_SCAN);
+        const params = new HttpParams()
+            .set('permitNumber', permitNumber);
+        return this.http.get<QRCodeScannedQADto>(url, {params}).pipe(
+            map(function (response: QRCodeScannedQADto) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {

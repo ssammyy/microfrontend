@@ -909,6 +909,12 @@ class QADaoServices(
         } ?: throw ExpectedDataNotFound("No Permit found with the following [ID=$id]")
     }
 
+    fun findPermitBYPermitNumber(permitNumber: String): PermitApplicationsEntity {
+        permitRepo.findTopByAwardedPermitNumberOrderByIdDesc(permitNumber)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No Permit found with the following permit number = $permitNumber")
+    }
+
     fun findPermitBYIDAndBranchID(id: Long, plantID: Long): PermitApplicationsEntity {
         permitRepo.findByIdAndAttachedPlantId(id, plantID)?.let {
             return it
@@ -5795,6 +5801,18 @@ class QADaoServices(
         }
 
         return sta1ViewDto
+    }
+
+    fun mapDtoQRCodeQaDetailsView(permit: PermitApplicationsEntity): QRCodeScannedQADto {
+        val qrCodeViewDto = QRCodeScannedQADto()
+        with(qrCodeViewDto) {
+            productName = permit.productName
+            tradeMark = permit.tradeMark
+            awardedPermitNumber = permit.awardedPermitNumber
+            dateOfIssue = permit.dateOfIssue
+            dateOfExpiry = permit.dateOfExpiry
+        }
+        return qrCodeViewDto
     }
 
     fun mapDtoSTA10SectionAAndQaSta10Entity(sta10SectionADto: STA10SectionADto): QaSta10Entity {

@@ -134,6 +134,7 @@ import {FmarkAllAwardedApplicationsComponent} from './apollowebs/quality-assuran
 import {QaTaskDetailsComponent} from './apollowebs/quality-assurance/qa-task-details/qa-task-details.component';
 import {CompanyViewComponent} from './apollowebs/company/company-view/company-view.component';
 import {BranchViewComponent} from './apollowebs/company/branch/branch-view/branch-view.component';
+import {QrCodeDetailsComponent} from './apollowebs/quality-assurance/qr-code-details/qr-code-details.component';
 
 
 // import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -270,7 +271,8 @@ import {BranchViewComponent} from './apollowebs/company/branch/branch-view/branc
         FmarkAllAwardedApplicationsComponent,
         QaTaskDetailsComponent,
         CompanyViewComponent,
-        BranchViewComponent
+        BranchViewComponent,
+        QrCodeDetailsComponent
 
     ]
 

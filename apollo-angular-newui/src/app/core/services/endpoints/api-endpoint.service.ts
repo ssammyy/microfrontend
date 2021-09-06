@@ -17,11 +17,11 @@ export class ApiEndpointService {
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-        // LOCAL_DEV: 'localhost:8006'
+        LOCAL_DEV: 'localhost:8006'
         // LOCAL_DEV: '12:8006'
         // LOCAL_DEV: '41.72.209.58:8006'
         // LOCAL_DEV: `kimsint.kebs.org:8006`
-        LOCAL_DEV: `kims.kebs.org:8006`
+        // LOCAL_DEV: `kims.kebs.org:8006`
     };
 
     /**
@@ -194,6 +194,8 @@ export class ApiEndpointService {
 
         // tslint:disable-next-line:max-line-length
         /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::QA ENDPOINTS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+        PERMIT_QR_CODE_SCAN: `${ApiEndpointService.ANONYMOUS_CONTEXT}/permit-qrcode/details`,
+
         PERMIT_PROCESS_STEP: `${ApiEndpointService.QA_CONTEXT_APPLY}/process-step-add`,
 
         FIRM_PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/firm-list`,
@@ -340,7 +342,7 @@ export class ApiEndpointService {
         NEP_DEPARTMENT_RESPONSE: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/division_response/send_response`,
         NEP_FEEDBACK_EMAIL: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/information_available/send_email`,
 
-        //SD NEP DOMESTIC NOTIFICATION
+        // SD NEP DOMESTIC NOTIFICATION
         NEP_RETRIEVE_NOTIFICATIONS: `${ApiEndpointService.SD_NEP_CONTEXT}/nep_officer/tasks`,
         NEP_MANAGER_RETRIEVE_NOTIFICATIONS: `${ApiEndpointService.SD_NEP_CONTEXT}/manager/tasks`,
         NEP_ACCEPT_REQUEST_MADE: `${ApiEndpointService.SD_NEP_CONTEXT}/nep_officer/is_accepted`,
@@ -350,10 +352,10 @@ export class ApiEndpointService {
         NEP_UPLOAD_FILE: `${ApiEndpointService.SD_NEP_CONTEXT}/nep_officer/draft_notification`,
 
 
-        //REQUEST STANDARDS
-        REQ_STANDARD:`${ApiEndpointService.REQUEST_STANDARD}/request`,
-        REQ_PRODUCTS:`${ApiEndpointService.REQUEST_STANDARD}/getProducts`,
-        REQ_PRODUCTS_SUBCATEGORY:`${ApiEndpointService.REQUEST_STANDARD}/getProductCategories`
+        // REQUEST STANDARDS
+        REQ_STANDARD: `${ApiEndpointService.REQUEST_STANDARD}/request`,
+        REQ_PRODUCTS: `${ApiEndpointService.REQUEST_STANDARD}/getProducts`,
+        REQ_PRODUCTS_SUBCATEGORY: `${ApiEndpointService.REQUEST_STANDARD}/getProductCategories`
 
     };
 

@@ -185,6 +185,14 @@ data class STA1Dto(
     var createFmark: Int? = null,
 )
 
+data class QRCodeScannedQADto(
+    var productName: String? = null,
+    var tradeMark: String? = null,
+    var awardedPermitNumber: String? = null,
+    var dateOfIssue: Date? = null,
+    var dateOfExpiry: Date? = null,
+)
+
 data class STA10ProductsManufactureDto(
     var id: Long? = null,
     var productName: String? = null,

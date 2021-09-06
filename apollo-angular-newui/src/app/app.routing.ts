@@ -66,6 +66,7 @@ import {DmarkAllAwardedApplicationsComponent} from './apollowebs/quality-assuran
 import {QaTaskDetailsComponent} from './apollowebs/quality-assurance/qa-task-details/qa-task-details.component';
 import {CompanyViewComponent} from './apollowebs/company/company-view/company-view.component';
 import {BranchViewComponent} from './apollowebs/company/branch/branch-view/branch-view.component';
+import {QrCodeDetailsComponent} from './apollowebs/quality-assurance/qr-code-details/qr-code-details.component';
 
 // export const AppRoutes: Routes = [
 //     {
@@ -167,6 +168,10 @@ export const routes: Routes = [
         data: {
             title: 'KEBS'
         }
+    },
+    {
+        path: 'qr-code-qa-permit-scan', component: RegistrationComponent,
+        children: [{path: '', component: QrCodeDetailsComponent}]
     },
     // {path: '**', component: AdminLayoutComponent},
     {

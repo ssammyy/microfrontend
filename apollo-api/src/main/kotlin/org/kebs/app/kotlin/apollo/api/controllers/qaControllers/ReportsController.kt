@@ -218,7 +218,8 @@ class ReportsController(
         map["faxNumber"] = foundPermitDetails.faxNo.toString()
         map["EmailAddress"] = foundPermitDetails.email.toString()
         map["phoneNumber"] = foundPermitDetails.telephoneNo.toString()
-        map["QrCode"] = applicationMapProperties.baseUrlValue
+        map["QrCode"] =
+            "${applicationMapProperties.baseUrlQRValue}qr-code-qa-permit-scan#${foundPermitDetails.permitNumber}"
         when (foundPermitDetails.permitTypeID) {
             applicationMapProperties.mapQAPermitTypeIDDmark -> {
                 map["DmarkLogo"] = dMarkImageFile
@@ -307,16 +308,7 @@ class ReportsController(
         val permit = qaDaoServices.findPermitBYID(id)
 
         val foundPermitDetails = qaDaoServices.permitDetails(permit, s)
-
-//        val standardNo = sampleStandardsRepository.findBySubCategoryId(permit.productSubCategory)?.standardNumber
-//        val ksApplicable = sampleStandardsRepository.findBySubCategoryId(permit.productSubCategory)?.standardTitle
-
-//        val standardsDetails = qaDaoServices.findStandardsByID(
-//            permit.productStandard
-//                ?: throw Exception("INVALID STANDARDS NUMBER [ID = ${permit.productStandard}]")
-//        )
-//        val standardNo = standardsDetails.standardNumber
-//        val ksApplicable = standardsDetails.standardTitle
+        var filePath: String? = null
 
         map["FirmName"] = foundPermitDetails.firmName.toString()
         map["PermitNo"] = foundPermitDetails.permitNumber.toString()
@@ -335,34 +327,65 @@ class ReportsController(
         map["faxNumber"] = foundPermitDetails.faxNo.toString()
         map["EmailAddress"] = foundPermitDetails.email.toString()
         map["phoneNumber"] = foundPermitDetails.telephoneNo.toString()
-        map["QrCode"] = foundPermitDetails.permitNumber.toString()
+        map["QrCode"] =
+            "${applicationMapProperties.baseUrlQRValue}qr-code-qa-permit-scan#${foundPermitDetails.permitNumber}"
+
 
 
         when (foundPermitDetails.permitTypeID) {
+//            applicationMapProperties.mapQAPermitTypeIDDmark -> {
+//                map["DmarkLogo"] = dMarkImageFile
+//                 map["backGroundImage"] = dMarkImageBackGroundFile
+//                reportsDaoService.extractReportEmptyDataSource(
+//                    map,
+//                    response,
+//                    applicationMapProperties.mapReportDmarkPermitReportPath
+//                )
+//            }
+//            applicationMapProperties.mapQAPermitTypeIdSmark -> {
+//                map["SmarkLogo"] = sMarkImageFile
+//                 map["backGroundImage"] = sMarkImageBackGroundFile
+//                reportsDaoService.extractReportEmptyDataSource(
+//                    map,
+//                    response,
+//                    applicationMapProperties.mapReportSmarkPermitReportPath
+//                )
+//            }
+//            applicationMapProperties.mapQAPermitTypeIdFmark -> {
+//                map["FmarkLogo"] = fMarkImageFile
+//                 map["backGroundImage"] = fMarkImageBackGroundFile
+//                reportsDaoService.extractReportEmptyDataSource(
+//                    map,
+//                    response,
+//                    applicationMapProperties.mapReportFmarkPermitReportPath
+//                )
+//            }
+
             applicationMapProperties.mapQAPermitTypeIDDmark -> {
                 map["DmarkLogo"] = dMarkImageFile
-                reportsDaoService.extractReportEmptyDataSource(
-                    map,
-                    response,
-                    applicationMapProperties.mapReportDmarkPermitReportPath
-                )
+                map["backGroundImage"] = dMarkImageBackGroundFile
+                filePath = applicationMapProperties.mapReportDmarkPermitReportPath
+
             }
             applicationMapProperties.mapQAPermitTypeIdSmark -> {
                 map["SmarkLogo"] = sMarkImageFile
-                reportsDaoService.extractReportEmptyDataSource(
-                    map,
-                    response,
-                    applicationMapProperties.mapReportSmarkPermitReportPath
-                )
+                map["backGroundImage"] = sMarkImageBackGroundFile
+                filePath = applicationMapProperties.mapReportSmarkPermitReportPath
+
             }
             applicationMapProperties.mapQAPermitTypeIdFmark -> {
                 map["FmarkLogo"] = fMarkImageFile
-                reportsDaoService.extractReportEmptyDataSource(
-                    map,
-                    response,
-                    applicationMapProperties.mapReportFmarkPermitReportPath
-                )
+                map["backGroundImage"] = fMarkImageBackGroundFile
+                filePath = applicationMapProperties.mapReportFmarkPermitReportPath
+
             }
+        }
+        if (filePath != null) {
+            reportsDaoService.extractReportEmptyDataSource(
+                map,
+                response,
+                filePath
+            )
         }
 
     }

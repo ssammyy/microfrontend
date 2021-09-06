@@ -8,6 +8,14 @@ export class UploadsDtoSTA3 {
     sta3Status: boolean;
 }
 
+export class QRCodeScannedQADto {
+    productName: string;
+    tradeMark: string;
+    awardedPermitNumber: string;
+    dateOfIssue: Date;
+    dateOfExpiry: Date;
+}
+
 export class PermitEntityDto {
     id: bigint;
     firmName: string;
