@@ -18,7 +18,6 @@ import {
   providedIn: 'root'
 })
 export class StdNwaService {
-
   constructor(private http: HttpClient) { }
 
   public getKNWDepartments(): any {
