@@ -67,6 +67,8 @@ import {QaTaskDetailsComponent} from './apollowebs/quality-assurance/qa-task-det
 import {CompanyViewComponent} from './apollowebs/company/company-view/company-view.component';
 import {BranchViewComponent} from './apollowebs/company/branch/branch-view/branch-view.component';
 import {QrCodeDetailsComponent} from './apollowebs/quality-assurance/qr-code-details/qr-code-details.component';
+import {StdTscSecTasksComponentComponent} from "./apollowebs/standards-development/standard-request/std-tsc-sec-tasks-component/std-tsc-sec-tasks-component.component";
+import {StdTcTasksComponent} from "./apollowebs/standards-development/standard-request/std-tc-tasks/std-tc-tasks.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -497,6 +499,8 @@ export const routes: Routes = [
         path: 'make_enquiry', component: MakeEnquiryComponent
     },
 
+
+    //  Request For Standards
     {
         path: 'request-standards',
         component: StandardRequestComponent,
@@ -505,6 +509,14 @@ export const routes: Routes = [
     {
         path: 'ms-standards', component: AdminLayoutComponent,
         children: [{path: '', component: StandardTaskComponent}]
+    },
+    {
+        path: 'std-tsc-sec-task', component: AdminLayoutComponent,
+        children: [{path: '', component: StdTscSecTasksComponentComponent}]
+    },
+    {
+        path: 'std-tc-task', component: AdminLayoutComponent,
+        children: [{path: '', component: StdTcTasksComponent}]
     },
 
 ];
