@@ -17,7 +17,7 @@ class DestinationInspectionRoutes {
     fun invoicing(handlers: InvoiceHandlers)= router{
         "/api/v1/di".nest {
 //            GET("/demand/note/{demandNoteId}",handlers::downloadDemandNote)
-            GET("/demand/note/details/{cdUuid}",handlers::cdInvoiceDetails)
+            GET("/demand/note/details/{invoiceId}",handlers::cdInvoiceDetails)
             GET("/demand/note/list/{cdId}",handlers::listDemandNotes)
             GET("/demand-note/fees",handlers::applicationFee)
             POST("/demand/note/generate/{cdUuid}",handlers::generateDemandNote)

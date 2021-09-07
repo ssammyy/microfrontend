@@ -31,6 +31,10 @@ class CdDemandNoteItemsDetailsEntity : Serializable {
     @Basic
     var product: String? = null
 
+    @Column(name = "RATE_TYPE")
+    @Basic
+    var rateType: String? = null
+
     @Column(name = "RATE")
     @Basic
     var rate: String? = null
@@ -38,6 +42,10 @@ class CdDemandNoteItemsDetailsEntity : Serializable {
     @Column(name = "AMOUNT_PAYABLE")
     @Basic
     var amountPayable: BigDecimal? = null
+
+    @Column(name = "ADJUSTED_AMOUNT")
+    @Basic
+    var adjustedAmount: BigDecimal? = null
 
     @Column(name = "DESCRIPTION")
     @Basic

@@ -143,4 +143,15 @@
     }
 }
 
-
+.risky {
+    color: rgba(231, 14, 14, 0.99);
+}
+:host /deep/ tr.risky {
+    color: rgba(231, 14, 14, 0.99);
+}
+.progress {
+    color:rgba(86, 241, 86, 0.5) ;
+}
+:host /deep/ tr.progress {
+    color:rgba(86, 241, 86, 0.5) ;
+}

@@ -362,7 +362,7 @@ class ApiDestinationInspectionHandler(
                 }
                 // Add data to response
                 data?.let {
-                    response.data = ConsignmentDocumentDao.fromList(data.toList())
+                    response.data = ConsignmentDocumentDao.fromList(data.toList(), daoServices.ncrCdType)
                     response.pageNo = data.number
                     response.totalPages = data.totalPages
                     response.totalCount = data.totalElements
@@ -395,7 +395,7 @@ class ApiDestinationInspectionHandler(
                 val allUserCFS = daoServices.findAllCFSUserList(userProfilesEntity.id!!)
 
                 val pp = daoServices.findAllOngoingCdWithFreightStationID(allUserCFS, cdType, listOf(map.activeStatus, map.initStatus, map.failedStatus, null), page)
-                response.data = ConsignmentDocumentDao.fromList(pp.toList())
+                response.data = ConsignmentDocumentDao.fromList(pp.toList(), daoServices.ncrCdType)
                 response.pageNo = pp.number
                 response.totalPages = pp.totalPages
                 response.totalCount = pp.totalElements
@@ -425,7 +425,7 @@ class ApiDestinationInspectionHandler(
                 when {
                     auth.authorities.stream().anyMatch { authority -> authority.authority == "DI_OFFICER_CHARGE_READ" } -> {
                         val pp = daoServices.findAllCompleteCdWithAssigner(usersEntity, cdType, page)
-                        response.data = ConsignmentDocumentDao.fromList(pp.toList())
+                        response.data = ConsignmentDocumentDao.fromList(pp.toList(),daoServices.ncrCdType)
                         response.totalPages = pp.totalPages
                         response.pageNo = pp.number
                         response.totalCount = pp.totalElements
@@ -434,7 +434,7 @@ class ApiDestinationInspectionHandler(
                     }
                     auth.authorities.stream().anyMatch { authority -> authority.authority == "DI_INSPECTION_OFFICER_READ" } -> {
                         val pp = daoServices.findAllCompleteCdWithAssignedIoID(usersEntity, cdType, page)
-                        response.data = ConsignmentDocumentDao.fromList(pp.toList())
+                        response.data = ConsignmentDocumentDao.fromList(pp.toList(),daoServices.ncrCdType)
                         response.pageNo = pp.number
                         response.totalPages = pp.totalPages
                         response.totalCount = pp.totalElements
@@ -469,7 +469,7 @@ class ApiDestinationInspectionHandler(
                 val statuses = listOf(map.activeStatus, map.initStatus, map.successStatus, null)
                 // Find documents
                 val pp = daoServices.findAllAvailableCdWithPortOfEntry(allUserCFS, cdType, statuses, page)
-                response.data = ConsignmentDocumentDao.fromList(pp.toList())
+                response.data = ConsignmentDocumentDao.fromList(pp.toList(),daoServices.ncrCdType)
                 response.totalPages = pp.totalPages
                 response.pageNo = pp.number
                 response.totalCount = pp.totalElements

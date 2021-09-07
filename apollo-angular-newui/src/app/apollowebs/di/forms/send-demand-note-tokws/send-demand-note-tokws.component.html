@@ -53,7 +53,8 @@
             <mat-error *ngIf="message">{{message}}</mat-error>
         </div>
         <div class="col-sm-12 col-md-8" *ngIf="presentmentData">
-            <label class="waiver-form-label">Total Amount: {{presentmentData.totalAmount}}</label>
+            <label class="waiver-form-label">CD PAYABLE AMOUNT: {{presentmentData.totalAmount}}</label>
+            <label class="waiver-form-label">CD ADJUSTED AMOUNT: {{presentmentData.adjustedAmount}}</label>
         </div>
         <div class="col-sm-12 col-md-8" *ngIf="items && items.length==0">
             <label for="fcorDemandAmount" class="waiver-form-label">Total Amount</label>

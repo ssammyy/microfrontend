@@ -252,4 +252,8 @@ export class DestinationInspectionService {
     saveSSFDetails(data: any,itemUuid:any): Observable<any> {
         return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/item-ssf/"+itemUuid),data);
     }
+
+    demandNoteDetails(demandNoteId: any): Observable<any> {
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/demand/note/details/"+demandNoteId))
+    }
 }

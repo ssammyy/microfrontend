@@ -32,6 +32,15 @@ export class ConsignmentDocumentListComponent implements OnInit {
             ],
             position: 'right' // left|right
         },
+        rowClassFunction: (row) =>{
+            // console.log(row)
+            if(row.data.isNcrDocument){
+                return 'risky';
+            }else {
+                return ''
+            }
+
+        },
         delete: {
             deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
             confirmDelete: true

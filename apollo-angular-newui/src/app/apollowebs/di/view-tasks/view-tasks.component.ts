@@ -3,6 +3,7 @@ import {DestinationInspectionService} from "../../../core/store/data/di/destinat
 import swal from "sweetalert2";
 import {MatDialog} from "@angular/material/dialog";
 import {ProcessRejectionComponent} from "../forms/process-rejection/process-rejection.component";
+import {ViewDemandNoteComponent} from "../demand-note-list/view-demand-note/view-demand-note.component";
 
 @Component({
     selector: 'app-view-tasks',
@@ -10,29 +11,39 @@ import {ProcessRejectionComponent} from "../forms/process-rejection/process-reje
     styleUrls: ['./view-tasks.component.css']
 })
 export class ViewTasksComponent implements OnInit {
-    active="consignment"
+    active = "consignment"
     tasks: any[]
     consignmentId: any
     consignment: any
-    attachments: any[]=[]
+    attachments: any[] = []
 
-    constructor(private dialog: MatDialog,private diService: DestinationInspectionService) {
+    constructor(private dialog: MatDialog, private diService: DestinationInspectionService) {
     }
 
     ngOnInit(): void {
         this.loadMyTasks()
     }
-    approveRejectTasks(taskId: any, docUuid: any){
-        this.dialog.open(ProcessRejectionComponent,{
-            data:{
+
+    viewDemandNote(demandNoteId: any) {
+        this.dialog.open(ViewDemandNoteComponent, {
+            data: {
+                id: demandNoteId
+            }
+        })
+    }
+
+    approveRejectTasks(taskId: any, docUuid: any) {
+        this.dialog.open(ProcessRejectionComponent, {
+            data: {
                 cdUuid: docUuid,
                 taskId: taskId
             }
         }).afterClosed()
-            .subscribe(res=>{
+            .subscribe(res => {
                 this.loadMyTasks()
             })
     }
+
     loadMyTasks() {
         this.diService.loadMyTasks()
             .subscribe(res => {
@@ -46,11 +57,11 @@ export class ViewTasksComponent implements OnInit {
             })
     }
 
-    loadSelectedConsignmentDetails(task?:any){
-        if(task){
-            this.consignmentId=task.map.cdUuid
+    loadSelectedConsignmentDetails(task?: any) {
+        if (task) {
+            this.consignmentId = task.map.cdUuid
         }
-        if(this.consignmentId) {
+        if (this.consignmentId) {
             this.diService.getConsignmentDetails(this.consignmentId)
                 .subscribe(
                     res => {

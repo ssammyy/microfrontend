@@ -15,7 +15,7 @@ fun checkHasAuthority(role: String, auth: Authentication): Boolean {
 
 class ConsignmentEnableUI {
     var owner: Boolean? = null
-    var canChange: Boolean=false
+    var canChange: Boolean = false
     var supervisor: Boolean? = null
     var inspector: Boolean? = null
     var demandNote: Boolean? = null
@@ -39,7 +39,7 @@ class ConsignmentEnableUI {
     var riskProfileConsignee: Boolean = false
     var inspectionActive: Boolean? = null
     var hasPort: Boolean? = null
-    var blacklistEnabled=false
+    var blacklistEnabled = false
 
     companion object {
         fun fromEntity(cd: ConsignmentDocumentDetailsEntity, map: ServiceMapsEntity, authentication: Authentication): ConsignmentEnableUI {
@@ -49,11 +49,11 @@ class ConsignmentEnableUI {
             val ui = ConsignmentEnableUI().apply {
                 supervisor = modify
                 inspector = change
-                assigned=cd.assignedInspectionOfficer!=null
+                assigned = cd.assignedInspectionOfficer != null
                 targeted = cd.targetStatus == map.activeStatus
                 idfAvailable = cd.idfNumber != null
-                cocAvailable=cd.ucrNumber!=null
-                corAvailable=cd.cdType?.localCorStatus == map.activeStatus && cd.localCocOrCorStatus == map.activeStatus
+                cocAvailable = cd.ucrNumber != null
+                corAvailable = cd.cdType?.localCorStatus == map.activeStatus && cd.localCocOrCorStatus == map.activeStatus
                 owner = cd.assignedInspectionOfficer?.userName == authentication.name
                 demandNote = cd.sendDemandNote == map.activeStatus
                 sendCoi = modify && cd.localCoi == map.activeStatus
@@ -114,11 +114,12 @@ class ConsignmentDocumentDao {
     var applicationRefNo: String? = null
     var summaryPageURL: String? = null
     var approvalStatus: String? = null
-    var applicationStatus: String?=null
+    var applicationStatus: String? = null
     var assigned: Boolean = false
+    var isNcrDocument: Boolean = false
 
     companion object {
-        fun fromEntity(doc: ConsignmentDocumentDetailsEntity): ConsignmentDocumentDao {
+        fun fromEntity(doc: ConsignmentDocumentDetailsEntity, ncrId: String = ""): ConsignmentDocumentDao {
             val dt = ConsignmentDocumentDao()
             dt.id = doc.id
             dt.summaryPageURL = doc.summaryPageURL
@@ -128,12 +129,13 @@ class ConsignmentDocumentDao {
                 dt.cdTypeCategory = it.category
                 dt.cdTypeName = it.typeName
                 dt.cdTypeDescription = it.description
+                dt.isNcrDocument = it.uuid == ncrId
             }
             doc.freightStation?.let {
                 dt.freightStation = it.cfsName
                 dt.freightStationId = it.id
             }
-            dt.applicationStatus=doc.varField10
+            dt.applicationStatus = doc.varField10
             dt.assigned = doc.assignedInspectionOfficer != null
             dt.localCoi = doc.localCoi
             dt.sendDemandNote = doc.sendDemandNote
@@ -160,10 +162,10 @@ class ConsignmentDocumentDao {
             return dt
         }
 
-        fun fromList(docs: List<ConsignmentDocumentDetailsEntity>): List<ConsignmentDocumentDao> {
+        fun fromList(docs: List<ConsignmentDocumentDetailsEntity>, ncrId: String = ""): List<ConsignmentDocumentDao> {
             val documents = mutableListOf<ConsignmentDocumentDao>()
             docs.forEach {
-                documents.add(fromEntity(it))
+                documents.add(fromEntity(it,ncrId))
             }
             return documents
         }
@@ -254,8 +256,8 @@ class CdItemDetailsDao {
     var localCoi: Int? = null
     var inspectionNotificationStatus: Int? = null
     var inspectionDate: Date? = null
-    var isVehicle=false
-    var ministrySubmitted=false
+    var isVehicle = false
+    var ministrySubmitted = false
 
     companion object {
         fun fromEntity(item: CdItemDetailsEntity, details: Boolean = false): CdItemDetailsDao {
@@ -275,12 +277,12 @@ class CdItemDetailsDao {
                 dt.localCoi = cd.localCoi
                 dt.inspectionNotificationStatus = cd.inspectionNotificationStatus
                 dt.inspectionDate = cd.inspectionDate
-                cd.cdType?.let { cdType->
-                    dt.isVehicle=cdType.category.equals("VEHICLES",true)
+                cd.cdType?.let { cdType ->
+                    dt.isVehicle = cdType.category.equals("VEHICLES", true)
                 }
 
             }
-            dt.ministrySubmitted=item.ministrySubmissionStatus==0
+            dt.ministrySubmitted = item.ministrySubmissionStatus == 0
             // Other details
             if (details) {
                 dt.apply {

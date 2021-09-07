@@ -1029,11 +1029,12 @@ class DestinationInspectionDaoServices(
     }
 
     fun demandNoteCalculation(
-            cfiValue: BigDecimal,
+            demandNoteItem: CdDemandNoteItemsDetailsEntity,
             diInspectionFeeId: DestinationInspectionFeeEntity,
             itemDetails: CdItemDetailsEntity,
             currencyCode: String
-    ): BigDecimal? {
+    ) {
+        val cfiValue = demandNoteItem.cfvalue ?: BigDecimal.ZERO
         val percentage = 100
         var amount: BigDecimal? = null
         val minimumUsd: BigDecimal = diInspectionFeeId.minimumUsd?.toBigDecimal() ?: BigDecimal.ZERO
@@ -1043,45 +1044,50 @@ class DestinationInspectionDaoServices(
         when (diInspectionFeeId.rateType) {
             "PERCENTAGE" -> {
                 amount = diInspectionFeeId.rate?.multiply(cfiValue)?.divide(percentage.toBigDecimal())
+                demandNoteItem.amountPayable = BigDecimal(amount?.toDouble() ?: 0.0)
                 KotlinLogging.logger { }.info("${diInspectionFeeId.rateType} MY AMOUNT BEFORE CALCULATION = $currencyCode-$amount")
                 // APPLY MAX AND MIN VALUES
                 amount?.let {
                     when (currencyCode) {
                         "KSH" -> {
-                            if (it < minimumKes && minimumKes> BigDecimal.ZERO) {
+                            if (it < minimumKes && minimumKes > BigDecimal.ZERO) {
                                 amount = minimumKes
-                            } else if (it > maximumKes && maximumKes< BigDecimal.ZERO) {
+                            } else if (it > maximumKes && maximumKes < BigDecimal.ZERO) {
                                 amount = maximumKes
                             }
                         }
                         "USD" -> {
-                            if (it < minimumUsd && minimumUsd> BigDecimal.ZERO) {
+                            if (it < minimumUsd && minimumUsd > BigDecimal.ZERO) {
                                 amount = minimumUsd
-                            } else if (it > maximum && maximum> BigDecimal.ZERO) {
+                            } else if (it > maximum && maximum > BigDecimal.ZERO) {
                                 amount = maximum
                             }
                         }
                         else -> {
-                            if (it < minimumUsd && minimumUsd> BigDecimal.ZERO) {
+                            if (it < minimumUsd && minimumUsd > BigDecimal.ZERO) {
                                 amount = minimumUsd
-                            } else if (it > maximum && maximum> BigDecimal.ZERO) {
+                            } else if (it > maximum && maximum > BigDecimal.ZERO) {
                                 amount = maximum
                             }
                         }
                     }
                 }
+                demandNoteItem.adjustedAmount = amount
                 KotlinLogging.logger { }.info("${diInspectionFeeId.rateType} MY AMOUNT AFTER CALCULATION = $amount")
             }
             "FIXED" -> {
-               amount=diInspectionFeeId.amountKsh?.toBigDecimalOrNull()
+                amount = diInspectionFeeId.amountKsh?.toBigDecimalOrNull()
                 KotlinLogging.logger { }.info("FIXED AMOUNT BEFORE CALCULATION = $amount")
+                demandNoteItem.adjustedAmount = amount
+                demandNoteItem.amountPayable = amount
             }
             "MANUAL" -> {
                 amount = BigDecimal.ZERO
+                demandNoteItem.adjustedAmount = amount
+                demandNoteItem.amountPayable = amount
                 KotlinLogging.logger { }.info("MANUAL AMOUNT BEFORE CALCULATION = $amount")
             }
         }
-        return amount
     }
 
     fun addItemDetailsToDemandNote(
@@ -1091,26 +1097,32 @@ class DestinationInspectionDaoServices(
     ) {
         val fee = itemDetails.paymentFeeIdSelected
                 ?: throw Exception("Item details with Id = ${itemDetails.id}, does not Have any Details For payment Fee Id Selected ")
-        val demandNoteItem = CdDemandNoteItemsDetailsEntity()
+        var demandNoteItem = iDemandNoteItemRepo.findByItemId(itemDetails.id)
+        if(demandNoteItem==null){
+            demandNoteItem = CdDemandNoteItemsDetailsEntity()
+        }
         with(demandNoteItem) {
             itemId = itemDetails.id
             demandNoteId = demandNote.id
-            product = itemDetails.itemDescription
+            product = itemDetails.itemDescription?:itemDetails.hsDescription?:itemDetails.productTechnicalName
             cfvalue = itemDetails.totalPriceNcy
             rate = fee.rate?.toString()
+            rateType = fee.rateType
             // Demand note Calculation Details
-            amountPayable = cfvalue?.let {
-                demandNoteCalculation(it, fee, itemDetails, itemDetails.foreignCurrencyCode ?: "KES")
-            }
-                    ?: BigDecimal.ZERO
             status = map.activeStatus
             createdOn = commonDaoServices.getTimestamp()
             createdBy = commonDaoServices.getUserName(user)
         }
+        // Apply fee type and adjustments
+        demandNoteCalculation(demandNoteItem, fee, itemDetails, itemDetails.foreignCurrencyCode ?: "KES")
+        // Skip saving for presentment
         if (!presentment) {
             iDemandNoteItemRepo.save(demandNoteItem)
+            return
         }
-        demandNote.totalAmount = demandNote.totalAmount?.plus(demandNoteItem.amountPayable ?: BigDecimal.ZERO)
+        // Add this for presentment purposes
+        demandNote.totalAmount = demandNote.totalAmount?.plus(demandNoteItem.adjustedAmount ?: BigDecimal.ZERO)
+        demandNote.amountPayable = demandNote.amountPayable?.plus(demandNoteItem.amountPayable ?: BigDecimal.ZERO)
     }
 
     fun calculateTotalAmountDemandNote(
@@ -1123,10 +1135,14 @@ class DestinationInspectionDaoServices(
             return demandNote
         }
         demandNote.amountPayable = BigDecimal.ZERO
+        demandNote.totalAmount = BigDecimal.ZERO
         iDemandNoteItemRepo.findByDemandNoteId(demandNote.id!!)
                 ?.forEach { demandNoteItem ->
-                    demandNote.amountPayable = demandNote.amountPayable?.plus(demandNoteItem.amountPayable
+                    demandNote.amountPayable = demandNote.amountPayable?.plus(demandNoteItem.adjustedAmount
                             ?: BigDecimal.ZERO)
+                    demandNote.totalAmount = demandNote.totalAmount?.plus(demandNoteItem.amountPayable
+                            ?: BigDecimal.ZERO)
+
                 }
         return upDateDemandNoteWithUser(demandNote, user)
     }
@@ -1157,7 +1173,7 @@ class DestinationInspectionDaoServices(
                         demandNoteDetails.amountPayable = amount.toBigDecimal()
                     }
                     //Calculate the total Amount for Items In one Cd Tobe paid For
-                    if(!presentment) {
+                    if (!presentment) {
                         demandNoteDetails = calculateTotalAmountDemandNote(demandNoteDetails, map, user, presentment)
                     }
                     demandNoteDetails
