@@ -155,6 +155,15 @@ import {DiCocItemDetailsComponent} from "./apollowebs/di/view-single-consignment
 import {DiCocComponent} from "./apollowebs/di/view-single-consignment-document/di-coc/di-coc.component";
 import { ViewTasksComponent } from './apollowebs/di/view-tasks/view-tasks.component';
 import {MatButtonModule} from "@angular/material/button";
+import {MatTableModule} from "@angular/material/table";
+import { DemandNoteListComponent } from './apollowebs/di/demand-note-list/demand-note-list.component';
+import { ChecklistDataFormComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/checklist-data-form/checklist-data-form.component';
+import { AgrochemInspectionChecklistComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/checklist-data-form/agrochem-inspection-checklist/agrochem-inspection-checklist.component';
+import { EngineeringInspectionChecklistComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/checklist-data-form/engineering-inspection-checklist/engineering-inspection-checklist.component';
+import { OtherInspectionChecklistComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/checklist-data-form/other-inspection-checklist/other-inspection-checklist.component';
+import { VehicleInspectionChecklistComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/checklist-data-form/vehicle-inspection-checklist/vehicle-inspection-checklist.component';
+import { SsfDetailsFormComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/ssf-details-form/ssf-details-form.component';
+import { ApproveRejectItemComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/approve-reject-item/approve-reject-item.component';
 
 
 @NgModule({
@@ -200,6 +209,7 @@ import {MatButtonModule} from "@angular/material/button";
         MatFormFieldModule,
         MatButtonModule,
         NgbPaginationModule,
+        MatTableModule,
     ],
     declarations: [
         AppComponent,
@@ -324,7 +334,15 @@ import {MatButtonModule} from "@angular/material/button";
         DiCorComponent,
         DiCocComponent,
         DiCocItemDetailsComponent,
-        ViewTasksComponent
+        ViewTasksComponent,
+        DemandNoteListComponent,
+        ChecklistDataFormComponent,
+        AgrochemInspectionChecklistComponent,
+        EngineeringInspectionChecklistComponent,
+        OtherInspectionChecklistComponent,
+        VehicleInspectionChecklistComponent,
+        SsfDetailsFormComponent,
+        ApproveRejectItemComponent
     ],
     providers: [
         MatNativeDateModule,

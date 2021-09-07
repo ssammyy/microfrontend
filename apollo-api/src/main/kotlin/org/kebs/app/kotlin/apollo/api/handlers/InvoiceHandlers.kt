@@ -86,11 +86,20 @@ class InvoiceHandlers(
             val cdDetails = daoServices.findCDWithUuid(cdUuid)
             val invoiceForm = req.body(DemandNoteForm::class.java)
             val itemList = mutableListOf<CdItemDetailsEntity>()
+            val mapErrors= mutableMapOf<Long,String>()
             var totalItems = 0
             if (invoiceForm.includeAll) {
                 daoServices.findCDItemsListWithCDID(cdDetails).forEach { item ->
                     val fees = invoiceForm.items.filter { it.itemId == item.id }
-                    item.paymentFeeIdSelected = daoServices.findDIFee(fees[0].feeId)
+                    if(fees.isEmpty()) {
+                       mapErrors.put(item.id!!,"Fee not selected with all items included")
+                    } else {
+                        try {
+                            item.paymentFeeIdSelected = daoServices.findDIFee(fees[0].feeId)
+                        }catch (ex:Exception) {
+                            mapErrors.put(item.id!!,ex.localizedMessage)
+                        }
+                    }
                     itemList.add(item)
                 }
                 totalItems = itemList.size
@@ -98,10 +107,21 @@ class InvoiceHandlers(
                 invoiceForm.items.forEach {
                     val item = daoServices.findItemWithItemIDAndDocument(cdDetails, it.itemId)
                     // Add to list
-                    item.paymentFeeIdSelected = daoServices.findDIFee(it.feeId)
+                    try {
+                        item.paymentFeeIdSelected = daoServices.findDIFee(it.feeId)
+                    }catch (ex: Exception) {
+                        mapErrors.put(item.id!!,ex.localizedMessage)
+                    }
                     itemList.add(item)
                 }
                 totalItems = daoServices.findCDItemsListWithCDID(cdDetails).size
+            }
+            // Failed response
+            if(mapErrors.isNotEmpty()){
+                response.message="Invalid request"
+                response.responseCode=ResponseCodes.FAILED_CODE
+                response.errors=mapErrors
+                return ServerResponse.ok().body(response)
             }
             // Reject for consignment with no items?
             if (itemList.isEmpty() && totalItems > 0) {
@@ -138,16 +158,19 @@ class InvoiceHandlers(
                 val data = mutableMapOf<String, Any?>()
                 data["demandNoteId"] = demandNote.id
                 data["amount"] = invoiceForm.amount
+                data["supervisor"]=cdDetails.assigner?.userName
                 data["remarks"] = invoiceForm.remarks
-                data["hasAllItems"] = false
+                data["hasAllItems"] = totalItems==itemList.size
                 data["cdUuid"] = cdUuid
                 this.diBpmn.startGenerateDemandNote(data, cdDetails)
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+                response.message = "Success"
             }
 
         } catch (ex: Exception) {
-            KotlinLogging.logger { }.error { ex }
+            KotlinLogging.logger { }.error("DEMAND NOTE GENERATION ERROR",ex)
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
-            response.message = ex.localizedMessage
+            response.message = "Failed to submit request"
         }
         return ServerResponse.ok().body(response)
     }

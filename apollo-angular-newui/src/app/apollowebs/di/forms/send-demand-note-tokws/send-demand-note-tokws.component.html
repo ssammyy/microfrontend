@@ -1,52 +1,78 @@
 <h2 mat-dialog-title> Send Demand Note To KWS</h2>
 <mat-dialog-content>
-    <div class="row no_margin" [formGroup]="form">
-        <div class="col-sm-12 col-md-8">
+    <div class="row no_margin">
+        <div class="col-sm-12 col-md-8" *ngIf="this.items && this.items.length>0">
+            <mat-table [dataSource]="selectionDataSource">
+                <ng-container matColumnDef="select">
+                    <mat-header-cell *matHeaderCellDef>
+                        <mat-checkbox (change)="$event ? masterToggle() : null"
+                                      [checked]="selection.hasValue() && isAllSelected()"
+                                      [indeterminate]="selection.hasValue() && !isAllSelected()">
+                        </mat-checkbox>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                        <mat-checkbox (click)="$event.stopPropagation()"
+                                      (change)="selectionChanged($event,row)"
+                                      [checked]="selection.isSelected(row)">
+                        </mat-checkbox>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="hsCode">
+                    <mat-header-cell *matHeaderCellDef>HS Code</mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.itemHsCode}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="price">
+                    <mat-header-cell *matHeaderCellDef>Total Amount</mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.totalPriceNcy?row.totalPriceNcy:'NA'}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="details">
+                    <mat-header-cell *matHeaderCellDef>HS Cde Description</mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.itemHsCodeDescription}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="description">
+                    <mat-header-cell *matHeaderCellDef>Description</mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.itemDescription}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="pricing">
+                    <mat-header-cell *matHeaderCellDef>Select pricing</mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                        <mat-form-field>
+                            <mat-select [hidden]="!selection.isSelected(row)"
+                                        (click)="changePricing(row,$event)"
+                                        [(value)]="row.feeId"
+                                        (selectionChange)="changePricing(row,$event)">
+                                <mat-option [value]="">None</mat-option>
+                                <mat-option *ngFor="let d of paymentFees" [value]="d">{{d.description}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table>
+            <mat-error *ngIf="message">{{message}}</mat-error>
+        </div>
+        <div class="col-sm-12 col-md-8" *ngIf="presentmentData">
+            <label class="waiver-form-label">Total Amount: {{presentmentData.totalAmount}}</label>
+        </div>
+        <div class="col-sm-12 col-md-8" *ngIf="items && items.length==0">
+            <label for="fcorDemandAmount" class="waiver-form-label">Total Amount</label>
+            <input id="fcorDemandAmount" class="waiver-form-input-master" formControlName="amount">
+        </div>
+        <div class="col-sm-12 col-md-8" [formGroup]="form">
             <label for="sendDemandNoteRemarks" class="waiver-form-label">Please write, in detail, your feedback for this
                 consignment:</label>
-            <textarea id="sendDemandNoteRemarks" class="waiver-form-input-master" placeholder=""
-                      formControlName="sendDemandNoteRemarks"></textarea>
+            <textarea id="sendDemandNoteRemarks" class="waiver-form-input-master"
+                      formControlName="remarks"></textarea>
         </div>
-        <div class="col-sm-12 col-md-8">
-            <mat-checkbox formControlName="includeAll" class="example-margin">Check to exclude some items
-            </mat-checkbox>
-        </div>
-        <br/>
-        <div class="col-sm-6 col-md-4 example-container" [hidden]="!this.form.value.includeAll">
-            <h2 [hidden]="!this.form.value.includeAll">Items</h2>
-            <div class="example-list" cdkDropList
-                 [hidden]="!this.form.value.includeAll"
-                 #itemList="cdkDropList"
-                 [cdkDropListData]="items"
-                 [cdkDropListConnectedTo]="includedItemList"
-                 (cdkDropListDropped)="drop($event)">
-                <div class="example-box" cdkDrag *ngFor="let item of items">{{item.itemDescription}}
-                    -{{item.hsCode}}</div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-md-4 example-container" [hidden]="!this.form.value.includeAll">
-            <h2 [hidden]="!this.form.value.includeAll">Selected Items</h2>
-            <div class="example-list" cdkDropList
-                 [hidden]="!this.form.value.includeAll"
-                 #includedItemList="cdkDropList"
-                 [cdkDropListData]="selectedItems"
-                 [cdkDropListConnectedTo]="itemList" (cdkDropListDropped)="drop($event)">
-                <div class="example-box" cdkDrag *ngFor="let item of selectedItems">
-                    {{item.itemDescription}}-{{item.hsCode}}
-                    <mat-select>
-                        <mat-option *ngFor="let fee of paymentFees" [value]="fee.id">{{fee.description}}</mat-option>
-                    </mat-select>
-                </div>
 
-            </div>
-        </div>
-        <mat-error *ngIf="message">{{message}}</mat-error>
     </div>
 </mat-dialog-content>
 <mat-dialog-actions>
     <div class="row no_margin master-list-new-btn">
         <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
-        <button [disabled]="form.invalid" class="next-btn btn-gen new-btn" (click)="saveRecord(false)">SAVE
+        <button [disabled]="form.invalid || invalidFeeSelection" class="next-btn btn-gen new-btn"
+                (click)="saveRecord(false)">SAVE
         </button>
     </div>
 </mat-dialog-actions>

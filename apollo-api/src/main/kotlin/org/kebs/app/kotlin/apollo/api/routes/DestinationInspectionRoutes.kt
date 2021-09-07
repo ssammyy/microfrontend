@@ -28,9 +28,9 @@ class DestinationInspectionRoutes {
     @CrossOrigin
     fun checkLists(handlers: ChecklistHandler)= router{
         "/api/v1/di".nest {
-            GET("/ministry/checklist/{checklistId}",handlers::downloadMinistryChecklist)
             GET("/checklists/{itemUuid}",handlers::listAllChecklists)
-            GET("/checklist/download/{checklistId}",handlers::downloadChecklist)
+            POST("/save-checklist/{cdItemUuid}",handlers::saveChecklist)
+            GET("/check-list/configurations",handlers::checklistConfigurations)
         }
     }
 
@@ -78,6 +78,7 @@ class DestinationInspectionRoutes {
             GET("/consignment/document/customs/declaration/{coUuid}", handler::consignmentDocumentCustomsDeclaration)
             GET("/consignment/document/invoices/{coUuid}", handler::consignmentDocumentInvoices)
             GET("/consignment/document/item/{coItemUuid}", handler::consignmentDocumentItemDetails)
+            GET("/consignment/document/item-ssf/{cdItemID}", handler::addSsfDetails)
             GET("/consignment/documents/item/checklist/{cdItemUuid}", handler::consignmentDocumentChecklist)
             GET("/consignment/documents/item/lab/{cdItemUuid}", handler::consignmentDocumentSSFLabDetails)
             // Foreign CoC/CoR
@@ -91,8 +92,6 @@ class DestinationInspectionRoutes {
             GET("/inspection/coc/details/{coUuid}", handler::certificateOfConformance)
             GET("/inspection/idf/details/{coUuid}", handler::importDeclarationFormDetails)
             GET("/inspection/cor/details/{coUuid}", handler::certificateOfRoadWorthines)
-            GET("/inspection/coc/download/{coUuid}", handler::downloadCertificateOfConformance)
-            GET("/inspection/cor/download/{coUuid}", handler::downloadCertificateOfRoadWorthines)
             // Ministry
             GET("/ministry/inspections/{inspectionStatus}", handler::ministryInspections)
             POST("/ministry/inspections/request/{itemId}", handler::ministryInspectionRequest)

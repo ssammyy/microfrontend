@@ -15,6 +15,9 @@ export class DestinationInspectionService {
     sendDemandNote(data: any, consignmentUuid: any): Observable<any>{
         return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/demand/note/generate/"+consignmentUuid),data)
     }
+    listDemandNotes(consignmentId): Observable<any> {
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/demand/note/list/"+consignmentId))
+    }
     loadMyTasks(): Observable<any>{
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/my/tasks"))
     }
@@ -230,5 +233,23 @@ export class DestinationInspectionService {
 
     loadItemDetails(itemId: any): Observable<any>{
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/item/"+itemId))
+    }
+
+    loadChecklistConfigs() : Observable<any>{
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/check-list/configurations"));
+    }
+    saveChecklist(itemUuid: any, data: any) : Observable<any>{
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/save-checklist/"+itemUuid),data);
+    }
+
+    loadCorDetails(cdUuid: any): Observable<any> {
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/inspection/cor/details/"+cdUuid));
+    }
+    loadCocDetails(cdUuid: any): Observable<any> {
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/inspection/coc/details/"+cdUuid));
+    }
+
+    saveSSFDetails(data: any,itemUuid:any): Observable<any> {
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/item-ssf/"+itemUuid),data);
     }
 }

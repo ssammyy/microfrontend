@@ -32,6 +32,7 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
     consignmentItems: any[]
     paymentFees: any[]
     configurations: any[]
+    demandNotes: any[]
 
     constructor(private diService: DestinationInspectionService,
                 private dialog: MatDialog,
@@ -46,12 +47,21 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
                 this.loadConsignmentDetails()
                 this.loadFees()
                 this.loadUiConfigurations()
-
             }
         )
 
     }
+    loadDemandNotes() {
+        this.diService.listDemandNotes(this.consignment.cd_details.id)
+            .subscribe(
+                res=>{
+                    if(res.responseCode=="00") {
+                        this.demandNotes=res.data
+                    }
+                }
+            )
 
+    }
     generateDemandNote() {
         this.dialog.open(SendDemandNoteTokwsComponent, {
             data: {
@@ -63,11 +73,11 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
     }
 
     viewCoR() {
-
+        this.router.navigate(["/di/cor/details",this.consignmentId])
     }
 
     viewCoC() {
-
+        this.router.navigate(["/di/coc/details",this.consignmentId])
     }
 
     loadUiConfigurations() {
@@ -171,6 +181,7 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
                         this.consignmentItems = this.consignment.items_cd
                         this.listConsignmentAttachments()
                         this.loadComments()
+                        this.loadDemandNotes()
                     } else {
                         swal.fire({
                             title: response.message,

@@ -1031,94 +1031,56 @@ class DestinationInspectionDaoServices(
     fun demandNoteCalculation(
             cfiValue: BigDecimal,
             diInspectionFeeId: DestinationInspectionFeeEntity,
-            itemDetails: CdItemDetailsEntity
+            itemDetails: CdItemDetailsEntity,
+            currencyCode: String
     ): BigDecimal? {
         val percentage = 100
-        var amount = (diInspectionFeeId.rate)?.multiply(cfiValue)?.divide(percentage.toBigDecimal())
-
-        KotlinLogging.logger { }.info { "MY AMOUNT BEFORE CALCULATION = $amount" }
-
-        val currencyValues = itemDetails.foreignCurrencyCode?.let { iCfgMoneyTypeCodesRepo.findByTypeCode(it) }
-//        var amountInUSD = itemDetails.foreignCurrencyCode?.let { iCfgMoneyTypeCodesRepo.findByTypeCode(it) }
-
-        when (amount) {
-            null -> {
-                amount = diInspectionFeeId.amountKsh?.toBigDecimal()
-            }
-        }
-
-        when {
-            diInspectionFeeId.minimumUsd != null -> {
-                val minimumValue = (currencyValues?.typeCodeValue)?.toBigDecimal()
-                        ?.multiply(diInspectionFeeId.minimumUsd?.toBigDecimal())
-                when {
-                    minimumValue != null -> {
-                        when {
-                            amount != null -> {
-                                amount = when {
-                                    amount < minimumValue -> {
-                                        minimumValue
-                                    }
-                                    else -> {
-                                        amount
-                                    }
-                                }
+        var amount: BigDecimal? = null
+        val minimumUsd: BigDecimal = diInspectionFeeId.minimumUsd?.toBigDecimal() ?: BigDecimal.ZERO
+        val maximum: BigDecimal = diInspectionFeeId.higher?.toBigDecimal() ?: BigDecimal.ZERO
+        val minimumKes: BigDecimal = diInspectionFeeId.minimumKsh?.toBigDecimal() ?: BigDecimal.ZERO
+        val maximumKes: BigDecimal = diInspectionFeeId.maximumKsh?.toBigDecimal() ?: BigDecimal.ZERO
+        when (diInspectionFeeId.rateType) {
+            "PERCENTAGE" -> {
+                amount = diInspectionFeeId.rate?.multiply(cfiValue)?.divide(percentage.toBigDecimal())
+                KotlinLogging.logger { }.info("${diInspectionFeeId.rateType} MY AMOUNT BEFORE CALCULATION = $currencyCode-$amount")
+                // APPLY MAX AND MIN VALUES
+                amount?.let {
+                    when (currencyCode) {
+                        "KSH" -> {
+                            if (it < minimumKes && minimumKes> BigDecimal.ZERO) {
+                                amount = minimumKes
+                            } else if (it > maximumKes && maximumKes< BigDecimal.ZERO) {
+                                amount = maximumKes
+                            }
+                        }
+                        "USD" -> {
+                            if (it < minimumUsd && minimumUsd> BigDecimal.ZERO) {
+                                amount = minimumUsd
+                            } else if (it > maximum && maximum> BigDecimal.ZERO) {
+                                amount = maximum
+                            }
+                        }
+                        else -> {
+                            if (it < minimumUsd && minimumUsd> BigDecimal.ZERO) {
+                                amount = minimumUsd
+                            } else if (it > maximum && maximum> BigDecimal.ZERO) {
+                                amount = maximum
                             }
                         }
                     }
                 }
+                KotlinLogging.logger { }.info("${diInspectionFeeId.rateType} MY AMOUNT AFTER CALCULATION = $amount")
+            }
+            "FIXED" -> {
+               amount=diInspectionFeeId.amountKsh?.toBigDecimalOrNull()
+                KotlinLogging.logger { }.info("FIXED AMOUNT BEFORE CALCULATION = $amount")
+            }
+            "MANUAL" -> {
+                amount = BigDecimal.ZERO
+                KotlinLogging.logger { }.info("MANUAL AMOUNT BEFORE CALCULATION = $amount")
             }
         }
-
-        when {
-            diInspectionFeeId.higher != null -> {
-                val higherValue =
-                        (currencyValues?.typeCodeValue)?.toBigDecimal()?.multiply(diInspectionFeeId.higher?.toBigDecimal())
-                when {
-                    higherValue != null -> {
-                        when {
-                            amount != null -> {
-                                amount = when {
-                                    amount > higherValue -> {
-                                        amount
-                                    }
-                                    amount < higherValue -> {
-                                        higherValue
-                                    }
-                                    else -> {
-                                        amount
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-
-        when {
-            diInspectionFeeId.minimumKsh != null -> {
-                val minimumValueKSH = diInspectionFeeId.minimumKsh?.toBigDecimal()
-                when {
-                    minimumValueKSH != null -> {
-                        when {
-                            amount != null -> {
-                                amount = when {
-                                    amount < minimumValueKSH -> {
-                                        minimumValueKSH
-                                    }
-                                    else -> {
-                                        amount
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
         return amount
     }
 
@@ -1137,8 +1099,10 @@ class DestinationInspectionDaoServices(
             cfvalue = itemDetails.totalPriceNcy
             rate = fee.rate?.toString()
             // Demand note Calculation Details
-            amountPayable = cfvalue?.let { demandNoteCalculation(it, fee, itemDetails) }
-                    ?: throw Exception("Item details with Id = ${itemDetails.id}, does not Have any Details For total Price Ncy")
+            amountPayable = cfvalue?.let {
+                demandNoteCalculation(it, fee, itemDetails, itemDetails.foreignCurrencyCode ?: "KES")
+            }
+                    ?: BigDecimal.ZERO
             status = map.activeStatus
             createdOn = commonDaoServices.getTimestamp()
             createdBy = commonDaoServices.getUserName(user)
@@ -1146,6 +1110,7 @@ class DestinationInspectionDaoServices(
         if (!presentment) {
             iDemandNoteItemRepo.save(demandNoteItem)
         }
+        demandNote.totalAmount = demandNote.totalAmount?.plus(demandNoteItem.amountPayable ?: BigDecimal.ZERO)
     }
 
     fun calculateTotalAmountDemandNote(
@@ -1154,22 +1119,15 @@ class DestinationInspectionDaoServices(
             user: UsersEntity,
             presentment: Boolean,
     ): CdDemandNoteEntity {
-        /* todo: Discuss with KEN on how to go with the bigDecimal not to be null when initializing */
-        var totalAmountPayable: BigDecimal = 0.00.toBigDecimal()
-        val demandNoteID =
-                demandNote.id ?: throw Exception("Demand Note details with Id = ${demandNote.id}, does not Exist")
-        iDemandNoteItemRepo.findByDemandNoteId(demandNoteID)
-                ?.forEach { demandNoteItem ->
-                    totalAmountPayable = demandNoteItem.amountPayable?.plus(totalAmountPayable)!!
-                }
-        //Add the total amount To demandNote Details
-        with(demandNote) {
-            totalAmount = totalAmountPayable
-        }
-        //Update Demand Note Details
         if (presentment) {
             return demandNote
         }
+        demandNote.amountPayable = BigDecimal.ZERO
+        iDemandNoteItemRepo.findByDemandNoteId(demandNote.id!!)
+                ?.forEach { demandNoteItem ->
+                    demandNote.amountPayable = demandNote.amountPayable?.plus(demandNoteItem.amountPayable
+                            ?: BigDecimal.ZERO)
+                }
         return upDateDemandNoteWithUser(demandNote, user)
     }
 
@@ -1186,6 +1144,7 @@ class DestinationInspectionDaoServices(
                 ?.let { demandNote ->
                     var demandNoteDetails = demandNote
                     //Call Function to add Item Details To be attached To The Demand note
+                    demandNote.totalAmount = BigDecimal.ZERO
                     itemList.forEach {
                         addItemDetailsToDemandNote(it, demandNoteDetails, map, presentment, user)
                         it.dnoteStatus = map.activeStatus
@@ -1198,7 +1157,9 @@ class DestinationInspectionDaoServices(
                         demandNoteDetails.amountPayable = amount.toBigDecimal()
                     }
                     //Calculate the total Amount for Items In one Cd Tobe paid For
-                    demandNoteDetails = calculateTotalAmountDemandNote(demandNoteDetails, map, user, presentment)
+                    if(!presentment) {
+                        demandNoteDetails = calculateTotalAmountDemandNote(demandNoteDetails, map, user, presentment)
+                    }
                     demandNoteDetails
                 }
                 ?: kotlin.run {
@@ -1243,9 +1204,9 @@ class DestinationInspectionDaoServices(
                     itemList.forEach {
                         addItemDetailsToDemandNote(it, demandNote, map, presentment, user)
                         //Calculate the total Amount for Items In one Cd Tobe paid For
-                        demandNote = calculateTotalAmountDemandNote(demandNote, map, user, presentment)
                         it.dnoteStatus = map.activeStatus
                         if (!presentment) {
+                            demandNote = calculateTotalAmountDemandNote(demandNote, map, user, presentment)
                             demandNoteUpDatingCDAndItem(it, user, demandNote)
                         }
                     }
@@ -2306,6 +2267,25 @@ class DestinationInspectionDaoServices(
         } ?: run {
             iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
                     usersEntity,
+                    page
+            )
+        }
+    }
+
+    fun findAllCdWithAssigner(
+            officerCharge: UsersEntity,
+            cdType: ConsignmentDocumentTypesEntity?,
+            page: PageRequest
+    ): Page<ConsignmentDocumentDetailsEntity> {
+        return cdType?.let {
+            iConsignmentDocumentDetailsRepo.findAllByAssignerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+                    officerCharge,
+                    it,
+                    page
+            )
+        } ?: run {
+            iConsignmentDocumentDetailsRepo.findAllByAssignerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+                    officerCharge,
                     page
             )
         }

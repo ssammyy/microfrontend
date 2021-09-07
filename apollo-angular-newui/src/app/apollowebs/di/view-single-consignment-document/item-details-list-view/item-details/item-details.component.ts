@@ -4,6 +4,9 @@ import {DestinationInspectionService} from "../../../../../core/store/data/di/de
 import swal from "sweetalert2";
 import {MatDialog} from "@angular/material/dialog";
 import {MinistryInspectionRequestComponent} from "../ministry-inspection-request/ministry-inspection-request.component";
+import {ChecklistDataFormComponent} from "../checklist-data-form/checklist-data-form.component";
+import {SsfDetailsFormComponent} from "../ssf-details-form/ssf-details-form.component";
+import {ApproveRejectItemComponent} from "../approve-reject-item/approve-reject-item.component";
 
 @Component({
     selector: 'app-item-details',
@@ -11,10 +14,13 @@ import {MinistryInspectionRequestComponent} from "../ministry-inspection-request
     styleUrls: ['./item-details.component.css']
 })
 export class ItemDetailsComponent implements OnInit {
+    activeTab = 'declarationGeneralDetails'
     itemUuid: any
     cdUuid: any
     itemDetails: any
     checkLists: any[]
+    checkListConfiguration: any
+    private statuses: any[] = [];
 
     constructor(private activatedRoute: ActivatedRoute, private diService: DestinationInspectionService,
                 private router: Router, private dialog: MatDialog) {
@@ -27,17 +33,63 @@ export class ItemDetailsComponent implements OnInit {
                 this.cdUuid = res.get("cdUuid")
                 this.loadItemDetails()
                 this.loadChecklists()
+                this.loadChecklistConfigurations()
             }
         )
+    }
+
+    loadChecklistConfigurations() {
+        this.diService.loadChecklistConfigs()
+            .subscribe(
+                res => {
+                    if (res.responseCode === "00") {
+                        this.checkListConfiguration = res.data
+                    }
+                }
+            )
+    }
+
+    rejectItem() {
+        this.dialog.open(ApproveRejectItemComponent, {
+            data: {
+                uuid: this.itemUuid,
+                reinspection: false,
+                configs: this.checkListConfiguration
+            }
+        }).afterClosed()
+            .subscribe(
+                res => {
+                    if (res) {
+                        this.loadItemDetails()
+                    }
+                }
+            )
+    }
+
+    addSsfDetails() {
+        this.dialog.open(SsfDetailsFormComponent, {
+            data: {
+                uuid: this.itemUuid,
+                reject: false,
+                configs: this.statuses
+            }
+        }).afterClosed()
+            .subscribe(
+                res => {
+                    if (res) {
+                        // Reload
+                    }
+                }
+            )
     }
 
     loadChecklists() {
         this.diService.loadChecklists(this.itemUuid)
             .subscribe(
-                res=>{
-                    if(res.responseCode==="00"){
-                        this.checkLists=res.data
-                    }else{
+                res => {
+                    if (res.responseCode === "00") {
+                        this.checkLists = res.data
+                    } else {
                         console.log(res.message)
                     }
                 }
@@ -45,16 +97,41 @@ export class ItemDetailsComponent implements OnInit {
     }
 
     submitMinistryInspection() {
-        this.dialog.open(MinistryInspectionRequestComponent,{
+        this.dialog.open(MinistryInspectionRequestComponent, {
             data: {
                 uuid: this.itemUuid,
                 reinspection: false,
+                configs: this.checkListConfiguration
             }
-        })
+        }).afterClosed()
+            .subscribe(
+                res => {
+                    if (res) {
+                        this.loadChecklists()
+                    }
+                }
+            )
+    }
+
+    createInspectionChecklist() {
+        this.dialog.open(ChecklistDataFormComponent, {
+            data: {
+                uuid: this.itemUuid,
+                reinspection: false,
+                configs: this.checkListConfiguration
+            }
+        }).afterClosed()
+            .subscribe(
+                res => {
+                    if (res) {
+                        this.loadChecklists()
+                    }
+                }
+            )
     }
 
     resubmitMinistryInspection() {
-        this.dialog.open(MinistryInspectionRequestComponent,{
+        this.dialog.open(MinistryInspectionRequestComponent, {
             data: {
                 uuid: this.itemUuid,
                 reinspection: true,

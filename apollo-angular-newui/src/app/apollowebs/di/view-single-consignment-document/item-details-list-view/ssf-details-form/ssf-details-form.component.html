@@ -1,0 +1,34 @@
+<h2 mat-dialog-title>SSF Details</h2>
+<mat-dialog-content>
+    <div class="row no_margin" [formGroup]="form">
+        <input type="hidden" id="description" name="description" value="'SSF was added sucessfull'">
+        <div class="col-sm-12 col-md-8">
+            <label for="ssfNo" class="col-form-label">SSF No:</label>
+            <input class="input-field w-input" type="text" id="ssfNo" name="ssfNo" formControlName="ssfNo">
+        </div>
+        <div class="col-sm-12 col-md-8">
+            <label for="ssfSubmissionDate" class="col-form-label">SSF Submission Date:</label>
+            <input class="input-field w-input" type="date" id="ssfSubmissionDate" name="ssfSubmissionDate" formControlName="ssfSubmissionDate">
+        </div>
+        <div class="col-sm-12 col-md-8">
+            <label for="bsNumber" class="col-form-label">BS Number:</label>
+            <input class="input-field w-input" type="text" id="bsNumber" name="bsNumber" formControlName="bsNumber">
+        </div>
+        <div class="col-sm-12 col-md-8">
+            <label for="brandName" class="col-form-label">Brand Name:</label>
+            <input class="input-field w-input" type="text" max="20" id="brandName" name="brandName"  formControlName="brandName" >
+        </div>
+        <div class="col-sm-12 col-md-8">
+            <label for="productDescription" class="col-form-label">Product Description:</label>
+            <input class="input-field w-input" type="text" id="productDescription" name="productDescription" formControlName="productDescription" >
+        </div>
+        <mat-error *ngIf="message">{{message}}</mat-error>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <div class="row no_margin master-list-new-btn">
+        <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
+        <button [disabled]="form.invalid" class="next-btn btn-gen new-btn" (click)="saveRecord()">SAVE SSF
+        </button>
+    </div>
+</mat-dialog-actions>

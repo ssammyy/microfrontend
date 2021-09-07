@@ -31,6 +31,8 @@ class ConsignmentEnableUI {
     var assigned: Boolean? = null
     var completed: Boolean? = null
     var idfAvailable: Boolean = false
+    var cocAvailable: Boolean = false
+    var corAvailable: Boolean = false
     var declarationDocument: Boolean = false
     var riskProfileImporter: Boolean = false
     var riskProfileConsignor: Boolean = false
@@ -50,6 +52,8 @@ class ConsignmentEnableUI {
                 assigned=cd.assignedInspectionOfficer!=null
                 targeted = cd.targetStatus == map.activeStatus
                 idfAvailable = cd.idfNumber != null
+                cocAvailable=cd.ucrNumber!=null
+                corAvailable=cd.cdType?.localCorStatus == map.activeStatus && cd.localCocOrCorStatus == map.activeStatus
                 owner = cd.assignedInspectionOfficer?.userName == authentication.name
                 demandNote = cd.sendDemandNote == map.activeStatus
                 sendCoi = modify && cd.localCoi == map.activeStatus

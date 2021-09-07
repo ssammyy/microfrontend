@@ -19,13 +19,16 @@ class DestinationInspectionFeeEntity : Serializable {
     @Basic
     var minimumUsd: String? = null
 
-    @Column(name = "HIGHER")
+    @Column(name = "MAXIMUM_USD")
     @Basic
     var higher: String? = null
 
     @Column(name = "MINIMUM_KSH")
     @Basic
     var minimumKsh: String? = null
+    @Column(name = "MAXIMUM_KSH")
+    @Basic
+    var maximumKsh: String? = null
 
     @Column(name = "AMOUNT_KSH")
     @Basic
@@ -35,7 +38,7 @@ class DestinationInspectionFeeEntity : Serializable {
     @Basic
     var rate: BigDecimal? = null
 
-    // PERCENTAGE,FIXED,RANGE
+    // PERCENTAGE,FIXED,RANGE,MANUAL
     @Column(name = "RATE_TYPE")
     @Basic
     var rateType: String? = null

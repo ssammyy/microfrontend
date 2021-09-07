@@ -1,28 +1,47 @@
-import { Component, OnInit } from '@angular/core';
-import { FileService } from 'src/app/core/services/file.service';
+import {Component, OnInit} from '@angular/core';
+import {FileService} from 'src/app/core/services/file.service';
 import * as fileSaver from 'file-saver';
+import {DestinationInspectionService} from "../../../../core/store/data/di/destination-inspection.service";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
-  selector: 'app-di-coc',
-  templateUrl: './di-coc.component.html',
-  styleUrls: ['./di-coc.component.css']
+    selector: 'app-di-coc',
+    templateUrl: './di-coc.component.html',
+    styleUrls: ['./di-coc.component.css']
 })
 export class DiCocComponent implements OnInit {
-  active='coc-details'
-  constructor(private fileService: FileService) { }
+    activeTab = 'coc-details'
+    cdDetailsId: any
+    cocDetails: any
 
-  ngOnInit(): void {
-  }
-  downloadCocFile(): void {
-    this.fileService.downloadFile().subscribe(response => {
-      let blob: any = new Blob([response], { type: 'application/pdf' });
-      const url = window.URL.createObjectURL(blob);
-      //window.open(url);
-      //window.location.href = response.url;
-      fileSaver.saveAs(blob, 'davy.pdf');
-    }), error => console.log('Error downloading the file'),
-      () => console.info('File downloaded successfully');
+    constructor(private fileService: FileService, private diService: DestinationInspectionService, private activatedRoute: ActivatedRoute) {
+    }
 
-  }
+    ngOnInit(): void {
+        this.activatedRoute.paramMap
+            .subscribe(
+                res => {
+                    this.cdDetailsId = res.get("id")
+                    this.loadCocDetails()
+                }
+            )
+    }
+
+    loadCocDetails() {
+        this.diService.loadCocDetails(this.cdDetailsId)
+            .subscribe(
+                res => {
+                    if (res.responseCode == "00") {
+                        this.cocDetails = res.data
+                    }
+                }
+            )
+    }
+
+    downloadCocFile(): void {
+        if(this.cocDetails) {
+            this.diService.downloadDocument("/api/v1/download/coc/" + this.cocDetails.certificate_details.id)
+        }
+    }
 
 }

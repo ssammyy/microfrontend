@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-di-coc-item-details',
@@ -18,39 +18,47 @@ export class DiCocItemDetailsComponent implements OnInit {
     },
     noDataMessage: 'No data found',
     columns: {
-      number: {
+      shipmentLineNumber: {
         title: 'NUMBER',
         type: 'string'
       },
-      hsCode: {
+      cocNumber: {
+        title: 'COC NUMBER',
+        type: 'string'
+      },
+      shipmentLineHscode: {
         title: 'HS CODE',
         type: 'string'
       },
-      vin: {
+      shipmentLineDescription: {
+        title: 'DESCRIPTION',
+        type: 'string'
+      },
+      shipmentLineVin: {
         title: 'VIN',
         type: 'string'
       },
-      stickerNumber: {
+      shipmentLineStickerNumber: {
         title: 'STICKER NUMBER',
         type: 'string'
       },
-      ics: {
+      shipmentLineIcs: {
         title: 'ICS',
         type: 'string'
       },
-      standardsRef: {
+      shipmentLineStandardsReference: {
         title: 'Standards Ref',
         type: 'string'
       },
-      licenseRef: {
+      shipmentLineLicenceReference: {
         title: 'License Ref',
         type: 'string'
       },
-      registration: {
+      shipmentLineRegistration: {
         title: 'Registration',
         type: 'string'
       },
-      brandName: {
+      shipmentLineBrandName: {
         title: 'Brand Name',
         type: 'string'
       }
@@ -60,16 +68,11 @@ export class DiCocItemDetailsComponent implements OnInit {
       perPage: 20
     }
   };
-  dataSet: any = [{
-    number: 1002, hsCode: 'cc03902', vin: 'zm', stickerNumber: '20',
-    ics: 1002, standardsRef: 'cc03902', licenseRef: 'zm', registration: '20',
-  brandName: '20'
-  }];
+  @Input()dataSet: any[]
   constructor() { }
 
   ngOnInit(): void {
   }
   onCustomAction(data: any){
-
   }
 }

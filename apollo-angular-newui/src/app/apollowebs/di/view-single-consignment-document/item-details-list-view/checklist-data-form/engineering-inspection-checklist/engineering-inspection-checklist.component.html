@@ -1,0 +1,105 @@
+<div id='engineering-item-details' [formGroup]="engineeringChecklist">
+    <div class="form-row">
+        <div class="col-md-12 mb-3">
+            <label style="color: #0082f3">ENGINEERING Markings Details</label>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-md-4 mb-3">
+            <label for="serialNumber">Serial Number</label>
+            <input type="text" class="form-control" name="serialNumber"
+                   data-name="clearing Agent" id="serialNumber" formControlName="serialNumber">
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="brand">Brand</label>
+            <input type="text" class="form-control" name="brand"
+                   data-name="brand" id="brand" formControlName="brand">
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="ksEasApplicable">KS/EAS Applicable</label>
+            <input type="text" class="form-control" name="ksEasApplicable"
+                   data-name="ksEas Applicable" id="ksEasApplicable"
+                   formControlName="ksEasApplicable">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-md-4 mb-3">
+            <label for="quantityVerified">Quantity Verified (No. Of items/packages)</label>
+            <input type="text" class="form-control" name="quantityVerified"
+                   data-name="quantity Verified" id="quantityVerified"
+                   formControlName="quantityVerified">
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="mfgNameAddress">Mfg Name/Address</label>
+            <input type="text" class="form-control" name="mfgNameAddress"
+                   data-name="mfg Name" id="mfgNameAddress" formControlName="mfgNameAddress">
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="batchNoModelTypeRef">Batch no./model/type/reference</label>
+            <input type="text" class="form-control" name="batchNoModelTypeRef"
+                   data-name="batchNo ModelTypeRef" id="batchNoModelTypeRef" required=""
+                   formControlName="batchNoModelTypeRef">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-md-4 mb-3">
+            <label for="fiberComposition">Fibre composition</label>
+            <input type="text" class="form-control" name="fiberComposition"
+                   data-name="fiber Composition" id="fiberComposition"
+                   formControlName="fiberComposition">
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="instructionsUseManual">Instructions for use/manual</label>
+            <input type="text" class="form-control" maxlength="256" name="instructionsUseManual"
+                   data-name="instructions UseManual" id="instructionsUseManual"
+                   formControlName="instructionsUseManual">
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="warrantyPeriodDocumentation">Warranty period/documentation</label>
+            <input type="text" class="form-control" maxlength="256"
+                   name="warrantyPeriodDocumentation" data-name="warrantyPeriod Documentation"
+                   id="warrantyPeriodDocumentation" formControlName="warrantyPeriodDocumentation">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-md-4 mb-3">
+            <label for="safetyCautionaryRemarks">Safety /cautionary remark</label>
+            <input type="text" class="form-control" maxlength="256"
+                   name="safetyCautionaryRemarks" data-name="safety Cautionary Remarks"
+                   id="safetyCautionaryRemarks" formControlName="safetyCautionaryRemarks">
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="sizeClassCapacity">Size/class/capacity</label>
+            <input type="text" class="form-control" name="sizeClassCapacity"
+                   data-name="size Class Capacity" id="sizeClassCapacity"
+                   formControlName="sizeClassCapacity">
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="certMarksPvocDoc2">Certification marks/pvoc documents</label>
+            <input type="text" class="form-control" maxlength="256" name="certMarksPvocDoc"
+                   data-name="ksEas Applicable" id="certMarksPvocDoc2"
+                   formControlName="certMarksPvocDoc">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-md-4 mb-3">
+            <label for="disposalInstruction">Disposal instructions</label>
+            <input type="text" class="form-control" maxlength="256" name="disposalInstruction"
+                   data-name="disposal Instruction" id="disposalInstruction"
+                   formControlName="disposalInstruction">
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="sampled">Sampled Yes/No</label>
+            <select id="sampled" class="form-control" formControlName="sampled">
+                <option value="0">Select one...</option>
+                <option value="'YES'">YES</option>
+                <option value="'NO'">NO</option>
+            </select>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="remarks">Remarks</label>
+            <textarea class="form-control" maxlength="256" name="remarks" data-name="remarks"
+                      id="remarks" formControlName="remarks"></textarea>
+        </div>
+    </div>
+</div>

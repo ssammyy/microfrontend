@@ -72,6 +72,8 @@ import {ViewDiDeclarationDocumentsComponent} from "./apollowebs/di/view-single-c
 import {ViewIdfDocumentDetailsComponent} from "./apollowebs/di/view-single-consignment-document/view-idf-document-details/view-idf-document-details.component";
 import {ItemDetailsComponent} from "./apollowebs/di/view-single-consignment-document/item-details-list-view/item-details/item-details.component";
 import {ViewTasksComponent} from "./apollowebs/di/view-tasks/view-tasks.component";
+import {DiCorComponent} from "./apollowebs/di/view-single-consignment-document/di-cor/di-cor.component";
+import {DiCocComponent} from "./apollowebs/di/view-single-consignment-document/di-coc/di-coc.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -390,8 +392,16 @@ const routes: Routes = [
                 component: ViewDiDeclarationDocumentsComponent
             },
             {
-              path: 'idf/details/:id',
-              component: ViewIdfDocumentDetailsComponent
+                path: 'cor/details/:id',
+                component: DiCorComponent
+            },
+            {
+                path: 'coc/details/:id',
+                component: DiCocComponent
+            },
+            {
+                path: 'idf/details/:id',
+                component: ViewIdfDocumentDetailsComponent
             },
             {
                 path: 'item/:cdUuid/:id',

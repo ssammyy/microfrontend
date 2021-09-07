@@ -32,7 +32,7 @@ class InvoicePaymentService(
         return true
     }
 
-    fun approveDemandNoteGeneration(cdUuid: String,demandNoteId: Long,remarks: String): Boolean {
+    fun approveDemandNoteGeneration(cdUuid: String,demandNoteId: Long,supervisor: String,remarks: String): Boolean {
         try {
             val consignmentDocument=this.daoServices.findCDWithUuid(cdUuid)
             val demandNote = iDemandNoteRepo.findById(demandNoteId)
@@ -42,6 +42,7 @@ class InvoicePaymentService(
                 this.iDemandNoteRepo.save(demand)
                 this.auditService.addHistoryRecord(consignmentDocument.id!!,remarks,"APPROVED DEMAND NOTE","Demand note ${demandNoteId} approved")
             }
+
         }catch (ex: Exception){
             KotlinLogging.logger {  }.error("DEMAND NOTE ERROR", ex)
         }
@@ -50,6 +51,7 @@ class InvoicePaymentService(
 
     fun sendDemandNote(cdUuid: String,demandNoteId: Long): Boolean{
         // Send demand note to user
+        this.daoServices.sendDemandNotGeneratedToKWIS(demandNoteId)
         return true
     }
 

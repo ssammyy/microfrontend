@@ -1,28 +1,51 @@
-import { Component, OnInit } from '@angular/core';
-import { FileService } from 'src/app/core/services/file.service';
-import * as fileSaver from 'file-saver';
+import {Component, OnInit} from '@angular/core';
+import {FileService} from 'src/app/core/services/file.service';
+import {DestinationInspectionService} from "../../../../core/store/data/di/destination-inspection.service";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
-  selector: 'app-di-cor',
-  templateUrl: './di-cor.component.html',
-  styleUrls: ['./di-cor.component.css']
+    selector: 'app-di-cor',
+    templateUrl: './di-cor.component.html',
+    styleUrls: ['./di-cor.component.css']
 })
 export class DiCorComponent implements OnInit {
-  active = 'cor-details';
-  constructor(private fileService: FileService) { }
+    active = 'cor-details';
+    corDetails: any
+    message: any
+    cdUuid: any
 
-  ngOnInit(): void {
-  }
-  downloadCorFile(): void {
-    this.fileService.downloadFile().subscribe(response => {
-      let blob: any = new Blob([response], { type: 'application/pdf' });
-      const url = window.URL.createObjectURL(blob);
-      //window.open(url);
-      //window.location.href = response.url;
-      fileSaver.saveAs(blob, 'davy.pdf');
-    }), error => console.log('Error downloading the file'),
-      () => console.info('File downloaded successfully');
+    constructor(private activatedRoute: ActivatedRoute, private fileService: FileService, private diService: DestinationInspectionService) {
+    }
 
-  }
+    ngOnInit(): void {
+        this.activatedRoute.paramMap
+            .subscribe(
+                res => {
+                    this.cdUuid = res.get("id")
+                    this.loadCorDetails()
+                }
+            )
+    }
+
+    loadCorDetails() {
+        this.message = null
+        this.diService.loadCorDetails(this.cdUuid)
+            .subscribe(
+                res => {
+                    if (res.responseCode == "00") {
+                        this.corDetails = res.data
+                    } else {
+                        this.message = res.message
+                    }
+                }
+            )
+    }
+
+    downloadCorFile(): void {
+       if(this.corDetails){
+           this.diService.downloadDocument("/api/v1/download/cor/"+this.corDetails.cor_details.id)
+       }
+
+    }
 
 }

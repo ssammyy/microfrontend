@@ -10,84 +10,81 @@
                         <h4 class="card-title">Certificate of Compliance</h4>
 
                     </div>
-                    <div class="card-body">
+                    <div class="card-body" *ngIf="cocDetails">
                         <div class="row">
                             <div class="col-md-2">
                                 <div widget class=" border-0 box-shadow">
                                     <div class="text-center pt-2" style="color: green;">
                                         CD Standard Details
                                     </div>
-                                    <div class="card-body pt-0 widget-body">
+                                    <div class="card-body pt-0 widget-body" *ngIf="cocDetails">
                                         <table class="table-responsive">
                                             <th>
                                                 Application Ref Number
                                             </th>
                                             <tr>
-                                                <td>#565633</td>
+                                                <td>{{cocDetails.consignment_document_details.applicationRefNo}}</td>
                                             </tr>
                                             <th>
                                                 Application Date
                                             </th>
                                             <tr>
-                                                <td>16-08-2021</td>
+                                                <td>{{cocDetails.consignment_document_details.applicationDate}}</td>
                                             </tr>
                                             <th>
                                                 Declaration Number
                                             </th>
                                             <tr>
-                                                <td>DCR893093</td>
+                                                <td>{{cocDetails.consignment_document_details.declaraionNumber}}</td>
                                             </tr>
                                             <th>
                                                 UCR Number
                                             </th>
                                             <tr>
-                                                <td>UCR89390930</td>
+                                                <td>{{cocDetails.consignment_document_details.ucrNumber}}</td>
                                             </tr>
                                             <th>
                                                 Application Type
                                             </th>
                                             <tr>
-                                                <td>Consignment Document</td>
+                                                <td>{{cocDetails.consignment_document_details.cdTypeName}}</td>
                                             </tr>
                                             <th>
                                                 Document Type
                                             </th>
                                             <tr>
-                                                <td>PERMIT</td>
+                                                <td>{{cocDetails.consignment_document_details.cdTypeName}}</td>
                                             </tr>
                                             <th>
                                                 Assigned Officer
                                             </th>
                                             <tr>
-                                                <td>Randy Inspection Officer</td>
+                                                <td>{{cocDetails.consignment_document_details.assignedTo}}</td>
                                             </tr>
                                             <th>
                                                 Approval Status
                                             </th>
                                             <tr>
-                                                <td>LOCAL COC GENERATED</td>
+                                                <td>{{cocDetails.consignment_document_details.approvalStatus}}</td>
                                             </tr>
 
                                             <th>
                                                 Approval Date
                                             </th>
                                             <tr>
-                                                <td>
-                                                    2021-08-13</td>
+                                                <td>{{cocDetails.consignment_document_details.approvalStatus}}</td>
                                             </tr>
                                             <th>
                                                 Final Approval Date
                                             </th>
                                             <tr>
-                                                <td>
-                                                    2021-08-13</td>
+                                                <td>{{cocDetails.consignment_document_details.approveRejectCdDate}}</td>
                                             </tr>
                                             <th>
                                                 Version No
                                             </th>
                                             <tr>
-                                                <td>
-                                                    1</td>
+                                                <td>{{cocDetails.consignment_document_details.version}}</td>
                                             </tr>
                                         </table>
                                     </div>
@@ -97,8 +94,7 @@
                             <div class="col-md-8">
 
                                 <!-- <div class="d-flex"> -->
-                                <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
-
+                                <ul ngbNav #nav="ngbNav" [(activeId)]="activeTab" class="nav-tabs">
                                     <li ngbNavItem="coc-details">
                                         <a ngbNavLink>CoC Details</a>
                                         <ng-template ngbNavContent>
@@ -106,35 +102,35 @@
                                             <ul class="w-list-unstyled">
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">COC NUMBER</div>
-                                                    <div class="list-text-accordion">KEBSCOC20210813492B4</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.cocNumber}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">IDF NUMBER</div>
-                                                    <div class="list-text-accordion">UNKOWN</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.idfNumber}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">RFI NUMBER</div>
-                                                    <div class="list-text-accordion">UNKNOWN</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.rfiNumber}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">UCR NUMBER</div>
-                                                    <div class="list-text-accordion">UCR202100129992</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.ucrNumber}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">RFC DATE</div>
-                                                    <div class="list-text-accordion">2021-08-13 14:41:56.396956</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.rfcDate}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">COC ISSUE DATE</div>
-                                                    <div class="list-text-accordion">2021-08-13 14:41:56.396965</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.dateOfInspection}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">COC REMARKS</div>
-                                                    <div class="list-text-accordion">UNKNOWN</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.cocRemarks}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">ISSUING OFFICE</div>
-                                                    <div class="list-text-accordion">UNKNOWN</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.issuingOffice}}</div>
                                                 </li>
                                             </ul>
                                         </ng-template>
@@ -146,43 +142,43 @@
                                             <ul class="w-list-unstyled">
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Name</div>
-                                                    <div class="list-text-accordion">HOTPOINT APPLIANCES LTD</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.importerName}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">PIN</div>
-                                                    <div class="list-text-accordion">P000597694S</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.importerPin}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Address 1</div>
-                                                    <div class="list-text-accordion">527 IMANI COURT,jkjkh,SYOKIMAU - NAIROBI,254</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.importerAddress1}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Address 2</div>
-                                                    <div class="list-text-accordion">UNKNOWN</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.importerAddress2}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">City</div>
-                                                    <div class="list-text-accordion">UNKNOWN</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.importerCity}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Country</div>
-                                                    <div class="list-text-accordion">KENYA</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.importerCountry}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">ZipCode</div>
-                                                    <div class="list-text-accordion">UNKNOWN</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.importerZipCode}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Telephone</div>
-                                                    <div class="list-text-accordion">0721535208</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.importerTelephoneNumber}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Fax</div>
-                                                    <div class="list-text-accordion">0721535208</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.importerFaxNumber}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Email</div>
-                                                    <div class="list-text-accordion">info@kkkkk.com</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.importerEmail}}</div>
                                                 </li>
                                             </ul>
                                         </ng-template>
@@ -194,43 +190,43 @@
                                             <ul class="w-list-unstyled">
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Name</div>
-                                                    <div class="list-text-accordion">HOTPOINT APPLIANCES LTD</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.exporterName}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">PIN</div>
-                                                    <div class="list-text-accordion">P000597694S</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.exporterPin}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Address 1</div>
-                                                    <div class="list-text-accordion">527 IMANI COURT,jhgjh,SYOKIMAU - NAIROBI,254</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.exporterAddress1}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Address 2</div>
-                                                    <div class="list-text-accordion">UNKNOWN</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.exporterAddress2}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">City</div>
-                                                    <div class="list-text-accordion">UNKNOWN</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.exporterCity}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Country</div>
-                                                    <div class="list-text-accordion">IRELAND</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.exporterCountry}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">ZipCode</div>
-                                                    <div class="list-text-accordion">UNKNOWN</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.exporterZipCode}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Telephone</div>
-                                                    <div class="list-text-accordion">0721535208</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.exporterTelephoneNumber}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Fax</div>
-                                                    <div class="list-text-accordion">0721535208</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.exporterFaxNumber}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Email</div>
-                                                    <div class="list-text-accordion">info@intt.com</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.exporterEmail}}</div>
                                                 </li>
                                             </ul>
                                         </ng-template>
@@ -243,20 +239,21 @@
                                                 <ul class="w-list-unstyled">
                                                     <li class="list-item-accordion">
                                                         <div class="list-title-accordion">FOB Value</div>
-                                                        <div class="list-text-accordion">0</div>
+                                                        <div class="list-text-accordion">{{cocDetails.certificate_details.finalInvoiceFobValue}}</div>
                                                     </li>
                                                     <li class="list-item-accordion">
                                                         <div class="list-title-accordion">Exchange Rate</div>
-                                                        <div class="list-text-accordion">0</div>
+                                                        <div class="list-text-accordion">{{cocDetails.certificate_details.finalInvoiceExchangeRate}}</div>
                                                     </li>
                                                     <li class="list-item-accordion">
                                                         <div class="list-title-accordion">Date</div>
-                                                        <div class="list-text-accordion">2021-08-13 14:41:56.399257</div>
+                                                        <div class="list-text-accordion">{{cocDetails.certificate_details.finalInvoiceDate}}</div>
                                                     </li>
                                                 </ul>
                                             </div>
                                         </ng-template>
                                     </li>
+
                                     <li ngbNavItem="shipment-dets">
                                         <a ngbNavLink>Shipment Details</a>
                                         <ng-template ngbNavContent>
@@ -265,27 +262,27 @@
                                                 <ul class="w-list-unstyled">
                                                     <li class="list-item-accordion">
                                                         <div class="list-title-accordion">Mode</div>
-                                                        <div class="list-text-accordion">UNKNOWN</div>
+                                                        <div class="list-text-accordion">{{cocDetails.certificate_details.shipmentMode}}</div>
                                                     </li>
                                                     <li class="list-item-accordion">
                                                         <div class="list-title-accordion">Partial Number</div>
-                                                        <div class="list-text-accordion">0</div>
+                                                        <div class="list-text-accordion">{{cocDetails.certificate_details.route}}</div>
                                                     </li>
                                                     <li class="list-item-accordion">
                                                         <div class="list-title-accordion">Seal Number</div>
-                                                        <div class="list-text-accordion">UNKNOWN</div>
+                                                        <div class="list-text-accordion">{{cocDetails.certificate_details.shipmentSealNumbers}}</div>
                                                     </li>
                                                     <li class="list-item-accordion">
                                                         <div class="list-title-accordion">Container Number</div>
-                                                        <div class="list-text-accordion">UNKNOWN</div>
+                                                        <div class="list-text-accordion">{{cocDetails.certificate_details.shipmentContainerNumber}}</div>
                                                     </li>
                                                     <li class="list-item-accordion">
                                                         <div class="list-title-accordion">Gross Weight</div>
-                                                        <div class="list-text-accordion">UNKNOWN</div>
+                                                        <div class="list-text-accordion">{{cocDetails.certificate_details.shipmentGrossWeight}}</div>
                                                     </li>
                                                     <li class="list-item-accordion">
                                                         <div class="list-title-accordion">Quantity Delivered</div>
-                                                        <div class="list-text-accordion">UNKNOWN</div>
+                                                        <div class="list-text-accordion">{{cocDetails.certificate_details.shipmentQuantityDelivered}}</div>
                                                     </li>
                                                 </ul>
                                             </div>
@@ -298,27 +295,27 @@
                                             <ul class="w-list-unstyled">
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Place Of Inspection</div>
-                                                    <div class="list-text-accordion">UNKNOWN</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.placeOfInspection}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Date Of Inspection</div>
-                                                    <div class="list-text-accordion">2021-08-13 14:41:56.39862</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.dateOfInspection}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Route</div>
-                                                    <div class="list-text-accordion">A</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.route}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Port Of Destination</div>
-                                                    <div class="list-text-accordion">NN</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.portOfDestination}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Country Of Supply</div>
-                                                    <div class="list-text-accordion">UNKNOWN</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.route}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Product Category</div>
-                                                    <div class="list-text-accordion">UNKNOWN</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.productCategory}}</div>
                                                 </li>
                                             </ul>
                                         </ng-template>
@@ -328,7 +325,7 @@
                                         <a ngbNavLink>Item Details</a>
                                         <ng-template ngbNavContent>
                                             <b class="text-primary">Item Details</b>
-                                            <app-di-coc-item-details></app-di-coc-item-details>
+                                            <app-di-coc-item-details [dataSet]="cocDetails.item_certificate_of_conformance"></app-di-coc-item-details>
                                         </ng-template>
                                     </li>
                                    

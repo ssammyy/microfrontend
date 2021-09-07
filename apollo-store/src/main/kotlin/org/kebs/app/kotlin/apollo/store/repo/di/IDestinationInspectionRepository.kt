@@ -121,7 +121,13 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
             page: Pageable,
     ): Page<ConsignmentDocumentDetailsEntity>
 
-
+    fun findAllByAssignerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(officerCharge: UsersEntity,
+                                                                                                  page: Pageable): Page<ConsignmentDocumentDetailsEntity>
+    fun findAllByAssignerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+            officerCharge: UsersEntity,
+            cdType:ConsignmentDocumentTypesEntity,
+            pageable: Pageable
+    ): Page<ConsignmentDocumentDetailsEntity>
     fun findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
         assignedInspectionOfficer: UsersEntity, cdType: ConsignmentDocumentTypesEntity
     ): List<ConsignmentDocumentDetailsEntity>?

@@ -115,7 +115,7 @@ export const ROUTES: RouteInfo[] = [
     },
     {
         path: '/tasks',
-        title: 'My Tasks',
+        title: 'Import Inspection Tasks',
         type: 'link',
         icontype: 'receipt'
     }

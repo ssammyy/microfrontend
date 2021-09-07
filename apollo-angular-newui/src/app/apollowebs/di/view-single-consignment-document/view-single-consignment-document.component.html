@@ -695,6 +695,15 @@
                                         </ng-template>
                                     </li>
 
+                                    <li ngbNavItem="demand-note-list" *ngIf="demandNotes">
+                                        <a ngbNavLink>Demand Notes</a>
+                                        <ng-template ngbNavContent>
+                                            <b class="text-primary">Other Version Details</b>
+                                            <app-demand-note-list
+                                                    [dataSet]="demandNotes"></app-demand-note-list>
+                                        </ng-template>
+                                    </li>
+
 
                                 </ul>
 
@@ -755,11 +764,11 @@
                                 <button *ngIf="consignment.ui.demandNote" class="btn btn-sm btn-primary"
                                         (click)="downloadDemandNote()">DEMAND NOTE PDF
                                 </button>
-                                <button *ngIf="isVehicle()" class="btn btn-sm btn-primary" (click)="viewCoR()">
+                                <button *ngIf="consignment.ui.corAvailable" class="btn btn-sm btn-primary" (click)="viewCoR()">
                                     CERTIFICATE OF
                                     ROADWORTHINESS
                                 </button>
-                                <button *ngIf="consignment.ui.cocRequest" class="btn btn-sm btn-primary" (click)="viewCoC()">CERTIFICATE OF COMPLIANCE
+                                <button *ngIf="consignment.ui.cocAvailable" class="btn btn-sm btn-primary" (click)="viewCoC()">CERTIFICATE OF COMPLIANCE
                                 </button>
                                 <button *ngIf="consignment.ui.idfAvailable" class="btn btn-sm btn-primary" (click)="viewIdfDocument()">IDF DOCUMENT
                                 </button>

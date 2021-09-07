@@ -1,0 +1,62 @@
+<h2 mat-dialog-title>Checklist Details</h2>
+<mat-dialog-content>
+    <div class="row no_margin" [formGroup]="generalCheckList">
+        <div class="col-md-4 mb-3">
+            <label for="inspection">Inspection</label>
+            <select id="inspection" name="inspection" class="form-control"
+                    formControlName="inspection">
+                <option value="not selected">Select one.....</option>
+                <option value="Partial Inspection">Partial Inspection</option>
+                <option value="100% Inspection">100% Inspection</option>
+            </select>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="category">Category</label>
+            <select id="category" name="category" class="form-control" formControlName="category">
+                <option value="0">Select one...</option>
+                <option *ngFor="let category of categories"
+                        name="category" [value]="category.typeName">{{category.typeName}}</option>
+            </select>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="confirmItemType">Item Type</label>
+            <select id="confirmItemType" name="confirmItemType" class="form-control"
+                    formControlName="confirmItemType"
+                    (change)="checklistChanges($event)"
+            >
+                <option value="0">Select one...</option>
+                <option *ngFor="let checkListType of checkListTypes"
+                        name="itemType"
+                        [value]="checkListType.id">{{checkListType.typeName}}</option>
+            </select>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="clearingAgent">Clearing agent</label>
+            <input type="text" class="form-control" name="clearingAgent"
+                   id="clearingAgent" formControlName="clearingAgent">
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="customsEntryNumber">Customs entry no</label>
+            <input type="text" class="form-control" name="customsEntryNumber"
+                   data-name="clearing Agent" id="customsEntryNumber"
+                   formControlName="customsEntryNumber">
+        </div>
+        <div class="col-sm-12 col-md-8">
+            <label for="overallRemarks" class="waiver-form-label">Overall Remarks</label>
+            <textarea id="overallRemarks" class="waiver-form-input-master" placeholder=""
+                      formControlName="overallRemarks"></textarea>
+            <mat-error *ngIf="message">{{message}}</mat-error>
+        </div>
+    </div>
+    <app-engineering-inspection-checklist (engineeringDetails)="setEngineringChecklist($event)" *ngIf="this.engineeringChecklist"></app-engineering-inspection-checklist>
+    <app-agrochem-inspection-checklist (agrochemDetails)="setAgrochemChecklist($event)" *ngIf="agrochemChecklist"></app-agrochem-inspection-checklist>
+    <app-vehicle-inspection-checklist (vehicleDetails)="setVehicleChecklist($event)" *ngIf="vehicleChecklist"></app-vehicle-inspection-checklist>
+    <app-other-inspection-checklist (otherDetails)="setOtherChecklist($event)" *ngIf="otherChecklist"></app-other-inspection-checklist>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <div class="row no_margin master-list-new-btn">
+        <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
+        <button [disabled]="generalCheckList.invalid || invalidData()" class="next-btn btn-gen new-btn" (click)="saveRecord()">SAVE
+        </button>
+    </div>
+</mat-dialog-actions>

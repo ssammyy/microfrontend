@@ -5,9 +5,9 @@
                 <div class="card">
                     <div class="card-header card-header-primary card-header-icon">
                         <div class="card-icon">
-                            <i class="material-icons">I</i>
+                            <i class="material-icons">ID</i>
                         </div>
-                        <h4 class="card-title">IDF Document Details</h4>
+                        <h4 class="card-title">Item Details</h4>
 
                     </div>
                     <div class="card-body" *ngIf="itemDetails">
@@ -77,7 +77,7 @@
                             <div class="col-md-7">
 
                                 <!-- <div class="d-flex"> -->
-                                <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
+                                <ul ngbNav #nav="ngbNav" [(activeId)]="activeTab" class="nav-tabs">
 
                                     <li ngbNavItem="declarationGeneralDetails" *ngIf="itemDetails.cd_item">
                                         <a ngbNavLink>Item Details</a>
@@ -175,11 +175,11 @@
                                                             [itemUuid]="itemUuid"></app-checklists>
                                         </ng-template>
                                     </li>
-                                    <li ngbNavItem="consignorDetails">
+                                    <li ngbNavItem="consignorDetails" [hidden]="!(itemDetails && itemDetails.item_non_standard)">
                                         <a ngbNavLink>Item Non Standard</a>
                                         <ng-template ngbNavContent>
                                             <b class="text-primary">Item Non Standard</b>
-                                            <ul class="w-list-unstyled">
+                                            <ul class="w-list-unstyled" *ngIf="itemDetails.item_non_standard">
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">CHASIS NO</div>
                                                     <div class="list-text-accordion">{{itemDetails.item_non_standard.chassisNo}}</div>
@@ -214,6 +214,15 @@
                             </div>
                             <div class="col-md-2">
                                 <b>Action:</b>
+                                <button *ngIf="itemDetails.cd_item.sampleBsNumberStatus!==1" class="btn btn-sm btn-primary"
+                                        (click)="addSsfDetails()">ADD SSF & BS NUMBER
+                                </button>
+                                <button *ngIf="!itemDetails.cd_item.ministrySubmitted" class="btn btn-sm btn-primary"
+                                        (click)="rejectItem()">APPROVE REJECT ITEM
+                                </button>
+                                <button *ngIf="itemDetails.cd_item.ministrySubmitted" class="btn btn-sm btn-primary"
+                                        (click)="createInspectionChecklist()">DOWNLOAD MINISTRY CHECKLIST
+                                </button>
                                 <div *ngIf="itemDetails && itemDetails.cd_item.isVehicle">
                                     <button *ngIf="!itemDetails.cd_item.ministrySubmitted" class="btn btn-sm btn-primary"
                                             (click)="submitMinistryInspection()">SUBMIT MINISTRY INSPECTION

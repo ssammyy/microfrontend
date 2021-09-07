@@ -1,0 +1,92 @@
+<div id='motor-vehicle-details' [formGroup]="motorVehicleChecklist">
+    <div class="form-row">
+        <div class="col-md-12 mb-3">
+            <label style="color: #0082f3">USED MOTOR VEHICLES</label>
+        </div>
+    </div>
+
+    <div class="form-row" >
+        <div class="col-md-4 mb-3">
+            <label for="serialNumber">Serial Number</label>
+            <input type="text" class="form-control" maxlength="256" name="serialNumber"
+                   data-name="clearing Agent" id="serialNumber" formControlName="serialNumber">
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="makeOfVehicle">Make Of Vehicle</label>
+            <input type="text"
+                   class="form-control" name="Make Of Vehicle"
+                   data-name="Make Of Vehicle"
+                   id="makeOfVehicle"
+                   formControlName="makeVehicle">
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="chassisNumber">Chassis Number</label>
+            <input type="text" class="form-control" name="Chassis Number"
+                   data-name="Chassis Number"
+                   id="chassisNumber"
+                   formControlName="chassisNo">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-md-4 mb-3">
+            <label for="engineNo">Engine No./Capacity</label>
+            <input type="text" class="form-control" name="Engine Number"
+                   data-name="Engine Number" id="engineNo" formControlName="engineNoCapacity">
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="manufacturerDate">Manufacturer Date</label>
+            <input type="date" class="form-control" name="Manufacturer Date"
+                   data-name="Manufacturer Date" id="manufacturerDate"
+                   formControlName="manufacturerDate">
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="registrationDate">Registration Date</label>
+            <input type="date" class="form-control" name="Registration Date"
+                   data-name="Registration Date" id="registrationDate"
+                   formControlName="registrationDate">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-md-4 mb-3">
+            <label for="odometreReading">Odometre Reading</label>
+            <input type="text" class="form-control" maxlength="256" name="Odometre Reading"
+                   data-name="Odometre Reading" id="odometreReading" formControlName="odemetreReading">
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="driveRhdLhd">Drive(RHD/LHD)</label>
+            <select id="driveRhdLhd" class="form-control" formControlName="driveRhdLhd">
+                <option value="0">Select one...</option>
+                <option value="LEFT">LEFT</option>
+                <option value="RIGHT">RIGHT</option>
+            </select>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="transmission">Transmission(Automatic/Manual)</label>
+            <select id="transmission" class="form-control" formControlName="transmissionAutoManual">
+                <option value="0">Select one...</option>
+                <option value="MANUAL">MANUAL</option>
+                <option value="AUTOMATIC">AUTOMATIC</option>
+                <option value="MANUAL/AUTO">AUTO/MANUAL</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-md-4 mb-3">
+            <label for="colour">Colour</label>
+            <input type="text" class="form-control" name="Colour"
+                   data-name="Colour" id="colour" formControlName="colour">
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="overallAppearance">Overall Appearance</label>
+            <input type="text" class="form-control" name="Overall Appearance"
+                   data-name="Overall Appearance" id="overallAppearance"
+                   formControlName="overallAppearance">
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="remarks">Remarks</label>
+            <textarea class="form-control" name="remarks" data-name="remarks"
+                      id="remarks" formControlName="remarks"></textarea>
+        </div>
+
+    </div>
+</div>

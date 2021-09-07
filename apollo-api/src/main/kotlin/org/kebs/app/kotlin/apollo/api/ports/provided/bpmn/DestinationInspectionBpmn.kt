@@ -108,6 +108,7 @@ class DestinationInspectionBpmn(
                             consignmentDocument.varField9 = processInstance.processDefinitionId
                             consignmentDocument.varField8 = processInstance.id
                             this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
+
                             response.responseCode = ResponseCodes.SUCCESS_CODE
                             response.message = "Success"
                         }
@@ -150,6 +151,10 @@ class DestinationInspectionBpmn(
         // Save process details
         this.auditService.addHistoryRecord(consignmentDocument.id!!, data["remarks"] as String?, "REQUEST CONSIGNMENT TARGETING", "Consignment targeting request")
         this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
+        // Update status to wait targeting approval
+        consignmentDocument.cdStandard?.let { cdStd ->
+            daoServices.updateCDStatus(cdStd, applicationMapProperties.mapDIStatusTypeAwaitingTargetingApprovalId)
+        }
     }
 
     fun startCompliantProcess(data: MutableMap<String, Any?>, consignmentDocument: ConsignmentDocumentDetailsEntity) {
@@ -236,6 +241,7 @@ class DestinationInspectionBpmn(
                     val userProfilesEntity = loggedInUser?.let { commonDaoServices.findUserProfileByUserID(it, map.activeStatus) }
                     val codes =daoServices.findAllCFSUserCodes(userProfilesEntity?.id ?: 0L)
                     KotlinLogging.logger { }.info("CFS CODES: $codes")
+//                    taskService.createTaskQuery().taskAssignee(loggedInUser?.userName)
                     // Load tasks in supervisors cfs id
                     for (c in codes) {
                         tasks.addAll(taskService.createTaskQuery().taskCategory(c).listPage(0,30))

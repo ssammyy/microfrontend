@@ -4,17 +4,23 @@ import mu.KotlinLogging
 import okhttp3.internal.toLongOrDefault
 import org.kebs.app.kotlin.apollo.api.payload.*
 import org.kebs.app.kotlin.apollo.api.payload.request.MinistryRequestForm
+import org.kebs.app.kotlin.apollo.api.payload.request.SsfForm
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentAuditService
 import org.kebs.app.kotlin.apollo.api.service.DestinationInspectionService
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.kebs.app.kotlin.apollo.store.model.SampleSubmissionDocumentsEntity
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
+import org.kebs.app.kotlin.apollo.store.model.ServiceRequestsEntity
+import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentTypesEntity
 import org.kebs.app.kotlin.apollo.store.model.di.DiUploadsEntity
+import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmissionEntity
 import org.kebs.app.kotlin.apollo.store.repo.IUserRoleAssignmentsRepository
 import org.springframework.core.io.ByteArrayResource
+import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
@@ -34,8 +40,32 @@ class ApiDestinationInspectionHandler(
         private val consignmentAuditService: ConsignmentDocumentAuditService,
         private val applicationMapProperties: ApplicationMapProperties
 ) {
+    fun addSsfDetails(req: ServerRequest): ServerResponse{
+        val response=ApiResponseModel()
+        val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            req.pathVariable("cdItemID").let { cdItemID ->
+                var cdItem = daoServices.findItemWithItemID(cdItemID.toLongOrDefault(0L))
+                val form=req.body(SsfForm::class.java)
+                val sampleSubmissionDetails=form.ssf()
 
-
+                //updating of Details in DB
+                daoServices.ssfSave(cdItem, sampleSubmissionDetails, loggedInUser, map).first
+                with(cdItem) {
+                    sampleBsNumberStatus = map.activeStatus
+                }
+                cdItem = daoServices.updateCdItemDetailsInDB(cdItem, loggedInUser)
+                response.data=CdItemDetailsDao.fromEntity(cdItem)
+                response.responseCode=ResponseCodes.SUCCESS_CODE
+                response.message="You have Successful Filled Sample Submission Details"
+            }
+        }catch (ex: Exception) {
+            response.responseCode=ResponseCodes.EXCEPTION_STATUS
+            response.message="Failed to save SSF details"
+        }
+        return ServerResponse.ok().body(response)
+    }
     fun listBlackListedUser(req: ServerRequest): ServerResponse {
         val response = ApiResponseModel()
         try {
@@ -320,12 +350,23 @@ class ApiDestinationInspectionHandler(
                     cdType = daoServices.findCdTypeDetailsWithUuid(cdTypeUuid)
                 }
                 val usersEntity = commonDaoServices.findUserByUserName(auth.name)
-
-                val data = daoServices.findAllCdWithAssignedIoID(usersEntity, cdType, extractPage(req))
-                response.data = ConsignmentDocumentDao.fromList(data.toList())
-                response.pageNo = data.number
-                response.totalPages = data.totalPages
-                response.totalCount = data.totalElements
+                // Query supervisor assigned or inspection officer assigned
+                var data: Page<ConsignmentDocumentDetailsEntity>?=null
+                when{
+                    auth.authorities.stream().anyMatch { authority -> authority.authority == "DI_OFFICER_CHARGE_READ" } -> {
+                        data = daoServices.findAllCdWithAssigner(usersEntity, cdType, extractPage(req))
+                    }
+                    auth.authorities.stream().anyMatch { authority -> authority.authority == "DI_INSPECTION_OFFICER_READ" } -> {
+                        data = daoServices.findAllCdWithAssignedIoID(usersEntity, cdType, extractPage(req))
+                    }
+                }
+                // Add data to response
+                data?.let {
+                    response.data = ConsignmentDocumentDao.fromList(data.toList())
+                    response.pageNo = data.number
+                    response.totalPages = data.totalPages
+                    response.totalCount = data.totalElements
+                }
                 response.message = "Assigned CD"
                 response.responseCode = ResponseCodes.SUCCESS_CODE
             }
@@ -450,37 +491,7 @@ class ApiDestinationInspectionHandler(
         }
     }
 
-    fun downloadCertificateOfRoadWorthines(req: ServerRequest): ServerResponse {
-        req.pathVariable("corId").let {
-            daoServices.findCorById(it.toLongOrDefault(0L))?.let { coc ->
-                coc.localCorFile?.let { file ->
-                    //Create FileDTO Object
-                    val resource = ByteArrayResource(file)
-                    return ServerResponse.ok()
-                            .contentType(MediaType.APPLICATION_PDF)
-                            .header("Content-Disposition", "inline; filename=LOCAL_COR_${coc.corNumber};")
-                            .body(resource)
-                }
-            }
-            return ServerResponse.ok().body(this.destinationInspectionService.certificateOfConformanceDetails(it))
-        }
-    }
 
-    fun downloadCertificateOfConformance(req: ServerRequest): ServerResponse {
-        req.pathVariable("cocId").let {
-            daoServices.findCOCById(it.toLongOrDefault(0L))?.let { coc ->
-                coc.localCocFile?.let { file ->
-                    //Create FileDTO Object
-                    val resource = ByteArrayResource(file)
-                    return ServerResponse.ok()
-                            .contentType(MediaType.APPLICATION_PDF)
-                            .header("Content-Disposition", "inline; filename=LOCAL_COC_${coc.cocNumber};")
-                            .body(resource)
-                }
-            }
-            return ServerResponse.ok().body(this.destinationInspectionService.certificateOfConformanceDetails(it))
-        }
-    }
 
     fun importDeclarationFormDetails(req: ServerRequest): ServerResponse {
         req.pathVariable("coUuid").let {

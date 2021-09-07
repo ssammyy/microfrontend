@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {DestinationInspectionService} from "../../../../../core/store/data/di/destination-inspection.service";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
     selector: 'app-checklists',
@@ -17,7 +18,7 @@ export class ChecklistsComponent implements OnInit {
             edit: false,
             delete: false,
             custom: [
-                //  { name: 'editRecord', title: '<i class="btn btn-sm btn-primary">View More</i>' },
+                // {name: 'addChecklist', title: '<i class="btn btn-sm btn-primary">Add Checklist</i>'},
                 {name: 'downloadChecklist', title: '<i class="btn btn-sm btn-primary">Download Checklist</i>'}
             ],
             position: 'right' // left|right
@@ -32,7 +33,7 @@ export class ChecklistsComponent implements OnInit {
                 title: '#',
                 type: 'string'
             },
-            checklistTypeName:{
+            checklistTypeName: {
                 title: 'Checklist Type',
                 type: 'string'
             },
@@ -69,8 +70,9 @@ export class ChecklistsComponent implements OnInit {
     };
     @Input() dataSet: any = [];
     @Input() itemUuid: any;
+    @Input() configurations: any
 
-    constructor(private diService: DestinationInspectionService) {
+    constructor(private diService: DestinationInspectionService, private dialog: MatDialog) {
     }
 
     ngOnInit(): void {
@@ -79,12 +81,7 @@ export class ChecklistsComponent implements OnInit {
     onCustomAction(data: any) {
         switch (data.action) {
             case 'downloadChecklist':
-                this.diService.downloadChecklist(data.data.id)
-                    .subscribe(
-                        res=>{
-                           // Do something with invalid response
-                        }
-                    )
+                this.diService.downloadDocument("/api/v1/download/checklist/"+data.data.id)
                 break
         }
     }
