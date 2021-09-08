@@ -14,6 +14,7 @@ import {
 } from '../../../core/store/data/master/master.model';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import swal from 'sweetalert2';
+import {DivisionDetails} from '../../../../../../apollo-webs/src/app/shared/models/master-data-details';
 
 @Component({
     selector: 'app-user-management-profile',
@@ -27,6 +28,7 @@ export class UserManagementProfileComponent implements OnInit {
     public divisionId!: bigint;
     public userDetails!: UserRegister;
     public userRoles!: RolesEntityDto[];
+    public divisionDto!: DivisionDetails[];
     public userSection!: SectionEntityDto[];
     public userCfs!: FreightStationsDto[];
     public tableData1: TableData;
@@ -40,6 +42,7 @@ export class UserManagementProfileComponent implements OnInit {
 
     rolesEntity: RolesEntityDto[] = [];
     cfsEntity: FreightStationsDto[] = [];
+    division: DivisionDetails[] = [];
     sectionEntity: SectionsEntityDto[] = [];
 
     constructor(
@@ -113,7 +116,7 @@ export class UserManagementProfileComponent implements OnInit {
                     headerRow: ['ROLE_NAME', 'DESCRIPTIONS', 'Action'],
                     dataRows: formattedArrayAssignedRolesList
                 };
-                this.masterService.loadRolesSystemAdmin().subscribe(
+                this.masterService.loadRolesSystemAdmin(1).subscribe(
                     (data: any) => {
                         this.rolesEntity = data;
                     }
@@ -133,14 +136,34 @@ export class UserManagementProfileComponent implements OnInit {
                     headerRow: ['SECTION_NAME', 'DESCRIPTIONS', 'Action'],
                     dataRows: formattedArrayAssignedSectionList
                 };
-                this.masterService.loadSectionSystemAdmin().subscribe(
+                this.masterService.loadDivisionsSystemAdmin(1).subscribe(
                     (data: any) => {
-                        this.sectionEntity = data.filter((item) => {
-                            return item.divisionId === Number(this.userDetails?.employeeProfile.divisionID);
+                        this.divisionDto = data;
+                        // Get division list from user selected department
+                        this.division = this.divisionDto.filter((item) => {
+                            return item.departmentId === Number(this.userDetails?.employeeProfile.departmentID);
                         });
+                        // console.log(`DIVISION LIST ${JSON.stringify(this.division) }`);
+                        // Get Section list from selected division list
+                        this.masterService.loadSectionSystemAdmin(1).subscribe(
+                            (data3: any) => {
+                                for (let i = 0; i <= this.division.length - 1; i++) {
+                                    // console.log(`DIVISION LIST ${this.division[1].division}`);
+                                    let sectionDetails: SectionsEntityDto[] = [];
+                                    sectionDetails = data3.filter((item) => {
+                                        return item.divisionId === Number(this.division[i].id);
+                                    });
+                                    // console.log(`SECTION LIST ${JSON.stringify(sectionDetails)}`);
+                                    for (let x = 0; x <= sectionDetails.length - 1; x++) {
+                                        // console.log(`SECTION LIST ${JSON.stringify(sectionDetails[x])}`);
+                                        this.sectionEntity.push(sectionDetails[x]);
+                                    }
+                                }
+                                // console.log(`SECTION LIST ENTITY ${JSON.stringify(this.sectionEntity)}`);
+                            }
+                        );
                     }
                 );
-
             }
         );
     }
@@ -155,7 +178,7 @@ export class UserManagementProfileComponent implements OnInit {
                     headerRow: ['CFS Code', 'CFS Name', 'Descriptions', 'Action'],
                     dataRows: formattedArrayAssignedCfsList
                 };
-                this.masterService.loadCfsSystemAdmin().subscribe(
+                this.masterService.loadCfsSystemAdmin(1).subscribe(
                     (data: any) => {
                         this.cfsEntity = data;
                     }

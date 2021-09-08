@@ -306,7 +306,7 @@ class MasterDataHandler(
                 -1
             }
             when {
-                status <= 1 -> {
+                status > 1 -> {
                     daoService.getAllDesignations()
                         ?.let {
                             return ok().body(it)
@@ -341,7 +341,7 @@ class MasterDataHandler(
                 -1
             }
             when {
-                status <= 1 -> {
+                status > 1 -> {
                     daoService.getAllDepartments()
                         ?.let {
                             return ok().body(it)
@@ -376,7 +376,7 @@ class MasterDataHandler(
                 -1
             }
             when {
-                status <= 1 -> {
+                status > 1 -> {
                     daoService.getAllDivisions()
                         ?.let {
                             return ok().body(it)
@@ -411,7 +411,7 @@ class MasterDataHandler(
                 -1
             }
             when {
-                status <= 1 -> {
+                status > 1 -> {
                     daoService.getAllDirectorates()
                         ?.let {
                             return ok().body(it)
@@ -446,7 +446,7 @@ class MasterDataHandler(
                 -1
             }
             when {
-                status <= 1 -> {
+                status > 1 -> {
                     daoService.getAllRegions()
                         ?.let {
                             return ok().body(it)
@@ -481,7 +481,7 @@ class MasterDataHandler(
                 -1
             }
             when {
-                status <= 1 -> {
+                status > 1 -> {
                     daoService.getAllSubRegions()
                         ?.let {
                             return ok().body(it)
@@ -516,7 +516,7 @@ class MasterDataHandler(
                 -1
             }
             when {
-                status <= 1 -> {
+                status > 1 -> {
                     daoService.getAllSections()
                         ?.let {
                             return ok().body(it)
@@ -551,7 +551,7 @@ class MasterDataHandler(
                 -1
             }
             when {
-                status <= 1 -> {
+                status > 1 -> {
                     daoService.getAllSubSectionsL1()
                         ?.let {
                             return ok().body(it)
@@ -586,7 +586,7 @@ class MasterDataHandler(
                 -1
             }
             when {
-                status <= 1 -> {
+                status > 1 -> {
                     daoService.getAllSubSectionsL2()
                         ?.let {
                             return ok().body(it)
@@ -623,7 +623,7 @@ class MasterDataHandler(
                 -1
             }
             when {
-                status <= 1 -> {
+                status > 1 -> {
                     daoService.getAllCounties()
                         ?.let {
                             return ok().body(it)
@@ -658,7 +658,7 @@ class MasterDataHandler(
                 -1
             }
             when {
-                status <= 1 -> {
+                status > 1 -> {
                     daoService.getAllCounties()
                         ?.let {
                             return ok().body(it)
@@ -743,7 +743,7 @@ class MasterDataHandler(
                 -1
             }
             when {
-                status <= 1 -> {
+                status > 1 -> {
                     daoService.getAllTowns()
                         ?.let {
                             return ok().body(it)
@@ -779,7 +779,7 @@ class MasterDataHandler(
                 -1
             }
             when {
-                status <= 1 -> {
+                status > 1 -> {
                     daoService.getAllTowns()
                         ?.let {
                             return ok().body(it)
@@ -815,7 +815,7 @@ class MasterDataHandler(
                 -1
             }
             when {
-                status <= 1 -> {
+                status > 1 -> {
                     daoService.getAllCFS()
                         ?.let {
                             return ok().body(it)

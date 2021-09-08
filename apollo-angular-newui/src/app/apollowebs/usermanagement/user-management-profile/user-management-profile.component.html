@@ -353,8 +353,8 @@
                                                         class="form-control mt-2" formControlName="sectionID"
                                                         name="sectionID">
                                                     <option label="--select something --"></option>
-                                                    <option *ngFor="let rle of sectionEntity| filterPipe:{divisionId: userDetails?.employeeProfile.divisionID}"
-                                                            [value]="rle.id"> {{ rle.section }}</option>
+                                                    <option *ngFor="let sec of sectionEntity"
+                                                            [value]="sec?.id"> {{ sec?.section }}</option>
                                                 </select>
                                             </div>
                                         </div>

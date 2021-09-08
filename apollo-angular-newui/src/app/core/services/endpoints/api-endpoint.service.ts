@@ -30,7 +30,7 @@ export class ApiEndpointService {
     public static CONTEXT = '';
 
     /**
-     * Map of contexts for API endpoints.
+     * Map of contexts for QA PROPERTIES endpoints.
      */
     public static QA_APPLICATION_MAP_PROPERTIES = {
         DMARK_TYPE_ID: 1,
@@ -38,6 +38,14 @@ export class ApiEndpointService {
         FMARK_TYPE_ID: 3,
         DRAFT_ID: 1,
         PAYMENT_PENDING_STATUS: 5,
+    };
+
+    /**
+     * Map of contexts for ADMIN PROPERTIES endpoints.
+     */
+    public static ADMIN_APPLICATION_MAP_PROPERTIES = {
+        QA_DEPARTMENT_ID: 1,
+        DI_DEPARTMENT_ID: 2,
     };
 
     /**
@@ -138,13 +146,16 @@ export class ApiEndpointService {
         LOAD_DESIGNATIONS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/designations/load`,
         LOAD_DEPARTMENTS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/departments/load`,
         LOAD_DIVISIONS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/divisions/load`,
+        LOAD_DIVISIONS_BY_STATUS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/divisions/loads`,
         LOAD_DIRECTORATE: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/directorate/load`,
         LOAD_REGIONS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/regions/load`,
         LOAD_SUB_REGIONS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/subRegions/load`,
         LOAD_SECTIONS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/sections/load`,
+        LOAD_SECTIONS_BY_STATUS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/sections/loads`,
         LOAD_SUB_SECTIONS_L1: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/subsections/l1/load`,
         LOAD_SUB_SECTIONS_L2: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/subsections/l2/load`,
         LOAD_FREIGHT_STATIONS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/freightStations/load`,
+        LOAD_FREIGHT_STATIONS_BY_STATUS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/freightStations/loads`,
         LOAD_COUNTIES: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/counties/load`,
         LOAD_TOWNS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/towns/load`,
         LOAD_BUSINESS_LINES: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/businessLines/load`,
@@ -171,12 +182,12 @@ export class ApiEndpointService {
         UPDATE_TITLE: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/titles/`,
         // Roles Endpoint
         LOAD_ROLES_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/roles/load`,
-        ROLES_LIST_BY_STATUS: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/roles/load/`,
+        ROLES_LIST_BY_STATUS: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/roles/loads`,
         ADD_ROLES: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/roles/`,
         UPDATE_ROLES: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/roles/`,
         // Authorities Endpoint
         LOAD_AUTHORITIES_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/authorities/load`,
-        AUTHORITIES_LIST_BY_STATUS: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/authorities/load/`,
+        AUTHORITIES_LIST_BY_STATUS: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/authorities/loads`,
         ADD_AUTHORITIES: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/authorities/`,
         UPDATE_AUTHORITIES: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/authorities/`,
         // RBAC Endpoint
