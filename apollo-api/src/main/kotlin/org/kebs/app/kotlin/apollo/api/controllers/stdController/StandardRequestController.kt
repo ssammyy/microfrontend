@@ -45,8 +45,17 @@ class StandardRequestController(
 //        )
 //    }
 
+
+    //Delete A process
+
     @PostMapping("/anonymous/standard/close")
     fun clos(@RequestBody responseMessage: ResponseMessage) {
+        return standardRequestService.closeProcess(responseMessage.message)
+    }
+
+    //Delete A Task
+    @PostMapping("/anonymous/standard/closetask")
+    fun closeTask(@RequestBody responseMessage: ResponseMessage) {
         return standardRequestService.closeTask(responseMessage.message)
     }
 
@@ -102,7 +111,7 @@ class StandardRequestController(
         return standardRequestService.getDepartments()
     }
 
-    @GetMapping("/anonymous/standard/getLiaisonOrganizations")
+    @GetMapping("/standard/getLiaisonOrganizations")
     @ResponseBody
     fun getLiaisonOrganization(): MutableList<LiaisonOrganization> {
         return standardRequestService.getLiaisonOrganization()
@@ -140,7 +149,6 @@ class StandardRequestController(
         return standardRequestService.getHOFTasks()
     }
 
-
     @PostMapping("standard/process")
     @ResponseBody
     fun checkState(@RequestBody id: ID): ServerResponse {
@@ -150,6 +158,7 @@ class StandardRequestController(
             standardRequestService.checkProcessHistory(id)
         )
     }
+
 
     @PostMapping("standard/hof/review")
     @ResponseBody

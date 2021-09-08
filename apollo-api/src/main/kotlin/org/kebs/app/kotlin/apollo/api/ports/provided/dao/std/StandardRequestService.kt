@@ -8,16 +8,12 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao.std
 
 import com.beust.klaxon.JsonReader
 import com.beust.klaxon.Klaxon
-import org.flowable.common.engine.api.delegate.event.FlowableEventDispatcher
 import org.flowable.engine.ProcessEngine
 import org.flowable.engine.RepositoryService
 import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
-import org.flowable.engine.delegate.event.FlowableActivityCancelledEvent
 import org.flowable.engine.history.HistoricActivityInstance
 import org.flowable.engine.repository.Deployment
-import org.flowable.engine.runtime.ProcessInstance
-import org.flowable.engine.task.Attachment
 import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.api.web.config.EmailConfig
 import org.kebs.app.kotlin.apollo.common.dto.std.ID
@@ -461,7 +457,13 @@ class StandardRequestService(
 //        TaskHelper.deleteTask(task.toString(), deleteReason, cascade)
 //
 //    }
-    fun closeTask(taskId: String){
+    fun closeTask(taskId: String) {
+        taskService.complete(taskId)
+        taskService.deleteTask(taskId, true)
+
+    }
+
+    fun closeProcess(taskId: String) {
         // taskService.complete(taskId)
         // taskService.deleteTask(taskId, true)
 

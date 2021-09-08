@@ -135,6 +135,9 @@ import {QaTaskDetailsComponent} from './apollowebs/quality-assurance/qa-task-det
 import {CompanyViewComponent} from './apollowebs/company/company-view/company-view.component';
 import {BranchViewComponent} from './apollowebs/company/branch/branch-view/branch-view.component';
 import {QrCodeDetailsComponent} from './apollowebs/quality-assurance/qr-code-details/qr-code-details.component';
+import { StdTscSecTasksComponentComponent } from './apollowebs/standards-development/standard-request/std-tsc-sec-tasks-component/std-tsc-sec-tasks-component.component';
+import {NgMultiSelectDropDownModule} from "ng-multiselect-dropdown";
+import { StdTcTasksComponent } from './apollowebs/standards-development/standard-request/std-tc-tasks/std-tc-tasks.component';
 
 
 // import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -192,6 +195,7 @@ import {QrCodeDetailsComponent} from './apollowebs/quality-assurance/qr-code-det
         NgxSpinnerModule,
         DataTablesModule,
         NgxPaginationModule,
+        NgMultiSelectDropDownModule,
         // CoreModule
     ],
     declarations: [
@@ -272,7 +276,9 @@ import {QrCodeDetailsComponent} from './apollowebs/quality-assurance/qr-code-det
         QaTaskDetailsComponent,
         CompanyViewComponent,
         BranchViewComponent,
-        QrCodeDetailsComponent
+        QrCodeDetailsComponent,
+        StdTscSecTasksComponentComponent,
+        StdTcTasksComponent
 
     ]
 
