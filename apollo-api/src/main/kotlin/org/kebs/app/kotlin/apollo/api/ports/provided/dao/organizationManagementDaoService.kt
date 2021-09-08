@@ -333,6 +333,15 @@ class RegistrationManagementDaoService(
                                                 createdOn = Timestamp.from(Instant.now())
                                             }
                                         )
+                                        userRolesRepo.save(
+                                            UserRoleAssignmentsEntity().apply {
+                                                userId = entity.id
+                                                roleId = applicationMapProperties.mapUserRegistrationUserRoleID
+                                                status = applicationMapProperties.transactionActiveStatus
+                                                createdBy = "${user.userName}"
+                                                createdOn = Timestamp.from(Instant.now())
+                                            }
+                                        )
                                         return OrganizationUserEntityDto(
                                             entity.id,
                                             entity.firstName,

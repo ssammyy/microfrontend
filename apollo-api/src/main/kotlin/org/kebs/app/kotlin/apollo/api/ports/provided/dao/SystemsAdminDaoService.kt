@@ -1328,6 +1328,13 @@ class SystemsAdminDaoService(
                                                 registrationDaoServices.userRoleAssignment(
                                                     user,
                                                     1,
+                                                    applicationMapProperties.mapUserRegistrationUserRoleID
+                                                )
+                                            )
+                                            userRolesRepo.save(
+                                                registrationDaoServices.userRoleAssignment(
+                                                    user,
+                                                    1,
                                                     applicationMapProperties.mapUserManufactureRoleID
                                                 )
                                             )
