@@ -333,6 +333,7 @@ class RegistrationManagementDaoService(
                                                 createdOn = Timestamp.from(Instant.now())
                                             }
                                         )
+
                                         userRolesRepo.save(
                                             UserRoleAssignmentsEntity().apply {
                                                 userId = entity.id
@@ -762,6 +763,7 @@ class RegistrationManagementDaoService(
                         it.businessLines,
                         it.businessNatures,
                         it.buildingName,
+                        null,
                         it.streetName,
                         it.directorIdNumber,
                         it.region,
@@ -791,6 +793,7 @@ class RegistrationManagementDaoService(
                         it.businessLines,
                         it.businessNatures,
                         it.buildingName,
+                        null,
                         it.streetName,
                         it.directorIdNumber,
                         it.region,
@@ -826,6 +829,7 @@ class RegistrationManagementDaoService(
                     it.businessLines,
                     it.businessNatures,
                     it.buildingName,
+                    null,
                     it.streetName,
                     it.directorIdNumber,
                     it.region,
@@ -894,6 +898,7 @@ class RegistrationManagementDaoService(
                         companyProfileEntity.businessLines,
                         companyProfileEntity.businessNatures,
                         companyProfileEntity.buildingName,
+                        null,
                         companyProfileEntity.streetName,
                         companyProfileEntity.directorIdNumber,
                         companyProfileEntity.region,
@@ -1034,6 +1039,7 @@ class RegistrationManagementDaoService(
                         companyProfileEntity.businessLines,
                         companyProfileEntity.businessNatures,
                         companyProfileEntity.buildingName,
+                        null,
                         companyProfileEntity.streetName,
                         companyProfileEntity.directorIdNumber,
                         companyProfileEntity.region,

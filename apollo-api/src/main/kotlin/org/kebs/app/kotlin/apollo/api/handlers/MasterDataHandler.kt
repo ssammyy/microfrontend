@@ -303,7 +303,7 @@ class MasterDataHandler(
             val status = try {
                 req.pathVariable("status").toInt()
             } catch (e: Exception) {
-                -1
+                2
             }
             when {
                 status > 1 -> {
@@ -338,7 +338,7 @@ class MasterDataHandler(
             val status = try {
                 req.pathVariable("status").toInt()
             } catch (e: Exception) {
-                -1
+                2
             }
             when {
                 status > 1 -> {
@@ -373,7 +373,7 @@ class MasterDataHandler(
             val status = try {
                 req.pathVariable("status").toInt()
             } catch (e: Exception) {
-                -1
+                2
             }
             when {
                 status > 1 -> {
@@ -408,7 +408,7 @@ class MasterDataHandler(
             val status = try {
                 req.pathVariable("status").toInt()
             } catch (e: Exception) {
-                -1
+                2
             }
             when {
                 status > 1 -> {
@@ -443,7 +443,7 @@ class MasterDataHandler(
             val status = try {
                 req.pathVariable("status").toInt()
             } catch (e: Exception) {
-                -1
+                2
             }
             when {
                 status > 1 -> {
@@ -478,7 +478,7 @@ class MasterDataHandler(
             val status = try {
                 req.pathVariable("status").toInt()
             } catch (e: Exception) {
-                -1
+                2
             }
             when {
                 status > 1 -> {
@@ -513,7 +513,7 @@ class MasterDataHandler(
             val status = try {
                 req.pathVariable("status").toInt()
             } catch (e: Exception) {
-                -1
+                2
             }
             when {
                 status > 1 -> {
@@ -548,7 +548,7 @@ class MasterDataHandler(
             val status = try {
                 req.pathVariable("status").toInt()
             } catch (e: Exception) {
-                -1
+                2
             }
             when {
                 status > 1 -> {
@@ -583,7 +583,7 @@ class MasterDataHandler(
             val status = try {
                 req.pathVariable("status").toInt()
             } catch (e: Exception) {
-                -1
+                2
             }
             when {
                 status > 1 -> {
@@ -620,7 +620,7 @@ class MasterDataHandler(
             val status = try {
                 req.pathVariable("status").toInt()
             } catch (e: Exception) {
-                -1
+                2
             }
             when {
                 status > 1 -> {
@@ -655,7 +655,7 @@ class MasterDataHandler(
             val status = try {
                 req.pathVariable("status").toInt()
             } catch (e: Exception) {
-                -1
+                2
             }
             when {
                 status > 1 -> {
@@ -740,7 +740,7 @@ class MasterDataHandler(
             val status = try {
                 req.pathVariable("status").toInt()
             } catch (e: Exception) {
-                -1
+                2
             }
             when {
                 status > 1 -> {
@@ -776,7 +776,7 @@ class MasterDataHandler(
             val status = try {
                 req.pathVariable("status").toInt()
             } catch (e: Exception) {
-                -1
+                2
             }
             when {
                 status > 1 -> {
@@ -812,7 +812,7 @@ class MasterDataHandler(
             val status = try {
                 req.pathVariable("status").toInt()
             } catch (e: Exception) {
-                -1
+                2
             }
             when {
                 status > 1 -> {
@@ -848,7 +848,7 @@ class MasterDataHandler(
             val status = try {
                 req.pathVariable("status").toInt()
             } catch (e: Exception) {
-                -1
+                2
             }
             val countyId = try {
                 req.pathVariable("id").toLong()
@@ -857,7 +857,7 @@ class MasterDataHandler(
                 throw e
             }
             when {
-                status <= 1 -> {
+                status > 1 -> {
                     daoService.getAllTownsByCountyId(countyId, 1)
                         ?.let {
                             return ok().body(it)
@@ -929,10 +929,10 @@ class MasterDataHandler(
             val status = try {
                 req.pathVariable("status").toInt()
             } catch (e: Exception) {
-                -1
+                2
             }
             when {
-                status <= 1 -> {
+                status > 1 -> {
                     daoService.getAllStandardProductCategory()
                         ?.let {
                             return ok().body(it)
@@ -963,7 +963,7 @@ class MasterDataHandler(
             val status = try {
                 req.pathVariable("status").toInt()
             } catch (e: Exception) {
-                -1
+                2
             }
             when {
                 status <= 1 -> {

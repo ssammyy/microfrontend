@@ -76,8 +76,8 @@ placeholder="Applicant Name" ngModel="{{fullname}}" disabled>
 [class.is-invalid]="formSta1Form.attachedPlant.invalid && formSta1Form.attachedPlant.touched">
     <option selected>Select Branch</option>
 <option *ngFor="let plant of plants"
-[ngValue]="plant.id"
-class="dropdown-item">{{plant.buildingName}}</option>
+        [ngValue]="plant.id"
+        class="dropdown-item">{{plant.branchName}}</option>
 
 </select>
 </div>

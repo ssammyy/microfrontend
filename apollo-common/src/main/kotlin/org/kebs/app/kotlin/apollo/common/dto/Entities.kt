@@ -407,6 +407,9 @@ data class UserCompanyEntityDto(
     @JsonProperty("buildingName")
     @NotEmpty(message = "is mandatory")
     var buildingName: String? = null,
+    @JsonProperty("branchName")
+    @NotEmpty(message = "is mandatory")
+    var branchName: String? = null,
     @JsonProperty("streetName")
     @NotEmpty(message = "is mandatory")
     var streetName: String? = null,

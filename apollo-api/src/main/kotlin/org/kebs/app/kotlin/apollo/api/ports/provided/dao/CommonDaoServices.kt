@@ -1662,7 +1662,7 @@ class CommonDaoServices(
         }
     }
 
-    fun makeKenyanMSISDNFormat(phoneNumber: String?): String? {
+    fun makeKenyanMSISDNFormat(phoneNumber: String?): String {
         val reversedPhoneNumber = StringBuilder(phoneNumber).reverse().substring(0, 9)
         val trimmedPhoneNumber = StringBuilder(reversedPhoneNumber).reverse().toString()
         return "254$trimmedPhoneNumber"

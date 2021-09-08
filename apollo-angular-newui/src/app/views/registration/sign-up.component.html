@@ -1234,7 +1234,22 @@
                             </div>
                         </ng-container>
                     </div>
-                    <div class="col"></div>
+                    <div class="col">
+                        <div class="form-group" style="margin-top: 3%">
+                            <label class="input-placeholder"><b>Branch Name</b></label>
+                            <input style="color: white;font-size: 14px;"
+                                   [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.branchName.errors }"
+                                   aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                   class="form-control two-column-input" formControlName="branchName"
+                                   id="branchName"
+                                   name="branchName" placeholder="Branch Name" required="required" type="text">
+                            <div *ngIf="submitted && formStepThreeForm.branchName.errors" class="invalid-feedback">
+                                <div *ngIf="formStepThreeForm.branchName.errors.required">The Branch Name is
+                                    required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
                 <div class="row mt-5">

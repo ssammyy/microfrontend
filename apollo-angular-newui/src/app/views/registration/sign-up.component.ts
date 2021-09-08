@@ -149,6 +149,7 @@ export class SignUpComponent implements OnInit {
         });
         this.stepThreeForm = new FormGroup({
             buildingName: new FormControl(),
+            branchName: new FormControl('', [Validators.required]),
             streetName: new FormControl('', [Validators.required]),
             region: new FormControl('', [Validators.required]),
             county: new FormControl('', [Validators.required]),

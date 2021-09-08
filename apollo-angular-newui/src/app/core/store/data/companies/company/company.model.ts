@@ -13,6 +13,7 @@ export interface Company {
     businessLines: number;
     businessNatures: number;
     buildingName: string;
+    branchName: string;
     streetName: string;
     directorIdNumber: string;
     region: number;

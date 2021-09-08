@@ -1216,7 +1216,10 @@ class SystemsAdminDaoService(
              * Generate token
              */
             val otp = commonDaoServices.randomNumber(6)
-            val token = commonDaoServices.generateVerificationToken(otp, request.phone)
+            val token = commonDaoServices.generateVerificationToken(
+                otp,
+                commonDaoServices.makeKenyanMSISDNFormat(request.phone)
+            )
             commonDaoServices.sendOtpViaSMS(token)
 
             result.apply {
@@ -1244,7 +1247,8 @@ class SystemsAdminDaoService(
      */
     fun validatePhoneNumberAndToken(request: ValidatePhoneNumberTokenRequestDto): CustomResponse? =
         commonDaoServices.validateOTPToken(
-            request.token ?: throw NullValueNotAllowedException("Invalid Token provided"), request.phone
+            request.token ?: throw NullValueNotAllowedException("Invalid Token provided"),
+            commonDaoServices.makeKenyanMSISDNFormat(request.phone)
         )
 
 
@@ -1408,6 +1412,7 @@ class SystemsAdminDaoService(
                                                 physicalAddress = dto.company.physicalAddress
                                                 street = dto.company.streetName
                                                 buildingName = dto.company.buildingName
+                                                branchName = dto.company.branchName
                                                 nearestLandMark = dto.company.buildingName
                                                 postalAddress = dto.company.postalAddress
                                                 telephone = dto.company.companyTelephone

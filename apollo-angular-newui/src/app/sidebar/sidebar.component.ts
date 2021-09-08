@@ -35,7 +35,7 @@ export const ROUTES: RouteInfo[] = [
     },
 
     {
-        path: '/dashboard',
+        path: '/user_management',
         title: 'Admin',
         type: 'link',
         icontype: 'dashboard',
