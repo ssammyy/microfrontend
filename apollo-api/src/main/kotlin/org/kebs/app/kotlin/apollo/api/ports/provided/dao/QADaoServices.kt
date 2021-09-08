@@ -42,6 +42,7 @@ import java.util.stream.Collectors
 class QADaoServices(
     private val applicationMapProperties: ApplicationMapProperties,
     private val commonDaoServices: CommonDaoServices,
+    private val systemsAdminDaoService: SystemsAdminDaoService,
     private val usersRepo: IUserRepository,
     private val qaInvoiceCalculation: QaInvoiceCalculationDaoServices,
     private val limsServices: LimsServices,
@@ -519,10 +520,17 @@ class QADaoServices(
         var permitListAllApplications: List<PermitApplicationsEntity>? = null
         when {
             auth.authorities.stream().anyMatch { authority -> authority.authority == authToCompareWith } -> {
-                permitListAllApplications = permitRepo.findRbacPermitByRegionIDPaymentStatusAndUserTaskIDAndPermitType(
-                    permitTypeID, map.initStatus,
-                    userProfile.regionId?.id ?: throw Exception("MISSING REGION ID"), taskID
+                systemsAdminDaoService.listRbacSectionByUsersIdAndByStatus(
+                    user.id ?: throw Exception("MISSING USER ID"), 1
                 )
+                    ?.forEach { section ->
+                        permitListAllApplications =
+                            permitRepo.findRbacPermitByRegionIDPaymentStatusAndUserTaskIDAndPermitTypeAndSectionId(
+                                permitTypeID, map.initStatus,
+                                userProfile.regionId?.id ?: throw Exception("MISSING REGION ID"), taskID, section.id
+                            )
+                    }
+
             }
         }
 
@@ -542,10 +550,16 @@ class QADaoServices(
         var permitListAllApplications: List<PermitApplicationsEntity>? = null
         when {
             auth.authorities.stream().anyMatch { authority -> authority.authority == authToCompareWith } -> {
-                permitListAllApplications = permitRepo.findRbacPermitByRegionIDPaymentStatusAndPermitTypeID(
-                    permitTypeID, map.initStatus,
-                    userProfile.regionId?.id ?: throw Exception("MISSING REGION ID")
+                systemsAdminDaoService.listRbacSectionByUsersIdAndByStatus(
+                    user.id ?: throw Exception("MISSING USER ID"), 1
                 )
+                    ?.forEach { section ->
+                        permitListAllApplications =
+                            permitRepo.findRbacPermitByRegionIDPaymentStatusAndPermitTypeIDAndSectionId(
+                                permitTypeID, map.initStatus,
+                                userProfile.regionId?.id ?: throw Exception("MISSING REGION ID"), section.id
+                            )
+                    }
             }
         }
 
@@ -565,11 +579,16 @@ class QADaoServices(
         var permitListAllApplications: List<PermitApplicationsEntity>? = null
         when {
             auth.authorities.stream().anyMatch { authority -> authority.authority == authToCompareWith } -> {
-                permitListAllApplications =
-                    permitRepo.findRbacPermitByRegionIDPaymentStatusAndPermitTypeIDAndAwardedStatus(
-                        permitTypeID, map.initStatus, map.activeStatus,
-                        userProfile.regionId?.id ?: throw Exception("MISSING REGION ID")
-                    )
+                systemsAdminDaoService.listRbacSectionByUsersIdAndByStatus(
+                    user.id ?: throw Exception("MISSING USER ID"), 1
+                )
+                    ?.forEach { section ->
+                        permitListAllApplications =
+                            permitRepo.findRbacPermitByRegionIDPaymentStatusAndPermitTypeIDAndAwardedStatusAndSectionId(
+                                permitTypeID, map.initStatus, map.activeStatus,
+                                userProfile.regionId?.id ?: throw Exception("MISSING REGION ID"), section.id
+                            )
+                    }
             }
         }
 

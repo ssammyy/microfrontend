@@ -15,6 +15,7 @@ import {
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import swal from 'sweetalert2';
 import {DivisionDetails} from '../../../../../../apollo-webs/src/app/shared/models/master-data-details';
+import {ApiEndpointService} from '../../../core/services/endpoints/api-endpoint.service';
 
 @Component({
     selector: 'app-user-management-profile',
@@ -22,6 +23,7 @@ import {DivisionDetails} from '../../../../../../apollo-webs/src/app/shared/mode
     styleUrls: ['./user-management-profile.component.css']
 })
 export class UserManagementProfileComponent implements OnInit {
+    diDepartmentID = ApiEndpointService.ADMIN_APPLICATION_MAP_PROPERTIES.DI_DEPARTMENT_ID;
     currDiv!: string;
     currDivLabel!: string;
     public userID!: string;
