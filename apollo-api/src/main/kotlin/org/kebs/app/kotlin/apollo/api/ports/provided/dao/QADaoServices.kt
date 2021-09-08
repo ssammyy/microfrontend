@@ -42,7 +42,6 @@ import java.util.stream.Collectors
 class QADaoServices(
     private val applicationMapProperties: ApplicationMapProperties,
     private val commonDaoServices: CommonDaoServices,
-    private val systemsAdminDaoService: SystemsAdminDaoService,
     private val usersRepo: IUserRepository,
     private val qaInvoiceCalculation: QaInvoiceCalculationDaoServices,
     private val limsServices: LimsServices,
@@ -104,6 +103,10 @@ class QADaoServices(
     @Lazy
     @Autowired
     lateinit var reportsControllers: ReportsController
+
+    @Lazy
+    @Autowired
+    lateinit var systemsAdminDaoService: SystemsAdminDaoService
 
 
     final var appId = applicationMapProperties.mapQualityAssurance
