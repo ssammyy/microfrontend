@@ -210,6 +210,11 @@ class CocsEntity : Serializable {
     @Basic
     var finalInvoiceFobValue: Long = 0
 
+    //    @NotNull(message = "Required field")
+    @Column(name = "FINAL_INVOICE_NUMBER", nullable = false, precision = 2)
+    @Basic
+    var finalInvoiceNumber: String? = null
+
     @NotNull(message = "Required field")
     @Column(name = "FINAL_INVOICE_EXCHANGE_RATE", nullable = false, precision = 2)
     @Basic
@@ -371,6 +376,7 @@ class CocsEntity : Serializable {
         return id == that.id && finalInvoiceFobValue == that.finalInvoiceFobValue && finalInvoiceExchangeRate == that.finalInvoiceExchangeRate && shipmentPartialNumber == that.shipmentPartialNumber &&
                 cocNumber == that.cocNumber &&
                 coiNumber == that.coiNumber &&
+                finalInvoiceNumber == that.finalInvoiceNumber &&
                 idfNumber == that.idfNumber &&
                 rfiNumber == that.rfiNumber &&
                 ucrNumber == that.ucrNumber &&
@@ -446,6 +452,7 @@ class CocsEntity : Serializable {
             id,
             cocNumber,
             coiNumber,
+            finalInvoiceNumber,
             idfNumber,
             rfiNumber,
             ucrNumber,

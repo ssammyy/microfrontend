@@ -965,34 +965,58 @@ fun createLocalCoc(
 //                ?: throw Exception("IDF ITEM(s) Details with IDF ID = ${idfId}, do not Exist")
     }
 
-//    fun sendDemandNotGeneratedToKWIS(demandNoteId: Long) {
-//        val demandNoteEntity: CdDemandNoteEntity = iDemandNoteRepo.findById(demandNoteId).get()
-//        demandNoteEntity.let {
-//            val mpesaDetails = invoiceDaoService.findPaymentMethodtype(applicationMapProperties.mapMpesaDetails)
-//            val bank1Details = invoiceDaoService.findPaymentMethodtype(applicationMapProperties.mapBankOneDetails)
-//            val bank2Details = invoiceDaoService.findPaymentMethodtype(applicationMapProperties.mapBankTwoDetails)
-//            val bank3Details = invoiceDaoService.findPaymentMethodtype(applicationMapProperties.mapBankThreeDetails)
-//
-////            val demandNote: CustomDemandNoteXmlDto = it.toCdDemandNoteXmlRecordRefl()
-//            demandNote.paymentInstruction1 = PaymenInstruction1(bank1Details)
-//            demandNote.paymentInstruction2 = PaymenInstruction2(bank2Details)
-//            demandNote.paymentInstruction3 = PaymenInstruction3(bank3Details)
-//            demandNote.paymentInstructionMpesa = PaymenInstructionMpesa(mpesaDetails)
-//            demandNote.paymentInstructionOther = PaymenInstructionOther(mpesaDetails)
-//
-//            val demandNoteFinalDto = DemandNoteXmlDTO()
-//            demandNoteFinalDto.customDemandNote = demandNote
-//
-//            val fileName = demandNoteFinalDto.customDemandNote?.demandNoteNumber?.let {
-//                commonDaoServices.createKesWsFileName(applicationMapProperties.mapKeswsDemandNoteDoctype, it)
-//            }
-//
-//            val xmlFile = fileName?.let { commonDaoServices.serializeToXml(it, demandNoteFinalDto) }
-//
-//            xmlFile?.let { it1 -> sftpService.uploadFile(it1) }
-//
-//        }
-//    }
+    fun sendDemandNotGeneratedToKWIS(demandNoteId: Long) {
+        val demandNoteEntity: CdDemandNoteEntity = iDemandNoteRepo.findById(demandNoteId).get()
+        demandNoteEntity.let { cdDemandNote ->
+            val mpesaDetails = invoiceDaoService.findPaymentMethodtype(applicationMapProperties.mapMpesaDetails)
+            val bank1Details = invoiceDaoService.findPaymentMethodtype(applicationMapProperties.mapBankOneDetails)
+            val bank2Details = invoiceDaoService.findPaymentMethodtype(applicationMapProperties.mapBankTwoDetails)
+            val bank3Details = invoiceDaoService.findPaymentMethodtype(applicationMapProperties.mapBankThreeDetails)
+
+            val demandNote = CustomDemandNoteXmlDto().apply {
+                id = cdDemandNote.id
+                nameImporter = cdDemandNote.nameImporter
+                address = cdDemandNote.address
+                telephone = cdDemandNote.telephone
+                product = cdDemandNote.product
+                cfvalue = cdDemandNote.cfvalue
+                rate = cdDemandNote.rate
+                amountPayable = cdDemandNote.amountPayable
+                entryAblNumber = cdDemandNote.entryAblNumber
+                dateGenerated = convertTimestampToKeswsValidDate(
+                    cdDemandNote.dateGenerated ?: throw Exception("MISSING dateGenerated")
+                )
+                totalAmount = cdDemandNote.totalAmount
+                demandNoteNumber = cdDemandNote.demandNoteNumber
+                receiptNo = cdDemandNote.receiptNo
+                paymentInstruction1 = null
+                paymentInstruction2 = null
+                paymentInstruction3 = null
+                paymentInstructionMpesa = null
+                paymentInstructionOther = null
+                transactionType = "PERMIT"
+                transactionNumber = cdDemandNote.cdRefNo
+                version = 1
+            }
+            demandNote.paymentInstruction1 = PaymenInstruction1(bank1Details)
+            demandNote.paymentInstruction2 = PaymenInstruction2(bank2Details)
+            demandNote.paymentInstruction3 = PaymenInstruction3(bank3Details)
+            demandNote.paymentInstructionMpesa = PaymenInstructionMpesa(mpesaDetails)
+            demandNote.paymentInstructionOther = PaymenInstructionOther(mpesaDetails)
+
+            val demandNoteFinalDto = DemandNoteXmlDTO()
+            demandNoteFinalDto.customDemandNote = demandNote
+
+            val fileName = demandNoteFinalDto.customDemandNote?.demandNoteNumber?.let {
+                commonDaoServices.createKesWsFileName(applicationMapProperties.mapKeswsDemandNoteDoctype, it)
+            }
+
+            val xmlFile = fileName?.let { commonDaoServices.serializeToXml(it, demandNoteFinalDto) }
+
+            xmlFile?.let { it1 -> sftpService.uploadFile(it1) }
+
+        }
+    }
 
 
     fun sendDemandNotePayedStatusToKWIS(demandNoteId: Long) {

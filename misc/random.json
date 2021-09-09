@@ -1,97 +1,18 @@
 {
-  "company": {
-    "name": "BARINGO CLUSTER LIMITED",
-    "kraPin": "TEST10006",
-    "userId": null,
-    "profileType": 2,
-    "registrationNumber": "PVT-EYUG97D",
-    "postalAddress": "7 - 30403",
-    "physicalAddress": "MARIGAT INN, FULL GOSPEL CHURCH, MARIGAT INN, FULL GOSPEL CHURCH",
-    "plotNumber": "TEST10006",
-    "companyEmail": "ke480fgckkibingor@gmail.com",
-    "companyTelephone": "+254723096064",
-    "yearlyTurnover": 80000,
-    "businessLines": 5,
-    "businessNatures": 68,
-    "buildingName": "TEST10006",
-    "streetName": "TEST10006",
-    "directorIdNumber": "23492176",
-    "region": 4,
-    "county": 28,
-    "town": 391,
-    "factoryVisitDate": null,
-    "factoryVisitStatus": null,
-    "manufactureStatus": null,
-    "id": null,
-    "status": true
+  "header": {
+    "serviceName": "Thirdparty ",
+    "messageID": "ATL/KBES/REF0002",
+    "connectionID": "Username",
+    "connectionPassword": "P@$$w0rd"
   },
-  "user": {
-    "name": "BARINGO CLUSTER LIMITED",
-    "kraPin": null,
-    "userId": null,
-    "profileType": 2,
-    "registrationNumber": "PVT-EYUG97D",
-    "postalAddress": "7 - 30403",
-    "physicalAddress": "MARIGAT INN, FULL GOSPEL CHURCH, MARIGAT INN, FULL GOSPEL CHURCH",
-    "plotNumber": null,
-    "companyEmail": "ke480fgckkibingor@gmail.com",
-    "companyTelephone": "+254723096064",
-    "yearlyTurnover": null,
-    "businessLines": null,
-    "businessNatures": null,
-    "buildingName": null,
-    "streetName": null,
-    "directorIdNumber": "23492176",
-    "region": null,
-    "county": null,
-    "town": null,
-    "factoryVisitDate": null,
-    "factoryVisitStatus": null,
-    "manufactureStatus": null,
-    "id": null,
-    "status": true,
-    "firstName": "TEST10006",
-    "lastName": "TEST10006",
-    "userName": "TEST10006",
-    "email": "TEST10006@gmail.com",
-    "credentials": "password",
-    "confirmCredentials": "password",
-    "cellphone": "715668934",
-    "otp": "B1318AC4"
+  "request": {
+    "BillReferenceNo": "INV0000689",
+    "PaymentDate": "2019-08-28T17:32:02.7460598+03:00",
+    "CurrencyCode": "KES",
+    "PaymentReferenceNo": "MXC534342",
+    "PaymentCode": "MPESA",
+    "PaymentAmount": 68400,
+    "PaymentDescription": "INV0000689",
+    "AdditionalInfo": " INV0000689"
   }
 }
-
-[
-  5
-  :
-  01
-  PM
-] Kevin Mureithi
-
-
-
-
-Principal Quality Assurance Officer
-
-
-
-
-
-Senior QA Officer
-
-
-
-
-
-QA Regional Manager
-
-
-
-
-
-Assistant Manager
-
-
-
-
-

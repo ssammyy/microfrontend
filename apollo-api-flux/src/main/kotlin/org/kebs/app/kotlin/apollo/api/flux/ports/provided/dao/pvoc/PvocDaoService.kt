@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.api.flux.ports.provided.dao.pvoc
 
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.flux.ports.dto.pvoc.*
+import org.kebs.app.kotlin.apollo.api.flux.ports.provided.dao.DaoService
 import org.kebs.app.kotlin.apollo.api.flux.ports.provided.dao.createKesWsFileName
 import org.kebs.app.kotlin.apollo.api.flux.ports.provided.dao.serializeToXml
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.SftpServiceImpl
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import java.sql.Date
 import java.sql.Timestamp
+import java.text.SimpleDateFormat
 import java.time.Instant
 
 @Service
@@ -26,6 +28,7 @@ class PvocServiceFlux(
     private val workflowTransactionsRepository: IWorkflowTransactionsRepository,
     private val pvocIntegrationProperties: PvocIntegrationProperties,
     private val cocsRepository: ICocsRepository,
+    private val daoService: DaoService,
     private val cocItemsRepository: ICocItemsRepository,
     private val coiItemsRepository: ICoiItemsRepository,
     private val corsBakRepository: ICorsBakRepository,
@@ -241,7 +244,60 @@ class PvocServiceFlux(
     }
 
     fun submitCocToKeSWS(cocData: CocsEntity) {
-        val coc: CustomCocXmlDto = cocData.toCocXmlRecordRefl()
+        val coc = CustomCocXmlDto().apply {
+            cocNumber = cocData.cocNumber
+            idfNumber = cocData.idfNumber
+            rfiNumber = cocData.rfiNumber
+            ucrNumber = cocData.ucrNumber
+            rfcDate = convertTimestampToKeswsValidDate(cocData.rfcDate ?: throw Exception("MISSING rfcDate"))
+            cocIssueDate =
+                convertTimestampToKeswsValidDate(cocData.cocIssueDate ?: throw Exception("MISSING cocIssueDate"))
+            isClean = cocData.clean
+            cocRemarks = cocData.cocRemarks
+            issuingOffice = cocData.issuingOffice
+            importerName = cocData.importerName
+            importerPin = cocData.importerPin
+            importerAddress1 = cocData.importerAddress1
+            importerAddress2 = cocData.importerAddress2
+            importerCity = cocData.importerCity
+            importerCountry = cocData.importerCountry
+            importerZipCode = cocData.importerZipCode
+            importerTelephoneNumber = cocData.importerTelephoneNumber
+            importerFaxNumber = cocData.importerFaxNumber
+            importerEmail = cocData.importerEmail
+            exporterName = cocData.exporterName
+            exporterPin = cocData.exporterPin
+            exporterAddress1 = cocData.exporterAddress1
+            exporterAddress2 = cocData.exporterAddress2
+            exporterCity = cocData.exporterCity
+            exporterCountry = cocData.exporterCountry
+            exporterZipCode = cocData.exporterZipCode
+            exporterTelephoneNumber = cocData.exporterTelephoneNumber
+            exporterFaxNumber = cocData.exporterFaxNumber
+            exporterEmail = cocData.exporterEmail
+            placeOfInspection = cocData.placeOfInspection
+            dateOfInspection = convertTimestampToKeswsValidDate(
+                cocData.dateOfInspection ?: throw Exception("MISSING dateOfInspection")
+            )
+            portOfDestination = cocData.portOfDestination
+            shipmentMode = cocData.shipmentMode
+            countryOfSupply = cocData.countryOfSupply
+            finalInvoiceFobValue = cocData.finalInvoiceFobValue.toString()
+            finalInvoiceExchangeRate = cocData.finalInvoiceExchangeRate.toString()
+            finalInvoiceCurrency = cocData.finalInvoiceCurrency
+            finalInvoiceDate = convertTimestampToKeswsValidDate(
+                cocData.finalInvoiceDate ?: throw Exception("MISSING finalInvoiceDate")
+            )
+            shipmentPartialNumber = cocData.shipmentPartialNumber
+            shipmentSealNumbers = cocData.shipmentSealNumbers
+            shipmentContainerNumber = cocData.shipmentContainerNumber
+            shipmentGrossWeight = cocData.shipmentGrossWeight
+            shipmentQuantityDelivered = cocData.shipmentQuantityDelivered
+            route = cocData.route
+            productCategory = cocData.productCategory
+            partner = cocData.partner
+            cocDetals = null
+        }
         val cocItem = iCocItemRepository.findByCocId(cocData.id)?.get(0)
         cocItem?.toCocItemDetailsXmlRecordRefl().let {
             coc.cocDetals = it
@@ -258,9 +314,64 @@ class PvocServiceFlux(
         }
     }
 
+    fun convertTimestampToKeswsValidDate(timestamp: Timestamp): String {
+        val sdf = SimpleDateFormat("yyyy-MM-dd")
+        val date = sdf.format(timestamp)
+        return date
+    }
+
     fun submitCoiToKeSWS(cocData: CocsEntity) {
         KotlinLogging.logger { }.info { "The COI entity: ${cocData.coiNumber}" }
-        val coi: CustomCoiXmlDto = cocData.toCoiXmlRecordRefl()
+        val coi = CustomCoiXmlDto().apply {
+            id = cocData.id
+            coiNumber = cocData.coiNumber
+            idfNumber = cocData.idfNumber
+            rfiNumber = cocData.rfiNumber
+            ucrNumber = cocData.ucrNumber
+            rfcDate = convertTimestampToKeswsValidDate(cocData.rfcDate ?: throw Exception("MISSING RFC DATE"))
+            coiIssueDate =
+                convertTimestampToKeswsValidDate(cocData.coiIssueDate ?: throw Exception("MISSING  coiIssueDate"))
+            clean = cocData.clean
+            coiRemarks = cocData.coiRemarks
+            issuingOffice = cocData.issuingOffice
+            importerName = cocData.importerName
+            importerPin = cocData.importerPin
+            importerAddress1 = cocData.importerAddress1
+            importerCity = cocData.importerCity
+            importerCountry = cocData.importerCountry
+            importerZipcode = cocData.importerZipCode
+            importerTelephoneNumber = cocData.importerTelephoneNumber
+            importerFaxNumber = cocData.importerFaxNumber
+            importerEmail = cocData.importerEmail
+            exporterName = cocData.exporterName
+            exporterPin = cocData.exporterPin
+            exporterAddress1 = cocData.exporterAddress1
+            exporterCity = cocData.exporterCity
+            exporterCountry = cocData.exporterCountry
+            exporterZipcode = cocData.exporterZipCode
+            exporterTelephoneNumber = cocData.exporterTelephoneNumber
+            exporterFaxNumber = cocData.exporterFaxNumber
+            exporterEmail = cocData.exporterEmail
+            placeOfInspection = cocData.placeOfInspection
+            dateOfInspection = convertTimestampToKeswsValidDate(
+                cocData.dateOfInspection ?: throw Exception("MISSING  dateOfInspection")
+            )
+            portOfDestination = cocData.portOfDestination
+            shipmentMode = cocData.shipmentMode
+            countryOfSupply = cocData.countryOfSupply
+            finalInvoiceFobValue = cocData.finalInvoiceFobValue
+            finalInvoiceExchangeRate = cocData.finalInvoiceExchangeRate
+            finalInvoiceCurrency = cocData.finalInvoiceCurrency
+            finalInvoiceNumber = cocData.finalInvoiceNumber
+            finalInvoiceDate = convertTimestampToKeswsValidDate(
+                cocData.finalInvoiceDate ?: throw Exception("MISSING  finalInvoiceDate")
+            )
+            shipmentPartialNumber = cocData.shipmentPartialNumber
+            shipmentSealNumbers = cocData.shipmentSealNumbers
+            shipmentGrossWeight = cocData.shipmentGrossWeight
+            productCategory = cocData.productCategory
+            route = "D"
+        }
         val coiFinalDto = COIXmlDTO()
         coiFinalDto.coi = coi
 
@@ -382,11 +493,51 @@ class PvocServiceFlux(
 
             //Send COR data to KeSWS
             try {
-                val cor: CustomCorXmlDto = savedCorData.toCorXmlRecordRefl()
+                val cor = CustomCorXmlDto().apply {
+                    id = savedCorData.id.toString()
+                    corNumber = savedCorData.corNumber
+                    corIssueDate = convertTimestampToKeswsValidDate(
+                        savedCorData.corIssueDate ?: throw Exception("Missing corIssueDate")
+                    )
+                    countryOfSupply = savedCorData.countryOfSupply
+                    inspectionCenter = savedCorData.inspectionCenter
+                    exporterName = savedCorData.exporterName
+                    exporterAddress1 = savedCorData.exporterAddress1
+                    exporterEmail = savedCorData.exporterEmail
+                    applicationBookingDate = convertTimestampToKeswsValidDate(
+                        savedCorData.applicationBookingDate ?: throw Exception("Missing applicationBookingDate")
+                    )
+                    inspectionDate = convertTimestampToKeswsValidDate(
+                        savedCorData.inspectionDate ?: throw Exception("Missing inspectionDate")
+                    )
+                    make = savedCorData.make
+                    model = savedCorData.model
+                    chasisNumber = savedCorData.chasisNumber
+                    engineNumber = savedCorData.engineNumber
+                    engineCapacity = savedCorData.engineCapacity
+                    yearOfManufacture = savedCorData.yearOfManufacture
+                    yearOfFirstRegistration = savedCorData.yearOfFirstRegistration
+                    inspectionMileage = savedCorData.inspectionMileage
+                    unitsOfMileage = savedCorData.unitsOfMileage
+                    inspectionRemarks = savedCorData.inspectionRemarks
+                    previousRegistrationNumber = savedCorData.previousRegistrationNumber
+                    previousCountryOfRegistration = savedCorData.previousCountryOfRegistration
+                    tareWeight = savedCorData.tareWeight.toString()
+                    loadCapacity = savedCorData.loadCapacity.toString()
+                    grossWeight = savedCorData.grossWeight.toString()
+                    numberOfAxles = savedCorData.numberOfAxles.toString()
+                    typeOfVehicle = savedCorData.typeOfVehicle
+                    numberOfPassangers = savedCorData.numberOfPassangers.toString()
+                    typeOfBody = savedCorData.typeOfBody
+                    bodyColor = savedCorData.bodyColor
+                    fuelType = savedCorData.fuelType
+                    version = "1"
+                }
                 val corDto = CORXmlDTO()
                 corDto.cor = cor
                 val fileName = corDto.cor?.chasisNumber?.let {
-                    createKesWsFileName(applicationMapProperties.mapKeswsCorDoctype,
+                    createKesWsFileName(
+                        applicationMapProperties.mapKeswsCorDoctype,
                         it
                     )
                 }
