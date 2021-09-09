@@ -28,7 +28,7 @@ export class MasterService {
     }
 
     loadDepartmentsSystemAdmin(status: number): any {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_DEPARTMENTS);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_DEPARTMENTS_BY_STATUS);
         const urlAndPathVariables = `${url}/${status}`;
         return this.http.get<DepartmentDto[]>(urlAndPathVariables).pipe(
             map(function (response: DepartmentDto[]) {
@@ -56,7 +56,7 @@ export class MasterService {
     }
 
     loadDirectorateSystemAdmin(status: number): any {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_DIRECTORATE);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_DIRECTORATE_BY_STATUS);
         const urlAndPathVariables = `${url}/${status}`;
         return this.http.get<DirectoratesEntityDto[]>(urlAndPathVariables).pipe(
             map(function (response: DirectoratesEntityDto[]) {
@@ -70,7 +70,7 @@ export class MasterService {
     }
 
     loadTitlesSystemAdmin(status: number): any {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_TITLE_LIST);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.TITLE_LIST_BY_STATUS);
         const urlAndPathVariables = `${url}/${status}`;
         return this.http.get<TitlesEntityDto[]>(urlAndPathVariables).pipe(
             map(function (response: TitlesEntityDto[]) {
@@ -112,7 +112,7 @@ export class MasterService {
     }
 
     loadDesignationsSystemAdmin(status: number): any {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_DESIGNATIONS);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_DESIGNATIONS_BY_STATUS);
         const urlAndPathVariables = `${url}/${status}`;
         return this.http.get<DesignationEntityDto[]>(urlAndPathVariables).pipe(
             map(function (response: DesignationEntityDto[]) {
@@ -140,7 +140,7 @@ export class MasterService {
     }
 
     loadL1SubSubSectionSystemAdmin(status: number): any {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_SUB_SECTIONS_L1);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_SUB_SECTIONS_L1_BY_STATUS);
         const urlAndPathVariables = `${url}/${status}`;
         return this.http.get<SubSectionsL1EntityDto[]>(urlAndPathVariables).pipe(
             map(function (response: SubSectionsL1EntityDto[]) {
@@ -154,7 +154,7 @@ export class MasterService {
     }
 
     loadL2SubSubSectionSystemAdmin(status: number): any {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_SUB_SECTIONS_L2);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_SUB_SECTIONS_L2_BY_STATUS);
         const urlAndPathVariables = `${url}/${status}`;
         return this.http.get<SubSectionsL2EntityDto[]>(urlAndPathVariables).pipe(
             map(function (response: SubSectionsL2EntityDto[]) {
@@ -182,7 +182,7 @@ export class MasterService {
     }
 
     loadRegionsSystemAdmin(status: number): any {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_REGIONS);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_REGIONS_BY_STATUS);
         const urlAndPathVariables = `${url}/${status}`;
         return this.http.get<RegionsEntityDto[]>(urlAndPathVariables).pipe(
             map(function (response: RegionsEntityDto[]) {
@@ -196,7 +196,7 @@ export class MasterService {
     }
 
     loadCountiesSystemAdmin(status: number): any {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_COUNTIES);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_COUNTIES_BY_STATUS);
         const urlAndPathVariables = `${url}/${status}`;
         return this.http.get<CountiesDto[]>(urlAndPathVariables).pipe(
             map(function (response: CountiesDto[]) {
@@ -210,7 +210,7 @@ export class MasterService {
     }
 
     loadTownsSystemAdmin(status: number): any {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_TOWNS);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_TOWNS_BY_STATUS);
         const urlAndPathVariables = `${url}/${status}`;
         return this.http.get<TownsDto[]>(urlAndPathVariables).pipe(
             map(function (response: TownsDto[]) {

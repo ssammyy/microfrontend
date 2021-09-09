@@ -17,11 +17,11 @@ export class ApiEndpointService {
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-         // LOCAL_DEV: 'localhost:8006'
+        // LOCAL_DEV: 'localhost:8006'
         // LOCAL_DEV: '12:8006'
         // LOCAL_DEV: '41.72.209.58:8006'
-        // LOCAL_DEV: `kimsint.kebs.org:8006`
-        LOCAL_DEV: `kims.kebs.org:8006`
+        LOCAL_DEV: `kimsint.kebs.org:8006`
+        // LOCAL_DEV: `kims.kebs.org:8006`
     };
 
     /**
@@ -144,20 +144,28 @@ export class ApiEndpointService {
         /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::USERS & SYSTEM ADMIN ENDPOINTS::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
         // MASTER Endpoints
         LOAD_DESIGNATIONS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/designations/load`,
+        LOAD_DESIGNATIONS_BY_STATUS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/designations/loads/`,
         LOAD_DEPARTMENTS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/departments/load`,
+        LOAD_DEPARTMENTS_BY_STATUS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/departments/loads/`,
         LOAD_DIVISIONS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/divisions/load`,
         LOAD_DIVISIONS_BY_STATUS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/divisions/loads`,
         LOAD_DIRECTORATE: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/directorate/load`,
+        LOAD_DIRECTORATE_BY_STATUS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/directorate/loads/`,
         LOAD_REGIONS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/regions/load`,
+        LOAD_REGIONS_BY_STATUS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/regions/loads/`,
         LOAD_SUB_REGIONS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/subRegions/load`,
         LOAD_SECTIONS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/sections/load`,
         LOAD_SECTIONS_BY_STATUS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/sections/loads`,
+        LOAD_SUB_SECTIONS_L1_BY_STATUS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/subsections/l1/loads/`,
         LOAD_SUB_SECTIONS_L1: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/subsections/l1/load`,
         LOAD_SUB_SECTIONS_L2: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/subsections/l2/load`,
+        LOAD_SUB_SECTIONS_L2_BY_STATUS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/subsections/l2/loads/`,
         LOAD_FREIGHT_STATIONS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/freightStations/load`,
         LOAD_FREIGHT_STATIONS_BY_STATUS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/freightStations/loads`,
         LOAD_COUNTIES: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/counties/load`,
+        LOAD_COUNTIES_BY_STATUS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/counties/loads/`,
         LOAD_TOWNS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/towns/load`,
+        LOAD_TOWNS_BY_STATUS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/towns/loads/`,
         LOAD_BUSINESS_LINES: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/businessLines/load`,
         LOAD_BUSINESS_NATURES: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/businessNatures/load`,
         LOAD_REGION_COUNTY_TOWN: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/regionCountyTown/load`,
@@ -177,7 +185,7 @@ export class ApiEndpointService {
         USER_SEARCH: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/users/search`,
         // Titles Endpoint
         LOAD_TITLE_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/titles/load`,
-        TITLE_LIST_BY_STATUS: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/titles/load/`,
+        TITLE_LIST_BY_STATUS: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/titles/loads/`,
         ADD_TITLE: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/titles/`,
         UPDATE_TITLE: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/titles/`,
         // Roles Endpoint
