@@ -232,6 +232,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_scheduling_visit}")
     val mapQaStatusPShedulvisit: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_standards_details}")
+    val mapQaStatusPStandardsAdding: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_generation_of_ssc}")
     val mapQaStatusPGenSSC: Long = 0L
 

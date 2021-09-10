@@ -444,7 +444,7 @@
                                     </div>
                                 </div>
 
-                                <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_HOD_MODIFY') or hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY') or hasAuthority('QA_PAC_SECRETARY_MODIFY') or hasAuthority('QA_PSC_MEMBERS_MODIFY') or hasAuthority('QA_PCM_MODIFY')">
+                                <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_HOD_MODIFY') or hasAuthority('QA_MANAGER_MODIFY') or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY') or hasAuthority('QA_PAC_SECRETARY_MODIFY') or hasAuthority('QA_PSC_MEMBERS_MODIFY') or hasAuthority('QA_PCM_MODIFY')">
 
                                     <button class="accordion">Scheme of Supervision Details</button>
                                     <div class="panel">
@@ -633,7 +633,7 @@
                                     <!--                                        SUPERVISION AND-->
                                     <!--                                        CONTROL</a>-->
 
-                                    <div sec:authorize="hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')">
+                                    <div sec:authorize="hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')">
 
 
                                         <a th:if="${permitDetails?.inspectionScheduledStatus == 1 and permitDetails?.inspectionReportGenerated != null and permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 }"
@@ -708,7 +708,7 @@
 
                                         </div>
 
-                                        <div sec:authorize="hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_RM_MODIFY') or hasAuthority('QA_HOD_MODIFY')">
+                                        <div sec:authorize="hasAuthority('QA_MANAGER_MODIFY') or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_RM_MODIFY') or hasAuthority('QA_HOD_MODIFY')">
                                             <a style="color: white" onclick="popUpFunction('updateSection');"
                                                class="filter-link">Update Section</a>
 
@@ -829,7 +829,7 @@
                                             </div>
                                         </div>
 
-                                        <div sec:authorize="hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_MODIFY')">
+                                        <div sec:authorize="hasAuthority('QA_MANAGER_MODIFY') or hasAuthority('QA_HOF_MODIFY')">
 
                                             <a th:if="${ permitDetails?.recommendationRemarks != null and permitDetails?.recommendationApprovalStatus == null  and permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1  }"
                                                style="color: white" onclick="popUpFunction('approveRecommendation');"
@@ -1035,7 +1035,7 @@
                                             </div>
                                         </div>
 
-                                        <div sec:authorize="hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_MODIFY')">
+                                        <div sec:authorize="hasAuthority('QA_MANAGER_MODIFY') or hasAuthority('QA_HOF_MODIFY')">
 
                                             <a th:if="${ permitDetails?.recommendationRemarks != null and permitDetails?.recommendationApprovalStatus == null  and permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1  }"
                                                style="color: white" onclick="popUpFunction('approveRecommendation');"
@@ -1387,7 +1387,6 @@
                                             </div>
                                         </div>
 
-                                        .
                                         <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')"
                                              th:if="${permitDetails?.qaoId == loggedInUserID}">
 
