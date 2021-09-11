@@ -284,7 +284,8 @@ class QaInvoiceCalculationDaoServices(
             itemDescName = permitType.itemInvoiceDesc
             itemQuantity = BigDecimal.ZERO
             itemAmount = applicationCostValue
-            permitStatus = 1
+            permitStatus = 0
+            fmarkStatus = 1
             status = 1
             createdOn = Timestamp.from(Instant.now())
             createdBy = commonDaoServices.concatenateName(user)

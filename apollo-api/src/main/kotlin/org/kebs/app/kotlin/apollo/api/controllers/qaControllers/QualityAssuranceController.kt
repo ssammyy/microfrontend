@@ -1168,6 +1168,13 @@ class QualityAssuranceController(
                         applicationMapProperties.mapQaStatusPermitAwarded,
                         loggedInUser
                     )
+                } else {
+                    permitDetailsDB.fmarkGenerated = 0
+                    permitDetailsDB = qaDaoServices.permitInsertStatus(
+                        permitDetailsDB,
+                        applicationMapProperties.mapQaStatusPermitAwarded,
+                        loggedInUser
+                    )
                 }
 
 

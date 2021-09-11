@@ -11,7 +11,7 @@
                     <form (ngSubmit)="onClickSubmit(fmarkForm.valid)" [formGroup]="fmarkForm" class="form"
                           enctype="multipart/form-data">
                         <div class="form-group">
-                            <label for="smarkPermitID">Select Standardization Mark</label>
+                            <label for="smarkPermitID"><b>Select Standardization Mark</b></label>
                             <select id="smarkPermitID" class="form-control" formControlName="smarkPermitID"
                                     name="smarkPermitID"
                                     [class.is-invalid]="formFmarkForm.smarkPermitID.invalid && formFmarkForm.smarkPermitID.touched">
