@@ -3927,6 +3927,8 @@ class QADaoServices(
                 renewalStatus = s.activeStatus
                 userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
                 userId = user.id
+                fmarkGenerated = s.inactiveStatus
+                companyId = oldPermit.companyId
                 attachedPlantId = oldPermit.attachedPlantId
                 permitType = oldPermit.permitType
                 permitRefNumber = oldPermit.permitRefNumber
