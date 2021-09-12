@@ -947,7 +947,6 @@ class QualityAssuranceHandler(
 
         limsServices.checkPDFFiles(ssfDetails.bsNumber ?: throw ExpectedDataNotFound("MISSING BS NUMBER"))
             ?.forEach { fpdf ->
-
                 if (savedPDFFiles.isNotEmpty()) {
                     savedPDFFiles.firstOrNull { it.pdfName == fpdf }
                         ?.let {
@@ -964,23 +963,6 @@ class QualityAssuranceHandler(
                             )
                             result.add(limsDto)
                         }
-
-
-//                    savedPDFFiles.forEach { spdf ->
-//                        if (fpdf == spdf.pdfName) {
-//                            val limsDto = LimsFilesFoundDto(
-//                                true,
-//                                fpdf
-//                            )
-//                            result.add(limsDto)
-//                        } else {
-//                            val limsDto = LimsFilesFoundDto(
-//                                false,
-//                                fpdf
-//                            )
-//                            result.add(limsDto)
-//                        }
-//                    }
                 } else {
                     val limsDto = LimsFilesFoundDto(
                         false,
