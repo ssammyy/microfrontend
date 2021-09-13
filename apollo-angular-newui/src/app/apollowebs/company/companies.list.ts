@@ -23,13 +23,13 @@ export class CompaniesList implements OnInit {
         private store$: Store<any>,
     ) {
         this.filterName = '';
-        this.companies$ = service.entities$;
-        service.getAll().subscribe();
-
+        // location.reload();
     }
 
     ngOnInit(): void {
-
+        this.companies$ = this.service.entities$;
+        this.service.clearCache();
+        this.service.getAll().subscribe();
     }
 
     editRecord(record: Company) {
@@ -48,5 +48,8 @@ export class CompaniesList implements OnInit {
         this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'company/directors'}));
     }
 
-
+    viewRecord(record: Company) {
+        this.store$.dispatch(loadCompanyId({payload: record.id, company: record}));
+        this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'company/view'}));
+    }
 }

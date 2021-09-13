@@ -3,8 +3,8 @@ import {QaService} from '../../../core/store/data/qa/qa.service';
 import {PermitEntityDto} from '../../../core/store/data/qa/qa.model';
 import {Router} from '@angular/router';
 import {ApiEndpointService} from '../../../core/services/endpoints/api-endpoint.service';
-import {LoadingService} from "../../../core/services/loader/loadingservice.service";
-import {NgxSpinnerService} from "ngx-spinner";
+import {LoadingService} from '../../../core/services/loader/loadingservice.service';
+import {NgxSpinnerService} from 'ngx-spinner';
 
 declare interface DataTable {
     headerRow: string[];
@@ -25,6 +25,7 @@ export class DmarkApplicationsAllComponent implements OnInit {
 
     // public formattedArray: any[];
     draftID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DRAFT_ID;
+    dmarkID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DMARK_TYPE_ID;
 
 
     constructor(
@@ -39,7 +40,7 @@ export class DmarkApplicationsAllComponent implements OnInit {
     ngOnInit() {
         let formattedArray = [];
         this.SpinnerService.show();
-        this.qaService.loadPermitList('1').subscribe(
+        this.qaService.loadPermitList(String(this.dmarkID)).subscribe(
             (data: any) => {
 
                 this.allPermitData = data;

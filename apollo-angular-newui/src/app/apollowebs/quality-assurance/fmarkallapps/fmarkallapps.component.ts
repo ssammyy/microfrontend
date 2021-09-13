@@ -2,6 +2,7 @@ import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {PermitEntityDto} from "../../../core/store/data/qa/qa.model";
 import {QaService} from "../../../core/store/data/qa/qa.service";
 import {Router} from "@angular/router";
+import {ApiEndpointService} from '../../../core/services/endpoints/api-endpoint.service';
 
 declare interface DataTable {
     headerRow: string[];
@@ -19,6 +20,9 @@ declare const $: any;
 export class FmarkallappsComponent implements OnInit, AfterViewInit {
     public dataTable: DataTable;
     public allPermitData: PermitEntityDto[];
+    draftID = String(ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DRAFT_ID);
+    fmarkID = String(ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.FMARK_TYPE_ID);
+
 
     constructor(
         private qaService: QaService,
@@ -29,7 +33,7 @@ export class FmarkallappsComponent implements OnInit, AfterViewInit {
 
     ngOnInit() {
         let formattedArray = [];
-        this.qaService.loadPermitList('3').subscribe(
+        this.qaService.loadPermitList(String(this.fmarkID)).subscribe(
             (data: any) => {
 
                 this.allPermitData = data;

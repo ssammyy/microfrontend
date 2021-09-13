@@ -25,6 +25,8 @@
                                     <th>{{ dataTable.headerRow[2] }}</th>
                                     <th>{{ dataTable.headerRow[3] }}</th>
                                     <th>{{ dataTable.headerRow[4] }}</th>
+                                    <th>{{ dataTable.headerRow[5] }}</th>
+                                    <th>{{ dataTable.headerRow[6] }}</th>
                                 </tr>
                                 </thead>
                                 <tfoot>
@@ -34,17 +36,31 @@
                                     <th>{{ dataTable.footerRow[2] }}</th>
                                     <th>{{ dataTable.footerRow[3] }}</th>
                                     <th>{{ dataTable.footerRow[4] }}</th>
+                                    <th>{{ dataTable.footerRow[5] }}</th>
+                                    <th>{{ dataTable.footerRow[6] }}</th>
                                 </tr>
                                 </tfoot>
                                 <tbody>
                                 <tr *ngFor="let row of dataTable.dataRows">
+
                                     <td>{{row[0]}}</td>
                                     <td>{{row[1]}}</td>
-                                    <td>{{row[2] | date}}</td>
+                                    <td>{{row[2]}}</td>
                                     <td>{{row[3]}}</td>
-                                    <td><input class="form-check-input" type="checkbox" value="{{row[0]}}" id="defaultCheck1"   (change)="onChange($event.target.checked, row)"
+                                    <td>{{row[4]}}</td>
+                                    <td *ngIf="row[3] != 0">
+                                        <button type="button" class="btn btn-primary"
+                                                (click)="payNowForOneInvoice(row[5])">
+                                            PAY NOW
+                                        </button>
+                                    </td>
+                                    <br>
+                                    <td *ngIf="row[3] != 0">
+                                        <input class="form-check-input" type="checkbox" value="{{row[5]}}"
+                                               id="defaultCheck1" (change)="onChange($event.target.checked, row)"
                                                [checked]="checked(row)">
                                     </td>
+
                                 </tr>
                                 </tbody>
                             </table>
@@ -59,7 +75,9 @@
                                 </div>
                                     <div class="card-icon">
                                         <div class="card-body">
-                                            <button type="button" class="btn btn-primary" (click)="submit()">Finish</button>
+                                            <button type="button" class="btn btn-primary" (click)="submit()">
+                                                Consolidate
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -68,12 +86,12 @@
 
                 </div>
         </form>
-        {{selected.length}} items selected
-        <!--  end card  -->
-            </div>
-    <h3 *ngIf="messages.length != 0">Log</h3>
-    <div *ngFor="let item of messages">
-        save: {{item}}
-            <!-- end col-md-12 -->
-        </div>
+        <!--        {{selected.length}} items selected-->
+        <!--        &lt;!&ndash;  end card  &ndash;&gt;-->
+        <!--            </div>-->
+        <!--    <h3 *ngIf="messages.length != 0">Log</h3>-->
+        <!--    <div *ngFor="let item of messages">-->
+        <!--        save: {{item}}-->
+        <!-- end col-md-12 -->
+    </div>
 </div>

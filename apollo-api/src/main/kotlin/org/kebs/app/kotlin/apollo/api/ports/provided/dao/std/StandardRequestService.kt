@@ -1,15 +1,13 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao.std
 
-import com.beust.klaxon.Klaxon
-import org.kebs.app.kotlin.apollo.common.dto.std.ID
-import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponse
-import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
 //import com.apollo.standardsdevelopment.models.*
 //import com.apollo.standardsdevelopment.repositories.*
-import com.beust.klaxon.JsonReader
 //import com.beust.klaxon.Klaxon
 
 //import com.google.gson.stream.JsonReader
+
+import com.beust.klaxon.JsonReader
+import com.beust.klaxon.Klaxon
 import org.flowable.engine.ProcessEngine
 import org.flowable.engine.RepositoryService
 import org.flowable.engine.RuntimeService
@@ -18,6 +16,9 @@ import org.flowable.engine.history.HistoricActivityInstance
 import org.flowable.engine.repository.Deployment
 import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.api.web.config.EmailConfig
+import org.kebs.app.kotlin.apollo.common.dto.std.ID
+import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponse
+import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.beans.factory.annotation.Qualifier
@@ -29,6 +30,7 @@ import java.io.StringReader
 import java.sql.Timestamp
 import java.util.*
 import kotlin.collections.HashMap
+
 
 @Service
 class StandardRequestService(
@@ -162,7 +164,7 @@ class StandardRequestService(
         mailMessage.setText("$toName, $body")
 
         // Send mail
-      //  mailSender.send(mailMessage)
+        //  mailSender.send(mailMessage)
     }
 
 
@@ -409,7 +411,7 @@ class StandardRequestService(
             .list()
         for (activity in activities) {
             println(
-                activity.activityId + " took " + activity.durationInMillis + " milliseconds"
+                activity.activityId + " took " + activity.durationInMillis + " milliseconds" + activity.processInstanceId
             )
         }
 
@@ -418,4 +420,59 @@ class StandardRequestService(
     }
 
 
+//    fun deleteTask(taskId: ID) {
+//        val deleteReason = "test"
+//        val cascade = true
+//        println("ID passed to services is" + taskId)
+//        val historyService = processEngine.historyService
+//
+//
+//         val activities = historyService
+//            .createHistoricActivityInstanceQuery()
+//            .processInstanceId(taskId.ID)
+////        val taskIdb = taskId.replace("\"", "");
+////        val taskIdbc = taskIdb.replace("{", "").replace("}", "");
+////        val taskIdc = taskIdbc.replace("id:", "");
+//        println("Final ID passed to services is" + taskId.toString())
+//        val tasks = CommandContextUtil.getTaskService().findTasksByProcessInstanceId("b88aa534-d97f-11eb-82cd-fe5c68490b49")
+//        for (task in tasks) {
+//            if (CommandContextUtil.getEventDispatcher().isEnabled && !task.isCanceled) {
+//                task.isCanceled = true
+//                val execution = CommandContextUtil.getExecutionEntityManager().findById(task.executionId)
+//                CommandContextUtil.getEventDispatcher()
+//                    .dispatchEvent(
+//                        FlowableEventBuilder
+//                            .createActivityCancelledEvent(
+//                                execution.activityId, task.name,
+//                                task.executionId, task.processInstanceId,
+//                                task.processDefinitionId, "userTask", deleteReason
+//                            )
+//                    )
+//            }
+//            deleteTask(task, deleteReason, cascade, true, true)
+//        }
+//    }
+
+    //    fun deleteTask(task: TaskEntity, deleteReason: String?, cascade: Boolean, b: Boolean, b1: Boolean) {
+//        TaskHelper.deleteTask(task.toString(), deleteReason, cascade)
+//
+//    }
+    fun closeTask(taskId: String) {
+        taskService.complete(taskId)
+        taskService.deleteTask(taskId, true)
+
+    }
+
+    fun closeProcess(taskId: String) {
+        // taskService.complete(taskId)
+        // taskService.deleteTask(taskId, true)
+
+        runtimeService.deleteProcessInstance(taskId, "cleaning")
+    }
+
 }
+
+
+
+
+

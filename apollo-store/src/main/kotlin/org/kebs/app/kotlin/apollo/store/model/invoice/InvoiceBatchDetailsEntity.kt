@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.store.model.invoice
 
 import java.io.Serializable
 import java.math.BigDecimal
+import java.sql.Date
 import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*
@@ -33,7 +34,11 @@ class InvoiceBatchDetailsEntity : Serializable {
 
     @Column(name = "RECEIPT_NUMBER")
     @Basic
-    var receiptNumber: Long? = null
+    var receiptNumber: String? = null
+
+    @Column(name = "RECEIPT_DATE")
+    @Basic
+    var receiptDate: Date? = null
 
     @Column(name = "STATUS")
     @Basic
@@ -114,6 +119,7 @@ class InvoiceBatchDetailsEntity : Serializable {
         return id == that.id &&
                 batchNumber == that.batchNumber &&
                 receiptNumber == that.receiptNumber &&
+                receiptDate == that.receiptDate &&
                 paymentStarted == that.paymentStarted &&
                 totalAmount == that.totalAmount &&
                 description == that.description &&
@@ -142,6 +148,7 @@ class InvoiceBatchDetailsEntity : Serializable {
             id,
             batchNumber,
             receiptNumber,
+            receiptDate,
             paymentStarted,
             totalAmount,
             description,

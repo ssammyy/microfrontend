@@ -12,9 +12,7 @@ class NWAStandard {
     @Column(name = "ID")
     var id: Long = 0
 
-    @Transient
-    @JsonProperty("TASKID")
-    var taskId: String? = null
+
 
     @Column(name = "TITLE")
     @Basic
@@ -44,12 +42,17 @@ class NWAStandard {
     @Basic
     var ksNumber: String? = null
 
-    @Transient
-    @Column(name = "ACCENT_TO")
-    @Basic
-    val accentTo: Boolean = false
-
     @Column(name="DATE_SD_UPLOADED")
     @Basic
     var dateSdUploaded: Timestamp?=null
+
+    @Transient
+    @Column(name = "ACCENT_TO")
+    @Basic
+    var accentTo: Boolean = false
+    @Column(name = "TASKID")
+    @Basic
+    var taskId: String? = null
+
+
 }

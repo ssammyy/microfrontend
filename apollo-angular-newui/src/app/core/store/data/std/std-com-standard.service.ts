@@ -1,23 +1,27 @@
-import { Injectable } from '@angular/core';
-import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
-import {Observable, throwError} from "rxjs";
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
+import {Observable, throwError} from 'rxjs';
 import {
   ComHodTasks,
   ComJcJustification, ComJcJustificationAction,
   ComJcJustificationList, CompanyStandardRequest,
   ComStdAction,
-  Department,  Product,
+  Department, Product,
   UsersEntity
-} from "./std.model";
-import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
-import {catchError, map} from "rxjs/operators";
+} from './std.model';
+import {ApiEndpointService} from '../../../services/endpoints/api-endpoint.service';
+import {catchError, map} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StdComStandardService {
+  baseUrl = ApiEndpointService.DOMAIN.LOCAL_DEV;
+  private apiServerUrl = `${this.baseUrl}/api/v1/migration/anonymous/standard/dropdown/`;
+  private apiServerUrl2 = `${this.baseUrl}/api/v1/migration/standard/`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
   public getStandards(): Observable<Product[]> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_GET_PRODUCTS);
@@ -46,17 +50,30 @@ export class StdComStandardService {
     const params = new HttpParams();
     return this.http.get<Department[]>(url, {params}).pipe();
   }
+
   public getTechnicalCommittee(id: bigint): any {
-    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_GET_TC_COMMITTEE);
-    const params = new HttpParams();
-    return this.http.get<any>(url, {params}).pipe();
+    return this.http.get<any>(`${this.apiServerUrl}getTechnicalCommittee/${id}`);
   }
 
-public getProductSubcategory(id: bigint): any {
-    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_GET_PRODUCT_CATEGORIES);
-    const params = new HttpParams();
-    return this.http.get<any>(url, {params}).pipe();
+  public getProduct(id: bigint): any {
+    return this.http.get<any>(`${this.apiServerUrl}getProducts/${id}`);
   }
+
+  public getProductSubcategory(id: bigint): any {
+    return this.http.get<any>(`${this.apiServerUrl}getProductCategories/${id}`);
+  }
+
+  // public getTechnicalCommittee(id: bigint): any {
+  //   const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_GET_TC_COMMITTEE);
+  //   const params = new HttpParams();
+  //   return this.http.get<any>(url, {params}).pipe();
+  // }
+
+// public getProductSubcategory(id: bigint): any {
+//     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_GET_PRODUCT_CATEGORIES);
+//     const params = new HttpParams();
+//     return this.http.get<any>(url, {params}).pipe();
+//   }
 
   public addStandardRequest(companyStandardRequest: CompanyStandardRequest): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_ADD_STD_REQUEST);

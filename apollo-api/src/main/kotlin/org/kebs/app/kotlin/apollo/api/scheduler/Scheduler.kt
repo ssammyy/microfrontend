@@ -41,16 +41,18 @@ class Scheduler(
         }
     }
 
-    @Scheduled(fixedDelay = 300000)
+    @Scheduled(fixedDelay = 100000)//1.6666667 Minutes for now
     fun runSchedulerAfterEveryFiveMin() {
         schedulerImpl.updatePaidDemandNotesStatus()
         qaDaoServices.assignPermitApplicationAfterPayment()
+        qaDaoServices.updatePermitWithDiscountWithPaymentDetails()
         schedulerImpl.updateLabResultsWithDetails()
+        schedulerImpl.updateFirmTypeStatus()
     }
 
     @Scheduled(fixedDelay = 600000)
     fun fetchKeswsFiles() {
-        sftpSchedulerImpl.downloadKeswsFiles()
+//        sftpSchedulerImpl.downloadKeswsFiles()
     }
 
 //    @Scheduled(fixedRate = 30 * 60000)

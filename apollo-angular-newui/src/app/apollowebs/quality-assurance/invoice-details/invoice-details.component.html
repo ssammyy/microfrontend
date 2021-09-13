@@ -21,12 +21,12 @@
                                         <i class="material-icons">assignment_turned_in</i> Invoices Attached Details
                                     </a>
                                 </li>
-                                <li class="nav-item" *ngIf="allBatchInvoiceDetails.batchDetails.paidStatus !== 10">
+                                <li class="nav-item" *ngIf="allBatchInvoiceDetails?.batchDetails?.paidStatus != 10">
                                     <a class="nav-link" data-toggle="tab" href="#link11" role="tablist">
                                         <i class="material-icons">assignment_turned_in</i> Bank Details
                                     </a>
                                 </li>
-                                <li class="nav-item" *ngIf="allBatchInvoiceDetails.batchDetails.paidStatus !== 10">
+                                <li class="nav-item" *ngIf="allBatchInvoiceDetails?.batchDetails?.paidStatus != 10">
                                     <a class="nav-link" data-toggle="tab" href="#link13" role="tablist">
                                         <i class="material-icons">assignment_turned_in</i>MPESA PAYMENT Details
                                     </a>
@@ -44,7 +44,7 @@
                             <div class="tab-content">
                                 <div class="tab-pane active" id="link10">
                                     <h3>Invoice Details</h3>
-                                    <button *ngIf="allBatchInvoiceDetails.batchDetails.paidStatus !== 10"
+                                    <button *ngIf="allBatchInvoiceDetails?.batchDetails?.paidStatus != 10"
                                             (click)="reloadPage()" mat-raised-button=""
                                             class="btn btn-kebs mat-raised-button mat-button-base"><span
                                             class="mat-button-wrapper">CHECK PAYMENT MADE</span>
@@ -62,7 +62,7 @@
                                                     </td>
                                                     <td><strong>
                                                         Invoice Number</strong></td>
-                                                    <td>{{allBatchInvoiceDetails.batchDetails.invoiceNumber}}</td>
+                                                    <td>{{allBatchInvoiceDetails?.batchDetails?.invoiceNumber}}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
@@ -70,14 +70,14 @@
                                                     </td>
                                                     <td><strong>Name of firm
                                                     </strong></td>
-                                                    <td>{{allBatchInvoiceDetails.batchDetails.firmName}}</td>
+                                                    <td>{{allBatchInvoiceDetails?.batchDetails?.firmName}}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
                                                         <i class="material-icons">room_preferences</i>
                                                     </td>
                                                     <td><strong>Postal address</strong></td>
-                                                    <td>{{allBatchInvoiceDetails.batchDetails.postalAddress}}
+                                                    <td>{{allBatchInvoiceDetails?.batchDetails?.postalAddress}}
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -86,7 +86,7 @@
                                                     </td>
                                                     <td><strong>Physical address
                                                     </strong></td>
-                                                    <td>{{allBatchInvoiceDetails.batchDetails.physicalAddress}}</td>
+                                                    <td>{{allBatchInvoiceDetails?.batchDetails?.physicalAddress}}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
@@ -94,7 +94,7 @@
                                                     </td>
                                                     <td><strong>Telephone number
                                                     </strong></td>
-                                                    <td>{{allBatchInvoiceDetails.batchDetails.telephoneNo}}
+                                                    <td>{{allBatchInvoiceDetails?.batchDetails?.telephoneNo}}
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -103,7 +103,7 @@
                                                     </td>
                                                     <td><strong>Email address
                                                     </strong></td>
-                                                    <td>{{allBatchInvoiceDetails.batchDetails.email}}</td>
+                                                    <td>{{allBatchInvoiceDetails?.batchDetails?.email}}</td>
                                                 </tr>
 
                                                 </tbody>
@@ -116,26 +116,32 @@
                                                     <tbody>
                                                     <tr>
                                                         <td><strong>Receipt No</strong></td>
-                                                        <td>{{allBatchInvoiceDetails.batchDetails.receiptNo}}</td>
+                                                        <td>{{allBatchInvoiceDetails?.batchDetails?.receiptNo}}</td>
                                                     </tr>
                                                     <tr>
                                                         <td><strong>
                                                             Paid Date</strong></td>
-                                                        <td>{{allBatchInvoiceDetails.batchDetails.paidDate}}</td>
+                                                        <td>{{allBatchInvoiceDetails?.batchDetails?.paidDate}}</td>
                                                     </tr>
                                                     <tr>
                                                         <td><strong>
                                                             Total Amount
                                                         </strong></td>
-                                                        <td>{{allBatchInvoiceDetails.batchDetails.totalAmount}}</td>
+                                                        <td>{{allBatchInvoiceDetails?.batchDetails?.totalAmount}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>
+                                                            Amount Balance
+                                                        </strong></td>
+                                                        <td>{{invoiceBalance?.balance}}</td>
                                                     </tr>
                                                     <tr>
                                                         <td><strong>
                                                             Status</strong></td>
                                                         <td>
-                                                            <span *ngIf="allBatchInvoiceDetails.batchDetails.paidStatus === 10"
+                                                            <span *ngIf="allBatchInvoiceDetails?.batchDetails?.paidStatus == 10"
                                                                   class="badge badge-success">PAID</span>
-                                                            <span *ngIf="allBatchInvoiceDetails.batchDetails.paidStatus !== 10"
+                                                            <span *ngIf="allBatchInvoiceDetails?.batchDetails?.paidStatus != 10"
                                                                   class="badge badge-danger">NOT PAID</span>
                                                         </td>
                                                     </tr>
@@ -397,23 +403,23 @@
                                         <!--                                                    <tbody>-->
                                         <!--                                                    <tr>-->
                                         <!--                                                        <td><strong>Receipt No</strong></td>-->
-                                        <!--                                                        <td>{{allBatchInvoiceDetails.batchDetails.receiptNo}}</td>-->
+                                        <!--                                                        <td>{{allBatchInvoiceDetails?.batchDetails?.receiptNo}}</td>-->
                                         <!--                                                    </tr>-->
                                         <!--                                                    <tr>-->
                                         <!--                                                        <td><strong>-->
                                         <!--                                                            Paid Date</strong></td>-->
-                                        <!--                                                        <td>{{allBatchInvoiceDetails.batchDetails.paidDate}}</td>-->
+                                        <!--                                                        <td>{{allBatchInvoiceDetails?.batchDetails?.paidDate}}</td>-->
                                         <!--                                                    </tr>-->
                                         <!--                                                    <tr>-->
                                         <!--                                                        <td><strong>-->
                                         <!--                                                            Total Amount-->
                                         <!--                                                        </strong></td>-->
-                                        <!--                                                        <td>{{allBatchInvoiceDetails.batchDetails.totalAmount}}</td>-->
+                                        <!--                                                        <td>{{allBatchInvoiceDetails?.batchDetails?.totalAmount}}</td>-->
                                         <!--                                                    </tr>-->
                                         <!--                                                    <tr>-->
                                         <!--                                                        <td><strong>-->
                                         <!--                                                            Status</strong></td>-->
-                                        <!--                                                        <td><span class="badge badge-primary">{{allBatchInvoiceDetails.batchDetails.paidStatus}}</span></td>-->
+                                        <!--                                                        <td><span class="badge badge-primary">{{allBatchInvoiceDetails?.batchDetails?.paidStatus}}</span></td>-->
                                         <!--                                                    </tr>-->
 
                                         <!--                                                    </tbody>-->
@@ -428,68 +434,72 @@
                                         <div class="col-md-10 ml-auto mr-auto" style="padding-top: 20px;">
                                             <div class="page-categories">
                                                 <ul class="nav nav-pills nav-pills-primary nav-pills-icons justify-content-center" role="tablist">
+                                                    <!--                                                    <li class="nav-item">-->
+                                                    <!--                                                        <a class="nav-link active" data-toggle="tab" href="#link17"-->
+                                                    <!--                                                           role="tablist">-->
+                                                    <!--                                                            <i class="material-icons">point_of_sale</i>Paybill-->
+                                                    <!--                                                        </a>-->
+                                                    <!--                                                    </li>-->
                                                     <li class="nav-item">
-                                                        <a class="nav-link active" data-toggle="tab" href="#link17" role="tablist">
-                                                            <i class="material-icons">point_of_sale</i> Paybill
-                                                        </a>
-                                                    </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" data-toggle="tab" href="#link18" role="tablist">
+                                                        <a class="nav-link active" data-toggle="tab" href="#link18"
+                                                           role="tablist">
                                                             <i class="material-icons">book_online</i> Direct to M-pesa
                                                         </a>
                                                     </li>
                                                 </ul>
                                                 <div class="tab-content tab-space tab-subcategories">
-                                                    <div class="tab-pane active" id="link17">
-                                                        <div class="card">
-                                                            <table class="table">
-                                                                <tbody>
-                                                                <tr>
-                                                                    <td>
-                                                                        <i class="material-icons">pin</i>
-                                                                    </td>
-                                                                    <td><strong>PAYBILL No</strong></td>
-                                                                    <td>804700
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>
-                                                                        <i class="material-icons">tag</i>
-                                                                    </td>
-                                                                    <td><strong>A/C No</strong></td>
-                                                                    <td>10060
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>
-                                                                        <i class="material-icons">room_preferences</i>
-                                                                    </td>
-                                                                    <td><strong>VAT No</strong></td>
-                                                                    <td>0130253A
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>
-                                                                        <i class="material-icons">password</i>
-                                                                    </td>
-                                                                    <td><strong>PIN No</strong></td>
-                                                                    <td>PO51092837Y
-                                                                    </td>
-                                                                </tr>
+                                                    <!--                                                    <div class="tab-pane active" id="link17">-->
+                                                    <!--                                                        <div class="card">-->
+                                                    <!--                                                            <table class="table">-->
+                                                    <!--                                                                <tbody>-->
+                                                    <!--                                                                <tr>-->
+                                                    <!--                                                                    <td>-->
+                                                    <!--                                                                        <i class="material-icons">pin</i>-->
+                                                    <!--                                                                    </td>-->
+                                                    <!--                                                                    <td><strong>PAYBILL No</strong></td>-->
+                                                    <!--                                                                    <td>804700-->
+                                                    <!--                                                                    </td>-->
+                                                    <!--                                                                </tr>-->
+                                                    <!--                                                                <tr>-->
+                                                    <!--                                                                    <td>-->
+                                                    <!--                                                                        <i class="material-icons">tag</i>-->
+                                                    <!--                                                                    </td>-->
+                                                    <!--                                                                    <td><strong>A/C No</strong></td>-->
+                                                    <!--                                                                    <td>{{allBatchInvoiceDetails?.batchDetails?.invoiceNumber}}-->
+                                                    <!--                                                                    </td>-->
+                                                    <!--                                                                </tr>-->
+                                                    <!--                                                                &lt;!&ndash;                                                                <tr>&ndash;&gt;-->
+                                                    <!--                                                                &lt;!&ndash;                                                                    <td>&ndash;&gt;-->
+                                                    <!--                                                                &lt;!&ndash;                                                                        <i class="material-icons">room_preferences</i>&ndash;&gt;-->
+                                                    <!--                                                                &lt;!&ndash;                                                                    </td>&ndash;&gt;-->
+                                                    <!--                                                                &lt;!&ndash;                                                                    <td><strong>VAT No</strong></td>&ndash;&gt;-->
+                                                    <!--                                                                &lt;!&ndash;                                                                    <td>0130253A&ndash;&gt;-->
+                                                    <!--                                                                &lt;!&ndash;                                                                    </td>&ndash;&gt;-->
+                                                    <!--                                                                &lt;!&ndash;                                                                </tr>&ndash;&gt;-->
+                                                    <!--                                                                &lt;!&ndash;                                                                <tr>&ndash;&gt;-->
+                                                    <!--                                                                &lt;!&ndash;                                                                    <td>&ndash;&gt;-->
+                                                    <!--                                                                &lt;!&ndash;                                                                        <i class="material-icons">password</i>&ndash;&gt;-->
+                                                    <!--                                                                &lt;!&ndash;                                                                    </td>&ndash;&gt;-->
+                                                    <!--                                                                &lt;!&ndash;                                                                    <td><strong>PIN No</strong></td>&ndash;&gt;-->
+                                                    <!--                                                                &lt;!&ndash;                                                                    <td>PO51092837Y&ndash;&gt;-->
+                                                    <!--                                                                &lt;!&ndash;                                                                    </td>&ndash;&gt;-->
+                                                    <!--                                                                &lt;!&ndash;                                                                </tr>&ndash;&gt;-->
 
 
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                    <div class="tab-pane" id="link18">
-                                                        <div class="card">
+                                                    <!--                                                                </tbody>-->
+                                                    <!--                                                            </table>-->
+                                                    <!--                                                        </div>-->
+                                                    <!--                                                    </div>-->
+                                                    <div class="tab-pane active" id="link18">
+                                                        <div class="card"
+                                                             style="padding-left: 20px; padding-bottom: 20px;">
                                                             <form [formGroup]="stkPushForm"
                                                                   action="" enctype="multipart/form-data"
                                                                   class="form" method="post">
-                                                                <h2 class="welcome">
-                                                                    Enter details below to Pay for invoice
-                                                                </h2>
+                                                                <br>
+                                                                <h4>
+                                                                    Fill the details below to make payment
+                                                                </h4>
                                                                 <div class="form-body">
 
                                                                     <div style="margin-top: 3%" class="form-group">
@@ -515,10 +525,9 @@
                                                                                value="{{batchID}}"
                                                                                name="entityValueID">
                                                                     </div>
-                                                                    <br>
                                                                     <div>
-                                                                        <button (click)="stkPush()"
-                                                                                class="login-button">PAY NOW
+                                                                        <button class="btn btn-primary" (click)="stkPush()"
+                                                                               >PAY NOW
                                                                         </button>
                                                                     </div>
                                                                 </div>

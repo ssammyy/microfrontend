@@ -8,13 +8,18 @@ import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapPrope
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.*
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.repo.di.ICfgMoneyTypeCodesRepository
+import org.kebs.app.kotlin.apollo.store.repo.qa.IPermitApplicationsRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IPermitRatingRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaInvoiceDetailsRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaInvoiceMasterDetailsRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
 import java.sql.Timestamp
 import java.time.Instant
@@ -25,6 +30,7 @@ class QaInvoiceCalculationDaoServices(
 //    private val iTurnOverRatesRepo: ITurnOverRatesRepository,
     private val iMoneyTypeCodesRepo: ICfgMoneyTypeCodesRepository,
     private val iPermitRatingRepo: IPermitRatingRepository,
+    private val permitRepo: IPermitApplicationsRepository,
     private val qaInvoiceDetailsRepo: IQaInvoiceDetailsRepository,
     private val qaInvoiceMasterDetailsRepo: IQaInvoiceMasterDetailsRepository,
     private val commonDaoServices: CommonDaoServices
@@ -99,7 +105,7 @@ class QaInvoiceCalculationDaoServices(
         }
 
 
-        invoiceMaster = calculateTotalInvoiceAmountToPay(invoiceMaster, user)
+        invoiceMaster = calculateTotalInvoiceAmountToPay(invoiceMaster, permitType, user)
 
 
         KotlinLogging.logger { }.info { "invoice Master total Amount = ${invoiceMaster.totalAmount}" }
@@ -107,8 +113,10 @@ class QaInvoiceCalculationDaoServices(
         return invoiceMaster
     }
 
+
     fun calculateTotalInvoiceAmountToPay(
         invoiceMaster: QaInvoiceMasterDetailsEntity,
+        permitType: PermitTypesEntity,
         user: UsersEntity
     ): QaInvoiceMasterDetailsEntity {
         var totalAmountPayable: BigDecimal = BigDecimal.ZERO
@@ -121,7 +129,7 @@ class QaInvoiceCalculationDaoServices(
                 }
             } ?: throw ExpectedDataNotFound("NO QA INVOICE DETAILS FOUND")
 
-        val totalAmountTaxPayable = totalAmountPayable.multiply(applicationMapProperties.mapKebsTaxRate)
+        val totalAmountTaxPayable = totalAmountPayable.multiply(permitType.taxRate)
 
         with(invoiceMaster) {
             paymentStatus = 0
@@ -276,7 +284,8 @@ class QaInvoiceCalculationDaoServices(
             itemDescName = permitType.itemInvoiceDesc
             itemQuantity = BigDecimal.ZERO
             itemAmount = applicationCostValue
-            permitStatus = 1
+            permitStatus = 0
+            fmarkStatus = 1
             status = 1
             createdOn = Timestamp.from(Instant.now())
             createdBy = commonDaoServices.concatenateName(user)
@@ -327,6 +336,31 @@ class QaInvoiceCalculationDaoServices(
 
 
         return invoiceDetails
+    }
+
+    fun calculatePaymentOtherDetails(
+        permit: PermitApplicationsEntity,
+        user: UsersEntity,
+        invoiceDetailsOthers: QaInvoiceDetailsEntity
+    ): Pair<QaInvoiceDetailsEntity, QaInvoiceMasterDetailsEntity> {
+
+        qaInvoiceMasterDetailsRepo.findByPermitId(permit.id ?: throw Exception("PERMIT ID MISSING"))
+            ?.let { invoiceMaster ->
+                var invoiceDetails = invoiceDetailsOthers.apply {
+                    invoiceMasterId = invoiceMaster.id
+                    generatedDate = Timestamp.from(Instant.now())
+                    umo = "PER"
+                    itemQuantity = BigDecimal.ZERO
+                    status = 1
+                    createdOn = Timestamp.from(Instant.now())
+                    createdBy = commonDaoServices.concatenateName(user)
+                }
+                invoiceDetails = qaInvoiceDetailsRepo.save(invoiceDetails)
+
+                return Pair(invoiceDetails, invoiceMaster)
+            } ?: throw ExpectedDataNotFound("NO INVOICE MASTER FOUND WITH PERMIT REF NUMBER ${permit.permitRefNumber}")
+
+
     }
 
 
@@ -461,57 +495,26 @@ class QaInvoiceCalculationDaoServices(
             "TOKEN${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
         val maxProductNumber = selectedRate.countBeforeFree ?: throw Exception("MISSING COUNT BEFORE FEE VALUE")
 
-        when {
-            productNumber <= maxProductNumber -> {
-                when {
-                    plantDetail.tokenGiven == null && plantDetail.invoiceSharedId == null -> {
-                        generateInvoice4SmallAndMedium(
-                            invoiceMaster,
-                            tokenGenerated,
-                            selectedRate,
-                            user,
-                            plantDetail,
-                            map,
-                            permit
-                        )
-                    }
-                    plantDetail.tokenGiven != null && plantDetail.invoiceSharedId != null -> {
-                        val invoiceDetailsPermitFee = QaInvoiceDetailsEntity().apply {
-                            invoiceMasterId = invoiceMaster.id
-                            umo = "PER"
-                            generatedDate = Timestamp.from(Instant.now())
-                            tokenValue = plantDetail.tokenGiven
-                            itemDescName = selectedRate.invoiceDesc
-                            itemQuantity = BigDecimal.valueOf(1)
-                            itemAmount = selectedRate.productFee?.multiply(selectedRate.validity?.toBigDecimal())
-                            permitStatus = 1
-                            status = 1
-                            createdOn = Timestamp.from(Instant.now())
-                            createdBy = commonDaoServices.concatenateName(user)
-                        }
-
-                        qaInvoiceDetailsRepo.save(invoiceDetailsPermitFee)
-
-                        permit.apply {
-                            permitFeeToken = plantDetail.tokenGiven
-                        }
-                        qaDaoServices.permitUpdateDetails(permit, map, user)
-
-                    }
-                    else -> {
-                        throw ExpectedDataNotFound("INVALID INVOICE CALCULATION DETAILS FOR MEDIUM/SMALL FIRM")
-                    }
-                }
-            }
-            productNumber > maxProductNumber -> {
+        if (productNumber <= maxProductNumber) {
+            if (plantDetail.tokenGiven == null && plantDetail.invoiceSharedId == null) {
+                generateInvoice4SmallAndMedium(
+                    invoiceMaster,
+                    tokenGenerated,
+                    selectedRate,
+                    user,
+                    plantDetail,
+                    map,
+                    permit
+                )
+            } else if (plantDetail.tokenGiven != null && plantDetail.invoiceSharedId != null) {
                 val invoiceDetailsPermitFee = QaInvoiceDetailsEntity().apply {
                     invoiceMasterId = invoiceMaster.id
                     umo = "PER"
                     generatedDate = Timestamp.from(Instant.now())
                     tokenValue = plantDetail.tokenGiven
-                    itemDescName = "EXTRA PRODUCT"
+                    itemDescName = selectedRate.invoiceDesc
                     itemQuantity = BigDecimal.valueOf(1)
-                    itemAmount = selectedRate.extraProductFee?.multiply(selectedRate.validity?.toBigDecimal())
+                    itemAmount = selectedRate.productFee?.multiply(selectedRate.validity?.toBigDecimal())
                     permitStatus = 1
                     status = 1
                     createdOn = Timestamp.from(Instant.now())
@@ -524,7 +527,31 @@ class QaInvoiceCalculationDaoServices(
                     permitFeeToken = plantDetail.tokenGiven
                 }
                 qaDaoServices.permitUpdateDetails(permit, map, user)
+
+            } else {
+                throw ExpectedDataNotFound("INVALID INVOICE CALCULATION DETAILS FOR MEDIUM/SMALL FIRM")
             }
+        } else if (productNumber > maxProductNumber) {
+            val invoiceDetailsPermitFee = QaInvoiceDetailsEntity().apply {
+                invoiceMasterId = invoiceMaster.id
+                umo = "PER"
+                generatedDate = Timestamp.from(Instant.now())
+                tokenValue = tokenGenerated
+                itemDescName = "EXTRA PRODUCT"
+                itemQuantity = BigDecimal.valueOf(1)
+                itemAmount = selectedRate.extraProductFee?.multiply(selectedRate.validity?.toBigDecimal())
+                permitStatus = 1
+                status = 1
+                createdOn = Timestamp.from(Instant.now())
+                createdBy = commonDaoServices.concatenateName(user)
+            }
+
+            qaInvoiceDetailsRepo.save(invoiceDetailsPermitFee)
+
+            permit.apply {
+                permitFeeToken = tokenGenerated
+            }
+            qaDaoServices.permitUpdateDetails(permit, map, user)
         }
 
 
@@ -570,5 +597,91 @@ class QaInvoiceCalculationDaoServices(
             permitFeeToken = tokenGenerated
         }
         qaDaoServices.permitUpdateDetails(permit, map, user)
+    }
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updatePermitWithZeroInvoicesAmount() {
+
+        /**
+         *  Find all company with firm category of small and medium and add them together to filter for those with
+         *  same token that acted as promotion or discount so that they can be able to be moved to next process
+         *
+         * */
+        val companyListMediumType =
+            qaDaoServices.findAllCompanyWithTurnOverID(applicationMapProperties.mapQASmarkMediumTurnOverId, 1)
+        val companyListSmallType =
+            qaDaoServices.findAllCompanyWithTurnOverID(applicationMapProperties.mapQASmarkJuakaliTurnOverId, 1)
+
+        val allCompanyTogether = mutableListOf<CompanyProfileEntity>()
+        allCompanyTogether.addAll(companyListSmallType)
+        allCompanyTogether.addAll(companyListMediumType)
+
+        for (cp in allCompanyTogether) {
+            try {
+                //Find all branches per Company Found
+                val allBranches = qaDaoServices.findAllPlantDetailsWithCompanyDetailsAndStatus(
+                    cp.id ?: throw Exception("Missing company ID"), 1
+                )
+                try {
+
+                    for (br in allBranches) {
+                        //find invoice Details associated with that company
+                        val invoiceDetail = qaInvoiceDetailsRepo.findByIdOrNull(br.invoiceSharedId)
+                        val masterDetails = qaInvoiceMasterDetailsRepo.findByIdOrNull(invoiceDetail?.invoiceMasterId)
+                        if (masterDetails?.paymentStatus == 10) {
+                            val permitsWithToken = qaDaoServices.findAllPermitListWithToken(
+                                br.tokenGiven ?: throw Exception("Missing TOKEN")
+                            )
+                            try {
+                                //update all permit details found with that company details
+                                for (pd in permitsWithToken) {
+                                    if (pd.paidStatus != 10) {
+                                        //find masterDetails invoice with id of permit
+                                        val masterInvoiceDetails = qaDaoServices.findPermitInvoiceByPermitID(
+                                            pd.id ?: throw Exception("Missing Permit ID")
+                                        )
+                                        if (masterInvoiceDetails.totalAmount == BigDecimal.ZERO) {
+                                            //Update permit paid status to 1
+                                            with(pd) {
+                                                paidStatus = 1
+                                                permitStatus = applicationMapProperties.mapQaStatusPaymentDone
+                                            }
+                                            permitRepo.save(pd)
+
+                                            with(masterInvoiceDetails) {
+                                                receiptNo = masterDetails.receiptNo
+                                                batchInvoiceNo = masterDetails.batchInvoiceNo
+                                                paymentStatus = masterDetails.paymentStatus
+                                            }
+                                            qaInvoiceMasterDetailsRepo.save(masterInvoiceDetails)
+                                        }
+
+                                    }
+                                }
+                            } catch (e: Exception) {
+                                KotlinLogging.logger { }.error(e.message)
+                                KotlinLogging.logger { }.debug(e.message, e)
+
+                                continue
+                            }
+                        }
+                    }
+                } catch (e: Exception) {
+                    KotlinLogging.logger { }.error(e.message)
+                    KotlinLogging.logger { }.debug(e.message, e)
+
+                    continue
+                }
+
+
+            } catch (e: Exception) {
+                KotlinLogging.logger { }.error(e.message)
+                KotlinLogging.logger { }.debug(e.message, e)
+
+                continue
+            }
+
+        }
+
     }
 }

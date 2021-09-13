@@ -4,15 +4,24 @@ import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
 import {Department, ReviewApplicationTask, StandardRequest} from "./std.model";
 import {Observable, throwError} from "rxjs";
 import {catchError, map} from "rxjs/operators";
-import {DecisionFeedback, HOFFeedback, StandardTasks} from './request_std.model';
+import {
+    DecisionFeedback,
+    HOFFeedback,
+    LiaisonOrganization,
+    StandardTasks, StdTCDecision,
+    StdTCTask,
+    Stdtsectask
+} from './request_std.model';
 
 @Injectable({
     providedIn: 'root'
 })
 export class StandardDevelopmentService {
-    private apiServerUrl2 = `https://localhost:8006/api/v1/migration/anonymous/standard/dropdown/`;
-    private apiMembershipToTCUrl = 'https://localhost:8006/api/v1/migration/membershipToTC/';
-    private apiServerUrl = `https://localhost:8006/api/v1/migration/standard/`;
+    protocol = `https://`;
+    baseUrl = ApiEndpointService.DOMAIN.LOCAL_DEV
+    private apiServerUrl2 = `${this.protocol}${this.baseUrl}/api/v1/migration/anonymous/standard/dropdown/`;
+    private apiMembershipToTCUrl = `${this.protocol}${this.baseUrl}/api/v1/migration/membershipToTC/`;
+    private apiServerUrl = `${this.protocol}${this.baseUrl}/api/v1/migration/standard/`;
 
     constructor(private http: HttpClient) {
     }
@@ -42,16 +51,19 @@ export class StandardDevelopmentService {
             })
         );
     }
+
     public getProducts(id: bigint): any {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.REQ_PRODUCTS);
         const params = new HttpParams();
         return this.http.get<any>(url, {params}).pipe();
     }
+
     public getProductSubcategory(id: bigint): any {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.REQ_PRODUCTS_SUBCATEGORY);
         const params = new HttpParams();
         return this.http.get<any>(url, {params}).pipe();
     }
+
     public getProductsb(id: bigint): any {
         return this.http.get<any>(`${this.apiServerUrl2}getProducts/${id}`)
     }
@@ -80,10 +92,32 @@ export class StandardDevelopmentService {
     public getHOFTasks(): Observable<StandardTasks[]> {
         return this.http.get<StandardTasks[]>(`${this.apiServerUrl}` + 'getHOFTasks')
     }
+
     public getTechnicalCommitteeName(id: number): Observable<string> {
         return this.http.get<string>(`${this.apiServerUrl}getTechnicalCommitteeName/${id}`)
     }
+
     public reviewTask(hofFeedback: HOFFeedback): Observable<HOFFeedback> {
         return this.http.post<HOFFeedback>(`${this.apiServerUrl}` + 'hof/review', hofFeedback)
     }
+
+    public getLiaisonOrganization(): any {
+        return this.http.get<LiaisonOrganization[]>(`${this.apiServerUrl}` + 'getLiaisonOrganizations')
+
+    }
+    public getTCSECTasks(): Observable<Stdtsectask[]> {
+        return this.http.get<Stdtsectask[]>(`${this.apiServerUrl}` + 'getTCSECTasks')
+    }
+    public uploadNWI(uploadNWI: Stdtsectask): Observable<Stdtsectask> {
+
+        console.log(uploadNWI);
+        return this.http.post<Stdtsectask>(`${this.apiServerUrl}` + 'uploadNWI', uploadNWI)
+    }
+    public getTCTasks(): Observable<StdTCTask[]> {
+        return this.http.get<StdTCTask[]>(`${this.apiServerUrl}` + 'getTCTasks')
+    }
+    public decisionOnNWI(reviewTask: StdTCDecision): Observable<StandardTasks> {
+        return this.http.post<StandardTasks>(`${this.apiServerUrl}` + 'decisionOnNWI', reviewTask)
+    }
+
 }

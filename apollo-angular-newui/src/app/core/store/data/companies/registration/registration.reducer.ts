@@ -59,6 +59,7 @@ export const initialBrsValidationState: BrsValidationState = {
     data: {
         id: -1,
         buildingName: '',
+        branchName: '',
         name: '',
         businessLines: 0,
         businessNatures: 0,

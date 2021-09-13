@@ -1,199 +1,234 @@
-<div class="container" id="main-container">
-    <div class="justify-content-between d-flex flex-wrap align-items-center mt-5">
-        <div class="d-flex flex-wrap align-items-center">
-            <h5 class="mr-4">Review Standard Requests</h5>
-            <div class="resolved-pill">
-                <p>{{tasks.length}}</p>
-            </div>
-        </div>
-
-        <button class="btn btn-sm btn-outline-secondary mr-2">EXPORT</button>
-
+<div class="container-fluid" style="margin-top: 5%" id="main-container">
+    <div class="loading-spinner ">
+        <ngx-spinner
+                bdColor="rgba(51,51,51,0.8)"
+                size="medium"
+                color="#fff"
+                type="ball-scale-multiple"
+        >
+            <p style="font-size: 20px; color: white">Loading...</p>
+        </ngx-spinner>
     </div>
-    <div class="material-datatables">
-
-        <table  class="table table-striped table-bordered table-hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
-        <thead>
-        <th class="id">ID</th>
-        <th class="task">Request No.</th>
-        <th class="task">TC Name</th>
-        <th class="task">Department</th>
-        <th class="task">Product</th>
-        <th class="task">Sub-category</th>
-        <th class="action">Action</th>
-        </thead>
-        <tbody>
-        <tr *ngFor="let task of tasks | paginate: { itemsPerPage: 10, currentPage: p2 } let i= index;">
-            <td>{{i + 1}}</td>
-            <td>{{task.taskData.requestNumber}}</td>
-            <td>{{task.taskData.tcName}} </td>
-            <td>{{task.taskData.departmentName}}</td>
-            <td>{{task.taskData.productName}}</td>
-            <td>{{task.taskData.productSubCategoryName}}</td>
-            <td><a (click)="onOpenModal(task,'edit')" class="btn btn-primary tooltips" data-placement="top"
-                   data-original-title="Review"> Review</a></td>
-
-        </tr>
-        </tbody>
-    </table>
-    </div>
-
-    <pagination-controls (pageChange)="p2 = $event"></pagination-controls>
-
-    <div class="modal fade" id="updateRequestModal" tabindex="-1" role="dialog"
-         aria-labelledby="updateExampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-xl" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="updateExampleModalLabel">{{actionRequest?.name}}</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form #editForm="ngForm">
-                    <div class="modal-body">
-
-
-                        <div class="row">
-                            <div class="col-12">
-                                <h5>Check Inputs</h5>
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-primary card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">assignment</i>
                             </div>
-                            <div class="form-check col-12">
-                                <input
-                                        name="isTc"
-                                        ngModel="{{hofFeedback?.isTc}}"
-                                        class="form-check-input" type="checkbox" value="1" id="isTc">
-                                <label class="form-check-label" for="isTc">
-                                    Technical Committee exists?
-                                </label>
-                            </div>
-                            <div class="form-check col-12">
-                                <input
-                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                        name="isTcSec"
-                                        ngModel="{{hofFeedback?.isTcSec}}"
-                                        class="form-check-input" type="checkbox" value="1" id="isTcSec">
-                                <label class="form-check-label" for="isTcSec">
-                                    Technical Committee Secretary is available?
-                                </label>
-                            </div>
-
-                            <div class="col-12">
-                                <hr/>
-                            </div>
+                            <h4 class="card-title">Tasks <small class="resolved-pill">{{tasks.length}} Standard
+                                Requests</small>
+                            </h4>
 
                         </div>
+                        <div class="card-body">
+                            <div class="toolbar">
 
+                            </div>
+                            <div class="material-datatables">
+                                <table class="table table-striped table-bordered table-hover" datatable
+                                       [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+                                    <thead>
+                                    <tr>
+                                        <th class="task">Id</th>
+                                        <th class="task">Request No.</th>
+                                        <th class="task">TC Name</th>
+                                        <th class="task">Department</th>
+                                        <th class="task">Product</th>
+                                        <th class="task">Sub-category</th>
+                                        <th class="action">Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr *ngFor="let task of tasks let i= index; ">
+                                        <td>{{i + 1}}</td>
 
-                        <div class="row">
-                            <div class="col-12">
-                                <h5>Desired Output</h5>
-                            </div>
-                            <div class="form-check col-12">
-                                <input
-                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                        name="sdOutput"
-                                        ngModel="{{hofFeedback?.sdOutput}}"
-                                        class="form-check-input" type="radio"
-                                        value="Develop a standard through committee draft" id="defaultCheck4">
-                                <label class="form-check-label" for="defaultCheck4">
-                                    Develop a standard through committee draft
-                                </label>
-                            </div>
-                            <div class="form-check col-12">
-                                <input
-                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                        name="sdOutput"
-                                        ngModel="{{hofFeedback?.sdOutput}}"
-                                        class="form-check-input" type="radio"
-                                        value="Adopt existing International Standard" id="defaultCheck5">
-                                <label class="form-check-label" for="defaultCheck5">
-                                    Adopt existing International Standard
-                                </label>
-                            </div>
-                            <div class="form-check col-12">
-                                <input
-                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                        name="sdOutput"
-                                        ngModel="{{hofFeedback?.sdOutput}}"
-                                        class="form-check-input" type="radio" value="Review existing Kenyan Standard"
-                                        id="defaultCheck6">
-                                <label class="form-check-label" for="defaultCheck6">
-                                    Review existing Kenyan Standard
-                                </label>
-                            </div>
+                                        <td>{{task.taskData.requestNumber}}</td>
+                                        <td>{{task.taskData.tcName}} </td>
+                                        <td>{{task.taskData.departmentName}}</td>
+                                        <td>{{task.taskData.productName}}</td>
+                                        <td>{{task.taskData.productSubCategoryName}}</td>
+                                        <td><a (click)="onOpenModal(task,'edit')" class="btn btn-info tooltips"
+                                               data-placement="top"
+                                               data-original-title="Review"> Review</a></td>
 
-                            <div class="form-check col-12">
-                                <input
-                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                        name="sdOutput"
-                                        ngModel="{{hofFeedback?.sdOutput}}"
-                                        class="form-check-input" type="radio"
-                                        value="Development of urgent Kenyan standard" id="defaultCheck8">
-                                <label class="form-check-label" for="defaultCheck8">
-                                    Development of urgent Kenyan standard
-                                </label>
+                                    </tr>
+                                    </tbody>
+                                </table>
                             </div>
 
 
-                            <div class="form-check col-12">
-                                <input
-                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                        name="sdOutput"
-                                        ngModel="{{hofFeedback?.sdOutput}}"
-                                        class="form-check-input" type="radio"
-                                        value="Development of publicly available specification" id="defaultCheck9">
-                                <label class="form-check-label" for="defaultCheck9">
-                                    Development of publicly available specification
-                                </label>
-                            </div>
+                            <div class="modal fade" id="updateRequestModal" tabindex="-1" role="dialog"
+                                 aria-labelledby="updateExampleModalLabel"
+                                 aria-hidden="true">
+                                <div class="modal-dialog modal-lg modal-xl" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title"
+                                                id="updateExampleModalLabel">{{actionRequest?.name}}</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <form #editForm="ngForm">
+                                            <div class="modal-body">
 
-                            <div class="form-check col-12">
-                                <input
-                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                        name="sdOutput"
-                                        ngModel="{{hofFeedback?.sdOutput}}"
-                                        class="form-check-input" type="radio"
-                                        value="Development of national workshop agreement" id="defaultCheck10">
-                                <label class="form-check-label" for="defaultCheck10">
-                                    Development of national workshop agreement
-                                </label>
-                            </div>
 
-                        </div>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <h5>Check Inputs</h5>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="col-sm-12 checkbox-radios">
+
+                                                            <mat-checkbox name="isTc"
+                                                                          ngModel="{{hofFeedback?.isTc}}"
+                                                                          class="form-check-input" value="1"
+                                                                          id="isTc">
+                                                                Technical Committee exists?
+                                                            </mat-checkbox>
+                                                            <br>
+                                                            <mat-checkbox
+                                                                    aria-describedby="inputGroup-sizing-sm"
+                                                                    aria-label="Small"
+                                                                    name="isTcSec"
+                                                                    ngModel="{{hofFeedback?.isTcSec}}"
+                                                                    class="form-check-input" value="1"
+                                                                    id="isTcSec">
+                                                                Technical Committee Secretary is available?
+                                                            </mat-checkbox>
+                                                        </div>
+                                                    </div>
+                                                </div>
+<br><br>
+
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <h5>Desired Output</h5>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="col-sm-12 checkbox-radios">
+                                                            <mat-radio-button
+                                                                    aria-describedby="inputGroup-sizing-sm"
+                                                                    aria-label="Small"
+                                                                    name="sdOutput"
+                                                                    ngModel="{{hofFeedback?.sdOutput}}"
+                                                                    class="form-check-input"
+                                                                    value="Develop a standard through committee draft"
+                                                                    id="defaultCheck4">
+                                                                Develop a standard through committee draft
+
+                                                            </mat-radio-button>
+                                                            <br>
+                                                            <mat-radio-button
+                                                                    aria-describedby="inputGroup-sizing-sm"
+                                                                    aria-label="Small"
+                                                                    name="sdOutput"
+                                                                    ngModel="{{hofFeedback?.sdOutput}}"
+                                                                    class="form-check-input"
+                                                                    value="Adopt existing International Standard"
+                                                                    id="defaultCheck5">
+                                                                Review existing Kenyan Standard
+                                                            </mat-radio-button>
+                                                            <br>
+
+                                                            <mat-radio-button
+                                                                    aria-describedby="inputGroup-sizing-sm"
+                                                                    aria-label="Small"
+                                                                    name="sdOutput"
+                                                                    ngModel="{{hofFeedback?.sdOutput}}"
+                                                                    class="form-check-input"
+                                                                    value="Review existing Kenyan Standard"
+                                                                    id="defaultCheck6">
+                                                                Adopt existing International Standard
+                                                            </mat-radio-button>
+                                                            <br>
+
+                                                            <mat-radio-button
+                                                                    aria-describedby="inputGroup-sizing-sm"
+                                                                    aria-label="Small"
+                                                                    name="sdOutput"
+                                                                    ngModel="{{hofFeedback?.sdOutput}}"
+                                                                    class="form-check-input"
+                                                                    value="Development of urgent Kenyan standard"
+                                                                    id="defaultCheck8">
+                                                                Development of urgent Kenyan standard
+                                                            </mat-radio-button>
+                                                            <br>
+
+                                                            <mat-radio-button
+                                                                    aria-describedby="inputGroup-sizing-sm"
+                                                                    aria-label="Small"
+                                                                    name="sdOutput"
+                                                                    ngModel="{{hofFeedback?.sdOutput}}"
+                                                                    class="form-check-input"
+                                                                    value="Development of publicly available specification"
+                                                                    id="defaultCheck9">
+                                                                Development of publicly available specification
+                                                            </mat-radio-button>
+                                                            <br>
+
+                                                            <mat-radio-button
+                                                                    aria-describedby="inputGroup-sizing-sm"
+                                                                    aria-label="Small"
+                                                                    name="sdOutput"
+                                                                    ngModel="{{hofFeedback?.sdOutput}}"
+                                                                    class="form-check-input"
+                                                                    value="Development of national workshop agreement"
+                                                                    id="defaultCheck10">
+                                                                Development of national workshop agreement
+                                                            </mat-radio-button>
+
+                                                            <br>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <br><br>
 
 
                         <div class="row">
                             <div class=" col-12">
                                 <ul class="list-group">
-                                    <li class="list-group-item active">Standard Request Details</li>
-                                    <li class="list-group-item">{{"Name: " + actionRequest?.taskData?.name}}</li>
-                                    <li class="list-group-item">{{"Phone: " + actionRequest?.taskData?.phone}}</li>
-                                    <li class="list-group-item">{{"Email: " + actionRequest?.taskData?.email}}</li>
-                                    <li class="list-group-item">{{"Department: " + actionRequest?.taskData?.departmentName}}</li>
-                                    <li class="list-group-item">{{"Technical Committee: " + actionRequest?.taskData?.tcName}}</li>
-                                    <li class="list-group-item">{{"Product Name: " + actionRequest?.taskData?.productName}}</li>
-                                    <li class="list-group-item">{{"Product Sub-category: " + actionRequest?.taskData?.productSubCategoryName}}</li>
+                                    <li  class="list-group-item active">Standard Request Details</li>
+                                    <li style="background: lightgray" class="list-group-item">{{"Name: " + actionRequest?.taskData?.name}}</li>
+                                    <li style="background: lightgray" class="list-group-item">{{"Phone: " + actionRequest?.taskData?.phone}}</li>
+                                    <li style="background: lightgray" class="list-group-item">{{"Email: " + actionRequest?.taskData?.email}}</li>
+                                    <li style="background: lightgray" class="list-group-item">{{"Department: " + actionRequest?.taskData?.departmentName}}</li>
+                                    <li style="background: lightgray" class="list-group-item">{{"Technical Committee: " + actionRequest?.taskData?.tcName}}</li>
+                                    <li style="background: lightgray" class="list-group-item">{{"Product Name: " + actionRequest?.taskData?.productName}}</li>
+                                    <li style="background: lightgray" class="list-group-item">{{"Product Sub-category: " + actionRequest?.taskData?.productSubCategoryName}}</li>
                                 </ul>
                             </div>
                         </div>
 
 
+                                            </div>
+                                            <input hidden ngModel="{{actionRequest?.taskId}}" name="taskId" id="taskId">
+                                            <input hidden ngModel="{{actionRequest?.taskData?.requestNumber}}"
+                                                   name="sdRequestID"
+                                                   id="sdRequestID">
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" #closeModal
+                                                        (click)="hideModel()"
+                                                        data-dismiss="modal">Close
+                                                </button>
+                                                <button class="btn btn-info" (click)="onReviewTask(editForm.value)">
+                                                    Submit
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
                     </div>
-                    <input hidden ngModel="{{actionRequest?.taskId}}" name="taskId" id="taskId">
-                    <input hidden ngModel="{{actionRequest?.taskData?.requestNumber}}" name="sdRequestID"
-                           id="sdRequestID">
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" #closeModal (click)="hideModel()"
-                                data-dismiss="modal">Close
-                        </button>
-                        <button class="btn btn-info" (click)="onReviewTask(editForm.value)">Submit</button>
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
-
-
 </div>

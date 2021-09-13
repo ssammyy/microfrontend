@@ -32,7 +32,8 @@
                                                     <h2 style="text-align: center"><b>Step</b> <b> 1</b><b> of</b> <b> 2</b></h2>
 
                                                     <fieldset class="wizard-fieldset show">
-                                                        <form (ngSubmit)="onClickNext(stepTwoForm.valid)" [formGroup]="stepTwoForm" action="" class="form"
+                                                        <form (ngSubmit)="onClickNext(stepTwoForm.valid)"
+                                                              [formGroup]="stepTwoForm" action="" class="form"
                                                               enctype="multipart/form-data" method="post">
                                                             <div class="container">
                                                                 <div class="row">
@@ -43,102 +44,149 @@
 
                                                                 <div class="row input-row">
                                                                     <div class="col">
-                                                                        <label class="input-placeholder-required" for="buildingName">
+                                                                        <label class="input-placeholder-required"
+                                                                               for="branchName">
+                                                                            Branch Name
+                                                                        </label>
+                                                                        <br>
+                                                                        <input class="form-control two-column-input"
+                                                                               formControlName="branchName"
+                                                                               id="branchName"
+                                                                               name="branchName"
+                                                                               placeholder="Branch name"
+                                                                               required="required" type="text">
+                                                                    </div>
+                                                                    <div class="col">
+                                                                        <label class="input-placeholder-required"
+                                                                               for="buildingName">
                                                                             Building Name
                                                                         </label>
                                                                         <br>
-                                                                        <input class="form-control two-column-input" formControlName="buildingName" id="buildingName"
+                                                                        <input class="form-control two-column-input"
+                                                                               formControlName="buildingName"
+                                                                               id="buildingName"
                                                                                name="buildingName"
-                                                                               placeholder="Company building name" required="required" type="text">
+                                                                               placeholder="Company building name"
+                                                                               required="required" type="text">
                                                                     </div>
+                                                                </div>
+
+                                                                <div class="row input-row">
+
                                                                     <div class="col">
-                                                                        <label class="input-placeholder-required" for="physicalAddress">
+                                                                        <label class="input-placeholder-required"
+                                                                               for="physicalAddress">
                                                                             Physical Address
                                                                         </label>
                                                                         <br>
-                                                                        <input class="form-control two-column-input" formControlName="physicalAddress" id="physicalAddress"
+                                                                        <input class="form-control two-column-input"
+                                                                               formControlName="physicalAddress"
+                                                                               id="physicalAddress"
                                                                                name="physicalAddress"
-                                                                               placeholder="Company physical address" required="required" type="text">
+                                                                               placeholder="Company physical address"
+                                                                               required="required" type="text">
                                                                     </div>
-                                                                </div>
-
-                                                                <div class="row input-row">
                                                                     <div class="col">
-                                                                        <label class="input-placeholder-required" for="location">
+                                                                        <label class="input-placeholder-required"
+                                                                               for="location">
                                                                             Location
                                                                         </label>
                                                                         <br>
-                                                                        <input class="form-control two-column-input" formControlName="location" id="location"
+                                                                        <input class="form-control two-column-input"
+                                                                               formControlName="location" id="location"
                                                                                name="location"
-                                                                               placeholder="Company location" required="required" type="text">
+                                                                               placeholder="Company location"
+                                                                               required="required" type="text">
                                                                     </div>
+
+                                                                </div>
+
+                                                                <div class="row input-row">
+
                                                                     <div class="col">
-                                                                        <label class="input-placeholder-required" for="postalAddress">
+                                                                        <label class="input-placeholder-required"
+                                                                               for="postalAddress">
                                                                             Postal Address
                                                                         </label>
                                                                         <br>
-                                                                        <input class="form-control two-column-input" formControlName="postalAddress" id="postalAddress"
+                                                                        <input class="form-control two-column-input"
+                                                                               formControlName="postalAddress"
+                                                                               id="postalAddress"
                                                                                name="postalAddress"
-                                                                               placeholder="Company postal address" required="required" type="text">
+                                                                               placeholder="Company postal address"
+                                                                               required="required" type="text">
                                                                     </div>
-                                                                </div>
-                                                                <div class="row input-row">
                                                                     <div class="col">
-                                                                        <label class="input-placeholder-required" for="plotNo">
+                                                                        <label class="input-placeholder-required"
+                                                                               for="plotNo">
                                                                             Plot Number
                                                                         </label>
                                                                         <br>
-                                                                        <input class="form-control two-column-input" formControlName="plotNo" id="plotNo"
+                                                                        <input class="form-control two-column-input"
+                                                                               formControlName="plotNo" id="plotNo"
                                                                                name="plotNo"
-                                                                               placeholder="Plot number" required="required" type="text">
+                                                                               placeholder="Plot number"
+                                                                               required="required" type="text">
 
                                                                     </div>
+                                                                </div>
+                                                                <div class="row input-row">
+
                                                                     <div class="col">
 
-                                                                        <label class="input-placeholder-required" for="street">
+                                                                        <label class="input-placeholder-required"
+                                                                               for="street">
                                                                             Street
                                                                         </label>
                                                                         <br>
-                                                                        <input class="form-control two-column-input" formControlName="street" id="street"
+                                                                        <input class="form-control two-column-input"
+                                                                               formControlName="street" id="street"
                                                                                name="street"
-                                                                               placeholder="Street name" required="required" type="text">
+                                                                               placeholder="Street name"
+                                                                               required="required" type="text">
                                                                     </div>
-
-                                                                </div>
-                                                                <div class="row input-row">
                                                                     <div class="col">
-                                                                        <label class="input-placeholder-required" for="nearestLandMark">
+                                                                        <label class="input-placeholder-required"
+                                                                               for="nearestLandMark">
                                                                             Nearest LandMark
                                                                         </label>
                                                                         <br>
-                                                                        <input class="form-control two-column-input" formControlName="nearestLandMark" id="nearestLandMark"
+                                                                        <input class="form-control two-column-input"
+                                                                               formControlName="nearestLandMark"
+                                                                               id="nearestLandMark"
                                                                                name="nearestLandMark"
-                                                                               placeholder="Nearest LandMark" required="required" type="text">
+                                                                               placeholder="Nearest LandMark"
+                                                                               required="required" type="text">
 
                                                                     </div>
+                                                                </div>
+                                                                <div class="row input-row">
+
                                                                     <div class="col">
-                                                                        <label class="input-placeholder-required" for="region">
+                                                                        <label class="input-placeholder-required"
+                                                                               for="region">
                                                                             Region
                                                                         </label>
                                                                         <br>
                                                                         <ng-container *ngIf="region$ | async as apps">
                                                                             <select (ngModelChange)="updateSelectedRegion()"
                                                                                     formControlName="region" id="region"
-                                                                                    name="region" required="required" class="form-control">
-                                                                                <option ngValue="null" selected>Please select</option>
+                                                                                    name="region" required="required"
+                                                                                    class="form-control">
+                                                                                <option ngValue="null" selected>Please
+                                                                                    select
+                                                                                </option>
                                                                                 <option
                                                                                         *ngFor="let app of apps| filterPipe: {status: true}"
                                                                                         [ngValue]="app.id"
-                                                                                        >{{app.region}}</option>
+                                                                                >{{app.region}}</option>
                                                                             </select>
 
                                                                         </ng-container>
                                                                     </div>
-
-                                                                </div>
-                                                                <div class="row input-row">
                                                                     <div class="col">
-                                                                        <label class="input-placeholder-required" for="county">
+                                                                        <label class="input-placeholder-required"
+                                                                               for="county">
                                                                             County
                                                                         </label>
                                                                         <br>
@@ -146,33 +194,65 @@
                                                                             <select
                                                                                     (ngModelChange)="updateSelectedCounty()"
                                                                                     formControlName="county" id="county"
-                                                                                    name="county" required="required" class="form-control">
-                                                                                <option ngValue="null" selected>Please select</option>
+                                                                                    name="county" required="required"
+                                                                                    class="form-control">
+                                                                                <option ngValue="null" selected>Please
+                                                                                    select
+                                                                                </option>
                                                                                 <option
                                                                                         *ngFor="let app of apps| filterPipe: {status: true, regionId: selectedRegion}"
                                                                                         [ngValue]="app.id"
-                                                                                        >{{app.county}}</option>
+                                                                                >{{app.county}}</option>
                                                                             </select>
 
                                                                         </ng-container>
                                                                     </div>
 
+                                                                </div>
+                                                                <div class="row input-row">
                                                                     <div class="col">
-                                                                        <label class="input-placeholder-required" for="town">
+                                                                        <label class="input-placeholder-required"
+                                                                               for="town">
                                                                             Town
                                                                         </label>
                                                                         <ng-container *ngIf="town$ | async as apps">
                                                                             <select (ngModelChange)="updateSelectedTown()"
                                                                                     formControlName="town" id="town"
-                                                                                    name="town" required="required" class="form-control">
-                                                                                <option ngValue="null" selected>Please select</option>
+                                                                                    name="town" required="required"
+                                                                                    class="form-control">
+                                                                                <option ngValue="null" selected>Please
+                                                                                    select
+                                                                                </option>
                                                                                 <option
                                                                                         *ngFor="let app of apps| filterPipe: {status: true, countyId: selectedCounty}"
                                                                                         [ngValue]="app.id"
-                                                                                        >{{app.town}}</option>
+                                                                                >{{app.town}}</option>
                                                                             </select>
 
                                                                         </ng-container>
+                                                                    </div>
+                                                                    <div class="col">
+                                                                        <!--                                                                        <label class="input-placeholder-required"-->
+                                                                        <!--                                                                               for="county">-->
+                                                                        <!--                                                                            County-->
+                                                                        <!--                                                                        </label>-->
+                                                                        <!--                                                                        <br>-->
+                                                                        <!--                                                                        <ng-container *ngIf="county$ | async as apps">-->
+                                                                        <!--                                                                            <select-->
+                                                                        <!--                                                                                    (ngModelChange)="updateSelectedCounty()"-->
+                                                                        <!--                                                                                    formControlName="county" id="county"-->
+                                                                        <!--                                                                                    name="county" required="required"-->
+                                                                        <!--                                                                                    class="form-control">-->
+                                                                        <!--                                                                                <option ngValue="null" selected>Please-->
+                                                                        <!--                                                                                    select-->
+                                                                        <!--                                                                                </option>-->
+                                                                        <!--                                                                                <option-->
+                                                                        <!--                                                                                        *ngFor="let app of apps| filterPipe: {status: true, regionId: selectedRegion}"-->
+                                                                        <!--                                                                                        [ngValue]="app.id"-->
+                                                                        <!--                                                                                >{{app.county}}</option>-->
+                                                                        <!--                                                                            </select>-->
+
+                                                                        <!--                                                                        </ng-container>-->
                                                                     </div>
 
                                                                 </div>

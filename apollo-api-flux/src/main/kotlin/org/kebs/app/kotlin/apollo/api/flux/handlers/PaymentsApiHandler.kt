@@ -5,6 +5,7 @@ import org.kebs.app.kotlin.apollo.api.flux.ports.provided.dao.kappa.KappaPayment
 import org.kebs.app.kotlin.apollo.api.flux.ports.provided.validation.AbstractValidationHandler
 import org.kebs.app.kotlin.apollo.common.dto.kappa.requests.NotificationRequestValue
 import org.kebs.app.kotlin.apollo.common.dto.kappa.requests.ValidationRequestValue
+import org.kebs.app.kotlin.apollo.common.dto.sage.response.SageNotificationResponse
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.springframework.stereotype.Component
 import org.springframework.validation.BeanPropertyBindingResult
@@ -29,6 +30,31 @@ class PaymentsApiHandler(
                     validator.validate(body, errors)
                     if (errors.allErrors.isEmpty()) {
                         val response = service.processPaymentNotification(body)
+                        ServerResponse.ok().bodyValueAndAwait(response)
+
+                    } else {
+                        onValidationErrors(errors)
+                    }
+
+
+                }
+                ?: throw InvalidValueException("No Body found")
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.debug(e.message, e)
+            KotlinLogging.logger { }.error(e.message)
+            onErrors(e.message)
+        }
+    }
+
+    suspend fun processPaymentSageNotification(req: ServerRequest): ServerResponse {
+        return try {
+            req.awaitBodyOrNull<SageNotificationResponse>()
+                ?.let { body ->
+                    val errors: Errors = BeanPropertyBindingResult(body, SageNotificationResponse::class.java.name)
+                    validator.validate(body, errors)
+                    if (errors.allErrors.isEmpty()) {
+                        val response = service.processPaymentSageNotification(body)
                         ServerResponse.ok().bodyValueAndAwait(response)
 
                     } else {

@@ -29,48 +29,46 @@ class DemandNoteXmlDTO {
     var customDemandNote: CustomDemandNoteXmlDto? = null
 }
 
-class CustomDemandNoteXmlDto(id: Long, nameImporter: String, address: String, telephone: String, product: String, cfvalue: BigDecimal, rate: String,
-                             amountPayable: BigDecimal,  entryAblNumber: String, dateGenerated: Date, totalAmount: BigDecimal, demandNoteNumber: String,
-                             receiptNo: String, cdRefNo: String) {
+class CustomDemandNoteXmlDto {
 
     @JacksonXmlProperty(localName = "ID")
-    var id: Long? = id
+    var id: Long? = null
 
     @JacksonXmlProperty(localName = "NAME_IMPORTER")
-    var nameImporter: String? = nameImporter
+    var nameImporter: String? = null
 
     @JacksonXmlProperty(localName = "ADDRESS")
-    var address: String? = address
+    var address: String? = null
 
     @JacksonXmlProperty(localName = "TELEPHONE")
-    var telephone: String? = telephone
+    var telephone: String? = null
 
     @JacksonXmlProperty(localName = "PRODUCT")
-    var product: String? = product
+    var product: String? = null
 
     @JacksonXmlProperty(localName = "C_F_VALUE")
-    var cfvalue: BigDecimal? = cfvalue
+    var cfvalue: BigDecimal? = null
 
     @JacksonXmlProperty(localName = "RATE")
-    var rate: String? = rate
+    var rate: String? = null
 
     @JacksonXmlProperty(localName = "AMOUNT_PAYABLE")
-    var amountPayable: BigDecimal? = amountPayable
+    var amountPayable: BigDecimal? = null
 
     @JacksonXmlProperty(localName = "ENTRY_ABL_NUMBER")
-    var entryAblNumber: String? = entryAblNumber
+    var entryAblNumber: String? = null
 
     @JacksonXmlProperty(localName = "DATE_GENERATED")
-    var dateGenerated: String? = convertTimestampToKeswsValidDate(dateGenerated)
+    var dateGenerated: String? = null
 
     @JacksonXmlProperty(localName = "TOTAL_AMOUNT")
-    var totalAmount: BigDecimal? = totalAmount
+    var totalAmount: BigDecimal? = null
 
     @JacksonXmlProperty(localName = "DEMAND_NOTE_NUMBER")
-    var demandNoteNumber: String? = demandNoteNumber
+    var demandNoteNumber: String? = null
 
     @JacksonXmlProperty(localName = "RECEIPT_NO")
-    var receiptNo: String? = receiptNo
+    var receiptNo: String? = null
 
     @JacksonXmlProperty(localName = "PAYMENT_INSTRUCTION_1")
     var paymentInstruction1: PaymenInstruction1? = null
@@ -88,13 +86,13 @@ class CustomDemandNoteXmlDto(id: Long, nameImporter: String, address: String, te
     var paymentInstructionOther: PaymenInstructionOther? = null
 
     @JacksonXmlProperty(localName = "TRANSACTION_TYPE")
-    var transactionType: String? = "PERMIT"
+    var transactionType: String? = null
 
     @JacksonXmlProperty(localName = "TRANSACTION_NUMBER")
-    var transactionNumber: String? = cdRefNo
+    var transactionNumber: String? = null
 
     @JacksonXmlProperty(localName = "VERSION")
-    var version: Long? = 1
+    var version: Long? = null
 
     fun convertTimestampToKeswsValidDate(date: Date): String {
         val sdf = SimpleDateFormat("yyyy-MM-dd")

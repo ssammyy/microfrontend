@@ -103,7 +103,7 @@
                 </span>
         </div>
         <div sec:authorize="hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_MODIFY')
-         or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ')
+         or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_READ') or hasAuthority('QA_HOF_READ')
          or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ')
          or hasAuthority('QA_PCM_READ')" class="sidebar-items">
             <img th:src="@{/images/assets/Quality Assurance.svg}" class="sidebar-icons-dashboard selected-page">

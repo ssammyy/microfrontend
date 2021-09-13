@@ -187,7 +187,7 @@ class DIReportsControllers(
 //                    map["amountInWords"] = demandNote?.
         map["receiptNo"] = demandNote?.receiptNo.toString()
 
-        map = reportsDaoService.addBankAndMPESADetails(map)
+        map = reportsDaoService.addBankAndMPESADetails(map, demandNote?.demandNoteNumber.toString())
 
         val pdfReportStream=reportsDaoService.extractReportEmptyDataSource(map, applicationMapProperties.mapReportDemandNotePath)
         response.contentType = "text/html"
@@ -234,7 +234,7 @@ class DIReportsControllers(
 //                    map["amountInWords"] = demandNote?.
         map["receiptNo"] = demandNote.receiptNo.toString()
 
-        map = reportsDaoService.addBankAndMPESADetails(map)
+        map = reportsDaoService.addBankAndMPESADetails(map, demandNote.demandNoteNumber.toString())
 
         val pdfReportStream=reportsDaoService.extractReport(
             map,

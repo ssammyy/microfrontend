@@ -100,6 +100,7 @@ export class UsermanagementComponent implements OnInit {
         this.masterService.loadUsers().subscribe(
             (data: any) => {
                 formattedArray = data.map(i => [i.id, i.firstName, i.lastName, i.userName, i.email, i.registrationDate, i.status]);
+                this.SpinnerService.hide();
 
                 this.dataTable = {
                     headerRow: ['Full Name', 'User name', 'Email', 'Date Registered', 'Status', 'Actions'],
@@ -176,77 +177,77 @@ export class UsermanagementComponent implements OnInit {
     }
 
     public getALlRecommendedDetails(): void {
-        this.masterService.loadTitlesSystemAdmin().subscribe(
+        this.masterService.loadTitlesSystemAdmin(1).subscribe(
             (data: any) => {
                 this.titles = data;
                 console.log(data);
             }
         );
 
-        this.masterService.loadDirectorateSystemAdmin().subscribe(
+        this.masterService.loadDirectorateSystemAdmin(1).subscribe(
             (data: any) => {
                 this.directoratesEntityDto = data;
                 console.log(data);
             }
         );
 
-        this.masterService.loadDesignationsSystemAdmin().subscribe(
+        this.masterService.loadDesignationsSystemAdmin(1).subscribe(
             (data: any) => {
                 this.designationEntityDto = data;
                 console.log(data);
             }
         );
 
-        this.masterService.loadDepartmentsSystemAdmin().subscribe(
+        this.masterService.loadDepartmentsSystemAdmin(1).subscribe(
             (data: any) => {
                 this.departmentDto = data;
                 console.log(data);
             }
         );
 
-        this.masterService.loadDivisionsSystemAdmin().subscribe(
+        this.masterService.loadDivisionsSystemAdmin(1).subscribe(
             (data: any) => {
                 this.divisionDto = data;
                 console.log(data);
             }
         );
 
-        this.masterService.loadSectionSystemAdmin().subscribe(
+        this.masterService.loadSectionSystemAdmin(1).subscribe(
             (data: any) => {
                 this.sectionsEntityDto = data;
                 console.log(data);
             }
         );
 
-        this.masterService.loadL1SubSubSectionSystemAdmin().subscribe(
+        this.masterService.loadL1SubSubSectionSystemAdmin(1).subscribe(
             (data: any) => {
                 this.subSectionsL1EntityDto = data;
                 console.log(data);
             }
         );
 
-        this.masterService.loadL2SubSubSectionSystemAdmin().subscribe(
+        this.masterService.loadL2SubSubSectionSystemAdmin(1).subscribe(
             (data: any) => {
                 this.subSectionsL2EntityDto = data;
                 console.log(data);
             }
         );
 
-        this.masterService.loadRegionsSystemAdmin().subscribe(
+        this.masterService.loadRegionsSystemAdmin(1).subscribe(
             (data: any) => {
                 this.regionsEntityDto = data;
                 console.log(data);
             }
         );
 
-        this.masterService.loadCountiesSystemAdmin().subscribe(
+        this.masterService.loadCountiesSystemAdmin(1).subscribe(
             (data: any) => {
                 this.countiesDto = data;
                 console.log(data);
             }
         );
 
-        this.masterService.loadTownsSystemAdmin().subscribe(
+        this.masterService.loadTownsSystemAdmin(1).subscribe(
             (data: any) => {
                 this.townsDto = data;
                 console.log(data);

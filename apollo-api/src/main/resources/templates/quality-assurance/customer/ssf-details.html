@@ -173,14 +173,15 @@
                                         <tr class="list" th:each="pdfFound: ${foundPDFFiles}" style="cursor: pointer">
 
                                             <!--                                            <td th:text="${fileParam.sampleNumber}"></td>-->
-                                            <td th:text="${pdfFound}"></td>
+                                            <td th:text="${pdfFound?.fileName}"></td>
                                             <!--                                            <td th:text="${fileParam.result}"></td>-->
                                             <!--                                            <td th:text="${fileParam.method}"></td>-->
                                             <td>
-                                                <a th:href="@{/api/qa/kebs/view/attached-lab-pdf(fileName=${pdfFound}, bsNumber=${ssfDetails?.bsNumber})}"
+                                                <a th:href="@{/api/qa/kebs/view/attached-lab-pdf(fileName=${pdfFound?.fileName}, bsNumber=${ssfDetails?.bsNumber})}"
                                                    target='_blank' class="btn btn-primary itemViewBtn">view</a></td>
-                                            <td>
-                                                <a th:href="@{/api/qa/kebs/selected/attached-lab-pdf(fileName=${pdfFound}, bsNumber=${ssfDetails?.bsNumber}, ssfID=${ssfDetails?.id})}"
+
+                                            <td th:if="${pdfFound?.fileSavedStatus == false}">
+                                                <a th:href="@{/api/qa/kebs/selected/attached-lab-pdf(fileName=${pdfFound?.fileName}, bsNumber=${ssfDetails?.bsNumber}, ssfID=${ssfDetails?.id})}"
                                                    class="btn btn-primary itemViewBtn">SAVE</a></td>
                                         </tr>
                                         </tbody>
@@ -254,9 +255,9 @@
                             </div>
                             <div>
 
-                                <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_ASSESSORS_READ')">
+                                <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY')">
                                     <!--                                    <a th:if="${ssfDetails.labResultsStatus == 0}" th:href="@{/api/qa/inspection/check-results(bsNumber=${ssfDetails?.bsNumber})}" class="filter-link" style="color: white">CHECK RESULTS</a>-->
-                                    <a th:if="${ssfDetails.labResultsStatus == 1}"
+                                    <a th:if="${ssfDetails.labResultsStatus == 1 and ssfDetails.resultsAnalysis == null}"
                                        onclick="popUpComplianceFunction('addComplianceStatusDetailsSSF');"
                                        class="filter-link" style="color: white">ADD COMPLIANCE DETAILS</a>
                                 </div>
@@ -332,8 +333,7 @@
                         <div class="qaSSFForm">
                             <form id="qa-ssf-form" name="qa-ssf-form" enctype="multipart/form-data"
                                   th:action="@{/api/qa/kebs/ssf-results-compliance-status/save(ssfID = ${ssfDetails?.id})}"
-                                  method="post"
-                                  th:object="${SampleSubmissionDetails}">
+                                  method="post" th:object="${SampleSubmissionDetails}">
                                 <div class="modal fade" id="qaSSFModal" tabindex="-1" role="dialog"
                                      aria-labelledby="qaSSFModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
@@ -341,7 +341,7 @@
                                             <div class="modal-header">
                                                 <h5 style="font-weight: bold; " class="modal-title"
                                                     id="qaSSFModalLabel"><span
-                                                        id="spanSSFValue">none</span></h5>
+                                                        id="spanSSFValue">Add Compliance Status</span></h5>
                                                 <button type="button" class="close" data-dismiss="modal"
                                                         onClick="refreshPage()"
                                                         aria-label="Close">
@@ -350,7 +350,6 @@
                                             </div>
                                             <div class="modal-body">
                                                 <div class="form-group">
-
 
                                                     <div id="addComplianceStatusDetailsSSF">
                                                         <label for="resultsAnalysis" class="col-form-label">Select a
@@ -375,8 +374,7 @@
                                             </div>
                                             <div class="modal-footer">
                                                 <button class="btn btn-secondary" data-dismiss="modal"
-                                                        onClick="refreshPage()"
-                                                        type="button">Close
+                                                        onClick="refreshPage()" type="button">Close
                                                 </button>
                                                 <input type="submit" id="saveSSfValue" class="btn btn-primary"
                                                        value="Save"/>
@@ -542,8 +540,8 @@
                 document.getElementById(arrHead[h]).remove();
             } else {
                 if (eventAction === arrHead[h]) {
-                    document.getElementById('spanValueCommodity').innerHTML = arrHeadSave[h];
-                    document.getElementById("saveValueCommodity").value = 'Submit';
+                    document.getElementById('spanSSFValue').innerHTML = arrHeadSave[h];
+                    document.getElementById("saveSSfValue").value = 'Submit';
                 }
             }
         }

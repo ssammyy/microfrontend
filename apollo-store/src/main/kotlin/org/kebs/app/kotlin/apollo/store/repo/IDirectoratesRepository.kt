@@ -23,6 +23,8 @@ package org.kebs.app.kotlin.apollo.store.repo
 
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.springframework.data.hazelcast.repository.HazelcastRepository
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -51,6 +53,12 @@ interface IDivisionsRepository : HazelcastRepository<DivisionsEntity, Long> {
 
 @Repository
 interface ISectionsRepository : HazelcastRepository<SectionsEntity, Long> {
+    @Query(
+        "SELECT r.* FROM CFG_USER_SECTION_ASSIGNMENTS UR, CFG_KEBS_SECTIONS R WHERE UR.SECTION_ID = R.ID AND UR.STATUS = :status AND UR.USER_ID = :userId order by r.ID",
+        nativeQuery = true
+    )
+    fun findRbacSectionByUserId(@Param("userId") userId: Long, @Param("status") status: Int): List<SectionsEntity>?
+
     fun findByIdAndStatusOrderBySection(id: Long, status: Int): List<SectionsEntity>?
     fun findByStatusOrderBySection(status: Int): List<SectionsEntity>?
     fun findByStatus(status: Int): List<SectionsEntity>?

@@ -89,6 +89,7 @@ import org.springframework.web.multipart.MultipartFile
 import java.io.*
 import java.math.BigDecimal
 import java.net.URLConnection
+import java.security.SecureRandom
 import java.sql.Date
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
@@ -402,6 +403,12 @@ class CommonDaoServices(
         calendar.time = Date()
         calendar.add(Calendar.HOUR, expirationTime)
         return Timestamp(calendar.timeInMillis)
+    }
+
+    fun randomNumber(digitSize: Int): String {
+        val random = SecureRandom()
+        val num: Int = random.nextInt(100000)
+        return String.format("%0${digitSize}d", num)
     }
 
     fun serviceMapDetails(appId: Int): ServiceMapsEntity {
@@ -886,6 +893,13 @@ class CommonDaoServices(
 //                }
     }
 
+    fun findCompanyProfileWithKraPin(kraPin: String): CompanyProfileEntity? {
+        return companyProfileRepo.findByKraPin(kraPin)
+//                ?.let { userCompanyDetails ->
+//                     userCompanyDetails
+//                }
+    }
+
     fun findCompanyProfileWhoAreManufactures(status: Int): List<CompanyProfileEntity> {
         companyProfileRepo.findByManufactureStatus(status)
             ?.let { userCompanyDetails ->
@@ -1363,26 +1377,26 @@ class CommonDaoServices(
         }
     }
 
-    fun userListDto(userList: List<UserProfilesEntity>): List<UserEntityDto> {
+    fun userListDto(userList: List<UsersEntity>): List<UserEntityDto> {
         return userList.map { u ->
             UserEntityDto(
-                u.userId?.id,
-                u.userId?.firstName,
-                u.userId?.lastName,
-                u.userId?.userName,
-                u.userId?.userPinIdNumber,
-                u.userId?.personalContactNumber,
-                u.userId?.typeOfUser,
-                u.userId?.email,
-                u.userId?.userRegNo,
-                u.userId?.enabled == 1,
-                u.userId?.accountExpired == 1,
-                u.userId?.accountLocked == 1,
-                u.userId?.credentialsExpired == 1,
-                u.userId?.status == 1,
-                u.userId?.registrationDate,
-                u.userId?.userTypes,
-                u.userId?.title,
+                u.id,
+                u.firstName,
+                u.lastName,
+                u.userName,
+                u.userPinIdNumber,
+                u.personalContactNumber,
+                u.typeOfUser,
+                u.email,
+                u.userRegNo,
+                u.enabled == 1,
+                u.accountExpired == 1,
+                u.accountLocked == 1,
+                u.credentialsExpired == 1,
+                u.status == 1,
+                u.registrationDate,
+                u.userTypes,
+                u.title,
             )
         }
     }
@@ -1435,12 +1449,12 @@ class CommonDaoServices(
             ?: throw ExpectedDataNotFound("Division with [Department ID = ${departmentsEntity.id}] and [status=${status}], does not Exist")
     }
 
-    fun findUserProfileByUserID(userId: UsersEntity, status: Int): UserProfilesEntity {
-        iUserProfilesRepo.findByUserIdAndStatus(userId, status)
+    fun findUserProfileByUserID(user: UsersEntity, status: Int): UserProfilesEntity {
+        iUserProfilesRepo.findByUserIdAndStatus(user, status)
             ?.let { userProfile ->
                 return userProfile
             }
-            ?: throw ExpectedDataNotFound("User Profile with user ID  = ${userId.id} and status = $status, does not Exist")
+            ?: throw ExpectedDataNotFound("User Profile with user ID  = ${user.id} and status = $status, does not Exist")
     }
 
     fun findDirectorateByID(directorateID: Long): DirectoratesEntity {
@@ -1648,7 +1662,7 @@ class CommonDaoServices(
         }
     }
 
-    fun makeKenyanMSISDNFormat(phoneNumber: String?): String? {
+    fun makeKenyanMSISDNFormat(phoneNumber: String?): String {
         val reversedPhoneNumber = StringBuilder(phoneNumber).reverse().substring(0, 9)
         val trimmedPhoneNumber = StringBuilder(reversedPhoneNumber).reverse().toString()
         return "254$trimmedPhoneNumber"

@@ -37,10 +37,7 @@ import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.config.security.ssl.SslContextFactory
-import org.kebs.app.kotlin.apollo.store.customdto.COCXmlDTO
-import org.kebs.app.kotlin.apollo.store.customdto.CustomCocXmlDto
-import org.kebs.app.kotlin.apollo.store.customdto.toCocItemDetailsXmlRecordRefl
-import org.kebs.app.kotlin.apollo.store.customdto.toCocXmlRecordRefl
+import org.kebs.app.kotlin.apollo.store.customdto.*
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.repo.ICocItemsRepository
 import org.springframework.context.annotation.Bean
@@ -435,23 +432,23 @@ class DaoService(
     }
 
 
-    fun submitCocToKeSWS(cocData: CocsEntity) {
-        val coc: CustomCocXmlDto = cocData.toCocXmlRecordRefl()
-        val cocItem = cocItemsRepository.findByCocId(cocData.id)?.get(0)
-        cocItem?.toCocItemDetailsXmlRecordRefl().let { cocDetails ->
-            coc.cocDetals = cocDetails
-            val cocFinalDto = COCXmlDTO()
-            cocFinalDto.coc = coc
-            val fileName = cocFinalDto.coc?.ucrNumber?.let { s ->
-                createKesWsFileName(
-                    applicationMapProperties.mapKeswsCocDoctype,
-                    s
-                )
-            }
-            val xmlFile = fileName?.let { s -> serializeToXml(s, cocFinalDto) }
-            xmlFile.let { it1 -> it1?.let { file -> sftpService.uploadFile(file) } }
-        }
-    }
+//    fun submitCocToKeSWS(cocData: CocsEntity) {
+//        val coc: CustomCocXmlDto = cocData.toCocXmlRecordRefl()
+//        val cocItem = cocItemsRepository.findByCocId(cocData.id)?.get(0)
+//        cocItem?.toCocItemDetailsXmlRecordRefl().let { cocDetails ->
+//            coc.cocDetals = cocDetails
+//            val cocFinalDto = COCXmlDTO()
+//            cocFinalDto.coc = coc
+//            val fileName = cocFinalDto.coc?.ucrNumber?.let { s ->
+//                createKesWsFileName(
+//                    applicationMapProperties.mapKeswsCocDoctype,
+//                    s
+//                )
+//            }
+//            val xmlFile = fileName?.let { s -> serializeToXml(s, cocFinalDto) }
+//            xmlFile.let { it1 -> it1?.let { file -> sftpService.uploadFile(file) } }
+//        }
+//    }
 
     fun serializeToXml(fileName: String, obj: Any): File {
         try {

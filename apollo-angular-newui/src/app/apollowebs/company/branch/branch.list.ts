@@ -10,7 +10,7 @@ import {
   loadBranchId,
   loadCompanyId,
   selectCompanyData,
-  selectCompanyIdData
+  selectCompanyIdData, selectUserInfo
 } from 'src/app/core/store';
 import {Store} from '@ngrx/store';
 import {Router} from "@angular/router";
@@ -32,6 +32,7 @@ export class BranchList implements OnInit {
   company$: Company | undefined;
   submitted = false;
   selectedCompany = 0;
+  roles: string[];
 
   constructor(
       private service: BranchesService,
@@ -45,6 +46,11 @@ export class BranchList implements OnInit {
   ngOnInit(): void {
     this.store$.select(selectCompanyIdData).subscribe((d) => {
       return this.selectedCompany = d;
+    });
+
+
+    this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+      return this.roles = u.roles;
     });
 
     this.store$.select(selectCompanyData).subscribe((d) => {
@@ -85,4 +91,8 @@ export class BranchList implements OnInit {
     this.store$.dispatch(Back());
   }
 
+  viewRecord(record: Branches) {
+    this.store$.dispatch(loadBranchId({payload: record.id, branch: record}));
+    this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'companies/view/branch'}));
+  }
 }

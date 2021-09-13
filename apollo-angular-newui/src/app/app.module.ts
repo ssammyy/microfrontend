@@ -122,6 +122,16 @@ import {RequestStandardFormComponent} from './apollowebs/standards-development/s
 import {ReviewApplicationsComponent} from './apollowebs/standards-development/standard-request/review-applications/review-applications.component';
 import {StandardTaskComponent} from './apollowebs/standards-development/standard-request/standard-task/standard-task.component';
 import {ModalModule} from "ngb-modal";
+import {SmarkAllAwardedApplicationsComponent} from './apollowebs/quality-assurance/smark-all-awarded-applications/smark-all-awarded-applications.component';
+import {DmarkAllAwardedApplicationsComponent} from './apollowebs/quality-assurance/dmark-all-awarded-applications/dmark-all-awarded-applications.component';
+import {FmarkAllAwardedApplicationsComponent} from './apollowebs/quality-assurance/fmark-all-awarded-applications/fmark-all-awarded-applications.component';
+import {QaTaskDetailsComponent} from './apollowebs/quality-assurance/qa-task-details/qa-task-details.component';
+import {CompanyViewComponent} from './apollowebs/company/company-view/company-view.component';
+import {BranchViewComponent} from './apollowebs/company/branch/branch-view/branch-view.component';
+import {QrCodeDetailsComponent} from './apollowebs/quality-assurance/qr-code-details/qr-code-details.component';
+import { StdTscSecTasksComponentComponent } from './apollowebs/standards-development/standard-request/std-tsc-sec-tasks-component/std-tsc-sec-tasks-component.component';
+import {NgMultiSelectDropDownModule} from "ng-multiselect-dropdown";
+import { StdTcTasksComponent } from './apollowebs/standards-development/standard-request/std-tc-tasks/std-tc-tasks.component';
 import {DataTablesModule} from "angular-datatables";
 import {ViewDiDeclarationDocumentsComponent} from "./apollowebs/di/view-single-consignment-document/view-di-declaration-documents/view-di-declaration-documents.component";
 import {ViewIdfDocumentDetailsComponent} from "./apollowebs/di/view-single-consignment-document/view-idf-document-details/view-idf-document-details.component";
@@ -213,6 +223,8 @@ import { ViewInspectionDetailsComponent } from './apollowebs/di/view-single-cons
         MatButtonModule,
         NgbPaginationModule,
         MatTableModule,
+        NgMultiSelectDropDownModule,
+        // CoreModule
     ],
     declarations: [
         AppComponent,

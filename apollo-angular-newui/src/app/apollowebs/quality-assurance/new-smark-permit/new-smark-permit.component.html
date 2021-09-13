@@ -76,8 +76,8 @@ placeholder="Applicant Name" ngModel="{{fullname}}" disabled>
 [class.is-invalid]="formSta1Form.attachedPlant.invalid && formSta1Form.attachedPlant.touched">
     <option selected>Select Branch</option>
 <option *ngFor="let plant of plants"
-[ngValue]="plant.id"
-class="dropdown-item">{{plant.buildingName}}</option>
+        [ngValue]="plant.id"
+        class="dropdown-item">{{plant.branchName}}</option>
 
 </select>
 </div>
@@ -106,7 +106,7 @@ class="dropdown-item">{{section.section}}</option>
 </select>
 </div>
 </div>
-<div *ngIf="SelectedSectionId==5" class="row">
+<div *ngIf="SelectedSectionId==71" class="row">
     <div class="form-group col-12">
         <label for="createFmark"><span
                 style=" color: red;">*NOTE: Fortification Requirement If you are applying for the following products:</span></label>
@@ -1093,7 +1093,8 @@ and have an effect on Health, Safety and Environment?<span style="font-size: xx-
 <fieldset class="wizard-fieldset show">
     <form (ngSubmit)="onClickSaveSTA10G()" [formGroup]="sta10FormG" class="form"
           enctype="multipart/form-data">
-        <h3>Upload all of the required documents:</h3>
+        <h3>Upload all of the required documents to proceed to next step:<span style="font-size: xx-small; color: red;">(*)Required</span>
+        </h3>
         <ul>
             <li>Product test reports</li>
             <li>Photos of the plant</li>
@@ -1140,6 +1141,7 @@ and have an effect on Health, Safety and Environment?<span style="font-size: xx-
             <button *ngIf="sta10FilesList.length == 0" class="btn btn-sm btn-primary float-right"
                     (click)="showNotification('top','right')">Finish
             </button>
+            <!--            <button *ngIf="sta10FilesList.length < 1" class="btn btn-sm btn-primary float-right" (click)="showErrorMessage()" >Finish</button>-->
             <button *ngIf="sta10FilesList.length>0" type="submit" class="form-wizard-next-btn btn-sm float-right">
                 Finish
             </button>

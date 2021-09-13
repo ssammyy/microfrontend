@@ -43,6 +43,16 @@ class ControllerRoutes(private val daoService: DaoService) {
     }
 
     @Bean
+    fun paymentsSageApiRoutes(handler: PaymentsApiHandler) = coRouter {
+        "/api/payments/sage".nest {
+            "/notify".nest {
+                GET("/", daoService::invalidGetOnPostUrl)
+                POST("/", handler::processPaymentSageNotification)
+            }
+        }
+    }
+
+    @Bean
     fun kraApiRoutes(handler: StandardsLevyHandler) = coRouter {
         "/api/kra".nest {
             GET("/receiveSL2Payment", daoService::invalidGetOnPostUrl)

@@ -492,7 +492,7 @@ export class NewSmarkPermitComponent implements OnInit {
                     console.log(data);
                     this.step += 1;
                     swal.fire({
-                        title: 'Non-Conforming Products Manufacturing Process saved!',
+                        title: 'Non-Conforming Products Manufacturing Process saved!.',
                         buttonsStyling: false,
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',
@@ -523,26 +523,37 @@ export class NewSmarkPermitComponent implements OnInit {
 
     onClickSaveSTAPersonnel(valid: boolean) {
         if (valid) {
-            this.SpinnerService.show();
-            console.log(this.sta10Details.id.toString());
-            // if (this.sta10PersonnelDetails == null) {
-            this.qaService.savePersonnelDetailsSta10(this.sta10Details.id.toString(), this.sta10PersonnelDetails).subscribe(
-                (data) => {
-                    this.sta10PersonnelDetails = data;
-                    this.onClickUpdateStep(this.step);
-                    this.SpinnerService.hide();
-                    console.log(data);
-                    this.step += 1;
-                    swal.fire({
-                        title: 'Key Personnel Details Saved!',
-                        buttonsStyling: false,
-                        customClass: {
-                            confirmButton: 'btn btn-success form-wizard-next-btn ',
-                        },
-                        icon: 'success'
-                    });
-                },
-            );
+
+            if (this.sta10PersonnelDetails.length > 0) {
+                this.SpinnerService.show();
+                console.log(this.sta10Details.id.toString());
+                this.qaService.savePersonnelDetailsSta10(this.sta10Details.id.toString(), this.sta10PersonnelDetails).subscribe(
+                    (data) => {
+                        this.sta10PersonnelDetails = data;
+                        this.onClickUpdateStep(this.step);
+                        this.SpinnerService.hide();
+                        console.log(data);
+                        this.step += 1;
+                        swal.fire({
+                            title: 'Key Personnel Details Saved!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+                    },
+                );
+            } else {
+                swal.fire({
+                    title: 'Key Personnel Details missing!',
+                    buttonsStyling: false,
+                    customClass: {
+                        confirmButton: 'btn btn-success form-wizard-next-btn ',
+                    },
+                    icon: 'success'
+                });
+            }
         }
     }
 
@@ -567,7 +578,7 @@ export class NewSmarkPermitComponent implements OnInit {
                             customClass: {
                                 confirmButton: 'btn btn-success form-wizard-next-btn ',
                             },
-                            icon: 'success'
+                            icon: 'warning'
                         });
                     },
                 );
@@ -580,74 +591,107 @@ export class NewSmarkPermitComponent implements OnInit {
 
     onClickSaveSTARawMaterials(valid: boolean) {
         if (valid) {
-            this.SpinnerService.show();
-            console.log(this.sta10Details.id.toString());
-            this.qaService.saveRawMaterialsDetailsSta10(this.sta10Details.id.toString(), this.sta10RawMaterialsDetails).subscribe(
-                (data) => {
-                    this.sta10RawMaterialsDetails = data;
-                    this.onClickUpdateStep(this.step);
-                    this.SpinnerService.hide();
-                    console.log(data);
-                    this.step += 1;
-                    swal.fire({
-                        title: 'Raw Materials Details saved!',
-                        buttonsStyling: false,
-                        customClass: {
-                            confirmButton: 'btn btn-success form-wizard-next-btn ',
-                        },
-                        icon: 'success'
-                    });
-                },
-            );
+            if (this.sta10RawMaterialsDetails.length > 0) {
+                this.SpinnerService.show();
+                console.log(this.sta10Details.id.toString());
+                this.qaService.saveRawMaterialsDetailsSta10(this.sta10Details.id.toString(), this.sta10RawMaterialsDetails).subscribe(
+                    (data) => {
+                        this.sta10RawMaterialsDetails = data;
+                        this.onClickUpdateStep(this.step);
+                        this.SpinnerService.hide();
+                        console.log(data);
+                        this.step += 1;
+                        swal.fire({
+                            title: 'Raw Materials Details saved!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+                    },
+                );
+            } else {
+                swal.fire({
+                    title: 'Raw Materials Details missing!',
+                    buttonsStyling: false,
+                    customClass: {
+                        confirmButton: 'btn btn-success form-wizard-next-btn ',
+                    },
+                    icon: 'error'
+                });
+            }
         }
     }
 
     onClickSaveSTAMachineryPlant(valid: boolean) {
         if (valid) {
-            this.SpinnerService.show();
-            console.log(this.sta10Details.id.toString());
-            this.qaService.saveMachineryPlantDetailsSta10(this.sta10Details.id.toString(), this.sta10MachineryAndPlantDetails).subscribe(
-                (data) => {
-                    this.sta10MachineryAndPlantDetails = data;
-                    this.onClickUpdateStep(this.step);
-                    this.SpinnerService.hide();
-                    console.log(data);
-                    this.step += 1;
-                    swal.fire({
-                        title: 'Machinery And Plant Details saved!',
-                        buttonsStyling: false,
-                        customClass: {
-                            confirmButton: 'btn btn-success form-wizard-next-btn ',
-                        },
-                        icon: 'success'
-                    });
-                },
-            );
+            if (this.sta10MachineryAndPlantDetails.length > 0) {
+                this.SpinnerService.show();
+                console.log(this.sta10Details.id.toString());
+                this.qaService.saveMachineryPlantDetailsSta10(this.sta10Details.id.toString(), this.sta10MachineryAndPlantDetails).subscribe(
+                    (data) => {
+                        this.sta10MachineryAndPlantDetails = data;
+                        this.onClickUpdateStep(this.step);
+                        this.SpinnerService.hide();
+                        console.log(data);
+                        this.step += 1;
+                        swal.fire({
+                            title: 'Machinery And Plant Details saved!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+                    },
+                );
+            } else {
+                swal.fire({
+                    title: 'Machinery And Plant Details missing!',
+                    buttonsStyling: false,
+                    customClass: {
+                        confirmButton: 'btn btn-success form-wizard-next-btn ',
+                    },
+                    icon: 'error'
+                });
+            }
         }
     }
 
     onClickSaveSTAManufacturingProcess(valid: boolean) {
         if (valid) {
-            this.SpinnerService.show();
-            console.log(this.sta10Details.id.toString());
-            // tslint:disable-next-line:max-line-length
-            this.qaService.saveManufacturingProcessDetailsSta10(this.sta10Details.id.toString(), this.sta10ManufacturingProcessDetails).subscribe(
-                (data) => {
-                    this.sta10ManufacturingProcessDetails = data;
-                    this.onClickUpdateStep(this.step);
-                    this.SpinnerService.hide();
-                    console.log(data);
-                    this.step += 1;
-                    swal.fire({
-                        title: 'Manufacturing Process Details saved!',
-                        buttonsStyling: false,
-                        customClass: {
-                            confirmButton: 'btn btn-success form-wizard-next-btn ',
-                        },
-                        icon: 'success'
-                    });
-                },
-            );
+            if (this.sta10ManufacturingProcessDetails.length > 0) {
+                this.SpinnerService.show();
+                console.log(this.sta10Details.id.toString());
+                // tslint:disable-next-line:max-line-length
+                this.qaService.saveManufacturingProcessDetailsSta10(this.sta10Details.id.toString(), this.sta10ManufacturingProcessDetails).subscribe(
+                    (data) => {
+                        this.sta10ManufacturingProcessDetails = data;
+                        this.onClickUpdateStep(this.step);
+                        this.SpinnerService.hide();
+                        console.log(data);
+                        this.step += 1;
+                        swal.fire({
+                            title: 'Manufacturing Process Details saved!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+                    },
+                );
+            } else {
+                swal.fire({
+                    title: 'Manufacturing Process Details missing!',
+                    buttonsStyling: false,
+                    customClass: {
+                        confirmButton: 'btn btn-success form-wizard-next-btn ',
+                    },
+                    icon: 'error'
+                });
+            }
         }
     }
 
@@ -702,7 +746,7 @@ export class NewSmarkPermitComponent implements OnInit {
 
     onClickSaveSTA10G() {
         if (this.sta10FilesList.length > 0) {
-            if (this.uploadedFiles) {
+            if (this?.uploadedFiles) {
                 this.fileListSaveDetails();
             } else {
                 this.step += 1;
@@ -716,7 +760,7 @@ export class NewSmarkPermitComponent implements OnInit {
                 });
                 this.router.navigate(['/smarkpermitdetails'], {fragment: String(this.sta1.id)});
             }
-        } else if (this.uploadedFiles.length > 0) {
+        } else if (this.uploadedFiles?.length > 0) {
             this.fileListSaveDetails();
         }
 
@@ -779,26 +823,58 @@ export class NewSmarkPermitComponent implements OnInit {
         });
     }
 
+    showErrorMessage() {
+        swal.fire({
+            title: 'MISSING UPLOAD\'S DOCUMENTS.',
+            buttonsStyling: false,
+            customClass: {
+                confirmButton: 'btn btn-success form-wizard-next-btn ',
+            },
+            icon: 'error'
+        });
+    }
+
+
 // Remove Form repeater values
     removePersonnelDetails(index) {
         console.log(index);
-        this.sta10PersonnelDetails.splice(index, index);
+        if (index === 0) {
+            this.sta10PersonnelDetails.splice(index, 1);
+        } else {
+            this.sta10PersonnelDetails.splice(index, index);
+        }
     }
 
     removeProductsManufacture(index) {
-        this.sta10ProductsManufactureDetails.splice(index, index);
+        if (index === 0) {
+            this.sta10ProductsManufactureDetails.splice(index, 1);
+        } else {
+            this.sta10ProductsManufactureDetails.splice(index, index);
+        }
     }
 
     removeRawMaterials(index) {
-        this.sta10RawMaterialsDetails.splice(index, index);
+        if (index === 0) {
+            this.sta10RawMaterialsDetails.splice(index, 1);
+        } else {
+            this.sta10RawMaterialsDetails.splice(index, index);
+        }
     }
 
     removeMachineryAndPlantDetails(index) {
-        this.sta10MachineryAndPlantDetails.splice(index, index);
+        if (index === 0) {
+            this.sta10MachineryAndPlantDetails.splice(index, 1);
+        } else {
+            this.sta10MachineryAndPlantDetails.splice(index, index);
+        }
     }
 
     removeManufacturingProcessDetails(index) {
-        this.sta10ManufacturingProcessDetails.splice(index, index);
+        if (index === 0) {
+            this.sta10ManufacturingProcessDetails.splice(index, 1);
+        } else {
+            this.sta10ManufacturingProcessDetails.splice(index, index);
+        }
     }
 
 

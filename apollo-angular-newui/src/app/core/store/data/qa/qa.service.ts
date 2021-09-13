@@ -6,8 +6,15 @@ import {catchError, map} from 'rxjs/operators';
 import {
     AllBatchInvoiceDetailsDto,
     AllPermitDetailsDto,
-    AllSTA10DetailsDto, FmarkEntityDto, GenerateInvoiceDto,
-    MPesaPushDto, PermitProcessStepDto, SSCApprovalRejectionDto,
+    AllSTA10DetailsDto,
+    FmarkEntityDto,
+    GenerateInvoiceDto,
+    MPesaPushDto,
+    PermitEntityDetails,
+    PermitEntityDto,
+    PermitProcessStepDto, PlantDetailsDto, QRCodeScannedQADto,
+    ResubmitApplicationDto,
+    SSCApprovalRejectionDto,
     STA1,
     Sta10Dto,
     STA10MachineryAndPlantDto,
@@ -15,7 +22,7 @@ import {
     STA10PersonnelDto,
     STA10ProductsManufactureDto,
     STA10RawMaterialsDto,
-    STA3,
+    STA3, StgInvoiceBalanceDto,
     TaskDto
 } from './qa.model';
 
@@ -98,12 +105,42 @@ export class QaService {
         );
     }
 
-    public loadPermitList(permitTypeID: string): Observable<any> {
+    public loadQRCodeDetails(permitNumber: string): Observable<QRCodeScannedQADto> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_QR_CODE_SCAN);
+        const params = new HttpParams()
+            .set('permitNumber', permitNumber);
+        return this.http.get<QRCodeScannedQADto>(url, {params}).pipe(
+            map(function (response: QRCodeScannedQADto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public loadInvoiceDetailsBalance(batchID: string): Observable<StgInvoiceBalanceDto> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_DETAILS_BALANCE);
+        const params = new HttpParams()
+            .set('batchID', batchID);
+        return this.http.get<StgInvoiceBalanceDto>(url, {params}).pipe(
+            map(function (response: StgInvoiceBalanceDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public loadPermitList(permitTypeID: string): Observable<PermitEntityDto[]> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_LIST);
         const params = new HttpParams()
             .set('permitTypeID', permitTypeID);
-        return this.http.get<any>(url, {params}).pipe(
-            map(function (response: any) {
+        return this.http.get<PermitEntityDto[]>(url, {params}).pipe(
+            map(function (response: PermitEntityDto[]) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
@@ -113,12 +150,12 @@ export class QaService {
         );
     }
 
-    public loadPermitAwardedList(permitTypeID: string): Observable<any> {
+    public loadPermitAwardedList(permitTypeID: string): Observable<PermitEntityDto[]> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_LIST_AWARDED);
         const params = new HttpParams()
             .set('permitTypeID', permitTypeID);
-        return this.http.get<any>(url, {params}).pipe(
-            map(function (response: any) {
+        return this.http.get<PermitEntityDto[]>(url, {params}).pipe(
+            map(function (response: PermitEntityDto[]) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
@@ -128,10 +165,25 @@ export class QaService {
         );
     }
 
-    public loadPlantList(): Observable<any> {
+    public loadPermitAwardedListToGenerateFMark(permitTypeID: string): Observable<PermitEntityDto[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_LIST_TO_GENERATE_FMRK);
+        const params = new HttpParams()
+            .set('permitTypeID', permitTypeID);
+        return this.http.get<PermitEntityDto[]>(url, {params}).pipe(
+            map(function (response: PermitEntityDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public loadPlantList(): Observable<PlantDetailsDto> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PLANT_LIST);
-        return this.http.get<any>(url).pipe(
-            map(function (response: any) {
+        return this.http.get<PlantDetailsDto>(url).pipe(
+            map(function (response: PlantDetailsDto) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
@@ -186,6 +238,19 @@ export class QaService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.MY_TASK_LIST);
         return this.http.get<TaskDto>(url).pipe(
             map(function (response: TaskDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public qaTaskListFind(): Observable<PermitEntityDto[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.MY_TASK_LIST);
+        return this.http.get<PermitEntityDto[]>(url).pipe(
+            map(function (response: PermitEntityDto[]) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
@@ -807,6 +872,21 @@ export class QaService {
             .set('permitID', permitID);
         return this.http.post<any>(url, data, {params}).pipe(
             map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public resubmitApplicationBack(permitID: string, data: ResubmitApplicationDto): Observable<PermitEntityDetails> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_RE_SUBMIT_APPLICATION);
+        const params = new HttpParams()
+            .set('permitID', permitID);
+        return this.http.post<PermitEntityDetails>(url, data, {params}).pipe(
+            map(function (response: PermitEntityDetails) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {

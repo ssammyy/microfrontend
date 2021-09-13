@@ -39,6 +39,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.base.url.value}")
     val baseUrlValue: String = "https://127.0.0.1:8005/api"
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.base.url.value.angular}")
+    val baseUrlQRValue: String = "https://127.0.0.1/qr-code-qa-permit-scan"
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.permit.questionnaire}")
     val mapPermitQuestionnaire: Int? = null
 
@@ -99,8 +102,17 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.PAC_SECRETARY}")
     val mapUserTaskNamePACSECRETARY: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.RM}")
+    val mapUserTaskNameRM: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.department.id.for.users}")
     val mapQADepertmentId: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.user.role.qa.assessor.id}")
+    val mapQAUserAssessorRoleId: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.user.role.qa.officer.id}")
+    val mapQAUserOfficerRoleId: Long = 0L
 
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.designation.id.for.QAM}")
     val mapQADesignationIDForQAMId: Long = 0L
@@ -220,6 +232,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_scheduling_visit}")
     val mapQaStatusPShedulvisit: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_standards_details}")
+    val mapQaStatusPStandardsAdding: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_generation_of_ssc}")
     val mapQaStatusPGenSSC: Long = 0L
 
@@ -259,6 +274,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_inspection_report_approval}")
     val mapQaStatusPInspectionReportApproval: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_new_inspection_Report}")
+    val mapQaStatusInspectionReportRejected: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_bs_number}")
     val mapQaStatusPBSNumber: Long = 0L
 
@@ -283,11 +301,20 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_psc_members_awarding}")
     val mapQaStatusPPSCMembersAward: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_qam_hod_approval}")
+    val mapQaStatusPHodQamApproval: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.deferred_by_psc_members}")
     val mapQaStatusDeferredPSCMembers: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_re_inspection}")
+    val mapQaStatusPendingReInspection: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_pcm_awarding}")
     val mapQaStatusPPCMAwarding: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_review_pcm}")
+    val mapQaStatusPPCMReview: Long = 0L
 
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_sta10_completion}")
     val mapQaStatusPSTA10Completion: Long = 0L
@@ -301,6 +328,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_correction}")
     val mapQaStatusPendingCorrectionManf: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_qam_hod_rejected}")
+    val mapQaStatusRejectedByHodQam: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.permit_expired}")
     val mapQaStatusPermitExpired: Long = 0L
 
@@ -312,6 +342,9 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.rejected_justification_report}")
     val mapQaStatusRejectedJustCationReport: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.rejected_assessment_report}")
+    val mapQaStatusRejectedAssessmentReport: Long = 0L
 
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_approval_of_justification_report}")
     val mapQaStatusPApprovalustCationReport: Long = 0L
@@ -490,6 +523,15 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.proforma.invoice.with.item.path}")
     val mapReportProfomaInvoiceWithItemsPath: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.qa.smark.permit.background.image.path}")
+    val mapSmarkBackgroundImagePath: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.qa.fmark.permit.background.image.path}")
+    val mapFmarkBackgroundImagePath: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.qa.dmark.permit.background.image.path}")
+    val mapDmarkBackgroundImagePath: String = ""
 
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.break.down.invoice.with.item.path}")
     val mapReportBreakDownInvoiceWithItemsPath: String = ""

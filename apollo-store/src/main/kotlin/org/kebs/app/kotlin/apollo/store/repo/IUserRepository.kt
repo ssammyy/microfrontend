@@ -86,6 +86,19 @@ interface IUserRepository : HazelcastRepository<UsersEntity, Long>, JpaSpecifica
         @Param("lastName") lastName: String?
     ): List<UsersEntity>?
 
+    @Query(
+        "SELECT distinct u.* from DAT_KEBS_PERMIT_TRANSACTION p, DAT_KEBS_MANUFACTURE_PLANT_DETAILS b, DAT_KEBS_USER_PROFILES pf, CFG_USER_ROLES_ASSIGNMENTS r," +
+                " DAT_KEBS_USERS u where p.ATTACHED_PLANT_ID=b.ID and b.REGION= pf.REGION_ID and p.SECTION_ID = pf.SECTION_ID and pf.USER_ID = r.USER_ID and u.ID = pf.USER_ID " +
+                "and r.ROLE_ID = :roleId and pf.SECTION_ID = :sectionId and pf.REGION_ID = :regionId and pf.STATUS = :status",
+        nativeQuery = true
+    )
+    fun findOfficerPermitUsersBySectionAndRegion(
+        @Param("roleId") roleId: Long,
+        @Param("sectionId") sectionId: Long,
+        @Param("regionId") regionId: Long,
+        @Param("status") status: Int
+    ): List<UsersEntity>?
+
     fun findAllByUserNameContainingIgnoreCaseOrEmailContainingIgnoreCaseOrFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(
         userName: String?,
         email: String?,
@@ -196,6 +209,28 @@ interface IUserRoleAssignmentsRepository : HazelcastRepository<UserRoleAssignmen
 }
 
 @Repository
+interface IUserSectionAssignmentsRepository : HazelcastRepository<UserSectionAssignmentsEntity, Long> {
+    fun findByUserIdAndStatus(userId: Long, status: Int): List<UserSectionAssignmentsEntity>?
+    fun findBySectionIdAndStatus(sectionId: Long, status: Int): List<UserSectionAssignmentsEntity>?
+    fun findBySectionId(sectionId: Long): List<UserSectionAssignmentsEntity>
+    fun findByUserId(userId: Long): UserSectionAssignmentsEntity?
+
+
+    @Query(
+        "SELECT * FROM CFG_USER_SECTION_ASSIGNMENTS cura WHERE CURA.USER_ID = :userId AND STATUS = :status",
+        nativeQuery = true
+    )
+    fun findUserRoleAssignments(
+        @Param("userId") userId: Long,
+        @Param("status") status: Int
+    ): List<UserSectionAssignmentsEntity>?
+
+    fun findByUserIdAndSectionIdAndStatus(userId: Long, sectionId: Long, status: Int): UserSectionAssignmentsEntity?
+    fun findByUserIdAndSectionId(userId: Long, sectionId: Long): UserSectionAssignmentsEntity?
+
+}
+
+@Repository
 interface IUserTypesEntityRepository : HazelcastRepository<UserTypesEntity, Long> {
     fun findByStatus(status: Int): List<UserTypesEntity>
     fun findByTypeNameAndStatus(typeName: String, status: Int): UserTypesEntity?
@@ -232,6 +267,7 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     fun findByManufactureStatus(status: Int): List<CompanyProfileEntity>?
     fun findAllByOrderByIdDesc(pageable: Pageable): List<CompanyProfileEntity>?
     fun findAllByUserId(userId: Long): List<CompanyProfileEntity>
+    fun findAllByFirmCategoryAndStatus(firmCategory: Long, status: Int): List<CompanyProfileEntity>?
 
 }
 

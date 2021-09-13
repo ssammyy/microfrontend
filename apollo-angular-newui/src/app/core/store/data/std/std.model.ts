@@ -93,6 +93,7 @@ export interface NWAJustification{
     submissionDate: string;
     knwCommittee: string;
     departmentName: string;
+    comments: string;
 
 
 }
@@ -116,6 +117,7 @@ export interface KnwSecTasks{
 }
 
 export interface KnwSecTaskData {
+    ID: number;
     requestedBy: string;
     requestNumber: string;
     referenceMaterial: string;
@@ -135,6 +137,8 @@ export interface KnwSecTaskData {
     special: string;
     knwCommittee: string;
     departmentName: string;
+    comments: string;
+    diJNumber: bigint;
 }
 
 
@@ -159,15 +163,27 @@ export interface SPCTaskData {
     knwCommittee: string;
     departmentName: string;
     knwSecretary: string;
+    ID: number;
+    comments: string;
 }
 
 export interface NWADiSdtJustification{
     id: number;
-    cost: number;
+    cost: string;
     numberOfMeetings: number;
     identifiedNeed: string;
     dateOfApproval: string;
     taskId: string;
+    jstNumber: number;
+}
+export interface NWADiJustification{
+    id: number;
+    cost: string;
+    numberOfMeetings: number;
+    identifiedNeed: string;
+    dateOfApproval: string;
+    taskId: string;
+    jstNumber: number;
 }
 
 export interface DISDTTasks{
@@ -176,7 +192,11 @@ export interface DISDTTasks{
     taskData: DisDTTaskData;
 }
 export interface DisDTTaskData {
-
+    cost: number;
+    numberOfMeetings: number;
+    identifiedNeed: string;
+    dateOfApproval: string;
+    taskId: string;
     requestedBy: string;
     requestNumber: string;
     referenceMaterial: string;
@@ -188,6 +208,10 @@ export interface DisDTTaskData {
     knwAcceptanceDate: Date;
     knwCommittee: string;
     departmentName: string;
+    ID: number;
+    comments: string;
+    jstNumber: number;
+
 
 }
 
@@ -200,6 +224,7 @@ export interface NWAPreliminaryDraft{
     special: string;
     clause: string;
     taskId: string;
+    diJNumber: number;
 }
 
 export interface NWAWorkShopDraft{
@@ -218,7 +243,7 @@ export interface SacSecTasks{
 }
 
 export interface SacSeCTaskData {
-
+    ID: number;
     title: number;
     scope: number;
     normativeReference: string;
@@ -227,6 +252,7 @@ export interface SacSeCTaskData {
     taskId: string;
     clause: string;
     referenceMaterial: string;
+    comments: string;
 
 }
 
@@ -243,6 +269,7 @@ export interface HOPTaskData{
     issuesAddressed: string;
     clause: string;
     special:string;
+    comments: string;
 }
 export interface NWAStandard{
     id: number;
@@ -271,6 +298,7 @@ export interface HoSicTaskData{
     ksNumber: number;
     description: string;
     dateUploaded: string;
+    comments: string;
 }
 export interface UploadNwaGazette{
     id: number;
@@ -737,6 +765,34 @@ export interface SubmitApplication
     qualifications:string;
     commitment:string;
     taskId:string;
+}
+export interface DiSdtDECISION{
+    taskId: string;
+    accentTo: boolean;
+    approvalID: bigint;
+    comments: string;
+    jstNumber: bigint;
+}
+
+export interface NWAJustificationDecision{
+    taskId: string;
+    accentTo: boolean;
+    approvalID: bigint;
+    comments: string;
+}
+
+export interface NWAPDDecision{
+    taskId: string;
+    accentTo: boolean;
+    approvalID: bigint;
+    comments: string;
+    diJNumber: bigint;
+}
+export interface NWAWDDecision{
+    taskId: string;
+    accentTo: boolean;
+    approvalID: bigint;
+    comments: string;
 }
 
 

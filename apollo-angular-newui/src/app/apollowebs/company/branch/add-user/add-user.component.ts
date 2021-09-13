@@ -58,6 +58,7 @@ export class AddUserComponent implements OnInit {
                 userName: ['', Validators.required],
                 email: ['', Validators.required],
                 cellphone: ['', Validators.required],
+                branch: ['', Validators.required],
                 // otp: new FormControl('', ),
                 credentials: ['', Validators.required],
                 confirmCredentials: ['', [Validators.required]]
@@ -69,6 +70,8 @@ export class AddUserComponent implements OnInit {
         this.store$.select(selectCompanyIdData).subscribe((d) => {
             return this.selectedCompany = d;
         });
+
+        /****We have a bigger issue here why change the selected branch to user main admin branch****/
         this.store$.select(selectBranchIdData).subscribe((d) => {
             return this.selectedBranch = d;
         });
@@ -156,4 +159,8 @@ export class AddUserComponent implements OnInit {
         this.store$.dispatch(Back());
     }
 
+    updateSelectedBranch() {
+        this.selectedBranch = this.stepOneForm?.get('branch')?.value;
+        console.log(`Selected Branch ${this.selectedBranch}`);
+    }
 }

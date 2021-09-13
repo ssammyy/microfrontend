@@ -27,6 +27,10 @@ class QaInspectionReportRecommendationEntity : Serializable {
     @Basic
     var recommendations: String? = null
 
+    @Column(name = "REF_NO")
+    @Basic
+    var refNo: String? = null
+
     @Column(name = "INSPECTOR_COMMENTS")
     @Basic
     var inspectorComments: String? = null
@@ -167,6 +171,7 @@ class QaInspectionReportRecommendationEntity : Serializable {
         if (other == null || javaClass != other.javaClass) return false
         val that = other as QaInspectionReportRecommendationEntity
         return id == that.id && recommendations == that.recommendations
+                && refNo == that.refNo
                 && filledQpsmsStatus == that.filledQpsmsStatus
                 && filledInspectionTestingStatus == that.filledInspectionTestingStatus
                 && filledStandardizationMarkSchemeStatus == that.filledStandardizationMarkSchemeStatus
@@ -181,6 +186,7 @@ class QaInspectionReportRecommendationEntity : Serializable {
     override fun hashCode(): Int {
         return Objects.hash(
             id,
+            refNo,
             supervisorFilledStatus,
             approvedRejectedStatus,
             filledQpsmsStatus,

@@ -22,9 +22,12 @@ class AngularRoutes {
 //                    GET("/fetch/users/{status}/{criteria}", handler::list)
                     GET("/fetch/users/{status}", handler::listActiveRbacUsers)
                     GET("/fetch/user-roles/{userId}/{status}", handler::listActiveRbacUserRoles)
+                    GET("/fetch/user-section/{userId}/{status}", handler::listActiveRbacUserSections)
                     GET("/fetch/user-cfs/{userProfileId}/{status}", handler::listActiveRbacUserCfs)
                     POST("/role/revoke/{userId}/{roleId}/{status}", handler::revokeRoleFromUser)
                     POST("/role/assign/{userId}/{roleId}/{status}", handler::assignRoleToUser)
+                    POST("/section/revoke/{userId}/{sectionId}/{status}", handler::revokeSectionFromUser)
+                    POST("/section/assign/{userId}/{sectionId}/{status}", handler::assignSectionToUser)
                     POST("/cfs/revoke/{userProfileId}/{cfsId}/{status}", handler::revokeCfsFromUser)
                     POST("/cfs/assign/{userProfileId}/{cfsId}/{status}", handler::assignCfsToUser)
                     POST(
@@ -422,6 +425,16 @@ class AngularRoutes {
     }
 
     @Bean
+    fun ApiBackGroundImageRoute(handler: ImagesHandlers) = router {
+        "/api/v1/migration/anonymous".nest {
+            GET("/background/smark/image", handler::smarkBackGroundImage)
+            GET("/background/dmark/image", handler::dmarkBackGroundImage)
+            GET("/background/fmark/image", handler::fmarkBackGroundImage)
+            GET("/permit-qrcode/details", handler::permitQRCodeScanned)
+        }
+    }
+
+    @Bean
     fun migrationQualityAssuranceRoutes(handler: QualityAssuranceHandler) = router {
         "/api/v1/migration/qa".nest {
             GET("/sections-list", handler::sectionListMigration)
@@ -432,7 +445,9 @@ class AngularRoutes {
                 GET("/task-list", handler::permitTaskListMigration)
                 GET("/list", handler::permitListMigration)
                 GET("/awarded-list", handler::permitListAwardedMigration)
+                GET("/awarded-list-fmark-generate", handler::permitListAwardedGenerateFmarkMigration)
                 GET("/firm-list", handler::firmPermitListMigration)
+                GET("/firm-branch-list", handler::firmBranchPermitListMigration)
                 "/apply".nest {
                     POST("/fmark", handler::permitFMARKGenerateMigration)
                     POST("/sta1", handler::permitApplySTA1Migration)
@@ -442,6 +457,7 @@ class AngularRoutes {
                     POST("/submit-application-review", handler::permitSubmitApplicationReviewMigration)
                     POST("/submit-application-qam-hod-review", handler::permitSubmitApplicationQAMHODReviewMigration)
                     POST("/submit-application-ssc-approval-rejection", handler::permitApproveRejectSSCMigration)
+                    POST("/re-submit-application", handler::permitResubmitMigration)
                     POST("/sta3", handler::permitApplySTA3Migration)
                     PUT("/sta3-update", handler::permitUpdateSTA3Migration)
 //                    POST(
@@ -494,6 +510,7 @@ class AngularRoutes {
                         GET("/list-no-batch-Id", handler::invoiceListNoBatchIDMigration)
                         GET("/batch-invoice-list", handler::invoiceBatchListMigration)
                         GET("/batch-invoice-details", handler::invoiceBatchDetailsMigration)
+                        GET("/batch-invoice-balance-details", handler::invoiceBatchDetailsBalanceMigration)
                         GET("/batch-invoice-pdf-details", handler::invoiceBatchDetailsPDFMigration)
 
                     }

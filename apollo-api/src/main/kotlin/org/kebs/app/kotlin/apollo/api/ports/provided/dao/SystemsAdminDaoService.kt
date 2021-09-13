@@ -16,6 +16,7 @@ import org.kebs.app.kotlin.apollo.store.model.qa.ManufacturePlantDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileDirectorsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.UserRequestsEntity
+import org.kebs.app.kotlin.apollo.store.model.registration.UserSectionAssignmentsEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.ICfsTypeCodesRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IUsersCfsAssignmentsRepository
@@ -52,6 +53,7 @@ class SystemsAdminDaoService(
     private val userTypesRepo: IUserTypesEntityRepository,
     private val userRequestRepo: IUserRequestsRepository,
     private val userRolesRepo: IUserRoleAssignmentsRepository,
+    private val userSectionRepo: IUserSectionAssignmentsRepository,
     private val registrationDaoServices: RegistrationDaoServices,
     private val designationsRepo: IDesignationsRepository,
     private val departmentsRepo: IDepartmentsRepository,
@@ -173,16 +175,26 @@ class SystemsAdminDaoService(
     private fun getEmployeeProfileDto(employeeProfile: UserProfilesEntity): EmployeeProfileDetailsDto {
         return EmployeeProfileDetailsDto(
             employeeProfile.directorateId?.id?.let { directoratesRepo.findByIdOrNull(it)?.directorate },
+            employeeProfile.directorateId?.id,
             employeeProfile.departmentId?.id?.let { departmentsRepo.findByIdOrNull(it)?.department },
+            employeeProfile.departmentId?.id,
             employeeProfile.divisionId?.id?.let { divisionsRepo.findByIdOrNull(it)?.division },
+            employeeProfile.divisionId?.id,
             employeeProfile.sectionId?.id?.let { sectionsRepo.findByIdOrNull(it)?.section },
+            employeeProfile.sectionId?.id,
             employeeProfile.subSectionL1Id?.id?.let { subSectionsL1Repo.findByIdOrNull(it)?.subSection },
+            employeeProfile.subSectionL1Id?.id,
             employeeProfile.subSectionL2Id?.id?.let { subSectionsL2Repo.findByIdOrNull(it)?.subSection },
+            employeeProfile.subSectionL2Id?.id,
             employeeProfile.designationId?.id?.let { designationsRepo.findByIdOrNull(it)?.designationName },
+            employeeProfile.designationId?.id,
             employeeProfile.id,
             employeeProfile.regionId?.id?.let { regionsRepo.findByIdOrNull(it)?.region },
+            employeeProfile.regionId?.id,
             employeeProfile.countyID?.id?.let { countiesRepo.findByIdOrNull(it)?.county },
+            employeeProfile.countyID?.id,
             employeeProfile.townID?.id?.let { townsRepo.findByIdOrNull(it)?.town },
+            employeeProfile.townID?.id,
             employeeProfile.status == 1
 
         )
@@ -270,8 +282,8 @@ class SystemsAdminDaoService(
                 user.lastName = dto.lastName
                 user.userName = dto.userName
                 user.userPinIdNumber = dto.userPinIdNumber
-                user.personalContactNumber = dto.personalContactNumber
-                user.cellphone = dto.personalContactNumber
+                user.personalContactNumber = commonDaoServices.makeKenyanMSISDNFormat(dto.personalContactNumber)
+                user.cellphone = commonDaoServices.makeKenyanMSISDNFormat(dto.personalContactNumber)
                 user.typeOfUser = dto.typeOfUser
                 user.email = dto.email
                 user.enabled = when (dto.enabled) {
@@ -751,6 +763,39 @@ class SystemsAdminDaoService(
             ?: throw InvalidValueException("Record with id=$roleId not found, check and try again")
     }
 
+    fun assignSectionToUser(userId: Long, sectionId: Long, status: Int): UserSectionAssignmentsEntity? {
+        return usersRepo.findByIdOrNull(userId)
+            ?.let { user ->
+                sectionsRepo.findByIdOrNull(sectionId)
+                    ?.let { section ->
+                        userSectionRepo.findByUserIdAndSectionId(user.id ?: -1L, section.id)
+                            ?.let { usersSection ->
+                                usersSection.status = 1
+                                usersSection.modifiedBy = loggedInUserDetails().userName
+                                usersSection.modifiedOn = Timestamp.from(Instant.now())
+                                usersSection.varField1 = "${usersSection.status}"
+                                userSectionRepo.save(usersSection)
+
+                            }
+                            ?: kotlin.run {
+                                val usersSection = UserSectionAssignmentsEntity()
+                                usersSection.userId = user.id
+                                usersSection.sectionId = section.id
+                                usersSection.status = 1
+                                usersSection.createdBy = loggedInUserDetails().userName
+                                usersSection.createdOn = Timestamp.from(Instant.now())
+                                userSectionRepo.save(usersSection)
+
+                            }
+
+
+                    }
+                    ?: throw InvalidValueException("Record with id=$sectionId not found, check and try again")
+
+            }
+            ?: throw InvalidValueException("Record with id=$userId not found, check and try again")
+    }
+
     fun assignRoleToUser(userId: Long, roleId: Long, status: Int): UserRoleAssignmentsEntity? {
         return usersRepo.findByIdOrNull(userId)
             ?.let { user ->
@@ -805,6 +850,30 @@ class SystemsAdminDaoService(
 
                     }
                     ?: throw InvalidValueException("Record with id=$roleId not found, check and try again")
+
+            }
+            ?: throw InvalidValueException("Record with id=$userId not found, check and try again")
+    }
+
+    fun revokeSectionFromUser(userId: Long, sectionId: Long, status: Int): UserSectionAssignmentsEntity? {
+        return usersRepo.findByIdOrNull(userId)
+            ?.let { user ->
+                sectionsRepo.findByIdOrNull(sectionId)
+                    ?.let { section ->
+
+                        userSectionRepo.findByUserIdAndSectionIdAndStatus(user.id ?: -1L, section.id, status)
+                            ?.let { userSection ->
+                                userSection.status = 0
+                                userSection.modifiedBy = loggedInUserDetails().userName
+                                userSection.modifiedOn = Timestamp.from(Instant.now())
+                                userSection.varField1 = "${userSection.status}"
+                                userSectionRepo.save(userSection)
+                            }
+                            ?: throw InvalidInputException("Revoking Role that does not exist")
+
+
+                    }
+                    ?: throw InvalidValueException("Record with id=$sectionId not found, check and try again")
 
             }
             ?: throw InvalidValueException("Record with id=$userId not found, check and try again")
@@ -1018,6 +1087,9 @@ class SystemsAdminDaoService(
     fun listRbacRolesByUsersIdAndByStatus(userId: Long, status: Int): List<UserRolesEntity>? =
         rolesRepo.findRbacRolesByUserId(userId, status)
 
+    fun listRbacSectionByUsersIdAndByStatus(userId: Long, status: Int): List<SectionsEntity>? =
+        sectionsRepo.findRbacSectionByUserId(userId, status)
+
     fun listRbacCfsByUsersProfileIdAndByStatus(userProfileId: Long, status: Int): List<CfsTypeCodesEntity>? =
         iCfsTypeCodesRepo.findRbacCfsByUserProfileID(userProfileId, status)
 
@@ -1143,8 +1215,11 @@ class SystemsAdminDaoService(
             /**
              * Generate token
              */
-            val otp = commonDaoServices.generateTransactionReference(8).toUpperCase()
-            val token = commonDaoServices.generateVerificationToken(otp, request.phone)
+            val otp = commonDaoServices.randomNumber(6)
+            val token = commonDaoServices.generateVerificationToken(
+                otp,
+                commonDaoServices.makeKenyanMSISDNFormat(request.phone)
+            )
             commonDaoServices.sendOtpViaSMS(token)
 
             result.apply {
@@ -1172,7 +1247,8 @@ class SystemsAdminDaoService(
      */
     fun validatePhoneNumberAndToken(request: ValidatePhoneNumberTokenRequestDto): CustomResponse? =
         commonDaoServices.validateOTPToken(
-            request.token ?: throw NullValueNotAllowedException("Invalid Token provided"), request.phone
+            request.token ?: throw NullValueNotAllowedException("Invalid Token provided"),
+            commonDaoServices.makeKenyanMSISDNFormat(request.phone)
         )
 
 
@@ -1187,170 +1263,188 @@ class SystemsAdminDaoService(
     fun registerCompany(dto: RegistrationPayloadDto): CustomResponse? {
         val result = CustomResponse()
         try {
-            commonDaoServices.findCompanyProfileWithRegistrationNumber(
-                dto.company.registrationNumber
-                    ?: throw NullValueNotAllowedException("Registration Number is required")
+            commonDaoServices.findCompanyProfileWithKraPin(
+                dto.company.kraPin ?: throw NullValueNotAllowedException("KRA  Pin Number is required")
             )
-                ?.let { throw ExpectedDataNotFound("The Company with this [Registration Number : ${dto.company.registrationNumber}] already exists") }
+                ?.let { throw ExpectedDataNotFound("A Company with this [KRA Pin Number : ${dto.company.kraPin}] already exists") }
                 ?: run {
-                    usersRepo.findByUserName(
-                        dto.user.userName ?: throw NullValueNotAllowedException("Username is required")
+                    commonDaoServices.findCompanyProfileWithRegistrationNumber(
+                        dto.company.registrationNumber
+                            ?: throw NullValueNotAllowedException("Registration Number is required")
                     )
-                        ?.let {
-                            throw InvalidValueException("Selected username is already in use")
-                        }
+                        ?.let { throw ExpectedDataNotFound("The Company with this [Registration Number : ${dto.company.registrationNumber}] already exists") }
                         ?: run {
-                            usersRepo.findByEmail(
-                                dto.user.email ?: throw NullValueNotAllowedException("Email is required")
+                            usersRepo.findByUserName(
+                                dto.user.userName ?: throw NullValueNotAllowedException("Username is required")
                             )
-                                ?.let { throw InvalidValueException("Selected email is already in use") }
+                                ?.let {
+                                    throw InvalidValueException("Selected username is already in use")
+                                }
                                 ?: run {
-
-                                    val u = dto.user
-                                    var user = UsersEntity().apply {
-                                        firstName = u.firstName
-                                        lastName = u.lastName
-                                        email = u.email
-                                        /**
-                                         * TODO: Revisit number validation
-                                         */
-                                        personalContactNumber = dto.company.companyTelephone
-                                        registrationDate = Date(java.util.Date().time)
-                                        typeOfUser = applicationMapProperties.transactionActiveStatus
-                                        title = u.title
-                                        email = u.email
-                                        userName = u.userName
-                                        cellphone = u.cellphone
-                                        userRegNo = "KEBS${commonDaoServices.generateTransactionReference(5).toUpperCase()}"
-                                        credentials = BCryptPasswordEncoder().encode(u.credentials)
-                                        confirmCredentials = BCryptPasswordEncoder().encode(u.credentials)
-                                        enabled = applicationMapProperties.transactionActiveStatus
-                                        status = applicationMapProperties.transactionActiveStatus
-                                        accountLocked = applicationMapProperties.transactionInactiveStatus
-                                        approvedDate = Timestamp.from(Instant.now())
-                                    }
-
-                                    user = usersRepo.save(user)
-
-
-                                    /**
-                                     * DONE: Create Manufacturer Id role
-                                     */
-                                    userRolesRepo.save(
-                                        registrationDaoServices.userRoleAssignment(
-                                            user,
-                                            1,
-                                            applicationMapProperties.manufacturerAdminRoleId
-                                                ?: throw NullValueNotAllowedException("Manufacturer Admin role not defined")
-                                        )
+                                    usersRepo.findByEmail(
+                                        dto.user.email ?: throw NullValueNotAllowedException("Email is required")
                                     )
-                                    userRolesRepo.save(
-                                        registrationDaoServices.userRoleAssignment(
-                                            user,
-                                            1,
-                                            applicationMapProperties.mapUserManufactureRoleID
-                                        )
-                                    )
+                                        ?.let { throw InvalidValueException("Selected email is already in use") }
+                                        ?: run {
+
+                                            val u = dto.user
+                                            var user = UsersEntity().apply {
+                                                firstName = u.firstName
+                                                lastName = u.lastName
+                                                email = u.email
+                                                /**
+                                                 * TODO: Revisit number validation
+                                                 */
+                                                personalContactNumber =
+                                                    commonDaoServices.makeKenyanMSISDNFormat(dto.company.companyTelephone)
+                                                registrationDate = Date(java.util.Date().time)
+                                                typeOfUser = applicationMapProperties.transactionActiveStatus
+                                                title = u.title
+                                                email = u.email
+                                                userName = u.userName
+                                                cellphone = commonDaoServices.makeKenyanMSISDNFormat(u.cellphone)
+                                                userRegNo = "KEBS${
+                                                    commonDaoServices.generateTransactionReference(5).toUpperCase()
+                                                }"
+                                                credentials = BCryptPasswordEncoder().encode(u.credentials)
+                                                confirmCredentials = BCryptPasswordEncoder().encode(u.credentials)
+                                                enabled = applicationMapProperties.transactionActiveStatus
+                                                status = applicationMapProperties.transactionActiveStatus
+                                                accountLocked = applicationMapProperties.transactionInactiveStatus
+                                                approvedDate = Timestamp.from(Instant.now())
+                                            }
+
+                                            user = usersRepo.save(user)
 
 
-                                    var companyProfileEntity = CompanyProfileEntity().apply {
-                                        name = dto.company.name
-                                        kraPin = dto.company.kraPin
-                                        userId = user.id
-
-                                        registrationNumber = dto.company.registrationNumber
-                                        postalAddress = dto.company.postalAddress
-                                        physicalAddress = dto.company.physicalAddress
-                                        plotNumber = dto.company.plotNumber
-                                        companyEmail = dto.company.companyEmail
-                                        companyTelephone = dto.company.companyTelephone
-                                        yearlyTurnover = dto.company.yearlyTurnover
-                                        businessLines = dto.company.businessLines
-                                        businessNatures = dto.company.businessNatures
-                                        buildingName = dto.company.buildingName
-                                        directorIdNumber = dto.company.directorIdNumber
-                                        streetName = dto.company.streetName
-                                        county = dto.company.county
-                                        town = dto.company.town
-                                        region = dto.company.region
-                                        manufactureStatus = applicationMapProperties.transactionActiveStatus
-                                        status = applicationMapProperties.transactionActiveStatus
-                                        createdBy = user.userName
-                                        createdOn = Timestamp.from(Instant.now())
-                                    }
-
-                                    companyProfileEntity = companyProfileRepo.save(companyProfileEntity)
-
-                                    brsLookupManufacturerDataRepo.findFirstByRegistrationNumberAndStatusOrderById(
-                                        companyProfileEntity.registrationNumber
-                                            ?: throw NullValueNotAllowedException("Invalid BRS Number"), 30
-                                    )
-                                        ?.let { record ->
-                                            brsLookupManufacturerPartnerRepo.findBrsLookupManufacturerPartnersEntitiesByManufacturerIdAndStatus(
-                                                record.id,
-                                                30
+                                            /**
+                                             * DONE: Create Manufacturer Id role
+                                             */
+                                            userRolesRepo.save(
+                                                registrationDaoServices.userRoleAssignment(
+                                                    user,
+                                                    1,
+                                                    applicationMapProperties.manufacturerAdminRoleId
+                                                        ?: throw NullValueNotAllowedException("Manufacturer Admin role not defined")
+                                                )
                                             )
-                                                ?.forEach { partner ->
-                                                    companyProfileEntity.id?.let {
+                                            userRolesRepo.save(
+                                                registrationDaoServices.userRoleAssignment(
+                                                    user,
+                                                    1,
+                                                    applicationMapProperties.mapUserRegistrationUserRoleID
+                                                )
+                                            )
+                                            userRolesRepo.save(
+                                                registrationDaoServices.userRoleAssignment(
+                                                    user,
+                                                    1,
+                                                    applicationMapProperties.mapUserManufactureRoleID
+                                                )
+                                            )
 
-                                                        val companyDirectors = CompanyProfileDirectorsEntity().apply {
-                                                            companyProfileId = companyProfileEntity.id
-                                                            directorName = partner.names
-                                                            directorId = partner.idNumber
-                                                            userType = partner.idType
-                                                            status = 1
-                                                            createdOn = commonDaoServices.getTimestamp()
-                                                            createdBy = commonDaoServices.concatenateName(user)
+
+                                            var companyProfileEntity = CompanyProfileEntity().apply {
+                                                name = dto.company.name
+                                                kraPin = dto.company.kraPin
+                                                userId = user.id
+
+                                                registrationNumber = dto.company.registrationNumber
+                                                postalAddress = dto.company.postalAddress
+                                                physicalAddress = dto.company.physicalAddress
+                                                plotNumber = dto.company.plotNumber
+                                                companyEmail = dto.company.companyEmail
+                                                companyTelephone = dto.company.companyTelephone
+                                                yearlyTurnover = dto.company.yearlyTurnover
+                                                businessLines = dto.company.businessLines
+                                                businessNatures = dto.company.businessNatures
+                                                buildingName = dto.company.buildingName
+                                                directorIdNumber = dto.company.directorIdNumber
+                                                streetName = dto.company.streetName
+                                                county = dto.company.county
+                                                town = dto.company.town
+                                                region = dto.company.region
+                                                manufactureStatus = applicationMapProperties.transactionActiveStatus
+                                                status = applicationMapProperties.transactionActiveStatus
+                                                createdBy = user.userName
+                                                createdOn = Timestamp.from(Instant.now())
+                                            }
+
+                                            companyProfileEntity = companyProfileRepo.save(companyProfileEntity)
+
+                                            brsLookupManufacturerDataRepo.findFirstByRegistrationNumberAndStatusOrderById(
+                                                companyProfileEntity.registrationNumber
+                                                    ?: throw NullValueNotAllowedException("Invalid BRS Number"), 30
+                                            )
+                                                ?.let { record ->
+                                                    brsLookupManufacturerPartnerRepo.findBrsLookupManufacturerPartnersEntitiesByManufacturerIdAndStatus(
+                                                        record.id,
+                                                        30
+                                                    )
+                                                        ?.forEach { partner ->
+                                                            companyProfileEntity.id?.let {
+
+                                                                val companyDirectors =
+                                                                    CompanyProfileDirectorsEntity().apply {
+                                                                        companyProfileId = companyProfileEntity.id
+                                                                        directorName = partner.names
+                                                                        directorId = partner.idNumber
+                                                                        userType = partner.idType
+                                                                        status = 1
+                                                                        createdOn = commonDaoServices.getTimestamp()
+                                                                        createdBy =
+                                                                            commonDaoServices.concatenateName(user)
+                                                                    }
+
+                                                                companyProfileDirectorsRepo.save(companyDirectors)
+
+
+                                                            }
                                                         }
 
-                                                        companyProfileDirectorsRepo.save(companyDirectors)
-
-
-                                                    }
                                                 }
+                                                ?: throw InvalidValueException("No record of look up found on the Datastore")
+
+                                            var branch = ManufacturePlantDetailsEntity().apply {
+                                                companyProfileId = companyProfileEntity.id
+                                                town = dto.company.town
+                                                county = dto.company.county
+                                                physicalAddress = dto.company.physicalAddress
+                                                street = dto.company.streetName
+                                                buildingName = dto.company.buildingName
+                                                branchName = dto.company.branchName
+                                                nearestLandMark = dto.company.buildingName
+                                                postalAddress = dto.company.postalAddress
+                                                telephone = dto.company.companyTelephone
+                                                emailAddress = dto.company.companyEmail
+                                                plotNo = dto.company.plotNumber
+                                                contactPerson = commonDaoServices.concatenateName(user)
+                                                descriptions = "Head Office"
+                                                region = dto.company.region
+
+                                                createdBy = companyProfileEntity.name
+                                                createdOn = Timestamp.from(Instant.now())
+                                                status = applicationMapProperties.transactionActiveStatus
+                                            }
+                                            branch = manufacturePlantRepository.save(branch)
+
+                                            user.companyId = companyProfileEntity.id
+                                            user.plantId = branch.id
+                                            usersRepo.save(user)
+
+                                            result.apply {
+                                                payload = "Successfully Created"
+                                                status = 200
+                                                response = "00"
+                                            }
 
                                         }
-                                        ?: throw InvalidValueException("No record of look up found on the Datastore")
-
-                                    var branch = ManufacturePlantDetailsEntity().apply {
-                                        companyProfileId = companyProfileEntity.id
-                                        town = dto.company.town
-                                        county = dto.company.county
-                                        physicalAddress = dto.company.physicalAddress
-                                        street = dto.company.streetName
-                                        buildingName = dto.company.buildingName
-                                        nearestLandMark = dto.company.buildingName
-                                        postalAddress = dto.company.postalAddress
-                                        telephone = dto.company.companyTelephone
-                                        emailAddress = dto.company.companyEmail
-                                        plotNo = dto.company.plotNumber
-                                        contactPerson = commonDaoServices.concatenateName(user)
-                                        descriptions = "Head Office"
-                                        region = dto.company.region
-
-                                        createdBy = companyProfileEntity.name
-                                        createdOn = Timestamp.from(Instant.now())
-                                        status = applicationMapProperties.transactionActiveStatus
-                                    }
-                                    branch = manufacturePlantRepository.save(branch)
-
-                                    user.companyId = companyProfileEntity.id
-                                    user.plantId = branch.id
-                                    usersRepo.save(user)
-
-                                    result.apply {
-                                        payload = "Successfully Created"
-                                        status = 200
-                                        response = "00"
-                                    }
-
                                 }
+
+
                         }
-
-
-
-
                 }
+
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.debug(e.message, e)

@@ -1,6 +1,11 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {StdNwaService} from "../../../../core/store/data/std/std-nwa.service";
-import {NWADiSdtJustification, NWAJustification, SPCSECTasks} from "../../../../core/store/data/std/std.model";
+import {
+    DiSdtDECISION,
+    NWADiSdtJustification,
+    NWAJustification, NWAJustificationDecision,
+    SPCSECTasks
+} from "../../../../core/store/data/std/std.model";
 import {HttpErrorResponse} from "@angular/common/http";
 import {NgxSpinnerService} from "ngx-spinner";
 import {Subject} from "rxjs";
@@ -91,22 +96,44 @@ export class NwaJustificationTasksComponent implements OnInit , OnDestroy {
   get formDecision(): any {
     return this.approveFormGroup.controls;
   }
-   onDecision(): void{
-    this.SpinnerService.show();
-     this.stdNwaService.decisionOnJustification(this.approveFormGroup.value).subscribe(
-        (response) => {
-          this.SpinnerService.hide();
-          this.showToasterSuccess('Success', `Justification Approved`);
-          this.dtTrigger.next();
-          console.log(response);
-        },
-        (error: HttpErrorResponse) => {
-          this.SpinnerService.hide();
-          this.showToasterError('Error', `Justification Was Not Approved`);
-          alert(error.message);
-        }
-    );
-  }
+    public onDecision(nwaJustificationDecision: NWAJustificationDecision): void{
+        this.SpinnerService.show();
+        this.stdNwaService.decisionOnJustification(nwaJustificationDecision).subscribe(
+            (response: NWAJustification) => {
+                this.SpinnerService.hide();
+                this.showToasterSuccess('Success', `Justification Approved`);
+                console.log(response);
+                this.getSPCSECTasks();
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                console.log(error.message);
+                this.showToasterError('Error', `Justification Was Not Approved`);
+                this.getSPCSECTasks();
+                //alert(error.message);
+            }
+        );
+    }
+    public rejectDecision(nwaJustificationDecision: NWAJustificationDecision): void{
+        this.SpinnerService.show();
+        this.stdNwaService.decisionOnJustification(nwaJustificationDecision).subscribe(
+            (response: NWAJustification) => {
+                this.SpinnerService.hide();
+                this.showToasterSuccess('Success', `Justification Was Declined`);
+                console.log(response);
+                this.getSPCSECTasks();
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                console.log(error.message);
+                this.showToasterError('Error', `Justification Was Not Approved`);
+                this.getSPCSECTasks();
+                //alert(error.message);
+            }
+        );
+    }
+
+
 
 
 

@@ -21,6 +21,7 @@ export class SmarkApplicationsAllComponent implements OnInit {
   public dataTable: DataTable;
     public allPermitData: PermitEntityDto[];
     draftID = String(ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DRAFT_ID);
+    smarkID = String(ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.SMARK_TYPE_ID);
 
   constructor(
       private qaService: QaService,
@@ -33,17 +34,17 @@ export class SmarkApplicationsAllComponent implements OnInit {
     let formattedArray = [];
     this.dataTable;
 
-    this.qaService.loadPermitList('2').subscribe(
-        (data: any) => {
+      this.qaService.loadPermitList(this.smarkID).subscribe(
+          (data: any) => {
 
-          this.allPermitData = data;
-          // tslint:disable-next-line:max-line-length
-          formattedArray = data.map(i => [i.permitRefNumber, i.createdOn, i.productName, i.tradeMark, i.awardedPermitNumber, i.dateOfIssue, i.dateOfExpiry, i.permitStatus, i.id, i.processStatusID]);
+              this.allPermitData = data;
+              // tslint:disable-next-line:max-line-length
+              formattedArray = data.map(i => [i.permitRefNumber, i.createdOn, i.productName, i.tradeMark, i.awardedPermitNumber, i.dateOfIssue, i.dateOfExpiry, i.permitStatus, i.id, i.processStatusID]);
 
-            this.dataTable = {
-                // tslint:disable-next-line:max-line-length
-                headerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date', 'Expiry Date', 'Status', 'Actions'],
-                footerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date', 'Expiry Date', 'Status', 'Actions'],
+              this.dataTable = {
+                  // tslint:disable-next-line:max-line-length
+                  headerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date', 'Expiry Date', 'Status', 'Actions'],
+                  footerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date', 'Expiry Date', 'Status', 'Actions'],
                 dataRows: formattedArray
 
 
