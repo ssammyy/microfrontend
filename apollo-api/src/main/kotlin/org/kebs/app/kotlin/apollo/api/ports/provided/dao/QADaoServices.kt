@@ -4664,14 +4664,12 @@ class QADaoServices(
                         ?: kotlin.run {
                             var batchInvoicePermit = QaBatchInvoiceEntity()
                             with(batchInvoicePermit) {
-                                invoiceNumber = "KIMS${
-                                    generateRandomText(
-                                        5,
-                                        s.secureRandom,
-                                        s.messageDigestAlgorithm,
-                                        true
-                                    )
-                                }".toUpperCase()
+                                invoiceNumber = applicationMapProperties.mapInvoicesPrefix + generateRandomText(
+                                    5,
+                                    s.secureRandom,
+                                    s.messageDigestAlgorithm,
+                                    true
+                                ).toUpperCase()
                                 userId = userID
                                 plantId = batchInvoiceDto.plantID
                                 status = s.activeStatus
