@@ -1215,15 +1215,14 @@ fun createLocalCoc(
 
 
                     //Generate Demand note number
-                    demandNoteNumber =
-                        "KIMS${itemDetails.cdDocId?.cdType?.demandNotePrefix}${
-                            generateRandomText(
-                                5,
-                                map.secureRandom,
-                                map.messageDigestAlgorithm,
-                                true
-                            )
-                        }".toUpperCase()
+                    demandNoteNumber = "${applicationMapProperties.mapInvoicesPrefix}${
+                        generateRandomText(
+                            5,
+                            map.secureRandom,
+                            map.messageDigestAlgorithm,
+                            true
+                        )
+                    }".toUpperCase()
                     paymentStatus = map.inactiveStatus
                     dateGenerated = commonDaoServices.getCurrentDate()
                     generatedBy = commonDaoServices.concatenateName(user)
