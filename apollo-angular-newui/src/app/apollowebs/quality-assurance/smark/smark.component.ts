@@ -31,6 +31,7 @@ import Swal from 'sweetalert2';
 })
 export class SmarkComponent implements OnInit {
     @ViewChild('editModal') editModal !: TemplateRef<any>;
+    permitTypeName!: string;
     currDiv!: string;
     currDivLabel!: string;
     labResultsStatus!: string;
@@ -340,6 +341,11 @@ export class SmarkComponent implements OnInit {
                     this.allPermitDetails = new AllPermitDetailsDto();
                     this.allPermitDetails = data;
                     this.batchID = this.allPermitDetails.batchID;
+                    if (this.allPermitDetails.permitDetails.permitTypeID === this.SMarkTypeID) {
+                        this.permitTypeName = 'Standardization';
+                    } else if (this.allPermitDetails.permitDetails.permitTypeID === this.FMarkTypeID) {
+                        this.permitTypeName = 'Fortification';
+                    }
                     // this.onSelectL1SubSubSection(this.userDetails?.employeeProfile?.l1SubSubSection);
                     this.qaService.viewSTA1Details(String(this.allPermitDetails.permitDetails.id)).subscribe(
                         (dataSta1) => {

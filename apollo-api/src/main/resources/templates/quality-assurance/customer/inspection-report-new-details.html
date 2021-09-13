@@ -816,7 +816,7 @@
                                        style="color: white">UPLOAD ATTACHMENTS</a>
                                     <!--                                    <a th:if="${permit?.sta10FilledStatus != 1 and QaSta10Entity?.closedProduction == 1 and QaSta10Entity?.closedRawMaterials == 1 and QaSta10Entity?.closedMachineryPlants == 1 and QaSta10Entity?.closedManufacturingProcesses == 1 }"  th:href="@{/api/qa/new-sta10-submit(permitID=${permit?.id})}" class="filter-link" style="color: white">SUBMIT STA10</a>-->
                                 </div>
-                                <div sec:authorize="hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_HOD_MODIFY') or hasAuthority('QA_RM_MODIFY')">
+                                <div sec:authorize="hasAuthority('QA_MANAGER_MODIFY') or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_HOD_MODIFY') or hasAuthority('QA_RM_MODIFY')">
                                     <a th:if="${QaInspectionReportRecommendationEntity?.submittedInspectionReportStatus == 1 and QaInspectionReportRecommendationEntity?.supervisorFilledStatus == null}"
                                        style="color: white"
                                        onclick="popUpFunctionAddRawMaterials('addSupervisorDetails');"

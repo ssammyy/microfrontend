@@ -197,7 +197,7 @@ class LimsServices(
 
     }
 
-    fun labPdfListResponseResults(response: String): List<String> {
+    fun labPdfListResponseResults(response: String): List<String>? {
         val resultsParam: RootLabPdfList = ObjectMapper().readValue(response, RootLabPdfList::class.java)
         //Loop
         if (resultsParam.pdf_files?.isNullOrEmpty() == true) {
@@ -205,7 +205,7 @@ class LimsServices(
             throw ExpectedDataNotFound("NO RESULTS PDF FOUND")
 //            return myStatus
         } else {
-            return resultsParam.pdf_files!!
+            return resultsParam.pdf_files
         }
 
     }

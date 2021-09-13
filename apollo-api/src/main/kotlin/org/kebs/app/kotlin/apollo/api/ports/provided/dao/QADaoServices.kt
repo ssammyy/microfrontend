@@ -386,6 +386,21 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
     }
 
+
+    fun findAllUserPermitWithPermitTypeAwardedStatusAndFmarkGeneratedSTatusISNull(
+        user: UsersEntity,
+        permitType: Long,
+        status: Int
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatus(userId, permitType, status)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
     fun findAllUserPermitWithPermitTypeAwardedStatusIsNullAndTaskID(
         user: UsersEntity,
         permitType: Long,
@@ -520,18 +535,25 @@ class QADaoServices(
 
         val userProfile = commonDaoServices.findUserProfileByUserID(user, 1)
 
-        var permitListAllApplications: List<PermitApplicationsEntity>? = null
+//        var permitListAllApplications: List<PermitApplicationsEntity>? = null
+        val permitListAllApplications = mutableListOf<PermitApplicationsEntity>()
         when {
             auth.authorities.stream().anyMatch { authority -> authority.authority == authToCompareWith } -> {
                 systemsAdminDaoService.listRbacSectionByUsersIdAndByStatus(
                     user.id ?: throw Exception("MISSING USER ID"), 1
                 )
                     ?.forEach { section ->
-                        permitListAllApplications =
-                            permitRepo.findRbacPermitByRegionIDPaymentStatusAndUserTaskIDAndPermitTypeAndSectionId(
-                                permitTypeID, map.initStatus,
-                                userProfile.regionId?.id ?: throw Exception("MISSING REGION ID"), taskID, section.id
-                            )
+                        permitRepo.findRbacPermitByRegionIDPaymentStatusAndUserTaskIDAndPermitTypeAndSectionId(
+                            permitTypeID,
+                            map.initStatus,
+                            userProfile.regionId?.id ?: throw Exception("MISSING REGION ID"),
+                            taskID,
+                            section.id
+                        )
+                            ?.let { ls ->
+                                permitListAllApplications.addAll(ls)
+                            }
+
                     }
 
             }
@@ -550,18 +572,23 @@ class QADaoServices(
 
         val userProfile = commonDaoServices.findUserProfileByUserID(user, 1)
 
-        var permitListAllApplications: List<PermitApplicationsEntity>? = null
+//        var permitListAllApplications: List<PermitApplicationsEntity>? = null
+        val permitListAllApplications = mutableListOf<PermitApplicationsEntity>()
         when {
             auth.authorities.stream().anyMatch { authority -> authority.authority == authToCompareWith } -> {
                 systemsAdminDaoService.listRbacSectionByUsersIdAndByStatus(
                     user.id ?: throw Exception("MISSING USER ID"), 1
                 )
                     ?.forEach { section ->
-                        permitListAllApplications =
-                            permitRepo.findRbacPermitByRegionIDPaymentStatusAndPermitTypeIDAndSectionId(
-                                permitTypeID, map.initStatus,
-                                userProfile.regionId?.id ?: throw Exception("MISSING REGION ID"), section.id
-                            )
+                        permitRepo.findRbacPermitByRegionIDPaymentStatusAndPermitTypeIDAndSectionId(
+                            permitTypeID,
+                            map.initStatus,
+                            userProfile.regionId?.id ?: throw Exception("MISSING REGION ID"),
+                            section.id
+                        )
+                            ?.let { ls ->
+                                permitListAllApplications.addAll(ls)
+                            }
                     }
             }
         }
@@ -579,18 +606,24 @@ class QADaoServices(
 
         val userProfile = commonDaoServices.findUserProfileByUserID(user, 1)
 
-        var permitListAllApplications: List<PermitApplicationsEntity>? = null
+//        var permitListAllApplications: List<PermitApplicationsEntity>? = null
+        val permitListAllApplications = mutableListOf<PermitApplicationsEntity>()
         when {
             auth.authorities.stream().anyMatch { authority -> authority.authority == authToCompareWith } -> {
                 systemsAdminDaoService.listRbacSectionByUsersIdAndByStatus(
                     user.id ?: throw Exception("MISSING USER ID"), 1
                 )
                     ?.forEach { section ->
-                        permitListAllApplications =
-                            permitRepo.findRbacPermitByRegionIDPaymentStatusAndPermitTypeIDAndAwardedStatusAndSectionId(
-                                permitTypeID, map.initStatus, map.activeStatus,
-                                userProfile.regionId?.id ?: throw Exception("MISSING REGION ID"), section.id
-                            )
+                        permitRepo.findRbacPermitByRegionIDPaymentStatusAndPermitTypeIDAndAwardedStatusAndSectionId(
+                            permitTypeID,
+                            map.initStatus,
+                            map.activeStatus,
+                            userProfile.regionId?.id ?: throw Exception("MISSING REGION ID"),
+                            section.id
+                        )
+                            ?.let { ls ->
+                                permitListAllApplications.addAll(ls)
+                            }
                     }
             }
         }
@@ -3894,6 +3927,8 @@ class QADaoServices(
                 renewalStatus = s.activeStatus
                 userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
                 userId = user.id
+                fmarkGenerated = s.inactiveStatus
+                companyId = oldPermit.companyId
                 attachedPlantId = oldPermit.attachedPlantId
                 permitType = oldPermit.permitType
                 permitRefNumber = oldPermit.permitRefNumber

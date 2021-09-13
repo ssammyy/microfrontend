@@ -947,7 +947,6 @@ class QualityAssuranceHandler(
 
         limsServices.checkPDFFiles(ssfDetails.bsNumber ?: throw ExpectedDataNotFound("MISSING BS NUMBER"))
             ?.forEach { fpdf ->
-
                 if (savedPDFFiles.isNotEmpty()) {
                     savedPDFFiles.firstOrNull { it.pdfName == fpdf }
                         ?.let {
@@ -964,23 +963,6 @@ class QualityAssuranceHandler(
                             )
                             result.add(limsDto)
                         }
-
-
-//                    savedPDFFiles.forEach { spdf ->
-//                        if (fpdf == spdf.pdfName) {
-//                            val limsDto = LimsFilesFoundDto(
-//                                true,
-//                                fpdf
-//                            )
-//                            result.add(limsDto)
-//                        } else {
-//                            val limsDto = LimsFilesFoundDto(
-//                                false,
-//                                fpdf
-//                            )
-//                            result.add(limsDto)
-//                        }
-//                    }
                 } else {
                     val limsDto = LimsFilesFoundDto(
                         false,
@@ -1516,6 +1498,51 @@ class QualityAssuranceHandler(
 
     }
 
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun permitListAwardedGenerateFmarkMigration(req: ServerRequest): ServerResponse {
+        try {
+            val auth = commonDaoServices.loggedInUserAuthentication()
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()
+                ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
+            val permitType = qaDaoServices.findPermitType(permitTypeID)
+
+            var permitListAllApplications: List<PermitEntityDto>? = null
+            when {
+                auth.authorities.stream().anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                    permitListAllApplications = qaDaoServices.listPermits(
+                        qaDaoServices.findAllSmarkPermitWithNoFmarkGenerated(
+                            loggedInUser,
+                            permitTypeID,
+                            map.activeStatus,
+                            map.inactiveStatus
+                        ), map
+                    )
+//                    permitListAllApplications = qaDaoServices.listPermits(
+//                        qaDaoServices.findAllUserPermitWithPermitTypeAwardedStatus(
+//                            loggedInUser,
+//                            permitTypeID,
+//                            map.activeStatus
+//                        ), map
+//                    )
+                }
+                else -> {
+                    throw ExpectedDataNotFound("UNAUTHORISED LOGGED IN USER (ACCESS DENIED)")
+                }
+            }
+
+            return ok().body(permitListAllApplications)
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
     @PreAuthorize(
         "hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_READ')" +
                 " or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')"
@@ -1649,7 +1676,7 @@ class QualityAssuranceHandler(
                 applicantName = dto.applicantName
                 sectionId = dto.sectionId
                 permitForeignStatus = dto.permitForeignStatus
-                fmarkGenerateStatus = dto.createFmark
+                fmarkGenerateStatus = dto.createFmark ?: 0
                 attachedPlantId = when {
                     auth.authorities.stream().anyMatch { authority -> authority.authority == "MODIFY_COMPANY" } -> {
                         dto.attachedPlant

@@ -779,6 +779,7 @@ create table CFG_USER_SECTION_ASSIGNMENTS
 
 
 create sequence CFG_USER_SECTION_ASSIGNMENTS_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+
 create or replace trigger CFG_USER_SECTION_ASSIGNMENTS_seq_trg
     before
         insert

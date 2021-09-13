@@ -52,16 +52,22 @@ class RegistrationManagementDaoService(
      */
     fun provideCompanyDetailsForUser(): UserCompanyDetailsDto? {
         val user = commonDaoServices.loggedInUserDetails()
-        val counter = manufacturePlantRepository.countByCompanyProfileId(
-            user.companyId ?: throw NullValueNotAllowedException("User does not have a company flag")
-        )
+        val counter = user.companyId?.let {
+            manufacturePlantRepository.countByCompanyProfileId(
+                it
+            )
+        }
         val turnOver = companyRepo.findByIdOrNull(user.companyId)?.yearlyTurnover
-        val countAwarded = permitRepo.countByCompanyIdAndPermitAwardStatus(
-            user.companyId ?: throw NullValueNotAllowedException("User does not have a company flag"), 1
-        )
-        val countExpired = permitRepo.countByCompanyIdAndPermitAwardStatusAndPermitExpiredStatus(
-            user.companyId ?: throw NullValueNotAllowedException("User does not have a company flag"), 1, 1
-        )
+        val countAwarded = user.companyId?.let {
+            permitRepo.countByCompanyIdAndPermitAwardStatus(
+                it, 1
+            )
+        }
+        val countExpired = user.companyId?.let {
+            permitRepo.countByCompanyIdAndPermitAwardStatusAndPermitExpiredStatus(
+                it, 1, 1
+            )
+        }
         return UserCompanyDetailsDto(
             user.companyId,
             user.plantId,

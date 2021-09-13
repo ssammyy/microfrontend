@@ -975,21 +975,21 @@ class QualityAssuranceController(
             applicationMapProperties.mapQAPermitTypeIdSmark -> {
                 permitDetailsDB = qaDaoServices.permitInsertStatus(
                     permitDetailsDB,
-                    applicationMapProperties.mapQaStatusPShedulvisit,
+                    applicationMapProperties.mapQaStatusPStandardsAdding,
                     loggedInUser
                 )
             }
             applicationMapProperties.mapQAPermitTypeIdFmark -> {
                 permitDetailsDB = qaDaoServices.permitInsertStatus(
                     permitDetailsDB,
-                    applicationMapProperties.mapQaStatusPShedulvisit,
+                    applicationMapProperties.mapQaStatusPStandardsAdding,
                     loggedInUser
                 )
             }
             applicationMapProperties.mapQAPermitTypeIDDmark -> {
                 permitDetailsDB = qaDaoServices.permitInsertStatus(
                     permitDetailsDB,
-                    applicationMapProperties.mapQaStatusPfactoryInsForms,
+                    applicationMapProperties.mapQaStatusPStandardsAdding,
                     loggedInUser
                 )
             }
@@ -1064,7 +1064,31 @@ class QualityAssuranceController(
         permitDetailsFromDB: PermitApplicationsEntity,
         loggedInUser: UsersEntity
     ): Pair<PermitApplicationsEntity, String> {
-        val permitDetailsDB = permitDetailsFromDB
+        var permitDetailsDB = permitDetailsFromDB
+
+        when (permitDetailsDB.permitType) {
+            applicationMapProperties.mapQAPermitTypeIdSmark -> {
+                permitDetailsDB = qaDaoServices.permitInsertStatus(
+                    permitDetailsDB,
+                    applicationMapProperties.mapQaStatusPShedulvisit,
+                    loggedInUser
+                )
+            }
+            applicationMapProperties.mapQAPermitTypeIdFmark -> {
+                permitDetailsDB = qaDaoServices.permitInsertStatus(
+                    permitDetailsDB,
+                    applicationMapProperties.mapQaStatusPShedulvisit,
+                    loggedInUser
+                )
+            }
+            applicationMapProperties.mapQAPermitTypeIDDmark -> {
+                permitDetailsDB = qaDaoServices.permitInsertStatus(
+                    permitDetailsDB,
+                    applicationMapProperties.mapQaStatusPfactoryInsForms,
+                    loggedInUser
+                )
+            }
+        }
 
         val closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetailsDB.id}"
         return Pair(permitDetailsDB, closeLink)
@@ -1139,6 +1163,13 @@ class QualityAssuranceController(
                 if (permitDetailsDB.fmarkGenerateStatus == 1 && permitDetailsDB.permitType == applicationMapProperties.mapQAPermitTypeIdSmark) {
                     qaDaoServices.permitGenerateFMarkFromAwardedPermit(map, loggedInUser, permitDetailsDB)
                     permitDetailsDB.fmarkGenerated = 1
+                    permitDetailsDB = qaDaoServices.permitInsertStatus(
+                        permitDetailsDB,
+                        applicationMapProperties.mapQaStatusPermitAwarded,
+                        loggedInUser
+                    )
+                } else {
+                    permitDetailsDB.fmarkGenerated = 0
                     permitDetailsDB = qaDaoServices.permitInsertStatus(
                         permitDetailsDB,
                         applicationMapProperties.mapQaStatusPermitAwarded,
