@@ -54,8 +54,14 @@ class WebSecurityConfig {
     @Order(1)
     class TokenSecurityConfigurationAdapter(
         private val customUserDetailsService: CustomUserDetailsService,
+        private val authenticationProperties: AuthenticationProperties,
         private val passwordEncoder: PasswordEncoder
     ) : WebSecurityConfigurerAdapter() {
+
+        private var exclusions: Array<String> =
+            authenticationProperties.requiresNoAuthenticationApolloApiToken?.split(",")?.toTypedArray() ?: arrayOf("")
+        private var exclusionsCros: Array<String> =
+            authenticationProperties.requiresNoAuthenticationCros?.split(",")?.toTypedArray() ?: arrayOf("")
 
 //        fun addCorsMappings(registry: CorsRegistry) {
 //            registry.addMapping("/**").allowedOrigins("*").allowedMethods("GET", "POST", "PUT", "DELETE")
@@ -77,13 +83,7 @@ class WebSecurityConfig {
         fun corsConfigurationSource(): CorsConfigurationSource? {
             val configuration = CorsConfiguration()
             //TODO: MOVE TO CONFIGURATION FILE
-            configuration.allowedOrigins = listOf(
-                "http://localhost:4200",
-                "https://kimsint.kebs.org",
-                "https://kimsint.kebs.org:8006",
-                "https://kims.kebs.org",
-                "https://kims.kebs.org:8006"
-            )
+            configuration.allowedOrigins = listOf(*exclusionsCros)
             configuration.allowedMethods = listOf("*")
             configuration.allowedHeaders = listOf("*")
             configuration.allowCredentials = true
@@ -103,16 +103,7 @@ class WebSecurityConfig {
                 /**
                  * TODO: Move to external configuration
                  */
-                .antMatchers(
-                    "/api/v1/login",
-                    "/api/v1/otp",
-                    "/api/v1/sftp/kesws/download",
-                    "/api/v1/auth/**",
-                    "/api/v1/otp",
-                    "/api/v1/migration/anonymous/**",
-                    "/api/v1/migration/qa/report/proforma-invoice-with-Item**",
-                    "/api/v1/migration/background/**"
-                )
+                .antMatchers(*exclusions)
                 .permitAll()
                 .anyRequest().authenticated()
                 .and()
@@ -145,6 +136,9 @@ class WebSecurityConfig {
 
     ) {
 
+        private var exclusions: Array<String> =
+            authenticationProperties.requiresNoAuthenticationApolloApi?.split(",")?.toTypedArray() ?: arrayOf("")
+
         @Bean
         fun accessDeniedHandler(): CustomAccessDeniedHandler = CustomAccessDeniedHandler()
 
@@ -171,39 +165,7 @@ class WebSecurityConfig {
                 .cors().disable()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers(
-                    "/api/sftp/kesws/download",
-                    "/api/ms/complaints/new/save/**",
-                    "/api/ms/complaints/new/**",
-                    "/auth/**",
-                    "/migration/**",
-                    "/accessDenied/**",
-                    "/api/auth/**",
-                    "/api/integ/login/*",
-                    "/resources/**",
-                    "/api/di/mpesa-callback/**",
-                    "/webjars/**",
-                    "/authorize/**",
-                    "/login/**",
-                    "/ui/login/**",
-                    "/static/**",
-                    "/css/**",
-                    "/images/**",
-                    "/fonts/**",
-                    "/js/**",
-                    ".css",
-                    ".js",
-                    ".svg",
-                    ".jpg",
-                    ".png",
-                    ".webp",
-                    ".webapp",
-                    ".pdf",
-                    ".ico",
-                    ".ico",
-                    ".html",
-                    "/favicon.ico"
-                ).permitAll()
+                .antMatchers(*exclusions).permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()

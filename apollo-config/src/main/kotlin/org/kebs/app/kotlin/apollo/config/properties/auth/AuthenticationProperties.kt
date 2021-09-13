@@ -158,6 +158,15 @@ class AuthenticationProperties {
     @Value("\${org.kebs.app.kotlin.apollo.auth.requires.no.authentication}")
     var requiresNoAuthentication: String? = null
 
+    @Value("\${org.kebs.app.kotlin.apollo.auth.requires.no.authentication.apollo.api}")
+    var requiresNoAuthenticationApolloApi: String? = null
+
+    @Value("\${org.kebs.app.kotlin.apollo.auth.requires.no.authentication.apollo.api.token}")
+    var requiresNoAuthenticationApolloApiToken: String? = null
+
+    @Value("\${org.kebs.app.kotlin.apollo.auth.requires.no.authentication.cros}")
+    var requiresNoAuthenticationCros: String? = null
+
     @Value("\${org.kebs.app.kotlin.apollo.auth.home.page}")
     val homePage: String? = null
 
