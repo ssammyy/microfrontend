@@ -17,6 +17,7 @@ import {TargetItemComponent} from "../forms/target-item/target-item.component";
 import {TargetSupervisorComponent} from "../forms/target-supervisor/target-supervisor.component";
 import {SendDemandNoteTokwsComponent} from "../forms/send-demand-note-tokws/send-demand-note-tokws.component";
 import {BlacklistComponent} from "../forms/blacklist/blacklist.component";
+import {ChecklistDataFormComponent} from "./item-details-list-view/checklist-data-form/checklist-data-form.component";
 
 @Component({
     selector: 'app-view-single-consignment-document',
@@ -33,6 +34,8 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
     paymentFees: any[]
     configurations: any[]
     demandNotes: any[]
+    checkLists: any[]
+    checkListConfiguration: any
 
     constructor(private diService: DestinationInspectionService,
                 private dialog: MatDialog,
@@ -47,10 +50,53 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
                 this.loadConsignmentDetails()
                 this.loadFees()
                 this.loadUiConfigurations()
+                this.loadChecklistConfigurations()
             }
         )
 
     }
+
+    createInspectionChecklist() {
+        this.dialog.open(ChecklistDataFormComponent, {
+            data: {
+                uuid: this.consignment.cd_details.uuid,
+                items: this.consignment.items_cd,
+                reinspection: false,
+                configs: this.checkListConfiguration
+            }
+        }).afterClosed()
+            .subscribe(
+                res => {
+                    if (res) {
+                        this.loadChecklists()
+                    }
+                }
+            )
+    }
+    loadChecklists() {
+        this.diService.loadChecklists(this.consignment.cd_details.uuid)
+            .subscribe(
+                res => {
+                    if (res.responseCode === "00") {
+                        this.checkLists = res.data
+                    } else {
+                        console.log(res.message)
+                    }
+                }
+            )
+    }
+
+    loadChecklistConfigurations() {
+        this.diService.loadChecklistConfigs()
+            .subscribe(
+                res => {
+                    if (res.responseCode === "00") {
+                        this.checkListConfiguration = res.data
+                    }
+                }
+            )
+    }
+
     loadDemandNotes() {
         this.diService.listDemandNotes(this.consignment.cd_details.id)
             .subscribe(
@@ -70,6 +116,12 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
                 paymentFees: this.paymentFees
             }
         })
+    }
+
+    reloadAttachments(v: boolean) {
+        if(v) {
+            this.listConsignmentAttachments()
+        }
     }
 
     viewCoR() {
@@ -166,7 +218,9 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
         }
         return false
     }
-
+    viewInspectionChecklists(){
+        this.router.navigate(["/di/checklist/details/",this.consignment.cd_details.uuid])
+    }
     downloadDemandNote() {
         // let d=341
         this.diService.downloadDocument("/api/v1/download/demand/note/"+this.consignment.cd_details.id)
@@ -345,7 +399,7 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
             .subscribe(
                 res => {
                     if (res) {
-                        this.loadConsignmentDetails()
+                        this.router.navigate(["/di"])
                     }
                 }
             )
@@ -397,7 +451,7 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
             .subscribe(
                 res => {
                     if (res) {
-                        this.loadConsignmentDetails()
+                        this.router.navigate(["/di"])
                     }
                 }
             )

@@ -40,32 +40,7 @@ class ApiDestinationInspectionHandler(
         private val consignmentAuditService: ConsignmentDocumentAuditService,
         private val applicationMapProperties: ApplicationMapProperties
 ) {
-    fun addSsfDetails(req: ServerRequest): ServerResponse{
-        val response=ApiResponseModel()
-        val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-        try {
-            val loggedInUser = commonDaoServices.loggedInUserDetails()
-            req.pathVariable("cdItemID").let { cdItemID ->
-                var cdItem = daoServices.findItemWithItemID(cdItemID.toLongOrDefault(0L))
-                val form=req.body(SsfForm::class.java)
-                val sampleSubmissionDetails=form.ssf()
 
-                //updating of Details in DB
-                daoServices.ssfSave(cdItem, sampleSubmissionDetails, loggedInUser, map).first
-                with(cdItem) {
-                    sampleBsNumberStatus = map.activeStatus
-                }
-                cdItem = daoServices.updateCdItemDetailsInDB(cdItem, loggedInUser)
-                response.data=CdItemDetailsDao.fromEntity(cdItem)
-                response.responseCode=ResponseCodes.SUCCESS_CODE
-                response.message="You have Successful Filled Sample Submission Details"
-            }
-        }catch (ex: Exception) {
-            response.responseCode=ResponseCodes.EXCEPTION_STATUS
-            response.message="Failed to save SSF details"
-        }
-        return ServerResponse.ok().body(response)
-    }
     fun listBlackListedUser(req: ServerRequest): ServerResponse {
         val response = ApiResponseModel()
         try {
@@ -181,37 +156,8 @@ class ApiDestinationInspectionHandler(
         return ServerResponse.ok().body(response)
     }
 
-    fun uploadMinistryCheckList(req: ServerRequest): ServerResponse {
-        var response = ApiResponseModel()
-        val multipartRequest = (req.servletRequest() as? MultipartHttpServletRequest)
-        if (multipartRequest != null) {
-            val multipartFile = multipartRequest.getFile("file")
-            val comment = req.attribute("comment")
-                    .orElse("")
-            val itemId = req.pathVariable("itemId")
-            response = this.destinationInspectionService.ministryInspectionList(itemId.toLongOrDefault(0L), comment.toString(), multipartFile!!)
 
-        } else {
-            response.responseCode = ResponseCodes.INVALID_CODE
-            response.message = "Request is not a multipart request"
-        }
-        return ServerResponse.ok().body(response)
-    }
 
-    fun downloadMinistryCheckList(req: ServerRequest): ServerResponse {
-        val itemId = req.pathVariable("itemId")
-                .toLongOrDefault(0L)
-        daoServices.findInspectionMotorVehicleById(itemId)?.let { cdInspectionMotorVehicleItemChecklistEntity ->
-            cdInspectionMotorVehicleItemChecklistEntity.ministryReportFile?.let {
-                val resource = ByteArrayResource(it)
-                return ServerResponse.ok()
-                        .header("Content-Disposition", "inline; filename=${cdInspectionMotorVehicleItemChecklistEntity.chassisNo}_inspection_report;")
-                        .contentType(MediaType.APPLICATION_PDF)
-                        .body(resource)
-            } ?: throw ExpectedDataNotFound("Inspection Report file not found")
-        }
-                ?: throw ExpectedDataNotFound("Motor Vehicle Inspection checklist with ID: $itemId not found")
-    }
 
     fun listConsignmentDocumentTypes(req: ServerRequest): ServerResponse {
         return ServerResponse.ok()
@@ -228,22 +174,6 @@ class ApiDestinationInspectionHandler(
                 .body(this.destinationInspectionService.applicationTypes())
     }
 
-    fun ministryInspectionRequest(req: ServerRequest): ServerResponse {
-        req.pathVariable("itemId").let {
-            val form = req.body(MinistryRequestForm::class.java)
-            return ServerResponse.ok()
-                    .body(this.destinationInspectionService.requestMinistryInspection(it, form.stationId))
-        }
-    }
-
-    fun ministryInspections(req: ServerRequest): ServerResponse {
-        req.pathVariable("inspectionStatus").let { taskId ->
-            val status = taskId.toLongOrDefault(0)
-            val page = extractPage(req)
-            return ServerResponse.ok()
-                    .body(this.destinationInspectionService.listMinistryInspection(status >= 1, page))
-        }
-    }
 
     fun consignmentDocumentDetails(req: ServerRequest): ServerResponse {
         try {
@@ -310,7 +240,11 @@ class ApiDestinationInspectionHandler(
         return ServerResponse.ok()
                 .body(response)
     }
-
+    fun deleteConsignmentDocumentAttachment(req: ServerRequest): ServerResponse {
+        req.pathVariable("attachmentId").let {
+            return ServerResponse.ok().body(this.destinationInspectionService.deleteConsignmentDocumentAttachments(it.toLongOrDefault(0L)))
+        }
+    }
 
     fun consignmentDocumentAttachments(req: ServerRequest): ServerResponse {
         req.pathVariable("coUuid").let {
@@ -523,29 +457,11 @@ class ApiDestinationInspectionHandler(
         }
     }
 
-    fun consignmentDocumentChecklist(req: ServerRequest): ServerResponse {
-        req.pathVariable("cdItemUuid").let {
-            return ServerResponse.ok().body(this.destinationInspectionService.inspectionChecklistReportDetails(it))
-        }
-    }
-
     fun consignmentDocumentSSFLabDetails(req: ServerRequest): ServerResponse {
         req.pathVariable("cdItemUuid").let {
             return ServerResponse.ok().body(this.destinationInspectionService.getSSfDetails(it.toLongOrDefault(0)))
         }
     }
 
-    fun motorVehicleInspection(req: ServerRequest): ServerResponse {
-        var response = ApiResponseModel()
-        req.pathVariable("itemId").let { itemId ->
-            val imId = itemId.toLongOrDefault(0)
-            if (imId > 0) {
-                response = this.destinationInspectionService.motorVehicleInspectionDetails(imId)
-            } else {
-                response.message = "Invalid item identifier"
-                response.responseCode = ResponseCodes.FAILED_CODE
-            }
-        }
-        return ServerResponse.ok().body(response)
-    }
+
 }

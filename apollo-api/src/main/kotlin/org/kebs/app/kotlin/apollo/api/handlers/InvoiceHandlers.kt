@@ -25,12 +25,12 @@ import org.springframework.stereotype.Component
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.function.paramOrNull
+import java.sql.Timestamp
+import java.time.Instant
 
 @Component
 class InvoiceHandlers(
-        private val invoiceService: InvoicePaymentService,
         private val demandNoteRepository: IDemandNoteRepository,
-        private val serviceMapsRepo: IServiceMapsRepository,
         private val commonDaoServices: CommonDaoServices,
         private val applicationMapProperties: ApplicationMapProperties,
         private val daoServices: DestinationInspectionDaoServices,
@@ -154,22 +154,87 @@ class InvoiceHandlers(
                 response.responseCode = ResponseCodes.SUCCESS_CODE
                 response.message = "Success"
             } else {
-                val data = mutableMapOf<String, Any?>()
-                data["demandNoteId"] = demandNote.id
-                data["amount"] = invoiceForm.amount
-                data["supervisor"] = cdDetails.assigner?.userName
-                data["remarks"] = invoiceForm.remarks
-                data["hasAllItems"] = totalItems == itemList.size
-                data["cdUuid"] = cdUuid
-                this.diBpmn.startGenerateDemandNote(data, cdDetails)
+                demandNote.status = -1
+                demandNote.varField1 = invoiceForm.remarks
+                demandNote.varField2 = (itemList.size == totalItems).toString()
+                demandNote.varField3="NEW"
+                daoServices.upDateDemandNote(demandNote)
                 response.responseCode = ResponseCodes.SUCCESS_CODE
-                response.message = "Success"
+                response.message = "Demand note generated"
             }
 
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("DEMAND NOTE GENERATION ERROR", ex)
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
             response.message = "Failed to submit request"
+        }
+        return ServerResponse.ok().body(response)
+    }
+
+    fun deleteDemandNote(req: ServerRequest): ServerResponse {
+        val response = ApiResponseModel()
+        try {
+            req.pathVariable("invoiceId").let { invoiceId ->
+                val demandNote = daoServices.findDemandNoteWithID(invoiceId.toLongOrDefault(0L))
+                if (demandNote != null) {
+                    if (demandNote.status!! < 0) {
+                        val loggedInUser = commonDaoServices.loggedInUserDetails()
+                        demandNote.status = 4
+                        demandNote.varField3 = "DELETED"
+                        demandNote.deletedOn = Timestamp.from(Instant.now())
+                        demandNote.deleteBy = loggedInUser.userName
+                        daoServices.upDateDemandNote(demandNote)
+                    } else {
+                        response.responseCode = ResponseCodes.NOT_FOUND
+                        response.message = "Demand not cannot be deleted after submission or deletion"
+                    }
+                } else {
+                    response.responseCode = ResponseCodes.NOT_FOUND
+                    response.message = "Demand not found"
+                }
+            }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("DEMAND NOTE DELETE ERROR", ex)
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.message = "Demand deletion failed"
+        }
+        return ServerResponse.ok().body(response)
+    }
+
+    fun submitDemandNoteForApproval(req: ServerRequest): ServerResponse {
+        val response = ApiResponseModel()
+        try {
+            req.pathVariable("invoiceId").let { invoiceId ->
+                val demandNote = daoServices.findDemandNoteWithID(invoiceId.toLongOrDefault(0L))
+                if (demandNote != null) {
+                    if (demandNote.status!! < 0) {
+                        val cdDetails = daoServices.findCD(demandNote.cdId!!)
+                        val data = mutableMapOf<String, Any?>()
+                        data["demandNoteId"] = demandNote.id
+                        data["amount"] = demandNote.totalAmount
+                        data["supervisor"] = cdDetails.assigner?.userName
+                        data["remarks"] = demandNote.varField1
+                        data["hasAllItems"] = demandNote.varField2?.toBoolean() ?: false
+                        data["cdUuid"] = cdDetails.uuid
+                        demandNote.status = 0
+                        demandNote.varField3="SUBMITTED"
+                        this.diBpmn.startGenerateDemandNote(data, cdDetails)
+                        daoServices.upDateDemandNote(demandNote)
+                        response.responseCode = ResponseCodes.SUCCESS_CODE
+                        response.message = "Demand note submitted"
+                    } else {
+                        response.responseCode = ResponseCodes.FAILED_CODE
+                        response.message = "Demand has already been submitted"
+                    }
+                } else {
+                    response.responseCode = ResponseCodes.NOT_FOUND
+                    response.message = "Demand not found"
+                }
+            }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("DEMAND NOTE SUBMISSION ERROR", ex)
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.message = "Demand submission failed"
         }
         return ServerResponse.ok().body(response)
     }

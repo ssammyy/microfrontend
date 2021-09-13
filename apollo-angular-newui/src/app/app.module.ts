@@ -165,6 +165,8 @@ import { VehicleInspectionChecklistComponent } from './apollowebs/di/view-single
 import { SsfDetailsFormComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/ssf-details-form/ssf-details-form.component';
 import { ApproveRejectItemComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/approve-reject-item/approve-reject-item.component';
 import { ViewDemandNoteComponent } from './apollowebs/di/demand-note-list/view-demand-note/view-demand-note.component';
+import { ItemSelectionComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/item-selection/item-selection.component';
+import { ViewInspectionDetailsComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/view-inspection-details/view-inspection-details.component';
 
 
 @NgModule({
@@ -344,7 +346,9 @@ import { ViewDemandNoteComponent } from './apollowebs/di/demand-note-list/view-d
         VehicleInspectionChecklistComponent,
         SsfDetailsFormComponent,
         ApproveRejectItemComponent,
-        ViewDemandNoteComponent
+        ViewDemandNoteComponent,
+        ItemSelectionComponent,
+        ViewInspectionDetailsComponent
     ],
     providers: [
         MatNativeDateModule,

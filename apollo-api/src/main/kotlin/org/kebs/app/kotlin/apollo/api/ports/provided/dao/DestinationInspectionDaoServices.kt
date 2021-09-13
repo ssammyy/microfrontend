@@ -101,6 +101,7 @@ class DestinationInspectionDaoServices(
         private val iPortsTypeCodesRepository: IPortsTypeCodesRepository,
         private val iCdPortsUserPortsRepository: ICdPortsUserPortsRepository,
         private val iCdInspectionGeneralRepo: ICdInspectionGeneralRepository,
+        private val cdMotorVehicleInspectionChecklistRepo: ICdInspectionMotorVehicleChecklistRepository,
         private val iCdInspectionAgrochemItemChecklistRepo: ICdInspectionAgrochemItemChecklistRepository,
 
         //Inspection Checklist Repos
@@ -326,7 +327,7 @@ class DestinationInspectionDaoServices(
     }
 
     fun findInspectionGeneralWithItemDetailsOrNull(cdItemDetails: CdItemDetailsEntity): CdInspectionGeneralEntity? {
-        return iCdInspectionGeneralRepo.findFirstByCdItemDetails(cdItemDetails)
+        return null
     }
 
     fun findCdItemsConsignmentDetailsOrNull(consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity): List<CdItemDetailsEntity>? {
@@ -722,8 +723,8 @@ class DestinationInspectionDaoServices(
     ): CdLocalCorEntity {
         var localCor = cdLocalCorEntity
         //Get CD Item by cd doc id
-        iCdItemsRepo.findByCdDocId(cdEntity)?.let { cdItemDetailsList ->
-            this.findMotorVehicleInspectionByCdItem(cdItemDetailsList.get(0))?.let { cdMvInspectionEntity ->
+            iCdInspectionGeneralRepo.findFirstByCdDetails(cdEntity)?.let{ cdItemDetailsList->
+            this.cdMotorVehicleInspectionChecklistRepo.findByInspectionGeneral(cdItemDetailsList)?.let { cdMvInspectionEntity ->
                 with(localCor) {
                     corSerialNo =
                             "KEBS/COR-NBI/${generateRandomText(5, s.secureRandom, s.messageDigestAlgorithm, false)}"
@@ -784,8 +785,8 @@ class DestinationInspectionDaoServices(
     ): CorsBakEntity {
         var localCor = CorsBakEntity()
         //Get CD Item by cd doc id
-        iCdItemsRepo.findByCdDocId(cdEntity)?.let { cdItemDetailsList ->
-            this.findMotorVehicleInspectionByCdItem(cdItemDetailsList.get(0))?.let { cdMvInspectionEntity ->
+        iCdInspectionGeneralRepo.findFirstByCdDetails(cdEntity)?.let{ cdItemDetailsList->
+            this.cdMotorVehicleInspectionChecklistRepo.findByInspectionGeneral(cdItemDetailsList)?.let { cdMvInspectionEntity ->
                 with(localCor) {
                     corNumber = "COR${generateRandomText(5, s.secureRandom, s.messageDigestAlgorithm, true)}"
                     corIssueDate = commonDaoServices.getTimestamp()
@@ -1156,7 +1157,7 @@ class DestinationInspectionDaoServices(
             amount: Double,
             user: UsersEntity
     ): CdDemandNoteEntity {
-        return iDemandNoteRepo.findByCdId(consignmentDocument.id!!)
+        return iDemandNoteRepo.findByCdIdAndStatusIn(consignmentDocument.id!!, listOf(-1,0))
                 ?.let { demandNote ->
                     var demandNoteDetails = demandNote
                     //Call Function to add Item Details To be attached To The Demand note
@@ -1440,13 +1441,13 @@ class DestinationInspectionDaoServices(
     }
 
     fun saveInspectionGeneralDetails(
-            inspectionGeneralEntity: CdInspectionGeneralEntity, itemDetails: CdItemDetailsEntity,
+            inspectionGeneralEntity: CdInspectionGeneralEntity, cDetails: ConsignmentDocumentDetailsEntity,
             user: UsersEntity, map: ServiceMapsEntity
     ): CdInspectionGeneralEntity {
-        var inspectionGeneralChecklist = inspectionGeneralEntity
+        // Get existing one or create a new one
+        var inspectionGeneralChecklist = iCdInspectionGeneralRepo.findFirstByCdDetails(cDetails)?:inspectionGeneralEntity
         with(inspectionGeneralChecklist) {
-            checkListType = inspectionGeneralChecklist.confirmItemType?.let { findChecklistInspectionTypeById(it) }
-            cdItemDetails = itemDetails
+            cdDetails = cDetails
             status = map.activeStatus
             createdBy = commonDaoServices.getUserName(user)
             createdOn = commonDaoServices.getTimestamp()
@@ -1465,7 +1466,6 @@ class DestinationInspectionDaoServices(
     ): CdInspectionAgrochemItemChecklistEntity {
         var inspectionAgrochemItemChecklist = inspectionAgrochemItemChecklistEntity
         with(inspectionAgrochemItemChecklist) {
-            inspectionGeneral = inspectionGeneralEntity
             status = map.activeStatus
             createdBy = commonDaoServices.getUserName(user)
             createdOn = commonDaoServices.getTimestamp()
@@ -1484,7 +1484,6 @@ class DestinationInspectionDaoServices(
     ): CdInspectionEngineeringItemChecklistEntity {
         var inspectionEngineeringItemChecklist = inspectionEngineeringItemChecklistEntity
         with(inspectionEngineeringItemChecklist) {
-            inspectionGeneral = inspectionGeneralEntity
             status = map.activeStatus
             createdBy = commonDaoServices.getUserName(user)
             createdOn = commonDaoServices.getTimestamp()
@@ -1504,7 +1503,6 @@ class DestinationInspectionDaoServices(
     ): CdInspectionOtherItemChecklistEntity {
         var inspectionOtherItemChecklist = inspectionOtherItemChecklistEntity
         with(inspectionOtherItemChecklist) {
-            inspectionGeneral = inspectionGeneralEntity
             status = map.activeStatus
             createdBy = commonDaoServices.getUserName(user)
             createdOn = commonDaoServices.getTimestamp()
@@ -1523,7 +1521,6 @@ class DestinationInspectionDaoServices(
     ): CdInspectionMotorVehicleItemChecklistEntity {
         var inspectionMotorVehicleItemChecklist = inspectionMotorVehicleItemChecklistEntity
         with(inspectionMotorVehicleItemChecklist) {
-            inspectionGeneral = inspectionGeneralEntity
             status = map.activeStatus
             createdBy = commonDaoServices.getUserName(user)
             createdOn = commonDaoServices.getTimestamp()
@@ -1771,23 +1768,6 @@ class DestinationInspectionDaoServices(
                 ?: throw Exception("CD Item Details with the following uuid= ${uuid}, do not Exist")
     }
 
-    fun findInspectionGeneralWithItemDetails(cdItemDetails: CdItemDetailsEntity): CdInspectionGeneralEntity {
-        iCdInspectionGeneralRepo.findFirstByCdItemDetails(cdItemDetails)
-                ?.let { it ->
-                    return it
-                }
-                ?: throw Exception("Inspection General Checklist with CD Item ID= ${cdItemDetails.id}, do not Exist")
-    }
-
-    fun findInspectionMotorVehicleWithInspectionGeneral(cdInspectionGeneralEntity: CdInspectionGeneralEntity):
-            CdInspectionMotorVehicleItemChecklistEntity? {
-        return iCdInspectionMotorVehicleItemChecklistRepo.findByInspectionGeneral(cdInspectionGeneralEntity)
-//                ?.let { it ->
-//                    return it
-//                }
-//                ?: throw Exception("Motor Vehicle Inspection Checklist with General Checklist ID= ${cdInspectionGeneralEntity.id}, do not Exist")
-    }
-
     fun findCDImporterDetails(importerDetailsID: Long): CdImporterDetailsEntity {
         iCdImporterRepo.findByIdOrNull(importerDetailsID)
                 ?.let { it ->
@@ -1842,38 +1822,6 @@ class DestinationInspectionDaoServices(
                     return it
                 }
                 ?: throw Exception("Header One Details with ID= ${headerOneDetailsID}, does not Exist")
-    }
-
-    fun findInspectionAgrochemWithInspectionGeneral(cdInspectionGeneralEntity: CdInspectionGeneralEntity): CdInspectionAgrochemItemChecklistEntity {
-        iCdInspectionAgrochemItemChecklistRepo.findByInspectionGeneral(cdInspectionGeneralEntity)
-                ?.let { it ->
-                    return it
-                }
-                ?: throw Exception("Agrochem Inspection Checklist with General Checklist ID= ${cdInspectionGeneralEntity.id}, do not Exist")
-    }
-
-    fun findInspectionOthersWithInspectionGeneral(cdInspectionGeneralEntity: CdInspectionGeneralEntity): CdInspectionOtherItemChecklistEntity {
-        iCdInspectionOtherItemChecklistRepo.findByInspectionGeneral(cdInspectionGeneralEntity)
-                ?.let { it ->
-                    return it
-                }
-                ?: throw Exception("Other Inspection Checklist with General Checklist ID= ${cdInspectionGeneralEntity.id}, do not Exist")
-    }
-
-    fun findInspectionEngineeringWithInspectionGeneral(cdInspectionGeneralEntity: CdInspectionGeneralEntity): CdInspectionEngineeringItemChecklistEntity {
-        iCdInspectionEngineeringItemChecklistRepo.findByInspectionGeneral(cdInspectionGeneralEntity)
-                ?.let { it ->
-                    return it
-                }
-                ?: throw Exception("Engineering Inspection Checklist with General Checklist ID= ${cdInspectionGeneralEntity.id}, do not Exist")
-    }
-
-    fun findInspectionMotorVehicleById(id: Long): CdInspectionMotorVehicleItemChecklistEntity? {
-        return iCdInspectionMotorVehicleItemChecklistRepo.findByIdOrNull(id)
-    }
-
-    fun findInspectionGeneralById(id: Long): CdInspectionGeneralEntity? {
-        return iCdInspectionGeneralRepo.findByIdOrNull(id)
     }
 
     fun findCdItemNonStandardByItemID(cdItemDetails: CdItemDetailsEntity): CdItemNonStandardEntity? {
@@ -2548,13 +2496,6 @@ class DestinationInspectionDaoServices(
                 ?: throw ServiceMapNotFoundException("CheckList for ITEM with ID = ${itemId}, Does not exist")
     }
 
-    fun findSavedGeneralInspection(itemId: CdItemDetailsEntity): CdInspectionGeneralEntity {
-        iCdInspectionGeneralRepo.findFirstByCdItemDetails(itemId)
-                ?.let { checklist ->
-                    return checklist
-                }
-                ?: throw ServiceMapNotFoundException("CheckList for ITEM with ID = ${itemId}, Does not exist")
-    }
 
     fun findSavedSampleCollection(itemId: Long): CdSampleCollectionEntity {
         iSampleCollectRepo.findByItemId(itemId)
@@ -3117,11 +3058,13 @@ class DestinationInspectionDaoServices(
 
     fun updateCdInspectionMotorVehicleItemChecklistInDB(
             cdInspectionMotorVehicleItemChecklistEntity: CdInspectionMotorVehicleItemChecklistEntity,
-            user: UsersEntity
+            user: UsersEntity?
     ): CdInspectionMotorVehicleItemChecklistEntity {
-        with(cdInspectionMotorVehicleItemChecklistEntity) {
-            modifiedBy = commonDaoServices.getUserName(user)
-            modifiedOn = commonDaoServices.getTimestamp()
+        if(user!=null) {
+            with(cdInspectionMotorVehicleItemChecklistEntity) {
+                modifiedBy = commonDaoServices.getUserName(user)
+                modifiedOn = commonDaoServices.getTimestamp()
+            }
         }
         KotlinLogging.logger { }
                 .info { "CdInspectionMotorVehicleItemChecklistEntity UPDATED ITEM ID =  ${cdInspectionMotorVehicleItemChecklistEntity.id}" }
@@ -3138,13 +3081,6 @@ class DestinationInspectionDaoServices(
         }
         KotlinLogging.logger { }.info { "CdInspectionGeneralEntity UPDATED with ID =  ${cdInspectionGeneralEntity.id}" }
         return iCdInspectionGeneralRepo.save(cdInspectionGeneralEntity)
-    }
-
-    fun findMotorVehicleInspectionByCdItem(cdItem: CdItemDetailsEntity): CdInspectionMotorVehicleItemChecklistEntity? {
-        iCdInspectionGeneralRepo.findFirstByCdItemDetails(cdItem)?.let { inspectionGeneral ->
-            return findInspectionMotorVehicleWithInspectionGeneral(inspectionGeneral)
-        }
-        return null
     }
 
     fun findLocalCorByUcrNumber(ucrNumber: String): CdLocalCorEntity {
@@ -3199,9 +3135,9 @@ class DestinationInspectionDaoServices(
         map["NoOfPassengers"] = corDetails?.numberOfPassangers.toString()
         map["PrevRegNo"] = corDetails?.previousCountryOfRegistration.orEmpty()
         map["PrevCountryOfReg"] = corDetails?.previousCountryOfRegistration.orEmpty()
-
-        val inspectionChecklist = findMotorVehicleInspectionByCdItem(cdItem)
-        map["InspectionDetails"] = inspectionChecklist?.remarks.orEmpty()
+    // todo: ADD CHECKLIST COMMENT
+//        val inspectionChecklist = findMotorVehicleInspectionByCdItem(cdItem)
+        map["InspectionDetails"] = "to ADD"
 
         return map
     }

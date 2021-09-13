@@ -38,6 +38,7 @@ class ConsignmentEnableUI {
     var riskProfileConsignor: Boolean = false
     var riskProfileConsignee: Boolean = false
     var inspectionActive: Boolean? = null
+    var inspectionChecklist: Boolean = false
     var hasPort: Boolean? = null
     var blacklistEnabled = false
 
@@ -60,8 +61,9 @@ class ConsignmentEnableUI {
                 targetItem = change && cd.targetStatus != map.activeStatus
                 supervisorTarget = modify && cd.targetStatus != map.activeStatus
                 attachments = (change || modify)
+                inspectionChecklist=cd.inspectionChecklist==map.activeStatus
                 hasPort = (cd.portOfArrival != null && cd.freightStation != null)
-                completed = cd.diProcessCompletedOn != null
+                completed = cd.approveRejectCdStatusType?.let {it.category=="APPROVE"|| it.category=="REJECT" }
                 approveReject = (cd.targetApproveStatus == null || cd.inspectionDateSetStatus == map.activeStatus) && modify
             }
 
@@ -414,9 +416,9 @@ class CdInspectionMotorVehicleItemChecklistDao {
             dt.overallAppearance = general.overallAppearance
             dt.remarks = general.remarks
             dt.ministryReportFile = general.ministryReportFile
-            dt.ministryReportReinspectionStatus = general.ministryReportSubmitStatus
-            dt.ministryReportReinspectionRemarks = general.ministryReportReinspectionRemarks
-            dt.ministryReportSubmitStatus = general.ministryReportSubmitStatus
+//            dt.ministryReportReinspectionStatus = general.ministryReportSubmitStatus
+//            dt.ministryReportReinspectionRemarks = general.ministryReportReinspectionRemarks
+//            dt.ministryReportSubmitStatus = general.ministryReportSubmitStatus
             return dt
         }
 

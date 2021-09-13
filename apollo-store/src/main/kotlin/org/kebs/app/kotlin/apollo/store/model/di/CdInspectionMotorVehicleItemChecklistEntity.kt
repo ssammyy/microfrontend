@@ -7,22 +7,22 @@ import java.util.*
 import javax.persistence.*
 
 @Entity
-@Table(name = "DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_ITEM_CHECKLIST")
+@Table(name = "DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_CHECKLIST")
 class CdInspectionMotorVehicleItemChecklistEntity : Serializable {
 
     @Column(name = "ID")
-    @SequenceGenerator(name = "DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_ITEM_CHECKLIST_SEQ_GEN", sequenceName = "DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_ITEM_CHECKLIST_SEQ", allocationSize = 1)
-    @GeneratedValue(generator = "DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_ITEM_CHECKLIST_SEQ_GEN", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_CHECKLIST_SEQ_GEN", sequenceName = "DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_CHECKLIST_SEQ", allocationSize = 1)
+    @GeneratedValue(generator = "DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_CHECKLIST_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Id
     var id: Long? = null
 
-    //TODO: This is a workaround, fix it asap
-    @Transient
-    var inspectionReportApprovalStatus: Int? = null
-    @Transient
-    var inspectionReportDisapprovalComments: String? = null
-    @Transient
-    var inspectionReportApprovalComments: String? = null
+    @Column(name = "ITEM_ID")
+    @Basic
+    var itemId: Long? = null
+
+    @Column(name = "SSF_ID")
+    @Basic
+    var ssfId: Long? = null
 
     @Column(name = "SERIAL_NUMBER")
     @Basic
@@ -63,6 +63,22 @@ class CdInspectionMotorVehicleItemChecklistEntity : Serializable {
     @Column(name = "COLOUR")
     @Basic
     var colour: String? = ""
+
+    @Column(name = "CATEGORY")
+    @Basic
+    var category: String? = null
+
+    @Column(name = "COMPLIANT")
+    @Basic
+    var compliant: String? = null
+
+    @Column(name = "SAMPLED")
+    @Basic
+    var sampled: String? = null
+
+    @Column(name = "SAMPLE_UPDATED")
+    @Basic
+    var sampleUpdated: Int? = 0
 
     @Column(name = "OVERALL_APPEARANCE")
     @Basic
@@ -160,18 +176,15 @@ class CdInspectionMotorVehicleItemChecklistEntity : Serializable {
     @Basic
     var deletedOn: Timestamp? = null
 
-    @JoinColumn(name = "INSPECTION_GENERAL_ID", referencedColumnName = "ID")
+    @JoinColumn(name = "INSPECTION_ID", referencedColumnName = "ID")
     @ManyToOne
-    var inspectionGeneral: CdInspectionGeneralEntity? = null
+    var inspection: CdInspectionMotorVehicleChecklist? = null
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
         val that = other as CdInspectionMotorVehicleItemChecklistEntity
         return id == that.id &&
-                inspectionReportApprovalStatus == that.inspectionReportApprovalStatus &&
-                inspectionReportDisapprovalComments == that.inspectionReportDisapprovalComments &&
-                inspectionReportApprovalComments == that.inspectionReportApprovalComments &&
                 serialNumber == that.serialNumber &&
                 makeVehicle == that.makeVehicle &&
                 chassisNo == that.chassisNo &&
@@ -185,9 +198,6 @@ class CdInspectionMotorVehicleItemChecklistEntity : Serializable {
                 overallAppearance == that.overallAppearance &&
                 remarks == that.remarks &&
                 ministryReportFile.contentEquals(that.ministryReportFile) &&
-                ministryReportSubmitStatus == that.ministryReportSubmitStatus &&
-                ministryReportReinspectionStatus == that.ministryReportReinspectionStatus &&
-                ministryReportReinspectionRemarks == that.ministryReportReinspectionRemarks &&
                 description == that.description &&
                 status == that.status &&
                 varField1 == that.varField1 &&
@@ -209,15 +219,14 @@ class CdInspectionMotorVehicleItemChecklistEntity : Serializable {
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(id, inspectionReportApprovalStatus, inspectionReportDisapprovalComments, inspectionReportApprovalComments, serialNumber, makeVehicle, chassisNo, engineNoCapacity, manufactureDate, registrationDate,
-                odemetreReading, driveRhdLhd, transmissionAutoManual, colour, overallAppearance, remarks, ministryReportFile,
-                ministryReportSubmitStatus, ministryReportReinspectionStatus, ministryReportReinspectionRemarks, description,
+        return Objects.hash(id, serialNumber, makeVehicle, chassisNo, engineNoCapacity, manufactureDate, registrationDate,
+                odemetreReading, driveRhdLhd, transmissionAutoManual, colour, overallAppearance, remarks, ministryReportFile, description,
                 status, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9,
                 varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn)
     }
 
     override fun toString(): String {
-        return "CdInspectionMotorVehicleItemChecklistEntity(id=$id, serialNumber=$serialNumber, makeVehicle=$makeVehicle, chassisNo=$chassisNo, engineNoCapacity=$engineNoCapacity, manufactureDate=$manufactureDate, registrationDate=$registrationDate, odemetreReading=$odemetreReading, driveRhdLhd=$driveRhdLhd, transmissionAutoManual=$transmissionAutoManual, colour=$colour, overallAppearance=$overallAppearance, remarks=$remarks, ministryReportSubmitStatus=$ministryReportSubmitStatus, ministryReportReinspectionStatus=$ministryReportReinspectionStatus, ministryReportReinspectionRemarks=$ministryReportReinspectionRemarks, description=$description, status=$status, createdBy=$createdBy, createdOn=$createdOn, modifiedBy=$modifiedBy, modifiedOn=$modifiedOn, deleteBy=$deleteBy, deletedOn=$deletedOn)"
+        return "CdInspectionMotorVehicleItemChecklistEntity(id=$id, serialNumber=$serialNumber, makeVehicle=$makeVehicle, chassisNo=$chassisNo, engineNoCapacity=$engineNoCapacity, manufactureDate=$manufactureDate, registrationDate=$registrationDate, odemetreReading=$odemetreReading, driveRhdLhd=$driveRhdLhd, transmissionAutoManual=$transmissionAutoManual, colour=$colour, overallAppearance=$overallAppearance, remarks=$remarks, description=$description, status=$status, createdBy=$createdBy, createdOn=$createdOn, modifiedBy=$modifiedBy, modifiedOn=$modifiedOn, deleteBy=$deleteBy, deletedOn=$deletedOn)"
     }
 
 }

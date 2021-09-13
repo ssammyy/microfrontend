@@ -13,7 +13,7 @@ import {MatTableDataSource} from "@angular/material/table";
     styleUrls: ['./send-demand-note-tokws.component.css']
 })
 export class SendDemandNoteTokwsComponent implements OnInit {
-    displayedColumns: string[] = ['select', 'hsCode', 'description','price','details', 'pricing'];
+    displayedColumns: string[] = ['select', 'hsCode', 'description','price', 'pricing'];
     @Input() items: any[]
     paymentFees: any[]
     presentmentData: any

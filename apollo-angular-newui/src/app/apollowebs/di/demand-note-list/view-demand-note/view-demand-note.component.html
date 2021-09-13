@@ -30,6 +30,10 @@
             <p>{{demandDetails.note.totalAmount}}</p>
         </div>
         <div class="col-sm-3 col-md-4">
+            <label class="waiver-form-label">Demand Note status</label>
+            <p>{{demandDetails.note.varField3}}</p>
+        </div>
+        <div class="col-sm-3 col-md-4">
             <label class="waiver-form-label">CD PAYABLE AMOUNT</label>
             <p>{{demandDetails.note.amountPayable}}</p>
         </div>
@@ -44,7 +48,11 @@
     <mat-error *ngIf="message">{{message}}</mat-error>
 </mat-dialog-content>
 <mat-dialog-actions>
-    <div class="row no_margin master-list-new-btn">
+    <div class="row no_margin master-list-new-btn" *ngIf="demandDetails">
         <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
+        <div *ngIf="demandDetails.note.status>=0">
+        <button [disabled]="demandDetails.note.status>=0" class="btn btn-warning" mat-button (click)="submitDemandNote()">Delete</button>
+        <button [disabled]="demandDetails.note.status>=0" class="btn btn-primary" mat-button (click)="submitDemandNote()">Submit</button>
+        </div>
     </div>
 </mat-dialog-actions>

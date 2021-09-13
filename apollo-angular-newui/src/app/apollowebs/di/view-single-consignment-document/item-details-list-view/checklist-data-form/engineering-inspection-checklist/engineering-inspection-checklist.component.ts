@@ -1,5 +1,6 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {MatTableDataSource} from "@angular/material/table";
 
 @Component({
     selector: 'app-engineering-inspection-checklist',
@@ -8,12 +9,16 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 })
 export class EngineeringInspectionChecklistComponent implements OnInit {
     @Output() private engineeringDetails = new EventEmitter<any>();
+    @Input() items:[]
     engineeringChecklist: FormGroup
+    initialSelection: any[]
+    selectionDataSource: MatTableDataSource<any>
 
     constructor(private fb: FormBuilder) {
     }
 
     ngOnInit(): void {
+
         this.engineeringChecklist = this.fb.group({
             serialNumber: ['', [Validators.required, Validators.maxLength(256)]],
             brand: ['', Validators.maxLength(256)],

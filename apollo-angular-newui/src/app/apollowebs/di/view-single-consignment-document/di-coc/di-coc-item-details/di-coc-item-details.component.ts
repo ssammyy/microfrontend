@@ -19,11 +19,7 @@ export class DiCocItemDetailsComponent implements OnInit {
     noDataMessage: 'No data found',
     columns: {
       shipmentLineNumber: {
-        title: 'NUMBER',
-        type: 'string'
-      },
-      cocNumber: {
-        title: 'COC NUMBER',
+        title: '#',
         type: 'string'
       },
       shipmentLineHscode: {

@@ -32,6 +32,12 @@
                                                 <td>{{ consignment.cd_details.applicationStatus ? consignment.cd_details.applicationStatus : 'NA' }}</td>
                                             </tr>
                                             <th>
+                                                Approval Status
+                                            </th>
+                                            <tr>
+                                                <td>{{ consignment.cd_details.approvalStatus ? consignment.cd_details.approvalStatus : 'NA' }}</td>
+                                            </tr>
+                                            <th>
                                                 Application Date
                                             </th>
                                             <tr>
@@ -683,7 +689,7 @@
                                         <a ngbNavLink>Attachments</a>
                                         <ng-template ngbNavContent>
                                             <b class="text-primary">Attachments</b>
-                                            <app-attachment-list [dataSet]="attachments"></app-attachment-list>
+                                            <app-attachment-list (reloadHandler)="reloadAttachments($event)" [dataSet]="attachments"></app-attachment-list>
                                         </ng-template>
                                     </li>
                                     <li ngbNavItem="other-version-details" *ngIf="consignment.old_versions">
@@ -713,17 +719,16 @@
                             <div class="col-md-2">
                                 <b>Action:</b>
                                 <div>
-
-                                    <div *ngIf="consignment.ui.inspector">
-                                        <button class="btn btn-sm btn-primary"
+                                    <div *ngIf="consignment.ui.inspector && !consignment.ui.completed">
+                                        <button *ngIf="consignment.ui.owner" class="btn btn-sm btn-primary"
                                                 (click)="uploadAttachment()">UPLOAD
                                             ATTACHMENT
                                         </button>
-                                        <button *ngIf="!consignment.ui.assigned" class="btn btn-sm btn-primary"
-                                                (click)="manualAssignInspectionOfficer()">SELF ASSIGN
-                                        </button>
-                                        <button *ngIf="consignment.ui.owner" class="btn btn-sm btn-primary"
+                                        <button *ngIf="consignment.ui.owner && (consignment.ui.cocRequest || consignment.ui.corRequest)" class="btn btn-sm btn-primary"
                                                 (click)="markAsCompliant()">COMPLIANT
+                                        </button>
+                                        <button *ngIf="consignment.ui.owner && !consignment.ui.inspectionChecklist" class="btn btn-sm btn-primary"
+                                                (click)="createInspectionChecklist()">FILL INSPECTION CHECKLIST
                                         </button>
                                         <button *ngIf="consignment.ui.owner && consignment.ui.blacklistEnabled"
                                                 class="btn btn-sm btn-warning"
@@ -732,12 +737,10 @@
                                         <button *ngIf="consignment.ui.owner && consignment.ui.targeted" class="btn btn-sm btn-warning"
                                                 (click)="generateDemandNote()">GENERATE DEMAND NOTE
                                         </button>
-
-
                                         <button *ngIf="consignment.ui.owner" class="btn btn-sm btn-warning"
                                                 (click)="approveRejectConsignment()">Approve / Reject Consignment
                                         </button>
-                                        <button *ngIf="consignment.ui.targetItem" class="btn btn-sm btn-warning"
+                                        <button *ngIf="consignment.ui.owner && consignment.ui.targetItem" class="btn btn-sm btn-warning"
                                                 (click)="targetConsignment()">TARGET
                                         </button>
                                     </div>
@@ -763,6 +766,9 @@
                                 <br/>
                                 <button *ngIf="consignment.ui.demandNote" class="btn btn-sm btn-primary"
                                         (click)="downloadDemandNote()">DEMAND NOTE PDF
+                                </button>
+                                <button *ngIf="consignment.ui.inspectionChecklist" class="btn btn-sm btn-primary"
+                                        (click)="viewInspectionChecklists()">VIEW INSPECTION REPORT
                                 </button>
                                 <button *ngIf="consignment.ui.corAvailable" class="btn btn-sm btn-primary" (click)="viewCoR()">
                                     CERTIFICATE OF

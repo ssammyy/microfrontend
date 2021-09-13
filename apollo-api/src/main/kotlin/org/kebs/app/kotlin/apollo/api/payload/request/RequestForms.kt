@@ -4,6 +4,15 @@ import org.kebs.app.kotlin.apollo.store.model.SampleSubmissionDocumentsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.*
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmissionEntity
 import java.sql.Date
+import java.time.Instant
+
+class CheckListItems{
+    val category: String?=null
+    var itemId: Long?=null
+    var compliant: String?=null
+    var sampled: String?=null
+    var serialNumber: String?=null
+}
 
 class AgrochemCheckList{
     var serialNumber: String?=null
@@ -18,7 +27,7 @@ class AgrochemCheckList{
     var storageCondition: String?=null
     var appearance: String?=null
     var certMarksPvocDoc:String?=null
-    var sampled: String?=null
+    var items: List<CheckListItems>?=null
     var remarks:String?=null
 }
 class EngineeringChecklist{
@@ -26,16 +35,13 @@ class EngineeringChecklist{
     var brand: String?=null
     var ksEasApplicable: String?=null
     var quantityVerified: String?=null
-    var mfgNameAddress: String?=null
-    var batchNoModelTypeRef: String?=null
-    var fiberComposition: String?=null
     var instructionsUseManual:String?=null
     var warrantyPeriodDocumentation: String?=null
     var safetyCautionaryRemarks: String?=null
     var sizeClassCapacity: String?=null
     var certMarksPvocDoc: String?=null
     var disposalInstruction: String?=null
-    var sampled: String?=null
+    var items: List<CheckListItems>?=null
     var remarks: String?=null
 }
 class VehicleInspectionCheckList{
@@ -50,6 +56,7 @@ class VehicleInspectionCheckList{
     var transmissionAutoManual: String?=null
     var colour: String?=null
     var overallAppearance: String?=null
+    var items: List<CheckListItems>?=null
     var remarks:String?=null
 }
 class OtherCheckList{
@@ -62,13 +69,11 @@ class OtherCheckList{
     var defects: String?=null
     var presenceAbsenceBanned:String?=null
     var documentation: String?=null
-    var sampled: String?=null
+    var items: List<CheckListItems>?=null
     var remarks:String?=null
 }
 class CheckListForm {
-    var category:String?=null
     var inspection:String?=null
-    var confirmItemType:String?=null
     var clearingAgent: String?=null
     var overallRemarks: String?=null
     var customsEntryNumber: String?=null
@@ -78,34 +83,26 @@ class CheckListForm {
     var vehicle: VehicleInspectionCheckList?=null
     fun generalChecklist():CdInspectionGeneralEntity{
         val dt=CdInspectionGeneralEntity()
-        dt.category=category
         dt.inspection=inspection
         dt.customsEntryNumber=customsEntryNumber
         dt.clearingAgent=clearingAgent
         dt.overallRemarks=overallRemarks
         return dt
     }
-    fun engineeringChecklist(): CdInspectionEngineeringItemChecklistEntity{
-        val dt=CdInspectionEngineeringItemChecklistEntity()
+    fun engineeringChecklist(): CdInspectionEngineeringChecklist{
+        val dt=CdInspectionEngineeringChecklist()
         dt.serialNumber=engineering?.serialNumber
-        dt.brand=engineering?.brand
-        dt.ksEasApplicable=engineering?.ksEasApplicable
         dt.quantityVerified=engineering?.quantityVerified
-        dt.mfgNameAddress=engineering?.mfgNameAddress
-        dt.batchNoModelTypeRef=engineering?.batchNoModelTypeRef
-        dt.fiberComposition=engineering?.fiberComposition
-        dt.instructionsUseManual=engineering?.instructionsUseManual
         dt.warrantyPeriodDocumentation=engineering?.warrantyPeriodDocumentation
         dt.safetyCautionaryRemarks=engineering?.safetyCautionaryRemarks
         dt.sizeClassCapacity=engineering?.sizeClassCapacity
         dt.certMarksPvocDoc=engineering?.certMarksPvocDoc
         dt.disposalInstruction=engineering?.disposalInstruction
-        dt.sampled=engineering?.sampled
         dt.remarks=engineering?.remarks
         return dt
     }
-    fun agrochemChecklist(): CdInspectionAgrochemItemChecklistEntity{
-        val dt=CdInspectionAgrochemItemChecklistEntity()
+    fun agrochemChecklist(): CdInspectionAgrochemChecklist{
+        val dt=CdInspectionAgrochemChecklist()
         dt.appearance=agrochem?.appearance
         dt.brand=agrochem?.brand
         dt.certMarksPvocDoc=agrochem?.certMarksPvocDoc
@@ -117,12 +114,11 @@ class CheckListForm {
         dt.mfgAddress=agrochem?.mfgAddress
         dt.compositionIngredients=agrochem?.compositionIngredients
         dt.storageCondition=agrochem?.storageCondition
-        dt.sampled=agrochem?.sampled
         dt.remarks=agrochem?.remarks
         return dt
     }
-    fun otherChecklist(): CdInspectionOtherItemChecklistEntity {
-        val dt=CdInspectionOtherItemChecklistEntity()
+    fun otherChecklist(): CdInspectionOtherChecklist {
+        val dt=CdInspectionOtherChecklist()
         dt.serialNumber=others?.serialNumber
         dt.brand=others?.brand
         dt.ksEasApplicable=others?.ksEasApplicable
@@ -132,12 +128,11 @@ class CheckListForm {
         dt.defects=others?.defects
         dt.presenceAbsenceBanned=others?.presenceAbsenceBanned
         dt.documentation=others?.documentation
-        dt.sampled=others?.sampled
         dt.remarks=others?.remarks
         return dt
     }
-    fun vehicleChecklist(): CdInspectionMotorVehicleItemChecklistEntity {
-        val dt=CdInspectionMotorVehicleItemChecklistEntity()
+    fun vehicleChecklist(): CdInspectionMotorVehicleChecklist {
+        val dt=CdInspectionMotorVehicleChecklist()
         dt.serialNumber=vehicle?.serialNumber
         dt.makeVehicle=vehicle?.makeVehicle
         dt.chassisNo=vehicle?.chassisNo
@@ -166,7 +161,7 @@ class SsfForm{
         df.description=description
         df.ssfNo=ssfNo
         df.brandName=brandName
-        df.ssfSubmissionDate= Date.valueOf(ssfSubmissionDate)
+        df.ssfSubmissionDate= Date(java.util.Date().time)
         df.bsNumber=bsNumber
         df.productDescription=productDescription
         return df

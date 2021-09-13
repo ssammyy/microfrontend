@@ -322,6 +322,10 @@ class ConsignmentDocumentDetailsEntity : Serializable {
     @Basic
     var targetStatus: Int? = null
 
+    @Column(name = "INSPECTION_CHECKLIST")
+    @Basic
+    var inspectionChecklist: Int? = 0
+
     @Column(name = "TARGET_APPROVED_REMARKS")
     @Basic
     var targetApproveRemarks: String? = null

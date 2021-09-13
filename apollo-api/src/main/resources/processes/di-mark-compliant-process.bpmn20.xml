@@ -4,7 +4,7 @@
         <startEvent id="startTargetConsignmentDocument" name="Start Targeting"></startEvent>
         <userTask id="usertask1" name="Approve Compliant" activiti:assignee="${supervisor}" activiti:candidateUsers="supervisor" activiti:category="${cfs_code}"></userTask>
         <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
-        <sequenceFlow id="flow2" sourceRef="exclusivegateway2" targetRef="cocApprovedStatus">
+        <sequenceFlow id="flow2" name="COC" sourceRef="exclusivegateway2" targetRef="cocApprovedStatus">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[${documentType=='COC'}]]></conditionExpression>
         </sequenceFlow>
         <sequenceFlow id="flow3" name="Approved" sourceRef="exclusivegateway3" targetRef="exclusivegateway2">
@@ -25,7 +25,7 @@
         <sequenceFlow id="flow11" sourceRef="servicetask3" targetRef="exclusivegateway1"></sequenceFlow>
         <serviceTask id="servicetask2" name="Generate COR" activiti:expression="#{diService.generateCorForDocument(cdUuid,supervisor,remarks)}"></serviceTask>
         <sequenceFlow id="flow14" sourceRef="servicetask5" targetRef="updateConsignmentDocumentProcessFields"></sequenceFlow>
-        <sequenceFlow id="flow15" sourceRef="exclusivegateway2" targetRef="servicetask2">
+        <sequenceFlow id="flow15" name="COR" sourceRef="exclusivegateway2" targetRef="servicetask2">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[${documentType=='COR'}]]></conditionExpression>
         </sequenceFlow>
         <sequenceFlow id="flow16" sourceRef="usertask1" targetRef="servicetask3"></sequenceFlow>
@@ -39,6 +39,11 @@
         </sequenceFlow>
         <sequenceFlow id="flow19" sourceRef="servicetask2" targetRef="servicetask5"></sequenceFlow>
         <serviceTask id="servicetask5" name="Update SW" activiti:expression="#{diService.swUpdateComplianceStatus(cdUuid,compliantStatus,supervisor,remarks)}"></serviceTask>
+        <sequenceFlow id="flow20" name="COI" sourceRef="exclusivegateway2" targetRef="servicetask6">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${documentType=='COI'}]]></conditionExpression>
+        </sequenceFlow>
+        <serviceTask id="servicetask6" name="Generate CoI" activiti:expression="#{diService.swGenerateCoI(cdUuid,remarks,supervisor)}"></serviceTask>
+        <sequenceFlow id="flow21" sourceRef="servicetask6" targetRef="servicetask5"></sequenceFlow>
     </process>
     <bpmndi:BPMNDiagram id="BPMNDiagram_consignmentCompliantApprovalProcess">
         <bpmndi:BPMNPlane bpmnElement="consignmentCompliantApprovalProcess" id="BPMNPlane_consignmentCompliantApprovalProcess">
@@ -78,9 +83,15 @@
             <bpmndi:BPMNShape bpmnElement="servicetask5" id="BPMNShape_servicetask5">
                 <omgdc:Bounds height="55.0" width="105.0" x="1061.0" y="245.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="servicetask6" id="BPMNShape_servicetask6">
+                <omgdc:Bounds height="55.0" width="105.0" x="830.0" y="330.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
             <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
                 <omgdi:waypoint x="740.0" y="272.0"></omgdi:waypoint>
                 <omgdi:waypoint x="838.0" y="272.0"></omgdi:waypoint>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds height="13.0" width="100.0" x="740.0" y="272.0"></omgdc:Bounds>
+                </bpmndi:BPMNLabel>
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
                 <omgdi:waypoint x="571.0" y="273.0"></omgdi:waypoint>
@@ -125,6 +136,9 @@
                 <omgdi:waypoint x="720.0" y="252.0"></omgdi:waypoint>
                 <omgdi:waypoint x="719.0" y="107.0"></omgdi:waypoint>
                 <omgdi:waypoint x="838.0" y="107.0"></omgdi:waypoint>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds height="13.0" width="100.0" x="720.0" y="252.0"></omgdc:Bounds>
+                </bpmndi:BPMNLabel>
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow16" id="BPMNEdge_flow16">
                 <omgdi:waypoint x="265.0" y="272.0"></omgdi:waypoint>
@@ -136,14 +150,28 @@
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow18" id="BPMNEdge_flow18">
                 <omgdi:waypoint x="551.0" y="293.0"></omgdi:waypoint>
-                <omgdi:waypoint x="551.0" y="387.0"></omgdi:waypoint>
-                <omgdi:waypoint x="1113.0" y="387.0"></omgdi:waypoint>
+                <omgdi:waypoint x="551.0" y="423.0"></omgdi:waypoint>
+                <omgdi:waypoint x="834.0" y="423.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1113.0" y="423.0"></omgdi:waypoint>
                 <omgdi:waypoint x="1113.0" y="300.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow19" id="BPMNEdge_flow19">
                 <omgdi:waypoint x="943.0" y="107.0"></omgdi:waypoint>
                 <omgdi:waypoint x="1113.0" y="103.0"></omgdi:waypoint>
                 <omgdi:waypoint x="1113.0" y="245.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow20" id="BPMNEdge_flow20">
+                <omgdi:waypoint x="720.0" y="292.0"></omgdi:waypoint>
+                <omgdi:waypoint x="720.0" y="357.0"></omgdi:waypoint>
+                <omgdi:waypoint x="830.0" y="357.0"></omgdi:waypoint>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds height="13.0" width="100.0" x="720.0" y="292.0"></omgdc:Bounds>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow21" id="BPMNEdge_flow21">
+                <omgdi:waypoint x="935.0" y="357.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1113.0" y="357.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1113.0" y="300.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
         </bpmndi:BPMNPlane>
     </bpmndi:BPMNDiagram>

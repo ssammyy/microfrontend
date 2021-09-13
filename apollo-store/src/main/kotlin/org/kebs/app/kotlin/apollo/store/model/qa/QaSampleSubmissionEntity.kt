@@ -48,6 +48,11 @@ class QaSampleSubmissionEntity : Serializable {
     @Basic
     var brandName: String? = null
 
+    @Column(name = "CATEGORY")
+    @Basic
+    var category: String? = null
+
+
     @Column(name = "PRODUCT_DESCRIPTION")
     @Basic
     var productDescription: String? = null

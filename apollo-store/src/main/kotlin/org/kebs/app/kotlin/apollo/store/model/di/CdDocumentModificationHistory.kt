@@ -17,6 +17,10 @@ class CdDocumentModificationHistory : Serializable {
     @Basic
     var cdId: Long? = null
 
+    @Column(name = "UCR_NUMBER")
+    @Basic
+    var ucrNumber: String? = null
+
     @Column(name = "USER_COMMENT")
     @Basic
     var comment: String? = null

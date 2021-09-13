@@ -16,6 +16,14 @@ class CdInspectionAgrochemItemChecklistEntity : Serializable {
     @Id
     var id: Long? = null
 
+    @Column(name = "ITEM_ID")
+    @Basic
+    var itemId: Long? = null
+
+    @Column(name = "SSF_ID")
+    @Basic
+    var ssfId: Long? = null
+
     @Column(name = "SERIAL_NUMBER")
     @Basic
     var serialNumber: String? = null
@@ -72,9 +80,21 @@ class CdInspectionAgrochemItemChecklistEntity : Serializable {
     @Basic
     var certMarksPvocDoc: String? = null
 
+    @Column(name = "CATEGORY")
+    @Basic
+    var category: String? = null
+
     @Column(name = "SAMPLED")
     @Basic
     var sampled: String? = null
+
+    @Column(name = "COMPLIANT")
+    @Basic
+    var compliant: String? = null
+
+    @Column(name = "SAMPLE_UPDATED")
+    @Basic
+    var sampleUpdated: Int? = 0
 
     @Column(name = "REMARKS")
     @Basic
@@ -152,9 +172,9 @@ class CdInspectionAgrochemItemChecklistEntity : Serializable {
     @Basic
     var deletedOn: Timestamp? = null
 
-    @JoinColumn(name = "INSPECTION_GENERAL_ID", referencedColumnName = "ID")
+    @JoinColumn(name = "INSPECTION_ID", referencedColumnName = "ID")
     @ManyToOne
-    var inspectionGeneral: CdInspectionGeneralEntity? = null
+    var inspection: CdInspectionAgrochemChecklist? = null
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

@@ -15,10 +15,15 @@ export class ChecklistDataFormComponent implements OnInit {
     checkListTypes: any[]
     laboratories: []
     message: any
+    itemList: any[]
     vehicleDetails: any
+    vehicleItems: any[]
     otherDetails: any
+    otherItems: any[]
     engineeringDetails: any
+    engineringItems: any[]
     agrochemDetails: any
+    agrochemItems: any[]
     selectedChecklist: any
     engineeringChecklist: Boolean
     vehicleChecklist: Boolean
@@ -33,10 +38,9 @@ export class ChecklistDataFormComponent implements OnInit {
         this.categories = this.data.configs.categories
         this.checkListTypes = this.data.configs.checkListTypes
         this.laboratories = this.data.configs.laboratories
+        this.itemList = this.data.items
         this.generalCheckList = this.fb.group({
-            category: ['', Validators.required],
             inspection: ['', Validators.required],
-            confirmItemType: ['', Validators.required],
             clearingAgent: ['', [Validators.required, Validators.maxLength(256)]],
             overallRemarks: ['', [Validators.required, Validators.maxLength(256)]],
             customsEntryNumber: ['', [Validators.required, Validators.maxLength(256)]],
@@ -57,6 +61,22 @@ export class ChecklistDataFormComponent implements OnInit {
 
     setOtherChecklist(data: any) {
         this.otherDetails = data
+    }
+
+    getItems(itemList: any[]): any[] {
+        let items = []
+        if (itemList) {
+            itemList.forEach(itm => {
+                items.push({
+                    "itemId": itm.id,
+                    "category": itm.category,
+                    "compliant": itm.compliant,
+                    "sampled": itm.sampled,
+                    "serialNumber": itm.serialNumber
+                })
+            })
+        }
+        return items
     }
 
     invalidData(): Boolean {
@@ -90,16 +110,20 @@ export class ChecklistDataFormComponent implements OnInit {
         this.message = null
         let data = this.generalCheckList.value
         if (this.engineeringChecklist) {
+            this.engineeringDetails["items"]=this.getItems(this.engineringItems)
             data["engineering"] = this.engineeringDetails
-        } else if (this.vehicleChecklist) {
+        }
+        if (this.vehicleChecklist) {
+            this.vehicleDetails["items"]=this.getItems(this.vehicleItems)
             data["vehicle"] = this.vehicleDetails
-        } else if (this.agrochemChecklist) {
+        }
+        if (this.agrochemChecklist) {
+            this.agrochemDetails["items"]=this.getItems(this.agrochemItems)
             data["agrochem"] = this.agrochemDetails
-        } else if (this.otherChecklist) {
+        }
+        if (this.otherChecklist) {
+            this.otherDetails["items"]=this.getItems(this.otherItems)
             data["others"] = this.otherDetails
-        } else {
-            this.message = "Please select at least one checklist"
-            return
         }
         this.diService.saveChecklist(this.data.uuid, data)
             .subscribe(

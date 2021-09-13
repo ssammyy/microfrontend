@@ -255,37 +255,37 @@ class DIReportsControllers(
     /*
     Get Ministry inspection unfilled checklist
      */
-    @RequestMapping(value = ["/ministry-checklist"], method = [RequestMethod.GET])
-    @Throws(Exception::class)
-    fun ministryMVchecklistFile(
-        response: HttpServletResponse,
-        @RequestParam(value = "mvInspectionChecklistId", required = false) mvInspectionChecklistid: Long?
-    ) {
-        val map = hashMapOf<String, Any>()
-        mvInspectionChecklistid?.let { it ->
-            daoServices.findInspectionMotorVehicleById(it)?.let { mvInspectionChecklist ->
-                map["ImporterName"] = mvInspectionChecklist.inspectionGeneral?.importersName.toString()
-                map["VehicleMake"] = mvInspectionChecklist.makeVehicle.toString()
-                map["EngineCapacity"] = mvInspectionChecklist.engineNoCapacity.toString()
-                map["ManufactureDate"] = mvInspectionChecklist.manufactureDate.toString()
-                map["OdometerReading"] = mvInspectionChecklist.odemetreReading.toString()
-                map["RegistrationDate"] = mvInspectionChecklist.registrationDate.toString()
-                map["ChassisNo"] = mvInspectionChecklist.chassisNo.toString()
-
-            } ?: throw ExpectedDataNotFound("Motor Vehicle Inspection Checklist does not exist")
-
-            val pdfReportStream=reportsDaoService.extractReportEmptyDataSource(map, applicationMapProperties.mapReportMinistryChecklistPath)
-            response.contentType = "text/html"
-            response.contentType = "application/pdf"
-            response.setHeader("Content-Length", pdfReportStream.size().toString())
-            response.addHeader("Content-Dispostion", "inline; filename=MINISTRY-CHECKLIS-${mvInspectionChecklistid}.pdf;")
-            response.outputStream.let { responseOutputStream ->
-                responseOutputStream.write(pdfReportStream.toByteArray())
-                responseOutputStream.close()
-                pdfReportStream.close()
-            }
-        }
-    }
+//    @RequestMapping(value = ["/ministry-checklist"], method = [RequestMethod.GET])
+//    @Throws(Exception::class)
+//    fun ministryMVchecklistFile(
+//        response: HttpServletResponse,
+//        @RequestParam(value = "mvInspectionChecklistId", required = false) mvInspectionChecklistid: Long?
+//    ) {
+//        val map = hashMapOf<String, Any>()
+//        mvInspectionChecklistid?.let { it ->
+//            daoServices.findInspectionMotorVehicleById(it)?.let { mvInspectionChecklist ->
+////                map["ImporterName"] = mvInspectionChecklist.inspection?.importersName.toString()
+//                map["VehicleMake"] = mvInspectionChecklist.makeVehicle.toString()
+//                map["EngineCapacity"] = mvInspectionChecklist.engineNoCapacity.toString()
+//                map["ManufactureDate"] = mvInspectionChecklist.manufactureDate.toString()
+//                map["OdometerReading"] = mvInspectionChecklist.odemetreReading.toString()
+//                map["RegistrationDate"] = mvInspectionChecklist.registrationDate.toString()
+//                map["ChassisNo"] = mvInspectionChecklist.chassisNo.toString()
+//
+//            } ?: throw ExpectedDataNotFound("Motor Vehicle Inspection Checklist does not exist")
+//
+//            val pdfReportStream=reportsDaoService.extractReportEmptyDataSource(map, applicationMapProperties.mapReportMinistryChecklistPath)
+//            response.contentType = "text/html"
+//            response.contentType = "application/pdf"
+//            response.setHeader("Content-Length", pdfReportStream.size().toString())
+//            response.addHeader("Content-Dispostion", "inline; filename=MINISTRY-CHECKLIS-${mvInspectionChecklistid}.pdf;")
+//            response.outputStream.let { responseOutputStream ->
+//                responseOutputStream.write(pdfReportStream.toByteArray())
+//                responseOutputStream.close()
+//                pdfReportStream.close()
+//            }
+//        }
+//    }
 
     /*
     Get Ministry inspection report
@@ -296,53 +296,53 @@ class DIReportsControllers(
             response: HttpServletResponse,
             @RequestParam(value = "mvInspectionChecklistId", required = false) mvInspectionChecklistid: Long?
     ) {
-        val map = hashMapOf<String, Any>()
-        mvInspectionChecklistid?.let { it ->
-            daoServices.findInspectionMotorVehicleById(it)?.let { mvInspectionChecklist ->
-                map["CheckMark"] = checkmarkImageFile
-                when (mvInspectionChecklist.inspectionGeneral?.inspection) {
-                    "100% Inspection" -> map["HundredPercentInspectionCheckmark"] = checkmarkImageFile
-                    "Partial Inspection" -> map["PartialInspectionCheckMark"] = checkmarkImageFile
-                }
-                map["EntryPoint"] = mvInspectionChecklist.inspectionGeneral?.entryPoint.toString()
-                map["Cfs"] = mvInspectionChecklist.inspectionGeneral?.cfs.toString()
-                map["Date"] = mvInspectionChecklist.inspectionGeneral?.inspectionDate.toString()
-                map["ImportersName"] = mvInspectionChecklist.inspectionGeneral?.importersName.toString()
-                map["ClearingAgent"] = mvInspectionChecklist.inspectionGeneral?.clearingAgent.toString()
-                map["CustomsEntryNo"] = mvInspectionChecklist.inspectionGeneral?.customsEntryNumber.toString()
-                map["IdfNo"] = mvInspectionChecklist.inspectionGeneral?.idfNumber.toString()
-                map["UcrNo"] = mvInspectionChecklist.inspectionGeneral?.ucrNumber.toString()
-                map["CocNo"] = mvInspectionChecklist.inspectionGeneral?.cocNumber.toString()
-                map["ReceiptNo"] = mvInspectionChecklist.inspectionGeneral?.receiptNumber.toString()
-                map["SerialNo"] = mvInspectionChecklist.serialNumber.toString()
-                map["VehicleMake"] = mvInspectionChecklist.makeVehicle.toString()
-                map["ChassisNo"] = mvInspectionChecklist.chassisNo.toString()
-                map["EngineCapacity"] = mvInspectionChecklist.engineNoCapacity.toString()
-                map["ManufacturerDate"] = mvInspectionChecklist.manufactureDate.toString()
-                map["RegistrationDate"] = mvInspectionChecklist.registrationDate.toString()
-                map["OdometreReading"] = mvInspectionChecklist.odemetreReading.toString()
-                map["Drive"] = mvInspectionChecklist.driveRhdLhd.toString()
-                map["Transmission"] = mvInspectionChecklist.transmissionAutoManual.toString()
-                map["Colour"] = mvInspectionChecklist.colour.toString()
-                map["OverallAppearance"] = mvInspectionChecklist.overallAppearance.toString()
-                map["OverallAppearance"] = mvInspectionChecklist.overallAppearance.toString()
-                map["Remarks"] = mvInspectionChecklist.remarks.toString()
-                map["Remarks"] = mvInspectionChecklist.remarks.toString()
-                map["OverallRemarks"] = mvInspectionChecklist.inspectionGeneral?.overallRemarks.toString()
-
-            } ?: throw ExpectedDataNotFound("Motor Vehicle Inspection Checklist does not exist")
-
-            val pdfReportStream=reportsDaoService.extractReportEmptyDataSource(map, applicationMapProperties.mapReportMotorVehicleChecklistPath)
-            response.contentType = "text/html"
-            response.contentType = "application/pdf"
-            response.setHeader("Content-Length", pdfReportStream.size().toString())
-            response.addHeader("Content-Dispostion", "inline; filename=VEHICLE-INSPECTION-REPORT-${mvInspectionChecklistid}.pdf;")
-            response.outputStream.let { responseOutputStream ->
-                responseOutputStream.write(pdfReportStream.toByteArray())
-                responseOutputStream.close()
-                pdfReportStream.close()
-            }
-        }
+//        val map = hashMapOf<String, Any>()
+//        mvInspectionChecklistid?.let { it ->
+//            daoServices.findInspectionMotorVehicleById(it)?.let { mvInspectionChecklist ->
+//                map["CheckMark"] = checkmarkImageFile
+//                when (mvInspectionChecklist.inspection?.inspection) {
+//                    "100% Inspection" -> map["HundredPercentInspectionCheckmark"] = checkmarkImageFile
+//                    "Partial Inspection" -> map["PartialInspectionCheckMark"] = checkmarkImageFile
+//                }
+//                map["EntryPoint"] = mvInspectionChecklist.inspectionGeneral?.entryPoint.toString()
+//                map["Cfs"] = mvInspectionChecklist.inspectionGeneral?.cfs.toString()
+//                map["Date"] = mvInspectionChecklist.inspectionGeneral?.inspectionDate.toString()
+//                map["ImportersName"] = mvInspectionChecklist.inspectionGeneral?.importersName.toString()
+//                map["ClearingAgent"] = mvInspectionChecklist.inspectionGeneral?.clearingAgent.toString()
+//                map["CustomsEntryNo"] = mvInspectionChecklist.inspectionGeneral?.customsEntryNumber.toString()
+//                map["IdfNo"] = mvInspectionChecklist.inspectionGeneral?.idfNumber.toString()
+//                map["UcrNo"] = mvInspectionChecklist.inspectionGeneral?.ucrNumber.toString()
+//                map["CocNo"] = mvInspectionChecklist.inspectionGeneral?.cocNumber.toString()
+//                map["ReceiptNo"] = mvInspectionChecklist.inspectionGeneral?.receiptNumber.toString()
+//                map["SerialNo"] = mvInspectionChecklist.serialNumber.toString()
+//                map["VehicleMake"] = mvInspectionChecklist.makeVehicle.toString()
+//                map["ChassisNo"] = mvInspectionChecklist.chassisNo.toString()
+//                map["EngineCapacity"] = mvInspectionChecklist.engineNoCapacity.toString()
+//                map["ManufacturerDate"] = mvInspectionChecklist.manufactureDate.toString()
+//                map["RegistrationDate"] = mvInspectionChecklist.registrationDate.toString()
+//                map["OdometreReading"] = mvInspectionChecklist.odemetreReading.toString()
+//                map["Drive"] = mvInspectionChecklist.driveRhdLhd.toString()
+//                map["Transmission"] = mvInspectionChecklist.transmissionAutoManual.toString()
+//                map["Colour"] = mvInspectionChecklist.colour.toString()
+//                map["OverallAppearance"] = mvInspectionChecklist.overallAppearance.toString()
+//                map["OverallAppearance"] = mvInspectionChecklist.overallAppearance.toString()
+//                map["Remarks"] = mvInspectionChecklist.remarks.toString()
+//                map["Remarks"] = mvInspectionChecklist.remarks.toString()
+//                map["OverallRemarks"] = mvInspectionChecklist.inspectionGeneral?.overallRemarks.toString()
+//
+//            } ?: throw ExpectedDataNotFound("Motor Vehicle Inspection Checklist does not exist")
+//
+//            val pdfReportStream=reportsDaoService.extractReportEmptyDataSource(map, applicationMapProperties.mapReportMotorVehicleChecklistPath)
+//            response.contentType = "text/html"
+//            response.contentType = "application/pdf"
+//            response.setHeader("Content-Length", pdfReportStream.size().toString())
+//            response.addHeader("Content-Dispostion", "inline; filename=VEHICLE-INSPECTION-REPORT-${mvInspectionChecklistid}.pdf;")
+//            response.outputStream.let { responseOutputStream ->
+//                responseOutputStream.write(pdfReportStream.toByteArray())
+//                responseOutputStream.close()
+//                pdfReportStream.close()
+//            }
+//        }
     }
 
 //    /*

@@ -220,9 +220,6 @@
                                 <button *ngIf="!itemDetails.cd_item.ministrySubmitted" class="btn btn-sm btn-primary"
                                         (click)="rejectItem()">APPROVE REJECT ITEM
                                 </button>
-                                <button *ngIf="itemDetails.cd_item.ministrySubmitted" class="btn btn-sm btn-primary"
-                                        (click)="createInspectionChecklist()">DOWNLOAD MINISTRY CHECKLIST
-                                </button>
                                 <div *ngIf="itemDetails && itemDetails.cd_item.isVehicle">
                                     <button *ngIf="!itemDetails.cd_item.ministrySubmitted" class="btn btn-sm btn-primary"
                                             (click)="submitMinistryInspection()">SUBMIT MINISTRY INSPECTION

@@ -8,6 +8,7 @@ import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
+import org.kebs.app.kotlin.apollo.api.service.ChecklistService
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.di.DiUploadsEntity
@@ -25,6 +26,7 @@ class GeneralController(
         private val applicationMapProperties: ApplicationMapProperties,
         private val reportsDaoService: ReportsDaoService,
         private val daoServices: DestinationInspectionDaoServices,
+        private val checklistService: ChecklistService,
 ) {
 
     @GetMapping("/cor/{corId}")
@@ -74,13 +76,13 @@ class GeneralController(
     @GetMapping("/checklist/{checklistId}")
     fun downloadChecklist(@PathVariable("checklistId") inspectionId: Long, httResponse: HttpServletResponse) {
         try {
-            this.daoServices.findInspectionGeneralById(inspectionId)?.let { inspectionGeneral ->
-                if (inspectionGeneral.inspectionReportFile != null) {
-                    val resource = ByteArrayResource(inspectionGeneral.inspectionReportFile!!)
+            this.checklistService.findInspectionMotorVehicleById(inspectionId)?.let { inspectionGeneral ->
+                if (inspectionGeneral.ministryReportFile != null) {
+                    val resource = ByteArrayResource(inspectionGeneral.ministryReportFile!!)
                     var name = "CHECKLIST"
-                    inspectionGeneral.checkListType?.let {
-                        name = name + "_" + it.typeName?.replace(" ", "-").toString()
-                    }
+//                    inspectionGeneral.checkListType?.let {
+//                        name = name + "_" + it.typeName?.replace(" ", "-").toString()
+//                    }
                     httResponse.setHeader("Content-Disposition", "inline; filename=\"${name}\";")
                     httResponse.addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
                     httResponse.setContentLengthLong(resource.contentLength())
@@ -103,8 +105,8 @@ class GeneralController(
         val map = hashMapOf<String, Any>()
         val response = ApiResponseModel()
         try {
-            daoServices.findInspectionMotorVehicleById(checklistId)?.let { mvInspectionChecklist ->
-                map["ImporterName"] = mvInspectionChecklist.inspectionGeneral?.importersName.toString()
+            checklistService.findInspectionMotorVehicleById(checklistId)?.let { mvInspectionChecklist ->
+//                map["ImporterName"] = mvInspectionChecklist.inspectionGeneral?.importersName.toString()
                 map["VehicleMake"] = mvInspectionChecklist.makeVehicle.toString()
                 map["EngineCapacity"] = mvInspectionChecklist.engineNoCapacity.toString()
                 map["ManufactureDate"] = mvInspectionChecklist.manufactureDate.toString()

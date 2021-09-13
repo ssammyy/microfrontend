@@ -81,7 +81,10 @@ class DestinationInspectionBpmn(
         consignmentDocument.diProcessStatus = processStarted
         consignmentDocument.diProcessStartedOn = Timestamp.from(Instant.now())
         consignmentDocument.varField10="Start Assign Inspection Officer"
-        this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
+        // Update history
+        this.auditService.addHistoryRecord(consignmentDocument.id!!,consignmentDocument.ucrNumber, data["remarks"] as String?, "ASSIGN IO", "Consignment assignment")
+        // Update document
+        this.daoServices.updateCdDetailsInDB(consignmentDocument, this.commonDaoServices.getLoggedInUser())
     }
 
     fun startApprovalConsignment(cdUuid: String, form: ConsignmentUpdateRequest): ApiResponseModel {
@@ -146,10 +149,10 @@ class DestinationInspectionBpmn(
         consignmentDocument.diProcessInstanceId = processInstance.processDefinitionId
         consignmentDocument.diProcessStatus=1
         consignmentDocument.diProcessStartedOn=Timestamp.from(Instant.now())
-        consignmentDocument.varField10 = "REQUEST TARGETING"
+        consignmentDocument.varField10 = "Request Targeting"
         consignmentDocument.targetReason = data.get("remarks") as String?
         // Save process details
-        this.auditService.addHistoryRecord(consignmentDocument.id!!, data["remarks"] as String?, "REQUEST CONSIGNMENT TARGETING", "Consignment targeting request")
+        this.auditService.addHistoryRecord(consignmentDocument.id!!,consignmentDocument.ucrNumber, data["remarks"] as String?, "REQUEST CONSIGNMENT TARGETING", "Consignment targeting request")
         this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
         // Update status to wait targeting approval
         consignmentDocument.cdStandard?.let { cdStd ->
@@ -165,7 +168,7 @@ class DestinationInspectionBpmn(
         consignmentDocument.diProcessStartedOn=Timestamp.from(Instant.now())
         consignmentDocument.varField10 = "REQUEST COMPLIANCE APPROVAL"
         // Save process details
-        this.auditService.addHistoryRecord(consignmentDocument.id!!, data["remarks"] as String?, "REQUEST CONSIGNMENT COMPLIANCE UPDATE", "Request to mark Consignment as compliant")
+        this.auditService.addHistoryRecord(consignmentDocument.id!!, consignmentDocument.ucrNumber, data["remarks"] as String?, "REQUEST CONSIGNMENT COMPLIANCE UPDATE", "Request to mark Consignment as compliant")
         // Update current process
         this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
     }
@@ -178,7 +181,7 @@ class DestinationInspectionBpmn(
         consignmentDocument.diProcessStartedOn=Timestamp.from(Instant.now())
         consignmentDocument.varField8 = processInstance.id
         // Save process details
-        this.auditService.addHistoryRecord(consignmentDocument.id!!, data["remarks"] as String?, "REQUEST CONSIGNMENT BLACKLISTING", "Consignment blacklist request")
+        this.auditService.addHistoryRecord(consignmentDocument.id!!,consignmentDocument.ucrNumber, data["remarks"] as String?, "REQUEST CONSIGNMENT BLACKLISTING", "Consignment blacklist request")
         // Update current process
         this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
     }
@@ -191,7 +194,7 @@ class DestinationInspectionBpmn(
         consignmentDocument.diProcessStartedOn=Timestamp.from(Instant.now())
         consignmentDocument.targetReason = data.get("remarks") as String?
         // Save process details
-        this.auditService.addHistoryRecord(consignmentDocument.id!!, data["remarks"] as String?, "REQUEST CONSIGNMENT COC/COI", "Consignment CoC/CoI request")
+        this.auditService.addHistoryRecord(consignmentDocument.id!!, consignmentDocument.ucrNumber, data["remarks"] as String?, "REQUEST CONSIGNMENT COC/COI", "Consignment CoC/CoI request")
         this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
     }
 
@@ -202,7 +205,7 @@ class DestinationInspectionBpmn(
         consignmentDocument.diProcessStartedOn=Timestamp.from(Instant.now())
         consignmentDocument.targetReason = data.get("remarks") as String?
         // Save process details
-        this.auditService.addHistoryRecord(consignmentDocument.id!!, data["remarks"] as String?, "REQUEST CONSIGNMENT COR", "Consignment CoR request")
+        this.auditService.addHistoryRecord(consignmentDocument.id!!,consignmentDocument.ucrNumber, data["remarks"] as String?, "REQUEST CONSIGNMENT COR", "Consignment CoR request")
         this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
     }
 
@@ -214,7 +217,7 @@ class DestinationInspectionBpmn(
         consignmentDocument.diProcessStartedOn=Timestamp.from(Instant.now())
         consignmentDocument.targetReason = data.get("remarks") as String?
         // Save process details
-        this.auditService.addHistoryRecord(consignmentDocument.id!!, data["remarks"] as String?, "DEMAND NOTE CONSIGNMENT", "Consignment demand note request")
+        this.auditService.addHistoryRecord(consignmentDocument.id!!,consignmentDocument.ucrNumber, data["remarks"] as String?, "DEMAND NOTE CONSIGNMENT", "Consignment demand note request")
         this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
     }
 

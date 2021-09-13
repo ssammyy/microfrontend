@@ -10,12 +10,14 @@ import {DestinationInspectionService} from "../../../../core/store/data/di/desti
 })
 export class ProcessRejectionComponent implements OnInit {
   message: any
+    title: any
   public form: FormGroup;
   constructor(public dialogRef: MatDialogRef<any>, private fb: FormBuilder, @Inject(MAT_DIALOG_DATA) public data: any,
               private diService: DestinationInspectionService) {
   }
 
   ngOnInit(): void {
+      this.title=this.data.title
     this.form = this.fb.group({
       approvalStatus: ['', Validators.required],
       remarks: ['', Validators.required]

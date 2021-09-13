@@ -157,6 +157,9 @@ export class DestinationInspectionService {
         }
         return filename
     }
+    deleteAttachmentDocument(attachmentId: any): Observable<any> {
+        return this.client.delete(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/attachments/"+attachmentId))
+    }
     downloadDocument(url){
         this.client.get(ApiEndpointService.getEndpoint(url),{ observe: 'response',responseType: 'blob'})
             .pipe(map((res: HttpResponse<Blob>)=>{
@@ -255,5 +258,11 @@ export class DestinationInspectionService {
 
     demandNoteDetails(demandNoteId: any): Observable<any> {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/demand/note/details/"+demandNoteId))
+    }
+    submitDemandNote(demandNoteId: any,data: any): Observable<any>{
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/demand/note/submit/"+demandNoteId),data)
+    }
+    deleteDemandNote(demandNoteId: any): Observable<any>{
+        return this.client.delete(ApiEndpointService.getEndpoint("/api/v1/di/demand/note/submit/"+demandNoteId))
     }
 }

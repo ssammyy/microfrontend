@@ -16,3 +16,22 @@
     z-index: 1050 !important;
     position: absolute;
 }
+
+/*
+* https://github.com/angular/components/issues/12779
+ */
+::ng-deep .mat-option-text.mat-option-text {
+    white-space: normal;
+    /*font-size: 0.7em;*/
+}
+::ng-deep .mat-select-panel {
+    max-width: none;
+}
+::ng-deep .mat-select-panel mat-option.mat-option {
+    margin: 1rem 0;
+    height: unset;
+    overflow: visible;
+    line-height: initial;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}

@@ -23,11 +23,11 @@
                                         <p *ngIf="task.map.hasAllItems"><b>HAS ALL ITEMS:</b> {{task.map.hasAllItems?'YES':'NO'}}</p>
                                         <p *ngIf="task.map.documentType"><b>GENERATED DOCUMENT:</b> {{task.map.documentType}}</p>
                                         <p *ngIf="task.map.compliantStatus"><b>COMPLIANCE:</b> {{task.map.compliantStatus==1?'COMPLIANT':'NON-COMPLIANT'}}</p>
-                                        <div class="btn-group">
-                                            <button class="btn btn-primary btn-sm" *ngIf="task.map.demandNoteId" (click)="viewDemandNote(task.map.demandNoteId)">VIEW DEMAND NOTE</button>
-                                            <button class="btn  btn-primary btn-sm" (click)="approveRejectTasks(task.objectId,task.map.cdUuid)">Approve/Reject</button>
-                                        </div>
 
+                                    </div>
+                                    <div class="card-footer btn-group">
+                                        <button class="btn btn-sm btn-primary" *ngIf="task.map.demandNoteId" (click)="viewDemandNote(task.map.demandNoteId)">VIEW DEMAND NOTE</button>
+                                        <button class="btn mr-1 btn-sm  btn-primary" (click)="approveRejectTasks(task.objectId,task.map.cdUuid, task.task)">Approve/Reject</button>
                                     </div>
                                 </div>
                             </div>

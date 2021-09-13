@@ -84,7 +84,22 @@ export class ViewDemandNoteComponent implements OnInit {
                 }
             )
     }
-
+    deleteDemandNote(){
+        this.diService.deleteDemandNote(this.demandNoteId)
+            .subscribe(
+                res=>{
+                    this.message=res.message
+                }
+            )
+    }
+    submitDemandNote() {
+        this.diService.submitDemandNote(this.demandNoteId,{})
+            .subscribe(
+                res=>{
+                    this.message=res.message
+                }
+            )
+    }
     onCustomAction(action){
 
     }

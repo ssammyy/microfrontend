@@ -32,10 +32,11 @@ export class ViewTasksComponent implements OnInit {
         })
     }
 
-    approveRejectTasks(taskId: any, docUuid: any) {
+    approveRejectTasks(taskId: any, docUuid: any,taskTitle: any) {
         this.dialog.open(ProcessRejectionComponent, {
             data: {
                 cdUuid: docUuid,
+                title: taskTitle,
                 taskId: taskId
             }
         }).afterClosed()

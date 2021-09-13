@@ -391,41 +391,41 @@ class ControllerRoutes {
     }
 
 
-    @Bean
-    fun diestinationInspectionRoutes(handler: DestinationInspectionHandler) = router {
-        "/api/di".nest {
-            GET("/home", handler::home)
-            GET("/cd-list", handler::cdList)
-            GET("/cd-details", handler::cDDetails)
-            GET("/cd-item-details", handler::cDItemDetails)
-            GET("/cd-coc", handler::cdCocDetails)
-            GET("/cd-cor", handler::cdCorDetails)
-//            GET("/cd-coi", handler::cdCoiDetails)
-            GET("/cd-idf", handler::cdIdfDetails)
-            GET("/cd-manifest", handler::cdManifestDetails)
-            GET("/cd-customDeclartion", handler::cdCustomDeclarationDetails)
-            GET("/cd-all-invoices", handler::cdInvoiceDetails)
-
-
-            "/inspection".nest {
-                GET("/check-list", handler::inspectionDetails)
-                GET("/ssf-details", handler::getSSfDetails)
-                GET("/sample-collection", handler::inspectionDetails)
-                GET("/sample-submission", handler::inspectionDetails)
-                GET("/item-report", handler::inspectionChecklistReportDetails)
-                GET("/item/sample-Submit-param/bs-number", handler::inspectionDetails)
-            }
-
-//            GET("/ministry-submission", handler::submitMVInspectionRequestToMinistry)
-            GET("/ministry-inspection-home", handler::ministryInspectionHome)
-            GET("/motor-vehicle-inspection-details", handler::mvInspectionDetails)
-
-//            GET("/ministry-inspection-report", handler::ministryInspectionReport)
-//            GET("/mv-inspection-checklist-detail", handler::mvInspectionChecklistDetails)
-
-//            GET("/cd-inspection-module", handler::cDInspectionModuleDetails)
-        }
-    }
+//    @Bean
+//    fun diestinationInspectionRoutes(handler: DestinationInspectionHandler) = router {
+//        "/api/di".nest {
+//            GET("/home", handler::home)
+//            GET("/cd-list", handler::cdList)
+//            GET("/cd-details", handler::cDDetails)
+//            GET("/cd-item-details", handler::cDItemDetails)
+//            GET("/cd-coc", handler::cdCocDetails)
+//            GET("/cd-cor", handler::cdCorDetails)
+////            GET("/cd-coi", handler::cdCoiDetails)
+//            GET("/cd-idf", handler::cdIdfDetails)
+//            GET("/cd-manifest", handler::cdManifestDetails)
+//            GET("/cd-customDeclartion", handler::cdCustomDeclarationDetails)
+//            GET("/cd-all-invoices", handler::cdInvoiceDetails)
+//
+//
+//            "/inspection".nest {
+////                GET("/check-list", handler::inspectionDetails)
+//                GET("/ssf-details", handler::getSSfDetails)
+//                GET("/sample-collection", handler::inspectionDetails)
+//                GET("/sample-submission", handler::inspectionDetails)
+////                GET("/item-report", handler::inspectionChecklistReportDetails)
+//                GET("/item/sample-Submit-param/bs-number", handler::inspectionDetails)
+//            }
+//
+////            GET("/ministry-submission", handler::submitMVInspectionRequestToMinistry)
+//            GET("/ministry-inspection-home", handler::ministryInspectionHome)
+//            GET("/motor-vehicle-inspection-details", handler::mvInspectionDetails)
+//
+////            GET("/ministry-inspection-report", handler::ministryInspectionReport)
+////            GET("/mv-inspection-checklist-detail", handler::mvInspectionChecklistDetails)
+//
+////            GET("/cd-inspection-module", handler::cDInspectionModuleDetails)
+//        }
+//    }
 
 
     @Bean

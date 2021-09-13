@@ -136,44 +136,6 @@ class DestinationInspectionActionsHandler(
         return ServerResponse.ok().body(response)
     }
 
-    fun updateMotorVehicleComplianceStatus(req: ServerRequest): ServerResponse {
-        val response = ApiResponseModel()
-        val form = req.body(ConsignmentUpdateRequest::class.java)
-        req.pathVariable("inspectionChecklistId").let { inspectionChecklistId ->
-            val generalInspectionChecklistId = inspectionChecklistId.toLongOrDefault(0L)
-            commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-                    .let {
-                        KotlinLogging.logger { }.info { "generalInspectionChecklistId = $generalInspectionChecklistId" }
-                        daoServices.findInspectionGeneralById(generalInspectionChecklistId)
-                                ?.let { cdInspectionGeneralEntity ->
-                                    cdInspectionGeneralEntity.cdItemDetails?.cdDocId?.let { consignmentDocumentDetailsEntity ->
-                                        consignmentDocumentDetailsEntity.compliantStatus = form.compliantStatus
-                                        consignmentDocumentDetailsEntity.compliantDate = commonDaoServices.getCurrentDate()
-                                        consignmentDocumentDetailsEntity.compliantRemarks = form.remarks
-                                        val loggedInUser = commonDaoServices.loggedInUserDetails()
-                                        daoServices.updateCdDetailsInDB(consignmentDocumentDetailsEntity, loggedInUser).let {
-                                            //TODO: Send notification to the supervisor
-                                        }
-                                        consignmentAuditService.addHistoryRecord(cdInspectionGeneralEntity.id, form.remarks, "KEBS_COMPLIANCE", "Send Certificate of Inspection")
-                                        response.data = ConsignmentDocumentDao.fromEntity(consignmentDocumentDetailsEntity)
-                                        response.responseCode = ResponseCodes.SUCCESS_CODE
-                                        response.message = "Success"
-                                        response
-                                    } ?: run {
-                                        response.message = "No Consignment Document Found"
-                                        response.responseCode = ResponseCodes.NOT_FOUND
-                                        response
-                                    }
-
-                                } ?: run {
-                            response.message = "No General Inspection Checklist Found"
-                            response.responseCode = ResponseCodes.NOT_FOUND
-                            response
-                        }
-                    }
-        }
-        return ServerResponse.ok().body(response)
-    }
 
     // Send COI
     fun sendCertificateOfInspection(req: ServerRequest): ServerResponse {
@@ -203,7 +165,7 @@ class DestinationInspectionActionsHandler(
                                     daoServices.updateCDStatus(cdStd, applicationMapProperties.mapDICdStatusTypeCOIGeneratedAndSendID)
                                 }
                             }
-                            consignmentAuditService.addHistoryRecord(updatedCDDetails.id, form.remarks, "KEBS_COI", "Send Certificate of Inspection")
+                            consignmentAuditService.addHistoryRecord(updatedCDDetails.id,updatedCDDetails.ucrNumber, form.remarks, "KEBS_COI", "Send Certificate of Inspection")
                             response.data = ConsignmentDocumentDao.fromEntity(consignmentDocument)
                             response.responseCode = ResponseCodes.SUCCESS_CODE
                             response.message = "Success"
@@ -255,7 +217,7 @@ class DestinationInspectionActionsHandler(
                             daoServices.createCDTransactionLog(map, loggedInUser, consignmentDocument.id!!, it, it1)
                         }
                     }
-                    consignmentAuditService.addHistoryRecord(consignmentDocument.id, form.remarks, "KEBS_ASSIGN_PORT", "Assign Port To consignment")
+                    consignmentAuditService.addHistoryRecord(consignmentDocument.id,consignmentDocument.ucrNumber, form.remarks, "KEBS_ASSIGN_PORT", "Assign Port To consignment")
                     response.message = "Port assigned"
                     response.responseCode = ResponseCodes.SUCCESS_CODE
                 } else {
@@ -300,7 +262,7 @@ class DestinationInspectionActionsHandler(
                     daoServices.updateCdDetailsInDB(consignmentDocument, loggedInUser)
                     // Submit Targeting to BPM
                     this.diBpmn.startTargetConsignment(data, consignmentDocument);
-                    consignmentAuditService.addHistoryRecord(consignmentDocument.id, form.remarks, "KEBS_TARGET", "Target consignment")
+                    consignmentAuditService.addHistoryRecord(consignmentDocument.id,consignmentDocument.ucrNumber, form.remarks, "KEBS_TARGET", "Target consignment")
                     response.message = "Target request submitted"
                     response.responseCode = ResponseCodes.SUCCESS_CODE
                 } else {
@@ -383,10 +345,10 @@ class DestinationInspectionActionsHandler(
                         }
                         if (supervisor) {
                             response.message = "Target request submitted"
-                            consignmentAuditService.addHistoryRecord(consignmentDocument.id, form.remarks, "KEBS_SUPERVISOR_TARGET", "Supervisor targeted consignment")
+                            consignmentAuditService.addHistoryRecord(consignmentDocument.id,consignmentDocument.ucrNumber, form.remarks, "KEBS_SUPERVISOR_TARGET", "Supervisor targeted consignment")
                         } else {
                             response.message = "Target approved successful"
-                            consignmentAuditService.addHistoryRecord(consignmentDocument.id, form.remarks, "KEBS_APPROVE_TARGET", "Approve target consignment")
+                            consignmentAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, form.remarks, "KEBS_APPROVE_TARGET", "Approve target consignment")
                         }
                         response.responseCode = ResponseCodes.SUCCESS_CODE
                     } else {
@@ -438,7 +400,7 @@ class DestinationInspectionActionsHandler(
                 //Start the relevant BPM
                 diBpmn.startDiBpmProcessByCdType(consignmentDocument)
                 diBpmn.assignIOBpmTask(consignmentDocument)
-                consignmentAuditService.addHistoryRecord(consignmentDocument.id, form.remarks, "KEBS_MANUAL_ASSIGN_IO", "Manual pick consignment")
+                consignmentAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, form.remarks, "KEBS_MANUAL_ASSIGN_IO", "Manual pick consignment")
                 response.responseCode = ResponseCodes.SUCCESS_CODE
                 response.message = "Inspection officer assigned"
             }

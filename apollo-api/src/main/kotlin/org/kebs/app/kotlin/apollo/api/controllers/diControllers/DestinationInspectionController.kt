@@ -709,204 +709,204 @@ class DestinationInspectionController(
     }
 
 
-    @PreAuthorize("hasAuthority('DI_INSPECTION_OFFICER_MODIFY')")
-    @PostMapping("item/inspection/checklist/save")
-    fun saveCheckListDetails(
-//            @ModelAttribute checkList: CdInspectionChecklistEntity,
-            @ModelAttribute generalCheckList: CdInspectionGeneralEntity,
-            @ModelAttribute agrochemItemInspectionChecklist: CdInspectionAgrochemItemChecklistEntity,
-            @ModelAttribute engineeringItemInspectionChecklist: CdInspectionEngineeringItemChecklistEntity,
-            @ModelAttribute otherItemInspectionChecklist: CdInspectionOtherItemChecklistEntity,
-            @ModelAttribute motorVehicleItemInspectionChecklist: CdInspectionMotorVehicleItemChecklistEntity?,
-            @ModelAttribute item: CdItemDetailsEntity,
-            @RequestParam("cdItemUuid") cdItemUuid: String,
-            model: Model,
-            result: BindingResult
-    ): String {
-        commonDaoServices.serviceMapDetails(appId)
-                .let { map ->
-                    commonDaoServices.loggedInUserDetails()
-                            .let { loggedInUser ->
-                                //Get CD item
-                                val cdItem = daoServices.findItemWithUuid(cdItemUuid)
-                                var cdUpdateItem: CdItemDetailsEntity? = item
-                                //Save the general checklist
-                                val inspectionGeneral =
-                                        daoServices.saveInspectionGeneralDetails(generalCheckList, cdItem, loggedInUser, map)
-                                //Save the respective checklist
-                                when (inspectionGeneral.checkListType?.uuid) {
-                                    daoServices.agrochemItemChecklistType -> {
-                                        daoServices.saveInspectionAgrochemItemChecklist(
-                                                agrochemItemInspectionChecklist,
-                                                inspectionGeneral,
-                                                loggedInUser,
-                                                map
-                                        )
-                                        cdUpdateItem = agrochemItemInspectionChecklist.sampled?.let {
-                                            daoServices.checkIfChecklistUndergoesSampling(
-                                                    it,
-                                                    item,
-                                                    map
-                                            )
-                                        }
-                                    }
-                                    daoServices.engineeringItemChecklistType -> {
-                                        daoServices.saveInspectionEngineeringItemChecklist(
-                                                engineeringItemInspectionChecklist,
-                                                inspectionGeneral,
-                                                loggedInUser,
-                                                map
-                                        )
-                                        cdUpdateItem = engineeringItemInspectionChecklist.sampled?.let {
-                                            daoServices.checkIfChecklistUndergoesSampling(
-                                                    it,
-                                                    item,
-                                                    map
-                                            )
-                                        }
-                                    }
-                                    daoServices.otherItemChecklistType -> {
-                                        daoServices.saveInspectionOtherItemChecklist(
-                                                otherItemInspectionChecklist,
-                                                inspectionGeneral,
-                                                loggedInUser,
-                                                map
-                                        )
-                                        cdUpdateItem = otherItemInspectionChecklist.sampled?.let {
-                                            daoServices.checkIfChecklistUndergoesSampling(
-                                                    it,
-                                                    item,
-                                                    map
-                                            )
-                                        }
-                                    }
-                                    daoServices.motorVehicleItemChecklistType -> {
-                                        if (motorVehicleItemInspectionChecklist != null) {
-                                            daoServices.saveInspectionMotorVehicleItemChecklist(
-                                                    motorVehicleItemInspectionChecklist,
-                                                    inspectionGeneral,
-                                                    loggedInUser,
-                                                    map
-                                            )
-                                            cdUpdateItem = daoServices.updateItemNoSampling(item, map)
-                                        }
-                                    }
-                                }
-                                //Save CD item details
-                                val cdItemID: Long = cdItem.id?.let { commonDaoServices.makeAnyNotBeNull(it) } as Long
-                                cdUpdateItem?.id = cdItemID
-                                cdUpdateItem?.checkListTypeId = generalCheckList.checkListType
-                                when {
-                                    cdUpdateItem != null -> {
-                                        daoServices.updateCDItemDetails(cdUpdateItem, cdItemID, loggedInUser, map)
-                                    }
-                                }
-                                //BPM: Update fill inspection details workflow
-                                val cdDetails = cdItem.cdDocId
-//                        cdDetails?.id?.let { it1 ->
-//                            cdDetails.assignedInspectionOfficer?.id?.let { it2 ->
-//                                diBpmn.diFillInspectionForms(it1, it2)
-//                            }
-//                        }
-                                cdDetails?.cdStandard?.let { cdStd ->
-                                    daoServices.updateCDStatus(cdStd, applicationMapProperties.mapDIStatusTypeInspectionChecklistId)
-                                }
-
-                                return daoServices.viewCdItemPage(cdItemUuid)
-                            }
-                }
-
-    }
-
-
-    @PreAuthorize("hasAuthority('MINISTRY_OF_TRANSPORT_MODIFY')")
-    @PostMapping("ministry/upload-inspection-report")
-    fun uploadMinistryInspectionReport(
-            @RequestParam("mvInspectionChecklistId") inspectionChecklistId: Long,
-            @RequestParam("doc_file") docFile: MultipartFile,
-            redirectAttributes: RedirectAttributes
+//    @PreAuthorize("hasAuthority('DI_INSPECTION_OFFICER_MODIFY')")
+//    @PostMapping("item/inspection/checklist/save")
+//    fun saveCheckListDetails(
+////            @ModelAttribute checkList: CdInspectionChecklistEntity,
+//            @ModelAttribute generalCheckList: CdInspectionGeneralEntity,
+//            @ModelAttribute agrochemItemInspectionChecklist: CdInspectionAgrochemItemChecklistEntity,
+//            @ModelAttribute engineeringItemInspectionChecklist: CdInspectionEngineeringItemChecklistEntity,
+//            @ModelAttribute otherItemInspectionChecklist: CdInspectionOtherItemChecklistEntity,
+//            @ModelAttribute motorVehicleItemInspectionChecklist: CdInspectionMotorVehicleItemChecklistEntity?,
+//            @ModelAttribute item: CdItemDetailsEntity,
+//            @RequestParam("cdItemUuid") cdItemUuid: String,
+//            model: Model,
 //            result: BindingResult
-    ): String {
-        commonDaoServices.serviceMapDetails(appId)
-                .let { map ->
-                    commonDaoServices.loggedInUserDetails()
-                            .let { loggedInUser ->
-                                if (docFile.isEmpty) {
-                                    throw ExpectedDataNotFound("No File found Found")
-                                }
-                                KotlinLogging.logger { }.info { "mvInspectionChecklistId = $inspectionChecklistId" }
-                                daoServices.findInspectionMotorVehicleById(inspectionChecklistId)
-                                        ?.let { inspectionMotorVehicle ->
-                                            inspectionMotorVehicle.ministryReportFile = docFile.bytes
-                                            inspectionMotorVehicle.ministryReportSubmitStatus = map.activeStatus
-                                            daoServices.updateCdInspectionMotorVehicleItemChecklistInDB(
-                                                    inspectionMotorVehicle,
-                                                    loggedInUser
-                                            ).let { cdInspectionMVChecklist ->
-                                                cdInspectionMVChecklist.inspectionGeneral?.cdItemDetails?.let { cdItemDetails ->
-                                                    cdItemDetails.cdDocId?.let { cdEntity ->
-                                                        //Update status
-                                                        cdEntity.cdStandard?.let { cdStd ->
-                                                            daoServices.updateCDStatus(cdStd, applicationMapProperties.mapDIStatusTypeMinistryInspectionUploadedId)
-                                                        }
-                                                        //daoServices.sendMinistryInspectionReportSubmittedEmail(it, cdItemDetails)
-                                                        //Complete Generate Ministry Inspection Report & Assign Review Ministry Inspection Report
-                                                        cdEntity.id?.let {
-                                                            cdEntity.assignedInspectionOfficer?.id?.let { it1 ->
-                                                                diBpmn.diGenerateMinistryInspectionReportComplete(
-                                                                        it, it1
-                                                                )
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            redirectAttributes.addFlashAttribute("success", "Report Submitted Successfully")
-                                            return "$motorVehicleInspectionDetailsPage=${inspectionMotorVehicle.inspectionGeneral?.cdItemDetails?.id}&docType=${daoServices.motorVehicleMinistryInspectionChecklistName}"
-                                        } ?: throw ExpectedDataNotFound("No Motor Vehicle Inspection Checklist Found")
-                            }
-                }
-    }
+//    ): String {
+//        commonDaoServices.serviceMapDetails(appId)
+//                .let { map ->
+//                    commonDaoServices.loggedInUserDetails()
+//                            .let { loggedInUser ->
+//                                //Get CD item
+//                                val cdItem = daoServices.findItemWithUuid(cdItemUuid)
+//                                var cdUpdateItem: CdItemDetailsEntity? = item
+//                                //Save the general checklist
+//                                val inspectionGeneral =
+//                                        daoServices.saveInspectionGeneralDetails(generalCheckList, cdItem, loggedInUser, map)
+//                                //Save the respective checklist
+//                                when (inspectionGeneral.checkListType?.uuid) {
+//                                    daoServices.agrochemItemChecklistType -> {
+//                                        daoServices.saveInspectionAgrochemItemChecklist(
+//                                                agrochemItemInspectionChecklist,
+//                                                inspectionGeneral,
+//                                                loggedInUser,
+//                                                map
+//                                        )
+//                                        cdUpdateItem = agrochemItemInspectionChecklist.sampled?.let {
+//                                            daoServices.checkIfChecklistUndergoesSampling(
+//                                                    it,
+//                                                    item,
+//                                                    map
+//                                            )
+//                                        }
+//                                    }
+//                                    daoServices.engineeringItemChecklistType -> {
+//                                        daoServices.saveInspectionEngineeringItemChecklist(
+//                                                engineeringItemInspectionChecklist,
+//                                                inspectionGeneral,
+//                                                loggedInUser,
+//                                                map
+//                                        )
+//                                        cdUpdateItem = engineeringItemInspectionChecklist.sampled?.let {
+//                                            daoServices.checkIfChecklistUndergoesSampling(
+//                                                    it,
+//                                                    item,
+//                                                    map
+//                                            )
+//                                        }
+//                                    }
+//                                    daoServices.otherItemChecklistType -> {
+//                                        daoServices.saveInspectionOtherItemChecklist(
+//                                                otherItemInspectionChecklist,
+//                                                inspectionGeneral,
+//                                                loggedInUser,
+//                                                map
+//                                        )
+//                                        cdUpdateItem = otherItemInspectionChecklist.sampled?.let {
+//                                            daoServices.checkIfChecklistUndergoesSampling(
+//                                                    it,
+//                                                    item,
+//                                                    map
+//                                            )
+//                                        }
+//                                    }
+//                                    daoServices.motorVehicleItemChecklistType -> {
+//                                        if (motorVehicleItemInspectionChecklist != null) {
+//                                            daoServices.saveInspectionMotorVehicleItemChecklist(
+//                                                    motorVehicleItemInspectionChecklist,
+//                                                    inspectionGeneral,
+//                                                    loggedInUser,
+//                                                    map
+//                                            )
+//                                            cdUpdateItem = daoServices.updateItemNoSampling(item, map)
+//                                        }
+//                                    }
+//                                }
+//                                //Save CD item details
+//                                val cdItemID: Long = cdItem.id?.let { commonDaoServices.makeAnyNotBeNull(it) } as Long
+//                                cdUpdateItem?.id = cdItemID
+//                                cdUpdateItem?.checkListTypeId = generalCheckList.checkListType
+//                                when {
+//                                    cdUpdateItem != null -> {
+//                                        daoServices.updateCDItemDetails(cdUpdateItem, cdItemID, loggedInUser, map)
+//                                    }
+//                                }
+//                                //BPM: Update fill inspection details workflow
+//                                val cdDetails = cdItem.cdDocId
+////                        cdDetails?.id?.let { it1 ->
+////                            cdDetails.assignedInspectionOfficer?.id?.let { it2 ->
+////                                diBpmn.diFillInspectionForms(it1, it2)
+////                            }
+////                        }
+//                                cdDetails?.cdStandard?.let { cdStd ->
+//                                    daoServices.updateCDStatus(cdStd, applicationMapProperties.mapDIStatusTypeInspectionChecklistId)
+//                                }
+//
+//                                return daoServices.viewCdItemPage(cdItemUuid)
+//                            }
+//                }
+//
+//    }
 
-    @PreAuthorize("hasAuthority('DI_INSPECTION_OFFICER_MODIFY')")
-    @PostMapping("upload/motor-inspection-report")
-    fun uploadMotorInspectionReport(
-            @RequestParam("generalInspectionChecklistId") generalInspectionChecklistId: Long,
-            @RequestParam("doc_file") docFile: MultipartFile,
-            @RequestParam("compliance_status") complianceStatus: Int,
-            @RequestParam("compliance_recommendations") complianceRecommendations: String,
-            redirectAttributes: RedirectAttributes
-    ): String {
-        KotlinLogging.logger { }.info {
-            "Params received \n generalInspectionChecklistId: ${generalInspectionChecklistId}, " +
-                    "compliance_status: $complianceStatus, compliance_recommendations: $complianceRecommendations"
-        }
-        commonDaoServices.serviceMapDetails(appId)
-                .let {
-                    commonDaoServices.loggedInUserDetails()
-                            .let { loggedInUser ->
-                                if (docFile.isEmpty) {
-                                    throw ExpectedDataNotFound("No File found Found")
-                                }
-                                KotlinLogging.logger { }.info { "generalInspectionChecklistId = $generalInspectionChecklistId" }
 
-                                daoServices.findInspectionGeneralById(generalInspectionChecklistId)
-                                        ?.let { cdInspectionGeneralEntity ->
-                                            cdInspectionGeneralEntity.inspectionReportFile = docFile.bytes
-                                            cdInspectionGeneralEntity.complianceRecommendations = complianceRecommendations
-                                            cdInspectionGeneralEntity.complianceStatus = complianceStatus
-                                            daoServices.updateCdInspectionGeneralChecklistInDB(
-                                                    cdInspectionGeneralEntity,
-                                                    loggedInUser
-                                            ).let {
-                                                //TODO: Send notification to the supervisor
-//                                        diBpmn.diGenerateMotorInspectionReportComplete(it, it1)
-                                            }
-                                            return "$motorVehicleInspectionDetailsPage=${cdInspectionGeneralEntity.cdItemDetails?.id}&docType=${daoServices.motorVehicleMinistryInspectionChecklistName}"
-                                        } ?: throw ExpectedDataNotFound("No General Inspection Checklist Found")
-                            }
-                }
-    }
+//    @PreAuthorize("hasAuthority('MINISTRY_OF_TRANSPORT_MODIFY')")
+//    @PostMapping("ministry/upload-inspection-report")
+//    fun uploadMinistryInspectionReport(
+//            @RequestParam("mvInspectionChecklistId") inspectionChecklistId: Long,
+//            @RequestParam("doc_file") docFile: MultipartFile,
+//            redirectAttributes: RedirectAttributes
+////            result: BindingResult
+//    ): String {
+//        commonDaoServices.serviceMapDetails(appId)
+//                .let { map ->
+//                    commonDaoServices.loggedInUserDetails()
+//                            .let { loggedInUser ->
+//                                if (docFile.isEmpty) {
+//                                    throw ExpectedDataNotFound("No File found Found")
+//                                }
+//                                KotlinLogging.logger { }.info { "mvInspectionChecklistId = $inspectionChecklistId" }
+//                                daoServices.findInspectionMotorVehicleById(inspectionChecklistId)
+//                                        ?.let { inspectionMotorVehicle ->
+//                                            inspectionMotorVehicle.ministryReportFile = docFile.bytes
+//                                            inspectionMotorVehicle.ministryReportSubmitStatus = map.activeStatus
+//                                            daoServices.updateCdInspectionMotorVehicleItemChecklistInDB(
+//                                                    inspectionMotorVehicle,
+//                                                    loggedInUser
+//                                            ).let { cdInspectionMVChecklist ->
+//                                                cdInspectionMVChecklist.inspectionGeneral?.cdItemDetails?.let { cdItemDetails ->
+//                                                    cdItemDetails.cdDocId?.let { cdEntity ->
+//                                                        //Update status
+//                                                        cdEntity.cdStandard?.let { cdStd ->
+//                                                            daoServices.updateCDStatus(cdStd, applicationMapProperties.mapDIStatusTypeMinistryInspectionUploadedId)
+//                                                        }
+//                                                        //daoServices.sendMinistryInspectionReportSubmittedEmail(it, cdItemDetails)
+//                                                        //Complete Generate Ministry Inspection Report & Assign Review Ministry Inspection Report
+//                                                        cdEntity.id?.let {
+//                                                            cdEntity.assignedInspectionOfficer?.id?.let { it1 ->
+//                                                                diBpmn.diGenerateMinistryInspectionReportComplete(
+//                                                                        it, it1
+//                                                                )
+//                                                            }
+//                                                        }
+//                                                    }
+//                                                }
+//                                            }
+//                                            redirectAttributes.addFlashAttribute("success", "Report Submitted Successfully")
+//                                            return "$motorVehicleInspectionDetailsPage=${inspectionMotorVehicle.inspectionGeneral?.cdItemDetails?.id}&docType=${daoServices.motorVehicleMinistryInspectionChecklistName}"
+//                                        } ?: throw ExpectedDataNotFound("No Motor Vehicle Inspection Checklist Found")
+//                            }
+//                }
+//    }
+
+//    @PreAuthorize("hasAuthority('DI_INSPECTION_OFFICER_MODIFY')")
+//    @PostMapping("upload/motor-inspection-report")
+//    fun uploadMotorInspectionReport(
+//            @RequestParam("generalInspectionChecklistId") generalInspectionChecklistId: Long,
+//            @RequestParam("doc_file") docFile: MultipartFile,
+//            @RequestParam("compliance_status") complianceStatus: Int,
+//            @RequestParam("compliance_recommendations") complianceRecommendations: String,
+//            redirectAttributes: RedirectAttributes
+//    ): String {
+//        KotlinLogging.logger { }.info {
+//            "Params received \n generalInspectionChecklistId: ${generalInspectionChecklistId}, " +
+//                    "compliance_status: $complianceStatus, compliance_recommendations: $complianceRecommendations"
+//        }
+//        commonDaoServices.serviceMapDetails(appId)
+//                .let {
+//                    commonDaoServices.loggedInUserDetails()
+//                            .let { loggedInUser ->
+//                                if (docFile.isEmpty) {
+//                                    throw ExpectedDataNotFound("No File found Found")
+//                                }
+//                                KotlinLogging.logger { }.info { "generalInspectionChecklistId = $generalInspectionChecklistId" }
+//
+//                                daoServices.findInspectionGeneralById(generalInspectionChecklistId)
+//                                        ?.let { cdInspectionGeneralEntity ->
+//                                            cdInspectionGeneralEntity.inspectionReportFile = docFile.bytes
+//                                            cdInspectionGeneralEntity.complianceRecommendations = complianceRecommendations
+//                                            cdInspectionGeneralEntity.complianceStatus = complianceStatus
+//                                            daoServices.updateCdInspectionGeneralChecklistInDB(
+//                                                    cdInspectionGeneralEntity,
+//                                                    loggedInUser
+//                                            ).let {
+//                                                //TODO: Send notification to the supervisor
+////                                        diBpmn.diGenerateMotorInspectionReportComplete(it, it1)
+//                                            }
+//                                            return "$motorVehicleInspectionDetailsPage=${cdInspectionGeneralEntity.cdDetails?.id}&docType=${daoServices.motorVehicleMinistryInspectionChecklistName}"
+//                                        } ?: throw ExpectedDataNotFound("No General Inspection Checklist Found")
+//                            }
+//                }
+//    }
 
     @PreAuthorize("hasAuthority('DI_INSPECTION_OFFICER_MODIFY')")
     @PostMapping("item/inspection/sample-Collect/save")
@@ -1140,93 +1140,93 @@ class DestinationInspectionController(
         return returnPage
     }
 
-    @PreAuthorize("hasAuthority('DI_OFFICER_CHARGE_MODIFY') or hasAuthority('DI_INSPECTION_OFFICER_MODIFY')")
-    @PostMapping("inspection/item-report/save")
-    fun saveInspectionReportRecommendationDetails(
-            @ModelAttribute generalInspectionReport: CdInspectionGeneralEntity,
-            @RequestParam("cdItemUuid") cdItemUuid: String,
-            model: Model,
-            result: BindingResult
-    ): String {
-        val map = commonDaoServices.serviceMapDetails(appId)
-        val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val itemDetails = daoServices.findItemWithUuid(cdItemUuid)
-        val filledGeneralInspection = daoServices.findSavedGeneralInspection(itemDetails)
-
-        //Update The entity from frontEnd With id of fetched Inspection General entity
-        with(generalInspectionReport) {
-            id = filledGeneralInspection.id
-        }
-        if (generalInspectionReport.complianceStatus != null) {
-            generalInspectionReport.inspectionReportRefNumber =
-                    "IRREF#${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
-        }
-
-        var payload =
-                "${this::saveInspectionReportRecommendationDetails.name} updated with id =[${generalInspectionReport.id}]"
-        daoServices.updateCdInspectionGeneralChecklistInDB(
-                commonDaoServices.updateDetails(
-                        generalInspectionReport,
-                        filledGeneralInspection
-                ) as CdInspectionGeneralEntity, loggedInUser
-        )
-                .let { updatedGeneralInspectionReport ->
-                    payload =
-                            "${payload}: Updated details [${this::saveInspectionReportRecommendationDetails.name} with Item ID =[${itemDetails.id}]]"
-
-                    when {
-                        generalInspectionReport.complianceStatus != null -> {
-                            with(itemDetails) {
-                                inspectionReportStatus = map.activeStatus
-                            }
-                            val updatedItemDetails = daoServices.updateCdItemDetailsInDB(itemDetails, loggedInUser)
-                            val inspectionReportEmailDto = daoServices.inspectionReportApprovalDTOEmailCompose(
-                                    updatedItemDetails,
-                                    updatedGeneralInspectionReport
-                            )
-                            val sr = commonDaoServices.mapServiceRequestForSuccess(map, payload, loggedInUser)
-//                             itemDetails.cdDocId?.assigner?.let { commonDaoServices.sendEmailWithUserEntity(it, applicationMapProperties.mapDIReportApprovalNotification, inspectionReportEmailDto, map, sr) }
-
-                        }
-                        generalInspectionReport.inspectionReportApprovalStatus != null -> {
-
-                            when (generalInspectionReport.inspectionReportApprovalStatus) {
-                                map.activeStatus -> {
-
-                                    val inspectionReportApprovedEmailDto =
-                                            daoServices.inspectionReportApprovedDTOEmailCompose(
-                                                    itemDetails,
-                                                    updatedGeneralInspectionReport
-                                            )
-                                    val sr = commonDaoServices.mapServiceRequestForSuccess(map, payload, loggedInUser)
-//                                    itemDetails.cdDocId?.assignedInspectionOfficer?.let { commonDaoServices.sendEmailWithUserEntity(it, applicationMapProperties.mapDIReportApprovedNotification, inspectionReportApprovedEmailDto, map, sr) }
-
-                                }
-                                map.inactiveStatus -> {
-                                    updatedGeneralInspectionReport.complianceStatus = null
-                                    updatedGeneralInspectionReport.inspectionReportApprovalStatus = null
-                                    daoServices.updateCdInspectionGeneralChecklistInDB(
-                                            updatedGeneralInspectionReport,
-                                            loggedInUser
-                                    )
-                                    val inspectionReportDisApprovedEmailDto =
-                                            daoServices.inspectionReportDisApprovedDTOEmailCompose(
-                                                    itemDetails,
-                                                    updatedGeneralInspectionReport
-                                            )
-                                    val sr = commonDaoServices.mapServiceRequestForSuccess(map, payload, loggedInUser)
-                                    // itemDetails.cdDocId?.assignedInspectionOfficer?.let { commonDaoServices.sendEmailWithUserEntity(it, applicationMapProperties.mapDIReportDisApprovedNotification, inspectionReportDisApprovedEmailDto, map, sr) }
-
-                                }
-                            }
-
-                        }
-                    }
-
-                    return daoServices.viewCdItemPage(cdItemUuid)
-                }
-
-    }
+//    @PreAuthorize("hasAuthority('DI_OFFICER_CHARGE_MODIFY') or hasAuthority('DI_INSPECTION_OFFICER_MODIFY')")
+//    @PostMapping("inspection/item-report/save")
+//    fun saveInspectionReportRecommendationDetails(
+//            @ModelAttribute generalInspectionReport: CdInspectionGeneralEntity,
+//            @RequestParam("cdItemUuid") cdItemUuid: String,
+//            model: Model,
+//            result: BindingResult
+//    ): String {
+//        val map = commonDaoServices.serviceMapDetails(appId)
+//        val loggedInUser = commonDaoServices.loggedInUserDetails()
+//        val itemDetails = daoServices.findItemWithUuid(cdItemUuid)
+//        val filledGeneralInspection = daoServices.findSavedGeneralInspection(itemDetails)
+//
+//        //Update The entity from frontEnd With id of fetched Inspection General entity
+//        with(generalInspectionReport) {
+//            id = filledGeneralInspection.id
+//        }
+//        if (generalInspectionReport.complianceStatus != null) {
+//            generalInspectionReport.inspectionReportRefNumber =
+//                    "IRREF#${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+//        }
+//
+//        var payload =
+//                "${this::saveInspectionReportRecommendationDetails.name} updated with id =[${generalInspectionReport.id}]"
+//        daoServices.updateCdInspectionGeneralChecklistInDB(
+//                commonDaoServices.updateDetails(
+//                        generalInspectionReport,
+//                        filledGeneralInspection
+//                ) as CdInspectionGeneralEntity, loggedInUser
+//        )
+//                .let { updatedGeneralInspectionReport ->
+//                    payload =
+//                            "${payload}: Updated details [${this::saveInspectionReportRecommendationDetails.name} with Item ID =[${itemDetails.id}]]"
+//
+//                    when {
+//                        generalInspectionReport.complianceStatus != null -> {
+//                            with(itemDetails) {
+//                                inspectionReportStatus = map.activeStatus
+//                            }
+//                            val updatedItemDetails = daoServices.updateCdItemDetailsInDB(itemDetails, loggedInUser)
+//                            val inspectionReportEmailDto = daoServices.inspectionReportApprovalDTOEmailCompose(
+//                                    updatedItemDetails,
+//                                    updatedGeneralInspectionReport
+//                            )
+//                            val sr = commonDaoServices.mapServiceRequestForSuccess(map, payload, loggedInUser)
+////                             itemDetails.cdDocId?.assigner?.let { commonDaoServices.sendEmailWithUserEntity(it, applicationMapProperties.mapDIReportApprovalNotification, inspectionReportEmailDto, map, sr) }
+//
+//                        }
+//                        generalInspectionReport.inspectionReportApprovalStatus != null -> {
+//
+//                            when (generalInspectionReport.inspectionReportApprovalStatus) {
+//                                map.activeStatus -> {
+//
+//                                    val inspectionReportApprovedEmailDto =
+//                                            daoServices.inspectionReportApprovedDTOEmailCompose(
+//                                                    itemDetails,
+//                                                    updatedGeneralInspectionReport
+//                                            )
+//                                    val sr = commonDaoServices.mapServiceRequestForSuccess(map, payload, loggedInUser)
+////                                    itemDetails.cdDocId?.assignedInspectionOfficer?.let { commonDaoServices.sendEmailWithUserEntity(it, applicationMapProperties.mapDIReportApprovedNotification, inspectionReportApprovedEmailDto, map, sr) }
+//
+//                                }
+//                                map.inactiveStatus -> {
+//                                    updatedGeneralInspectionReport.complianceStatus = null
+//                                    updatedGeneralInspectionReport.inspectionReportApprovalStatus = null
+//                                    daoServices.updateCdInspectionGeneralChecklistInDB(
+//                                            updatedGeneralInspectionReport,
+//                                            loggedInUser
+//                                    )
+//                                    val inspectionReportDisApprovedEmailDto =
+//                                            daoServices.inspectionReportDisApprovedDTOEmailCompose(
+//                                                    itemDetails,
+//                                                    updatedGeneralInspectionReport
+//                                            )
+//                                    val sr = commonDaoServices.mapServiceRequestForSuccess(map, payload, loggedInUser)
+//                                    // itemDetails.cdDocId?.assignedInspectionOfficer?.let { commonDaoServices.sendEmailWithUserEntity(it, applicationMapProperties.mapDIReportDisApprovedNotification, inspectionReportDisApprovedEmailDto, map, sr) }
+//
+//                                }
+//                            }
+//
+//                        }
+//                    }
+//
+//                    return daoServices.viewCdItemPage(cdItemUuid)
+//                }
+//
+//    }
 
     @PreAuthorize("hasAuthority('DI_INSPECTION_OFFICER_MODIFY')")
     @GetMapping("ministry-submission")
@@ -1261,193 +1261,193 @@ class DestinationInspectionController(
     }
 
 
-    @PreAuthorize("hasAuthority('DI_INSPECTION_OFFICER_MODIFY') or hasAuthority('DI_OFFICER_CHARGE_MODIFY')")
-    @GetMapping("ministry-inspection-report")
-    fun downloadFileDocument(
-            response: HttpServletResponse,
-            @RequestParam("motorVehicleInspectionChecklistId") motorVehicleInspectionChecklistId: Long
-    ) {
-        daoServices.findInspectionMotorVehicleById(motorVehicleInspectionChecklistId)
-                ?.let { cdInspectionMotorVehicleItemChecklistEntity ->
-                    cdInspectionMotorVehicleItemChecklistEntity.ministryReportFile?.let {
-                        response.contentType = "application/pdf"
-                        response.addHeader(
-                                "Content-Dispostion", "inline; filename=${
-                            cdInspectionMotorVehicleItemChecklistEntity.chassisNo
-                        }_inspection_report;"
-                        )
-                        response.outputStream
-                                .let { responseOutputStream ->
-                                    responseOutputStream.write(it)
-                                    responseOutputStream.close()
-                                }
-                    } ?: throw ExpectedDataNotFound("Inspection Report file not found")
-                }
-                ?: throw ExpectedDataNotFound("Motor Vehicle Inspection checklist with ID: $motorVehicleInspectionChecklistId not found")
-    }
+//    @PreAuthorize("hasAuthority('DI_INSPECTION_OFFICER_MODIFY') or hasAuthority('DI_OFFICER_CHARGE_MODIFY')")
+//    @GetMapping("ministry-inspection-report")
+//    fun downloadFileDocument(
+//            response: HttpServletResponse,
+//            @RequestParam("motorVehicleInspectionChecklistId") motorVehicleInspectionChecklistId: Long
+//    ) {
+//        daoServices.findInspectionMotorVehicleById(motorVehicleInspectionChecklistId)
+//                ?.let { cdInspectionMotorVehicleItemChecklistEntity ->
+//                    cdInspectionMotorVehicleItemChecklistEntity.ministryReportFile?.let {
+//                        response.contentType = "application/pdf"
+//                        response.addHeader(
+//                                "Content-Dispostion", "inline; filename=${
+//                            cdInspectionMotorVehicleItemChecklistEntity.chassisNo
+//                        }_inspection_report;"
+//                        )
+//                        response.outputStream
+//                                .let { responseOutputStream ->
+//                                    responseOutputStream.write(it)
+//                                    responseOutputStream.close()
+//                                }
+//                    } ?: throw ExpectedDataNotFound("Inspection Report file not found")
+//                }
+//                ?: throw ExpectedDataNotFound("Motor Vehicle Inspection checklist with ID: $motorVehicleInspectionChecklistId not found")
+//    }
 
-    @PreAuthorize("hasAuthority('DI_OFFICER_CHARGE_MODIFY') or hasAuthority('DI_INSPECTION_OFFICER_MODIFY')")
-    @GetMapping("final-motor-inspection-report")
-    fun finalMotorVehicleInspectionReport(
-            response: HttpServletResponse,
-            @RequestParam("generalInspectionChecklist") generalInspectionChecklistId: Long
-    ) {
-        daoServices.findInspectionGeneralById(generalInspectionChecklistId)
-                ?.let { cdInspectionGeneralEntity ->
-                    cdInspectionGeneralEntity.inspectionReportFile?.let {
-                        response.contentType = "application/pdf"
-                        response.addHeader("Content-Dispostion", "inline; filename=final_inspection_report;")
-                        response.outputStream
-                                .let { responseOutputStream ->
-                                    responseOutputStream.write(it)
-                                    responseOutputStream.close()
-                                }
-                    } ?: throw ExpectedDataNotFound("Motor Inspection Report file not found")
-                }
-                ?: throw ExpectedDataNotFound("Motor Inspection report with ID: $generalInspectionChecklistId not found")
-    }
+//    @PreAuthorize("hasAuthority('DI_OFFICER_CHARGE_MODIFY') or hasAuthority('DI_INSPECTION_OFFICER_MODIFY')")
+//    @GetMapping("final-motor-inspection-report")
+//    fun finalMotorVehicleInspectionReport(
+//            response: HttpServletResponse,
+//            @RequestParam("generalInspectionChecklist") generalInspectionChecklistId: Long
+//    ) {
+//        daoServices.findInspectionGeneralById(generalInspectionChecklistId)
+//                ?.let { cdInspectionGeneralEntity ->
+//                    cdInspectionGeneralEntity.inspectionReportFile?.let {
+//                        response.contentType = "application/pdf"
+//                        response.addHeader("Content-Dispostion", "inline; filename=final_inspection_report;")
+//                        response.outputStream
+//                                .let { responseOutputStream ->
+//                                    responseOutputStream.write(it)
+//                                    responseOutputStream.close()
+//                                }
+//                    } ?: throw ExpectedDataNotFound("Motor Inspection Report file not found")
+//                }
+//                ?: throw ExpectedDataNotFound("Motor Inspection report with ID: $generalInspectionChecklistId not found")
+//    }
 
-    @PreAuthorize("hasAuthority('DI_OFFICER_CHARGE_MODIFY') or hasAuthority('DI_INSPECTION_OFFICER_MODIFY')")
-    @PostMapping("mv-inspection-action")
-    fun cdItemDetailsSave(
-            @ModelAttribute mvInspectionChecklist: CdInspectionMotorVehicleItemChecklistEntity,
-            @RequestParam("mvInspectionChecklistId") mvInspectionChecklistId: Long,
-            model: Model,
-            result: BindingResult,
-            status: SessionStatus
-    ): String {
-        commonDaoServices.serviceMapDetails(appId)
-                .let { map ->
+//    @PreAuthorize("hasAuthority('DI_OFFICER_CHARGE_MODIFY') or hasAuthority('DI_INSPECTION_OFFICER_MODIFY')")
+//    @PostMapping("mv-inspection-action")
+//    fun cdItemDetailsSave(
+//            @ModelAttribute mvInspectionChecklist: CdInspectionMotorVehicleItemChecklistEntity,
+//            @RequestParam("mvInspectionChecklistId") mvInspectionChecklistId: Long,
+//            model: Model,
+//            result: BindingResult,
+//            status: SessionStatus
+//    ): String {
+//        commonDaoServices.serviceMapDetails(appId)
+//                .let { map ->
+//
+//                    commonDaoServices.loggedInUserDetails()
+//                            .let { loggedInUser ->
+//                                KotlinLogging.logger { }.info { "mvInspectionChecklistId = $mvInspectionChecklistId" }
+//                                daoServices.findInspectionMotorVehicleById(mvInspectionChecklistId)
+//                                        ?.let { inspectionMotorVehicle ->
+//                                            when {
+//                                                //Supervisor report disapproval
+//                                                mvInspectionChecklist.inspectionReportApprovalStatus != null -> {
+//                                                    inspectionMotorVehicle.inspectionGeneral?.let { cdInspectionGeneralEntity ->
+//                                                        cdInspectionGeneralEntity.inspectionReportApprovalStatus =
+//                                                                mvInspectionChecklist.inspectionReportApprovalStatus
+//                                                        if (mvInspectionChecklist.inspectionReportApprovalComments != null) {
+//                                                            cdInspectionGeneralEntity.inspectionReportApprovalComments =
+//                                                                    mvInspectionChecklist.inspectionReportApprovalComments
+//                                                            cdInspectionGeneralEntity.inspectionReportApprovalDate =
+//                                                                    commonDaoServices.getCurrentDate()
+//                                                            daoServices.updateCdInspectionGeneralChecklistInDB(
+//                                                                    cdInspectionGeneralEntity,
+//                                                                    loggedInUser
+//                                                            ).let {
+//                                                                //Generate Local Cor & Submit to KeSWS
+//
+//                                                                val payload =
+//                                                                        "Motor Inspection Report Approved [inspectionReportApprovalStatus= ${cdInspectionGeneralEntity.inspectionReportApprovalStatus}, inspectionReportApprovalComments= ${cdInspectionGeneralEntity.inspectionReportApprovalComments}]"
+//                                                                val sr = commonDaoServices.mapServiceRequestForSuccess(
+//                                                                        map,
+//                                                                        payload,
+//                                                                        loggedInUser
+//                                                                )
+//                                                                //Create DTO & Send email
+//                                                                createMvInspectionReportNotificationDTO(
+//                                                                        cdInspectionGeneralEntity,
+//                                                                        inspectionMotorVehicle
+//                                                                ).let { mvInspectionReportDTO ->
+//                                                                    KotlinLogging.logger { }
+//                                                                            .info { "mvInspectionReportDTO = $mvInspectionReportDTO" }
+////                                                                    cdInspectionGeneralEntity.cdItemDetails?.cdDocId?.assignedInspectionOfficer?.let { it1 -> commonDaoServices.sendEmailWithUserEntity(it1, applicationMapProperties.mapMVReportApprovedNotification, mvInspectionReportDTO, map, sr) }
+//                                                                }
+//                                                            }
+//                                                        } else {
+//                                                            cdInspectionGeneralEntity.inspectionReportDisapprovalComments =
+//                                                                    mvInspectionChecklist.inspectionReportDisapprovalComments
+//                                                            cdInspectionGeneralEntity.inspectionReportDisapprovalDate =
+//                                                                    commonDaoServices.getCurrentDate()
+//                                                            daoServices.updateCdInspectionGeneralChecklistInDB(
+//                                                                    cdInspectionGeneralEntity,
+//                                                                    loggedInUser
+//                                                            ).let {
+//                                                                val payload =
+//                                                                        "Motor Inspection Report Disapproved [inspectionReportApprovalStatus= ${cdInspectionGeneralEntity.inspectionReportApprovalStatus}, inspectionReportDisapprovalComments= ${cdInspectionGeneralEntity.inspectionReportDisapprovalComments}]"
+//                                                                val sr = commonDaoServices.mapServiceRequestForSuccess(
+//                                                                        map,
+//                                                                        payload,
+//                                                                        loggedInUser
+//                                                                )
+//                                                                //Create DTO & Send email
+//                                                                val mvInspectionReportDTO = createMvInspectionReportNotificationDTO(
+//                                                                        cdInspectionGeneralEntity,
+//                                                                        inspectionMotorVehicle
+//                                                                )
+////                                                                cdInspectionGeneralEntity.cdItemDetails?.cdDocId?.assignedInspectionOfficer?.let { it1 -> commonDaoServices.sendEmailWithUserEntity(it1, applicationMapProperties.mapMVReportDissaprovedNotification, mvInspectionReportDTO, map, sr) }
+//                                                            }
+//                                                        }
+//                                                    }
+//                                                }
+//                                            }
+//                                            return "$motorVehicleInspectionDetailsPage=${inspectionMotorVehicle.inspectionGeneral?.cdItemDetails?.id}&docType=${daoServices.motorVehicleInspectionDetailsName}"
+//                                        } ?: throw ExpectedDataNotFound("No Motor Vehicle Inspection Checklist Found")
+//                            }
+//                }
+//    }
 
-                    commonDaoServices.loggedInUserDetails()
-                            .let { loggedInUser ->
-                                KotlinLogging.logger { }.info { "mvInspectionChecklistId = $mvInspectionChecklistId" }
-                                daoServices.findInspectionMotorVehicleById(mvInspectionChecklistId)
-                                        ?.let { inspectionMotorVehicle ->
-                                            when {
-                                                //Supervisor report disapproval
-                                                mvInspectionChecklist.inspectionReportApprovalStatus != null -> {
-                                                    inspectionMotorVehicle.inspectionGeneral?.let { cdInspectionGeneralEntity ->
-                                                        cdInspectionGeneralEntity.inspectionReportApprovalStatus =
-                                                                mvInspectionChecklist.inspectionReportApprovalStatus
-                                                        if (mvInspectionChecklist.inspectionReportApprovalComments != null) {
-                                                            cdInspectionGeneralEntity.inspectionReportApprovalComments =
-                                                                    mvInspectionChecklist.inspectionReportApprovalComments
-                                                            cdInspectionGeneralEntity.inspectionReportApprovalDate =
-                                                                    commonDaoServices.getCurrentDate()
-                                                            daoServices.updateCdInspectionGeneralChecklistInDB(
-                                                                    cdInspectionGeneralEntity,
-                                                                    loggedInUser
-                                                            ).let {
-                                                                //Generate Local Cor & Submit to KeSWS
+//    @PreAuthorize("hasAuthority('DI_INSPECTION_OFFICER_MODIFY')")
+//    @PostMapping("motor-vehicle/compliance")
+//    fun updateMotorVehicleCompliance(
+//            @RequestParam("generalInspectionChecklistId") generalInspectionChecklistId: Long,
+//            @RequestParam("compliance_status") complianceStatus: Int,
+//            @RequestParam("compliance_recommendations") complianceRecommendations: String,
+//
+//            redirectAttributes: RedirectAttributes
+//    ): String {
+//        KotlinLogging.logger { }.info {
+//            "Params received \n generalInspectionChecklistId: ${generalInspectionChecklistId}, " +
+//                    "compliance_status: $complianceStatus, compliance_recommendations: $complianceRecommendations"
+//        }
+//        commonDaoServices.serviceMapDetails(appId)
+//                .let {
+//                    commonDaoServices.loggedInUserDetails()
+//                            .let { loggedInUser ->
+//                                KotlinLogging.logger { }.info { "generalInspectionChecklistId = $generalInspectionChecklistId" }
+//
+//                                daoServices.findInspectionGeneralById(generalInspectionChecklistId)
+//                                        ?.let { cdInspectionGeneralEntity ->
+//                                            cdInspectionGeneralEntity.cdItemDetails?.cdDocId?.let { consignmentDocumentDetailsEntity ->
+//                                                consignmentDocumentDetailsEntity.compliantStatus = complianceStatus
+//                                                consignmentDocumentDetailsEntity.compliantDate = commonDaoServices.getCurrentDate()
+//                                                consignmentDocumentDetailsEntity.compliantRemarks = complianceRecommendations
+//
+//                                                daoServices.updateCdDetailsInDB(consignmentDocumentDetailsEntity, loggedInUser).let {
+//                                                    //TODO: Send notification to the supervisor
+//                                                }
+//                                                return "$motorVehicleInspectionDetailsPage=${cdInspectionGeneralEntity.cdItemDetails?.id}&docType=${daoServices.motorVehicleMinistryInspectionChecklistName}"
+//                                            } ?: throw ExpectedDataNotFound("No Consignment Document Found")
+//
+//                                        } ?: throw ExpectedDataNotFound("No General Inspection Checklist Found")
+//                            }
+//                }
+//    }
 
-                                                                val payload =
-                                                                        "Motor Inspection Report Approved [inspectionReportApprovalStatus= ${cdInspectionGeneralEntity.inspectionReportApprovalStatus}, inspectionReportApprovalComments= ${cdInspectionGeneralEntity.inspectionReportApprovalComments}]"
-                                                                val sr = commonDaoServices.mapServiceRequestForSuccess(
-                                                                        map,
-                                                                        payload,
-                                                                        loggedInUser
-                                                                )
-                                                                //Create DTO & Send email
-                                                                createMvInspectionReportNotificationDTO(
-                                                                        cdInspectionGeneralEntity,
-                                                                        inspectionMotorVehicle
-                                                                ).let { mvInspectionReportDTO ->
-                                                                    KotlinLogging.logger { }
-                                                                            .info { "mvInspectionReportDTO = $mvInspectionReportDTO" }
-//                                                                    cdInspectionGeneralEntity.cdItemDetails?.cdDocId?.assignedInspectionOfficer?.let { it1 -> commonDaoServices.sendEmailWithUserEntity(it1, applicationMapProperties.mapMVReportApprovedNotification, mvInspectionReportDTO, map, sr) }
-                                                                }
-                                                            }
-                                                        } else {
-                                                            cdInspectionGeneralEntity.inspectionReportDisapprovalComments =
-                                                                    mvInspectionChecklist.inspectionReportDisapprovalComments
-                                                            cdInspectionGeneralEntity.inspectionReportDisapprovalDate =
-                                                                    commonDaoServices.getCurrentDate()
-                                                            daoServices.updateCdInspectionGeneralChecklistInDB(
-                                                                    cdInspectionGeneralEntity,
-                                                                    loggedInUser
-                                                            ).let {
-                                                                val payload =
-                                                                        "Motor Inspection Report Disapproved [inspectionReportApprovalStatus= ${cdInspectionGeneralEntity.inspectionReportApprovalStatus}, inspectionReportDisapprovalComments= ${cdInspectionGeneralEntity.inspectionReportDisapprovalComments}]"
-                                                                val sr = commonDaoServices.mapServiceRequestForSuccess(
-                                                                        map,
-                                                                        payload,
-                                                                        loggedInUser
-                                                                )
-                                                                //Create DTO & Send email
-                                                                val mvInspectionReportDTO = createMvInspectionReportNotificationDTO(
-                                                                        cdInspectionGeneralEntity,
-                                                                        inspectionMotorVehicle
-                                                                )
-//                                                                cdInspectionGeneralEntity.cdItemDetails?.cdDocId?.assignedInspectionOfficer?.let { it1 -> commonDaoServices.sendEmailWithUserEntity(it1, applicationMapProperties.mapMVReportDissaprovedNotification, mvInspectionReportDTO, map, sr) }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            return "$motorVehicleInspectionDetailsPage=${inspectionMotorVehicle.inspectionGeneral?.cdItemDetails?.id}&docType=${daoServices.motorVehicleInspectionDetailsName}"
-                                        } ?: throw ExpectedDataNotFound("No Motor Vehicle Inspection Checklist Found")
-                            }
-                }
-    }
-
-    @PreAuthorize("hasAuthority('DI_INSPECTION_OFFICER_MODIFY')")
-    @PostMapping("motor-vehicle/compliance")
-    fun updateMotorVehicleCompliance(
-            @RequestParam("generalInspectionChecklistId") generalInspectionChecklistId: Long,
-            @RequestParam("compliance_status") complianceStatus: Int,
-            @RequestParam("compliance_recommendations") complianceRecommendations: String,
-
-            redirectAttributes: RedirectAttributes
-    ): String {
-        KotlinLogging.logger { }.info {
-            "Params received \n generalInspectionChecklistId: ${generalInspectionChecklistId}, " +
-                    "compliance_status: $complianceStatus, compliance_recommendations: $complianceRecommendations"
-        }
-        commonDaoServices.serviceMapDetails(appId)
-                .let {
-                    commonDaoServices.loggedInUserDetails()
-                            .let { loggedInUser ->
-                                KotlinLogging.logger { }.info { "generalInspectionChecklistId = $generalInspectionChecklistId" }
-
-                                daoServices.findInspectionGeneralById(generalInspectionChecklistId)
-                                        ?.let { cdInspectionGeneralEntity ->
-                                            cdInspectionGeneralEntity.cdItemDetails?.cdDocId?.let { consignmentDocumentDetailsEntity ->
-                                                consignmentDocumentDetailsEntity.compliantStatus = complianceStatus
-                                                consignmentDocumentDetailsEntity.compliantDate = commonDaoServices.getCurrentDate()
-                                                consignmentDocumentDetailsEntity.compliantRemarks = complianceRecommendations
-
-                                                daoServices.updateCdDetailsInDB(consignmentDocumentDetailsEntity, loggedInUser).let {
-                                                    //TODO: Send notification to the supervisor
-                                                }
-                                                return "$motorVehicleInspectionDetailsPage=${cdInspectionGeneralEntity.cdItemDetails?.id}&docType=${daoServices.motorVehicleMinistryInspectionChecklistName}"
-                                            } ?: throw ExpectedDataNotFound("No Consignment Document Found")
-
-                                        } ?: throw ExpectedDataNotFound("No General Inspection Checklist Found")
-                            }
-                }
-    }
-
-    fun createMvInspectionReportNotificationDTO(
-            cdInspectionGeneralEntity: CdInspectionGeneralEntity,
-            inspectionMotorVehicle: CdInspectionMotorVehicleItemChecklistEntity
-    ):
-            MvInspectionNotificationDTO {
-        val mvInspectionNotificationDTO = MvInspectionNotificationDTO()
-        with(mvInspectionNotificationDTO) {
-            baseUrl = applicationMapProperties.baseUrlValue
-            id = cdInspectionGeneralEntity.cdItemDetails?.id
-            fullName = cdInspectionGeneralEntity.cdItemDetails?.cdDocId?.assignedInspectionOfficer?.let { it1 ->
-                commonDaoServices.concatenateName(it1)
-            }
-            date =
-                    if (cdInspectionGeneralEntity.inspectionReportApprovalDate != null) cdInspectionGeneralEntity.inspectionReportApprovalDate else cdInspectionGeneralEntity.inspectionReportDisapprovalDate
-            chassisNumber = inspectionMotorVehicle.chassisNo
-            comments =
-                    if (cdInspectionGeneralEntity.inspectionReportApprovalComments != null) cdInspectionGeneralEntity.inspectionReportApprovalComments else cdInspectionGeneralEntity.inspectionReportDisapprovalComments
-        }
-        return mvInspectionNotificationDTO
-    }
+//    fun createMvInspectionReportNotificationDTO(
+//            cdInspectionGeneralEntity: CdInspectionGeneralEntity,
+//            inspectionMotorVehicle: CdInspectionMotorVehicleItemChecklistEntity
+//    ):
+//            MvInspectionNotificationDTO {
+//        val mvInspectionNotificationDTO = MvInspectionNotificationDTO()
+//        with(mvInspectionNotificationDTO) {
+//            baseUrl = applicationMapProperties.baseUrlValue
+//            id = cdInspectionGeneralEntity.cdItemDetails?.id
+//            fullName = cdInspectionGeneralEntity.cdItemDetails?.cdDocId?.assignedInspectionOfficer?.let { it1 ->
+//                commonDaoServices.concatenateName(it1)
+//            }
+//            date =
+//                    if (cdInspectionGeneralEntity.inspectionReportApprovalDate != null) cdInspectionGeneralEntity.inspectionReportApprovalDate else cdInspectionGeneralEntity.inspectionReportDisapprovalDate
+//            chassisNumber = inspectionMotorVehicle.chassisNo
+//            comments =
+//                    if (cdInspectionGeneralEntity.inspectionReportApprovalComments != null) cdInspectionGeneralEntity.inspectionReportApprovalComments else cdInspectionGeneralEntity.inspectionReportDisapprovalComments
+//        }
+//        return mvInspectionNotificationDTO
+//    }
 
     @GetMapping("/coc-certificate/view")
     fun downloadCocCertificateFile(response: HttpServletResponse, @RequestParam("cocId") cocId: Long) {

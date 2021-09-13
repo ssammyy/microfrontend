@@ -16,46 +16,66 @@ class InvoicePaymentService(
         private val applicationMapProperties: ApplicationMapProperties
 ) {
 
-    fun rejectDemandNoteGeneration(cdUuid: String,demandNoteId: Long,remarks: String): Boolean {
+    fun rejectDemandNoteGeneration(cdUuid: String, demandNoteId: Long, remarks: String): Boolean {
         try {
-            val consignmentDocument=this.daoServices.findCDWithUuid(cdUuid)
+            val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             val demandNote = iDemandNoteRepo.findById(demandNoteId)
-            if(demandNote.isPresent){
-                val demand=demandNote.get()
-                demand.status=2
+            if (demandNote.isPresent) {
+                val demand = demandNote.get()
+                demand.status = 2
+                demand.varField3 = "REJECTED"
+                demand.varField4 = remarks
                 this.iDemandNoteRepo.save(demand)
-                this.auditService.addHistoryRecord(consignmentDocument.id!!,remarks,"REJECT DEMAND NOTE","Demand note ${demandNoteId} rejected")
+                this.auditService.addHistoryRecord(consignmentDocument.id!!,consignmentDocument.ucrNumber, remarks, "REJECT DEMAND NOTE", "Demand note ${demandNoteId} rejected")
             }
-        }catch (ex: Exception){
-            KotlinLogging.logger {  }.error("DEMAND NOTE ERROR", ex)
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("DEMAND NOTE ERROR", ex)
         }
         return true
     }
 
-    fun approveDemandNoteGeneration(cdUuid: String,demandNoteId: Long,supervisor: String,remarks: String): Boolean {
+    fun approveDemandNoteGeneration(cdUuid: String, demandNoteId: Long, supervisor: String, remarks: String): Boolean {
         try {
-            val consignmentDocument=this.daoServices.findCDWithUuid(cdUuid)
+            val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             val demandNote = iDemandNoteRepo.findById(demandNoteId)
-            if(demandNote.isPresent){
-                val demand=demandNote.get()
-                demand.status=1
+            if (demandNote.isPresent) {
+                val demand = demandNote.get()
+                demand.status = 1
+                demand.varField3 = "APPROVED"
                 this.iDemandNoteRepo.save(demand)
-                this.auditService.addHistoryRecord(consignmentDocument.id!!,remarks,"APPROVED DEMAND NOTE","Demand note ${demandNoteId} approved")
+                this.auditService.addHistoryRecord(consignmentDocument.id!!,consignmentDocument.ucrNumber, remarks, "APPROVED DEMAND NOTE", "Demand note ${demandNoteId} approved")
             }
 
-        }catch (ex: Exception){
-            KotlinLogging.logger {  }.error("DEMAND NOTE ERROR", ex)
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("DEMAND NOTE ERROR", ex)
         }
         return true
     }
 
-    fun sendDemandNote(cdUuid: String,demandNoteId: Long): Boolean{
+    fun sendDemandNote(cdUuid: String, demandNoteId: Long): Boolean {
         // Send demand note to user
-        this.daoServices.sendDemandNotGeneratedToKWIS(demandNoteId)
+        val demandNote = iDemandNoteRepo.findById(demandNoteId)
+        try {
+            this.daoServices.sendDemandNotGeneratedToKWIS(demandNoteId)
+            // Update submission status
+            if (demandNote.isPresent) {
+                val demand = demandNote.get()
+                demand.varField3 = "SUBMITTED"
+                this.iDemandNoteRepo.save(demand)
+            }
+        } catch (ex: Exception) {
+            if (demandNote.isPresent) {
+                val demand = demandNote.get()
+                demand.status = 3
+                demand.varField3 = "SUBMIT_FAILED"
+                demand.varField5 = ex.localizedMessage
+                this.iDemandNoteRepo.save(demand)
+            }
+        }
         return true
     }
 
-    fun invoicePaymentCompleted(cdUuid: String, demandNoteId: Long,receiptNo: String): Boolean{
+    fun invoicePaymentCompleted(cdUuid: String, demandNoteId: Long, receiptNo: String): Boolean {
         try {
             val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             val demandNote = this.iDemandNoteRepo.findById(demandNoteId).get()
@@ -92,8 +112,8 @@ class InvoicePaymentService(
                         }
             }
             return true
-        }catch (ex: Exception){
-            KotlinLogging.logger {  }.error("INVOICE UPDATE FAILED",ex)
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("INVOICE UPDATE FAILED", ex)
         }
         return false
     }

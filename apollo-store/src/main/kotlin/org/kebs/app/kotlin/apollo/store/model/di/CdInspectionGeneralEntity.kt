@@ -184,13 +184,9 @@ class CdInspectionGeneralEntity : Serializable {
     @Basic
     var deletedOn: Timestamp? = null
 
-    @JoinColumn(name = "CD_ITEM_DETAILS_ID", referencedColumnName = "ID")
+    @JoinColumn(name = "CD_DETAILS_ID", referencedColumnName = "ID")
     @ManyToOne
-    var cdItemDetails: CdItemDetailsEntity? = null
-
-    @JoinColumn(name = "CHECKLIST_TYPE", referencedColumnName = "ID")
-    @ManyToOne
-    var checkListType: CdChecklistTypesEntity? = null
+    var cdDetails: ConsignmentDocumentDetailsEntity? = null
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

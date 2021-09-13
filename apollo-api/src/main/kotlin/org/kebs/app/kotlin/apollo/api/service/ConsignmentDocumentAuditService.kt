@@ -6,6 +6,7 @@ import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.CdDocumentModificationHistoryDao
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.di.CdDocumentModificationHistory
 import org.kebs.app.kotlin.apollo.store.repo.di.ICdDocumentModificationHistoryRepository
@@ -16,9 +17,10 @@ import java.time.LocalDateTime
 @Service
 class ConsignmentDocumentAuditService(
         private val cdHistory: ICdDocumentModificationHistoryRepository,
-        private val commonDaoServices: CommonDaoServices
+        private val commonDaoServices: CommonDaoServices,
+        private val daoServices: DestinationInspectionDaoServices,
 ) {
-    fun addHistoryRecord(cdId: Long?, comment: String?, action: String, narration: String, username: String? = null) {
+    fun addHistoryRecord(cdId: Long?,ucrNumber: String?, comment: String?, action: String, narration: String, username: String? = null) {
         try {
             val history = CdDocumentModificationHistory()
             val user: UsersEntity? = username?.let {
@@ -32,6 +34,7 @@ class ConsignmentDocumentAuditService(
                 history.modifiedOn = Timestamp.valueOf(LocalDateTime.now())
                 history.actionCode = action
                 history.cdId = cdId
+                history.ucrNumber=ucrNumber
                 history.status = 1
                 history.comment = comment
                 history.description = narration
@@ -47,8 +50,12 @@ class ConsignmentDocumentAuditService(
     fun listDocumentHistory(cdId: Long): ApiResponseModel {
         val response = ApiResponseModel()
         try {
-            val history = cdHistory.findAllByCdId(cdId)
-            response.data = CdDocumentModificationHistoryDao.fromList(history)
+            val consignmentDocument=daoServices.findCD(cdId)
+            // Find by ucrNumber
+            consignmentDocument.ucrNumber?.let {
+                val history = cdHistory.findAllByUcrNumberOrCdId(it,cdId)
+                response.data = CdDocumentModificationHistoryDao.fromList(history)
+            }
             response.responseCode = ResponseCodes.SUCCESS_CODE
             response.message = "Success"
         } catch (ex: Exception) {

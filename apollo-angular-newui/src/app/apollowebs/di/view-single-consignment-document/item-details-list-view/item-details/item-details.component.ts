@@ -33,21 +33,12 @@ export class ItemDetailsComponent implements OnInit {
                 this.cdUuid = res.get("cdUuid")
                 this.loadItemDetails()
                 this.loadChecklists()
-                this.loadChecklistConfigurations()
+
             }
         )
     }
 
-    loadChecklistConfigurations() {
-        this.diService.loadChecklistConfigs()
-            .subscribe(
-                res => {
-                    if (res.responseCode === "00") {
-                        this.checkListConfiguration = res.data
-                    }
-                }
-            )
-    }
+
 
     rejectItem() {
         this.dialog.open(ApproveRejectItemComponent, {
@@ -98,23 +89,6 @@ export class ItemDetailsComponent implements OnInit {
 
     submitMinistryInspection() {
         this.dialog.open(MinistryInspectionRequestComponent, {
-            data: {
-                uuid: this.itemUuid,
-                reinspection: false,
-                configs: this.checkListConfiguration
-            }
-        }).afterClosed()
-            .subscribe(
-                res => {
-                    if (res) {
-                        this.loadChecklists()
-                    }
-                }
-            )
-    }
-
-    createInspectionChecklist() {
-        this.dialog.open(ChecklistDataFormComponent, {
             data: {
                 uuid: this.itemUuid,
                 reinspection: false,
