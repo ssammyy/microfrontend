@@ -2245,7 +2245,7 @@ class QADaoServices(
     ): List<UsersEntity> {
 
         val plantAttached = findPlantDetails(plantID)
-        usersRepo.findOfficerPermitUsersBySectionAndRegion(
+        usersRepo.findOfficerPermitUsersBySectionAndRegionFromSectionUserDetails(
             roleID,
             permit.sectionId ?: throw ExpectedDataNotFound("MISSING SECTION ID ON PERMIT"),
             plantAttached.region ?: throw ExpectedDataNotFound("MISSING REGION ID ON BRANCH ATTACHED ON PERMIT"),

@@ -157,7 +157,7 @@ const routes: Routes = [
 
 
   {
-    path: 'complaints', component: ComplaintsFormPageComponent, canActivate: [AuthGuard],
+    path: 'complaints', component: ComplaintsFormPageComponent,
     children: [{path: '', component: ComplaintsFormComponent}]
   },
 

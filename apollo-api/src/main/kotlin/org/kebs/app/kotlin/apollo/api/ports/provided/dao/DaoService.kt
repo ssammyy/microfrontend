@@ -430,23 +430,76 @@ class DaoService(
     }
 
 
-//    fun submitCocToKeSWS(cocData: CocsEntity) {
-//        val coc: CustomCocXmlDto = cocData.toCocXmlRecordRefl()
-//        val cocItem = cocItemsRepository.findByCocId(cocData.id)?.get(0)
-//        cocItem?.toCocItemDetailsXmlRecordRefl().let { cocDetails ->
-//            coc.cocDetals = cocDetails
-//            val cocFinalDto = COCXmlDTO()
-//            cocFinalDto.coc = coc
-//            val fileName = cocFinalDto.coc?.ucrNumber?.let { s ->
-//                createKesWsFileName(
-//                    applicationMapProperties.mapKeswsCocDoctype,
-//                    s
-//                )
-//            }
-//            val xmlFile = fileName?.let { s -> serializeToXml(s, cocFinalDto) }
-//            xmlFile.let { it1 -> it1?.let { file -> sftpService.uploadFile(file) } }
-//        }
-//    }
+    fun submitCocToKeSWS(cocData: CocsEntity) {
+        val coc = CustomCocXmlDto().apply {
+            cocNumber = cocData.cocNumber
+            idfNumber = cocData.idfNumber
+            rfiNumber = cocData.rfiNumber
+            ucrNumber = cocData.ucrNumber
+            rfcDate = convertTimestampToKeswsValidDate(cocData.rfcDate ?: throw Exception("MISSING rfcDate"))
+            cocIssueDate =
+                convertTimestampToKeswsValidDate(cocData.cocIssueDate ?: throw Exception("MISSING cocIssueDate"))
+            isClean = cocData.clean
+            cocRemarks = cocData.cocRemarks
+            issuingOffice = cocData.issuingOffice
+            importerName = cocData.importerName
+            importerPin = cocData.importerPin
+            importerAddress1 = cocData.importerAddress1
+            importerAddress2 = cocData.importerAddress2
+            importerCity = cocData.importerCity
+            importerCountry = cocData.importerCountry
+            importerZipCode = cocData.importerZipCode
+            importerTelephoneNumber = cocData.importerTelephoneNumber
+            importerFaxNumber = cocData.importerFaxNumber
+            importerEmail = cocData.importerEmail
+            exporterName = cocData.exporterName
+            exporterPin = cocData.exporterPin
+            exporterAddress1 = cocData.exporterAddress1
+            exporterAddress2 = cocData.exporterAddress2
+            exporterCity = cocData.exporterCity
+            exporterCountry = cocData.exporterCountry
+            exporterZipCode = cocData.exporterZipCode
+            exporterTelephoneNumber = cocData.exporterTelephoneNumber
+            exporterFaxNumber = cocData.exporterFaxNumber
+            exporterEmail = cocData.exporterEmail
+            placeOfInspection = cocData.placeOfInspection
+            dateOfInspection = convertTimestampToKeswsValidDate(
+                cocData.dateOfInspection ?: throw Exception("MISSING dateOfInspection")
+            )
+            portOfDestination = cocData.portOfDestination
+            shipmentMode = cocData.shipmentMode
+            countryOfSupply = cocData.countryOfSupply
+            finalInvoiceFobValue = cocData.finalInvoiceFobValue.toString()
+            finalInvoiceExchangeRate = cocData.finalInvoiceExchangeRate.toString()
+            finalInvoiceCurrency = cocData.finalInvoiceCurrency
+            finalInvoiceDate = convertTimestampToKeswsValidDate(
+                cocData.finalInvoiceDate ?: throw Exception("MISSING finalInvoiceDate")
+            )
+            shipmentPartialNumber = cocData.shipmentPartialNumber
+            shipmentSealNumbers = cocData.shipmentSealNumbers
+            shipmentContainerNumber = cocData.shipmentContainerNumber
+            shipmentGrossWeight = cocData.shipmentGrossWeight
+            shipmentQuantityDelivered = cocData.shipmentQuantityDelivered
+            route = cocData.route
+            productCategory = cocData.productCategory
+            partner = cocData.partner
+            cocDetals = null
+        }
+        val cocItem = cocItemsRepository.findByCocId(cocData.id)?.get(0)
+        cocItem?.toCocItemDetailsXmlRecordRefl().let { cocDetails ->
+            coc.cocDetals = cocDetails
+            val cocFinalDto = COCXmlDTO()
+            cocFinalDto.coc = coc
+            val fileName = cocFinalDto.coc?.ucrNumber?.let { s ->
+                createKesWsFileName(
+                    applicationMapProperties.mapKeswsCocDoctype,
+                    s
+                )
+            }
+            val xmlFile = fileName?.let { s -> serializeToXml(s, cocFinalDto) }
+            xmlFile.let { it1 -> it1?.let { file -> sftpService.uploadFile(file) } }
+        }
+    }
 
     fun serializeToXml(fileName: String, obj: Any): File {
         try {

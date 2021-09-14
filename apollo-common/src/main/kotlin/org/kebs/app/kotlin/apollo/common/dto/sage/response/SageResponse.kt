@@ -14,6 +14,7 @@ class RequestHeader {
 }
 
 class RequestBody {
+    @NotEmpty(message = "Required field")
     @JsonProperty("BillReferenceNo")
     var billReferenceNo: String? = null
 

@@ -67,9 +67,14 @@ dependencies {
     implementation("org.flowable:flowable-spring-boot-starter-basic:6.6.0")
 
     /**
+     * Swagger
+     */
+    implementation("io.springfox:springfox-boot-starter:3.0.0")
+
+    /**
      * MPESA
      */
-    implementation( "org.json:json:20200518")
+    implementation("org.json:json:20200518")
 //    implementation ("org.apache.httpcomponents:httpclient:4.5.13")
     implementation("com.squareup.okhttp3:okhttp:4.8.0")
     implementation("com.squareup.okhttp3:logging-interceptor:3.10.0")
