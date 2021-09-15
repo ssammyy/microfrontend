@@ -1,80 +1,107 @@
-<h2 mat-dialog-title>Checklist Details</h2>
-<mat-dialog-content>
-    <mat-horizontal-stepper [linear]="false">
-        <mat-step label="General Checklist">
-            <div class="row no_margin" [formGroup]="generalCheckList">
-                <div class="col-md-4 mb-3">
-                    <label for="inspection">Inspection</label>
-                    <select id="inspection" name="inspection" class="form-control"
-                            formControlName="inspection">
-                        <option value="not selected">Select one.....</option>
-                        <option value="Partial Inspection">Partial Inspection</option>
-                        <option value="100% Inspection">100% Inspection</option>
-                    </select>
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons" *ngIf="consignment">CHECKLIST</i>
+                        </div>
+                        <h4 class="card-title" *ngIf="consignment"> CHECKLIST FORM</h4>
+
+                    </div>
+                    <div class="card-body" *ngIf="consignment">
+                        <mat-horizontal-stepper [linear]="false">
+                            <mat-step label="General Checklist">
+                                <div class="row no_margin" [formGroup]="generalCheckList">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="inspection">Inspection</label>
+                                        <select id="inspection" name="inspection" class="form-control"
+                                                formControlName="inspection">
+                                            <option value="not selected">Select one.....</option>
+                                            <option value="PARTIAL">Partial Inspection</option>
+                                            <option value="FULL">Full Inspection</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="clearingAgent">Clearing agent</label>
+                                        <input type="text" class="form-control" name="clearingAgent"
+                                               id="clearingAgent" formControlName="clearingAgent">
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="customsEntryNumber">Customs entry no</label>
+                                        <input type="text" class="form-control" name="customsEntryNumber"
+                                               data-name="clearing Agent" id="customsEntryNumber"
+                                               formControlName="customsEntryNumber">
+                                    </div>
+                                    <div class="col-sm-12 col-md-8">
+                                        <label for="overallRemarks" class="waiver-form-label">Overall Remarks</label>
+                                        <textarea id="overallRemarks" class="waiver-form-input-master" placeholder=""
+                                                  formControlName="overallRemarks"></textarea>
+                                        <mat-error *ngIf="message">{{message}}</mat-error>
+                                    </div>
+                                </div>
+                                <div class="pull-right pr-4">
+                                    <button [disabled]="generalCheckList.invalid" class="btn btn-primary" mat-button
+                                            matStepperNext>NEXT
+                                    </button>
+                                </div>
+                            </mat-step>
+                            <mat-step label="Engineering checklist">
+                                <app-engineering-inspection-checklist
+                                        (engineeringDetails)="setEngineringChecklist($event)"></app-engineering-inspection-checklist>
+                                <app-item-selection id="engineering" [categories]="categories" [items]="itemList"
+                                                    [(selectedItems)]="engineringItems"></app-item-selection>
+                                <button class="btn btn-warning" mat-button matStepperPrevious>Back</button>
+                                <div class="pull-right pr-4">
+                                    <button [disabled]="!engineeringDetails" class="btn btn-primary" mat-button
+                                            matStepperNext>NEXT
+                                    </button>
+                                </div>
+                            </mat-step>
+                            <mat-step label="Agrochem Checklist">
+                                <app-agrochem-inspection-checklist (agrochemDetails)="setAgrochemChecklist($event)"
+                                ></app-agrochem-inspection-checklist>
+                                    <label style="color: #0082f3">Select Agrochemical Items</label>
+                                <app-item-selection id="agrochem" [categories]="categories" [items]="itemList"
+                                                    [(selectedItems)]="agrochemItems"></app-item-selection>
+                                <button class="btn btn-warning" mat-button matStepperPrevious>Back</button>
+                                <div class="pull-right pr-4">
+                                    <button [disabled]="!agrochemChecklist" class="btn btn-primary" mat-button
+                                            matStepperNext>NEXT
+                                    </button>
+                                </div>
+                            </mat-step>
+                            <mat-step label="Vehicle Checklist">
+                                <app-vehicle-inspection-checklist (vehicleDetails)="setVehicleChecklist($event)"
+                                ></app-vehicle-inspection-checklist>
+                                <app-item-selection id="vehicle" [categories]="categories" [items]="itemList"
+                                                    [(selectedItems)]="vehicleItems"></app-item-selection>
+                                <button class="btn btn-warning" mat-button matStepperPrevious>Back</button>
+                                <div class="pull-right pr-4">
+                                    <button [disabled]="vehicleDetails" class="btn btn-primary" mat-button
+                                            matStepperNext>NEXT
+                                    </button>
+                                </div>
+                            </mat-step>
+                            <mat-step label="Other Checklists">
+                                <app-other-inspection-checklist (otherDetails)="setOtherChecklist($event)"
+                                ></app-other-inspection-checklist>
+                                <app-item-selection id="other" [categories]="categories" [items]="itemList"
+                                                    [(selectedItems)]="otherItems"></app-item-selection>
+                                <button class="btn btn-warning" mat-button matStepperPrevious>Back</button>
+                            </mat-step>
+                        </mat-horizontal-stepper>
+                        <div class="row no_margin master-list-new-btn">
+                            <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
+                            <button [disabled]="generalCheckList.invalid || invalidData()"
+                                    class="next-btn btn-gen new-btn"
+                                    (click)="saveRecord()">SAVE
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-4 mb-3">
-                    <label for="clearingAgent">Clearing agent</label>
-                    <input type="text" class="form-control" name="clearingAgent"
-                           id="clearingAgent" formControlName="clearingAgent">
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label for="customsEntryNumber">Customs entry no</label>
-                    <input type="text" class="form-control" name="customsEntryNumber"
-                           data-name="clearing Agent" id="customsEntryNumber"
-                           formControlName="customsEntryNumber">
-                </div>
-                <div class="col-sm-12 col-md-8">
-                    <label for="overallRemarks" class="waiver-form-label">Overall Remarks</label>
-                    <textarea id="overallRemarks" class="waiver-form-input-master" placeholder=""
-                              formControlName="overallRemarks"></textarea>
-                    <mat-error *ngIf="message">{{message}}</mat-error>
-                </div>
             </div>
-            <div class="pull-right pr-4">
-                <button [disabled]="generalCheckList.invalid" class="btn btn-primary" mat-button matStepperNext>NEXT
-                </button>
-            </div>
-        </mat-step>
-        <mat-step label="Engineering checklist">
-            <app-engineering-inspection-checklist
-                    (engineeringDetails)="setEngineringChecklist($event)"></app-engineering-inspection-checklist>
-            <app-item-selection [categories]="categories" [items]="itemList" [(selectedItems)]="engineringItems"></app-item-selection>
-            <button class="btn btn-warning" mat-button matStepperPrevious>Back</button>
-            <div class="pull-right pr-4">
-                <button [disabled]="!engineeringDetails" class="btn btn-primary" mat-button matStepperNext>NEXT</button>
-            </div>
-        </mat-step>
-        <mat-step label="Agrochem Checklist">
-            <app-agrochem-inspection-checklist (agrochemDetails)="setAgrochemChecklist($event)"
-            ></app-agrochem-inspection-checklist>
-            <app-item-selection [categories]="categories" [items]="itemList" [(selectedItems)]="agrochemItems"></app-item-selection>
-            <button class="btn btn-warning" mat-button matStepperPrevious>Back</button>
-            <div class="pull-right pr-4">
-                <button [disabled]="!agrochemChecklist" class="btn btn-primary" mat-button matStepperNext>NEXT</button>
-            </div>
-        </mat-step>
-        <mat-step label="Vehicle Checklist">
-            <app-vehicle-inspection-checklist (vehicleDetails)="setVehicleChecklist($event)"
-            ></app-vehicle-inspection-checklist>
-            <app-item-selection [categories]="categories" [items]="itemList" [(selectedItems)]="vehicleItems"></app-item-selection>
-            <button class="btn btn-warning" mat-button matStepperPrevious>Back</button>
-            <div class="pull-right pr-4">
-                <button [disabled]="vehicleDetails" class="btn btn-primary" mat-button matStepperNext>NEXT</button>
-            </div>
-        </mat-step>
-        <mat-step label="Other Checklists">
-            <app-other-inspection-checklist (otherDetails)="setOtherChecklist($event)"
-            ></app-other-inspection-checklist>
-            <app-item-selection [categories]="categories" [items]="itemList" [(selectedItems)]="otherItems"></app-item-selection>
-            <button class="btn btn-warning" mat-button matStepperPrevious>Back</button>
-        </mat-step>
-    </mat-horizontal-stepper>
-</mat-dialog-content>
-<mat-dialog-actions>
-    <div class="row no_margin master-list-new-btn">
-        <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
-        <button [disabled]="generalCheckList.invalid || invalidData()" class="next-btn btn-gen new-btn"
-                (click)="saveRecord()">SAVE
-        </button>
+        </div>
     </div>
-</mat-dialog-actions>
+</div>

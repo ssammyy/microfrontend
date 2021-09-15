@@ -3,6 +3,8 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {DestinationInspectionService} from "../../../../../core/store/data/di/destination-inspection.service";
 import {isNullOrUndefined} from "util";
+import swal from "sweetalert2";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
     selector: 'app-checklist-data-form',
@@ -28,17 +30,23 @@ export class ChecklistDataFormComponent implements OnInit {
     engineeringChecklist: Boolean
     vehicleChecklist: Boolean
     otherChecklist: Boolean
-    agrochemChecklist
+    agrochemChecklist: Boolean
+    configs: any
+    consignmentId: any
+    consignment: any
 
-    constructor(private fb: FormBuilder, @Inject(MAT_DIALOG_DATA) public data: any, public dialogRef: MatDialogRef<any>,
+    constructor(private fb: FormBuilder, private router: Router, private activatedRoute: ActivatedRoute,
                 private diService: DestinationInspectionService) {
     }
 
     ngOnInit(): void {
-        this.categories = this.data.configs.categories
-        this.checkListTypes = this.data.configs.checkListTypes
-        this.laboratories = this.data.configs.laboratories
-        this.itemList = this.data.items
+        this.activatedRoute.paramMap.subscribe(
+            res=>{
+                this.consignmentId=res.get("id")
+                this.loadConsignmentDetails()
+                this.loadChecklistConfigurations()
+            }
+        )
         this.generalCheckList = this.fb.group({
             inspection: ['', Validators.required],
             clearingAgent: ['', [Validators.required, Validators.maxLength(256)]],
@@ -46,7 +54,42 @@ export class ChecklistDataFormComponent implements OnInit {
             customsEntryNumber: ['', [Validators.required, Validators.maxLength(256)]],
         })
     }
-
+    loadConsignmentDetails() {
+        this.diService.getConsignmentDetails(this.consignmentId)
+            .subscribe(
+                response => {
+                    if (response.responseCode === "00") {
+                        this.consignment = response.data
+                        this.itemList = this.consignment.items_cd
+                    } else {
+                        swal.fire({
+                            title: response.message,
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'error'
+                        }).then(()=>{
+                            this.router.navigate(["/di", this.consignmentId])
+                        });
+                        console.log(response)
+                    }
+                }
+            )
+    }
+    loadChecklistConfigurations() {
+        this.diService.loadChecklistConfigs()
+            .subscribe(
+                res => {
+                    if (res.responseCode === "00") {
+                        this.configs = res.data
+                        this.categories = this.configs.categories
+                        this.checkListTypes = this.configs.checkListTypes
+                        this.laboratories = this.configs.laboratories
+                    }
+                }
+            )
+    }
     setAgrochemChecklist(data: any) {
         this.agrochemDetails = data
     }
@@ -125,11 +168,11 @@ export class ChecklistDataFormComponent implements OnInit {
             this.otherDetails["items"]=this.getItems(this.otherItems)
             data["others"] = this.otherDetails
         }
-        this.diService.saveChecklist(this.data.uuid, data)
+        this.diService.saveChecklist(this.consignmentId, data)
             .subscribe(
                 res => {
                     if (res.responseCode === "00") {
-                        this.dialogRef.close(true)
+                        this.router.navigate(["/di", this.consignmentId])
                     } else {
                         this.message = res.message
                     }

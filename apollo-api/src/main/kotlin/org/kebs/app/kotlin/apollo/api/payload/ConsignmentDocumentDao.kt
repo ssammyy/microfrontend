@@ -284,15 +284,17 @@ class CdItemDetailsDao {
                 }
 
             }
+            dt.apply {
+                unitOfQuantity = item.unitOfQuantity
+                packageQuantity = item.packageQuantity
+                totalPriceFcy = item.totalPriceFcy
+                unitPriceFcy = item.unitPriceFcy
+            }
             dt.ministrySubmitted = item.ministrySubmissionStatus == 0
             // Other details
             if (details) {
                 dt.apply {
                     itemHsCodeDescription = item.hsDescription
-                    unitOfQuantity = item.unitOfQuantity
-                    packageQuantity = item.packageQuantity
-                    totalPriceFcy = item.totalPriceFcy
-                    unitPriceFcy = item.unitPriceFcy
                     supplimentaryQuantity = item.supplimentaryQuantity
                     unitPriceNcy = item.unitPriceNcy
                     totalPriceNcy = item.totalPriceNcy

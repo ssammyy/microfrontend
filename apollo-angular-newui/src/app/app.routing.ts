@@ -75,6 +75,7 @@ import {ViewTasksComponent} from "./apollowebs/di/view-tasks/view-tasks.componen
 import {DiCorComponent} from "./apollowebs/di/view-single-consignment-document/di-cor/di-cor.component";
 import {DiCocComponent} from "./apollowebs/di/view-single-consignment-document/di-coc/di-coc.component";
 import {ViewInspectionDetailsComponent} from "./apollowebs/di/view-single-consignment-document/item-details-list-view/view-inspection-details/view-inspection-details.component";
+import {ChecklistDataFormComponent} from "./apollowebs/di/view-single-consignment-document/item-details-list-view/checklist-data-form/checklist-data-form.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -391,6 +392,10 @@ const routes: Routes = [
             {
                 path: 'declaration/document/:id',
                 component: ViewDiDeclarationDocumentsComponent
+            },
+            {
+                path: 'inspection/checklist/:id',
+                component: ChecklistDataFormComponent
             },
             {
                 path: 'cor/details/:id',

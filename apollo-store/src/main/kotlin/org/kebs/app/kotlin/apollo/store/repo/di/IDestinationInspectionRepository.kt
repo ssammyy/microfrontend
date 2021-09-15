@@ -8,6 +8,7 @@ import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
+import java.math.BigDecimal
 
 
 /***********
@@ -332,6 +333,15 @@ interface ICdStandardsEntityRepository : HazelcastRepository<CdStandardsEntity, 
 @Repository
 interface IDestinationInspectionFeeRepository : HazelcastRepository<DestinationInspectionFeeEntity, Long> {
     fun findByStatus(status: Int): List<DestinationInspectionFeeEntity>
+}
+
+@Repository
+interface InspectionFeeRangesRepository : HazelcastRepository<InspectionFeeRanges, Long> {
+    fun findByInspectionFee(inspectionFee: DestinationInspectionFeeEntity): List<InspectionFeeRanges>
+    @Query("select * From CFG_KEBS_DESTINATION_FEE_RANGES where (INSPECTION_FEE_ID=:id and  :amount between MINIMUM_KSH and MAXIMUM_KSH and STATUS=1) and (DESCRIPTION=:docType or DESCRIPTION is null )", nativeQuery = true)
+    fun findByInspectionFeeAndMinimumKshGreaterThanEqualAndMaximumKshLessThanEqual(@Param("id")inspectionFeeId:Long,@Param("amount") amount: BigDecimal,@Param("docType") documentType: String): List<InspectionFeeRanges>
+    fun findByInspectionFeeAndMinimumKshGreaterThanEqual(inspectionFee: DestinationInspectionFeeEntity,amount: BigDecimal): List<InspectionFeeRanges>
+
 }
 
 @Repository

@@ -46,6 +46,7 @@ class DestinationInspectionDaoServices(
         private val SampleSubmissionRepo: IQaSampleSubmissionRepository,
         private val serviceRequestsRepository: IServiceRequestsRepository,
         private val invoiceDaoService: InvoiceDaoService,
+        private val feeRangesRepository: InspectionFeeRangesRepository,
         private val notifications: Notifications,
         private val iCocItemRepository: ICocItemRepository,
         private val iUserProfilesRepo: IUserProfilesRepository,
@@ -723,7 +724,7 @@ class DestinationInspectionDaoServices(
     ): CdLocalCorEntity {
         var localCor = cdLocalCorEntity
         //Get CD Item by cd doc id
-            iCdInspectionGeneralRepo.findFirstByCdDetails(cdEntity)?.let{ cdItemDetailsList->
+        iCdInspectionGeneralRepo.findFirstByCdDetails(cdEntity)?.let { cdItemDetailsList ->
             this.cdMotorVehicleInspectionChecklistRepo.findByInspectionGeneral(cdItemDetailsList)?.let { cdMvInspectionEntity ->
                 with(localCor) {
                     corSerialNo =
@@ -785,7 +786,7 @@ class DestinationInspectionDaoServices(
     ): CorsBakEntity {
         var localCor = CorsBakEntity()
         //Get CD Item by cd doc id
-        iCdInspectionGeneralRepo.findFirstByCdDetails(cdEntity)?.let{ cdItemDetailsList->
+        iCdInspectionGeneralRepo.findFirstByCdDetails(cdEntity)?.let { cdItemDetailsList ->
             this.cdMotorVehicleInspectionChecklistRepo.findByInspectionGeneral(cdItemDetailsList)?.let { cdMvInspectionEntity ->
                 with(localCor) {
                     corNumber = "COR${generateRandomText(5, s.secureRandom, s.messageDigestAlgorithm, true)}"
@@ -1036,18 +1037,56 @@ class DestinationInspectionDaoServices(
             currencyCode: String
     ) {
         val cfiValue = demandNoteItem.cfvalue ?: BigDecimal.ZERO
+        var minimumUsd: BigDecimal = BigDecimal.ZERO
+        var maximum: BigDecimal = BigDecimal.ZERO
+        var minimumKes: BigDecimal = BigDecimal.ZERO
+        var maximumKes: BigDecimal = BigDecimal.ZERO
+        var fixedAmount: BigDecimal = BigDecimal.ZERO
+        var fee: InspectionFeeRanges? = null
+        //1. Handle ranges in the fee depending on amounts
+        var feeType = diInspectionFeeId.rateType
+        if ("RANGE".equals(diInspectionFeeId.rateType)) {
+            var documentType="NON-PVOC"
+            itemDetails.cdDocId?.let {
+                when(it.cdStandardsTwo?.cocType){
+                    "L"->{
+                        documentType="LOCAL"
+                    }
+                    "F" ->{
+                        documentType="PVOC"
+                    }
+                }
+            }
+            KotlinLogging.logger { }.info("${documentType} CFI DOCUMENT TYPE = $currencyCode-$cfiValue")
+            val feeRange = this.feeRangesRepository.findByInspectionFeeAndMinimumKshGreaterThanEqualAndMaximumKshLessThanEqual(diInspectionFeeId.id, cfiValue,documentType)
+            if (feeRange.isEmpty()) {
+                throw Exception("Item details with Id = ${itemDetails.id}, does not Have any range For payment Fee Id Selected ${cfiValue}")
+            } else {
+                fee = feeRange.get(0)
+            }
+            minimumUsd = fee.minimumUsd ?: BigDecimal.ZERO
+            maximum = fee.maximumUsd ?: BigDecimal.ZERO
+            minimumKes = fee.minimumKsh ?: BigDecimal.ZERO
+            maximumKes = fee.maximumKsh ?: BigDecimal.ZERO
+            fixedAmount = fee.fixedAmount ?: BigDecimal.ZERO
+            feeType = fee.rateType
+        } else {
+            minimumUsd = diInspectionFeeId.minimumUsd?.toBigDecimal() ?: BigDecimal.ZERO
+            maximum = diInspectionFeeId.higher?.toBigDecimal() ?: BigDecimal.ZERO
+            minimumKes = diInspectionFeeId.minimumKsh?.toBigDecimal() ?: BigDecimal.ZERO
+            maximumKes = diInspectionFeeId.maximumKsh?.toBigDecimal() ?: BigDecimal.ZERO
+            fixedAmount = diInspectionFeeId.amountKsh?.toBigDecimal() ?: BigDecimal.ZERO
+        }
         val percentage = 100
         var amount: BigDecimal? = null
-        val minimumUsd: BigDecimal = diInspectionFeeId.minimumUsd?.toBigDecimal() ?: BigDecimal.ZERO
-        val maximum: BigDecimal = diInspectionFeeId.higher?.toBigDecimal() ?: BigDecimal.ZERO
-        val minimumKes: BigDecimal = diInspectionFeeId.minimumKsh?.toBigDecimal() ?: BigDecimal.ZERO
-        val maximumKes: BigDecimal = diInspectionFeeId.maximumKsh?.toBigDecimal() ?: BigDecimal.ZERO
-        when (diInspectionFeeId.rateType) {
+        KotlinLogging.logger { }.info("${feeType} CFI AMOUNT BEFORE CALCULATION = $currencyCode-$cfiValue")
+        //2. Calculate based on the ranges provided
+        when (feeType) {
             "PERCENTAGE" -> {
                 amount = diInspectionFeeId.rate?.multiply(cfiValue)?.divide(percentage.toBigDecimal())
                 demandNoteItem.amountPayable = BigDecimal(amount?.toDouble() ?: 0.0)
                 KotlinLogging.logger { }.info("${diInspectionFeeId.rateType} MY AMOUNT BEFORE CALCULATION = $currencyCode-$amount")
-                // APPLY MAX AND MIN VALUES
+                //3.  APPLY MAX AND MIN VALUES
                 amount?.let {
                     when (currencyCode) {
                         "KSH" -> {
@@ -1077,16 +1116,22 @@ class DestinationInspectionDaoServices(
                 KotlinLogging.logger { }.info("${diInspectionFeeId.rateType} MY AMOUNT AFTER CALCULATION = $amount")
             }
             "FIXED" -> {
-                amount = diInspectionFeeId.amountKsh?.toBigDecimalOrNull()
+                amount = fixedAmount
                 KotlinLogging.logger { }.info("FIXED AMOUNT BEFORE CALCULATION = $amount")
                 demandNoteItem.adjustedAmount = amount
                 demandNoteItem.amountPayable = amount
             }
             "MANUAL" -> {
+                // Not-Applicable to items
                 amount = BigDecimal.ZERO
                 demandNoteItem.adjustedAmount = amount
                 demandNoteItem.amountPayable = amount
                 KotlinLogging.logger { }.info("MANUAL AMOUNT BEFORE CALCULATION = $amount")
+            }
+            else -> {
+                amount = BigDecimal.ZERO
+                demandNoteItem.adjustedAmount = amount
+                demandNoteItem.amountPayable = amount
             }
         }
     }
@@ -1099,13 +1144,13 @@ class DestinationInspectionDaoServices(
         val fee = itemDetails.paymentFeeIdSelected
                 ?: throw Exception("Item details with Id = ${itemDetails.id}, does not Have any Details For payment Fee Id Selected ")
         var demandNoteItem = iDemandNoteItemRepo.findByItemId(itemDetails.id)
-        if(demandNoteItem==null){
+        if (demandNoteItem == null) {
             demandNoteItem = CdDemandNoteItemsDetailsEntity()
         }
         with(demandNoteItem) {
             itemId = itemDetails.id
             demandNoteId = demandNote.id
-            product = itemDetails.itemDescription?:itemDetails.hsDescription?:itemDetails.productTechnicalName
+            product = itemDetails.itemDescription ?: itemDetails.hsDescription ?: itemDetails.productTechnicalName
             cfvalue = itemDetails.totalPriceNcy
             rate = fee.rate?.toString()
             rateType = fee.rateType
@@ -1157,7 +1202,7 @@ class DestinationInspectionDaoServices(
             amount: Double,
             user: UsersEntity
     ): CdDemandNoteEntity {
-        return iDemandNoteRepo.findByCdIdAndStatusIn(consignmentDocument.id!!, listOf(-1,0))
+        return iDemandNoteRepo.findByCdIdAndStatusIn(consignmentDocument.id!!, listOf(-1, 0))
                 ?.let { demandNote ->
                     var demandNoteDetails = demandNote
                     //Call Function to add Item Details To be attached To The Demand note
@@ -1171,6 +1216,7 @@ class DestinationInspectionDaoServices(
                     }
                     // Foreign CoR without Items
                     if (itemList.isEmpty()) {
+                        demandNoteDetails.totalAmount = amount.toBigDecimal()
                         demandNoteDetails.amountPayable = amount.toBigDecimal()
                     }
                     //Calculate the total Amount for Items In one Cd Tobe paid For
@@ -1190,11 +1236,12 @@ class DestinationInspectionDaoServices(
                         cdRefNo = consignmentDocument.cdStandard?.applicationRefNo
                         //todo: Entry Number
                         entryAblNumber = "UNKNOWN"
-                        amountPayable = 0.00.toBigDecimal()
+                        totalAmount = BigDecimal.ZERO
+                        amountPayable = BigDecimal.ZERO
                         receiptNo = "NOT PAID"
                         product = "UNKNOWN"
                         rate = "UNKNOWN"
-                        cfvalue = 0.00.toBigDecimal()
+                        cfvalue = BigDecimal.ZERO
 
 
                         //Generate Demand note number
@@ -1229,6 +1276,7 @@ class DestinationInspectionDaoServices(
                     }
                     // Foreign CoR/CoC without Items
                     if (itemList.isEmpty()) {
+                        demandNote.totalAmount = amount.toBigDecimal()
                         demandNote.amountPayable = amount.toBigDecimal()
                     }
                     return demandNote
@@ -1445,7 +1493,8 @@ class DestinationInspectionDaoServices(
             user: UsersEntity, map: ServiceMapsEntity
     ): CdInspectionGeneralEntity {
         // Get existing one or create a new one
-        var inspectionGeneralChecklist = iCdInspectionGeneralRepo.findFirstByCdDetails(cDetails)?:inspectionGeneralEntity
+        var inspectionGeneralChecklist = iCdInspectionGeneralRepo.findFirstByCdDetails(cDetails)
+                ?: inspectionGeneralEntity
         with(inspectionGeneralChecklist) {
             cdDetails = cDetails
             status = map.activeStatus
@@ -3060,7 +3109,7 @@ class DestinationInspectionDaoServices(
             cdInspectionMotorVehicleItemChecklistEntity: CdInspectionMotorVehicleItemChecklistEntity,
             user: UsersEntity?
     ): CdInspectionMotorVehicleItemChecklistEntity {
-        if(user!=null) {
+        if (user != null) {
             with(cdInspectionMotorVehicleItemChecklistEntity) {
                 modifiedBy = commonDaoServices.getUserName(user)
                 modifiedOn = commonDaoServices.getTimestamp()
@@ -3135,7 +3184,7 @@ class DestinationInspectionDaoServices(
         map["NoOfPassengers"] = corDetails?.numberOfPassangers.toString()
         map["PrevRegNo"] = corDetails?.previousCountryOfRegistration.orEmpty()
         map["PrevCountryOfReg"] = corDetails?.previousCountryOfRegistration.orEmpty()
-    // todo: ADD CHECKLIST COMMENT
+        // todo: ADD CHECKLIST COMMENT
 //        val inspectionChecklist = findMotorVehicleInspectionByCdItem(cdItem)
         map["InspectionDetails"] = "to ADD"
 
