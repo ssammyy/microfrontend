@@ -1,31 +1,18 @@
 {
-  "id": null,
-  "firstName": "DANIEL",
-  "lastName": "TINEGA",
-  "userName": "tinegad@kebs.org",
-  "userPinIdNumber": null,
-  "personalContactNumber": "254725279260",
-  "typeOfUser": null,
-  "email": "tinegad@kebs.org",
-  "userRegNo": "KEBS#EMP20210812255D7",
-  "enabled": false,
-  "accountExpired": false,
-  "accountLocked": false,
-  "credentialsExpired": false,
-  "status": false,
-  "registrationDate": null,
-  "userType": null,
-  "title": 1,
-  "directorate": 1,
-  "department": 2,
-  "division": 4,
-  "section": null,
-  "l1SubSubSection": null,
-  "l2SubSubSection": null,
-  "designation": 410,
-  "profileId": null,
-  "region": 4,
-  "county": 26,
-  "town": 579,
-  "subRegion": null
+  "header": {
+    "serviceName": "Thirdparty ",
+    "messageID": "ATL/KBES/REF0002",
+    "connectionID": "Username",
+    "connectionPassword": "P@$$w0rd"
+  },
+  "request": {
+    "BillReferenceNo": "INV0000689",
+    "PaymentDate": "2019-08-28T17:32:02.7460598+03:00",
+    "CurrencyCode": "KES",
+    "PaymentReferenceNo": "MXC534342",
+    "PaymentCode": "MPESA",
+    "PaymentAmount": 68400,
+    "PaymentDescription": "INV0000689",
+    "AdditionalInfo": " INV0000689"
+  }
 }

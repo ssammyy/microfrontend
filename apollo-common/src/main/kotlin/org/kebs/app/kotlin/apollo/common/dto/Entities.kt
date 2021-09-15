@@ -409,6 +409,9 @@ data class UserCompanyEntityDto(
     @JsonProperty("buildingName")
     @NotEmpty(message = "is mandatory")
     var buildingName: String? = null,
+    @JsonProperty("branchName")
+    @NotEmpty(message = "is mandatory")
+    var branchName: String? = null,
     @JsonProperty("streetName")
     @NotEmpty(message = "is mandatory")
     var streetName: String? = null,
@@ -491,16 +494,26 @@ data class UserDetailsDto(
 
 data class EmployeeProfileDetailsDto(
     var directorate: String? = null,
+    var directorateID: Long? = null,
     var department: String? = null,
+    var departmentID: Long? = null,
     var division: String? = null,
+    var divisionID: Long? = null,
     var section: String? = null,
+    var sectionID: Long? = null,
     var l1SubSubSection: String? = null,
+    var l1SubSubSectionID: Long? = null,
     var l2SubSubSection: String? = null,
+    var l2SubSubSectionID: Long? = null,
     var designation: String? = null,
+    var designationID: Long? = null,
     var profileId: Long? = null,
     var region: String? = null,
+    var regionID: Long? = null,
     var county: String? = null,
+    var countyID: Long? = null,
     var town: String? = null,
+    var townID: Long? = null,
     var status: Boolean = false,
 )
 
@@ -510,6 +523,13 @@ data class RolesEntityDto(
         val roleName: String?,
         var descriptions: String?,
         var status: Boolean?,
+)
+
+data class SectionEntityDto(
+    var id: Long?,
+    val section: String?,
+    var descriptions: String?,
+    var status: Boolean?,
 )
 
 data class AuthoritiesEntityDto(
@@ -649,6 +669,7 @@ class JwtResponse(
     var tokenType = "Bearer"
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss.SSS")
+//var expiry: Timestamp? = null
     var expiry: LocalDateTime? = null
     var companyID: Long? = null
     var branchID: Long? = null
@@ -712,6 +733,7 @@ class PlantEntityDto {
     var location: String? = null
     var street: String? = null
     var buildingName: String? = null
+    var branchName: String? = null
     var nearestLandMark: String? = null
     var postalAddress: String? = null
     var telephone: String? = null

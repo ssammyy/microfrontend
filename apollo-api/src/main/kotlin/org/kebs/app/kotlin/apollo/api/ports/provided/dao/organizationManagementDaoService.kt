@@ -95,16 +95,22 @@ class RegistrationManagementDaoService(
      */
     fun provideCompanyDetailsForUser(): UserCompanyDetailsDto? {
         val user = commonDaoServices.loggedInUserDetails()
-        val counter = manufacturePlantRepository.countByCompanyProfileId(
-            user.companyId ?: throw NullValueNotAllowedException("User does not have a company flag")
-        )
+        val counter = user.companyId?.let {
+            manufacturePlantRepository.countByCompanyProfileId(
+                it
+            )
+        }
         val turnOver = companyRepo.findByIdOrNull(user.companyId)?.yearlyTurnover
-        val countAwarded = permitRepo.countByCompanyIdAndPermitAwardStatus(
-            user.companyId ?: throw NullValueNotAllowedException("User does not have a company flag"), 1
-        )
-        val countExpired = permitRepo.countByCompanyIdAndPermitAwardStatusAndPermitExpiredStatus(
-            user.companyId ?: throw NullValueNotAllowedException("User does not have a company flag"), 1, 1
-        )
+        val countAwarded = user.companyId?.let {
+            permitRepo.countByCompanyIdAndPermitAwardStatus(
+                it, 1
+            )
+        }
+        val countExpired = user.companyId?.let {
+            permitRepo.countByCompanyIdAndPermitAwardStatusAndPermitExpiredStatus(
+                it, 1, 1
+            )
+        }
         return UserCompanyDetailsDto(
             user.companyId,
             user.plantId,
@@ -270,7 +276,8 @@ class RegistrationManagementDaoService(
         try {
             usersRepo.findByUserName(request.username)
                 ?.let { user ->
-                    val otp = commonDaoServices.generateTransactionReference(8).toUpperCase()
+//                    val otp = commonDaoServices.generateTransactionReference(8).toUpperCase()
+                    val otp = commonDaoServices.randomNumber(6)
                     val token = commonDaoServices.generateVerificationToken(
                         otp,
                         user.cellphone ?: throw NullValueNotAllowedException("Valid Cellphone is required")
@@ -345,13 +352,14 @@ class RegistrationManagementDaoService(
                                             /**
                                              * TODO: Revisit number validation
                                              */
-                                            personalContactNumber = u.cellphone
+                                            personalContactNumber =
+                                                commonDaoServices.makeKenyanMSISDNFormat(u.cellphone)
                                             registrationDate = Date(Date().time)
                                             typeOfUser = applicationMapProperties.transactionActiveStatus
                                             title = u.title
                                             email = u.email
                                             userName = u.userName
-                                            cellphone = u.cellphone
+                                            cellphone = commonDaoServices.makeKenyanMSISDNFormat(u.cellphone)
                                             userRegNo = "KEBS${generateTransactionReference(5).toUpperCase()}"
                                             credentials = BCryptPasswordEncoder().encode(u.credentials)
                                             enabled = applicationMapProperties.transactionActiveStatus
@@ -369,6 +377,16 @@ class RegistrationManagementDaoService(
                                             UserRoleAssignmentsEntity().apply {
                                                 userId = entity.id
                                                 roleId = applicationMapProperties.manufacturerRoleId
+                                                status = applicationMapProperties.transactionActiveStatus
+                                                createdBy = "${user.userName}"
+                                                createdOn = Timestamp.from(Instant.now())
+                                            }
+                                        )
+
+                                        userRolesRepo.save(
+                                            UserRoleAssignmentsEntity().apply {
+                                                userId = entity.id
+                                                roleId = applicationMapProperties.mapUserRegistrationUserRoleID
                                                 status = applicationMapProperties.transactionActiveStatus
                                                 createdBy = "${user.userName}"
                                                 createdOn = Timestamp.from(Instant.now())
@@ -403,8 +421,8 @@ class RegistrationManagementDaoService(
                                     /**
                                      * TODO: Revisit number validation
                                      */
-                                    personalContactNumber = u.cellphone
-                                    cellphone = u.cellphone
+                                    personalContactNumber = commonDaoServices.makeKenyanMSISDNFormat(u.cellphone)
+                                    cellphone = commonDaoServices.makeKenyanMSISDNFormat(u.cellphone)
                                     registrationDate = Date(Date().time)
                                     typeOfUser = applicationMapProperties.transactionActiveStatus
                                     title = u.title
@@ -511,6 +529,7 @@ class RegistrationManagementDaoService(
                 street = dto.street
                 location = dto.location
                 buildingName = dto.buildingName
+                branchName = dto.branchName
                 nearestLandMark = dto.nearestLandMark
                 postalAddress = dto.postalAddress
                 telephone = dto.telephone
@@ -537,6 +556,7 @@ class RegistrationManagementDaoService(
                         physicalAddress = dto.physicalAddress
                         street = dto.street
                         buildingName = dto.buildingName
+                        branchName = dto.branchName
                         nearestLandMark = dto.nearestLandMark
                         postalAddress = dto.postalAddress
                         telephone = dto.telephone
@@ -737,6 +757,7 @@ class RegistrationManagementDaoService(
             location = it.location
             street = it.street
             buildingName = it.buildingName
+            branchName = it.branchName
             nearestLandMark = it.nearestLandMark
             postalAddress = it.postalAddress
             telephone = it.telephone
@@ -791,6 +812,7 @@ class RegistrationManagementDaoService(
                         it.businessLines,
                         it.businessNatures,
                         it.buildingName,
+                        null,
                         it.streetName,
                         it.directorIdNumber,
                         it.region,
@@ -820,6 +842,7 @@ class RegistrationManagementDaoService(
                         it.businessLines,
                         it.businessNatures,
                         it.buildingName,
+                        null,
                         it.streetName,
                         it.directorIdNumber,
                         it.region,
@@ -855,6 +878,7 @@ class RegistrationManagementDaoService(
                     it.businessLines,
                     it.businessNatures,
                     it.buildingName,
+                    null,
                     it.streetName,
                     it.directorIdNumber,
                     it.region,
@@ -923,6 +947,7 @@ class RegistrationManagementDaoService(
                         companyProfileEntity.businessLines,
                         companyProfileEntity.businessNatures,
                         companyProfileEntity.buildingName,
+                        null,
                         companyProfileEntity.streetName,
                         companyProfileEntity.directorIdNumber,
                         companyProfileEntity.region,
@@ -951,9 +976,10 @@ class RegistrationManagementDaoService(
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun registerCompany(dto: UserCompanyEntityDto, user: UsersEntity, map: ServiceMapsEntity): UserCompanyEntityDto? {
         try {
+            companyRepo.findByKraPin(dto.kraPin ?: throw NullValueNotAllowedException("KRA  Pin Number is required"))
+                ?.let { throw ExpectedDataNotFound("A Company with this [KRA Pin Number : ${dto.kraPin}] already exists") }
             companyRepo.findByRegistrationNumber(
-                dto.registrationNumber
-                    ?: throw NullValueNotAllowedException("Registration Number is required")
+                dto.registrationNumber ?: throw NullValueNotAllowedException("Registration Number is required")
             )
                 ?.let { throw ExpectedDataNotFound("The Company with this [Registration Number : ${dto.registrationNumber}] already exists") }
                 ?: run {
@@ -1062,6 +1088,7 @@ class RegistrationManagementDaoService(
                         companyProfileEntity.businessLines,
                         companyProfileEntity.businessNatures,
                         companyProfileEntity.buildingName,
+                        null,
                         companyProfileEntity.streetName,
                         companyProfileEntity.directorIdNumber,
                         companyProfileEntity.region,

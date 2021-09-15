@@ -148,6 +148,7 @@ export class SignUpComponent implements OnInit {
         });
         this.stepThreeForm = new FormGroup({
             buildingName: new FormControl(),
+            branchName: new FormControl('', [Validators.required]),
             streetName: new FormControl('', [Validators.required]),
             region: new FormControl('', [Validators.required]),
             county: new FormControl('', [Validators.required]),
@@ -331,6 +332,7 @@ export class SignUpComponent implements OnInit {
                 // this.stepFourForm?.get('otp')?.reset();
                 this.phoneValidated = d;
                 if (this.phoneValidated) {
+                    this.userSoFar = {...this.userSoFar, ...this.stepFiveForm.value};
                     this.company = {...this.company, ...this.companySoFar};
                     this.user = {...this.user, ...this.userSoFar};
 

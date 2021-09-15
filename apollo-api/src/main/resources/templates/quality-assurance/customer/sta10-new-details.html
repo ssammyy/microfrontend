@@ -135,7 +135,8 @@
                             <button class="accordion">B: PRODUCTION DETAILS:<br>1. Products being manufactured/Brands</button>
                             <div class="panel">
                                 &nbsp;
-                                <div th:if="${QaSta10Entity?.closedProduction != 1 }" id="idButtons">
+                                <div sec:authorize="hasAuthority('PERMIT_APPLICATION')"
+                                     th:if="${QaSta10Entity?.closedProduction != 1 }" id="idButtons">
                                     <div class="form-row">
                                         <div class="col-md-6 mb-3">
                                             <button id="addParam" class="btn btn-primary"
@@ -198,7 +199,8 @@
                             <button class="accordion">2. Raw material</button>
                             <div class="panel">
                                 &nbsp;
-                                <div th:if="${QaSta10Entity?.closedRawMaterials != 1 }" id="idButtons">
+                                <div sec:authorize="hasAuthority('PERMIT_APPLICATION')"
+                                     th:if="${QaSta10Entity?.closedRawMaterials != 1 }" id="idButtons">
                                     <div class="form-row">
                                         <div class="col-md-6 mb-3">
                                             <button id="addRawMaterials" class="btn btn-primary"
@@ -258,7 +260,8 @@
                             <button class="accordion">3. Machinery and Plant</button>
                             <div class="panel">
                                 &nbsp;
-                                <div th:if="${QaSta10Entity?.closedMachineryPlants != 1 }" id="idButtons">
+                                <div sec:authorize="hasAuthority('PERMIT_APPLICATION')"
+                                     th:if="${QaSta10Entity?.closedMachineryPlants != 1 }" id="idButtons">
                                     <div class="form-row">
                                         <div class="col-md-6 mb-3">
                                             <button id="addMachinePlant" class="btn btn-primary"
@@ -300,7 +303,8 @@
                             <button class="accordion">4. Manufacturing process</button>
                             <div class="panel">
                                 &nbsp;
-                                <div th:if="${QaSta10Entity?.closedManufacturingProcesses != 1 }" id="idButtons">
+                                <div sec:authorize="hasAuthority('PERMIT_APPLICATION')"
+                                     th:if="${QaSta10Entity?.closedManufacturingProcesses != 1 }" id="idButtons">
                                     <div class="form-row">
                                         <div class="col-md-6 mb-3">
                                             <button id="addManufactureProcess" class="btn btn-primary"

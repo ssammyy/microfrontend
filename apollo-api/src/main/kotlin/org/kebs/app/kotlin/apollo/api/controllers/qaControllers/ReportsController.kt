@@ -1,6 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.controllers.qaControllers
 
-import org.apache.http.HttpStatus
+import com.google.gson.Gson
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
@@ -11,11 +11,8 @@ import org.kebs.app.kotlin.apollo.store.model.InvoiceEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaInvoiceMasterDetailsEntity
 import org.kebs.app.kotlin.apollo.store.repo.ISampleStandardsRepository
 import org.springframework.core.io.ResourceLoader
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
-import java.io.ByteArrayOutputStream
+import org.springframework.http.MediaType
+import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletResponse
 
 @RestController
@@ -33,11 +30,33 @@ class ReportsController(
     final val dMarkImageResource = resourceLoader.getResource(applicationMapProperties.mapDmarkImagePath)
     val dMarkImageFile = dMarkImageResource.file.toString()
 
+    final val dMarkImageBackGroundResource =
+        resourceLoader.getResource(applicationMapProperties.mapDmarkBackgroundImagePath)
+    val dMarkImageBackGroundFile = dMarkImageBackGroundResource.file.toString()
+
     final val sMarkImageResource = resourceLoader.getResource(applicationMapProperties.mapSmarkImagePath)
     val sMarkImageFile = sMarkImageResource.file.toString()
 
+    final val sMarkImageBackGroundResource =
+        resourceLoader.getResource(applicationMapProperties.mapSmarkBackgroundImagePath)
+    val sMarkImageBackGroundFile = sMarkImageBackGroundResource.file.toString()
+
     final val fMarkImageResource = resourceLoader.getResource(applicationMapProperties.mapFmarkImagePath)
     val fMarkImageFile = fMarkImageResource.file.toString()
+
+    final val fMarkImageBackGroundResource =
+        resourceLoader.getResource(applicationMapProperties.mapFmarkBackgroundImagePath)
+    val fMarkImageBackGroundFile = fMarkImageBackGroundResource.file.toString()
+
+    @GetMapping("view/remarks/{id}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun userRemarks(
+        @PathVariable(value = "id", required = false) id: Long
+    ): String? {
+        val remarks = qaDaoServices.findRemarksDetailsByID(id)
+        val gson = Gson()
+        return gson.toJson(remarks)
+
+    }
 
     @RequestMapping(value = ["pac_summary"], method = [RequestMethod.GET])
     @Throws(Exception::class)
@@ -45,7 +64,7 @@ class ReportsController(
         response: HttpServletResponse,
         @RequestParam(value = "permit_id") id: Long
     ) {
-        val map = hashMapOf<String, Any>()
+        var map = hashMapOf<String, Any>()
         val permit = qaDaoServices.findPermitBYID(id)
 
         map["FirmName"] = "Test"
@@ -55,19 +74,11 @@ class ReportsController(
         map["AssessmentDate"] = "Test"
         map["Assessors"] = "Test"
 
-        val pdfReportStream=reportsDaoService.extractReportEmptyDataSource(
+        reportsDaoService.extractReportEmptyDataSource(
             map,
+            response,
             applicationMapProperties.mapReportPacSummaryReportPath
         )
-        response.contentType = "text/html"
-        response.contentType = "application/pdf"
-        response.setHeader("Content-Length", pdfReportStream.size().toString())
-        response.addHeader("Content-Dispostion", "inline; filename=file.pdf;")
-        response.outputStream.let { responseOutputStream ->
-            responseOutputStream.write(pdfReportStream.toByteArray())
-            responseOutputStream.close()
-            pdfReportStream.close()
-        }
     }
 
 
@@ -114,24 +125,14 @@ class ReportsController(
 //                    map["amountInWords"] = demandNote?.
         map["receiptNo"] = batchInvoice.receiptNo.toString()
 
-        map = reportsDaoService.addBankAndMPESADetails(map)
+        map = reportsDaoService.addBankAndMPESADetails(map, batchInvoice.invoiceNumber.toString())
 
-        val extractReport = reportsDaoService.extractReport(
-                map,
-                applicationMapProperties.mapReportProfomaInvoiceWithItemsPath,
-                batchInvoiceList
+        reportsDaoService.extractReport(
+            map,
+            response,
+            applicationMapProperties.mapReportProfomaInvoiceWithItemsPath,
+            batchInvoiceList
         )
-
-//        response.contentType = "text/html"
-        response.contentType = "application/pdf"
-        response.setHeader("Content-Length", extractReport.size().toString())
-        response.addHeader("Content-Dispostion", "inline; filename=jasper.html;")
-        response.outputStream
-                .let { responseOutputStream ->
-                    responseOutputStream.write(extractReport.toByteArray())
-                    responseOutputStream.close()
-                    extractReport.close()
-                }
     }
 //    /*
 //    GetDemand Note with all list of Items In It
@@ -186,7 +187,7 @@ class ReportsController(
         //                    map["amountInWords"] = demandNote?.
         map["receiptNo"] = batchInvoice.receiptNo.toString()
 
-        map = reportsDaoService.addBankAndMPESADetails(map)
+        map = reportsDaoService.addBankAndMPESADetails(map, batchInvoice.invoiceNumber.toString())
         return Pair(map, batchInvoiceList)
     }
 
@@ -217,25 +218,79 @@ class ReportsController(
         map["faxNumber"] = foundPermitDetails.faxNo.toString()
         map["EmailAddress"] = foundPermitDetails.email.toString()
         map["phoneNumber"] = foundPermitDetails.telephoneNo.toString()
-        map["QrCode"] = foundPermitDetails.permitNumber.toString()
+        map["QrCode"] =
+            "${applicationMapProperties.baseUrlQRValue}qr-code-qa-permit-scan#${foundPermitDetails.permitNumber}"
         when (foundPermitDetails.permitTypeID) {
             applicationMapProperties.mapQAPermitTypeIDDmark -> {
                 map["DmarkLogo"] = dMarkImageFile
+                map["backGroundImage"] = dMarkImageBackGroundFile
                 filePath = applicationMapProperties.mapReportDmarkPermitReportPath
 
             }
             applicationMapProperties.mapQAPermitTypeIdSmark -> {
                 map["SmarkLogo"] = sMarkImageFile
+                map["backGroundImage"] = sMarkImageBackGroundFile
                 filePath = applicationMapProperties.mapReportSmarkPermitReportPath
 
             }
             applicationMapProperties.mapQAPermitTypeIdFmark -> {
                 map["FmarkLogo"] = fMarkImageFile
+                map["backGroundImage"] = fMarkImageBackGroundFile
                 filePath = applicationMapProperties.mapReportFmarkPermitReportPath
 
             }
         }
         return Pair(map, filePath ?: throw ExpectedDataNotFound("MISSING FILE PATH"))
+    }
+
+
+    @RequestMapping(value = ["braked-down-invoice-with-Item"], method = [RequestMethod.GET])
+    @Throws(Exception::class)
+    fun brakedDownInvoiceWithMoreItems(
+        response: HttpServletResponse,
+        @RequestParam(value = "ID") ID: Long
+    ) {
+        var map = hashMapOf<String, Any>()
+//        val cdItemDetailsEntity = daoServices.findItemWithItemID(id)
+        val masterInvoice = qaDaoServices.findPermitInvoiceByPermitID(ID)
+        val invoiceDetailsList = qaDaoServices.findALlInvoicesPermitWithMasterInvoiceID(
+            masterInvoice.id, 1
+        )
+        val companyProfile = commonDaoServices.findCompanyProfileWithID(
+            commonDaoServices.findUserByID(
+                masterInvoice.userId ?: throw ExpectedDataNotFound("MISSING USER ID")
+            ).companyId ?: throw ExpectedDataNotFound("MISSING USER ID")
+        )
+
+        map["preparedBy"] = masterInvoice.createdBy.toString()
+        map["datePrepared"] = commonDaoServices.convertTimestampToKeswsValidDate(
+            masterInvoice.createdOn ?: throw ExpectedDataNotFound("MISSING CREATION DATE")
+        )
+        map["demandNoteNo"] = masterInvoice.invoiceRef.toString()
+        map["companyName"] = companyProfile.name.toString()
+        map["companyAddress"] = companyProfile.postalAddress.toString()
+        map["companyTelephone"] = companyProfile.companyTelephone.toString()
+//        map["productName"] = demandNote?.product.toString()
+//        map["cfValue"] = demandNote?.cfvalue.toString()
+//        map["rate"] = demandNote?.rate.toString()
+//        map["amountPayable"] = demandNote?.amountPayable.toString()
+        map["customerNo"] = companyProfile.entryNumber.toString()
+        map["taxAmount"] = masterInvoice.taxAmount.toString()
+        map["subTotalAmount"] = masterInvoice.subTotalBeforeTax.toString()
+        map["totalAmount"] = masterInvoice.totalAmount.toString()
+        //Todo: config for amount in words
+
+//                    map["amountInWords"] = demandNote?.
+        map["receiptNo"] = masterInvoice.receiptNo.toString()
+
+        map = reportsDaoService.addBankAndMPESADetails(map, masterInvoice.invoiceRef.toString())
+
+        reportsDaoService.extractReport(
+            map,
+            response,
+            applicationMapProperties.mapReportBreakDownInvoiceWithItemsPath,
+            invoiceDetailsList
+        )
     }
 
     /*
@@ -253,16 +308,7 @@ class ReportsController(
         val permit = qaDaoServices.findPermitBYID(id)
 
         val foundPermitDetails = qaDaoServices.permitDetails(permit, s)
-
-//        val standardNo = sampleStandardsRepository.findBySubCategoryId(permit.productSubCategory)?.standardNumber
-//        val ksApplicable = sampleStandardsRepository.findBySubCategoryId(permit.productSubCategory)?.standardTitle
-
-//        val standardsDetails = qaDaoServices.findStandardsByID(
-//            permit.productStandard
-//                ?: throw Exception("INVALID STANDARDS NUMBER [ID = ${permit.productStandard}]")
-//        )
-//        val standardNo = standardsDetails.standardNumber
-//        val ksApplicable = standardsDetails.standardTitle
+        var filePath: String? = null
 
         map["FirmName"] = foundPermitDetails.firmName.toString()
         map["PermitNo"] = foundPermitDetails.permitNumber.toString()
@@ -281,43 +327,65 @@ class ReportsController(
         map["faxNumber"] = foundPermitDetails.faxNo.toString()
         map["EmailAddress"] = foundPermitDetails.email.toString()
         map["phoneNumber"] = foundPermitDetails.telephoneNo.toString()
-        map["QrCode"] = foundPermitDetails.permitNumber.toString()
-        var pdfReportStream:ByteArrayOutputStream?=null
+        map["QrCode"] =
+            "${applicationMapProperties.baseUrlQRValue}qr-code-qa-permit-scan#${foundPermitDetails.permitNumber}"
+
+
+
         when (foundPermitDetails.permitTypeID) {
+//            applicationMapProperties.mapQAPermitTypeIDDmark -> {
+//                map["DmarkLogo"] = dMarkImageFile
+//                 map["backGroundImage"] = dMarkImageBackGroundFile
+//                reportsDaoService.extractReportEmptyDataSource(
+//                    map,
+//                    response,
+//                    applicationMapProperties.mapReportDmarkPermitReportPath
+//                )
+//            }
+//            applicationMapProperties.mapQAPermitTypeIdSmark -> {
+//                map["SmarkLogo"] = sMarkImageFile
+//                 map["backGroundImage"] = sMarkImageBackGroundFile
+//                reportsDaoService.extractReportEmptyDataSource(
+//                    map,
+//                    response,
+//                    applicationMapProperties.mapReportSmarkPermitReportPath
+//                )
+//            }
+//            applicationMapProperties.mapQAPermitTypeIdFmark -> {
+//                map["FmarkLogo"] = fMarkImageFile
+//                 map["backGroundImage"] = fMarkImageBackGroundFile
+//                reportsDaoService.extractReportEmptyDataSource(
+//                    map,
+//                    response,
+//                    applicationMapProperties.mapReportFmarkPermitReportPath
+//                )
+//            }
+
             applicationMapProperties.mapQAPermitTypeIDDmark -> {
                 map["DmarkLogo"] = dMarkImageFile
-                pdfReportStream=reportsDaoService.extractReportEmptyDataSource(
-                    map,
-                    applicationMapProperties.mapReportDmarkPermitReportPath
-                )
+                map["backGroundImage"] = dMarkImageBackGroundFile
+                filePath = applicationMapProperties.mapReportDmarkPermitReportPath
+
             }
             applicationMapProperties.mapQAPermitTypeIdSmark -> {
                 map["SmarkLogo"] = sMarkImageFile
-                pdfReportStream=reportsDaoService.extractReportEmptyDataSource(
-                    map,
-                    applicationMapProperties.mapReportSmarkPermitReportPath
-                )
+                map["backGroundImage"] = sMarkImageBackGroundFile
+                filePath = applicationMapProperties.mapReportSmarkPermitReportPath
+
             }
             applicationMapProperties.mapQAPermitTypeIdFmark -> {
                 map["FmarkLogo"] = fMarkImageFile
-                pdfReportStream=reportsDaoService.extractReportEmptyDataSource(
-                    map,
-                    applicationMapProperties.mapReportFmarkPermitReportPath
-                )
+                map["backGroundImage"] = fMarkImageBackGroundFile
+                filePath = applicationMapProperties.mapReportFmarkPermitReportPath
+
             }
         }
-        if(pdfReportStream!=null) {
-            response.contentType = "text/html"
-            response.contentType = "application/pdf"
-            response.setHeader("Content-Length", pdfReportStream.size().toString())
-            response.addHeader("Content-Dispostion", "inline; filename=file.pdf;")
-            response.outputStream.let { responseOutputStream ->
-                responseOutputStream.write(pdfReportStream.toByteArray())
-                responseOutputStream.close()
-                pdfReportStream.close()
-            }
-        } else {
-            response.status=HttpStatus.SC_BAD_REQUEST
+        if (filePath != null) {
+            reportsDaoService.extractReportEmptyDataSource(
+                map,
+                response,
+                filePath
+            )
         }
 
     }

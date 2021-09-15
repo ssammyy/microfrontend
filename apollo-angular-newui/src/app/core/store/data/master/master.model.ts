@@ -151,6 +151,13 @@ export class RolesEntityDto {
     status?: boolean;
 }
 
+export class SectionEntityDto {
+    id?: bigint;
+    section?: string;
+    descriptions?: string;
+    status?: boolean;
+}
+
 export class AuthoritiesEntityDto {
     id?: bigint;
     name?: string;

@@ -22,9 +22,10 @@ export class MasterService {
     constructor(private http: HttpClient) {
     }
 
-    loadDepartmentsSystemAdmin(): any {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_DEPARTMENTS);
-        return this.http.get<DepartmentDto[]>(url).pipe(
+    loadDepartmentsSystemAdmin(status: number): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_DEPARTMENTS_BY_STATUS);
+        const urlAndPathVariables = `${url}/${status}`;
+        return this.http.get<DepartmentDto[]>(urlAndPathVariables).pipe(
             map(function (response: DepartmentDto[]) {
                 return response;
             }),
@@ -35,9 +36,10 @@ export class MasterService {
         );
     }
 
-    loadDivisionsSystemAdmin(): any {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_DIVISIONS);
-        return this.http.get<DivisionDetailsDto[]>(url).pipe(
+    loadDivisionsSystemAdmin(status: number): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_DIVISIONS_BY_STATUS);
+        const urlAndPathVariables = `${url}/${status}`;
+        return this.http.get<DivisionDetailsDto[]>(urlAndPathVariables).pipe(
             map(function (response: DivisionDetailsDto[]) {
                 return response;
             }),
@@ -48,9 +50,10 @@ export class MasterService {
         );
     }
 
-    loadDirectorateSystemAdmin(): any {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_DIRECTORATE);
-        return this.http.get<DirectoratesEntityDto[]>(url).pipe(
+    loadDirectorateSystemAdmin(status: number): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_DIRECTORATE_BY_STATUS);
+        const urlAndPathVariables = `${url}/${status}`;
+        return this.http.get<DirectoratesEntityDto[]>(urlAndPathVariables).pipe(
             map(function (response: DirectoratesEntityDto[]) {
                 return response;
             }),
@@ -61,9 +64,10 @@ export class MasterService {
         );
     }
 
-    loadTitlesSystemAdmin(): any {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_TITLE_LIST);
-        return this.http.get<TitlesEntityDto[]>(url).pipe(
+    loadTitlesSystemAdmin(status: number): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.TITLE_LIST_BY_STATUS);
+        const urlAndPathVariables = `${url}/${status}`;
+        return this.http.get<TitlesEntityDto[]>(urlAndPathVariables).pipe(
             map(function (response: TitlesEntityDto[]) {
                 return response;
             }),
@@ -74,9 +78,10 @@ export class MasterService {
         );
     }
 
-    loadRolesSystemAdmin(): any {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_ROLES_LIST);
-        return this.http.get<RolesEntityDto[]>(url).pipe(
+    loadRolesSystemAdmin(status: number): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ROLES_LIST_BY_STATUS);
+        const urlAndPathVariables = `${url}/${status}`;
+        return this.http.get<RolesEntityDto[]>(urlAndPathVariables).pipe(
             map(function (response: RolesEntityDto[]) {
                 return response;
             }),
@@ -87,9 +92,10 @@ export class MasterService {
         );
     }
 
-    loadAuthoritiesSystemAdmin(): any {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_AUTHORITIES_LIST);
-        return this.http.get<AuthoritiesEntityDto[]>(url).pipe(
+    loadAuthoritiesSystemAdmin(status: number): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.AUTHORITIES_LIST_BY_STATUS);
+        const urlAndPathVariables = `${url}/${status}`;
+        return this.http.get<AuthoritiesEntityDto[]>(urlAndPathVariables).pipe(
             map(function (response: AuthoritiesEntityDto[]) {
                 return response;
             }),
@@ -100,9 +106,10 @@ export class MasterService {
         );
     }
 
-    loadDesignationsSystemAdmin(): any {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_DESIGNATIONS);
-        return this.http.get<DesignationEntityDto[]>(url).pipe(
+    loadDesignationsSystemAdmin(status: number): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_DESIGNATIONS_BY_STATUS);
+        const urlAndPathVariables = `${url}/${status}`;
+        return this.http.get<DesignationEntityDto[]>(urlAndPathVariables).pipe(
             map(function (response: DesignationEntityDto[]) {
                 return response;
             }),
@@ -113,9 +120,10 @@ export class MasterService {
         );
     }
 
-    loadSectionSystemAdmin(): any {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_SECTIONS);
-        return this.http.get<SectionsEntityDto[]>(url).pipe(
+    loadSectionSystemAdmin(status: number): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_SECTIONS_BY_STATUS);
+        const urlAndPathVariables = `${url}/${status}`;
+        return this.http.get<SectionsEntityDto[]>(urlAndPathVariables).pipe(
             map(function (response: SectionsEntityDto[]) {
                 return response;
             }),
@@ -126,9 +134,10 @@ export class MasterService {
         );
     }
 
-    loadL1SubSubSectionSystemAdmin(): any {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_SUB_SECTIONS_L1);
-        return this.http.get<SubSectionsL1EntityDto[]>(url).pipe(
+    loadL1SubSubSectionSystemAdmin(status: number): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_SUB_SECTIONS_L1_BY_STATUS);
+        const urlAndPathVariables = `${url}/${status}`;
+        return this.http.get<SubSectionsL1EntityDto[]>(urlAndPathVariables).pipe(
             map(function (response: SubSectionsL1EntityDto[]) {
                 return response;
             }),
@@ -139,9 +148,10 @@ export class MasterService {
         );
     }
 
-    loadL2SubSubSectionSystemAdmin(): any {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_SUB_SECTIONS_L2);
-        return this.http.get<SubSectionsL2EntityDto[]>(url).pipe(
+    loadL2SubSubSectionSystemAdmin(status: number): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_SUB_SECTIONS_L2_BY_STATUS);
+        const urlAndPathVariables = `${url}/${status}`;
+        return this.http.get<SubSectionsL2EntityDto[]>(urlAndPathVariables).pipe(
             map(function (response: SubSectionsL2EntityDto[]) {
                 return response;
             }),
@@ -152,9 +162,10 @@ export class MasterService {
         );
     }
 
-    loadCfsSystemAdmin(): any {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_FREIGHT_STATIONS);
-        return this.http.get<any>(url).pipe(
+    loadCfsSystemAdmin(status: number): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_FREIGHT_STATIONS_BY_STATUS);
+        const urlAndPathVariables = `${url}/${status}`;
+        return this.http.get<any>(urlAndPathVariables).pipe(
             map(function (response: any) {
                 return response;
             }),
@@ -165,9 +176,10 @@ export class MasterService {
         );
     }
 
-    loadRegionsSystemAdmin(): any {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_REGIONS);
-        return this.http.get<RegionsEntityDto[]>(url).pipe(
+    loadRegionsSystemAdmin(status: number): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_REGIONS_BY_STATUS);
+        const urlAndPathVariables = `${url}/${status}`;
+        return this.http.get<RegionsEntityDto[]>(urlAndPathVariables).pipe(
             map(function (response: RegionsEntityDto[]) {
                 return response;
             }),
@@ -178,9 +190,10 @@ export class MasterService {
         );
     }
 
-    loadCountiesSystemAdmin(): any {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_COUNTIES);
-        return this.http.get<CountiesDto[]>(url).pipe(
+    loadCountiesSystemAdmin(status: number): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_COUNTIES_BY_STATUS);
+        const urlAndPathVariables = `${url}/${status}`;
+        return this.http.get<CountiesDto[]>(urlAndPathVariables).pipe(
             map(function (response: CountiesDto[]) {
                 return response;
             }),
@@ -191,9 +204,10 @@ export class MasterService {
         );
     }
 
-    loadTownsSystemAdmin(): any {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_TOWNS);
-        return this.http.get<TownsDto[]>(url).pipe(
+    loadTownsSystemAdmin(status: number): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_TOWNS_BY_STATUS);
+        const urlAndPathVariables = `${url}/${status}`;
+        return this.http.get<TownsDto[]>(urlAndPathVariables).pipe(
             map(function (response: TownsDto[]) {
                 return response;
             }),
@@ -220,6 +234,20 @@ export class MasterService {
 
     loadUsersAssignedRoles(userId: bigint, status: number): any {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LIST_ACTIVE_RBAC_USERS_ROLES);
+        const urlAndPathVariables = `${url}${userId}/${status}`;
+        return this.http.get<any>(urlAndPathVariables).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    loadUsersSectionRoles(userId: bigint, status: number): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LIST_ACTIVE_RBAC_USERS_SECTION);
         const urlAndPathVariables = `${url}${userId}/${status}`;
         return this.http.get<any>(urlAndPathVariables).pipe(
             map(function (response: any) {
@@ -267,9 +295,37 @@ export class MasterService {
         );
     }
 
+    assignSectionToUser(userId: bigint, sectionId: bigint, status: number): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ASSIGN_SECTION_TO_USER);
+        const urlAndPathVariables = `${url}${userId}/${sectionId}/${status}`;
+        return this.http.post<any>(urlAndPathVariables, null).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
     revokeRoleFromUser(userId: bigint, roleId: string, status: number): any {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.REVOKE_ROLE_FROM_USER);
         const urlAndPathVariables = `${url}${userId}/${roleId}/${status}`;
+        return this.http.post<any>(urlAndPathVariables, null).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    revokeSectionFromUser(userId: bigint, sectionId: string, status: number): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.REVOKE_SECTION_FROM_USER);
+        const urlAndPathVariables = `${url}${userId}/${sectionId}/${status}`;
         return this.http.post<any>(urlAndPathVariables, null).pipe(
             map(function (response: any) {
                 return response;

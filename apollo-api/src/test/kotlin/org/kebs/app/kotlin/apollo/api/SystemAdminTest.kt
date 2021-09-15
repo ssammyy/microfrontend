@@ -102,10 +102,16 @@ class SystemAdminTest {
     }
 
     @Test
+    fun saveCompanyDetails() {
+
+
+    }
+
+    @Test
     fun listUserRequestResults() {
 //        usersRepo.findByUserName("kpaul7747@gmail.com")
 //            ?.let { loggedInUser ->
-        PageRequest.of(0, 10).let { pagable->
+        PageRequest.of(0, 10).let { pagable ->
             userRequestRepo.findAll(pagable).forEach {
                 KotlinLogging.logger { }.info { "my hashed value =${it.userId} = " }
             }

@@ -100,8 +100,21 @@ data class SSFPDFListDetailsDto(
     var complianceStatus: Boolean? = null,
 )
 
+data class SSFComplianceStatusDetailsDto(
+    var sffId: Long? = null,
+    var bsNumber: String? = null,
+    var complianceRemarks: String? = null,
+    var complianceStatus: Boolean? = null,
+)
+
+data class PermitSSFLabResultsDto(
+    var ssfResultsList: List<SSFComplianceStatusDetailsDto>? = null,
+    var labResultsList: List<SSFPDFListDetailsDto>? = null,
+)
+
 data class PermitAllRemarksDetailsDto(
     var hofQamCompleteness: RemarksAndStatusDto? = null,
+    var labResultsCompleteness: RemarksAndStatusDto? = null,
     var pcmApproval: RemarksAndStatusDto? = null,
     var pscMemberApproval: RemarksAndStatusDto? = null,
     var pcmReviewApproval: RemarksAndStatusDto? = null,
@@ -156,6 +169,11 @@ data class PermitProcessStepDto(
     var processStep: Int? = null
 )
 
+data class StgInvoiceBalanceDto(
+    var batchID: Long? = null,
+    var balance: BigDecimal? = null
+)
+
 data class STA1Dto(
     var id: Long? = null,
     var commodityDescription: String? = null,
@@ -165,6 +183,14 @@ data class STA1Dto(
     var permitForeignStatus: Int? = null,
     var attachedPlant: Long? = null,
     var createFmark: Int? = null,
+)
+
+data class QRCodeScannedQADto(
+    var productName: String? = null,
+    var tradeMark: String? = null,
+    var awardedPermitNumber: String? = null,
+    var dateOfIssue: Date? = null,
+    var dateOfExpiry: Date? = null,
 )
 
 data class STA10ProductsManufactureDto(
@@ -201,6 +227,11 @@ data class STA10MachineryAndPlantDto(
 data class RemarksAndStatusDto(
     var remarksStatus: Boolean? = null,
     var remarksValue: String? = null,
+)
+
+data class LimsFilesFoundDto(
+    var fileSavedStatus: Boolean? = null,
+    var fileName: String? = null,
 )
 
 data class InvoiceDetailsDto(
@@ -301,7 +332,8 @@ data class STA3Dto(
     var levelDefectivesFound: String? = null,
     var levelClaimsComplaints: String? = null,
     var independentTests: String? = null,
-    var indicateStageManufacture: String? = null
+    var indicateStageManufacture: String? = null,
+    var sta3FilesList: List<FilesListDto>? = null
 )
 
 data class FilesListDto(
@@ -423,6 +455,8 @@ data class PermitDetailsDto(
     var resubmitApplicationStatus: Boolean? = null,
     var processStep: Int? = null,
     var processStatusID: Long? = null,
+    var fmarkGeneratedID: Long? = null,
+    var oldPermitStatus: Boolean? = null,
 )
 
 data class AllPermitDetailsDto(
@@ -435,7 +469,7 @@ data class AllPermitDetailsDto(
     var ordinaryFilesList: List<FilesListDto>? = null,
     var sta3FilesList: List<FilesListDto>? = null,
     var sta10FilesList: List<FilesListDto>? = null,
-    var labResultsList: List<SSFPDFListDetailsDto>? = null,
+    var labResultsList: PermitSSFLabResultsDto? = null,
     var schemeOfSuperVision: FilesListDto? = null,
     var batchID: Long? = null
 )
@@ -471,6 +505,11 @@ data class SSCApprovalRejectionDto(
     var approvedRejectedSchemeRemarks: String? = null,
 )
 
+data class ResubmitApplicationDto(
+    var resubmitRemarks: String? = null,
+    var resubmittedDetails: String? = null,
+)
+
 data class TaskDto(
     var permitId: Long? = null,
     var taskName: String? = null,
@@ -487,6 +526,7 @@ data class PlantsDetailsDto(
     var location: String? = null,
     var street: String? = null,
     var buildingName: String? = null,
+    var branchName: String? = null,
     var nearestLandMark: String? = null,
     var postalAddress: String? = null,
     var telephone: String? = null,

@@ -6,7 +6,7 @@ import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.PvocBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.PvocDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QualityAssuranceDaoServices
+//import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QualityAssuranceDaoServices
 import org.kebs.app.kotlin.apollo.api.service.UserRolesService
 import org.kebs.app.kotlin.apollo.common.exceptions.SupervisorNotFoundException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -47,7 +47,7 @@ class Waivers(
     private val iPvocWaiversReportRepo: IPvocWaiversReportRepo,
     private val iPvocWaiversApplicationDocumentRepo: IPvocWaiversApplicationDocumentRepo,
     private val iPvocWaiversWetcMinutesEntityRepo: IPvocWaiversWetcMinutesEntityRepo,
-    private val qualityAssuranceDaoServices: QualityAssuranceDaoServices,
+//    private val qualityAssuranceDaoServices: QualityAssuranceDaoServices,
     private val iPvocWaiversRequestLetterRepo: IPvocWaiversRequestLetterRepo,
     private val notifications: Notifications,
     private val pvocBpmn: PvocBpmn,
@@ -149,7 +149,7 @@ class Waivers(
                     .let { w ->
                         document1?.forEach { file ->
                             with(waiverDocs) {
-                                name = file.let { qualityAssuranceDaoServices.saveDocuments(null, null, null, w, it) }
+//                                name = file.let { qualityAssuranceDaoServices.saveDocuments(null, null, null, w, it) }
                                 fileType = file.contentType
                                 documentType = file.bytes
                                 status = 1
@@ -886,7 +886,7 @@ class Waivers(
         val pvocWaiversApplicationDocumentsEntity = PvocWaiversApplicationDocumentsEntity()
         iwaiversApplicationRepo.findByIdOrNull(id)?.let { w ->
             with(pvocWaiversApplicationDocumentsEntity) {
-                name = masterList.let { qualityAssuranceDaoServices.saveDocuments(null, null, null, w, it) }
+//                name = masterList.let { qualityAssuranceDaoServices.saveDocuments(null, null, null, w, it) }
                 fileType = masterList.contentType
                 documentType = masterList.bytes
                 reason = "application"

@@ -27,6 +27,8 @@
                         <input type="hidden" id="messageValue" name="messageValue" th:value="${myStatus}">
                     </div>
                     <input type="hidden" id="permitIDValue" name="permitIDValue" th:value="${permit?.Id}">
+                    <input type="hidden" id="inspectionReportIDValue" name="inspectionReportIDValue"
+                           th:value="${QaInspectionReportRecommendationEntity?.id}">
                     <div class="content-block">
                         <div class="content-block-parent" style="flex: 0 75%">
 
@@ -423,7 +425,7 @@
                             <button class="accordion">Annex II: HACCP IMPLEMENTATION</button>
                             <div class="panel">
                                 <form id="myForm3"
-                                      th:action="@{/api/qa/kebs/add/new-haccp-implementation/save(permitID=${permit?.Id})}"
+                                      th:action="@{/api/qa/kebs/add/new-haccp-implementation/save(permitID=${permit?.Id},inspectionReportID=${QaInspectionReportRecommendationEntity.id})}"
                                       method="post">
                                     <div class="row-table" th:object="${QaInspectionHaccpImplementationEntity}">
                                         <input type="hidden" id="idTechnical3" name="id"
@@ -707,6 +709,35 @@
                                 </ul>
                             </div>
 
+                            <button class="accordion">Documents Attached Details</button>
+                            <div class="panel">
+                                <div class="row-table ">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>File Name</th>
+                                            <th>File Type</th>
+                                            <th>Document Description</th>
+                                            <th>Version Number</th>
+                                            <th>View</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr class="list" th:each="fileParam: ${fileParameters}"
+                                            style="cursor: pointer">
+
+                                            <td th:text="${fileParam.name}"></td>
+                                            <td th:text="${fileParam.fileType}"></td>
+                                            <td th:text="${fileParam.documentType}"></td>
+                                            <td th:text="${fileParam.versionNumber}"></td>
+                                            <td><a th:href="@{/api/qa/kebs/view/attached(fileID=${fileParam.id})}"
+                                                   target='_blank' class="btn btn-primary itemViewBtn">view</a></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
                             <button class="accordion">Inspector Details</button>
                             <div class="panel">
                                 <ul class="w-list-unstyled">
@@ -755,34 +786,7 @@
                                 </ul>
                             </div>
 
-                            <button class="accordion">Documents Attached Details</button>
-                            <div class="panel">
-                                <div class="row-table ">
-                                    <table class="table table-striped">
-                                        <thead>
-                                        <tr>
-                                            <th>File Name</th>
-                                            <th>File Type</th>
-                                            <th>Document Description</th>
-                                            <th>Version Number</th>
-                                            <th>View</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr class="list" th:each="fileParam: ${fileParameters}"
-                                            style="cursor: pointer">
 
-                                            <td th:text="${fileParam.name}"></td>
-                                            <td th:text="${fileParam.fileType}"></td>
-                                            <td th:text="${fileParam.documentType}"></td>
-                                            <td th:text="${fileParam.versionNumber}"></td>
-                                            <td><a th:href="@{/api/qa/kebs/view/attached(fileID=${fileParam.id})}"
-                                                   target='_blank' class="btn btn-primary itemViewBtn">view</a></td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
 
                         </div>
 
@@ -797,18 +801,22 @@
                                 <div class="filter-title">Action:</div>
                             </div>
                             <div>
+                                <a style="color: white"
+                                   th:href="@{/api/qa/permit-details(permitID=${permit?.id})}"
+                                   class="filter-link">GO TO PERMIT DETAILS</a>
+
                                 <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">
                                     <a th:if="${QaInspectionReportRecommendationEntity?.filledQpsmsStatus == 1 and QaInspectionReportRecommendationEntity?.submittedInspectionReportStatus == null}"
                                        style="color: white"
                                        onclick="popUpFunctionAddRawMaterials('addRecommendationDetails');"
                                        class="filter-link">ADD RECOMMENDATION</a>
 
-                                    <a th:if="${QaInspectionReportRecommendationEntity?.filledQpsmsStatus == 1}"
+                                    <a th:if="${QaInspectionReportRecommendationEntity?.filledQpsmsStatus == 1 and QaInspectionReportRecommendationEntity?.submittedInspectionReportStatus == null}"
                                        class="filter-link" onclick="popUpUploadFunction('uploadAttachments');"
                                        style="color: white">UPLOAD ATTACHMENTS</a>
                                     <!--                                    <a th:if="${permit?.sta10FilledStatus != 1 and QaSta10Entity?.closedProduction == 1 and QaSta10Entity?.closedRawMaterials == 1 and QaSta10Entity?.closedMachineryPlants == 1 and QaSta10Entity?.closedManufacturingProcesses == 1 }"  th:href="@{/api/qa/new-sta10-submit(permitID=${permit?.id})}" class="filter-link" style="color: white">SUBMIT STA10</a>-->
                                 </div>
-                                <div sec:authorize="hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_HOD_MODIFY')">
+                                <div sec:authorize="hasAuthority('QA_MANAGER_MODIFY') or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_HOD_MODIFY') or hasAuthority('QA_RM_MODIFY')">
                                     <a th:if="${QaInspectionReportRecommendationEntity?.submittedInspectionReportStatus == 1 and QaInspectionReportRecommendationEntity?.supervisorFilledStatus == null}"
                                        style="color: white"
                                        onclick="popUpFunctionAddRawMaterials('addSupervisorDetails');"
@@ -959,7 +967,8 @@
 
                         <div class="uploadForm">
                             <form id="upload-form" enctype="multipart/form-data" name="upload-form"
-                                  th:action="@{/api/qa/kebs/add/new-upload(permitID = ${permit?.id})}" method="post">
+                                  th:action="@{/api/qa/kebs/add/new-upload(permitID = ${permit?.id},inspectionReportID = ${QaInspectionReportRecommendationEntity?.id})}"
+                                  method="post">
                                 <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog"
                                      aria-labelledby="uploadModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
@@ -1166,19 +1175,20 @@
     function popUpFunctionAddRawMaterials(eventAction) {
 
         let permitID = $("#permitIDValue").val();
+        let inspectionReportID = $("#inspectionReportIDValue").val();
         let arrHead = ['addOPCDetails', 'addRecommendationDetails', 'addSupervisorDetails'];
         let arrHeadAndAction = [
             {
                 "head": "Attach duly filled Annexes here below as signed with the firm. Include the findings during inspection (See Annex I& II as appropriate):",
-                "action": `/api/qa/kebs/add/new-opc-details/save?permitID=${permitID}`,
+                "action": `/api/qa/kebs/add/new-opc-details/save?permitID=${permitID}&inspectionReportID=${inspectionReportID}`,
             },
             {
                 "head": "Please fill the details below",
-                "action": `/api/qa/kebs/add/new-recommendation-details/save?permitID=${permitID}`,
+                "action": `/api/qa/kebs/add/new-recommendation-details/save?permitID=${permitID}&inspectionReportID=${inspectionReportID}`,
             },
             {
                 "head": "Please fill the details below",
-                "action": `/api/qa/kebs/add/new-recommendation-details/save?permitID=${permitID}`,
+                "action": `/api/qa/kebs/add/new-recommendation-details/save?permitID=${permitID}&inspectionReportID=${inspectionReportID}`,
             }
         ]
 

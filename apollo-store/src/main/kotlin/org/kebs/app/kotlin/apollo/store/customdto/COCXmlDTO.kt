@@ -28,153 +28,145 @@ class COCXmlDTO {
     var coc: CustomCocXmlDto? = null
 }
 
-class CustomCocXmlDto(cocNumber: String, idfNumber: String, rfiNumber: String, ucrNumber: String, rfcDate: Timestamp, cocIssueDate: Timestamp,
-                      clean: String, cocRemarks: String, issuingOffice: String, importerName: String, importerPin: String, importerAddress1: String,
-                      importerAddress2: String, importerCity: String, importerCountry: String, importerZipCode: String, importerTelephoneNumber: String,
-                      importerFaxNumber: String, importerEmail: String, exporterName: String, exporterPin: String, exporterAddress1: String,
-                      exporterAddress2: String, exporterCity: String, exporterCountry: String, exporterZipCode: String, exporterTelephoneNumber: String,
-                      exporterFaxNumber: String, exporterEmail: String, placeOfInspection: String, dateOfInspection: Timestamp, portOfDestination: String,
-                      shipmentMode: String, countryOfSupply: String, finalInvoiceFobValue: Double, finalInvoiceExchangeRate: Double, finalInvoiceCurrency: String,
-                      finalInvoiceDate: Timestamp, shipmentPartialNumber: Double, shipmentSealNumbers: String, shipmentContainerNumber: String,
-                      shipmentGrossWeight: String, shipmentQuantityDelivered: String, route: String, productCategory: String, partner: String) {
+class CustomCocXmlDto {
 
     @JacksonXmlProperty(localName = "COC_NUMBER")
-    var cocNumber: String? = cocNumber
+    var cocNumber: String? = null
 
     @JacksonXmlProperty(localName = "IDF_NUMBER")
-    var idfNumber: String? = idfNumber
+    var idfNumber: String? = null
 
     @JacksonXmlProperty(localName = "RFI_NUMBER")
-    var rfiNumber: String? = rfiNumber
+    var rfiNumber: String? = null
 
     @JacksonXmlProperty(localName = "UCR_NUMBER")
-    var ucrNumber: String? = ucrNumber
+    var ucrNumber: String? = null
 
     @JacksonXmlProperty(localName = "RFC_DATE")
-    var rfcDate: String? = this.convertTimestampToKeswsValidDate(rfcDate)
+    var rfcDate: String? = null
 
     @JacksonXmlProperty(localName = "COC_ISSUE_DATE")
-    var cocIssueDate: String? = this.convertTimestampToKeswsValidDate(cocIssueDate)
+    var cocIssueDate: String? = null
 
     @JacksonXmlProperty(localName = "IS_CLEAN")
-    var isClean: String? = clean
+    var isClean: String? = null
 
     @JacksonXmlProperty(localName = "COC_REMARKS")
-    var cocRemarks: String? = cocRemarks
+    var cocRemarks: String? = null
 
     @JacksonXmlProperty(localName = "ISSUING_OFFICE")
-    var issuingOffice: String? = issuingOffice
+    var issuingOffice: String? = null
 
     @JacksonXmlProperty(localName = "IMPORTER_NAME")
-    var importerName: String? = importerName
+    var importerName: String? = null
 
     @JacksonXmlProperty(localName = "IMPORTER_PIN")
-    var importerPin: String? = importerPin
+    var importerPin: String? = null
 
     @JacksonXmlProperty(localName = "IMPORTER_ADDRESS_1")
-    var importerAddress1: String? = importerAddress1
+    var importerAddress1: String? = null
 
     @JacksonXmlProperty(localName = "IMPORTER_ADDRESS_2")
-    var importerAddress2: String? = importerAddress2
+    var importerAddress2: String? = null
 
     @JacksonXmlProperty(localName = "IMPORTER_CITY")
-    var importerCity: String? = importerCity
+    var importerCity: String? = null
 
     @JacksonXmlProperty(localName = "IMPORTER_COUNTRY")
-    var importerCountry: String? = importerCountry
+    var importerCountry: String? = null
 
     @JacksonXmlProperty(localName = "IMPORTER_ZIPCODE")
-    var importerZipCode: String? = importerZipCode
+    var importerZipCode: String? = null
 
     @JacksonXmlProperty(localName = "IMPORTER_TELEPHONE_NUMBER")
-    var importerTelephoneNumber: String? = importerTelephoneNumber
+    var importerTelephoneNumber: String? = null
 
     @JacksonXmlProperty(localName = "IMPORTER_FAX_NUMBER")
-    var importerFaxNumber: String? = importerFaxNumber
+    var importerFaxNumber: String? = null
 
     @JacksonXmlProperty(localName = "IMPORTER_EMAIL")
-    var importerEmail: String? = importerEmail
+    var importerEmail: String? = null
 
     @JacksonXmlProperty(localName = "EXPORTER_NAME")
-    var exporterName: String? = exporterName
+    var exporterName: String? = null
 
     @JacksonXmlProperty(localName = "EXPORTER_PIN")
-    var exporterPin: String? = exporterPin
+    var exporterPin: String? = null
 
     @JacksonXmlProperty(localName = "EXPORTER_ADDRESS_1")
-    var exporterAddress1: String? = exporterAddress1
+    var exporterAddress1: String? = null
 
     @JacksonXmlProperty(localName = "EXPORTER_ADDRESS_2")
-    var exporterAddress2: String? = exporterAddress2
+    var exporterAddress2: String? = null
 
     @JacksonXmlProperty(localName = "EXPORTER_CITY")
-    var exporterCity: String? = exporterCity
+    var exporterCity: String? = null
 
     @JacksonXmlProperty(localName = "EXPORTER_COUNTRY")
-    var exporterCountry: String? = exporterCountry
+    var exporterCountry: String? = null
 
     @JacksonXmlProperty(localName = "EXPORTER_ZIPCODE")
-    var exporterZipCode: String? = exporterZipCode
+    var exporterZipCode: String? = null
 
     @JacksonXmlProperty(localName = "EXPORTER_TELEPHONE_NUMBER")
-    var exporterTelephoneNumber: String? = exporterTelephoneNumber
+    var exporterTelephoneNumber: String? = null
 
     @JacksonXmlProperty(localName = "EXPORTER_FAX_NUMBER")
-    var exporterFaxNumber: String? = exporterFaxNumber
+    var exporterFaxNumber: String? = null
 
     @JacksonXmlProperty(localName = "EXPORTER_EMAIL")
-    var exporterEmail: String? = exporterEmail
+    var exporterEmail: String? = null
 
     @JacksonXmlProperty(localName = "PLACE_OF_INSPECTION")
-    var placeOfInspection: String? = placeOfInspection
+    var placeOfInspection: String? = null
 
     @JacksonXmlProperty(localName = "DATE_OF_INSPECTION")
-    var dateOfInspection: String? = this.convertTimestampToKeswsValidDate(dateOfInspection)
+    var dateOfInspection: String? = null
 
     @JacksonXmlProperty(localName = "PORT_OF_DESTINATION")
-    var portOfDestination: String? = portOfDestination
+    var portOfDestination: String? = null
 
     @JacksonXmlProperty(localName = "SHIPMENT_MODE")
-    var shipmentMode: String? = shipmentMode
+    var shipmentMode: String? = null
 
     @JacksonXmlProperty(localName = "COUNTRY_OF_SUPPLY")
-    var countryOfSupply: String? = countryOfSupply
+    var countryOfSupply: String? = null
 
     @JacksonXmlProperty(localName = "FINAL_INVOICE_FOB_VALUE")
-    var finalInvoiceFobValue: String? = finalInvoiceFobValue.toString()
+    var finalInvoiceFobValue: String? = null.toString()
 
     @JacksonXmlProperty(localName = "FINAL_INVOICE_EXCHANGE_RATE")
-    var finalInvoiceExchangeRate: String? = finalInvoiceExchangeRate.toString()
+    var finalInvoiceExchangeRate: String? = null.toString()
 
     @JacksonXmlProperty(localName = "FINAL_INVOICE_CURRENCY")
-    var finalInvoiceCurrency: String? = finalInvoiceCurrency
+    var finalInvoiceCurrency: String? = null
 
     @JacksonXmlProperty(localName = "FINAL_INVOICE_DATE")
-    var finalInvoiceDate: String? = this.convertTimestampToKeswsValidDate(finalInvoiceDate)
+    var finalInvoiceDate: String? = null
 
     @JacksonXmlProperty(localName = "SHIPMENT_PARTIAL_NUMBER")
-    var shipmentPartialNumber: Long? = shipmentPartialNumber.toLong()
+    var shipmentPartialNumber: Long? = null
 
     @JacksonXmlProperty(localName = "SHIPMENT_SEAL_NUMBERS")
-    var shipmentSealNumbers: String? = shipmentSealNumbers
+    var shipmentSealNumbers: String? = null
 
     @JacksonXmlProperty(localName = "SHIPMENT_CONTAINER_NUMBER")
-    var shipmentContainerNumber: String? = shipmentContainerNumber
+    var shipmentContainerNumber: String? = null
 
     @JacksonXmlProperty(localName = "SHIPMENT_GROSS_WEIGHT")
-    var shipmentGrossWeight: String? = shipmentGrossWeight
+    var shipmentGrossWeight: String? = null
 
     @JacksonXmlProperty(localName = "SHIPMENT_QUANTITY_DELIVERED")
-    var shipmentQuantityDelivered: String? = shipmentQuantityDelivered
+    var shipmentQuantityDelivered: String? = null
 
     @JacksonXmlProperty(localName = "ROUTE")
-    var route: String? = route
+    var route: String? = null
 
     @JacksonXmlProperty(localName = "PRODUCT_CATEGORY")
-    var productCategory: String? = productCategory
+    var productCategory: String? = null
 
     @JacksonXmlProperty(localName = "PARTNER")
-    var partner: String? = partner
+    var partner: String? = null
 
     @JacksonXmlProperty(localName = "COC_DETAILS")
     var cocDetals: CocDetails? = null

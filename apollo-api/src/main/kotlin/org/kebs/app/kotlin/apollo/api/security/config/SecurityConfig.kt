@@ -18,7 +18,6 @@ import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
-import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.AuthenticationManager
@@ -39,7 +38,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
-import java.time.Duration
 import java.util.*
 
 
@@ -55,10 +53,19 @@ class WebSecurityConfig {
     @Configuration
     @Order(1)
     class TokenSecurityConfigurationAdapter(
-            private val customUserDetailsService: CustomUserDetailsService,
-            private val passwordEncoder: PasswordEncoder
+        private val customUserDetailsService: CustomUserDetailsService,
+        private val authenticationProperties: AuthenticationProperties,
+        private val passwordEncoder: PasswordEncoder
     ) : WebSecurityConfigurerAdapter() {
 
+        private var exclusions: Array<String> =
+            authenticationProperties.requiresNoAuthenticationApolloApiToken?.split(",")?.toTypedArray() ?: arrayOf("")
+        private var exclusionsCros: Array<String> =
+            authenticationProperties.requiresNoAuthenticationCros?.split(",")?.toTypedArray() ?: arrayOf("")
+
+//        fun addCorsMappings(registry: CorsRegistry) {
+//            registry.addMapping("/**").allowedOrigins("*").allowedMethods("GET", "POST", "PUT", "DELETE")
+//        }
 
         @Bean
         fun authenticationTokenFilterBean(): JWTAuthorizationFilter {
@@ -68,89 +75,69 @@ class WebSecurityConfig {
         @Throws(Exception::class)
         override fun configure(authenticationManagerBuilder: AuthenticationManagerBuilder) {
             authenticationManagerBuilder
-                    .userDetailsService(customUserDetailsService)
-                    .passwordEncoder(passwordEncoder)
+                .userDetailsService(customUserDetailsService)
+                .passwordEncoder(passwordEncoder)
         }
 
         @Bean
         fun corsConfigurationSource(): CorsConfigurationSource? {
             val configuration = CorsConfiguration()
-            configuration.allowedOrigins = listOf(
-                "http://localhost:4200",
-                "https://kimsint.kebs.org",
-                "https://kimsint.kebs.org:8006",
-                "https://kimsfluxint.kebs.org:8001",
-                "https://kimsfluxint.kebs.org:8005",
-                "https://kims.kebs.org",
-                "https://kims.kebs.org:8006"
-            )
-            configuration.applyPermitDefaultValues()
-            configuration.allowedMethods = listOf(
-                    HttpMethod.GET.name,
-                    HttpMethod.POST.name,
-                    HttpMethod.PUT.name,
-                    HttpMethod.PATCH.name,
-                    HttpMethod.DELETE.name,
-                    HttpMethod.OPTIONS.name,
-                    HttpMethod.HEAD.name,
-            )
-            configuration.exposedHeaders= listOf(HttpHeaders.CONTENT_DISPOSITION,HttpHeaders.CONTENT_TYPE)
-            configuration.setMaxAge(Duration.ofMinutes(60))
+            //TODO: MOVE TO CONFIGURATION FILE
+            configuration.allowedOrigins = listOf(*exclusionsCros)
+            configuration.allowedMethods = listOf("*")
+            configuration.allowedHeaders = listOf("*")
+            configuration.allowCredentials = true
             val source = UrlBasedCorsConfigurationSource()
-            source.registerCorsConfiguration("/api/**", configuration)
+            source.registerCorsConfiguration("/**", configuration)
             return source
         }
 
         override fun configure(http: HttpSecurity) {
             http
-                    .cors().configurationSource(corsConfigurationSource())
-                    .and()
-                    .csrf().disable()
-                    .antMatcher("/api/v1/**")
-                    .authorizeRequests()
-                    .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                    /**
-                     * TODO: Move to external configuration
-                     */
-                    .antMatchers(
-                            "/api/v1/login",
-                            "/api/v1/otp",
-                            "/api/v1/sftp/kesws/download",
-                            "/api/v1/auth/**",
-                            "/api/v1/otp",
-                            "/api/v1/migration/anonymous/**",
-                            "/api/v1/migration/qa/report/proforma-invoice-with-Item**"
-                    )
-                    .permitAll()
-                    .anyRequest().authenticated()
-                    .and()
-                    .exceptionHandling()
-                    .authenticationEntryPoint(HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
-                    .accessDeniedHandler { _, response, accessDeniedException ->
-                        response?.status = HttpStatus.UNAUTHORIZED.value()
-                        response?.outputStream?.println("message: ${accessDeniedException.message}, timestamp: ${Calendar.getInstance().time}")
-                    }
-                    .and()
-                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            http.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter::class.java)
+                .cors().configurationSource(corsConfigurationSource())
+                .and()
+                .csrf().disable()
+                .antMatcher("/api/v1/**")
+                .authorizeRequests()
+                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                /**
+                 * TODO: Move to external configuration
+                 */
+                .antMatchers(*exclusions)
+                .permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+                .accessDeniedHandler { _, response, accessDeniedException ->
+                    response?.status = HttpStatus.UNAUTHORIZED.value()
+                    response?.outputStream?.println("message: ${accessDeniedException.message}, timestamp: ${Calendar.getInstance().time}")
+                }
+                .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            http
+                .addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter::class.java)
         }
     }
 
     @Configuration
     @Order(2)
     class FormLoginWebSecurityConfigurationAdapter(
-            private val authenticationProperties: AuthenticationProperties,
-            private val customUserDetailsService: CustomUserDetailsService,
-            private val usersRepo: IUserRepository,
-            private val approvalStatusRepo: IApprovalStatusRepository,
-            private val usersProfilesRepository: IUserProfilesRepository,
-            private val statusValuesRepo: IStatusValuesRepository,
-            private val taskService: TaskService,
-            private val applicationMapProperties: ApplicationMapProperties,
-            private val passwordEncoder: PasswordEncoder
+        private val authenticationProperties: AuthenticationProperties,
+        private val customUserDetailsService: CustomUserDetailsService,
+        private val usersRepo: IUserRepository,
+        private val approvalStatusRepo: IApprovalStatusRepository,
+        private val usersProfilesRepository: IUserProfilesRepository,
+        private val statusValuesRepo: IStatusValuesRepository,
+        private val taskService: TaskService,
+        private val applicationMapProperties: ApplicationMapProperties,
+        private val passwordEncoder: PasswordEncoder
     ) : WebSecurityConfigurerAdapter(
 
     ) {
+
+        private var exclusions: Array<String> =
+            authenticationProperties.requiresNoAuthenticationApolloApi?.split(",")?.toTypedArray() ?: arrayOf("")
 
         @Bean
         fun accessDeniedHandler(): CustomAccessDeniedHandler = CustomAccessDeniedHandler()
@@ -159,8 +146,8 @@ class WebSecurityConfig {
         @Throws(Exception::class)
         override fun configure(authenticationManagerBuilder: AuthenticationManagerBuilder) {
             authenticationManagerBuilder
-                    .userDetailsService(customUserDetailsService)
-                    .passwordEncoder(passwordEncoder)
+                .userDetailsService(customUserDetailsService)
+                .passwordEncoder(passwordEncoder)
         }
 
         @Bean
@@ -174,82 +161,50 @@ class WebSecurityConfig {
             http
 //                .requiresChannel().anyRequest().requiresSecure()
 //                .and()
-                    .httpBasic().disable()
-                    .cors().disable()
-                    .csrf().disable()
-                    .authorizeRequests()
-                    .antMatchers(
-                            "/api/sftp/kesws/download",
-                            "/api/ms/complaints/new/save/**",
-                            "/api/ms/complaints/new/**",
-                            "/auth/**",
-                            "/migration/**",
-                            "/accessDenied/**",
-                            "/api/auth/**",
-                            "/api/integ/login/*",
-                            "/resources/**",
-                            "/api/di/mpesa-callback/**",
-                            "/webjars/**",
-                            "/authorize/**",
-                            "/login/**",
-                            "/ui/login/**",
-                            "/static/**",
-                            "/css/**",
-                            "/images/**",
-                            "/fonts/**",
-                            "/js/**",
-                            ".css",
-                            ".js",
-                            ".svg",
-                            ".jpg",
-                            ".png",
-                            ".webp",
-                            ".webapp",
-                            ".pdf",
-                            ".ico",
-                            ".ico",
-                            ".html",
-                            "/favicon.ico"
-                    ).permitAll()
-                    .anyRequest()
-                    .authenticated()
-                    .and()
-                    .addFilterAt(authenticationFilter(), UsernamePasswordAuthenticationFilter::class.java)
-                    .formLogin()
-                    .loginPage("/auth/login")
-                    .usernameParameter("username")
-                    .passwordParameter("password")
-                    .loginProcessingUrl("/auth/login-service")
-                    .successHandler(loginSuccessHandler(authenticationProperties.homePage))
-                    .failureUrl("/auth/login?error")
+                .httpBasic().disable()
+                .cors().disable()
+                .csrf().disable()
+                .authorizeRequests()
+                .antMatchers(*exclusions).permitAll()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .addFilterAt(authenticationFilter(), UsernamePasswordAuthenticationFilter::class.java)
+                .formLogin()
+                .loginPage("/auth/login")
+                .usernameParameter("username")
+                .passwordParameter("password")
+                .loginProcessingUrl("/auth/login-service")
+                .successHandler(loginSuccessHandler(authenticationProperties.homePage))
+                .failureUrl("/auth/login?error")
 //            .failureHandler(authenticationFailureHandler())
 //            .and()
 //            .logout()
 //            .deleteCookies("JSESSIONID")
 //            .logoutUrl(authenticationProperties.logoutUrl)
 //            .logoutSuccessHandler(logoutSuccessHandler())
-                    .and()
-                    .exceptionHandling()
-                    .defaultAuthenticationEntryPointFor(
-                            mainAuthenticationEntryPoint("/auth/login"),
-                            AntPathRequestMatcher("/")
-                    )
-                    .accessDeniedPage("/accessDenied")
-                    .accessDeniedHandler(accessDeniedHandler())
+                .and()
+                .exceptionHandling()
+                .defaultAuthenticationEntryPointFor(
+                    mainAuthenticationEntryPoint("/auth/login"),
+                    AntPathRequestMatcher("/")
+                )
+                .accessDeniedPage("/accessDenied")
+                .accessDeniedHandler(accessDeniedHandler())
 
 
         }
 
         fun loginSuccessHandler(url: String?): RefererAuthenticationSuccessHandler =
-                RefererAuthenticationSuccessHandler(
-                        usersRepo = usersRepo,
-                        usersProfilesRepository = usersProfilesRepository,
-                        approvalStatusRepo = approvalStatusRepo,
-                        taskService = taskService,
-                        url = url,
-                        statusValuesRepo = statusValuesRepo,
-                        applicationMapProperties = applicationMapProperties
-                )
+            RefererAuthenticationSuccessHandler(
+                usersRepo = usersRepo,
+                usersProfilesRepository = usersProfilesRepository,
+                approvalStatusRepo = approvalStatusRepo,
+                taskService = taskService,
+                url = url,
+                statusValuesRepo = statusValuesRepo,
+                applicationMapProperties = applicationMapProperties
+            )
 
         @Bean
         fun logoutSuccessHandler(): CustomLogoutSuccessHandler? = CustomLogoutSuccessHandler()

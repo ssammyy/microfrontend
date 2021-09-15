@@ -10,7 +10,7 @@ export class LoggedInUser {
     email = '';
     fullName = '';
     roles: string[] = [];
-    expiry = Date();
+    expiry: Date = new Date();
     // companyID = 0;
     // branchID = 0;
     // turnover = 0;

@@ -64,6 +64,15 @@ import {UserManagementProfileComponent} from "./apollowebs/usermanagement/user-m
 import {RequestStandardFormComponent} from "./apollowebs/standards-development/standard-request/request-standard-form/request-standard-form.component";
 import {StandardRequestComponent} from "./apollowebs/standards-development/standard-request/standard-request.component";
 import {StandardTaskComponent} from "./apollowebs/standards-development/standard-request/standard-task/standard-task.component";
+import {SmarkAllAwardedApplicationsComponent} from './apollowebs/quality-assurance/smark-all-awarded-applications/smark-all-awarded-applications.component';
+import {FmarkAllAwardedApplicationsComponent} from './apollowebs/quality-assurance/fmark-all-awarded-applications/fmark-all-awarded-applications.component';
+import {DmarkAllAwardedApplicationsComponent} from './apollowebs/quality-assurance/dmark-all-awarded-applications/dmark-all-awarded-applications.component';
+import {QaTaskDetailsComponent} from './apollowebs/quality-assurance/qa-task-details/qa-task-details.component';
+import {CompanyViewComponent} from './apollowebs/company/company-view/company-view.component';
+import {BranchViewComponent} from './apollowebs/company/branch/branch-view/branch-view.component';
+import {QrCodeDetailsComponent} from './apollowebs/quality-assurance/qr-code-details/qr-code-details.component';
+import {StdTscSecTasksComponentComponent} from "./apollowebs/standards-development/standard-request/std-tsc-sec-tasks-component/std-tsc-sec-tasks-component.component";
+import {StdTcTasksComponent} from "./apollowebs/standards-development/standard-request/std-tc-tasks/std-tc-tasks.component";
 import {InvoiceConsolidateComponent} from "./apollowebs/quality-assurance/invoice-consolidate/invoice-consolidate.component";
 import {FmarkApplicationComponent} from "./apollowebs/quality-assurance/fmark-application/fmark-application.component";
 import {SmarkComponent} from "./apollowebs/quality-assurance/smark/smark.component";
@@ -157,6 +166,7 @@ const routes: Routes = [
     {
         path: 'login',
         component: RegistrationComponent,
+
         children: [
             {
                 path: '',
@@ -176,6 +186,10 @@ const routes: Routes = [
         data: {
             title: 'KEBS'
         }
+    },
+    {
+        path: 'qr-code-qa-permit-scan', component: RegistrationComponent,
+        children: [{path: '', component: QrCodeDetailsComponent}]
     },
     // {path: '**', component: AdminLayoutComponent},
     {
@@ -202,10 +216,22 @@ const routes: Routes = [
         children: [{path: '', component: CompanyComponent}]
     },
     {
+        path: 'company/view', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
+        children: [{path: '', component: CompanyViewComponent}]
+    },
+    {
         path: 'company/branches', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
 
         children: [{path: '', component: BranchList}]
+    },
+    {
+        path: 'companies/view/branch', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
+        children: [{path: '', component: BranchViewComponent}]
     },
     {
         path: 'branches', component: AdminLayoutComponent,
@@ -282,6 +308,12 @@ const routes: Routes = [
         children: [{path: '', component: FmarkallappsComponent}]
     },
     {
+        path: 'fmark/all_fmark_awarded', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
+        children: [{path: '', component: FmarkAllAwardedApplicationsComponent}]
+    },
+    {
         path: 'st10Form', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
 
@@ -318,6 +350,12 @@ const routes: Routes = [
         children: [{path: '', component: DmarkApplicationsAllComponent}]
     },
     {
+        path: 'dmark/all_dmark_awarded', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
+        children: [{path: '', component: DmarkAllAwardedApplicationsComponent}]
+    },
+    {
         path: 'profile', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
 
@@ -330,6 +368,12 @@ const routes: Routes = [
         children: [{path: '', component: SmarkApplicationsAllComponent}]
     },
     {
+        path: 'smark/all_smark_awarded', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
+        children: [{path: '', component: SmarkAllAwardedApplicationsComponent}]
+    },
+    {
         path: 'invoice/consolidate_invoice', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [{path: '', component: InvoiceConsolidateComponent}]
@@ -339,6 +383,12 @@ const routes: Routes = [
         canActivate: [RouteGuard],
 
         children: [{path: '', component: TaskManagerComponent}]
+    },
+    {
+        path: 'all_qa_tasks_list', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
+        children: [{path: '', component: QaTaskDetailsComponent}]
     },
     {
         path: 'fmark/application', component: AdminLayoutComponent,
@@ -458,7 +508,7 @@ const routes: Routes = [
     },
     {
         path: 'nwaDirStTasks', component: AdminLayoutComponent,
-        canActivate: [RouteGuard],
+        // canActivate: [RouteGuard],
         children: [{path: '', component: NwaDiSdtTasksComponent}]
     },
     {
@@ -520,8 +570,13 @@ const routes: Routes = [
     },
 
     // SD COMPANY STANDARDS
+    // {
+    //     path: 'comStdRequest', component: AdminLayoutComponent,
+    //     children: [{path: '', component: CsRequestFormComponent}]
+    // },
     {
-        path: 'comStdRequest', component: AdminLayoutComponent,
+        path: 'comStdRequest',
+        component: StandardRequestComponent,
         children: [{path: '', component: CsRequestFormComponent}]
     },
     {
@@ -552,6 +607,8 @@ const routes: Routes = [
         path: 'make_enquiry', component: MakeEnquiryComponent
     },
 
+
+    //  Request For Standards
     {
         path: 'request-standards',
         component: StandardRequestComponent,
@@ -560,6 +617,14 @@ const routes: Routes = [
     {
         path: 'ms-standards', component: AdminLayoutComponent,
         children: [{path: '', component: StandardTaskComponent}]
+    },
+    {
+        path: 'std-tsc-sec-task', component: AdminLayoutComponent,
+        children: [{path: '', component: StdTscSecTasksComponentComponent}]
+    },
+    {
+        path: 'std-tc-task', component: AdminLayoutComponent,
+        children: [{path: '', component: StdTcTasksComponent}]
     },
 
 ];

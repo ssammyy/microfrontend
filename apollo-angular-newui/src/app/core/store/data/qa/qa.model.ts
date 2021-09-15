@@ -8,6 +8,14 @@ export class UploadsDtoSTA3 {
     sta3Status: boolean;
 }
 
+export class QRCodeScannedQADto {
+    productName: string;
+    tradeMark: string;
+    awardedPermitNumber: string;
+    dateOfIssue: Date;
+    dateOfExpiry: Date;
+}
+
 export class PermitEntityDto {
     id: bigint;
     firmName: string;
@@ -52,6 +60,7 @@ export class RemarksAndStatusDto {
 
 export class PermitAllRemarksDetailsDto {
     hofQamCompleteness: RemarksAndStatusDto;
+    labResultsCompleteness: RemarksAndStatusDto;
     pcmApproval: RemarksAndStatusDto;
     pscMemberApproval: RemarksAndStatusDto;
     pcmReviewApproval: RemarksAndStatusDto;
@@ -69,6 +78,18 @@ export class SSFPDFListDetailsDto {
     pdfSavedId: bigint;
     pdfName: string;
     sffId: bigint;
+    complianceRemarks: string;
+    complianceStatus: boolean;
+}
+
+export class PermitSSFLabResultsDto {
+    ssfResultsList: SSFComplianceStatusDetailsDto[];
+    labResultsList: SSFPDFListDetailsDto[];
+}
+
+export class SSFComplianceStatusDetailsDto {
+    sffId: bigint;
+    bsNumber: string;
     complianceRemarks: string;
     complianceStatus: boolean;
 }
@@ -103,6 +124,11 @@ export class PermitProcessStepDto {
 export class SSCApprovalRejectionDto {
     approvedRejectedScheme: number;
     approvedRejectedSchemeRemarks: string;
+}
+
+export class ResubmitApplicationDto {
+    resubmitRemarks: string;
+    resubmittedDetails: string;
 }
 
 
@@ -161,6 +187,8 @@ export class PermitEntityDetails {
     resubmitApplicationStatus: boolean;
     processStep: number;
     processStatusID: number;
+    fmarkGeneratedID: number;
+    oldPermitStatus: number;
 }
 
 
@@ -194,6 +222,7 @@ export class STA3 {
     levelClaimsComplaints: string;
     independentTests: string;
     indicateStageManufacture: string;
+    sta3FilesList: FilesListDto[];
 }
 
 export class SectionDto {
@@ -242,7 +271,7 @@ export class AllPermitDetailsDto {
     ordinaryFilesList: FilesListDto[];
     sta3FilesList: FilesListDto[];
     sta10FilesList: FilesListDto[];
-    labResultsList: SSFPDFListDetailsDto[];
+    labResultsList: PermitSSFLabResultsDto;
     schemeOfSuperVision: FilesListDto;
     batchID: bigint;
 }
@@ -266,6 +295,7 @@ export class PlantDetailsDto {
     location: string;
     street: string;
     buildingName: string;
+    branchName: string;
     nearestLandMark: string;
     postalAddress: string;
     telephone: string;
@@ -275,6 +305,11 @@ export class PlantDetailsDto {
     plotNo: string;
     designation: string;
     contactPerson: string;
+}
+
+export class StgInvoiceBalanceDto {
+    batchID: bigint;
+    balance: any;
 }
 
 

@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.store.repo.std
 
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
+import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
@@ -38,8 +39,9 @@ interface ISGazetteNoticeRepository : JpaRepository<ISGazetteNotice, Long> {
 interface ISUploadStandardRepository : JpaRepository<ISUploadStandard, Long> {
 }
 
-interface NWADISDTJustificationRepository : JpaRepository<NWADiSdtJustification, Long>{
-    fun findAllByOrderByIdDesc(): MutableList<NWADiSdtJustification>
+interface NWADISDTJustificationRepository : HazelcastRepository<NWADiSdtJustification, Long>{
+    @Query(value = "SELECT max(CDN)  FROM SD_NWA_DISDT_JUSTIFICATION", nativeQuery = true)
+    fun getMaxCDN(): Long
 }
 
 interface NwaDocumentsRepository : JpaRepository<NwaDocument, String> {
@@ -59,6 +61,7 @@ interface NwaJustificationRepository: JpaRepository<NWAJustification,Long>{
 }
 
 interface NwaPreliminaryDraftRepository: JpaRepository<NWAPreliminaryDraft,Long>{
+    fun findAllByOrderByIdDesc(): MutableList<NWAPreliminaryDraft>
 
 }
 
@@ -95,6 +98,22 @@ interface SDDIJustificationUploadsRepository : JpaRepository<SDDIJustificationUp
 }
 
 interface SdIsDocumentUploadsRepository : JpaRepository<SdIsDocumentUploads, Long> {
+}
+
+interface NWAPreliminaryDraftUploadsRepository : JpaRepository<NWAPreliminaryDraftUploads, Long> {
+}
+interface NWAWorkShopDraftUploadsRepository : JpaRepository<NWAWorkShopDraftUploads, Long> {
+}
+interface NWAStandardUploadsRepository : JpaRepository<NWAStandardUploads, Long> {
+}
+interface DepartmentListRepository : JpaRepository<Department,Long>{
+    @Query("SELECT name FROM SD_DEPARTMENT WHERE id=:id", nativeQuery = true)
+    fun findNameById(@Param("id") id: Long?): String
+}
+
+interface TechnicalComListRepository : JpaRepository<TechnicalCommittee,Long>{
+    @Query("SELECT TC_TITLE FROM SD_TECHNICAL_COMMITTEE  WHERE id=:id", nativeQuery = true)
+    fun findNameById(@Param("id") id: Long?): String
 }
 //interface UserNameRepository : JpaRepository<UsersEntity,Long>{
 //    fun findByUserId(assignedTo: Long?) : MutableList<UsersEntity>

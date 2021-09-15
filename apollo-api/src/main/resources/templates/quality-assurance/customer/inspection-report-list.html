@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<!--  This site was created in Webflow. http://www.webflow.com  -->
+<!--  Last Published: Wed Mar 18 2020 20:03:10 GMT+0000 (Coordinated Universal Time)  -->
+<html data-wf-page="5e70fb3a565ebdc05ddb37cf" data-wf-site="5e70fb3a565ebd99c1db37ce"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <title>KEBS</title>
+    <th:block th:include="fragments/general-form.html:: headerfiles"/>
+</head>
+<body>
+<div id="spinnerContainer">
+    <div class="spinner"></div>
+</div>
+<div th:replace="fragments/general-form.html :: dashboard-page"></div>
+
+<div class="dashboard-body">
+    <div th:replace="fragments/general-form.html :: side-navigation-bar"></div>
+    <div class="main-area">
+        <div th:replace="fragments/general-form.html :: content-navigation-bar"></div>
+        <section class="dashboard-content">
+            <div class="content-wrap">
+                <div class="content-container">
+                    <h4 class="h3-blue" style="color: #0082f3; font-weight: bold; ">Inspection Report List</h4>
+                    <div class="content-block">
+                        <div class="content-block-parent" style="flex: 0 75%">
+                            <div class="row-table ">
+                                <table id="example" class="table table-striped table-bordered" style="width:100%">
+                                    <thead>
+                                    <tr>
+                                        <th>INSPECTION REPORT REF NO</th>
+                                        <th>DATE CREATED</th>
+                                        <th>REPORT FILLED</th>
+                                        <th>STATUS</th>
+                                        <th>View Details</th>
+                                        <!--                                        <th>View PDF</th>-->
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr class="list" th:each="inspectDetails: ${allInspectionReportDetailsList}"
+                                        style="cursor: pointer">
+                                        <td th:text="${inspectDetails?.refNo}"></td>
+                                        <td th:text="${#dates.format(inspectDetails?.createdOn, 'dd/MM/yyyy')}"></td>
+                                        <td style="color: #0082f3"
+                                            th:text="${inspectDetails?.submittedInspectionReportStatus} ? 'YES' : 'NO'"></td>
+                                        <td th:if="${inspectDetails?.approvedRejectedStatus == null}">N/A</td>
+                                        <td style="color: #0082f3"
+                                            th:if="${inspectDetails?.approvedRejectedStatus != null}"
+                                            th:text="${inspectDetails?.approvedRejectedStatus} ? 'APPROVED' : 'REJECTED'"></td>
+                                        <!--                                        <td style="color: #0082f3" th:text="${ssfDetails?.sampleStatus} ? 'PAID' : 'NOT PAID'"></td>-->
+                                        <!--                                        <td th:text="${invoice?.awardedPermitNumber}"></td>-->
+
+                                        <!--                                        <td th:text="${#dates.format(permit?.dateOfExpiry, 'dd/MM/yyyy')}"></td>-->
+                                        <!--                                        <td  style="color: #0082f3" th:text="${permit?.permitStatus}"></td>-->
+
+                                        <!--                                        <td style="color: #20f300; font-weight: bold; " th:if="${permit?.enabled == 1}">Active</td>-->
+                                        <!--&lt;!&ndash;                                        <td style="color: Black; font-weight: bold; " th:unless="${permit?.enabled == 10}">Applied</td>&ndash;&gt;-->
+                                        <!--                                        <td style="color: #f30014; font-weight: bold; " th:unless="${permit?.enabled == 1}">Expired</td>-->
+                                        <!--                                        <td th:text="${complaint?.}"></td>-->
+                                        <!--                                        <td sec:authorize="hasAuthority('CD_SUPERVISOR_READ')" th:if="${coc?.assignedStatus == 1}"  th:text="${coc?.assignIoId?.firstName}  + ' ' + ${coc?.assignIoId?.lastName}"></td>-->
+                                        <td><a class="filter-link"
+                                               th:href="@{/api/qa/inspection/inspection-report-details(inspectionReportID=${inspectDetails.id})}">VIEW</a>
+                                        </td>
+                                        <!--                                        <td><a class="filter-link" th:href="@{/api/kebs/qa/report/proforma-invoice-with-Item(ID=${ssfDetails?.permitId})}">VIEW</a></td>-->
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="filter-block">
+                            <div class="filter-block-title">
+                                <div class="filter-title">Action:</div>
+                            </div>
+                            <div>
+                                <a sec:authorize="hasAuthority('QA_OFFICER_MODIFY')"
+                                   th:if="${permitDetails?.inspectionScheduledStatus == 1 and permitDetails?.inspectionReportGenerated == 1}"
+                                   style="color: white"
+                                   th:href="@{/api/qa/inspection/new-inspection-report(permitID=${permitDetails?.id})}"
+                                   class="filter-link">GENERATE NEW INSPECTION REPORT</a>
+
+                                <a style="color: white"
+                                   th:href="@{/api/qa/permit-details(permitID=${permitDetails.id},userID=${permitDetails?.userId})}"
+                                   class="filter-link">GO TO PERMIT DETAILS</a>
+                                <!--                                <button id="addParam" class="btn btn-primary"  type="button">ADD PLANT DETAILS</button>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+<div th:replace="fragments/general-form.html :: scripts"></div>
+
+
+<script>
+    document.onreadystatechange = function () {
+        showSpinnerOnLoad(document)
+    }
+
+    function loadSpinner() {
+        showSpinner(document)
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        var table = $('#example').DataTable({
+            lengthChange: false,
+            buttons: ['copy', 'excel', 'pdf', 'colvis']
+        });
+
+        table.buttons().container()
+            .appendTo('#example_wrapper .col-sm-6:eq(0)');
+    });
+</script>
+<script>
+    $(document).ready(function () {
+
+        $('select').selectize({
+            sortField: 'text'
+        });
+
+
+        $("#plantID").click(function () {
+            // let methodId = $("#divisionId").children("option:selected").val()
+            let plantID = $("#plantID").val()
+            // console.log(categories.length)
+            if (plantID !== 0) {
+                $.ajax({
+                    method: "GET",
+                    url: `/api/qa/invoice/permit-invoice-list/${plantID}`,
+                    // data: regionId,
+                    success(response) {
+                        console.log(response)
+                        let s = '';
+                        s += ' <option value="0">Select One...</option>';
+                        for (let i = 0; i < response.length; i++) {
+                            // response.push('Select one')
+                            s += '<option value="' + response[i].permitID + '">' + response[i].brandName + '= KSH ' + response[i].totalAmount + '</option>';
+                            // <option th:each="subRegion : ${subRegions}" th:text="${subRegion.subRegion}" th:value="${subRegion.id}"></option>-->
+                            // s += ' <option th:each="department : ${departments}" th:text="${department.department}" th:value="${department.id}"></option>';
+                        }
+                        $("#permitID").html(s);
+                    }
+                })
+            }
+        });
+    });
+</script>
+<script>
+
+
+    let arrHead = ['addParamBtn',];
+    let arrHeadSave = ['Please select applicable SMARK',];
+
+
+    function refreshPage() {
+        window.location.reload();
+    }
+
+
+    function popUpSSFFunction(eventAction) {
+        let arrHead = ['addSSFDetails'];
+        let arrHeadSave = ['Add SSF Details Below'];
+
+        for (let h = 0; h < arrHead.length; h++) {
+            if (eventAction !== arrHead[h]) {
+                document.getElementById(arrHead[h]).remove();
+            } else {
+                if (eventAction === arrHead[h]) {
+                    document.getElementById('spanSSFValue').innerHTML = arrHeadSave[h];
+                    document.getElementById("saveSSfValue").value = 'Save';
+                }
+            }
+        }
+
+        $('.qaSSFForm #qaSSFModal').modal();
+    }
+
+    function popUpFunctionUpload(eventAction) {
+
+        for (let h = 0; h < arrHead.length; h++) {
+            if (eventAction !== arrHead[h]) {
+                document.getElementById(arrHead[h]).remove();
+            } else {
+                if (eventAction === arrHead[h]) {
+                    document.getElementById('uploadSpan').innerHTML = arrHeadSave[h];
+                    document.getElementById("upload").value = 'Save';
+                }
+            }
+        }
+
+        $('.uploadForm #uploadModal').modal();
+    }
+
+    window.onload = function () {
+        setTimeout(function () {
+            hello();
+        }, 1000);
+    }
+</script>
+</body>
+</html>
+
+

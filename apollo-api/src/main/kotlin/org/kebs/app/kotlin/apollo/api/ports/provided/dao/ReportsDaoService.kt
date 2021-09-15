@@ -44,7 +44,7 @@ class ReportsDaoService(
 
 
 
-    fun addBankAndMPESADetails(map: HashMap<String, Any>): HashMap<String, Any> {
+    fun addBankAndMPESADetails(map: HashMap<String, Any>, mpesaAccountNumber: String): HashMap<String, Any> {
         //Get MPESA Logo
         val logoMpesaImageResource = resourceLoader.getResource(applicationMapProperties.mapMPESALogoPath)
         val logoMpesaImageFile = logoMpesaImageResource.file.toString()
@@ -52,14 +52,14 @@ class ReportsDaoService(
         val mpesaDetails = invoiceDaoService.findPaymentMethodtype(applicationMapProperties.mapMpesaDetails)
         val bank1Details = invoiceDaoService.findPaymentMethodtype(applicationMapProperties.mapBankOneDetails)
         val bank2Details = invoiceDaoService.findPaymentMethodtype(applicationMapProperties.mapBankTwoDetails)
-        val bank3Details =invoiceDaoService.findPaymentMethodtype(applicationMapProperties.mapBankThreeDetails)
+        val bank3Details = invoiceDaoService.findPaymentMethodtype(applicationMapProperties.mapBankThreeDetails)
 //        val map = hashMapOf<String, Any>()
 
 
         map["imagePath"] = logoImageFile
         map["mpesaLogo"] = logoMpesaImageFile
         map["paybillNo"] = mpesaDetails.payBillNo.toString()
-        map["mpesaACNo"] = mpesaDetails.mpesaAccNo.toString()
+        map["mpesaACNo"] = mpesaAccountNumber
         map["vatNo"] = mpesaDetails.vatNo.toString()
         map["pinNo"] = mpesaDetails.pinNo.toString()
 //        map["preparedBy"] = demandNote?.

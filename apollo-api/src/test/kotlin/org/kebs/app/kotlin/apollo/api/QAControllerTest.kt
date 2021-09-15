@@ -18,10 +18,9 @@ import org.kebs.app.kotlin.apollo.store.repo.IMpesaTransactionsRepository
 import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.math.BigDecimal
-import java.sql.Date
+import java.security.SecureRandom
 import java.sql.Timestamp
 import java.time.Instant
 
@@ -85,6 +84,15 @@ class QAControllerTest {
     }
 
     @Test
+    fun randomNumber(digitSize: Int) {
+        val random = SecureRandom()
+        val num: Int = random.nextInt(100000)
+        val formatted = String.format("%0${digitSize}d", num)
+        println(formatted)
+        KotlinLogging.logger { }.info { "complaint = ${formatted} " }
+    }
+
+    @Test
     fun permitDetails() {
         val appId = applicationMapProperties.mapMarketSurveillance
         val map = commonDaoServices.serviceMapDetails(appId)
@@ -102,7 +110,8 @@ class QAControllerTest {
         val allUnpaidInvoices = qaDaoServices.permitInvoiceCalculation(
             map,
             commonDaoServices.findUserByID(2361),
-            qaDaoServices.findPermitBYID(1422)
+            qaDaoServices.findPermitBYID(1422),
+            null
         )
         val gson = Gson()
 

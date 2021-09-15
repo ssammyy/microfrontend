@@ -107,9 +107,10 @@ export class AddBranchComponent implements OnInit {
 
   ngOnInit(): void {
     this.stepTwoForm = new FormGroup({
+      branchName: new FormControl('', [Validators.required]),
       buildingName: new FormControl('', [Validators.required]),
       physicalAddress: new FormControl('', [Validators.required]),
-      location: new FormControl(),
+      location: new FormControl('', [Validators.required]),
       postalAddress: new FormControl(),
       street: new FormControl('', [Validators.required]),
       plotNo: new FormControl('', [Validators.required]),

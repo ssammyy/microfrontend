@@ -1,10 +1,11 @@
 
+
 ###
 GET https://localhost:8006/api/v1/migration/anonymous/titles/
 
 ###
 GET https://localhost:8006/api/v1/migration/secure/user/details/2046
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJJYW5fS2lwcm9ubyIsImlzcyI6ImtpbXMua2Vicy5vcmciLCJpYXQiOjE2MjYxOTc0MTMsImV4cCI6MTYyNjIwMzQxMywiYWRkcmVzcyI6IjEyNy4wLjAuMSIsInVzZXJBZ2VudCI6IltNb3ppbGxhLzUuMCAoTWFjaW50b3NoOyBJbnRlbCBNYWMgT1MgWCAxMC4xNTsgcnY6ODkuMCkgR2Vja28vMjAxMDAxMDEgRmlyZWZveC84OS4wXSIsImZ1bGxOYW1lIjoiSWFuIEtpcHJvbm8iLCJyb2xlcyI6IlBFUk1JVF9BUFBMSUNBVElPTixQRVJNSVRfUkVORVdBTCxQVk9DX0FQUExJQ0FUSU9OX1JFQUQsTElTVF9DT01QQU5ZLE1PRElGWV9DT01QQU5ZIn0.A3yA7X_01DmKJbh6_US5EReLvP6wggupI8HpO0wvsn_FeHKrjLMeyV97IoiHG1UG_QBiya6ZV0Fc9n7v897DIw
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJJYW5fS2lwcm9ubyIsImlzcyI6ImtpbXMua2Vicy5vcmciLCJpYXQiOjE2MjkzNzcwNzcsImV4cCI6MTYyOTM4MzA3NywiYWRkcmVzcyI6IjEyNy4wLjAuMSIsInVzZXJBZ2VudCI6IltBcGFjaGUtSHR0cENsaWVudC80LjUuMTIgKEphdmEvMTEuMC4xMCldIiwiZnVsbE5hbWUiOiJJYW4gS2lwcm9ubyIsInJvbGVzIjoiUEVSTUlUX0FQUExJQ0FUSU9OLFBFUk1JVF9SRU5FV0FMLFBWT0NfQVBQTElDQVRJT05fUkVBRCxMSVNUX0NPTVBBTlksTU9ESUZZX0NPTVBBTlkifQ.T6rnoVjZ0kkIKUa_th1YYQKLFgxVw0O7dbkElm_7yJTCrPIzSEOt4Tj40eIa45VvdkBaUK7o13MKGp9nub_eUg
 
 ###
 POST https://127.0.0.1:8006/api/v1/login
@@ -18,6 +19,7 @@ Content-Type: application/json
     client.global.set("auth_token", response.headers.valuesOf('accessToken')[0]);
 %}
 
+
 ###GET Department
 GET https://localhost:8006/api/v1/migration/anonymous/standard/dropdown/getDepartments
 
@@ -25,3 +27,71 @@ GET https://localhost:8006/api/v1/migration/anonymous/standard/dropdown/getDepar
 ###GET Department
 POST https://localhost:8006/api/v1/migration/anonymous/standard/deploy
 
+###GET Department
+GET https://localhost:8006/api/v1/migration/standard/getHOFTasks
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJJYW5fS2lwcm9ubyIsImlzcyI6ImtpbXMua2Vicy5vcmciLCJpYXQiOjE2MzA2ODQ4OTMsImV4cCI6MTYzMDY5MDg5MywiYWRkcmVzcyI6IjEyNy4wLjAuMSIsInVzZXJBZ2VudCI6IltBcGFjaGUtSHR0cENsaWVudC80LjUuMTIgKEphdmEvMTEuMC4xMCldIiwiZnVsbE5hbWUiOiJJYW4gS2lwcm9ubyIsInJvbGVzIjoiUEVSTUlUX0FQUExJQ0FUSU9OLFBFUk1JVF9SRU5FV0FMLFBWT0NfQVBQTElDQVRJT05fUkVBRCxMSVNUX0NPTVBBTlksTU9ESUZZX0NPTVBBTlkifQ.-wkcNvpsY690_1HKlbjdJ1eyKe0w6OQs-Ea-fA4vWtcOq5vj8abTCr8LGxp_WLEYRr5DowlgzghYqK6sgRLC3w
+
+#### Delete A Process
+
+#### Table to search for process instance id is ACT_HI_ACTINST
+POST https://localhost:8006/api/v1/migration/anonymous/standard/close
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJJYW5fS2lwcm9ubyIsImlzcyI6ImtpbXMua2Vicy5vcmciLCJpYXQiOjE2MzA5MzA5NTksImV4cCI6MTYzMDkzNjk1OSwiYWRkcmVzcyI6IjEyNy4wLjAuMSIsInVzZXJBZ2VudCI6IltBcGFjaGUtSHR0cENsaWVudC80LjUuMTIgKEphdmEvMTEuMC4xMCldIiwiZnVsbE5hbWUiOiJJYW4gS2lwcm9ubyIsInJvbGVzIjoiUEVSTUlUX0FQUExJQ0FUSU9OLFBFUk1JVF9SRU5FV0FMLFBWT0NfQVBQTElDQVRJT05fUkVBRCxMSVNUX0NPTVBBTlksTU9ESUZZX0NPTVBBTlkifQ.yJ5h2NoJAlZcjWUHaVqzDJwUsKbawJYenA9d_JFdWp76By9-17JN4jUdWlHZOq_y059wdUZTlhSDIaOPjODOUg
+Content-Type: application/json
+
+{
+  "message": "ffe756d0-d8c5-11eb-9b6b-8e3cc3b54d69"
+
+
+}
+
+#### Delete A Task
+
+POST https://localhost:8006/api/v1/migration/anonymous/standard/closetask
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJJYW5fS2lwcm9ubyIsImlzcyI6ImtpbXMua2Vicy5vcmciLCJpYXQiOjE2MzA5MzA5NTksImV4cCI6MTYzMDkzNjk1OSwiYWRkcmVzcyI6IjEyNy4wLjAuMSIsInVzZXJBZ2VudCI6IltBcGFjaGUtSHR0cENsaWVudC80LjUuMTIgKEphdmEvMTEuMC4xMCldIiwiZnVsbE5hbWUiOiJJYW4gS2lwcm9ubyIsInJvbGVzIjoiUEVSTUlUX0FQUExJQ0FUSU9OLFBFUk1JVF9SRU5FV0FMLFBWT0NfQVBQTElDQVRJT05fUkVBRCxMSVNUX0NPTVBBTlksTU9ESUZZX0NPTVBBTlkifQ.yJ5h2NoJAlZcjWUHaVqzDJwUsKbawJYenA9d_JFdWp76By9-17JN4jUdWlHZOq_y059wdUZTlhSDIaOPjODOUg
+Content-Type: application/json
+
+{
+  "message": "afd3e75d-dd59-11eb-80b0-8e3cc3b54d69"
+}
+
+
+
+#### View A Process
+POST https://localhost:8006/api/v1/migration/standard/process
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJJYW5fS2lwcm9ubyIsImlzcyI6ImtpbXMua2Vicy5vcmciLCJpYXQiOjE2MzA5MzA5NTksImV4cCI6MTYzMDkzNjk1OSwiYWRkcmVzcyI6IjEyNy4wLjAuMSIsInVzZXJBZ2VudCI6IltBcGFjaGUtSHR0cENsaWVudC80LjUuMTIgKEphdmEvMTEuMC4xMCldIiwiZnVsbE5hbWUiOiJJYW4gS2lwcm9ubyIsInJvbGVzIjoiUEVSTUlUX0FQUExJQ0FUSU9OLFBFUk1JVF9SRU5FV0FMLFBWT0NfQVBQTElDQVRJT05fUkVBRCxMSVNUX0NPTVBBTlksTU9ESUZZX0NPTVBBTlkifQ.yJ5h2NoJAlZcjWUHaVqzDJwUsKbawJYenA9d_JFdWp76By9-17JN4jUdWlHZOq_y059wdUZTlhSDIaOPjODOUg
+Content-Type: application/json
+
+{
+  "id": "ffef1f08-d8c5-11eb-9b6b-8e3cc3b54d69"
+}
+
+
+###GET Department
+GET https://localhost:8006/api/v1/migration/standard/getTCSECTasks
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJJYW5fS2lwcm9ubyIsImlzcyI6ImtpbXMua2Vicy5vcmciLCJpYXQiOjE2MzA5MzAzOTgsImV4cCI6MTYzMDkzNjM5OCwiYWRkcmVzcyI6IjEyNy4wLjAuMSIsInVzZXJBZ2VudCI6IltBcGFjaGUtSHR0cENsaWVudC80LjUuMTIgKEphdmEvMTEuMC4xMCldIiwiZnVsbE5hbWUiOiJJYW4gS2lwcm9ubyIsInJvbGVzIjoiUEVSTUlUX0FQUExJQ0FUSU9OLFBFUk1JVF9SRU5FV0FMLFBWT0NfQVBQTElDQVRJT05fUkVBRCxMSVNUX0NPTVBBTlksTU9ESUZZX0NPTVBBTlkifQ.eMSTfNsL_F9zyRzwhe-wjk3gii71OJF9GT5DUgVyRNHeQ7OhDrVx7i8UfXt8xzV55xyXvruKfCf-bOk5FTjfPA
+
+###POST apply for standard request
+POST https://localhost:8006/api/v1/migration/standard/uploadNWI
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJJYW5fS2lwcm9ubyIsImlzcyI6ImtpbXMua2Vicy5vcmciLCJpYXQiOjE2MzA5MzAzOTgsImV4cCI6MTYzMDkzNjM5OCwiYWRkcmVzcyI6IjEyNy4wLjAuMSIsInVzZXJBZ2VudCI6IltBcGFjaGUtSHR0cENsaWVudC80LjUuMTIgKEphdmEvMTEuMC4xMCldIiwiZnVsbE5hbWUiOiJJYW4gS2lwcm9ubyIsInJvbGVzIjoiUEVSTUlUX0FQUExJQ0FUSU9OLFBFUk1JVF9SRU5FV0FMLFBWT0NfQVBQTElDQVRJT05fUkVBRCxMSVNUX0NPTVBBTlksTU9ESUZZX0NPTVBBTlkifQ.eMSTfNsL_F9zyRzwhe-wjk3gii71OJF9GT5DUgVyRNHeQ7OhDrVx7i8UfXt8xzV55xyXvruKfCf-bOk5FTjfPA
+Content-Type: application/json
+
+{
+  "proposalTitle": "ENG/01:2021",
+  "nameOfProposer": "Edwin Inganji",
+  "scope": "Scope of NWI",
+  "purpose": "Purpose of NWI",
+  "targetDate": "2021-09-06",
+  "similarStandards": "Another similar standards",
+  "draftAttached": "true",
+  "outlineAttached": "false",
+  "liaisonOrganisation": "[{\"id\":4,\"name\":\"KCC\"},{\"id\":5,\"name\":\"Dormans\"},{\"id\":6,\"name\":\"Nuteez\"}]",
+  "draftOutlineImpossible": "true",
+  "outlineSentLater": "false",
+  "organization": "KEBS",
+  "circulationDate": "2021-09-10",
+  "closingDate": "2021-09-16",
+  "dateOfPresentation": "2021-09-14",
+  "nameOfTC": "Edible Nuts",
+  "referenceNumber": "F&A/1:2021",
+  "taskId": "981f868c-00f2-11ec-ap37-9a04019f9082"
+}

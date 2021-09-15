@@ -57,7 +57,7 @@
             <i class="material-icons">preview</i> Scheme of Supervision
         </a>
     </li>
-    <li *ngIf="allPermitDetails?.labResultsList.length > 0" class="nav-item">
+    <li *ngIf="allPermitDetails?.labResultsList?.ssfResultsList?.length> 0" class="nav-item">
         <a class="nav-link" data-toggle="tab" href="#link17" role="tablist">
             <i class="material-icons">summarize</i> Lab Results
         </a>
@@ -111,7 +111,9 @@ Permit Ref No.</strong></td>
 </td>
 <td><strong>Firm type
 </strong></td>
-<td></td>
+<td>
+    {{allPermitDetails?.permitDetails?.firmTypeName}}
+</td>
 </tr>
 <tr>
 <td>
@@ -962,6 +964,39 @@ placeholder=""
                         <table class="table">
                             <thead>
                             <tr>
+                                <th class="text-left">{{ tableData6?.headerRow[0] }}</th>
+                                <th>{{ tableData6?.headerRow[1] }}</th>
+                                <th class="text-right">{{ tableData6?.headerRow[2] }}</th>
+                                <!--                                <th class="text-right">{{ tableData6?.headerRow[3] }}</th>-->
+                                <!--                                <th class="text-right">{{ tableData3?.headerRow[4] }}</th>-->
+
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let row of tableData6?.dataRows">
+                                <td class="text-left">{{row[1]}}</td>
+                                <td *ngIf="row[2] == true">{{COMPLIANTSTATUS}}</td>
+                                <td *ngIf="row[2] == false">{{NONCOMPLIANT}}</td>
+                                <!--                                <td>{{row[2]}}</td>-->
+                                <!--                                <td>{{row[3]}}</td>-->
+
+                                <td class="td-actions text-right">
+                                    <button mat-raised-button type="button" data-toggle="modal" data-target="#myModal2"
+                                            (click)="viewLabRemarks(row[2], row[3], 'viewLabComplianceRemarks')"
+                                            class="btn btn-info {{row[3]}}">
+                                        <i class="material-icons">visibility</i>
+
+                                    </button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
                                 <th class="text-left">{{ tableData4?.headerRow[0] }}</th>
                                 <th>{{ tableData4?.headerRow[1] }}</th>
                                 <th class="text-right">{{ tableData4?.headerRow[2] }}</th>
@@ -980,7 +1015,8 @@ placeholder=""
 
                                 <td class="td-actions text-right">
                                     <button mat-raised-button type="button" data-toggle="modal" data-target="#myModal2"
-                                            (click)="viewLabRemarks(row[1], row[3])" class="btn btn-info {{row[3]}}">
+                                            (click)="viewLabRemarks(row[1], row[3], 'viewLabResultsRemarks')"
+                                            class="btn btn-info {{row[3]}}">
                                         <i class="material-icons">visibility</i>
 
                                     </button>
@@ -990,7 +1026,6 @@ placeholder=""
                                             (click)="viewPdfFile(row[4], row[0], 'application/pdf')"
                                             class="btn btn-info {{row[4]}}">
                                         <i class="material-icons">visibility</i>
-
                                     </button>
                                 </td>
                             </tr>
@@ -1007,7 +1042,8 @@ placeholder=""
         <br>
         <div id="main18">
             <div class="container">
-                <button (click)="goToPayment()" mat-raised-button=""
+                <button *ngIf="allPermitDetails?.permitDetails?.invoiceGenerated == true && allPermitDetails?.batchID == null"
+                        (click)="goToPayment()" mat-raised-button=""
                         class="btn btn-kebs mat-raised-button mat-button-base"><span
                         class="mat-button-wrapper">MAKE PAYMENT</span>
                     <div matripple="" class="mat-ripple mat-button-ripple"></div>
@@ -1051,47 +1087,6 @@ placeholder=""
     </div>
 
 
-    <!--                        <div class="tab-pane" id="link12">-->
-    <!--                            <div class="material-datatables">-->
-    <!--                                <table id="datatables" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">-->
-    <!--                                    <thead>-->
-    <!--                                    <tr>-->
-    <!--                                        <th>{{ dataTable.headerRow[0] }}</th>-->
-    <!--                                        <th>{{ dataTable.headerRow[1] }}</th>-->
-    <!--                                        <th>{{ dataTable.headerRow[2] }}</th>-->
-    <!--                                        <th>{{ dataTable.headerRow[3] }}</th>-->
-    <!--                                        <th>{{ dataTable.headerRow[4] }}</th>-->
-<!--                                        <th class="disabled-sorting text-right">{{ dataTable.headerRow[5] }}</th>-->
-<!--                                    </tr>-->
-<!--                                    </thead>-->
-<!--                                    <tfoot>-->
-<!--                                    <tr>-->
-<!--                                        <th>{{ dataTable.footerRow[0] }}</th>-->
-<!--                                        <th>{{ dataTable.footerRow[1] }}</th>-->
-<!--                                        <th>{{ dataTable.footerRow[2] }}</th>-->
-<!--                                        <th>{{ dataTable.footerRow[3] }}</th>-->
-<!--                                        <th>{{ dataTable.footerRow[4] }}</th>-->
-<!--                                        <th class="text-right">{{ dataTable.footerRow[5] }}</th>-->
-<!--                                    </tr>-->
-<!--                                    </tfoot>-->
-<!--                                    <tbody>-->
-<!--                                    <tr *ngFor="let row of dataTable.dataRows">-->
-<!--                                        <td>{{row[0]}}</td>-->
-<!--                                        <td>{{row[1]}}</td>-->
-<!--                                        <td>{{row[2]}}</td>-->
-<!--                                        <td>{{row[3]}}</td>-->
-<!--                                        <td>{{row[4]}}</td>-->
-<!--                                        <td class="text-right">-->
-<!--                                            <a href="javascript:void(0)" class="btn btn-link btn-info btn-just-icon like"><i class="material-icons">download</i></a>-->
-<!--                                        </td>-->
-<!--                                    </tr>-->
-<!--                                    </tbody>-->
-<!--                                </table>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="tab-pane" id="link13">-->
-
-<!--                        </div>-->
 </div>
 </div>
 </div>
@@ -1112,38 +1107,155 @@ placeholder=""
             <div matripple="" class="mat-ripple mat-button-ripple"></div>
             <div class="mat-button-focus-overlay"></div>
         </button>
-        <button *ngIf="allPermitDetails?.permitDetails?.permitAwardStatus == true" mat-raised-button=""
-                (click)="submitRenewalApplication()" class="btn btn-kebs mat-raised-button mat-button-base"><span
-                class="mat-button-wrapper">RENEW</span>
-            <div matripple="" class="mat-ripple mat-button-ripple"></div>
-            <div class="mat-button-focus-overlay"></div>
-        </button>
 
-
-        <div *ngIf="allPermitDetails?.permitDetails?.resubmitApplicationStatus == true">
-            <button (click)="openModalUpload('uploadModal')" mat-raised-button="" data-toggle="modal"
+        <div *ngIf="allPermitDetails?.permitDetails?.hofQamCompletenessStatus == false && allPermitDetails?.permitDetails?.permitForeignStatus == false && allPermitDetails?.permitDetails?.resubmitApplicationStatus == true">
+            <a href="/dmark/newDmarkPermit#{{sta1.id}}" mat-raised-button=""
+               class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">UPDATE APPLICATION DETAILS</span>
+                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                <div class="mat-button-focus-overlay"></div>
+            </a>
+            <button (click)="openModalUpload('uploadModal', 'uploadModal')" mat-raised-button="" data-toggle="modal"
                     data-target="#myModal1"
                     class="btn btn-kebs mat-raised-button mat-button-base"><span
                     class="mat-button-wrapper">UPLOAD DOCUMENTS</span>
                 <div matripple="" class="mat-ripple mat-button-ripple"></div>
                 <div class="mat-button-focus-overlay"></div>
             </button>
+            <button (click)="openModalUpload('resubmitDetails', 'resubmitHofQamCompletenessResults')"
+                    mat-raised-button="" data-toggle="modal"
+                    data-target="#myModal1"
+                    class="btn btn-kebs mat-raised-button mat-button-base"><span
+                    class="mat-button-wrapper">RE-SUBMIT APPLICATION</span>
+                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                <div class="mat-button-focus-overlay"></div>
+            </button>
+        </div>
+
+        <div *ngIf="allPermitDetails?.permitDetails?.permitForeignStatus == false && allPermitDetails?.permitDetails?.resubmitApplicationStatus == false && allPermitDetails?.permitDetails?.sendApplication == false">
+            <a href="/dmark/newDmarkPermit#{{sta1.id}}" mat-raised-button=""
+               class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">UPDATE APPLICATION DETAILS</span>
+                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                <div class="mat-button-focus-overlay"></div>
+            </a>
+            <!--            <button (click)="openModalUpload('uploadModal', 'uploadModal')" mat-raised-button="" data-toggle="modal"-->
+            <!--                    data-target="#myModal1"-->
+            <!--                    class="btn btn-kebs mat-raised-button mat-button-base"><span-->
+            <!--                    class="mat-button-wrapper">UPLOAD DOCUMENTS</span>-->
+            <!--                <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
+            <!--                <div class="mat-button-focus-overlay"></div>-->
+            <!--            </button>-->
+            <button (click)="submitApplication()" mat-raised-button=""
+                    class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">SUBMIT APPLICATION</span>
+                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                <div class="mat-button-focus-overlay"></div>
+            </button>
+        </div>
+
+        <div *ngIf="allPermitDetails?.permitDetails?.sendForPcmReview == true && allPermitDetails?.permitDetails?.pcmReviewApprove == false && allPermitDetails?.permitDetails?.permitForeignStatus == true && allPermitDetails?.permitDetails?.resubmitApplicationStatus == true">
+            <a href="/dmark/newDmarkPermit#{{sta1.id}}" mat-raised-button=""
+               class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">UPDATE APPLICATION DETAILS</span>
+                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                <div class="mat-button-focus-overlay"></div>
+            </a>
+            <button (click)="openModalUpload('uploadModal', 'uploadModal')" mat-raised-button="" data-toggle="modal"
+                    data-target="#myModal1"
+                    class="btn btn-kebs mat-raised-button mat-button-base"><span
+                    class="mat-button-wrapper">UPLOAD DOCUMENTS</span>
+                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                <div class="mat-button-focus-overlay"></div>
+            </button>
+            <button (click)="openModalUpload('resubmitDetails', 'resubmitPCMReviewCompletenessResults')"
+                    mat-raised-button="" data-toggle="modal"
+                    data-target="#myModal1"
+                    class="btn btn-kebs mat-raised-button mat-button-base"><span
+                    class="mat-button-wrapper">RE-SUBMIT APPLICATION</span>
+                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                <div class="mat-button-focus-overlay"></div>
+            </button>
+        </div>
+
+        <div *ngIf="allPermitDetails?.permitDetails?.sendForPcmReview == true && allPermitDetails?.permitDetails?.hofQamCompletenessStatus == false && allPermitDetails?.permitDetails?.pcmReviewApprove == true && allPermitDetails?.permitDetails?.permitForeignStatus == true && allPermitDetails?.permitDetails?.resubmitApplicationStatus == true">
+            <a href="/dmark/newDmarkPermit#{{sta1.id}}" mat-raised-button=""
+               class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">UPDATE APPLICATION DETAILS</span>
+                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                <div class="mat-button-focus-overlay"></div>
+            </a>
+            <button (click)="openModalUpload('uploadModal', 'uploadModal')" mat-raised-button="" data-toggle="modal"
+                    data-target="#myModal1"
+                    class="btn btn-kebs mat-raised-button mat-button-base"><span
+                    class="mat-button-wrapper">UPLOAD DOCUMENTS</span>
+                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                <div class="mat-button-focus-overlay"></div>
+            </button>
+            <button (click)="openModalUpload('resubmitDetails', 'resubmitHofQamCompletenessResults')"
+                    mat-raised-button="" data-toggle="modal"
+                    data-target="#myModal1"
+                    class="btn btn-kebs mat-raised-button mat-button-base"><span
+                    class="mat-button-wrapper">RE-SUBMIT APPLICATION</span>
+                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                <div class="mat-button-focus-overlay"></div>
+            </button>
+        </div>
+
+        <div *ngIf="allPermitDetails?.permitDetails?.sendForPcmReview == false && allPermitDetails?.permitDetails?.permitForeignStatus == true && allPermitDetails?.permitDetails?.resubmitApplicationStatus == false">
+            <a href="/dmark/newDmarkPermit#{{sta1.id}}" mat-raised-button=""
+               class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">UPDATE APPLICATION DETAILS</span>
+                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                <div class="mat-button-focus-overlay"></div>
+            </a>
+            <!--            <button (click)="openModalUpload('uploadModal', 'uploadModal')" mat-raised-button="" data-toggle="modal"-->
+            <!--                    data-target="#myModal1"-->
+            <!--                    class="btn btn-kebs mat-raised-button mat-button-base"><span-->
+            <!--                    class="mat-button-wrapper">UPLOAD DOCUMENTS</span>-->
+            <!--                <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
+            <!--                <div class="mat-button-focus-overlay"></div>-->
+            <!--            </button>-->
+            <button (click)="submitApplicationForReview()" mat-raised-button=""
+                    class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">SUBMIT APPLICATION FOR REVIEW</span>
+                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                <div class="mat-button-focus-overlay"></div>
+            </button>
         </div>
 
 
-        <!--        <div *ngIf="allPermitDetails?.permitDetails?.permitTypeID == DMarkTypeID">-->
-        <button *ngIf="allPermitDetails?.permitDetails?.permitForeignStatus == true && allPermitDetails?.permitDetails?.sendForPcmReview == false"
-                (click)="submitApplicationForReview()" mat-raised-button=""
-                class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">SUBMIT APPLICATION FOR REVIEW</span>
+        <button *ngIf="allPermitDetails?.permitDetails?.permitAwardStatus == true and allPermitDetails?.permitDetails?.oldPermitStatus == false"
+                mat-raised-button=""
+                (click)="submitRenewalApplication()" class="btn btn-kebs mat-raised-button mat-button-base"><span
+                class="mat-button-wrapper">RE-NEW</span>
             <div matripple="" class="mat-ripple mat-button-ripple"></div>
             <div class="mat-button-focus-overlay"></div>
         </button>
-        <button *ngIf="allPermitDetails?.permitDetails?.pcmReviewApprove == false && allPermitDetails?.permitDetails?.sendForPcmReview == true && allPermitDetails?.permitDetails?.resubmitApplicationStatus == true"
-                    (click)="submitApplicationForReview()" mat-raised-button=""
-                    class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">RE-SUBMIT APPLICATION FOR REVIEW</span>
-                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+
+        <button *ngIf="allPermitDetails?.remarksDetails?.labResultsCompleteness?.remarksStatus == false && allPermitDetails?.permitDetails?.resubmitApplicationStatus == true"
+                (click)="openModalUpload('resubmitDetails', 'resubmitLabNonComplianceResults')"
+                mat-raised-button="" data-toggle="modal"
+                data-target="#myModal1"
+                class="btn btn-kebs mat-raised-button mat-button-base"><span
+                class="mat-button-wrapper">RE-SUBMIT APPLICATION FOR RE-SAMPLING</span>
+            <div matripple="" class="mat-ripple mat-button-ripple"></div>
             <div class="mat-button-focus-overlay"></div>
         </button>
+
+
+        <!--        <div *ngIf="allPermitDetails?.permitDetails?.resubmitApplicationStatus == true">-->
+        <!--            <button (click)="openModalUpload('uploadModal')" mat-raised-button="" data-toggle="modal"-->
+        <!--                    data-target="#myModal1"-->
+        <!--                    class="btn btn-kebs mat-raised-button mat-button-base"><span-->
+        <!--                    class="mat-button-wrapper">UPLOAD DOCUMENTS</span>-->
+        <!--                <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
+        <!--                <div class="mat-button-focus-overlay"></div>-->
+        <!--            </button>-->
+        <!--        </div>-->
+
+
+        <!--        <div *ngIf="allPermitDetails?.permitDetails?.permitTypeID == DMarkTypeID">-->
+
+        <!--        <button *ngIf="allPermitDetails?.permitDetails?.pcmReviewApprove == false && allPermitDetails?.permitDetails?.sendForPcmReview == true && allPermitDetails?.permitDetails?.resubmitApplicationStatus == true"-->
+        <!--                    (click)="submitApplicationForReview()" mat-raised-button=""-->
+        <!--                    class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">RE-SUBMIT APPLICATION FOR REVIEW</span>-->
+        <!--                <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
+        <!--            <div class="mat-button-focus-overlay"></div>-->
+        <!--        </button>-->
         <!--        <div *ngIf="allPermitDetails?.permitDetails?.pcmReviewApprove == true && allPermitDetails?.permitDetails?.sendForPcmReview == true">-->
         <!--            <button *ngIf="allPermitDetails?.permitDetails?.hofQamCompletenessStatus == false && allPermitDetails?.permitDetails?.resubmitApplicationStatus == true"-->
         <!--                    (click)="submitApplicationForReviewHOD()" mat-raised-button=""-->
@@ -1152,38 +1264,33 @@ placeholder=""
         <!--                <div class="mat-button-focus-overlay"></div>-->
         <!--            </button>-->
         <!--        </div>-->
-        <div *ngIf="allPermitDetails?.permitDetails?.hofQamCompletenessStatus == false && allPermitDetails?.permitDetails?.resubmitApplicationStatus == true ">
-            <a href="/dmark/newDmarkPermit#{{sta1.id}}" mat-raised-button=""
-               class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">UPDATE APPLICATION DETAILS</span>
-                <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                <div class="mat-button-focus-overlay"></div>
-            </a>
-            <button (click)="submitApplicationForReviewHOD()" mat-raised-button=""
-                    class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">RE-SUBMIT APPLICATION FOR REVIEW</span>
-                <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                <div class="mat-button-focus-overlay"></div>
-            </button>
-        </div>
-        <button *ngIf="allPermitDetails?.permitDetails?.permitForeignStatus == false && allPermitDetails?.permitDetails?.sendApplication == false "
-                (click)="submitApplication()" mat-raised-button=""
-                class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">SUBMIT APPLICATION</span>
-            <div matripple="" class="mat-ripple mat-button-ripple"></div>
-            <div class="mat-button-focus-overlay"></div>
-        </button>
-        <a *ngIf="allPermitDetails?.permitDetails?.sendApplication == false "
-           href="/dmark/newDmarkPermit#{{sta1.id}}" mat-raised-button=""
-           class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">UPDATE APPLICATION DETAILS</span>
-            <div matripple="" class="mat-ripple mat-button-ripple"></div>
-            <div class="mat-button-focus-overlay"></div>
-        </a>
-        <button *ngIf="allPermitDetails?.permitDetails?.generateSchemeStatus == true && allPermitDetails?.permitDetails?.approvedRejectedScheme == false"
-                (click)="openModalUpload('schemeModal')" mat-raised-button=""
-                data-toggle="modal"
-                data-target="#myModal1"
-                class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">AGREE/CONSENT TO SSC</span>
-            <div matripple="" class="mat-ripple mat-button-ripple"></div>
-            <div class="mat-button-focus-overlay"></div>
-        </button>
+        <!--        <div *ngIf="allPermitDetails?.permitDetails?.hofQamCompletenessStatus == false && allPermitDetails?.permitDetails?.resubmitApplicationStatus == true ">-->
+        <!--            <a href="/dmark/newDmarkPermit#{{sta1.id}}" mat-raised-button=""-->
+        <!--               class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">UPDATE APPLICATION DETAILS</span>-->
+        <!--                <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
+        <!--                <div class="mat-button-focus-overlay"></div>-->
+        <!--            </a>-->
+        <!--            <button (click)="submitApplicationForReviewHOD()" mat-raised-button=""-->
+        <!--                    class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">RE-SUBMIT APPLICATION FOR REVIEW</span>-->
+        <!--                <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
+        <!--                <div class="mat-button-focus-overlay"></div>-->
+        <!--            </button>-->
+        <!--        </div>-->
+
+        <!--        <a *ngIf="allPermitDetails?.permitDetails?.sendApplication == false "-->
+        <!--           href="/dmark/newDmarkPermit#{{sta1.id}}" mat-raised-button=""-->
+        <!--           class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">UPDATE APPLICATION DETAILS</span>-->
+        <!--            <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
+        <!--            <div class="mat-button-focus-overlay"></div>-->
+        <!--        </a>-->
+        <!--        <button *ngIf="allPermitDetails?.permitDetails?.generateSchemeStatus == true && allPermitDetails?.permitDetails?.approvedRejectedScheme == false"-->
+        <!--                (click)="openModalUpload('schemeModal')" mat-raised-button=""-->
+        <!--                data-toggle="modal"-->
+        <!--                data-target="#myModal1"-->
+        <!--                class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">AGREE/CONSENT TO SSC</span>-->
+        <!--            <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
+        <!--            <div class="mat-button-focus-overlay"></div>-->
+        <!--        </button>-->
         <!--    </div>-->
     </div>
 </div>
@@ -1202,6 +1309,38 @@ placeholder=""
                 </div>
                 <div class="modal-body">
                     <!--                <p>Are you sure this userDetails falls in the KEBS mandate ?</p>-->
+                    <div *ngIf="(currDiv == 'resubmitDetails')">
+                        <form [formGroup]="resubmitForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+
+                                    <div>
+                                        <!--                                        <label for="approvedRejectedScheme"><b>Approve/Reject SCC</b></label>-->
+                                        <!--                                        <mat-form-field id="approvedRejectedScheme">-->
+                                        <!--                                            <mat-select placeholder="Please Select an option"-->
+                                        <!--                                                        formControlName="approvedRejectedScheme"-->
+                                        <!--                                                        [class.is-invalid]="formResubmitRemarks.re.invalid && formApproveRejectSSC.approvedRejectedScheme.touched"-->
+                                        <!--                                                        name="approvedRejectedScheme">-->
+                                        <!--                                                <mat-option [value]="1">APPROVE</mat-option>-->
+                                        <!--                                                <mat-option [value]="0">REJECT</mat-option>-->
+
+                                        <!--                                            </mat-select>-->
+                                        <!--                                        </mat-form-field>-->
+                                        <!--                                        <input  name="resubmittedDetails" formControlName="resubmittedDetails" id="resubmittedDetails" type="hidden" value="{{resubmitDetail}}">-->
+                                        <label for="approvedRejectedSchemeRemarks">Feedback For This Permit</label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea id="resubmitRemarks" matInput type="text"
+                                                      formControlName="resubmitRemarks"
+                                                      name="resubmitRemarks"
+                                                      [class.is-invalid]="formResubmitRemarks.resubmitRemarks.invalid && formResubmitRemarks.resubmitRemarks.touched"
+                                                      disabled>
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                     <div *ngIf="(currDiv == 'schemeModal')">
                         <form [formGroup]="approveRejectSSCForm" class="form">
                             <div class="form-body">
@@ -1253,6 +1392,13 @@ placeholder=""
                             [disabled]="!approveRejectSSCForm.valid"
                             data-dismiss="modal"
                     >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'resubmitDetails')" mat-raised-button type="button"
+                            class="btn btn-success"
+                            (click)="reSubmitWithRemarks();"
+                            [disabled]="!resubmitForm.valid"
+                            data-dismiss="modal"
+                    >RE-SUBMIT
                     </button>
                     <button *ngIf="(currDiv == 'uploadModal')" mat-raised-button type="button" class="btn btn-success"
                             (click)="uploadDocument();"
@@ -1329,6 +1475,21 @@ placeholder=""
                             </textarea>
                         </mat-form-field>
                     </div>
+                    <div *ngIf="(currDiv == 'viewLabComplianceRemarks')">
+
+                        <label for="reviewsattus52">Lab Results Status</label>
+                        <mat-form-field class="example-full-width">
+                            <input id="reviewsattus52" matInput type="text" value="{{labResultsStatus}}"
+                                   disabled>
+                        </mat-form-field>
+                        <label for="feedback">Lab Results Remarks</label>
+                        <mat-form-field class="example-full-width">
+                            <textarea id="feedback" matInput type="text"
+                                      value="{{labResultsRemarks}}"
+                                      disabled>
+                            </textarea>
+                        </mat-form-field>
+                    </div>
                     <div *ngIf="(currDiv == 'hofQamCompletenessRemarks')">
                         <div *ngIf="allPermitDetails.remarksDetails.hofQamCompleteness.remarksStatus === true">
                             <label for="reviewsattus25">Review Status</label>
@@ -1349,6 +1510,30 @@ placeholder=""
                         <mat-form-field class="example-full-width">
                             <textarea id="feedback" matInput type="text"
                                       value="{{allPermitDetails.remarksDetails.hofQamCompleteness.remarksValue}}"
+                                      disabled>
+                            </textarea>
+                        </mat-form-field>
+                    </div>
+                    <div *ngIf="(currDiv == 'labResultsCompletenessRemarks')">
+                        <div *ngIf="allPermitDetails?.remarksDetails?.labResultsCompleteness?.remarksStatus === true">
+                            <label for="reviewsattus25">Review Status</label>
+                            <mat-form-field class="example-full-width">
+                                <input id="reviewsattus25" matInput type="text" value="COMPLIANT"
+                                       disabled>
+                            </mat-form-field>
+                        </div>
+                        <div *ngIf="allPermitDetails?.remarksDetails?.labResultsCompleteness?.remarksStatus === false">
+                            <label for="reviewsattus72">Review Status</label>
+                            <mat-form-field class="example-full-width">
+                                <input id="reviewsattus72" matInput type="text" value="NON-COMPLIANT"
+                                       disabled>
+                            </mat-form-field>
+                        </div>
+
+                        <label for="feedback">Feedback For This Permit</label>
+                        <mat-form-field class="example-full-width">
+                            <textarea id="feedback" matInput type="text"
+                                      value="{{allPermitDetails?.remarksDetails?.labResultsCompleteness.remarksValue}}"
                                       disabled>
                             </textarea>
                         </mat-form-field>

@@ -96,6 +96,8 @@ export class BranchComponent implements OnInit {
                 }
             }
         );
+        // console.log(`Select town ID inside is ${this.branch.town}`);
+        this.stepTwoForm?.get('town').setValue(this.branch.town);
     }
 
     updateSelectedTown() {
@@ -105,6 +107,7 @@ export class BranchComponent implements OnInit {
 
     ngOnInit(): void {
         this.stepTwoForm = new FormGroup({
+            branchName: new FormControl('', [Validators.required]),
             buildingName: new FormControl('', [Validators.required]),
             physicalAddress: new FormControl('', [Validators.required]),
             location: new FormControl(),
@@ -137,10 +140,27 @@ export class BranchComponent implements OnInit {
         });
 
         this.store$.select(selectBranchData).subscribe((u) => {
-            this.stepTwoForm.patchValue(u);
-            this.stepThreeForm.patchValue(u);
-
+            return this.branch = u;
         });
+        this.stepTwoForm.patchValue(this.branch);
+        this.stepThreeForm.patchValue(this.branch);
+        console.log(`Select town ID inside is ${this.branch.town}`);
+
+        this.regionService.getAll().subscribe();
+        this.countyService.getAll().subscribe();
+
+        this.selectedCounty = this.branch.county;
+        this.store$.dispatch(loadCountyId({payload: this.branch.county}));
+        this.store$.select(selectCountyIdData).subscribe(
+            (d) => {
+                if (d) {
+                    console.log(`Select county inside is ${d}`);
+                    return this.townService.getAll();
+                } else {
+                    return throwError('Invalid request, Company id is required');
+                }
+            }
+        );
 
     }
 

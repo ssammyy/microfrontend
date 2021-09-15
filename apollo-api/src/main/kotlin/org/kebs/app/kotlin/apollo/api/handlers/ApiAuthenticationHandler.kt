@@ -48,7 +48,8 @@ class ApiAuthenticationHandler(
         return reqBody.username?.let {
             usersRepo.findByUserName(it)
                 ?.let { user ->
-                    val otp = generateTransactionReference(8).toUpperCase()
+//                    val otp = generateTransactionReference(8).toUpperCase()
+                    val otp = commonDaoServices.randomNumber(6)
                     val token = generateVerificationToken(otp, user)
                     KotlinLogging.logger { }.info { "Token: ${token.token}" }
 
@@ -133,11 +134,25 @@ class ApiAuthenticationHandler(
                         roles
                     ).apply {
                         /**
-                         * TODO: Set expiry padding configuration
+                         * TODO: Set expiry padding configuration  check this time stamp is false
                          */
+//                        val localDate = LocalDateTime.now().plusMinutes(authenticationProperties.jwtExpirationMs).minusSeconds(20L)
+//                        val timestamp: Timestamp = Timestamp.valueOf(localDate)
+//                        expiry = timestamp
                         expiry =
                             LocalDateTime.now().plusMinutes(authenticationProperties.jwtExpirationMs).minusSeconds(20L)
                     }
+
+                    /**
+                     *SEND OTP TO USER LOGIN throw phone number
+                     */
+                    val otp = commonDaoServices.randomNumber(6)
+                    val tokenValidation = commonDaoServices.generateVerificationToken(
+                        otp,
+                        user.cellphone ?: throw NullValueNotAllowedException("Valid Cellphone is required")
+                    )
+                    commonDaoServices.sendOtpViaSMS(tokenValidation)
+
                     ServerResponse.ok().body(response)
                 }
                 ?: throw NullValueNotAllowedException("Empty authentication after authentication attempt")

@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {
   doSendTokenForUser,
   doValidateTokenForUser,
@@ -7,9 +7,9 @@ import {
   loadResponsesFailure,
   selectTokenSentStateOtpSent,
   selectTokenValidatedStateValidated
-} from "../../core/store";
-import {select, Store} from "@ngrx/store";
-import {throwError} from "rxjs";
+} from '../../core/store';
+import {select, Store} from '@ngrx/store';
+import {throwError} from 'rxjs';
 
 @Component({
   selector: 'app-reset-credentials',
@@ -66,11 +66,11 @@ export class ResetCredentialsComponent implements OnInit {
     }
 
     this.store$.pipe(select(selectTokenSentStateOtpSent)).subscribe((d) => {
-      console.log(`value of inside is ${d}`)
+      console.log(`value of inside is ${d}`);
       if (d) {
         return this.otpSent = d;
       } else {
-        return throwError("Unable to send token");
+        return throwError('Unable to send token');
       }
     });
 
@@ -102,15 +102,15 @@ export class ResetCredentialsComponent implements OnInit {
     }
 
     this.store$.pipe(select(selectTokenValidatedStateValidated)).subscribe((d) => {
-      console.log(`value of inside is ${d}`)
+      console.log(`value of inside is ${d}`);
       if (d) {
-        this.username = this.stepZeroForm?.get('username')?.value
+        this.username = this.stepZeroForm?.get('username')?.value;
         this.step = 1;
         return this.tokenValidated = d;
       } else {
         this.otpSent = false;
-        this.stepZeroForm?.get('otp')?.reset()
-        return throwError("Could not validate token");
+        this.stepZeroForm?.get('otp')?.reset();
+        return throwError('Could not validate token');
       }
 
     });
@@ -152,7 +152,7 @@ export class ResetCredentialsComponent implements OnInit {
               username: this.username,
               password: this.stepOneForm?.get('credentials')?.value
             }, redirectUrl: ''
-          }))
+          }));
         } else {
           this.store$.dispatch(loadResponsesFailure({
             error: {

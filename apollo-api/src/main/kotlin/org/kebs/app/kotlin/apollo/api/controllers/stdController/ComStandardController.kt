@@ -9,7 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@CrossOrigin(origins = ["http://localhost:4200"])
+//@CrossOrigin(origins = ["http://localhost:4200"])
 @RequestMapping("api/v1/company_standard")
 class ComStandardController (val comStandardService: ComStandardService,
                              val standardRequestService: StandardRequestService
@@ -48,8 +48,8 @@ class ComStandardController (val comStandardService: ComStandardService,
 //    {
 //        return standardRequestService.getProductCategories(productId)
 //    }
-    @GetMapping("/getDepartments")
-    @ResponseBody
+@GetMapping("/anonymous/getDepartments")
+@ResponseBody
     fun getDepartments(): MutableList<Department>
     {
         return standardRequestService.getDepartments()
@@ -177,13 +177,13 @@ class ComStandardController (val comStandardService: ComStandardService,
     @ResponseBody
     fun getRQNumber(): String
     {
-        return comStandardService.getRQNumber();
+        return comStandardService.getRQNumber()
     }
 
     @GetMapping("/getUserList")
     @ResponseBody
     fun getUserList(): MutableList<UsersEntity> {
-        return comStandardService.getUserList();
+        return comStandardService.getUserList()
     }
 
 }
