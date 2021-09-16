@@ -46,24 +46,13 @@
                                             matStepperNext>NEXT
                                     </button>
                                 </div>
-                            </mat-step>
-                            <mat-step label="Engineering checklist">
-                                <app-engineering-inspection-checklist
-                                        (engineeringDetails)="setEngineringChecklist($event)"></app-engineering-inspection-checklist>
-                                <app-item-selection id="engineering" [categories]="categories" [items]="itemList"
-                                                    [(selectedItems)]="engineringItems"></app-item-selection>
-                                <button class="btn btn-warning" mat-button matStepperPrevious>Back</button>
-                                <div class="pull-right pr-4">
-                                    <button [disabled]="!engineeringDetails" class="btn btn-primary" mat-button
-                                            matStepperNext>NEXT
-                                    </button>
-                                </div>
+
                             </mat-step>
                             <mat-step label="Agrochem Checklist">
                                 <app-agrochem-inspection-checklist (agrochemDetails)="setAgrochemChecklist($event)"
                                 ></app-agrochem-inspection-checklist>
-                                    <label style="color: #0082f3">Select Agrochemical Items</label>
-                                <app-item-selection id="agrochem" [categories]="categories" [items]="itemList"
+                                <label style="color: #0082f3">Select Agrochemical Items</label>
+                                <app-item-selection id="agrochem" checklistType="agrochem" [categories]="categories" [items]="itemList"
                                                     [(selectedItems)]="agrochemItems"></app-item-selection>
                                 <button class="btn btn-warning" mat-button matStepperPrevious>Back</button>
                                 <div class="pull-right pr-4">
@@ -72,10 +61,22 @@
                                     </button>
                                 </div>
                             </mat-step>
+                            <mat-step label="Engineering checklist">
+                                <app-engineering-inspection-checklist
+                                        (engineeringDetails)="setEngineringChecklist($event)"></app-engineering-inspection-checklist>
+                                <app-item-selection checklistType="engineering" id="engineering" [categories]="categories" [items]="itemList"
+                                                    [(selectedItems)]="engineringItems"></app-item-selection>
+                                <button class="btn btn-warning" mat-button matStepperPrevious>Back</button>
+                                <div class="pull-right pr-4">
+                                    <button [disabled]="!engineeringDetails" class="btn btn-primary" mat-button
+                                            matStepperNext>NEXT
+                                    </button>
+                                </div>
+                            </mat-step>
                             <mat-step label="Vehicle Checklist">
                                 <app-vehicle-inspection-checklist (vehicleDetails)="setVehicleChecklist($event)"
                                 ></app-vehicle-inspection-checklist>
-                                <app-item-selection id="vehicle" [categories]="categories" [items]="itemList"
+                                <app-item-selection checklistType="vehicle" id="vehicle" [categories]="categories" [items]="itemList"
                                                     [(selectedItems)]="vehicleItems"></app-item-selection>
                                 <button class="btn btn-warning" mat-button matStepperPrevious>Back</button>
                                 <div class="pull-right pr-4">
@@ -87,7 +88,7 @@
                             <mat-step label="Other Checklists">
                                 <app-other-inspection-checklist (otherDetails)="setOtherChecklist($event)"
                                 ></app-other-inspection-checklist>
-                                <app-item-selection id="other" [categories]="categories" [items]="itemList"
+                                <app-item-selection checklistType="other" id="other" [categories]="categories" [items]="itemList"
                                                     [(selectedItems)]="otherItems"></app-item-selection>
                                 <button class="btn btn-warning" mat-button matStepperPrevious>Back</button>
                             </mat-step>

@@ -2,7 +2,6 @@ package org.kebs.app.kotlin.apollo.api.service
 
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.payload.*
-import org.kebs.app.kotlin.apollo.api.payload.request.CheckListItems
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.common.dto.MinistryInspectionListResponseDto

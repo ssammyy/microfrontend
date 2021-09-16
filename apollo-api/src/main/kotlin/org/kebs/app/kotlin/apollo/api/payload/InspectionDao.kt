@@ -43,6 +43,7 @@ class InspectionGeneralDetailsDto {
                 inspection = entity.inspection
                 idfNumber = entity.idfNumber
                 ucrNumber = entity.ucrNumber
+                overallRemarks=entity.overallRemarks
                 feePaid = entity.feePaid
                 receiptNumber = entity.receiptNumber
                 overallRemarks = entity.overallRemarks
@@ -134,6 +135,7 @@ class InspectionEngineeringDetailsDto {
     var instructionsUseManual: String? = null
     var inspectionReportApprovalComments: String? = null
     var description: String? = null
+    var remarks: String?=null
     var status: Int? = null
     var items: List<InspectionEngineeringItemDto>? = null
 
@@ -143,6 +145,7 @@ class InspectionEngineeringDetailsDto {
                 id = entity.id
                 inspection = entity.inspectionGeneral?.id
                 serialNumber = entity.serialNumber
+                remarks=entity.remarks
                 inspectionDate = entity.createdOn
                 description = entity.description
                 status = entity.status
@@ -227,6 +230,7 @@ class InspectionAgrochemDetailsDto {
     var inspectionReportApprovalComments: String? = null
     var description: String? = null
     var status: Int? = null
+    var remarks: String?=null
     var items: List<InspectionAgrochemItemDto>? = null
 
     companion object {
@@ -236,6 +240,7 @@ class InspectionAgrochemDetailsDto {
                 inspection = entity.inspectionGeneral?.id
                 serialNumber = entity.serialNumber
                 inspectionDate = entity.createdOn
+                remarks=entity.remarks
                 description = entity.description
                 status = entity.status
             }
@@ -319,6 +324,7 @@ class InspectionOtherDetailsDto {
     var inspectionReportApprovalComments: String? = null
     var description: String? = null
     var status: Int? = null
+    var remarks: String?=null
     var items: List<InspectionOtherItemDto>? = null
 
     companion object {
@@ -329,6 +335,7 @@ class InspectionOtherDetailsDto {
                 serialNumber = entity.serialNumber
                 inspectionDate = entity.createdOn
                 description = entity.description
+                remarks=entity.remarks
                 status = entity.status
             }
             entity.inspectionGeneral?.cdDetails?.let {
@@ -411,6 +418,7 @@ class InspectionMotorVehicleDetailsDto {
     var instructionsUseManual: String? = null
     var inspectionReportApprovalComments: String? = null
     var description: String? = null
+    var remarks: String?=null
     var status: Int? = null
     var items: List<InspectionMotorVehicleItemDto>? = null
 
@@ -420,6 +428,7 @@ class InspectionMotorVehicleDetailsDto {
                 id = entity.id
                 inspection = entity.inspectionGeneral?.id
                 serialNumber = entity.serialNumber
+                remarks=entity.remarks
                 inspectionDate = entity.createdOn
                 description = entity.description
                 status = entity.status

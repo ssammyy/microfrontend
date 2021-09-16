@@ -586,6 +586,7 @@ interface ICdThirdPartyDetailsRepository : HazelcastRepository<CdThirdPartyDetai
 interface IConsignmentItemsRepository : HazelcastRepository<CdItemDetailsEntity, Long> {
     fun findByCdDocId(cdDocId: ConsignmentDocumentDetailsEntity): List<CdItemDetailsEntity>?
     fun findByCdDocIdAndDnoteStatus(cdDocId: ConsignmentDocumentDetailsEntity, dnoteStatus: Int): List<CdItemDetailsEntity>?
+    fun findByCdDocIdAndSampledStatus(cdDocId: ConsignmentDocumentDetailsEntity, sampledStatus: Int): List<CdItemDetailsEntity>
     fun findByUuid(uuid: String): CdItemDetailsEntity?
     fun findByCdDocIdAndId(cdType: ConsignmentDocumentDetailsEntity, id: Long?) :CdItemDetailsEntity
     fun findByMinistrySubmissionStatus(status: Int): List<CdItemDetailsEntity>?

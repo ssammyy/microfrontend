@@ -1,5 +1,7 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {MatDialog, MatDialogRef} from "@angular/material/dialog";
+import {ItemChecklistComponent} from "./item-checklist/item-checklist.component";
 
 @Component({
   selector: 'app-agrochem-inspection-checklist',
@@ -9,12 +11,10 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 export class AgrochemInspectionChecklistComponent implements OnInit {
   @Output() private agrochemDetails = new EventEmitter<any>();
   agrochemChecklist: FormGroup
-
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder, private dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.agrochemChecklist=this.fb.group({
-      serialNumber: ['', [Validators.required,Validators.maxLength(256)]],
       brand: ['',Validators.maxLength(256)],
       ksEasApplicable: ['',Validators.maxLength(256)],
       quantityVerified: ['',Validators.maxLength(256)],
@@ -26,7 +26,6 @@ export class AgrochemInspectionChecklistComponent implements OnInit {
       storageCondition: ['', Validators.maxLength(256)],
       appearance: ['',Validators.maxLength(256)],
       certMarksPvocDoc: ['', Validators.maxLength(256)],
-      sampled: ['', Validators.required],
       remarks: ['',Validators.required]
     })
     this.agrochemChecklist.valueChanges

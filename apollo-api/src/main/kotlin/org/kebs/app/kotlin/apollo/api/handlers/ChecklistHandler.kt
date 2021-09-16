@@ -3,11 +3,11 @@ package org.kebs.app.kotlin.apollo.api.handlers
 import mu.KotlinLogging
 import okhttp3.internal.toLongOrDefault
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
-import org.kebs.app.kotlin.apollo.api.payload.CdItemDetailsDao
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.extractPage
 import org.kebs.app.kotlin.apollo.api.payload.request.CheckListForm
 import org.kebs.app.kotlin.apollo.api.payload.request.MinistryRequestForm
+import org.kebs.app.kotlin.apollo.api.payload.request.ScfForm
 import org.kebs.app.kotlin.apollo.api.payload.request.SsfForm
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
@@ -25,6 +25,8 @@ import org.springframework.web.multipart.MultipartHttpServletRequest
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
 import java.sql.Date
+import java.sql.Timestamp
+import java.time.Instant
 
 @Component
 class ChecklistHandler(
@@ -89,6 +91,12 @@ class ChecklistHandler(
         }
     }
 
+    fun consignmentDocumentChecklistSampled(req: ServerRequest): ServerResponse {
+        req.pathVariable("cdUuid").let {
+            return ServerResponse.ok().body(this.checlistService.consignmentChecklistSampled(it))
+        }
+    }
+
     fun ministryInspectionRequest(req: ServerRequest): ServerResponse {
         req.pathVariable("itemId").let {
             val form = req.body(MinistryRequestForm::class.java)
@@ -126,7 +134,40 @@ class ChecklistHandler(
     }
 
     fun addScfDetails(req: ServerRequest): ServerResponse{
-        return ServerResponse.ok().body("TEST")
+        var response=ApiResponseModel()
+        try {
+            val form = req.body(ScfForm::class.java)
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val sampleCollectionForm = form.scf()
+            sampleCollectionForm.createdBy = loggedInUser.createdBy
+            sampleCollectionForm.modifiedBy=loggedInUser.userName
+            sampleCollectionForm.createdOn= Timestamp.from(Instant.now())
+            response = this.checlistService.saveScfDetails(sampleCollectionForm,form.itemId, loggedInUser)
+        }catch (ex: Exception) {
+            response.responseCode=ResponseCodes.FAILED_CODE
+            response.message="SCF submission failed"
+        }
+        return ServerResponse.ok().body(response)
+    }
+
+    fun updateScfDetails(req: ServerRequest): ServerResponse{
+        var response=ApiResponseModel()
+        try {
+            val form = req.body(ScfForm::class.java)
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val sampleCollectionForm = form.scf()
+            response = this.checlistService.saveScfDetails(sampleCollectionForm,form.itemId,loggedInUser)
+        }catch (ex: Exception) {
+            response.responseCode=ResponseCodes.FAILED_CODE
+            response.message="SCF submission failed"
+        }
+        return ServerResponse.ok().body(response)
+    }
+
+    fun completeSsfDetails(req: ServerRequest): ServerResponse{
+        val form=req.body(SsfForm::class.java)
+        // Update sample
+        return ServerResponse.ok().body("OK")
     }
 
     fun addSsfDetails(req: ServerRequest): ServerResponse {
@@ -172,7 +213,7 @@ class ChecklistHandler(
                     val generalCheckList = form.generalChecklist()
                     generalCheckList.description = cdItem.description
                     generalCheckList.inspectionDate = Date(java.util.Date().time)
-                    generalCheckList.cfs = cdItem.freightStation?.cfsCode
+                    generalCheckList.cfs = cdItem.freightStation?.cfsName
                     generalCheckList.cocNumber = cdItem.cocNumber
                     generalCheckList.idfNumber = cdItem.idfNumber
                     val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
@@ -183,26 +224,29 @@ class ChecklistHandler(
                     //Save the respective checklist
                     form.agrochem?.let {
                         val agrochemItemInspectionChecklist = form.agrochemChecklist()
-                        checlistService.addAgrochemChecklist(map, inspectionGeneral, it.items, agrochemItemInspectionChecklist, loggedInUser)
+                        checlistService.addAgrochemChecklist(map, inspectionGeneral, form.agrochemChecklistItems(), agrochemItemInspectionChecklist, loggedInUser)
                     }
                     // Add engineering checklist
                     form.engineering?.let {
                         val engineeringItemInspectionChecklist = form.engineeringChecklist()
-                        checlistService.addEngineeringChecklist(map, inspectionGeneral, it.items, engineeringItemInspectionChecklist, loggedInUser)
+                        checlistService.addEngineeringChecklist(map, inspectionGeneral, form.engineeringChecklistItems(), engineeringItemInspectionChecklist, loggedInUser)
 
                     }
                     // Add vehicle checklist
                     form.vehicle?.let {
                         val motorVehicleItemInspectionChecklist = form.vehicleChecklist()
-                        checlistService.addVehicleChecklist(map, inspectionGeneral, it.items, motorVehicleItemInspectionChecklist, loggedInUser)
+                        checlistService.addVehicleChecklist(map, inspectionGeneral, form.vehicleChecklistItems(), motorVehicleItemInspectionChecklist, loggedInUser)
                     }
                     // Add other checklists
                     form.others?.let {
                         val otherItemInspectionChecklist = form.otherChecklist()
-                        checlistService.addOtherChecklist(map, inspectionGeneral, it.items, otherItemInspectionChecklist, loggedInUser)
+                        checlistService.addOtherChecklist(map, inspectionGeneral, form.otherChecklistItems(), otherItemInspectionChecklist, loggedInUser)
                     }
+                    cdItem.inspectionChecklist=map.activeStatus
+                    cdItem.varField10="CHECKLIST ITEM FILLED"
+                    daoServices.updateCdDetailsInDB(cdItem,loggedInUser)
                 }
-                response.message = "Success"
+                response.message = "Checklist submitted successfully"
                 response.responseCode = ResponseCodes.SUCCESS_CODE
             }
         } catch (ex: Exception) {

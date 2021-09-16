@@ -26,13 +26,16 @@ export class SsfDetailsFormComponent implements OnInit {
         })
     }
 
-    saveRecord() {
+    saveSsfRecord() {
         this.message = null
         this.diService.saveSSFDetails(this.form.value, this.data.uuid)
             .subscribe(
                 res => {
                     if (res.responseCode == "00") {
-                        this.dialogRef.close(false)
+                        this.diService.showSuccess(res.message, () => {
+                            this.dialogRef.close(false)
+                        })
+
                     } else {
                         this.message = res.message
                     }

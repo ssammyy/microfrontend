@@ -1046,19 +1046,19 @@ class DestinationInspectionDaoServices(
         //1. Handle ranges in the fee depending on amounts
         var feeType = diInspectionFeeId.rateType
         if ("RANGE".equals(diInspectionFeeId.rateType)) {
-            var documentType="NON-PVOC"
+            var documentType = "LOCAL"
             itemDetails.cdDocId?.let {
-                when(it.cdStandardsTwo?.cocType){
-                    "L"->{
-                        documentType="LOCAL"
+                when (it.cdStandardsTwo?.cocType) {
+                    "L" -> {
+                        documentType = "LOCAL"
                     }
-                    "F" ->{
-                        documentType="PVOC"
+                    "F" -> {
+                        documentType = "PVOC"
                     }
                 }
             }
             KotlinLogging.logger { }.info("${documentType} CFI DOCUMENT TYPE = $currencyCode-$cfiValue")
-            val feeRange = this.feeRangesRepository.findByInspectionFeeAndMinimumKshGreaterThanEqualAndMaximumKshLessThanEqual(diInspectionFeeId.id, cfiValue,documentType)
+            val feeRange = this.feeRangesRepository.findByInspectionFeeAndMinimumKshGreaterThanEqualAndMaximumKshLessThanEqual(diInspectionFeeId.id, cfiValue, documentType)
             if (feeRange.isEmpty()) {
                 throw Exception("Item details with Id = ${itemDetails.id}, does not Have any range For payment Fee Id Selected ${cfiValue}")
             } else {

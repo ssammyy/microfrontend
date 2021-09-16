@@ -27,6 +27,14 @@ class CdItemDetailsEntity : Serializable {
     @Column(name = "UUID")
     var uuid: String? = null
 
+    @Basic
+    @Column(name = "SSF_ID")
+    var ssfId: Long? = null
+
+    @Basic
+    @Column(name = "SCF_ID")
+    var scfId: Long? = null
+
     @Column(name = "ITEM_DESCRIPTION")
     @Basic
     var itemDescription: String? = null

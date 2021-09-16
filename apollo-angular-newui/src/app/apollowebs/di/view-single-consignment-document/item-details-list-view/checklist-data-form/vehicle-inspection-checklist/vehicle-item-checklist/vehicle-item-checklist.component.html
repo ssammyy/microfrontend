@@ -1,0 +1,106 @@
+<h2 mat-dialog-title>Assign Officer</h2>
+<mat-dialog-content>
+    <div class="row no_margin" [formGroup]="form">
+        <div class="col-sm-4 col-md-3">
+            <label for="category" class="waiver-form-label">Item Category</label>
+            <select id="category" class="waiver-form-input-master" formControlName="category">
+                <option value="" disabled selected>Select Category</option>
+                <option *ngFor="let d of categories" [value]="d.typeName">{{d.typeName}}</option>
+            </select>
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <label for="compliant" class="waiver-form-label">Select Compliance</label>
+            <select id="compliant" class="waiver-form-input-master" formControlName="compliant">
+                <option value="" disabled selected>Assign Compliance</option>
+                <option *ngFor="let d of complianceStatus" [value]="d.name">{{d.description}}</option>
+            </select>
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <label for="sampled" class="waiver-form-label">Sampled?</label>
+            <select id="sampled" class="waiver-form-input-master" formControlName="sampled">
+                <option [value]="">None</option>
+                <option value="YES">Yes</option>
+                <option value="NO">No</option>
+            </select>
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <label for="makeVehicle" class="waiver-form-label">Make Of Vehicle</label>
+            <input type="text" class="waiver-form-input-master" name="brand"
+                   data-name="brand" id="makeVehicle" formControlName="makeVehicle">
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <label for="chassisNo" class="waiver-form-label">Chassis Number</label>
+            <input type="text" class="waiver-form-input-master" name="chassisNo"
+                   data-name="quantity Verified" id="chassisNo"
+                   formControlName="chassisNo">
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <label for="ksEasApplicable" class="waiver-form-label">KS/EAS Applicable</label>
+            <select id="ksEasApplicable" class="waiver-form-input-master" formControlName="ksEasApplicable">
+                <option [value]="">None</option>
+                <option value="YES">Yes</option>
+                <option value="NO">No</option>
+            </select>
+        </div>
+
+        <div class="col-sm-4 col-md-3">
+            <label for="engineNoCapacity" class="waiver-form-label">Engine No./Capacity</label>
+            <input type="text" class="waiver-form-input-master"  name="engineNoCapacity"
+                   data-name="mfg Name" id="engineNoCapacity" formControlName="engineNoCapacity">
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <label for="registrationDate" class="waiver-form-label">Registration Date</label>
+            <input type="date" class="waiver-form-input-master" name="registrationDate"
+                   data-name="mfg Address" id="registrationDate" formControlName="registrationDate">
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <label for="compositionIngredients" class="waiver-form-label">Odometre Reading</label>
+            <input type="text" class="waiver-form-input-master"
+                   name="compositionIngredients" data-name="composition Ingredients"
+                   id="compositionIngredients" formControlName="compositionIngredients">
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <label for="driveRhdLhd" class="waiver-form-label">Drive(RHD/LHD)</label>
+            <select id="driveRhdLhd" class="form-control" formControlName="driveRhdLhd">
+                <option value="0">Select one...</option>
+                <option value="LEFT">LEFT</option>
+                <option value="RIGHT">RIGHT</option>
+                <option value="MIDDLE">MIDDLE</option>
+            </select>
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <label for="transmission">Transmission(Automatic/Manual)</label>
+            <select id="transmission" class="form-control" formControlName="transmissionAutoManual">
+                <option value="0">Select one...</option>
+                <option value="MANUAL">MANUAL</option>
+                <option value="AUTOMATIC">AUTOMATIC</option>
+                <option value="MANUAL/AUTO">AUTO/MANUAL</option>
+            </select>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="colour">Colour</label>
+            <input type="text" class="form-control" name="Colour"
+                   data-name="Colour" id="colour" formControlName="colour">
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="overallAppearance">Overall Appearance</label>
+            <input type="text" class="form-control" name="Overall Appearance"
+                   data-name="Overall Appearance" id="overallAppearance"
+                   formControlName="overallAppearance">
+        </div>
+        <div class="col-sm-12 col-md-8">
+            <label for="remarks" class="waiver-form-label">Please write, in detail, your feedback for this
+                item:</label>
+            <textarea id="remarks" class="waiver-form-input-master"
+                      formControlName="remarks"></textarea>
+        </div>
+    </div>
+    <mat-error *ngIf="message">{{message}}</mat-error>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <div class="row no_margin master-list-new-btn">
+        <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
+        <button [disabled]="form.invalid" class="next-btn btn-gen new-btn" (click)="addCompliance()">SAVE
+        </button>
+    </div>
+</mat-dialog-actions>

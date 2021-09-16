@@ -1,11 +1,9 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
+import {MatDialog} from "@angular/material/dialog";
 import {DestinationInspectionService} from "../../../../../core/store/data/di/destination-inspection.service";
-import {isNullOrUndefined} from "util";
 import swal from "sweetalert2";
 import {ActivatedRoute, Router} from "@angular/router";
-
 @Component({
     selector: 'app-checklist-data-form',
     templateUrl: './checklist-data-form.component.html',
@@ -27,22 +25,18 @@ export class ChecklistDataFormComponent implements OnInit {
     agrochemDetails: any
     agrochemItems: any[]
     selectedChecklist: any
-    engineeringChecklist: Boolean
-    vehicleChecklist: Boolean
-    otherChecklist: Boolean
-    agrochemChecklist: Boolean
     configs: any
     consignmentId: any
     consignment: any
-
-    constructor(private fb: FormBuilder, private router: Router, private activatedRoute: ActivatedRoute,
+    errors:any
+    constructor(private fb: FormBuilder, private dialog: MatDialog, private router: Router, private activatedRoute: ActivatedRoute,
                 private diService: DestinationInspectionService) {
     }
 
     ngOnInit(): void {
         this.activatedRoute.paramMap.subscribe(
-            res=>{
-                this.consignmentId=res.get("id")
+            res => {
+                this.consignmentId = res.get("id")
                 this.loadConsignmentDetails()
                 this.loadChecklistConfigurations()
             }
@@ -54,6 +48,7 @@ export class ChecklistDataFormComponent implements OnInit {
             customsEntryNumber: ['', [Validators.required, Validators.maxLength(256)]],
         })
     }
+
     loadConsignmentDetails() {
         this.diService.getConsignmentDetails(this.consignmentId)
             .subscribe(
@@ -69,7 +64,7 @@ export class ChecklistDataFormComponent implements OnInit {
                                 confirmButton: 'btn btn-success form-wizard-next-btn ',
                             },
                             icon: 'error'
-                        }).then(()=>{
+                        }).then(() => {
                             this.router.navigate(["/di", this.consignmentId])
                         });
                         console.log(response)
@@ -77,6 +72,7 @@ export class ChecklistDataFormComponent implements OnInit {
                 }
             )
     }
+
     loadChecklistConfigurations() {
         this.diService.loadChecklistConfigs()
             .subscribe(
@@ -90,6 +86,7 @@ export class ChecklistDataFormComponent implements OnInit {
                 }
             )
     }
+
     setAgrochemChecklist(data: any) {
         this.agrochemDetails = data
     }
@@ -110,31 +107,37 @@ export class ChecklistDataFormComponent implements OnInit {
         let items = []
         if (itemList) {
             itemList.forEach(itm => {
-                items.push({
+                items.push({...{
                     "itemId": itm.id,
                     "category": itm.category,
                     "compliant": itm.compliant,
                     "sampled": itm.sampled,
                     "serialNumber": itm.serialNumber
-                })
+                },...itm.checklist})
             })
         }
         return items
     }
 
-    invalidData(): Boolean {
-        let result = true;
-        if (this.engineeringChecklist) {
-            result = isNullOrUndefined(this.engineeringDetails)
-        } else if (this.vehicleChecklist) {
-            result = isNullOrUndefined(this.vehicleDetails)
-        } else if (this.agrochemChecklist) {
-            result = isNullOrUndefined(this.agrochemDetails)
-        } else if (this.otherChecklist) {
-            result = isNullOrUndefined(this.otherDetails)
+    validateItems() {
+        let selectedItems = []
+        selectedItems.push(this.engineringItems)
+        selectedItems.push(this.agrochemItems)
+        selectedItems.push(this.otherItems)
+        selectedItems.push(this.vehicleItems)
+        if(selectedItems.length>this.itemList.length){
+            this.errors["selected"]="Some items were selected more than once"
         }
-        console.log("CHK: " + result)
-        return result
+        if(this.generalCheckList.value.inspection=="FULL" && selectedItems.length<this.itemList.length){
+            this.errors["inspection"]="Full inspection requires all items to be selected"
+        }
+    }
+
+
+    invalidData(): Boolean {
+        this.errors={}
+        this.validateItems()
+        return this.errors.length>0
     }
 
     checklistChanges(event: any) {
@@ -142,30 +145,26 @@ export class ChecklistDataFormComponent implements OnInit {
         let selections = this.checkListTypes.filter(d => d.id == event.target.value)
         if (selections.length > 0) {
             this.selectedChecklist = selections[0]
-            this.engineeringChecklist = this.selectedChecklist.typeName.includes("ENGINEERING")
-            this.vehicleChecklist = this.selectedChecklist.typeName.includes("VEHICLE")
-            this.otherChecklist = this.selectedChecklist.typeName.includes("OTHER")
-            this.agrochemChecklist = this.selectedChecklist.typeName.includes("AGROCHEM")
         }
     }
 
     saveRecord() {
         this.message = null
         let data = this.generalCheckList.value
-        if (this.engineeringChecklist) {
-            this.engineeringDetails["items"]=this.getItems(this.engineringItems)
+        if (this.engineeringDetails) {
+            this.engineeringDetails["items"] = this.getItems(this.engineringItems)
             data["engineering"] = this.engineeringDetails
         }
-        if (this.vehicleChecklist) {
-            this.vehicleDetails["items"]=this.getItems(this.vehicleItems)
+        if (this.vehicleDetails) {
+            this.vehicleDetails["items"] = this.getItems(this.vehicleItems)
             data["vehicle"] = this.vehicleDetails
         }
-        if (this.agrochemChecklist) {
-            this.agrochemDetails["items"]=this.getItems(this.agrochemItems)
+        if (this.agrochemDetails) {
+            this.agrochemDetails["items"] = this.getItems(this.agrochemItems)
             data["agrochem"] = this.agrochemDetails
         }
-        if (this.otherChecklist) {
-            this.otherDetails["items"]=this.getItems(this.otherItems)
+        if (this.otherDetails) {
+            this.otherDetails["items"] = this.getItems(this.otherItems)
             data["others"] = this.otherDetails
         }
         this.diService.saveChecklist(this.consignmentId, data)

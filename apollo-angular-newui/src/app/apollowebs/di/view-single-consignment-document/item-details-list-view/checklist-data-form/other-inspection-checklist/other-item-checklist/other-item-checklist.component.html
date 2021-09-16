@@ -1,0 +1,89 @@
+<h2 mat-dialog-title>Engineering Item Checklist</h2>
+<mat-dialog-content>
+    <div class="row no_margin" [formGroup]="form">
+        <div class="col-sm-4 col-md-3">
+            <label for="category" class="waiver-form-label">Item Category</label>
+            <select id="category" class="waiver-form-input-master" formControlName="category">
+                <option value="" disabled selected>Select Category</option>
+                <option *ngFor="let d of categories" [value]="d.typeName">{{d.typeName}}</option>
+            </select>
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <label for="compliant" class="waiver-form-label">Select Compliance</label>
+            <select id="compliant" class="waiver-form-input-master" formControlName="compliant">
+                <option value="" disabled selected>Assign Compliance</option>
+                <option *ngFor="let d of complianceStatus" [value]="d.name">{{d.description}}</option>
+            </select>
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <label for="sampled" class="waiver-form-label">Sampled?</label>
+            <select id="sampled" class="waiver-form-input-master" formControlName="sampled">
+                <option [value]="">None</option>
+                <option value="YES">Yes</option>
+                <option value="NO">No</option>
+            </select>
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <label for="brand" class="waiver-form-label">Brand</label>
+            <input type="text" class="waiver-form-input-master" name="brand"
+                   data-name="brand" id="brand" formControlName="brand">
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <label for="ksEasApplicable" class="waiver-form-label">KS/EAS Applicable</label>
+            <select id="ksEasApplicable" class="waiver-form-input-master" formControlName="ksEasApplicable">
+                <option [value]="">None</option>
+                <option value="YES">Yes</option>
+                <option value="NO">No</option>
+            </select>
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <label for="quantityVerified" class="waiver-form-label">Quantity Verified (No. Of items/packages)</label>
+            <input type="text" class="waiver-form-input-master" name="quantityVerified"
+                   data-name="quantity Verified" id="quantityVerified"
+                   formControlName="quantityVerified">
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <label for="packagingLabelling" class="waiver-form-label">Packaging And labeling</label>
+            <input type="text" class="waiver-form-input-master"  name="packagingLabelling"
+                   data-name="mfg Name" id="packagingLabelling" formControlName="packagingLabelling">
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <label for="physicalCondition" class="waiver-form-label">Physical Condition</label>
+            <input type="text" class="waiver-form-input-master" name="physicalCondition"
+                   data-name="mfg Address" id="physicalCondition" formControlName="physicalCondition">
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <label for="defects" class="waiver-form-label">Defects</label>
+            <input type="text" class="waiver-form-input-master"
+                   name="defects" data-name="Defects"
+                   id="defects" formControlName="defects">
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <label for="presenceAbsenceBanned" class="waiver-form-label">Presence/absence of banned items</label>
+            <select id="presenceAbsenceBanned" class="waiver-form-input-master" formControlName="ksEasApplicable">
+                <option [value]="">None</option>
+                <option value="YES">Yes</option>
+                <option value="NO">No</option>
+            </select>
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <label for="documentation" class="waiver-form-label">Documentation (heath/fumigation certificates e.t.c.)</label>
+            <input type="text" class="waiver-form-input-master"  name="documentation"
+                   data-name="date Expiry" id="documentation" required="" formControlName="documentation">
+        </div>
+        <div class="col-sm-12 col-md-8">
+            <label for="remarks" class="waiver-form-label">Please write, in detail, your feedback for this
+                item:</label>
+            <textarea id="remarks" class="waiver-form-input-master"
+                      formControlName="remarks"></textarea>
+        </div>
+    </div>
+    <mat-error *ngIf="message">{{message}}</mat-error>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <div class="row no_margin master-list-new-btn">
+        <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
+        <button [disabled]="form.invalid" class="next-btn btn-gen new-btn" (click)="addCompliance()">SAVE
+        </button>
+    </div>
+</mat-dialog-actions>

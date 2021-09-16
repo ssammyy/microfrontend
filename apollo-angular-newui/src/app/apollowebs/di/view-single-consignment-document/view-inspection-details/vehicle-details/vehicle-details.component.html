@@ -1,0 +1,22 @@
+<div id='vehicle-details' *ngIf="inspectionDetails">
+    <div class="form-row">
+        <ul class="col-md-12 w-list-unstyled">
+            <li class="list-item-accordion">
+                <div class="list-title-accordion">REMARKS</div>
+                <div class="list-text-accordion">{{inspectionDetails.remarks}}</div>
+            </li>
+            <li class="list-item-accordion">
+                <div class="list-title-accordion">DATE</div>
+                <div class="list-text-accordion">{{inspectionDetails.inspectionDate}}</div>
+            </li>
+        </ul>
+    </div>
+    <div class="form-row">
+        <div class="col-md-12 mb-3">
+            <label style="color: #0082f3">Items</label>
+        </div>
+        <div class="table-striped table-condensed table-responsive">
+            <ng2-smart-table [settings]="settings" [source]="inspectionDetails.items"></ng2-smart-table>
+        </div>
+    </div>
+</div>

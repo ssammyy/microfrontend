@@ -4,6 +4,7 @@ import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.servi
 import {Observable} from "rxjs";
 import * as fileSaver from 'file-saver';
 import {map} from "rxjs/operators";
+import swal from "sweetalert2";
 
 @Injectable({
     providedIn: 'root'
@@ -256,6 +257,10 @@ export class DestinationInspectionService {
         return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/item-ssf/"+itemUuid),data);
     }
 
+    saveSCFDetails(data: any,itemUuid:any): Observable<any> {
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/item-scf/"+itemUuid),data);
+    }
+
     demandNoteDetails(demandNoteId: any): Observable<any> {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/demand/note/details/"+demandNoteId))
     }
@@ -264,5 +269,38 @@ export class DestinationInspectionService {
     }
     deleteDemandNote(demandNoteId: any): Observable<any>{
         return this.client.delete(ApiEndpointService.getEndpoint("/api/v1/di/demand/note/submit/"+demandNoteId))
+    }
+
+    getDetails(url: string): Observable<any> {
+        return this.client.get(ApiEndpointService.getEndpoint(url))
+    }
+
+    showSuccess(message: string, fn?:Function){
+        swal.fire({
+            title: message,
+            buttonsStyling: false,
+            customClass: {
+                confirmButton: 'btn btn-success form-wizard-next-btn ',
+            },
+            icon: 'success'
+        }).then(()=>{
+            if(fn){
+                fn()
+            }
+        })
+    }
+    showError(message: string, fn?:Function){
+        swal.fire({
+            title: message,
+            buttonsStyling: false,
+            customClass: {
+                confirmButton: 'btn btn-success form-wizard-next-btn ',
+            },
+            icon: 'error'
+        }).then(()=>{
+            if(fn){
+                fn()
+            }
+        })
     }
 }

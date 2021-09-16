@@ -432,23 +432,23 @@ class DaoService(
     }
 
 
-//    fun submitCocToKeSWS(cocData: CocsEntity) {
-//        val coc: CustomCocXmlDto = cocData.toCocXmlRecordRefl()
-//        val cocItem = cocItemsRepository.findByCocId(cocData.id)?.get(0)
-//        cocItem?.toCocItemDetailsXmlRecordRefl().let { cocDetails ->
-//            coc.cocDetals = cocDetails
-//            val cocFinalDto = COCXmlDTO()
-//            cocFinalDto.coc = coc
-//            val fileName = cocFinalDto.coc?.ucrNumber?.let { s ->
-//                createKesWsFileName(
-//                    applicationMapProperties.mapKeswsCocDoctype,
-//                    s
-//                )
-//            }
-//            val xmlFile = fileName?.let { s -> serializeToXml(s, cocFinalDto) }
-//            xmlFile.let { it1 -> it1?.let { file -> sftpService.uploadFile(file) } }
-//        }
-//    }
+    fun submitCocToKeSWS(cocData: CocsEntity) {
+        val coc: CustomCocXmlDto = cocData.toCocXmlRecordRefl()
+        val cocItem = cocItemsRepository.findByCocId(cocData.id)?.get(0)
+        cocItem?.toCocItemDetailsXmlRecordRefl().let { cocDetails ->
+            coc.cocDetals = cocDetails
+            val cocFinalDto = COCXmlDTO()
+            cocFinalDto.coc = coc
+            val fileName = cocFinalDto.coc?.ucrNumber?.let { s ->
+                createKesWsFileName(
+                    applicationMapProperties.mapKeswsCocDoctype,
+                    s
+                )
+            }
+            val xmlFile = fileName?.let { s -> serializeToXml(s, cocFinalDto) }
+            xmlFile.let { it1 -> it1?.let { file -> sftpService.uploadFile(file) } }
+        }
+    }
 
     fun serializeToXml(fileName: String, obj: Any): File {
         try {

@@ -122,16 +122,7 @@ import {RequestStandardFormComponent} from './apollowebs/standards-development/s
 import {ReviewApplicationsComponent} from './apollowebs/standards-development/standard-request/review-applications/review-applications.component';
 import {StandardTaskComponent} from './apollowebs/standards-development/standard-request/standard-task/standard-task.component';
 import {ModalModule} from "ngb-modal";
-import {SmarkAllAwardedApplicationsComponent} from './apollowebs/quality-assurance/smark-all-awarded-applications/smark-all-awarded-applications.component';
-import {DmarkAllAwardedApplicationsComponent} from './apollowebs/quality-assurance/dmark-all-awarded-applications/dmark-all-awarded-applications.component';
-import {FmarkAllAwardedApplicationsComponent} from './apollowebs/quality-assurance/fmark-all-awarded-applications/fmark-all-awarded-applications.component';
-import {QaTaskDetailsComponent} from './apollowebs/quality-assurance/qa-task-details/qa-task-details.component';
-import {CompanyViewComponent} from './apollowebs/company/company-view/company-view.component';
-import {BranchViewComponent} from './apollowebs/company/branch/branch-view/branch-view.component';
-import {QrCodeDetailsComponent} from './apollowebs/quality-assurance/qr-code-details/qr-code-details.component';
-import { StdTscSecTasksComponentComponent } from './apollowebs/standards-development/standard-request/std-tsc-sec-tasks-component/std-tsc-sec-tasks-component.component';
 import {NgMultiSelectDropDownModule} from "ng-multiselect-dropdown";
-import { StdTcTasksComponent } from './apollowebs/standards-development/standard-request/std-tc-tasks/std-tc-tasks.component';
 import {DataTablesModule} from "angular-datatables";
 import {ViewDiDeclarationDocumentsComponent} from "./apollowebs/di/view-single-consignment-document/view-di-declaration-documents/view-di-declaration-documents.component";
 import {ViewIdfDocumentDetailsComponent} from "./apollowebs/di/view-single-consignment-document/view-idf-document-details/view-idf-document-details.component";
@@ -157,7 +148,7 @@ import {ViewRemarksHistoryComponent} from './apollowebs/di/view-single-consignme
 import {ItemDetailsComponent} from './apollowebs/di/view-single-consignment-document/item-details-list-view/item-details/item-details.component';
 import {ProcessRejectionComponent} from "./apollowebs/di/forms/process-rejection/process-rejection.component";
 import {MatFormFieldModule} from "@angular/material/form-field";
-import { ChecklistsComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/checklists/checklists.component';
+import { ChecklistsComponent } from './apollowebs/di/view-single-consignment-document/view-inspection-details/checklists/checklists.component';
 import { MinistryInspectionRequestComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/ministry-inspection-request/ministry-inspection-request.component';
 import {DragDropModule} from "@angular/cdk/drag-drop";
 import {DiCorComponent} from "./apollowebs/di/view-single-consignment-document/di-cor/di-cor.component";
@@ -172,11 +163,21 @@ import { AgrochemInspectionChecklistComponent } from './apollowebs/di/view-singl
 import { EngineeringInspectionChecklistComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/checklist-data-form/engineering-inspection-checklist/engineering-inspection-checklist.component';
 import { OtherInspectionChecklistComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/checklist-data-form/other-inspection-checklist/other-inspection-checklist.component';
 import { VehicleInspectionChecklistComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/checklist-data-form/vehicle-inspection-checklist/vehicle-inspection-checklist.component';
-import { SsfDetailsFormComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/ssf-details-form/ssf-details-form.component';
+import { SsfDetailsFormComponent } from './apollowebs/di/view-single-consignment-document/view-inspection-details/ssf-details-form/ssf-details-form.component';
 import { ApproveRejectItemComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/approve-reject-item/approve-reject-item.component';
 import { ViewDemandNoteComponent } from './apollowebs/di/demand-note-list/view-demand-note/view-demand-note.component';
-import { ItemSelectionComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/item-selection/item-selection.component';
-import { ViewInspectionDetailsComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/view-inspection-details/view-inspection-details.component';
+import { ItemSelectionComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/checklist-data-form/item-selection/item-selection.component';
+import { ViewInspectionDetailsComponent } from './apollowebs/di/view-single-consignment-document/view-inspection-details/view-inspection-details.component';
+import {ItemChecklistComponent} from "./apollowebs/di/view-single-consignment-document/item-details-list-view/checklist-data-form/agrochem-inspection-checklist/item-checklist/item-checklist.component";
+import { EngineeringItemChecklistComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/checklist-data-form/engineering-inspection-checklist/engineering-item-checklist/engineering-item-checklist.component';
+import { OtherItemChecklistComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/checklist-data-form/other-inspection-checklist/other-item-checklist/other-item-checklist.component';
+import { VehicleItemChecklistComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/checklist-data-form/vehicle-inspection-checklist/vehicle-item-checklist/vehicle-item-checklist.component';
+import { EngineeringDetailsComponent } from './apollowebs/di/view-single-consignment-document/view-inspection-details/engineering-details/engineering-details.component';
+import { AgrochemDetailsComponent } from './apollowebs/di/view-single-consignment-document/view-inspection-details/agrochem-details/agrochem-details.component';
+import { OtherDetailsComponent } from './apollowebs/di/view-single-consignment-document/view-inspection-details/other-details/other-details.component';
+import { VehicleDetailsComponent } from './apollowebs/di/view-single-consignment-document/view-inspection-details/vehicle-details/vehicle-details.component';
+import { ScfDetailsFormComponent } from './apollowebs/di/view-single-consignment-document/view-inspection-details/scf-details-form/scf-details-form.component';
+import { ComplianceUpdateFormComponent } from './apollowebs/di/view-single-consignment-document/view-inspection-details/compliance-update-form/compliance-update-form.component';
 
 
 @NgModule({
@@ -360,7 +361,17 @@ import { ViewInspectionDetailsComponent } from './apollowebs/di/view-single-cons
         ApproveRejectItemComponent,
         ViewDemandNoteComponent,
         ItemSelectionComponent,
-        ViewInspectionDetailsComponent
+        ViewInspectionDetailsComponent,
+        ItemChecklistComponent,
+        EngineeringItemChecklistComponent,
+        OtherItemChecklistComponent,
+        VehicleItemChecklistComponent,
+        EngineeringDetailsComponent,
+        AgrochemDetailsComponent,
+        OtherDetailsComponent,
+        VehicleDetailsComponent,
+        ScfDetailsFormComponent,
+        ComplianceUpdateFormComponent
     ],
     providers: [
         MatNativeDateModule,

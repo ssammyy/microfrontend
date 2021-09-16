@@ -1,10 +1,8 @@
 import {Component, Inject, Input, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 import {DestinationInspectionService} from "../../../../core/store/data/di/destination-inspection.service";
-import {DataSource, SelectionModel} from "@angular/cdk/collections";
-import {LocalDataSource} from "ng2-smart-table";
+import {SelectionModel} from "@angular/cdk/collections";
 import {MatTableDataSource} from "@angular/material/table";
 
 @Component({

@@ -35,7 +35,8 @@ class DestinationInspectionRoutes {
             POST("/consignment/document/item-scf/{category}/{cdItemID}", handler::addScfDetails)
             POST("/consignment/document/item-ssf/{category}/{cdItemID}", handler::addSsfDetails)
             GET("/check-list/configurations",handler::checklistConfigurations)
-            GET("/consignment/documents/checklist/{cdUuid}", handler::consignmentDocumentChecklist)
+            GET("/consignment/document/checklist/{cdUuid}", handler::consignmentDocumentChecklist)
+            GET("/consignment/document/sampled-items/{cdUuid}", handler::consignmentDocumentChecklistSampled)
 //            POST("/consignment/document/compliant-vehicle/{inspectionChecklistId}", handler::updateMotorVehicleComplianceStatus)
             // Ministry
             GET("/ministry/inspections/{inspectionStatus}", handler::ministryInspections)

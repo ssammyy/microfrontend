@@ -21,19 +21,6 @@ export class EngineeringInspectionChecklistComponent implements OnInit {
 
         this.engineeringChecklist = this.fb.group({
             serialNumber: ['', [Validators.required, Validators.maxLength(256)]],
-            brand: ['', Validators.maxLength(256)],
-            ksEasApplicable: ['', Validators.maxLength(256)],
-            quantityVerified: ['', Validators.maxLength(256)],
-            mfgNameAddress: ['', Validators.maxLength(256)],
-            batchNoModelTypeRef: ['', Validators.maxLength(256)],
-            fiberComposition: ['', Validators.maxLength(256)],
-            instructionsUseManual: ['', Validators.maxLength(256)],
-            warrantyPeriodDocumentation: ['', Validators.maxLength(256)],
-            safetyCautionaryRemarks: ['', Validators.maxLength(256)],
-            sizeClassCapacity: ['', Validators.maxLength(256)],
-            certMarksPvocDoc: ['', Validators.maxLength(256)],
-            disposalInstruction: ['', Validators.required],
-            sampled: ['', Validators.required],
             remarks: ['', Validators.required]
         })
 

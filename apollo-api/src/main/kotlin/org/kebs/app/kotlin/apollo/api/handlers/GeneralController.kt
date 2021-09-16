@@ -174,7 +174,7 @@ class GeneralController(
             map["totalAmount"] = demandNote.totalAmount.toString()
             map["receiptNo"] = demandNote.receiptNo.toString()
 
-            map = reportsDaoService.addBankAndMPESADetails(map)
+            map = reportsDaoService.addBankAndMPESADetails(map,"")
 
             val extractReport = reportsDaoService.extractReport(
                     map,

@@ -5,7 +5,7 @@ import swal from "sweetalert2";
 import {MatDialog} from "@angular/material/dialog";
 import {MinistryInspectionRequestComponent} from "../ministry-inspection-request/ministry-inspection-request.component";
 import {ChecklistDataFormComponent} from "../checklist-data-form/checklist-data-form.component";
-import {SsfDetailsFormComponent} from "../ssf-details-form/ssf-details-form.component";
+import {SsfDetailsFormComponent} from "../../view-inspection-details/ssf-details-form/ssf-details-form.component";
 import {ApproveRejectItemComponent} from "../approve-reject-item/approve-reject-item.component";
 
 @Component({

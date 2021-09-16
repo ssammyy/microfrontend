@@ -115,27 +115,27 @@ export const ROUTES: RouteInfo[] = [
         path: '/pvoc',
         title: 'PVOC',
         type: 'link',
-        privilege: 'DI_INSPECTION',
+        privilege: 'DI_INSPECTION_OFFICER_READ',
         icontype: 'receipt'
     },
     {
         path: '/ministry/inspection',
         title: 'Motor Vehicle Inspection',
         type: 'link',
-        privilege: 'DI_INSPECTION',
+        privilege: 'DI_INSPECTION_OFFICER_READ',
         icontype: 'receipt'
     },
     {
         path: '/di',
         title: 'Import Inspection',
         type: 'link',
-        privilege: 'DI_INSPECTION',
+        privilege: 'DI_INSPECTION_OFFICER_READ',
         icontype: 'receipt'
     },
     {
         path: '/tasks',
         title: 'Import Inspection Tasks',
-        privilege: 'DI_INSPECTION',
+        privilege: 'DI_INSPECTION_OFFICER_READ',
         type: 'link',
         icontype: 'receipt'
     }

@@ -14,6 +14,9 @@ class CdInspectionEngineeringChecklist : Serializable {
     @GeneratedValue(generator = "DAT_KEBS_CD_INSPECTION_ENGINEERING_CHECKLIST_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Id
     var id: Long? = null
+    @Column(name = "ITEM_COUNT")
+    @Basic
+    var itemCount: Int? = null
     @Column(name = "SERIAL_NUMBER")
     @Basic
     var serialNumber: String? = null
