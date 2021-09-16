@@ -178,6 +178,9 @@ import { OtherDetailsComponent } from './apollowebs/di/view-single-consignment-d
 import { VehicleDetailsComponent } from './apollowebs/di/view-single-consignment-document/view-inspection-details/vehicle-details/vehicle-details.component';
 import { ScfDetailsFormComponent } from './apollowebs/di/view-single-consignment-document/view-inspection-details/scf-details-form/scf-details-form.component';
 import { ComplianceUpdateFormComponent } from './apollowebs/di/view-single-consignment-document/view-inspection-details/compliance-update-form/compliance-update-form.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatMultilineTabDirective } from './apollowebs/di/mat-multiline-tab.directive';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 
 @NgModule({
@@ -225,6 +228,8 @@ import { ComplianceUpdateFormComponent } from './apollowebs/di/view-single-consi
         NgbPaginationModule,
         MatTableModule,
         NgMultiSelectDropDownModule,
+        MatTabsModule,
+        MatProgressSpinnerModule
         // CoreModule
     ],
     declarations: [
@@ -371,7 +376,8 @@ import { ComplianceUpdateFormComponent } from './apollowebs/di/view-single-consi
         OtherDetailsComponent,
         VehicleDetailsComponent,
         ScfDetailsFormComponent,
-        ComplianceUpdateFormComponent
+        ComplianceUpdateFormComponent,
+        MatMultilineTabDirective
     ],
     providers: [
         MatNativeDateModule,

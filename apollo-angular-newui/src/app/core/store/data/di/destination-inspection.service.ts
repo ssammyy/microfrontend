@@ -274,6 +274,9 @@ export class DestinationInspectionService {
     getDetails(url: string): Observable<any> {
         return this.client.get(ApiEndpointService.getEndpoint(url))
     }
+    updateSSFResults(data: any, itemUuid: any): Observable<any> {
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/item-ssf-result/"+itemUuid),data);
+    }
 
     showSuccess(message: string, fn?:Function){
         swal.fire({
@@ -303,4 +306,6 @@ export class DestinationInspectionService {
             }
         })
     }
+
+
 }

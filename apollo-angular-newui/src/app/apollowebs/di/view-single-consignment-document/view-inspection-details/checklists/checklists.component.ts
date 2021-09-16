@@ -3,6 +3,7 @@ import {DestinationInspectionService} from "../../../../../core/store/data/di/de
 import {MatDialog} from "@angular/material/dialog";
 import {SsfDetailsFormComponent} from "../ssf-details-form/ssf-details-form.component";
 import {ScfDetailsFormComponent} from "../scf-details-form/scf-details-form.component";
+import {ComplianceUpdateFormComponent} from "../compliance-update-form/compliance-update-form.component";
 
 @Component({
     selector: 'app-checklists',
@@ -20,10 +21,18 @@ export class ChecklistsComponent implements OnInit {
             edit: false,
             delete: false,
             custom: [
-                {name: 'sampleSubmission', title: '<i class="btn btn-sm btn-primary">SSF</i>'},
-                {name: 'sampleCollection', title: '<i class="btn btn-sm btn-primary">SCF</i>'}
+                {name: 'sampleSubmission', title: '<i class="btn-sm btn-primary ssf">SSF</i>'},
+                {name: 'sampleCollection', title: '<i class="btn-sm btn-primary scf">SCF</i>'},
+                {name: 'sampleUpdate', title: '<i class="btn-sm btn-primary ssf-update">SSF Updated</i>'}
             ],
             position: 'right' // left|right
+        },
+        rowClassFunction: (row)=>{
+            if(row.sampleCollectionStatus==1) {
+                return 'hide-scf-action'
+            }
+
+            return "hide-ssf-action"
         },
         delete: {
             deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
@@ -31,37 +40,32 @@ export class ChecklistsComponent implements OnInit {
         },
         noDataMessage: 'No data found',
         columns: {
-            id: {
+            itemNo: {
                 title: '#',
                 type: 'string'
             },
-            checklistTypeName: {
-                title: 'Checklist Type',
+            itemHsCode: {
+                title: 'HS Code',
                 type: 'string'
             },
-            inspection: {
-                title: 'Inspection Status',
+            quantity: {
+                title: 'Quantity',
                 type: 'string'
             },
-            inspectionDate: {
-                title: 'Inspection Date',
+            unitOfQuantity: {
+                title: 'Unit',
                 type: 'string'
             },
-
-            feePaid: {
-                title: 'Payment Status',
+            countryOfOrgin: {
+                title: 'Origin',
                 type: 'string'
             },
-            receiptNumber: {
-                title: 'Receipt Number',
-                type: 'string'
-            },
-            overallRemarks: {
-                title: 'Remarks',
-                type: 'string'
-            },
-            description: {
+            itemDescription: {
                 title: 'Description',
+                type: 'string'
+            },
+            inspectionNotificationStatus: {
+                title: 'Inspection Status',
                 type: 'string'
             }
         },
@@ -98,6 +102,15 @@ export class ChecklistsComponent implements OnInit {
         })
     }
 
+    openSampleUpdate(data: any) {
+        this.dialog.open(ComplianceUpdateFormComponent, {
+            data: {
+                uuid: data.uuid,
+                details: data
+            }
+        })
+    }
+
     onCustomAction(data: any) {
         switch (data.action) {
             case 'sampleCollection':
@@ -106,6 +119,8 @@ export class ChecklistsComponent implements OnInit {
             case "sampleSubmission":
                 this.openSampleSubmission(data.data)
                 break
+            case "sampleUpdate":
+                this.openSampleUpdate(data.data)
             default:
                 console.log("Invalid action: " + data.action)
 

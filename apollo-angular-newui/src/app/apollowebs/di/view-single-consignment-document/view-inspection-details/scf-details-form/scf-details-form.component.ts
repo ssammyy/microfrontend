@@ -11,6 +11,40 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 export class ScfDetailsFormComponent implements OnInit {
     form: FormGroup
     message: any
+    samplingMethods=[
+        {
+            name: "Random Sampling",
+            description: "Random Sampling"
+        },
+        {
+            name: "Systematic sampling",
+            description: "Systematic sampling"
+        },
+        {
+            name: "Stratified sampling",
+            description: "Stratified sampling"
+        },
+        {
+            name: "Clustered sampling",
+            description: "Clustered sampling"
+        },
+        {
+            name: "Convenience sampling",
+            description: "Convenience sampling"
+        },
+        {
+            name: "Quota sampling",
+            description: "Quota sampling"
+        },
+        {
+            name: "Judgement (or Purposive) Sampling",
+            description: "Systematic sampling"
+        },
+        {
+            name: "Snowball sampling",
+            description: "Snowball sampling"
+        }
+    ]
 
     constructor(@Inject(MAT_DIALOG_DATA) public data: any, private fb: FormBuilder, private diService: DestinationInspectionService, public dialogRef: MatDialogRef<any>) {
     }
@@ -33,7 +67,7 @@ export class ScfDetailsFormComponent implements OnInit {
 
     saveScfRecord() {
         this.message = null
-        this.diService.saveSSFDetails(this.form.value, this.data.uuid)
+        this.diService.saveSCFDetails(this.form.value, this.data.uuid)
             .subscribe(
                 res => {
                     if (res.responseCode == "00") {

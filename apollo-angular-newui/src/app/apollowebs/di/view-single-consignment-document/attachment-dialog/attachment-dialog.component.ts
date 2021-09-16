@@ -2,6 +2,7 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {DestinationInspectionService} from "../../../../core/store/data/di/destination-inspection.service";
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
     selector: 'app-attachment-dialog',
@@ -12,17 +13,19 @@ export class AttachmentDialogComponent implements OnInit {
     selectedFile: File
     message: string
     form: FormGroup
+    loading: boolean;
 
     constructor(private dialogRef: MatDialogRef<any>,
                 @Inject(MAT_DIALOG_DATA) public data: any,
                 private fb: FormBuilder,
+                private toastrService: ToastrService,
                 private diService: DestinationInspectionService) {
     }
 
     ngOnInit(): void {
         this.form = this.fb.group({
             description: ['', Validators.required]
-        })
+        });
     }
 
     onFileSelected(event: any) {
@@ -32,19 +35,21 @@ export class AttachmentDialogComponent implements OnInit {
     }
 
     saveRecord() {
+        this.loading =  true;
         this.diService.uploadConsignmentDocumentAttachment(this.selectedFile, this.form.value.description, this.data.id)
             .subscribe(
                 res => {
-                    if (res.responseCode === "00") {
-                        this.dialogRef.close(true)
+                    if (res.responseCode === '00') {
+                        this.toastrService.success('Record Saved Successfully', 'Success');
+                        this.dialogRef.close(true);
                     } else {
-                        this.message = res.message
+                        this.message = res.message;
                     }
                 }
-            )
+            );
     }
 
     closeDialog() {
-        this.dialogRef.close(false)
+        this.dialogRef.close(false);
     }
 }

@@ -20,7 +20,6 @@ export class EngineeringInspectionChecklistComponent implements OnInit {
     ngOnInit(): void {
 
         this.engineeringChecklist = this.fb.group({
-            serialNumber: ['', [Validators.required, Validators.maxLength(256)]],
             remarks: ['', Validators.required]
         })
 

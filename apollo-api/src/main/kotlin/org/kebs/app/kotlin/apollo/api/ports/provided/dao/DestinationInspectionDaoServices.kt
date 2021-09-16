@@ -1910,7 +1910,6 @@ class DestinationInspectionDaoServices(
             return it
         } ?: throw ExpectedDataNotFound("No sample submission found with the following [cdItemID=$cdItemID]")
     }
-
     fun ssfSave(
             cdItemDetails: CdItemDetailsEntity,
             ssfDetails: QaSampleSubmissionEntity,

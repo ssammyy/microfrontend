@@ -4,6 +4,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {DestinationInspectionService} from "../../../../../core/store/data/di/destination-inspection.service";
 import swal from "sweetalert2";
 import {ActivatedRoute, Router} from "@angular/router";
+
 @Component({
     selector: 'app-checklist-data-form',
     templateUrl: './checklist-data-form.component.html',
@@ -28,7 +29,8 @@ export class ChecklistDataFormComponent implements OnInit {
     configs: any
     consignmentId: any
     consignment: any
-    errors:any
+    errors: any
+
     constructor(private fb: FormBuilder, private dialog: MatDialog, private router: Router, private activatedRoute: ActivatedRoute,
                 private diService: DestinationInspectionService) {
     }
@@ -107,13 +109,15 @@ export class ChecklistDataFormComponent implements OnInit {
         let items = []
         if (itemList) {
             itemList.forEach(itm => {
-                items.push({...{
-                    "itemId": itm.id,
-                    "category": itm.category,
-                    "compliant": itm.compliant,
-                    "sampled": itm.sampled,
-                    "serialNumber": itm.serialNumber
-                },...itm.checklist})
+                items.push({
+                    ...{
+                        "itemId": itm.id,
+                        "category": itm.category,
+                        "compliant": itm.compliant,
+                        "sampled": itm.sampled,
+                        "serialNumber": itm.serialNumber
+                    }, ...itm.checklist
+                })
             })
         }
         return items
@@ -125,19 +129,31 @@ export class ChecklistDataFormComponent implements OnInit {
         selectedItems.push(this.agrochemItems)
         selectedItems.push(this.otherItems)
         selectedItems.push(this.vehicleItems)
-        if(selectedItems.length>this.itemList.length){
-            this.errors["selected"]="Some items were selected more than once"
+        if (selectedItems.length > this.itemList.length) {
+            this.errors["selected"] = "Some items were selected more than once"
         }
-        if(this.generalCheckList.value.inspection=="FULL" && selectedItems.length<this.itemList.length){
-            this.errors["inspection"]="Full inspection requires all items to be selected"
+        if (this.generalCheckList.value.inspection == "FULL" && selectedItems.length < this.itemList.length) {
+            this.errors["inspection"] = "Full inspection requires all items to be selected"
         }
     }
 
 
     invalidData(): Boolean {
-        this.errors={}
+        this.errors = {}
         this.validateItems()
-        return this.errors.length>0
+        if (this.engineringItems && this.engineringItems.length > 0 && !this.engineeringDetails) {
+            this.errors["engineering"] = "Fill engineering details"
+        }
+        if (this.agrochemItems && this.agrochemItems.length > 0 && !this.agrochemDetails) {
+            this.errors["agrochem"] = "Fill agrochem details"
+        }
+        if (this.vehicleItems && this.vehicleItems.length > 0 && !this.vehicleDetails) {
+            this.errors["vehicle"] = "Fill vehicle details"
+        }
+        if (this.otherItems && this.otherItems.length > 0 && !this.otherDetails) {
+            this.errors["other"] = "Fill other details"
+        }
+        return this.errors.length > 0
     }
 
     checklistChanges(event: any) {
@@ -150,6 +166,10 @@ export class ChecklistDataFormComponent implements OnInit {
 
     saveRecord() {
         this.message = null
+        if (this.invalidData()) {
+            this.message = "Please correct form errors"
+            return
+        }
         let data = this.generalCheckList.value
         if (this.engineeringDetails) {
             this.engineeringDetails["items"] = this.getItems(this.engineringItems)

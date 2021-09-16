@@ -17,12 +17,11 @@ export class SsfDetailsFormComponent implements OnInit {
 
     ngOnInit(): void {
         this.form = this.fb.group({
-            description: ['', Validators.required],
-            ssfNo: ['', [Validators.required, Validators.maxLength(25)]],
+            permitNumber:['', Validators.required],
             ssfSubmissionDate: ['', Validators.required],
-            bsNumber: ['', [Validators.required, Validators.maxLength(80)]],
             brandName: ['', [Validators.required, Validators.maxLength(150)]],
-            productDescription: ['', [Validators.required, Validators.maxLength(150)]]
+            productDescription: ['', [Validators.required, Validators.maxLength(150)]],
+            description: ['',Validators.maxLength(256)],
         })
     }
 

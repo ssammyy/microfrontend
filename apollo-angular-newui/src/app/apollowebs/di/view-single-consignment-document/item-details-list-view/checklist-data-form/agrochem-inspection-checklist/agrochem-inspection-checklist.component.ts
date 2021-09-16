@@ -15,17 +15,6 @@ export class AgrochemInspectionChecklistComponent implements OnInit {
 
   ngOnInit(): void {
     this.agrochemChecklist=this.fb.group({
-      brand: ['',Validators.maxLength(256)],
-      ksEasApplicable: ['',Validators.maxLength(256)],
-      quantityVerified: ['',Validators.maxLength(256)],
-      dateMfgPackaging: ['', Validators.maxLength(256)],
-      dateExpiry: ['',Validators.maxLength(256)],
-      mfgName: ['',Validators.maxLength(256)],
-      mfgAddress: ['',Validators.maxLength(256)],
-      compositionIngredients:['',Validators.maxLength(256)],
-      storageCondition: ['', Validators.maxLength(256)],
-      appearance: ['',Validators.maxLength(256)],
-      certMarksPvocDoc: ['', Validators.maxLength(256)],
       remarks: ['',Validators.required]
     })
     this.agrochemChecklist.valueChanges

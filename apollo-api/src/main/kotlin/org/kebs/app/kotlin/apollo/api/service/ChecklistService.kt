@@ -4,6 +4,7 @@ import mu.KotlinLogging
 import okhttp3.internal.toLongOrDefault
 import org.kebs.app.kotlin.apollo.api.payload.*
 import org.kebs.app.kotlin.apollo.api.payload.request.ConsignmentUpdateRequest
+import org.kebs.app.kotlin.apollo.api.payload.request.SsfResultForm
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -16,6 +17,7 @@ import org.kebs.app.kotlin.apollo.store.repo.di.*
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleCollectionRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
@@ -102,12 +104,14 @@ class ChecklistService(
                     // Details
                     checklistItem.sampled = itm.sampled
                     if ("YES".equals(itm.sampled)) {
-                        checklistItem.sampleUpdated = 0
+                        checklistItem.sampleUpdated = map.activeStatus
                     } else {
                         checklistItem.sampleUpdated = 2
                     }
+                    checklistItem.quantityDeclared= detail.quantity.toString()
+                    checklistItem.productDescription=detail.itemDescription
                     checklistItem.itemId = itm.itemId
-                    checklistItem.sizeClassCapacity = detail.productClassCode
+                    checklistItem.sizeClassCapacity = itm.sizeClassCapacity
                     checklistItem.description = detail.hsDescription
                     checklistItem.brand = detail.productBrandName
                     checklistItem.serialNumber = itm.serialNumber
@@ -157,10 +161,12 @@ class ChecklistService(
                     // Details
                     checklistItem.sampled = itm.sampled
                     if ("YES".equals(itm.sampled)) {
-                        checklistItem.sampleUpdated = 0
+                        checklistItem.sampleUpdated = map.activeStatus
                     } else {
                         checklistItem.sampleUpdated = 2
                     }
+                    checklistItem.productDescription=detail.itemDescription
+                    checklistItem.quantityDeclared= detail.quantity.toString()
                     checklistItem.itemId = itm.itemId
                     checklistItem.description = detail.hsDescription
                     checklistItem.brand = detail.productBrandName
@@ -212,7 +218,7 @@ class ChecklistService(
                     // Update details
                     checklistItem.sampled = itm.sampled
                     if ("YES".equals(itm.sampled)) {
-                        checklistItem.sampleUpdated = 0
+                        checklistItem.sampleUpdated = map.activeStatus
                     } else {
                         checklistItem.sampleUpdated = 2
                     }
@@ -284,6 +290,7 @@ class ChecklistService(
                     } else {
                         checklistItem.sampleUpdated = 2
                     }
+                    checklistItem.quantityDeclared=detail.quantity.toString()
                     checklistItem.itemId = itm.itemId
                     checklistItem.description = detail.hsDescription
                     checklistItem.serialNumber = itm.serialNumber
@@ -493,18 +500,21 @@ class ChecklistService(
         return response
     }
 
+    @Transactional
     fun saveSsfDetails(sampleSubmissionDetails: QaSampleSubmissionEntity, itemId: Long, map: ServiceMapsEntity, loggedInUser: UsersEntity): ApiResponseModel {
         val response = ApiResponseModel()
         val cdItemOptional = iCdItemsRepo.findById(itemId)
         if (cdItemOptional.isPresent) {
             var cdItem = cdItemOptional.get()
             //updating of Details in DB
-            if (cdItem.sampledCollectedStatus == map.activeStatus) {
+            if (cdItem.sampledCollectedStatus == map.initStatus) {
+                sampleSubmissionDetails.status = map.initStatus
                 val serviceRequestsEntity = daoServices.ssfSave(cdItem, sampleSubmissionDetails, loggedInUser, map).first
                 with(cdItem) {
-                    sampleBsNumberStatus = map.activeStatus
+                    sampleBsNumberStatus = map.initStatus
+                    sampledCollectedStatus=map.activeStatus
+                    ssfId = serviceRequestsEntity.id
                 }
-                cdItem.ssfId = serviceRequestsEntity.id
                 cdItem = daoServices.updateCdItemDetailsInDB(cdItem, loggedInUser)
                 response.data = CdItemDetailsDao.fromEntity(cdItem)
                 response.responseCode = ResponseCodes.SUCCESS_CODE
@@ -520,14 +530,16 @@ class ChecklistService(
         return response
     }
 
+    @Transactional
     fun saveScfDetails(sampleCollectionForm: QaSampleCollectionEntity, itemId: Long, loggedInUser: UsersEntity): ApiResponseModel {
         val response = ApiResponseModel()
-        var collectionEntity = qaISampleCollectRepository.findByPermitId(sampleCollectionForm.permitId!!)
+        var collectionEntity = qaISampleCollectRepository.findByPermitId(itemId)
         if (collectionEntity == null) {
             collectionEntity = sampleCollectionForm
             collectionEntity.modifiedOn = Timestamp.from(Instant.now())
             collectionEntity.nameOfOfficer = "${loggedInUser.firstName} ${loggedInUser.lastName}"
             collectionEntity.officerDesignation = "IO"
+            collectionEntity.permitId = itemId
             sampleCollectionForm.createdBy = loggedInUser.createdBy
             sampleCollectionForm.createdOn = Timestamp.from(Instant.now())
         } else {
@@ -552,7 +564,7 @@ class ChecklistService(
                 collectionEntity.nameOfProduct = cdItem.hsDescription ?: cdItem.productTechnicalName ?: "UNKNOWN"
                 val entity = this.qaISampleCollectRepository.save(collectionEntity)
                 //Update CD item SCF status
-                cdItem.sampledCollectedStatus = map.activeStatus
+                cdItem.sampledCollectedStatus = map.initStatus
                 cdItem.sampleSubmissionStatus = map.initStatus
 
                 cdItem.scfId = entity.id
@@ -566,6 +578,31 @@ class ChecklistService(
             }
         } else {
             response.message = "Invalid item details submitted"
+            response.responseCode = ResponseCodes.FAILED_CODE
+        }
+        return response
+    }
+
+    @Transactional
+    fun updateSsfResult(form: SsfResultForm, item: CdItemDetailsEntity, map: ServiceMapsEntity, loggedInUser: UsersEntity): ApiResponseModel {
+        val response = ApiResponseModel()
+        val sample = daoServices.findSampleSubmittedBYCdItemID(item.id!!)
+        if (item.ssfId != null) {
+            if (item.sampleBsNumberStatus == map.initStatus) {
+                item.sampleBsNumberStatus = map.activeStatus
+                iCdItemsRepo.save(item)
+                sample.bsNumber = form.bsNumber
+                sample.ssfNo = form.ssfNo
+                sample.complianceRemarks = form.remarks
+                daoServices.ssfUpdateDetails(item, sample, loggedInUser, map)
+                response.message = "Sample BS number and SSF NO updated"
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+            } else {
+                response.message = "Sample BS number already submitted"
+                response.responseCode = ResponseCodes.FAILED_CODE
+            }
+        } else {
+            response.message = "Sampling has not been requested for this item"
             response.responseCode = ResponseCodes.FAILED_CODE
         }
         return response

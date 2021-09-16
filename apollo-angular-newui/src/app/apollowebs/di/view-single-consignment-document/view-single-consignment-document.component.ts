@@ -1,22 +1,22 @@
-import {Component, OnInit} from '@angular/core';
-import {MatDialog} from '@angular/material/dialog';
-import {ApproveRejectConsignmentComponent} from './approve-reject-consignment/approve-reject-consignment.component';
-import {ActivatedRoute, Router} from "@angular/router";
-import {DestinationInspectionService} from "../../../core/store/data/di/destination-inspection.service";
-import swal from "sweetalert2";
-import {AttachmentDialogComponent} from "./attachment-dialog/attachment-dialog.component";
-import {GenerateLocalCocComponent} from "../forms/generate-local-coc/generate-local-coc.component";
-import {GenerateLocalCorComponent} from "../forms/generate-local-cor/generate-local-cor.component";
-import {ManualAssignOfficerComponent} from "../forms/manual-assign-officer/manual-assign-officer.component";
-import {ReAssignOfficerComponent} from "../forms/re-assign-officer/re-assign-officer.component";
-import {AssignPortComponent} from "../forms/assign-port/assign-port.component";
-import {AssignOfficerComponent} from "../forms/assign-officer/assign-officer.component";
-import {CompliantComponent} from "../forms/compliant/compliant.component";
-import {SendCoiComponent} from "../forms/send-coi/send-coi.component";
-import {TargetItemComponent} from "../forms/target-item/target-item.component";
-import {TargetSupervisorComponent} from "../forms/target-supervisor/target-supervisor.component";
-import {SendDemandNoteTokwsComponent} from "../forms/send-demand-note-tokws/send-demand-note-tokws.component";
-import {BlacklistComponent} from "../forms/blacklist/blacklist.component";
+import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { ApproveRejectConsignmentComponent } from './approve-reject-consignment/approve-reject-consignment.component';
+import { ActivatedRoute, Router } from '@angular/router';
+import { DestinationInspectionService } from '../../../core/store/data/di/destination-inspection.service';
+import swal from 'sweetalert2';
+import { AttachmentDialogComponent } from './attachment-dialog/attachment-dialog.component';
+import { GenerateLocalCocComponent } from '../forms/generate-local-coc/generate-local-coc.component';
+import { GenerateLocalCorComponent } from '../forms/generate-local-cor/generate-local-cor.component';
+import { ManualAssignOfficerComponent } from '../forms/manual-assign-officer/manual-assign-officer.component';
+import { ReAssignOfficerComponent } from '../forms/re-assign-officer/re-assign-officer.component';
+import { AssignPortComponent } from '../forms/assign-port/assign-port.component';
+import { AssignOfficerComponent } from '../forms/assign-officer/assign-officer.component';
+import { CompliantComponent } from '../forms/compliant/compliant.component';
+import { SendCoiComponent } from '../forms/send-coi/send-coi.component';
+import { TargetItemComponent } from '../forms/target-item/target-item.component';
+import { TargetSupervisorComponent } from '../forms/target-supervisor/target-supervisor.component';
+import { SendDemandNoteTokwsComponent } from '../forms/send-demand-note-tokws/send-demand-note-tokws.component';
+import { BlacklistComponent } from '../forms/blacklist/blacklist.component';
 
 @Component({
     selector: 'app-view-single-consignment-document',
@@ -29,56 +29,56 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
     consignment: any;
     attachments: any[];
     comments: any[];
-    consignmentItems: any[]
-    paymentFees: any[]
-    configurations: any[]
-    demandNotes: any[]
-    checkLists: any[]
+    consignmentItems: any[];
+    paymentFees: any[];
+    configurations: any[];
+    demandNotes: any[];
+    checkLists: any[];
 
     constructor(private diService: DestinationInspectionService,
-                private dialog: MatDialog,
-                private activatedRoute: ActivatedRoute,
-                private router: Router) {
+        private dialog: MatDialog,
+        private activatedRoute: ActivatedRoute,
+        private router: Router) {
     }
 
     ngOnInit(): void {
         this.activatedRoute.paramMap.subscribe(
             rs => {
-                this.consignmentId = rs.get("id")
-                this.loadConsignmentDetails()
-                this.loadFees()
-                this.loadUiConfigurations()
+                this.consignmentId = rs.get('id');
+                this.loadConsignmentDetails();
+                this.loadFees();
+                this.loadUiConfigurations();
             }
-        )
+        );
 
     }
 
     createInspectionChecklist() {
-        this.router.navigate(["/di/inspection/checklist",this.consignmentId])
+        this.router.navigate(['/di/inspection/checklist', this.consignmentId]);
     }
     loadChecklists() {
         this.diService.loadChecklists(this.consignment.cd_details.uuid)
             .subscribe(
                 res => {
-                    if (res.responseCode === "00") {
-                        this.checkLists = res.data
+                    if (res.responseCode === '00') {
+                        this.checkLists = res.data;
                     } else {
-                        console.log(res.message)
+                        console.log(res.message);
                     }
                 }
-            )
+            );
     }
 
 
     loadDemandNotes() {
         this.diService.listDemandNotes(this.consignment.cd_details.id)
             .subscribe(
-                res=>{
-                    if(res.responseCode=="00") {
-                        this.demandNotes=res.data
+                res => {
+                    if (res.responseCode == '00') {
+                        this.demandNotes = res.data;
                     }
                 }
-            )
+            );
 
     }
     generateDemandNote() {
@@ -88,127 +88,133 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
                 items: this.consignmentItems,
                 paymentFees: this.paymentFees
             }
-        })
+        });
     }
 
     reloadAttachments(v: boolean) {
-        if(v) {
-            this.listConsignmentAttachments()
+        if (v) {
+            this.listConsignmentAttachments();
         }
     }
 
     viewCoR() {
-        this.router.navigate(["/di/cor/details",this.consignmentId])
+        this.router.navigate(['/di/cor/details', this.consignmentId]);
     }
 
     viewCoC() {
-        this.router.navigate(["/di/coc/details",this.consignmentId])
+        this.router.navigate(['/di/coc/details', this.consignmentId]);
     }
 
     loadUiConfigurations() {
         this.diService.getInspectionUiConfigurations()
             .subscribe(
                 res => {
-                    if (res.responseCode === "00") {
-                        this.configurations = res.data
+                    if (res.responseCode === '00') {
+                        this.configurations = res.data;
                     } else {
-                        this.configurations = null
+                        this.configurations = null;
                     }
                 }
-            )
+            );
     }
 
     loadFees() {
         this.diService.demandNoteFees()
             .subscribe(
                 res => {
-                    if (res.responseCode === "00") {
-                        this.paymentFees = res.data
+                    if (res.responseCode === '00') {
+                        this.paymentFees = res.data;
                     } else {
-                        this.paymentFees = []
+                        this.paymentFees = [];
                     }
                 }
-            )
+            );
     }
 
     viewIdfDocument() {
-        this.router.navigate(["/di/idf/details", this.consignment.cd_details.uuid])
+        this.router.navigate(['/di/idf/details', this.consignment.cd_details.uuid]);
     }
 
     loadComments() {
         this.diService.getAuditComments(this.consignment.cd_details.id)
             .subscribe(
                 res => {
-                    if (res.responseCode === "00") {
-                        this.comments = res.data
+                    if (res.responseCode === '00') {
+                        this.comments = res.data;
                     } else {
-                        this.comments = []
+                        this.comments = [];
                     }
                 }
-            )
+            );
     }
 
     viewDeclarationDocument() {
-        this.router.navigate(["/di/declaration/document", this.consignment.cd_details.uuid])
+        this.router.navigate(['/di/declaration/document', this.consignment.cd_details.uuid]);
     }
 
     goBackHome() {
-        this.router.navigateByUrl("/di")
+        this.router.navigateByUrl('/di');
     }
 
     uploadAttachment() {
-        let ref = this.dialog.open(AttachmentDialogComponent, {
+        const ref = this.dialog.open(AttachmentDialogComponent, {
             data: {
                 id: this.consignmentId
             }
-        })
+        });
         ref.afterClosed()
             .subscribe(
                 uploaded => {
                     if (uploaded) {
-                        this.listConsignmentAttachments()
+                        this.listConsignmentAttachments();
                     }
                 }
-            )
+            );
     }
 
     listConsignmentAttachments() {
         this.diService.getConsignmentAttachments(this.consignmentId)
             .subscribe(
                 res => {
-                    if (res.responseCode === "00") {
-                        this.attachments = res.data
+                    if (res.responseCode === '00') {
+                        this.attachments = res.data;
                     } else {
-                        this.attachments = []
+                        this.attachments = [];
                     }
                 }
-            )
+            );
     }
 
     isVehicle(): Boolean {
         if (this.consignment) {
-            return this.consignment.cd_details.cdTypeCategory === "VEHICLES"
+            return this.consignment.cd_details.cdTypeCategory === 'VEHICLES';
         }
-        return false
+        return false;
     }
-    viewInspectionChecklists(){
-        this.router.navigate(["/di/checklist/details/",this.consignment.cd_details.uuid])
+    viewInspectionChecklists() {
+        this.router.navigate(['/di/checklist/details/', this.consignment.cd_details.uuid]);
     }
     downloadDemandNote() {
         // let d=341
-        this.diService.downloadDocument("/api/v1/download/demand/note/"+this.consignment.cd_details.id)
+        this.diService.downloadDocument('/api/v1/download/demand/note/' + this.consignment.cd_details.id);
+    }
+    goBack() {
+        this.router.navigate(['/di']);
     }
 
     loadConsignmentDetails() {
         this.diService.getConsignmentDetails(this.consignmentId)
             .subscribe(
                 response => {
-                    if (response.responseCode === "00") {
-                        this.consignment = response.data
-                        this.consignmentItems = this.consignment.items_cd
-                        this.listConsignmentAttachments()
-                        this.loadComments()
-                        this.loadDemandNotes()
+
+                    if (response.responseCode === '00') {
+
+                        this.consignment = response.data;
+                        console.log(this.consignment.cd_consignee.name);
+                        this.consignmentItems = this.consignment.items_cd;
+                        this.listConsignmentAttachments();
+                        this.loadComments();
+                        this.loadDemandNotes();
                     } else {
                         swal.fire({
                             title: response.message,
@@ -218,202 +224,202 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
                             },
                             icon: 'error'
                         }).then(this.goBackHome);
-                        console.log(response)
+                        console.log(response);
                     }
                 }
-            )
+            );
     }
 
     generateLocalCoC() {
-        let ref = this.dialog.open(GenerateLocalCocComponent, {
+        const ref = this.dialog.open(GenerateLocalCocComponent, {
             data: {
                 uuid: this.consignmentId,
                 configurations: this.configurations,
             }
-        })
+        });
         ref.afterClosed()
             .subscribe(
                 res => {
                     if (res) {
-                        this.loadConsignmentDetails()
+                        this.loadConsignmentDetails();
                     }
                 }
-            )
+            );
     }
 
     generateLocalCoR() {
-        let ref = this.dialog.open(GenerateLocalCorComponent, {
+        const ref = this.dialog.open(GenerateLocalCorComponent, {
             data: {
                 uuid: this.consignmentId,
                 configurations: this.configurations,
             }
-        })
+        });
         ref.afterClosed()
             .subscribe(
                 res => {
                     if (res) {
-                        this.loadConsignmentDetails()
+                        this.loadConsignmentDetails();
                     }
                 }
-            )
+            );
     }
 
     manualAssignInspectionOfficer() {
-        let ref = this.dialog.open(ManualAssignOfficerComponent, {
+        const ref = this.dialog.open(ManualAssignOfficerComponent, {
             data: {
                 uuid: this.consignmentId,
                 configurations: this.configurations,
             }
-        })
+        });
         ref.afterClosed()
             .subscribe(
                 res => {
                     if (res) {
-                        this.loadConsignmentDetails()
+                        this.loadConsignmentDetails();
                     }
                 }
-            )
+            );
     }
 
     assignInspectionOfficer() {
-        let ref = this.dialog.open(AssignOfficerComponent, {
+        const ref = this.dialog.open(AssignOfficerComponent, {
             data: {
                 uuid: this.consignmentId,
                 configurations: this.configurations,
             }
-        })
-        ref.afterClosed()
-            .subscribe(
-                res => {
-                    if(res){
-                        this.loadConsignmentDetails()
-                    }
-
-                }
-            )
-    }
-
-    blacklistUser(){
-        let ref = this.dialog.open(BlacklistComponent, {
-            data: {
-                uuid: this.consignmentId,
-                configurations: this.configurations,
-            }
-        })
+        });
         ref.afterClosed()
             .subscribe(
                 res => {
                     if (res) {
-                        this.loadConsignmentDetails()
+                        this.loadConsignmentDetails();
+                    }
+
+                }
+            );
+    }
+
+    blacklistUser() {
+        const ref = this.dialog.open(BlacklistComponent, {
+            data: {
+                uuid: this.consignmentId,
+                configurations: this.configurations,
+            }
+        });
+        ref.afterClosed()
+            .subscribe(
+                res => {
+                    if (res) {
+                        this.loadConsignmentDetails();
                     }
                 }
-            )
+            );
     }
 
     supervisorTargetConsignment() {
-        let ref = this.dialog.open(TargetSupervisorComponent, {
+        const ref = this.dialog.open(TargetSupervisorComponent, {
             data: {
                 uuid: this.consignmentId,
                 configurations: this.configurations,
             }
-        })
+        });
         ref.afterClosed()
             .subscribe(
                 res => {
                     if (res) {
-                        this.loadConsignmentDetails()
+                        this.loadConsignmentDetails();
                     }
                 }
-            )
+            );
     }
 
     targetConsignment() {
-        let ref = this.dialog.open(TargetItemComponent, {
+        const ref = this.dialog.open(TargetItemComponent, {
             data: {
                 uuid: this.consignmentId,
                 configurations: this.configurations,
             }
-        })
+        });
         ref.afterClosed()
             .subscribe(
                 res => {
                     if (res) {
-                        this.loadConsignmentDetails()
+                        this.loadConsignmentDetails();
                     }
                 }
-            )
+            );
     }
 
     sendCertificateOfCompliance() {
-        let ref = this.dialog.open(SendCoiComponent, {
+        const ref = this.dialog.open(SendCoiComponent, {
             data: {
                 uuid: this.consignmentId,
                 configurations: this.configurations,
             }
-        })
+        });
         ref.afterClosed()
             .subscribe(
                 res => {
                     if (res) {
-                        this.loadConsignmentDetails()
+                        this.loadConsignmentDetails();
                     }
                 }
-            )
+            );
     }
 
     markAsCompliant() {
-        let ref = this.dialog.open(CompliantComponent, {
+        const ref = this.dialog.open(CompliantComponent, {
             data: {
                 uuid: this.consignmentId,
                 configurations: this.configurations,
             }
-        })
+        });
         ref.afterClosed()
             .subscribe(
                 res => {
                     if (res) {
-                        this.router.navigate(["/di"])
+                        this.router.navigate(['/di']);
                     }
                 }
-            )
+            );
     }
 
     assignConsignmentPort() {
-        let ref = this.dialog.open(AssignPortComponent, {
+        const ref = this.dialog.open(AssignPortComponent, {
             data: {
                 uuid: this.consignmentId,
                 configurations: this.configurations,
             }
-        })
+        });
         ref.afterClosed()
             .subscribe(
                 res => {
                     if (res) {
-                        this.loadConsignmentDetails()
+                        this.loadConsignmentDetails();
                     }
                 }
-            )
+            );
     }
 
     reassignInspectionOfficer() {
-        let ref = this.dialog.open(ReAssignOfficerComponent, {
+        const ref = this.dialog.open(ReAssignOfficerComponent, {
             data: {
                 uuid: this.consignmentId,
                 configurations: this.configurations,
             }
-        })
+        });
         ref.afterClosed()
             .subscribe(
                 res => {
                     if (res) {
-                        this.loadConsignmentDetails()
+                        this.loadConsignmentDetails();
                     }
                 }
-            )
+            );
     }
 
     approveRejectConsignment() {
-        let ref = this.dialog.open(ApproveRejectConsignmentComponent, {
+        const ref = this.dialog.open(ApproveRejectConsignmentComponent, {
             data: {
                 uuid: this.consignmentId,
                 configurations: this.configurations,
@@ -424,9 +430,9 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
             .subscribe(
                 res => {
                     if (res) {
-                        this.router.navigate(["/di"])
+                        this.router.navigate(['/di']);
                     }
                 }
-            )
+            );
     }
 }

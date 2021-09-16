@@ -240,4 +240,18 @@ ul, ol {
 .btn-warning {
     width: 150px;
 }
+.tab-wraps .mat-tab-labels{
+    flex-wrap: wrap !important;
+}
+.mat-tab-group.mat-tab-multiline >
+    .mat-tab-header:first-child >
+      .mat-tab-header-pagination {
+        display: none;
+      }
 
+      .mat-tab-group.mat-tab-multiline >
+      .mat-tab-header:first-child > .mat-tab-labels {
+        flex-wrap: wrap;
+      }
+    
+  

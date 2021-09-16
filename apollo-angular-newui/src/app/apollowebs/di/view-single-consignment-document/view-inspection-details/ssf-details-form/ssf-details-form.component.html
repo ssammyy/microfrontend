@@ -1,26 +1,29 @@
-<h2 mat-dialog-title>SSF Details</h2>
+<h2 mat-dialog-title>SSF Details (Sample Submission Form)</h2>
 <mat-dialog-content>
     <div class="row no_margin" [formGroup]="form">
-        <input type="hidden" id="description" name="description" value="'SSF was added sucessfull'">
-        <div class="col-sm-12 col-md-8">
-            <label for="ssfNo" class="col-form-label">SSF No:</label>
-            <input class="input-field w-input" type="text" id="ssfNo" name="ssfNo" formControlName="ssfNo">
+        <div class="col-sm-12 col-md-6">
+            <label for="permitNumber" class="waiver-form-label">Permit No:</label>
+            <input class="waiver-form-input-master" type="number" id="permitNumber" name="permitNumber" formControlName="permitNumber">
         </div>
-        <div class="col-sm-12 col-md-8">
-            <label for="ssfSubmissionDate" class="col-form-label">SSF Submission Date:</label>
-            <input class="input-field w-input" type="date" id="ssfSubmissionDate" name="ssfSubmissionDate" formControlName="ssfSubmissionDate">
+        <div class="col-sm-7 col-md-6">
+            <label for="ssfSubmissionDate" class="waiver-form-label">SSF Submission Date:</label>
+            <input class="waiver-form-input-master" type="date" id="ssfSubmissionDate" name="ssfSubmissionDate"
+                   formControlName="ssfSubmissionDate">
         </div>
-        <div class="col-sm-12 col-md-8">
-            <label for="bsNumber" class="col-form-label">BS Number:</label>
-            <input class="input-field w-input" type="text" id="bsNumber" name="bsNumber" formControlName="bsNumber">
+        <div class="col-sm-12 col-md-6">
+            <label for="brandName" class="waiver-form-label">Brand Name:</label>
+            <input class="waiver-form-input-master" type="text" max="20" id="brandName" name="brandName"
+                   formControlName="brandName">
         </div>
-        <div class="col-sm-12 col-md-8">
-            <label for="brandName" class="col-form-label">Brand Name:</label>
-            <input class="input-field w-input" type="text" max="20" id="brandName" name="brandName"  formControlName="brandName" >
+        <div class="col-sm-12 col-md-6">
+            <label for="productDescription" class="waiver-form-label">Product Description:</label>
+            <input class="waiver-form-input-master" type="text" id="productDescription" name="productDescription"
+                   formControlName="productDescription">
         </div>
-        <div class="col-sm-12 col-md-8">
-            <label for="productDescription" class="col-form-label">Product Description:</label>
-            <input class="input-field w-input" type="text" id="productDescription" name="productDescription" formControlName="productDescription" >
+        <div class="col-sm-12 col-md-12">
+            <label for="description" class="waiver-form-label">Remarks</label>
+            <textarea class="waiver-form-input-master" id="description" name="description" formControlName="description" rows="4">
+            </textarea>
         </div>
         <mat-error *ngIf="message">{{message}}</mat-error>
     </div>
@@ -28,7 +31,7 @@
 <mat-dialog-actions>
     <div class="row no_margin master-list-new-btn">
         <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
-        <button [disabled]="form.invalid" class="next-btn btn-gen new-btn" (click)="saveSsfRecord()">SAVE SSF
+        <button [disabled]="form.invalid" class="next-btn btn-gen new-btn" (click)="saveSsfRecord()">SAVE
         </button>
     </div>
 </mat-dialog-actions>

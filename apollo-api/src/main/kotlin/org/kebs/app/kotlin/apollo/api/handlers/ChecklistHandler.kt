@@ -5,10 +5,7 @@ import okhttp3.internal.toLongOrDefault
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.extractPage
-import org.kebs.app.kotlin.apollo.api.payload.request.CheckListForm
-import org.kebs.app.kotlin.apollo.api.payload.request.MinistryRequestForm
-import org.kebs.app.kotlin.apollo.api.payload.request.ScfForm
-import org.kebs.app.kotlin.apollo.api.payload.request.SsfForm
+import org.kebs.app.kotlin.apollo.api.payload.request.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.service.ChecklistService
@@ -133,44 +130,52 @@ class ChecklistHandler(
         return ServerResponse.ok().body(response)
     }
 
-    fun addScfDetails(req: ServerRequest): ServerResponse{
-        var response=ApiResponseModel()
+    fun addChecklistScfDetails(req: ServerRequest): ServerResponse {
+        return ServerResponse.ok().body("OK")
+    }
+
+    fun addScfDetails(req: ServerRequest): ServerResponse {
+        var response = ApiResponseModel()
         try {
-            val form = req.body(ScfForm::class.java)
-            val loggedInUser = commonDaoServices.loggedInUserDetails()
-            val sampleCollectionForm = form.scf()
-            sampleCollectionForm.createdBy = loggedInUser.createdBy
-            sampleCollectionForm.modifiedBy=loggedInUser.userName
-            sampleCollectionForm.createdOn= Timestamp.from(Instant.now())
-            response = this.checlistService.saveScfDetails(sampleCollectionForm,form.itemId, loggedInUser)
-        }catch (ex: Exception) {
-            response.responseCode=ResponseCodes.FAILED_CODE
-            response.message="SCF submission failed"
+            req.pathVariable("cdItemID").let {
+                val item = daoServices.findItemWithUuid(it)
+                val form = req.body(ScfForm::class.java)
+                val loggedInUser = commonDaoServices.loggedInUserDetails()
+                val sampleCollectionForm = form.scf()
+                sampleCollectionForm.createdBy = loggedInUser.createdBy
+                sampleCollectionForm.modifiedBy = loggedInUser.userName
+                sampleCollectionForm.createdOn = Timestamp.from(Instant.now())
+                response = this.checlistService.saveScfDetails(sampleCollectionForm, item.id!!, loggedInUser)
+            }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("FAILED TO CREATED SCF", ex)
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "SCF submission failed"
         }
         return ServerResponse.ok().body(response)
     }
 
-    fun updateScfDetails(req: ServerRequest): ServerResponse{
-        var response=ApiResponseModel()
+    fun updateScfDetails(req: ServerRequest): ServerResponse {
+        var response = ApiResponseModel()
         try {
             val form = req.body(ScfForm::class.java)
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val sampleCollectionForm = form.scf()
-            response = this.checlistService.saveScfDetails(sampleCollectionForm,form.itemId,loggedInUser)
-        }catch (ex: Exception) {
-            response.responseCode=ResponseCodes.FAILED_CODE
-            response.message="SCF submission failed"
+            response = this.checlistService.saveScfDetails(sampleCollectionForm, form.itemId, loggedInUser)
+        } catch (ex: Exception) {
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "SCF submission failed"
         }
         return ServerResponse.ok().body(response)
     }
 
-    fun completeSsfDetails(req: ServerRequest): ServerResponse{
-        val form=req.body(SsfForm::class.java)
+    fun completeSsfDetails(req: ServerRequest): ServerResponse {
+        val form = req.body(SsfForm::class.java)
         // Update sample
         return ServerResponse.ok().body("OK")
     }
 
-    fun addSsfDetails(req: ServerRequest): ServerResponse {
+    fun addChecklistSsfDetails(req: ServerRequest): ServerResponse {
         var response = ApiResponseModel()
         val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
         try {
@@ -178,20 +183,55 @@ class ChecklistHandler(
             val category = req.pathVariable("category")
             req.pathVariable("cdItemID").let { cdItemID ->
                 val form = req.body(SsfForm::class.java)
-                val ssfDetails=form.ssf()
-                ssfDetails.category=category
+                val ssfDetails = form.ssf()
+                ssfDetails.category = category
                 when (category) {
                     "engineering" -> {
-                        response = this.checlistService.addEngineeringSsf(map,cdItemID.toLongOrDefault(0L), ssfDetails, loggedInUser)
+                        response = this.checlistService.addEngineeringSsf(map, cdItemID.toLongOrDefault(0L), ssfDetails, loggedInUser)
                     }
                     "agrochem" -> {
-                        response = this.checlistService.addAgrochemSsf(map,cdItemID.toLongOrDefault(0L), ssfDetails, loggedInUser)
+                        response = this.checlistService.addAgrochemSsf(map, cdItemID.toLongOrDefault(0L), ssfDetails, loggedInUser)
                     }
                     else -> {
                         response.message = "invalid category :" + category
                         response.responseCode = ResponseCodes.FAILED_CODE
                     }
                 }
+            }
+        } catch (ex: Exception) {
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.message = "Failed to save SSF details"
+        }
+        return ServerResponse.ok().body(response)
+    }
+
+    fun addSsfDetails(req: ServerRequest): ServerResponse {
+        var response = ApiResponseModel()
+        val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            req.pathVariable("cdItemID").let { cdItemID ->
+                val item = daoServices.findItemWithUuid(cdItemID)
+                val form = req.body(SsfForm::class.java)
+                val ssfDetails = form.ssf()
+                response = this.checlistService.saveSsfDetails(ssfDetails, item.id!!, map, loggedInUser)
+            }
+        } catch (ex: Exception) {
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.message = "Failed to save SSF details"
+        }
+        return ServerResponse.ok().body(response)
+    }
+
+    fun updateSsfResults(req: ServerRequest): ServerResponse {
+        var response = ApiResponseModel()
+        val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            req.pathVariable("cdItemID").let { cdItemID ->
+                val item = daoServices.findItemWithUuid(cdItemID)
+                val form = req.body(SsfResultForm::class.java)
+                response = this.checlistService.updateSsfResult(form, item, map, loggedInUser)
             }
         } catch (ex: Exception) {
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
@@ -218,8 +258,10 @@ class ChecklistHandler(
                     generalCheckList.idfNumber = cdItem.idfNumber
                     val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
                     val inspectionGeneral = daoServices.saveInspectionGeneralDetails(generalCheckList, cdItem, loggedInUser, map)
-                    form.vehicle?.let {
-
+                    if (form.agrochem == null && form.engineering == null && form.vehicle == null && form.others == null) {
+                        response.responseCode = ResponseCodes.FAILED_CODE
+                        response.message = "Validation failed, please select and fill at least one checklist"
+                        return ServerResponse.ok().body(response)
                     }
                     //Save the respective checklist
                     form.agrochem?.let {
@@ -242,9 +284,9 @@ class ChecklistHandler(
                         val otherItemInspectionChecklist = form.otherChecklist()
                         checlistService.addOtherChecklist(map, inspectionGeneral, form.otherChecklistItems(), otherItemInspectionChecklist, loggedInUser)
                     }
-                    cdItem.inspectionChecklist=map.activeStatus
-                    cdItem.varField10="CHECKLIST ITEM FILLED"
-                    daoServices.updateCdDetailsInDB(cdItem,loggedInUser)
+                    cdItem.inspectionChecklist = map.activeStatus
+                    cdItem.varField10 = "CHECKLIST ITEM FILLED"
+                    daoServices.updateCdDetailsInDB(cdItem, loggedInUser)
                 }
                 response.message = "Checklist submitted successfully"
                 response.responseCode = ResponseCodes.SUCCESS_CODE

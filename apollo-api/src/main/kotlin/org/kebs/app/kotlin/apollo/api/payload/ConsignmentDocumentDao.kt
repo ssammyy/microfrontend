@@ -61,9 +61,9 @@ class ConsignmentEnableUI {
                 targetItem = change && cd.targetStatus != map.activeStatus
                 supervisorTarget = modify && cd.targetStatus != map.activeStatus
                 attachments = (change || modify)
-                inspectionChecklist=cd.inspectionChecklist==map.activeStatus
+                inspectionChecklist = cd.inspectionChecklist == map.activeStatus
                 hasPort = (cd.portOfArrival != null && cd.freightStation != null)
-                completed = cd.approveRejectCdStatusType?.let {it.category=="APPROVE"|| it.category=="REJECT" }
+                completed = cd.approveRejectCdStatusType?.let { it.category == "APPROVE" || it.category == "REJECT" }
                 approveReject = (cd.targetApproveStatus == null || cd.inspectionDateSetStatus == map.activeStatus) && modify
             }
 
@@ -167,7 +167,7 @@ class ConsignmentDocumentDao {
         fun fromList(docs: List<ConsignmentDocumentDetailsEntity>, ncrId: String = ""): List<ConsignmentDocumentDao> {
             val documents = mutableListOf<ConsignmentDocumentDao>()
             docs.forEach {
-                documents.add(fromEntity(it,ncrId))
+                documents.add(fromEntity(it, ncrId))
             }
             return documents
         }
@@ -231,9 +231,11 @@ class CdItemDetailsDao {
     var dnoteStatus: Int? = null
     var inspectionReportStatus: Int? = null
     var itemNo: Long? = null
+    var sampledStatus: Int? = null
     var sampleBsNumberStatus: Int? = null
     var sampleSubmissionStatus: Int? = null
     var ministrySubmissionStatus: Int? = null
+    var sampledCollectedStatus: Int? = null
     var checklistStatus: Int? = null
     var quantity: BigDecimal? = null
     var packageQuantity: BigDecimal? = null
@@ -285,6 +287,10 @@ class CdItemDetailsDao {
 
             }
             dt.apply {
+                sampleBsNumberStatus = item.sampleBsNumberStatus
+                sampleSubmissionStatus = item.sampleSubmissionStatus
+                sampledCollectedStatus = item.sampledCollectedStatus
+                sampledStatus = item.sampledStatus
                 unitOfQuantity = item.unitOfQuantity
                 packageQuantity = item.packageQuantity
                 totalPriceFcy = item.totalPriceFcy

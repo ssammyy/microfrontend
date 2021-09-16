@@ -15,16 +15,6 @@ export class OtherInspectionChecklistComponent implements OnInit {
 
     ngOnInit(): void {
         this.otherItemChecklist = this.fb.group({
-            serialNumber: ['', [Validators.required, Validators.maxLength(256)]],
-            brand: ['', Validators.maxLength(256)],
-            ksEasApplicable: ['', Validators.maxLength(256)],
-            quantityVerified: ['', Validators.maxLength(256)],
-            packagingLabelling: ['', Validators.maxLength(256)],
-            physicalCondition: ['', Validators.maxLength(256)],
-            defects: ['', Validators.maxLength(256)],
-            presenceAbsenceBanned: ['', Validators.maxLength(256)],
-            documentation: ['', Validators.maxLength(256)],
-            sampled: ['', Validators.required],
             remarks: ['', Validators.required]
         })
 

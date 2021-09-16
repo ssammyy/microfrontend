@@ -32,8 +32,11 @@ class DestinationInspectionRoutes {
         "/api/v1/di".nest {
             GET("/checklists/{itemUuid}",handler::listAllChecklists)
             POST("/save-checklist/{cdUuid}",handler::saveChecklist)
-            POST("/consignment/document/item-scf/{category}/{cdItemID}", handler::addScfDetails)
-            POST("/consignment/document/item-ssf/{category}/{cdItemID}", handler::addSsfDetails)
+            POST("/consignment/document/checklist-scf/{category}/{cdItemID}", handler::addChecklistScfDetails) // Per inspection item
+            POST("/consignment/document/item-scf/{cdItemID}", handler::addScfDetails) // Per item
+            POST("/consignment/document/checklist-ssf/{category}/{cdItemID}", handler::addChecklistSsfDetails) // Per inspection item
+            POST("/consignment/document/item-ssf/{cdItemID}", handler::addSsfDetails) // Per inspection item
+            POST("/consignment/document/item-ssf-result/{cdItemID}", handler::updateSsfResults) // Per inspection item
             GET("/check-list/configurations",handler::checklistConfigurations)
             GET("/consignment/document/checklist/{cdUuid}", handler::consignmentDocumentChecklist)
             GET("/consignment/document/sampled-items/{cdUuid}", handler::consignmentDocumentChecklistSampled)

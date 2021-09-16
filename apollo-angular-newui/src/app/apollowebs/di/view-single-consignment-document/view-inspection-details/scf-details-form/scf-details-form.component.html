@@ -1,50 +1,64 @@
-<h2 mat-dialog-title>SSF Details</h2>
+<h2 mat-dialog-title>SCF Details (Sample Collection Form)</h2>
 <mat-dialog-content>
     <div class="row no_margin" [formGroup]="form">
-        <input type="hidden" id="description" name="description" value="'SSF was added sucessfull'">
-        <div class="col-sm-12 col-md-8">
-            <label for="manufacturerTraderName" class="col-form-label">Manufacturer/Trader Name</label>
-            <input class="input-field w-input" type="text" id="manufacturerTraderName" name="manufacturerTraderName" formControlName="manufacturerTraderName">
+        <div class="col-sm-12 col-md-6">
+            <label for="manufacturerTraderName" class="waiver-form-label">Manufacturer/Trader Name</label>
+            <input class="waiver-form-input-master" type="text" id="manufacturerTraderName" name="manufacturerTraderName"
+                   formControlName="manufacturerTraderName">
         </div>
-        <div class="col-sm-12 col-md-8">
-            <label for="manufacturerTraderAddress" class="col-form-label">Manufacturer/Trader Address</label>
-            <input class="input-field w-input" type="date" id="manufacturerTraderAddress" name="manufacturerTraderAddress" formControlName="manufacturerTraderAddress">
+        <div class="col-sm-12 col-md-6">
+            <label for="manufacturerTraderAddress" class="waiver-form-label">Manufacturer/Trader Address</label>
+            <input class="waiver-form-input-master" type="text" id="manufacturerTraderAddress" name="manufacturerTraderAddress"
+                   formControlName="manufacturerTraderAddress">
         </div>
-        <div class="col-sm-12 col-md-8">
-            <label for="brandName" class="col-form-label">Brand Name</label>
-            <input class="input-field w-input" type="text" id="brandName" name="brandName" formControlName="brandName">
+        <div class="col-sm-12 col-md-6">
+            <label for="brandName" class="waiver-form-label">Brand Name</label>
+            <input class="waiver-form-input-master" type="text" id="brandName" name="brandName"
+                   formControlName="brandName">
         </div>
-        <div class="col-sm-12 col-md-8">
-            <label for="batchNumber" class="col-form-label">Batch Number</label>
-            <input class="input-field w-input" type="text" max="20" id="batchNumber" name="batchNumber"  formControlName="batchNumber" >
+        <div class="col-sm-12 col-md-6">
+            <label for="batchNumber" class="waiver-form-label">Batch Number</label>
+            <input class="waiver-form-input-master" type="text" id="batchNumber" name="batchNumber"
+                   formControlName="batchNumber">
         </div>
-        <div class="col-sm-8 col-md-6">
-            <label for="batchSize" class="col-form-label">Batch Size</label>
-            <input class="input-field w-input" type="text" max="20" id="batchSize" name="batchNumber"  formControlName="batchSize" >
+        <div class="col-sm-12 col-md-6">
+            <label for="batchSize" class="waiver-form-label">Batch Size</label>
+            <input class="waiver-form-input-master" type="text" id="batchSize" name="batchNumber"
+                   formControlName="batchSize">
         </div>
-        <div class="col-sm-8 col-md-6">
-            <label for="sampleSize" class="col-form-label">Sample Size</label>
-            <input class="input-field w-input" type="text" max="20" id="sampleSize" name="sampleSize"  formControlName="sampleSize" >
+        <div class="col-sm-12 col-md-6">
+            <label for="sampleSize" class="waiver-form-label">Sample Size</label>
+            <input class="waiver-form-input-master" type="text"  id="sampleSize" name="sampleSize"
+                   formControlName="sampleSize">
         </div>
-        <div class="col-sm-8 col-md-6">
-            <label for="samplingMethod" class="col-form-label">Sampling Method</label>
-            <input class="input-field w-input" type="text" max="20" id="samplingMethod" name="samplingMethod"  formControlName="samplingMethod" >
+        <div class="col-sm-12 col-md-6">
+            <label for="samplingMethod" class="waiver-form-label">Sampling Method</label>
+            <select id="samplingMethod" name="samplingMethod" class="waiver-form-input-master"
+                    formControlName="samplingMethod">
+                <option value="" disabled selected>Select Sampling method</option>
+                <option *ngFor="let mthd of samplingMethods"
+                        [value]="mthd.name">{{mthd.description}}</option>
+            </select>
         </div>
-        <div class="col-sm-8 col-md-6">
-            <label for="reasonsForCollectingSamples" class="col-form-label">Reason For Sampled Collection</label>
-            <input class="input-field w-input" type="text" max="20" id="reasonsForCollectingSamples" name="reasonsForCollectingSamples"  formControlName="reasonsForCollectingSamples" >
+        <div class="col-sm-12 col-md-6">
+            <label for="reasonsForCollectingSamples" class="waiver-form-label">Reason For Sampled Collection</label>
+            <input class="waiver-form-input-master" type="text" id="reasonsForCollectingSamples"
+                   name="reasonsForCollectingSamples" formControlName="reasonsForCollectingSamples">
         </div>
-        <div class="col-sm-8 col-md-6">
-            <label for="witnessName" class="col-form-label">Witness Name</label>
-            <input class="input-field w-input" type="text" max="20" id="witnessName" name="sampleSize"  formControlName="witnessName" >
+        <div class="col-sm-12 col-md-6">
+            <label for="witnessName" class="waiver-form-label">Witness Name</label>
+            <input class="waiver-form-input-master" type="text" id="witnessName" name="sampleSize"
+                   formControlName="witnessName">
         </div>
-        <div class="col-sm-8 col-md-6">
-            <label for="witnessDesignation" class="col-form-label">Witness Designation</label>
-            <input class="input-field w-input" type="text" max="20" id="witnessDesignation" name="witnessDesignation"  formControlName="witnessDesignation" >
+        <div class="col-sm-12 col-md-6">
+            <label for="witnessDesignation" class="waiver-form-label">Witness Designation</label>
+            <input class="waiver-form-input-master" type="text" id="witnessDesignation"
+                   name="witnessDesignation" formControlName="witnessDesignation">
         </div>
-        <div class="col-sm-12 col-md-8">
-            <label for="remarks" class="col-form-label">Remarks</label>
-            <input class="input-field w-input" type="text" id="remarks" name="remarks" formControlName="remarks" >
+        <div class="col-sm-12 col-md-12">
+            <label for="remarks" class="waiver-form-label">Remarks</label>
+            <textarea class="waiver-form-input-master" id="remarks" name="remarks" formControlName="remarks" rows="4">
+            </textarea>
         </div>
         <mat-error *ngIf="message">{{message}}</mat-error>
     </div>
@@ -52,7 +66,7 @@
 <mat-dialog-actions>
     <div class="row no_margin master-list-new-btn">
         <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
-        <button [disabled]="form.invalid" class="next-btn btn-gen new-btn" (click)="saveScfRecord()">SAVE SSF
+        <button [disabled]="form.invalid" class="next-btn btn-gen new-btn" (click)="saveScfRecord()">SAVE
         </button>
     </div>
 </mat-dialog-actions>

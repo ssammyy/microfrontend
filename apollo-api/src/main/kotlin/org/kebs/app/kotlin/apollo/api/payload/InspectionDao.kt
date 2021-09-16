@@ -3,6 +3,8 @@ package org.kebs.app.kotlin.apollo.api.payload;
 import org.kebs.app.kotlin.apollo.store.model.di.*
 import java.sql.Timestamp
 import java.util.*
+import kotlin.random.Random
+import kotlin.random.nextULong
 
 
 class InspectionGeneralDetailsDto {
@@ -43,7 +45,7 @@ class InspectionGeneralDetailsDto {
                 inspection = entity.inspection
                 idfNumber = entity.idfNumber
                 ucrNumber = entity.ucrNumber
-                overallRemarks=entity.overallRemarks
+                overallRemarks = entity.overallRemarks
                 feePaid = entity.feePaid
                 receiptNumber = entity.receiptNumber
                 overallRemarks = entity.overallRemarks
@@ -69,29 +71,29 @@ class InspectionGeneralDetailsDto {
 
 class InspectionEngineeringItemDto {
     var id: Long? = null
-    var confirmItemType: Long? = null
     var inspection: Long? = null
+    var inspectionDate: Date? = null
     var category: String? = null
-    var entryPoint: String? = null
-    var cfs: String? = null
-    var inspectionDate: Timestamp? = null
-    var importersName: String? = null
+    var itemId: Long? = null
     var compliant: String? = null
-    var customsEntryNumber: String? = null
-    var idfNumber: String? = null
-    var cocNumber: String? = null
-    var feePaid: String? = null
-    var receiptNumber: String? = null
-    var overallRemarks: String? = null
-    var instructionsUseManual: String? = null
-    var inspectionReportApprovalComments: String? = null
-    var description: String? = null
     var sampled: String? = null
-    var status: Int? = null
-    var sampleUpdated: Int? = null
-    var brand: String? = null
     var serialNumber: String? = null
-    var ssfId: Long? = null
+    var brand: String? = null
+    var ksEasApplicable: String? = null
+    var quantityVerified: String? = null
+    var instructionsUseManual: String? = null
+    var warrantyPeriodDocumentation: String? = null
+    var safetyCautionaryRemarks: String? = null
+    var sizeClassCapacity: String? = null
+    var certMarksPvocDoc: String? = null
+    var disposalInstruction: String? = null
+    var mfgNameAddress: String? = null
+    var fiberComposition: String? = null
+    var batchNoModelTypeRef: String? = null
+    var sampleUpdated: Int? = null
+    var description: String? = null
+    var status: Int? = null
+    var remarks: String? = null
 
     companion object {
         fun fromEntity(entity: CdInspectionEngineeringItemChecklistEntity): InspectionEngineeringItemDto {
@@ -102,12 +104,23 @@ class InspectionEngineeringItemDto {
                 serialNumber = entity.serialNumber
                 compliant = entity.compliant
                 instructionsUseManual = entity.instructionsUseManual
-                category = entity.category
                 inspectionDate = entity.createdOn
                 sampled = entity.sampled
-                ssfId = entity.ssfId
                 sampleUpdated = entity.sampleUpdated
                 description = entity.description
+                itemId = entity.itemId
+                category = entity.category
+                quantityVerified = entity.quantityVerified
+                warrantyPeriodDocumentation = entity.warrantyPeriodDocumentation
+                safetyCautionaryRemarks = entity.safetyCautionaryRemarks
+                certMarksPvocDoc = entity.certMarksPvocDoc
+                disposalInstruction = entity.disposalInstruction
+                remarks = entity.remarks
+                sizeClassCapacity = entity.sizeClassCapacity
+                fiberComposition = entity.fiberComposition
+                batchNoModelTypeRef = entity.batchNoModelTypeRef
+                mfgNameAddress = entity.mfgNameAddress
+                ksEasApplicable = entity.ksEasApplicable
                 status = entity.status
             }
             return dto
@@ -135,7 +148,7 @@ class InspectionEngineeringDetailsDto {
     var instructionsUseManual: String? = null
     var inspectionReportApprovalComments: String? = null
     var description: String? = null
-    var remarks: String?=null
+    var remarks: String? = null
     var status: Int? = null
     var items: List<InspectionEngineeringItemDto>? = null
 
@@ -145,7 +158,7 @@ class InspectionEngineeringDetailsDto {
                 id = entity.id
                 inspection = entity.inspectionGeneral?.id
                 serialNumber = entity.serialNumber
-                remarks=entity.remarks
+                remarks = entity.remarks
                 inspectionDate = entity.createdOn
                 description = entity.description
                 status = entity.status
@@ -230,7 +243,7 @@ class InspectionAgrochemDetailsDto {
     var inspectionReportApprovalComments: String? = null
     var description: String? = null
     var status: Int? = null
-    var remarks: String?=null
+    var remarks: String? = null
     var items: List<InspectionAgrochemItemDto>? = null
 
     companion object {
@@ -240,7 +253,7 @@ class InspectionAgrochemDetailsDto {
                 inspection = entity.inspectionGeneral?.id
                 serialNumber = entity.serialNumber
                 inspectionDate = entity.createdOn
-                remarks=entity.remarks
+                remarks = entity.remarks
                 description = entity.description
                 status = entity.status
             }
@@ -324,7 +337,7 @@ class InspectionOtherDetailsDto {
     var inspectionReportApprovalComments: String? = null
     var description: String? = null
     var status: Int? = null
-    var remarks: String?=null
+    var remarks: String? = null
     var items: List<InspectionOtherItemDto>? = null
 
     companion object {
@@ -335,7 +348,7 @@ class InspectionOtherDetailsDto {
                 serialNumber = entity.serialNumber
                 inspectionDate = entity.createdOn
                 description = entity.description
-                remarks=entity.remarks
+                remarks = entity.remarks
                 status = entity.status
             }
             entity.inspectionGeneral?.cdDetails?.let {
@@ -418,7 +431,7 @@ class InspectionMotorVehicleDetailsDto {
     var instructionsUseManual: String? = null
     var inspectionReportApprovalComments: String? = null
     var description: String? = null
-    var remarks: String?=null
+    var remarks: String? = null
     var status: Int? = null
     var items: List<InspectionMotorVehicleItemDto>? = null
 
@@ -428,7 +441,7 @@ class InspectionMotorVehicleDetailsDto {
                 id = entity.id
                 inspection = entity.inspectionGeneral?.id
                 serialNumber = entity.serialNumber
-                remarks=entity.remarks
+                remarks = entity.remarks
                 inspectionDate = entity.createdOn
                 description = entity.description
                 status = entity.status

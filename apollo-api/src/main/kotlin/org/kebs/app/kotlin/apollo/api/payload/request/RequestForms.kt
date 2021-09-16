@@ -6,6 +6,9 @@ import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleCollectionEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmissionEntity
 import java.sql.Date
 import java.time.Instant
+import kotlin.random.Random
+import kotlin.random.nextUInt
+import kotlin.random.nextULong
 
 class AgrochemCheckListItems {
     val category: String? = null
@@ -47,6 +50,9 @@ class EngineeringCheckListItems {
     var sizeClassCapacity: String? = null
     var certMarksPvocDoc: String? = null
     var disposalInstruction: String? = null
+    var mfgNameAddress: String?=null
+    var fiberComposition: String?=null
+    var batchNoModelTypeRef: String?=null
     var remarks: String? = null
 }
 
@@ -122,14 +128,14 @@ class CheckListForm {
     }
 
     fun engineeringChecklistItems(): List<CdInspectionEngineeringItemChecklistEntity> {
-        var listItems = mutableListOf<CdInspectionEngineeringItemChecklistEntity>()
+        val listItems = mutableListOf<CdInspectionEngineeringItemChecklistEntity>()
         this.engineering?.items?.forEach { item ->
             val dt = CdInspectionEngineeringItemChecklistEntity()
             dt.itemId = item.itemId
             dt.compliant = item.compliant
             dt.category = item.category
             dt.sampled = item.sampled
-            dt.serialNumber = item.serialNumber
+            dt.serialNumber = "EG${item.itemId}${Random(12).nextULong()}"
             dt.quantityVerified = item.quantityVerified
             dt.warrantyPeriodDocumentation = item.warrantyPeriodDocumentation
             dt.safetyCautionaryRemarks = item.safetyCautionaryRemarks
@@ -140,6 +146,15 @@ class CheckListForm {
             dt.compliant = item.compliant
             dt.category = item.category
             dt.remarks = item.remarks
+            dt.sizeClassCapacity=item.sizeClassCapacity
+            dt.instructionsUseManual=item.instructionsUseManual
+            dt.fiberComposition=item.fiberComposition
+            dt.batchNoModelTypeRef=item.batchNoModelTypeRef
+            dt.mfgNameAddress=item.mfgNameAddress
+            dt.ksEasApplicable=item.ksEasApplicable
+            dt.quantityVerified=item.quantityVerified
+            dt.brand=item.brand
+            dt.status=1
             listItems.add(dt)
         }
         return listItems
@@ -162,6 +177,7 @@ class CheckListForm {
             dt.category = item.category
             dt.sampled = item.sampled
             dt.appearance = item.appearance
+            dt.serialNumber = "AC${item.itemId}${Random(12).nextULong()}"
             dt.brand = item.brand
             dt.certMarksPvocDoc = item.certMarksPvocDoc
             dt.ksEasApplicable = item.ksEasApplicable
@@ -173,6 +189,7 @@ class CheckListForm {
             dt.compositionIngredients = item.compositionIngredients
             dt.storageCondition = item.storageCondition
             dt.remarks = agrochem?.remarks
+            dt.status=1
             listItems.add(dt)
         }
         return listItems
@@ -192,6 +209,7 @@ class CheckListForm {
             val dt = CdInspectionOtherItemChecklistEntity()
             dt.itemId = item.itemId
             dt.compliant = item.compliant
+            dt.serialNumber = "OT${item.itemId}${Random(12).nextULong()}"
             dt.category = item.category
             dt.sampled = item.sampled
             dt.serialNumber = item.serialNumber
@@ -204,6 +222,7 @@ class CheckListForm {
             dt.presenceAbsenceBanned = item.presenceAbsenceBanned
             dt.documentation = item.documentation
             dt.remarks = others?.remarks
+            dt.status=1
             listItems.add(dt)
         }
         return listItems
@@ -224,8 +243,8 @@ class CheckListForm {
             dt.itemId = item.itemId
             dt.compliant = item.compliant
             dt.category = item.category
+            dt.serialNumber = "MV${item.itemId}${Random(12).nextULong()}"
             dt.sampled = item.sampled
-            dt.serialNumber = item.serialNumber
             dt.makeVehicle = item.makeVehicle
             dt.chassisNo = item.chassisNo
             dt.engineNoCapacity = item.engineNoCapacity
@@ -237,6 +256,7 @@ class CheckListForm {
             dt.colour = item.colour
             dt.overallAppearance = item.overallAppearance
             dt.remarks = item.remarks
+            dt.status=1
             listItems.add(dt)
         }
         return listItems
@@ -252,22 +272,27 @@ class CheckListForm {
 }
 
 class SsfForm {
+    var permitNumber: Long?=null
     var description: String? = null
-    var ssfNo: String? = null
     var ssfSubmissionDate: String? = null
-    var bsNumber: String? = null
     var brandName: String? = null
     var productDescription: String? = null
     fun ssf(): QaSampleSubmissionEntity {
         val df = QaSampleSubmissionEntity()
         df.description = description
-        df.ssfNo = ssfNo
+        df.permitId=permitNumber
         df.brandName = brandName
         df.ssfSubmissionDate = Date(java.util.Date().time)
-        df.bsNumber = bsNumber
         df.productDescription = productDescription
         return df
     }
+}
+
+class SsfResultForm {
+    var remarks: String? = null
+    var ssfNo: String? = null
+    var compliance: String? = null
+    var bsNumber: String? = null
 }
 
 class ScfForm {

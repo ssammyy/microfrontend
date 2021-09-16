@@ -1,0 +1,11 @@
+.hide-ssf-action td.ng2-smart-actions a.ssf {
+    display: none;
+}
+
+.hide-ssfu-action td.ng2-smart-actions a.ssf-update {
+    display: none;
+}
+
+.hide-scf-action td.ng2-smart-actions a.scf {
+    display: none;
+}

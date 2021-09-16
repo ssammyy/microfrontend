@@ -59,15 +59,20 @@
                    id="compositionIngredients" formControlName="fiberComposition">
         </div>
         <div class="col-sm-4 col-md-3">
-            <label for="dateMfgPackaging" class="waiver-form-label">Instructors Manual</label>
-            <input type="date" class="waiver-form-input-master" name="dateMfgPackaging"
-                   data-name="dateMfg Packaging" id="dateMfgPackaging" required=""
-                   formControlName="instructionsUseManual">
+            <label for="instructionsUseManual" class="waiver-form-label">Instructors Manual</label>
+            <select id="instructionsUseManual" class="waiver-form-input-master" formControlName="instructionsUseManual">
+                <option [value]="">None</option>
+                <option value="YES">Yes</option>
+                <option value="NO">No</option>
+            </select>
         </div>
         <div class="col-sm-4 col-md-3">
-            <label for="dateExpiry" class="waiver-form-label">Warranty period/documentation</label>
-            <input type="date" class="waiver-form-input-master"  name="dateExpiry"
-                   data-name="date Expiry" id="dateExpiry" required="" formControlName="warrantyPeriodDocumentation">
+            <label for="warrantyPeriodDocumentation" class="waiver-form-label">Warranty period/documentation</label>
+            <select id="warrantyPeriodDocumentation" class="waiver-form-input-master" formControlName="warrantyPeriodDocumentation">
+                <option [value]="">None</option>
+                <option value="YES">Yes</option>
+                <option value="NO">No</option>
+            </select>
         </div>
         <div class="col-sm-4 col-md-3">
             <label for="storageCondition" class="waiver-form-label">Size/class/capacity</label>
@@ -81,10 +86,12 @@
                    data-name="certMarksPvocDoc" id="certMarksPvocDoc" formControlName="certMarksPvocDoc">
         </div>
         <div class="col-sm-4 col-md-3">
-            <label for="disposalInstructions" class="waiver-form-label">Disposal instructions</label>
-            <input id="disposalInstructions" type="text" class="waiver-form-input-master"  name="certMarksPvocDoc"
-                   data-name="ksEas Applicable"
-                   formControlName="disposalInstruction">
+            <label for="disposalInstruction" class="waiver-form-label">Disposal instructions</label>
+            <select id="disposalInstruction" class="waiver-form-input-master" formControlName="disposalInstruction">
+                <option [value]="">None</option>
+                <option value="YES">Yes</option>
+                <option value="NO">No</option>
+            </select>
         </div>
         <div class="col-sm-12 col-md-8">
             <label for="remarks" class="waiver-form-label">Please write, in detail, your feedback for this
