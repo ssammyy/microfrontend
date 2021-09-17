@@ -1332,14 +1332,14 @@ class QADaoServices(
                     permit.userId ?: throw ExpectedDataNotFound("MISSING USER ID"),
                     permit.id ?: throw ExpectedDataNotFound("MISSING USER ID")
                 )
-                sendEmailWithProformaPaid(
-                    userDetails.email ?: throw ExpectedDataNotFound("MISSING USER ID"),
-                    invoiceCreationPDF(
-                        batchInvoice.id,
-                        userDetails
-                    ).path,
-                    permit.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
-                )
+//                sendEmailWithProformaPaid(
+//                    userDetails.email ?: throw ExpectedDataNotFound("MISSING USER ID"),
+//                    invoiceCreationPDF(
+//                        batchInvoice.id,
+//                        userDetails
+//                    ).path,
+//                    permit.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
+//                )
             } catch (e: Exception) {
                 KotlinLogging.logger { }.error(e.message)
                 KotlinLogging.logger { }.debug(e.message, e)

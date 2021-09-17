@@ -125,6 +125,7 @@ export const routes: Routes = [
     {
         path: '',
         redirectTo: 'dashboard',
+        canActivate: [RouteGuard],
         pathMatch: 'prefix',
     },
     // {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
