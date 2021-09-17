@@ -64,24 +64,33 @@
                                                     <div class="list-text-accordion" th:text="${permit?.faxNo}"></div>
                                                 </li>
                                                 <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Email address </div>
+                                                    <div class="list-title-accordion">Email address</div>
                                                     <div class="list-text-accordion" th:text="${permit?.email}"></div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Date of Application</div>
-                                                    <div class="list-text-accordion" th:text="${#dates.format(permit?.createdOn, 'dd/MM/yyyy')}"></div>
+                                                    <div class="list-text-accordion"
+                                                         th:text="${#dates.format(permit?.createdOn, 'dd/MM/yyyy')}"></div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Date of Issue</div>
-                                                    <div class="list-text-accordion" th:text="${#dates.format(permit?.dateOfIssue, 'dd/MM/yyyy')}"></div>
+                                                    <div class="list-text-accordion"
+                                                         th:text="${#dates.format(permit?.dateOfIssue, 'dd/MM/yyyy')}"></div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Effective Date</div>
+                                                    <div class="list-text-accordion"
+                                                         th:text="${#dates.format(permit?.effectiveDate, 'dd/MM/yyyy')}"></div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Date of Expiry</div>
-                                                    <div class="list-text-accordion" th:text="${#dates.format(permit?.dateOfExpiry, 'dd/MM/yyyy')}"></div>
+                                                    <div class="list-text-accordion"
+                                                         th:text="${#dates.format(permit?.dateOfExpiry, 'dd/MM/yyyy')}"></div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Description of commodity</div>
-                                                    <div class="list-text-accordion" th:text="${permit?.commodityDescription}"></div>
+                                                    <div class="list-text-accordion"
+                                                         th:text="${permit?.commodityDescription}"></div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Trade Mark</div>
