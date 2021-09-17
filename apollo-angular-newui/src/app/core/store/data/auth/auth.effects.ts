@@ -173,6 +173,7 @@ export class AuthEffects {
                     .pipe(
                         mergeMap((data) => {
                             return [
+                                loadAuthsSuccess({profile: null, loggedIn: false}),
                                 loadLogoutSuccess({data: data, loggedIn: false, profile: null}),
                                 loadUserCompanyInfoSuccess({data: null}),
                                 loadBranchIdSuccess({branchId: null, branch: null}),
