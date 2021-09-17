@@ -229,7 +229,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
         MatTableModule,
         NgMultiSelectDropDownModule,
         MatTabsModule,
-        MatProgressSpinnerModule
+        MatProgressSpinnerModule,
+        NgxSpinnerModule
         // CoreModule
     ],
     declarations: [
@@ -377,7 +378,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
         VehicleDetailsComponent,
         ScfDetailsFormComponent,
         ComplianceUpdateFormComponent,
-        MatMultilineTabDirective
+        MatMultilineTabDirective,
     ],
     providers: [
         MatNativeDateModule,

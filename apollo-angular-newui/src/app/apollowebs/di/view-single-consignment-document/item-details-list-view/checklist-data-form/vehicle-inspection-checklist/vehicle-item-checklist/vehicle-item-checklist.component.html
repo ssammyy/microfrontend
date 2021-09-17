@@ -16,11 +16,18 @@
             </select>
         </div>
         <div class="col-sm-4 col-md-3">
-            <label for="sampled" class="waiver-form-label">Sampled?</label>
-            <select id="sampled" class="waiver-form-input-master" formControlName="sampled">
+            <label for="submitToMinistry" class="waiver-form-label">Sumit To Ministry?</label>
+            <select id="submitToMinistry" class="waiver-form-input-master" formControlName="submitToMinistry">
                 <option [value]="">None</option>
                 <option value="YES">Yes</option>
                 <option value="NO">No</option>
+            </select>
+        </div>
+        <div class="col-sm-4 col-md-3" [hidden]="form.value.submitToMinistry==='YES'">
+            <label for="stationId" class="waiver-form-label">Select Station</label>
+            <select id="stationId" class="waiver-form-input-master" formControlName="stationId">
+                <option value="" disabled selected>Select Station</option>
+                <option *ngFor="let station of stations" [value]="station.id">{{station.stationName}}-{{station.description}}</option>
             </select>
         </div>
         <div class="col-sm-4 col-md-3">

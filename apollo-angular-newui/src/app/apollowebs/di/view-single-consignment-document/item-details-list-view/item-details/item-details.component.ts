@@ -18,7 +18,6 @@ export class ItemDetailsComponent implements OnInit {
     itemUuid: any
     cdUuid: any
     itemDetails: any
-    checkLists: any[]
     checkListConfiguration: any
     private statuses: any[] = [];
 
@@ -32,7 +31,6 @@ export class ItemDetailsComponent implements OnInit {
                 this.itemUuid = res.get("id")
                 this.cdUuid = res.get("cdUuid")
                 this.loadItemDetails()
-                this.loadChecklists()
 
             }
         )
@@ -74,19 +72,6 @@ export class ItemDetailsComponent implements OnInit {
             )
     }
 
-    loadChecklists() {
-        this.diService.loadChecklists(this.itemUuid)
-            .subscribe(
-                res => {
-                    if (res.responseCode === "00") {
-                        this.checkLists = res.data
-                    } else {
-                        console.log(res.message)
-                    }
-                }
-            )
-    }
-
     submitMinistryInspection() {
         this.dialog.open(MinistryInspectionRequestComponent, {
             data: {
@@ -97,9 +82,6 @@ export class ItemDetailsComponent implements OnInit {
         }).afterClosed()
             .subscribe(
                 res => {
-                    if (res) {
-                        this.loadChecklists()
-                    }
                 }
             )
     }

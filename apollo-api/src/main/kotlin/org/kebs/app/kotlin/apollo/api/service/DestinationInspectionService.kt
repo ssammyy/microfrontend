@@ -811,24 +811,23 @@ class DestinationInspectionService(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
         val cdItemDetails = daoServices.findItemWithUuid(cdItemUuid)
-        val cdItemID: Long = cdItemDetails.id?.let { commonDaoServices.makeAnyNotBeNull(it) } as Long
 
-        cdItemDetails.ministrySubmissionStatus = map.activeStatus
+        cdItemDetails.ministrySubmissionStatus = map.initStatus
         val ministryStation = this.ministryStationRepo.findById(stationId)
         if (ministryStation.isPresent) {
             cdItemDetails.ministryStationId = ministryStation.get()
-
-            daoServices.updateCDItemDetails(cdItemDetails, cdItemID, loggedInUser, map)
+            daoServices.updateCDItemDetails(cdItemDetails, cdItemDetails.id!!, loggedInUser, map)
 
             val cdDetails = cdItemDetails.cdDocId
             commonDaoServices.findAllUsersWithMinistryUserType()?.let { ministryUsers ->
                 cdDetails?.id?.let { cdDetailsId ->
-                    ministryUsers.get(0).id?.let {
+                    ministryUsers.get(Random().nextInt(ministryUsers.size)).id?.let {
+
                         // TODO: uncomment as required
-//                        diBpmn.diMinistryInspectionRequiredComplete(
-//                                cdDetailsId,
-//                                it, true
-//                        )
+                        diBpmn.diMinistryInspectionRequiredComplete(
+                                cdDetailsId,
+                                it, true
+                        )
                     }
                 }
             }

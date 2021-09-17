@@ -3101,8 +3101,13 @@ class DestinationInspectionDaoServices(
 //    }
 
     fun findAllCompleteMinistryInspectionRequests(page: PageRequest): Page<CdItemDetailsEntity> {
-        return iCdItemsRepo.findCompletedMinistrySubmissions(page)
+        return iCdItemsRepo.findByMinistrySubmissionStatus( 1,page)
     }
+
+    fun findAllCompleteMinistryInspectionRequests(status: Int, page: PageRequest): Page<CdItemDetailsEntity> {
+        return iCdItemsRepo.findByMinistrySubmissionStatus( status,page)
+    }
+
 
     fun updateCdInspectionMotorVehicleItemChecklistInDB(
             cdInspectionMotorVehicleItemChecklistEntity: CdInspectionMotorVehicleItemChecklistEntity,

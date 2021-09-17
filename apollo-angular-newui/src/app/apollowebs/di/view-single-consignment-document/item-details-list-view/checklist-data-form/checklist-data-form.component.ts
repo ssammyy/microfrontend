@@ -13,6 +13,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 export class ChecklistDataFormComponent implements OnInit {
     generalCheckList: FormGroup
     categories: any[]
+    stations: any[]
     checkListTypes: any[]
     laboratories: []
     message: any
@@ -51,6 +52,19 @@ export class ChecklistDataFormComponent implements OnInit {
         })
     }
 
+    loadMinistryStations() {
+        this.diService.loadMinistryStations()
+            .subscribe(
+                res => {
+                    if (res.responseCode === "00") {
+                        this.stations = res.data
+                    } else {
+                        console.log("Failed to load stations")
+                    }
+                }
+            )
+
+    }
     loadConsignmentDetails() {
         this.diService.getConsignmentDetails(this.consignmentId)
             .subscribe(

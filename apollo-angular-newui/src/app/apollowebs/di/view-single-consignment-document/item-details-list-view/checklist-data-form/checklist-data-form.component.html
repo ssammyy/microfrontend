@@ -56,7 +56,7 @@
                                                     [(selectedItems)]="agrochemItems"></app-item-selection>
                                 <button class="btn btn-warning" mat-button matStepperPrevious>Back</button>
                                 <div class="pull-right pr-4">
-                                    <button [disabled]="!agrochemChecklist" class="btn btn-primary" mat-button
+                                    <button [disabled]="agrochemItems && !agrochemDetails" class="btn btn-primary" mat-button
                                             matStepperNext>NEXT
                                     </button>
                                 </div>
@@ -68,7 +68,7 @@
                                                     [(selectedItems)]="engineringItems"></app-item-selection>
                                 <button class="btn btn-warning" mat-button matStepperPrevious>Back</button>
                                 <div class="pull-right pr-4">
-                                    <button [disabled]="!engineeringDetails" class="btn btn-primary" mat-button
+                                    <button [disabled]="engineringItems &&!engineeringDetails" class="btn btn-primary" mat-button
                                             matStepperNext>NEXT
                                     </button>
                                 </div>
@@ -76,11 +76,11 @@
                             <mat-step label="Vehicle Checklist">
                                 <app-vehicle-inspection-checklist (vehicleDetails)="setVehicleChecklist($event)"
                                 ></app-vehicle-inspection-checklist>
-                                <app-item-selection checklistType="vehicle" id="vehicle" [categories]="categories" [items]="itemList"
+                                <app-item-selection [stations]="stations" checklistType="vehicle" id="vehicle" [categories]="categories" [items]="itemList"
                                                     [(selectedItems)]="vehicleItems"></app-item-selection>
                                 <button class="btn btn-warning" mat-button matStepperPrevious>Back</button>
                                 <div class="pull-right pr-4">
-                                    <button [disabled]="vehicleDetails" class="btn btn-primary" mat-button
+                                    <button [disabled]="vehicleItems &&!vehicleDetails" class="btn btn-primary" mat-button
                                             matStepperNext>NEXT
                                     </button>
                                 </div>

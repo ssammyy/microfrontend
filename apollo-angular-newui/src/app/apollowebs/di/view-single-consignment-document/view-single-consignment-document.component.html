@@ -870,7 +870,7 @@
                                             *ngIf="consignment.ui.owner && (consignment.ui.cocRequest || consignment.ui.corRequest)"
                                             class="btn btn-sm btn-primary" (click)="markAsCompliant()">COMPLIANT
                                         </button>
-                                        <button *ngIf="consignment.ui.owner && !consignment.ui.inspectionChecklist"
+                                        <button *ngIf="consignment.ui.owner && !consignment.ui.inspectionChecklist && consignment.ui.canInspect"
                                             class="btn btn-sm btn-primary" (click)="createInspectionChecklist()">FILL
                                             INSPECTION CHECKLIST
                                         </button>

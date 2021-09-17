@@ -5,6 +5,7 @@ import java.sql.Date
 import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*
+import kotlin.jvm.Transient
 
 @Entity
 @Table(name = "DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_CHECKLIST")
@@ -16,6 +17,8 @@ class CdInspectionMotorVehicleItemChecklistEntity : Serializable {
     @Id
     var id: Long? = null
 
+    @Transient
+    var stationId: Long = 0L
     @Column(name = "ITEM_ID")
     @Basic
     var itemId: Long? = null
@@ -103,6 +106,10 @@ class CdInspectionMotorVehicleItemChecklistEntity : Serializable {
     @Column(name = "MINISTRY_REPORT_REINSPECTION_REMARKS")
     @Basic
     var ministryReportReinspectionRemarks: String? = null
+
+    @JoinColumn(name = "MINISTRY_STATION_ID", referencedColumnName = "ID")
+    @ManyToOne
+    var ministryStationId: MinistryStationEntity? = null
 
     @Column(name = "DESCRIPTION")
     @Basic

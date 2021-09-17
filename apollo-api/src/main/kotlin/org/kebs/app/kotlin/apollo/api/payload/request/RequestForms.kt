@@ -50,9 +50,9 @@ class EngineeringCheckListItems {
     var sizeClassCapacity: String? = null
     var certMarksPvocDoc: String? = null
     var disposalInstruction: String? = null
-    var mfgNameAddress: String?=null
-    var fiberComposition: String?=null
-    var batchNoModelTypeRef: String?=null
+    var mfgNameAddress: String? = null
+    var fiberComposition: String? = null
+    var batchNoModelTypeRef: String? = null
     var remarks: String? = null
 }
 
@@ -62,10 +62,11 @@ class EngineeringChecklist {
 }
 
 class VehicleCheckListItems {
+    val stationId: Long = 0
     val category: String? = null
     var itemId: Long? = null
     var compliant: String? = null
-    var sampled: String? = null
+    var submitToMinistry: String? = null
     var serialNumber: String? = null
     var makeVehicle: String? = null
     var chassisNo: String? = null
@@ -146,15 +147,15 @@ class CheckListForm {
             dt.compliant = item.compliant
             dt.category = item.category
             dt.remarks = item.remarks
-            dt.sizeClassCapacity=item.sizeClassCapacity
-            dt.instructionsUseManual=item.instructionsUseManual
-            dt.fiberComposition=item.fiberComposition
-            dt.batchNoModelTypeRef=item.batchNoModelTypeRef
-            dt.mfgNameAddress=item.mfgNameAddress
-            dt.ksEasApplicable=item.ksEasApplicable
-            dt.quantityVerified=item.quantityVerified
-            dt.brand=item.brand
-            dt.status=1
+            dt.sizeClassCapacity = item.sizeClassCapacity
+            dt.instructionsUseManual = item.instructionsUseManual
+            dt.fiberComposition = item.fiberComposition
+            dt.batchNoModelTypeRef = item.batchNoModelTypeRef
+            dt.mfgNameAddress = item.mfgNameAddress
+            dt.ksEasApplicable = item.ksEasApplicable
+            dt.quantityVerified = item.quantityVerified
+            dt.brand = item.brand
+            dt.status = 1
             listItems.add(dt)
         }
         return listItems
@@ -189,7 +190,7 @@ class CheckListForm {
             dt.compositionIngredients = item.compositionIngredients
             dt.storageCondition = item.storageCondition
             dt.remarks = agrochem?.remarks
-            dt.status=1
+            dt.status = 1
             listItems.add(dt)
         }
         return listItems
@@ -222,7 +223,7 @@ class CheckListForm {
             dt.presenceAbsenceBanned = item.presenceAbsenceBanned
             dt.documentation = item.documentation
             dt.remarks = others?.remarks
-            dt.status=1
+            dt.status = 1
             listItems.add(dt)
         }
         return listItems
@@ -241,10 +242,11 @@ class CheckListForm {
         vehicle?.items?.forEach { item ->
             val dt = CdInspectionMotorVehicleItemChecklistEntity()
             dt.itemId = item.itemId
+            dt.stationId = item.stationId
             dt.compliant = item.compliant
             dt.category = item.category
             dt.serialNumber = "MV${item.itemId}${Random(12).nextULong()}"
-            dt.sampled = item.sampled
+            dt.sampled = item.submitToMinistry
             dt.makeVehicle = item.makeVehicle
             dt.chassisNo = item.chassisNo
             dt.engineNoCapacity = item.engineNoCapacity
@@ -256,7 +258,7 @@ class CheckListForm {
             dt.colour = item.colour
             dt.overallAppearance = item.overallAppearance
             dt.remarks = item.remarks
-            dt.status=1
+            dt.status = 1
             listItems.add(dt)
         }
         return listItems
@@ -272,7 +274,7 @@ class CheckListForm {
 }
 
 class SsfForm {
-    var permitNumber: Long?=null
+    var permitNumber: Long? = null
     var description: String? = null
     var ssfSubmissionDate: String? = null
     var brandName: String? = null
@@ -280,7 +282,7 @@ class SsfForm {
     fun ssf(): QaSampleSubmissionEntity {
         val df = QaSampleSubmissionEntity()
         df.description = description
-        df.permitId=permitNumber
+        df.permitId = permitNumber
         df.brandName = brandName
         df.ssfSubmissionDate = Date(java.util.Date().time)
         df.productDescription = productDescription

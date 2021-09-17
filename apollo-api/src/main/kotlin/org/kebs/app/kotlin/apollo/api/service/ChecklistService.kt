@@ -5,6 +5,7 @@ import okhttp3.internal.toLongOrDefault
 import org.kebs.app.kotlin.apollo.api.payload.*
 import org.kebs.app.kotlin.apollo.api.payload.request.ConsignmentUpdateRequest
 import org.kebs.app.kotlin.apollo.api.payload.request.SsfResultForm
+import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -39,6 +40,8 @@ class ChecklistService(
         private val iChecklistInspectionTypesRepo: IChecklistInspectionTypesRepository,
         private val iCdItemsRepo: IConsignmentItemsRepository,
         private val commonDaoServices: CommonDaoServices,
+        private val bpmn: DestinationInspectionBpmn,
+        private val ministryStationRepository: IMinistryStationEntityRepository,
         private val qaISampleCollectRepository: IQaSampleCollectionRepository,
         private val consignmentAuditService: ConsignmentDocumentAuditService,
         private val daoServices: DestinationInspectionDaoServices,
@@ -218,23 +221,30 @@ class ChecklistService(
                     // Update details
                     checklistItem.sampled = itm.sampled
                     if ("YES".equals(itm.sampled)) {
-                        checklistItem.sampleUpdated = map.activeStatus
+                        checklistItem.sampleUpdated = 2
+                        checklistItem.ministryReportSubmitStatus=map.activeStatus
+
                     } else {
                         checklistItem.sampleUpdated = 2
                     }
-
                     checklistItem.itemId = itm.itemId
                     checklistItem.description = detail.hsDescription
                     checklistItem.serialNumber = itm.serialNumber
                     checklistItem.compliant = itm.compliant
                     checklistItem.inspection = vehicleChecklist
-                    this.motorVehicleItemChecklistRepository.save(checklistItem)
-                    // Update Item
-                    daoServices.checkIfChecklistUndergoesSampling(
-                            checklistItem.sampled!!,
-                            detail,
-                            map
-                    )
+                    if (checklistItem.ministryReportSubmitStatus==map.activeStatus){
+                        val ministryStation = this.ministryStationRepository.findById(checklistItem.stationId)
+                        if (ministryStation.isPresent) {
+                            val saved = this.motorVehicleItemChecklistRepository.save(checklistItem)
+                            checklistItem.ministryStationId=ministryStation.get()
+                            //Submit ministry inspection
+                            this.bpmn.startMinistryInspection(saved, detail)
+                        } else {
+                            // Handle invalid selection here
+                        }
+                    } else {
+                        this.motorVehicleItemChecklistRepository.save(checklistItem)
+                    }
                 }
             }
         }

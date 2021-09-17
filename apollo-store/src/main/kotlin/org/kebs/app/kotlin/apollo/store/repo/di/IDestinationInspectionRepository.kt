@@ -590,7 +590,7 @@ interface IConsignmentItemsRepository : HazelcastRepository<CdItemDetailsEntity,
     fun findByUuid(uuid: String): CdItemDetailsEntity?
     fun findByCdDocIdAndId(cdType: ConsignmentDocumentDetailsEntity, id: Long?) :CdItemDetailsEntity
     fun findByMinistrySubmissionStatus(status: Int): List<CdItemDetailsEntity>?
-
+    fun findByMinistrySubmissionStatus(status: Int, page: Pageable): Page<CdItemDetailsEntity>
     @Query(
         "SELECT DAT_KEBS_CD_ITEM_DETAILS.* FROM\n" +
                 "    DAT_KEBS_CD_ITEM_DETAILS\n" +

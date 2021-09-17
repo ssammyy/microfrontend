@@ -37,7 +37,7 @@ class ConsignmentEnableUI {
     var riskProfileImporter: Boolean = false
     var riskProfileConsignor: Boolean = false
     var riskProfileConsignee: Boolean = false
-    var inspectionActive: Boolean? = null
+    var canInspect: Boolean? = null
     var inspectionChecklist: Boolean = false
     var hasPort: Boolean? = null
     var blacklistEnabled = false
@@ -70,7 +70,7 @@ class ConsignmentEnableUI {
             cd.cdType?.let {
                 ui.corRequest = it.localCorStatus == map.activeStatus
                 ui.cocRequest = it.localCocStatus == map.activeStatus
-                ui.inspectionActive = it.inspectionStatus == map.activeStatus
+                ui.canInspect = it.inspectionStatus == map.activeStatus
             }
             return ui
         }

@@ -14,6 +14,8 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDa
 import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentAuditService
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.CdDemandNoteEntity
+import org.kebs.app.kotlin.apollo.store.model.di.CdInspectionMotorVehicleItemChecklistEntity
+import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntity
 import org.kebs.app.kotlin.apollo.store.repo.ICdItemDetailsRepo
 import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
@@ -73,6 +75,17 @@ class DestinationInspectionBpmn(
     val processStarted: Int = 1
     val processCompleted: Int = 2
     val pidPrefix = "di"
+    fun startMinistryInspection(saved: CdInspectionMotorVehicleItemChecklistEntity, detail: CdItemDetailsEntity) {
+        val data = mutableMapOf<String, Any?>()
+        data.put("mvInspectionId", saved.id)
+        data.put("itemId", detail.id)
+        data.put("ministry", saved.ministryStationId?.stationName ?: "ALL")
+        val processInstance = runtimeService.startProcessInstanceByKey("assignInspectionOfficer", data)
+        detail.varField7 = processInstance.processDefinitionId
+        detail.varField8 = processStarted.toString()
+        detail.varField9 = Timestamp.from(Instant.now()).toString()
+        detail.varField10 = "Start ministry inspection"
+    }
 
     fun startAssignmentProcesses(data: MutableMap<String, Any?>, consignmentDocument: ConsignmentDocumentDetailsEntity) {
         data.put("cfs_code", consignmentDocument.freightStation?.cfsCode)
@@ -80,9 +93,9 @@ class DestinationInspectionBpmn(
         consignmentDocument.diProcessInstanceId = processInstance.processDefinitionId
         consignmentDocument.diProcessStatus = processStarted
         consignmentDocument.diProcessStartedOn = Timestamp.from(Instant.now())
-        consignmentDocument.varField10="Start Assign Inspection Officer"
+        consignmentDocument.varField10 = "Start Assign Inspection Officer"
         // Update history
-        this.auditService.addHistoryRecord(consignmentDocument.id!!,consignmentDocument.ucrNumber, data["remarks"] as String?, "ASSIGN IO", "Consignment assignment")
+        this.auditService.addHistoryRecord(consignmentDocument.id!!, consignmentDocument.ucrNumber, data["remarks"] as String?, "ASSIGN IO", "Consignment assignment")
         // Update document
         this.daoServices.updateCdDetailsInDB(consignmentDocument, this.commonDaoServices.getLoggedInUser())
     }
@@ -100,7 +113,8 @@ class DestinationInspectionBpmn(
                             val processProperties = mutableMapOf<String, Any?>()
                             val loggedInUser = this.commonDaoServices.getLoggedInUser()
                             processProperties.put("cdUuid", cdUuid)
-                            processProperties.put("supervisor", consignmentDocument.assigner?.userName?:loggedInUser?.userName)
+                            processProperties.put("supervisor", consignmentDocument.assigner?.userName
+                                    ?: loggedInUser?.userName)
                             processProperties.put("cfs_code", consignmentDocument.freightStation?.cfsCode)
                             processProperties.put("remarks", form.remarks)
                             processProperties.put("activeStatus", map.activeStatus)
@@ -135,8 +149,8 @@ class DestinationInspectionBpmn(
                 response.responseCode = ResponseCodes.FAILED_CODE
                 response.message = "Document does not have any tasks remaining"
             }
-        }catch (ex: Exception ){
-            KotlinLogging.logger {  }.error("FAILED TO COMPLETE TASK",ex)
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("FAILED TO COMPLETE TASK", ex)
             response.responseCode = ResponseCodes.FAILED_CODE
             response.message = "Task update failed"
         }
@@ -147,12 +161,12 @@ class DestinationInspectionBpmn(
         data.put("cfs_code", consignmentDocument.freightStation?.cfsCode)
         val processInstance = runtimeService.startProcessInstanceByKey("targetConsignmentDocument", data)
         consignmentDocument.diProcessInstanceId = processInstance.processDefinitionId
-        consignmentDocument.diProcessStatus=1
-        consignmentDocument.diProcessStartedOn=Timestamp.from(Instant.now())
+        consignmentDocument.diProcessStatus = 1
+        consignmentDocument.diProcessStartedOn = Timestamp.from(Instant.now())
         consignmentDocument.varField10 = "Request Targeting"
         consignmentDocument.targetReason = data.get("remarks") as String?
         // Save process details
-        this.auditService.addHistoryRecord(consignmentDocument.id!!,consignmentDocument.ucrNumber, data["remarks"] as String?, "REQUEST CONSIGNMENT TARGETING", "Consignment targeting request")
+        this.auditService.addHistoryRecord(consignmentDocument.id!!, consignmentDocument.ucrNumber, data["remarks"] as String?, "REQUEST CONSIGNMENT TARGETING", "Consignment targeting request")
         this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
         // Update status to wait targeting approval
         consignmentDocument.cdStandard?.let { cdStd ->
@@ -164,8 +178,8 @@ class DestinationInspectionBpmn(
         data.put("cfs_code", consignmentDocument.freightStation?.cfsCode)
         val processInstance = runtimeService.startProcessInstanceByKey("consignmentCompliantApprovalProcess", data)
         consignmentDocument.diProcessInstanceId = processInstance.processDefinitionId
-        consignmentDocument.diProcessStatus=1
-        consignmentDocument.diProcessStartedOn=Timestamp.from(Instant.now())
+        consignmentDocument.diProcessStatus = 1
+        consignmentDocument.diProcessStartedOn = Timestamp.from(Instant.now())
         consignmentDocument.varField10 = "REQUEST COMPLIANCE APPROVAL"
         // Save process details
         this.auditService.addHistoryRecord(consignmentDocument.id!!, consignmentDocument.ucrNumber, data["remarks"] as String?, "REQUEST CONSIGNMENT COMPLIANCE UPDATE", "Request to mark Consignment as compliant")
@@ -177,11 +191,11 @@ class DestinationInspectionBpmn(
         data.put("cfs_code", consignmentDocument.freightStation?.cfsCode)
         val processInstance = runtimeService.startProcessInstanceByKey("blacklistUser", data)
         consignmentDocument.diProcessInstanceId = processInstance.processDefinitionId
-        consignmentDocument.diProcessStatus=1
-        consignmentDocument.diProcessStartedOn=Timestamp.from(Instant.now())
+        consignmentDocument.diProcessStatus = 1
+        consignmentDocument.diProcessStartedOn = Timestamp.from(Instant.now())
         consignmentDocument.varField8 = processInstance.id
         // Save process details
-        this.auditService.addHistoryRecord(consignmentDocument.id!!,consignmentDocument.ucrNumber, data["remarks"] as String?, "REQUEST CONSIGNMENT BLACKLISTING", "Consignment blacklist request")
+        this.auditService.addHistoryRecord(consignmentDocument.id!!, consignmentDocument.ucrNumber, data["remarks"] as String?, "REQUEST CONSIGNMENT BLACKLISTING", "Consignment blacklist request")
         // Update current process
         this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
     }
@@ -190,8 +204,8 @@ class DestinationInspectionBpmn(
         data.put("cfs_code", consignmentDocument.freightStation?.cfsCode)
         val processInstance = runtimeService.startProcessInstanceByKey("cocApprovalProcess", data)
         consignmentDocument.diProcessInstanceId = processInstance.processDefinitionId
-        consignmentDocument.diProcessStatus=1
-        consignmentDocument.diProcessStartedOn=Timestamp.from(Instant.now())
+        consignmentDocument.diProcessStatus = 1
+        consignmentDocument.diProcessStartedOn = Timestamp.from(Instant.now())
         consignmentDocument.targetReason = data.get("remarks") as String?
         // Save process details
         this.auditService.addHistoryRecord(consignmentDocument.id!!, consignmentDocument.ucrNumber, data["remarks"] as String?, "REQUEST CONSIGNMENT COC/COI", "Consignment CoC/CoI request")
@@ -201,11 +215,11 @@ class DestinationInspectionBpmn(
     fun startGenerateCor(data: MutableMap<String, Any?>, consignmentDocument: ConsignmentDocumentDetailsEntity) {
         val processInstance = runtimeService.startProcessInstanceByKey("corApprovalProcess", data)
         consignmentDocument.diProcessInstanceId = processInstance.processDefinitionId
-        consignmentDocument.diProcessStatus=1
-        consignmentDocument.diProcessStartedOn=Timestamp.from(Instant.now())
+        consignmentDocument.diProcessStatus = 1
+        consignmentDocument.diProcessStartedOn = Timestamp.from(Instant.now())
         consignmentDocument.targetReason = data.get("remarks") as String?
         // Save process details
-        this.auditService.addHistoryRecord(consignmentDocument.id!!,consignmentDocument.ucrNumber, data["remarks"] as String?, "REQUEST CONSIGNMENT COR", "Consignment CoR request")
+        this.auditService.addHistoryRecord(consignmentDocument.id!!, consignmentDocument.ucrNumber, data["remarks"] as String?, "REQUEST CONSIGNMENT COR", "Consignment CoR request")
         this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
     }
 
@@ -213,11 +227,11 @@ class DestinationInspectionBpmn(
         data.put("cfs_code", consignmentDocument.freightStation?.cfsCode)
         val processInstance = runtimeService.startProcessInstanceByKey("demandNoteGenerationProcess", data)
         consignmentDocument.diProcessInstanceId = processInstance.processDefinitionId
-        consignmentDocument.diProcessStatus=1
-        consignmentDocument.diProcessStartedOn=Timestamp.from(Instant.now())
+        consignmentDocument.diProcessStatus = 1
+        consignmentDocument.diProcessStartedOn = Timestamp.from(Instant.now())
         consignmentDocument.targetReason = data.get("remarks") as String?
         // Save process details
-        this.auditService.addHistoryRecord(consignmentDocument.id!!,consignmentDocument.ucrNumber, data["remarks"] as String?, "DEMAND NOTE CONSIGNMENT", "Consignment demand note request")
+        this.auditService.addHistoryRecord(consignmentDocument.id!!, consignmentDocument.ucrNumber, data["remarks"] as String?, "DEMAND NOTE CONSIGNMENT", "Consignment demand note request")
         this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
     }
 
@@ -239,22 +253,22 @@ class DestinationInspectionBpmn(
             val auth = commonDaoServices.loggedInUserAuthentication()
             val loggedInUser = this.commonDaoServices.getLoggedInUser()
             var tasks: MutableList<org.flowable.task.api.Task> = mutableListOf()
-             when {
+            when {
                 auth.authorities.stream().anyMatch { authority -> authority.authority == "DI_OFFICER_CHARGE_READ" } -> {
                     val userProfilesEntity = loggedInUser?.let { commonDaoServices.findUserProfileByUserID(it, map.activeStatus) }
-                    val codes =daoServices.findAllCFSUserCodes(userProfilesEntity?.id ?: 0L)
+                    val codes = daoServices.findAllCFSUserCodes(userProfilesEntity?.id ?: 0L)
                     KotlinLogging.logger { }.info("CFS CODES: $codes")
 //                    taskService.createTaskQuery().taskAssignee(loggedInUser?.userName)
                     // Load tasks in supervisors cfs id
                     for (c in codes) {
-                        tasks.addAll(taskService.createTaskQuery().taskCategory(c).listPage(0,30))
-                        if(tasks.size>30){
+                        tasks.addAll(taskService.createTaskQuery().taskCategory(c).listPage(0, 30))
+                        if (tasks.size > 30) {
                             break
                         }
                     }
                 }
                 else -> {
-                    tasks=taskService.createTaskQuery().taskOwner(loggedInUser?.userName).list()
+                    tasks = taskService.createTaskQuery().taskOwner(loggedInUser?.userName).list()
                 }
             }
             response.data = getTaskDetails(tasks)
@@ -813,8 +827,5 @@ class DestinationInspectionBpmn(
         }
         return false
     }
-
-
-
 
 }

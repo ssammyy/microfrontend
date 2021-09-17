@@ -167,14 +167,6 @@
                                             </ul>
                                         </ng-template>
                                     </li>
-                                    <li ngbNavItem="item-details">
-                                        <a ngbNavLink>Item Checklists</a>
-                                        <ng-template ngbNavContent>
-                                            <b class="text-primary">List of checklists in this item</b>
-                                            <app-checklists [dataSet]="checkLists"
-                                                            [itemUuid]="itemUuid"></app-checklists>
-                                        </ng-template>
-                                    </li>
                                     <li ngbNavItem="consignorDetails" [hidden]="!(itemDetails && itemDetails.item_non_standard)">
                                         <a ngbNavLink>Item Non Standard</a>
                                         <ng-template ngbNavContent>
@@ -214,7 +206,7 @@
                             </div>
                             <div class="col-md-2">
                                 <b>Action:</b>
-                                <button *ngIf="itemDetails.cd_item.sampleBsNumberStatus!==1" class="btn btn-sm btn-primary"
+                                <button *ngIf="itemDetails.cd_item.sampleBsNumberStatus===0" class="btn btn-sm btn-primary"
                                         (click)="addSsfDetails()">ADD SSF & BS NUMBER
                                 </button>
                                 <button *ngIf="!itemDetails.cd_item.ministrySubmitted" class="btn btn-sm btn-primary"

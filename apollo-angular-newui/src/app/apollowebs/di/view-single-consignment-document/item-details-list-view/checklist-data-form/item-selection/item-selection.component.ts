@@ -29,6 +29,7 @@ export class ItemSelectionComponent implements OnInit {
     @Input() categories: any[]
     @Input() selectedItems: any[]
     @Input() checklistType: any
+    @Input() stations: any[]
     selectionDataSource: MatTableDataSource<any>
     selection: SelectionModel<any>
     invalidFeeSelection: Boolean;
@@ -84,6 +85,7 @@ export class ItemSelectionComponent implements OnInit {
                 })
                 break
             case 'vehicle':
+                formData["stations"]=this.stations
                 dialogRef = this.dialog.open(VehicleItemChecklistComponent,{
                     data : formData
                 })
