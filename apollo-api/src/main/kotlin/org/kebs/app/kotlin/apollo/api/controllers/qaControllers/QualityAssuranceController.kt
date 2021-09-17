@@ -1117,13 +1117,12 @@ class QualityAssuranceController(
         when (permitFromInterface.pcmApprovalStatus) {
             map.activeStatus -> {
                 //TODO: CHANGE THE DATE OF EXPIRY IF RENEWAL
-                val issueDate = commonDaoServices.getCurrentDate()
                 val permitType = permitDetailsDB.permitType?.let { qaDaoServices.findPermitType(it) }
                 val expiryDate = permitType?.numberOfYears?.let { commonDaoServices.addYearsToCurrentDate(it) }
 
                 with(permitFromInterface) {
-                    awardedPermitNumber = if (permitDetailsFromDB.renewalStatus != map.activeStatus) {
-                        "${permitType?.markNumber}${
+                    if (permitDetailsFromDB.renewalStatus != map.activeStatus) {
+                        awardedPermitNumber = "${permitType?.markNumber}${
                             generateRandomText(
                                 6,
                                 map.secureRandom,
@@ -1131,13 +1130,26 @@ class QualityAssuranceController(
                                 false
                             )
                         }".toUpperCase()
-                    } else {
-                        permitDetailsFromDB.awardedPermitNumber
+                        dateOfIssue = commonDaoServices.getCurrentDate()
+                        dateOfExpiry = expiryDate
+                        effectiveDate = commonDaoServices.getCurrentDate()
+                    } else if (permitDetailsFromDB.renewalStatus == map.activeStatus) {
+                        val previousPermit = qaDaoServices.findPermitWithPermitRefNumberLatest(
+                            permitDetailsFromDB.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER")
+                        )
+                        awardedPermitNumber = previousPermit.awardedPermitNumber
+                        dateOfIssue = commonDaoServices.getCurrentDate()
+                        effectiveDate = commonDaoServices.addYDayToDate(
+                            previousPermit.dateOfExpiry ?: throw Exception("MISSING PREVIOUS YEAR EXPIRY DATE"), 1
+                        )
+                        dateOfExpiry = commonDaoServices.addYearsToDate(
+                            effectiveDate ?: throw Exception("MISSING PREVIOUS YEAR EXPIRY DATE"),
+                            permitType?.numberOfYears ?: throw Exception("MISSING NUMBER OF YEAR")
+                        )
                     }
                     userTaskId = null
                     permitAwardStatus = map.activeStatus
-                    dateOfIssue = issueDate
-                    dateOfExpiry = expiryDate
+
                 }
                 //Generate permit and forward to manufacturer
                 KotlinLogging.logger { }.info(":::::: Sending compliance status along with e-permit :::::::")

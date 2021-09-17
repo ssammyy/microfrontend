@@ -95,6 +95,10 @@ class PermitApplicationsEntity : Serializable {
     @Basic
     var plotNo: String? = null
 
+    @Column(name = "EFFECTIVE_DATE")
+    @Basic
+    var effectiveDate: Date? = null
+
 
     @Column(name = "DESIGNATION")
     @Basic
@@ -830,6 +834,7 @@ class PermitApplicationsEntity : Serializable {
         val that = other as PermitApplicationsEntity
         return id == that.id && cocId == that.cocId
                 && factoryVisit == that.factoryVisit
+                && effectiveDate == that.effectiveDate
                 && processStep == that.processStep
                 && hodQamApproveRejectStatus == that.hodQamApproveRejectStatus
                 && hodQamApproveRejectRemarks == that.hodQamApproveRejectRemarks
@@ -854,6 +859,7 @@ class PermitApplicationsEntity : Serializable {
         return Objects.hash(
             id,
             hodQamApproveRejectStatus,
+            effectiveDate,
             hodQamApproveRejectRemarks,
             companyId,
             applicationStatus,
