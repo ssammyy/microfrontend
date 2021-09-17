@@ -98,7 +98,7 @@ class ChecklistHandler(
         req.pathVariable("itemId").let {
             val form = req.body(MinistryRequestForm::class.java)
             return ServerResponse.ok()
-                    .body(this.diService.requestMinistryInspection(it, form.stationId))
+                    .body(this.checlistService.requestMinistryInspection(it.toLongOrDefault(0L), form.stationId))
         }
     }
 

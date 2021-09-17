@@ -16,7 +16,7 @@
             <label style="color: #0082f3">Items</label>
         </div>
         <div class="table-striped table-condensed table-responsive">
-            <ng2-smart-table [settings]="settings" [source]="inspectionDetails.items"></ng2-smart-table>
+            <ng2-smart-table [settings]="settings" [source]="inspectionDetails.items" (custom)="customAction($event)" ></ng2-smart-table>
         </div>
     </div>
 </div>

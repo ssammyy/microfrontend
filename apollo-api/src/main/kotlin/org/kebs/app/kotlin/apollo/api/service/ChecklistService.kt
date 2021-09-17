@@ -5,6 +5,7 @@ import okhttp3.internal.toLongOrDefault
 import org.kebs.app.kotlin.apollo.api.payload.*
 import org.kebs.app.kotlin.apollo.api.payload.request.ConsignmentUpdateRequest
 import org.kebs.app.kotlin.apollo.api.payload.request.SsfResultForm
+import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.BpmnNotifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
@@ -24,6 +25,7 @@ import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
 import java.sql.Timestamp
 import java.time.Instant
+import java.util.*
 
 @Service
 class ChecklistService(
@@ -41,6 +43,8 @@ class ChecklistService(
         private val iCdItemsRepo: IConsignmentItemsRepository,
         private val commonDaoServices: CommonDaoServices,
         private val bpmn: DestinationInspectionBpmn,
+        private val notifications: BpmnNotifications,
+        private val ministryStationRepo: IMinistryStationEntityRepository,
         private val ministryStationRepository: IMinistryStationEntityRepository,
         private val qaISampleCollectRepository: IQaSampleCollectionRepository,
         private val consignmentAuditService: ConsignmentDocumentAuditService,
@@ -111,8 +115,8 @@ class ChecklistService(
                     } else {
                         checklistItem.sampleUpdated = 2
                     }
-                    checklistItem.quantityDeclared= detail.quantity.toString()
-                    checklistItem.productDescription=detail.itemDescription
+                    checklistItem.quantityDeclared = detail.quantity.toString()
+                    checklistItem.productDescription = detail.itemDescription
                     checklistItem.itemId = itm.itemId
                     checklistItem.sizeClassCapacity = itm.sizeClassCapacity
                     checklistItem.description = detail.hsDescription
@@ -168,8 +172,8 @@ class ChecklistService(
                     } else {
                         checklistItem.sampleUpdated = 2
                     }
-                    checklistItem.productDescription=detail.itemDescription
-                    checklistItem.quantityDeclared= detail.quantity.toString()
+                    checklistItem.productDescription = detail.itemDescription
+                    checklistItem.quantityDeclared = detail.quantity.toString()
                     checklistItem.itemId = itm.itemId
                     checklistItem.description = detail.hsDescription
                     checklistItem.brand = detail.productBrandName
@@ -222,7 +226,7 @@ class ChecklistService(
                     checklistItem.sampled = itm.sampled
                     if ("YES".equals(itm.sampled)) {
                         checklistItem.sampleUpdated = 2
-                        checklistItem.ministryReportSubmitStatus=map.activeStatus
+                        checklistItem.ministryReportSubmitStatus = map.activeStatus
 
                     } else {
                         checklistItem.sampleUpdated = 2
@@ -232,11 +236,11 @@ class ChecklistService(
                     checklistItem.serialNumber = itm.serialNumber
                     checklistItem.compliant = itm.compliant
                     checklistItem.inspection = vehicleChecklist
-                    if (checklistItem.ministryReportSubmitStatus==map.activeStatus){
+                    if (checklistItem.ministryReportSubmitStatus == map.activeStatus) {
                         val ministryStation = this.ministryStationRepository.findById(checklistItem.stationId)
                         if (ministryStation.isPresent) {
                             val saved = this.motorVehicleItemChecklistRepository.save(checklistItem)
-                            checklistItem.ministryStationId=ministryStation.get()
+                            checklistItem.ministryStationId = ministryStation.get()
                             //Submit ministry inspection
                             this.bpmn.startMinistryInspection(saved, detail)
                         } else {
@@ -300,7 +304,7 @@ class ChecklistService(
                     } else {
                         checklistItem.sampleUpdated = 2
                     }
-                    checklistItem.quantityDeclared=detail.quantity.toString()
+                    checklistItem.quantityDeclared = detail.quantity.toString()
                     checklistItem.itemId = itm.itemId
                     checklistItem.description = detail.hsDescription
                     checklistItem.serialNumber = itm.serialNumber
@@ -510,6 +514,28 @@ class ChecklistService(
         return response
     }
 
+    fun sendEmailToImporter(mvInspectionId: Long, cdItemId: Long): Boolean {
+        try {
+            val data = mutableMapOf<String, Any?>()
+            val itemDetails = this.daoServices.findItemWithItemID(cdItemId)
+            itemDetails.cdDocId?.let {
+                it.cdImporter?.let { importerId ->
+                    val cdImporterDetails = daoServices.findCDImporterDetails(importerId)
+                    data.put("emailAddress", cdImporterDetails.email)
+                    data.put("name", cdImporterDetails.name)
+                }
+            }
+            val optional = this.motorVehicleItemChecklistRepository.findById(mvInspectionId)
+            if (optional.isPresent) {
+                data.put("mvir", optional.get())
+                // TODO: Deliver email to importer
+            }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Error sending email", ex)
+        }
+        return false
+    }
+
     @Transactional
     fun saveSsfDetails(sampleSubmissionDetails: QaSampleSubmissionEntity, itemId: Long, map: ServiceMapsEntity, loggedInUser: UsersEntity): ApiResponseModel {
         val response = ApiResponseModel()
@@ -522,7 +548,7 @@ class ChecklistService(
                 val serviceRequestsEntity = daoServices.ssfSave(cdItem, sampleSubmissionDetails, loggedInUser, map).first
                 with(cdItem) {
                     sampleBsNumberStatus = map.initStatus
-                    sampledCollectedStatus=map.activeStatus
+                    sampledCollectedStatus = map.activeStatus
                     ssfId = serviceRequestsEntity.id
                 }
                 cdItem = daoServices.updateCdItemDetailsInDB(cdItem, loggedInUser)
@@ -614,6 +640,52 @@ class ChecklistService(
         } else {
             response.message = "Sampling has not been requested for this item"
             response.responseCode = ResponseCodes.FAILED_CODE
+        }
+        return response
+    }
+
+    // Assign Ministry user
+    fun assignMinistryUser(mvInspectionId: Long, stationId: Long): Boolean {
+        val optional = this.motorVehicleItemChecklistRepository.findById(mvInspectionId)
+        if (optional.isPresent) {
+            val ministryInspection = optional.get()
+            commonDaoServices.findAllUsersWithMinistryUserType()?.let { ministryUsers ->
+                ministryUsers.get(Random().nextInt(ministryUsers.size)).let {
+                    ministryInspection.assignedUser = it
+                    this.motorVehicleItemChecklistRepository.save(ministryInspection)
+                }
+            }
+        }
+        return false
+    }
+
+    fun requestMinistryInspection(mvInspectionId: Long, stationId: Long): ApiResponseModel {
+        val response = ApiResponseModel()
+        val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        val optional = this.motorVehicleItemChecklistRepository.findById(mvInspectionId)
+        if (optional.isPresent) {
+            val motorVehicleInspection = optional.get()
+            val cdItemDetails = this.daoServices.findItemWithItemID(motorVehicleInspection.itemId!!)
+            cdItemDetails.ministrySubmissionStatus = map.initStatus
+            val ministryStation = this.ministryStationRepo.findById(stationId)
+            if (ministryStation.isPresent) {
+                motorVehicleInspection.ministryStationId = ministryStation.get()
+                motorVehicleInspection.ministryReportSubmitStatus = map.activeStatus
+                daoServices.updateCDItemDetails(cdItemDetails, cdItemDetails.id!!, loggedInUser, map)
+                this.motorVehicleItemChecklistRepository.save(motorVehicleInspection)
+                this.bpmn.startMinistryInspection(motorVehicleInspection, cdItemDetails)
+                response.data = InspectionMotorVehicleItemDto.fromEntity(motorVehicleInspection)
+                response.message = "Data Submitted Successfully"
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+            } else {
+                response.message = "Invalid ministry station request"
+                response.responseCode = ResponseCodes.NOT_FOUND
+            }
+        } else {
+            response.message = "Inspection request does not exist"
+            response.responseCode = ResponseCodes.NOT_FOUND
         }
         return response
     }

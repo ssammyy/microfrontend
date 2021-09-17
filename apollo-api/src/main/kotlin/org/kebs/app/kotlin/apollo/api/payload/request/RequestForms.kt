@@ -250,8 +250,12 @@ class CheckListForm {
             dt.makeVehicle = item.makeVehicle
             dt.chassisNo = item.chassisNo
             dt.engineNoCapacity = item.engineNoCapacity
-            dt.manufactureDate = Date.valueOf(item.manufacturerDate)
-            dt.registrationDate = Date.valueOf(item.registrationDate)
+            item.manufacturerDate?.let {
+                dt.manufactureDate = Date.valueOf(it)
+            }
+            item.registrationDate?.let {
+                dt.registrationDate = Date.valueOf(it)
+            }
             dt.odemetreReading = item.odemetreReading
             dt.driveRhdLhd = item.driveRhdLhd
             dt.transmissionAutoManual = item.transmissionAutoManual

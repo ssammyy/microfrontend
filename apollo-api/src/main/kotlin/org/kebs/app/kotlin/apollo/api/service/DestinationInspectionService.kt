@@ -13,6 +13,7 @@ import org.kebs.app.kotlin.apollo.store.model.CocsEntity
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.di.*
+import org.kebs.app.kotlin.apollo.store.repo.ICdItemDetailsRepo
 import org.kebs.app.kotlin.apollo.store.repo.ICocItemsRepository
 import org.kebs.app.kotlin.apollo.store.repo.ICocsRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.*
@@ -48,6 +49,7 @@ class DestinationInspectionService(
         private val importerDaoServices: ImporterDaoServices,
         private val cdAuditService: ConsignmentDocumentAuditService,
         private val qaDaoServices: QADaoServices,
+        private val cdItemsDetailsRepository: ICdItemDetailsRepo,
         private val diBpmn: DestinationInspectionBpmn,
         private val reportsDaoService: ReportsDaoService
 ) {
@@ -62,7 +64,7 @@ class DestinationInspectionService(
             consignmentDocument.compliantRemarks = remarks
             val loggedInUser = commonDaoServices.findUserByUserName(supervisor)
             daoServices.updateCdDetailsInDB(consignmentDocument, loggedInUser)
-            cdAuditService.addHistoryRecord(consignmentDocument.id,consignmentDocument.ucrNumber, remarks, "KEBS_APPROVE_COMPLIANCE", "Approve compliance request", supervisor)
+            cdAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, remarks, "KEBS_APPROVE_COMPLIANCE", "Approve compliance request", supervisor)
         }
         return false
     }
@@ -493,7 +495,7 @@ class DestinationInspectionService(
             } else {
                 this.daoServices.updateCdDetailsInDB(consignmentDocument, this.commonDaoServices.findUserByUserName(supervisor))
             }
-            this.cdAuditService.addHistoryRecord(consignmentDocument.id!!,consignmentDocument.ucrNumber, remarks, "APPROVE TARGETING", "Targeting of ${cdUuid} has been rejected by ${supervisor}", supervisor)
+            this.cdAuditService.addHistoryRecord(consignmentDocument.id!!, consignmentDocument.ucrNumber, remarks, "APPROVE TARGETING", "Targeting of ${cdUuid} has been rejected by ${supervisor}", supervisor)
             // Submit consignment to Single/Window
             daoServices.submitCDStatusToKesWS("OH", "OH", consignmentDocument.version.toString(), consignmentDocument)
             consignmentDocument.cdStandard?.let { cdStd ->
@@ -569,6 +571,18 @@ class DestinationInspectionService(
         }
         return true
     }
+    fun clearItemProcess(mvInspectionId: Long, cdItemId: Long): Boolean {
+        try {
+            val itemDetails = this.daoServices.findItemWithItemID(cdItemId)
+            itemDetails.varField9 = null
+            itemDetails.varField8 = null
+            itemDetails.varField7 = null
+            this.cdItemsDetailsRepository.save(itemDetails)
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("FAILED to clear process", ex)
+        }
+        return false
+    }
 
     /**
      * Clear consignment document current process information
@@ -583,22 +597,6 @@ class DestinationInspectionService(
             KotlinLogging.logger { }.error("UPDATE STATUS", ex)
         }
         return true
-    }
-
-
-
-    fun lisMinistryChecklists(cdItemUuid: String): ApiResponseModel {
-        val response = ApiResponseModel()
-        try {
-            val cdItemDetails = daoServices.findItemWithUuid(cdItemUuid)
-            response.data = null
-            response.responseCode = ResponseCodes.SUCCESS_CODE
-            response.message = "Success";
-        } catch (ex: Exception) {
-            response.message = "Invalid inspection item"
-            response.responseCode = ResponseCodes.FAILED_CODE
-        }
-        return response
     }
 
     fun applicationConfigurations(appId: Int): ApiResponseModel {
@@ -648,7 +646,7 @@ class DestinationInspectionService(
                     updatedCDDetails.approveRejectCdStatusType?.id?.let { it2 -> daoServices.updateCDStatus(cdStd, it2) }
                 }
             }
-            cdAuditService.addHistoryRecord(updatedCDDetails.id,consignmentDocument.ucrNumber ,remarks, "KEBS_${cdStatus.category?.toUpperCase()}", "${cdStatus.category?.capitalize()} consignment")
+            cdAuditService.addHistoryRecord(updatedCDDetails.id, consignmentDocument.ucrNumber, remarks, "KEBS_${cdStatus.category?.toUpperCase()}", "${cdStatus.category?.capitalize()} consignment")
         }
     }
 
@@ -803,42 +801,6 @@ class DestinationInspectionService(
                     }
                     ?: KotlinLogging.logger { }.info("Empty value")
         }
-    }
-
-    fun requestMinistryInspection(cdItemUuid: String, stationId: Long): ApiResponseModel {
-        val response = ApiResponseModel()
-        val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-        val loggedInUser = commonDaoServices.loggedInUserDetails()
-
-        val cdItemDetails = daoServices.findItemWithUuid(cdItemUuid)
-
-        cdItemDetails.ministrySubmissionStatus = map.initStatus
-        val ministryStation = this.ministryStationRepo.findById(stationId)
-        if (ministryStation.isPresent) {
-            cdItemDetails.ministryStationId = ministryStation.get()
-            daoServices.updateCDItemDetails(cdItemDetails, cdItemDetails.id!!, loggedInUser, map)
-
-            val cdDetails = cdItemDetails.cdDocId
-            commonDaoServices.findAllUsersWithMinistryUserType()?.let { ministryUsers ->
-                cdDetails?.id?.let { cdDetailsId ->
-                    ministryUsers.get(Random().nextInt(ministryUsers.size)).id?.let {
-
-                        // TODO: uncomment as required
-                        diBpmn.diMinistryInspectionRequiredComplete(
-                                cdDetailsId,
-                                it, true
-                        )
-                    }
-                }
-            }
-            //
-            response.message = "Data Submitted Successfully"
-            response.responseCode = ResponseCodes.SUCCESS_CODE
-        } else {
-            response.message = "Invalid ministry station request"
-            response.responseCode = ResponseCodes.SUCCESS_CODE
-        }
-        return response
     }
 
     fun applicationTypes(): ApiResponseModel {

@@ -75,6 +75,7 @@ class DestinationInspectionBpmn(
     val processStarted: Int = 1
     val processCompleted: Int = 2
     val pidPrefix = "di"
+
     fun startMinistryInspection(saved: CdInspectionMotorVehicleItemChecklistEntity, detail: CdItemDetailsEntity) {
         val data = mutableMapOf<String, Any?>()
         data.put("mvInspectionId", saved.id)

@@ -1,0 +1,781 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.17.0.final using JasperReports Library version 6.17.0-6d93193241dd8cc42629e188b94f9e0bc5722efd  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="demandNote" pageWidth="595" pageHeight="842" whenNoDataType="NoPages" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9e00953a-ee21-49bc-8776-57c80bb03432">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter "/>
+	<style name="TextStatic" hTextAlign="Left" vTextAlign="Middle" rotation="None" fontName="Times New Roman" fontSize="12" isBold="true"/>
+	<style name="TextField" hTextAlign="Left" vTextAlign="Middle" rotation="None" fontName="Times New Roman" fontSize="12" isBold="false">
+		<box>
+			<bottomPen lineWidth="1.0" lineStyle="Dashed"/>
+		</box>
+	</style>
+	<parameter name="imagePath" class="java.lang.String"/>
+	<field name="ssfNum" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="ssfNum"/>
+	</field>
+	<field name="product" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="product"/>
+	</field>
+	<field name="genDate" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="genDate"/>
+	</field>
+	<field name="cocNum" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="cocNum"/>
+	</field>
+	<field name="officerName" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="officerName"/>
+	</field>
+	<field name="dutyStation" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="dutyStation"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="72">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<image>
+				<reportElement style="TextField" x="131" y="-4" width="50" height="45" uuid="7546897c-61fb-4851-b7ad-934811644575"/>
+				<imageExpression><![CDATA[$P{imagePath}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="183" y="11" width="199" height="18" uuid="02d0061a-51ba-4e79-a291-921532af5414"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[P.O. Box 54974 00200 NAIROBI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="183" y="-4" width="199" height="18" uuid="898b0506-29ab-469f-979d-035b83ad796d">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[KENYA BUREAU OF STANDARDS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="183" y="27" width="199" height="15" uuid="539e6319-d55d-4712-b092-e81fed330e38">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Tel : 020 6948000]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="41" width="440" height="25" uuid="b1a99762-1f6b-45cc-9b0c-7c918dedfff8">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="16" isBold="true" isItalic="false" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[STA/30:	SAMPLE SUBMISSION FORM (IMPORTS)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="TextStatic" x="447" y="40" width="50" height="20" uuid="a5a7261e-d8fd-4d13-849e-056a047b6d24">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[SSF/1]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="490" y="44" width="77" height="20" uuid="c936feb3-2718-47da-91fc-4f5eae0a9cf6"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ssfNum}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="802">
+			<staticText>
+				<reportElement style="TextStatic" x="5" y="0" width="100" height="20" uuid="0a67f965-dc51-4ca0-a644-c21412d02316">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[1. Product]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="TextField" x="5" y="22" width="261" height="20" uuid="01516d15-71b0-419a-8bea-f13e74300f15">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{product}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="TextField" x="298" y="148" width="259" height="20" uuid="e10c6aec-a680-42ce-9d21-734ac74e87a6">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[14. Status of Consignment]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="330" y="171" width="130" height="20" uuid="7e512fa6-d197-40e9-8c04-1890a9fde592"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[(a) Goods held at port]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="332" y="193" width="180" height="20" uuid="bb51d197-bb13-4452-98e4-b5e1b18a70d2"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[(b) Goods released under seal]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="332" y="217" width="130" height="20" uuid="44abbe7f-66b5-445d-8bfd-a53dbb050305"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[(c) Normal release]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="529" y="172" width="25" height="17" uuid="04655e48-2faf-448a-8086-4f720482d764"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="529" y="195" width="25" height="17" uuid="50dd55c4-859d-45a0-818b-39e9539c9dca"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="529" y="217" width="25" height="17" uuid="27cb7785-d852-42cd-8808-eb0178fce6e1"/>
+			</rectangle>
+			<staticText>
+				<reportElement style="TextStatic" x="5" y="50" width="100" height="20" uuid="36ae5c94-8166-455b-a8c0-7baf684b5bb9">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[2. Packaging]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="TextField" x="298" y="240" width="259" height="20" uuid="10e1cf9d-2afb-4ca9-bff8-9a200abd7a6b">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[15. Submitting officer]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="329" y="297" width="76" height="20" uuid="185aee8e-4de2-4149-a10c-74cc7358e9d5"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Designation]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="TextField" x="330" y="267" width="227" height="20" uuid="cc72f0e9-9b2d-4891-bc12-8b1b24e08de6">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{officerName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="329" y="361" width="76" height="20" uuid="061b5fdc-f3f2-41cc-b1f7-8187885427ee"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Duty Station]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="329" y="318" width="76" height="20" uuid="3b1ed3e0-6c29-4689-859f-508cbbfff428"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Signature]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="329" y="339" width="76" height="20" uuid="e6d13c17-c1e9-44f5-a977-c101b376222e"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Date]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="TextField" x="416" y="339" width="138" height="20" uuid="9e081a81-39e1-43f4-a908-ad6ef3517b05">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{genDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="TextField" x="416" y="361" width="138" height="20" uuid="2beb8ecc-4801-474d-bc36-45d4aebf3531">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dutyStation}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="TextStatic" x="7" y="96" width="158" height="20" uuid="2ae8e456-e68e-4447-b9fc-dde8d769fce2">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[3. Size of test sample]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="TextStatic" x="7" y="129" width="168" height="20" uuid="cf1d79c6-ea24-49b6-abf4-f2dfe2f02a7a">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[4. Size of Ref sample]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="TextStatic" x="7" y="157" width="168" height="20" uuid="ee9da6af-52e7-43d3-a30b-10941268fe1f">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[5. STA/30 SL No]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="403" y="297" width="154" height="20" uuid="a9146d22-f791-4195-97fb-579d89bda126"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[__________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="405" y="318" width="152" height="20" uuid="d6a09f08-ecb8-4069-9fca-511aa308fb47"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[__________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="130" y="122" width="150" height="20" uuid="6f8d9506-5a8e-4ae5-8ed0-c97b7e182f17"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[__________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="131" y="90" width="149" height="20" uuid="3e598582-a046-4a30-be5e-3bbf7c1d2de9"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[__________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="98" y="151" width="182" height="20" uuid="9d645015-2b66-42df-8153-5fedada62fd3"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[__________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="TextStatic" x="8" y="185" width="168" height="20" uuid="e7782b97-74e3-4495-8965-1b82c445ab25">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[6. File Ref No]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="87" y="179" width="193" height="20" uuid="ccfba466-8ebb-455b-b35b-3d77a54eca6d"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[__________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="TextStatic" x="8" y="216" width="182" height="20" uuid="b806a530-6e8b-49ba-93d5-d30c6de8e4dd">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[7. Packaging of product(s)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="160" y="211" width="120" height="20" uuid="7d2713cb-249f-4183-af5a-54e200306024"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[__________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="3" y="232" width="277" height="20" uuid="78289d00-eb90-414e-8f44-d01fb8e0c0a6"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[_________________________________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="300" width="208" height="20" uuid="06a8a3dd-706b-442e-8326-da80dcb18ca0"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[__________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="330" width="76" height="20" uuid="9f143717-b121-497c-a362-e855c922ce22"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Expiry Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="307" width="76" height="20" uuid="2cc2a3de-aa8e-4f6b-9f88-a7305d1eaee4"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Date of Manufacture]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="TextField" x="7" y="261" width="259" height="20" uuid="dad3a1d3-5202-4c8b-a9c4-8a990db4d686">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[8. Labelling/Identification]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="283" width="76" height="20" uuid="5db9b508-f109-46dc-b7c0-c1cf22b33c4b"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Trade Mark]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="95" y="280" width="193" height="20" uuid="29b8122b-75b1-41c8-9ba3-210fce371569"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[__________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="96" y="321" width="189" height="20" uuid="87a1186a-03dc-4373-a7e6-fabf0f233734"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[__________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="346" width="135" height="30" uuid="61262b82-0890-4ccb-a70c-d97e75af112a"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Content as declared (Kgs, Lts, No. etc)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="140" y="351" width="146" height="20" uuid="db319d19-5379-4d9f-89d1-3d06abdf29b4"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[__________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="381" width="101" height="20" uuid="84de27e3-ee01-4095-83f7-8171fc3cd611"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Country of Origin]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="131" y="372" width="154" height="20" uuid="24714c0f-7e54-49d1-9331-b86b69293983"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[__________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="70" y="394" width="216" height="20" uuid="78d66f4f-19f1-45dd-94ad-c7b390047229"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[__________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="31" y="403" width="76" height="20" uuid="9be13499-b864-4483-9342-97398bde2b6a"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Others]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="TextStatic" x="9" y="421" width="276" height="30" uuid="5e2b17f6-8f5c-495e-9097-4842796fa28f">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[9. Condition at time of sampling (good, satisfactory, poor etc)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="9" y="451" width="276" height="20" uuid="5acdf00e-72c6-433b-ad10-69bf9c9bc209"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[_________________________________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="TextStatic" x="11" y="472" width="276" height="30" uuid="bef99d51-faa4-4377-b8aa-a8f2c73f0dce">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[10. Reference Standard(s)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="11" y="487" width="276" height="20" uuid="d8eec512-aa96-4cca-b840-dd5bd0b49a7b"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[_________________________________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="TextStatic" x="12" y="514" width="276" height="42" uuid="7708b5c9-13e1-47ca-9d42-8887be899679">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[11. Parameters to be tested (** Indicate whether measurement uncertainity is required with Y/N):]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="12" y="548" width="276" height="20" uuid="bb9f9c26-5435-4334-bea4-ac81745ab06b"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[_________________________________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="12" y="569" width="276" height="20" uuid="4f94d2b2-bd8b-497c-8813-cf26cd71c8e8"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[_________________________________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="12" y="589" width="276" height="20" uuid="f9a916e6-0c27-4a77-8532-03325bbe7fa3"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[_________________________________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="TextStatic" x="11" y="609" width="276" height="26" uuid="5a28bad9-2306-4f25-b61f-360be32b16cc">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[12. Applicable laboratories]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="23" y="650" width="262" height="20" uuid="b2331faa-74bf-43cb-9203-151421cd2cda"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[2. _________________________________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="23" y="629" width="257" height="20" uuid="a015cac8-d9e1-4ee2-b5f6-7ea3de836eae"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[1. _________________________________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="TextStatic" x="298" y="0" width="257" height="26" uuid="8d01bd63-b5e4-4368-bd54-84109b7eb36a">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[13. Details of Consignment ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="3" y="72" width="277" height="20" uuid="b1607088-c796-421a-bd0b-dafce0f642ef"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[_______________________________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="65" y="666" width="489" height="20" uuid="52a1353c-7cec-4a7d-8de6-4493b46ad634"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[ ___________________________________________________________________________________________________________________________________________________________________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="11" y="688" width="543" height="20" uuid="afe79833-27b4-47ae-8539-108fa9b12788"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[______________________________________________________________________________________________________________________________________________________________________________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="46" width="200" height="20" uuid="0e108c0e-e928-44e7-9141-d4a1fb387dc9"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[__________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="430" y="392" width="127" height="20" uuid="b05deedf-a7c1-421d-89bb-d6bd65a4d84c"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[__________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="TextStatic" x="304" y="382" width="123" height="41" uuid="57fabeb9-e8ac-4a6f-9f18-a273fbcdccbd">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[16. Condition at Sample at time of Reception]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="304" y="420" width="250" height="20" uuid="103f2d98-8c20-4caf-a759-8b59d237da0d"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[______________________________________________________________________________________________________________________________________________________________________________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="TextField" x="303" y="442" width="259" height="20" uuid="925401a3-5b44-4e5a-b0bc-14ff566c9050">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[17. Receiving officer]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="332" y="468" width="76" height="20" uuid="7c0791a6-90a3-44fd-82c2-b13028d4b3e6"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Signature]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="408" y="468" width="144" height="20" uuid="8f1e5ec4-f3f3-45eb-8e43-b3bf38a2561f"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[__________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="332" y="491" width="76" height="20" uuid="d8258a78-6c6b-4800-90d2-aac263e2b31a"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="408" y="489" width="144" height="20" uuid="b5176b62-1178-4991-824e-59b1e1fe1ce2"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[__________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="TextField" x="301" y="517" width="254" height="20" uuid="0b7b71b6-ee27-4d21-9aae-4d2d09b42284">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[18. Sample Reference No.(s)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="303" y="536" width="250" height="20" uuid="96be145a-6546-401a-9a27-a02bd628b36e"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[______________________________________________________________________________________________________________________________________________________________________________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="303" y="559" width="250" height="20" uuid="b830735d-11af-487e-b280-44a8be6edeed"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[______________________________________________________________________________________________________________________________________________________________________________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="304" y="582" width="250" height="20" uuid="6aee19fd-d56d-48e9-bf8c-0a2cb50981af"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[______________________________________________________________________________________________________________________________________________________________________________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="304" y="605" width="250" height="20" uuid="a451192c-a2f0-49a7-bdcf-8a43d5626d2c"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[______________________________________________________________________________________________________________________________________________________________________________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="303" y="627" width="250" height="20" uuid="1323214b-d1cf-451d-aa0e-c2987139f82b"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[______________________________________________________________________________________________________________________________________________________________________________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="303" y="650" width="250" height="20" uuid="ea774042-5083-4692-8b16-62fc3cf32dd6"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[______________________________________________________________________________________________________________________________________________________________________________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="320" y="49" width="76" height="20" uuid="3e323f4a-a14b-4938-a48a-319b565900cb"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[PRO No.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="320" y="26" width="85" height="20" uuid="908d3927-33c8-4832-afd0-f864c67eb119"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Customs I.E No.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="360" y="40" width="194" height="20" uuid="a30eed01-066d-4afa-919b-1756b6f98d00"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[__________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="396" y="21" width="158" height="20" uuid="c9fa5c48-675b-4c41-8393-e4c26b20e074"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[__________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="321" y="96" width="76" height="20" uuid="4cce2a66-e0d7-47e0-a81c-1ac37b6546fc"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Invoice No.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="321" y="73" width="102" height="20" uuid="705f864b-9bc8-4f6b-9acb-30931361997e"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Receipt/LPO No.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="380" y="87" width="174" height="20" uuid="5bfed653-4595-43e9-91de-d0fa50cc1feb"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[__________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="397" y="65" width="157" height="20" uuid="a851db01-8dcf-4317-aa5f-5d0dd17d28e8"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[__________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="322" y="122" width="76" height="20" uuid="d1620b67-b738-4bef-8b00-cf7e222ced4e"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[C.O.C No.]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="TextField" x="380" y="118" width="174" height="20" uuid="96cbe4df-fc28-4c1b-8fe2-b51d3b40aca6">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cocNum}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="8" y="736" width="546" height="60" uuid="411b56de-6190-4856-8630-512b2fd596ba"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="8" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[* By signing this form, the customer authorises KEBS to carry out the tests listed herein and to subcontract, as and when need arises, any one or more of the tests to laboratories assessed and deemed competent by KEBS. KEBS laboratories will only accept test samples for scopes of testing that it has the necessary resources and capability. Please note that analisis of sample may be carried out in any of the KEBS laboratories. The conditions overleaf apply in all cases.
+**Inclusion of uncertainity of measurement against the test results has an additional associated cost.
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="11" y="709" width="543" height="20" uuid="670932fc-80c7-443b-b274-9018fed95d31"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[______________________________________________________________________________________________________________________________________________________________________________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="TextStatic" x="13" y="669" width="71" height="26" uuid="9d39b9e5-4e71-4d9a-87c8-d43a7e130af1">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Remarks]]></text>
+			</staticText>
+		</band>
+	</detail>
+</jasperReport>

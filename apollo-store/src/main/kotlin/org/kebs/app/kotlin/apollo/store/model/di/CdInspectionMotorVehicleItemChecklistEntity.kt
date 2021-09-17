@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.store.model.di
 
+import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import java.io.Serializable
 import java.sql.Date
 import java.sql.Timestamp
@@ -8,17 +9,18 @@ import javax.persistence.*
 import kotlin.jvm.Transient
 
 @Entity
-@Table(name = "DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_CHECKLIST")
+@Table(name = "DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_ITEM_CHECKLIST")
 class CdInspectionMotorVehicleItemChecklistEntity : Serializable {
 
     @Column(name = "ID")
-    @SequenceGenerator(name = "DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_CHECKLIST_SEQ_GEN", sequenceName = "DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_CHECKLIST_SEQ", allocationSize = 1)
-    @GeneratedValue(generator = "DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_CHECKLIST_SEQ_GEN", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_ITEM_CHECKLIST_SEQ_GEN", sequenceName = "DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_ITEM_CHECKLIST_SEQ", allocationSize = 1)
+    @GeneratedValue(generator = "DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_ITEM_CHECKLIST_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Id
     var id: Long? = null
 
     @Transient
     var stationId: Long = 0L
+
     @Column(name = "ITEM_ID")
     @Basic
     var itemId: Long? = null
@@ -186,6 +188,10 @@ class CdInspectionMotorVehicleItemChecklistEntity : Serializable {
     @JoinColumn(name = "INSPECTION_ID", referencedColumnName = "ID")
     @ManyToOne
     var inspection: CdInspectionMotorVehicleChecklist? = null
+
+    @JoinColumn(name = "USER_ID", referencedColumnName = "ID")
+    @ManyToOne
+    var assignedUser: UsersEntity? = null
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

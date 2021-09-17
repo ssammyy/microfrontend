@@ -366,45 +366,53 @@ class InspectionOtherDetailsDto {
 
 class InspectionMotorVehicleItemDto {
     var id: Long? = null
-    var confirmItemType: Long? = null
     var inspection: Long? = null
     var category: String? = null
     var entryPoint: String? = null
-    var cfs: String? = null
     var inspectionDate: Timestamp? = null
-    var importersName: String? = null
+    var registrationDate: Date? = null
+    var manufactureDate: Date? = null
     var compliant: String? = null
-    var customsEntryNumber: String? = null
-    var idfNumber: String? = null
-    var cocNumber: String? = null
-    var feePaid: String? = null
-    var receiptNumber: String? = null
     var overallRemarks: String? = null
     var inspectionReportApprovalComments: String? = null
     var description: String? = null
-    var sampled: String? = null
     var makeVehicle: String? = null
     var status: Int? = null
     var sampleUpdated: Int? = null
-    var brand: String? = null
     var serialNumber: String? = null
+    var ministryStation: String? = null
+    var ministryInspection: String? = null
+    var odemetreReading: String? = null
+    var transmissionAutoManual: String? = null
+    var engineNoCapacity: String? = null
     var ssfId: Long? = null
 
     companion object {
         fun fromEntity(entity: CdInspectionMotorVehicleItemChecklistEntity): InspectionMotorVehicleItemDto {
             val dto = InspectionMotorVehicleItemDto().apply {
                 id = entity.id
+                overallRemarks = entity.remarks
+                makeVehicle = entity.makeVehicle
                 inspection = entity.inspection?.id
                 makeVehicle = entity.makeVehicle
+                ministryInspection = entity.sampled
                 serialNumber = entity.serialNumber
                 compliant = entity.compliant
                 category = entity.category
+                odemetreReading = entity.odemetreReading
+                transmissionAutoManual = entity.transmissionAutoManual
+                engineNoCapacity = entity.engineNoCapacity
+                registrationDate = entity.registrationDate
+                manufactureDate = entity.manufactureDate
                 inspectionDate = entity.createdOn
-                sampled = entity.sampled
+                ministryInspection = entity.sampled
                 ssfId = entity.ssfId
                 sampleUpdated = entity.sampleUpdated
                 description = entity.description
                 status = entity.status
+            }
+            entity.ministryStationId?.let {
+                dto.ministryStation=it.stationName
             }
             return dto
         }

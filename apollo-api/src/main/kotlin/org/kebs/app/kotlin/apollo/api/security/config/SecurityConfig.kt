@@ -38,6 +38,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
+import org.springframework.web.servlet.config.annotation.CorsRegistry
 import java.util.*
 
 
@@ -63,10 +64,6 @@ class WebSecurityConfig {
         private var exclusionsCros: Array<String> =
             authenticationProperties.requiresNoAuthenticationCros?.split(",")?.toTypedArray() ?: arrayOf("")
 
-//        fun addCorsMappings(registry: CorsRegistry) {
-//            registry.addMapping("/**").allowedOrigins("*").allowedMethods("GET", "POST", "PUT", "DELETE")
-//        }
-
         @Bean
         fun authenticationTokenFilterBean(): JWTAuthorizationFilter {
             return JWTAuthorizationFilter()
@@ -82,7 +79,7 @@ class WebSecurityConfig {
         @Bean
         fun corsConfigurationSource(): CorsConfigurationSource? {
             val configuration = CorsConfiguration()
-            //TODO: MOVE TO CONFIGURATION FILE
+            // MOVE TO CONFIGURATION FILE
             configuration.allowedOrigins = listOf(*exclusionsCros)
             configuration.allowedMethods = listOf("*")
             configuration.allowedHeaders = listOf("*")

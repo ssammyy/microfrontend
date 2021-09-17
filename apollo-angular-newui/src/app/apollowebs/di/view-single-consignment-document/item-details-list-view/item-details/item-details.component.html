@@ -206,9 +206,6 @@
                             </div>
                             <div class="col-md-2">
                                 <b>Action:</b>
-                                <button *ngIf="itemDetails.cd_item.sampleBsNumberStatus===0" class="btn btn-sm btn-primary"
-                                        (click)="addSsfDetails()">ADD SSF & BS NUMBER
-                                </button>
                                 <button *ngIf="!itemDetails.cd_item.ministrySubmitted" class="btn btn-sm btn-primary"
                                         (click)="rejectItem()">APPROVE REJECT ITEM
                                 </button>
