@@ -2084,6 +2084,7 @@ class QADaoServices(
             createdOn = permit.createdOn
             dateOfIssue = permit.dateOfIssue
             dateOfExpiry = permit.dateOfExpiry
+            effectiveDate = permit.effectiveDate
             commodityDescription = permit.commodityDescription
             brandName = permit.tradeMark
 

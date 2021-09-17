@@ -422,6 +422,7 @@ data class PermitDetailsDto(
     var createdOn: Timestamp? = null,
     var dateOfIssue: Date? = null,
     var dateOfExpiry: Date? = null,
+    var effectiveDate: Date? = null,
     var commodityDescription: String? = null,
     var brandName: String? = null,
     var standardNumber: String? = null,

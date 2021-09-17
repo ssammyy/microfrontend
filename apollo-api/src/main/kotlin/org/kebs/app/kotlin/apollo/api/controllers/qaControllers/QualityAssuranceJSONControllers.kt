@@ -296,6 +296,8 @@ class QualityAssuranceJSONControllers(
             foundPermitDetails.dateOfIssue?.let { commonDaoServices.convertDateToString(it, "dd-MM-YYYY") }!!
         map["ExpiryDate"] =
             foundPermitDetails.dateOfExpiry?.let { commonDaoServices.convertDateToString(it, "dd-MM-YYYY") }!!
+        map["EffectiveDate"] =
+            foundPermitDetails.effectiveDate?.let { commonDaoServices.convertDateToString(it, "dd-MM-YYYY") }!!
 
 //        map["FirmName"] = foundPermitDetails.firmName.toString()
         map["CommodityDesc"] = foundPermitDetails.commodityDescription.toString()
