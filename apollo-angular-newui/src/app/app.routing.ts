@@ -125,6 +125,7 @@ export const routes: Routes = [
     {
         path: '',
         redirectTo: 'dashboard',
+        canActivate: [RouteGuard],
         pathMatch: 'prefix',
     },
     // {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
@@ -196,31 +197,26 @@ export const routes: Routes = [
     {
         path: 'company', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-
         children: [{path: '', component: CompanyComponent}]
     },
     {
         path: 'company/view', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-
         children: [{path: '', component: CompanyViewComponent}]
     },
     {
         path: 'company/branches', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-
         children: [{path: '', component: BranchList}]
     },
     {
         path: 'companies/view/branch', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-
         children: [{path: '', component: BranchViewComponent}]
     },
     {
         path: 'branches', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-
         children: [{path: '', component: BranchList}]
 
     },
