@@ -133,10 +133,10 @@ class CustomCoiXmlDto {
     var countryOfSupply: String? = null
 
     @JacksonXmlProperty(localName = "FINAL_INVOICE_FOB_VALUE")
-    var finalInvoiceFobValue: Long? = null
+    var finalInvoiceFobValue: Double? = null
 
     @JacksonXmlProperty(localName = "FINAL_INVOICE_EXCHANGE_RATE")
-    var finalInvoiceExchangeRate: Long? = null
+    var finalInvoiceExchangeRate: Double? = null
 
     @JacksonXmlProperty(localName = "FINAL_INVOICE_CURRENCY")
     var finalInvoiceCurrency: String? = null
