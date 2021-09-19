@@ -51,3 +51,5 @@ package-lock.json
 /apollo-angular/yarn-error.log
 /apollo-angular/yarn.lock
 /apollo-api/src/main/resources/static/migration/
+*.zip
+*.txt
