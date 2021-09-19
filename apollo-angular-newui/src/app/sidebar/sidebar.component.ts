@@ -12,7 +12,7 @@ export interface RouteInfo {
     title: string;
     type: string;
     icontype: string;
-    privilege: string;
+    privilege: string[];
     collapse?: string;
     children?: ChildrenItems[];
 }
@@ -31,7 +31,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'Dashboard',
         type: 'link',
         icontype: 'dashboard',
-        privilege: 'USER'
+        privilege: ['USER']
     },
 
     {
@@ -39,7 +39,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'Admin',
         type: 'link',
         icontype: 'dashboard',
-        privilege: 'SYSADMIN_VIEW'
+        privilege: ['SYSADMIN_VIEW']
     },
 
     {
@@ -47,7 +47,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'My Companies',
         type: 'sub',
         icontype: 'business',
-        privilege: 'MODIFY_COMPANY',
+        privilege: ['MODIFY_COMPANY'],
         collapse: 'company',
         children: [
             {path: 'companies', title: 'View Companies', ab: 'VC'},
@@ -61,7 +61,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'Diamond Mark',
         type: 'sub',
         icontype: 'verified',
-        privilege: 'PERMIT_APPLICATION',
+        privilege: ['PERMIT_APPLICATION'],
         collapse: 'forms',
         children: [
             {path: 'newDmarkPermit', title: 'Make Application', ab: 'MA'},
@@ -73,7 +73,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'Standardization Mark',
         type: 'sub',
         icontype: 'class',
-        privilege: 'PERMIT_APPLICATION',
+        privilege: ['PERMIT_APPLICATION'],
         collapse: 'tables',
         children: [
             {path: 'newSmarkPermit', title: 'Make Application', ab: 'MA'},
@@ -85,7 +85,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'Fortification Mark',
         type: 'sub',
         icontype: 'recommended',
-        privilege: 'PERMIT_APPLICATION',
+        privilege: ['PERMIT_APPLICATION'],
         collapse: 'fmark',
         children: [
             {path: 'application', title: 'Make Application', ab: 'MA'},
@@ -97,7 +97,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'Invoices',
         type: 'sub',
         icontype: 'receipt',
-        privilege: 'PERMIT_APPLICATION',
+        privilege: ['PERMIT_APPLICATION'],
         collapse: 'invoice',
         children: [
             {path: 'consolidate_invoice', title: 'Consolidate Invoices', ab: 'CI'},
@@ -109,33 +109,33 @@ export const ROUTES: RouteInfo[] = [
         title: 'My Tasks',
         type: 'link',
         icontype: 'task',
-        privilege: 'PERMIT_APPLICATION',
+        privilege: ['PERMIT_APPLICATION'],
     },
     {
         path: '/pvoc',
         title: 'PVOC',
         type: 'link',
-        privilege: 'DI_INSPECTION_OFFICER_READ',
+        privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
         icontype: 'receipt'
     },
     {
         path: '/ministry/inspection',
         title: 'Motor Vehicle Inspection',
         type: 'link',
-        privilege: 'DI_INSPECTION_OFFICER_READ',
+        privilege: ['MINISTRY_OF_TRANSPORT_READ','MINISTRY_OF_TRANSPORT_MODIFY'],
         icontype: 'receipt'
     },
     {
         path: '/di',
         title: 'Import Inspection',
         type: 'link',
-        privilege: 'DI_INSPECTION_OFFICER_READ',
+        privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
         icontype: 'receipt'
     },
     {
         path: '/tasks',
         title: 'Import Inspection Tasks',
-        privilege: 'DI_INSPECTION_OFFICER_READ',
+        privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
         type: 'link',
         icontype: 'receipt'
     }
@@ -173,6 +173,18 @@ export class SidebarComponent implements OnInit {
             this.roles = u.roles;
             return this.fullname = u.fullName;
         });
+    }
+
+    // Check if role is in required privileges
+    canViewRole(privileges: string[]): Boolean {
+        for(let role of this.roles) {
+            for (let p of privileges) {
+                if (role == p) {
+                    return true
+                }
+            }
+        }
+        return false
     }
 
     updatePS(): void {

@@ -375,31 +375,8 @@ class DestinationInspectionActionsHandler(
             req.pathVariable("cdUuid").let { cdUuid ->
                 val form = req.body(ConsignmentUpdateRequest::class.java)
                 val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
-
-                val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-                val processStages = commonDaoServices.findProcesses(applicationMapProperties.mapImportInspection)
-                val loggedInUser = commonDaoServices.loggedInUserDetails()
-
-                // Assign consignment to this user
-                with(consignmentDocument) {
-                    assignedRemarks = form.remarks
-                    assignedDate = Date(java.util.Date().time)
-                    assignedStatus = map.activeStatus
-                    assignedInspectionOfficer = loggedInUser
-                }
-                this.daoServices.updateCdDetailsInDB(consignmentDocument, loggedInUser)
-                // Transaction Log
-                consignmentDocument.assignedRemarks?.let {
-                    processStages.process2?.let { it1 ->
-                        daoServices.createCDTransactionLog(map, loggedInUser, consignmentDocument.id!!, it, it1)
-                    }
-                }
-                consignmentDocument.cdStandard?.let { cdStd ->
-                    daoServices.updateCDStatus(cdStd, applicationMapProperties.mapDIStatusTypeAssignIoId)
-                }
                 //Start the relevant BPM
-                diBpmn.startDiBpmProcessByCdType(consignmentDocument)
-                diBpmn.assignIOBpmTask(consignmentDocument)
+                diService.selfAssign(consignmentDocument,form.remarks)
                 consignmentAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, form.remarks, "KEBS_MANUAL_ASSIGN_IO", "Manual pick consignment")
                 response.responseCode = ResponseCodes.SUCCESS_CODE
                 response.message = "Inspection officer assigned"

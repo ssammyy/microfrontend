@@ -79,9 +79,11 @@ class DestinationInspectionBpmn(
     fun startMinistryInspection(saved: CdInspectionMotorVehicleItemChecklistEntity, detail: CdItemDetailsEntity) {
         val data = mutableMapOf<String, Any?>()
         data.put("mvInspectionId", saved.id)
-        data.put("itemId", detail.id)
+        data.put("stationId", saved.ministryStationId?.id)
+        data.put("stationName", saved.ministryStationId?.stationName)
+        data.put("cdItemId", detail.id)
         data.put("ministry", saved.ministryStationId?.stationName ?: "ALL")
-        val processInstance = runtimeService.startProcessInstanceByKey("assignInspectionOfficer", data)
+        val processInstance = runtimeService.startProcessInstanceByKey("ministryInspectionProcess", data)
         detail.varField7 = processInstance.processDefinitionId
         detail.varField8 = processStarted.toString()
         detail.varField9 = Timestamp.from(Instant.now()).toString()

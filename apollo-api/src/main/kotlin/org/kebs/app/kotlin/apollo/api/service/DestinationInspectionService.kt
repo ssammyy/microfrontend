@@ -4,7 +4,6 @@ import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.payload.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
-import org.kebs.app.kotlin.apollo.common.dto.MinistryInspectionListResponseDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -13,13 +12,9 @@ import org.kebs.app.kotlin.apollo.store.model.CocsEntity
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.di.*
-import org.kebs.app.kotlin.apollo.store.repo.ICdItemDetailsRepo
-import org.kebs.app.kotlin.apollo.store.repo.ICocItemsRepository
-import org.kebs.app.kotlin.apollo.store.repo.ICocsRepository
+import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.*
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -31,7 +26,6 @@ import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 @Service("diService")
@@ -51,7 +45,10 @@ class DestinationInspectionService(
         private val qaDaoServices: QADaoServices,
         private val cdItemsDetailsRepository: ICdItemDetailsRepo,
         private val diBpmn: DestinationInspectionBpmn,
-        private val reportsDaoService: ReportsDaoService
+        private val cfsTypesEntity: ICfsTypeCodesRepository,
+        private val reportsDaoService: ReportsDaoService,
+        private val privilegesRepository: IUserPrivilegesRepository,
+        private val userEntityRepository: IUserRepository
 ) {
     @Value("\${destination.inspection.cd.type.cor}")
     lateinit var corCdType: String
@@ -178,7 +175,7 @@ class DestinationInspectionService(
             consignmentDocument.cdStandard?.let { cdStd ->
                 daoServices.updateCDStatus(cdStd, applicationMapProperties.mapDIStatusTypeAssignIoId)
             }
-            cdAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, remarks, "KEBS_ASSIGN_IO", "Assign inspection officer to consignment")
+            cdAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, remarks, "KEBS_ASSIGN_IO", "Assign inspection officer to consignment", username = supervisor)
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("ASSIGNMENT FAILED", ex)
         }
@@ -571,6 +568,7 @@ class DestinationInspectionService(
         }
         return true
     }
+
     fun clearItemProcess(mvInspectionId: Long, cdItemId: Long): Boolean {
         try {
             val itemDetails = this.daoServices.findItemWithItemID(cdItemId)
@@ -811,41 +809,22 @@ class DestinationInspectionService(
         return response
     }
 
-    fun listMinistryInspection(completed: Boolean, page: PageRequest): ApiResponseModel {
-        val requests: Page<CdItemDetailsEntity>
-        val ministryInspectionItems: MutableList<MinistryInspectionListResponseDto> = ArrayList()
-        val response = ApiResponseModel()
-        if (completed) {
-            requests = daoServices.findAllCompleteMinistryInspectionRequests(page)
-        } else {
-            requests = daoServices.findAllOngoingMinistryInspectionRequests(page)
-
-        }
-        requests.toList().forEach {
-            ministryInspectionItems.add(this.daoServices.convertCdItemDetailsToMinistryInspectionListResponseDto(it))
-        }
-        response.pageNo = requests.number
-        response.totalPages = requests.totalPages
-        response.data = ministryInspectionItems
-        response.extras = daoServices.motorVehicleMinistryInspectionChecklistName
-        response.responseCode = ResponseCodes.SUCCESS_CODE
-        response.message = "Success"
-
-        return response
-    }
 
     fun consignmentDocumentDetails(cdUuid: String, isSupervisor: Boolean, isInspectionOfficer: Boolean): ApiResponseModel {
         val response = ApiResponseModel()
         try {
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             val cdDetails = daoServices.findCDWithUuid(cdUuid)
-
-//            KotlinLogging.logger { }.info(ObjectMapper().writeValueAsString(cdDetails))
+            // When IO requests for details, they are are auto assigned
+            if(isInspectionOfficer && cdDetails.assignedInspectionOfficer==null) {
+                this.selfAssign(cdDetails)
+            }
+            // Load inspection details
             response.data = loadCDDetails(cdDetails, map, isSupervisor, isInspectionOfficer)
             response.responseCode = ResponseCodes.SUCCESS_CODE
             response.message = "Consignment Document"
         } catch (ex: Exception) {
-            KotlinLogging.logger { }.error { ex }
+            KotlinLogging.logger { }.error("FAILE TO LOAD DOCUMENT",ex)
             response.data = null
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
             response.message = "Record not found"
@@ -1226,6 +1205,49 @@ class DestinationInspectionService(
             response.message = "Lab results not found"
         }
         return response
+    }
+
+    fun selfAssign(cdDetails: ConsignmentDocumentDetailsEntity,comment: String?=null) {
+        KotlinLogging.logger {  }.info("START AUTO ASSIGN")
+        if(comment==null){
+            comment="Auto Assigned on Open"
+        }
+        this.getSupervisor(cdDetails)?.let {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val data = mutableMapOf<String, Any?>()
+            data["remarks"] = comment
+            data["reassign"] = false
+            data["officerId"] = loggedInUser.id
+            data["owner"] = loggedInUser.userName
+            data["supervisor"] = it.userName
+            data["isAutoTargeted"] = cdDetails.cdType?.uuid == daoServices.noCorCdType
+            data["cdUuid"] = cdDetails.uuid
+            // Start BPM process for assigneing inspection
+            this.diBpmn.startAssignmentProcesses(data, cdDetails);
+            KotlinLogging.logger {  }.info("AUTO ASSIGN COMPLETED: ${cdDetails.uuid}-> Supervisor[${it.userName}]")
+        }?:KotlinLogging.logger {  }.info("AUTO ASSIGN FAILED UNABLE TO GET SUPERVISOR for CFS")
+    }
+
+    fun getSupervisor(cdDetails: ConsignmentDocumentDetailsEntity): UsersEntity? {
+        cdDetails.freightStation?.let {
+            val supervisorRoles = this.privilegesRepository.findRoleIdsByRoleName("DI_OFFICER_CHARGE_READ")
+            KotlinLogging.logger {  }.info("ROLE IDS: ${supervisorRoles}")
+            val userIds = cfsTypesEntity.findCfsUserIds(it.id, 1)
+            KotlinLogging.logger {  }.info("USR IDS: ${userIds}")
+            val supervisors = this.userEntityRepository.findUsersInCfsAndProfiles(supervisorRoles, userIds)
+            KotlinLogging.logger {  }.info("USR COUNT: ${supervisors.size}")
+            var usersEntity: UsersEntity? = null
+            if (supervisors.size > 1) {
+                usersEntity = supervisors[Random().nextInt(supervisors.size)]
+            } else if (supervisors.size == 1) {
+                usersEntity = supervisors[0]
+            } else {
+                return null
+            }
+            // Assign consignment
+            return usersEntity
+        }
+        return null
     }
 
 }

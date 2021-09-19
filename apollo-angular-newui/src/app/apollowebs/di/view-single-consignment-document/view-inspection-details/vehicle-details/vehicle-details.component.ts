@@ -10,81 +10,7 @@ import {MatDialog} from "@angular/material/dialog";
 })
 export class VehicleDetailsComponent implements OnInit {
     @Input() inspectionDetails: any
-    public settings = {
-        selectMode: 'single',  // single|multi
-        hideHeader: false,
-        hideSubHeader: false,
-        actions: {
-            columnTitle: 'Actions',
-            add: false,
-            edit: false,
-            delete: false,
-            custom: [
-                {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
-                {name: 'downloadChekclist', title: '<i class="btn btn-sm btn-primary">Download</i>'}
-            ],
-            position: 'right' // left|right
-        },
-        delete: {
-            deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
-            confirmDelete: true
-        },
-        noDataMessage: 'No data found',
-        columns: {
-            id: {
-                title: '#',
-                type: 'string'
-            },
-            registrationDate: {
-                title: 'Registration Date',
-                type: 'string'
-            },
-            manufactureDate: {
-                title: 'Manufacture Date',
-                type: 'string'
-            },
-            category: {
-                title: 'Item Category',
-                type: 'string'
-            },
-            compliant: {
-                title: 'Compliant',
-                type: 'string'
-            },
-            ministryStation: {
-                title: 'Ministry Station',
-                type: 'string'
-            },
-            ministryInspection: {
-                title: 'Ministry Inspection',
-                type: 'string'
-            },
-            makeVehicle: {
-                title: 'Make',
-                type: 'string'
-            },
-            odemetreReading: {
-                title: 'Odometer',
-                type: 'string'
-            },
-            transmissionAutoManual: {
-                title: 'Transmission',
-                type: 'string'
-            },
-            engineNoCapacity: {
-                title: 'Engine CC',
-                type: 'date'
-            },
-            sampleUpdated: {
-                title: 'Sample Updated',
-                type: 'string'
-            }
-        },
-        pager: {
-            display: true,
-            perPage: 20
-        }
-    };
+    displayedColumns=['id','manufactureDate','registrationDate','category','compliant','ministryStation','ministryInspection','makeVehicle','odemetreReading','transmissionAutoManual','engineNoCapacity','actions']
 
     constructor(private diService: DestinationInspectionService, private dialog: MatDialog) {
     }
@@ -92,24 +18,30 @@ export class VehicleDetailsComponent implements OnInit {
     ngOnInit(): void {
     }
 
-    resubmitMinistryInspection(itemUuid: any) {
+    resubmitMinistryInspection(itemUuid: any, reinspection: boolean) {
         this.dialog.open(MinistryInspectionRequestComponent, {
             data: {
                 uuid: itemUuid,
-                reinspection: true,
+                reinspection: reinspection,
             }
         })
     }
-    customAction(event: any) {
-        switch (event.action) {
+    customAction(data: any,action: string) {
+        switch (action) {
             case 'requestMinistryChecklist':
-                this.resubmitMinistryInspection(event.data.id)
+                this.resubmitMinistryInspection(data.id, false)
                 break
-            case 'downloadChekclist':
-                this.diService.downloadDocument("/api/v1/di/ministry/inspection/checklist/download/" + event.data.id)
+            case 'downloadReport':
+                this.diService.downloadDocument('/api/v1/download/motor/inspection/report/'+data.id)
+                break
+            case 'downloadUnfilled':
+                this.diService.downloadDocument('/api/v1/download/ministry/checklist/unfilled/'+data.id)
+                break
+            case 'downloadChecklist':
+                this.diService.downloadDocument("/api/v1/di/ministry/inspection/checklist/download/" + data.id)
                 break
             default:
-                console.log("Invalid action: " + event.action)
+                console.log("Invalid action: " + action)
         }
     }
 

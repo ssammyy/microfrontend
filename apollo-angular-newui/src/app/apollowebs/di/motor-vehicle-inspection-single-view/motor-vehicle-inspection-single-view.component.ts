@@ -36,8 +36,7 @@ export class MotorVehicleInspectionSingleViewComponent implements OnInit {
             }
         })
         ref.afterClosed()
-            .subscribe(
-                res=>{
+            .subscribe(res=>{
                     // Navigate on successful upload
                     if(res) {
                         this.router.navigate(["/ministry/inspection"])
@@ -47,19 +46,11 @@ export class MotorVehicleInspectionSingleViewComponent implements OnInit {
     }
 
     downloadReport() {
-        this.diService.downloadMinistryCheckList(this.itemId)
-            .subscribe(
-                res=>{
-                    if(res.responseCode==="00"){
-                        const blob = new Blob([res.data]);
-                        const url= window.URL.createObjectURL(blob);
-                        window.open(url);
-                    }else {
-                        console.log(res.message)
-                    }
-                }
-            )
+        this.diService.downloadDocument("/api/v1/di/ministry/inspection/checklist/download/" + this.itemId)
+    }
 
+    downloadMinistryUnfilled() {
+        this.diService.downloadDocument('/api/v1/download/ministry/checklist/unfilled/'+this.itemId)
     }
 
     loadData(itemId: any) {

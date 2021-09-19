@@ -7,7 +7,12 @@
                         <div class="card-icon">
                             <i class="material-icons">CD</i>
                         </div>
-                        <h4 class="card-title">Consignment checklist Details</h4>
+                        <h4 class="card-title">Consignment checklist Details
+                            <button class="btn btn-sm btn-default pull-right mr-7"
+                                    (click)="goBack()"><i class="fa fa-arrow-left"></i> Back
+
+                            </button>
+                        </h4>
 
                     </div>
                     <div class="card-body" *ngIf="inspectionDetails">
@@ -76,7 +81,8 @@
                                 <!-- <div class="d-flex"> -->
                                 <ul ngbNav #nav="ngbNav" [(activeId)]="activeTab" class="nav-tabs">
 
-                                    <li ngbNavItem="declarationGeneralDetails" [hidden]="!(inspectionDetails && inspectionDetails.details)">
+                                    <li ngbNavItem="declarationGeneralDetails"
+                                        [hidden]="!(inspectionDetails && inspectionDetails.details)">
                                         <a ngbNavLink>Inspection general details</a>
                                         <ng-template ngbNavContent>
                                             <b class="text-primary">General Inspection Details</b>
@@ -116,39 +122,40 @@
                                             </ul>
                                         </ng-template>
                                     </li>
-                                    <li ngbNavItem="agrochem-details" [hidden]="!(inspectionDetails && inspectionDetails.agrochem_checklist)">
+                                    <li ngbNavItem="agrochem-details"
+                                        [hidden]="!(inspectionDetails && inspectionDetails.agrochem_checklist)">
                                         <a ngbNavLink>Agrochemical</a>
                                         <ng-template ngbNavContent>
                                             <b class="text-primary">Agrochemical checklist details and items</b>
-                                            <app-agrochem-details *ngIf="inspectionDetails.agrochem_checklist" [inspectionDetails]="inspectionDetails.agrochem_checklist"></app-agrochem-details>
+                                            <app-agrochem-details *ngIf="inspectionDetails.agrochem_checklist"
+                                                                  [inspectionDetails]="inspectionDetails.agrochem_checklist"></app-agrochem-details>
                                         </ng-template>
                                     </li>
-                                    <li ngbNavItem="engineering-details" [hidden]="!(inspectionDetails && inspectionDetails.engineering_checklist)">
+                                    <li ngbNavItem="engineering-details"
+                                        [hidden]="!(inspectionDetails && inspectionDetails.engineering_checklist)">
                                         <a ngbNavLink>Engineering</a>
                                         <ng-template ngbNavContent>
                                             <b class="text-primary">Engineering checklist details and items</b>
-                                            <app-engineering-details *ngIf="inspectionDetails.engineering_checklist" [inspectionDetails]="inspectionDetails.engineering_checklist"></app-engineering-details>
+                                            <app-engineering-details *ngIf="inspectionDetails.engineering_checklist"
+                                                                     [inspectionDetails]="inspectionDetails.engineering_checklist"></app-engineering-details>
                                         </ng-template>
                                     </li>
-                                    <li ngbNavItem="vehicle-details" [hidden]="!(inspectionDetails && inspectionDetails.vehicle_checklist)">
+                                    <li ngbNavItem="vehicle-details"
+                                        [hidden]="!(inspectionDetails && inspectionDetails.vehicle_checklist)">
                                         <a ngbNavLink>Motor Vehicle</a>
                                         <ng-template ngbNavContent>
                                             <b class="text-primary">Motor Vehicle checklist details and items</b>
-                                            <app-vehicle-details *ngIf="inspectionDetails.vehicle_checklist" [inspectionDetails]="inspectionDetails.vehicle_checklist"></app-vehicle-details>
+                                            <app-vehicle-details *ngIf="inspectionDetails.vehicle_checklist"
+                                                                 [inspectionDetails]="inspectionDetails.vehicle_checklist"></app-vehicle-details>
                                         </ng-template>
                                     </li>
-                                    <li ngbNavItem="other-details" [hidden]="!(inspectionDetails && inspectionDetails.other_checklist)">
+                                    <li ngbNavItem="vehicle-details"
+                                        [hidden]="!(inspectionDetails && inspectionDetails.other_checklist)">
                                         <a ngbNavLink>Motor Vehicle</a>
                                         <ng-template ngbNavContent>
                                             <b class="text-primary">Motor Vehicle checklist details and items</b>
-                                            <app-other-details *ngIf="inspectionDetails.other_checklist" [inspectionDetails]="inspectionDetails.other_checklist"></app-other-details>
-                                        </ng-template>
-                                    </li>
-                                    <li ngbNavItem="item-details">
-                                        <a ngbNavLink>Sampled Items</a>
-                                        <ng-template ngbNavContent>
-                                            <b class="text-primary">List of sampled item</b>
-                                            <app-checklists [dataSet]="sampledItems"></app-checklists>
+                                            <app-other-details *ngIf="inspectionDetails.other_checklist"
+                                                               [inspectionDetails]="inspectionDetails.other_checklist"></app-other-details>
                                         </ng-template>
                                     </li>
                                 </ul>
@@ -156,23 +163,23 @@
                                 <div [ngbNavOutlet]="nav" class="ml-4"></div>
                                 <!-- </div>  -->
                             </div>
-<!--                            <div class="col-md-2">-->
-<!--                                <b>Action:</b>-->
-<!--                                <button *ngIf="inspectionDetails.cd_item.sampleBsNumberStatus!==1" class="btn btn-sm btn-primary"-->
-<!--                                        (click)="addSsfDetails()">ADD SSF & BS NUMBER-->
-<!--                                </button>-->
-<!--                                <button *ngIf="!inspectionDetails.cd_item.ministrySubmitted" class="btn btn-sm btn-primary"-->
-<!--                                        (click)="rejectItem()">APPROVE REJECT ITEM-->
-<!--                                </button>-->
-<!--                                <div *ngIf="inspectionDetails && inspectionDetails.cd_item.isVehicle">-->
-<!--                                    <button *ngIf="!inspectionDetails.cd_item.ministrySubmitted" class="btn btn-sm btn-primary"-->
-<!--                                            (click)="submitMinistryInspection()">SUBMIT MINISTRY INSPECTION-->
-<!--                                    </button>-->
-<!--                                    <button *ngIf="inspectionDetails.cd_item.ministrySubmitted" class="btn btn-sm btn-primary"-->
-<!--                                            (click)="resubmitMinistryInspection()">RE-SUBMIT MINISTRY INSPECTION-->
-<!--                                    </button>-->
-<!--                                </div>-->
-<!--                            </div>-->
+                            <!--                            <div class="col-md-2">-->
+                            <!--                                <b>Action:</b>-->
+                            <!--                                <button *ngIf="inspectionDetails.cd_item.sampleBsNumberStatus!==1" class="btn btn-sm btn-primary"-->
+                            <!--                                        (click)="addSsfDetails()">ADD SSF & BS NUMBER-->
+                            <!--                                </button>-->
+                            <!--                                <button *ngIf="!inspectionDetails.cd_item.ministrySubmitted" class="btn btn-sm btn-primary"-->
+                            <!--                                        (click)="rejectItem()">APPROVE REJECT ITEM-->
+                            <!--                                </button>-->
+                            <!--                                <div *ngIf="inspectionDetails && inspectionDetails.cd_item.isVehicle">-->
+                            <!--                                    <button *ngIf="!inspectionDetails.cd_item.ministrySubmitted" class="btn btn-sm btn-primary"-->
+                            <!--                                            (click)="submitMinistryInspection()">SUBMIT MINISTRY INSPECTION-->
+                            <!--                                    </button>-->
+                            <!--                                    <button *ngIf="inspectionDetails.cd_item.ministrySubmitted" class="btn btn-sm btn-primary"-->
+                            <!--                                            (click)="resubmitMinistryInspection()">RE-SUBMIT MINISTRY INSPECTION-->
+                            <!--                                    </button>-->
+                            <!--                                </div>-->
+                            <!--                            </div>-->
 
                         </div>
                         <!-- end content-->

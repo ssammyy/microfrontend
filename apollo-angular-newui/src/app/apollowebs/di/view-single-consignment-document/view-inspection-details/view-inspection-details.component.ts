@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {DestinationInspectionService} from "../../../../core/store/data/di/destination-inspection.service";
 
 @Component({
@@ -13,7 +13,7 @@ export class ViewInspectionDetailsComponent implements OnInit {
     documentId: any
     sampledItems: any
 
-    constructor(private diService: DestinationInspectionService, private  activatedRoute: ActivatedRoute) {
+    constructor(private diService: DestinationInspectionService, private  activatedRoute: ActivatedRoute, private router: Router) {
     }
 
     ngOnInit(): void {
@@ -24,6 +24,10 @@ export class ViewInspectionDetailsComponent implements OnInit {
 
             }
         )
+    }
+
+    goBack() {
+        this.router.navigate(["/di", this.documentId])
     }
 
     loadInspectionDetails() {

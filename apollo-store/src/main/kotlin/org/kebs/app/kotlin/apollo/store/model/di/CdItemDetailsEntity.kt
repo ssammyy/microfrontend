@@ -516,7 +516,6 @@ class CdItemDetailsEntity : Serializable {
                 paymentNeededStatus == that.paymentNeededStatus &&
                 status == that.status &&
                 inspectionProcessStatus == that.inspectionProcessStatus &&
-                ministrySubmissionStatus == that.ministrySubmissionStatus &&
                 inspectionProcessInstanceId == that.inspectionProcessInstanceId &&
                 inspectionProcessStartedOn == that.inspectionProcessStartedOn &&
                 inspectionProcessCompletedOn == that.inspectionProcessCompletedOn
@@ -616,7 +615,6 @@ class CdItemDetailsEntity : Serializable {
             sampledStatus,
             status,
             inspectionProcessStatus,
-            ministrySubmissionStatus,
             inspectionProcessInstanceId,
             inspectionProcessStartedOn,
             inspectionProcessCompletedOn

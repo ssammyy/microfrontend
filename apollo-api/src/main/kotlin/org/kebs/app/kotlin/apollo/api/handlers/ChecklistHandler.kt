@@ -36,31 +36,23 @@ class ChecklistHandler(
         private val commonDaoServices: CommonDaoServices,
         private val applicationMapProperties: ApplicationMapProperties
 ) {
-    fun downloadMinistryCheckList(req: ServerRequest): ServerResponse {
-        val itemId = req.pathVariable("itemId")
-                .toLongOrDefault(0L)
-        checlistService.findInspectionMotorVehicleById(itemId)?.let { cdInspectionMotorVehicleItemChecklistEntity ->
-            cdInspectionMotorVehicleItemChecklistEntity.ministryReportFile?.let {
-                val resource = ByteArrayResource(it)
-                return ServerResponse.ok()
-                        .header("Content-Disposition", "inline; filename=${cdInspectionMotorVehicleItemChecklistEntity.chassisNo}_inspection_report;")
-                        .contentType(MediaType.APPLICATION_PDF)
-                        .body(resource)
-            } ?: throw ExpectedDataNotFound("Inspection Report file not found")
-        }
-                ?: throw ExpectedDataNotFound("Motor Vehicle Inspection checklist with ID: $itemId not found")
-    }
+
 
     fun uploadMinistryCheckList(req: ServerRequest): ServerResponse {
         var response = ApiResponseModel()
         val multipartRequest = (req.servletRequest() as? MultipartHttpServletRequest)
         if (multipartRequest != null) {
-            val multipartFile = multipartRequest.getFile("file")
-            val comment = req.attribute("comment")
-                    .orElse("")
-            val itemId = req.pathVariable("itemId")
-            response = checlistService.ministryInspectionList(itemId.toLongOrDefault(0L), comment.toString(), multipartFile!!)
-
+            multipartRequest.getFile("file")?.let { multipartFile ->
+                val comment = req.attribute("comment")
+                        .orElse("")
+                val itemId = req.pathVariable("inspectionId")
+                response = checlistService.ministryInspectionList(itemId.toLongOrDefault(0L), comment.toString(), multipartFile)
+                response
+            } ?: run {
+                response.responseCode = ResponseCodes.FAILED_CODE
+                response.message = "Please select file to upload"
+                response
+            }
         } else {
             response.responseCode = ResponseCodes.INVALID_CODE
             response.message = "Request is not a multipart request"
@@ -70,8 +62,8 @@ class ChecklistHandler(
 
     fun motorVehicleInspection(req: ServerRequest): ServerResponse {
         var response = ApiResponseModel()
-        req.pathVariable("itemId").let { itemId ->
-            val imId = itemId.toLongOrDefault(0)
+        req.pathVariable("inspectionId").let { inspectionId ->
+            val imId = inspectionId.toLongOrDefault(0)
             if (imId > 0) {
                 response = this.checlistService.motorVehicleInspectionDetails(imId)
             } else {
@@ -95,7 +87,7 @@ class ChecklistHandler(
     }
 
     fun ministryInspectionRequest(req: ServerRequest): ServerResponse {
-        req.pathVariable("itemId").let {
+        req.pathVariable("inspectionId").let {
             val form = req.body(MinistryRequestForm::class.java)
             return ServerResponse.ok()
                     .body(this.checlistService.requestMinistryInspection(it.toLongOrDefault(0L), form.stationId))
@@ -104,10 +96,10 @@ class ChecklistHandler(
 
     fun ministryInspections(req: ServerRequest): ServerResponse {
         req.pathVariable("inspectionStatus").let { taskId ->
-            val status = taskId.toLongOrDefault(0)
+            val status = taskId.toInt()
             val page = extractPage(req)
             return ServerResponse.ok()
-                    .body(this.diService.listMinistryInspection(status >= 1, page))
+                    .body(this.checlistService.listMinistryInspection(listOf(status), page))
         }
     }
 

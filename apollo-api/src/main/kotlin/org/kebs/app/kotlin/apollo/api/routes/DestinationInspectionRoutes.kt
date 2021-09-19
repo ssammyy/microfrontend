@@ -43,10 +43,9 @@ class DestinationInspectionRoutes {
 //            POST("/consignment/document/compliant-vehicle/{inspectionChecklistId}", handler::updateMotorVehicleComplianceStatus)
             // Ministry
             GET("/ministry/inspections/{inspectionStatus}", handler::ministryInspections)
-            POST("/ministry/inspections/request/{itemId}", handler::ministryInspectionRequest)
-            GET("/ministry/inspection/details/{itemId}", handler::motorVehicleInspection)
-            POST("/ministry/inspection/checklist/{itemId}", handler::uploadMinistryCheckList)
-            GET("/ministry/inspection/checklist/download/{itemId}", handler::downloadMinistryCheckList)
+            POST("/ministry/inspections/request/{inspectionId}", handler::ministryInspectionRequest)
+            GET("/ministry/inspection/details/{inspectionId}", handler::motorVehicleInspection)
+            POST("/ministry/inspection/checklist/{inspectionId}", handler::uploadMinistryCheckList)
         }
     }
 

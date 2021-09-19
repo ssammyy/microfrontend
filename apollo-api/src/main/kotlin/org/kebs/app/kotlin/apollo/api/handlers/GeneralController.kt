@@ -18,7 +18,9 @@ import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
+import java.io.ByteArrayOutputStream
 import javax.servlet.http.HttpServletResponse
+import kotlin.random.Random
 
 @RestController
 @RequestMapping("/api/v1/download")
@@ -73,26 +75,16 @@ class GeneralController(
     }
 
 
-    @GetMapping("/checklist/{checklistId}")
+    @GetMapping("/ministry/checklist/{checklistId}")
     fun downloadChecklist(@PathVariable("checklistId") inspectionId: Long, httResponse: HttpServletResponse) {
         try {
             this.checklistService.findInspectionMotorVehicleById(inspectionId)?.let { inspectionGeneral ->
-                if (inspectionGeneral.ministryReportFile != null) {
-                    val resource = ByteArrayResource(inspectionGeneral.ministryReportFile!!)
-                    var name = "CHECKLIST"
-//                    inspectionGeneral.checkListType?.let {
-//                        name = name + "_" + it.typeName?.replace(" ", "-").toString()
-//                    }
-                    httResponse.setHeader("Content-Disposition", "inline; filename=\"${name}\";")
-                    httResponse.addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
-                    httResponse.setContentLengthLong(resource.contentLength())
-                    httResponse.outputStream
-                            .let { responseOutputStream ->
-                                responseOutputStream.write(resource.byteArray)
-                                responseOutputStream.close()
-                            }
-                }
-            }
+                inspectionGeneral.ministryReportFile?.let {
+                    val name = "MINISTRY_CHECKLIST-${inspectionId}.pdf"
+                    downloadBytes(it, name, httResponse)
+                } ?: throw ExpectedDataNotFound("Ministry file has not been uploaded")
+            } ?: throw ExpectedDataNotFound("MVIR not found")
+            return
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("CHECKLIST DOWNLOAD FAILED", ex)
         }
@@ -100,13 +92,34 @@ class GeneralController(
         httResponse.writer.println("INVALID checklist")
     }
 
-    @GetMapping("/ministry/checklist/{checklistId}")
+    /*
+   Get Ministry inspection report
+    */
+    @RequestMapping(value = ["/motor/inspection/report/{mvInspectionChecklistId}"], method = [RequestMethod.GET])
+    fun motorInspectionReport(httpResponse: HttpServletResponse, @PathVariable(value = "mvInspectionChecklistId") mvInspectionChecklistid: Long) {
+        try {
+            val data = this.checklistService.motorVehicleInspectionReportDetails(mvInspectionChecklistid)
+            val pdfStream = reportsDaoService.extractReportEmptyDataSource(data, applicationMapProperties.mapReportMotorVehicleChecklistPath)
+            val serialNumber = data.getOrDefault("SerialNo", Random(mvInspectionChecklistid).nextLong())
+            val fileName = "INSPECTION_REPORT_${serialNumber}.pdf"
+            download(pdfStream, fileName, httpResponse)
+        } catch (ex: Exception) {
+            val response = ApiResponseModel()
+            KotlinLogging.logger { }.error("Download failed", ex)
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.message = "Could not download checklist"
+            // Error
+            httpResponse.status = HttpStatus.SC_INTERNAL_SERVER_ERROR
+            httpResponse.writer.write(ObjectMapper().writeValueAsString(response))
+        }
+    }
+
+    @GetMapping("/ministry/checklist/unfilled/{checklistId}")
     fun downloadMinistryChecklist(@PathVariable("checklistId") checklistId: Long, httResponse: HttpServletResponse) {
         val map = hashMapOf<String, Any>()
         val response = ApiResponseModel()
         try {
             checklistService.findInspectionMotorVehicleById(checklistId)?.let { mvInspectionChecklist ->
-//                map["ImporterName"] = mvInspectionChecklist.inspectionGeneral?.importersName.toString()
                 map["VehicleMake"] = mvInspectionChecklist.makeVehicle.toString()
                 map["EngineCapacity"] = mvInspectionChecklist.engineNoCapacity.toString()
                 map["ManufactureDate"] = mvInspectionChecklist.manufactureDate.toString()
@@ -117,16 +130,8 @@ class GeneralController(
             } ?: throw ExpectedDataNotFound("Motor Vehicle Inspection Checklist does not exist")
 
             val stream = reportsDaoService.extractReportEmptyDataSource(map, applicationMapProperties.mapReportMinistryChecklistPath)
-            httResponse
-                    .setHeader("Content-Disposition", "inline; filename=\"CHECKLIST-${checklistId}.pdf\";")
-            httResponse.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION)
-            httResponse.addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
-            httResponse.setContentLengthLong(stream.size().toLong())
-            httResponse.outputStream
-                    .let { responseOutputStream ->
-                        responseOutputStream.write(stream.toByteArray())
-                        responseOutputStream.close()
-                    }
+            download(stream, "MINISTRY-CHECKLIST-${checklistId}.pdf", httResponse)
+            return
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("MINISTRY CHECKLIST", ex)
             response.message = ex.localizedMessage
@@ -136,20 +141,39 @@ class GeneralController(
         httResponse.writer.println(response.message)
     }
 
+    fun download(stream: ByteArrayOutputStream, fileName: String, httResponse: HttpServletResponse): Boolean {
+        httResponse.setHeader("Content-Disposition", "inline; filename=\"${fileName}\";")
+        httResponse.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION)
+        httResponse.addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
+        httResponse.setContentLengthLong(stream.size().toLong())
+        httResponse.outputStream
+                .let { responseOutputStream ->
+                    responseOutputStream.write(stream.toByteArray())
+                    responseOutputStream.close()
+                }
+        return true
+    }
+
+    fun downloadBytes(bytes: ByteArray, fileName: String, httResponse: HttpServletResponse): Boolean {
+        httResponse.setHeader("Content-Disposition", "inline; filename=\"${fileName}\";")
+        httResponse.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION)
+        httResponse.addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
+        httResponse.setContentLength(bytes.size)
+        httResponse.outputStream
+                .let { responseOutputStream ->
+                    responseOutputStream.write(bytes)
+                    responseOutputStream.close()
+                }
+        return true
+    }
+
+
     @GetMapping("/attachments/{uploadId}")
     fun downloadConsignmentDocumentAttachment(@PathVariable("uploadId") uploadId: Long, httResponse: HttpServletResponse) {
         val diUpload: DiUploadsEntity = daoServices.findDiUploadById(uploadId)
         diUpload.document?.let {
             // Response with file
-            httResponse.addHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"ATTACHMENT-${diUpload.id}-${diUpload.name}\"")
-            httResponse.setContentLength(it.size)
-            httResponse.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION)
-            httResponse.addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
-            httResponse.outputStream
-                    .let { responseOutputStream ->
-                        responseOutputStream.write(it)
-                        responseOutputStream.close()
-                    }
+            downloadBytes(it, "ATTACHMENT-${diUpload.id}-${diUpload.name}", httResponse)
         } ?: throw ExpectedDataNotFound("Attachment file not found")
     }
 
@@ -174,7 +198,7 @@ class GeneralController(
             map["totalAmount"] = demandNote.totalAmount.toString()
             map["receiptNo"] = demandNote.receiptNo.toString()
 
-            map = reportsDaoService.addBankAndMPESADetails(map,"")
+            map = reportsDaoService.addBankAndMPESADetails(map, "")
 
             val extractReport = reportsDaoService.extractReport(
                     map,
@@ -182,15 +206,7 @@ class GeneralController(
                     demandNoteItemList
             )
             // Response with file
-            httResponse.addHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"NOTE-${demandNoteId}-${demandNote.demandNoteNumber}.pdf\"")
-            httResponse.setContentLength(extractReport.size().toLong().toInt())
-            httResponse.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION)
-            httResponse.addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
-            httResponse.outputStream
-                    .let { responseOutputStream ->
-                        responseOutputStream.write(extractReport.toByteArray())
-                        responseOutputStream.close()
-                    }
+            download(extractReport, "NOTE-${demandNoteId}-${demandNote.demandNoteNumber}.pdf", httResponse)
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Download failed", ex)
             response.responseCode = ResponseCodes.EXCEPTION_STATUS

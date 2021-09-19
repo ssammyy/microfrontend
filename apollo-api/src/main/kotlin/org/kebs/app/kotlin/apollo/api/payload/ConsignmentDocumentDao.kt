@@ -296,7 +296,7 @@ class CdItemDetailsDao {
                 totalPriceFcy = item.totalPriceFcy
                 unitPriceFcy = item.unitPriceFcy
             }
-            dt.ministrySubmitted = item.ministrySubmissionStatus == 0
+            dt.ministrySubmitted = item.ministrySubmissionStatus == 1
             // Other details
             if (details) {
                 dt.apply {
@@ -400,7 +400,7 @@ class CdInspectionMotorVehicleItemChecklistDao {
     var colour: String? = ""
     var overallAppearance: String? = ""
     var remarks: String? = ""
-    var ministryReportFile: ByteArray? = null
+    var ministryInspectionComplete: Boolean=false
     var ministryReportSubmitStatus: Int? = null
     var ministryReportReinspectionStatus: Int? = null
     var ministryReportReinspectionRemarks: String? = null
@@ -423,7 +423,7 @@ class CdInspectionMotorVehicleItemChecklistDao {
             dt.colour = general.colour
             dt.overallAppearance = general.overallAppearance
             dt.remarks = general.remarks
-            dt.ministryReportFile = general.ministryReportFile
+            dt.ministryInspectionComplete=general.ministryReportFile!=null
 //            dt.ministryReportReinspectionStatus = general.ministryReportSubmitStatus
 //            dt.ministryReportReinspectionRemarks = general.ministryReportReinspectionRemarks
 //            dt.ministryReportSubmitStatus = general.ministryReportSubmitStatus

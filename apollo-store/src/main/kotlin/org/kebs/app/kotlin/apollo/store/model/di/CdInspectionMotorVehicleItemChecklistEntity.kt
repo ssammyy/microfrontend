@@ -21,9 +21,12 @@ class CdInspectionMotorVehicleItemChecklistEntity : Serializable {
     @Transient
     var stationId: Long = 0L
 
-    @Column(name = "ITEM_ID")
-    @Basic
-    var itemId: Long? = null
+    @Transient
+    var temporalItemId: Long? = null
+
+    @JoinColumn(name = "ITEM_ID", referencedColumnName = "ID")
+    @ManyToOne
+    var itemId: CdItemDetailsEntity? = null
 
     @Column(name = "SSF_ID")
     @Basic

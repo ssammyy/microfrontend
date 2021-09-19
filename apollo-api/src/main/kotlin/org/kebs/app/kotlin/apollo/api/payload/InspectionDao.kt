@@ -385,12 +385,16 @@ class InspectionMotorVehicleItemDto {
     var odemetreReading: String? = null
     var transmissionAutoManual: String? = null
     var engineNoCapacity: String? = null
+    var hasMinistryInspection: Boolean?=null
+    var ministryInspectionActive: Boolean?=null
     var ssfId: Long? = null
 
     companion object {
         fun fromEntity(entity: CdInspectionMotorVehicleItemChecklistEntity): InspectionMotorVehicleItemDto {
             val dto = InspectionMotorVehicleItemDto().apply {
                 id = entity.id
+                hasMinistryInspection=entity.ministryReportFile!=null
+                ministryInspectionActive=entity.ministryReportSubmitStatus==1
                 overallRemarks = entity.remarks
                 makeVehicle = entity.makeVehicle
                 inspection = entity.inspection?.id

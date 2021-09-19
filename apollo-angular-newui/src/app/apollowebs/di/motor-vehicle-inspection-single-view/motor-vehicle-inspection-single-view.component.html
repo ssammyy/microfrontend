@@ -91,13 +91,9 @@
 
                                         </table>
                                     </div>
-                                    <b>Action:</b>
-                                    <button class="btn btn-sm btn-primary" (click)="downloadReport()">Download Report Checklist</button>
-                                    <button class="btn btn-sm btn-primary" (click)="uploadReport()" >Upload Filled Report</button>
-                                    
                                 </div>
                             </div>
-                            <div class="col-md-9">
+                            <div class="col-md-8">
                               
                                 <!-- <div class="d-flex"> -->
                                     <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
@@ -158,13 +154,17 @@
                                                 </ul>
                                             </ng-template>
                                         </li>
-                                     
                                     </ul>
 
                                     <div [ngbNavOutlet]="nav" class="ml-4"></div>
                                 <!-- </div>  -->
                             </div>
-                           
+                            <div class="col-md-2">
+                                <b>Action:</b>
+                                <button *ngIf="itemDetails.mvInspectionChecklist.ministryInspectionComplete" class="btn btn-sm btn-primary" (click)="downloadReport()">Download Report Checklist</button>
+                                <button class="btn btn-sm btn-primary" (click)="downloadMinistryUnfilled()">Download Unfilled Checklist</button>
+                                <button *ngIf="!itemDetails.mvInspectionChecklist.ministryInspectionComplete" class="btn btn-sm btn-primary" (click)="uploadReport()" >Upload Filled Report</button>
+                            </div>
                         </div>
                         <!-- end content-->
                     </div>

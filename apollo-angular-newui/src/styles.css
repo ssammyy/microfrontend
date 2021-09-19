@@ -225,6 +225,34 @@ ul, ol {
     margin-bottom: 5px;
     margin-right: 2px;
 }
+
+.button-label {
+    display: table-cell;
+    font-size: 14px;
+    margin-left: 8px;
+    min-width: 120px;
+}
+
+.button-row {
+    display: table-cell;
+    width: 490px;
+}
+
+.button-row .mat-button-base {
+    margin: 8px 8px 8px 0;
+}
+
+.flex-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    width: 120px;
+}
 /* this is for clicked or active tabs */
 .nav-tabs .nav-link.active,
 .nav-tabs .nav-item.show .nav-link {

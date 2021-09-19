@@ -241,7 +241,7 @@ class CheckListForm {
         val listItems = mutableListOf<CdInspectionMotorVehicleItemChecklistEntity>()
         vehicle?.items?.forEach { item ->
             val dt = CdInspectionMotorVehicleItemChecklistEntity()
-            dt.itemId = item.itemId
+            dt.temporalItemId = item.itemId
             dt.stationId = item.stationId
             dt.compliant = item.compliant
             dt.category = item.category

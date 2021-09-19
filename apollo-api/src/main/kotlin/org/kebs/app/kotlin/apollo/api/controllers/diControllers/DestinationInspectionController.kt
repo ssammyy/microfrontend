@@ -1241,7 +1241,7 @@ class DestinationInspectionController(
         val cdItemDetails = daoServices.findItemWithUuid(cdItemUuid)
         val cdItemID: Long = cdItemDetails.id?.let { commonDaoServices.makeAnyNotBeNull(it) } as Long
 
-        cdItemDetails.ministrySubmissionStatus = map.activeStatus
+//        cdItemDetails.ministrySubmissionStatus = map.activeStatus
         daoServices.updateCDItemDetails(cdItemDetails, cdItemID, loggedInUser, map)
 
         val cdDetails = cdItemDetails.cdDocId

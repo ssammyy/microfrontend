@@ -3,8 +3,8 @@
     <div class="row no_margin" [formGroup]="form">
         <div class="col-sm-12 col-md-12">
             <label class="waiver-form-label">Upload your report</label>
-            <input type="file" name="file" class="waiver-form-input-master"
-                   (change)="onFileSelected($event)">
+            <input #ministryReport type="file" name="file" class="waiver-form-input-master"
+                   (change)="onFileSelected($event)"  accept="application/pdf">
         </div>
         <div class="col-sm-12 col-md-12">
             <label class="waiver-form-label">Remarks</label>
@@ -21,7 +21,7 @@
     <div class="row no_margin master-list-new-btn">
         <button class="next-btn btn-warning new-btn" (click)="closeDialog()">CLOSE
         </button>
-        <button [disabled]="form.invalid && !selectedFile"  class="next-btn btn-gen new-btn" (click)="saveRecord()">SAVE
+        <button [disabled]="(form.invalid || !selectedFile || selectedFile.size==0)"  class="next-btn btn-gen new-btn" (click)="saveRecord()">SAVE
         </button>
     </div>
 </mat-dialog-actions>

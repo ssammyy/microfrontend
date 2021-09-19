@@ -633,6 +633,8 @@ Ministry Inspection table view details
  */
 data class MinistryInspectionListResponseDto(
         var cdId: Long = 0,
+        var inspectionId: Long?=0,
+        var remarks: String?=null,
         var cdUcr: String? = null,
         var chassis: String? = null,
         var used: String? = null,

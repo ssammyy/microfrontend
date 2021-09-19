@@ -86,9 +86,9 @@ export class MinistryInspectionHomeComponent implements OnInit {
     }
 
     private loadData(page: number, size: number): any {
-        let status=0;
+        let status=1;
         if(this.activeStatus==='completed'){
-            status=1
+            status=2
         }
         this.diService.listMinistryInspections(status, page, size)
             .subscribe(
@@ -120,7 +120,7 @@ export class MinistryInspectionHomeComponent implements OnInit {
     }
 
     viewRecord(data: any) {
-        this.router.navigate([`/ministry/inspection`, data.cdItemDetailsId]);
+        this.router.navigate([`/ministry/inspection`, data.inspectionId]);
     }
 
     toggleStatus(status: string): void {

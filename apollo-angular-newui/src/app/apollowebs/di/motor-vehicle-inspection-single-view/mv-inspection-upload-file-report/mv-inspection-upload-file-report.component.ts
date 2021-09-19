@@ -2,6 +2,7 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {DestinationInspectionService} from "../../../../core/store/data/di/destination-inspection.service";
+import {file} from "googleapis/build/src/apis/file";
 
 @Component({
     selector: 'app-mv-inspection-upload-file-report',
@@ -28,25 +29,30 @@ export class MvInspectionUploadFileReportComponent implements OnInit {
         this.dialogRef.close(false)
     }
     onFileSelected(event: any) {
-        console.log(event)
-        if(event.target.files>0){
-            this.selectedFile=event.target.files[0]
+        let files=event.target.files
+        if(files.length>0){
+            this.selectedFile=files[0]
         } else {
             this.selectedFile=null
         }
+        console.log(this.selectedFile)
     }
 
     saveRecord() {
-        this.diService.uploadMinistryChecklist(this.selectedFile,this.form.value.comment, this.data.id)
-            .subscribe(
-                res=>{
-                    if(res.responseCode==="00") {
-                        this.dialogRef.close(true)
-                    }else {
-                        this.message=res.message
+        if(this.selectedFile) {
+            this.diService.uploadMinistryChecklist(this.selectedFile, this.form.value.comment, this.data.id)
+                .subscribe(
+                    res => {
+                        if (res.responseCode === "00") {
+                            this.dialogRef.close(true)
+                        } else {
+                            this.message = res.message
+                        }
                     }
-                }
-            )
+                )
+        }else {
+            this.message="Please select file to upload"
+        }
 
     }
 }

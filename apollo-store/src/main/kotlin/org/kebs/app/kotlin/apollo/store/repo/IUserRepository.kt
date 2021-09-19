@@ -58,6 +58,8 @@ interface IUserRepository : HazelcastRepository<UsersEntity, Long>, JpaSpecifica
 
     fun findAllByUserTypes(userType: Long): List<UsersEntity>?
 
+    @Query("select DKU.*  from DAT_KEBS_USERS DKU where DKU.ID in(select USER_ID from CFG_USER_ROLES_ASSIGNMENTS where ROLE_ID in (:profileIds)) and DKU.ID in (:cfsUserIds)", nativeQuery = true)
+    fun findUsersInCfsAndProfiles(@Param("profileIds")profileIds:List<Long>, @Param("cfsUserIds") cfsUserIds: List<Long>): List<UsersEntity>
     //    @Query("SELECT u.Id, u.firstName, u.lastName, u.notifs, u.role, u.status from datKebsUsers u where u.notifs=?1")
     fun findByEmail(email: String): UsersEntity?
 
@@ -139,7 +141,8 @@ interface IUserPrivilegesRepository : HazelcastRepository<UserPrivilegesEntity, 
 
     fun findByName(name: String): UserPrivilegesEntity
 
-
+    @Query(value = "SELECT DISTINCT ROLE_ID FROM CFG_ROLES_PRIVILEGES rp left join CFG_USER_ROLES cur on(rp.ROLES_ID=cur.ID)  left join CFG_USER_PRIVILEGES cup  on(rp.PRIVILEGE_ID=cup.ID) WHERE rp.STATUS = 1 and NAME=:name", nativeQuery = true)
+    fun findRoleIdsByRoleName(@Param("name") name: String): List<Long>
 }
 
 @Repository

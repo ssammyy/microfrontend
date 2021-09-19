@@ -235,6 +235,8 @@ interface ICfsTypeCodesRepository : HazelcastRepository<CfsTypeCodesEntity, Long
         @Param("userProfileID") userProfileID: Long,
         @Param("status") status: Int
     ): List<CfsTypeCodesEntity>?
+    @Query("SELECT unique b.USER_ID FROM CFG_USERS_CFS_ASSIGNMENTS a left join DAT_KEBS_USER_PROFILES B on(a.USER_PROFILE_ID=B.ID) WHERE a.STATUS=:status and b.STATUS=:status and CFS_ID=:id", nativeQuery = true)
+    fun findCfsUserIds(@Param("id")id: Long, @Param("status") status: Int): List<Long>
 //    fun findAllById(Id: Long): List<ConsignmentDocumentTypesEntity>?
 }
 
@@ -465,8 +467,9 @@ interface ICdInspectionMotorVehicleChecklistRepository : HazelcastRepository<CdI
 
 @Repository
 interface ICdInspectionMotorVehicleItemChecklistRepository : HazelcastRepository<CdInspectionMotorVehicleItemChecklistEntity, Long> {
-    fun findByInspectionAndItemId(inspectionGeneral: CdInspectionMotorVehicleChecklist,itemId: Long?): CdInspectionMotorVehicleItemChecklistEntity?
+    fun findByInspectionAndItemId(inspectionGeneral: CdInspectionMotorVehicleChecklist,itemId: CdItemDetailsEntity?): CdInspectionMotorVehicleItemChecklistEntity?
     fun findByInspection(inspectionGeneral: CdInspectionMotorVehicleChecklist): List<CdInspectionMotorVehicleItemChecklistEntity>
+    fun findByMinistryReportSubmitStatusIn(status: List<Int>, page: Pageable): Page<CdInspectionMotorVehicleItemChecklistEntity>
     fun findAllByInspection(inspectionGeneral: CdInspectionMotorVehicleChecklist): List<CdInspectionMotorVehicleItemChecklistEntity>
 }
 
