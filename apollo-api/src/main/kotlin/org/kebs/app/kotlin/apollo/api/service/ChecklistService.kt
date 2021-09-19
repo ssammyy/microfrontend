@@ -43,7 +43,6 @@ class ChecklistService(
         private val iCdItemsRepo: IConsignmentItemsRepository,
         private val commonDaoServices: CommonDaoServices,
         private val bpmn: DestinationInspectionBpmn,
-        private val notifications: BpmnNotifications,
         private val ministryStationRepo: IMinistryStationEntityRepository,
         private val ministryStationRepository: IMinistryStationEntityRepository,
         private val qaISampleCollectRepository: IQaSampleCollectionRepository,
