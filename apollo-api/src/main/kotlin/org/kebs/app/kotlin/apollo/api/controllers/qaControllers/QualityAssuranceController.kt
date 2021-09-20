@@ -613,7 +613,7 @@ class QualityAssuranceController(
             permitDetailsDB.suspensionRemarks,
             permitDetailsDB.suspensionStatus,
             "PCM",
-            "SUSPEND/UNSUSPEND PERMIT AWARED",
+            "SUSPEND/UNSUSPEND PERMIT AWARDED",
             map,
             loggedInUser
         )
