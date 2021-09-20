@@ -798,6 +798,13 @@
 
                                         </div>
 
+                                        <div sec:authorize="hasAuthority('QA_PCM_MODIFY')">
+                                            <a th:if="${permitDetails?.oldPermitStatus != 1 and permitDetails?.permitAwardStatus == 1}"
+                                               class="filter-link"
+                                               onclick="popUpFunction('pcmSuspendPermit');"
+                                               style="color: white">SUSPEND/UNSUSPEND PERMIT</a>
+                                        </div>
+
 
                                     </div>
 
@@ -1923,6 +1930,25 @@
                                                           class="input-field w-input" cols="65" rows="5"
                                                           th:field="*{pcmApprovalRemarks}"></textarea>
                                             </div>
+
+                                            <div id="pcmSuspendPermit">
+                                                <input type="hidden" id="description13" name="description"
+                                                       th:value="'Permit Status Updated succesfully'">
+                                                <label for="suspensionStatus" class="col-form-label">Select
+                                                    Status:</label>
+                                                <select id="suspensionStatus" required class="form-control"
+                                                        th:field="*{suspensionStatus}">
+                                                    <option th:text="'Select one.....'"
+                                                            th:value="${nullStatus}"></option>
+                                                    <option th:text="'SUSPEND'" th:value="1"></option>
+                                                    <option th:text="'UNSUSPEND'" th:value="0"></option>
+                                                </select>
+                                                <label for="suspensionRemarks" class="col-form-label">Please write, in
+                                                    detail, your feedback for this Suspending/Unsuspend:</label>
+                                                <textarea name="name" id="suspensionRemarks"
+                                                          class="input-field w-input" cols="65" rows="5"
+                                                          th:field="*{suspensionRemarks}"></textarea>
+                                            </div>
                                             <div id="dmarkApplicationApproval">
                                                 <input type="hidden" id="description15" name="description"
                                                        th:value="'Permit status successfully updated'">
@@ -2987,7 +3013,9 @@
             'pcmApproval',
             'pcmReviewApproval',
             'dmarkApplicationApproval',
-            'hodApprovalAssessmentReport', 'permitEditApplication'];
+            'hodApprovalAssessmentReport',
+            'pcmSuspendPermit',
+            'permitEditApplication'];
 
         let arrHeadSave = ['AGREE/CONSENT TO SSC',
             'Approve or Reject Justification Report',
@@ -3010,7 +3038,9 @@
             'Approve / Reject Awarding of Permit',
             'Approve / Reject Permit',
             'Grant/Defer Application',
-            'Approve / Reject Permit Review', 'Edit Permit Application'];
+            'Approve / Reject Permit Review',
+            'Suspend/Unsuspend Permit Awarded',
+            'Edit Permit Application'];
 
         for (let h = 0; h < arrHead.length; h++) {
             if (eventAction !== arrHead[h]) {

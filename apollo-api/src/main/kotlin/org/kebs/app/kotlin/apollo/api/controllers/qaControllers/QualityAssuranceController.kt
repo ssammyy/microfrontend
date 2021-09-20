@@ -389,6 +389,11 @@ class QualityAssuranceController(
                 returnDetails = approveAssesmentReport(permit, map, permitDetails, loggedInUser)
                 permitDetails = returnDetails.first
             }
+            //PERMIT SUSPENDED/UNSUSPENDED
+            permit.suspensionStatus != null -> {
+                returnDetails = approveAssesmentReport(permit, map, permitDetails, loggedInUser)
+                permitDetails = returnDetails.first
+            }
 
 //            //Permit Resubmit application
 //            permit.resubmitApplicationStatus == map.activeStatus -> {
@@ -533,6 +538,82 @@ class QualityAssuranceController(
             permitDetailsDB.hodApproveAssessmentStatus,
             "HOD",
             "APPROVE/REJECT ASSESSMENT REPORT",
+            map,
+            loggedInUser
+        )
+
+        val closeLink =
+            "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permitDetailsDB.permitType}"
+        return Pair(permitDetailsDB, closeLink)
+    }
+
+    fun suspendUnsuspendPermit(
+        permit: PermitApplicationsEntity,
+        map: ServiceMapsEntity,
+        permitDetails: PermitApplicationsEntity,
+        loggedInUser: UsersEntity
+    ): Pair<PermitApplicationsEntity, String> {
+        var complianceValue: String? = null
+        var permitDetailsDB = permitDetails
+        when (permit.suspensionStatus) {
+            map.activeStatus -> {
+//                val appointedPacSec = qaDaoServices.assignNextOfficerWithDesignation(
+//                    permitDetailsDB,
+//                    map,
+//                    applicationMapProperties.mapQADesignationIDForPacSecId
+//                )
+
+                with(permitDetailsDB) {
+                    suspensionStatus = map.activeStatus
+                    suspensionRemarks = permit.suspensionRemarks
+//                    pacSecId = appointedPacSec?.id
+                    userTaskId = null
+                }
+                qaDaoServices.permitUpdateDetails(permitDetailsDB, map, loggedInUser)
+
+                //Send notification to PAC secretary
+//                val pacSec = appointedPacSec?.id?.let { commonDaoServices.findUserByID(it) }
+//                pacSec?.email?.let { qaDaoServices.sendPacDmarkAssessmentNotificationEmail(it, permitDetailsDB) }
+
+                qaDaoServices.permitInsertStatus(
+                    permitDetailsDB,
+                    applicationMapProperties.mapQaStatusSuspended,
+                    loggedInUser
+                )
+
+            }
+            map.inactiveStatus -> {
+//                complianceValue = "REJECTED"
+                with(permitDetailsDB) {
+                    resubmitApplicationStatus = 1
+                    userTaskId = null
+//                    assessmentScheduledStatus = null
+//                    hodApproveAssessmentStatus = null
+//                    permitAwardStatus = null
+                }
+
+                permitDetailsDB = qaDaoServices.permitInsertStatus(
+                    permitDetailsDB,
+                    applicationMapProperties.mapQaStatusUnSuspended,
+                    loggedInUser
+                )
+
+//                qaDaoServices.sendAssessmentReportRejection(
+//                    permitDetailsDB,
+//                    complianceValue,
+//                    permitDetailsDB.hodApproveAssessmentRemarks
+//                        ?: throw ExpectedDataNotFound("MISSING COMPLIANCE REMARKS"),
+//                )
+
+            }
+        }
+
+        qaDaoServices.permitAddRemarksDetails(
+            permitDetailsDB.id ?: throw Exception("ID NOT FOUND"),
+            permitDetailsDB.suspensionRemarks,
+            permitDetailsDB.suspensionStatus,
+            "PCM",
+            "SUSPEND/UNSUSPEND PERMIT AWARED",
             map,
             loggedInUser
         )

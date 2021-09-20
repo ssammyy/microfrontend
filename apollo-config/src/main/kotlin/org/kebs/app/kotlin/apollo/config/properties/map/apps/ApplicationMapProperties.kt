@@ -102,6 +102,12 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.PAC_SECRETARY}")
     val mapUserTaskNamePACSECRETARY: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.suspended}")
+    val mapQaStatusSuspended: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.unsuspended}")
+    val mapQaStatusUnSuspended: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.RM}")
     val mapUserTaskNameRM: Long = 0L
 
