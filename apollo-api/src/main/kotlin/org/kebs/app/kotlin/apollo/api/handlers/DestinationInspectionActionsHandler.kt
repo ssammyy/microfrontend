@@ -64,7 +64,7 @@ class DestinationInspectionActionsHandler(
             data.put("owner", loggedInUser.userName)
             data.put("documentType", form.documentType)
             data.put("cdUuid", cdUuid)
-            data.put("compliantStatus",form.compliantStatus)
+            data.put("compliantStatus", form.compliantStatus)
             data.put("supervisor", consignmentDocument.assigner?.userName)
             // Start blacklisting process
             this.diBpmn.startCompliantProcess(data, consignmentDocument)
@@ -165,7 +165,7 @@ class DestinationInspectionActionsHandler(
                                     daoServices.updateCDStatus(cdStd, applicationMapProperties.mapDICdStatusTypeCOIGeneratedAndSendID)
                                 }
                             }
-                            consignmentAuditService.addHistoryRecord(updatedCDDetails.id,updatedCDDetails.ucrNumber, form.remarks, "KEBS_COI", "Send Certificate of Inspection")
+                            consignmentAuditService.addHistoryRecord(updatedCDDetails.id, updatedCDDetails.ucrNumber, form.remarks, "KEBS_COI", "Send Certificate of Inspection")
                             response.data = ConsignmentDocumentDao.fromEntity(consignmentDocument)
                             response.responseCode = ResponseCodes.SUCCESS_CODE
                             response.message = "Success"
@@ -217,7 +217,7 @@ class DestinationInspectionActionsHandler(
                             daoServices.createCDTransactionLog(map, loggedInUser, consignmentDocument.id!!, it, it1)
                         }
                     }
-                    consignmentAuditService.addHistoryRecord(consignmentDocument.id,consignmentDocument.ucrNumber, form.remarks, "KEBS_ASSIGN_PORT", "Assign Port To consignment")
+                    consignmentAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, form.remarks, "KEBS_ASSIGN_PORT", "Assign Port To consignment")
                     response.message = "Port assigned"
                     response.responseCode = ResponseCodes.SUCCESS_CODE
                 } else {
@@ -235,7 +235,7 @@ class DestinationInspectionActionsHandler(
 
 
     fun targetConsignment(req: ServerRequest): ServerResponse {
-       return targetConsignment(req, false)
+        return targetConsignment(req, false)
     }
 
     fun supervisorTargetConsignment(req: ServerRequest): ServerResponse {
@@ -262,7 +262,7 @@ class DestinationInspectionActionsHandler(
                     daoServices.updateCdDetailsInDB(consignmentDocument, loggedInUser)
                     // Submit Targeting to BPM
                     this.diBpmn.startTargetConsignment(data, consignmentDocument);
-                    consignmentAuditService.addHistoryRecord(consignmentDocument.id,consignmentDocument.ucrNumber, form.remarks, "KEBS_TARGET", "Target consignment")
+                    consignmentAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, form.remarks, "KEBS_TARGET", "Target consignment")
                     response.message = "Target request submitted"
                     response.responseCode = ResponseCodes.SUCCESS_CODE
                 } else {
@@ -289,7 +289,9 @@ class DestinationInspectionActionsHandler(
             val form = req.body(ConsignmentUpdateRequest::class.java)
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             val data = mutableMapOf<String, Any?>()
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
             data.put("remarks", form.remarks)
+            data.put("supervisor", loggedInUser.userName)
             data.put("targetingApproved", form.approvalStatus == map.activeStatus)
             data.put("taskApproved", form.approvalStatus == map.activeStatus)
             val cdUuid = req.pathVariable("cdUuid")
@@ -345,7 +347,7 @@ class DestinationInspectionActionsHandler(
                         }
                         if (supervisor) {
                             response.message = "Target request submitted"
-                            consignmentAuditService.addHistoryRecord(consignmentDocument.id,consignmentDocument.ucrNumber, form.remarks, "KEBS_SUPERVISOR_TARGET", "Supervisor targeted consignment")
+                            consignmentAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, form.remarks, "KEBS_SUPERVISOR_TARGET", "Supervisor targeted consignment")
                         } else {
                             response.message = "Target approved successful"
                             consignmentAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, form.remarks, "KEBS_APPROVE_TARGET", "Approve target consignment")
@@ -376,7 +378,7 @@ class DestinationInspectionActionsHandler(
                 val form = req.body(ConsignmentUpdateRequest::class.java)
                 val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
                 //Start the relevant BPM
-                diService.selfAssign(consignmentDocument,form.remarks)
+                diService.selfAssign(consignmentDocument, form.remarks)
                 consignmentAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, form.remarks, "KEBS_MANUAL_ASSIGN_IO", "Manual pick consignment")
                 response.responseCode = ResponseCodes.SUCCESS_CODE
                 response.message = "Inspection officer assigned"
@@ -397,13 +399,15 @@ class DestinationInspectionActionsHandler(
                 if (officer.isPresent) {
                     val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
                     val loggedInUser = commonDaoServices.loggedInUserDetails()
+                    val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
                     val data = mutableMapOf<String, Any?>()
                     data["remarks"] = form.remarks
                     data["reassign"] = form.reassign
                     data["officerId"] = form.officerId
                     data["owner"] = officer.get().userName
                     data["supervisor"] = loggedInUser.userName
-                    data["isAutoTargeted"] = consignmentDocument.cdType?.uuid == daoServices.noCorCdType
+                    data["isAutoRejected"] = consignmentDocument.cdType?.autoRejectStatus == map.activeStatus
+                    data["isAutoTargeted"] = consignmentDocument.cdType?.autoTargetStatus == map.activeStatus
                     data["cdUuid"] = cdUuid
                     // Start BPM process
                     this.diBpmn.startAssignmentProcesses(data, consignmentDocument);

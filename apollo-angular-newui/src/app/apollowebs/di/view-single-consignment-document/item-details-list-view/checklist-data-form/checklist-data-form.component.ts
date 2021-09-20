@@ -52,6 +52,10 @@ export class ChecklistDataFormComponent implements OnInit {
         })
     }
 
+    goBack() {
+        this.router.navigate(["/di", this.consignmentId])
+    }
+
     loadMinistryStations() {
         this.diService.loadMinistryStations()
             .subscribe(

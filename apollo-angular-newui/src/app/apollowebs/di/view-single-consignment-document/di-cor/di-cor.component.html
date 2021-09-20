@@ -7,7 +7,12 @@
                         <div class="card-icon">
                             <i class="material-icons">CoR</i>
                         </div>
-                        <h4 class="card-title">Certificate of Roadworthiness</h4>
+                        <h4 class="card-title">Certificate of Roadworthiness
+                            <button class="btn btn-sm btn-default pull-right mr-7"
+                                    (click)="goBack()"> <i class="fa fa-arrow-left"></i> Back
+
+                            </button>
+                        </h4>
 
                     </div>
                     <div class="card-body" *ngIf="corDetails">

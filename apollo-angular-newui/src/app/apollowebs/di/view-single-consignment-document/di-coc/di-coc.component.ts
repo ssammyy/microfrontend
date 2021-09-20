@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FileService} from 'src/app/core/services/file.service';
 import * as fileSaver from 'file-saver';
 import {DestinationInspectionService} from "../../../../core/store/data/di/destination-inspection.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
     selector: 'app-di-coc',
@@ -14,7 +14,7 @@ export class DiCocComponent implements OnInit {
     cdDetailsId: any
     cocDetails: any
 
-    constructor(private fileService: FileService, private diService: DestinationInspectionService, private activatedRoute: ActivatedRoute) {
+    constructor(private fileService: FileService, private diService: DestinationInspectionService, private activatedRoute: ActivatedRoute,private router:Router) {
     }
 
     ngOnInit(): void {
@@ -26,7 +26,9 @@ export class DiCocComponent implements OnInit {
                 }
             )
     }
-
+    goBack() {
+        this.router.navigate(["/di", this.cdDetailsId])
+    }
     loadCocDetails() {
         this.diService.loadCocDetails(this.cdDetailsId)
             .subscribe(

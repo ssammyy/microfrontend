@@ -18,11 +18,9 @@ class InspectionGeneralDetailsDto {
     var importersName: String? = null
     var clearingAgent: String? = null
     var customsEntryNumber: String? = null
-    var idfNumber: String? = null
     var ucrNumber: String? = null
     var cocNumber: String? = null
-    var feePaid: String? = null
-    var receiptNumber: String? = null
+    var idfNumber: String? = null
     var overallRemarks: String? = null
     var complianceStatus: Int? = null
     var complianceRecommendations: String? = null
@@ -30,12 +28,9 @@ class InspectionGeneralDetailsDto {
     var inspectionReportDisapprovalComments: String? = null
     var inspectionReportDisapprovalDate: Date? = null
     var inspectionReportApprovalComments: String? = null
-    var inspectionReportApprovalDate: Date? = null
     var description: String? = null
-    var inspectionReportRefNumber: String? = null
+    var inspectionOfficer: String? = null
     var status: Int? = null
-    var checklistTypeName: String? = null
-    var checklistTypeId: Long? = null
 
     companion object {
         fun fromEntity(entity: CdInspectionGeneralEntity): InspectionGeneralDetailsDto {
@@ -43,18 +38,23 @@ class InspectionGeneralDetailsDto {
                 id = entity.id
                 confirmItemType = entity.confirmItemType
                 inspection = entity.inspection
-                idfNumber = entity.idfNumber
+                customsEntryNumber = entity.customsEntryNumber
                 ucrNumber = entity.ucrNumber
                 overallRemarks = entity.overallRemarks
-                feePaid = entity.feePaid
-                receiptNumber = entity.receiptNumber
                 overallRemarks = entity.overallRemarks
                 complianceRecommendations = entity.complianceRecommendations
                 category = entity.category
+                inspectionOfficer = entity.createdBy
                 inspectionDate = entity.inspectionDate
                 complianceStatus = entity.complianceStatus
                 description = entity.description
                 status = entity.status
+            }
+            entity.cdDetails?.let {
+                dto.cocNumber = it.cocNumber?:"NA"
+                dto.cfs = it.freightStation?.cfsName
+                dto.idfNumber = it.idfNumber?:"NA"
+                dto.ucrNumber = it.ucrNumber?:"NA"
             }
             return dto
         }
@@ -385,16 +385,16 @@ class InspectionMotorVehicleItemDto {
     var odemetreReading: String? = null
     var transmissionAutoManual: String? = null
     var engineNoCapacity: String? = null
-    var hasMinistryInspection: Boolean?=null
-    var ministryInspectionActive: Boolean?=null
+    var hasMinistryInspection: Boolean? = null
+    var ministryInspectionActive: Boolean? = null
     var ssfId: Long? = null
 
     companion object {
         fun fromEntity(entity: CdInspectionMotorVehicleItemChecklistEntity): InspectionMotorVehicleItemDto {
             val dto = InspectionMotorVehicleItemDto().apply {
                 id = entity.id
-                hasMinistryInspection=entity.ministryReportFile!=null
-                ministryInspectionActive=entity.ministryReportSubmitStatus==1
+                hasMinistryInspection = entity.ministryReportFile != null
+                ministryInspectionActive = entity.ministryReportSubmitStatus == 1
                 overallRemarks = entity.remarks
                 makeVehicle = entity.makeVehicle
                 inspection = entity.inspection?.id
@@ -416,7 +416,7 @@ class InspectionMotorVehicleItemDto {
                 status = entity.status
             }
             entity.ministryStationId?.let {
-                dto.ministryStation=it.stationName
+                dto.ministryStation = it.stationName
             }
             return dto
         }
@@ -436,9 +436,9 @@ class InspectionMotorVehicleDetailsDto {
     var serialNumber: String? = null
     var itemTypeId: Long? = null
     var itemTypeName: String? = null
+    var odemetreReading: String? = null
     var inspection: Long? = null
     var inspectionDate: Timestamp? = null
-    var compliant: String? = null
     var ucrNumber: String? = null
     var instructionsUseManual: String? = null
     var inspectionReportApprovalComments: String? = null
@@ -451,6 +451,7 @@ class InspectionMotorVehicleDetailsDto {
         fun fromEntity(entity: CdInspectionMotorVehicleChecklist): InspectionMotorVehicleDetailsDto {
             val dto = InspectionMotorVehicleDetailsDto().apply {
                 id = entity.id
+                odemetreReading = entity.odemetreReading
                 inspection = entity.inspectionGeneral?.id
                 serialNumber = entity.serialNumber
                 remarks = entity.remarks

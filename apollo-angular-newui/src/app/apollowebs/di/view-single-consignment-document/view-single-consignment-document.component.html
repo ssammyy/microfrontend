@@ -844,7 +844,6 @@
                                             <b class="text-primary">Other Version Details</b>
                                             <app-other-version-details [dataSet]="consignment.old_versions">
                                             </app-other-version-details>
-                                      
                                     </mat-tab>
                                     <mat-tab *ngIf="demandNotes">
                                         <ng-template mat-tab-label>
@@ -870,7 +869,7 @@
                                             *ngIf="consignment.ui.owner && (consignment.ui.cocRequest || consignment.ui.corRequest)"
                                             class="btn btn-sm btn-primary" (click)="markAsCompliant()">COMPLIANT
                                         </button>
-                                        <button *ngIf="consignment.ui.owner && !consignment.ui.inspectionChecklist && consignment.ui.canInspect"
+                                        <button *ngIf="consignment.ui.owner && !consignment.ui.checklistFilled && consignment.ui.demandNotePaid && consignment.ui.targeted"
                                             class="btn btn-sm btn-primary" (click)="createInspectionChecklist()">FILL
                                             INSPECTION CHECKLIST
                                         </button>
@@ -909,7 +908,7 @@
                                 <button *ngIf="consignment.ui.demandNote" class="btn btn-sm btn-primary"
                                     (click)="downloadDemandNote()">DEMAND NOTE PDF
                                 </button>
-                                <button *ngIf="consignment.ui.inspectionChecklist" class="btn btn-sm btn-primary"
+                                <button *ngIf="consignment.ui.checklistFilled" class="btn btn-sm btn-primary"
                                     (click)="viewInspectionChecklists()">VIEW INSPECTION REPORT
                                 </button>
                                 <button *ngIf="consignment.ui.corAvailable" class="btn btn-sm btn-primary"

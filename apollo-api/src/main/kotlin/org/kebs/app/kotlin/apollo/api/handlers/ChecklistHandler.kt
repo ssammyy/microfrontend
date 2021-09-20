@@ -209,11 +209,13 @@ class ChecklistHandler(
                 response = this.checlistService.saveSsfDetails(ssfDetails, item.id!!, map, loggedInUser)
             }
         } catch (ex: Exception) {
+            KotlinLogging.logger {  }.error("Failed to submit SSF", ex)
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
             response.message = "Failed to save SSF details"
         }
         return ServerResponse.ok().body(response)
     }
+
 
     fun updateSsfResults(req: ServerRequest): ServerResponse {
         var response = ApiResponseModel()
@@ -226,8 +228,9 @@ class ChecklistHandler(
                 response = this.checlistService.updateSsfResult(form, item, map, loggedInUser)
             }
         } catch (ex: Exception) {
+            KotlinLogging.logger {  }.error("Failed to update BS number",ex)
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
-            response.message = "Failed to save SSF details"
+            response.message = "Failed to save SSF details, check the supplied SSF number"
         }
         return ServerResponse.ok().body(response)
     }
@@ -246,8 +249,6 @@ class ChecklistHandler(
                     generalCheckList.description = cdItem.description
                     generalCheckList.inspectionDate = Date(java.util.Date().time)
                     generalCheckList.cfs = cdItem.freightStation?.cfsName
-                    generalCheckList.cocNumber = cdItem.cocNumber
-                    generalCheckList.idfNumber = cdItem.idfNumber
                     val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
                     val inspectionGeneral = daoServices.saveInspectionGeneralDetails(generalCheckList, cdItem, loggedInUser, map)
                     if (form.agrochem == null && form.engineering == null && form.vehicle == null && form.others == null) {

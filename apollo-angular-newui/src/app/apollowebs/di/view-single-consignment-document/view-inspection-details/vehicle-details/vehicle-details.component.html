@@ -1,5 +1,5 @@
 <div id='vehicle-details' *ngIf="inspectionDetails">
-    <div class="form-row">
+    <div class="row">
         <ul class="col-md-12 w-list-unstyled">
             <li class="list-item-accordion">
                 <div class="list-title-accordion">REMARKS</div>
@@ -11,68 +11,68 @@
             </li>
         </ul>
     </div>
-    <div class="form-row">
+    <div class="row">
         <div class="col-md-12 mb-3">
             <label style="color: #0082f3">Items</label>
         </div>
-        <div class="table-striped table-condensed table-responsive">
-            <mat-table [dataSource]="inspectionDetails.items">
+        <div class="col-md-12 mb-3">
+            <mat-table class="table-striped table-condensed table-responsive" [dataSource]="inspectionDetails.items">
                 <ng-container matColumnDef="id">
-                    <th mat-header-cell *matHeaderCellDef>#</th>
-                    <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+                    <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="registrationDate">
-                    <th mat-header-cell *matHeaderCellDef>Registration Date</th>
-                    <td mat-cell *matCellDef="let element"> {{element.registrationDate}} </td>
+                    <mat-header-cell *matHeaderCellDef>Registration Date</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.registrationDate}} </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="manufactureDate">
-                    <th mat-header-cell *matHeaderCellDef>Manufacture Date</th>
-                    <td mat-cell *matCellDef="let element"> {{element.manufactureDate}} </td>
+                    <mat-header-cell *matHeaderCellDef>Manufacture Date</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.manufactureDate}} </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="category">
-                    <th mat-header-cell *matHeaderCellDef>Category</th>
-                    <td mat-cell *matCellDef="let element"> {{element.category}} </td>
+                    <mat-header-cell *matHeaderCellDef>Category</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.category}} </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="compliant">
-                    <th mat-header-cell *matHeaderCellDef>Compliant</th>
-                    <td mat-cell *matCellDef="let element"> {{element.compliant}} </td>
+                    <mat-header-cell *matHeaderCellDef>Compliant</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.compliant}} </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="ministryStation">
-                    <th mat-header-cell *matHeaderCellDef>Ministry Station</th>
-                    <td mat-cell *matCellDef="let element"> {{element.ministryStation}} </td>
+                    <mat-header-cell *matHeaderCellDef>Ministry Station</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.ministryStation}} </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="ministryInspection">
-                    <th mat-header-cell *matHeaderCellDef>Ministry Inspection</th>
-                    <td mat-cell *matCellDef="let element"> {{element.ministryInspection}} </td>
+                    <mat-header-cell *matHeaderCellDef>Ministry Inspection</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.ministryInspection}} </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="makeVehicle">
-                    <th mat-header-cell *matHeaderCellDef>Make</th>
-                    <td mat-cell *matCellDef="let element"> {{element.makeVehicle}} </td>
+                    <mat-header-cell *matHeaderCellDef>Make</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.makeVehicle}} </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="odemetreReading">
-                    <th mat-header-cell *matHeaderCellDef>Odometre Reading</th>
-                    <td mat-cell *matCellDef="let element"> {{element.odemetreReading}} </td>
+                    <mat-header-cell *matHeaderCellDef>Odometre Reading</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.odemetreReading}} </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="transmissionAutoManual">
-                    <th mat-header-cell *matHeaderCellDef>Transmission</th>
-                    <td mat-cell *matCellDef="let element"> {{element.transmissionAutoManual}} </td>
+                    <mat-header-cell *matHeaderCellDef>Transmission</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.transmissionAutoManual}} </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="engineNoCapacity">
-                    <th mat-header-cell *matHeaderCellDef>CC</th>
-                    <td mat-cell *matCellDef="let element"> {{element.engineNoCapacity}} </td>
+                    <mat-header-cell *matHeaderCellDef>CC</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.engineNoCapacity}} </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="actions">
-                    <th mat-header-cell *matHeaderCellDef>Action/Download</th>
-                    <td class="button-row" mat-cell *matCellDef="let element">
+                    <mat-header-cell *matHeaderCellDef>Action/Download</mat-header-cell>
+                    <mat-cell class="button-row" mat-cell *matCellDef="let element">
                         <button mat-button  color="primary" (click)="customAction(element,'downloadReport')">Download Report</button>
                         <button mat-button  color="primary" (click)="customAction(element,'downloadUnfilled')">Download Unfilled</button>
                         <button *ngIf="element.hasMinistryInspection" mat-button  color="primary" (click)="customAction(element,'downloadChecklist')">Download Ministry Checklist</button>
-                        <button mat-button  color="primary" (click)="customAction(element,'requestMinistryChecklist')">Request Ministry Inspection</button>
-                    </td>
+                        <button *ngIf="!element.ministryStation" mat-button  color="primary" (click)="customAction(element,'requestMinistryChecklist')">Request Ministry Inspection</button>
+                    </mat-cell>
                 </ng-container>
-                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
             </mat-table>
         </div>
     </div>

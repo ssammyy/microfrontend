@@ -28,7 +28,9 @@ export class ViewIdfDocumentDetailsComponent implements OnInit {
                 }
             )
     }
-
+    goBack() {
+        this.router.navigate(["/di", this.documentUuid])
+    }
     loadIdfDocument() {
         this.diService.loadIdfDocumentDetails(this.documentUuid)
             .subscribe(

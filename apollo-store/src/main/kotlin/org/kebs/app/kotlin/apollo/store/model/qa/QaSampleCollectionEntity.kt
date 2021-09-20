@@ -20,6 +20,10 @@ class QaSampleCollectionEntity : Serializable {
     @Basic
     var permitId: Long? = null
 
+    @Column(name = "ITEM_ID")
+    @Basic
+    var itemId: Long? = null
+
     @Column(name = "NAME_OF_MANUFACTURE")
     @Basic
     var nameOfManufacture: String? = null

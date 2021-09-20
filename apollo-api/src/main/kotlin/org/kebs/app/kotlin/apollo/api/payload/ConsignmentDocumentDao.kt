@@ -16,6 +16,7 @@ fun checkHasAuthority(role: String, auth: Authentication): Boolean {
 class ConsignmentEnableUI {
     var owner: Boolean? = null
     var canChange: Boolean = false
+    var demandNotePaid: Boolean=true
     var supervisor: Boolean? = null
     var inspector: Boolean? = null
     var demandNote: Boolean? = null
@@ -38,7 +39,7 @@ class ConsignmentEnableUI {
     var riskProfileConsignor: Boolean = false
     var riskProfileConsignee: Boolean = false
     var canInspect: Boolean? = null
-    var inspectionChecklist: Boolean = false
+    var checklistFilled: Boolean = false
     var hasPort: Boolean? = null
     var blacklistEnabled = false
 
@@ -61,7 +62,7 @@ class ConsignmentEnableUI {
                 targetItem = change && cd.targetStatus != map.activeStatus
                 supervisorTarget = modify && cd.targetStatus != map.activeStatus
                 attachments = (change || modify)
-                inspectionChecklist = cd.inspectionChecklist == map.activeStatus
+                checklistFilled = cd.inspectionChecklist == map.activeStatus
                 hasPort = (cd.portOfArrival != null && cd.freightStation != null)
                 completed = cd.approveRejectCdStatusType?.let { it.category == "APPROVE" || it.category == "REJECT" }
                 approveReject = (cd.targetApproveStatus == null || cd.inspectionDateSetStatus == map.activeStatus) && modify
@@ -368,11 +369,12 @@ class CdInspectionGeneralDao {
             dt.importersName = general.importersName
             dt.clearingAgent = general.clearingAgent
             dt.customsEntryNumber = general.customsEntryNumber
-            dt.idfNumber = general.idfNumber
             dt.ucrNumber = general.ucrNumber
-            dt.cocNumber = general.cocNumber
-            dt.feePaid = general.feePaid
-            dt.receiptNumber = general.receiptNumber
+            general.cdDetails?.let {
+                dt.cocNumber = it.cocNumber
+                dt.idfNumber = it.idfNumber
+                dt.cfs = it.freightStation?.cfsName
+            }
             return dt
         }
 

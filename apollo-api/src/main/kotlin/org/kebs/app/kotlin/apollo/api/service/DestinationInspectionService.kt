@@ -1055,7 +1055,7 @@ class DestinationInspectionService(
             val uiDetails = ConsignmentEnableUI.fromEntity(cdDetails, map, commonDaoServices.loggedInUserAuthentication())
             uiDetails.supervisor = isSupervisor
             uiDetails.inspector = isInspectionOfficer
-            uiDetails.corAvailable = false
+            uiDetails.demandNotePaid=daoServices.demandNotePaid(cdDetails.id!!)
             try {
                 cdDetails.ucrNumber?.let {
                     daoServices.findLocalCorByUcrNumber(it)
@@ -1063,6 +1063,7 @@ class DestinationInspectionService(
                 }
 
             } catch (ignored: Exception) {
+                uiDetails.corAvailable = false
             }
             uiDetails.cocAvailable = false
             try {
@@ -1072,6 +1073,7 @@ class DestinationInspectionService(
                 }
 
             } catch (ignored: Exception) {
+                uiDetails.cocAvailable = false
             }
             dataMap.put("ui", uiDetails)
         } catch (ex: Exception) {
@@ -1209,13 +1211,14 @@ class DestinationInspectionService(
 
     fun selfAssign(cdDetails: ConsignmentDocumentDetailsEntity,comment: String?=null) {
         KotlinLogging.logger {  }.info("START AUTO ASSIGN")
-        if(comment==null){
-            comment="Auto Assigned on Open"
+        var addedComment=comment
+        if(addedComment==null){
+            addedComment="Auto Assigned on Open"
         }
         this.getSupervisor(cdDetails)?.let {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val data = mutableMapOf<String, Any?>()
-            data["remarks"] = comment
+            data["remarks"] = addedComment
             data["reassign"] = false
             data["officerId"] = loggedInUser.id
             data["owner"] = loggedInUser.userName

@@ -5,7 +5,7 @@
                 <div class="card">
                     <div class="card-header card-header-primary card-header-icon">
                         <div class="card-icon">
-                            <i class="material-icons">CD</i>
+                            <i class="material-icons">ID</i>
                         </div>
                         <h4 class="card-title">Consignment checklist Details
                             <button class="btn btn-sm btn-default pull-right mr-7"
@@ -101,7 +101,7 @@
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">INSPECTION OFFICER</div>
-                                                    <div class="list-text-accordion">{{inspectionDetails.details.createdBy}}</div>
+                                                    <div class="list-text-accordion">{{inspectionDetails.details.inspectionOfficer}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">COC NUMBER</div>
@@ -156,6 +156,14 @@
                                             <b class="text-primary">Motor Vehicle checklist details and items</b>
                                             <app-other-details *ngIf="inspectionDetails.other_checklist"
                                                                [inspectionDetails]="inspectionDetails.other_checklist"></app-other-details>
+                                        </ng-template>
+                                    </li>
+                                    <li ngbNavItem="sampled-item-details"
+                                        [hidden]="!(sampledItems && sampledItems.length>0)">
+                                        <a ngbNavLink>Sampled Items</a>
+                                        <ng-template ngbNavContent>
+                                            <b class="text-primary">Sampled item details and items</b>
+                                            <app-checklists [dataSet]="sampledItems" (reloadSample)="loadSampledItems()"></app-checklists>
                                         </ng-template>
                                     </li>
                                 </ul>

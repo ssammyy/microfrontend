@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FileService} from 'src/app/core/services/file.service';
 import {DestinationInspectionService} from "../../../../core/store/data/di/destination-inspection.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
     selector: 'app-di-cor',
@@ -14,7 +14,7 @@ export class DiCorComponent implements OnInit {
     message: any
     cdUuid: any
 
-    constructor(private activatedRoute: ActivatedRoute, private fileService: FileService, private diService: DestinationInspectionService) {
+    constructor(private activatedRoute: ActivatedRoute, private fileService: FileService, private diService: DestinationInspectionService,private router: Router) {
     }
 
     ngOnInit(): void {
@@ -26,7 +26,9 @@ export class DiCorComponent implements OnInit {
                 }
             )
     }
-
+    goBack() {
+        this.router.navigate(["/di", this.cdUuid])
+    }
     loadCorDetails() {
         this.message = null
         this.diService.loadCorDetails(this.cdUuid)

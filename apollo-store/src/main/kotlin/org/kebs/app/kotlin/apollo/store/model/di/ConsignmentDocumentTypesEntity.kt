@@ -38,6 +38,14 @@ class ConsignmentDocumentTypesEntity : Serializable {
     @Basic
     var inspectionStatus: Int? = null
 
+    @Column(name = "AUTO_TARGET_STATUS")
+    @Basic
+    var autoTargetStatus: Int? = null
+
+    @Column(name = "AUTO_REJECTED_STATUS")
+    @Basic
+    var autoRejectStatus: Int? = null
+
     @Column(name = "LOCAL_COC_STATUS")
     @Basic
     var localCocStatus: Int? = null
@@ -147,6 +155,6 @@ class ConsignmentDocumentTypesEntity : Serializable {
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(id, uuid, typeName, demandNotePrefix, localCocStatus, localCorStatus, inspectionStatus,  category, description, status, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn)
+        return Objects.hash(id, uuid, typeName, demandNotePrefix, localCocStatus, localCorStatus, inspectionStatus, category, description, status, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn)
     }
 }

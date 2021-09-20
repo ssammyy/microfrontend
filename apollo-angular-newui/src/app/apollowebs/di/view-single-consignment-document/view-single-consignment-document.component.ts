@@ -88,7 +88,14 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
                 items: this.consignmentItems,
                 paymentFees: this.paymentFees
             }
-        });
+        }).afterClosed()
+            .subscribe(
+                res=>{
+                    if(res){
+                        this.loadDemandNotes()
+                    }
+                }
+            );
     }
 
     reloadAttachments(v: boolean) {

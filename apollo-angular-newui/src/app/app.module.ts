@@ -181,6 +181,7 @@ import { ComplianceUpdateFormComponent } from './apollowebs/di/view-single-consi
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatMultilineTabDirective } from './apollowebs/di/mat-multiline-tab.directive';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 
 @NgModule({
@@ -230,7 +231,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
         NgMultiSelectDropDownModule,
         MatTabsModule,
         MatProgressSpinnerModule,
-        NgxSpinnerModule
+        NgxSpinnerModule,
+        FontAwesomeModule
         // CoreModule
     ],
     declarations: [

@@ -495,6 +495,7 @@ interface IQaSampleSubmittedPdfListRepository : HazelcastRepository<QaSampleSubm
 interface IQaSampleCollectionRepository : HazelcastRepository<QaSampleCollectionEntity, Long> {
     fun findByStatusAndId(status: Int, id: Long): QaSampleCollectionEntity?
     fun findByPermitId(permitId: Long): QaSampleCollectionEntity?
+    fun findByItemId(itemId: Long): QaSampleCollectionEntity?
 //    fun findByPermitRefNumber(permitId: Long): QaSampleCollectionEntity?
 }
 

@@ -1193,6 +1193,25 @@ class DestinationInspectionDaoServices(
         return upDateDemandNoteWithUser(demandNote, user)
     }
 
+    /**
+     * Check for new demand note, approved demand note and payment status
+     *
+     * @param cdId Consignment ID
+     */
+    fun demandNotePaid(cdId: Long): Boolean {
+        val noteEntity = iDemandNoteRepo.findByCdIdAndStatusIn(cdId, listOf(-1, 0,1))
+
+        return when (noteEntity) {
+            null -> {
+                KotlinLogging.logger {  }.info("No Demand note")
+                true
+            }
+            else -> {
+                KotlinLogging.logger {  }.info("Demand note: ${noteEntity.paymentStatus}")
+                noteEntity.paymentStatus ==1
+            }
+        }
+    }
 
     fun generateDemandNoteWithItemList(
             itemList: List<CdItemDetailsEntity>,
@@ -1905,11 +1924,16 @@ class DestinationInspectionDaoServices(
         return declarationRepo.findByDeclarationRefNo(dclRefNum)
     }
 
+    fun findSampleSubmittedItemID(cdItemID: Long): QaSampleSubmissionEntity? {
+        return SampleSubmissionRepo.findByCdItemId(cdItemID)
+    }
+
     fun findSampleSubmittedBYCdItemID(cdItemID: Long): QaSampleSubmissionEntity {
         SampleSubmissionRepo.findByCdItemId(cdItemID)?.let {
             return it
         } ?: throw ExpectedDataNotFound("No sample submission found with the following [cdItemID=$cdItemID]")
     }
+
     fun ssfSave(
             cdItemDetails: CdItemDetailsEntity,
             ssfDetails: QaSampleSubmissionEntity,
@@ -3101,11 +3125,11 @@ class DestinationInspectionDaoServices(
 //    }
 
     fun findAllCompleteMinistryInspectionRequests(page: PageRequest): Page<CdItemDetailsEntity> {
-        return iCdItemsRepo.findByMinistrySubmissionStatus( 1,page)
+        return iCdItemsRepo.findByMinistrySubmissionStatus(1, page)
     }
 
     fun findAllCompleteMinistryInspectionRequests(status: Int, page: PageRequest): Page<CdItemDetailsEntity> {
-        return iCdItemsRepo.findByMinistrySubmissionStatus( status,page)
+        return iCdItemsRepo.findByMinistrySubmissionStatus(status, page)
     }
 
 

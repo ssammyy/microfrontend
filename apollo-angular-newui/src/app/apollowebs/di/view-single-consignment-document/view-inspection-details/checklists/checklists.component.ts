@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {DestinationInspectionService} from "../../../../../core/store/data/di/destination-inspection.service";
 import {MatDialog} from "@angular/material/dialog";
 import {SsfDetailsFormComponent} from "../ssf-details-form/ssf-details-form.component";
@@ -11,72 +11,9 @@ import {ComplianceUpdateFormComponent} from "../compliance-update-form/complianc
     styleUrls: ['./checklists.component.css']
 })
 export class ChecklistsComponent implements OnInit {
-    public settings = {
-        selectMode: 'single',  // single|multi
-        hideHeader: false,
-        hideSubHeader: false,
-        actions: {
-            columnTitle: 'Actions',
-            add: false,
-            edit: false,
-            delete: false,
-            custom: [
-                {name: 'sampleSubmission', title: '<i class="btn-sm btn-primary ssf">SSF</i>'},
-                {name: 'sampleCollection', title: '<i class="btn-sm btn-primary scf">SCF</i>'},
-                {name: 'sampleUpdate', title: '<i class="btn-sm btn-primary ssf-update">SSF Updated</i>'}
-            ],
-            position: 'right' // left|right
-        },
-        rowClassFunction: (row)=>{
-            if(row.sampleCollectionStatus==1) {
-                return 'hide-scf-action'
-            }
-
-            return "hide-ssf-action"
-        },
-        delete: {
-            deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
-            confirmDelete: true
-        },
-        noDataMessage: 'No data found',
-        columns: {
-            itemNo: {
-                title: '#',
-                type: 'string'
-            },
-            itemHsCode: {
-                title: 'HS Code',
-                type: 'string'
-            },
-            quantity: {
-                title: 'Quantity',
-                type: 'string'
-            },
-            unitOfQuantity: {
-                title: 'Unit',
-                type: 'string'
-            },
-            countryOfOrgin: {
-                title: 'Origin',
-                type: 'string'
-            },
-            itemDescription: {
-                title: 'Description',
-                type: 'string'
-            },
-            inspectionNotificationStatus: {
-                title: 'Inspection Status',
-                type: 'string'
-            }
-        },
-        pager: {
-            display: true,
-            perPage: 20
-        }
-    };
+    public displayedColumns = ['itemNo', 'itemHsCode', 'quantity', 'unitOfQuantity', 'countryOfOrgin', 'itemDescription', 'inspectionNotificationStatus', 'actions']
     @Input() dataSet: any = [];
-    @Input() itemUuid: any;
-    @Input() configurations: any
+    @Output() reloadSample = new EventEmitter<Boolean>()
 
     constructor(private diService: DestinationInspectionService, private dialog: MatDialog) {
     }
@@ -90,7 +27,14 @@ export class ChecklistsComponent implements OnInit {
                 uuid: data.uuid,
                 details: data
             }
-        })
+        }).afterClosed()
+            .subscribe(
+                res => {
+                    if (res) {
+                        this.reloadSample.emit(true)
+                    }
+                }
+            )
     }
 
     openSampleSubmission(data: any) {
@@ -99,7 +43,14 @@ export class ChecklistsComponent implements OnInit {
                 uuid: data.uuid,
                 details: data
             }
-        })
+        }).afterClosed()
+            .subscribe(
+                res => {
+                    if (res) {
+                        this.reloadSample.emit(true)
+                    }
+                }
+            )
     }
 
     openSampleUpdate(data: any) {
@@ -108,21 +59,34 @@ export class ChecklistsComponent implements OnInit {
                 uuid: data.uuid,
                 details: data
             }
-        })
+        }).afterClosed()
+            .subscribe(
+                res => {
+                    if (res) {
+                        this.reloadSample.emit(true)
+                    }
+                }
+            )
     }
 
-    onCustomAction(data: any) {
-        switch (data.action) {
+    customAction(data: any, action: string) {
+        switch (action) {
             case 'sampleCollection':
-                this.openSampleCollection(data.data)
+                this.openSampleCollection(data)
                 break
             case "sampleSubmission":
-                this.openSampleSubmission(data.data)
+                this.openSampleSubmission(data)
                 break
             case "sampleUpdate":
-                this.openSampleUpdate(data.data)
+                this.openSampleUpdate(data)
+            case "downlodSsf":
+                this.diService.downloadDocument("/api/v1/download/checklist/sampleSubmissionForm/" + data.id)
+                break
+            case "downlodScf":
+                this.diService.downloadDocument("/api/v1/download/checklist/sampleCollectionForm/" + data.id)
+                break
             default:
-                console.log("Invalid action: " + data.action)
+                console.log("Invalid action: " + action)
 
         }
     }

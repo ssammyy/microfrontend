@@ -13,6 +13,7 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.di.DiUploadsEntity
 import org.springframework.core.io.ByteArrayResource
+import org.springframework.core.io.ResourceLoader
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
@@ -29,7 +30,47 @@ class GeneralController(
         private val reportsDaoService: ReportsDaoService,
         private val daoServices: DestinationInspectionDaoServices,
         private val checklistService: ChecklistService,
+        private val resourceLoader: ResourceLoader
 ) {
+    final val resource = resourceLoader.getResource("classpath:static/images/KEBS_SMARK.png")
+    val imageFile = resource.file.toString()
+
+    @GetMapping("/checklist/{docType}/{downloadId}")
+    fun downloadChecklist(@PathVariable("docType") docType: String, @PathVariable("downloadId") downloadId: Long, httResponse: HttpServletResponse) {
+        val map = hashMapOf<String, Any>()
+//        map["ITEM_ID"] = id
+        val sampleCollect = listOf<Any>()
+        map["imagePath"] = imageFile
+        val fileName = "${docType.toUpperCase()}_$downloadId.pdf"
+        when {
+            docType.equals("sampleCollectionForm") -> {
+                map.putAll(this.checklistService.getSsfDetails(downloadId))
+            }
+            docType.equals("sampleSubmission") -> {
+                map.putAll(this.checklistService.getScfDetails(downloadId))
+            }
+            docType.equals("agrochemChecklist") -> {
+                map.putAll(this.checklistService.getAgrochemChecklistDetails(downloadId))
+            }
+            docType.equals("allAgrochemChecklist") -> {
+                map.putAll(this.checklistService.getAgrochemChecklistDetails(downloadId))
+            }
+            docType.equals("allEngineringChecklist") -> {
+                map.putAll(this.checklistService.getEngineeringChecklistDetails(downloadId))
+            }
+            docType.equals("allOtherChecklist") -> {
+                map.putAll(this.checklistService.getOtherChecklistDetails(downloadId))
+            }
+            else -> {
+                httResponse.status = 500
+                httResponse.writer.println("Invalid document type")
+                return
+            }
+        }
+        val stream = reportsDaoService.extractReport(map, "classpath:reports/$docType.jrxml", sampleCollect)
+        download(stream, fileName, httResponse)
+
+    }
 
     @GetMapping("/cor/{corId}")
     fun downloadCertificateOfRoadWorthines(@PathVariable("corId") corId: Long, httResponse: HttpServletResponse) {

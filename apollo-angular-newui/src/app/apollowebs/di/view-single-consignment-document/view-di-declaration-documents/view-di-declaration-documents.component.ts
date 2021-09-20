@@ -29,7 +29,9 @@ export class ViewDiDeclarationDocumentsComponent implements OnInit {
                 }
             )
     }
-
+    goBack() {
+        this.router.navigate(["/di", this.documentId])
+    }
     loadData() {
         this.diService.loadCustomsDeclaration(this.documentId)
             .subscribe(
