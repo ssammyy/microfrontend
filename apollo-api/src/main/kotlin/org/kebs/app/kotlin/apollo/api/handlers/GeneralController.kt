@@ -2,7 +2,6 @@ package org.kebs.app.kotlin.apollo.api.handlers
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import mu.KotlinLogging
-import okhttp3.internal.toLongOrDefault
 import org.apache.http.HttpStatus
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
@@ -12,13 +11,10 @@ import org.kebs.app.kotlin.apollo.api.service.ChecklistService
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.di.DiUploadsEntity
-import org.springframework.core.io.ByteArrayResource
 import org.springframework.core.io.ResourceLoader
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.servlet.function.ServerRequest
-import org.springframework.web.servlet.function.ServerResponse
 import java.io.ByteArrayOutputStream
 import javax.servlet.http.HttpServletResponse
 import kotlin.random.Random
@@ -32,11 +28,19 @@ class GeneralController(
         private val checklistService: ChecklistService,
         private val resourceLoader: ResourceLoader
 ) {
-    final val resource = resourceLoader.getResource("classpath:static/images/KEBS_SMARK.png")
-    val imageFile = resource.file.toString()
+
 
     @GetMapping("/checklist/{docType}/{downloadId}")
     fun downloadChecklist(@PathVariable("docType") docType: String, @PathVariable("downloadId") downloadId: Long, httResponse: HttpServletResponse) {
+        var imageFile = ""
+        try {
+//            val resource = resourceLoader.getResource("classpath:static/images/KEBS_SMARK.png")
+            val resource = resourceLoader.getResource("file:\${CONFIG_PATH}/reports/images/KEBS_SMARK.png")
+            imageFile = resource.file.toString()
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.info("Incorrect path ${e.message}")
+        }
+
         val map = hashMapOf<String, Any>()
 //        map["ITEM_ID"] = id
         val sampleCollect = listOf<Any>()
@@ -129,7 +133,7 @@ class GeneralController(
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("CHECKLIST DOWNLOAD FAILED", ex)
         }
-        httResponse.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR)
+        httResponse.status = HttpStatus.SC_INTERNAL_SERVER_ERROR
         httResponse.writer.println("INVALID checklist")
     }
 
@@ -178,7 +182,7 @@ class GeneralController(
             response.message = ex.localizedMessage
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
         }
-        httResponse.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR)
+        httResponse.status = HttpStatus.SC_INTERNAL_SERVER_ERROR
         httResponse.writer.println(response.message)
     }
 
