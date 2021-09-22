@@ -2,7 +2,6 @@ package org.kebs.app.kotlin.apollo.api.handlers
 
 import mu.KotlinLogging
 import okhttp3.internal.toLongOrDefault
-import org.apache.http.HttpStatus
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.request.ConsignmentUpdateRequest
@@ -11,20 +10,12 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionB
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
-import org.kebs.app.kotlin.apollo.api.service.InvoicePaymentService
-import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
-import org.kebs.app.kotlin.apollo.store.repo.IInvoiceRepository
-import org.kebs.app.kotlin.apollo.store.repo.IServiceMapsRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteRepository
-import org.springframework.http.HttpHeaders
-import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
-import org.springframework.web.servlet.function.paramOrNull
 import java.sql.Timestamp
 import java.time.Instant
 
@@ -160,7 +151,7 @@ class InvoiceHandlers(
                 demandNote.varField3="NEW"
                 daoServices.upDateDemandNote(demandNote)
                 response.responseCode = ResponseCodes.SUCCESS_CODE
-                response.message = "Demand note generated"
+                response.message = "Demand note generated, review under demand note tab and submit for approval"
             }
 
         } catch (ex: Exception) {
@@ -218,7 +209,8 @@ class InvoiceHandlers(
                         data["cdUuid"] = cdDetails.uuid
                         demandNote.status = 0
                         demandNote.varField3="SUBMITTED"
-                        this.diBpmn.startGenerateDemandNote(data, cdDetails)
+                        val map = commonDaoServices.serviceMapDetails(appId)
+                        this.diBpmn.startGenerateDemandNote(map,data, cdDetails)
                         daoServices.upDateDemandNote(demandNote)
                         response.responseCode = ResponseCodes.SUCCESS_CODE
                         response.message = "Demand note submitted"

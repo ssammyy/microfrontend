@@ -364,7 +364,8 @@ interface ICdConsignorEntityRepository : HazelcastRepository<CdConsignorDetailsE
 @Repository
 interface IDemandNoteRepository : HazelcastRepository<CdDemandNoteEntity, Long> {
     fun findByUcrNumber(ucrNumber: String): CdDemandNoteEntity?
-    fun findByCdIdAndStatusIn(cdId: Long,statuses: List<Int>): CdDemandNoteEntity?
+    fun findAllByCdIdAndStatusIn(cdId: Long,statuses: List<Int>): List<CdDemandNoteEntity>
+    fun findFirstByCdIdAndStatusIn(cdId: Long,statuses: List<Int>): CdDemandNoteEntity?
     fun findByCdId(cdId: Long): CdDemandNoteEntity?
     fun findAllByCdId(cdId: Long): List<CdDemandNoteEntity>
     fun findByDemandNoteNumber(demandNoteNumber: String): CdDemandNoteEntity?

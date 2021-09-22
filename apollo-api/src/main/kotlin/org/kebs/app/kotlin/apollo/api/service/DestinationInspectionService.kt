@@ -68,6 +68,9 @@ class DestinationInspectionService(
 
     fun rejectComplianceRequests(cdUuid: String, supervisor: String, remarks: String): Boolean {
         val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
+        val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+        consignmentDocument.compliantStatus=map.inactiveStatus
+        daoServices.updateCdDetailsInDB(consignmentDocument, null)
         cdAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, remarks, "KEBS_REJECT_COMPLIANCE", "Reject compliance request", supervisor)
         return false
     }
@@ -261,6 +264,7 @@ class DestinationInspectionService(
                     }
                     daoServices.saveCorDetails(corDetails)
                     // Update COR
+                    consignmentDocument.compliantStatus=map.activeStatus
                     consignmentDocument.localCocOrCorStatus = map.activeStatus
                     daoServices.updateCdDetailsInDB(consignmentDocument, null)
                     //Send email
@@ -285,6 +289,9 @@ class DestinationInspectionService(
         KotlinLogging.logger { }.info("UPDATE COR GENERATION REJECTION: ${cdUuid}")
         try {
             val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
+            consignmentDocument.compliantStatus=0
+            consignmentDocument.localCocOrCorStatus=0
+            daoServices.updateCdDetailsInDB(consignmentDocument, null)
             this.cdAuditService.addHistoryRecord(consignmentDocument.id!!, remarks, "REJECT COR", "COR of ${cdUuid} has been rejected by ${supervisor}", supervisor)
             KotlinLogging.logger { }.info("COR REJECTION UPDATED: ${cdUuid}")
             return true
@@ -520,6 +527,7 @@ class DestinationInspectionService(
             }
             consignmentDocument.varField10 = "Local COC Generated"
             consignmentDocument.localCocOrCorStatus = map.activeStatus
+            consignmentDocument.compliantStatus=map.activeStatus
             consignmentDocument.cocNumber = localCoc.cocNumber
             daoServices.updateCdDetailsInDB(consignmentDocument, null)
 
@@ -555,6 +563,7 @@ class DestinationInspectionService(
             }
             // Update CoI generation
             consignmentDocument.localCoi = 1
+            consignmentDocument.compliantStatus=map.activeStatus
             consignmentDocument.localCocOrCorStatus = map.activeStatus
             consignmentDocument.cocNumber = localCoi.cocNumber
             consignmentDocument.varField10 = "Local COI Generated"
@@ -1055,7 +1064,11 @@ class DestinationInspectionService(
             val uiDetails = ConsignmentEnableUI.fromEntity(cdDetails, map, commonDaoServices.loggedInUserAuthentication())
             uiDetails.supervisor = isSupervisor
             uiDetails.inspector = isInspectionOfficer
-            uiDetails.demandNotePaid=daoServices.demandNotePaid(cdDetails.id!!)
+            try {
+                uiDetails.demandNotePaid = daoServices.demandNotePaid(cdDetails.id!!)
+            }catch (ex: Exception) {
+                uiDetails.demandNotePaid=false
+            }
             try {
                 cdDetails.ucrNumber?.let {
                     daoServices.findLocalCorByUcrNumber(it)
@@ -1077,7 +1090,7 @@ class DestinationInspectionService(
             }
             dataMap.put("ui", uiDetails)
         } catch (ex: Exception) {
-            KotlinLogging.logger { }.error { ex }
+            KotlinLogging.logger { }.error("Failed to prepare UI",ex)
         }
         return dataMap
     }

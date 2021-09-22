@@ -14,6 +14,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDa
 import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentAuditService
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.CdDemandNoteEntity
+import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.CdInspectionMotorVehicleItemChecklistEntity
 import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntity
@@ -160,13 +161,14 @@ class DestinationInspectionBpmn(
         return response
     }
 
-    fun startTargetConsignment(data: MutableMap<String, Any?>, consignmentDocument: ConsignmentDocumentDetailsEntity) {
+    fun startTargetConsignment(map: ServiceMapsEntity, data: MutableMap<String, Any?>, consignmentDocument: ConsignmentDocumentDetailsEntity) {
         data.put("cfs_code", consignmentDocument.freightStation?.cfsCode)
         val processInstance = runtimeService.startProcessInstanceByKey("targetConsignmentDocument", data)
         consignmentDocument.diProcessInstanceId = processInstance.processDefinitionId
         consignmentDocument.diProcessStatus = 1
         consignmentDocument.diProcessStartedOn = Timestamp.from(Instant.now())
         consignmentDocument.varField10 = "Request Targeting"
+        consignmentDocument.targetStatus = map.initStatus
         consignmentDocument.targetReason = data.get("remarks") as String?
         // Save process details
         this.auditService.addHistoryRecord(consignmentDocument.id!!, consignmentDocument.ucrNumber, data["remarks"] as String?, "REQUEST CONSIGNMENT TARGETING", "Consignment targeting request")
@@ -177,11 +179,13 @@ class DestinationInspectionBpmn(
         }
     }
 
-    fun startCompliantProcess(data: MutableMap<String, Any?>, consignmentDocument: ConsignmentDocumentDetailsEntity) {
+    fun startCompliantProcess(map: ServiceMapsEntity, data: MutableMap<String, Any?>, consignmentDocument: ConsignmentDocumentDetailsEntity) {
         data.put("cfs_code", consignmentDocument.freightStation?.cfsCode)
         val processInstance = runtimeService.startProcessInstanceByKey("consignmentCompliantApprovalProcess", data)
         consignmentDocument.diProcessInstanceId = processInstance.processDefinitionId
         consignmentDocument.diProcessStatus = 1
+        consignmentDocument.localCocOrCorStatus = map.initStatus
+        consignmentDocument.compliantStatus = map.initStatus
         consignmentDocument.diProcessStartedOn = Timestamp.from(Instant.now())
         consignmentDocument.varField10 = "REQUEST COMPLIANCE APPROVAL"
         // Save process details
@@ -203,11 +207,12 @@ class DestinationInspectionBpmn(
         this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
     }
 
-    fun startGenerateCoC(data: MutableMap<String, Any?>, consignmentDocument: ConsignmentDocumentDetailsEntity) {
+    fun startGenerateCoC(map: ServiceMapsEntity,data: MutableMap<String, Any?>, consignmentDocument: ConsignmentDocumentDetailsEntity) {
         data.put("cfs_code", consignmentDocument.freightStation?.cfsCode)
         val processInstance = runtimeService.startProcessInstanceByKey("cocApprovalProcess", data)
         consignmentDocument.diProcessInstanceId = processInstance.processDefinitionId
         consignmentDocument.diProcessStatus = 1
+        consignmentDocument.localCocOrCorStatus=map.initStatus
         consignmentDocument.diProcessStartedOn = Timestamp.from(Instant.now())
         consignmentDocument.targetReason = data.get("remarks") as String?
         // Save process details
@@ -215,22 +220,24 @@ class DestinationInspectionBpmn(
         this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
     }
 
-    fun startGenerateCor(data: MutableMap<String, Any?>, consignmentDocument: ConsignmentDocumentDetailsEntity) {
+    fun startGenerateCor(map: ServiceMapsEntity,data: MutableMap<String, Any?>, consignmentDocument: ConsignmentDocumentDetailsEntity) {
         val processInstance = runtimeService.startProcessInstanceByKey("corApprovalProcess", data)
         consignmentDocument.diProcessInstanceId = processInstance.processDefinitionId
         consignmentDocument.diProcessStatus = 1
+        consignmentDocument.localCocOrCorStatus=map.initStatus
         consignmentDocument.diProcessStartedOn = Timestamp.from(Instant.now())
         consignmentDocument.targetReason = data.get("remarks") as String?
         // Save process details
         this.auditService.addHistoryRecord(consignmentDocument.id!!, consignmentDocument.ucrNumber, data["remarks"] as String?, "REQUEST CONSIGNMENT COR", "Consignment CoR request")
-        this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
+         this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
     }
 
-    fun startGenerateDemandNote(data: MutableMap<String, Any?>, consignmentDocument: ConsignmentDocumentDetailsEntity) {
+    fun startGenerateDemandNote(map: ServiceMapsEntity, data: MutableMap<String, Any?>, consignmentDocument: ConsignmentDocumentDetailsEntity) {
         data.put("cfs_code", consignmentDocument.freightStation?.cfsCode)
         val processInstance = runtimeService.startProcessInstanceByKey("demandNoteGenerationProcess", data)
         consignmentDocument.diProcessInstanceId = processInstance.processDefinitionId
         consignmentDocument.diProcessStatus = 1
+        consignmentDocument.sendDemandNote = map.initStatus
         consignmentDocument.diProcessStartedOn = Timestamp.from(Instant.now())
         consignmentDocument.targetReason = data.get("remarks") as String?
         // Save process details

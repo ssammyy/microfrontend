@@ -18,6 +18,9 @@ export class VehicleDetailsComponent implements OnInit {
     ngOnInit(): void {
     }
 
+    downloadVehicleChecklist(){
+        this.diService.downloadDocument("/api/v1/download/checklist/allVehicleChecklist/" + this.inspectionDetails.id)
+    }
     resubmitMinistryInspection(itemUuid: any, reinspection: boolean) {
         this.dialog.open(MinistryInspectionRequestComponent, {
             data: {

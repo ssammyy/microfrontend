@@ -120,6 +120,9 @@
                                                     <div class="list-text-accordion">{{inspectionDetails.details.overallRemarks}}</div>
                                                 </li>
                                             </ul>
+                                            <button class="btn-sm btn-primary" (click)="downloadAllChecklist()">
+                                                Download All
+                                            </button>
                                         </ng-template>
                                     </li>
                                     <li ngbNavItem="agrochem-details"
@@ -171,24 +174,6 @@
                                 <div [ngbNavOutlet]="nav" class="ml-4"></div>
                                 <!-- </div>  -->
                             </div>
-                            <!--                            <div class="col-md-2">-->
-                            <!--                                <b>Action:</b>-->
-                            <!--                                <button *ngIf="inspectionDetails.cd_item.sampleBsNumberStatus!==1" class="btn btn-sm btn-primary"-->
-                            <!--                                        (click)="addSsfDetails()">ADD SSF & BS NUMBER-->
-                            <!--                                </button>-->
-                            <!--                                <button *ngIf="!inspectionDetails.cd_item.ministrySubmitted" class="btn btn-sm btn-primary"-->
-                            <!--                                        (click)="rejectItem()">APPROVE REJECT ITEM-->
-                            <!--                                </button>-->
-                            <!--                                <div *ngIf="inspectionDetails && inspectionDetails.cd_item.isVehicle">-->
-                            <!--                                    <button *ngIf="!inspectionDetails.cd_item.ministrySubmitted" class="btn btn-sm btn-primary"-->
-                            <!--                                            (click)="submitMinistryInspection()">SUBMIT MINISTRY INSPECTION-->
-                            <!--                                    </button>-->
-                            <!--                                    <button *ngIf="inspectionDetails.cd_item.ministrySubmitted" class="btn btn-sm btn-primary"-->
-                            <!--                                            (click)="resubmitMinistryInspection()">RE-SUBMIT MINISTRY INSPECTION-->
-                            <!--                                    </button>-->
-                            <!--                                </div>-->
-                            <!--                            </div>-->
-
                         </div>
                         <!-- end content-->
                     </div>

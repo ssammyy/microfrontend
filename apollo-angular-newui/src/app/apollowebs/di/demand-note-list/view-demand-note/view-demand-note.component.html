@@ -50,7 +50,7 @@
 <mat-dialog-actions>
     <div class="row no_margin master-list-new-btn" *ngIf="demandDetails">
         <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
-        <div *ngIf="demandDetails.note.status>=0">
+        <div *ngIf="demandDetails.note.status">
         <button [disabled]="demandDetails.note.status>=0" class="btn btn-warning" mat-button (click)="submitDemandNote()">Delete</button>
         <button [disabled]="demandDetails.note.status>=0" class="btn btn-primary" mat-button (click)="submitDemandNote()">Submit</button>
         </div>

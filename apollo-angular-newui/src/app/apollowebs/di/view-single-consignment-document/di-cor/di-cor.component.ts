@@ -26,9 +26,11 @@ export class DiCorComponent implements OnInit {
                 }
             )
     }
+
     goBack() {
         this.router.navigate(["/di", this.cdUuid])
     }
+
     loadCorDetails() {
         this.message = null
         this.diService.loadCorDetails(this.cdUuid)

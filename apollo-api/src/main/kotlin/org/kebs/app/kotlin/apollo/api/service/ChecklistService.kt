@@ -593,27 +593,58 @@ class ChecklistService(
 
     fun getSsfDetails(itemId: Long): HashMap<String, Any> {
         val map = hashMapOf<String, Any>()
-        this.daoServices.findSampleSubmittedItemID(itemId)?.let { inspectionGeneral ->
+        return this.daoServices.findSampleSubmittedItemID(itemId)?.let { inspectionGeneral ->
             map["CheckMark"] = checkmarkImageFile
             map["id"] = inspectionGeneral.id.toString()
             map["ssfNum"] = inspectionGeneral.ssfNo.toString()
             map["product"] = inspectionGeneral.productDescription.toString()
             map["genDate"] = inspectionGeneral.createdOn.toString()
-            val itemDetails=this.daoServices.findItemWithItemID(inspectionGeneral.cdItemId!!)
+            val itemDetails = this.daoServices.findItemWithItemID(inspectionGeneral.cdItemId!!)
             itemDetails.cdDocId?.let {
                 map["cocNum"] = it.cocNumber.toString()
-                map["dutyStation"]=it.freightStation?.cfsName.toString()
+                map["dutyStation"] = it.freightStation?.cfsName.toString()
                 map["officerName"] = "${it.assignedInspectionOfficer?.firstName} ${it.assignedInspectionOfficer?.lastName}"
+                val importerDetailsEntity = it.cdImporter?.let { it1 -> this.daoServices.findCDImporterDetails(it1) }
+                importerDetailsEntity?.let { importer ->
+                    map["importerName"] = importer.name.toString()
+                    map["importerAddress"] = importer.physicalAddress ?: importer.postalAddress.toString()
+                }
+                val consgnorDetails = it.cdConsignor?.let { it3 -> daoServices.findCdConsignorDetails(it3) }
+                consgnorDetails?.let { consignor ->
+                    map["supplierName"] = consignor.name.toString()
+                    map["supplierAddress"] = consignor.physicalAddress ?: consignor.postalAddress.toString()
+                }
             }
+            map
         } ?: throw ExpectedDataNotFound("SSF details not found")
-        return map
     }
 
     fun getScfDetails(itemId: Long): HashMap<String, Any> {
-        val sample = this.qaISampleCollectRepository.findByItemId(itemId)
-        val data = hashMapOf<String, Any>()
-
-        return data
+        val map = hashMapOf<String, Any>()
+        return this.qaISampleCollectRepository.findByItemId(itemId)?.let { inspectionGeneral ->
+            map["CheckMark"] = checkmarkImageFile
+            map["id"] = inspectionGeneral.id.toString()
+            map["slNum"] = inspectionGeneral.batchNo.toString()
+            map["product"] = inspectionGeneral.nameOfProduct.toString()
+            map["genDate"] = inspectionGeneral.createdOn.toString()
+            val itemDetails = this.daoServices.findItemWithItemID(inspectionGeneral.itemId!!)
+            itemDetails.cdDocId?.let {
+                map["cocNum"] = it.cocNumber.toString()
+                map["dutyStation"] = it.freightStation?.cfsName.toString()
+                map["officerName"] = "${it.assignedInspectionOfficer?.firstName} ${it.assignedInspectionOfficer?.lastName}"
+                val importerDetailsEntity = it.cdImporter?.let { it1 -> this.daoServices.findCDImporterDetails(it1) }
+                importerDetailsEntity?.let { importer ->
+                    map["importerName"] = importer.name.toString()
+                    map["importerAddress"] = importer.physicalAddress ?: importer.postalAddress.toString()
+                }
+                val consgnorDetails = it.cdConsignor?.let { it3 -> daoServices.findCdConsignorDetails(it3) }
+                consgnorDetails?.let { consignor ->
+                    map["supplierName"] = consignor.name.toString()
+                    map["supplierAddress"] = consignor.physicalAddress ?: consignor.postalAddress.toString()
+                }
+            }
+            map
+        } ?: throw ExpectedDataNotFound("SCF details not found")
     }
 
     @Transactional
@@ -625,7 +656,6 @@ class ChecklistService(
             collectionEntity.modifiedOn = Timestamp.from(Instant.now())
             collectionEntity.nameOfOfficer = "${loggedInUser.firstName} ${loggedInUser.lastName}"
             collectionEntity.officerDesignation = "IO"
-            collectionEntity.itemId = itemId
             sampleCollectionForm.createdBy = loggedInUser.createdBy
             sampleCollectionForm.createdOn = Timestamp.from(Instant.now())
         } else {
@@ -653,7 +683,7 @@ class ChecklistService(
                 //Update CD item SCF status
                 cdItem.sampledCollectedStatus = map.activeStatus
                 cdItem.sampleSubmissionStatus = map.initStatus
-
+                collectionEntity.itemId = cdItem.id
                 cdItem.scfId = entity.id
                 iCdItemsRepo.save(cdItem)
                 //
@@ -821,5 +851,13 @@ class ChecklistService(
 
     fun getOtherChecklistDetails(inspectionId: Long): Map<out String, Any> {
         return mapOf()
+    }
+
+    fun getAllChecklistDetails(cdUuid: String): Map<out String, Any> {
+        val document = this.daoServices.findCDWithUuid(cdUuid)
+        val data = hashMapOf<String, Any>()
+        data.put("CD_ID", document.ucrNumber.toString())
+        data.put("ITEM_ID", "")
+        return data
     }
 }

@@ -1199,16 +1199,20 @@ class DestinationInspectionDaoServices(
      * @param cdId Consignment ID
      */
     fun demandNotePaid(cdId: Long): Boolean {
-        val noteEntity = iDemandNoteRepo.findByCdIdAndStatusIn(cdId, listOf(-1, 0,1))
-
-        return when (noteEntity) {
-            null -> {
+        val noteEntity = iDemandNoteRepo.findAllByCdIdAndStatusIn(cdId, listOf(-1, 0,1,10))
+        return when {
+            noteEntity.isEmpty() -> {
                 KotlinLogging.logger {  }.info("No Demand note")
                 true
             }
             else -> {
-                KotlinLogging.logger {  }.info("Demand note: ${noteEntity.paymentStatus}")
-                noteEntity.paymentStatus ==1
+                noteEntity.forEach {
+                    KotlinLogging.logger {  }.info("Demand note: ${it.paymentStatus}")
+                    if(it.paymentStatus==1){
+                        return true
+                    }
+                }
+                false
             }
         }
     }
@@ -1221,7 +1225,7 @@ class DestinationInspectionDaoServices(
             amount: Double,
             user: UsersEntity
     ): CdDemandNoteEntity {
-        return iDemandNoteRepo.findByCdIdAndStatusIn(consignmentDocument.id!!, listOf(-1, 0))
+        return iDemandNoteRepo.findFirstByCdIdAndStatusIn(consignmentDocument.id!!, listOf(-1, 0))
                 ?.let { demandNote ->
                     var demandNoteDetails = demandNote
                     //Call Function to add Item Details To be attached To The Demand note
@@ -1261,8 +1265,6 @@ class DestinationInspectionDaoServices(
                         product = "UNKNOWN"
                         rate = "UNKNOWN"
                         cfvalue = BigDecimal.ZERO
-
-
                         //Generate Demand note number
                         demandNoteNumber =
                                 "KIMS${consignmentDocument.cdType?.demandNotePrefix}${

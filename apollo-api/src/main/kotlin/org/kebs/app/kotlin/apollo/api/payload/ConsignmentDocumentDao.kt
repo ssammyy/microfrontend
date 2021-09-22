@@ -16,13 +16,15 @@ fun checkHasAuthority(role: String, auth: Authentication): Boolean {
 class ConsignmentEnableUI {
     var owner: Boolean? = null
     var canChange: Boolean = false
-    var demandNotePaid: Boolean=true
+    var demandNotePaid: Boolean = true
     var supervisor: Boolean? = null
     var inspector: Boolean? = null
-    var demandNote: Boolean? = null
+    var demandNote: Boolean = false
+    var demandNoteDisabled: Boolean = false
     var sendCoi: Boolean? = null
     var targetItem: Boolean? = null
     var targeted: Boolean = false
+    var targetDisabled: Boolean = false
     var supervisorTarget: Boolean? = null
     var attachments: Boolean? = null
     var approveReject: Boolean? = null
@@ -34,6 +36,7 @@ class ConsignmentEnableUI {
     var idfAvailable: Boolean = false
     var cocAvailable: Boolean = false
     var corAvailable: Boolean = false
+    var complianceDisabled: Boolean = false
     var declarationDocument: Boolean = false
     var riskProfileImporter: Boolean = false
     var riskProfileConsignor: Boolean = false
@@ -51,17 +54,18 @@ class ConsignmentEnableUI {
             val ui = ConsignmentEnableUI().apply {
                 supervisor = modify
                 inspector = change
+                targetDisabled=cd.targetStatus==map.initStatus
                 assigned = cd.assignedInspectionOfficer != null
                 targeted = cd.targetStatus == map.activeStatus
                 idfAvailable = cd.idfNumber != null
-                cocAvailable = cd.ucrNumber != null
-                corAvailable = cd.cdType?.localCorStatus == map.activeStatus && cd.localCocOrCorStatus == map.activeStatus
+                demandNoteDisabled=cd.sendDemandNote==map.initStatus
                 owner = cd.assignedInspectionOfficer?.userName == authentication.name
                 demandNote = cd.sendDemandNote == map.activeStatus
                 sendCoi = modify && cd.localCoi == map.activeStatus
                 targetItem = change && cd.targetStatus != map.activeStatus
                 supervisorTarget = modify && cd.targetStatus != map.activeStatus
                 attachments = (change || modify)
+                complianceDisabled =(cd.compliantStatus==map.activeStatus ||cd.compliantStatus==map.initStatus)
                 checklistFilled = cd.inspectionChecklist == map.activeStatus
                 hasPort = (cd.portOfArrival != null && cd.freightStation != null)
                 completed = cd.approveRejectCdStatusType?.let { it.category == "APPROVE" || it.category == "REJECT" }
@@ -69,6 +73,9 @@ class ConsignmentEnableUI {
             }
 
             cd.cdType?.let {
+                ui.cocAvailable = it.localCocStatus == map.activeStatus && cd.localCocOrCorStatus == map.activeStatus
+                ui.corAvailable = it.localCorStatus == map.activeStatus && cd.localCocOrCorStatus == map.activeStatus
+
                 ui.corRequest = it.localCorStatus == map.activeStatus
                 ui.cocRequest = it.localCocStatus == map.activeStatus
                 ui.canInspect = it.inspectionStatus == map.activeStatus
@@ -402,7 +409,7 @@ class CdInspectionMotorVehicleItemChecklistDao {
     var colour: String? = ""
     var overallAppearance: String? = ""
     var remarks: String? = ""
-    var ministryInspectionComplete: Boolean=false
+    var ministryInspectionComplete: Boolean = false
     var ministryReportSubmitStatus: Int? = null
     var ministryReportReinspectionStatus: Int? = null
     var ministryReportReinspectionRemarks: String? = null
@@ -425,7 +432,7 @@ class CdInspectionMotorVehicleItemChecklistDao {
             dt.colour = general.colour
             dt.overallAppearance = general.overallAppearance
             dt.remarks = general.remarks
-            dt.ministryInspectionComplete=general.ministryReportFile!=null
+            dt.ministryInspectionComplete = general.ministryReportFile != null
 //            dt.ministryReportReinspectionStatus = general.ministryReportSubmitStatus
 //            dt.ministryReportReinspectionRemarks = general.ministryReportReinspectionRemarks
 //            dt.ministryReportSubmitStatus = general.ministryReportSubmitStatus

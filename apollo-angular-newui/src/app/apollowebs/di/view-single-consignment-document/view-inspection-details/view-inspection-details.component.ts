@@ -16,6 +16,7 @@ export class ViewInspectionDetailsComponent implements OnInit {
     constructor(private diService: DestinationInspectionService, private  activatedRoute: ActivatedRoute, private router: Router) {
     }
 
+
     ngOnInit(): void {
         this.activatedRoute.paramMap.subscribe(
             res => {
@@ -28,6 +29,10 @@ export class ViewInspectionDetailsComponent implements OnInit {
 
     goBack() {
         this.router.navigate(["/di", this.documentId])
+    }
+
+    downloadAllChecklist() {
+        this.diService.downloadDocument("/api/v1/download/all/checklist/" + this.documentId)
     }
 
     loadInspectionDetails() {
