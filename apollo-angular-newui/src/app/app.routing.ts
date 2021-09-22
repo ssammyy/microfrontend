@@ -69,6 +69,9 @@ import {BranchViewComponent} from './apollowebs/company/branch/branch-view/branc
 import {QrCodeDetailsComponent} from './apollowebs/quality-assurance/qr-code-details/qr-code-details.component';
 import {StdTscSecTasksComponentComponent} from './apollowebs/standards-development/standard-request/std-tsc-sec-tasks-component/std-tsc-sec-tasks-component.component';
 import {StdTcTasksComponent} from './apollowebs/standards-development/standard-request/std-tc-tasks/std-tc-tasks.component';
+import {StdJustificationComponent} from "./apollowebs/standards-development/standard-request/std-justification/std-justification.component";
+import {SpcSecTaskComponent} from "./apollowebs/standards-development/standard-request/spc-sec-task/spc-sec-task.component";
+import {StdTcWorkplanComponent} from "./apollowebs/standards-development/standard-request/std-tc-workplan/std-tc-workplan.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -518,6 +521,20 @@ export const routes: Routes = [
     {
         path: 'std-tc-task', component: AdminLayoutComponent,
         children: [{path: '', component: StdTcTasksComponent}]
+    },
+    {
+        path: 'upload-justification', component: AdminLayoutComponent,
+        children: [{path: '', component: StdJustificationComponent}]
+    },
+    {
+        path: 'decision-justification', component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: SpcSecTaskComponent}]
+    },
+    {
+        path: 'upload-workplan', component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: StdTcWorkplanComponent}]
     },
 
 ];
