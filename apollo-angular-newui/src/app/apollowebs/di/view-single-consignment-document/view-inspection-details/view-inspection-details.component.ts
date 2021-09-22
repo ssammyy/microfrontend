@@ -62,4 +62,9 @@ export class ViewInspectionDetailsComponent implements OnInit {
             )
     }
 
+    reloadChecklist(){
+        this.loadInspectionDetails()
+        this.loadSampledItems()
+    }
+
 }

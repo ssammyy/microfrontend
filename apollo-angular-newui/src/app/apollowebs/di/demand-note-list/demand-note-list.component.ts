@@ -1,6 +1,5 @@
-import {Component, EventEmitter, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {DestinationInspectionService} from "../../../core/store/data/di/destination-inspection.service";
-import {act} from "@ngrx/effects";
 import {MatDialog} from "@angular/material/dialog";
 import {ViewDemandNoteComponent} from "./view-demand-note/view-demand-note.component";
 
@@ -61,6 +60,10 @@ export class DemandNoteListComponent implements OnInit {
             },
             totalAmount: {
                 title: 'TOTAL AMOUNT',
+                type: 'string'
+            },
+            varField10:{
+                title: 'Remarks',
                 type: 'string'
             },
             rate: {

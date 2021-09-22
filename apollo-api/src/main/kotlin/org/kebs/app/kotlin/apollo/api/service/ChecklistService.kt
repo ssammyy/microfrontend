@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
+import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
 import java.util.*
@@ -123,9 +124,9 @@ class ChecklistService(
                     // Details
                     checklistItem.sampled = itm.sampled
                     if ("YES".equals(itm.sampled)) {
-                        checklistItem.sampleUpdated = map.activeStatus
+                        checklistItem.sampleUpdated = map.initStatus
                     } else {
-                        checklistItem.sampleUpdated = 2
+                        checklistItem.sampleUpdated = map.activeStatus
                     }
                     checklistItem.quantityDeclared = detail.quantity.toString()
                     checklistItem.productDescription = detail.itemDescription
@@ -140,7 +141,7 @@ class ChecklistService(
                     this.engineeringItemChecklistRepository.save(checklistItem)
                     // Update checklist update
                     daoServices.checkIfChecklistUndergoesSampling(
-                            checklistItem.sampled!!,
+                            checklistItem.sampled ?: "NO",
                             detail,
                             map
                     )
@@ -180,9 +181,9 @@ class ChecklistService(
                     // Details
                     checklistItem.sampled = itm.sampled
                     if ("YES".equals(itm.sampled)) {
-                        checklistItem.sampleUpdated = map.activeStatus
+                        checklistItem.sampleUpdated = map.initStatus
                     } else {
-                        checklistItem.sampleUpdated = 2
+                        checklistItem.sampleUpdated = map.activeStatus
                     }
                     checklistItem.productDescription = detail.itemDescription
                     checklistItem.quantityDeclared = detail.quantity.toString()
@@ -237,11 +238,10 @@ class ChecklistService(
                     // Update details
                     checklistItem.sampled = itm.sampled
                     if ("YES".equals(itm.sampled)) {
-                        checklistItem.sampleUpdated = 2
+                        checklistItem.sampleUpdated = map.initStatus
                         checklistItem.ministryReportSubmitStatus = map.activeStatus
-
                     } else {
-                        checklistItem.sampleUpdated = 2
+                        checklistItem.sampleUpdated = map.inactiveStatus
                     }
                     checklistItem.itemId = detail
                     checklistItem.description = detail.hsDescription
@@ -710,6 +710,15 @@ class ChecklistService(
                 iCdItemsRepo.save(item)
                 sample.bsNumber = form.bsNumber
                 sample.ssfNo = form.ssfNo
+                sample.permitId = null
+                sample.ssfSubmissionDate = Date(java.util.Date().time)
+                form.submissionDate?.let {
+                    try {
+                        sample.ssfSubmissionDate = Date.valueOf(it)
+                    } catch (ex: Exception) {
+                        sample.ssfSubmissionDate = Date(java.util.Date().time)
+                    }
+                }
                 sample.complianceRemarks = form.remarks
                 daoServices.ssfUpdateDetails(item, sample, loggedInUser, map)
                 response.message = "Sample BS number and SSF NO updated"

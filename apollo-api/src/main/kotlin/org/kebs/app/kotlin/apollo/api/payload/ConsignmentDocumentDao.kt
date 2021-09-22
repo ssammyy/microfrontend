@@ -65,13 +65,12 @@ class ConsignmentEnableUI {
                 targetItem = change && cd.targetStatus != map.activeStatus
                 supervisorTarget = modify && cd.targetStatus != map.activeStatus
                 attachments = (change || modify)
-                complianceDisabled =(cd.compliantStatus==map.activeStatus ||cd.compliantStatus==map.initStatus)
                 checklistFilled = cd.inspectionChecklist == map.activeStatus
                 hasPort = (cd.portOfArrival != null && cd.freightStation != null)
                 completed = cd.approveRejectCdStatusType?.let { it.category == "APPROVE" || it.category == "REJECT" }
                 approveReject = (cd.targetApproveStatus == null || cd.inspectionDateSetStatus == map.activeStatus) && modify
             }
-
+            ui.complianceDisabled =(cd.compliantStatus==map.activeStatus ||cd.compliantStatus==map.initStatus) ||!ui.checklistFilled
             cd.cdType?.let {
                 ui.cocAvailable = it.localCocStatus == map.activeStatus && cd.localCocOrCorStatus == map.activeStatus
                 ui.corAvailable = it.localCorStatus == map.activeStatus && cd.localCocOrCorStatus == map.activeStatus

@@ -148,7 +148,7 @@ class InvoiceHandlers(
                 demandNote.status = -1
                 demandNote.varField1 = invoiceForm.remarks
                 demandNote.varField2 = (itemList.size == totalItems).toString()
-                demandNote.varField3="NEW"
+                demandNote.varField3 = "NEW"
                 daoServices.upDateDemandNote(demandNote)
                 response.responseCode = ResponseCodes.SUCCESS_CODE
                 response.message = "Demand note generated, review under demand note tab and submit for approval"
@@ -169,12 +169,15 @@ class InvoiceHandlers(
                 val demandNote = daoServices.findDemandNoteWithID(invoiceId.toLongOrDefault(0L))
                 if (demandNote != null) {
                     if (demandNote.status!! < 0) {
+                        val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
                         val loggedInUser = commonDaoServices.loggedInUserDetails()
-                        demandNote.status = 4
+                        demandNote.status = map.inactiveStatus
                         demandNote.varField3 = "DELETED"
                         demandNote.deletedOn = Timestamp.from(Instant.now())
                         demandNote.deleteBy = loggedInUser.userName
                         daoServices.upDateDemandNote(demandNote)
+                        response.responseCode = ResponseCodes.SUCCESS_CODE
+                        response.message = "Demand not deleted"
                     } else {
                         response.responseCode = ResponseCodes.NOT_FOUND
                         response.message = "Demand not cannot be deleted after submission or deletion"
@@ -208,9 +211,9 @@ class InvoiceHandlers(
                         data["hasAllItems"] = demandNote.varField2?.toBoolean() ?: false
                         data["cdUuid"] = cdDetails.uuid
                         demandNote.status = 0
-                        demandNote.varField3="SUBMITTED"
+                        demandNote.varField3 = "SUBMITTED"
                         val map = commonDaoServices.serviceMapDetails(appId)
-                        this.diBpmn.startGenerateDemandNote(map,data, cdDetails)
+                        this.diBpmn.startGenerateDemandNote(map, data, cdDetails)
                         daoServices.upDateDemandNote(demandNote)
                         response.responseCode = ResponseCodes.SUCCESS_CODE
                         response.message = "Demand note submitted"
@@ -311,8 +314,10 @@ class InvoiceHandlers(
 
     fun listDemandNotes(req: ServerRequest): ServerResponse {
         val response = ApiResponseModel()
+
         req.pathVariable("cdId").let {
-            response.data = demandNoteRepository.findAllByCdId(it.toLongOrDefault(0L))
+            val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+            response.data = demandNoteRepository.findAllByCdIdAndStatusIn(it.toLongOrDefault(0L), listOf(-1,0,map.activeStatus, map.initStatus, map.invalidStatus))
             response.message = "Success"
             response.responseCode = ResponseCodes.SUCCESS_CODE
             return ServerResponse.ok().body(response)

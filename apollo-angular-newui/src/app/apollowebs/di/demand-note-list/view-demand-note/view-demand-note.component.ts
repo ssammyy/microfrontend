@@ -29,6 +29,10 @@ export class ViewDemandNoteComponent implements OnInit {
         },
         noDataMessage: 'No data found',
         columns: {
+            feeName: {
+                title: 'FEE NAME',
+                type: 'string'
+            },
             product: {
                 title: 'PRODUCT',
                 type: 'string'
@@ -64,6 +68,7 @@ export class ViewDemandNoteComponent implements OnInit {
     message: any
 
     constructor(private diService: DestinationInspectionService,
+                public dialogRef: MatDialogRef<any>,
                 @Inject(MAT_DIALOG_DATA) public data: any) {
     }
 
@@ -88,7 +93,13 @@ export class ViewDemandNoteComponent implements OnInit {
         this.diService.deleteDemandNote(this.demandNoteId)
             .subscribe(
                 res=>{
-                    this.message=res.message
+                    if(res.responseCode=="00") {
+                        this.diService.showSuccess(res.message, ()=>{
+                            this.dialogRef.close(false)
+                        })
+                    } else {
+                        this.message = res.message
+                    }
                 }
             )
     }
@@ -96,7 +107,13 @@ export class ViewDemandNoteComponent implements OnInit {
         this.diService.submitDemandNote(this.demandNoteId,{})
             .subscribe(
                 res=>{
-                    this.message=res.message
+                    if(res.responseCode=="00"){
+                        this.diService.showSuccess(res.message, ()=>{
+                            this.dialogRef.close(false)
+                        })
+                    } else {
+                        this.message = res.message
+                    }
                 }
             )
     }

@@ -297,7 +297,7 @@ class SsfForm {
 class SsfResultForm {
     var remarks: String? = null
     var ssfNo: String? = null
-    var compliance: String? = null
+    var submissionDate: String? = null
     var bsNumber: String? = null
 }
 

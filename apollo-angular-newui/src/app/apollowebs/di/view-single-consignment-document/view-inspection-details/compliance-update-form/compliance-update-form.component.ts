@@ -30,7 +30,7 @@ export class ComplianceUpdateFormComponent implements OnInit {
         this.form = this.fb.group({
             ssfNo: ['', [Validators.required, Validators.maxLength(25)]],
             bsNumber: ['', [Validators.required, Validators.maxLength(80)]],
-            compliant: ['', [Validators.required, Validators.maxLength(25)]],
+            submissionDate: ['', Validators.required],
             remarks: ['', Validators.maxLength(256)],
         })
     }

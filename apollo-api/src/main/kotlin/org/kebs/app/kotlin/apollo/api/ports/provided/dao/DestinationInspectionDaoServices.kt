@@ -1154,6 +1154,7 @@ class DestinationInspectionDaoServices(
             cfvalue = itemDetails.totalPriceNcy
             rate = fee.rate?.toString()
             rateType = fee.rateType
+            feeName=fee.name
             // Demand note Calculation Details
             status = map.activeStatus
             createdOn = commonDaoServices.getTimestamp()

@@ -14,6 +14,7 @@ import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.di.*
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.*
+import org.modelmapper.ModelMapper
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
@@ -69,7 +70,7 @@ class DestinationInspectionService(
     fun rejectComplianceRequests(cdUuid: String, supervisor: String, remarks: String): Boolean {
         val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
         val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-        consignmentDocument.compliantStatus=map.inactiveStatus
+        consignmentDocument.compliantStatus = map.inactiveStatus
         daoServices.updateCdDetailsInDB(consignmentDocument, null)
         cdAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, remarks, "KEBS_REJECT_COMPLIANCE", "Reject compliance request", supervisor)
         return false
@@ -108,6 +109,13 @@ class DestinationInspectionService(
         return false
     }
 
+    //    fun createVersion(consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity): Boolean{
+//        var consignmentDetailsCopy=ConsignmentDocumentDetailsEntity()
+//        ModelMapper().map(consignmentDocumentDetailsEntity,consignmentDetailsCopy)
+//        consignmentDetailsCopy.id=null
+//
+//        return true
+//    }
     fun updateStatus(cdUuid: String, cdStatusTypeId: Long, supervisor: String, remarks: String): Boolean {
         try {
             val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
@@ -118,6 +126,14 @@ class DestinationInspectionService(
             daoServices.updateCdDetailsInDB(consignmentDocument, commonDaoServices.findUserByUserName(supervisor))
             // Update Local status
             if (cdStatusType.category == "APPROVE" || cdStatusType.category == "REJECT") {
+                consignmentDocument.cdStandard?.let { cdStd ->
+                    daoServices.updateCDStatus(cdStd, cdStatusTypeId)
+                }
+            } else if (cdStatusType.category == "AMENDMENT") {
+                consignmentDocument.cdStandard?.let { cdStd ->
+                    daoServices.updateCDStatus(cdStd, cdStatusTypeId)
+                }
+            } else if (cdStatusType.category === "QUERY") {
                 consignmentDocument.cdStandard?.let { cdStd ->
                     daoServices.updateCDStatus(cdStd, cdStatusTypeId)
                 }
@@ -264,7 +280,7 @@ class DestinationInspectionService(
                     }
                     daoServices.saveCorDetails(corDetails)
                     // Update COR
-                    consignmentDocument.compliantStatus=map.activeStatus
+                    consignmentDocument.compliantStatus = map.activeStatus
                     consignmentDocument.localCocOrCorStatus = map.activeStatus
                     daoServices.updateCdDetailsInDB(consignmentDocument, null)
                     //Send email
@@ -289,8 +305,8 @@ class DestinationInspectionService(
         KotlinLogging.logger { }.info("UPDATE COR GENERATION REJECTION: ${cdUuid}")
         try {
             val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
-            consignmentDocument.compliantStatus=0
-            consignmentDocument.localCocOrCorStatus=0
+            consignmentDocument.compliantStatus = 0
+            consignmentDocument.localCocOrCorStatus = 0
             daoServices.updateCdDetailsInDB(consignmentDocument, null)
             this.cdAuditService.addHistoryRecord(consignmentDocument.id!!, remarks, "REJECT COR", "COR of ${cdUuid} has been rejected by ${supervisor}", supervisor)
             KotlinLogging.logger { }.info("COR REJECTION UPDATED: ${cdUuid}")
@@ -527,7 +543,7 @@ class DestinationInspectionService(
             }
             consignmentDocument.varField10 = "Local COC Generated"
             consignmentDocument.localCocOrCorStatus = map.activeStatus
-            consignmentDocument.compliantStatus=map.activeStatus
+            consignmentDocument.compliantStatus = map.activeStatus
             consignmentDocument.cocNumber = localCoc.cocNumber
             daoServices.updateCdDetailsInDB(consignmentDocument, null)
 
@@ -563,7 +579,7 @@ class DestinationInspectionService(
             }
             // Update CoI generation
             consignmentDocument.localCoi = 1
-            consignmentDocument.compliantStatus=map.activeStatus
+            consignmentDocument.compliantStatus = map.activeStatus
             consignmentDocument.localCocOrCorStatus = map.activeStatus
             consignmentDocument.cocNumber = localCoi.cocNumber
             consignmentDocument.varField10 = "Local COI Generated"
@@ -823,17 +839,19 @@ class DestinationInspectionService(
         val response = ApiResponseModel()
         try {
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-            val cdDetails = daoServices.findCDWithUuid(cdUuid)
+            var cdDetails = daoServices.findCDWithUuid(cdUuid)
             // When IO requests for details, they are are auto assigned
-            if(isInspectionOfficer && cdDetails.assignedInspectionOfficer==null) {
+            if (isInspectionOfficer && cdDetails.assignedInspectionOfficer == null) {
                 this.selfAssign(cdDetails)
+                // Reload CD on self assign BPM process
+                cdDetails=daoServices.findCDWithUuid(cdUuid)
             }
             // Load inspection details
             response.data = loadCDDetails(cdDetails, map, isSupervisor, isInspectionOfficer)
             response.responseCode = ResponseCodes.SUCCESS_CODE
             response.message = "Consignment Document"
         } catch (ex: Exception) {
-            KotlinLogging.logger { }.error("FAILE TO LOAD DOCUMENT",ex)
+            KotlinLogging.logger { }.error("FAILE TO LOAD DOCUMENT", ex)
             response.data = null
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
             response.message = "Record not found"
@@ -1066,8 +1084,8 @@ class DestinationInspectionService(
             uiDetails.inspector = isInspectionOfficer
             try {
                 uiDetails.demandNotePaid = daoServices.demandNotePaid(cdDetails.id!!)
-            }catch (ex: Exception) {
-                uiDetails.demandNotePaid=false
+            } catch (ex: Exception) {
+                uiDetails.demandNotePaid = false
             }
             try {
                 cdDetails.ucrNumber?.let {
@@ -1090,7 +1108,7 @@ class DestinationInspectionService(
             }
             dataMap.put("ui", uiDetails)
         } catch (ex: Exception) {
-            KotlinLogging.logger { }.error("Failed to prepare UI",ex)
+            KotlinLogging.logger { }.error("Failed to prepare UI", ex)
         }
         return dataMap
     }
@@ -1222,11 +1240,11 @@ class DestinationInspectionService(
         return response
     }
 
-    fun selfAssign(cdDetails: ConsignmentDocumentDetailsEntity,comment: String?=null) {
-        KotlinLogging.logger {  }.info("START AUTO ASSIGN")
-        var addedComment=comment
-        if(addedComment==null){
-            addedComment="Auto Assigned on Open"
+    fun selfAssign(cdDetails: ConsignmentDocumentDetailsEntity, comment: String? = null) {
+        KotlinLogging.logger { }.info("START AUTO ASSIGN")
+        var addedComment = comment
+        if (addedComment == null) {
+            addedComment = "Auto Assigned on Open"
         }
         this.getSupervisor(cdDetails)?.let {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
@@ -1240,18 +1258,18 @@ class DestinationInspectionService(
             data["cdUuid"] = cdDetails.uuid
             // Start BPM process for assigneing inspection
             this.diBpmn.startAssignmentProcesses(data, cdDetails);
-            KotlinLogging.logger {  }.info("AUTO ASSIGN COMPLETED: ${cdDetails.uuid}-> Supervisor[${it.userName}]")
-        }?:KotlinLogging.logger {  }.info("AUTO ASSIGN FAILED UNABLE TO GET SUPERVISOR for CFS")
+            KotlinLogging.logger { }.info("AUTO ASSIGN COMPLETED: ${cdDetails.uuid}-> Supervisor[${it.userName}]")
+        } ?: KotlinLogging.logger { }.info("AUTO ASSIGN FAILED UNABLE TO GET SUPERVISOR for CFS")
     }
 
     fun getSupervisor(cdDetails: ConsignmentDocumentDetailsEntity): UsersEntity? {
         cdDetails.freightStation?.let {
             val supervisorRoles = this.privilegesRepository.findRoleIdsByRoleName("DI_OFFICER_CHARGE_READ")
-            KotlinLogging.logger {  }.info("ROLE IDS: ${supervisorRoles}")
+            KotlinLogging.logger { }.info("ROLE IDS: ${supervisorRoles}")
             val userIds = cfsTypesEntity.findCfsUserIds(it.id, 1)
-            KotlinLogging.logger {  }.info("USR IDS: ${userIds}")
+            KotlinLogging.logger { }.info("USR IDS: ${userIds}")
             val supervisors = this.userEntityRepository.findUsersInCfsAndProfiles(supervisorRoles, userIds)
-            KotlinLogging.logger {  }.info("USR COUNT: ${supervisors.size}")
+            KotlinLogging.logger { }.info("USR COUNT: ${supervisors.size}")
             var usersEntity: UsersEntity? = null
             if (supervisors.size > 1) {
                 usersEntity = supervisors[Random().nextInt(supervisors.size)]

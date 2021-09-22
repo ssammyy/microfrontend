@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.service
 
 import mu.KotlinLogging
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -13,6 +14,7 @@ class InvoicePaymentService(
         private val auditService: ConsignmentDocumentAuditService,
         private val daoServices: DestinationInspectionDaoServices,
         private val invoiceDaoService: InvoiceDaoService,
+        private val commonDaoServices: CommonDaoServices,
         private val applicationMapProperties: ApplicationMapProperties
 ) {
 
@@ -22,9 +24,13 @@ class InvoicePaymentService(
             val demandNote = iDemandNoteRepo.findById(demandNoteId)
             if (demandNote.isPresent) {
                 val demand = demandNote.get()
-                demand.status = 2
+                val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+                demand.status = map.invalidStatus
                 demand.varField3 = "REJECTED"
-                demand.varField4 = remarks
+                demand.varField10 = remarks
+                consignmentDocument.varField10="Demand note rejected"
+                consignmentDocument.sendDemandNote=0
+                this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
                 this.iDemandNoteRepo.save(demand)
                 this.auditService.addHistoryRecord(consignmentDocument.id!!,consignmentDocument.ucrNumber, remarks, "REJECT DEMAND NOTE", "Demand note ${demandNoteId} rejected")
             }
@@ -40,8 +46,15 @@ class InvoicePaymentService(
             val demandNote = iDemandNoteRepo.findById(demandNoteId)
             if (demandNote.isPresent) {
                 val demand = demandNote.get()
-                demand.status = 1
+                val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+                demand.status = map.initStatus
                 demand.varField3 = "APPROVED"
+                demand.varField10 = remarks
+                // Update CD status
+                consignmentDocument.varField10="Demand Approved"
+                consignmentDocument.sendDemandNote=map.activeStatus
+                this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
+                // Update demand note
                 this.iDemandNoteRepo.save(demand)
                 this.auditService.addHistoryRecord(consignmentDocument.id!!,consignmentDocument.ucrNumber, remarks, "APPROVED DEMAND NOTE", "Demand note ${demandNoteId} approved")
             }
@@ -54,20 +67,27 @@ class InvoicePaymentService(
 
     fun sendDemandNote(cdUuid: String, demandNoteId: Long): Boolean {
         // Send demand note to user
+        val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
         val demandNote = iDemandNoteRepo.findById(demandNoteId)
         try {
+
             this.daoServices.sendDemandNotGeneratedToKWIS(demandNoteId)
             // Update submission status
             if (demandNote.isPresent) {
+                val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
                 val demand = demandNote.get()
-                demand.varField3 = "SUBMITTED"
+                demand.varField3 = "SUBMITTED TO KENTRADE"
+                // Update CD status
+                consignmentDocument.varField10="Demand submitted to KenTrade"
+                this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
+                // Update Demand note status
                 this.iDemandNoteRepo.save(demand)
             }
         } catch (ex: Exception) {
             if (demandNote.isPresent) {
                 val demand = demandNote.get()
-                demand.status = 3
-                demand.varField3 = "SUBMIT_FAILED"
+                demand.status = 0
+                demand.varField3 = "SUBMIT TO KENTRADE FAILED"
                 demand.varField5 = ex.localizedMessage
                 this.iDemandNoteRepo.save(demand)
             }

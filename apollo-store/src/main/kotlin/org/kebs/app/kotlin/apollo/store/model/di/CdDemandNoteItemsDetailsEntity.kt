@@ -34,6 +34,9 @@ class CdDemandNoteItemsDetailsEntity : Serializable {
     @Column(name = "RATE_TYPE")
     @Basic
     var rateType: String? = null
+    @Column(name = "FEE_NAME")
+    @Basic
+    var feeName: String? = null
 
     @Column(name = "RATE")
     @Basic

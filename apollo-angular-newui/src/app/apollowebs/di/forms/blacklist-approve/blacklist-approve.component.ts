@@ -28,7 +28,9 @@ export class BlacklistApproveComponent implements OnInit {
             .subscribe(
                 res => {
                     if (res.responseCode === "00") {
-                        this.dialogRef.close(true)
+                        this.diService.showSuccess(res.message,()=>{
+                            this.dialogRef.close(true)
+                        })
                     } else {
                         this.message = res.message
                     }
