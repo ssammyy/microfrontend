@@ -12,4 +12,10 @@
                       id="remarks" formControlName="remarks"></textarea>
         </div>
     </div>
+    <label style="color: #0082f3">Select Other Items</label>
+    <app-item-selection checklistType="other" id="other" [categories]="categories"
+                        [items]="itemList"
+                        [selectedItems]="selectedItems"
+                        (selectedItemsChange)="itemsSelected($event)"
+    ></app-item-selection>
 </div>

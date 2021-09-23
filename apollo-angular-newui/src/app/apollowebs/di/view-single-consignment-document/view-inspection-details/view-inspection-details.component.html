@@ -154,9 +154,9 @@
                                     </li>
                                     <li ngbNavItem="vehicle-details"
                                         [hidden]="!(inspectionDetails && inspectionDetails.other_checklist)">
-                                        <a ngbNavLink>Motor Vehicle</a>
+                                        <a ngbNavLink>Other checklists</a>
                                         <ng-template ngbNavContent>
-                                            <b class="text-primary">Motor Vehicle checklist details and items</b>
+                                            <b class="text-primary">Other checklist details and items</b>
                                             <app-other-details *ngIf="inspectionDetails.other_checklist"
                                                                [inspectionDetails]="inspectionDetails.other_checklist"></app-other-details>
                                         </ng-template>

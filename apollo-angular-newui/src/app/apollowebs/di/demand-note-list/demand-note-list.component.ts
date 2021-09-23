@@ -2,6 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {DestinationInspectionService} from "../../../core/store/data/di/destination-inspection.service";
 import {MatDialog} from "@angular/material/dialog";
 import {ViewDemandNoteComponent} from "./view-demand-note/view-demand-note.component";
+import {CurrencyFormatterComponent} from "../../../core/shared/currency-formatter/currency-formatter.component";
 
 @Component({
     selector: 'app-demand-note-list',
@@ -38,29 +39,20 @@ export class DemandNoteListComponent implements OnInit {
                 title: 'DATE GENERATED',
                 type: 'string'
             },
-            nameImporter: {
-                title: 'NAME IMPORTER',
-                type: 'string'
-            },
-            telephone: {
-                title: 'TELEPHONE',
-                type: 'string'
-            },
-            product: {
-                title: 'PRODUCT',
-                type: 'string'
-            },
             cfvalue: {
                 title: 'CF VALUE',
-                type: 'string'
+                type: 'custom',
+                renderComponent: CurrencyFormatterComponent,
             },
             amountPayable: {
                 title: 'AMOUNT PAYABLE',
-                type: 'string'
+                type: 'custom',
+                renderComponent: CurrencyFormatterComponent,
             },
             totalAmount: {
                 title: 'TOTAL AMOUNT',
-                type: 'string'
+                type: 'custom',
+                renderComponent: CurrencyFormatterComponent,
             },
             varField10:{
                 title: 'Remarks',

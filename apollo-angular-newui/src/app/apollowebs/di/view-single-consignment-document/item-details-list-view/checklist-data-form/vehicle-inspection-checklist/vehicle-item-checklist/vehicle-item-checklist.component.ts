@@ -24,7 +24,6 @@ export class VehicleItemChecklistComponent implements OnInit {
         this.complianceStatus = this.data.complianceStatus
         this.categories = this.data.categories
         this.stations=this.data.stations
-        console.log(this.categories)
         let formData = this.data.checklist
         this.form = this.fb.group({
             stationId: [0],
@@ -32,6 +31,7 @@ export class VehicleItemChecklistComponent implements OnInit {
             chassisNo: [formData ? formData.chassisNo : '', Validators.maxLength(256)],
             engineNoCapacity: [formData ? formData.engineNoCapacity : '', Validators.maxLength(256)],
             manufacturerDate: [formData ? formData.manufacturerDate : '', Validators.maxLength(256)],
+            ksEasApplicable: [formData?formData.ksEasApplicable: '',Validators.maxLength(23)],
             registrationDate: [formData ? formData.registrationDate : '', Validators.maxLength(256)],
             odemetreReading: [formData ? formData.odemetreReading : '', Validators.maxLength(256)],
             driveRhdLhd: [formData ? formData.driveRhdLhd : '', Validators.maxLength(256)],

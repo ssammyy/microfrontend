@@ -1,13 +1,14 @@
 <mat-table [dataSource]="selectionDataSource">
     <ng-container matColumnDef="select">
         <mat-header-cell *matHeaderCellDef>
-            <mat-checkbox (change)="$event ? masterToggle() : null"
+            <mat-checkbox (change)="masterToggle($event)"
                           [checked]="selection.hasValue() && isAllSelected()"
                           [indeterminate]="selection.hasValue() && !isAllSelected()">
             </mat-checkbox>
         </mat-header-cell>
         <mat-cell *matCellDef="let row">
             <mat-checkbox (click)="$event.stopPropagation()"
+                          [disabled]="row.selected && row.selected!==checklistType"
                           (change)="selectionChanged($event,row)"
                           [checked]="selection.isSelected(row)">
             </mat-checkbox>
@@ -16,6 +17,10 @@
     <ng-container matColumnDef="hsCode">
         <mat-header-cell *matHeaderCellDef>HS Code</mat-header-cell>
         <mat-cell *matCellDef="let row"> {{row.itemHsCode}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="checklist">
+        <mat-header-cell *matHeaderCellDef>Checklist Type</mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.selected?row.selected:'not-selected'}} </mat-cell>
     </ng-container>
     <ng-container matColumnDef="price">
         <mat-header-cell *matHeaderCellDef>Total Amount</mat-header-cell>

@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {Form, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {MatDialog} from "@angular/material/dialog";
 import {DestinationInspectionService} from "../../../../../core/store/data/di/destination-inspection.service";
 import swal from "sweetalert2";
@@ -12,6 +12,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 })
 export class ChecklistDataFormComponent implements OnInit {
     generalCheckList: FormGroup
+    motorVehicleChecklist: FormGroup
     categories: any[]
     stations: any[]
     checkListTypes: any[]
@@ -20,17 +21,18 @@ export class ChecklistDataFormComponent implements OnInit {
     itemList: any[]
     vehicleDetails: any
     vehicleItems: any[]
+    vehicleValid: Boolean = true
     otherDetails: any
-    otherItems: any[]
+    otherValid: Boolean = true
     engineeringDetails: any
-    engineringItems: any[]
+    engineringValid: Boolean = true
     agrochemDetails: any
-    agrochemItems: any[]
-    selectedChecklist: any
+    agroChemValid: Boolean = true
     configs: any
     consignmentId: any
     consignment: any
     errors: any
+    validSelection: Boolean=false;
 
     constructor(private fb: FormBuilder, private dialog: MatDialog, private router: Router, private activatedRoute: ActivatedRoute,
                 private diService: DestinationInspectionService) {
@@ -50,12 +52,33 @@ export class ChecklistDataFormComponent implements OnInit {
             overallRemarks: ['', [Validators.required, Validators.maxLength(256)]],
             customsEntryNumber: ['', [Validators.required, Validators.maxLength(256)]],
         })
+        this.motorVehicleChecklist = this.fb.group({
+            remarks: ['', Validators.required]
+        })
     }
 
     goBack() {
         this.router.navigate(["/di", this.consignmentId])
     }
-
+    validationUpdate(value: Boolean,checklist: any){
+        switch (checklist) {
+            case 'engineering':
+                this.engineringValid=value
+                break
+            case "agrochem":
+                this.agroChemValid=value
+                break
+            case 'other':
+                this.otherValid=value
+                break
+            case 'vehicle':
+                this.vehicleValid=value
+                break
+            default:
+                console.log("invalid checklist: "+checklist)
+        }
+        this.validSelection=this.invalidData()
+    }
     loadMinistryStations() {
         this.diService.loadMinistryStations()
             .subscribe(
@@ -69,6 +92,7 @@ export class ChecklistDataFormComponent implements OnInit {
             )
 
     }
+
     loadConsignmentDetails() {
         this.diService.getConsignmentDetails(this.consignmentId)
             .subscribe(
@@ -142,15 +166,13 @@ export class ChecklistDataFormComponent implements OnInit {
     }
 
     validateItems() {
-        let selectedItems = []
-        selectedItems.push(this.engineringItems)
-        selectedItems.push(this.agrochemItems)
-        selectedItems.push(this.otherItems)
-        selectedItems.push(this.vehicleItems)
-        if (selectedItems.length > this.itemList.length) {
-            this.errors["selected"] = "Some items were selected more than once"
+        let selectedItems = 0
+        for (let itm of this.itemList) {
+            if (itm.selected) {
+                selectedItems = selectedItems + 1;
+            }
         }
-        if (this.generalCheckList.value.inspection == "FULL" && selectedItems.length < this.itemList.length) {
+        if (this.generalCheckList.value.inspection == "FULL" && selectedItems < this.itemList.length) {
             this.errors["inspection"] = "Full inspection requires all items to be selected"
         }
     }
@@ -159,27 +181,19 @@ export class ChecklistDataFormComponent implements OnInit {
     invalidData(): Boolean {
         this.errors = {}
         this.validateItems()
-        if (this.engineringItems && this.engineringItems.length > 0 && !this.engineeringDetails) {
+        if (!this.engineringValid) {
             this.errors["engineering"] = "Fill engineering details"
         }
-        if (this.agrochemItems && this.agrochemItems.length > 0 && !this.agrochemDetails) {
+        if (!this.agroChemValid) {
             this.errors["agrochem"] = "Fill agrochem details"
         }
-        if (this.vehicleItems && this.vehicleItems.length > 0 && !this.vehicleDetails) {
+        if (this.vehicleValid) {
             this.errors["vehicle"] = "Fill vehicle details"
         }
-        if (this.otherItems && this.otherItems.length > 0 && !this.otherDetails) {
+        if (this.otherValid) {
             this.errors["other"] = "Fill other details"
         }
         return this.errors.length > 0
-    }
-
-    checklistChanges(event: any) {
-        console.log(event)
-        let selections = this.checkListTypes.filter(d => d.id == event.target.value)
-        if (selections.length > 0) {
-            this.selectedChecklist = selections[0]
-        }
     }
 
     saveRecord() {
@@ -190,19 +204,19 @@ export class ChecklistDataFormComponent implements OnInit {
         }
         let data = this.generalCheckList.value
         if (this.engineeringDetails) {
-            this.engineeringDetails["items"] = this.getItems(this.engineringItems)
+            this.engineeringDetails["items"] = this.getItems(this.engineeringDetails.items)
             data["engineering"] = this.engineeringDetails
         }
         if (this.vehicleDetails) {
-            this.vehicleDetails["items"] = this.getItems(this.vehicleItems)
+            this.vehicleDetails["items"] = this.getItems(this.vehicleDetails.items)
             data["vehicle"] = this.vehicleDetails
         }
         if (this.agrochemDetails) {
-            this.agrochemDetails["items"] = this.getItems(this.agrochemItems)
+            this.agrochemDetails["items"] = this.getItems(this.agrochemDetails.items)
             data["agrochem"] = this.agrochemDetails
         }
         if (this.otherDetails) {
-            this.otherDetails["items"] = this.getItems(this.otherItems)
+            this.otherDetails["items"] = this.getItems(this.otherDetails.items)
             data["others"] = this.otherDetails
         }
         this.diService.saveChecklist(this.consignmentId, data)

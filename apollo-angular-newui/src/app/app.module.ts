@@ -185,6 +185,9 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 
 @NgModule({
+    exports: [
+        CoreModule,
+    ],
     imports: [
         AppRoutingModule,
         RouterModule,

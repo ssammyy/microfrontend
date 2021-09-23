@@ -1226,7 +1226,7 @@ class DestinationInspectionDaoServices(
             amount: Double,
             user: UsersEntity
     ): CdDemandNoteEntity {
-        return iDemandNoteRepo.findFirstByCdIdAndStatusIn(consignmentDocument.id!!, listOf(-1, 0))
+        return iDemandNoteRepo.findFirstByCdIdAndStatusIn(consignmentDocument.id!!, listOf(-1))
                 ?.let { demandNote ->
                     var demandNoteDetails = demandNote
                     //Call Function to add Item Details To be attached To The Demand note
@@ -3030,6 +3030,8 @@ class DestinationInspectionDaoServices(
                 updateItem = updateItemNoSampling(item, map)
             }
         }
+        // Update CD Item
+        this.iCdItemsRepo.save(updateItem)
         return updateItem
     }
 

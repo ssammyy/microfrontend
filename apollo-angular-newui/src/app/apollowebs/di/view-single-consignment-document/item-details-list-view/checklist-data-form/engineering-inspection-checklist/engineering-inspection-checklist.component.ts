@@ -9,30 +9,62 @@ import {MatTableDataSource} from "@angular/material/table";
 })
 export class EngineeringInspectionChecklistComponent implements OnInit {
     @Output() private engineeringDetails = new EventEmitter<any>();
-    @Input() items:[]
+    @Input() categories: any[]
+    @Input() itemList: any[]
+    @Output() valid=new EventEmitter<Boolean>()
     engineeringChecklist: FormGroup
-    initialSelection: any[]
+    selectedItems: any[]
     selectionDataSource: MatTableDataSource<any>
 
     constructor(private fb: FormBuilder) {
     }
 
     ngOnInit(): void {
-
+        this.valid.emit(true)
         this.engineeringChecklist = this.fb.group({
-            remarks: ['', Validators.required]
+            remarks: ['Engineering checklist', Validators.required],
+            items: []
         })
 
         this.engineeringChecklist.statusChanges
             .subscribe(
-                res=>{
-                    if(this.engineeringChecklist.valid){
-                        this.engineeringDetails.emit(this.engineeringChecklist.value)
+                res => {
+                    if (this.engineeringChecklist.valid) {
+                        let data = this.engineeringChecklist.value
+                        let v=this.validateItems(data)
+                        this.valid.emit(v)
+                        if (this.valid) {
+                            this.engineeringDetails.emit(data)
+                        } else {
+                            this.engineeringDetails.emit(null)
+                        }
                     } else {
+                        this.valid.emit(false)
                         this.engineeringDetails.emit(null)
                     }
                 }
             )
+    }
+
+    itemsSelected(items: any) {
+        this.engineeringChecklist.patchValue({
+            items: items
+        })
+        this.selectedItems = items
+    }
+
+    validateItems(data: any) {
+        let validItems = true;
+        if (data.items && data.items.length > 0) {
+            for (let itm of data.items) {
+                if (!itm.checklist) {
+                    itm.valid = false
+                    console.log("Invalid item: " + itm.id)
+                    validItems = false
+                }
+            }
+        }
+        return validItems
     }
 
 }

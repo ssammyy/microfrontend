@@ -207,20 +207,20 @@
                                 <div [ngbNavOutlet]="nav" class="ml-4"></div>
                                 <!-- </div>  -->
                             </div>
-                            <div class="col-md-2">
-                                <b>Action:</b>
-                                <button *ngIf="!itemDetails.cd_item.ministrySubmitted" class="btn btn-sm btn-primary"
-                                        (click)="rejectItem()">APPROVE REJECT ITEM
-                                </button>
-                                <div *ngIf="itemDetails && itemDetails.cd_item.isVehicle">
-                                    <button *ngIf="!itemDetails.cd_item.ministrySubmitted" class="btn btn-sm btn-primary"
-                                            (click)="submitMinistryInspection()">SUBMIT MINISTRY INSPECTION
-                                    </button>
-                                    <button *ngIf="itemDetails.cd_item.ministrySubmitted" class="btn btn-sm btn-primary"
-                                            (click)="resubmitMinistryInspection()">RE-SUBMIT MINISTRY INSPECTION
-                                    </button>
-                                </div>
-                            </div>
+<!--                            <div class="col-md-2">-->
+<!--                                <b>Action:</b>-->
+<!--                                <button *ngIf="!itemDetails.cd_item.ministrySubmitted" class="btn btn-sm btn-primary"-->
+<!--                                        (click)="rejectItem()">APPROVE REJECT ITEM-->
+<!--                                </button>-->
+<!--                                <div *ngIf="itemDetails && itemDetails.cd_item.isVehicle">-->
+<!--                                    <button *ngIf="!itemDetails.cd_item.ministrySubmitted" class="btn btn-sm btn-primary"-->
+<!--                                            (click)="submitMinistryInspection()">SUBMIT MINISTRY INSPECTION-->
+<!--                                    </button>-->
+<!--                                    <button *ngIf="itemDetails.cd_item.ministrySubmitted" class="btn btn-sm btn-primary"-->
+<!--                                            (click)="resubmitMinistryInspection()">RE-SUBMIT MINISTRY INSPECTION-->
+<!--                                    </button>-->
+<!--                                </div>-->
+<!--                            </div>-->
 
                         </div>
                         <!-- end content-->

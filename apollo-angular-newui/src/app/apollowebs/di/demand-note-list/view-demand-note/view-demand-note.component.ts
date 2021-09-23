@@ -1,6 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {DestinationInspectionService} from "../../../../core/store/data/di/destination-inspection.service";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
+import {CurrencyFormatterComponent} from "../../../../core/shared/currency-formatter/currency-formatter.component";
 
 @Component({
     selector: 'app-view-demand-note',
@@ -39,7 +40,8 @@ export class ViewDemandNoteComponent implements OnInit {
             },
             cfvalue: {
                 title: 'CF VALUE',
-                type: 'string'
+                type: 'custom',
+                renderComponent: CurrencyFormatterComponent
             },
             rateType: {
                 title: 'RATE TYPE',
@@ -51,11 +53,13 @@ export class ViewDemandNoteComponent implements OnInit {
             },
             amountPayable: {
                 title: 'CALCULATED AMOUNT',
-                type: 'string'
+                type: 'custom',
+                renderComponent: CurrencyFormatterComponent
             },
             adjustedAmount: {
                 title: 'PAYABLE AMOUNT',
-                type: 'string'
+                type: 'custom',
+                renderComponent: CurrencyFormatterComponent
             }
         },
         pager: {

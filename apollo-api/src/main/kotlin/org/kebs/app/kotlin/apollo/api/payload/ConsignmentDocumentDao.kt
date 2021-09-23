@@ -24,6 +24,7 @@ class ConsignmentEnableUI {
     var sendCoi: Boolean? = null
     var targetItem: Boolean? = null
     var targeted: Boolean = false
+    var targetRejected: Boolean = false
     var targetDisabled: Boolean = false
     var supervisorTarget: Boolean? = null
     var attachments: Boolean? = null
@@ -54,11 +55,12 @@ class ConsignmentEnableUI {
             val ui = ConsignmentEnableUI().apply {
                 supervisor = modify
                 inspector = change
-                targetDisabled=cd.targetStatus==map.initStatus
+                targetDisabled = (cd.targetStatus == map.initStatus || cd.targetStatus == map.invalidStatus)
                 assigned = cd.assignedInspectionOfficer != null
                 targeted = cd.targetStatus == map.activeStatus
+                targetRejected = cd.targetStatus == map.invalidStatus
                 idfAvailable = cd.idfNumber != null
-                demandNoteDisabled=cd.sendDemandNote==map.initStatus
+                demandNoteDisabled = (cd.sendDemandNote == map.initStatus || cd.sendDemandNote == map.activeStatus)
                 owner = cd.assignedInspectionOfficer?.userName == authentication.name
                 demandNote = cd.sendDemandNote == map.activeStatus
                 sendCoi = modify && cd.localCoi == map.activeStatus
@@ -70,7 +72,8 @@ class ConsignmentEnableUI {
                 completed = cd.approveRejectCdStatusType?.let { it.category == "APPROVE" || it.category == "REJECT" }
                 approveReject = (cd.targetApproveStatus == null || cd.inspectionDateSetStatus == map.activeStatus) && modify
             }
-            ui.complianceDisabled =(cd.compliantStatus==map.activeStatus ||cd.compliantStatus==map.initStatus) ||!ui.checklistFilled
+
+            ui.complianceDisabled = (cd.compliantStatus == map.activeStatus || cd.compliantStatus == map.initStatus) || ui.checklistFilled || ui.targetRejected
             cd.cdType?.let {
                 ui.cocAvailable = it.localCocStatus == map.activeStatus && cd.localCocOrCorStatus == map.activeStatus
                 ui.corAvailable = it.localCorStatus == map.activeStatus && cd.localCocOrCorStatus == map.activeStatus

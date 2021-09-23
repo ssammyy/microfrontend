@@ -10,6 +10,10 @@
             <textarea class="waiver-form-input-master" name="remarks" data-name="remarks"
                       id="remarks" formControlName="remarks"></textarea>
         </div>
-
     </div>
+    <app-item-selection [stations]="stations" checklistType="vehicle" id="vehicle"
+                        [categories]="categories"
+                        [items]="itemList"
+                        [selectedItems]="selectedItems"
+                        (selectedItemsChange)="itemsSelected($event)"></app-item-selection>
 </div>

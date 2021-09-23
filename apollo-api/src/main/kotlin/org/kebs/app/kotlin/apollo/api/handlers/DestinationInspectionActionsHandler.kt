@@ -262,7 +262,6 @@ class DestinationInspectionActionsHandler(
                     daoServices.updateCdDetailsInDB(consignmentDocument, loggedInUser)
                     // Submit Targeting to BPM
                     this.diBpmn.startTargetConsignment(map,data, consignmentDocument);
-                    consignmentAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, form.remarks, "KEBS_TARGET", "Target consignment")
                     response.message = "Target request submitted"
                     response.responseCode = ResponseCodes.SUCCESS_CODE
                 } else {

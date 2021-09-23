@@ -471,14 +471,15 @@ class DestinationInspectionService(
         KotlinLogging.logger { }.info("UPDATE TARGETING REJECTION: ${cdUuid}")
         try {
             val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
+            val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             consignmentDocument.varField9 = null
             consignmentDocument.varField10 = "Targeting rejected"
             consignmentDocument.targetApproveStatus = 0
-            consignmentDocument.targetStatus = 0
+            consignmentDocument.targetStatus = map.invalidStatus
             consignmentDocument.targetApproveRemarks = remarks
             consignmentDocument.targetApproveDate = Date(Date().time)
-            this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
-            this.cdAuditService.addHistoryRecord(consignmentDocument.id!!, remarks, "REJECT TARGETING", "Targting of ${cdUuid} has been rejected by ${supervisor}", supervisor)
+            this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
+            this.cdAuditService.addHistoryRecord(consignmentDocument.id!!,consignmentDocument.ucrNumber, remarks, "REJECT TARGETING", "Targting of ${cdUuid} has been rejected by ${supervisor}", supervisor)
             KotlinLogging.logger { }.info("TARGET REJECTION UPDATED: ${cdUuid}")
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("REJECTION UPDATE STATUS", ex)
@@ -844,7 +845,7 @@ class DestinationInspectionService(
             if (isInspectionOfficer && cdDetails.assignedInspectionOfficer == null) {
                 this.selfAssign(cdDetails)
                 // Reload CD on self assign BPM process
-                cdDetails=daoServices.findCDWithUuid(cdUuid)
+                cdDetails=daoServices.findCD(cdDetails.id!!)
             }
             // Load inspection details
             response.data = loadCDDetails(cdDetails, map, isSupervisor, isInspectionOfficer)

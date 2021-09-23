@@ -867,7 +867,7 @@
                                             ATTACHMENT
                                         </button>
                                         <button
-                                                *ngIf="consignment.ui.owner && (consignment.ui.cocRequest || consignment.ui.corRequest) && !consignment.ui.complianceDisabled"
+                                                *ngIf="consignment.ui.owner && (consignment.ui.cocRequest || consignment.ui.corRequest) && (!consignment.ui.complianceDisabled && consignment.ui.targetRejected)"
                                                 class="btn btn-sm btn-primary" (click)="markAsCompliant()">COMPLIANT
                                         </button>
                                         <button *ngIf="consignment.ui.owner && !consignment.ui.checklistFilled && consignment.ui.demandNotePaid && consignment.ui.targeted"
