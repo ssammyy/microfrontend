@@ -59,6 +59,10 @@ interface IServiceRequestsRepository : HazelcastRepository<ServiceRequestsEntity
 @Repository
 interface IWorkflowTransactionsRepository : HazelcastRepository<WorkflowTransactionsEntity, Long>
 
+
+@Repository
+interface ISftpTransmissionEntityRepository : HazelcastRepository<SftpTransmissionEntity, Long>
+
 @Repository
 interface IServiceMapsWorkflowEventsRepository : HazelcastRepository<ServiceMapsWorkflowEventsEntity, Long>
 
