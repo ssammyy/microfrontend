@@ -17,7 +17,7 @@ export class ApiEndpointService {
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-        // LOCAL_DEV: 'localhost:8006'
+       // LOCAL_DEV: 'localhost:8006'
         // LOCAL_DEV: '12:8006'
         // LOCAL_DEV: '41.72.209.58:8006'
          LOCAL_DEV: `kimsint.kebs.org:8006`
@@ -53,6 +53,7 @@ export class ApiEndpointService {
      */
     public static AUTH_CONTEXT = '/api/v1/login';
     public static ANONYMOUS_CONTEXT = '/api/v1/migration/anonymous';
+    public static ANONYMOUS_CONTEXT_NEP = '/api/v1/migration/anonymous/National_enquiry_point';
     public static USER_CONTEXT = 'user';
     public static MASTERS_CONTEXT = '/api/v1/migration';
     public static SYSTEMS_ADMIN_SECURITY = `${ApiEndpointService.MASTERS_CONTEXT}/security`;
@@ -360,7 +361,7 @@ export class ApiEndpointService {
         // SD NATIONAL ENQUIRY POINT
         NEP_ENQUIRY_NEP_TASKS: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/nep_officer/tasks`,
         NEP_ENQUIRY_DIVISION_TASKS: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/division/tasks`,
-        NEP_MAKE_ENQUIRY: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/notification_request`,
+        NEP_MAKE_ENQUIRY: `${ApiEndpointService.ANONYMOUS_CONTEXT_NEP}/notification_request`,
         NEP_INFORMATION_AVAILABLE_YES: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/nep_officer/is_available`,
         NEP_DEPARTMENT_RESPONSE: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/division_response/send_response`,
         NEP_FEEDBACK_EMAIL: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/information_available/send_email`,

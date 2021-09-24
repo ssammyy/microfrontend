@@ -69,6 +69,7 @@ import {BranchViewComponent} from './apollowebs/company/branch/branch-view/branc
 import {QrCodeDetailsComponent} from './apollowebs/quality-assurance/qr-code-details/qr-code-details.component';
 import {StdTscSecTasksComponentComponent} from './apollowebs/standards-development/standard-request/std-tsc-sec-tasks-component/std-tsc-sec-tasks-component.component';
 import {StdTcTasksComponent} from './apollowebs/standards-development/standard-request/std-tc-tasks/std-tc-tasks.component';
+import {SuccessComponent} from "../../../apollo-webs/src/app/components/standards-development/sd-national-enquiry-point/success/success.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -498,6 +499,9 @@ export const routes: Routes = [
     },
     {
         path: 'make_enquiry', component: MakeEnquiryComponent
+    },
+    {
+        path: 'success', component: SuccessComponent
     },
 
 
