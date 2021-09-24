@@ -18,8 +18,8 @@
                             <div class="card-icon">
                                 <i class="material-icons">assignment</i>
                             </div>
-                            <h4 class="card-title">Tasks <small class="resolved-pill">{{tcTasks.length}}
-                                Tasks</small>
+                            <h4 class="card-title">Vote on New Work Item <small class="resolved-pill">{{tcTasks.length}}
+                                Items To Vote On</small>
                             </h4>
 
                         </div>
@@ -78,30 +78,43 @@
                                                         <h5>Please tick and fill your preference of the listed
                                                             option.</h5>
                                                     </div>
-                                                    <div class="form-check col-12">
-                                                        <input
-                                                                name="decision"
-                                                                ngModel="{{formActionRequest?.decision}}"
-                                                                class="form-check-input" type="radio" value="true"
-                                                                id="yesVote">
-                                                        <label class="form-check-label" for="yesVote">
-                                                            Proposal acceptable
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check col-12">
-                                                        <input
-                                                                aria-describedby="inputGroup-sizing-sm"
-                                                                aria-label="Small"
-                                                                name="decision"
-                                                                ngModel="{{formActionRequest?.decision}}"
-                                                                class="form-check-input" type="radio" value="false"
-                                                                id="noVote">
-                                                        <label class="form-check-label" for="noVote">
-                                                            Proposal not acceptable
-                                                        </label>
-                                                    </div>
+                                                    <div class="col-sm-5 checkbox-radios">
+<!--                                                        <input-->
+<!--                                                                name="decision"-->
+<!--                                                                ngModel="{{formActionRequest?.decision}}"-->
+<!--                                                                class="form-check-input" type="radio" value="true"-->
+<!--                                                                id="yesVote">-->
+<!--                                                        <label class="form-check-label" for="yesVote">-->
+<!--                                                            Proposal acceptable-->
+<!--                                                        </label>-->
+                                                        <mat-radio-button name="decision"
+                                                                          ngModel="{{formActionRequest?.decision}}"
+                                                                          class="form-check-input"  value="true"
+                                                                          id="yesVote">Proposal acceptable</mat-radio-button>
 
-                                                    <div class="form-group col-12">
+                                                    </div>
+                                                    <br><br>
+                                                    <div class="col-sm-5 checkbox-radios">
+<!--                                                        <input-->
+<!--                                                                aria-describedby="inputGroup-sizing-sm"-->
+<!--                                                                aria-label="Small"-->
+<!--                                                                name="decision"-->
+<!--                                                                ngModel="{{formActionRequest?.decision}}"-->
+<!--                                                                class="form-check-input" type="radio" value="false"-->
+<!--                                                                id="noVote">-->
+<!--                                                        <label class="form-check-label" for="noVote">-->
+<!--                                                            Proposal not acceptable-->
+<!--                                                        </label>-->
+                                                        <mat-radio-button name="decision"
+                                                                          ngModel="{{formActionRequest?.decision}}"
+                                                                          class="form-check-input"  value="true"
+                                                                          id="noVote">Proposal not acceptable</mat-radio-button>
+                                                    </div>
+                                                    <br><br>
+
+
+
+                                                        <div class="form-group col-12">
                                                         <label><b>Reasons</b></label>
                                                         <textarea
                                                                 aria-describedby="inputGroup-sizing-sm"
@@ -113,6 +126,8 @@
 
 
                                                     </div>
+
+
 
                                                     <div class="form-group col-6">
                                                         <label><b>Position</b></label>
@@ -203,9 +218,8 @@
                                             <input hidden ngModel="{{actionRequest?.taskId}}"
                                                    value="{{actionRequest?.taskId}}" name="taskId" id="taskId">
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                                                    Close
-                                                </button>
+                                                <button type="button" class="btn btn-secondary" #closeModal (click)="hideModel()" data-dismiss="modal">Close</button>
+
                                                 <button class="btn btn-info" (click)="decisionOnNWI(editForm.value)">
                                                     Complete
                                                 </button>
