@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup} from "@angular/forms";
 
 @Component({
     selector: 'app-vehicle-inspection-checklist',
@@ -21,25 +21,23 @@ export class VehicleInspectionChecklistComponent implements OnInit {
     ngOnInit(): void {
         this.valid.emit(true)
         this.motorVehicleChecklist = this.fb.group({
-            remarks: ['Motor vehicle checklist', Validators.required],
+            remarks: ['Motor vehicle checklist'],
             items: [[]]
         })
         this.motorVehicleChecklist.statusChanges
             .subscribe(
-                res => {
-                    console.log(res)
-                    if (this.motorVehicleChecklist.valid) {
-                        let data = this.motorVehicleChecklist.value
+                data => {
+                    if (this.selectedItems && this.selectedItems.length>0) {
                         let v = this.validateItems(data)
                         this.valid.emit(v)
+                        // At least one vehicle item selected
                         if (v) {
                             this.vehicleDetails.emit(data)
                         } else {
                             this.vehicleDetails.emit(null)
                         }
                     } else {
-                        this.valid.emit(false)
-                        console.log("invalid")
+                        this.valid.emit(true)
                         this.vehicleDetails.emit(null)
                     }
                 }

@@ -852,7 +852,7 @@
                                         </ng-template>
 
                                         <b class="text-primary">Other Version Details</b>
-                                        <app-demand-note-list [dataSet]="demandNotes"></app-demand-note-list>
+                                        <app-demand-note-list [dataSet]="demandNotes" (reloadDemandNotes)="loadDemandNotes($event)"></app-demand-note-list>
 
                                     </mat-tab>
 

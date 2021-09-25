@@ -1245,7 +1245,7 @@ class DITest {
     @Ignore
     fun testCorEmailAttachment() {
         val consignmentDocumentEntity: ConsignmentDocumentDetailsEntity = destinationInspectionDaoServices.findCD(863)
-        reportsDaoService.generateLocalCoRReport(consignmentDocumentEntity, applicationMapProperties.mapReportLocalCorPath)?.let { file ->
+        reportsDaoService.generateLocalCoRReport(consignmentDocumentEntity, applicationMapProperties.mapReportLocalCorPath,0L)?.let { file ->
             consignmentDocumentEntity.cdImporter?.let { destinationInspectionDaoServices.findCDImporterDetails(it)
             }?.let { importer ->
                 importer.email?.let { destinationInspectionDaoServices.sendLocalCorReportEmail(it, file.path) }

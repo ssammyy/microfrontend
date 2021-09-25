@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.service
 
 import mu.KotlinLogging
+import okhttp3.internal.toLongOrDefault
 import org.kebs.app.kotlin.apollo.api.payload.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
@@ -78,33 +79,35 @@ class DestinationInspectionService(
 
     fun swUpdateComplianceStatus(cdUuid: String, compliantStatus: Int, supervisor: String, remarks: String): Boolean {
         // Rejected consignment document after non-compliance status is assigned
-        if (compliantStatus != 1) {
-            try {
-                val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-                val cdStatusType = daoServices.findCdStatusCategory("REJECT")
-                val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
-                consignmentDocument.approveRejectCdRemarks = remarks
-                consignmentDocument.approveRejectCdDate = Date(Date().time)
-                consignmentDocument.approveRejectCdStatus = map.activeStatus
-                consignmentDocument.approveRejectCdStatusType = cdStatusType
-                // Update consignment
-                consignmentDocument.varField10 = "SEND NON-COMPLIANCE TO SW"
-                daoServices.updateCdDetailsInDB(consignmentDocument, commonDaoServices.findUserByUserName(supervisor))
-                // Update SW status
-                cdStatusType.statusCode?.let {
-                    consignmentDocument.approveRejectCdRemarks?.let { it1 ->
-                        daoServices.submitCDStatusToKesWS(it1, it, consignmentDocument.version.toString(), consignmentDocument)
-                        consignmentDocument.cdStandard?.let { cdStd ->
-                            consignmentDocument.approveRejectCdStatusType?.id?.let { it2 ->
-                                daoServices.updateCDStatus(cdStd, it2)
-                            }
-                        }
+        try {
+            val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
+            val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+            // Auto-Reject Approve depending on compliance status
+            val cdStatusType: CdStatusTypesEntity?
+            if (compliantStatus == 1) {
+                cdStatusType = daoServices.findCdStatusCategory("APPROVE")
+                consignmentDocument.varField10 = "Consignment Document Approved on Compliance"
+            } else {
+                cdStatusType = daoServices.findCdStatusCategory("REJECT")
+                consignmentDocument.varField10 = "Consignment Document Rejected on Non-Compliance"
+            }
+            consignmentDocument.approveRejectCdStatus = map.activeStatus
+            consignmentDocument.approveRejectCdStatusType = cdStatusType
+            consignmentDocument.approveRejectCdRemarks = remarks
+            consignmentDocument.approveRejectCdDate = Date(Date().time)
+            // Update consignment
+            daoServices.updateCdDetailsInDB(consignmentDocument, commonDaoServices.findUserByUserName(supervisor))
+            // Update SW status
+            cdStatusType.statusCode?.let {
+                daoServices.submitCDStatusToKesWS(remarks, it, consignmentDocument.version.toString(), consignmentDocument)
+                consignmentDocument.cdStandard?.let { cdStd ->
+                    consignmentDocument.approveRejectCdStatusType?.id?.let { it2 ->
+                        daoServices.updateCDStatus(cdStd, it2)
                     }
                 }
-            } catch (ex: Exception) {
-                KotlinLogging.logger { }.error("FAILED TO COMPLIANCE REJECTION STATUS", ex)
             }
-            return false
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("FAILED TO COMPLIANCE REJECTION STATUS", ex)
         }
         return false
     }
@@ -271,14 +274,15 @@ class DestinationInspectionService(
                             applicationMapProperties.mapDICdStatusTypeCORGeneratedAndSendID
                     )
                 }
+                daoServices.saveCorDetails(corDetails)
+                val itemId = corDetails.varField1?.toLongOrDefault(0L) ?: 0L
                 //Send Cor to manufacturer
-                reportsDaoService.generateLocalCoRReport(consignmentDocument, applicationMapProperties.mapReportLocalCorPath)?.let { file ->
+                reportsDaoService.generateLocalCoRReport(consignmentDocument, applicationMapProperties.mapReportLocalCorPath, itemId)?.let { file ->
                     with(corDetails) {
                         localCorFile = file.readBytes()
                         localCorFileName = file.name
                         varField10 = "COR Generated"
                     }
-                    daoServices.saveCorDetails(corDetails)
                     // Update COR
                     consignmentDocument.compliantStatus = map.activeStatus
                     consignmentDocument.localCocOrCorStatus = map.activeStatus
@@ -479,7 +483,7 @@ class DestinationInspectionService(
             consignmentDocument.targetApproveRemarks = remarks
             consignmentDocument.targetApproveDate = Date(Date().time)
             this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
-            this.cdAuditService.addHistoryRecord(consignmentDocument.id!!,consignmentDocument.ucrNumber, remarks, "REJECT TARGETING", "Targting of ${cdUuid} has been rejected by ${supervisor}", supervisor)
+            this.cdAuditService.addHistoryRecord(consignmentDocument.id!!, consignmentDocument.ucrNumber, remarks, "REJECT TARGETING", "Targting of ${cdUuid} has been rejected by ${supervisor}", supervisor)
             KotlinLogging.logger { }.info("TARGET REJECTION UPDATED: ${cdUuid}")
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("REJECTION UPDATE STATUS", ex)
@@ -845,7 +849,7 @@ class DestinationInspectionService(
             if (isInspectionOfficer && cdDetails.assignedInspectionOfficer == null) {
                 this.selfAssign(cdDetails)
                 // Reload CD on self assign BPM process
-                cdDetails=daoServices.findCD(cdDetails.id!!)
+                cdDetails = daoServices.findCD(cdDetails.id!!)
             }
             // Load inspection details
             response.data = loadCDDetails(cdDetails, map, isSupervisor, isInspectionOfficer)

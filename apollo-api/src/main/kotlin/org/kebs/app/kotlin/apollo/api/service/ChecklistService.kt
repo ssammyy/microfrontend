@@ -143,9 +143,11 @@ class ChecklistService(
                     // Update checklist update
                     daoServices.checkIfChecklistUndergoesSampling(
                             checklistItem.sampled ?: "NO",
+                            checklistItem.compliant ?: "NO",
                             detail,
                             map
                     )
+
                 }
             }
         }
@@ -198,7 +200,8 @@ class ChecklistService(
                     this.agrochemItemChecklistRepository.save(checklistItem)
                     // Mark item as sampled
                     daoServices.checkIfChecklistUndergoesSampling(
-                            checklistItem.sampled!!,
+                            checklistItem.sampled ?: "NO",
+                            checklistItem.compliant ?: "NO",
                             detail,
                             map
                     )
@@ -330,7 +333,8 @@ class ChecklistService(
                     this.otherItemChecklistRepository.save(checklistItem)
                     // Update sampling status
                     daoServices.checkIfChecklistUndergoesSampling(
-                            checklistItem.sampled!!,
+                            checklistItem.sampled ?: "NO",
+                            checklistItem.compliant ?: "NO",
                             detail,
                             map
                     )

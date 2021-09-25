@@ -297,7 +297,7 @@ export class DestinationInspectionService {
     }
 
     deleteDemandNote(demandNoteId: any): Observable<any> {
-        return this.client.delete(ApiEndpointService.getEndpoint("/api/v1/di/demand/note/submit/" + demandNoteId))
+        return this.client.delete(ApiEndpointService.getEndpoint("/api/v1/di/demand/note/delete/" + demandNoteId))
     }
 
     getDetails(url: string): Observable<any> {

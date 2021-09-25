@@ -10,7 +10,7 @@ export class OtherInspectionChecklistComponent implements OnInit {
     @Output() private otherDetails = new EventEmitter<any>();
     @Input() categories: any[]
     @Input() itemList: any[]
-    @Output() valid =new EventEmitter<Boolean>()
+    @Output() valid = new EventEmitter<Boolean>()
     selectedItems: any[]
     otherItemChecklist: FormGroup
 
@@ -20,28 +20,30 @@ export class OtherInspectionChecklistComponent implements OnInit {
     ngOnInit(): void {
         this.valid.emit(true)
         this.otherItemChecklist = this.fb.group({
-            remarks: ['', Validators.required]
+            remarks: ['Other checklist'],
+            items: []
         })
 
         this.otherItemChecklist.statusChanges
             .subscribe(
-                res=>{
-                    if(this.otherItemChecklist.valid){
-                        let data=this.otherItemChecklist.value
-                        let v=this.validateItems(data)
+                data => {
+                    if (this.selectedItems && this.selectedItems.length>0) {
+                        let v = this.validateItems(data)
                         this.valid.emit(v)
-                        if(v) {
+                        // At least one other items selected
+                        if (v) {
                             this.otherDetails.emit(data)
                         } else {
                             this.otherDetails.emit(null)
                         }
-                    } else{
-                        this.valid.emit(false)
+                    } else {
+                        this.valid.emit(true)
                         this.otherDetails.emit(null)
                     }
                 }
             )
     }
+
     itemsSelected(items: any) {
         this.otherItemChecklist.patchValue({
             items: items

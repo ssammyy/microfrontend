@@ -492,19 +492,19 @@ class DestinationInspectionController(
                                         )
                                     }
                                     //Send Cor to manufacturer
-                                    reportsDaoService.generateLocalCoRReport(updatedCDDetails, applicationMapProperties.mapReportLocalCorPath)?.let { file ->
-                                        with(corDetails) {
-                                            localCorFile = file.readBytes()
-                                            localCorFileName = file.name
-                                        }
-                                        daoServices.saveCorDetails(corDetails)
-                                        //Send email
-                                        updatedCDDetails.cdImporter?.let {
-                                            daoServices.findCDImporterDetails(it)
-                                        }?.let { importer ->
-                                            importer.email?.let { daoServices.sendLocalCorReportEmail(it, file.path) }
-                                        }
-                                    }
+//                                    reportsDaoService.generateLocalCoRReport(updatedCDDetails, applicationMapProperties.mapReportLocalCorPath)?.let { file ->
+//                                        with(corDetails) {
+//                                            localCorFile = file.readBytes()
+//                                            localCorFileName = file.name
+//                                        }
+//                                        daoServices.saveCorDetails(corDetails)
+//                                        //Send email
+//                                        updatedCDDetails.cdImporter?.let {
+//                                            daoServices.findCDImporterDetails(it)
+//                                        }?.let { importer ->
+//                                            importer.email?.let { daoServices.sendLocalCorReportEmail(it, file.path) }
+//                                        }
+//                                    }
                                 }
                             }
                         }

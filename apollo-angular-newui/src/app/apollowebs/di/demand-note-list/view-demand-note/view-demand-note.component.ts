@@ -99,7 +99,7 @@ export class ViewDemandNoteComponent implements OnInit {
                 res=>{
                     if(res.responseCode=="00") {
                         this.diService.showSuccess(res.message, ()=>{
-                            this.dialogRef.close(false)
+                            this.dialogRef.close(true)
                         })
                     } else {
                         this.message = res.message
@@ -113,7 +113,7 @@ export class ViewDemandNoteComponent implements OnInit {
                 res=>{
                     if(res.responseCode=="00"){
                         this.diService.showSuccess(res.message, ()=>{
-                            this.dialogRef.close(false)
+                            this.dialogRef.close(true)
                         })
                     } else {
                         this.message = res.message

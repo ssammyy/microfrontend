@@ -70,7 +70,10 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
     }
 
 
-    loadDemandNotes() {
+    loadDemandNotes(reload: Boolean=true) {
+        if(!reload){
+            return
+        }
         this.diService.listDemandNotes(this.consignment.cd_details.id)
             .subscribe(
                 res => {

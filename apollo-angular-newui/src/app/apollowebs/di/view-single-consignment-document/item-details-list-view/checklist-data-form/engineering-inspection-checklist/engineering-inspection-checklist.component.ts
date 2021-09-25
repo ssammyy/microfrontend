@@ -22,24 +22,24 @@ export class EngineeringInspectionChecklistComponent implements OnInit {
     ngOnInit(): void {
         this.valid.emit(true)
         this.engineeringChecklist = this.fb.group({
-            remarks: ['Engineering checklist', Validators.required],
+            remarks: ['Engineering checklist'],
             items: []
         })
 
         this.engineeringChecklist.statusChanges
             .subscribe(
-                res => {
-                    if (this.engineeringChecklist.valid) {
-                        let data = this.engineeringChecklist.value
+                data => {
+                    if (this.selectedItems && this.selectedItems.length>0) {
                         let v=this.validateItems(data)
                         this.valid.emit(v)
+                        // At least one engineering item to be selected
                         if (this.valid) {
                             this.engineeringDetails.emit(data)
                         } else {
                             this.engineeringDetails.emit(null)
                         }
                     } else {
-                        this.valid.emit(false)
+                        this.valid.emit(true)
                         this.engineeringDetails.emit(null)
                     }
                 }

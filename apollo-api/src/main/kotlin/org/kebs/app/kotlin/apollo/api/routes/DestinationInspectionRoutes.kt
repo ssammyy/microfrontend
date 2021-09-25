@@ -16,7 +16,7 @@ class DestinationInspectionRoutes {
     @CrossOrigin
     fun invoicing(handlers: InvoiceHandlers)= router{
         "/api/v1/di".nest {
-//            GET("/demand/note/{demandNoteId}",handlers::downloadDemandNote)
+            POST("/demand/note/payment/{cdUuid}",handlers::simulateDemandNotePayment)
             GET("/demand/note/details/{invoiceId}",handlers::cdInvoiceDetails)
             POST("/demand/note/submit/{invoiceId}",handlers::submitDemandNoteForApproval)
             DELETE("/demand/note/delete/{invoiceId}",handlers::deleteDemandNote)

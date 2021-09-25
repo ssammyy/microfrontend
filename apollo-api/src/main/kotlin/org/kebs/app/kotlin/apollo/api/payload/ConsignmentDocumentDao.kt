@@ -60,7 +60,7 @@ class ConsignmentEnableUI {
                 targeted = cd.targetStatus == map.activeStatus
                 targetRejected = cd.targetStatus == map.invalidStatus
                 idfAvailable = cd.idfNumber != null
-                demandNoteDisabled = (cd.sendDemandNote == map.initStatus || cd.sendDemandNote == map.activeStatus)
+                demandNoteDisabled = (cd.sendDemandNote == map.initStatus || cd.sendDemandNote == map.activeStatus || cd.inspectionChecklist==map.activeStatus)
                 owner = cd.assignedInspectionOfficer?.userName == authentication.name
                 demandNote = cd.sendDemandNote == map.activeStatus
                 sendCoi = modify && cd.localCoi == map.activeStatus
@@ -73,7 +73,7 @@ class ConsignmentEnableUI {
                 approveReject = (cd.targetApproveStatus == null || cd.inspectionDateSetStatus == map.activeStatus) && modify
             }
 
-            ui.complianceDisabled = (cd.compliantStatus == map.activeStatus || cd.compliantStatus == map.initStatus) || ui.checklistFilled || ui.targetRejected
+            ui.complianceDisabled = (cd.compliantStatus == map.activeStatus || cd.compliantStatus == map.initStatus) || !ui.checklistFilled || ui.targetRejected
             cd.cdType?.let {
                 ui.cocAvailable = it.localCocStatus == map.activeStatus && cd.localCocOrCorStatus == map.activeStatus
                 ui.corAvailable = it.localCorStatus == map.activeStatus && cd.localCocOrCorStatus == map.activeStatus

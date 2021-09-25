@@ -169,9 +169,8 @@ class InvoiceHandlers(
                 val demandNote = daoServices.findDemandNoteWithID(invoiceId.toLongOrDefault(0L))
                 if (demandNote != null) {
                     if (demandNote.status!! < 0) {
-                        val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
                         val loggedInUser = commonDaoServices.loggedInUserDetails()
-                        demandNote.status = map.inactiveStatus
+                        demandNote.status = 50
                         demandNote.varField3 = "DELETED"
                         demandNote.deletedOn = Timestamp.from(Instant.now())
                         demandNote.deleteBy = loggedInUser.userName
@@ -265,18 +264,14 @@ class InvoiceHandlers(
                                     batchInvoiceDetail
                             )
                                     .let { updateBatchInvoiceDetail ->
-                                        //Todo: Payment selection
-                                        val importerDetails =
-                                                consignmentDocument.cdImporter?.let {
-                                                    daoServices.findCDImporterDetails(it)
-                                                }
-                                        val myAccountDetails =
-                                                InvoiceDaoService.InvoiceAccountDetails()
+                                        val importerDetails = consignmentDocument.cdImporter?.let {
+                                            daoServices.findCDImporterDetails(it)
+                                        }
+                                        val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
                                         with(myAccountDetails) {
                                             accountName = importerDetails?.name
                                             accountNumber = importerDetails?.pin
-                                            currency =
-                                                    applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
+                                            currency = applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
                                         }
                                         invoiceDaoService.createPaymentDetailsOnStgReconciliationTable(
                                                 loggedInUser.userName!!,
@@ -284,7 +279,6 @@ class InvoiceHandlers(
                                                 myAccountDetails
                                         )
                                         demandNote.id?.let { it1 ->
-                                            daoServices.sendDemandNotGeneratedToKWIS(it1)
                                             consignmentDocument.cdStandard?.let { cdStd ->
                                                 daoServices.updateCDStatus(
                                                         cdStd,
@@ -293,19 +287,13 @@ class InvoiceHandlers(
 
                                             }
                                         }
+                                        response.responseCode = ResponseCodes.SUCCESS_CODE
+                                        response.message = "Submitted"
                                     }
-
                         }
             }
-//                                                daoServices.demandNotePayment(demandNote, map, loggedInUser)
-            //Update BPM payment required task
-//                            val cdDetails = updatedItemDetails.cdDocId
-//                            cdDetails?.id?.let { it1 ->
-//                                cdDetails.assignedInspectionOfficer?.id?.let { it2 ->
-//                                    diBpmn.diPaymentRequiredComplete(it1, it2, true)
-//                                }
-//                            }
         } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("SIMULATE PAYMENT", ex)
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
             response.message = ex.localizedMessage
         }
@@ -317,7 +305,7 @@ class InvoiceHandlers(
 
         req.pathVariable("cdId").let {
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-            response.data = demandNoteRepository.findAllByCdIdAndStatusIn(it.toLongOrDefault(0L), listOf(-1,0,map.activeStatus, map.initStatus, map.invalidStatus))
+            response.data = demandNoteRepository.findAllByCdIdAndStatusIn(it.toLongOrDefault(0L), listOf(-1, 0, map.activeStatus, map.initStatus, map.invalidStatus))
             response.message = "Success"
             response.responseCode = ResponseCodes.SUCCESS_CODE
             return ServerResponse.ok().body(response)

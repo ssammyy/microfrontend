@@ -1,7 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {MatDialog, MatDialogRef} from "@angular/material/dialog";
-import {ItemChecklistComponent} from "./item-checklist/item-checklist.component";
 
 @Component({
     selector: 'app-agrochem-inspection-checklist',
@@ -16,34 +14,40 @@ export class AgrochemInspectionChecklistComponent implements OnInit {
     @Output() valid=new EventEmitter<Boolean>()
     selectedItems: []
 
-    constructor(private fb: FormBuilder, private dialog: MatDialog) {
+    constructor(private fb: FormBuilder) {
     }
 
     ngOnInit(): void {
         this.valid.emit(true)
         this.agrochemChecklist = this.fb.group({
-            remarks: ['AgroChemical Checklist', Validators.required],
+            remarks: ['AgroChemical Checklist'],
             items: []
         })
         this.agrochemChecklist.valueChanges
             .subscribe(
-                res => {
-                    if (this.agrochemChecklist.valid) {
-                        console.log("valid value changes")
-                        let data = this.agrochemChecklist.value
+                data => {
+                    console.log(data)
+                    if (this.selectedItems && this.selectedItems.length>0) {
                         let v=this.validateItems(data)
+                        // At least one item selected for data to be emitted.
                         this.valid.emit(v)
-                        if (this.valid) {
+                        if (v) {
+                            console.log("valid value changes")
                             this.agrochemDetails.emit(data)
                         } else {
+                            console.log("invalid value changes: "+v)
                            this.agrochemDetails.emit(null)
                         }
                     } else {
-                        this.valid.emit(false)
+                        this.valid.emit(true)
                         this.agrochemDetails.emit(null)
                     }
                 }
             )
+        // Simulate updated for value changed event
+        this.agrochemChecklist.patchValue({
+            remarks: ''
+        })
     }
 
     itemsSelected(items: any) {

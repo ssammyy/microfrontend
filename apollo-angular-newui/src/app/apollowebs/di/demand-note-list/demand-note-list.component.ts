@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {DestinationInspectionService} from "../../../core/store/data/di/destination-inspection.service";
 import {MatDialog} from "@angular/material/dialog";
 import {ViewDemandNoteComponent} from "./view-demand-note/view-demand-note.component";
@@ -10,6 +10,7 @@ import {CurrencyFormatterComponent} from "../../../core/shared/currency-formatte
     styleUrls: ['./demand-note-list.component.css']
 })
 export class DemandNoteListComponent implements OnInit {
+    @Output()reloadDemandNotes= new EventEmitter<Boolean>();
     public settings = {
         selectMode: 'single',  // single|multi
         hideHeader: false,
@@ -82,7 +83,12 @@ export class DemandNoteListComponent implements OnInit {
             data: {
                 id: demandNoteId
             }
-        })
+        }).afterClosed()
+            .subscribe(
+            res=> {
+                this.reloadDemandNotes.emit(res)
+            }
+        )
     }
     onCustomAction(action: any) {
         switch (action.action) {

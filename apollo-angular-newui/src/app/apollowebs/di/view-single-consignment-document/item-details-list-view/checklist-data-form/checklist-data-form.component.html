@@ -16,7 +16,9 @@
 
                     </div>
                     <div class="card-body" *ngIf="consignment">
-                        <mat-error *ngFor="let ee of errors">{{ee}}</mat-error>
+                        <p>
+                            <mat-error *ngFor="let e of errors">{{e.type}} - {{e.description}}</mat-error>
+                        </p>
                         <mat-horizontal-stepper [linear]="false">
                             <mat-step label="General Checklist">
                                 <div class="row no_margin" [formGroup]="generalCheckList">
@@ -112,7 +114,7 @@
                         </mat-horizontal-stepper>
                         <div class="row no_margin master-list-new-btn">
                             <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
-                            <button [disabled]="generalCheckList.invalid || !validSelection"
+                            <button [disabled]="generalCheckList.invalid || invalidSelection"
                                     class="next-btn btn-gen new-btn"
                                     (click)="saveRecord()">SAVE
                             </button>

@@ -84,11 +84,22 @@ class DestinationInspectionBpmn(
         data.put("stationName", saved.ministryStationId?.stationName)
         data.put("cdItemId", detail.id)
         data.put("ministry", saved.ministryStationId?.stationName ?: "ALL")
+
         val processInstance = runtimeService.startProcessInstanceByKey("ministryInspectionProcess", data)
+        // Update CD Item details
         detail.varField7 = processInstance.processDefinitionId
         detail.varField8 = processStarted.toString()
         detail.varField9 = Timestamp.from(Instant.now()).toString()
-        detail.varField10 = "Start ministry inspection"
+        detail.varField10 = "Submitted to ministry"
+        // Update CD status
+        this.daoServices.updateCdItemDetailsInDB(detail,null)
+        detail.cdDocId?.let {
+            it.varField7 = processInstance.processDefinitionId
+            it.varField8 = processStarted.toString()
+            it.varField9 = Timestamp.from(Instant.now()).toString()
+            it.varField10 = "Submitted to ministry"
+            this.daoServices.updateCdDetailsInDB(it, null)
+        }
     }
 
     fun startAssignmentProcesses(data: MutableMap<String, Any?>, consignmentDocument: ConsignmentDocumentDetailsEntity) {
