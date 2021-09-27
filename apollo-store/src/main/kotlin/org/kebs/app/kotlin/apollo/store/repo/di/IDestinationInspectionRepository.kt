@@ -378,7 +378,7 @@ interface IDemandNoteRepository : HazelcastRepository<CdDemandNoteEntity, Long> 
     fun findByItemIdNo(itemIdNo: Long): CdDemandNoteEntity?
     fun findByItemId(itemId: CdItemDetailsEntity): CdDemandNoteEntity?
     fun findByItemIdAndPaymentStatus(itemId: CdItemDetailsEntity, paymentStatus: Int): CdDemandNoteEntity?
-
+    fun findByCdIdAndPaymentStatus(cdId:Long, paymentStatus: Int): CdDemandNoteEntity?
     fun findAllByPaymentStatus(paymentStatus: Int): List<CdDemandNoteEntity>?
 }
 

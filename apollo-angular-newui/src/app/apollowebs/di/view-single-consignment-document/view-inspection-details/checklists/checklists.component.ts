@@ -79,6 +79,7 @@ export class ChecklistsComponent implements OnInit {
                 break
             case "sampleUpdate":
                 this.openSampleUpdate(data)
+                break
             case "downlodSsf":
                 this.diService.downloadDocument("/api/v1/download/checklist/sampleSubmissionForm/" + data.id)
                 break

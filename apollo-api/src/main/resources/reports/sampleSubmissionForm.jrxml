@@ -91,7 +91,7 @@
 				<textElement>
 					<font size="10" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{ssfNum}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{ssfNum}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
@@ -113,7 +113,7 @@
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{product}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{product}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement style="TextField" x="298" y="148" width="259" height="20" uuid="e10c6aec-a680-42ce-9d21-734ac74e87a6">
@@ -198,7 +198,7 @@
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{officerName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{officerName}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="329" y="361" width="76" height="20" uuid="061b5fdc-f3f2-41cc-b1f7-8187885427ee"/>
@@ -228,7 +228,7 @@
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{genDate}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{genDate}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="TextField" x="416" y="361" width="138" height="20" uuid="2beb8ecc-4801-474d-bc36-45d4aebf3531">
@@ -237,7 +237,7 @@
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{dutyStation}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{dutyStation}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement style="TextStatic" x="7" y="96" width="158" height="20" uuid="2ae8e456-e68e-4447-b9fc-dde8d769fce2">
@@ -754,7 +754,7 @@
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{cocNum}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{cocNum}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="8" y="736" width="546" height="60" uuid="411b56de-6190-4856-8630-512b2fd596ba"/>

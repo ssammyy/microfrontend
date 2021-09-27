@@ -182,6 +182,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatMultilineTabDirective } from './apollowebs/di/mat-multiline-tab.directive';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { InspectionDashboardComponent } from './apollowebs/di/inspection-dashboard/inspection-dashboard.component';
 
 
 @NgModule({
@@ -384,6 +385,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
         ScfDetailsFormComponent,
         ComplianceUpdateFormComponent,
         MatMultilineTabDirective,
+        InspectionDashboardComponent,
     ],
     providers: [
         MatNativeDateModule,

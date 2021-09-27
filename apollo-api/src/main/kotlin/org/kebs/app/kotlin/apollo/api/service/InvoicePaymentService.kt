@@ -20,6 +20,7 @@ class InvoicePaymentService(
 
     fun rejectDemandNoteGeneration(cdUuid: String, demandNoteId: Long, remarks: String): Boolean {
         try {
+            val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             val demandNote = iDemandNoteRepo.findById(demandNoteId)
             if (demandNote.isPresent) {
@@ -28,11 +29,11 @@ class InvoicePaymentService(
                 demand.status = map.invalidStatus
                 demand.varField3 = "REJECTED"
                 demand.varField10 = remarks
-                consignmentDocument.varField10="Demand note rejected"
-                consignmentDocument.sendDemandNote=0
+                consignmentDocument.varField10 = "Demand note rejected"
+                consignmentDocument.sendDemandNote = map.invalidStatus
                 this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
                 this.iDemandNoteRepo.save(demand)
-                this.auditService.addHistoryRecord(consignmentDocument.id!!,consignmentDocument.ucrNumber, remarks, "REJECT DEMAND NOTE", "Demand note ${demandNoteId} rejected")
+                this.auditService.addHistoryRecord(consignmentDocument.id!!, consignmentDocument.ucrNumber, remarks, "REJECT DEMAND NOTE", "Demand note ${demandNoteId} rejected")
             }
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("DEMAND NOTE ERROR", ex)
@@ -51,12 +52,12 @@ class InvoicePaymentService(
                 demand.varField3 = "APPROVED"
                 demand.varField10 = remarks
                 // Update CD status
-                consignmentDocument.varField10="Demand Approved"
-                consignmentDocument.sendDemandNote=map.activeStatus
+                consignmentDocument.varField10 = "Demand Approved"
+                consignmentDocument.sendDemandNote = map.activeStatus
                 this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
                 // Update demand note
                 this.iDemandNoteRepo.save(demand)
-                this.auditService.addHistoryRecord(consignmentDocument.id!!,consignmentDocument.ucrNumber, remarks, "APPROVED DEMAND NOTE", "Demand note ${demandNoteId} approved")
+                this.auditService.addHistoryRecord(consignmentDocument.id!!, consignmentDocument.ucrNumber, remarks, "APPROVED DEMAND NOTE", "Demand note ${demandNoteId} approved")
             }
 
         } catch (ex: Exception) {
@@ -65,20 +66,23 @@ class InvoicePaymentService(
         return true
     }
 
-    fun sendDemandNote(cdUuid: String, demandNoteId: Long): Boolean {
+    fun updateDemandNoteCdStatus(cdUuid: String, demandNoteId: Long): Boolean {
         // Send demand note to user
-        val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
         val demandNote = iDemandNoteRepo.findById(demandNoteId)
         try {
-
-            this.daoServices.sendDemandNotGeneratedToKWIS(demandNoteId)
             // Update submission status
             if (demandNote.isPresent) {
                 val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
                 val demand = demandNote.get()
-                demand.varField3 = "SUBMITTED TO KENTRADE"
                 // Update CD status
-                consignmentDocument.varField10="Demand submitted to KenTrade"
+                consignmentDocument.cdStandard?.let { cdStd ->
+                    daoServices.updateCDStatus(
+                            cdStd,
+                            daoServices.awaitPaymentStatus.toLong()
+                    )
+                }
+                demand.varField3 = "UPDATED DEMAND NOTE STATUS"
+                consignmentDocument.varField10 = "UPDATED DEMAND NOTE STATUS"
                 this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
                 // Update Demand note status
                 this.iDemandNoteRepo.save(demand)
@@ -95,42 +99,76 @@ class InvoicePaymentService(
         return true
     }
 
-    fun invoicePaymentCompleted(cdUuid: String, demandNoteId: Long, receiptNo: String): Boolean {
+    fun generateInvoiceBatch(cdUuid: String, demandNoteId: Long): Boolean {
+        try {
+            val consignmentDocument = daoServices.findCDWithUuid(cdUuid)
+            //Send Demand Note
+            val demandNote = daoServices.findDemandNoteWithID(demandNoteId)
+            demandNote?.demandNoteNumber?.let {
+                val loggedInUser = commonDaoServices.findUserByUserName(demandNote.createdBy ?: "NA")
+                // Create payment batch
+                val batchInvoiceDetail = invoiceDaoService.createBatchInvoiceDetails(loggedInUser.userName!!, it)
+                // Add demand note details to batch
+                val updateBatchInvoiceDetail = invoiceDaoService.addInvoiceDetailsToBatchInvoice(
+                        demandNote,
+                        applicationMapProperties.mapInvoiceTransactionsForDemandNote,
+                        loggedInUser,
+                        batchInvoiceDetail
+                )
+                // Find recipient of the invoice from importer details
+                val importerDetails = consignmentDocument.cdImporter?.let {
+                    daoServices.findCDImporterDetails(it)
+                }
+                val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
+                with(myAccountDetails) {
+                    accountName = importerDetails?.name
+                    accountNumber = importerDetails?.pin
+                    currency = applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
+                }
+                // Create payment on staging table
+                invoiceDaoService.createPaymentDetailsOnStgReconciliationTable(
+                        loggedInUser.userName!!,
+                        updateBatchInvoiceDetail,
+                        myAccountDetails
+                )
+
+            }
+            return true
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to generate batch number", ex)
+        }
+        return false
+    }
+
+    fun updateDemandNoteSw(cdUuid: String, demandNoteId: Long): Boolean {
         try {
             val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
-            val demandNote = this.iDemandNoteRepo.findById(demandNoteId).get()
-            demandNote.demandNoteNumber?.let {
-                invoiceDaoService.createBatchInvoiceDetails("system", it)
-                        .let { batchInvoiceDetail ->
-                            val importerDetails = consignmentDocument.cdImporter?.let {
-                                daoServices.findCDImporterDetails(it)
-                            }
-                            val myAccountDetails =
-                                    InvoiceDaoService.InvoiceAccountDetails()
-                            with(myAccountDetails) {
-                                accountName = importerDetails?.name
-                                accountNumber = importerDetails?.pin
-                                currency =
-                                        applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
-                            }
-                            invoiceDaoService.createPaymentDetailsOnStgReconciliationTable(
-                                    "system",
-                                    batchInvoiceDetail,
-                                    myAccountDetails
-                            )
-                            // Send demand note to SW
-                            demandNote.id?.let { it1 ->
-                                daoServices.sendDemandNotGeneratedToKWIS(it1)
-                                consignmentDocument.cdStandard?.let { cdStd ->
-                                    daoServices.updateCDStatus(
-                                            cdStd,
-                                            daoServices.awaitPaymentStatus.toLong()
-                                    )
+            //2. Update payment status on KenTrade
+            daoServices.sendDemandNotGeneratedToKWIS(demandNoteId)
+            consignmentDocument.varField10 = "DEMAND NOTE SENT TO KENTRADE"
+            this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
+            return true
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to update status", ex)
+        }
+        return false
+    }
 
-                                }
-                            }
-                        }
+    fun invoicePaymentCompleted(cdUuid: String, demandNoteId: Long): Boolean {
+        try {
+            val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
+            // 1. Send demand payment status to SW
+            daoServices.sendDemandNotePayedStatusToKWIS(demandNoteId)
+            // 2. Update CD status
+            consignmentDocument.cdStandard?.let { cdStd ->
+                daoServices.updateCDStatus(
+                        cdStd,
+                        daoServices.paymentMadeStatus.toLong()
+                )
             }
+            // Update application status
+            consignmentDocument.varField10 = "INVOICE PAYMENT UPDATE ON SW"
+            this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
             return true
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("INVOICE UPDATE FAILED", ex)

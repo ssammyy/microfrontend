@@ -6,6 +6,7 @@ import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*
 
+
 @Entity
 @Table(name = "DAT_KEBS_CD_INSPECTION_AGROCHEM_ITEM_CHECKLIST")
 class CdInspectionAgrochemItemChecklistEntity : Serializable {
@@ -16,9 +17,12 @@ class CdInspectionAgrochemItemChecklistEntity : Serializable {
     @Id
     var id: Long? = null
 
-    @Column(name = "ITEM_ID")
-    @Basic
-    var itemId: Long? = null
+    @Transient
+    var itemIdTmp: Long?=null
+
+    @JoinColumn(name = "ITEM_ID", referencedColumnName = "ID")
+    @ManyToOne
+    var itemId: CdItemDetailsEntity? = null
 
     @Column(name = "SSF_ID")
     @Basic

@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.17.0.final using JasperReports Library version 6.17.0-6d93193241dd8cc42629e188b94f9e0bc5722efd  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="demandNote" pageWidth="595" pageHeight="842" whenNoDataType="NoPages" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9e00953a-ee21-49bc-8776-57c80bb03432">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter "/>
+	<style name="TextStatic" hTextAlign="Left" vTextAlign="Middle" rotation="None" fontName="Times New Roman" fontSize="12" isBold="true"/>
+	<style name="TextField" hTextAlign="Left" vTextAlign="Middle" rotation="None" fontName="Times New Roman" fontSize="12" isBold="false">
+		<box>
+			<bottomPen lineWidth="1.0" lineStyle="Dashed"/>
+		</box>
+	</style>
+	<parameter name="imagePath" class="java.lang.String"/>
+	<parameter name="mvirNum" class="java.lang.String"/>
+	<parameter name="inspectionRegion" class="java.lang.String"/>
+	<parameter name="genDate" class="java.lang.String"/>
+	<parameter name="officerName" class="java.lang.String"/>
+	<parameter name="dutyStation" class="java.lang.String"/>
+	<parameter name="importerName" class="java.lang.String"/>
+	<parameter name="importerAddress" class="java.lang.String"/>
+
+	<field name="mvirNum" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="mvirNum"/>
+	</field>
+	<field name="inspectionRegion" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="inspectionRegion"/>
+	</field>
+	<field name="genDate" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="genDate"/>
+	</field>
+	<field name="officerName" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="officerName"/>
+	</field>
+	<field name="dutyStation" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="dutyStation"/>
+	</field>
+	<field name="importerName" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="importerName"/>
+	</field>
+	<field name="importerAddress" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="importerAddress"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="119">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<image>
+				<reportElement style="TextField" x="131" y="-4" width="50" height="45" uuid="7546897c-61fb-4851-b7ad-934811644575"/>
+				<imageExpression><![CDATA[$P{imagePath}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="183" y="11" width="246" height="18" uuid="02d0061a-51ba-4e79-a291-921532af5414"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<text><![CDATA[STANDARDS ACT.CAP. 496 LAWS OF KENYA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="183" y="-4" width="267" height="18" uuid="898b0506-29ab-469f-979d-035b83ad796d">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[KENYA BUREAU OF STANDARDS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="64" width="545" height="29" uuid="b1a99762-1f6b-45cc-9b0c-7c918dedfff8">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="16" isBold="true" isItalic="false" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[MOTOR VEHICLE INSPECTION REQUEST (MVIR) FORM                                       ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="TextStatic" x="404" y="39" width="56" height="20" uuid="a5a7261e-d8fd-4d13-849e-056a047b6d24">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[MVIR No.]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="460" y="42" width="94" height="20" uuid="c936feb3-2718-47da-91fc-4f5eae0a9cf6"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{mvirNum}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="TextStatic" x="460" y="-4" width="68" height="20" uuid="67cf4520-e4e6-41bf-8539-3676e87496b8">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[STA/22]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="TextStatic" x="222" y="89" width="100" height="20" uuid="722e6203-a62a-4b66-8e66-26079d659a8e">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[(KS 06-1515)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="371" y="92" width="50" height="20" uuid="8bb9e1c8-31ef-4bfa-934f-49b748e548ff"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Date]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="TextField" x="404" y="89" width="125" height="20" uuid="4b4566fa-7ab6-4327-bce3-bfb0919a98d9">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{genDate}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="802">
+			<textField>
+				<reportElement style="TextField" x="243" y="29" width="345" height="20" uuid="01516d15-71b0-419a-8bea-f13e74300f15">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{inspectionRegion}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="TextStatic" x="5" y="29" width="247" height="20" uuid="36ae5c94-8166-455b-a8c0-7baf684b5bb9">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[To.  Chief Engineer Motor vehicles]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="TextStatic" x="7" y="60" width="547" height="37" uuid="2ae8e456-e68e-4447-b9fc-dde8d769fce2">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Please carry out mechanical inspection on the motor vehicle with the following particulars:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="TextStatic" x="7" y="97" width="110" height="20" uuid="cf1d79c6-ea24-49b6-abf4-f2dfe2f02a7a">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Name of Importer]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="TextStatic" x="7" y="152" width="131" height="20" uuid="ee9da6af-52e7-43d3-a30b-10941268fe1f">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Motor Vehicle Details]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="TextField" x="8" y="176" width="143" height="20" uuid="dad3a1d3-5202-4c8b-a9c4-8a990db4d686">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Make/Type of Vehicle]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="134" y="170" width="420" height="20" uuid="29b8122b-75b1-41c8-9ba3-210fce371569"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[__________________________________________________________________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="TextStatic" x="5" y="273" width="157" height="30" uuid="bef99d51-faa4-4377-b8aa-a8f2c73f0dce">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Documentation Details]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="TextStatic" x="-1" y="368" width="163" height="26" uuid="5a28bad9-2306-4f25-b61f-360be32b16cc">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Name of Authorized Officer]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="TextField" x="123" y="97" width="431" height="20" uuid="1bcf37fe-c20f-40f2-afef-585b4dff86f1">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{importerName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="TextField" x="123" y="123" width="431" height="20" uuid="95e27aab-a705-41eb-bafb-4b36e046103b">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{importerAddress}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="222" y="310" width="76" height="20" uuid="2db97edf-3489-46ca-9782-4b06af3fec8f"/>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[PRO No.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="79" y="301" width="143" height="20" uuid="519ad724-f07a-4c3e-b15d-afe613cea38d"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[__________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="262" y="301" width="128" height="20" uuid="62bb5372-dbd7-4716-aab6-eff851cb0145"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[_________________________________________________________________________________________________________________________________________]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="TextField" x="69" y="334" width="485" height="20" uuid="cc91ab24-a4a9-47f0-95b1-48317c5a5589">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{dutyStation}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="3" y="309" width="85" height="20" uuid="cc5d9989-9000-475a-aa0b-ba780657e4b5"/>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Customs I.E No.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="339" width="88" height="20" uuid="41a45fc0-6c01-4002-b4c9-f645d3e51986"/>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Entry Point]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="-1" y="410" width="76" height="20" uuid="8d5fa194-4b0e-4fb6-8d84-046027cd3b82"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Signed]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="39" y="400" width="225" height="20" uuid="ec33be78-650b-4040-b91b-7220cbe4ab93"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[______________________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="264" y="410" width="50" height="20" uuid="8b6af667-d200-4377-853a-fa10d0788cc8"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="291" y="401" width="263" height="20" uuid="e4b5b2be-bdb8-4796-b41f-04367ed10331"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[________________________________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="TextStatic" x="8" y="121" width="110" height="20" uuid="538fc00f-93e9-4157-a87c-6e301dcf7d5e">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Address]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="TextField" x="7" y="201" width="143" height="20" uuid="7147e84f-7746-4759-b87c-211ada67a3bb">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Engine No.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="74" y="195" width="480" height="20" uuid="62c02303-6ab3-499a-b6d4-92cce641f2b2"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[_____________________________________________________________________________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="74" y="219" width="480" height="20" uuid="191e48c8-8ac2-4545-a6fc-06506d2883ac"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[_____________________________________________________________________________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="TextField" x="7" y="225" width="143" height="20" uuid="2046efba-22cf-4e0b-835b-30259d0978ac">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Chassis No.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="TextField" x="4" y="247" width="143" height="20" uuid="ccb27edd-6a76-4391-848c-0cb2cc375182">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Year of Manufacture]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="123" y="241" width="428" height="20" uuid="fec0d6b4-de80-4309-8f58-5ff05d1d5f22"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[_____________________________________________________________________________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="430" y="300" width="124" height="20" uuid="91493db1-38c5-4152-9b26-3f867a90e185"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[_________________________________________________________________________________________________________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="390" y="309" width="76" height="20" uuid="0c8293ca-b044-425c-915b-e757e99079bf"/>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[IDF No.]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="TextField" x="160" y="370" width="394" height="20" uuid="bfa44a6d-224b-4416-aa26-bfb6ec50d481">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{officerName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="TextStatic" x="3" y="450" width="71" height="26" uuid="6270596e-df3c-4bf2-8cfd-9e5f7eae67c6">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Remarks]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="490" width="543" height="20" uuid="b2329107-af7d-4eb9-abc6-2744bfab897f"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[______________________________________________________________________________________________________________________________________________________________________________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="469" width="543" height="20" uuid="f10f4e43-c90d-48e1-bc22-564f1fa5b2c3"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[______________________________________________________________________________________________________________________________________________________________________________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="510" width="543" height="20" uuid="fbddc308-6cb4-4306-8a92-94266433a9e5"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[______________________________________________________________________________________________________________________________________________________________________________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="531" width="543" height="20" uuid="f0407ca2-4347-45a0-bf35-929b4813c68f"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[______________________________________________________________________________________________________________________________________________________________________________________________________________]]></text>
+			</staticText>
+		</band>
+	</detail>
+</jasperReport>

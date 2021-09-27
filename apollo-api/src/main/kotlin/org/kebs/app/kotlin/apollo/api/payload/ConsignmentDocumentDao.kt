@@ -20,6 +20,7 @@ class ConsignmentEnableUI {
     var supervisor: Boolean? = null
     var inspector: Boolean? = null
     var demandNote: Boolean = false
+    var demandNoteRejected: Boolean=false
     var demandNoteDisabled: Boolean = false
     var sendCoi: Boolean? = null
     var targetItem: Boolean? = null
@@ -60,6 +61,7 @@ class ConsignmentEnableUI {
                 targeted = cd.targetStatus == map.activeStatus
                 targetRejected = cd.targetStatus == map.invalidStatus
                 idfAvailable = cd.idfNumber != null
+                demandNoteRejected=cd.sendDemandNote==map.invalidStatus
                 demandNoteDisabled = (cd.sendDemandNote == map.initStatus || cd.sendDemandNote == map.activeStatus || cd.inspectionChecklist==map.activeStatus)
                 owner = cd.assignedInspectionOfficer?.userName == authentication.name
                 demandNote = cd.sendDemandNote == map.activeStatus

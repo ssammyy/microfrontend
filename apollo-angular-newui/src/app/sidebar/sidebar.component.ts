@@ -31,7 +31,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'Dashboard',
         type: 'link',
         icontype: 'dashboard',
-        privilege: ['USER']
+        privilege: ['USER','DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
     },
 
     {
@@ -132,6 +132,7 @@ export const ROUTES: RouteInfo[] = [
         privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
         icontype: 'receipt'
     },
+
     {
         path: '/tasks',
         title: 'Import Inspection Tasks',

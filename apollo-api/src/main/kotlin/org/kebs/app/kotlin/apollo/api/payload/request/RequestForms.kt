@@ -132,7 +132,7 @@ class CheckListForm {
         val listItems = mutableListOf<CdInspectionEngineeringItemChecklistEntity>()
         this.engineering?.items?.forEach { item ->
             val dt = CdInspectionEngineeringItemChecklistEntity()
-            dt.itemId = item.itemId
+            dt.itemIdTmp = item.itemId
             dt.compliant = item.compliant
             dt.category = item.category
             dt.sampled = item.sampled
@@ -168,7 +168,7 @@ class CheckListForm {
         val listItems = mutableListOf<CdInspectionAgrochemItemChecklistEntity>()
         agrochem?.items?.forEach { item ->
             val dt = CdInspectionAgrochemItemChecklistEntity()
-            dt.itemId = item.itemId
+            dt.itemIdTmp = item.itemId
             dt.compliant = item.compliant
             dt.category = item.category
             dt.sampled = item.sampled
@@ -203,7 +203,7 @@ class CheckListForm {
         val listItems = mutableListOf<CdInspectionOtherItemChecklistEntity>()
         others?.items?.forEach { item ->
             val dt = CdInspectionOtherItemChecklistEntity()
-            dt.itemId = item.itemId
+            dt.itemIdTmp = item.itemId
             dt.compliant = item.compliant
             dt.serialNumber = "OT${item.itemId}${Random(12).nextULong()}"
             dt.category = item.category

@@ -13,7 +13,12 @@ export class DestinationInspectionService {
 
     constructor(private client: HttpClient) {
     }
-
+    loadPersonalDashboard(): Observable<any>{
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/dashboard/personal"))
+    }
+    loadAllDashboard(): Observable<any>{
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/dashboard/all"))
+    }
     sendDemandNote(data: any, consignmentUuid: any): Observable<any> {
         return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/demand/note/generate/" + consignmentUuid), data)
     }

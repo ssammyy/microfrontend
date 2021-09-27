@@ -28,7 +28,6 @@ export class VehicleItemChecklistComponent implements OnInit {
         this.form = this.fb.group({
             stationId: [0],
             makeVehicle: [formData ? formData.makeVehicle : '', [Validators.required, Validators.maxLength(256)]],
-            chassisNo: [formData ? formData.chassisNo : '', Validators.maxLength(256)],
             engineNoCapacity: [formData ? formData.engineNoCapacity : '', Validators.maxLength(256)],
             manufacturerDate: [formData ? formData.manufacturerDate : '', Validators.maxLength(256)],
             ksEasApplicable: [formData?formData.ksEasApplicable: '',Validators.maxLength(23)],

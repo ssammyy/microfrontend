@@ -85,6 +85,7 @@ import {DiCorComponent} from "./apollowebs/di/view-single-consignment-document/d
 import {DiCocComponent} from "./apollowebs/di/view-single-consignment-document/di-coc/di-coc.component";
 import {ViewInspectionDetailsComponent} from "./apollowebs/di/view-single-consignment-document/view-inspection-details/view-inspection-details.component";
 import {ChecklistDataFormComponent} from "./apollowebs/di/view-single-consignment-document/item-details-list-view/checklist-data-form/checklist-data-form.component";
+import {InspectionDashboardComponent} from "./apollowebs/di/inspection-dashboard/inspection-dashboard.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -473,7 +474,16 @@ const routes: Routes = [
             }
         ]
     },
-
+    {
+        path: 'dashboard',
+        component: AdminLayoutComponent,
+        children: [
+            {
+                path: 'inspection',
+                component: InspectionDashboardComponent
+            }
+        ]
+    },
     {
         path: 'ministry',
         component: AdminLayoutComponent,

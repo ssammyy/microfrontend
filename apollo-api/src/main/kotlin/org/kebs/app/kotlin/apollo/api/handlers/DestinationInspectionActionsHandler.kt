@@ -69,7 +69,7 @@ class DestinationInspectionActionsHandler(
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             this.diBpmn.startCompliantProcess(map, data, consignmentDocument)
             response.responseCode = ResponseCodes.SUCCESS_CODE
-            response.message = "Success"
+            response.message = "Compliant request received, please await approval"
         } catch (ex: Exception) {
             response.message = ex.localizedMessage
             response.responseCode = ResponseCodes.EXCEPTION_STATUS

@@ -238,60 +238,9 @@ class InvoiceHandlers(
         try {
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             val cdUuid = req.pathVariable("cdUuid")
-            val consignmentDocument = daoServices.findCDWithUuid(cdUuid)
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             // Update demand note
-            val form = req.body(ConsignmentUpdateRequest::class.java)
-            with(consignmentDocument) {
-                sendDemandNote = map.activeStatus
-                sendDemandNoteRemarks = form.remarks
-            }
-            this.daoServices.updateCdDetailsInDB(consignmentDocument, loggedInUser)
-            //Send Demand Note
-            val demandNote = consignmentDocument.id?.let {
-                daoServices.findDemandNoteWithCDID(
-                        it
-                )
-            }
-            //TODO: DemandNote Simulate payment Status
-            demandNote?.demandNoteNumber?.let {
-                invoiceDaoService.createBatchInvoiceDetails(loggedInUser.userName!!, it)
-                        .let { batchInvoiceDetail ->
-                            invoiceDaoService.addInvoiceDetailsToBatchInvoice(
-                                    demandNote,
-                                    applicationMapProperties.mapInvoiceTransactionsForDemandNote,
-                                    loggedInUser,
-                                    batchInvoiceDetail
-                            )
-                                    .let { updateBatchInvoiceDetail ->
-                                        val importerDetails = consignmentDocument.cdImporter?.let {
-                                            daoServices.findCDImporterDetails(it)
-                                        }
-                                        val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
-                                        with(myAccountDetails) {
-                                            accountName = importerDetails?.name
-                                            accountNumber = importerDetails?.pin
-                                            currency = applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
-                                        }
-                                        invoiceDaoService.createPaymentDetailsOnStgReconciliationTable(
-                                                loggedInUser.userName!!,
-                                                updateBatchInvoiceDetail,
-                                                myAccountDetails
-                                        )
-                                        demandNote.id?.let { it1 ->
-                                            consignmentDocument.cdStandard?.let { cdStd ->
-                                                daoServices.updateCDStatus(
-                                                        cdStd,
-                                                        daoServices.awaitPaymentStatus.toLong()
-                                                )
 
-                                            }
-                                        }
-                                        response.responseCode = ResponseCodes.SUCCESS_CODE
-                                        response.message = "Submitted"
-                                    }
-                        }
-            }
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("SIMULATE PAYMENT", ex)
             response.responseCode = ResponseCodes.EXCEPTION_STATUS

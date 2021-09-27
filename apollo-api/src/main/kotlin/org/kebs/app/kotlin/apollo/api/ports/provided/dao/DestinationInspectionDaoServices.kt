@@ -910,10 +910,10 @@ class DestinationInspectionDaoServices(
     ): MutableList<CdDemandNoteEntity> {
         val demandNotes: MutableList<CdDemandNoteEntity> = mutableListOf()
         cdItemList.forEach { item ->
-            val demandNote = findDemandNoteWithPaymentStatus(item, status)
-            if (demandNote != null) {
-                demandNotes.add(demandNote)
-            }
+//            val demandNote = findDemandNoteWithPaymentStatus(item, status)
+//            if (demandNote != null) {
+//                demandNotes.add(demandNote)
+//            }
         }
         return demandNotes
     }
@@ -1439,12 +1439,8 @@ class DestinationInspectionDaoServices(
 //                ?: throw Exception("Demand Note Details with [Item ID = ${item.id}], does not Exist")
     }
 
-    fun findDemandNoteWithPaymentStatus(item: CdItemDetailsEntity, status: Int): CdDemandNoteEntity? {
-        iDemandNoteRepo.findByItemIdAndPaymentStatus(item, status)
-                ?.let { demandNoteDetails ->
-                    return demandNoteDetails
-                }
-                ?: throw Exception("Demand Note Details with [Item ID = ${item.id} and Status ${status}], does not Exist")
+    fun findDemandNoteWithPaymentStatus(cdId: Long, status: Int): CdDemandNoteEntity? {
+        return iDemandNoteRepo.findByCdIdAndPaymentStatus(cdId, status)
     }
 
 //    fun findDemandNoteByCDID(invoiceBatchId:Long): List<CdDemandNoteEntity> {

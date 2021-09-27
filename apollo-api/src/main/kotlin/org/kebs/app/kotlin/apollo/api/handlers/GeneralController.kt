@@ -67,7 +67,7 @@ class GeneralController(
         try {
             val map = hashMapOf<String, Any>()
 //        map["ITEM_ID"] = id
-            val sampleCollect = listOf<Any>()
+            var sampleCollect: List<Any>? = null
             map["imagePath"] = imageFile
             val fileName = "${docType.toUpperCase()}_$downloadId.pdf"
             when {
@@ -82,15 +82,19 @@ class GeneralController(
                 }
                 docType.equals("allAgrochemChecklist") -> {
                     map.putAll(this.checklistService.getAgrochemChecklistDetails(downloadId))
+                    sampleCollect=map["items"] as List<Any>
                 }
                 docType.equals("allEngineringChecklist") -> {
                     map.putAll(this.checklistService.getEngineeringChecklistDetails(downloadId))
+                    sampleCollect=map["items"] as List<Any>
                 }
                 docType.equals("allOtherChecklist") -> {
                     map.putAll(this.checklistService.getOtherChecklistDetails(downloadId))
+                    sampleCollect=map["items"] as List<Any>
                 }
                 docType.equals("allVehicleChecklist") -> {
-                    map.putAll(this.checklistService.getOtherChecklistDetails(downloadId))
+                    map.putAll(this.checklistService.getVehicleChecklistDetails(downloadId))
+                    sampleCollect=map["items"] as List<Any>
                 }
                 docType.equals("allChecklist") -> {
 
@@ -103,7 +107,11 @@ class GeneralController(
             }
             val designPath="classpath:reports/$docType.jrxml"
             KotlinLogging.logger { }.info("Print report: $designPath: $map")
-            val stream = reportsDaoService.extractReportEmptyDataSource(map, designPath)
+            val stream =sampleCollect?.let {
+                reportsDaoService.extractReport(map, designPath,it)
+            }?: run {
+                reportsDaoService.extractReportEmptyDataSource(map, designPath)
+            }
             download(stream, fileName, httResponse)
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("FAILED TO READ DATA", ex)

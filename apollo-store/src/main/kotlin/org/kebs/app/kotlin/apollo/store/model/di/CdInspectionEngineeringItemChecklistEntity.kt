@@ -15,9 +15,12 @@ class CdInspectionEngineeringItemChecklistEntity : Serializable {
     @Id
     var id: Long? = null
 
-    @Column(name = "ITEM_ID")
-    @Basic
-    var itemId: Long? = null
+    @Transient
+    var itemIdTmp: Long? = null
+
+    @JoinColumn(name = "ITEM_ID",referencedColumnName = "ID")
+    @ManyToOne
+    var itemId: CdItemDetailsEntity? = null
 
     @Column(name = "SSF_ID")
     @Basic

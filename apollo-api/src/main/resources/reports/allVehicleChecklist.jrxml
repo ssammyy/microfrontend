@@ -64,36 +64,38 @@
     <field name="serialNumber" class="java.lang.String">
         <property name="com.jaspersoft.studio.field.label" value="serialNumber"/>
     </field>
-    <field name="brand" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="brand"/>
+    <field name="makeVehicle" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.label" value="makeVehicle"/>
     </field>
-    <field name="ksEasApplicable" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="ksEasApplicable"/>
+    <field name="chassisNo" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.label" value="chassisNo"/>
     </field>
-    <field name="quantityDeclared" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="quantityDeclared"/>
+    <field name="engineNoCapacity" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.label" value="engineNoCapacity"/>
     </field>
-    <field name="quantityVerified" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="quantityVerified"/>
+    <field name="manufactureDate" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.label" value="manufactureDate"/>
     </field>
-    <field name="packagingLabellig" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="packagingLabellig"/>
+    <field name="registrationDate" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.label" value="registrationDate"/>
     </field>
-    <field name="physicalCondition" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="physicalCondition"/>
+    <field name="odemetreReading" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.label" value="odemetreReading"/>
     </field>
-    <field name="defects" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="defects"/>
+    <field name="driveRhdLhd" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.label" value="driveRhdLhd"/>
     </field>
-    <field name="presenceAbsenceBanned" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="presenceAbsenceBanned"/>
+    <field name="transmissionAutoManual" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.label" value="transmissionAutoManual"/>
     </field>
-    <field name="documentation" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="documentation"/>
+    <field name="color" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.label" value="color"/>
     </field>
-
-    <field name="sampled" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="sampled"/>
+    <field name="compliant" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.label" value="compliant"/>
+    </field>
+    <field name="overallAppearance" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.label" value="overallAppearance"/>
     </field>
     <field name="remarks" class="java.lang.String">
         <property name="com.jaspersoft.studio.field.label" value="remarks"/>
@@ -486,7 +488,7 @@
                         <rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
                     </box>
                     <textElement textAlignment="Center" rotation="None"/>
-                    <text><![CDATA[Product Description ]]></text>
+                    <text><![CDATA[MAKE OF VEHICLE]]></text>
                 </staticText>
                 <staticText>
                     <reportElement style="ChecklistHeader" x="237" y="31" width="41" height="110" uuid="56a4bbd8-35e4-486c-b420-cb93ede903fb"/>
@@ -497,7 +499,7 @@
                         <rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
                     </box>
                     <textElement textAlignment="Center"/>
-                    <text><![CDATA[Brand]]></text>
+                    <text><![CDATA[CHASIS NO.]]></text>
                 </staticText>
                 <staticText>
                     <reportElement style="ChecklistHeader" x="278" y="31" width="53" height="110" uuid="ae99abe3-2eed-4c7d-b8d0-18cd36be9f20"/>
@@ -508,7 +510,7 @@
                         <rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
                     </box>
                     <textElement textAlignment="Center"/>
-                    <text><![CDATA[Ks EAS Applicable]]></text>
+                    <text><![CDATA[ENGINE NO./CAPACITY]]></text>
                 </staticText>
                 <staticText>
                     <reportElement style="ChecklistHeader" x="331" y="31" width="49" height="110" uuid="1d60d3f6-b26d-4f3d-bdc0-2229899358dc"/>
@@ -519,7 +521,7 @@
                         <rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
                     </box>
                     <textElement textAlignment="Center"/>
-                    <text><![CDATA[Quantity Declared (No. Of items/packages)]]></text>
+                    <text><![CDATA[MANUFACTURER DATE]]></text>
                 </staticText>
                 <staticText>
                     <reportElement style="ChecklistHeader" x="381" y="31" width="51" height="110" isRemoveLineWhenBlank="true" uuid="9f602307-01aa-4852-8fe4-85057c503d6b"/>
@@ -530,7 +532,7 @@
                         <rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
                     </box>
                     <textElement textAlignment="Center"/>
-                    <text><![CDATA[Quantity Verified (No. Of items/packages)]]></text>
+                    <text><![CDATA[REGISTRATION DATE]]></text>
                 </staticText>
                 <staticText>
                     <reportElement style="ChecklistHeader" x="433" y="51" width="73" height="90" uuid="4352b603-e238-4040-887e-c6dbc316d66d">
@@ -539,7 +541,7 @@
                     <textElement textAlignment="Center">
                         <font size="10"/>
                     </textElement>
-                    <text><![CDATA[Packaging/labelling ]]></text>
+                    <text><![CDATA[ODOMETRE READING]]></text>
                 </staticText>
                 <staticText>
                     <reportElement style="ChecklistHeader" x="506" y="50" width="57" height="91" uuid="ed1a8a62-30ec-47bd-8a2f-5cc8d9a54bcc">
@@ -548,7 +550,7 @@
                     <textElement textAlignment="Center">
                         <font size="10"/>
                     </textElement>
-                    <text><![CDATA[Physical condition ]]></text>
+                    <text><![CDATA[DRIVE (RHD/LHD)]]></text>
                 </staticText>
                 <staticText>
                     <reportElement style="ChecklistHeader" x="563" y="50" width="55" height="91" uuid="c13cb0c0-731a-4de2-81ff-67030dc0f9fe">
@@ -557,7 +559,7 @@
                     <textElement textAlignment="Center">
                         <font size="10"/>
                     </textElement>
-                    <text><![CDATA[Defects ]]></text>
+                    <text><![CDATA[TRANSMISSION(AUTOMATIC/MANUAL)]]></text>
                 </staticText>
                 <staticText>
                     <reportElement style="ChecklistHeader" x="618" y="51" width="46" height="90" uuid="02bf57b6-3be0-4612-a8c6-0bad896f6e55">
@@ -566,7 +568,7 @@
                     <textElement textAlignment="Center">
                         <font size="10"/>
                     </textElement>
-                    <text><![CDATA[Presence/absence of banned items ]]></text>
+                    <text><![CDATA[COLOR]]></text>
                 </staticText>
                 <staticText>
                     <reportElement style="ChecklistHeader" x="664" y="51" width="46" height="90" uuid="d58fe1c3-8c26-4ea9-bf6f-f8140e8d9e27">
@@ -575,7 +577,7 @@
                     <textElement textAlignment="Center">
                         <font size="10"/>
                     </textElement>
-                    <text><![CDATA[Documentation (heath/fumigation certificates  e.t.c.)  ]]></text>
+                    <text><![CDATA[OVERAL APPEARANCE]]></text>
                 </staticText>
                 <staticText>
                     <reportElement style="ChecklistHeader" x="710" y="31" width="33" height="110" uuid="732cfdf0-6022-4ef2-a6c3-07cb353259c2">
@@ -584,7 +586,7 @@
                     <textElement textAlignment="Center" rotation="Left">
                         <font size="10"/>
                     </textElement>
-                    <text><![CDATA[SAMPLED]]></text>
+                    <text><![CDATA[COMPLIANT]]></text>
                 </staticText>
                 <staticText>
                     <reportElement style="ChecklistHeader" x="743" y="31" width="57" height="110" uuid="0757c030-d68e-4069-be99-46886cc416b1">
@@ -675,7 +677,7 @@
                     <bottomPen lineWidth="1.0"/>
                 </box>
                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                <textFieldExpression><![CDATA[$F{productDescription}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$F{makeVehicle}]]></textFieldExpression>
             </textField>
             <textField isBlankWhenNull="true">
                 <reportElement style="ChecklistValue" x="237" y="0" width="41" height="90" uuid="9df4ab69-5ae1-4338-989d-586e85534e1f">
@@ -687,7 +689,7 @@
                     <bottomPen lineWidth="1.0"/>
                 </box>
                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                <textFieldExpression><![CDATA[$F{brand}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$F{chassisNo}]]></textFieldExpression>
             </textField>
             <textField isBlankWhenNull="true">
                 <reportElement style="ChecklistValue" x="278" y="0" width="53" height="90" uuid="e8b377cb-5186-4094-a6bb-0a11c200ce71">
@@ -699,7 +701,7 @@
                     <bottomPen lineWidth="1.0"/>
                 </box>
                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                <textFieldExpression><![CDATA[$F{ksEasApplicable}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$F{engineNoCapacity}]]></textFieldExpression>
             </textField>
             <textField isBlankWhenNull="true">
                 <reportElement style="ChecklistValue" x="331" y="0" width="50" height="90" uuid="e8b1fc72-c516-4395-9b18-b95d14d167f8">
@@ -711,7 +713,7 @@
                     <bottomPen lineWidth="1.0"/>
                 </box>
                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                <textFieldExpression><![CDATA[$F{quantityDeclared}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$F{manufactureDate}]]></textFieldExpression>
             </textField>
             <textField isBlankWhenNull="true">
                 <reportElement style="ChecklistValue" x="381" y="0" width="50" height="90" uuid="57f22fe3-3bd2-41b9-8551-bf233ea53850">
@@ -724,37 +726,37 @@
                     <rightPen lineWidth="1.0"/>
                 </box>
                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                <textFieldExpression><![CDATA[$F{quantityVerified}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$F{registrationDate}]]></textFieldExpression>
             </textField>
             <textField isBlankWhenNull="true">
                 <reportElement style="ChecklistValue" x="431" y="0" width="75" height="90" uuid="f6a46f4b-a553-4d7b-a532-bdf8f518b466"/>
                 <textElement textAlignment="Center"/>
-                <textFieldExpression><![CDATA[$F{packagingLabellig}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$F{odemetreReading}]]></textFieldExpression>
             </textField>
             <textField isBlankWhenNull="true">
                 <reportElement style="ChecklistValue" x="506" y="0" width="57" height="90" uuid="2b970cec-9935-433b-9a6a-621f726afe8b"/>
                 <textElement textAlignment="Center"/>
-                <textFieldExpression><![CDATA[$F{physicalCondition}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$F{driveRhdLhd}]]></textFieldExpression>
             </textField>
             <textField isBlankWhenNull="true">
                 <reportElement style="ChecklistValue" x="563" y="0" width="55" height="90" uuid="b8982362-8e80-4fa5-b87e-3f8a10528f49"/>
                 <textElement textAlignment="Center"/>
-                <textFieldExpression><![CDATA[$F{defects}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$F{transmissionAutoManual}]]></textFieldExpression>
             </textField>
             <textField isBlankWhenNull="true">
                 <reportElement style="ChecklistValue" x="618" y="0" width="46" height="90" uuid="86768578-b2be-46e7-9b97-88b991be492d"/>
                 <textElement textAlignment="Center"/>
-                <textFieldExpression><![CDATA[$F{presenceAbsenceBanned}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$F{color}]]></textFieldExpression>
             </textField>
             <textField isBlankWhenNull="true">
                 <reportElement style="ChecklistValue" x="664" y="0" width="46" height="90" uuid="f576bacd-0186-4a55-8688-28d82c7ae81f"/>
                 <textElement textAlignment="Center"/>
-                <textFieldExpression><![CDATA[$F{documentation}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$F{overallAppearance}]]></textFieldExpression>
             </textField>
             <textField isBlankWhenNull="true">
                 <reportElement style="ChecklistValue" x="710" y="0" width="33" height="90" uuid="473e5906-d385-47b6-9e95-dbc405bf6d82"/>
                 <textElement textAlignment="Center"/>
-                <textFieldExpression><![CDATA[$F{sampled}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$F{compliant}]]></textFieldExpression>
             </textField>
             <textField isBlankWhenNull="true">
                 <reportElement style="ChecklistValue" x="743" y="0" width="57" height="90" uuid="a7ea559d-570c-462f-ad85-6be88b5e85af"/>
