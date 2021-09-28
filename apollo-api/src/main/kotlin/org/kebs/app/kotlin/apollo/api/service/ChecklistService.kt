@@ -114,7 +114,7 @@ class ChecklistService(
                 val itemDetails = iCdItemsRepo.findById(itm.itemIdTmp!!)
                 if (itemDetails.isPresent) {
                     val detail = itemDetails.get()
-                    var checklistItem: CdInspectionEngineeringItemChecklistEntity? = this.engineeringItemChecklistRepository.findByInspectionAndItemId(engineering, itm.itemIdTmp)
+                    var checklistItem: CdInspectionEngineeringItemChecklistEntity? = this.engineeringItemChecklistRepository.findByInspectionAndItemId_Id(engineering, itm.itemIdTmp)
                     if (checklistItem == null) {
                         checklistItem = itm
                         checklistItem.createdBy = loggedInUser.userName
@@ -175,7 +175,7 @@ class ChecklistService(
                 val itemDetails = iCdItemsRepo.findById(itm.itemIdTmp!!)
                 if (itemDetails.isPresent) {
                     val detail = itemDetails.get()
-                    var checklistItem: CdInspectionAgrochemItemChecklistEntity? = this.agrochemItemChecklistRepository.findByInspectionAndItemId(agrochemChecklist, itm.itemIdTmp)
+                    var checklistItem: CdInspectionAgrochemItemChecklistEntity? = this.agrochemItemChecklistRepository.findByInspectionAndItemId_Id(agrochemChecklist, itm.itemIdTmp)
                     if (checklistItem == null) {
                         checklistItem = itm
                         checklistItem.itemId = detail
@@ -314,7 +314,7 @@ class ChecklistService(
                 val itemDetails = iCdItemsRepo.findById(itm.itemIdTmp!!)
                 if (itemDetails.isPresent) {
                     val detail = itemDetails.get()
-                    var checklistItem: CdInspectionOtherItemChecklistEntity? = this.otherItemChecklistRepository.findByInspectionAndItemId(otherChecklist, itm.itemIdTmp)
+                    var checklistItem: CdInspectionOtherItemChecklistEntity? = this.otherItemChecklistRepository.findByInspectionAndItemId_Id(otherChecklist, itm.itemIdTmp)
                     if (checklistItem == null) {
                         checklistItem = itm
                         checklistItem.createdBy = loggedInUser.userName
