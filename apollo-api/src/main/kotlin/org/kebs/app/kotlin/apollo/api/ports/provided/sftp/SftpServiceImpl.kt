@@ -139,11 +139,11 @@ class SftpServiceImpl(
                     log.transactionDate = Date()
                     log.transactionStartDate = Timestamp.from(Instant.now())
                     log.callingMethod = Thread.currentThread().name
+                    log.flowDirection = "IN"
                     try {
                         val entry: ChannelSftp.LsEntry = file as ChannelSftp.LsEntry
                         log.filename = entry.filename
                         log.transactionStatus = 0
-                        log.flowDirection = "IN"
                         if (validateKeswsFileByDocType(entry.filename, docType)) {
                             filesList.add(convertInputstreamToFile(sftp.get(entry.filename), entry.filename))
                         }
