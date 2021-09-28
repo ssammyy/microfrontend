@@ -26,8 +26,9 @@ export class OtherInspectionChecklistComponent implements OnInit {
 
         this.otherItemChecklist.statusChanges
             .subscribe(
-                data => {
+                valid => {
                     if (this.selectedItems && this.selectedItems.length>0) {
+                        let data=this.otherItemChecklist.value
                         let v = this.validateItems(data)
                         this.valid.emit(v)
                         // At least one other items selected

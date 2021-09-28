@@ -10,13 +10,13 @@
                 <div class="list-text-accordion">{{inspectionDetails.inspectionDate}}</div>
             </li>
         </ul>
-        <button class="btn btn-sm btn-primary" (click)="downloadVehicleChecklist()">Download</button>
+        <button class="btn-sm btn-primary" (click)="downloadVehicleChecklist()">Download</button>
     </div>
     <div class="row">
         <div class="col-md-12 mb-3">
             <label style="color: #0082f3">Items</label>
         </div>
-        <div class="col-md-12 mb-3">
+        <div class="col-sm-12 col-md-12 table">
             <mat-table class="table-striped table-condensed table-responsive" [dataSource]="inspectionDetails.items">
                 <ng-container matColumnDef="id">
                     <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
@@ -65,11 +65,22 @@
                 </ng-container>
                 <ng-container matColumnDef="actions">
                     <mat-header-cell *matHeaderCellDef>Action/Download</mat-header-cell>
-                    <mat-cell class="button-row" mat-cell *matCellDef="let element">
-                        <button mat-button  color="primary" (click)="customAction(element,'downloadReport')">Download Report</button>
-                        <button mat-button  color="primary" (click)="customAction(element,'downloadUnfilled')">Download Unfilled</button>
-                        <button *ngIf="element.hasMinistryInspection" mat-button  color="primary" (click)="customAction(element,'downloadChecklist')">Download Ministry Checklist</button>
-                        <button *ngIf="!element.ministryStation" mat-button  color="primary" (click)="customAction(element,'requestMinistryChecklist')">Request Ministry Inspection</button>
+                    <mat-cell mat-cell *matCellDef="let element">
+                        <div class="button-row">
+                            <button class="btn-sm btn-primary" (click)="customAction(element,'downloadReport')">Download
+                                Report
+                            </button>
+                            <button class="btn-sm btn-primary" (click)="customAction(element,'downloadUnfilled')">
+                                Download Unfilled
+                            </button>
+                            <button class="btn-sm btn-primary" *ngIf="element.hasMinistryInspection"
+                                    (click)="customAction(element,'downloadChecklist')">Download Ministry Checklist
+                            </button>
+                            <button class="btn-sm btn-primary" *ngIf="!element.ministryStation"
+                                    (click)="customAction(element,'requestMinistryChecklist')">Request Ministry
+                                Inspection
+                            </button>
+                        </div>
                     </mat-cell>
                 </ng-container>
                 <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

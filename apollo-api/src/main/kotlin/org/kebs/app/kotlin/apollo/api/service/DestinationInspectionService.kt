@@ -563,12 +563,13 @@ class DestinationInspectionService(
                     importer.email?.let { daoServices.sendLocalCocReportEmail(it, file.path) }
                 }
             }
-            this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
+            this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
             KotlinLogging.logger { }.info("GENERATE COC/COI: ${cdUuid}")
+            return true
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("REJECTION UPDATE STATUS", ex)
         }
-        return true
+        return false
     }
 
 

@@ -39,21 +39,22 @@ class GeneralController(
         } catch (e: Exception) {
             KotlinLogging.logger { }.info("Incorrect path ${e.message}")
         }
-        try{
-        val map = hashMapOf<String, Any>()
+        try {
+            val map = hashMapOf<String, Any>()
 //        map["ITEM_ID"] = id
             val fileName = "ALL_CHECKLIST.pdf"
-        val sampleCollect = listOf<Any>()
-        map["imagePath"] = imageFile
-        map.putAll(this.checklistService.getAllChecklistDetails(downloadId))
-        val stream = reportsDaoService.extractReportEmptyDataSource(map, "classpath:reports/allChecklist.jrxml")
-        download(stream, fileName, httResponse)
-    } catch (ex: Exception) {
-        KotlinLogging.logger { }.error("FAILED TO READ DATA", ex)
-        httResponse.status = HttpStatus.SC_INTERNAL_SERVER_ERROR
-        httResponse.writer.println("Request failed")
+            val sampleCollect = listOf<Any>()
+            map["imagePath"] = imageFile
+            map.putAll(this.checklistService.getAllChecklistDetails(downloadId))
+            val stream = reportsDaoService.extractReportEmptyDataSource(map, "classpath:reports/allChecklist.jrxml")
+            download(stream, fileName, httResponse)
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("FAILED TO READ DATA", ex)
+            httResponse.status = HttpStatus.SC_INTERNAL_SERVER_ERROR
+            httResponse.writer.println("Request failed")
+        }
     }
-    }
+
     @GetMapping("/checklist/{docType}/{downloadId}")
     fun downloadChecklist(@PathVariable("docType") docType: String, @PathVariable("downloadId") downloadId: Long, httResponse: HttpServletResponse) {
         var imageFile = ""
@@ -82,19 +83,19 @@ class GeneralController(
                 }
                 docType.equals("allAgrochemChecklist") -> {
                     map.putAll(this.checklistService.getAgrochemChecklistDetails(downloadId))
-                    sampleCollect=map["items"] as List<Any>
+                    sampleCollect = map["items"] as List<Any>
                 }
                 docType.equals("allEngineringChecklist") -> {
                     map.putAll(this.checklistService.getEngineeringChecklistDetails(downloadId))
-                    sampleCollect=map["items"] as List<Any>
+                    sampleCollect = map["items"] as List<Any>
                 }
                 docType.equals("allOtherChecklist") -> {
                     map.putAll(this.checklistService.getOtherChecklistDetails(downloadId))
-                    sampleCollect=map["items"] as List<Any>
+                    sampleCollect = map["items"] as List<Any>
                 }
                 docType.equals("allVehicleChecklist") -> {
                     map.putAll(this.checklistService.getVehicleChecklistDetails(downloadId))
-                    sampleCollect=map["items"] as List<Any>
+                    sampleCollect = map["items"] as List<Any>
                 }
                 docType.equals("allChecklist") -> {
 
@@ -105,11 +106,11 @@ class GeneralController(
                     return
                 }
             }
-            val designPath="classpath:reports/$docType.jrxml"
+            val designPath = "classpath:reports/$docType.jrxml"
             KotlinLogging.logger { }.info("Print report: $designPath: $map")
-            val stream =sampleCollect?.let {
-                reportsDaoService.extractReport(map, designPath,it)
-            }?: run {
+            val stream = sampleCollect?.let {
+                reportsDaoService.extractReport(map, designPath, it)
+            } ?: run {
                 reportsDaoService.extractReportEmptyDataSource(map, designPath)
             }
             download(stream, fileName, httResponse)
@@ -123,20 +124,23 @@ class GeneralController(
 
     @GetMapping("/cor/{corId}")
     fun downloadCertificateOfRoadWorthines(@PathVariable("corId") corId: Long, httResponse: HttpServletResponse) {
-        daoServices.findCorById(corId)?.let { cor ->
-            cor.localCorFile?.let { file ->
-                //Create FileDTO Object
-                httResponse.setHeader(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"LOCAL_COR_${cor.corNumber}.pdf\";")
-                httResponse.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION)
-                httResponse.addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
-                httResponse.setContentLength(file.size)
-                httResponse.outputStream
-                        .let { responseOutputStream ->
-                            responseOutputStream.write(file)
-                            responseOutputStream.close()
-                        }
-                return
-            }
+        try {
+            daoServices.findCorById(corId)?.let { cor ->
+                cor.localCorFile?.let { file ->
+                    //Create FileDTO Object
+                    httResponse.setHeader(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"LOCAL_COR_${cor.corNumber}.pdf\";")
+                    httResponse.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION)
+                    httResponse.addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
+                    httResponse.setContentLength(file.size)
+                    httResponse.outputStream
+                            .let { responseOutputStream ->
+                                responseOutputStream.write(file)
+                                responseOutputStream.close()
+                            }
+                } ?: throw ExpectedDataNotFound("Local COR not generated")
+            } ?: throw ExpectedDataNotFound("Local COR not generated")
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("FAILED TO DOWNLOAD COC", ex)
         }
         httResponse.status = 500
         httResponse.writer.println("Invalid COR identifier or COI")
@@ -144,21 +148,16 @@ class GeneralController(
 
     @GetMapping("/coc/{cocId}")
     fun downloadCertificateOfConformance(@PathVariable("cocId") cocId: Long, httResponse: HttpServletResponse) {
-        daoServices.findCOCById(cocId)?.let { coc ->
-            coc.localCocFile?.let { file ->
-                //Create FileDTO Object
-
-                httResponse.setHeader(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"LOCAL_COC_${coc.cocNumber}.pdf\";")
-                httResponse.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION)
-                httResponse.addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
-                httResponse.setContentLength(file.size)
-                httResponse.outputStream
-                        .let { responseOutputStream ->
-                            responseOutputStream.write(file)
-                            responseOutputStream.close()
-                        }
-                return
-            }
+        try {
+            daoServices.findCOCById(cocId)?.let { coc ->
+                coc.localCocFile?.let { file ->
+                    //Create FileDTO Object
+                    downloadBytes(file,"LOCAL_COC_${coc.cocNumber}.pdf",httResponse)
+                } ?: throw ExpectedDataNotFound("Local COC file not generated")
+            } ?: throw ExpectedDataNotFound("Local COC not generated")
+            return
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("FAILED TO DOWNLOAD COD", ex)
         }
         httResponse.status = 500
         httResponse.writer.println("Invalid COC identifier")

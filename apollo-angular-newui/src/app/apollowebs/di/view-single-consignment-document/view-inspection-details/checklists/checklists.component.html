@@ -1,4 +1,4 @@
-<div>
+<div class="table-responsive">
     <mat-table class="table-striped table-responsive table-condensed" [dataSource]="dataSet">
         <ng-container matColumnDef="itemNo">
             <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
@@ -32,18 +32,18 @@
         <ng-container matColumnDef="actions">
             <mat-header-cell *matHeaderCellDef>Action/Download</mat-header-cell>
             <mat-cell *matCellDef="let element">
-                <div *ngIf="element.sampledStatus==1">
-                    <button *ngIf="element.sampledCollectedStatus!==1" mat-button color="primary" (click)="customAction(element,'sampleCollection')">SCF</button>
-                    <button *ngIf="element.sampledCollectedStatus==1 &&element.sampleSubmissionStatus!==1" mat-button color="primary" (click)="customAction(element,'sampleSubmission')">SSF</button>
-                    <button *ngIf="element.sampleSubmissionStatus==1 && element.sampleBsNumberStatus!==1" mat-button color="primary" (click)="customAction(element,'sampleUpdate')">Update BS Number
+                <div *ngIf="element.sampledStatus==1" class="button-row">
+                    <button class="btn-sm btn-primary" *ngIf="element.sampledCollectedStatus!==1" (click)="customAction(element,'sampleCollection')">Fill SCF</button>
+                    <button class="btn-sm btn-primary" *ngIf="element.sampledCollectedStatus==1 &&element.sampleSubmissionStatus!==1" (click)="customAction(element,'sampleSubmission')">Fill SSF</button>
+                    <button class="btn-sm btn-primary" *ngIf="element.sampleSubmissionStatus==1 && element.sampleBsNumberStatus!==1"  (click)="customAction(element,'sampleUpdate')">Add BS Number
+                    </button>
+                    <button class="btn-sm btn-primary" *ngIf="element.sampledCollectedStatus==1"
+                            (click)="customAction(element,'downlodScf')"><i class="fa fa-download"></i>SCF
+                    </button>
+                    <button class="btn-sm btn-primary" *ngIf="element.sampleSubmissionStatus==1"
+                            (click)="customAction(element,'downlodSsf')"><i class="fa fa-download"></i>SSF
                     </button>
                 </div>
-                <button *ngIf="element.sampledCollectedStatus==1" mat-button color="primary"
-                        (click)="customAction(element,'downlodScf')"><i class="fa-download"></i>SCF
-                </button>
-                <button *ngIf="element.sampleSubmissionStatus==1" mat-button color="primary"
-                        (click)="customAction(element,'downlodSsf')"><i class="fa-download"></i>SSF
-                </button>
             </mat-cell>
         </ng-container>
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

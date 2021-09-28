@@ -16,11 +16,11 @@ export class ItemSelectionComponent implements OnInit {
     displayedColumns = ['select', 'checklist','hsCode', 'details', 'price', 'description', 'actions']
     complianceStatus = [
         {
-            name: 'COMPLIANCE',
+            name: 'COMPLIANT',
             description: 'Compliant',
         },
         {
-            name: 'NON-COMPLIANCE',
+            name: 'NON-COMPLIANT',
             description: 'Non-Compliant',
         }
     ]

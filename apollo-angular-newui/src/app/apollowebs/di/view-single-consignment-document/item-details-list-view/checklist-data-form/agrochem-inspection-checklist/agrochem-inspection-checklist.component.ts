@@ -25,9 +25,9 @@ export class AgrochemInspectionChecklistComponent implements OnInit {
         })
         this.agrochemChecklist.valueChanges
             .subscribe(
-                data => {
-                    console.log(data)
+                valid => {
                     if (this.selectedItems && this.selectedItems.length>0) {
+                        let data=this.agrochemChecklist.value
                         let v=this.validateItems(data)
                         // At least one item selected for data to be emitted.
                         this.valid.emit(v)

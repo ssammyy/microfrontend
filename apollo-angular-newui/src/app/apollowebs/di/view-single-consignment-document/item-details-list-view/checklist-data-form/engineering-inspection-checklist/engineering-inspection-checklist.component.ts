@@ -28,8 +28,9 @@ export class EngineeringInspectionChecklistComponent implements OnInit {
 
         this.engineeringChecklist.statusChanges
             .subscribe(
-                data => {
+                valid => {
                     if (this.selectedItems && this.selectedItems.length>0) {
+                        let data=this.engineeringChecklist.value
                         let v=this.validateItems(data)
                         this.valid.emit(v)
                         // At least one engineering item to be selected

@@ -376,7 +376,6 @@ class DestinationInspectionDaoServices(
                     }
         }
                 ?: kotlin.run {
-//            GlobalScope.launch(Dispatchers.IO) {
                     KotlinLogging.logger { }.debug("Starting background task")
                     try {
                         with(localCoc) {
@@ -458,7 +457,6 @@ class DestinationInspectionDaoServices(
                         KotlinLogging.logger { }.debug(e.message)
                         KotlinLogging.logger { }.debug(e.toString())
                     }
-//            }
                     return localCoc
                 }
 
@@ -627,7 +625,11 @@ class DestinationInspectionDaoServices(
     ) {
         findCDItemsListWithCDID(updatedCDDetails)
                 .forEach { cdItemDetails ->
-                    if (cdItemDetails.approveStatus == map.activeStatus) {
+                    if (cdItemDetails.checklistStatus==map.activeStatus) { // If checklist was filled, only add compliant items only
+                        if(cdItemDetails.approveStatus == map.activeStatus) {
+                            generateLocalCocItem(cdItemDetails, localCocEntity, user, map, "NA", "NA")
+                        }
+                    } else{
                         generateLocalCocItem(cdItemDetails, localCocEntity, user, map, "NA", "NA")
                     }
                 }
@@ -3028,6 +3030,7 @@ class DestinationInspectionDaoServices(
             map: ServiceMapsEntity
     ): CdItemDetailsEntity? {
         var updateItem = item
+        // Mark sampled or not sampled
         when (sampled) {
             "YES" -> {
                 updateItem.sampledStatus = map.activeStatus
@@ -3036,8 +3039,9 @@ class DestinationInspectionDaoServices(
                 updateItem = updateItemNoSampling(item, map)
             }
         }
+        // Mark compliant or non-compliant
         when(compliant){
-            "YES" ->{
+            "COMPLIANT" ->{
                 updateItem.approveStatus=map.activeStatus
                 updateItem.approveDate=Date(Date().time)
             }

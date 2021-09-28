@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service
 import org.springframework.util.ResourceUtils
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.InputStream
 import javax.servlet.http.HttpServletResponse
 
 
@@ -101,7 +102,13 @@ class ReportsDaoService(
     ): ByteArrayOutputStream{
         map["imagePath"] = logoImageFile
         val dataSource = JRBeanCollectionDataSource(listCollect)
-        val file = ResourceUtils.getFile(filePath)
+        // Handle classpath resource
+        val file: InputStream?
+        if(filePath.startsWith("classpath:")){
+            file = resourceLoader.getResource(filePath).inputStream
+        } else {
+            file = ResourceUtils.getFile(filePath).inputStream()
+        }
         val design = JRXmlLoader.load(file)
         val jasperReport = JasperCompileManager.compileReport(design)
         val jasperPrint = JasperFillManager.fillReport(jasperReport, map, dataSource)
@@ -119,7 +126,13 @@ class ReportsDaoService(
      */
     fun extractReportEmptyDataSource(map: HashMap<String, Any>, filePath: String): ByteArrayOutputStream {
         map["imagePath"] = logoImageFile
-        val file = ResourceUtils.getFile(filePath)
+        // Handle classpath resource
+        val file: InputStream?
+        if(filePath.startsWith("classpath:")){
+            file = resourceLoader.getResource(filePath).inputStream
+        } else {
+            file = ResourceUtils.getFile(filePath).inputStream()
+        }
         val design = JRXmlLoader.load(file)
         val jasperReport = JasperCompileManager.compileReport(design)
         val jasperPrint = JasperFillManager.fillReport(jasperReport, map, JREmptyDataSource())

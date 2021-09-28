@@ -235,11 +235,13 @@ ul, ol {
 
 .button-row {
     display: table-cell;
-    width: 490px;
+    height: fit-content;
 }
 
-.button-row .mat-button-base {
-    margin: 8px 8px 8px 0;
+.button-row button {
+    display: block;
+    font-size: 0.75em;
+    width: fit-content;
 }
 
 .flex-container {

@@ -12,6 +12,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDa
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
 import org.kebs.app.kotlin.apollo.common.dto.MinistryInspectionListResponseDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
+import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
@@ -145,7 +146,7 @@ class ChecklistService(
                     // Update checklist update
                     daoServices.checkIfChecklistUndergoesSampling(
                             checklistItem.sampled ?: "NO",
-                            checklistItem.compliant ?: "NO",
+                            checklistItem.compliant ?: "NON-COMPLIANT",
                             detail,
                             map
                     )
@@ -204,7 +205,7 @@ class ChecklistService(
                     // Mark item as sampled
                     daoServices.checkIfChecklistUndergoesSampling(
                             checklistItem.sampled ?: "NO",
-                            checklistItem.compliant ?: "NO",
+                            checklistItem.compliant ?: "NON-COMPLIANT",
                             detail,
                             map
                     )
@@ -741,14 +742,14 @@ class ChecklistService(
                 item.sampleBsNumberStatus = map.activeStatus
                 iCdItemsRepo.save(item)
                 sample.bsNumber = form.bsNumber
-                sample.ssfNo = form.ssfNo
+                sample.ssfNo = "SSF"+SimpleDateFormat("yyyyMMdd").format(java.util.Date())+ generateRandomText(4)
                 sample.permitId = null
-                sample.ssfSubmissionDate = Date(java.util.Date().time)
+                sample.ssfSubmissionDate = Date(Date().time)
                 form.submissionDate?.let {
                     try {
                         sample.ssfSubmissionDate = Date.valueOf(it)
                     } catch (ex: Exception) {
-                        sample.ssfSubmissionDate = Date(java.util.Date().time)
+                        sample.ssfSubmissionDate = Date(Date().time)
                     }
                 }
                 sample.complianceRemarks = form.remarks
