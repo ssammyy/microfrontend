@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.17.0.final using JasperReports Library version 6.17.0-6d93193241dd8cc42629e188b94f9e0bc5722efd  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="LocalCoCReport" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9665bbe6-92ea-47fc-a54b-44d9214a0e07">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="ItemDataset" whenResourceMissingType="Empty" uuid="16d33e52-c298-4fbb-a8bf-b175afad91c1">
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+		<field name="itemHsCode" class="java.lang.String"/>
+		<field name="itemDescription" class="java.lang.String"/>
+		<field name="quantity" class="java.math.BigDecimal"/>
+	</subDataset>
+	<parameter name="CocType" class="java.lang.String"/>
+	<parameter name="CocNo" class="java.lang.String"/>
+	<parameter name="IssueDate" class="java.lang.String"/>
+	<parameter name="EntryNo" class="java.lang.String"/>
+	<parameter name="IdfNo" class="java.lang.String"/>
+	<parameter name="ImporterName" class="java.lang.String"/>
+	<parameter name="ImporterAddress" class="java.lang.String"/>
+	<parameter name="ImporterPin" class="java.lang.String"/>
+	<parameter name="ClearingAgent" class="java.lang.String"/>
+	<parameter name="PortOfEntry" class="java.lang.String"/>
+	<parameter name="UcrNo" class="java.lang.String"/>
+	<parameter name="Status" class="java.lang.String"/>
+	<parameter name="Remarks" class="java.lang.String"/>
+	<parameter name="CoCType" class="java.lang.String"/>
+	<parameter name="imagePath" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="itemDataSource" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="116" splitType="Stretch">
+			<image>
+				<reportElement x="160" y="15" width="80" height="87" uuid="b237ab97-8c25-4236-b40e-52eadd3ad277"/>
+				<imageExpression><![CDATA[$P{imagePath}]]></imageExpression>
+			</image>
+			<line>
+				<reportElement x="259" y="60" width="121" height="1" uuid="f575791f-0bff-4ea8-ab8b-f717e7d7dd11"/>
+			</line>
+			<staticText>
+				<reportElement x="260" y="20" width="171" height="52" uuid="b8d18b77-e414-4b6a-9df5-6156e354ba4c"/>
+				<textElement verticalAlignment="Top">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Kenya Bureau of
+Standards]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="260" y="64" width="110" height="26" uuid="ad0cb7be-d040-4e26-ae79-79f819400d41"/>
+				<textElement>
+					<font size="11"/>
+				</textElement>
+				<text><![CDATA[Standards for Quality life]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="578" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="14" width="561" height="356" uuid="efcdec80-976d-4413-b7e5-d39c81742ba8"/>
+			</rectangle>
+			<line>
+				<reportElement x="0" y="36" width="561" height="1" uuid="7eb74fe2-a8b7-4323-a4be-5d459cb2e587"/>
+			</line>
+			<staticText>
+				<reportElement x="20" y="18" width="260" height="17" uuid="94b09c0c-3025-43ec-8935-2fc32458c6ef"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CERTIFICATE OF CONFORMITY]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="5" y="43" width="90" height="19" uuid="87af62a4-6893-4cbc-9b22-8fb13286807b"/>
+				<text><![CDATA[COC No:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="150" y="44" width="198" height="16" uuid="5d0596a0-5198-4828-8d99-94f22f44edee"/>
+				<textFieldExpression><![CDATA[$P{CocNo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="5" y="66" width="89" height="20" uuid="d253aece-3eb0-4888-b5f2-8aced8c3bd0c"/>
+				<text><![CDATA[Issue Date:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="150" y="66" width="197" height="20" uuid="63572ae1-91fc-4919-9582-7b429719345d"/>
+				<textFieldExpression><![CDATA[$P{IssueDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="5" y="90" width="89" height="20" uuid="e2cc6d0c-9424-43fb-9920-8ae7762d4cff"/>
+				<text><![CDATA[Entry No:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="150" y="89" width="197" height="23" uuid="d028205b-1193-43e5-8b2d-a6d1c3d5cd3a"/>
+				<textFieldExpression><![CDATA[$P{EntryNo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="5" y="113" width="89" height="20" uuid="4af3451e-d86a-47f7-bbb9-60b7ed595ff9"/>
+				<text><![CDATA[IDF No:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="150" y="113" width="197" height="20" uuid="9a32b88a-f3c1-4d6e-a565-83ea228aca78"/>
+				<textFieldExpression><![CDATA[$P{IdfNo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="5" y="136" width="89" height="20" uuid="ee7263bd-68e1-4783-89a4-b0dafb5304a3"/>
+				<text><![CDATA[Importer Name:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="150" y="136" width="198" height="22" uuid="e866f90c-e6cf-4a23-a4d5-9eb103e93c2e"/>
+				<textFieldExpression><![CDATA[$P{ImporterName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="5" y="159" width="89" height="20" uuid="3908a5e9-1582-4750-9311-01de7c7ddb01"/>
+				<text><![CDATA[Importer Address:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="150" y="160" width="197" height="19" uuid="5fc4b27c-9890-4ac5-ad90-a64c5cb6165d"/>
+				<textFieldExpression><![CDATA[$P{ImporterAddress}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="5" y="182" width="89" height="20" uuid="7a0f81fa-602a-4899-ac80-abc347adc574"/>
+				<text><![CDATA[Importer Pin:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="150" y="181" width="197" height="20" uuid="716e50ab-0221-470c-a487-585f45fe6145"/>
+				<textFieldExpression><![CDATA[$P{ImporterPin}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="5" y="204" width="89" height="20" uuid="853a0d15-6077-4d45-84af-6d8c9e82ca78"/>
+				<text><![CDATA[Clearing Agent:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="150" y="204" width="197" height="20" uuid="89493648-bd00-40b9-b8b7-3990f2630875"/>
+				<textFieldExpression><![CDATA[$P{ClearingAgent}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="5" y="227" width="89" height="26" uuid="9c7ea310-031f-4d41-aba3-a213deb67242"/>
+				<text><![CDATA[Port of Entry:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="150" y="227" width="198" height="23" uuid="5b450d37-4b48-479c-a6b7-ae7a83f47c10"/>
+				<textFieldExpression><![CDATA[$P{PortOfEntry}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="6" y="255" width="89" height="20" uuid="3a0783e7-b12d-4e9f-a073-6491130d0fcc"/>
+				<text><![CDATA[UCR No:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="150" y="254" width="197" height="21" uuid="3e4bc670-3dfb-4914-b7a3-1624f27585b7"/>
+				<textFieldExpression><![CDATA[$P{UcrNo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="6" y="281" width="89" height="20" uuid="0f47727c-859c-4bbe-b969-9b4b3a4722ef"/>
+				<text><![CDATA[Status:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="150" y="281" width="197" height="20" uuid="1e5a1d50-d417-49e7-99e1-ad830df39a72"/>
+				<textFieldExpression><![CDATA[$P{Status}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="6" y="307" width="89" height="20" uuid="534a29db-64cd-4dbf-ae28-7181e88e2abe"/>
+				<text><![CDATA[Remarks:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="150" y="307" width="197" height="24" uuid="134508ab-c7c1-4578-b137-a0c4910ca65f"/>
+				<textFieldExpression><![CDATA[$P{Remarks}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="5" y="337" width="89" height="20" uuid="14133a65-a47f-422a-8a6c-70c84ed93ec8"/>
+				<text><![CDATA[COC Type:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="150" y="336" width="197" height="23" uuid="391a473a-07b6-44df-ab7d-c51faad39ecd"/>
+				<textFieldExpression><![CDATA[$P{CoCType}]]></textFieldExpression>
+			</textField>
+			<componentElement>
+				<reportElement x="5" y="380" width="555" height="100" uuid="56b86851-de07-4f24-8ec5-e2516b1c45f7">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
+					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
+					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
+					<property name="com.jaspersoft.studio.components.autoresize.proportional" value="true"/>
+				</reportElement>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="Blank">
+					<datasetRun subDataset="ItemDataset" uuid="81663993-d33a-4721-9635-e61d292365ab">
+						<dataSourceExpression><![CDATA[$F{itemDataSource}]]></dataSourceExpression>
+					</datasetRun>
+					<jr:column width="185" uuid="9d6db7e8-162d-466a-8380-0e88d993f6d7">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement x="0" y="0" width="185" height="30" uuid="57870771-d973-4199-b6bf-88f0c4decd00"/>
+								<textElement textAlignment="Center"/>
+								<text><![CDATA[HSCODE]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="185" height="30" uuid="5fc72a29-674a-417d-ad26-1f5712321494"/>
+								<textElement textAlignment="Center"/>
+								<textFieldExpression><![CDATA[$F{itemHsCode}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="185" uuid="6ee47f53-4c5c-4063-882b-42d0cd80b902">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement x="0" y="0" width="185" height="30" uuid="9202a682-c8f4-4936-b855-f36e26de8d4f"/>
+								<textElement textAlignment="Center"/>
+								<text><![CDATA[Product Description]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="185" height="30" uuid="55f4666c-413a-4e48-a794-edf663d9df3b"/>
+								<textElement textAlignment="Center"/>
+								<textFieldExpression><![CDATA[$F{itemDescription}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="185" uuid="e83ef170-38f8-4226-9338-f855e240a743">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement x="0" y="0" width="185" height="30" uuid="a21b67a9-1fc3-424b-92f5-0683bb22c0f4"/>
+								<textElement textAlignment="Center"/>
+								<text><![CDATA[Quantities Declared]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="185" height="30" uuid="deb2f865-20cf-4490-8c7f-1864942a697d"/>
+								<textElement textAlignment="Center"/>
+								<textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+			<line>
+				<reportElement x="100" y="518" width="200" height="1" uuid="9ead5f1a-959d-4685-9755-f8b240d808c1"/>
+			</line>
+			<staticText>
+				<reportElement x="100" y="522" width="200" height="18" uuid="4f653450-4476-402f-9fb0-b7375d9b42c5"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Managing Director/Authorised Officer]]></text>
+			</staticText>
+		</band>
+	</detail>
+</jasperReport>

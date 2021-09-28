@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 
 @Component({
@@ -8,26 +8,61 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 })
 export class OtherInspectionChecklistComponent implements OnInit {
     @Output() private otherDetails = new EventEmitter<any>();
+    @Input() categories: any[]
+    @Input() itemList: any[]
+    @Output() valid = new EventEmitter<Boolean>()
+    selectedItems: any[]
     otherItemChecklist: FormGroup
 
     constructor(private fb: FormBuilder) {
     }
 
     ngOnInit(): void {
+        this.valid.emit(true)
         this.otherItemChecklist = this.fb.group({
-            remarks: ['', Validators.required]
+            remarks: ['Other checklist'],
+            items: []
         })
 
         this.otherItemChecklist.statusChanges
             .subscribe(
-                res=>{
-                    if(this.otherItemChecklist.valid){
-                        this.otherDetails.emit(this.otherItemChecklist.value)
-                    } else{
+                data => {
+                    if (this.selectedItems && this.selectedItems.length>0) {
+                        let v = this.validateItems(data)
+                        this.valid.emit(v)
+                        // At least one other items selected
+                        if (v) {
+                            this.otherDetails.emit(data)
+                        } else {
+                            this.otherDetails.emit(null)
+                        }
+                    } else {
+                        this.valid.emit(true)
                         this.otherDetails.emit(null)
                     }
                 }
             )
+    }
+
+    itemsSelected(items: any) {
+        this.otherItemChecklist.patchValue({
+            items: items
+        })
+        this.selectedItems = items
+    }
+
+    validateItems(data: any) {
+        let validItems = true;
+        if (data.items && data.items.length > 0) {
+            for (let itm of data.items) {
+                if (!itm.checklist) {
+                    itm.valid = false
+                    console.log("Invalid item: " + itm.id)
+                    validItems = false
+                }
+            }
+        }
+        return validItems
     }
 
 }

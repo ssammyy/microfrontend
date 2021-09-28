@@ -1,6 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {DestinationInspectionService} from "../../../../core/store/data/di/destination-inspection.service";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
+import {CurrencyFormatterComponent} from "../../../../core/shared/currency-formatter/currency-formatter.component";
 
 @Component({
     selector: 'app-view-demand-note',
@@ -29,13 +30,18 @@ export class ViewDemandNoteComponent implements OnInit {
         },
         noDataMessage: 'No data found',
         columns: {
+            feeName: {
+                title: 'FEE NAME',
+                type: 'string'
+            },
             product: {
                 title: 'PRODUCT',
                 type: 'string'
             },
             cfvalue: {
                 title: 'CF VALUE',
-                type: 'string'
+                type: 'custom',
+                renderComponent: CurrencyFormatterComponent
             },
             rateType: {
                 title: 'RATE TYPE',
@@ -47,11 +53,13 @@ export class ViewDemandNoteComponent implements OnInit {
             },
             amountPayable: {
                 title: 'CALCULATED AMOUNT',
-                type: 'string'
+                type: 'custom',
+                renderComponent: CurrencyFormatterComponent
             },
             adjustedAmount: {
                 title: 'PAYABLE AMOUNT',
-                type: 'string'
+                type: 'custom',
+                renderComponent: CurrencyFormatterComponent
             }
         },
         pager: {
@@ -64,6 +72,7 @@ export class ViewDemandNoteComponent implements OnInit {
     message: any
 
     constructor(private diService: DestinationInspectionService,
+                public dialogRef: MatDialogRef<any>,
                 @Inject(MAT_DIALOG_DATA) public data: any) {
     }
 
@@ -88,7 +97,13 @@ export class ViewDemandNoteComponent implements OnInit {
         this.diService.deleteDemandNote(this.demandNoteId)
             .subscribe(
                 res=>{
-                    this.message=res.message
+                    if(res.responseCode=="00") {
+                        this.diService.showSuccess(res.message, ()=>{
+                            this.dialogRef.close(true)
+                        })
+                    } else {
+                        this.message = res.message
+                    }
                 }
             )
     }
@@ -96,7 +111,13 @@ export class ViewDemandNoteComponent implements OnInit {
         this.diService.submitDemandNote(this.demandNoteId,{})
             .subscribe(
                 res=>{
-                    this.message=res.message
+                    if(res.responseCode=="00"){
+                        this.diService.showSuccess(res.message, ()=>{
+                            this.dialogRef.close(true)
+                        })
+                    } else {
+                        this.message = res.message
+                    }
                 }
             )
     }

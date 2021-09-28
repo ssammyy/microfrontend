@@ -51,7 +51,9 @@ export class ReAssignOfficerComponent implements OnInit {
             .subscribe(
                 res => {
                     if (res.responseCode === "00") {
-                        this.dialogRef.close(this.form.value)
+                        this.diService.showSuccess(res.message,()=>{
+                            this.dialogRef.close(this.form.value)
+                        })
                     } else {
                         this.message = res.message
                     }

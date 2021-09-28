@@ -1,19 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.13.0.final using JasperReports Library version 6.13.0-46ada4d1be8f3c5985fd0b6146f3ed44caed6f05  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="userCheckcklistItems" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="971f1fe7-e68c-4f5e-ae6e-36619f845323">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="userCheckcklistItems" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802"
+              leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20"
+              uuid="971f1fe7-e68c-4f5e-ae6e-36619f845323">
     <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
     <property name="com.jaspersoft.studio.data.defaultdataadapter" value="apollo"/>
     <property name="net.sf.jasperreports.print.create.bookmarks" value="true"/>
-    <style name="Detail" isDefault="true" mode="Opaque" forecolor="#000000" hTextAlign="Left" pattern="" fontName="SansSerif" fontSize="12"/>
+    <style name="Detail" isDefault="true" mode="Opaque" forecolor="#000000" hTextAlign="Left" pattern=""
+           fontName="SansSerif" fontSize="12"/>
     <style name="Title" mode="Opaque" forecolor="#000000" hTextAlign="Center" fontName="SansSerif" fontSize="12"/>
-    <style name="SubTitle" mode="Opaque" forecolor="#000000" hTextAlign="Center" markup="styled" fontName="SansSerif" fontSize="14" isBold="true"/>
-    <style name="ColunmHeader" mode="Transparent" forecolor="#000000" hTextAlign="Left" vTextAlign="Middle" pattern="" fontName="Times New Roman" fontSize="12" isBold="true"/>
-    <style name="ColunmText" forecolor="#000000" hTextAlign="Center" vTextAlign="Middle" pattern="" isBlankWhenNull="true" fontName="SansSerif" fontSize="12" isBold="false">
+    <style name="SubTitle" mode="Opaque" forecolor="#000000" hTextAlign="Center" markup="styled" fontName="SansSerif"
+           fontSize="14" isBold="true"/>
+    <style name="ColunmHeader" mode="Transparent" forecolor="#000000" hTextAlign="Left" vTextAlign="Middle" pattern=""
+           fontName="Times New Roman" fontSize="12" isBold="true"/>
+    <style name="ColunmText" forecolor="#000000" hTextAlign="Center" vTextAlign="Middle" pattern=""
+           isBlankWhenNull="true" fontName="SansSerif" fontSize="12" isBold="false">
         <box>
             <bottomPen lineWidth="1.0" lineStyle="Dashed"/>
         </box>
     </style>
-    <style name="ChecklistHeader" mode="Transparent" forecolor="#000000" hTextAlign="Left" vTextAlign="Middle" rotation="Left" pattern="" fontName="Times New Roman" fontSize="11" isBold="true">
+    <style name="ChecklistHeader" mode="Transparent" forecolor="#000000" hTextAlign="Left" vTextAlign="Middle"
+           rotation="Left" pattern="" fontName="Times New Roman" fontSize="11" isBold="true">
         <box>
             <topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
             <leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -21,7 +31,8 @@
             <rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
         </box>
     </style>
-    <style name="ChecklistValue" mode="Transparent" forecolor="#000000" hTextAlign="Left" vTextAlign="Middle" rotation="None" pattern="" fontName="Times New Roman" fontSize="11" isBold="false">
+    <style name="ChecklistValue" mode="Transparent" forecolor="#000000" hTextAlign="Left" vTextAlign="Middle"
+           rotation="None" pattern="" fontName="Times New Roman" fontSize="11" isBold="false">
         <box>
             <topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
             <leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -29,386 +40,513 @@
             <rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
         </box>
     </style>
-    <parameter name="CD_ID" class="java.lang.Long"/>
-    <parameter name="ITEM_ID" class="java.lang.String"/>
     <parameter name="imagePath" class="java.lang.String"/>
-    <queryString language="SQL">
-        <![CDATA[select * from DAT_KEBS_CD_INSPECTION_CHECKLIST where CD_ID_NUMBER =  $P{CD_ID}]]>
-    </queryString>
-    <field name="id" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="id"/>
-    </field>
-    <field name="inspection" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="inspection"/>
-    </field>
-    <field name="category" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="category"/>
-    </field>
-    <field name="entryPoint" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="entryPoint"/>
-    </field>
-    <field name="cfs" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="cfs"/>
-    </field>
-    <field name="inspectionDate" class="java.sql.Date">
-        <property name="com.jaspersoft.studio.field.label" value="inspectionDate"/>
-    </field>
-    <field name="importersName" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="importersName"/>
-    </field>
-    <field name="clearingAgent" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="clearingAgent"/>
-    </field>
-    <field name="customsEntryNumber" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="customsEntryNumber"/>
-    </field>
-    <field name="idfNumber" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="idfNumber"/>
-    </field>
-    <field name="ucrNumber" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="ucrNumber"/>
-    </field>
-    <field name="cocNumber" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="cocNumber"/>
-    </field>
-    <field name="feePaid" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="feePaid"/>
-    </field>
-    <field name="receiptNumber" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="receiptNumber"/>
-    </field>
-    <field name="itemsName" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="itemsName"/>
-    </field>
-    <field name="serialNumber" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="serialNumber"/>
-    </field>
-    <field name="productDescription" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="productDescription"/>
-    </field>
-    <field name="brand" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="brand"/>
-    </field>
-    <field name="ksEasApplicable" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="ksEasApplicable"/>
-    </field>
-    <field name="quantityDeclared" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="quantityDeclared"/>
-    </field>
-    <field name="quantityVerified" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="quantityVerified"/>
-    </field>
-    <field name="dateMfgPackaging" class="java.sql.Date">
-        <property name="com.jaspersoft.studio.field.label" value="dateMfgPackaging"/>
-    </field>
-    <field name="dateExpiry" class="java.sql.Date">
-        <property name="com.jaspersoft.studio.field.label" value="dateExpiry"/>
-    </field>
-    <field name="mfgName" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="mfgName"/>
-    </field>
-    <field name="mfgAddress" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="mfgAddress"/>
-    </field>
-    <field name="compositionIngredients" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="compositionIngredients"/>
-    </field>
-    <field name="storageCondition" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="storageCondition"/>
-    </field>
-    <field name="appearance" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="appearance"/>
-    </field>
-    <field name="certMarksPvocDoc" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="certMarksPvocDoc"/>
-    </field>
-    <field name="sampled" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="sampled"/>
-    </field>
-    <field name="batchNoModelTypeRef" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="batchNoModelTypeRef"/>
-    </field>
-    <field name="fiberComposition" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="fiberComposition"/>
-    </field>
-    <field name="instructionsUseManual" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="instructionsUseManual"/>
-    </field>
-    <field name="warrantyPeriodDocumentaion" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="warrantyPeriodDocumentaion"/>
-    </field>
-    <field name="safetyCautionaryRemarks" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="safetyCautionaryRemarks"/>
-    </field>
-    <field name="disposalInstruction" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="disposalInstruction"/>
-    </field>
-    <field name="sizeClassCapacity" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="sizeClassCapacity"/>
-    </field>
-    <field name="packagingLabellig" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="packagingLabellig"/>
-    </field>
-    <field name="physicalCondition" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="physicalCondition"/>
-    </field>
-    <field name="defects" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="defects"/>
-    </field>
-    <field name="presenceAbsenceBanned" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="presenceAbsenceBanned"/>
-    </field>
-    <field name="documentation" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="documentation"/>
-    </field>
-    <field name="overalRemarks" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="overalRemarks"/>
-    </field>
-    <field name="kebsOfficer" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="kebsOfficer"/>
-    </field>
-    <field name="officerDate" class="java.sql.Date">
-        <property name="com.jaspersoft.studio.field.label" value="officerDate"/>
-    </field>
-    <field name="csName" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="csName"/>
-    </field>
-    <field name="csDate" class="java.sql.Date">
-        <property name="com.jaspersoft.studio.field.label" value="csDate"/>
-    </field>
-    <field name="oicName" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="oicName"/>
-    </field>
-    <field name="oicDate" class="java.sql.Date">
-        <property name="com.jaspersoft.studio.field.label" value="oicDate"/>
-    </field>
-    <field name="status" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="status"/>
-    </field>
-    <field name="createdBy" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="createdBy"/>
-    </field>
-    <field name="createdOn" class="java.sql.Timestamp">
-        <property name="com.jaspersoft.studio.field.label" value="createdOn"/>
-    </field>
-    <field name="itemId" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="itemId"/>
-    </field>
-    <field name="itemNumber" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="itemNumber"/>
-    </field>
-    <field name="productStatus" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="productStatus"/>
-    </field>
-    <field name="brandStatus" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="brandStatus"/>
-    </field>
-    <field name="quantityDeclaredStatus" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="quantityDeclaredStatus"/>
-    </field>
-    <field name="ksEasApplicableStatus" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="ksEasApplicableStatus"/>
-    </field>
-    <field name="quantityVerifiedStatus" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="quantityVerifiedStatus"/>
-    </field>
-    <field name="dateMfgPackagingStatus" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="dateMfgPackagingStatus"/>
-    </field>
-    <field name="dateExpiryStatus" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="dateExpiryStatus"/>
-    </field>
-    <field name="mfgNameStatus" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="mfgNameStatus"/>
-    </field>
-    <field name="compositionIngredientsStatus" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="compositionIngredientsStatus"/>
-    </field>
-    <field name="storageConditionStatus" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="storageConditionStatus"/>
-    </field>
-    <field name="appearanceStatus" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="appearanceStatus"/>
-    </field>
-    <field name="certMarksPvocDocStatus" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="certMarksPvocDocStatus"/>
-    </field>
-    <field name="serialNumberStatus" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="serialNumberStatus"/>
-    </field>
-    <field name="quantityDeclaredRemarks" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="quantityDeclaredRemarks"/>
-    </field>
-    <field name="productDescriptionRemarks" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="productDescriptionRemarks"/>
-    </field>
-    <field name="compliantStatus" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="compliantStatus"/>
-    </field>
-    <field name="saveReason" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="saveReason"/>
-    </field>
-    <field name="remarks" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="remarks"/>
-    </field>
-    <field name="itemType" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="itemType"/>
-    </field>
-    <field name="cdIdNumber" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="cdIdNumber"/>
-    </field>
+    <parameter name="inspectionDate" class="java.lang.String"/>
+    <parameter name="inspectionOfficer" class="java.lang.String"/>
+    <parameter name="feePaid" class="java.lang.String"/>
+    <parameter name="idfNumber" class="java.lang.String"/>
+    <parameter name="ucrNumber" class="java.lang.String"/>
+    <parameter name="entryPoint" class="java.lang.String"/>
+    <parameter name="receiptNumber" class="java.lang.String"/>
+    <parameter name="cfs" class="java.lang.String"/>
+    <parameter name="documentCategory" class="java.lang.String"/>
+    <parameter name="clearingAgent" class="java.lang.String"/>
+    <parameter name="cocNumber" class="java.lang.String"/>
+    <parameter name="inspection" class="java.lang.String"/>
+    <parameter name="importersName" class="java.lang.String"/>
+    <parameter name="customsEntryNumber" class="java.lang.String"/>
+    <parameter name="overallRemarks" class="java.lang.String"/>
+
+    <parameter name="engineeringItems" class="java.util.List"/>
+    <parameter name="agrochemicalItems" class="java.util.List"/>
+    <parameter name="otherItems" class="java.util.List"/>
+    <parameter name="motorVehicleItems" class="java.util.List"/>
+
+    <subDataset name="engineeringDatasource">
+        <field name="id" class="java.lang.Long">
+            <property name="com.jaspersoft.studio.field.label" value="id"/>
+        </field>
+        <field name="category" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="category"/>
+        </field>
+        <field name="itemNumber" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="itemNumber"/>
+        </field>
+        <field name="productDescription" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="productDescription"/>
+        </field>
+        <field name="itemType" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="itemType"/>
+        </field>
+        <field name="serialNumber" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="serialNumber"/>
+        </field>
+        <field name="brand" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="brand"/>
+        </field>
+        <field name="ksEasApplicable" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="ksEasApplicable"/>
+        </field>
+        <field name="quantityDeclared" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="quantityDeclared"/>
+        </field>
+        <field name="quantityVerified" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="quantityVerified"/>
+        </field>
+        <field name="batchNoModelTypeRef" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="batchNoModelTypeRef"/>
+        </field>
+        <field name="mfgName" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="mfgName"/>
+        </field>
+        <field name="fiberComposition" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="fiberComposition"/>
+        </field>
+        <field name="instructionsUseManual" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="instructionsUseManual"/>
+        </field>
+        <field name="warrantyPeriodDocumentation" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="warrantyPeriodDocumentation"/>
+        </field>
+        <field name="safetyCautionaryRemarks" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="safetyCautionaryRemarks"/>
+        </field>
+        <field name="disposalInstruction" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="disposalInstruction"/>
+        </field>
+        <field name="sizeClassCapacity" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="sizeClassCapacity"/>
+        </field>
+        <field name="certMarksPvocDoc" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="certMarksPvocDoc"/>
+        </field>
+        <field name="sampled" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="sampled"/>
+        </field>
+        <field name="remarks" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="remarks"/>
+        </field>
+        <field name="csName" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="csName"/>
+        </field>
+        <field name="csDate" class="java.sql.Date">
+            <property name="com.jaspersoft.studio.field.label" value="csDate"/>
+        </field>
+        <field name="oicName" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="oicName"/>
+        </field>
+        <field name="oicDate" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="oicDate"/>
+        </field>
+        <field name="status" class="java.lang.Integer">
+            <property name="com.jaspersoft.studio.field.label" value="status"/>
+        </field>
+        <field name="createdOn" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="createdOn"/>
+        </field>
+    </subDataset>
+
+    <subDataset name="agrochemicalDatasource">
+        <field name="id" class="java.lang.Long">
+            <property name="com.jaspersoft.studio.field.label" value="id"/>
+        </field>
+        <field name="category" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="category"/>
+        </field>
+        <field name="itemNumber" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="itemNumber"/>
+        </field>
+        <field name="productDescription" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="productDescription"/>
+        </field>
+        <field name="itemType" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="itemType"/>
+        </field>
+        <field name="serialNumber" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="serialNumber"/>
+        </field>
+        <field name="brand" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="brand"/>
+        </field>
+        <field name="ksEasApplicable" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="ksEasApplicable"/>
+        </field>
+        <field name="quantityDeclared" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="quantityDeclared"/>
+        </field>
+        <field name="quantityVerified" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="quantityVerified"/>
+        </field>
+        <field name="dateMfgPackaging" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="dateMfgPackaging"/>
+        </field>
+        <field name="dateExpiry" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="dateExpiry"/>
+        </field>
+        <field name="mfgName" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="mfgName"/>
+        </field>
+        <field name="compositionIngredients" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="compositionIngredients"/>
+        </field>
+        <field name="storageCondition" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="storageCondition"/>
+        </field>
+        <field name="appearance" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="appearance"/>
+        </field>
+        <field name="certMarksPvocDoc" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="certMarksPvocDoc"/>
+        </field>
+        <field name="sampled" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="sampled"/>
+        </field>
+        <field name="remarks" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="remarks"/>
+        </field>
+        <field name="csName" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="csName"/>
+        </field>
+        <field name="csDate" class="java.sql.Date">
+            <property name="com.jaspersoft.studio.field.label" value="csDate"/>
+        </field>
+        <field name="oicName" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="oicName"/>
+        </field>
+        <field name="oicDate" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="oicDate"/>
+        </field>
+        <field name="status" class="java.lang.Integer">
+            <property name="com.jaspersoft.studio.field.label" value="status"/>
+        </field>
+        <field name="createdOn" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="createdOn"/>
+        </field>
+    </subDataset>
+
+    <subDataset name="otherDatasource">
+        <field name="id" class="java.lang.Long">
+            <property name="com.jaspersoft.studio.field.label" value="id"/>
+        </field>
+        <field name="category" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="category"/>
+        </field>
+        <field name="itemNumber" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="itemNumber"/>
+        </field>
+        <field name="productDescription" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="productDescription"/>
+        </field>
+        <field name="itemType" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="itemType"/>
+        </field>
+        <field name="serialNumber" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="serialNumber"/>
+        </field>
+        <field name="brand" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="brand"/>
+        </field>
+        <field name="ksEasApplicable" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="ksEasApplicable"/>
+        </field>
+        <field name="quantityDeclared" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="quantityDeclared"/>
+        </field>
+        <field name="quantityVerified" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="quantityVerified"/>
+        </field>
+        <field name="packagingLabellig" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="packagingLabellig"/>
+        </field>
+        <field name="physicalCondition" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="physicalCondition"/>
+        </field>
+        <field name="defects" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="defects"/>
+        </field>
+        <field name="presenceAbsenceBanned" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="presenceAbsenceBanned"/>
+        </field>
+        <field name="documentation" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="documentation"/>
+        </field>
+
+        <field name="sampled" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="sampled"/>
+        </field>
+        <field name="remarks" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="remarks"/>
+        </field>
+        <field name="csName" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="csName"/>
+        </field>
+        <field name="csDate" class="java.sql.Date">
+            <property name="com.jaspersoft.studio.field.label" value="csDate"/>
+        </field>
+        <field name="oicName" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="oicName"/>
+        </field>
+        <field name="oicDate" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="oicDate"/>
+        </field>
+        <field name="status" class="java.lang.Integer">
+            <property name="com.jaspersoft.studio.field.label" value="status"/>
+        </field>
+        <field name="createdOn" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="createdOn"/>
+        </field>
+    </subDataset>
+    <subDataset name="vehicleDatasource">
+        <field name="id" class="java.lang.Long">
+            <property name="com.jaspersoft.studio.field.label" value="id"/>
+        </field>
+        <field name="category" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="category"/>
+        </field>
+        <field name="itemNumber" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="itemNumber"/>
+        </field>
+        <field name="productDescription" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="productDescription"/>
+        </field>
+        <field name="itemType" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="itemType"/>
+        </field>
+        <field name="serialNumber" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="serialNumber"/>
+        </field>
+        <field name="makeVehicle" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="makeVehicle"/>
+        </field>
+        <field name="chassisNo" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="chassisNo"/>
+        </field>
+        <field name="engineNoCapacity" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="engineNoCapacity"/>
+        </field>
+        <field name="manufactureDate" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="manufactureDate"/>
+        </field>
+        <field name="registrationDate" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="registrationDate"/>
+        </field>
+        <field name="odemetreReading" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="odemetreReading"/>
+        </field>
+        <field name="driveRhdLhd" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="driveRhdLhd"/>
+        </field>
+        <field name="transmissionAutoManual" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="transmissionAutoManual"/>
+        </field>
+        <field name="color" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="color"/>
+        </field>
+        <field name="compliant" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="compliant"/>
+        </field>
+        <field name="overallAppearance" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="overallAppearance"/>
+        </field>
+        <field name="remarks" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="remarks"/>
+        </field>
+        <field name="csName" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="csName"/>
+        </field>
+        <field name="csDate" class="java.sql.Date">
+            <property name="com.jaspersoft.studio.field.label" value="csDate"/>
+        </field>
+        <field name="oicName" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="oicName"/>
+        </field>
+        <field name="oicDate" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="oicDate"/>
+        </field>
+        <field name="status" class="java.lang.Integer">
+            <property name="com.jaspersoft.studio.field.label" value="status"/>
+        </field>
+        <field name="createdOn" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="createdOn"/>
+        </field>
+    </subDataset>
+
     <group name="TopHeader">
         <groupHeader>
             <band height="153">
                 <staticText>
-                    <reportElement style="ColunmHeader" x="236" y="98" width="50" height="20" uuid="b0e6ef52-f705-46be-b9f2-3a918621886b">
+                    <reportElement style="ColunmHeader" x="236" y="98" width="50" height="20"
+                                   uuid="b0e6ef52-f705-46be-b9f2-3a918621886b">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <text><![CDATA[IDF No:]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement style="ColunmHeader" x="236" y="7" width="55" height="20" uuid="5c5fae95-bec0-4ddc-a147-2da885f82082">
+                    <reportElement style="ColunmHeader" x="236" y="7" width="55" height="20"
+                                   uuid="5c5fae95-bec0-4ddc-a147-2da885f82082">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                         <property name="com.jaspersoft.studio.unit.width" value="px"/>
                     </reportElement>
                     <text><![CDATA[Category :]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement style="ColunmHeader" x="2" y="67" width="95" height="20" uuid="f4f66b35-8bcf-46a9-8e31-e7af4e146b71">
+                    <reportElement style="ColunmHeader" x="2" y="67" width="95" height="20"
+                                   uuid="f4f66b35-8bcf-46a9-8e31-e7af4e146b71">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                         <property name="com.jaspersoft.studio.unit.width" value="px"/>
                     </reportElement>
                     <text><![CDATA[Importer's name: ]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="292" y="7" width="168" height="20" uuid="fbbf8c0d-5b85-409b-bf3a-8be25d103d78">
+                    <reportElement style="ColunmText" x="292" y="7" width="168" height="20"
+                                   uuid="fbbf8c0d-5b85-409b-bf3a-8be25d103d78">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textElement textAlignment="Center"/>
                     <textFieldExpression><![CDATA[$F{category}]]></textFieldExpression>
                 </textField>
                 <staticText>
-                    <reportElement style="ColunmHeader" x="601" y="97" width="63" height="20" uuid="c9453003-f6aa-495b-b546-ce4e0abdd09f">
+                    <reportElement style="ColunmHeader" x="601" y="97" width="63" height="20"
+                                   uuid="c9453003-f6aa-495b-b546-ce4e0abdd09f">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <text><![CDATA[COC No: ]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="477" y="97" width="124" height="20" uuid="b1a1415c-221f-46ae-896c-fb7965d82195">
+                    <reportElement style="ColunmText" x="477" y="97" width="124" height="20"
+                                   uuid="b1a1415c-221f-46ae-896c-fb7965d82195">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textElement textAlignment="Center"/>
                     <textFieldExpression><![CDATA[$F{ucrNumber}]]></textFieldExpression>
                 </textField>
                 <staticText>
-                    <reportElement style="ColunmHeader" x="2" y="6" width="95" height="20" uuid="284333ce-6879-422f-b375-ca3d4879bdb1">
+                    <reportElement style="ColunmHeader" x="2" y="6" width="95" height="20"
+                                   uuid="284333ce-6879-422f-b375-ca3d4879bdb1">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <text><![CDATA[Inspection Type : ]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="505" y="127" width="295" height="20" uuid="b5b1b114-155e-463d-809e-7e066b4170cb">
+                    <reportElement style="ColunmText" x="505" y="127" width="295" height="20"
+                                   uuid="b5b1b114-155e-463d-809e-7e066b4170cb">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textFieldExpression><![CDATA[$F{receiptNumber}]]></textFieldExpression>
                 </textField>
                 <staticText>
-                    <reportElement style="ColunmHeader" x="413" y="97" width="64" height="20" uuid="f20a2270-0c82-4e87-a533-c42c4842dcfb">
+                    <reportElement style="ColunmHeader" x="413" y="97" width="64" height="20"
+                                   uuid="f20a2270-0c82-4e87-a533-c42c4842dcfb">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <text><![CDATA[UCR No: ]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement style="ColunmHeader" x="412" y="67" width="87" height="20" uuid="e5b06616-2b20-4a29-bbb4-c500475c7a3a">
+                    <reportElement style="ColunmHeader" x="412" y="67" width="87" height="20"
+                                   uuid="e5b06616-2b20-4a29-bbb4-c500475c7a3a">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <text><![CDATA[Clearing agent :]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement style="ColunmHeader" x="1" y="127" width="60" height="20" uuid="6606402b-fa5d-4bcb-9e7e-c45cb164ac5c">
+                    <reportElement style="ColunmHeader" x="1" y="127" width="60" height="20"
+                                   uuid="6606402b-fa5d-4bcb-9e7e-c45cb164ac5c">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <text><![CDATA[Fee paid: ]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement style="ColunmHeader" x="613" y="38" width="40" height="20" uuid="4545e617-a310-4733-bae3-f9431de4bd43">
+                    <reportElement style="ColunmHeader" x="613" y="38" width="40" height="20"
+                                   uuid="4545e617-a310-4733-bae3-f9431de4bd43">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <text><![CDATA[Date :]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement style="ColunmHeader" x="2" y="97" width="99" height="20" uuid="101a0009-fbd7-471b-b51a-3ef585ef8d2f">
+                    <reportElement style="ColunmHeader" x="2" y="97" width="99" height="20"
+                                   uuid="101a0009-fbd7-471b-b51a-3ef585ef8d2f">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <text><![CDATA[Customs entry no:]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement style="ColunmHeader" x="237" y="126" width="268" height="20" uuid="d827f126-5c93-4a04-bbd3-eb8c6c5ed737">
+                    <reportElement style="ColunmHeader" x="237" y="126" width="268" height="20"
+                                   uuid="d827f126-5c93-4a04-bbd3-eb8c6c5ed737">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                         <property name="com.jaspersoft.studio.unit.width" value="px"/>
                     </reportElement>
                     <text><![CDATA[Receipt no/Exemption Sno. /Waiver no./Dmark no: ]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="653" y="38" width="147" height="20" uuid="c38f9d69-166c-498a-a8b5-f16282bbbfb6">
+                    <reportElement style="ColunmText" x="653" y="38" width="147" height="20"
+                                   uuid="c38f9d69-166c-498a-a8b5-f16282bbbfb6">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textFieldExpression><![CDATA[$F{inspectionDate}]]></textFieldExpression>
                 </textField>
                 <textField>
-                    <reportElement style="ColunmText" x="50" y="127" width="186" height="20" uuid="0640fc4a-5772-49bd-8d2c-f6b8f8f751ed">
+                    <reportElement style="ColunmText" x="50" y="127" width="186" height="20"
+                                   uuid="0640fc4a-5772-49bd-8d2c-f6b8f8f751ed">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textElement textAlignment="Center"/>
                     <textFieldExpression><![CDATA[$F{feePaid}]]></textFieldExpression>
                 </textField>
                 <staticText>
-                    <reportElement style="ColunmHeader" x="2" y="36" width="75" height="20" uuid="76060f6c-dc97-4fec-afbc-a9104160713a">
+                    <reportElement style="ColunmHeader" x="2" y="36" width="75" height="20"
+                                   uuid="76060f6c-dc97-4fec-afbc-a9104160713a">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                         <property name="com.jaspersoft.studio.unit.width" value="px"/>
                     </reportElement>
                     <text><![CDATA[Entry point :]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="286" y="98" width="127" height="20" uuid="46809ea6-a37f-4e32-892d-340e7bdc431e">
+                    <reportElement style="ColunmText" x="286" y="98" width="127" height="20"
+                                   uuid="46809ea6-a37f-4e32-892d-340e7bdc431e">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textElement textAlignment="Center" verticalAlignment="Middle"/>
                     <textFieldExpression><![CDATA[$F{idfNumber}]]></textFieldExpression>
                 </textField>
                 <textField>
-                    <reportElement style="ColunmText" x="70" y="36" width="342" height="20" uuid="fc0744e4-a8e9-4862-817f-0928930e210c">
+                    <reportElement style="ColunmText" x="70" y="36" width="342" height="20"
+                                   uuid="fc0744e4-a8e9-4862-817f-0928930e210c">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textFieldExpression><![CDATA[$F{entryPoint}]]></textFieldExpression>
                 </textField>
                 <textField>
-                    <reportElement style="ColunmText" x="453" y="38" width="160" height="20" uuid="7a08c6f9-1426-439b-b4ea-f9f8b3c86f74">
+                    <reportElement style="ColunmText" x="453" y="38" width="160" height="20"
+                                   uuid="7a08c6f9-1426-439b-b4ea-f9f8b3c86f74">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textFieldExpression><![CDATA[$F{cfs}]]></textFieldExpression>
                 </textField>
                 <textField>
-                    <reportElement style="ColunmText" x="499" y="67" width="301" height="20" uuid="634e38aa-93e8-4ec1-8672-316ac138daec">
+                    <reportElement style="ColunmText" x="499" y="67" width="301" height="20"
+                                   uuid="634e38aa-93e8-4ec1-8672-316ac138daec">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textFieldExpression><![CDATA[$F{clearingAgent}]]></textFieldExpression>
                 </textField>
                 <textField>
-                    <reportElement style="ColunmText" x="664" y="97" width="136" height="20" uuid="d75696c4-3e6b-46f4-a3ff-29a59e22109b">
+                    <reportElement style="ColunmText" x="664" y="97" width="136" height="20"
+                                   uuid="d75696c4-3e6b-46f4-a3ff-29a59e22109b">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textElement textAlignment="Center"/>
                     <textFieldExpression><![CDATA[$F{cocNumber}]]></textFieldExpression>
                 </textField>
                 <staticText>
-                    <reportElement style="ColunmHeader" x="412" y="38" width="39" height="20" uuid="20f876fc-619d-4c53-8f25-46b99789c5bd">
+                    <reportElement style="ColunmHeader" x="412" y="38" width="39" height="20"
+                                   uuid="20f876fc-619d-4c53-8f25-46b99789c5bd">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <text><![CDATA[CFS :]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="97" y="6" width="130" height="20" uuid="9ba89bfa-452f-4343-b524-233365c215c5">
+                    <reportElement style="ColunmText" x="97" y="6" width="130" height="20"
+                                   uuid="9ba89bfa-452f-4343-b524-233365c215c5">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <box>
@@ -422,13 +560,15 @@
                     <textFieldExpression><![CDATA[$F{inspection}]]></textFieldExpression>
                 </textField>
                 <textField>
-                    <reportElement style="ColunmText" x="97" y="67" width="315" height="20" uuid="83b5da7f-f981-4ace-902a-9f6fe17e7306">
+                    <reportElement style="ColunmText" x="97" y="67" width="315" height="20"
+                                   uuid="83b5da7f-f981-4ace-902a-9f6fe17e7306">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textFieldExpression><![CDATA[$F{importersName}]]></textFieldExpression>
                 </textField>
                 <textField>
-                    <reportElement style="ColunmText" x="102" y="97" width="134" height="20" uuid="d92e952d-8b5a-403a-93ad-9792ac29b15b">
+                    <reportElement style="ColunmText" x="102" y="97" width="134" height="20"
+                                   uuid="d92e952d-8b5a-403a-93ad-9792ac29b15b">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textElement textAlignment="Center"/>
@@ -439,114 +579,132 @@
         <groupFooter>
             <band height="222">
                 <textField>
-                    <reportElement style="ColunmText" x="684" y="154" width="116" height="20" uuid="bf7fd6c5-b1f6-407e-845c-73001e2be277">
+                    <reportElement style="ColunmText" x="684" y="154" width="116" height="20"
+                                   uuid="bf7fd6c5-b1f6-407e-845c-73001e2be277">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textFieldExpression><![CDATA[$F{csDate}]]></textFieldExpression>
                 </textField>
                 <staticText>
-                    <reportElement style="ColunmHeader" x="280" y="155" width="112" height="20" uuid="799637ce-cb1c-4e9f-ab21-e4328f4b7fa1">
+                    <reportElement style="ColunmHeader" x="280" y="155" width="112" height="20"
+                                   uuid="799637ce-cb1c-4e9f-ab21-e4328f4b7fa1">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <text><![CDATA[SIGNED/STAMP : ]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement style="ColunmHeader" x="2" y="152" width="75" height="20" uuid="60c6524e-fce8-4544-9780-8bb95b8a68a3">
+                    <reportElement style="ColunmHeader" x="2" y="152" width="75" height="20"
+                                   uuid="60c6524e-fce8-4544-9780-8bb95b8a68a3">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <text><![CDATA[C_S_NAME :]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement style="ColunmHeader" x="280" y="196" width="112" height="20" uuid="08b04b8a-c7b5-48e0-a902-b4c64bef9db6">
+                    <reportElement style="ColunmHeader" x="280" y="196" width="112" height="20"
+                                   uuid="08b04b8a-c7b5-48e0-a902-b4c64bef9db6">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <text><![CDATA[SIGNED/STAMP : ]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="74" y="152" width="196" height="20" uuid="e2e02043-1b58-4276-a273-1c6d9ca94dc0">
+                    <reportElement style="ColunmText" x="74" y="152" width="196" height="20"
+                                   uuid="e2e02043-1b58-4276-a273-1c6d9ca94dc0">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textElement textAlignment="Center"/>
                     <textFieldExpression><![CDATA[$F{csName}]]></textFieldExpression>
                 </textField>
                 <textField>
-                    <reportElement style="ColunmText" x="85" y="194" width="184" height="20" uuid="f875515e-73ff-4212-921c-0336842d8d25">
+                    <reportElement style="ColunmText" x="85" y="194" width="184" height="20"
+                                   uuid="f875515e-73ff-4212-921c-0336842d8d25">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textElement textAlignment="Center"/>
                     <textFieldExpression><![CDATA[$F{oicName}]]></textFieldExpression>
                 </textField>
                 <textField>
-                    <reportElement style="ColunmText" x="101" y="81" width="169" height="20" uuid="e72d2b26-a37e-4f37-94e1-6df655e4b7b9">
+                    <reportElement style="ColunmText" x="101" y="81" width="169" height="20"
+                                   uuid="e72d2b26-a37e-4f37-94e1-6df655e4b7b9">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textElement textAlignment="Center"/>
                     <textFieldExpression><![CDATA[$F{createdBy}]]></textFieldExpression>
                 </textField>
                 <staticText>
-                    <reportElement style="ColunmText" x="384" y="170" width="240" height="1" uuid="ec7f26ba-86d0-42bd-beee-b75724e79c44">
+                    <reportElement style="ColunmText" x="384" y="170" width="240" height="1"
+                                   uuid="ec7f26ba-86d0-42bd-beee-b75724e79c44">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                         <property name="com.jaspersoft.studio.unit.width" value="px"/>
                     </reportElement>
                     <text><![CDATA[Static Text]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="679" y="83" width="116" height="20" uuid="241590f7-336f-40ee-8180-010f33aac638">
+                    <reportElement style="ColunmText" x="679" y="83" width="116" height="20"
+                                   uuid="241590f7-336f-40ee-8180-010f33aac638">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textFieldExpression><![CDATA[$F{createdOn}]]></textFieldExpression>
                 </textField>
                 <staticText>
-                    <reportElement style="ColunmHeader" x="632" y="154" width="52" height="20" uuid="1c93d36b-1926-4271-b498-c836c9e021f9">
+                    <reportElement style="ColunmHeader" x="632" y="154" width="52" height="20"
+                                   uuid="1c93d36b-1926-4271-b498-c836c9e021f9">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <text><![CDATA[DATE :]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="684" y="196" width="113" height="20" uuid="d6e08b0b-1ff2-4334-8cbb-08441ff28aab">
+                    <reportElement style="ColunmText" x="684" y="196" width="113" height="20"
+                                   uuid="d6e08b0b-1ff2-4334-8cbb-08441ff28aab">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textFieldExpression><![CDATA[$F{oicDate}]]></textFieldExpression>
                 </textField>
                 <staticText>
-                    <reportElement style="ColunmText" x="381" y="214" width="240" height="1" uuid="f56a8bcd-ff4c-474d-a8b4-a1e34863108b">
+                    <reportElement style="ColunmText" x="381" y="214" width="240" height="1"
+                                   uuid="f56a8bcd-ff4c-474d-a8b4-a1e34863108b">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                         <property name="com.jaspersoft.studio.unit.width" value="px"/>
                     </reportElement>
                     <text><![CDATA[Static Text]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement style="ColunmHeader" x="632" y="196" width="52" height="20" uuid="f2708a6d-a6b4-41ec-acec-4f3c450c901c">
+                    <reportElement style="ColunmHeader" x="632" y="196" width="52" height="20"
+                                   uuid="f2708a6d-a6b4-41ec-acec-4f3c450c901c">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <text><![CDATA[DATE :]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="130" y="30" width="670" height="20" uuid="4e6d36ce-3134-4d3b-a73d-d1afd67aae5e">
+                    <reportElement style="ColunmText" x="130" y="30" width="670" height="20"
+                                   uuid="4e6d36ce-3134-4d3b-a73d-d1afd67aae5e">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textFieldExpression><![CDATA[$F{overalRemarks}]]></textFieldExpression>
                 </textField>
                 <staticText>
-                    <reportElement style="ColunmHeader" x="1" y="194" width="89" height="20" uuid="b4ac9e05-6159-4fe8-9347-219ff4a0b82e">
+                    <reportElement style="ColunmHeader" x="1" y="194" width="89" height="20"
+                                   uuid="b4ac9e05-6159-4fe8-9347-219ff4a0b82e">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <text><![CDATA[O_I_C_NAME :]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement style="ColunmHeader" x="632" y="83" width="46" height="20" uuid="5cc55f88-a5df-4f80-a28b-772a5183b119">
+                    <reportElement style="ColunmHeader" x="632" y="83" width="46" height="20"
+                                   uuid="5cc55f88-a5df-4f80-a28b-772a5183b119">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <text><![CDATA[DATE :]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement style="ColunmHeader" x="0" y="30" width="130" height="20" uuid="62e12e18-0412-4eec-9cad-552f216a089b">
+                    <reportElement style="ColunmHeader" x="0" y="30" width="130" height="20"
+                                   uuid="62e12e18-0412-4eec-9cad-552f216a089b">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <text><![CDATA[OVERAL_REMARKS :]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement style="ColunmHeader" x="1" y="81" width="100" height="20" uuid="e5ce4dc8-6c3d-4599-bd09-6a4e1b855455">
+                    <reportElement style="ColunmHeader" x="1" y="81" width="100" height="20"
+                                   uuid="e5ce4dc8-6c3d-4599-bd09-6a4e1b855455">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <text><![CDATA[KEBS OFFICER :]]></text>
@@ -556,12 +714,13 @@
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textElement textAlignment="Left">
-                        <font fontName="Algerian" size="12" isBold="true" isUnderline="true"/>
+                        <font fontName="SansSerif" size="12" isBold="true" isUnderline="true"/>
                     </textElement>
                     <text><![CDATA[SIGNATURES]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement style="ColunmText" x="384" y="99" width="240" height="1" uuid="5b02b244-b9cd-4ec0-9ab0-7e9dbc97e3cc">
+                    <reportElement style="ColunmText" x="384" y="99" width="240" height="1"
+                                   uuid="5b02b244-b9cd-4ec0-9ab0-7e9dbc97e3cc">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                         <property name="com.jaspersoft.studio.unit.width" value="px"/>
                     </reportElement>
@@ -575,7 +734,8 @@
                     <text><![CDATA[Static Text]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement style="ColunmHeader" x="278" y="84" width="114" height="20" uuid="5e6a12c8-21f4-422a-b5c4-42f1fa3516dd">
+                    <reportElement style="ColunmHeader" x="278" y="84" width="114" height="20"
+                                   uuid="5e6a12c8-21f4-422a-b5c4-42f1fa3516dd">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <text><![CDATA[SIGNED/STAMP : ]]></text>
@@ -585,7 +745,7 @@
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textElement textAlignment="Left">
-                        <font fontName="Algerian" size="12" isBold="true" isUnderline="true"/>
+                        <font fontName="SansSerif" size="12" isBold="true" isUnderline="true"/>
                     </textElement>
                     <text><![CDATA[SUPEERVISOR’S COMMENTS ]]></text>
                 </staticText>
@@ -606,7 +766,8 @@
                     <textFieldExpression><![CDATA[$F{itemType}]]></textFieldExpression>
                 </textField>
                 <staticText>
-                    <reportElement style="ChecklistHeader" x="1" y="21" width="19" height="120" uuid="eaa99cf7-d03b-498d-8b56-f5bb8d255fbf">
+                    <reportElement style="ChecklistHeader" x="1" y="21" width="19" height="120"
+                                   uuid="eaa99cf7-d03b-498d-8b56-f5bb8d255fbf">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <box>
@@ -619,7 +780,8 @@
                     <text><![CDATA[SN]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement style="ChecklistHeader" x="20" y="21" width="260" height="120" uuid="fd53e3da-760e-4ac8-b60b-7ffb1b4e48ee"/>
+                    <reportElement style="ChecklistHeader" x="20" y="21" width="260" height="120"
+                                   uuid="fd53e3da-760e-4ac8-b60b-7ffb1b4e48ee"/>
                     <box>
                         <topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
                         <leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -630,7 +792,8 @@
                     <text><![CDATA[Product Description ]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement style="ChecklistHeader" x="281" y="21" width="33" height="120" uuid="56a4bbd8-35e4-486c-b420-cb93ede903fb"/>
+                    <reportElement style="ChecklistHeader" x="281" y="21" width="33" height="120"
+                                   uuid="56a4bbd8-35e4-486c-b420-cb93ede903fb"/>
                     <box>
                         <topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
                         <leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -641,7 +804,8 @@
                     <text><![CDATA[Brand]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement style="ChecklistHeader" x="314" y="21" width="40" height="120" uuid="ae99abe3-2eed-4c7d-b8d0-18cd36be9f20"/>
+                    <reportElement style="ChecklistHeader" x="314" y="21" width="40" height="120"
+                                   uuid="ae99abe3-2eed-4c7d-b8d0-18cd36be9f20"/>
                     <box>
                         <topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
                         <leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -652,7 +816,8 @@
                     <text><![CDATA[Ks EAS Applicable]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement style="ChecklistHeader" x="354" y="21" width="40" height="120" uuid="1d60d3f6-b26d-4f3d-bdc0-2229899358dc"/>
+                    <reportElement style="ChecklistHeader" x="354" y="21" width="40" height="120"
+                                   uuid="1d60d3f6-b26d-4f3d-bdc0-2229899358dc"/>
                     <box>
                         <topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
                         <leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -663,7 +828,8 @@
                     <text><![CDATA[Quantity Declared (No. Of items/packages)]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement style="ChecklistHeader" x="394" y="21" width="37" height="120" isRemoveLineWhenBlank="true" uuid="9f602307-01aa-4852-8fe4-85057c503d6b"/>
+                    <reportElement style="ChecklistHeader" x="394" y="21" width="37" height="120"
+                                   isRemoveLineWhenBlank="true" uuid="9f602307-01aa-4852-8fe4-85057c503d6b"/>
                     <box>
                         <topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
                         <leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -674,7 +840,8 @@
                     <text><![CDATA[Quantity Verified (No. Of items/packages)]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement style="ChecklistHeader" x="432" y="50" width="47" height="90" uuid="4352b603-e238-4040-887e-c6dbc316d66d">
+                    <reportElement style="ChecklistHeader" x="432" y="50" width="47" height="90"
+                                   uuid="4352b603-e238-4040-887e-c6dbc316d66d">
                         <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
                     </reportElement>
                     <textElement textAlignment="Center">
@@ -683,7 +850,8 @@
                     <text><![CDATA[Date of mfg/packaging ]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement style="ChecklistHeader" x="480" y="50" width="45" height="91" uuid="ed1a8a62-30ec-47bd-8a2f-5cc8d9a54bcc">
+                    <reportElement style="ChecklistHeader" x="480" y="50" width="45" height="91"
+                                   uuid="ed1a8a62-30ec-47bd-8a2f-5cc8d9a54bcc">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textElement textAlignment="Center">
@@ -692,7 +860,8 @@
                     <text><![CDATA[Date of expiry]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement style="ChecklistHeader" x="526" y="50" width="43" height="91" uuid="c13cb0c0-731a-4de2-81ff-67030dc0f9fe">
+                    <reportElement style="ChecklistHeader" x="526" y="50" width="43" height="91"
+                                   uuid="c13cb0c0-731a-4de2-81ff-67030dc0f9fe">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textElement textAlignment="Center">
@@ -701,7 +870,8 @@
                     <text><![CDATA[Mfg name/address ]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement style="ChecklistHeader" x="570" y="51" width="37" height="90" uuid="02bf57b6-3be0-4612-a8c6-0bad896f6e55">
+                    <reportElement style="ChecklistHeader" x="570" y="51" width="37" height="90"
+                                   uuid="02bf57b6-3be0-4612-a8c6-0bad896f6e55">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textElement textAlignment="Center">
@@ -710,7 +880,8 @@
                     <text><![CDATA[Composition/ingredients ]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement style="ChecklistHeader" x="608" y="51" width="35" height="90" uuid="d58fe1c3-8c26-4ea9-bf6f-f8140e8d9e27">
+                    <reportElement style="ChecklistHeader" x="608" y="51" width="35" height="90"
+                                   uuid="d58fe1c3-8c26-4ea9-bf6f-f8140e8d9e27">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textElement textAlignment="Center">
@@ -719,7 +890,8 @@
                     <text><![CDATA[Storage condition ]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement style="ChecklistHeader" x="644" y="51" width="33" height="90" uuid="fb26231c-7d60-4d71-9e5a-7a9a240ae3ec">
+                    <reportElement style="ChecklistHeader" x="644" y="51" width="33" height="90"
+                                   uuid="fb26231c-7d60-4d71-9e5a-7a9a240ae3ec">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textElement textAlignment="Center">
@@ -728,7 +900,8 @@
                     <text><![CDATA[Appearance(mouldy,infested,foreign matter e.t.c.) ]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement style="ChecklistHeader" x="678" y="51" width="34" height="89" uuid="184048d4-32e3-4da4-847e-e8c4e4f73b22">
+                    <reportElement style="ChecklistHeader" x="678" y="51" width="34" height="89"
+                                   uuid="184048d4-32e3-4da4-847e-e8c4e4f73b22">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textElement textAlignment="Center">
@@ -737,7 +910,8 @@
                     <text><![CDATA[Certification marks/pvoc documents ]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement style="ChecklistHeader" x="713" y="20" width="36" height="120" uuid="732cfdf0-6022-4ef2-a6c3-07cb353259c2">
+                    <reportElement style="ChecklistHeader" x="713" y="20" width="36" height="120"
+                                   uuid="732cfdf0-6022-4ef2-a6c3-07cb353259c2">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textElement textAlignment="Center" rotation="Left">
@@ -746,7 +920,8 @@
                     <text><![CDATA[SAMPLED]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement style="ChecklistHeader" x="749" y="20" width="50" height="120" uuid="0757c030-d68e-4069-be99-46886cc416b1">
+                    <reportElement style="ChecklistHeader" x="749" y="20" width="50" height="120"
+                                   uuid="0757c030-d68e-4069-be99-46886cc416b1">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textElement textAlignment="Center" rotation="Left">
@@ -755,7 +930,8 @@
                     <text><![CDATA[REMARKS]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement style="ChecklistHeader" x="432" y="20" width="281" height="30" uuid="2bffa073-e34f-4e53-b06b-672988993b7f"/>
+                    <reportElement style="ChecklistHeader" x="432" y="20" width="281" height="30"
+                                   uuid="2bffa073-e34f-4e53-b06b-672988993b7f"/>
                     <textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
                         <font fontName="Times New Roman" size="14" isBold="true"/>
                     </textElement>
@@ -775,7 +951,7 @@
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
                 </reportElement>
                 <textElement textAlignment="Center">
-                    <font fontName="Algerian" size="16" isBold="true" isItalic="false" isUnderline="true"/>
+                    <font fontName="SansSerif" size="16" isBold="true" isItalic="false" isUnderline="true"/>
                 </textElement>
                 <text><![CDATA[INSPECTION CHECKLIST]]></text>
             </staticText>
@@ -812,9 +988,11 @@
     </title>
     <detail>
         <band height="90" splitType="Stretch">
-            <property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.spreadsheet.SpreadsheetLayout"/>
+            <property name="com.jaspersoft.studio.layout"
+                      value="com.jaspersoft.studio.editor.layout.spreadsheet.SpreadsheetLayout"/>
             <textField>
-                <reportElement style="ChecklistValue" x="0" y="0" width="20" height="90" uuid="ec3214b8-78af-4ab1-a060-e210e5a81727">
+                <reportElement style="ChecklistValue" x="0" y="0" width="20" height="90"
+                               uuid="ec3214b8-78af-4ab1-a060-e210e5a81727">
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
                 </reportElement>
                 <box>
@@ -825,7 +1003,8 @@
                 <textFieldExpression><![CDATA[$V{GroupChecklist_COUNT}]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement style="ChecklistValue" x="20" y="0" width="260" height="90" uuid="28732e0f-f996-47d4-b10f-5b2b42dd0763">
+                <reportElement style="ChecklistValue" x="20" y="0" width="260" height="90"
+                               uuid="28732e0f-f996-47d4-b10f-5b2b42dd0763">
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
                 </reportElement>
                 <box>
@@ -837,7 +1016,8 @@
                 <textFieldExpression><![CDATA[$F{productDescription}]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement style="ChecklistValue" x="280" y="0" width="33" height="90" uuid="9df4ab69-5ae1-4338-989d-586e85534e1f">
+                <reportElement style="ChecklistValue" x="280" y="0" width="33" height="90"
+                               uuid="9df4ab69-5ae1-4338-989d-586e85534e1f">
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
                 </reportElement>
                 <box>
@@ -849,7 +1029,8 @@
                 <textFieldExpression><![CDATA[$F{brand}]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement style="ChecklistValue" x="313" y="0" width="41" height="90" uuid="e8b377cb-5186-4094-a6bb-0a11c200ce71">
+                <reportElement style="ChecklistValue" x="313" y="0" width="41" height="90"
+                               uuid="e8b377cb-5186-4094-a6bb-0a11c200ce71">
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
                 </reportElement>
                 <box>
@@ -861,7 +1042,8 @@
                 <textFieldExpression><![CDATA[$F{ksEasApplicable}]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement style="ChecklistValue" x="354" y="0" width="40" height="90" uuid="e8b1fc72-c516-4395-9b18-b95d14d167f8">
+                <reportElement style="ChecklistValue" x="354" y="0" width="40" height="90"
+                               uuid="e8b1fc72-c516-4395-9b18-b95d14d167f8">
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
                 </reportElement>
                 <box>
@@ -873,7 +1055,8 @@
                 <textFieldExpression><![CDATA[$F{quantityDeclared}]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement style="ChecklistValue" x="394" y="0" width="38" height="90" uuid="57f22fe3-3bd2-41b9-8551-bf233ea53850">
+                <reportElement style="ChecklistValue" x="394" y="0" width="38" height="90"
+                               uuid="57f22fe3-3bd2-41b9-8551-bf233ea53850">
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
                 </reportElement>
                 <box>
@@ -886,39 +1069,48 @@
                 <textFieldExpression><![CDATA[$F{quantityVerified}]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement style="ChecklistValue" x="432" y="0" width="50" height="90" uuid="f6a46f4b-a553-4d7b-a532-bdf8f518b466"/>
+                <reportElement style="ChecklistValue" x="432" y="0" width="50" height="90"
+                               uuid="f6a46f4b-a553-4d7b-a532-bdf8f518b466"/>
                 <textFieldExpression><![CDATA[$F{dateMfgPackaging}]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement style="ChecklistValue" x="482" y="0" width="45" height="90" uuid="2b970cec-9935-433b-9a6a-621f726afe8b"/>
+                <reportElement style="ChecklistValue" x="482" y="0" width="45" height="90"
+                               uuid="2b970cec-9935-433b-9a6a-621f726afe8b"/>
                 <textFieldExpression><![CDATA[$F{dateExpiry}]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement style="ChecklistValue" x="527" y="0" width="43" height="90" uuid="b8982362-8e80-4fa5-b87e-3f8a10528f49"/>
+                <reportElement style="ChecklistValue" x="527" y="0" width="43" height="90"
+                               uuid="b8982362-8e80-4fa5-b87e-3f8a10528f49"/>
                 <textFieldExpression><![CDATA[$F{mfgName}]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement style="ChecklistValue" x="570" y="0" width="38" height="90" uuid="86768578-b2be-46e7-9b97-88b991be492d"/>
+                <reportElement style="ChecklistValue" x="570" y="0" width="38" height="90"
+                               uuid="86768578-b2be-46e7-9b97-88b991be492d"/>
                 <textFieldExpression><![CDATA[$F{compositionIngredients}]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement style="ChecklistValue" x="608" y="0" width="37" height="90" uuid="f576bacd-0186-4a55-8688-28d82c7ae81f"/>
+                <reportElement style="ChecklistValue" x="608" y="0" width="37" height="90"
+                               uuid="f576bacd-0186-4a55-8688-28d82c7ae81f"/>
                 <textFieldExpression><![CDATA[$F{storageCondition}]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement style="ChecklistValue" x="645" y="0" width="37" height="90" uuid="9f055405-764f-4e98-b137-2c6b6e443074"/>
+                <reportElement style="ChecklistValue" x="645" y="0" width="37" height="90"
+                               uuid="9f055405-764f-4e98-b137-2c6b6e443074"/>
                 <textFieldExpression><![CDATA[$F{appearance}]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement style="ChecklistValue" x="682" y="0" width="34" height="90" uuid="bf3a4474-853c-47bc-91d6-852169c7c230"/>
+                <reportElement style="ChecklistValue" x="682" y="0" width="34" height="90"
+                               uuid="bf3a4474-853c-47bc-91d6-852169c7c230"/>
                 <textFieldExpression><![CDATA[$F{certMarksPvocDoc}]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement style="ChecklistValue" x="716" y="0" width="33" height="90" uuid="473e5906-d385-47b6-9e95-dbc405bf6d82"/>
+                <reportElement style="ChecklistValue" x="716" y="0" width="33" height="90"
+                               uuid="473e5906-d385-47b6-9e95-dbc405bf6d82"/>
                 <textFieldExpression><![CDATA[$F{sampled}]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement style="ChecklistValue" x="749" y="0" width="51" height="90" uuid="a7ea559d-570c-462f-ad85-6be88b5e85af"/>
+                <reportElement style="ChecklistValue" x="749" y="0" width="51" height="90"
+                               uuid="a7ea559d-570c-462f-ad85-6be88b5e85af"/>
                 <textFieldExpression><![CDATA[$F{remarks}]]></textFieldExpression>
             </textField>
         </band>

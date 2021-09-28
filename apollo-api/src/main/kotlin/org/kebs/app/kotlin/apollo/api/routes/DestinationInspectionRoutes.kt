@@ -1,9 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.routes
 
-import org.kebs.app.kotlin.apollo.api.handlers.ApiDestinationInspectionHandler
-import org.kebs.app.kotlin.apollo.api.handlers.ChecklistHandler
-import org.kebs.app.kotlin.apollo.api.handlers.DestinationInspectionActionsHandler
-import org.kebs.app.kotlin.apollo.api.handlers.InvoiceHandlers
+import org.kebs.app.kotlin.apollo.api.handlers.*
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.bind.annotation.CrossOrigin
@@ -11,12 +8,19 @@ import org.springframework.web.servlet.function.router
 
 @Configuration
 class DestinationInspectionRoutes {
-
+    @Bean
+    @CrossOrigin
+    fun dashboard(handler: InspectionDashboard)= router {
+        "/api/v1/dashboard".nest {
+            GET("/all", handler::inspectionStatistics)
+            GET("/personal", handler::myInspectionStatistics)
+        }
+    }
     @Bean
     @CrossOrigin
     fun invoicing(handlers: InvoiceHandlers)= router{
         "/api/v1/di".nest {
-//            GET("/demand/note/{demandNoteId}",handlers::downloadDemandNote)
+            POST("/demand/note/payment/{cdUuid}",handlers::simulateDemandNotePayment)
             GET("/demand/note/details/{invoiceId}",handlers::cdInvoiceDetails)
             POST("/demand/note/submit/{invoiceId}",handlers::submitDemandNoteForApproval)
             DELETE("/demand/note/delete/{invoiceId}",handlers::deleteDemandNote)

@@ -69,7 +69,9 @@ export class AssignPortComponent implements OnInit {
         this.diService.assignPort(this.form.value, this.data.uuid)
             .subscribe(res => {
                 if (res.responseCode === "00") {
-                    this.dialogRef.close(true)
+                    this.diService.showSuccess(res.message,()=>{
+                        this.dialogRef.close(true)
+                    })
                 } else {
                     this.message=res.message
                 }

@@ -8,10 +8,10 @@
                             <i class="material-icons" *ngIf="consignment">Consignment #{{consignment.id}} </i>
                         </div>
                         <h4 class="card-title" *ngIf="consignment">Consignment #{{consignment.id}}
-                                <button class="btn btn-sm btn-default pull-right mr-7"
-                                (click)="goBack()"> <i class="fa fa-arrow-left"></i> Back
-                              
-                            </button>    
+                            <button class="btn btn-sm btn-default pull-right mr-7"
+                                    (click)="goBack()"><i class="fa fa-arrow-left"></i> Back
+
+                            </button>
                         </h4>
 
                     </div>
@@ -125,806 +125,811 @@
                                 </div>
                             </div>
                             <div class="col-md-8">
-                                <mat-tab-group mat-stretch-tabs [disablePagination]="true"  appMatMultilineTab class="tab-wraps">
-                                    <mat-tab *ngIf="consignment.cd_consignee">
+                                <mat-tab-group [(selectedIndex)]="active"  mat-stretch-tabs [disablePagination]="true" appMatMultilineTab
+                                               class="tab-wraps">
+                                    <mat-tab *ngIf="consignment.cd_consignee" label="1">
                                         <ng-template mat-tab-label>
                                             Consignee Details
                                         </ng-template>
-                                            <b class="text-primary">Consignee Details</b>
-                                            <ul class="w-list-unstyled">
-                                                <li class="list-item-accordion ">
-                                                    <div class="list-title-accordion">Name</div>
-                                                    <div class="list-text-accordion">{{consignment.cd_consignee.name}}
-                                                    </div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">PIN</div>
-                                                    <div class="list-text-accordion">{{consignment.cd_consignee.pin}}
-                                                    </div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Physical Address</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_consignee.physicalAddress}}
-                                                    </div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Postal Address</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_consignee.postalAddress}}
-                                                    </div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Telephone</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_consignee.telephone}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Email</div>
-                                                    <div class="list-text-accordion">{{consignment.cd_consignee.email}}
-                                                    </div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Warehouse Code</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_consignee.warehouseCode}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Warehouse Location</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_consignee.warehouseLocation}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">OGA Ref Number</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_consignee.ogaRefNo}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Physical Country</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_consignee.physicalCountry}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Physical Country Name</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_consignee.physicalCountryName}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Postal Country</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_consignee.postalCountry}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Postal Country Name</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_consignee.postalCountryName}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Fax</div>
-                                                    <div class="list-text-accordion">{{consignment.cd_consignee.fax}}
-                                                    </div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div clases="list-title-accordion">Sector of Activity</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_consignee.sectorOfActivity}}</div>
-                                                </li>
-                                            </ul>
+                                        <b class="text-primary">Consignee Details</b>
+                                        <ul class="w-list-unstyled">
+                                            <li class="list-item-accordion ">
+                                                <div class="list-title-accordion">Name</div>
+                                                <div class="list-text-accordion">{{consignment.cd_consignee.name}}
+                                                </div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">PIN</div>
+                                                <div class="list-text-accordion">{{consignment.cd_consignee.pin}}
+                                                </div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Physical Address</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_consignee.physicalAddress}}
+                                                </div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Postal Address</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_consignee.postalAddress}}
+                                                </div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Telephone</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_consignee.telephone}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Email</div>
+                                                <div class="list-text-accordion">{{consignment.cd_consignee.email}}
+                                                </div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Warehouse Code</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_consignee.warehouseCode}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Warehouse Location</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_consignee.warehouseLocation}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">OGA Ref Number</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_consignee.ogaRefNo}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Physical Country</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_consignee.physicalCountry}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Physical Country Name</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_consignee.physicalCountryName}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Postal Country</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_consignee.postalCountry}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Postal Country Name</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_consignee.postalCountryName}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Fax</div>
+                                                <div class="list-text-accordion">{{consignment.cd_consignee.fax}}
+                                                </div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div clases="list-title-accordion">Sector of Activity</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_consignee.sectorOfActivity}}</div>
+                                            </li>
+                                        </ul>
                                     </mat-tab>
-                                    <mat-tab *ngIf="comments">
+                                    <mat-tab *ngIf="comments" label="2">
                                         <ng-template mat-tab-label>
                                             Remarks History
                                         </ng-template>
-                                            <b class="text-primary">Remarks history</b>
-                                            <app-view-remarks-history [remarks]="comments"></app-view-remarks-history>
+                                        <b class="text-primary">Remarks history</b>
+                                        <app-view-remarks-history [remarks]="comments"></app-view-remarks-history>
                                     </mat-tab>
-                                    <mat-tab *ngIf="consignment.cd_importer">
+                                    <mat-tab *ngIf="consignment.cd_importer" label="3">
                                         <ng-template mat-tab-label>
                                             Importer Details
                                         </ng-template>
-                                            <b class="text-primary">Importer Details</b>
-                                            <ul class="w-list-unstyled">
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Name</div>
-                                                    <div class="list-text-accordion">{{consignment.cd_importer.name}}
-                                                    </div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">PIN</div>
-                                                    <div class="list-text-accordion">{{consignment.cd_importer.pin}}
-                                                    </div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">MDA Ref No</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_importer.mdaRefNo}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Physical Address</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_importer.physicalAddress}}
-                                                    </div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Postal Address</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_importer.postalAddress}}
-                                                    </div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Telephone</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_importer.telephone}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Email</div>
-                                                    <div class="list-text-accordion">{{consignment.cd_importer.email}}
-                                                    </div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Warehouse Code</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_importer.warehouseCode}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Warehouse Location</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_importer.warehouseLocation}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">OGA Ref Number</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_importer.ogaRefNo}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Physical Country</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_importer.physicalCountry}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Physical Country Name</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_importer.physicalCountryName}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Postal Country</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_importer.postalCountry}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Postal Country Name</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_importer.postalCountryName}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Fax</div>
-                                                    <div class="list-text-accordion">{{consignment.cd_importer.fax}}
-                                                    </div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Sector of Activity</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_importer.sectorOfActivity}}</div>
-                                                </li>
-                                            </ul>
+                                        <b class="text-primary">Importer Details</b>
+                                        <ul class="w-list-unstyled">
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Name</div>
+                                                <div class="list-text-accordion">{{consignment.cd_importer.name}}
+                                                </div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">PIN</div>
+                                                <div class="list-text-accordion">{{consignment.cd_importer.pin}}
+                                                </div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">MDA Ref No</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_importer.mdaRefNo}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Physical Address</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_importer.physicalAddress}}
+                                                </div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Postal Address</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_importer.postalAddress}}
+                                                </div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Telephone</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_importer.telephone}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Email</div>
+                                                <div class="list-text-accordion">{{consignment.cd_importer.email}}
+                                                </div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Warehouse Code</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_importer.warehouseCode}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Warehouse Location</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_importer.warehouseLocation}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">OGA Ref Number</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_importer.ogaRefNo}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Physical Country</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_importer.physicalCountry}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Physical Country Name</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_importer.physicalCountryName}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Postal Country</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_importer.postalCountry}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Postal Country Name</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_importer.postalCountryName}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Fax</div>
+                                                <div class="list-text-accordion">{{consignment.cd_importer.fax}}
+                                                </div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Sector of Activity</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_importer.sectorOfActivity}}</div>
+                                            </li>
+                                        </ul>
                                     </mat-tab>
-                                    <mat-tab *ngIf="consignment.cd_exporter?.length">
+                                    <mat-tab *ngIf="consignment.cd_exporter?.length" label="4">
                                         <ng-template mat-tab-label>
                                             Exporter Details
                                         </ng-template>
-                                            <b class="text-primary">Exporter Details</b>
+                                        <b class="text-primary">Exporter Details</b>
+                                        <ul class="w-list-unstyled">
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Name</div>
+                                                <div class="list-text-accordion">{{consignment.cd_exporter.name}}
+                                                </div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">PIN</div>
+                                                <div class="list-text-accordion">{{consignment.cd_exporter.pin}}
+                                                </div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Physical Address</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_exporter.physicalAddress}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Postal Address</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_exporter.postalAddress}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Telephone</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_exporter.telephone}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Email</div>
+                                                <div class="list-text-accordion">{{consignment.cd_exporter.email}}
+                                                </div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Warehouse Code</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_exporter.warehouseCode}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Warehouse Location</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_exporter.warehouseLocation}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">OGA Ref Number</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_exporter.ogaRefNo}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Physical Country</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_exporter.physicalCountry}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Physical Country Name</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_exporter.physicalCountryName}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Postal Country</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_exporter.postalCountry}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Postal Country Name</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_exporter.postalCountryName}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Fax</div>
+                                                <div class="list-text-accordion">{{consignment.cd_exporter.fax}}
+                                                </div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Sector of Activity</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_exporter.sectorOfActivity}}</div>
+                                            </li>
+                                        </ul>
+                                    </mat-tab>
+                                    <mat-tab *ngIf="consignment.cd_consignor?.length" label="5">
+                                        <ng-template mat-tab-label>
+                                            Consignor Details
+                                        </ng-template>
+                                        <b class="text-primary">Consignor Details</b>
+                                        <div class="panel" style="max-height: 388px;">
                                             <ul class="w-list-unstyled">
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Name</div>
-                                                    <div class="list-text-accordion">{{consignment.cd_exporter.name}}
-                                                    </div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_consignor.name}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">PIN</div>
-                                                    <div class="list-text-accordion">{{consignment.cd_exporter.pin}}
-                                                    </div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_consignor.pin}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Physical Address</div>
                                                     <div class="list-text-accordion">
-                                                        {{consignment.cd_exporter.physicalAddress}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Postal Address</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_exporter.postalAddress}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Telephone</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_exporter.telephone}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Email</div>
-                                                    <div class="list-text-accordion">{{consignment.cd_exporter.email}}
-                                                    </div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Warehouse Code</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_exporter.warehouseCode}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Warehouse Location</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_exporter.warehouseLocation}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">OGA Ref Number</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_exporter.ogaRefNo}}</div>
+                                                        {{consignment.cd_consignor.physicalAddress}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Physical Country</div>
                                                     <div class="list-text-accordion">
-                                                        {{consignment.cd_exporter.physicalCountry}}</div>
+                                                        {{consignment.cd_consignor.physicalCountry}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Physical Country Name</div>
+                                                    <div class="list-title-accordion">Physical Country Name
+                                                    </div>
                                                     <div class="list-text-accordion">
-                                                        {{consignment.cd_exporter.physicalCountryName}}</div>
+                                                        {{consignment.cd_consignor.physicalCountryName}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Postal Address</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_consignor.postalAddress}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Postal Country</div>
                                                     <div class="list-text-accordion">
-                                                        {{consignment.cd_exporter.postalCountry}}</div>
+                                                        {{consignment.cd_consignor.postalCountry}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Postal Country Name</div>
                                                     <div class="list-text-accordion">
-                                                        {{consignment.cd_exporter.postalCountryName}}</div>
+                                                        {{consignment.cd_consignor.postalCountryName}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Telephone</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_consignor.telephone}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Email</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_consignor.email}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Warehouse Code</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_consignor.warehouseCode}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Warehouse Location</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_consignor.warehouseLocation}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">OGA Ref Number</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_consignor.ogaRefNo}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Fax</div>
-                                                    <div class="list-text-accordion">{{consignment.cd_exporter.fax}}
-                                                    </div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_consignor.fax}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Sector of Activity</div>
                                                     <div class="list-text-accordion">
-                                                        {{consignment.cd_exporter.sectorOfActivity}}</div>
+                                                        {{consignment.cd_consignor.sectorOfActivity}}</div>
                                                 </li>
                                             </ul>
+                                        </div>
                                     </mat-tab>
-                                    <mat-tab *ngIf="consignment.cd_consignor?.length">
-                                        <ng-template mat-tab-label>
-                                            Consignor Details
-                                        </ng-template>
-                                            <b class="text-primary">Consignor Details</b>
-                                            <div class="panel" style="max-height: 388px;">
-                                                <ul class="w-list-unstyled">
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Name</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_consignor.name}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">PIN</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_consignor.pin}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Physical Address</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_consignor.physicalAddress}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Physical Country</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_consignor.physicalCountry}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Physical Country Name
-                                                        </div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_consignor.physicalCountryName}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Postal Address</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_consignor.postalAddress}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Postal Country</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_consignor.postalCountry}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Postal Country Name</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_consignor.postalCountryName}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Telephone</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_consignor.telephone}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Email</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_consignor.email}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Warehouse Code</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_consignor.warehouseCode}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Warehouse Location</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_consignor.warehouseLocation}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">OGA Ref Number</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_consignor.ogaRefNo}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Fax</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_consignor.fax}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Sector of Activity</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_consignor.sectorOfActivity}}</div>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                    </mat-tab>
-                                    <mat-tab *ngIf="consignment.cd_header_one">
+                                    <mat-tab *ngIf="consignment.cd_header_one" label="6">
                                         <ng-template mat-tab-label>
                                             Values - Header Levels
                                         </ng-template>
-                                            <b class="text-primary">Values - Header Levels</b>
-                                            <div class="panel" style="max-height: 487px;">
-                                                <ul class="w-list-unstyled">
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Foreign Currency Code
-                                                        </div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_header_one.foreignCurrencyCode}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Freight FCY</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_header_one.freightFcy|currency:consignment.cd_header_one.foreignCurrencyCode:'symbol'}}
-                                                        </div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">CIF FCY</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_header_one.cifFcy|currency:consignment.cd_header_one.foreignCurrencyCode:'symbol'}}
-                                                        </div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Insurance NYC</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_header_one.insuranceNyc|currency:consignment.cd_header_one.foreignCurrencyCode:'symbol'}}
-                                                        </div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Forex Rate</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_header_one.forexRate| currency:consignment.cd_header_one.foreignCurrencyCode}}
-                                                        </div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Insurance FCY</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_header_one.insuranceFcy}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">FOB NCY</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_header_one.fobNcy|currency:consignment.cd_header_one.foreignCurrencyCode:'symbol'}}
-                                                        </div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Other Charges NCY</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_header_one.otherChargesNcy|currency:consignment.cd_header_one.foreignCurrencyCode:'symbol'}}
-                                                        </div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">FOB FCY</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_header_one.fobFcy}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Other Charges FCY</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_header_one.otherChargesFcy|currency:consignment.cd_header_one.foreignCurrencyCode:'symbol'}}
-                                                        </div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Freight NCY</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_header_one.freightNcy|currency:consignment.cd_header_one.foreignCurrencyCode:'symbol'}}
-                                                        </div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">CIF NCY</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_header_one.cifNcy|currency:consignment.cd_header_one.foreignCurrencyCode:'symbol'}}
-                                                        </div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">COMESA</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_header_one.comesa}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">INCO Terms</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_header_one.incoTerms}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Transaction Terms</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_header_one.transactionTerms}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Invoice Date</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_header_one.invoiceDate}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Invoice Number</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_header_one.invoiceNumber}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Country Of Supply</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_header_one.countryOfSupply}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Country Of Supply Name
-                                                        </div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_header_one.countryOfSupplyName}}</div>
-                                                    </li>
-                                                </ul>
-                                            </div>
+                                        <b class="text-primary">Values - Header Levels</b>
+                                        <div class="panel" style="max-height: 487px;">
+                                            <ul class="w-list-unstyled">
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Foreign Currency Code
+                                                    </div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_header_one.foreignCurrencyCode}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Freight FCY</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_header_one.freightFcy|currency:consignment.cd_header_one.foreignCurrencyCode:'symbol'}}
+                                                    </div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">CIF FCY</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_header_one.cifFcy|currency:consignment.cd_header_one.foreignCurrencyCode:'symbol'}}
+                                                    </div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Insurance NYC</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_header_one.insuranceNyc|currency:consignment.cd_header_one.foreignCurrencyCode:'symbol'}}
+                                                    </div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Forex Rate</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_header_one.forexRate| currency:consignment.cd_header_one.foreignCurrencyCode}}
+                                                    </div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Insurance FCY</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_header_one.insuranceFcy}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">FOB NCY</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_header_one.fobNcy|currency:consignment.cd_header_one.foreignCurrencyCode:'symbol'}}
+                                                    </div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Other Charges NCY</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_header_one.otherChargesNcy|currency:consignment.cd_header_one.foreignCurrencyCode:'symbol'}}
+                                                    </div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">FOB FCY</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_header_one.fobFcy}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Other Charges FCY</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_header_one.otherChargesFcy|currency:consignment.cd_header_one.foreignCurrencyCode:'symbol'}}
+                                                    </div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Freight NCY</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_header_one.freightNcy|currency:consignment.cd_header_one.foreignCurrencyCode:'symbol'}}
+                                                    </div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">CIF NCY</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_header_one.cifNcy|currency:consignment.cd_header_one.foreignCurrencyCode:'symbol'}}
+                                                    </div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">COMESA</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_header_one.comesa}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">INCO Terms</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_header_one.incoTerms}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Transaction Terms</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_header_one.transactionTerms}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Invoice Date</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_header_one.invoiceDate}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Invoice Number</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_header_one.invoiceNumber}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Country Of Supply</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_header_one.countryOfSupply}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Country Of Supply Name
+                                                    </div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_header_one.countryOfSupplyName}}</div>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </mat-tab>
-                                    <mat-tab *ngIf="consignment.cd_standards_two"> 
+                                    <mat-tab *ngIf="consignment.cd_standards_two" label="8">
                                         <ng-template mat-tab-label>
                                             Standards Two
                                         </ng-template>
-                                            <b class="text-primary">Standards Two</b>
-                                            <ul class="w-list-unstyled">
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Conditions Of Approval</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_standards_two.conditionsOfApproval}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Applicant Remarks</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_standards_two.applicantRemarks}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">MDA Remarks</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_standards_two.mdaRemarks}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Customs Remarks</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_standards_two.customsRemarks}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Purpose Of Import</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_standards_two.purposeOfImport}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Coc Type</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_standards_two.cocType}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Local Coc Type</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_standards_two.localCocType}}</div>
-                                                </li>
-                                            </ul>
+                                        <b class="text-primary">Standards Two</b>
+                                        <ul class="w-list-unstyled">
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Conditions Of Approval</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_standards_two.conditionsOfApproval}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Applicant Remarks</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_standards_two.applicantRemarks}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">MDA Remarks</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_standards_two.mdaRemarks}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Customs Remarks</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_standards_two.customsRemarks}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Purpose Of Import</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_standards_two.purposeOfImport}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Coc Type</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_standards_two.cocType}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Local Coc Type</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_standards_two.localCocType}}</div>
+                                            </li>
+                                        </ul>
                                     </mat-tab>
-                                    <mat-tab *ngIf="consignment.cd_service_provider">
+                                    <mat-tab *ngIf="consignment.cd_service_provider" label="9">
                                         <ng-template mat-tab-label>
                                             Service Providers
                                         </ng-template>
-                                            <b class="text-primary">Service Providers</b>
-                                            <ul class="w-list-unstyled">
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Application Code</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_service_provider.applicationCode}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Name</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_service_provider.name}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Pin</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_service_provider.pin}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Physical Address</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_service_provider.physicalAddress}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Physical Country Name</div>
-                                                    <div class="list-text-accordion">
-                                                        {{consignment.cd_service_provider.physicalCountryName}}</div>
-                                                </li>
-                                            </ul>
-                                       
+                                        <b class="text-primary">Service Providers</b>
+                                        <ul class="w-list-unstyled">
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Application Code</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_service_provider.applicationCode}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Name</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_service_provider.name}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Pin</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_service_provider.pin}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Physical Address</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_service_provider.physicalAddress}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Physical Country Name</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_service_provider.physicalCountryName}}</div>
+                                            </li>
+                                        </ul>
+
                                     </mat-tab>
-                                    <mat-tab *ngIf="consignment.cd_transport">
+                                    <mat-tab *ngIf="consignment.cd_transport" label="10">
                                         <ng-template mat-tab-label>
                                             Transport Details
                                         </ng-template>
-                                            <b class="text-primary">Transport Details</b>
-                                            <div class="panel" style="max-height: 636px;">
-                                                <ul class="w-list-unstyled">
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Mode Of Transport</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_transport.modeOfTransport}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Mode Of Transport
-                                                            Description
-                                                        </div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_transport.modeOfTransportDesc}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Vessel Name</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_transport.vesselName}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Date Of Arrival</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_transport.dateOfArrival}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Shipment Date</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_transport.shipmentDate}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Carrier</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_transport.carrier}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Voyage No</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_transport.voyageNo}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Marks And Numbers</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_transport.marksAndNumbers}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">BLAWB</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_transport.blawb}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Customs Office</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_transport.customOffice}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Customs Office Description
-                                                        </div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_transport.customOfficeDesc}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Manifest No</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_transport.manifestNo}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Port Of Departure</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_transport.portOfDeparture}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Port Of Departure
-                                                            Description
-                                                        </div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_transport.portOfDepartureDesc}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Port Of Arrival</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_transport.portOfArrival}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Port Of Arrival
-                                                            Description
-                                                        </div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_transport.portOfArrivalDesc}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Freight Station</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_transport.freightStation}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Freight Station
-                                                            Description
-                                                        </div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_transport.freightStationDesc}}
-                                                        </div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Cargo Type Indicator</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_transport.cargoTypeIndicator}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">In Land Trans Port Co
-                                                        </div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_transport.inLandTransPortCo}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">In Land Trans Port Co Ref
-                                                            No
-                                                        </div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_transport.inLandTransPortCoRefNo}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Kephis Collection Office
-                                                        </div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_transport.kephisCollectionOffice}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Certification Category
-                                                        </div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_transport.certificationCategory}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Place Of Application</div>
-                                                        <div class="list-text-accordion">
-                                                            {{consignment.cd_transport.placeOfApplication}}</div>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        
+                                        <b class="text-primary">Transport Details</b>
+                                        <div class="panel" style="max-height: 636px;">
+                                            <ul class="w-list-unstyled">
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Mode Of Transport</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_transport.modeOfTransport}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Mode Of Transport
+                                                        Description
+                                                    </div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_transport.modeOfTransportDesc}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Vessel Name</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_transport.vesselName}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Date Of Arrival</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_transport.dateOfArrival}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Shipment Date</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_transport.shipmentDate}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Carrier</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_transport.carrier}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Voyage No</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_transport.voyageNo}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Marks And Numbers</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_transport.marksAndNumbers}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">BLAWB</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_transport.blawb}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Customs Office</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_transport.customOffice}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Customs Office Description
+                                                    </div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_transport.customOfficeDesc}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Manifest No</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_transport.manifestNo}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Port Of Departure</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_transport.portOfDeparture}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Port Of Departure
+                                                        Description
+                                                    </div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_transport.portOfDepartureDesc}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Port Of Arrival</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_transport.portOfArrival}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Port Of Arrival
+                                                        Description
+                                                    </div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_transport.portOfArrivalDesc}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Freight Station</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_transport.freightStation}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Freight Station
+                                                        Description
+                                                    </div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_transport.freightStationDesc}}
+                                                    </div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Cargo Type Indicator</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_transport.cargoTypeIndicator}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">In Land Trans Port Co
+                                                    </div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_transport.inLandTransPortCo}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">In Land Trans Port Co Ref
+                                                        No
+                                                    </div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_transport.inLandTransPortCoRefNo}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Kephis Collection Office
+                                                    </div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_transport.kephisCollectionOffice}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Certification Category
+                                                    </div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_transport.certificationCategory}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Place Of Application</div>
+                                                    <div class="list-text-accordion">
+                                                        {{consignment.cd_transport.placeOfApplication}}</div>
+                                                </li>
+                                            </ul>
+                                        </div>
+
                                     </mat-tab>
-                                    <mat-tab>
+                                    <mat-tab label="11">
                                         <ng-template mat-tab-label>
                                             Item Details
                                         </ng-template>
-                                      
-                                            <b class="text-primary">Item Details</b>
-                                            <app-item-details-list-view [consignmentId]="consignmentId"
-                                                [dataSet]="consignmentItems"></app-item-details-list-view>
-                                       
+
+                                        <b class="text-primary">Item Details</b>
+                                        <app-item-details-list-view [consignmentId]="consignmentId"
+                                                                    [dataSet]="consignmentItems"></app-item-details-list-view>
+
                                     </mat-tab>
-                                    <mat-tab *ngIf="attachments"> 
+                                    <mat-tab *ngIf="attachments" label="12">
                                         <ng-template mat-tab-label>
                                             Attachments
                                         </ng-template>
-                                       
-                                            <b class="text-primary">Attachments</b>
-                                            <app-attachment-list (reloadHandler)="reloadAttachments($event)"
-                                                [dataSet]="attachments"></app-attachment-list>
-                                      
+
+                                        <b class="text-primary">Attachments</b>
+                                        <app-attachment-list (reloadHandler)="reloadAttachments($event)"
+                                                             [dataSet]="attachments"></app-attachment-list>
+
                                     </mat-tab>
-                                    <mat-tab *ngIf="consignment.old_versions">
+                                    <mat-tab *ngIf="consignment.old_versions" label="13">
                                         <ng-template mat-tab-label>
                                             Other Version Details
-                                        </ng-template >
-                                      
-                                            <b class="text-primary">Other Version Details</b>
-                                            <app-other-version-details [dataSet]="consignment.old_versions">
-                                            </app-other-version-details>
+                                        </ng-template>
+
+                                        <b class="text-primary">Other Version Details</b>
+                                        <app-other-version-details [dataSet]="consignment.old_versions">
+                                        </app-other-version-details>
                                     </mat-tab>
-                                    <mat-tab *ngIf="demandNotes">
+                                    <mat-tab *ngIf="demandNotes" label="13">
                                         <ng-template mat-tab-label>
                                             Demand Notes
                                         </ng-template>
-                                      
-                                            <b class="text-primary">Other Version Details</b>
-                                            <app-demand-note-list [dataSet]="demandNotes"></app-demand-note-list>
-                                       
+
+                                        <b class="text-primary">Other Version Details</b>
+                                        <app-demand-note-list [dataSet]="demandNotes" (reloadDemandNotes)="loadDemandNotes($event)"></app-demand-note-list>
+
                                     </mat-tab>
 
                                 </mat-tab-group>
                             </div>
                             <div class="col-md-2">
                                 <b>Action:</b>
-                                <div>
+                                <div *ngIf="consignment.ui">
                                     <div *ngIf="consignment.ui.inspector && !consignment.ui.completed">
                                         <button *ngIf="consignment.ui.owner" class="btn btn-sm btn-primary"
-                                            (click)="uploadAttachment()">UPLOAD
+                                                (click)="uploadAttachment()">UPLOAD
                                             ATTACHMENT
                                         </button>
                                         <button
-                                            *ngIf="consignment.ui.owner && (consignment.ui.cocRequest || consignment.ui.corRequest)"
-                                            class="btn btn-sm btn-primary" (click)="markAsCompliant()">COMPLIANT
+                                                *ngIf="consignment.ui.owner && (consignment.ui.cocRequest || consignment.ui.corRequest) && (!consignment.ui.complianceDisabled || consignment.ui.targetRejected)"
+                                                class="btn btn-sm btn-primary" (click)="markAsCompliant()">COMPLIANT
                                         </button>
-                                        <button *ngIf="consignment.ui.owner && !consignment.ui.checklistFilled && consignment.ui.demandNotePaid && consignment.ui.targeted"
-                                            class="btn btn-sm btn-primary" (click)="createInspectionChecklist()">FILL
+                                        <button *ngIf="consignment.ui.owner && !consignment.ui.checklistFilled && (consignment.ui.demandNotePaid || consignment.ui.demandNoteRejected) && consignment.ui.targeted"
+                                                class="btn btn-sm btn-primary" (click)="createInspectionChecklist()">
+                                            FILL
                                             INSPECTION CHECKLIST
                                         </button>
                                         <button *ngIf="consignment.ui.owner && consignment.ui.blacklistEnabled"
-                                            class="btn btn-sm btn-warning" (click)="blacklistUser()">BLACKLIST USER
+                                                class="btn btn-sm btn-warning" (click)="blacklistUser()">BLACKLIST USER
                                         </button>
-                                        <button *ngIf="consignment.ui.owner && consignment.ui.targeted"
-                                            class="btn btn-sm btn-warning" (click)="generateDemandNote()">GENERATE
+                                        <button *ngIf="consignment.ui.owner && consignment.ui.targeted && !consignment.ui.demandNoteDisabled"
+                                                class="btn btn-sm btn-warning" (click)="generateDemandNote()">GENERATE
                                             DEMAND NOTE
                                         </button>
                                         <button *ngIf="consignment.ui.owner" class="btn btn-sm btn-warning"
-                                            (click)="approveRejectConsignment()">Approve / Reject Consignment
+                                                (click)="approveRejectConsignment()">Approve / Reject Consignment
                                         </button>
-                                        <button *ngIf="consignment.ui.owner && consignment.ui.targetItem"
-                                            class="btn btn-sm btn-warning" (click)="targetConsignment()">TARGET
+                                        <button *ngIf="consignment.ui.owner && consignment.ui.targetItem && !consignment.ui.targetDisabled"
+                                                class="btn btn-sm btn-warning" (click)="targetConsignment()">TARGET
                                         </button>
                                     </div>
                                     <div *ngIf="consignment.ui.supervisor">
                                         <button *ngIf="!consignment.ui.assigned " class="btn btn-sm btn-primary"
-                                            (click)="assignInspectionOfficer()">ASSIGN IO
+                                                (click)="assignInspectionOfficer()">ASSIGN IO
                                         </button>
                                         <button *ngIf="consignment.ui.assigned" class="btn btn-sm btn-primary"
-                                            (click)="reassignInspectionOfficer()">REASSIGN IO
+                                                (click)="reassignInspectionOfficer()">REASSIGN IO
                                         </button>
                                         <button *ngIf="consignment.ui.supervisorTarget" class="btn btn-sm btn-warning"
-                                            (click)="supervisorTargetConsignment()">SUPERVISOR TARGET
+                                                (click)="supervisorTargetConsignment()">SUPERVISOR TARGET
                                         </button>
                                     </div>
                                 </div>
 
-                                <br />
+                                <br/>
                                 <b>Document Details:</b>
-                                <a class="btn btn-sm btn-warning" href="{{consignment.cd_details.summaryPageURL}}"
-                                    *ngIf="consignment.cd_details.summaryPageURL" target="_blank">View on KenTrade</a>
-                                <br />
-                                <button *ngIf="consignment.ui.demandNote" class="btn btn-sm btn-primary"
-                                    (click)="downloadDemandNote()">DEMAND NOTE PDF
-                                </button>
-                                <button *ngIf="consignment.ui.checklistFilled" class="btn btn-sm btn-primary"
-                                    (click)="viewInspectionChecklists()">VIEW INSPECTION REPORT
-                                </button>
-                                <button *ngIf="consignment.ui.corAvailable" class="btn btn-sm btn-primary"
-                                    (click)="viewCoR()">
-                                    CERTIFICATE OF
-                                    ROADWORTHINESS
-                                </button>
-                                <button *ngIf="consignment.ui.cocAvailable" class="btn btn-sm btn-primary"
-                                    (click)="viewCoC()">CERTIFICATE OF COMPLIANCE
-                                </button>
-                                <button *ngIf="consignment.ui.idfAvailable" class="btn btn-sm btn-primary"
-                                    (click)="viewIdfDocument()">IDF DOCUMENT
-                                </button>
-                                <button class="btn btn-sm btn-primary" (click)="viewDeclarationDocument()">
-                                    DECLARATION DOCUMENT
-                                </button>
+                                <div *ngIf="consignment.ui">
+                                    <a class="btn btn-sm btn-warning" href="{{consignment.cd_details.summaryPageURL}}"
+                                       *ngIf="consignment.cd_details.summaryPageURL" target="_blank">View on
+                                        KenTrade</a>
+                                    <br/>
+                                    <button *ngIf="consignment.ui.demandNote" class="btn btn-sm btn-primary"
+                                            (click)="downloadDemandNote()">DEMAND NOTE PDF
+                                    </button>
+                                    <button *ngIf="consignment.ui.checklistFilled" class="btn btn-sm btn-primary"
+                                            (click)="viewInspectionChecklists()">VIEW INSPECTION REPORT
+                                    </button>
+                                    <button *ngIf="consignment.ui.corAvailable" class="btn btn-sm btn-primary"
+                                            (click)="viewCoR()">
+                                        CERTIFICATE OF
+                                        ROADWORTHINESS
+                                    </button>
+                                    <button *ngIf="consignment.ui.cocAvailable" class="btn btn-sm btn-primary"
+                                            (click)="viewCoC()">CERTIFICATE OF COMPLIANCE
+                                    </button>
+                                    <button *ngIf="consignment.ui.idfAvailable" class="btn btn-sm btn-primary"
+                                            (click)="viewIdfDocument()">IDF DOCUMENT
+                                    </button>
+                                    <button class="btn btn-sm btn-primary" (click)="viewDeclarationDocument()">
+                                        DECLARATION DOCUMENT
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>

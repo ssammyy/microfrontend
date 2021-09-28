@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {DestinationInspectionService} from "../../../../../core/store/data/di/destination-inspection.service";
 
 @Component({
     selector: 'app-engineering-details',
@@ -68,10 +69,13 @@ export class EngineeringDetailsComponent implements OnInit {
         }
     };
 
-    constructor() {
+    constructor(private diService: DestinationInspectionService) {
     }
 
     ngOnInit(): void {
     }
 
+    downloadEngineering(){
+        this.diService.downloadDocument("/api/v1/download/checklist/allEngineringChecklist/" + this.inspectionDetails.id)
+    }
 }

@@ -13,82 +13,104 @@ export class DestinationInspectionService {
 
     constructor(private client: HttpClient) {
     }
-    sendDemandNote(data: any, consignmentUuid: any): Observable<any>{
-        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/demand/note/generate/"+consignmentUuid),data)
+    loadPersonalDashboard(): Observable<any>{
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/dashboard/personal"))
     }
+    loadAllDashboard(): Observable<any>{
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/dashboard/all"))
+    }
+    sendDemandNote(data: any, consignmentUuid: any): Observable<any> {
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/demand/note/generate/" + consignmentUuid), data)
+    }
+
     listDemandNotes(consignmentId): Observable<any> {
-        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/demand/note/list/"+consignmentId))
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/demand/note/list/" + consignmentId))
     }
-    loadMyTasks(): Observable<any>{
+
+    loadMyTasks(): Observable<any> {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/my/tasks"))
     }
-    loadChecklists(itemUuid: any): Observable<any>{
-        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/checklists/"+itemUuid))
+
+    loadChecklists(itemUuid: any): Observable<any> {
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/checklists/" + itemUuid))
     }
-    downloadChecklist(checkListId: any): Observable<any>{
-        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/checklist/download/"+checkListId))
+
+    downloadChecklist(checkListId: any): Observable<any> {
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/checklist/download/" + checkListId))
     }
-    listOfficersForConsignment(consignmentUuid: any): Observable<any>{
-        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/user/officers/"+consignmentUuid))
+
+    listOfficersForConsignment(consignmentUuid: any): Observable<any> {
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/user/officers/" + consignmentUuid))
     }
-    approveReject(data: any, consignmentUuid: any):  Observable<any> {
-        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/approve-reject/"+consignmentUuid),data)
+
+    approveReject(data: any, consignmentUuid: any): Observable<any> {
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/approve-reject/" + consignmentUuid), data)
     }
-    getAllPorts(): Observable<any>{
+
+    getAllPorts(): Observable<any> {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/ports"))
     }
-    loadMinistryStations(): Observable<any>{
+
+    loadMinistryStations(): Observable<any> {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/ministry/stations"))
     }
 
-    userBlacklistTypes(): Observable<any>{
+    userBlacklistTypes(): Observable<any> {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/user/blacklist/types"))
     }
-    getAllPortFreightStations(portId:any): Observable<any>{
-        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/port/freight/stations/"+portId))
-    }
-    assignPort(data: any, consignmentUuid: any): Observable<any>{
-        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/assign-port/"+consignmentUuid),data)
-    }
-    sendCertificateOfInspection(data: any, consignmentUuid: any): Observable<any>{
-        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/send-coi/"+consignmentUuid),data)
+
+    getAllPortFreightStations(portId: any): Observable<any> {
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/port/freight/stations/" + portId))
     }
 
-    sendConsignmentDocumentAction(data: any, consignmentUuid: any,actionName: string): Observable<any>{
-        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/"+actionName+"/"+consignmentUuid),data)
+    assignPort(data: any, consignmentUuid: any): Observable<any> {
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/assign-port/" + consignmentUuid), data)
     }
-    assignInspectionOfficer(data: any, consignmentUuid: any):  Observable<any> {
-        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/assign-io/"+consignmentUuid),data)
+
+    sendCertificateOfInspection(data: any, consignmentUuid: any): Observable<any> {
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/send-coi/" + consignmentUuid), data)
     }
+
+    sendConsignmentDocumentAction(data: any, consignmentUuid: any, actionName: string): Observable<any> {
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/" + actionName + "/" + consignmentUuid), data)
+    }
+
+    assignInspectionOfficer(data: any, consignmentUuid: any): Observable<any> {
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/assign-io/" + consignmentUuid), data)
+    }
+
     getInspectionUiConfigurations(): Observable<any> {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/cd/inspection/configuration"))
     }
+
     demandNoteFees(): Observable<any> {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/demand-note/fees"))
     }
-    uploadMinistryChecklist(file: File, comment: string, id: any): Observable<any>{
-        let fd=new FormData()
+
+    uploadMinistryChecklist(file: File, comment: string, id: any): Observable<any> {
+        let fd = new FormData()
         fd.append("file", file)
         fd.append("comment", comment)
-        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/ministry/inspection/checklist/"+id),fd)
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/ministry/inspection/checklist/" + id), fd)
     }
 
-    requestMinistryChecklist(data: any,id: any): Observable<any>{
-        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/ministry/inspections/request/"+id),data)
+    requestMinistryChecklist(data: any, id: any): Observable<any> {
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/ministry/inspections/request/" + id), data)
     }
-    uploadForeignDocuments(file: File, fileType: string, documentType:any): Observable<any>{
-        let fd=new FormData()
+
+    uploadForeignDocuments(file: File, fileType: string, documentType: any): Observable<any> {
+        let fd = new FormData()
         fd.append("file", file)
-        fd.append("docType",documentType)
+        fd.append("docType", documentType)
         fd.append("file_type", fileType)
-        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/foreign/cd/upload"),fd)
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/foreign/cd/upload"), fd)
     }
 
-    uploadConsignmentDocumentAttachment(file: File, description: string, documentUuid: string): Observable<any>{
-        let fd=new FormData()
+    uploadConsignmentDocumentAttachment(file: File, description: string, documentUuid: string): Observable<any> {
+        let fd = new FormData()
         fd.append("file", file)
         fd.append("description", description)
-        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/attachments/upload/"+documentUuid),fd)
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/attachments/upload/" + documentUuid), fd)
     }
 
     listMinistryInspections(status: number, page: number, size: number): Observable<any> {
@@ -103,7 +125,8 @@ export class DestinationInspectionService {
     getMinistryInspections(itemId: number): Observable<any> {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/ministry/inspection/details/" + itemId))
     }
-    downloadMinistryCheckList(itemId: number): Observable<any>{
+
+    downloadMinistryCheckList(itemId: number): Observable<any> {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/ministry/inspection/download/" + itemId))
     }
 
@@ -144,6 +167,7 @@ export class DestinationInspectionService {
     getConsignmentDetails(consignmentUiid: string): Observable<any> {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/details/" + consignmentUiid))
     }
+
     getFileName(response: HttpResponse<Blob>) {
         let filename: string;
         try {
@@ -151,35 +175,41 @@ export class DestinationInspectionService {
             console.log(contentDisposition)
             const r = /(?:filename=")(.+)(?:")/
             filename = r.exec(contentDisposition)[1];
-        }
-        catch (e) {
+        } catch (e) {
             console.error(e)
-            filename = 'myfile.pdf'
+            filename = 'FILE.pdf'
         }
         return filename
     }
+
     deleteAttachmentDocument(attachmentId: any): Observable<any> {
-        return this.client.delete(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/attachments/"+attachmentId))
+        return this.client.delete(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/attachments/" + attachmentId))
     }
-    downloadDocument(url){
-        this.client.get(ApiEndpointService.getEndpoint(url),{ observe: 'response',responseType: 'blob'})
-            .pipe(map((res: HttpResponse<Blob>)=>{
-                    let fileName=this.getFileName(res)
-                    if(!fileName){
-                        fileName="sample.pdf"
+
+    downloadDocument(url) {
+        this.client.get(ApiEndpointService.getEndpoint(url), {observe: 'response', responseType: 'blob'})
+            .pipe(map((res: HttpResponse<any>) => {
+                    if (res.ok) {
+                        let fileName = this.getFileName(res)
+                        if (!fileName) {
+                            fileName = "sample.pdf"
+                        }
+                        // @ts-ignore
+                        let blob: any = new Blob([res.body], {type: res.headers.get("content-type")});
+                        fileSaver.saveAs(blob, fileName);
+                        return fileName
+                    } else {
+                        this.showError(res.body,null)
                     }
-                    // @ts-ignore
-                    let blob: any = new Blob([res.body], { type: res.headers.get("content-type") });
-                    const url = window.URL.createObjectURL(blob);
-                    //window.open(url);
-                    //window.location.href = response.url;
-                    fileSaver.saveAs(blob, fileName);
-                    return fileName
                 }
             ))
             .subscribe(
-                res=>{
+                res => {
                     console.log(res)
+                },
+                error => {
+                    console.log(error)
+                    this.showError(error.message?error.message:"Download failed, please try again latter",null)
                 }
             )
     }
@@ -222,63 +252,68 @@ export class DestinationInspectionService {
         return this.client.get("/api/v1/di/application/types")
     }
 
-    getAuditComments(id: any): Observable<any>{
-        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/audit/"+id))
+    getAuditComments(id: any): Observable<any> {
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/audit/" + id))
     }
 
     // Download attachment
-    downloadAttachment(id: any) : Observable<any>{
-        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/cd/download/attachments/"+id))
+    downloadAttachment(id: any): Observable<any> {
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/cd/download/attachments/" + id))
     }
 
-    getConsignmentAttachments(consignmentId: string) : Observable<any>{
-        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/attachments/"+consignmentId))
+    getConsignmentAttachments(consignmentId: string): Observable<any> {
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/attachments/" + consignmentId))
     }
 
-    loadItemDetails(itemId: any): Observable<any>{
-        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/item/"+itemId))
+    loadItemDetails(itemId: any): Observable<any> {
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/item/" + itemId))
     }
 
-    loadChecklistConfigs() : Observable<any>{
+    loadChecklistConfigs(): Observable<any> {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/check-list/configurations"));
     }
-    saveChecklist(itemUuid: any, data: any) : Observable<any>{
-        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/save-checklist/"+itemUuid),data);
+
+    saveChecklist(itemUuid: any, data: any): Observable<any> {
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/save-checklist/" + itemUuid), data);
     }
 
     loadCorDetails(cdUuid: any): Observable<any> {
-        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/inspection/cor/details/"+cdUuid));
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/inspection/cor/details/" + cdUuid));
     }
+
     loadCocDetails(cdUuid: any): Observable<any> {
-        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/inspection/coc/details/"+cdUuid));
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/inspection/coc/details/" + cdUuid));
     }
 
-    saveSSFDetails(data: any,itemUuid:any): Observable<any> {
-        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/item-ssf/"+itemUuid),data);
+    saveSSFDetails(data: any, itemUuid: any): Observable<any> {
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/item-ssf/" + itemUuid), data);
     }
 
-    saveSCFDetails(data: any,itemUuid:any): Observable<any> {
-        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/item-scf/"+itemUuid),data);
+    saveSCFDetails(data: any, itemUuid: any): Observable<any> {
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/item-scf/" + itemUuid), data);
     }
 
     demandNoteDetails(demandNoteId: any): Observable<any> {
-        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/demand/note/details/"+demandNoteId))
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/demand/note/details/" + demandNoteId))
     }
-    submitDemandNote(demandNoteId: any,data: any): Observable<any>{
-        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/demand/note/submit/"+demandNoteId),data)
+
+    submitDemandNote(demandNoteId: any, data: any): Observable<any> {
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/demand/note/submit/" + demandNoteId), data)
     }
-    deleteDemandNote(demandNoteId: any): Observable<any>{
-        return this.client.delete(ApiEndpointService.getEndpoint("/api/v1/di/demand/note/submit/"+demandNoteId))
+
+    deleteDemandNote(demandNoteId: any): Observable<any> {
+        return this.client.delete(ApiEndpointService.getEndpoint("/api/v1/di/demand/note/delete/" + demandNoteId))
     }
 
     getDetails(url: string): Observable<any> {
         return this.client.get(ApiEndpointService.getEndpoint(url))
     }
+
     updateSSFResults(data: any, itemUuid: any): Observable<any> {
-        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/item-ssf-result/"+itemUuid),data);
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/item-ssf-result/" + itemUuid), data);
     }
 
-    showSuccess(message: string, fn?:Function){
+    showSuccess(message: string, fn?: Function) {
         swal.fire({
             title: message,
             buttonsStyling: false,
@@ -286,13 +321,14 @@ export class DestinationInspectionService {
                 confirmButton: 'btn btn-success form-wizard-next-btn ',
             },
             icon: 'success'
-        }).then(()=>{
-            if(fn){
+        }).then(() => {
+            if (fn) {
                 fn()
             }
         })
     }
-    showError(message: string, fn?:Function){
+
+    showError(message: string, fn?: Function) {
         swal.fire({
             title: message,
             buttonsStyling: false,
@@ -300,8 +336,8 @@ export class DestinationInspectionService {
                 confirmButton: 'btn btn-success form-wizard-next-btn ',
             },
             icon: 'error'
-        }).then(()=>{
-            if(fn){
+        }).then(() => {
+            if (fn) {
                 fn()
             }
         })

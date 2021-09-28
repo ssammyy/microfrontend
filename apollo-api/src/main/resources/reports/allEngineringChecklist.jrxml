@@ -29,59 +29,40 @@
             <rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
         </box>
     </style>
-    <parameter name="CD_ID" class="java.lang.Long"/>
-    <parameter name="ID_ID" class="java.lang.String"/>
     <parameter name="imagePath" class="java.lang.String"/>
-    <field name="id" class="java.math.BigDecimal">
+    <parameter name="inspectionDate" class="java.lang.String"/>
+    <parameter name="inspectionOfficer" class="java.lang.String"/>
+    <parameter name="feePaid" class="java.lang.String"/>
+    <parameter name="idfNumber" class="java.lang.String"/>
+    <parameter name="ucrNumber" class="java.lang.String"/>
+    <parameter name="entryPoint" class="java.lang.String"/>
+    <parameter name="receiptNumber" class="java.lang.String"/>
+    <parameter name="cfs" class="java.lang.String"/>
+    <parameter name="documentCategory" class="java.lang.String"/>
+    <parameter name="clearingAgent" class="java.lang.String"/>
+    <parameter name="cocNumber" class="java.lang.String"/>
+    <parameter name="inspection" class="java.lang.String"/>
+    <parameter name="importersName" class="java.lang.String"/>
+    <parameter name="customsEntryNumber" class="java.lang.String"/>
+    <parameter name="overallRemarks" class="java.lang.String"/>
+
+    <field name="id" class="java.lang.Long">
         <property name="com.jaspersoft.studio.field.label" value="id"/>
-    </field>
-    <field name="inspection" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="inspection"/>
     </field>
     <field name="category" class="java.lang.String">
         <property name="com.jaspersoft.studio.field.label" value="category"/>
     </field>
-    <field name="entryPoint" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="entryPoint"/>
-    </field>
-    <field name="cfs" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="cfs"/>
-    </field>
-    <field name="inspectionDate" class="java.sql.Date">
-        <property name="com.jaspersoft.studio.field.label" value="inspectionDate"/>
-    </field>
-    <field name="importersName" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="importersName"/>
-    </field>
-    <field name="clearingAgent" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="clearingAgent"/>
-    </field>
-    <field name="customsEntryNumber" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="customsEntryNumber"/>
-    </field>
-    <field name="idfNumber" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="idfNumber"/>
-    </field>
-    <field name="ucrNumber" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="ucrNumber"/>
-    </field>
-    <field name="cocNumber" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="cocNumber"/>
-    </field>
-    <field name="feePaid" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="feePaid"/>
-    </field>
-    <field name="receiptNumber" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="receiptNumber"/>
-    </field>
-    <field name="itemsName" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="itemsName"/>
-    </field>
-    <field name="serialNumber" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="serialNumber"/>
+    <field name="itemNumber" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.label" value="itemNumber"/>
     </field>
     <field name="productDescription" class="java.lang.String">
         <property name="com.jaspersoft.studio.field.label" value="productDescription"/>
+    </field>
+    <field name="itemType" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.label" value="itemType"/>
+    </field>
+    <field name="serialNumber" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.label" value="serialNumber"/>
     </field>
     <field name="brand" class="java.lang.String">
         <property name="com.jaspersoft.studio.field.label" value="brand"/>
@@ -95,35 +76,11 @@
     <field name="quantityVerified" class="java.lang.String">
         <property name="com.jaspersoft.studio.field.label" value="quantityVerified"/>
     </field>
-    <field name="dateMfgPackaging" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="dateMfgPackaging"/>
-    </field>
-    <field name="dateExpiry" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="dateExpiry"/>
+    <field name="batchNoModelTypeRef" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.label" value="batchNoModelTypeRef"/>
     </field>
     <field name="mfgName" class="java.lang.String">
         <property name="com.jaspersoft.studio.field.label" value="mfgName"/>
-    </field>
-    <field name="mfgAddress" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="mfgAddress"/>
-    </field>
-    <field name="compositionIngredients" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="compositionIngredients"/>
-    </field>
-    <field name="storageCondition" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="storageCondition"/>
-    </field>
-    <field name="appearance" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="appearance"/>
-    </field>
-    <field name="certMarksPvocDoc" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="certMarksPvocDoc"/>
-    </field>
-    <field name="sampled" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="sampled"/>
-    </field>
-    <field name="batchNoModelTypeRef" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="batchNoModelTypeRef"/>
     </field>
     <field name="fiberComposition" class="java.lang.String">
         <property name="com.jaspersoft.studio.field.label" value="fiberComposition"/>
@@ -131,8 +88,8 @@
     <field name="instructionsUseManual" class="java.lang.String">
         <property name="com.jaspersoft.studio.field.label" value="instructionsUseManual"/>
     </field>
-    <field name="warrantyPeriodDocumentaion" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="warrantyPeriodDocumentaion"/>
+    <field name="warrantyPeriodDocumentation" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.label" value="warrantyPeriodDocumentation"/>
     </field>
     <field name="safetyCautionaryRemarks" class="java.lang.String">
         <property name="com.jaspersoft.studio.field.label" value="safetyCautionaryRemarks"/>
@@ -143,62 +100,14 @@
     <field name="sizeClassCapacity" class="java.lang.String">
         <property name="com.jaspersoft.studio.field.label" value="sizeClassCapacity"/>
     </field>
-    <field name="makeVehicle" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="makeVehicle"/>
+    <field name="certMarksPvocDoc" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.label" value="certMarksPvocDoc"/>
     </field>
-    <field name="chasisNo" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="chasisNo"/>
-    </field>
-    <field name="engineNoCapacity" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="engineNoCapacity"/>
-    </field>
-    <field name="manufactureDate" class="java.sql.Date">
-        <property name="com.jaspersoft.studio.field.label" value="manufactureDate"/>
-    </field>
-    <field name="registartionDate" class="java.sql.Date">
-        <property name="com.jaspersoft.studio.field.label" value="registartionDate"/>
-    </field>
-    <field name="odemetreReading" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="odemetreReading"/>
-    </field>
-    <field name="driveRhdLhd" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="driveRhdLhd"/>
-    </field>
-    <field name="transmisionAutoManual" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="transmisionAutoManual"/>
-    </field>
-    <field name="colour" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="colour"/>
-    </field>
-    <field name="overalAppearance" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="overalAppearance"/>
+    <field name="sampled" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.label" value="sampled"/>
     </field>
     <field name="remarks" class="java.lang.String">
         <property name="com.jaspersoft.studio.field.label" value="remarks"/>
-    </field>
-    <field name="packagingLabellig" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="packagingLabellig"/>
-    </field>
-    <field name="physicalCondition" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="physicalCondition"/>
-    </field>
-    <field name="defects" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="defects"/>
-    </field>
-    <field name="presenceAbsenceBanned" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="presenceAbsenceBanned"/>
-    </field>
-    <field name="documentation" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="documentation"/>
-    </field>
-    <field name="overalRemarks" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="overalRemarks"/>
-    </field>
-    <field name="kebsOfficer" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="kebsOfficer"/>
-    </field>
-    <field name="officerDate" class="java.sql.Date">
-        <property name="com.jaspersoft.studio.field.label" value="officerDate"/>
     </field>
     <field name="csName" class="java.lang.String">
         <property name="com.jaspersoft.studio.field.label" value="csName"/>
@@ -209,122 +118,14 @@
     <field name="oicName" class="java.lang.String">
         <property name="com.jaspersoft.studio.field.label" value="oicName"/>
     </field>
-    <field name="oicDate" class="java.sql.Date">
+    <field name="oicDate" class="java.lang.String">
         <property name="com.jaspersoft.studio.field.label" value="oicDate"/>
     </field>
-    <field name="status" class="java.math.BigDecimal">
+    <field name="status" class="java.lang.Integer">
         <property name="com.jaspersoft.studio.field.label" value="status"/>
     </field>
-    <field name="varField1" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="varField1"/>
-    </field>
-    <field name="varField2" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="varField2"/>
-    </field>
-    <field name="varField3" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="varField3"/>
-    </field>
-    <field name="varField4" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="varField4"/>
-    </field>
-    <field name="varField5" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="varField5"/>
-    </field>
-    <field name="varField6" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="varField6"/>
-    </field>
-    <field name="varField7" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="varField7"/>
-    </field>
-    <field name="varField8" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="varField8"/>
-    </field>
-    <field name="varField9" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="varField9"/>
-    </field>
-    <field name="varField10" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="varField10"/>
-    </field>
-    <field name="createdBy" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="createdBy"/>
-    </field>
-    <field name="createdOn" class="java.sql.Timestamp">
+    <field name="createdOn" class="java.lang.String">
         <property name="com.jaspersoft.studio.field.label" value="createdOn"/>
-    </field>
-    <field name="modifiedBy" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="modifiedBy"/>
-    </field>
-    <field name="modifiedOn" class="java.sql.Timestamp">
-        <property name="com.jaspersoft.studio.field.label" value="modifiedOn"/>
-    </field>
-    <field name="deleteBy" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="deleteBy"/>
-    </field>
-    <field name="deletedOn" class="java.sql.Timestamp">
-        <property name="com.jaspersoft.studio.field.label" value="deletedOn"/>
-    </field>
-    <field name="itemId" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="itemId"/>
-    </field>
-    <field name="itemNumber" class="java.lang.Long">
-        <property name="com.jaspersoft.studio.field.label" value="itemNumber"/>
-    </field>
-    <field name="productStatus" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="productStatus"/>
-    </field>
-    <field name="brandStatus" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="brandStatus"/>
-    </field>
-    <field name="quantityDeclaredStatus" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="quantityDeclaredStatus"/>
-    </field>
-    <field name="ksEasApplicableStatus" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="ksEasApplicableStatus"/>
-    </field>
-    <field name="quantityVerifiedStatus" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="quantityVerifiedStatus"/>
-    </field>
-    <field name="dateMfgPackagingStatus" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="dateMfgPackagingStatus"/>
-    </field>
-    <field name="dateExpiryStatus" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="dateExpiryStatus"/>
-    </field>
-    <field name="mfgNameStatus" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="mfgNameStatus"/>
-    </field>
-    <field name="compositionIngredientsStatus" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="compositionIngredientsStatus"/>
-    </field>
-    <field name="storageConditionStatus" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="storageConditionStatus"/>
-    </field>
-    <field name="appearanceStatus" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="appearanceStatus"/>
-    </field>
-    <field name="certMarksPvocDocStatus" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="certMarksPvocDocStatus"/>
-    </field>
-    <field name="serialNumberStatus" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="serialNumberStatus"/>
-    </field>
-    <field name="quantityDeclaredRemarks" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="quantityDeclaredRemarks"/>
-    </field>
-    <field name="productDescriptionRemarks" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="productDescriptionRemarks"/>
-    </field>
-    <field name="compliantStatus" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="compliantStatus"/>
-    </field>
-    <field name="saveReason" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="saveReason"/>
-    </field>
-    <field name="itemType" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="ITEM_TYPE"/>
-    </field>
-    <field name="cdIdNumber" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="CD_ID_NUMBER"/>
     </field>
     <group name="TopHeader">
         <groupHeader>
@@ -367,7 +168,7 @@
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textElement textAlignment="Center"/>
-                    <textFieldExpression><![CDATA[$F{ucrNumber}]]></textFieldExpression>
+                    <textFieldExpression><![CDATA[$P{ucrNumber}]]></textFieldExpression>
                 </textField>
                 <staticText>
                     <reportElement style="ColunmHeader" x="2" y="6" width="95" height="20" uuid="284333ce-6879-422f-b375-ca3d4879bdb1">
@@ -379,7 +180,7 @@
                     <reportElement style="ColunmText" x="505" y="127" width="295" height="20" uuid="b5b1b114-155e-463d-809e-7e066b4170cb">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
-                    <textFieldExpression><![CDATA[$F{receiptNumber}]]></textFieldExpression>
+                    <textFieldExpression><![CDATA[$P{receiptNumber}]]></textFieldExpression>
                 </textField>
                 <staticText>
                     <reportElement style="ColunmHeader" x="413" y="97" width="64" height="20" uuid="f20a2270-0c82-4e87-a533-c42c4842dcfb">
@@ -422,14 +223,14 @@
                     <reportElement style="ColunmText" x="653" y="38" width="147" height="20" uuid="c38f9d69-166c-498a-a8b5-f16282bbbfb6">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
-                    <textFieldExpression><![CDATA[$F{inspectionDate}]]></textFieldExpression>
+                    <textFieldExpression><![CDATA[$P{inspectionDate}]]></textFieldExpression>
                 </textField>
                 <textField>
                     <reportElement style="ColunmText" x="50" y="127" width="186" height="20" uuid="0640fc4a-5772-49bd-8d2c-f6b8f8f751ed">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textElement textAlignment="Center"/>
-                    <textFieldExpression><![CDATA[$F{feePaid}]]></textFieldExpression>
+                    <textFieldExpression><![CDATA[$P{feePaid}]]></textFieldExpression>
                 </textField>
                 <staticText>
                     <reportElement style="ColunmHeader" x="2" y="36" width="75" height="20" uuid="76060f6c-dc97-4fec-afbc-a9104160713a">
@@ -443,32 +244,32 @@
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                    <textFieldExpression><![CDATA[$F{idfNumber}]]></textFieldExpression>
+                    <textFieldExpression><![CDATA[$P{idfNumber}]]></textFieldExpression>
                 </textField>
                 <textField>
                     <reportElement style="ColunmText" x="70" y="36" width="342" height="20" uuid="fc0744e4-a8e9-4862-817f-0928930e210c">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
-                    <textFieldExpression><![CDATA[$F{entryPoint}]]></textFieldExpression>
+                    <textFieldExpression><![CDATA[$P{entryPoint}]]></textFieldExpression>
                 </textField>
                 <textField>
                     <reportElement style="ColunmText" x="453" y="38" width="160" height="20" uuid="7a08c6f9-1426-439b-b4ea-f9f8b3c86f74">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
-                    <textFieldExpression><![CDATA[$F{cfs}]]></textFieldExpression>
+                    <textFieldExpression><![CDATA[$P{cfs}]]></textFieldExpression>
                 </textField>
                 <textField>
                     <reportElement style="ColunmText" x="499" y="67" width="301" height="20" uuid="634e38aa-93e8-4ec1-8672-316ac138daec">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
-                    <textFieldExpression><![CDATA[$F{clearingAgent}]]></textFieldExpression>
+                    <textFieldExpression><![CDATA[$P{clearingAgent}]]></textFieldExpression>
                 </textField>
                 <textField>
                     <reportElement style="ColunmText" x="664" y="97" width="136" height="20" uuid="d75696c4-3e6b-46f4-a3ff-29a59e22109b">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textElement textAlignment="Center"/>
-                    <textFieldExpression><![CDATA[$F{cocNumber}]]></textFieldExpression>
+                    <textFieldExpression><![CDATA[$P{cocNumber}]]></textFieldExpression>
                 </textField>
                 <staticText>
                     <reportElement style="ColunmHeader" x="412" y="38" width="39" height="20" uuid="20f876fc-619d-4c53-8f25-46b99789c5bd">
@@ -488,20 +289,20 @@
                         <rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
                     </box>
                     <textElement textAlignment="Center"/>
-                    <textFieldExpression><![CDATA[$F{inspection}]]></textFieldExpression>
+                    <textFieldExpression><![CDATA[$P{inspection}]]></textFieldExpression>
                 </textField>
                 <textField>
                     <reportElement style="ColunmText" x="97" y="67" width="315" height="20" uuid="83b5da7f-f981-4ace-902a-9f6fe17e7306">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
-                    <textFieldExpression><![CDATA[$F{importersName}]]></textFieldExpression>
+                    <textFieldExpression><![CDATA[$P{importersName}]]></textFieldExpression>
                 </textField>
                 <textField>
                     <reportElement style="ColunmText" x="102" y="97" width="134" height="20" uuid="d92e952d-8b5a-403a-93ad-9792ac29b15b">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textElement textAlignment="Center"/>
-                    <textFieldExpression><![CDATA[$F{customsEntryNumber}]]></textFieldExpression>
+                    <textFieldExpression><![CDATA[$P{customsEntryNumber}]]></textFieldExpression>
                 </textField>
             </band>
         </groupHeader>
@@ -550,7 +351,7 @@
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textElement textAlignment="Center"/>
-                    <textFieldExpression><![CDATA[$F{createdBy}]]></textFieldExpression>
+                    <textFieldExpression><![CDATA[$P{inspectionOfficer}]]></textFieldExpression>
                 </textField>
                 <staticText>
                     <reportElement style="ColunmText" x="384" y="170" width="240" height="1" uuid="ec7f26ba-86d0-42bd-beee-b75724e79c44">
@@ -594,7 +395,7 @@
                     <reportElement style="ColunmText" x="130" y="30" width="670" height="20" uuid="4e6d36ce-3134-4d3b-a73d-d1afd67aae5e">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
-                    <textFieldExpression><![CDATA[$F{overalRemarks}]]></textFieldExpression>
+                    <textFieldExpression><![CDATA[$P{overallRemarks}]]></textFieldExpression>
                 </textField>
                 <staticText>
                     <reportElement style="ColunmHeader" x="1" y="194" width="89" height="20" uuid="b4ac9e05-6159-4fe8-9347-219ff4a0b82e">
@@ -625,7 +426,7 @@
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textElement textAlignment="Left">
-                        <font fontName="Algerian" size="12" isBold="true" isUnderline="true"/>
+                        <font fontName="SansSerif" size="12" isBold="true" isUnderline="true"/>
                     </textElement>
                     <text><![CDATA[SIGNATURES]]></text>
                 </staticText>
@@ -654,7 +455,7 @@
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
                     <textElement textAlignment="Left">
-                        <font fontName="Algerian" size="12" isBold="true" isUnderline="true"/>
+                        <font fontName="SansSerif" size="12" isBold="true" isUnderline="true"/>
                     </textElement>
                     <text><![CDATA[SUPEERVISOR’S COMMENTS ]]></text>
                 </staticText>
@@ -857,7 +658,7 @@
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
                 </reportElement>
                 <textElement textAlignment="Center">
-                    <font fontName="Algerian" size="16" isBold="true" isItalic="false" isUnderline="true"/>
+                    <font fontName="SansSerif" size="16" isBold="true" isItalic="false" isUnderline="true"/>
                 </textElement>
                 <text><![CDATA[INSPECTION CHECKLIST]]></text>
             </staticText>
@@ -990,7 +791,7 @@
             <textField isBlankWhenNull="true">
                 <reportElement style="ChecklistValue" x="538" y="0" width="37" height="97" uuid="f576bacd-0186-4a55-8688-28d82c7ae81f"/>
                 <textElement textAlignment="Center"/>
-                <textFieldExpression><![CDATA[$F{warrantyPeriodDocumentaion}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$F{warrantyPeriodDocumentation}]]></textFieldExpression>
             </textField>
             <textField isBlankWhenNull="true">
                 <reportElement style="ChecklistValue" x="575" y="0" width="37" height="97" uuid="9f055405-764f-4e98-b137-2c6b6e443074"/>

@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {Form, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {MatDialog} from "@angular/material/dialog";
 import {DestinationInspectionService} from "../../../../../core/store/data/di/destination-inspection.service";
 import swal from "sweetalert2";
@@ -19,29 +19,31 @@ export class ChecklistDataFormComponent implements OnInit {
     message: any
     itemList: any[]
     vehicleDetails: any
-    vehicleItems: any[]
+    vehicleValid: Boolean = true
     otherDetails: any
-    otherItems: any[]
+    otherValid: Boolean = true
     engineeringDetails: any
-    engineringItems: any[]
+    engineringValid: Boolean = true
     agrochemDetails: any
-    agrochemItems: any[]
-    selectedChecklist: any
+    agroChemValid: Boolean = true
     configs: any
     consignmentId: any
     consignment: any
-    errors: any
+    errors: any[]
+    invalidSelection: Boolean = false;
 
     constructor(private fb: FormBuilder, private dialog: MatDialog, private router: Router, private activatedRoute: ActivatedRoute,
                 private diService: DestinationInspectionService) {
     }
 
     ngOnInit(): void {
+        this.errors = []
         this.activatedRoute.paramMap.subscribe(
             res => {
                 this.consignmentId = res.get("id")
                 this.loadConsignmentDetails()
                 this.loadChecklistConfigurations()
+                this.loadMinistryStations()
             }
         )
         this.generalCheckList = this.fb.group({
@@ -50,10 +52,37 @@ export class ChecklistDataFormComponent implements OnInit {
             overallRemarks: ['', [Validators.required, Validators.maxLength(256)]],
             customsEntryNumber: ['', [Validators.required, Validators.maxLength(256)]],
         })
+        // Validate on change
+        this.generalCheckList.statusChanges.subscribe(
+            res => {
+                console.log(res)
+                this.invalidSelection = this.invalidData()
+            }
+        )
     }
 
     goBack() {
         this.router.navigate(["/di", this.consignmentId])
+    }
+
+    validationUpdate(value: Boolean, checklist: any) {
+        switch (checklist) {
+            case 'engineering':
+                this.engineringValid = value
+                break
+            case "agrochem":
+                this.agroChemValid = value
+                break
+            case 'other':
+                this.otherValid = value
+                break
+            case 'vehicle':
+                this.vehicleValid = value
+                break
+            default:
+                console.log("invalid checklist: " + checklist)
+        }
+        this.invalidSelection = this.invalidData()
     }
 
     loadMinistryStations() {
@@ -69,6 +98,7 @@ export class ChecklistDataFormComponent implements OnInit {
             )
 
     }
+
     loadConsignmentDetails() {
         this.diService.getConsignmentDetails(this.consignmentId)
             .subscribe(
@@ -77,17 +107,9 @@ export class ChecklistDataFormComponent implements OnInit {
                         this.consignment = response.data
                         this.itemList = this.consignment.items_cd
                     } else {
-                        swal.fire({
-                            title: response.message,
-                            buttonsStyling: false,
-                            customClass: {
-                                confirmButton: 'btn btn-success form-wizard-next-btn ',
-                            },
-                            icon: 'error'
-                        }).then(() => {
+                        this.diService.showError(response.message, () => {
                             this.router.navigate(["/di", this.consignmentId])
-                        });
-                        console.log(response)
+                        })
                     }
                 }
             )
@@ -109,18 +131,22 @@ export class ChecklistDataFormComponent implements OnInit {
 
     setAgrochemChecklist(data: any) {
         this.agrochemDetails = data
+        this.invalidSelection = this.invalidData()
     }
 
     setEngineringChecklist(data: any) {
         this.engineeringDetails = data
+        this.invalidSelection = this.invalidData()
     }
 
     setVehicleChecklist(data: any) {
         this.vehicleDetails = data
+        this.invalidSelection = this.invalidData()
     }
 
     setOtherChecklist(data: any) {
         this.otherDetails = data
+        this.invalidSelection = this.invalidData()
     }
 
     getItems(itemList: any[]): any[] {
@@ -142,44 +168,57 @@ export class ChecklistDataFormComponent implements OnInit {
     }
 
     validateItems() {
-        let selectedItems = []
-        selectedItems.push(this.engineringItems)
-        selectedItems.push(this.agrochemItems)
-        selectedItems.push(this.otherItems)
-        selectedItems.push(this.vehicleItems)
-        if (selectedItems.length > this.itemList.length) {
-            this.errors["selected"] = "Some items were selected more than once"
+        let selectedItems = 0
+        for (let itm of this.itemList) {
+            if (itm.selected) {
+                selectedItems = selectedItems + 1;
+            }
         }
-        if (this.generalCheckList.value.inspection == "FULL" && selectedItems.length < this.itemList.length) {
-            this.errors["inspection"] = "Full inspection requires all items to be selected"
+        if (this.generalCheckList.value.inspection == "FULL" && selectedItems < this.itemList.length) {
+            this.errors.push({
+                type: "inspection",
+                description: "Full inspection requires all items to be selected"
+            })
         }
     }
 
 
     invalidData(): Boolean {
-        this.errors = {}
+        this.errors = []
         this.validateItems()
-        if (this.engineringItems && this.engineringItems.length > 0 && !this.engineeringDetails) {
-            this.errors["engineering"] = "Fill engineering details"
+        if (!this.engineringValid) {
+            this.errors.push({
+                type: "engineering",
+                description: "Fill engineering details"
+            })
         }
-        if (this.agrochemItems && this.agrochemItems.length > 0 && !this.agrochemDetails) {
-            this.errors["agrochem"] = "Fill agrochem details"
+        if (!this.agroChemValid) {
+            this.errors.push({
+                type: "agrochem",
+                description: "Fill agrochem details"
+            })
         }
-        if (this.vehicleItems && this.vehicleItems.length > 0 && !this.vehicleDetails) {
-            this.errors["vehicle"] = "Fill vehicle details"
+        if (!this.vehicleValid) {
+            this.errors.push({
+                type: "vehicle",
+                description: "Fill vehicle details"
+            })
         }
-        if (this.otherItems && this.otherItems.length > 0 && !this.otherDetails) {
-            this.errors["other"] = "Fill other details"
+        if (!this.otherValid) {
+            this.errors.push({
+                type: "other",
+                description: "Fill other details"
+            })
+        }
+        if(this.generalCheckList.valid) {
+            if (!this.vehicleDetails && !this.otherDetails && !this.agrochemDetails && !this.engineeringDetails) {
+                this.errors.push({
+                    type: "checklist",
+                    description: "Please fill at least one checklist"
+                })
+            }
         }
         return this.errors.length > 0
-    }
-
-    checklistChanges(event: any) {
-        console.log(event)
-        let selections = this.checkListTypes.filter(d => d.id == event.target.value)
-        if (selections.length > 0) {
-            this.selectedChecklist = selections[0]
-        }
     }
 
     saveRecord() {
@@ -190,26 +229,26 @@ export class ChecklistDataFormComponent implements OnInit {
         }
         let data = this.generalCheckList.value
         if (this.engineeringDetails) {
-            this.engineeringDetails["items"] = this.getItems(this.engineringItems)
+            this.engineeringDetails["items"] = this.getItems(this.engineeringDetails.items)
             data["engineering"] = this.engineeringDetails
         }
         if (this.vehicleDetails) {
-            this.vehicleDetails["items"] = this.getItems(this.vehicleItems)
+            this.vehicleDetails["items"] = this.getItems(this.vehicleDetails.items)
             data["vehicle"] = this.vehicleDetails
         }
         if (this.agrochemDetails) {
-            this.agrochemDetails["items"] = this.getItems(this.agrochemItems)
+            this.agrochemDetails["items"] = this.getItems(this.agrochemDetails.items)
             data["agrochem"] = this.agrochemDetails
         }
         if (this.otherDetails) {
-            this.otherDetails["items"] = this.getItems(this.otherItems)
+            this.otherDetails["items"] = this.getItems(this.otherDetails.items)
             data["others"] = this.otherDetails
         }
         this.diService.saveChecklist(this.consignmentId, data)
             .subscribe(
                 res => {
                     if (res.responseCode === "00") {
-                        this.router.navigate(["/di", this.consignmentId])
+                        this.router.navigate(["/di/checklist/details", this.consignmentId])
                     } else {
                         this.message = res.message
                     }

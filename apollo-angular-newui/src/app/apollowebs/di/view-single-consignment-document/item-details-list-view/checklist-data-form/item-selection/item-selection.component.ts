@@ -13,7 +13,7 @@ import {OtherItemChecklistComponent} from "../other-inspection-checklist/other-i
     styleUrls: ['./item-selection.component.css']
 })
 export class ItemSelectionComponent implements OnInit {
-    displayedColumns = ['select', 'hsCode', 'details', 'price', 'description', 'actions']
+    displayedColumns = ['select', 'checklist','hsCode', 'details', 'price', 'description', 'actions']
     complianceStatus = [
         {
             name: 'COMPLIANCE',
@@ -57,17 +57,35 @@ export class ItemSelectionComponent implements OnInit {
         return numSelected == numRows;
     }
 
+    getSelectedIndex(row): number {
+        for (let i = 0; i < this.items.length; i++) {
+            if (row.id !== this.items[i].id) {
+                continue
+            }
+            return i
+        }
+        return -1
+    }
+
     selectionChanged(event, row) {
-        if(event.checked) {
-            this.selection.select(row)
-        }else {
+        let i = this.getSelectedIndex(row)
+        if (!this.items[i].selected || this.items[i].selected && this.items[i].selected == this.checklistType) {
+            if (event.checked) {
+                this.items[i].selected = this.checklistType
+                this.selection.select(row)
+            } else {
+                this.items[i].selected = false
+                this.selection.deselect(row)
+            }
+        } else {
             this.selection.deselect(row)
+            console.log("Item already selected")
         }
     }
 
     openChekclistForm(row: any) {
         let dialogRef: MatDialogRef<any> = null;
-        let formData={
+        let formData = {
             itemId: row.id,
             complianceStatus: this.complianceStatus,
             categories: this.categories,
@@ -75,24 +93,24 @@ export class ItemSelectionComponent implements OnInit {
         }
         switch (this.checklistType) {
             case 'agrochem':
-                dialogRef = this.dialog.open(ItemChecklistComponent,{
-                    data : formData
+                dialogRef = this.dialog.open(ItemChecklistComponent, {
+                    data: formData
                 })
                 break
             case 'engineering':
-                dialogRef = this.dialog.open(EngineeringItemChecklistComponent,{
-                    data : formData
+                dialogRef = this.dialog.open(EngineeringItemChecklistComponent, {
+                    data: formData
                 })
                 break
             case 'vehicle':
-                formData["stations"]=this.stations
-                dialogRef = this.dialog.open(VehicleItemChecklistComponent,{
-                    data : formData
+                formData["stations"] = this.stations
+                dialogRef = this.dialog.open(VehicleItemChecklistComponent, {
+                    data: formData
                 })
                 break
             case 'other':
-                dialogRef = this.dialog.open(OtherItemChecklistComponent,{
-                    data : formData
+                dialogRef = this.dialog.open(OtherItemChecklistComponent, {
+                    data: formData
                 })
                 break
             default:
@@ -101,17 +119,30 @@ export class ItemSelectionComponent implements OnInit {
         dialogRef.afterClosed()
             .subscribe(res => {
                     if (res) {
-                        row.checklist=res
+                        row.checklist = res
                         this.selectedItemsChange.emit(this.selection.selected)
                     }
                 }
             )
     }
 
-    masterToggle() {
-        this.isAllSelected() ?
-            this.selection.clear() :
-            this.selectionDataSource.data.forEach(row => this.selection.select(row));
+    masterToggle(event: any) {
+            if(!event.checked) {
+                this.selection.clear()
+            }
+            this.selectionDataSource.data.forEach(row => {
+                let i=this.getSelectedIndex(row)
+                // Toggle only if you own the item or can own
+                if(!this.items[i].selected || this.items[i].selected && this.items[i].selected==this.checklistType) {
+                    if(event.checked) {
+                        this.items[i].selected=this.checklistType
+                        this.selection.select(row)
+                    }else {
+                        this.selection.deselect(row)
+                        this.items[i].selected=false
+                    }
+                }
+            });
     }
 
     changeCompliance(row, event) {

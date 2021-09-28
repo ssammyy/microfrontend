@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {DestinationInspectionService} from "../../../../../core/store/data/di/destination-inspection.service";
 
 @Component({
   selector: 'app-agrochem-details',
@@ -66,9 +67,13 @@ export class AgrochemDetailsComponent implements OnInit {
       perPage: 20
     }
   };
-  constructor() { }
+  constructor(private diService: DestinationInspectionService) { }
 
   ngOnInit(): void {
+  }
+
+  downloadAgrochem(){
+    this.diService.downloadDocument("/api/v1/download/checklist/allAgrochemChecklist/" + this.inspectionDetails.id)
   }
 
 }

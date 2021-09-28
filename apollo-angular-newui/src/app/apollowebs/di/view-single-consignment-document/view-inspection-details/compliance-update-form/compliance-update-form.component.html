@@ -12,11 +12,9 @@
                    formControlName="bsNumber">
         </div>
         <div class="col-sm-12 col-md-6">
-            <label for="compliant" class="waiver-form-label">Product Description:</label>
-            <select id="compliant" class="waiver-form-input-master" formControlName="compliant">
-                <option value="" disabled selected>Assign Compliance</option>
-                <option *ngFor="let d of complianceStatus" [value]="d.name">{{d.description}}</option>
-            </select>
+            <label for="submissionDate" class="waiver-form-label">Submission Date:</label>
+            <input class="waiver-form-input-master" type="date" id="submissionDate" name="submissionDate"
+                   formControlName="submissionDate">
         </div>
         <div class="col-sm-12 col-md-12">
             <label for="remarks" class="waiver-form-label">Remarks</label>

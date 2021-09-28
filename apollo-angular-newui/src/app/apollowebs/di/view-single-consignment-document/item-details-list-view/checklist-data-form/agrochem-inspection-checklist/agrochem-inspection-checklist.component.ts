@@ -1,33 +1,74 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {MatDialog, MatDialogRef} from "@angular/material/dialog";
-import {ItemChecklistComponent} from "./item-checklist/item-checklist.component";
 
 @Component({
-  selector: 'app-agrochem-inspection-checklist',
-  templateUrl: './agrochem-inspection-checklist.component.html',
-  styleUrls: ['./agrochem-inspection-checklist.component.css']
+    selector: 'app-agrochem-inspection-checklist',
+    templateUrl: './agrochem-inspection-checklist.component.html',
+    styleUrls: ['./agrochem-inspection-checklist.component.css']
 })
 export class AgrochemInspectionChecklistComponent implements OnInit {
-  @Output() private agrochemDetails = new EventEmitter<any>();
-  agrochemChecklist: FormGroup
-  constructor(private fb: FormBuilder, private dialog: MatDialog) { }
+    @Output() private agrochemDetails = new EventEmitter<any>();
+    agrochemChecklist: FormGroup
+    @Input() categories: any[]
+    @Input() itemList: any[]
+    @Output() valid=new EventEmitter<Boolean>()
+    selectedItems: []
 
-  ngOnInit(): void {
-    this.agrochemChecklist=this.fb.group({
-      remarks: ['',Validators.required]
-    })
-    this.agrochemChecklist.valueChanges
-        .subscribe(
-            res=>{
-              if(this.agrochemChecklist.valid){
-                console.log("valid value changes")
-                this.agrochemDetails.emit(this.agrochemChecklist.value)
-              } else {
-                this.agrochemDetails.emit(null)
-              }
+    constructor(private fb: FormBuilder) {
+    }
+
+    ngOnInit(): void {
+        this.valid.emit(true)
+        this.agrochemChecklist = this.fb.group({
+            remarks: ['AgroChemical Checklist'],
+            items: []
+        })
+        this.agrochemChecklist.valueChanges
+            .subscribe(
+                data => {
+                    console.log(data)
+                    if (this.selectedItems && this.selectedItems.length>0) {
+                        let v=this.validateItems(data)
+                        // At least one item selected for data to be emitted.
+                        this.valid.emit(v)
+                        if (v) {
+                            console.log("valid value changes")
+                            this.agrochemDetails.emit(data)
+                        } else {
+                            console.log("invalid value changes: "+v)
+                           this.agrochemDetails.emit(null)
+                        }
+                    } else {
+                        this.valid.emit(true)
+                        this.agrochemDetails.emit(null)
+                    }
+                }
+            )
+        // Simulate updated for value changed event
+        this.agrochemChecklist.patchValue({
+            remarks: ''
+        })
+    }
+
+    itemsSelected(items: any) {
+        this.agrochemChecklist.patchValue({
+            items: items
+        })
+        this.selectedItems = items
+    }
+
+    validateItems(data: any) {
+        let validItems = true;
+        if (data.items && data.items.length > 0) {
+            for (let itm of data.items) {
+                if (!itm.checklist) {
+                    itm.valid = false
+                    console.log("Invalid item: " + itm.id)
+                    validItems = false
+                }
             }
-        )
-  }
+        }
+        return validItems
+    }
 
 }

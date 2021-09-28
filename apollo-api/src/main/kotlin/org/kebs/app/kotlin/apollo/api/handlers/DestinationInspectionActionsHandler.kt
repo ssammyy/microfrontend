@@ -1,17 +1,16 @@
 package org.kebs.app.kotlin.apollo.api.handlers
 
 import mu.KotlinLogging
-import okhttp3.internal.toLongOrDefault
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ConsignmentDocumentDao
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.request.ConsignmentUpdateRequest
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentAuditService
 import org.kebs.app.kotlin.apollo.api.service.DestinationInspectionService
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
-import org.kebs.app.kotlin.apollo.store.model.di.CdStatusTypesEntity
 import org.kebs.app.kotlin.apollo.store.model.di.DeclarationDetailsEntity
 import org.springframework.stereotype.Service
 import org.springframework.web.servlet.function.ServerRequest
@@ -67,9 +66,10 @@ class DestinationInspectionActionsHandler(
             data.put("compliantStatus", form.compliantStatus)
             data.put("supervisor", consignmentDocument.assigner?.userName)
             // Start blacklisting process
-            this.diBpmn.startCompliantProcess(data, consignmentDocument)
+            val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+            this.diBpmn.startCompliantProcess(map, data, consignmentDocument)
             response.responseCode = ResponseCodes.SUCCESS_CODE
-            response.message = "Success"
+            response.message = "Compliant request received, please await approval"
         } catch (ex: Exception) {
             response.message = ex.localizedMessage
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
@@ -90,7 +90,7 @@ class DestinationInspectionActionsHandler(
                 data.put("remarks", form.remarks)
                 data.put("supervisor", consignmentDocument.assigner?.userName)
                 data.put("cdUuid", cdUuid)
-                this.diBpmn.startGenerateCoC(data, consignmentDocument)
+                this.diBpmn.startGenerateCoC(map,data, consignmentDocument)
                 response.message = "Request submitted for approval"
                 response.responseCode = ResponseCodes.SUCCESS_CODE
             } else {
@@ -120,7 +120,7 @@ class DestinationInspectionActionsHandler(
                 data.put("cdUuid", cdUuid)
                 data.put("owner", loggedInUser.userName)
                 data.put("supervisor", consignmentDocument.assigner?.userName)
-                this.diBpmn.startGenerateCor(data, consignmentDocument)
+                this.diBpmn.startGenerateCor(map,data, consignmentDocument)
                 response.responseCode = ResponseCodes.SUCCESS_CODE
                 response.message = "Local CoR request received"
             } else {
@@ -261,8 +261,7 @@ class DestinationInspectionActionsHandler(
                     data["supervisor"] = consignmentDocument.assigner?.userName
                     daoServices.updateCdDetailsInDB(consignmentDocument, loggedInUser)
                     // Submit Targeting to BPM
-                    this.diBpmn.startTargetConsignment(data, consignmentDocument);
-                    consignmentAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, form.remarks, "KEBS_TARGET", "Target consignment")
+                    this.diBpmn.startTargetConsignment(map,data, consignmentDocument);
                     response.message = "Target request submitted"
                     response.responseCode = ResponseCodes.SUCCESS_CODE
                 } else {

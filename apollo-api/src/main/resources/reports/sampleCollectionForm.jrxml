@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.17.0.final using JasperReports Library version 6.17.0-6d93193241dd8cc42629e188b94f9e0bc5722efd  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="demandNote" pageWidth="595" pageHeight="842" whenNoDataType="NoPages" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9e00953a-ee21-49bc-8776-57c80bb03432">
-	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter "/>
 	<style name="TextStatic" hTextAlign="Left" vTextAlign="Middle" rotation="None" fontName="Times New Roman" fontSize="12" isBold="true"/>
 	<style name="TextField" hTextAlign="Left" vTextAlign="Middle" rotation="None" fontName="Times New Roman" fontSize="12" isBold="false">
@@ -10,6 +9,16 @@
 		</box>
 	</style>
 	<parameter name="imagePath" class="java.lang.String"/>
+	<parameter name="slNum" class="java.lang.String"/>
+	<parameter name="product" class="java.lang.String"/>
+	<parameter name="genDate" class="java.lang.String"/>
+	<parameter name="cocNum" class="java.lang.String"/>
+	<parameter name="officerName" class="java.lang.String"/>
+	<parameter name="dutyStation" class="java.lang.String"/>
+	<parameter name="importerName" class="java.lang.String"/>
+	<parameter name="importerAddress" class="java.lang.String"/>
+	<parameter name="supplierName" class="java.lang.String"/>
+	<parameter name="supplierAddress" class="java.lang.String"/>
 	<field name="slNum" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="slNum"/>
 	</field>
@@ -98,7 +107,7 @@
 				<textElement>
 					<font size="10" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{slNum}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{slNum}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
@@ -120,7 +129,7 @@
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{product}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{product}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement style="TextStatic" x="5" y="29" width="100" height="20" uuid="36ae5c94-8166-455b-a8c0-7baf684b5bb9">
@@ -318,7 +327,7 @@
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{dutyStation}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{dutyStation}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="TextField" x="215" y="85" width="339" height="20" uuid="1bcf37fe-c20f-40f2-afef-585b4dff86f1">
@@ -327,7 +336,7 @@
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{importerName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{importerName}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="TextField" x="8" y="114" width="546" height="20" uuid="95e27aab-a705-41eb-bafb-4b36e046103b">
@@ -336,7 +345,7 @@
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{importerAddress}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{importerAddress}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="TextField" x="10" y="258" width="544" height="20" uuid="2dd8e5d4-0e75-4972-9453-46127ce11283">
@@ -345,7 +354,7 @@
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{supplierAddress}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{supplierAddress}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="TextField" x="209" y="227" width="345" height="20" uuid="b9189c0e-022d-41a7-a3b4-6617192cb6e5">
@@ -354,7 +363,7 @@
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{supplierName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{supplierName}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="257" y="317" width="76" height="20" uuid="2db97edf-3489-46ca-9782-4b06af3fec8f"/>
@@ -384,7 +393,7 @@
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{cocNum}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{cocNum}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="3" y="317" width="85" height="20" uuid="cc5d9989-9000-475a-aa0b-ba780657e4b5"/>
@@ -449,7 +458,7 @@
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{genDate}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{genDate}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="138" y="690" width="132" height="20" uuid="94faaddb-48ca-4f57-9c12-a6dfdff4bf33"/>
@@ -465,7 +474,7 @@
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{officerName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{officerName}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="314" y="713" width="76" height="20" uuid="8d5fa194-4b0e-4fb6-8d84-046027cd3b82"/>

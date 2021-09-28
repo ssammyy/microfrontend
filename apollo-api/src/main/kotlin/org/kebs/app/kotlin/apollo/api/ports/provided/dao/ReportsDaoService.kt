@@ -178,11 +178,11 @@ class ReportsDaoService(
         return localCocItemsReportInput
     }
 
-    fun generateLocalCoRReport(cdDetails: ConsignmentDocumentDetailsEntity, filePath: String): File? {
+    fun generateLocalCoRReport(cdDetails: ConsignmentDocumentDetailsEntity, filePath: String, itemId: Long): File? {
         var map = hashMapOf<String, Any>()
         map["imagePath"] = logoImageFile
 
-        map = diDaoServices.createLocalCorReportMap(cdDetails)
+        map = diDaoServices.createLocalCorReportMap(cdDetails, itemId)
 
         val file = ResourceUtils.getFile(filePath)
         val design = JRXmlLoader.load(file)

@@ -1,8 +1,8 @@
-import {Component, EventEmitter, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {DestinationInspectionService} from "../../../core/store/data/di/destination-inspection.service";
-import {act} from "@ngrx/effects";
 import {MatDialog} from "@angular/material/dialog";
 import {ViewDemandNoteComponent} from "./view-demand-note/view-demand-note.component";
+import {CurrencyFormatterComponent} from "../../../core/shared/currency-formatter/currency-formatter.component";
 
 @Component({
     selector: 'app-demand-note-list',
@@ -10,6 +10,7 @@ import {ViewDemandNoteComponent} from "./view-demand-note/view-demand-note.compo
     styleUrls: ['./demand-note-list.component.css']
 })
 export class DemandNoteListComponent implements OnInit {
+    @Output()reloadDemandNotes= new EventEmitter<Boolean>();
     public settings = {
         selectMode: 'single',  // single|multi
         hideHeader: false,
@@ -39,28 +40,23 @@ export class DemandNoteListComponent implements OnInit {
                 title: 'DATE GENERATED',
                 type: 'string'
             },
-            nameImporter: {
-                title: 'NAME IMPORTER',
-                type: 'string'
-            },
-            telephone: {
-                title: 'TELEPHONE',
-                type: 'string'
-            },
-            product: {
-                title: 'PRODUCT',
-                type: 'string'
-            },
             cfvalue: {
                 title: 'CF VALUE',
-                type: 'string'
+                type: 'custom',
+                renderComponent: CurrencyFormatterComponent,
             },
             amountPayable: {
                 title: 'AMOUNT PAYABLE',
-                type: 'string'
+                type: 'custom',
+                renderComponent: CurrencyFormatterComponent,
             },
             totalAmount: {
                 title: 'TOTAL AMOUNT',
+                type: 'custom',
+                renderComponent: CurrencyFormatterComponent,
+            },
+            varField10:{
+                title: 'Remarks',
                 type: 'string'
             },
             rate: {
@@ -87,7 +83,12 @@ export class DemandNoteListComponent implements OnInit {
             data: {
                 id: demandNoteId
             }
-        })
+        }).afterClosed()
+            .subscribe(
+            res=> {
+                this.reloadDemandNotes.emit(res)
+            }
+        )
     }
     onCustomAction(action: any) {
         switch (action.action) {

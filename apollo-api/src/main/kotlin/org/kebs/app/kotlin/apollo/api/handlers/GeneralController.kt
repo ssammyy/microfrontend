@@ -29,7 +29,31 @@ class GeneralController(
         private val resourceLoader: ResourceLoader
 ) {
 
-
+    @GetMapping("/all/checklist/{downloadId}")
+    fun downloadAllChecklist(@PathVariable("downloadId") downloadId: String, httResponse: HttpServletResponse) {
+        var imageFile = ""
+        try {
+//            val resource = resourceLoader.getResource("classpath:static/images/KEBS_SMARK.png")
+            val resource = resourceLoader.getResource("file:\${CONFIG_PATH}/reports/images/KEBS_SMARK.png")
+            imageFile = resource.file.toString()
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.info("Incorrect path ${e.message}")
+        }
+        try{
+        val map = hashMapOf<String, Any>()
+//        map["ITEM_ID"] = id
+            val fileName = "ALL_CHECKLIST.pdf"
+        val sampleCollect = listOf<Any>()
+        map["imagePath"] = imageFile
+        map.putAll(this.checklistService.getAllChecklistDetails(downloadId))
+        val stream = reportsDaoService.extractReportEmptyDataSource(map, "classpath:reports/allChecklist.jrxml")
+        download(stream, fileName, httResponse)
+    } catch (ex: Exception) {
+        KotlinLogging.logger { }.error("FAILED TO READ DATA", ex)
+        httResponse.status = HttpStatus.SC_INTERNAL_SERVER_ERROR
+        httResponse.writer.println("Request failed")
+    }
+    }
     @GetMapping("/checklist/{docType}/{downloadId}")
     fun downloadChecklist(@PathVariable("docType") docType: String, @PathVariable("downloadId") downloadId: Long, httResponse: HttpServletResponse) {
         var imageFile = ""
@@ -40,39 +64,60 @@ class GeneralController(
         } catch (e: Exception) {
             KotlinLogging.logger { }.info("Incorrect path ${e.message}")
         }
-
-        val map = hashMapOf<String, Any>()
+        try {
+            val map = hashMapOf<String, Any>()
 //        map["ITEM_ID"] = id
-        val sampleCollect = listOf<Any>()
-        map["imagePath"] = imageFile
-        val fileName = "${docType.toUpperCase()}_$downloadId.pdf"
-        when {
-            docType.equals("sampleCollectionForm") -> {
-                map.putAll(this.checklistService.getSsfDetails(downloadId))
+            var sampleCollect: List<Any>? = null
+            map["imagePath"] = imageFile
+            val fileName = "${docType.toUpperCase()}_$downloadId.pdf"
+            when {
+                docType.equals("sampleCollectionForm") -> {
+                    map.putAll(this.checklistService.getScfDetails(downloadId))
+                }
+                docType.equals("sampleSubmissionForm") -> {
+                    map.putAll(this.checklistService.getSsfDetails(downloadId))
+                }
+                docType.equals("agrochemChecklist") -> {
+                    map.putAll(this.checklistService.getAgrochemChecklistDetails(downloadId))
+                }
+                docType.equals("allAgrochemChecklist") -> {
+                    map.putAll(this.checklistService.getAgrochemChecklistDetails(downloadId))
+                    sampleCollect=map["items"] as List<Any>
+                }
+                docType.equals("allEngineringChecklist") -> {
+                    map.putAll(this.checklistService.getEngineeringChecklistDetails(downloadId))
+                    sampleCollect=map["items"] as List<Any>
+                }
+                docType.equals("allOtherChecklist") -> {
+                    map.putAll(this.checklistService.getOtherChecklistDetails(downloadId))
+                    sampleCollect=map["items"] as List<Any>
+                }
+                docType.equals("allVehicleChecklist") -> {
+                    map.putAll(this.checklistService.getVehicleChecklistDetails(downloadId))
+                    sampleCollect=map["items"] as List<Any>
+                }
+                docType.equals("allChecklist") -> {
+
+                }
+                else -> {
+                    httResponse.status = 500
+                    httResponse.writer.println("Invalid document type")
+                    return
+                }
             }
-            docType.equals("sampleSubmission") -> {
-                map.putAll(this.checklistService.getScfDetails(downloadId))
+            val designPath="classpath:reports/$docType.jrxml"
+            KotlinLogging.logger { }.info("Print report: $designPath: $map")
+            val stream =sampleCollect?.let {
+                reportsDaoService.extractReport(map, designPath,it)
+            }?: run {
+                reportsDaoService.extractReportEmptyDataSource(map, designPath)
             }
-            docType.equals("agrochemChecklist") -> {
-                map.putAll(this.checklistService.getAgrochemChecklistDetails(downloadId))
-            }
-            docType.equals("allAgrochemChecklist") -> {
-                map.putAll(this.checklistService.getAgrochemChecklistDetails(downloadId))
-            }
-            docType.equals("allEngineringChecklist") -> {
-                map.putAll(this.checklistService.getEngineeringChecklistDetails(downloadId))
-            }
-            docType.equals("allOtherChecklist") -> {
-                map.putAll(this.checklistService.getOtherChecklistDetails(downloadId))
-            }
-            else -> {
-                httResponse.status = 500
-                httResponse.writer.println("Invalid document type")
-                return
-            }
+            download(stream, fileName, httResponse)
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("FAILED TO READ DATA", ex)
+            httResponse.status = HttpStatus.SC_INTERNAL_SERVER_ERROR
+            httResponse.writer.println("Request failed")
         }
-        val stream = reportsDaoService.extractReport(map, "classpath:reports/$docType.jrxml", sampleCollect)
-        download(stream, fileName, httResponse)
 
     }
 

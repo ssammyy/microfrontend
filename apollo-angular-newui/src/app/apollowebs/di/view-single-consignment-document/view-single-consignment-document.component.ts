@@ -24,7 +24,7 @@ import { BlacklistComponent } from '../forms/blacklist/blacklist.component';
     styleUrls: ['./view-single-consignment-document.component.css']
 })
 export class ViewSingleConsignmentDocumentComponent implements OnInit {
-    active = 'consignee';
+    active:Number= 1;
     consignmentId: string;
     consignment: any;
     attachments: any[];
@@ -70,7 +70,10 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
     }
 
 
-    loadDemandNotes() {
+    loadDemandNotes(reload: Boolean=true) {
+        if(!reload){
+            return
+        }
         this.diService.listDemandNotes(this.consignment.cd_details.id)
             .subscribe(
                 res => {
@@ -93,6 +96,7 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
                 res=>{
                     if(res){
                         this.loadDemandNotes()
+                        this.active=13
                     }
                 }
             );

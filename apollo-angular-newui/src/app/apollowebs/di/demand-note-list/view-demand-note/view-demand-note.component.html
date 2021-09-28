@@ -18,16 +18,12 @@
             <p>{{demandDetails.note.telephone}}</p>
         </div>
         <div class="col-sm-3 col-md-4">
-            <label class="waiver-form-label">Product</label>
-            <p>{{demandDetails.note.product}}</p>
-        </div>
-        <div class="col-sm-3 col-md-4">
             <label class="waiver-form-label">CFS VALUE</label>
-            <p>{{demandDetails.note.cfvalue}}</p>
+            <p>{{demandDetails.note.cfvalue | money }}</p>
         </div>
         <div class="col-sm-3 col-md-4">
             <label class="waiver-form-label">CD CALCULATED AMOUNT</label>
-            <p>{{demandDetails.note.totalAmount}}</p>
+            <p>{{demandDetails.note.totalAmount | money}}</p>
         </div>
         <div class="col-sm-3 col-md-4">
             <label class="waiver-form-label">Demand Note status</label>
@@ -35,7 +31,11 @@
         </div>
         <div class="col-sm-3 col-md-4">
             <label class="waiver-form-label">CD PAYABLE AMOUNT</label>
-            <p>{{demandDetails.note.amountPayable}}</p>
+            <p>{{demandDetails.note.amountPayable | money}}</p>
+        </div>
+        <div class="col-sm-3 col-md-4">
+            <label class="waiver-form-label">REMARKS</label>
+            <p>{{demandDetails.note.varField10}}</p>
         </div>
     </div>
     <div class="row no_margin" *ngIf="demandDetails">
@@ -50,9 +50,9 @@
 <mat-dialog-actions>
     <div class="row no_margin master-list-new-btn" *ngIf="demandDetails">
         <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
-        <div *ngIf="demandDetails.note.status>=0">
-        <button [disabled]="demandDetails.note.status>=0" class="btn btn-warning" mat-button (click)="submitDemandNote()">Delete</button>
-        <button [disabled]="demandDetails.note.status>=0" class="btn btn-primary" mat-button (click)="submitDemandNote()">Submit</button>
+        <div *ngIf="demandDetails.note.status">
+        <button *ngIf="demandDetails.note.status==-1" class="btn btn-warning" mat-button (click)="deleteDemandNote()">Delete</button>
+        <button *ngIf="demandDetails.note.status==-1" class="btn btn-primary" mat-button (click)="submitDemandNote()">Submit</button>
         </div>
     </div>
 </mat-dialog-actions>

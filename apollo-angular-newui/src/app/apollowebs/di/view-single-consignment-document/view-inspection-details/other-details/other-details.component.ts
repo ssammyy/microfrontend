@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {DestinationInspectionService} from "../../../../../core/store/data/di/destination-inspection.service";
 
 @Component({
   selector: 'app-other-details',
@@ -66,9 +67,12 @@ export class OtherDetailsComponent implements OnInit {
       perPage: 20
     }
   };
-  constructor() { }
+  constructor(private diService: DestinationInspectionService) { }
 
   ngOnInit(): void {
   }
 
+  downloadOther(){
+    this.diService.downloadDocument("/api/v1/download/checklist/allOtherChecklist/" + this.inspectionDetails.id)
+  }
 }

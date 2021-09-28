@@ -21,27 +21,31 @@ export class AssignOfficerComponent implements OnInit {
 
     ngOnInit(): void {
         this.loadOfficers();
-        this.officers=[]
+        this.officers = []
         this.form = this.fb.group({
             officerId: ['', Validators.required],
             remarks: ['', Validators.required]
         })
     }
+
     // Assign inspection officer to this consignment
     assignOfficer() {
-        let data=this.form.value
-        data["officerId"]=parseInt(this.form.value.officerId)
-        this.diService.assignInspectionOfficer(data,this.data.uuid)
+        let data = this.form.value
+        data["officerId"] = parseInt(this.form.value.officerId)
+        this.diService.assignInspectionOfficer(data, this.data.uuid)
             .subscribe(
-                res=>{
-                    if(res.responseCode==="00"){
-                        this.dialogRef.close(true)
-                    }else{
-                        this.message=res.message
+                res => {
+                    if (res.responseCode === "00") {
+                        this.diService.showSuccess(res.message, () => {
+                            this.dialogRef.close(true)
+                        })
+                    } else {
+                        this.message = res.message
                     }
                 }
             )
     }
+
     // Load data here
     loadOfficers(): void {
         this.diService.listOfficersForConsignment(this.data.uuid)

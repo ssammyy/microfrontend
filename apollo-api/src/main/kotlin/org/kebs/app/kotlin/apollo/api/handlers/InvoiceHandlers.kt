@@ -2,7 +2,6 @@ package org.kebs.app.kotlin.apollo.api.handlers
 
 import mu.KotlinLogging
 import okhttp3.internal.toLongOrDefault
-import org.apache.http.HttpStatus
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.request.ConsignmentUpdateRequest
@@ -11,20 +10,12 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionB
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
-import org.kebs.app.kotlin.apollo.api.service.InvoicePaymentService
-import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
-import org.kebs.app.kotlin.apollo.store.repo.IInvoiceRepository
-import org.kebs.app.kotlin.apollo.store.repo.IServiceMapsRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteRepository
-import org.springframework.http.HttpHeaders
-import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
-import org.springframework.web.servlet.function.paramOrNull
 import java.sql.Timestamp
 import java.time.Instant
 
@@ -157,10 +148,10 @@ class InvoiceHandlers(
                 demandNote.status = -1
                 demandNote.varField1 = invoiceForm.remarks
                 demandNote.varField2 = (itemList.size == totalItems).toString()
-                demandNote.varField3="NEW"
+                demandNote.varField3 = "NEW"
                 daoServices.upDateDemandNote(demandNote)
                 response.responseCode = ResponseCodes.SUCCESS_CODE
-                response.message = "Demand note generated"
+                response.message = "Demand note generated, review under demand note tab and submit for approval"
             }
 
         } catch (ex: Exception) {
@@ -179,11 +170,13 @@ class InvoiceHandlers(
                 if (demandNote != null) {
                     if (demandNote.status!! < 0) {
                         val loggedInUser = commonDaoServices.loggedInUserDetails()
-                        demandNote.status = 4
+                        demandNote.status = 50
                         demandNote.varField3 = "DELETED"
                         demandNote.deletedOn = Timestamp.from(Instant.now())
                         demandNote.deleteBy = loggedInUser.userName
                         daoServices.upDateDemandNote(demandNote)
+                        response.responseCode = ResponseCodes.SUCCESS_CODE
+                        response.message = "Demand not deleted"
                     } else {
                         response.responseCode = ResponseCodes.NOT_FOUND
                         response.message = "Demand not cannot be deleted after submission or deletion"
@@ -217,8 +210,9 @@ class InvoiceHandlers(
                         data["hasAllItems"] = demandNote.varField2?.toBoolean() ?: false
                         data["cdUuid"] = cdDetails.uuid
                         demandNote.status = 0
-                        demandNote.varField3="SUBMITTED"
-                        this.diBpmn.startGenerateDemandNote(data, cdDetails)
+                        demandNote.varField3 = "SUBMITTED"
+                        val map = commonDaoServices.serviceMapDetails(appId)
+                        this.diBpmn.startGenerateDemandNote(map, data, cdDetails)
                         daoServices.upDateDemandNote(demandNote)
                         response.responseCode = ResponseCodes.SUCCESS_CODE
                         response.message = "Demand note submitted"
@@ -244,73 +238,11 @@ class InvoiceHandlers(
         try {
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             val cdUuid = req.pathVariable("cdUuid")
-            val consignmentDocument = daoServices.findCDWithUuid(cdUuid)
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             // Update demand note
-            val form = req.body(ConsignmentUpdateRequest::class.java)
-            with(consignmentDocument) {
-                sendDemandNote = map.activeStatus
-                sendDemandNoteRemarks = form.remarks
-            }
-            this.daoServices.updateCdDetailsInDB(consignmentDocument, loggedInUser)
-            //Send Demand Note
-            val demandNote = consignmentDocument.id?.let {
-                daoServices.findDemandNoteWithCDID(
-                        it
-                )
-            }
-            //TODO: DemandNote Simulate payment Status
-            demandNote?.demandNoteNumber?.let {
-                invoiceDaoService.createBatchInvoiceDetails(loggedInUser.userName!!, it)
-                        .let { batchInvoiceDetail ->
-                            invoiceDaoService.addInvoiceDetailsToBatchInvoice(
-                                    demandNote,
-                                    applicationMapProperties.mapInvoiceTransactionsForDemandNote,
-                                    loggedInUser,
-                                    batchInvoiceDetail
-                            )
-                                    .let { updateBatchInvoiceDetail ->
-                                        //Todo: Payment selection
-                                        val importerDetails =
-                                                consignmentDocument.cdImporter?.let {
-                                                    daoServices.findCDImporterDetails(it)
-                                                }
-                                        val myAccountDetails =
-                                                InvoiceDaoService.InvoiceAccountDetails()
-                                        with(myAccountDetails) {
-                                            accountName = importerDetails?.name
-                                            accountNumber = importerDetails?.pin
-                                            currency =
-                                                    applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
-                                        }
-                                        invoiceDaoService.createPaymentDetailsOnStgReconciliationTable(
-                                                loggedInUser.userName!!,
-                                                updateBatchInvoiceDetail,
-                                                myAccountDetails
-                                        )
-                                        demandNote.id?.let { it1 ->
-                                            daoServices.sendDemandNotGeneratedToKWIS(it1)
-                                            consignmentDocument.cdStandard?.let { cdStd ->
-                                                daoServices.updateCDStatus(
-                                                        cdStd,
-                                                        daoServices.awaitPaymentStatus.toLong()
-                                                )
 
-                                            }
-                                        }
-                                    }
-
-                        }
-            }
-//                                                daoServices.demandNotePayment(demandNote, map, loggedInUser)
-            //Update BPM payment required task
-//                            val cdDetails = updatedItemDetails.cdDocId
-//                            cdDetails?.id?.let { it1 ->
-//                                cdDetails.assignedInspectionOfficer?.id?.let { it2 ->
-//                                    diBpmn.diPaymentRequiredComplete(it1, it2, true)
-//                                }
-//                            }
         } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("SIMULATE PAYMENT", ex)
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
             response.message = ex.localizedMessage
         }
@@ -319,8 +251,10 @@ class InvoiceHandlers(
 
     fun listDemandNotes(req: ServerRequest): ServerResponse {
         val response = ApiResponseModel()
+
         req.pathVariable("cdId").let {
-            response.data = demandNoteRepository.findAllByCdId(it.toLongOrDefault(0L))
+            val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+            response.data = demandNoteRepository.findAllByCdIdAndStatusIn(it.toLongOrDefault(0L), listOf(-1, 0, map.activeStatus, map.initStatus, map.invalidStatus))
             response.message = "Success"
             response.responseCode = ResponseCodes.SUCCESS_CODE
             return ServerResponse.ok().body(response)

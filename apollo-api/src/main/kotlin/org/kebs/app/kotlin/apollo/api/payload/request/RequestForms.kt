@@ -132,7 +132,7 @@ class CheckListForm {
         val listItems = mutableListOf<CdInspectionEngineeringItemChecklistEntity>()
         this.engineering?.items?.forEach { item ->
             val dt = CdInspectionEngineeringItemChecklistEntity()
-            dt.itemId = item.itemId
+            dt.itemIdTmp = item.itemId
             dt.compliant = item.compliant
             dt.category = item.category
             dt.sampled = item.sampled
@@ -143,18 +143,13 @@ class CheckListForm {
             dt.sizeClassCapacity = item.sizeClassCapacity
             dt.certMarksPvocDoc = item.certMarksPvocDoc
             dt.disposalInstruction = item.disposalInstruction
-            dt.sampled = item.sampled
-            dt.compliant = item.compliant
-            dt.category = item.category
-            dt.remarks = item.remarks
-            dt.sizeClassCapacity = item.sizeClassCapacity
             dt.instructionsUseManual = item.instructionsUseManual
             dt.fiberComposition = item.fiberComposition
             dt.batchNoModelTypeRef = item.batchNoModelTypeRef
             dt.mfgNameAddress = item.mfgNameAddress
             dt.ksEasApplicable = item.ksEasApplicable
-            dt.quantityVerified = item.quantityVerified
             dt.brand = item.brand
+            dt.remarks = item.remarks
             dt.status = 1
             listItems.add(dt)
         }
@@ -173,7 +168,7 @@ class CheckListForm {
         val listItems = mutableListOf<CdInspectionAgrochemItemChecklistEntity>()
         agrochem?.items?.forEach { item ->
             val dt = CdInspectionAgrochemItemChecklistEntity()
-            dt.itemId = item.itemId
+            dt.itemIdTmp = item.itemId
             dt.compliant = item.compliant
             dt.category = item.category
             dt.sampled = item.sampled
@@ -208,7 +203,7 @@ class CheckListForm {
         val listItems = mutableListOf<CdInspectionOtherItemChecklistEntity>()
         others?.items?.forEach { item ->
             val dt = CdInspectionOtherItemChecklistEntity()
-            dt.itemId = item.itemId
+            dt.itemIdTmp = item.itemId
             dt.compliant = item.compliant
             dt.serialNumber = "OT${item.itemId}${Random(12).nextULong()}"
             dt.category = item.category
@@ -297,7 +292,7 @@ class SsfForm {
 class SsfResultForm {
     var remarks: String? = null
     var ssfNo: String? = null
-    var compliance: String? = null
+    var submissionDate: String? = null
     var bsNumber: String? = null
 }
 
