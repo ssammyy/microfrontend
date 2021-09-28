@@ -52,14 +52,14 @@ class SftpServiceImpl(
         KotlinLogging.logger { }.info(":::: SFTP session connected successfully ::::")
 
         val channel: Channel = session.openChannel(applicationMapProperties.mapSftpClientProtocol)
-        channel.connect(applicationMapProperties.mapSftpChannelConnectedTimeout.toInt());
+        channel.connect(applicationMapProperties.mapSftpChannelConnectedTimeout.toInt())
         KotlinLogging.logger { }.info(":::: SFTP channel created successfully ::::")
 
         return channel as ChannelSftp
     }
 
     fun createSession(jSch: JSch, host: String, username: String, port: String): Session {
-        var session: Session? = null
+        var session: Session?
         try {
             session = jSch.getSession(username, host, port.toInt())
         } catch (e: IOException) {
@@ -157,6 +157,7 @@ class SftpServiceImpl(
                     log.responseStatus = "99"
                     log.transactionCompletedDate = Timestamp.from(Instant.now())
                 }
+                sftpLogRepo.save(log)
             }
         } catch (e: Exception) {
             KotlinLogging.logger { }.error("An error occurred while downloading sftp files", e)
@@ -196,7 +197,7 @@ class SftpServiceImpl(
     fun convertInputstreamToFile(inputStream: InputStream, fileName: String): File {
         val targetFile = File(Files.createTempDir(), fileName)
 //        KotlinLogging.logger { }.info(":::: targetFile: ${targetFile.name} ::::")
-        targetFile.deleteOnExit();
+        targetFile.deleteOnExit()
         try {
             FileUtils.copyInputStreamToFile(inputStream, targetFile)
             return targetFile
