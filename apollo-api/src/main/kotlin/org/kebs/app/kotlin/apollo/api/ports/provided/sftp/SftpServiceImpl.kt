@@ -141,7 +141,7 @@ class SftpServiceImpl(
                     log.callingMethod = Thread.currentThread().name
                     try {
                         val entry: ChannelSftp.LsEntry = file as ChannelSftp.LsEntry
-                        log.filename = (file as File).name
+                        log.filename = entry.filename
                         log.transactionStatus = 0
                         log.flowDirection = "IN"
                         if (validateKeswsFileByDocType(entry.filename, docType)) {
