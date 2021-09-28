@@ -135,13 +135,13 @@ class SftpServiceImpl(
             val allFiles = sftp.ls(applicationMapProperties.mapSftpDownloadRoot)
             for (file in allFiles) {
                 val log = SftpTransmissionEntity()
+                log.transactionDate = Date()
+                log.transactionStartDate = Timestamp.from(Instant.now())
+                log.callingMethod = Thread.currentThread().name
                 try {
                     val entry: ChannelSftp.LsEntry = file as ChannelSftp.LsEntry
                     log.filename = (file as File).name
-                    log.transactionDate = Date()
-                    log.transactionStartDate = Timestamp.from(Instant.now())
                     log.transactionStatus = 0
-                    log.callingMethod = Thread.currentThread().name
                     log.flowDirection = "IN"
                     if (validateKeswsFileByDocType(entry.filename, docType)) {
                         filesList.add(convertInputstreamToFile(sftp.get(entry.filename), entry.filename))
@@ -152,6 +152,7 @@ class SftpServiceImpl(
                     log.responseStatus = "00"
                     log.transactionCompletedDate = Timestamp.from(Instant.now())
                 }catch (e : Exception) {
+                    KotlinLogging.logger { }.error("An error occurred while downloading sftp files in the inner loop: ", e)
                     log.transactionStatus = 20
                     log.responseMessage = e.message
                     log.responseStatus = "99"
