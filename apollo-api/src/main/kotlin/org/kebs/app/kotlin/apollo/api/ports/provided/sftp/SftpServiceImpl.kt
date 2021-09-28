@@ -133,32 +133,37 @@ class SftpServiceImpl(
             sftp.cd(applicationMapProperties.mapSftpDownloadRoot)
 
             val allFiles = sftp.ls(applicationMapProperties.mapSftpDownloadRoot)
-            for (file in allFiles) {
-                val log = SftpTransmissionEntity()
-                log.transactionDate = Date()
-                log.transactionStartDate = Timestamp.from(Instant.now())
-                log.callingMethod = Thread.currentThread().name
-                try {
-                    val entry: ChannelSftp.LsEntry = file as ChannelSftp.LsEntry
-                    log.filename = (file as File).name
-                    log.transactionStatus = 0
-                    log.flowDirection = "IN"
-                    if (validateKeswsFileByDocType(entry.filename, docType)) {
-                        filesList.add(convertInputstreamToFile(sftp.get(entry.filename), entry.filename))
-                    }
+            if (allFiles.size>0) {
+                for (file in allFiles) {
+                    val log = SftpTransmissionEntity()
+                    log.transactionDate = Date()
+                    log.transactionStartDate = Timestamp.from(Instant.now())
+                    log.callingMethod = Thread.currentThread().name
+                    try {
+                        val entry: ChannelSftp.LsEntry = file as ChannelSftp.LsEntry
+                        log.filename = (file as File).name
+                        log.transactionStatus = 0
+                        log.flowDirection = "IN"
+                        if (validateKeswsFileByDocType(entry.filename, docType)) {
+                            filesList.add(convertInputstreamToFile(sftp.get(entry.filename), entry.filename))
+                        }
 
-                    log.transactionStatus = 30
-                    log.responseMessage = "Successfully downloaded"
-                    log.responseStatus = "00"
-                    log.transactionCompletedDate = Timestamp.from(Instant.now())
-                }catch (e : Exception) {
-                    KotlinLogging.logger { }.error("An error occurred while downloading sftp files in the inner loop: ", e)
-                    log.transactionStatus = 20
-                    log.responseMessage = e.message
-                    log.responseStatus = "99"
-                    log.transactionCompletedDate = Timestamp.from(Instant.now())
+                        log.transactionStatus = 30
+                        log.responseMessage = "Successfully downloaded"
+                        log.responseStatus = "00"
+                        log.transactionCompletedDate = Timestamp.from(Instant.now())
+                    } catch (e: Exception) {
+                        KotlinLogging.logger { }
+                            .error("An error occurred while downloading sftp files in the inner loop: ", e)
+                        log.transactionStatus = 20
+                        log.responseMessage = e.message
+                        log.responseStatus = "99"
+                        log.transactionCompletedDate = Timestamp.from(Instant.now())
+                    }
+                    sftpLogRepo.save(log)
                 }
-                sftpLogRepo.save(log)
+            }else{
+                KotlinLogging.logger { }.error("No files to pull in directory ",applicationMapProperties.mapSftpDownloadRoot )
             }
         } catch (e: Exception) {
             KotlinLogging.logger { }.error("An error occurred while downloading sftp files", e)
