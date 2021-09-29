@@ -41,6 +41,16 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     ): List<PermitApplicationsEntity>?
 
     @Query(
+        value = "{ CALL PROC_MIGRATE_NEW_USER_PERMITS(:VAR_USER_ID,:VAR_PERMIT_NUMBER, :VAR_ATTACHED_PLANT_ID ) }",
+        nativeQuery = true
+    )
+    fun migratePermitsToNewUser(
+        @Param("VAR_USER_ID") userId: Long,
+        @Param("VAR_PERMIT_NUMBER") permitNumber: String,
+        @Param("VAR_ATTACHED_PLANT_ID") plantId: Long
+    ): String
+
+    @Query(
         "SELECT pr.* FROM DAT_KEBS_PERMIT_TRANSACTION pr, DAT_KEBS_MANUFACTURE_PLANT_DETAILS B WHERE pr.ATTACHED_PLANT_ID = B.ID AND pr.PAID_STATUS = :paidStatus AND B.REGION = :region order by pr.ID",
         nativeQuery = true
     )
@@ -531,7 +541,8 @@ interface IQaSta3EntityRepository : HazelcastRepository<QaSta3Entity, Long> {
 }
 
 @Repository
-interface IQaInspectionHaccpImplementationRepository : HazelcastRepository<QaInspectionHaccpImplementationEntity, Long> {
+interface IQaInspectionHaccpImplementationRepository :
+    HazelcastRepository<QaInspectionHaccpImplementationEntity, Long> {
     fun findByStatusAndId(status: Int, id: Long): QaInspectionHaccpImplementationEntity?
     fun findByPermitId(permitId: Long): QaInspectionHaccpImplementationEntity?
     fun findByInspectionRecommendationId(inspectionRecommendationId: Long): QaInspectionHaccpImplementationEntity?
@@ -543,7 +554,8 @@ interface IQaInspectionHaccpImplementationRepository : HazelcastRepository<QaIns
 }
 
 @Repository
-interface IQaInspectionReportRecommendationRepository : HazelcastRepository<QaInspectionReportRecommendationEntity, Long> {
+interface IQaInspectionReportRecommendationRepository :
+    HazelcastRepository<QaInspectionReportRecommendationEntity, Long> {
     fun findByStatusAndId(status: Int, id: Long): QaInspectionReportRecommendationEntity?
     fun findByPermitId(permitId: Long): List<QaInspectionReportRecommendationEntity>?
     fun findTopByPermitRefNumberOrderByIdDesc(permitRefNumber: String): QaInspectionReportRecommendationEntity?
@@ -587,7 +599,7 @@ interface IQaSampleLabTestResultsRepository : HazelcastRepository<QaSampleLabTes
 
 @Repository
 interface IQaSampleLabTestParametersRepository : HazelcastRepository<QaSampleLabTestParametersEntity, Long> {
-//    fun findByOrderId(orderId: String): QaSampleLabTestParametersEntity?
+    //    fun findByOrderId(orderId: String): QaSampleLabTestParametersEntity?
     fun findByOrderId(orderId: String): List<QaSampleLabTestParametersEntity>?
 }
 
@@ -598,12 +610,12 @@ interface IQaMachineryRepository : HazelcastRepository<QaMachineryEntity, Long> 
 
 
 @Repository
-interface IQaRawMaterialRepository: HazelcastRepository<QaRawMaterialEntity, Long> {
+interface IQaRawMaterialRepository : HazelcastRepository<QaRawMaterialEntity, Long> {
     fun findBySta10Id(sta10Id: Long): List<QaRawMaterialEntity>?
 }
 
 @Repository
-interface IQaManufactureProcessRepository: HazelcastRepository<QaManufacturingProcessEntity, Long> {
+interface IQaManufactureProcessRepository : HazelcastRepository<QaManufacturingProcessEntity, Long> {
     fun findBySta10Id(sta10Id: Long): List<QaManufacturingProcessEntity>?
 }
 
@@ -667,15 +679,20 @@ interface IQaSmarkFmarkRepository : HazelcastRepository<QaSmarkFmarkEntity, Long
 }
 
 @Repository
-interface IQaWorkplanRepository: HazelcastRepository<QaWorkplanEntity, Long> {
+interface IQaWorkplanRepository : HazelcastRepository<QaWorkplanEntity, Long> {
     fun findByPermitNumber(permitNumber: String): List<QaWorkplanEntity>?
     fun findByOfficerId(officerId: Long): List<QaWorkplanEntity>?
     fun findByOfficerIdAndRefNumber(officerId: Long, refNumber: String): QaWorkplanEntity?
 }
 
 @Repository
-interface IQaBatchInvoiceRepository: HazelcastRepository<QaBatchInvoiceEntity, Long> {
+interface IQaBatchInvoiceRepository : HazelcastRepository<QaBatchInvoiceEntity, Long> {
     fun findByUserIdAndInvoiceNumber(userId: Long, refNumber: String): QaBatchInvoiceEntity?
-    fun findByUserIdAndInvoiceNumberAndPlantId(userId: Long, invoiceNumber: String, plantId: Long): QaBatchInvoiceEntity?
+    fun findByUserIdAndInvoiceNumberAndPlantId(
+        userId: Long,
+        invoiceNumber: String,
+        plantId: Long
+    ): QaBatchInvoiceEntity?
+
     fun findByUserId(userId: Long): List<QaBatchInvoiceEntity>?
 }
