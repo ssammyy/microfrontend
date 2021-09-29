@@ -72,6 +72,7 @@ import {StdTcTasksComponent} from './apollowebs/standards-development/standard-r
 import {StdJustificationComponent} from "./apollowebs/standards-development/standard-request/std-justification/std-justification.component";
 import {SpcSecTaskComponent} from "./apollowebs/standards-development/standard-request/spc-sec-task/spc-sec-task.component";
 import {StdTcWorkplanComponent} from "./apollowebs/standards-development/standard-request/std-tc-workplan/std-tc-workplan.component";
+import {AllpermitsComponent} from "./apollowebs/quality-assurance/allpermits/allpermits.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -343,6 +344,12 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
 
         children: [{path: '', component: UserProfileMainComponent}]
+    },
+    {
+        path: 'all_my_permits', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
+        children: [{path: '', component: AllpermitsComponent}]
     },
     {
         path: 'smark/all_smark', component: AdminLayoutComponent,

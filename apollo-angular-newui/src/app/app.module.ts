@@ -141,6 +141,7 @@ import { StdTcTasksComponent } from './apollowebs/standards-development/standard
 import { StdJustificationComponent } from './apollowebs/standards-development/standard-request/std-justification/std-justification.component';
 import { SpcSecTaskComponent } from './apollowebs/standards-development/standard-request/spc-sec-task/spc-sec-task.component';
 import { StdTcWorkplanComponent } from './apollowebs/standards-development/standard-request/std-tc-workplan/std-tc-workplan.component';
+import { AllpermitsComponent } from './apollowebs/quality-assurance/allpermits/allpermits.component';
 
 
 // import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -284,7 +285,8 @@ import { StdTcWorkplanComponent } from './apollowebs/standards-development/stand
         StdTcTasksComponent,
         StdJustificationComponent,
         SpcSecTaskComponent,
-        StdTcWorkplanComponent
+        StdTcWorkplanComponent,
+        AllpermitsComponent
 
     ]
 

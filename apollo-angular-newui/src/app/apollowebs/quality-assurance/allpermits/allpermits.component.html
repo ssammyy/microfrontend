@@ -1,0 +1,137 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header card-header-icon card-header-rose">
+                        <div class="card-icon">
+                            <i class="material-icons">perm_identity</i>
+                        </div>
+                        <h4 class="card-title">Edit Profile -
+                            <small class="category">My profile</small>
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <form [formGroup]="stepOneForm" class="form"
+                              (ngSubmit)="onClickSave(stepOneForm.valid)">
+                            <div class="row">
+                                <div class="col-md-7">
+                                    <div class="form-group">
+                                        <label for="userName" class="bmd-label-floating">Username</label>
+                                        <input class="form-control" formControlName="userName"
+                                               id="userName"
+                                               name="userName"
+                                               readonly
+                                               required="required" type="text">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="firstName" class="bmd-label-floating">Firstname</label>
+                                        <input class="form-control" formControlName="firstName"
+                                               id="firstName"
+                                               name="firstName"
+                                               required="required" type="text">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="lastName" class="bmd-label-floating">Lastname</label>
+                                        <input class="form-control" formControlName="lastName"
+                                               id="lastName"
+                                               name="lastName"
+                                               required="required" type="text">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="email" class="bmd-label-floating">Email Address</label>
+                                        <input class="form-control" formControlName="email"
+                                               id="email"
+                                               name="email"
+                                               required="required" type="email">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="personalContactNumber" class="bmd-label-floating">Personal Contact
+                                            Number</label>
+                                        <input class="form-control" formControlName="personalContactNumber"
+                                               id="personalContactNumber"
+                                               name="personalContactNumber"
+                                               required="required" type="text">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="userRegNo" class="bmd-label-floating">Registration Number</label>
+                                        <input class="form-control" formControlName="userRegNo"
+                                               id="userRegNo"
+                                               name="userRegNo"
+                                               readonly
+                                               required="required" type="text">
+                                    </div>
+                                </div>
+                            </div>
+                            <!--                            <div class="row">-->
+                            <!--                                <div class="col-md-4">-->
+                            <!--                                    <div class="form-group">-->
+                            <!--                                        <label class="bmd-label-floating">City</label>-->
+                            <!--                                        <input type="text" class="form-control">-->
+                            <!--                                    </div>-->
+                            <!--                                </div>-->
+                            <!--                                <div class="col-md-4">-->
+                            <!--                                    <div class="form-group">-->
+                            <!--                                        <label class="bmd-label-floating">Country</label>-->
+                            <!--                                        <input type="text" class="form-control">-->
+                            <!--                                    </div>-->
+                            <!--                                </div>-->
+                            <!--                                <div class="col-md-4">-->
+                            <!--                                    <div class="form-group">-->
+                            <!--                                        <label class="bmd-label-floating">Postal Code</label>-->
+                            <!--                                        <input type="text" class="form-control">-->
+                            <!--                                    </div>-->
+                            <!--                                </div>-->
+                            <!--                            </div>-->
+                            <!--                            <div class="row">-->
+                            <!--                                <div class="col-md-12">-->
+                            <!--                                    <div class="form-group">-->
+                            <!--                                        <label>About Me</label>-->
+                            <!--                                        <div class="form-group">-->
+                            <!--                                            <label class="bmd-label-floating"> Lamborghini Mercy, Your chick she so-->
+                            <!--                                                thirsty, I'm in that two seat Lambo.</label>-->
+                            <!--                                            <textarea class="form-control" rows="5"></textarea>-->
+                            <!--                                        </div>-->
+                            <!--                                    </div>-->
+                            <!--                                </div>-->
+                            <!--                            </div>-->
+                            <button mat-raised-button type="submit" class="btn btn-info pull-right">Update Profile
+                            </button>
+                            <div class="clearfix"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card card-profile">
+                    <div class="card-avatar">
+                        <img alt="The User" class="img" src="./assets/img/faces/user.png"/>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-category text-gray">{{user?.firstName}} {{user?.lastName}}</h6>
+                        <h4 class="card-title"></h4>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
