@@ -53,3 +53,4 @@ package-lock.json
 /apollo-api/src/main/resources/static/migration/
 *.zip
 *.txt
+DAT_KEBS_CONSIGNMENT_DOCUMENT_DETAILS_IDX/
