@@ -31,6 +31,10 @@ class CdStatusTypesEntity : Serializable {
     @Basic
     var description: String? = null
 
+    @Column(name = "MODIFICATION_ALLOWED")
+    @Basic
+    var modificationAllowed: Int? = 1
+
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null
@@ -128,28 +132,28 @@ class CdStatusTypesEntity : Serializable {
 
     override fun hashCode(): Int {
         return Objects.hash(
-            id,
-            typeName,
-            statusCode,
-            description,
-            category,
-            status,
-            varField1,
-            varField2,
-            varField3,
-            varField4,
-            varField5,
-            varField6,
-            varField7,
-            varField8,
-            varField9,
-            varField10,
-            createdBy,
-            createdOn,
-            modifiedBy,
-            modifiedOn,
-            deleteBy,
-            deletedOn
+                id,
+                typeName,
+                statusCode,
+                description,
+                category,
+                status,
+                varField1,
+                varField2,
+                varField3,
+                varField4,
+                varField5,
+                varField6,
+                varField7,
+                varField8,
+                varField9,
+                varField10,
+                createdBy,
+                createdOn,
+                modifiedBy,
+                modifiedOn,
+                deleteBy,
+                deletedOn
         )
     }
 }

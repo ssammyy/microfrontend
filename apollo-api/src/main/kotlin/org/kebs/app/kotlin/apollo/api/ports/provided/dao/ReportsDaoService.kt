@@ -41,7 +41,7 @@ class ReportsDaoService(
 
     //Get KEBS Logo
     final val logoImageResource = resourceLoader.getResource(applicationMapProperties.mapKebsLogoPath)
-    val logoImageFile = logoImageResource.file.toString()
+    val logoImageFile = logoImageResource.inputStream.toString()
 
 
 

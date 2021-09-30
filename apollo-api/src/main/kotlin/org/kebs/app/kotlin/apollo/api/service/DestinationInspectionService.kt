@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.api.service
 import mu.KotlinLogging
 import okhttp3.internal.toLongOrDefault
 import org.kebs.app.kotlin.apollo.api.payload.*
+import org.kebs.app.kotlin.apollo.api.payload.request.SearchForms
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
@@ -15,7 +16,6 @@ import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.di.*
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.*
-import org.modelmapper.ModelMapper
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
@@ -28,6 +28,7 @@ import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
 import java.util.*
+import org.kebs.app.kotlin.apollo.store.events.SearchInitialization
 
 
 @Service("diService")
@@ -50,7 +51,8 @@ class DestinationInspectionService(
         private val cfsTypesEntity: ICfsTypeCodesRepository,
         private val reportsDaoService: ReportsDaoService,
         private val privilegesRepository: IUserPrivilegesRepository,
-        private val userEntityRepository: IUserRepository
+        private val userEntityRepository: IUserRepository,
+        private val searchService: SearchInitialization,
 ) {
     @Value("\${destination.inspection.cd.type.cor}")
     lateinit var corCdType: String
@@ -1078,7 +1080,9 @@ class DestinationInspectionService(
             dataMap.put("cd_service_provider", it)
         }
         cdDetails.ucrNumber?.let {
-            dataMap.put("old_versions", daoServices.findAllOlderVersionCDsWithSameUcrNumber(it, map)?.let { it1 -> ConsignmentDocumentDao.fromList(it1) })
+            daoServices.findAllOlderVersionCDsWithSameUcrNumber(it, map)?.let { it1 ->
+                dataMap.put("old_versions", ConsignmentDocumentDao.fromList(it1))
+            }
         }
         dataMap.put("cd_details", ConsignmentDocumentDao.fromEntity(cdDetails))
         dataMap.put("items_cd", CdItemDetailsDao.fromList(daoServices.findCDItemsListWithCDID(cdDetails)))
@@ -1288,6 +1292,24 @@ class DestinationInspectionService(
             return usersEntity
         }
         return null
+    }
+
+    @Transactional
+    fun searchConsignmentDocuments(form: SearchForms, isSupervisor: Boolean, isInspectionOfficer: Boolean): ApiResponseModel {
+        val response = ApiResponseModel()
+        var cdType: ConsignmentDocumentTypesEntity? = null
+        form.documentType?.let {
+            cdType = daoServices.findCdTypeDetails(it)
+        }
+        val loggedInUser = commonDaoServices.getLoggedInUser()
+        val list: List<ConsignmentDocumentDetailsEntity> = searchService.searchConsignmentDocuments(form.keywords, form.category, cdType, isInspectionOfficer, loggedInUser)
+        response.data = ConsignmentDocumentDao.fromList(list)
+        response.message = "Success"
+        response.totalPages = 1
+        response.pageNo = 1
+        response.totalCount = 30
+        response.responseCode = ResponseCodes.SUCCESS_CODE
+        return response
     }
 
 }

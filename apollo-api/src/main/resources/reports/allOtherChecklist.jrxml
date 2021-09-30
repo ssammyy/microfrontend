@@ -44,7 +44,7 @@
     <parameter name="inspection" class="java.lang.String"/>
     <parameter name="importersName" class="java.lang.String"/>
     <parameter name="customsEntryNumber" class="java.lang.String"/>
-    <parameter name="overallRemarks" class="java.lang.String"/>
+    <parameter name="overalRemarks" class="java.lang.String"/>
 
     <field name="id" class="java.lang.Long">
         <property name="com.jaspersoft.studio.field.label" value="id"/>
@@ -384,7 +384,7 @@
                     <reportElement style="ColunmText" x="130" y="30" width="670" height="20" uuid="4e6d36ce-3134-4d3b-a73d-d1afd67aae5e">
                         <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     </reportElement>
-                    <textFieldExpression><![CDATA[$P{overallRemarks}]]></textFieldExpression>
+                    <textFieldExpression><![CDATA[$P{overalRemarks}]]></textFieldExpression>
                 </textField>
                 <staticText>
                     <reportElement style="ColunmHeader" x="1" y="194" width="89" height="20" uuid="b4ac9e05-6159-4fe8-9347-219ff4a0b82e">

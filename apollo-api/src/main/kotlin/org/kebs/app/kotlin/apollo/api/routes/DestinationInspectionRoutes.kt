@@ -106,6 +106,8 @@ class DestinationInspectionRoutes {
             GET("/consignment/documents/ongoing", handler::ongoingAssignedConsignmentDocuments)
             GET("/consignment/documents/manual/assigned", handler::availableConsignmentDocuments)
             GET("/consignment/documents/completed", handler::completedConsignmentDocuments)
+            // CD Search
+            POST("/consignment/documents/search", handler::searchConsignmentDocuments)
             // CD Extra Details
             GET("/inspection/coc/details/{coUuid}", handler::certificateOfConformance)
             GET("/inspection/idf/details/{coUuid}", handler::importDeclarationFormDetails)

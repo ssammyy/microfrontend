@@ -61,11 +61,14 @@ class ChecklistService(
         private val daoServices: DestinationInspectionDaoServices,
         private val resourceLoader: ResourceLoader
 ) {
-
-    //Get KEBS Logo
-    final val checkmarkImageResource = resourceLoader.getResource(applicationMapProperties.mapCheckmarkImagePath)
-    val checkmarkImageFile = checkmarkImageResource.file.toString()
-
+    fun readCheckmark(fileName: String): ByteArray? {
+        try {
+            val checkmarkImageResource = resourceLoader.getResource(fileName)
+            return checkmarkImageResource.inputStream.readAllBytes()
+        }catch (ex: Exception){
+            return null
+        }
+    }
     fun addEngineeringSsf(map: ServiceMapsEntity, cdItemID: Long, sampleSubmissionDetails: QaSampleSubmissionEntity, loggedInUser: UsersEntity): ApiResponseModel {
         var response = ApiResponseModel()
         val enginerringItem = engineeringItemChecklistRepository.findByIdOrNull(cdItemID)
@@ -574,7 +577,7 @@ class ChecklistService(
                 data.put("officerName", mvInspection.assignedUser?.firstName.toString())
                 data.put("dutyStation", mvInspection.ministryStationId?.stationName.toString())
                 val fileName = "/tmp/MVIR-${mvInspection.serialNumber}.pdf"
-                val pdfStream = reportsDaoService.generateEmailPDFReportWithNoDataSource(fileName, data, "classpath:reports/motorVehicleInspectionReport.jrxml")
+               reportsDaoService.generateEmailPDFReportWithNoDataSource(fileName, data, "classpath:reports/motorVehicleInspectionReport.jrxml")
                 data.put("mvir", mvInspection)
                 val subject = "Motor Vehicle Inspection Request"
                 val messageBody = "Please Find The attached motor vehicle details submitted for inspection  \n" +
@@ -627,7 +630,7 @@ class ChecklistService(
     fun getSsfDetails(itemId: Long): HashMap<String, Any> {
         val map = hashMapOf<String, Any>()
         return this.daoServices.findSampleSubmittedItemID(itemId)?.let { inspectionGeneral ->
-            map["CheckMark"] = checkmarkImageFile
+
             map["id"] = inspectionGeneral.id.toString()
             map["ssfNum"] = inspectionGeneral.ssfNo.toString()
             map["product"] = inspectionGeneral.productDescription.toString()
@@ -655,7 +658,6 @@ class ChecklistService(
     fun getScfDetails(itemId: Long): HashMap<String, Any> {
         val map = hashMapOf<String, Any>()
         return this.qaISampleCollectRepository.findByItemId(itemId)?.let { inspectionGeneral ->
-            map["CheckMark"] = checkmarkImageFile
             map["id"] = inspectionGeneral.id.toString()
             map["slNum"] = inspectionGeneral.batchNo.toString()
             map["product"] = inspectionGeneral.nameOfProduct.toString()
@@ -822,11 +824,6 @@ class ChecklistService(
         val map = hashMapOf<String, Any>()
         motorVehicleItemChecklistRepository.findByIdOrNull(mvInspectionId)?.let { mvInspectionChecklist ->
             val inspectionGeneral = mvInspectionChecklist.inspection?.inspectionGeneral
-            map["CheckMark"] = checkmarkImageFile
-            when (inspectionGeneral?.inspection) {
-                "100% Inspection" -> map["HundredPercentInspectionCheckmark"] = checkmarkImageFile
-                "Partial Inspection" -> map["PartialInspectionCheckMark"] = checkmarkImageFile
-            }
             map["EntryPoint"] = inspectionGeneral?.entryPoint.toString()
             map["Cfs"] = inspectionGeneral?.cfs.toString()
             map["Date"] = inspectionGeneral?.inspectionDate.toString()
@@ -885,11 +882,6 @@ class ChecklistService(
 
     fun loadGeneralInspection(inspectionGeneral: CdInspectionGeneralEntity?): Map<out String, Any> {
         val map = hashMapOf<String, Any>()
-        map["imagePath"] = checkmarkImageFile
-        when (inspectionGeneral?.inspection) {
-            "FULL" -> map["HundredPercentInspectionCheckmark"] = checkmarkImageFile
-            else -> map["PartialInspectionCheckMark"] = checkmarkImageFile
-        }
         map["inspection"] = inspectionGeneral?.inspection.toString()
         map["cfs"] = inspectionGeneral?.cfs.toString()
         map["inspectionDate"] = inspectionGeneral?.inspectionDate.toString()
@@ -911,7 +903,7 @@ class ChecklistService(
             map["cfs"] = it.freightStation?.cfsCode ?: "NA"
             map["cdId"] = it.id ?: 0L
             it.cdImporter?.let { importterId ->
-                this.daoServices.findCDImporterDetails(importterId)?.let { importer ->
+                this.daoServices.findCDImporterDetails(importterId).let { importer ->
                     map["importersName"] = importer.name ?: inspectionGeneral.importersName.toString()
                 }
             }
@@ -925,11 +917,6 @@ class ChecklistService(
         agrochemChecklistRepository.findByIdOrNull(inspectionId)?.let { mvInspectionChecklist ->
             KotlinLogging.logger { }.info("Agrochem checklist details Found")
             val inspectionGeneral = mvInspectionChecklist.inspectionGeneral
-            map["imagePath"] = checkmarkImageFile
-            when (inspectionGeneral?.inspection) {
-                "FULL" -> map["HundredPercentInspectionCheckmark"] = checkmarkImageFile
-                else -> map["PartialInspectionCheckMark"] = checkmarkImageFile
-            }
             map["inspection"] = inspectionGeneral?.inspection.toString()
             map["documentCategory"] = mvInspectionChecklist.inspectionChecklistType?.description
                     ?: "Agrochemical checklist"
@@ -953,7 +940,7 @@ class ChecklistService(
                 map["cfs"] = it.freightStation?.cfsCode ?: "NA"
                 map["cdId"] = it.id ?: 0L
                 it.cdImporter?.let { importterId ->
-                    this.daoServices.findCDImporterDetails(importterId)?.let { importer ->
+                    this.daoServices.findCDImporterDetails(importterId).let { importer ->
                         map["importersName"] = importer.name ?: inspectionGeneral.importersName.toString()
                     }
                 }

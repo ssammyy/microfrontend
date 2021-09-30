@@ -78,8 +78,6 @@ import javax.xml.stream.XMLOutputFactory
 class DaoService(
     private val sslContextFactory: SslContextFactory,
     private val jasyptStringEncryptor: StringEncryptor,
-    @PersistenceContext
-    private val entityManager: EntityManager,
     private val cocItemsRepository: ICocItemsRepository,
     private val applicationMapProperties: ApplicationMapProperties,
     private val sftpService: SftpServiceImpl
@@ -349,45 +347,6 @@ class DaoService(
          * TODO: Validate the hash whenever it gets provided
          */
         return true
-    }
-
-    @Transactional
-    @Modifying
-    fun postJobProcessingRecordsCleanUp(
-            jobDetails: BatchJobDetails,
-            manufacturersProcessed: MutableList<Long?>,
-            log: WorkflowTransactionsEntity,
-            transmissionDate: Timestamp?,
-            config: IntegrationConfigurationEntity,
-    ): Int {
-
-        val cb = entityManager.criteriaBuilder
-
-        val update: CriteriaUpdate<StagingStandardsLevyManufacturerEntryNumber> = cb.createCriteriaUpdate(StagingStandardsLevyManufacturerEntryNumber::class.java)
-        val root: Root<StagingStandardsLevyManufacturerEntryNumber> = update.from(StagingStandardsLevyManufacturerEntryNumber::class.java)
-        val finalStatus: Int? = evaluateFinalStatus(log, config, jobDetails)
-
-        update
-                .set("status", finalStatus)
-                .set("transmissionDate", transmissionDate)
-                .set("description", log.transactionReference)
-                .set("modifiedBy", log.transactionReference)
-                .set("modifiedOn", Timestamp.from(Instant.now()))
-        val status: Path<Int?> = root.get("status")
-        val manufacturerId: Path<Long?> = root.get("manufacturerId")
-
-
-        update.where(
-                cb.and(
-                        cb.equal(status, jobDetails.startStatus),
-                        manufacturerId.`in`(manufacturersProcessed)
-
-                )
-        )
-
-        val results = entityManager.createQuery(update).executeUpdate()
-
-        return results
     }
 
     private fun evaluateFinalStatus(

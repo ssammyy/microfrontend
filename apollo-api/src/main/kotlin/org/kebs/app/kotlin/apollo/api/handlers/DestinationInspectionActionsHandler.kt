@@ -31,6 +31,11 @@ class DestinationInspectionActionsHandler(
         try {
             val cdUuid = req.pathVariable("cdUuid")
             val consignmentDocument = daoServices.findCDWithUuid(cdUuid)
+            if (diBpmn.modifyDisabled(consignmentDocument, response)) {
+                KotlinLogging.logger { }.error("FAILED to APPROVE IO, MODIFICATION disabled")
+                return ServerResponse.ok().body(response)
+            }
+            // Blacklist
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val form = req.body(ConsignmentUpdateRequest::class.java)
             val data = mutableMapOf<String, Any?>()
@@ -42,7 +47,7 @@ class DestinationInspectionActionsHandler(
             // Start blacklisting process
             this.diBpmn.startBlacklist(data, consignmentDocument)
             response.responseCode = ResponseCodes.SUCCESS_CODE
-            response.message = "Success"
+            response.message = "Black listing request received, please await approval"
         } catch (ex: Exception) {
             response.message = ex.localizedMessage
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
@@ -56,20 +61,24 @@ class DestinationInspectionActionsHandler(
         try {
             val cdUuid = req.pathVariable("cdUuid")
             val consignmentDocument = daoServices.findCDWithUuid(cdUuid)
-            val loggedInUser = commonDaoServices.loggedInUserDetails()
-            val form = req.body(ConsignmentUpdateRequest::class.java)
-            val data = mutableMapOf<String, Any?>()
-            data.put("remarks", form.remarks)
-            data.put("owner", loggedInUser.userName)
-            data.put("documentType", form.documentType)
-            data.put("cdUuid", cdUuid)
-            data.put("compliantStatus", form.compliantStatus)
-            data.put("supervisor", consignmentDocument.assigner?.userName)
-            // Start blacklisting process
-            val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-            this.diBpmn.startCompliantProcess(map, data, consignmentDocument)
-            response.responseCode = ResponseCodes.SUCCESS_CODE
-            response.message = "Compliant request received, please await approval"
+            if (diBpmn.modifyDisabled(consignmentDocument, response)) {
+                KotlinLogging.logger { }.error("FAILED to MARK COMPLIANT, MODIFICATION disabled")
+            } else {
+                val loggedInUser = commonDaoServices.loggedInUserDetails()
+                val form = req.body(ConsignmentUpdateRequest::class.java)
+                val data = mutableMapOf<String, Any?>()
+                data.put("remarks", form.remarks)
+                data.put("owner", loggedInUser.userName)
+                data.put("documentType", form.documentType)
+                data.put("cdUuid", cdUuid)
+                data.put("compliantStatus", form.compliantStatus)
+                data.put("supervisor", consignmentDocument.assigner?.userName)
+                // Start blacklisting process
+                val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+                this.diBpmn.startCompliantProcess(map, data, consignmentDocument)
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+                response.message = "Compliant request received, please await approval"
+            }
         } catch (ex: Exception) {
             response.message = ex.localizedMessage
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
@@ -85,12 +94,16 @@ class DestinationInspectionActionsHandler(
             val cdUuid = req.pathVariable("cdUuid")
             val form = req.body(ConsignmentUpdateRequest::class.java)
             val consignmentDocument = daoServices.findCDWithUuid(cdUuid)
+            if (diBpmn.modifyDisabled(consignmentDocument, response)) {
+                KotlinLogging.logger { }.error("FAILED to GENERATE LOCAL COC, MODIFICATION disabled")
+                return ServerResponse.ok().body(response)
+            }
             if (consignmentDocument.cdType?.localCocStatus != map.activeStatus) {
                 val data = mutableMapOf<String, Any?>()
                 data.put("remarks", form.remarks)
                 data.put("supervisor", consignmentDocument.assigner?.userName)
                 data.put("cdUuid", cdUuid)
-                this.diBpmn.startGenerateCoC(map,data, consignmentDocument)
+                this.diBpmn.startGenerateCoC(map, data, consignmentDocument)
                 response.message = "Request submitted for approval"
                 response.responseCode = ResponseCodes.SUCCESS_CODE
             } else {
@@ -111,6 +124,10 @@ class DestinationInspectionActionsHandler(
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             val cdUuid = req.pathVariable("cdUuid")
             val consignmentDocument = daoServices.findCDWithUuid(cdUuid)
+            if (diBpmn.modifyDisabled(consignmentDocument, response)) {
+                KotlinLogging.logger { }.error("FAILED to GENERATE LOCAL COR, MODIFICATION disabled")
+                return ServerResponse.ok().body(response)
+            }
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val form = req.body(ConsignmentUpdateRequest::class.java)
 
@@ -120,7 +137,7 @@ class DestinationInspectionActionsHandler(
                 data.put("cdUuid", cdUuid)
                 data.put("owner", loggedInUser.userName)
                 data.put("supervisor", consignmentDocument.assigner?.userName)
-                this.diBpmn.startGenerateCor(map,data, consignmentDocument)
+                this.diBpmn.startGenerateCor(map, data, consignmentDocument)
                 response.responseCode = ResponseCodes.SUCCESS_CODE
                 response.message = "Local CoR request received"
             } else {
@@ -249,24 +266,28 @@ class DestinationInspectionActionsHandler(
                 val form = req.body(ConsignmentUpdateRequest::class.java)
                 val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
                 val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
-                if (consignmentDocument.targetStatus != 1) {
-                    val data = mutableMapOf<String, Any?>()
-                    data["targetStatus"] = map.activeStatus
-                    data["remarks"] = form.remarks
-                    data["cdUuid"] = cdUuid
-                    val loggedInUser = commonDaoServices.loggedInUserDetails()
-                    // Supervisor can request targeting
-                    data["isSupervisor"] = isSupervisor
-                    // update consignment
-                    data["supervisor"] = consignmentDocument.assigner?.userName
-                    daoServices.updateCdDetailsInDB(consignmentDocument, loggedInUser)
-                    // Submit Targeting to BPM
-                    this.diBpmn.startTargetConsignment(map,data, consignmentDocument);
-                    response.message = "Target request submitted"
-                    response.responseCode = ResponseCodes.SUCCESS_CODE
+                if (diBpmn.modifyDisabled(consignmentDocument, response)) {
+                    KotlinLogging.logger { }.error("FAILED to TARGET CD, MODIFICATION disabled")
                 } else {
-                    response.message = "Consignment targeting has already been sent, please await approval"
-                    response.responseCode = ResponseCodes.FAILED_CODE
+                    if (consignmentDocument.targetStatus != 1) {
+                        val data = mutableMapOf<String, Any?>()
+                        data["targetStatus"] = map.activeStatus
+                        data["remarks"] = form.remarks
+                        data["cdUuid"] = cdUuid
+                        val loggedInUser = commonDaoServices.loggedInUserDetails()
+                        // Supervisor can request targeting
+                        data["isSupervisor"] = isSupervisor
+                        // update consignment
+                        data["supervisor"] = consignmentDocument.assigner?.userName
+                        daoServices.updateCdDetailsInDB(consignmentDocument, loggedInUser)
+                        // Submit Targeting to BPM
+                        this.diBpmn.startTargetConsignment(map, data, consignmentDocument);
+                        response.message = "Target request submitted"
+                        response.responseCode = ResponseCodes.SUCCESS_CODE
+                    } else {
+                        response.message = "Consignment targeting has already been sent, please await approval"
+                        response.responseCode = ResponseCodes.FAILED_CODE
+                    }
                 }
             }
         } catch (ex: Exception) {
@@ -284,6 +305,7 @@ class DestinationInspectionActionsHandler(
 
     // Supervisor approve targeted consignment
     fun approveRejectTask(req: ServerRequest): ServerResponse {
+        val response = ApiResponseModel()
         try {
             val form = req.body(ConsignmentUpdateRequest::class.java)
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
@@ -295,79 +317,21 @@ class DestinationInspectionActionsHandler(
             data.put("taskApproved", form.approvalStatus == map.activeStatus)
             val cdUuid = req.pathVariable("cdUuid")
             val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
-            req.pathVariable("taskId").let {
-                return ServerResponse.ok()
-                        .body(this.diBpmn.consignmentDocumentProcessUpdate(it, data, consignmentDocument))
-            }
-        } catch (ex: Exception) {
-            KotlinLogging.logger { }.error("PROCESS UPDATE FAILED", ex)
-            val response = ApiResponseModel()
-            response.responseCode = ResponseCodes.EXCEPTION_STATUS
-            response.message = "Request failed, please try again later"
-            return ServerResponse.ok()
-                    .body(response)
-        }
-    }
-
-    // Targeting approval
-    fun approveTargeting(req: ServerRequest, supervisor: Boolean): ServerResponse {
-        val response = ApiResponseModel()
-        try {
-            req.pathVariable("cdUuid").let { cdUuid ->
-                val form = req.body(ConsignmentUpdateRequest::class.java)
-                val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-                val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
-                if (consignmentDocument.targetStatus == map.activeStatus || supervisor) {
-                    with(consignmentDocument) {
-                        targetApproveStatus = form.targetApproveStatus
-                        targetApproveRemarks = form.remarks
-                        targetApproveDate = Date(java.util.Date().time)
-                    }
-                    val loggedInUser = commonDaoServices.loggedInUserDetails()
-                    // Supervisor status
-                    if (supervisor) {
-                        consignmentDocument.targetStatus = map.activeStatus
-                        consignmentDocument.targetReason = form.remarks
-                        consignmentDocument.targetDate = Date(java.util.Date().time)
-                    }
-                    // Inspection status
-                    if (form.inspectionNotificationStatus == map.activeStatus) {
-                        consignmentDocument.inspectionNotificationStatus = map.activeStatus
-                        consignmentDocument.inspectionNotificationDate = Date(java.util.Date().time)
-                    }
-                    // update consignment
-                    daoServices.updateCdDetailsInDB(consignmentDocument, loggedInUser)
-                    val declaration: DeclarationDetailsEntity? = consignmentDocument.ucrNumber?.let { daoServices.findDeclaration(it) }
-                    if (declaration != null && form.inspectionNotificationStatus == map.activeStatus) {
-                        // Submit consignment to Single/Window
-                        daoServices.submitCDStatusToKesWS("OH", "OH", consignmentDocument.version.toString(), consignmentDocument)
-                        consignmentDocument.cdStandard?.let { cdStd ->
-                            daoServices.updateCDStatus(cdStd, applicationMapProperties.mapDIStatusTypeKraVerificationSendId)
-                        }
-                        if (supervisor) {
-                            response.message = "Target request submitted"
-                            consignmentAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, form.remarks, "KEBS_SUPERVISOR_TARGET", "Supervisor targeted consignment")
-                        } else {
-                            response.message = "Target approved successful"
-                            consignmentAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, form.remarks, "KEBS_APPROVE_TARGET", "Approve target consignment")
-                        }
-                        response.responseCode = ResponseCodes.SUCCESS_CODE
-                    } else {
-                        response.message = "Could not send verification request. Declaration unavailable"
-                        response.responseCode = ResponseCodes.FAILED_CODE
-                    }
-
-                } else {
-                    response.message = "Consignment targeting has already been sent, please await approval"
-                    response.responseCode = ResponseCodes.FAILED_CODE
+            if (diBpmn.modifyDisabled(consignmentDocument, response)) {
+                KotlinLogging.logger { }.error("FAILED to APPROVE IO, MODIFICATION disabled")
+            } else {
+                req.pathVariable("taskId").let {
+                    return ServerResponse.ok()
+                            .body(this.diBpmn.consignmentDocumentProcessUpdate(it, data, consignmentDocument))
                 }
             }
         } catch (ex: Exception) {
-            KotlinLogging.logger { }.error { ex }
-            response.message = ex.localizedMessage
+            KotlinLogging.logger { }.error("PROCESS UPDATE FAILED", ex)
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.message = "Request failed, please try again later"
         }
-        return ServerResponse.ok().body(response)
+        return ServerResponse.ok()
+                .body(response)
     }
 
     fun pickConsignmentInspectionOfficer(req: ServerRequest): ServerResponse {
@@ -377,10 +341,14 @@ class DestinationInspectionActionsHandler(
                 val form = req.body(ConsignmentUpdateRequest::class.java)
                 val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
                 //Start the relevant BPM
-                diService.selfAssign(consignmentDocument, form.remarks)
-                consignmentAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, form.remarks, "KEBS_MANUAL_ASSIGN_IO", "Manual pick consignment")
-                response.responseCode = ResponseCodes.SUCCESS_CODE
-                response.message = "Inspection officer assigned"
+                if (diBpmn.modifyDisabled(consignmentDocument, response)) {
+                    KotlinLogging.logger { }.error("FAILED to PICK FOR IO, MODIFICATION disabled")
+                } else {
+                    diService.selfAssign(consignmentDocument, form.remarks)
+                    consignmentAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, form.remarks, "KEBS_MANUAL_ASSIGN_IO", "Manual pick consignment")
+                    response.responseCode = ResponseCodes.SUCCESS_CODE
+                    response.message = "Inspection officer assigned"
+                }
             }
         } catch (ex: Exception) {
             response.message = ex.localizedMessage
@@ -397,22 +365,26 @@ class DestinationInspectionActionsHandler(
                 val officer = daoServices.findUserById(form.officerId)
                 if (officer.isPresent) {
                     val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
-                    val loggedInUser = commonDaoServices.loggedInUserDetails()
-                    val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-                    val data = mutableMapOf<String, Any?>()
-                    data["remarks"] = form.remarks
-                    data["reassign"] = form.reassign
-                    data["officerId"] = form.officerId
-                    data["owner"] = officer.get().userName
-                    data["supervisor"] = loggedInUser.userName
-                    data["isAutoRejected"] = consignmentDocument.cdType?.autoRejectStatus == map.activeStatus
-                    data["isAutoTargeted"] = consignmentDocument.cdType?.autoTargetStatus == map.activeStatus
-                    data["cdUuid"] = cdUuid
-                    // Start BPM process
-                    this.diBpmn.startAssignmentProcesses(data, consignmentDocument);
-                    // Prepare response
-                    response.responseCode = ResponseCodes.SUCCESS_CODE
-                    response.message = "Inspection officer assigned"
+                    if (diBpmn.modifyDisabled(consignmentDocument, response)) {
+                        KotlinLogging.logger { }.error("FAILED to Assign IO, MODIFICATION disabled")
+                    } else {
+                        val loggedInUser = commonDaoServices.loggedInUserDetails()
+                        val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+                        val data = mutableMapOf<String, Any?>()
+                        data["remarks"] = form.remarks
+                        data["reassign"] = form.reassign
+                        data["officerId"] = form.officerId
+                        data["owner"] = officer.get().userName
+                        data["supervisor"] = loggedInUser.userName
+                        data["isAutoRejected"] = consignmentDocument.cdType?.autoRejectStatus == map.activeStatus
+                        data["isAutoTargeted"] = consignmentDocument.cdType?.autoTargetStatus == map.activeStatus
+                        data["cdUuid"] = cdUuid
+                        // Start BPM process
+                        this.diBpmn.startAssignmentProcesses(data, consignmentDocument);
+                        // Prepare response
+                        response.responseCode = ResponseCodes.SUCCESS_CODE
+                        response.message = "Inspection officer assigned"
+                    }
                 } else {
                     response.message = "Please select inspection officer"
                     response.responseCode = ResponseCodes.NOT_FOUND

@@ -469,6 +469,10 @@ const routes: Routes = [
                 component: ViewSingleConsignmentDocumentComponent
             },
             {
+                path: 'version/:id',
+                component: ViewSingleConsignmentDocumentComponent
+            },
+            {
                 path: 'checklist/details/:id',
                 component: ViewInspectionDetailsComponent
             }

@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
+import {DestinationInspectionService} from "../../../../core/store/data/di/destination-inspection.service";
 
 @Component({
     selector: 'app-other-version-details',
@@ -18,7 +19,7 @@ export class OtherVersionDetailsComponent implements OnInit {
             delete: false,
             custom: [
                 //  { name: 'editRecord', title: '<i class="btn btn-sm btn-primary">View More</i>' },
-                {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View More</i>'}
+                {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View</i>'}
             ],
             position: 'right' // left|right
         },
@@ -33,7 +34,11 @@ export class OtherVersionDetailsComponent implements OnInit {
                 title: 'UCR No',
                 type: 'string'
             },
-            modifiedBy: {
+            lastModifiedOn: {
+                title: "Last Modified ON",
+                type: 'string'
+            },
+            lastModifiedBy: {
                 title: "Last Modified By",
                 type: 'string'
             },
@@ -49,7 +54,7 @@ export class OtherVersionDetailsComponent implements OnInit {
     };
     @Input() dataSet: any = [];
 
-    constructor(private router: Router) {
+    constructor(private router: Router,private diService: DestinationInspectionService) {
     }
 
 
@@ -59,7 +64,13 @@ export class OtherVersionDetailsComponent implements OnInit {
     onCustomAction(event: any) {
         switch (event.action) {
             case "viewRecord":
-                this.router.navigate(["/di", event.data.uuid])
+                if(event.data.uuid) {
+                    console.log(event.data.uuid)
+                    this.router.navigate(["/di/version", event.data.uuid])
+
+                } else {
+                    this.diService.showError("Document does not have a valid UUID")
+                }
                 break
             default:
                 console.log("Ignored action: "+event.action)

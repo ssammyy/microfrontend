@@ -75,6 +75,10 @@ export class DestinationInspectionService {
         return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/" + actionName + "/" + consignmentUuid), data)
     }
 
+    searchConsignmentDocuments(data: any): Observable<any> {
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/documents/search"), data)
+    }
+
     assignInspectionOfficer(data: any, consignmentUuid: any): Observable<any> {
         return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/assign-io/" + consignmentUuid), data)
     }

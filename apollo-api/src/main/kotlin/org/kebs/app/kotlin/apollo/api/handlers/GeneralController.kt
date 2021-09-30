@@ -28,23 +28,16 @@ class GeneralController(
         private val checklistService: ChecklistService,
         private val resourceLoader: ResourceLoader
 ) {
-
+    val checkMark=checklistService.readCheckmark(applicationMapProperties.mapCheckmarkImagePath)?.toString()
+    val smarkImage=checklistService.readCheckmark(applicationMapProperties.mapSmarkImagePath)?.toString()
     @GetMapping("/all/checklist/{downloadId}")
     fun downloadAllChecklist(@PathVariable("downloadId") downloadId: String, httResponse: HttpServletResponse) {
-        var imageFile = ""
-        try {
-//            val resource = resourceLoader.getResource("classpath:static/images/KEBS_SMARK.png")
-            val resource = resourceLoader.getResource("file:\${CONFIG_PATH}/reports/images/KEBS_SMARK.png")
-            imageFile = resource.file.toString()
-        } catch (e: Exception) {
-            KotlinLogging.logger { }.info("Incorrect path ${e.message}")
-        }
         try {
             val map = hashMapOf<String, Any>()
 //        map["ITEM_ID"] = id
             val fileName = "ALL_CHECKLIST.pdf"
             val sampleCollect = listOf<Any>()
-            map["imagePath"] = imageFile
+            map["imagePath"] = smarkImage?:""
             map.putAll(this.checklistService.getAllChecklistDetails(downloadId))
             val stream = reportsDaoService.extractReportEmptyDataSource(map, "classpath:reports/allChecklist.jrxml")
             download(stream, fileName, httResponse)
@@ -57,19 +50,12 @@ class GeneralController(
 
     @GetMapping("/checklist/{docType}/{downloadId}")
     fun downloadChecklist(@PathVariable("docType") docType: String, @PathVariable("downloadId") downloadId: Long, httResponse: HttpServletResponse) {
-        var imageFile = ""
-        try {
-//            val resource = resourceLoader.getResource("classpath:static/images/KEBS_SMARK.png")
-            val resource = resourceLoader.getResource("file:\${CONFIG_PATH}/reports/images/KEBS_SMARK.png")
-            imageFile = resource.file.toString()
-        } catch (e: Exception) {
-            KotlinLogging.logger { }.info("Incorrect path ${e.message}")
-        }
         try {
             val map = hashMapOf<String, Any>()
 //        map["ITEM_ID"] = id
             var sampleCollect: List<Any>? = null
-            map["imagePath"] = imageFile
+            map["imagePath"] = smarkImage?:""
+            map["CheckMark"] = checkMark?:""
             val fileName = "${docType.toUpperCase()}_$downloadId.pdf"
             when {
                 docType.equals("sampleCollectionForm") -> {

@@ -39,6 +39,13 @@
                                                 </td>
                                             </tr>
                                             <th>
+                                                Document Version
+                                            </th>
+                                            <tr>
+                                                <td>{{ consignment.cd_details.version ? 'VERSION '+consignment.cd_details.version : 'CURRENT' }}
+                                                </td>
+                                            </tr>
+                                            <th>
                                                 Approval Status
                                             </th>
                                             <tr>
@@ -837,7 +844,7 @@
                                                              [dataSet]="attachments"></app-attachment-list>
 
                                     </mat-tab>
-                                    <mat-tab *ngIf="consignment.old_versions" label="13">
+                                    <mat-tab [hidden]="!consignment.old_versions" *ngIf="consignment.old_versions" label="13">
                                         <ng-template mat-tab-label>
                                             Other Version Details
                                         </ng-template>

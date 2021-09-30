@@ -20,7 +20,7 @@ class ConsignmentEnableUI {
     var supervisor: Boolean? = null
     var inspector: Boolean? = null
     var demandNote: Boolean = false
-    var demandNoteRejected: Boolean=false
+    var demandNoteRejected: Boolean = false
     var demandNoteDisabled: Boolean = false
     var sendCoi: Boolean? = null
     var targetItem: Boolean? = null
@@ -61,8 +61,8 @@ class ConsignmentEnableUI {
                 targeted = cd.targetStatus == map.activeStatus
                 targetRejected = cd.targetStatus == map.invalidStatus
                 idfAvailable = cd.idfNumber != null
-                demandNoteRejected=cd.sendDemandNote==map.invalidStatus
-                demandNoteDisabled = (cd.sendDemandNote == map.initStatus || cd.sendDemandNote == map.activeStatus || cd.inspectionChecklist==map.activeStatus)
+                demandNoteRejected = cd.sendDemandNote == map.invalidStatus
+                demandNoteDisabled = (cd.sendDemandNote == map.initStatus || cd.sendDemandNote == map.activeStatus || cd.inspectionChecklist == map.activeStatus)
                 owner = cd.assignedInspectionOfficer?.userName == authentication.name
                 demandNote = cd.sendDemandNote == map.activeStatus
                 sendCoi = modify && cd.localCoi == map.activeStatus
@@ -71,7 +71,7 @@ class ConsignmentEnableUI {
                 attachments = (change || modify)
                 checklistFilled = cd.inspectionChecklist == map.activeStatus
                 hasPort = (cd.portOfArrival != null && cd.freightStation != null)
-                completed = cd.approveRejectCdStatusType?.let { it.category == "APPROVE" || it.category == "REJECT" }
+                completed = cd.approveRejectCdStatusType?.let { it.modificationAllowed != map.activeStatus } == true || cd.oldCdStatus != null
                 approveReject = (cd.targetApproveStatus == null || cd.inspectionDateSetStatus == map.activeStatus) && modify
             }
 
@@ -130,6 +130,8 @@ class ConsignmentDocumentDao {
     var approvalStatus: String? = null
     var applicationStatus: String? = null
     var assigned: Boolean = false
+    var lastModifiedOn: Timestamp? = null
+    var lastModifiedBy: String? = null
     var isNcrDocument: Boolean = false
 
     companion object {
@@ -138,6 +140,8 @@ class ConsignmentDocumentDao {
             dt.id = doc.id
             dt.summaryPageURL = doc.summaryPageURL
             dt.uuid = doc.uuid
+            dt.lastModifiedOn = doc.modifiedOn
+            dt.lastModifiedBy = doc.modifiedBy
             doc.cdType?.let {
                 dt.cdType = it.id
                 dt.cdTypeCategory = it.category
@@ -153,7 +157,7 @@ class ConsignmentDocumentDao {
             dt.assigned = doc.assignedInspectionOfficer != null
             dt.localCoi = doc.localCoi
             dt.sendDemandNote = doc.sendDemandNote
-
+            dt.version = doc.version
             dt.docTypeId = doc.docTypeId
             dt.cocNumber = doc.cocNumber
             dt.cdRefNumber = doc.cdRefNumber

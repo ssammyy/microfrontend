@@ -114,10 +114,27 @@ class DestinationInspectionBpmn(
         // Update document
         this.daoServices.updateCdDetailsInDB(consignmentDocument, this.commonDaoServices.getLoggedInUser())
     }
+    // Check for modification disabled status
+    fun modifyDisabled(consignmentDocument: ConsignmentDocumentDetailsEntity, response: ApiResponseModel): Boolean{
+        if(consignmentDocument.oldCdStatus!=null){
+            return true
+        }
+        consignmentDocument.approveRejectCdStatusType?.let {
+            if(it.modificationAllowed!=1){
+                response.responseCode=ResponseCodes.INVALID_CODE
+                response.message="Consignment with status '${it.typeName}' cannot be modified"
+                return true
+            }
+        }
+        return false
+    }
 
     fun startApprovalConsignment(cdUuid: String, form: ConsignmentUpdateRequest): ApiResponseModel {
         val response = ApiResponseModel()
         val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
+        if(modifyDisabled(consignmentDocument, response)){
+            return response
+        }
         // Check already approved
         commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
                 .let { map ->

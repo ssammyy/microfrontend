@@ -906,27 +906,6 @@ class DestinationInspectionDaoServices(
     }
 
 
-    fun findDemandNoteListFromCdItemList(
-            cdItemList: List<CdItemDetailsEntity>,
-            status: Int
-    ): MutableList<CdDemandNoteEntity> {
-        val demandNotes: MutableList<CdDemandNoteEntity> = mutableListOf()
-        cdItemList.forEach { item ->
-//            val demandNote = findDemandNoteWithPaymentStatus(item, status)
-//            if (demandNote != null) {
-//                demandNotes.add(demandNote)
-//            }
-        }
-        return demandNotes
-    }
-
-    fun findLocalCocItemsList(localCocId: Long): List<CdLocalCocItemsEntity> {
-        iLocalCocItemRepo.findByLocalCocId(localCocId)
-                ?.let { localCocItemDetails ->
-                    return localCocItemDetails
-                }
-                ?: throw Exception("Local COC with ID = ${localCocId}, do not Exist")
-    }
 
     fun findCdStatusValue(statusID: Long): CdStatusTypesEntity {
         iCdStatusTypesDetailsRepo.findByIdOrNull(statusID)
@@ -1384,8 +1363,10 @@ class DestinationInspectionDaoServices(
 
     fun updateCDStatus(cdStandard: CdStandardsEntity, statusValue: Long): Boolean {
         var updateCD = cdStandard
+        var status=findCdStatusValue(statusValue)
         with(updateCD) {
-            approvalStatus = findCdStatusValue(statusValue).typeName
+            approvalStatus = status.typeName
+            statusId= status.id
             approvalDate = commonDaoServices.getCurrentDate().toString()
         }
         updateCD = iCdStandardsRepo.save(updateCD)

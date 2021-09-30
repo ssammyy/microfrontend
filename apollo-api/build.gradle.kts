@@ -59,11 +59,11 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-test:2.2.4.RELEASE")
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+//    implementation("org.hibernate:hibernate-search-orm:5.8.2.Final")
     implementation("org.hibernate.validator:hibernate-validator:6.1.5.Final")
     /**
      * BPMN BOM
      */
-//    implementation("org.activiti:activiti-spring-boot-starter:7.1.0.M6")
     implementation("org.flowable:flowable-spring-boot-starter-basic:6.6.0")
 
     /**

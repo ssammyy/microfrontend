@@ -1,4 +1,3 @@
-
 <div class="main-content">
     <div class="container-fluid">
         <div class="row">
@@ -13,50 +12,75 @@
                     <div class="card-body">
                         <div class="toolbar">
                             <div class="form-group" *ngIf="documentTypes">
-                                <label for="filter">Filter By Type</label>
-                                <select id="filter" class="mdb-select md-form md-outline" (change)="onFilterChange($event)">
+                                <label class="waiver-form-label col-sm-2" for="filter">Filter By
+                                    Type</label>
+                                <select id="filter" class="waiver-form-input col-sm-3"
+                                        (change)="onFilterChange($event)">
                                     <option value="">None</option>
-                                    <option *ngFor="let d of documentTypes" [ngValue]="d.uuid" [value]="d.uuid">{{d.typeName}}-{{d.category}}</option>
+                                    <option *ngFor="let d of documentTypes" [ngValue]="d" [value]="d">{{d.typeName}}
+                                        -{{d.category}}</option>
                                 </select>
+                                <input class="waiver-form-input col-sm-4" (keyup)="searchPhraseChanged()"
+                                       [(ngModel)]="keywords">
+                                <button class="btn-sm btn-primary ml-1" (click)="searchPhraseChanged()">Search
+                                </button>
+                                <mat-error *ngIf="message">{{message}}</mat-error>
                             </div>
                             <div class="btn-group btn-group-sm" role="group" aria-label="Applications Status">
-                                <button type="button"  (click)="toggleStatus('my-tasks')"
-                                        [className]="activeStatus == 'my-tasks' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">My Tasks</button>
-                             <button type="button"  (click)="toggleStatus('ongoing')"
-                              [className]="activeStatus == 'ongoing' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">ONGOING</button>
-                             <button type="button"  (click)="toggleStatus('not-assigned')"
-                              [className]="activeStatus == 'not-assigned' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">NOT ASSIGNED</button>
-                                <button type="button"  (click)="toggleStatus('completed')"
-                                        [className]="activeStatus == 'completed' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">COMPLETED</button>
-                          </div>
-                            <div class="btn-group btn-group-sm pull-right" role="group" aria-label="Applications Status">
-                                <button type="button"  (click)="uploadForeignCoROrCor($event,'coc')"
-                                        class="btn btn-sm btn-primary mr-2">Upload Foreign CoC</button>
-                                <button type="button"  (click)="uploadForeignCoROrCor($event,'cor')"
-                                        class="btn btn-sm btn-primary mr-2">Upload Foreign CoR</button>
+                                <button type="button" (click)="toggleStatus('my-tasks')"
+                                        [className]="activeStatus == 'my-tasks' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                    My Tasks
+                                </button>
+                                <button type="button" (click)="toggleStatus('ongoing')"
+                                        [className]="activeStatus == 'ongoing' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                    ONGOING
+                                </button>
+                                <button type="button" (click)="toggleStatus('not-assigned')"
+                                        [className]="activeStatus == 'not-assigned' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                    NOT ASSIGNED
+                                </button>
+                                <button type="button" (click)="toggleStatus('completed')"
+                                        [className]="activeStatus == 'completed' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                    COMPLETED
+                                </button>
+                                <button *ngIf="searchStatus" type="button" (click)="toggleStatus('completed')"
+                                        [className]="activeStatus == 'search-result' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                    SEARCH_RESULT
+                                </button>
+                            </div>
+                            <div class="btn-group btn-group-sm pull-right" role="group"
+                                 aria-label="Applications Status">
+                                <button type="button" (click)="uploadForeignCoROrCor($event,'coc')"
+                                        class="btn btn-sm btn-primary mr-2">Upload Foreign CoC
+                                </button>
+                                <button type="button" (click)="uploadForeignCoROrCor($event,'cor')"
+                                        class="btn btn-sm btn-primary mr-2">Upload Foreign CoR
+                                </button>
                             </div>
                         </div>
-                        
-                              <div widget class="card border-0 box-shadow">
-                              <div class="card-body pt-0 widget-body">
-                              <div class="table-responsive table-striped">
-                                <ng2-smart-table class="table table-hover" [settings]="settings" [source]="dataSet"
-                                 (custom) = "onCustomAction($event)" >
-                                </ng2-smart-table>
-                                  <br />
-                                  <ngb-pagination [(page)]="currentPage" [pageSize]="defaultPageSize" [collectionSize]="totalCount"
-                                                  (pageChange)=pageChange($event)>
-                                      <ng-template ngbPaginationFirst>First</ng-template>
-                                      <ng-template ngbPaginationLast>Last</ng-template>
-                                      <ng-template ngbPaginationPrevious>Prev</ng-template>
-                                      <ng-template ngbPaginationNext>Next</ng-template>
-                                      <ng-template ngbPaginationEllipsis>...</ng-template>
-                                      <ng-template ngbPaginationNumber let-page>{{ page }}</ng-template>
-                                  </ngb-pagination>
-                              </div>
-                              </div>
-                              </div>
-                       
+
+                        <div widget class="card border-0 box-shadow">
+                            <div class="card-body pt-0 widget-body">
+                                <div class="table-responsive table-striped">
+                                    <ng2-smart-table class="table table-hover" [settings]="settings"
+                                                     [source]="dataSet"
+                                                     (custom)="onCustomAction($event)">
+                                    </ng2-smart-table>
+                                    <br/>
+                                    <ngb-pagination [(page)]="currentPage" [pageSize]="defaultPageSize"
+                                                    [collectionSize]="totalCount"
+                                                    (pageChange)=pageChange($event)>
+                                        <ng-template ngbPaginationFirst>First</ng-template>
+                                        <ng-template ngbPaginationLast>Last</ng-template>
+                                        <ng-template ngbPaginationPrevious>Prev</ng-template>
+                                        <ng-template ngbPaginationNext>Next</ng-template>
+                                        <ng-template ngbPaginationEllipsis>...</ng-template>
+                                        <ng-template ngbPaginationNumber let-page>{{ page }}</ng-template>
+                                    </ngb-pagination>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                     <!-- end content-->
                 </div>

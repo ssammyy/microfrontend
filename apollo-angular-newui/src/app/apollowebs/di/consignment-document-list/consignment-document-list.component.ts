@@ -13,6 +13,8 @@ import {DatePipe} from "@angular/common";
 })
 export class ConsignmentDocumentListComponent implements OnInit {
     activeStatus: string = 'my-tasks';
+    previousStatus: string='my-tasks'
+    searchStatus: any
     defaultPageSize: number = 20
     currentPage: number = 0
     currentPageInternal: number = 0
@@ -32,11 +34,11 @@ export class ConsignmentDocumentListComponent implements OnInit {
             ],
             position: 'right' // left|right
         },
-        rowClassFunction: (row) =>{
+        rowClassFunction: (row) => {
             // console.log(row)
-            if(row.data.isNcrDocument){
+            if (row.data.isNcrDocument) {
                 return 'risky';
-            }else {
+            } else {
                 return ''
             }
 
@@ -69,7 +71,7 @@ export class ConsignmentDocumentListComponent implements OnInit {
                 title: 'Application Date',
                 type: 'date',
                 valuePrepareFunction: (date) => {
-                    if(date){
+                    if (date) {
                         // return new DatePipe('he-IL').transform(date, 'dd/MM/yyyy hh:mm');
                         return date
                     }
@@ -81,7 +83,7 @@ export class ConsignmentDocumentListComponent implements OnInit {
                 title: 'Approval Date',
                 type: 'data',
                 valuePrepareFunction: (date) => {
-                    if(date){
+                    if (date) {
                         // return new DatePipe('en-GB').transform(date, 'dd/MM/yyyy hh:mm');
                         return date
                     }
@@ -124,7 +126,10 @@ export class ConsignmentDocumentListComponent implements OnInit {
     };
     dataSet: LocalDataSource = new LocalDataSource();
     documentTypes: any[];
+    message: any
+    keywords: any;
     private documentTypeUuid: string
+    private documentTypeId: any
 
     constructor(private dialog: MatDialog, private router: Router, private diService: DestinationInspectionService) {
     }
@@ -204,8 +209,13 @@ export class ConsignmentDocumentListComponent implements OnInit {
     public onFilterChange(event: any) {
         // console.log(event)
         if (event.target.value != this.documentTypeUuid) {
-            this.documentTypeUuid = event.target.value
-            this.loadData(this.documentTypeUuid, 0, this.defaultPageSize)
+            this.documentTypeUuid = event.target.value.uuid
+            this.documentTypeId = event.target.value.id
+            if(this.searchStatus){
+                this.searchDocuments()
+            } else {
+                this.loadData(this.documentTypeUuid, 0, this.defaultPageSize)
+            }
         }
     }
 
@@ -225,8 +235,43 @@ export class ConsignmentDocumentListComponent implements OnInit {
             )
     }
 
+    searchPhraseChanged(){
+        this.searchDocuments()
+    }
+    searchDocuments() {
+        this.dataSet.load([])
+        this.previousStatus=this.activeStatus
+        this.searchStatus = 'search-result'
+        this.activeStatus=this.searchStatus
+        console.log(event)
+        let data = {
+            'documentType': this.documentTypeId,
+            'keywords': this.keywords,
+            'category': this.activeStatus
+        }
+        console.log(data)
+        this.diService.searchConsignmentDocuments(data)
+            .subscribe(
+                res => {
+                    if (res.responseCode == "00") {
+                        this.message=null
+                        this.dataSet.load(res.data)
+                    } else {
+                        this.message = res.message
+                    }
+                },
+                error => {
+                    console.log(error)
+                    this.message = "Search failed"
+                }
+            )
+
+    }
+
     toggleStatus(status: string): void {
         console.log(status)
+        this.message=null
+        this.searchStatus=null
         if (status !== this.activeStatus) {
             this.activeStatus = status;
             this.loadData(this.documentTypeUuid, 0, this.defaultPageSize)

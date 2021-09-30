@@ -103,6 +103,10 @@ class CdStandardsEntity : Serializable {
     @Basic
     var approvalStatus: String? = null
 
+    @Column(name = "STATUS_ID")
+    @Basic
+    var statusId: Long? = null
+
     @Column(name = "APPROVAL_DATE")
     @Basic
     var approvalDate: String? = null
