@@ -5,6 +5,9 @@ import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
+import javax.persistence.NamedStoredProcedureQuery
+import javax.persistence.ParameterMode
+import javax.persistence.StoredProcedureParameter
 
 @Repository
 interface IPermitApplicationsRepository : HazelcastRepository<PermitApplicationsEntity, Long> {
@@ -18,6 +21,8 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         permitAwardStatus: Int,
         permitExpiredStatus: Int
     ): Long
+
+
 
     fun findByUserIdAndPermitType(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
     fun findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(
@@ -140,6 +145,21 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         @Param("userTaskId") userTaskId: Long,
         @Param("sectionID") sectionID: Long
     ): List<PermitApplicationsEntity>?
+
+
+    //    @Procedure(procedureName = "proc_load_new_user_permits")
+    @Query(value = "{CALL PROC_LOAD_NEW_USER_PERMITS(:VAR_USER_ID,:VAR_PERMIT_NUMBER, :VAR_ATTACHED_PLANT_ID)}", nativeQuery = true)
+
+    fun findByUserIdAndPermitRefNumberAndAttachedPlantId(
+        @Param("VAR_USER_ID") userId: Long,
+        @Param("VAR_PERMIT_NUMBER") permitNumber: String,
+        @Param("VAR_ATTACHED_PLANT_ID") attachedPlantId: Long,
+
+        ):Int
+
+   // @Query(value = "{call sp_findBetween(:min, :max)}", nativeQuery = true)
+    //fun findAllBetweenStoredProcedure(@Param("min") min: BigDecimal?, @Param("max") max: BigDecimal?): List<Product?>?
+
 
     fun findByUserIdAndPermitTypeAndOldPermitStatusIsNull(
         userId: Long,

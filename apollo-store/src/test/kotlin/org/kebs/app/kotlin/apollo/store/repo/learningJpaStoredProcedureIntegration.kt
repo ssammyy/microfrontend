@@ -18,14 +18,12 @@ class StoredProcedureCallTests {
     @Test
     fun migratePermitsToNewUserTest() {
         try {
-            val response = procCall.migratePermitsToNewUser(2046L, "10333", 378L)
+            val response = procCall.migratePermitsToNewUser(2046L, "dfsdfsdf", 378L)
             KotlinLogging.logger { }.info("The response is $response")
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
-
+            println("Failed")
         }
-
-
     }
 }
 

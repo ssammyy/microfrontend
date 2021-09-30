@@ -73,6 +73,7 @@ import {SuccessComponent} from "../../../apollo-webs/src/app/components/standard
 import {StdJustificationComponent} from "./apollowebs/standards-development/standard-request/std-justification/std-justification.component";
 import {SpcSecTaskComponent} from "./apollowebs/standards-development/standard-request/spc-sec-task/spc-sec-task.component";
 import {StdTcWorkplanComponent} from "./apollowebs/standards-development/standard-request/std-tc-workplan/std-tc-workplan.component";
+import {AllpermitsComponent} from "./apollowebs/quality-assurance/allpermits/allpermits.component";
 import {NepNotificationComponent} from "./apollowebs/standards-development/nep-notification/nep-notification.component";
 import {ManagernotificationsComponent} from "./apollowebs/standards-development/managernotifications/managernotifications.component";
 
@@ -346,6 +347,12 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
 
         children: [{path: '', component: UserProfileMainComponent}]
+    },
+    {
+        path: 'all_my_permits', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
+        children: [{path: '', component: AllpermitsComponent}]
     },
     {
         path: 'smark/all_smark', component: AdminLayoutComponent,

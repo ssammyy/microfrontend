@@ -164,6 +164,20 @@ export class QaService {
             })
         );
     }
+    public loadPermitMigratededList(permitTypeID: string): Observable<PermitEntityDto[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_LIST_MIGRATION);
+        const params = new HttpParams()
+            .set('permitNumber', permitTypeID);
+        return this.http.get<PermitEntityDto[]>(url, {params}).pipe(
+            map(function (response: PermitEntityDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
 
     public loadPermitAwardedListToGenerateFMark(permitTypeID: string): Observable<PermitEntityDto[]> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_LIST_TO_GENERATE_FMRK);
