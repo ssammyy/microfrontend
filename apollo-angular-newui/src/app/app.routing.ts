@@ -74,6 +74,7 @@ import {StdJustificationComponent} from "./apollowebs/standards-development/stan
 import {SpcSecTaskComponent} from "./apollowebs/standards-development/standard-request/spc-sec-task/spc-sec-task.component";
 import {StdTcWorkplanComponent} from "./apollowebs/standards-development/standard-request/std-tc-workplan/std-tc-workplan.component";
 import {NepNotificationComponent} from "./apollowebs/standards-development/nep-notification/nep-notification.component";
+import {ManagernotificationsComponent} from "./apollowebs/standards-development/managernotifications/managernotifications.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -500,6 +501,10 @@ export const routes: Routes = [
     {
         path: 'nep_division_response', component: AdminLayoutComponent,
         children: [{path: '', component: DivisionresponseComponent}]
+    },
+    {
+        path: 'managernotification', component: AdminLayoutComponent,
+        children: [{path: '', component: ManagernotificationsComponent}]
     },
     {
         path: 'nepnotification', component: AdminLayoutComponent,

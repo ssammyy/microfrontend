@@ -139,6 +139,7 @@ import { StdTscSecTasksComponentComponent } from './apollowebs/standards-develop
 import {NgMultiSelectDropDownModule} from "ng-multiselect-dropdown";
 import { StdTcTasksComponent } from './apollowebs/standards-development/standard-request/std-tc-tasks/std-tc-tasks.component';
 import { NepSuccessComponent } from './apollowebs/standards-development/nep-success/nep-success.component';
+import { ManagernotificationsComponent } from './apollowebs/standards-development/managernotifications/managernotifications.component';
 
 
 // import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -280,7 +281,8 @@ import { NepSuccessComponent } from './apollowebs/standards-development/nep-succ
         QrCodeDetailsComponent,
         StdTscSecTasksComponentComponent,
         StdTcTasksComponent,
-        NepSuccessComponent
+        NepSuccessComponent,
+        ManagernotificationsComponent
 
     ]
 
