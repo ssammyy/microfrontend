@@ -1,1 +1,170 @@
-<p>nep-notification works!</p>
+<div id="main-container">
+    <div class="container" style="margin-top: 70px;">
+        <h2>NEP Domestic Notifications</h2>
+        <br>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>Status</th>
+                <th>Notification Category</th>
+                <th>Notification Document</th>
+                <th></th>
+                <th>TC Secretary</th>
+                <th>Is Accepted?</th>
+            </tr>
+            </thead>
+            <tbody class="table-striped ">
+            <tr *ngFor="let notification of notifications">
+                <td *ngIf="notification.name ==='Draft a notification'"><span class="badge badge-pill badge-info ">{{notification.name}}</span></td>
+                <td *ngIf="notification.name ==='Accept or Reject Notification'"><span class="badge badge-pill badge-warning ">{{notification.name}}</span></td>
+                <td *ngIf="notification.name ==='Upload to WTO NSS'"><span class="badge badge-pill badge-success ">{{notification.name}}</span></td>
+                <td>{{notification.taskData.NotificationCategory}}</td>
+                <td>{{notification.taskData.NotificationDueIndex}}</td>
+                <td> <button  class="btn btn-outline-primary">Download</button></td>
+                <td>James Chege</td>
+                <td *ngIf="notification.name ==='Accept or Reject Notification'">
+                    <a  (click)="onOpenModal(notification,'yes2')" class="btn btn-outline-primary tooltips" data-placement="top"  data-original-title="Yes"> Yes</a>
+                    &nbsp;<a  (click)="onOpenModal(notification,'no')" class="btn btn-outline-danger tooltips" data-placement="top"  data-original-title="Yes"> No</a>
+                </td>
+                <td *ngIf="notification.name ==='Draft a notification'">
+                    <a  (click)="onOpenModal(notification,'draftNotification')" class="btn btn-outline-success tooltips" data-placement="top"  data-original-title="Yes"> Draft Notification</a>
+                </td>
+                <td *ngIf="notification.name ==='Upload to WTO NSS'">
+                    <a  (click)="onOpenModal(notification,'final')" class="btn btn-outline-dark tooltips" data-placement="top"  data-original-title="Yes"> Confirm WTO NSS upload</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div id="yesmodals" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-lg">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Accept The Public Review Standard</h4>
+                    </div>
+                    <div class="modal-body">
+                        <h5>Does it has a significant measure on trade? Accepting proceeds to drafting a notification</h5>
+                        <form #editForm="ngForm" >
+                            <input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskId" id="taskId" >
+                            <input type="hidden" ngModel="true" name="isAvailable"  id="isAvailable" >
+                            <button  class="btn btn-success btn-lg" (click)="onReSubmit(editForm.value)" data-dismiss="modal" >Yes I Accept</button>
+                            &nbsp;&nbsp;<button  class="btn btn-outline-info btn-lg" data-dismiss="modal" >Close</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="noModal" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Reject The Public Review Standard</h4>
+                    </div>
+                    <div class="modal-body">
+                        <h5>Does it has a significant measure on trade? Declining ends the process</h5>
+                        <form #noForm="ngForm" >
+                            <input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskId" id="taskIds" >
+                            <input type="hidden" ngModel="false" name="isAvailable"  id="isAvailables" >
+                            <button  class="btn btn-danger btn-lg" (click)="onNoSubmit(noForm.value)" data-dismiss="modal" >Yes I Decline</button>
+                            &nbsp;&nbsp;<button  class="btn btn-outline-info btn-lg" data-dismiss="modal" >Close</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="final" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Confirm WTO NSS Upload</h4>
+                    </div>
+                    <div class="modal-body">
+                        <h5>Have you Uploaded The Notification? Confirming ends the process</h5>
+                        <form #confirmForm="ngForm" >
+                            <input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskId" id="taskId90" >
+                            <button  class="btn btn-success btn-lg" (click)="finalSubmit(confirmForm.value)" data-dismiss="modal" >Yes I Have</button>
+                            &nbsp;&nbsp;<button  class="btn btn-outline-info btn-lg" data-dismiss="modal" >Close</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Draft notification modal -->
+        <div id="draftNotification" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Draft Notification</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-8">
+                                <label class="btn btn-default p-0">
+                                    <input type="file" (change)="selectFile($event)" />
+                                </label>
+                            </div>
+
+                            <div class="col-4">
+
+                            </div>
+                        </div>
+
+                        <div *ngIf="currentFile" class="progress my-3">
+                            <div
+                                    class="progress-bar progress-bar-info progress-bar-striped"
+                                    role="progressbar"
+                                    attr.aria-valuenow="{{ progress }}"
+                                    aria-valuemin="0"
+                                    aria-valuemax="100"
+                                    [ngStyle]="{ width: progress + '%' }"
+                            >
+                                {{ progress }}%
+                            </div>
+                        </div>
+
+                        <div *ngIf="message" class="alert alert-secondary" role="alert">{{ message }}</div>
+
+                        <!--
+                            <div class="card mt-3">
+                              <div class="card-header">List of Files</div>
+                              <ul
+                                class="list-group list-group-flush"
+                                *ngFor="let file of fileInfos | async"
+                              >
+                                <li class="list-group-item">
+                                  <a href="{{ file.url }}">{{ file.name }}</a>
+                                </li>
+                              </ul>
+                -->
+                        <!-- my form -->
+                        <form #draftNotification="ngForm"  >
+                            <input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskID" id="taskId4" >
+                            <input type="hidden" ngModel="3" name="tcNotificationID"  id="tcNotificationID" >
+                            <input type="hidden" ngModel="327" name="nepOfficerID"  id="nepOfficerID" >
+                            <input type="hidden" ngModel="{{fileName}}" name="notificationDocumentIndex"  id="notificationDocumentIndex" ><br>
+                            <button  class="btn btn-success btn-lg btn-block" [disabled]="!selectedFiles"  (click)="uploadNotification(draftNotification.value)" data-dismiss="modal" >Draft Notification</button>
+                        </form>
+                        <!-- End my form -->
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button  class="btn btn-outline-info btn-lg" data-dismiss="modal" >Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
