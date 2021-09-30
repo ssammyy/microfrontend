@@ -348,7 +348,9 @@ export interface InfoAvailableNo{
     isAvailable: string;
 }
 
-
+export interface finalSubmit{
+    taskId: string;
+}
 //********************************************************** International Standards Adoption -START **********************************************************
 export interface ISAdoptionProposal{
     taskId : string;
