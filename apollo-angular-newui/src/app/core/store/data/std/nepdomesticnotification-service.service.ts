@@ -120,7 +120,7 @@ export class NepdomesticnotificationServiceService {
 
     formData.append('file', file);
 
-    const req = new HttpRequest('POST', `${this.baseUrl}sd/upload`, formData, {
+    const req = new HttpRequest('POST', `${this.baseUrl}migration/upload`, formData, {
       reportProgress: true,
       responseType: 'json'
     });
@@ -129,7 +129,7 @@ export class NepdomesticnotificationServiceService {
   }
 
   getFiles(): Observable<any> {
-    return this.http.get(`${this.baseUrl}sd/files`);
+    return this.http.get(`${this.baseUrl}migration/files`);
   }
 
 }
