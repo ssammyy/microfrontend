@@ -73,6 +73,7 @@ import {SuccessComponent} from "../../../apollo-webs/src/app/components/standard
 import {StdJustificationComponent} from "./apollowebs/standards-development/standard-request/std-justification/std-justification.component";
 import {SpcSecTaskComponent} from "./apollowebs/standards-development/standard-request/spc-sec-task/spc-sec-task.component";
 import {StdTcWorkplanComponent} from "./apollowebs/standards-development/standard-request/std-tc-workplan/std-tc-workplan.component";
+import {NepNotificationComponent} from "./apollowebs/standards-development/nep-notification/nep-notification.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -499,6 +500,10 @@ export const routes: Routes = [
     {
         path: 'nep_division_response', component: AdminLayoutComponent,
         children: [{path: '', component: DivisionresponseComponent}]
+    },
+    {
+        path: 'nepnotification', component: AdminLayoutComponent,
+        children: [{path: '', component: NepNotificationComponent}]
     },
     {
         path: 'make_enquiry', component: MakeEnquiryComponent
