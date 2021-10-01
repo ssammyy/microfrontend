@@ -1,0 +1,294 @@
+<div class="container-fluid" style="margin-top: 5%" id="main-container">
+<div  class="loading-spinner ">
+<ngx-spinner
+bdColor="rgba(51,51,51,0.8)"
+size="medium"
+color="#fff"
+type="ball-scale-multiple"
+>
+<p style="font-size: 20px; color: white">Loading...</p>
+</ngx-spinner>
+</div>
+<div class="main-content" >
+<div class="container-fluid">
+<div class="row">
+<div class="col-md-12">
+<div class="card">
+<div class="card-header card-header-primary card-header-icon">
+<div class="card-icon">
+<i class="material-icons">assignment</i>
+</div>
+<div class="card-title float-right"><button type="button" class="btn btn-sm btn-outline-warning">
+Tasks <span class="badge badge-primary">{{tasks.length}}</span>
+</button></div>
+</div>
+<div class="card-body">
+<div class="toolbar">
+
+</div>
+<div class="material-datatables table-responsive">
+<table  class="table table-striped table-bordered table-hover " datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"  cellspacing="0" width="100%">
+<thead>
+<tr>
+<th>#</th>
+<th class="knw">Request Number</th>
+<th class="sl">Company Name</th>
+<th class="knw">Assigned To</th>
+<th class="sl">SL Number</th>
+<th class="requestNumber">Reference Material </th>
+<th class="knw">Technical Committee</th>
+<th class="sl">Department</th>
+<th class="knw">Product</th>
+<th class="sl">Sub Category</th>
+<th class="requestNumber">Submission Date </th>
+<th class="sl">Phone Number</th>
+<th class="action">Action</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr  *ngFor="let task of tasks let i=index">
+<td>{{i+1}}</td>
+<td>{{task.taskData.requestNumber}}</td>
+<td>{{task.taskData.companyName}}</td>
+<td>{{task.taskData.assignedTo}}</td>
+<td>{{task.taskData.slNumber}}</td>
+<td>{{task.taskData.referenceMaterial}}</td>
+<td>{{task.taskData.tcName}}</td>
+<td>{{task.taskData.departmentName}}</td>
+<td>{{task.taskData.productName}}</td>
+<td>{{task.taskData.productSubCategoryName}}</td>
+<td>{{task.taskData.submissionDate | date: 'dd/MM/yyyy hh:mm:ss'}}</td>
+<td>{{task.taskData.companyPhone}}</td>
+<td ><a  (click)="onOpenModal(task,'approveDraft')" class="btn btn-success btn-sm tooltips" data-placement="top" style=" " data-original-title="preparePD">Approve Draft</a></td>
+<td><button (click)="onOpenModal(task,'reject')" type="submit" class="btn btn-danger btn-sm">Reject</button></td>
+</tr>
+</tbody>
+</table>
+
+
+<div class="modal fade" id="approveDraft" tabindex="-1" role="dialog" aria-labelledby="approveExampleModalLabel" aria-hidden="true">a
+<div class="modal-dialog modal-lg" role="document">
+<div class="modal-content">
+<div class="modal-header">
+<h3 class="modal-title" id="approveExampleModalLabel">Upload Company Draft</h3>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<form (ngSubmit)="onSaveStandard()" [formGroup]="prepareStandardFormGroup" class="form">
+<div class="modal-body">
+<div class="row col-12">
+<div class="form-group col-6">
+<label>Title <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+<input [class.is-invalid]="formPrepareSD.title.invalid && formPrepareSD.title.touched"
+class="form-control"  formControlName="title" ngModel="{{actionRequest?.taskData?.title}}" name="title" type="text">
+</div>
+<div class="form-group col-6">
+<label>Scope <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+<input [class.is-invalid]="formPrepareSD.scope.invalid && formPrepareSD.scope.touched"
+class="form-control"  formControlName="scope" ngModel="{{actionRequest?.taskData?.scope}}" name="scope" type="text">
+</div>
+
+
+</div>
+<div class="row col-12">
+<div class="form-group col-6">
+<label>Normative Reference <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+<input [class.is-invalid]="formPrepareSD.normativeReference.invalid && formPrepareSD.normativeReference.touched"
+class="form-control"  formControlName="normativeReference" ngModel="{{actionRequest?.taskData?.normativeReference}}" name="normativeReference" type="text">
+</div>
+<div class="form-group col-6">
+<label>Reference Material <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+<input [class.is-invalid]="formPrepareSD.referenceMaterial.invalid && formPrepareSD.referenceMaterial.touched"
+class="form-control"  formControlName="referenceMaterial" ngModel="{{actionRequest?.taskData?.referenceMaterial}}" name="referenceMaterial" type="text">
+</div>
+
+</div>
+<div class="row col-12">
+<div class="form-group col-6">
+<label>Clause <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+<input [class.is-invalid]="formPrepareSD.clause.invalid && formPrepareSD.clause.touched"
+class="form-control"  formControlName="clause" ngModel="{{actionRequest?.taskData?.clause}}" name="clause" type="text">
+</div>
+<div class="form-group col-6">
+<label>Special <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+<input [class.is-invalid]="formPrepareSD.special.invalid && formPrepareSD.special.touched"
+class="form-control"  formControlName="special" ngModel="{{actionRequest?.taskData?.special}}" name="special" type="text">
+</div>
+<input type="hidden" formControlName="taskId" ngModel="{{actionRequest?.taskId}}" name="taskId" >
+</div>
+<div class="row col-12">
+<div class="form-group col-12">
+<label><b>Upload Workshop Draft  </b> <span style="font-size: xx-small; color: red;">(*)Required</span></label><br>
+<form #demoForm="ngForm">
+<input type="file" name="uploadedFiles" [(ngModel)]="uploadedFiles"  multiple>
+<file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles"   fileslimit="2" accept=".pdf, .doc, .docx" ></file-upload>
+</form>
+</div>
+
+
+</div>
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+<button  class="btn btn-sm btn-primary float-right" type="submit">Edit</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+
+<div class="modal fade" id="reject" tabindex="-1" role="dialog" aria-labelledby="rejectExampleModalLabel" aria-hidden="true">a
+<div class="modal-dialog modal-lg" role="document">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title" id="rejectExampleModalLabel">Reject Company Draft</h5>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<form #rejectJcJustificationForm="ngForm" >
+<div class="modal-body">
+<div class="form-body">
+<div class="list-group list-group-flush">
+<a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+<div class="d-flex w-100 justify-content-between">
+<div>
+<div class="d-flex w-100 align-items-center">
+<h5 class="mb-1" style="color: #0d0505"><b>Company Name</b></h5>
+</div>
+</div>
+
+</div>
+
+<p class="text-sm mb-0">{{actionRequest?.taskData?.companyName}}.</p>
+</a>
+<a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+<div class="d-flex w-100 justify-content-between">
+<div>
+<div class="d-flex w-100 align-items-center">
+<h5 class="mb-1" style="color: #0d0505"><b>SL Number</b></h5>
+</div>
+</div>
+
+</div>
+
+<p class="text-sm mb-0">{{actionRequest?.taskData?.slNumber}}.</p>
+</a>
+<a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+<div class="d-flex w-100 justify-content-between">
+<div>
+<div class="d-flex w-100 align-items-center">
+<h5 class="mb-1" style="color: #0d0505"><b>TC Acceptance Date</b></h5>
+</div>
+</div>
+
+</div>
+
+<p class="text-sm mb-0">{{actionRequest?.taskData?.tcAcceptanceDate}}.</p>
+</a>
+<a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+<div class="d-flex w-100 justify-content-between">
+<div>
+<div class="d-flex w-100 align-items-center">
+<h5 class="mb-1" style="color: #0d0505"><b>Submission Date</b></h5>
+</div>
+</div>
+
+</div>
+
+<p class="text-sm mb-0">{{actionRequest?.taskData?.submissionDate}}.</p>
+</a>
+<a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+<div class="d-flex w-100 justify-content-between">
+<div>
+<div class="d-flex w-100 align-items-center">
+<h5 class="mb-1" style="color: #0d0505"><b>Assigned To</b></h5>
+</div>
+</div>
+
+</div>
+
+<p class="text-sm mb-0">{{actionRequest?.taskData?.assignedTo}}.</p>
+</a>
+<a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+<div class="d-flex w-100 justify-content-between">
+<div>
+<div class="d-flex w-100 align-items-center">
+<h5 class="mb-1" style="color: #0d0505"><b>Request Number</b></h5>
+</div>
+</div>
+
+</div>
+
+<p class="text-sm mb-0">{{actionRequest?.taskData?.requestNumber}}.</p>
+</a>
+<a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+<div class="d-flex w-100 justify-content-between">
+<div>
+<div class="d-flex w-100 align-items-center">
+<h5 class="mb-1" style="color: #0d0505"><b>Project Leader</b></h5>
+</div>
+</div>
+
+</div>
+
+<p class="text-sm mb-0">{{actionRequest?.taskData?.projectLeader}}.</p>
+</a>
+<a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+<div class="d-flex w-100 justify-content-between">
+<div>
+<div class="d-flex w-100 align-items-center">
+<h5 class="mb-1" style="color: #0d0505"><b>Remarks</b></h5>
+</div>
+</div>
+
+</div>
+
+<p class="text-sm mb-0">{{actionRequest?.taskData?.remarks}}.</p>
+</a>
+<a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+<div class="d-flex w-100 justify-content-between">
+<div>
+<div class="d-flex w-100 align-items-center">
+<h5 class="mb-1" style="color: #0d0505"><b>Status</b></h5>
+</div>
+</div>
+
+</div>
+
+<p class="text-sm mb-0">{{actionRequest?.taskData?.status}}.</p>
+</a>
+</div>
+
+<div class="row">
+<div class="form-group col-12">
+<label><b>Comments/Remarks</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+<textarea class="form-control" ngModel name="comments" rows="2" ></textarea>
+</div>
+</div>
+</div>
+</div>
+<input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskId" >
+<input type="hidden" ngModel="false" name="accentTo"  >
+<input type="hidden" name="approvalID" ngModel="{{actionRequest?.taskData.ID}}" >
+
+
+<div class="modal-footer">
+<button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+<button type="submit" class="btn btn-primary btn-sm" (click)="onDecisionReject(rejectJcJustificationForm.value)" data-dismiss="modal">Approve</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
