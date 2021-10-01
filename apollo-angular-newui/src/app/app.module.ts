@@ -144,6 +144,7 @@ import {ComStdUploadComponent} from './apollowebs/standards-development/company-
 import {ComStdConfirmComponent} from './apollowebs/standards-development/company-standard/com-std-confirm/com-std-confirm.component';
 import {NepSuccessComponent} from './apollowebs/standards-development/nep-success/nep-success.component';
 import {ManagernotificationsComponent} from './apollowebs/standards-development/managernotifications/managernotifications.component';
+import {AllpermitsComponent} from "./apollowebs/quality-assurance/allpermits/allpermits.component";
 
 
 // import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -265,6 +266,7 @@ import {ManagernotificationsComponent} from './apollowebs/standards-development/
         CompanyStandardRequestComponent,
         CsRequestFormComponent,
         ComStdRequestListComponent,
+        AllpermitsComponent,
         ComStdJcJustificationComponent,
         ComStdJcJustificationListComponent,
         InformationcheckComponent,
