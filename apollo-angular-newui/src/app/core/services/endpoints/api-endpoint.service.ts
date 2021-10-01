@@ -17,7 +17,7 @@ export class ApiEndpointService {
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-        // LOCAL_DEV: 'localhost:8006'
+         // LOCAL_DEV: 'localhost:8006'
         // LOCAL_DEV: '12:8006'
         // LOCAL_DEV: '41.72.209.58:8006'
          LOCAL_DEV: `kimsint.kebs.org:8006`
@@ -340,13 +340,26 @@ export class ApiEndpointService {
         ICT_GET_TC_COMMITTEE: `${ApiEndpointService.SD_DR_CONTEXT}/getTechnicalCommittee`,
         // ICT_GET_PRODUCT_CATEGORIES: `${ApiEndpointService.SD_DR_CONTEXT}/getProductCategories/${id}`,
         ICT_GET_PRODUCT_CATEGORIES: `${ApiEndpointService.SD_DR_CONTEXT}/getProductCategories/`,
-        ICT_ADD_STD_REQUEST: `${ApiEndpointService.SD_ICT_CONTEXT}/request`,
+        ICT_ADD_STD_REQUEST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/request`,
         ICT_HOD_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getHODTasks`,
         ICT_ASSIGN_REQUEST: `${ApiEndpointService.SD_ICT_CONTEXT}/assignRequest`,
         ICT_PL_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getPlTasks`,
         ICT_PREPARE_JUSTIFICATION: `${ApiEndpointService.SD_ICT_CONTEXT}/prepareJustification`,
+        ICT_UPLOAD_JC: `${ApiEndpointService.SD_ICT_CONTEXT}/file-upload`,
         ICT_SPC_SEC_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getSpcSecTasks`,
         ICT_DECISION_ON_JUSTIFICATION: `${ApiEndpointService.SD_ICT_CONTEXT}/decisionOnJustification`,
+        ICT_SAC_SEC_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getSacSecTasks`,
+        ICT_DECISION_ON_APP_JUSTIFICATION: `${ApiEndpointService.SD_ICT_CONTEXT}/decisionOnAppJustification`,
+        ICT_PREPARE_PRELIMINARY_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/uploadDraft`,
+        ICT_UPLOAD_PD: `${ApiEndpointService.SD_ICT_CONTEXT}/draft-file-upload`,
+        ICT_JC_SEC_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getJcSecTasks`,
+        ICT_DECISION_ON_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/decisionOnCompanyStdDraft`,
+        ICT_COM_SEC_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getComSecTasks`,
+        ICT_PREPARE_COM_STANDARD: `${ApiEndpointService.SD_ICT_CONTEXT}/uploadComStandard`,
+        ICT_COM_UPLOAD_SD: `${ApiEndpointService.SD_ICT_CONTEXT}/std-file-upload`,
+        ICT_COM_HOP_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getHopTasks`,
+        ICT_COM_EDIT_STANDARD: `${ApiEndpointService.SD_ICT_CONTEXT}/editCompanyStandard`,
+        ICT_COM_UPLOAD_SD_EDIT: `${ApiEndpointService.SD_ICT_CONTEXT}/std-efile-upload`,
 
         // SD SYSTEMIC REVIEW
         SR_GET_REVIEWED_STANDARDS: `${ApiEndpointService.SD_SR_CONTEXT}/reviewedStandards`,

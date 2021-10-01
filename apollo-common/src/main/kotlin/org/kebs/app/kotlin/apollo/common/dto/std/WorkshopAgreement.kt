@@ -44,3 +44,14 @@ class NWADiJustification(
     @JsonProperty("kID")  var kID: Long,
     @JsonProperty("datePrepared")  var datePrepared: Timestamp,
 ){}
+class EditCompanyStandard(
+    @JsonProperty("taskId") var taskId: String,
+    @JsonProperty("title") var title: String,
+    @JsonProperty("scope")  var cost: String,
+    @JsonProperty("normativeReference") var normativeReference: String,
+    @JsonProperty("symbolsAbbreviatedTerms")  var symbolsAbbreviatedTerms: String,
+    @JsonProperty("clause") var clause: String,
+    @JsonProperty("special")  var special: String,
+    @JsonProperty("comStdNumber")  var comStdNumber: String,
+    @JsonProperty("savedRowID")  var id: Long,
+){}

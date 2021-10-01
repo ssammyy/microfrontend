@@ -69,6 +69,10 @@ import {BranchViewComponent} from './apollowebs/company/branch/branch-view/branc
 import {QrCodeDetailsComponent} from './apollowebs/quality-assurance/qr-code-details/qr-code-details.component';
 import {StdTscSecTasksComponentComponent} from './apollowebs/standards-development/standard-request/std-tsc-sec-tasks-component/std-tsc-sec-tasks-component.component';
 import {StdTcTasksComponent} from './apollowebs/standards-development/standard-request/std-tc-tasks/std-tc-tasks.component';
+import {ComStdApproveJustificationComponent} from "./apollowebs/standards-development/company-standard/com-std-approve-justification/com-std-approve-justification.component";
+import {ComStdDraftComponent} from "./apollowebs/standards-development/company-standard/com-std-draft/com-std-draft.component";
+import {ComStdUploadComponent} from "./apollowebs/standards-development/company-standard/com-std-upload/com-std-upload.component";
+import {ComStdConfirmComponent} from "./apollowebs/standards-development/company-standard/com-std-confirm/com-std-confirm.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -483,9 +487,34 @@ export const routes: Routes = [
         children: [{path: '', component: ComStdJcJustificationComponent}]
     },
     {
+        path: 'comAppJustification', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: ComStdApproveJustificationComponent}]
+    },
+    {
         path: 'comStdJustificationList', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [{path: '', component: ComStdJcJustificationListComponent}]
+    },
+    {
+        path: 'comStdAppJustification', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: ComStdApproveJustificationComponent}]
+    },
+    {
+        path: 'comStdDraft', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: ComStdDraftComponent}]
+    },
+    {
+        path: 'comStdConfirmation', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: ComStdUploadComponent}]
+    },
+    {
+        path: 'comStdUpload', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: ComStdConfirmComponent}]
     },
 
     {

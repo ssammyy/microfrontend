@@ -138,6 +138,11 @@ import {QrCodeDetailsComponent} from './apollowebs/quality-assurance/qr-code-det
 import { StdTscSecTasksComponentComponent } from './apollowebs/standards-development/standard-request/std-tsc-sec-tasks-component/std-tsc-sec-tasks-component.component';
 import {NgMultiSelectDropDownModule} from "ng-multiselect-dropdown";
 import { StdTcTasksComponent } from './apollowebs/standards-development/standard-request/std-tc-tasks/std-tc-tasks.component';
+import {NgSelectModule} from "@ng-select/ng-select";
+import { ComStdApproveJustificationComponent } from './apollowebs/standards-development/company-standard/com-std-approve-justification/com-std-approve-justification.component';
+import { ComStdDraftComponent } from './apollowebs/standards-development/company-standard/com-std-draft/com-std-draft.component';
+import { ComStdUploadComponent } from './apollowebs/standards-development/company-standard/com-std-upload/com-std-upload.component';
+import { ComStdConfirmComponent } from './apollowebs/standards-development/company-standard/com-std-confirm/com-std-confirm.component';
 
 
 // import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -174,6 +179,7 @@ import { StdTcTasksComponent } from './apollowebs/standards-development/standard
         MatToolbarModule,
         MatTooltipModule,
         MatNativeDateModule
+
     ],
     imports: [
         MdModule,
@@ -196,6 +202,7 @@ import { StdTcTasksComponent } from './apollowebs/standards-development/standard
         DataTablesModule,
         NgxPaginationModule,
         NgMultiSelectDropDownModule,
+        NgSelectModule
         // CoreModule
     ],
     declarations: [
@@ -278,7 +285,11 @@ import { StdTcTasksComponent } from './apollowebs/standards-development/standard
         BranchViewComponent,
         QrCodeDetailsComponent,
         StdTscSecTasksComponentComponent,
-        StdTcTasksComponent
+        StdTcTasksComponent,
+        ComStdApproveJustificationComponent,
+        ComStdDraftComponent,
+        ComStdUploadComponent,
+        ComStdConfirmComponent
 
     ]
 
