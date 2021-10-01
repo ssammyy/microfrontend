@@ -73,7 +73,6 @@ import {ComStdApproveJustificationComponent} from "./apollowebs/standards-develo
 import {ComStdDraftComponent} from "./apollowebs/standards-development/company-standard/com-std-draft/com-std-draft.component";
 import {ComStdUploadComponent} from "./apollowebs/standards-development/company-standard/com-std-upload/com-std-upload.component";
 import {ComStdConfirmComponent} from "./apollowebs/standards-development/company-standard/com-std-confirm/com-std-confirm.component";
-import {SuccessComponent} from "../../../apollo-webs/src/app/components/standards-development/sd-national-enquiry-point/success/success.component";
 import {StdJustificationComponent} from "./apollowebs/standards-development/standard-request/std-justification/std-justification.component";
 import {SpcSecTaskComponent} from "./apollowebs/standards-development/standard-request/spc-sec-task/spc-sec-task.component";
 import {StdTcWorkplanComponent} from "./apollowebs/standards-development/standard-request/std-tc-workplan/std-tc-workplan.component";
