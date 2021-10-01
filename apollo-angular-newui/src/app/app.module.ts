@@ -143,6 +143,8 @@ import { ComStdApproveJustificationComponent } from './apollowebs/standards-deve
 import { ComStdDraftComponent } from './apollowebs/standards-development/company-standard/com-std-draft/com-std-draft.component';
 import { ComStdUploadComponent } from './apollowebs/standards-development/company-standard/com-std-upload/com-std-upload.component';
 import { ComStdConfirmComponent } from './apollowebs/standards-development/company-standard/com-std-confirm/com-std-confirm.component';
+import { NepSuccessComponent } from './apollowebs/standards-development/nep-success/nep-success.component';
+import { ManagernotificationsComponent } from './apollowebs/standards-development/managernotifications/managernotifications.component';
 
 
 // import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -290,6 +292,9 @@ import { ComStdConfirmComponent } from './apollowebs/standards-development/compa
         ComStdDraftComponent,
         ComStdUploadComponent,
         ComStdConfirmComponent
+        StdTcTasksComponent,
+        NepSuccessComponent,
+        ManagernotificationsComponent
 
     ]
 

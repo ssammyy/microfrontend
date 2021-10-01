@@ -103,7 +103,8 @@
                     <div class="modal-body">
                         <h4>Department Feedback</h4>
                         <p>{{actionRequest?.taskData?.feedbackProvided}}</p>
-                        <br>
+                        <hr>
+                        <h4>Compose response e-mail</h4>
                         <form #sendEmail="ngForm" >
                             <input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskId" id="taskId32" >
                             <input type="hidden" ngModel="34" name="nepOfficerId" id="nepOfficerId" >

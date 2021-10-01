@@ -95,3 +95,18 @@ Content-Type: application/json
   "referenceNumber": "F&A/1:2021",
   "taskId": "981f868c-00f2-11ec-ap37-9a04019f9082"
 }
+
+
+############
+GET https://localhost:8006/api/v1/migration/qa/permit/my-permits-loaded?permitNumber=10333
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJJYW5fS2lwcm9ubyIsImlzcyI6ImtpbXMua2Vicy5vcmciLCJpYXQiOjE2MzMwMDcwNTYsImV4cCI6MTYzMzAxMzA1NiwiYWRkcmVzcyI6IjEyNy4wLjAuMSIsInVzZXJBZ2VudCI6IltBcGFjaGUtSHR0cENsaWVudC80LjUuMTIgKEphdmEvMTEuMC4xMCldIiwiZnVsbE5hbWUiOiJJYW4gS2lwcm9ubyIsInJvbGVzIjoiUEVSTUlUX0FQUExJQ0FUSU9OLFBFUk1JVF9SRU5FV0FMLFBWT0NfQVBQTElDQVRJT05fUkVBRCxMSVNUX0NPTVBBTlksTU9ESUZZX0NPTVBBTlkifQ.8GUDJ--nEZt65wJKRn541SWeCpunVQTtx-0CpkpYIeBOD3BppXiPGXV22qAR9K3Ge_DUE5E-_aNMTppFqo_knw
+#Content-Type: application/json
+#
+#{
+#  "permitNumber": "SM#85A38"
+#}
+
+
+
+
+

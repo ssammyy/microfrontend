@@ -73,6 +73,13 @@ import {ComStdApproveJustificationComponent} from "./apollowebs/standards-develo
 import {ComStdDraftComponent} from "./apollowebs/standards-development/company-standard/com-std-draft/com-std-draft.component";
 import {ComStdUploadComponent} from "./apollowebs/standards-development/company-standard/com-std-upload/com-std-upload.component";
 import {ComStdConfirmComponent} from "./apollowebs/standards-development/company-standard/com-std-confirm/com-std-confirm.component";
+import {SuccessComponent} from "../../../apollo-webs/src/app/components/standards-development/sd-national-enquiry-point/success/success.component";
+import {StdJustificationComponent} from "./apollowebs/standards-development/standard-request/std-justification/std-justification.component";
+import {SpcSecTaskComponent} from "./apollowebs/standards-development/standard-request/spc-sec-task/spc-sec-task.component";
+import {StdTcWorkplanComponent} from "./apollowebs/standards-development/standard-request/std-tc-workplan/std-tc-workplan.component";
+import {AllpermitsComponent} from "./apollowebs/quality-assurance/allpermits/allpermits.component";
+import {NepNotificationComponent} from "./apollowebs/standards-development/nep-notification/nep-notification.component";
+import {ManagernotificationsComponent} from "./apollowebs/standards-development/managernotifications/managernotifications.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -346,6 +353,12 @@ export const routes: Routes = [
         children: [{path: '', component: UserProfileMainComponent}]
     },
     {
+        path: 'all_my_permits', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
+        children: [{path: '', component: AllpermitsComponent}]
+    },
+    {
         path: 'smark/all_smark', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
 
@@ -524,6 +537,14 @@ export const routes: Routes = [
     {
         path: 'nep_division_response', component: AdminLayoutComponent,
         children: [{path: '', component: DivisionresponseComponent}]
+    },
+    {
+        path: 'managernotification', component: AdminLayoutComponent,
+        children: [{path: '', component: ManagernotificationsComponent}]
+    },
+    {
+        path: 'nepnotification', component: AdminLayoutComponent,
+        children: [{path: '', component: NepNotificationComponent}]
     },
     {
         path: 'make_enquiry', component: MakeEnquiryComponent
