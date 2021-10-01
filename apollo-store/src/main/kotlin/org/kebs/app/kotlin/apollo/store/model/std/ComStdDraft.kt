@@ -11,24 +11,51 @@ class ComStdDraft {
     @Column(name="ID")
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     val id:Long=0
+    @Column(name = "TITLE")
+    @Basic
+    var title: String? = null
+
+    @Column(name = "SCOPE")
+    @Basic
+    var scope: String? = null
+
+    @Column(name = "NORMATIVE_REFERENCE")
+    @Basic
+    var normativeReference: String? = null
+
+    @Column(name = "SYMBOLS_ABBREVIATED_TERMS")
+    @Basic
+    var symbolsAbbreviatedTerms: String? = null
+
+    @Column(name = "CLAUSE")
+    @Basic
+    var clause: String? = null
+
+    @Column(name = "SPECIAL")
+    @Basic
+    var special: String? = null
 
     @Column(name="UPLOAD_DATE")
     @Basic
     var uploadDate: Timestamp?=null
 
-
+    @Column(name = "DRAFT_NUMBER")
+    @Basic
+    var draftNumber: String? = null
 
     @Column(name="UPLOADED_BY")
     @Basic
     var uploadedBy : String?=null
 
-    @Column(name="DOC_NAME")
+    @Column(name="CREATED_BY")
     @Basic
-    var documentName : String?=null
+    var createdBy : String?=null
 
-    @Column(name="UPLOADED_BY_NAME")
+
+
+    @Column(name = "REMARKS")
     @Basic
-    var uploadedByName : String?=null
+    var remarks: String? = null
 
     @Transient
     @Column(name = "ACCENT_TO")

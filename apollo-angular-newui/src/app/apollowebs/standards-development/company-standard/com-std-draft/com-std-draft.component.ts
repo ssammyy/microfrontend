@@ -1,27 +1,21 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {Subject} from "rxjs";
-import {NgxSpinnerService} from "ngx-spinner";
-import {HttpErrorResponse} from "@angular/common/http";
-import {
-  ApproveJC,
-  ComJcJustification,
-  ComJcJustificationList,
-  DiSdtDECISION,
-  NWADiSdtJustification
-} from "../../../../core/store/data/std/std.model";
+import {ApproveDraft, ApproveSACJC, ComJcJustificationDec} from "../../../../core/store/data/std/std.model";
 import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
+import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
-  selector: 'app-com-std-jc-justification-list',
-  templateUrl: './com-std-jc-justification-list.component.html',
-  styleUrls: ['./com-std-jc-justification-list.component.css']
+  selector: 'app-com-std-draft',
+  templateUrl: './com-std-draft.component.html',
+  styleUrls: ['./com-std-draft.component.css']
 })
-export class ComStdJcJustificationListComponent implements OnInit ,OnDestroy{
+export class ComStdDraftComponent implements OnInit {
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
-  tasks: ComJcJustificationList[] = [];
-  public actionRequest: ComJcJustificationList | undefined;
+  tasks: ComJcJustificationDec[] = [];
+  public actionRequest: ComJcJustificationDec | undefined;
   constructor(
       private stdComStandardService:StdComStandardService,
       private SpinnerService: NgxSpinnerService,
@@ -29,23 +23,22 @@ export class ComStdJcJustificationListComponent implements OnInit ,OnDestroy{
   ) { }
 
   ngOnInit(): void {
-    this.getSpcSecTasks();
+    this.getJcSecTasks();
   }
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
   }
   showToasterError(title:string,message:string){
     this.notifyService.showError(message, title)
-
   }
   showToasterSuccess(title:string,message:string){
     this.notifyService.showSuccess(message, title)
 
   }
-  public getSpcSecTasks(): void{
+  public getJcSecTasks(): void{
     this.SpinnerService.show();
-    this.stdComStandardService.getSpcSecTasks().subscribe(
-        (response: ComJcJustificationList[])=> {
+    this.stdComStandardService.getJcSecTasks().subscribe(
+        (response: ComJcJustificationDec[])=> {
           this.SpinnerService.hide();
           this.dtTrigger.next();
           this.tasks = response;
@@ -56,7 +49,7 @@ export class ComStdJcJustificationListComponent implements OnInit ,OnDestroy{
         }
     );
   }
-  public onOpenModal(task: ComJcJustificationList,mode:string): void{
+  public onOpenModal(task: ComJcJustificationDec,mode:string): void{
     const container = document.getElementById('main-container');
     const button = document.createElement('button');
     button.type = 'button';
@@ -70,9 +63,9 @@ export class ComStdJcJustificationListComponent implements OnInit ,OnDestroy{
       this.actionRequest=task;
       button.setAttribute('data-target','#prepPd');
     }
-    if (mode==='approvePd'){
+    if (mode==='approveDraft'){
       this.actionRequest=task;
-      button.setAttribute('data-target','#approvePd');
+      button.setAttribute('data-target','#approveDraft');
     }
 
     if (mode==='reject'){
@@ -84,42 +77,40 @@ export class ComStdJcJustificationListComponent implements OnInit ,OnDestroy{
     button.click();
 
   }
-
-  public approveJustification(approveJC: ApproveJC): void{
+  public decisionOnAccept(approveDraft: ApproveDraft): void{
     this.SpinnerService.show();
-    this.stdComStandardService.decisionOnJustification(approveJC).subscribe(
-        (response: ComJcJustificationList) => {
+    this.stdComStandardService.decisionOnDraft(approveDraft).subscribe(
+        (response: ComJcJustificationDec) => {
           this.SpinnerService.hide();
           this.showToasterSuccess('Success', `Justification Approved`);
           console.log(response);
-          this.getSpcSecTasks();
+          this.getJcSecTasks();
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
           this.showToasterError('Error', `Error Processing Action`);
           console.log(error.message);
-          this.getSpcSecTasks();
+          this.getJcSecTasks();
           //alert(error.message);
         }
     );
   }
-  public onDecisionReject(approveJC: ApproveJC): void{
+  public onDecisionReject(approveDraft: ApproveDraft): void{
     this.SpinnerService.show();
-    this.stdComStandardService.decisionOnJustification(approveJC).subscribe(
-        (response: ComJcJustificationList) => {
+    this.stdComStandardService.decisionOnDraft(approveDraft).subscribe(
+        (response: ComJcJustificationDec) => {
           this.SpinnerService.hide();
           this.showToasterSuccess('Success', `Justification Rejected`);
           console.log(response);
-          this.getSpcSecTasks();
+          this.getJcSecTasks();
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
           this.showToasterError('Error', `Error Processing Action`);
           console.log(error.message);
-          this.getSpcSecTasks();
+          this.getJcSecTasks();
           //alert(error.message);
         }
     );
   }
-
 }

@@ -18,7 +18,11 @@ interface ISAdoptionCommentsRepository : JpaRepository<ISAdoptionComments, Long>
 interface ComJcJustificationRepository: JpaRepository<ComJcJustification,Long> {
 }
 
+interface ComJcJustificationUploadsRepository: JpaRepository<ComJcJustificationUploads,Long> {
+}
+
 interface CompanyStandardRepository : JpaRepository<CompanyStandard,Long> {
+    fun findAllByOrderByIdDesc(): MutableList<CompanyStandard>
 }
 interface ComStandardRequestRepository : JpaRepository<CompanyStandardRequest,Long> {
     fun findAllByOrderByIdDesc(): MutableList<CompanyStandardRequest>
@@ -26,6 +30,11 @@ interface ComStandardRequestRepository : JpaRepository<CompanyStandardRequest,Lo
 interface ComStdActionRepository: JpaRepository<ComStdAction,Long> {
 }
 interface ComStdDraftRepository: JpaRepository<ComStdDraft,Long> {
+    fun findAllByOrderByIdDesc(): MutableList<ComStdDraft>
+}
+interface ComStandardDraftUploadsRepository : JpaRepository<ComStandardDraftUploads, Long> {
+}
+interface ComStandardUploadsRepository : JpaRepository<ComStandardUploads, Long> {
 }
 interface ISAdoptionJustificationRepository : JpaRepository<ISAdoptionJustification, Long> {
 }

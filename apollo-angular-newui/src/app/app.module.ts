@@ -138,6 +138,11 @@ import {QrCodeDetailsComponent} from './apollowebs/quality-assurance/qr-code-det
 import { StdTscSecTasksComponentComponent } from './apollowebs/standards-development/standard-request/std-tsc-sec-tasks-component/std-tsc-sec-tasks-component.component';
 import {NgMultiSelectDropDownModule} from "ng-multiselect-dropdown";
 import { StdTcTasksComponent } from './apollowebs/standards-development/standard-request/std-tc-tasks/std-tc-tasks.component';
+import {NgSelectModule} from "@ng-select/ng-select";
+import { ComStdApproveJustificationComponent } from './apollowebs/standards-development/company-standard/com-std-approve-justification/com-std-approve-justification.component';
+import { ComStdDraftComponent } from './apollowebs/standards-development/company-standard/com-std-draft/com-std-draft.component';
+import { ComStdUploadComponent } from './apollowebs/standards-development/company-standard/com-std-upload/com-std-upload.component';
+import { ComStdConfirmComponent } from './apollowebs/standards-development/company-standard/com-std-confirm/com-std-confirm.component';
 import { NepSuccessComponent } from './apollowebs/standards-development/nep-success/nep-success.component';
 import { ManagernotificationsComponent } from './apollowebs/standards-development/managernotifications/managernotifications.component';
 
@@ -176,6 +181,7 @@ import { ManagernotificationsComponent } from './apollowebs/standards-developmen
         MatToolbarModule,
         MatTooltipModule,
         MatNativeDateModule
+
     ],
     imports: [
         MdModule,
@@ -198,6 +204,7 @@ import { ManagernotificationsComponent } from './apollowebs/standards-developmen
         DataTablesModule,
         NgxPaginationModule,
         NgMultiSelectDropDownModule,
+        NgSelectModule
         // CoreModule
     ],
     declarations: [
@@ -280,6 +287,11 @@ import { ManagernotificationsComponent } from './apollowebs/standards-developmen
         BranchViewComponent,
         QrCodeDetailsComponent,
         StdTscSecTasksComponentComponent,
+        StdTcTasksComponent,
+        ComStdApproveJustificationComponent,
+        ComStdDraftComponent,
+        ComStdUploadComponent,
+        ComStdConfirmComponent,
         StdTcTasksComponent,
         NepSuccessComponent,
         ManagernotificationsComponent
