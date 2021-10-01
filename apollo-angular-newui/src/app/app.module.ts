@@ -291,7 +291,7 @@ import { ManagernotificationsComponent } from './apollowebs/standards-developmen
         ComStdApproveJustificationComponent,
         ComStdDraftComponent,
         ComStdUploadComponent,
-        ComStdConfirmComponent
+        ComStdConfirmComponent,
         StdTcTasksComponent,
         NepSuccessComponent,
         ManagernotificationsComponent
