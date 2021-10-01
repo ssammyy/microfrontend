@@ -17,11 +17,11 @@ export class ApiEndpointService {
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-         // LOCAL_DEV: 'localhost:8006'
+        // LOCAL_DEV: 'localhost:8006'
         // LOCAL_DEV: '12:8006'
         // LOCAL_DEV: '41.72.209.58:8006'
         LOCAL_DEV: `kimsint.kebs.org:8006`
-        //LOCAL_DEV: `kims.kebs.org:8006`
+        // LOCAL_DEV: `kims.kebs.org:8006`
     };
 
     /**
@@ -294,7 +294,7 @@ export class ApiEndpointService {
         PERMIT_UPDATE_STA10_MANUFACTURING_PROCESS: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/manufacturing_process_update`,
 
 
-        /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::SD ENDPOINTS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+        /*::::::::::::::::::::::::::::::SD ENDPOINTS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
         // SD Kenya National Workshop Agreement
         NWA_PREPARE_JUSTIFICATION: `${ApiEndpointService.SD_NWA_CONTEXT}/prepareJustification`,
         NWA_DEPARTMENTS: `${ApiEndpointService.SD_NWA_CONTEXT}/getKNWDepartments`,
