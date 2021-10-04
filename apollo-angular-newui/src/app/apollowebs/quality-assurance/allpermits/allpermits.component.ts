@@ -51,7 +51,17 @@ export class AllpermitsComponent implements OnInit {
                         this.dtTrigger.next();
                     },
                     (error: HttpErrorResponse) => {
-                        alert(error.message);
+                        swal.fire({
+                            title: 'Cancelled',
+                            text: 'This Permit Is Not Assigned To You.',
+                            icon: 'error',
+                            customClass: {confirmButton: "btn btn-info",},
+                            buttonsStyling: false
+                        }).then((result) => {
+                            if (result.value) {
+                                window.location.href = "/dashboard";
+                            }
+                        });
                     }
                 );
 
