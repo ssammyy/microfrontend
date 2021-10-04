@@ -8,11 +8,22 @@ GET https://localhost:8006/api/v1/migration/secure/user/details/2046
 Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJJYW5fS2lwcm9ubyIsImlzcyI6ImtpbXMua2Vicy5vcmciLCJpYXQiOjE2MjkzNzcwNzcsImV4cCI6MTYyOTM4MzA3NywiYWRkcmVzcyI6IjEyNy4wLjAuMSIsInVzZXJBZ2VudCI6IltBcGFjaGUtSHR0cENsaWVudC80LjUuMTIgKEphdmEvMTEuMC4xMCldIiwiZnVsbE5hbWUiOiJJYW4gS2lwcm9ubyIsInJvbGVzIjoiUEVSTUlUX0FQUExJQ0FUSU9OLFBFUk1JVF9SRU5FV0FMLFBWT0NfQVBQTElDQVRJT05fUkVBRCxMSVNUX0NPTVBBTlksTU9ESUZZX0NPTVBBTlkifQ.T6rnoVjZ0kkIKUa_th1YYQKLFgxVw0O7dbkElm_7yJTCrPIzSEOt4Tj40eIa45VvdkBaUK7o13MKGp9nub_eUg
 
 ###
-POST https://127.0.0.1:8006/api/v1/login
+POST https://localhost:8006/api/v1/login
 Content-Type: application/json
 
 {
   "username": "Ian_Kiprono",
+  "password": "password"}
+
+> {%
+    client.global.set("auth_token", response.headers.valuesOf('accessToken')[0]);
+%}
+###
+POST https://kimsint.kebs.org:8006/api/v1/login
+Content-Type: application/json
+
+{
+  "username": "Tia",
   "password": "password"}
 
 > {%
@@ -99,12 +110,12 @@ Content-Type: application/json
 
 ############
 GET https://localhost:8006/api/v1/migration/qa/permit/my-permits-loaded?permitNumber=10333
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJJYW5fS2lwcm9ubyIsImlzcyI6ImtpbXMua2Vicy5vcmciLCJpYXQiOjE2MzMwMDcwNTYsImV4cCI6MTYzMzAxMzA1NiwiYWRkcmVzcyI6IjEyNy4wLjAuMSIsInVzZXJBZ2VudCI6IltBcGFjaGUtSHR0cENsaWVudC80LjUuMTIgKEphdmEvMTEuMC4xMCldIiwiZnVsbE5hbWUiOiJJYW4gS2lwcm9ubyIsInJvbGVzIjoiUEVSTUlUX0FQUExJQ0FUSU9OLFBFUk1JVF9SRU5FV0FMLFBWT0NfQVBQTElDQVRJT05fUkVBRCxMSVNUX0NPTVBBTlksTU9ESUZZX0NPTVBBTlkifQ.8GUDJ--nEZt65wJKRn541SWeCpunVQTtx-0CpkpYIeBOD3BppXiPGXV22qAR9K3Ge_DUE5E-_aNMTppFqo_knw
-#Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJJYW5fS2lwcm9ubyIsImlzcyI6ImtpbXMua2Vicy5vcmciLCJpYXQiOjE2MzMzNDUyNjksImV4cCI6MTYzMzM1MTI2OSwiYWRkcmVzcyI6IjEyNy4wLjAuMSIsInVzZXJBZ2VudCI6IltBcGFjaGUtSHR0cENsaWVudC80LjUuMTIgKEphdmEvMTEuMC4xMCldIiwiZnVsbE5hbWUiOiJJYW4gS2lwcm9ubyIsInJvbGVzIjoiUEVSTUlUX0FQUExJQ0FUSU9OLFBFUk1JVF9SRU5FV0FMLFBWT0NfQVBQTElDQVRJT05fUkVBRCxMSVNUX0NPTVBBTlksTU9ESUZZX0NPTVBBTlkifQ.N3bLZRQRNR3E3YWhctWrTKSla_-FYTnSiRGh1IUXNDATqfmPOdKRPg9qlusw0AqzvZrdu8FzD1kfLIKSR5CUPQ
 #
 #{
 #  "permitNumber": "SM#85A38"
 #}
+
 
 
 
