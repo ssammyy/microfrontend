@@ -3,11 +3,13 @@ import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {
     doSendTokenForUser,
     doSendTokenForUserSuccess,
-    doValidateTokenForUser, doValidateTokenForUserFailure,
+    doValidateTokenForUser,
+    doValidateTokenForUserFailure,
     doValidateTokenForUserSuccess,
     loadAuths,
     loadAuthsSuccess,
-    loadLogout, loadLogoutFailure,
+    loadLogout,
+    loadLogoutFailure,
     loadLogoutSuccess,
     loadResetAuths,
     loadUserCompanyInfo,
@@ -173,8 +175,19 @@ export class AuthEffects {
                     .pipe(
                         mergeMap((data) => {
                             return [
-                                loadAuthsSuccess({profile: null, loggedIn: false}),
-                                loadLogoutSuccess({data: data, loggedIn: false, profile: null}),
+                                loadLogoutSuccess({
+                                    data: data,
+                                    loggedIn: false,
+                                    profile: {
+                                        id: 0,
+                                        username: '',
+                                        roles: undefined,
+                                        expiry: undefined,
+                                        email: '',
+                                        accessToken: '',
+                                        fullName: ''
+                                    }
+                                }),
                                 loadUserCompanyInfoSuccess({data: null}),
                                 loadBranchIdSuccess({branchId: null, branch: null}),
                                 loadCompanyIdSuccess({companyId: null, company: null}),

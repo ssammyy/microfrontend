@@ -9,10 +9,13 @@ import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
 import org.flowable.engine.repository.Deployment
 import org.flowable.task.api.Task
+import org.kebs.app.kotlin.apollo.api.notifications.Notifications
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.web.multipart.MultipartFile
 import java.sql.Timestamp
 import java.util.*
 import kotlin.collections.HashMap
@@ -32,7 +35,12 @@ class ComStandardService(
     private val comStdDraftRepository: ComStdDraftRepository,
     private val companyStandardRepository: CompanyStandardRepository,
     private val technicalCommitteeRepository: TechnicalCommitteeRepository,
-    private val userListRepository: UserListRepository
+    private val userListRepository: UserListRepository,
+    private val comJcJustificationUploadsRepository: ComJcJustificationUploadsRepository,
+    private val notifications: Notifications,
+    private val commonDaoServices: CommonDaoServices,
+    private val comStandardDraftUploadsRepository: ComStandardDraftUploadsRepository,
+    private val comStandardUploadsRepository: ComStandardUploadsRepository
 ) {
     val PROCESS_DEFINITION_KEY = "sd_CompanyStandardsProcessFlow"
     val TASK_CANDIDATE_COM_SEC ="COM_SEC"
@@ -170,8 +178,7 @@ class ComStandardService(
     }
 
     //Prepare Justification
-    fun prepareJustification(comJcJustification: ComJcJustification)
-    {
+    fun prepareJustification(comJcJustification: ComJcJustification): ProcessInstanceComJc {
         val variables: MutableMap<String, Any> = HashMap()
         comJcJustification.meetingDate?.let{ variables.put("meetingDate", it)}
         comJcJustification.projectLeader?.let{ variables.put("projectLeader", it)}
@@ -188,14 +195,42 @@ class ComStandardService(
         comJcJustification.datePrepared = Timestamp(System.currentTimeMillis())
         variables["datePrepared"] = comJcJustification.datePrepared!!
 
-        print(comJcJustification.toString())
 
-        comJcJustificationRepository.save(comJcJustification)
+        val comDetails = comJcJustificationRepository.save(comJcJustification)
+        variables["ID"] = comDetails.id
         taskService.complete(comJcJustification.taskId, variables)
         println("Justification Prepared")
+        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
+        return ProcessInstanceComJc(comDetails.id, processInstance.id, processInstance.isEnded,comJcJustification.datePrepared!!)
 
 
     }
+
+    fun uploadJCFile(
+        uploads: ComJcJustificationUploads,
+        docFile: MultipartFile,
+        doc: String,
+        user: UsersEntity,
+        DocDescription: String
+    ): ComJcJustificationUploads {
+
+        with(uploads) {
+//            filepath = docFile.path
+            name = commonDaoServices.saveDocuments(docFile)
+//            fileType = docFile.contentType
+            fileType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(docFile.name)
+            documentType = doc
+            description=DocDescription
+            document = docFile.bytes
+            transactionDate = commonDaoServices.getCurrentDate()
+            status = 1
+            createdBy = commonDaoServices.concatenateName(user)
+            createdOn = commonDaoServices.getTimestamp()
+        }
+
+        return comJcJustificationUploadsRepository.save(uploads)
+    }
+
 
     //Return task details for SPC_SEC
     fun getSpcSecTasks():List<TaskDetails>
@@ -205,11 +240,34 @@ class ComStandardService(
     }
 
     // Decision on Justification
-    fun decisionOnJustification(comJcJustification: ComJcJustification)
-    {
+    fun decisionOnJustification(comJustificationDecision: ComJustificationDecision) : List<TaskDetails> {
         val variables: MutableMap<String, Any> = java.util.HashMap()
-        variables["Yes"] = comJcJustification.accentTo
-        taskService.complete(comJcJustification.taskId, variables)
+        variables["Yes"] = comJustificationDecision.accentTo
+        variables["No"] = comJustificationDecision.accentTo
+        comJustificationDecision.comments.let { variables.put("comments", it) }
+        if(variables["Yes"]==true){
+            comJcJustificationRepository.findByIdOrNull(comJustificationDecision.approvalID)?.let { comJcJustification->
+                with(comJcJustification){
+
+                    remarks=comJustificationDecision.comments
+                    accentTo = true
+                }
+                comJcJustificationRepository.save(comJcJustification)
+            }?: throw Exception("TASK NOT FOUND")
+
+        }else if(variables["No"]==false) {
+            comJcJustificationRepository.findByIdOrNull(comJustificationDecision.approvalID)?.let { comJcJustification->
+
+                with(comJcJustification){
+                    remarks=comJustificationDecision.comments
+                    // accentTo = false
+                }
+                comJcJustificationRepository.save(comJcJustification)
+            }?: throw Exception("TASK NOT FOUND")
+
+        }
+        taskService.complete(comJustificationDecision.taskId, variables)
+        return  getSpcSecTasks()
     }
 
     //Return task details for SAC_SEC
@@ -220,31 +278,124 @@ class ComStandardService(
     }
 
     // Decision
-    fun approveJustification(comJcJustification: ComJcJustification)
-    {
+    fun approveJustification(comJustificationDecision: ComJustificationDecision) : List<TaskDetails> {
         val variables: MutableMap<String, Any> = java.util.HashMap()
-        variables["Yes"] = comJcJustification.accentTo
-        taskService.complete(comJcJustification.taskId, variables)
+        variables["Yes"] = comJustificationDecision.accentTo
+        variables["No"] = comJustificationDecision.accentTo
+        comJustificationDecision.comments.let { variables.put("comments", it) }
+        if(variables["Yes"]==true){
+            comJcJustificationRepository.findByIdOrNull(comJustificationDecision.approvalID)?.let { comJcJustification->
+                with(comJcJustification){
+
+                    remarks=comJustificationDecision.comments
+                    accentTo = true
+                }
+                comJcJustificationRepository.save(comJcJustification)
+            }?: throw Exception("TASK NOT FOUND")
+
+        }else if(variables["No"]==false) {
+            comJcJustificationRepository.findByIdOrNull(comJustificationDecision.approvalID)?.let { comJcJustification->
+
+                with(comJcJustification){
+                    remarks=comJustificationDecision.comments
+                    // accentTo = false
+                }
+                comJcJustificationRepository.save(comJcJustification)
+            }?: throw Exception("TASK NOT FOUND")
+
+        }
+        taskService.complete(comJustificationDecision.taskId, variables)
+        return  getSacSecTasks()
     }
 
+
     //Upload Company Draft
-    fun uploadDraft(comStdDraft: ComStdDraft)
-    {
+    fun uploadDraft(comStdDraft: ComStdDraft): ProcessInstanceComDraft {
         val variables: MutableMap<String, Any> = HashMap()
-        comStdDraft.documentName?.let{ variables.put("documentName", it)}
+        comStdDraft.title?.let{variables.put("title", it)}
+        comStdDraft.scope?.let{variables.put("scope", it)}
+        comStdDraft.normativeReference?.let{variables.put("normativeReference", it)}
+        comStdDraft.symbolsAbbreviatedTerms?.let{variables.put("symbolsAbbreviatedTerms", it)}
+        comStdDraft.clause?.let{variables.put("clause", it)}
+        comStdDraft.special?.let{variables.put("special", it)}
         comStdDraft.uploadedBy?.let{ variables.put("uploadedBy", it)}
         comStdDraft.uploadDate = Timestamp(System.currentTimeMillis())
         variables["uploadDate"] = comStdDraft.uploadDate!!
         variables["uploadedByName"] = userListRepository.findNameById(comStdDraft.uploadedBy?.toLong())
-        comStdDraft.uploadedByName = userListRepository.findNameById(comStdDraft.uploadedBy?.toLong())
+        comStdDraft.createdBy = userListRepository.findNameById(comStdDraft.uploadedBy?.toLong())
+        comStdDraft.draftNumber = getDRNumber()
 
-        print(comStdDraft.toString())
+        variables["draftNumber"] = comStdDraft.draftNumber!!
 
-        comStdDraftRepository.save(comStdDraft)
+        val comDetails = comStdDraftRepository.save(comStdDraft)
+        variables["ID"] = comDetails.id
         taskService.complete(comStdDraft.taskId, variables)
         println("Upload Company standard Draft")
+        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
+        return ProcessInstanceComDraft(comDetails.id, processInstance.id, processInstance.isEnded,comStdDraft.draftNumber!!)
 
 
+    }
+    fun uploadDrFile(
+        uploads: ComStandardDraftUploads,
+        docFile: MultipartFile,
+        doc: String,
+        user: UsersEntity,
+        DocDescription: String
+    ): ComStandardDraftUploads {
+
+        with(uploads) {
+//            filepath = docFile.path
+            name = commonDaoServices.saveDocuments(docFile)
+//            fileType = docFile.contentType
+            fileType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(docFile.name)
+            documentType = doc
+            description=DocDescription
+            document = docFile.bytes
+            transactionDate = commonDaoServices.getCurrentDate()
+            status = 1
+            createdBy = commonDaoServices.concatenateName(user)
+            createdOn = commonDaoServices.getTimestamp()
+        }
+
+        return comStandardDraftUploadsRepository.save(uploads)
+    }
+
+
+    fun getDRNumber(): String
+    {
+        //val allRequests: Int
+        val allRequests =comStdDraftRepository.findAllByOrderByIdDesc()
+
+        var lastId:String?="0"
+        var finalValue =1
+        var startId="DRAFT"
+
+        for(item in allRequests){
+            println(item)
+            lastId = item.draftNumber
+            break
+        }
+
+        if(lastId != "0")
+        {
+            val strs = lastId?.split(":")?.toTypedArray()
+
+            val firstPortion = strs?.get(0)
+
+            val lastPortArray = firstPortion?.split("/")?.toTypedArray()
+
+            val intToIncrement =lastPortArray?.get(1)
+
+            finalValue = (intToIncrement?.toInt()!!)
+            finalValue += 1
+        }
+
+
+        val year = Calendar.getInstance()[Calendar.YEAR]
+        val month = Calendar.getInstance()[Calendar.MONTH]
+
+        return "$finalValue/$startId/$month:$year"
     }
 
     //Return task details for JC_SEC
@@ -255,11 +406,34 @@ class ComStandardService(
     }
 
     // Decision on Company Draft
-    fun decisionOnCompanyStdDraft(comStdDraft: ComStdDraft)
-    {
+    fun decisionOnCompanyStdDraft(comDraftDecision: ComDraftDecision) : List<TaskDetails> {
         val variables: MutableMap<String, Any> = java.util.HashMap()
-        variables["Yes"] = comStdDraft.accentTo
-        taskService.complete(comStdDraft.taskId, variables)
+        variables["Yes"] = comDraftDecision.accentTo
+        variables["No"] = comDraftDecision.accentTo
+        comDraftDecision.comments.let { variables.put("comments", it) }
+        if(variables["Yes"]==true){
+            comStdDraftRepository.findByIdOrNull(comDraftDecision.approvalID)?.let { comStdDraft->
+                with(comStdDraft){
+
+                    remarks=comDraftDecision.comments
+                    accentTo = true
+                }
+                comStdDraftRepository.save(comStdDraft)
+            }?: throw Exception("TASK NOT FOUND")
+
+        }else if(variables["No"]==false) {
+            comStdDraftRepository.findByIdOrNull(comDraftDecision.approvalID)?.let { comStdDraft->
+
+                with(comStdDraft){
+                    remarks=comDraftDecision.comments
+                    // accentTo = false
+                }
+                comStdDraftRepository.save(comStdDraft)
+            }?: throw Exception("TASK NOT FOUND")
+
+        }
+        taskService.complete(comDraftDecision.taskId, variables)
+        return  getJcSecTasks()
     }
 
     //Return task details for COM_SEC
@@ -270,7 +444,7 @@ class ComStandardService(
     }
 
     // Upload Company Standard
-    fun uploadComStandard(companyStandard: CompanyStandard)
+    fun uploadComStandard(companyStandard: CompanyStandard) : ProcessInstanceComStandard
     {
         val variable:MutableMap<String, Any> = HashMap()
         companyStandard.title?.let{variable.put("title", it)}
@@ -279,21 +453,135 @@ class ComStandardService(
         companyStandard.symbolsAbbreviatedTerms?.let{variable.put("symbolsAbbreviatedTerms", it)}
         companyStandard.clause?.let{variable.put("clause", it)}
         companyStandard.special?.let{variable.put("special", it)}
-        companyStandard.comStdNumber?.let{variable.put("comStdNumber", it)}
 
-        print(companyStandard.toString())
+        companyStandard.comStdNumber = getCSNumber()
 
-        companyStandardRepository.save(companyStandard)
+        variable["comStdNumber"] = companyStandard.comStdNumber!!
+
+        val comDetails = companyStandardRepository.save(companyStandard)
+        variable["ID"] = comDetails.id
         taskService.complete(companyStandard.taskId, variable)
         println("Company Standard Uploaded")
+        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variable)
+        return ProcessInstanceComStandard(comDetails.id, processInstance.id, processInstance.isEnded,companyStandard.comStdNumber!!)
 
     }
+    fun getCSNumber(): String
+    {
+        //val allRequests: Int
+        val allRequests =companyStandardRepository.findAllByOrderByIdDesc()
+
+        var lastId:String?="0"
+        var finalValue =1
+        var startId="CS"
+
+        for(item in allRequests){
+            println(item)
+            lastId = item.comStdNumber
+            break
+        }
+
+        if(lastId != "0")
+        {
+            val strs = lastId?.split(":")?.toTypedArray()
+
+            val firstPortion = strs?.get(0)
+
+            val lastPortArray = firstPortion?.split("/")?.toTypedArray()
+
+            val intToIncrement =lastPortArray?.get(1)
+
+            finalValue = (intToIncrement?.toInt()!!)
+            finalValue += 1
+        }
+
+
+        val year = Calendar.getInstance()[Calendar.YEAR]
+        val month = Calendar.getInstance()[Calendar.MONTH]
+
+        return "$finalValue/$startId/$month:$year"
+    }
+    fun uploadSTDFile(
+        uploads: ComStandardUploads,
+        docFile: MultipartFile,
+        doc: String,
+        user: UsersEntity,
+        DocDescription: String
+    ): ComStandardUploads {
+
+        with(uploads) {
+//            filepath = docFile.path
+            name = commonDaoServices.saveDocuments(docFile)
+//            fileType = docFile.contentType
+            fileType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(docFile.name)
+            documentType = doc
+            description=DocDescription
+            document = docFile.bytes
+            transactionDate = commonDaoServices.getCurrentDate()
+            status = 1
+            createdBy = commonDaoServices.concatenateName(user)
+            createdOn = commonDaoServices.getTimestamp()
+        }
+
+        return comStandardUploadsRepository.save(uploads)
+    }
+
 
     //Return task details for HOP
     fun getHopTasks():List<TaskDetails>
     {
         val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_HOP).processDefinitionKey(PROCESS_DEFINITION_KEY).list()
         return getTaskDetails(tasks)
+    }
+
+    fun editCompanyStandard(editCompanyStandard: EditCompanyStandard): ProcessInstanceEditStandard
+    {
+        val variable:MutableMap<String, Any> = HashMap()
+        companyStandardRepository.findByIdOrNull(editCompanyStandard.id)?.let { editCompanyStandard->
+
+            with(editCompanyStandard){
+
+                title=editCompanyStandard.title
+                scope=editCompanyStandard.scope
+                normativeReference=editCompanyStandard.normativeReference
+                symbolsAbbreviatedTerms=editCompanyStandard.symbolsAbbreviatedTerms
+                clause=editCompanyStandard.clause
+                special=editCompanyStandard.special
+
+                // accentTo = false
+            }
+            companyStandardRepository.save(editCompanyStandard)
+            taskService.complete(editCompanyStandard.taskId, variable)
+            println("Company Standard Edited")
+            val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variable)
+            return ProcessInstanceEditStandard(editCompanyStandard.id, processInstance.id, processInstance.isEnded,editCompanyStandard.comStdNumber!!)
+        }?: throw Exception("STANDARD NOT FOUND")
+
+    }
+    fun editSTDFile(
+        uploads: ComStandardUploads,
+        docFile: MultipartFile,
+        doc: String,
+        user: UsersEntity,
+        DocDescription: String
+    ): ComStandardUploads {
+        comStandardUploadsRepository.findByIdOrNull(uploads.comStdDocumentId)?.let { uploads->
+        with(uploads) {
+//            filepath = docFile.path
+            name = commonDaoServices.saveDocuments(docFile)
+//            fileType = docFile.contentType
+            fileType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(docFile.name)
+            documentType = doc
+            description=DocDescription
+            document = docFile.bytes
+            transactionDate = commonDaoServices.getCurrentDate()
+            status = 1
+            createdBy = commonDaoServices.concatenateName(user)
+            createdOn = commonDaoServices.getTimestamp()
+        }
+
+        return comStandardUploadsRepository.save(uploads)
+        }?: throw Exception("STANDARD NOT FOUND")
     }
 
 

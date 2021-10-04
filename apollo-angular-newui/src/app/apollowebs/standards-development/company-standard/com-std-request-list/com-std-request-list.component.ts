@@ -15,6 +15,7 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
   public users !: UsersEntity[] ;
+    selectedUser: number;
   tasks: ComHodTasks[] = [];
   public actionRequest: ComHodTasks | undefined;
   constructor(
@@ -35,6 +36,7 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
     this.stdComStandardService.getHODTasks().subscribe(
         (response: ComHodTasks[])=> {
           this.SpinnerService.hide();
+            this.dtTrigger.next();
           this.tasks = response;
         },
         (error: HttpErrorResponse)=>{

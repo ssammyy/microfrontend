@@ -69,9 +69,16 @@ import {BranchViewComponent} from './apollowebs/company/branch/branch-view/branc
 import {QrCodeDetailsComponent} from './apollowebs/quality-assurance/qr-code-details/qr-code-details.component';
 import {StdTscSecTasksComponentComponent} from './apollowebs/standards-development/standard-request/std-tsc-sec-tasks-component/std-tsc-sec-tasks-component.component';
 import {StdTcTasksComponent} from './apollowebs/standards-development/standard-request/std-tc-tasks/std-tc-tasks.component';
+import {ComStdApproveJustificationComponent} from "./apollowebs/standards-development/company-standard/com-std-approve-justification/com-std-approve-justification.component";
+import {ComStdDraftComponent} from "./apollowebs/standards-development/company-standard/com-std-draft/com-std-draft.component";
+import {ComStdUploadComponent} from "./apollowebs/standards-development/company-standard/com-std-upload/com-std-upload.component";
+import {ComStdConfirmComponent} from "./apollowebs/standards-development/company-standard/com-std-confirm/com-std-confirm.component";
 import {StdJustificationComponent} from "./apollowebs/standards-development/standard-request/std-justification/std-justification.component";
 import {SpcSecTaskComponent} from "./apollowebs/standards-development/standard-request/spc-sec-task/spc-sec-task.component";
 import {StdTcWorkplanComponent} from "./apollowebs/standards-development/standard-request/std-tc-workplan/std-tc-workplan.component";
+import {AllpermitsComponent} from "./apollowebs/quality-assurance/allpermits/allpermits.component";
+import {NepNotificationComponent} from "./apollowebs/standards-development/nep-notification/nep-notification.component";
+import {ManagernotificationsComponent} from "./apollowebs/standards-development/managernotifications/managernotifications.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -345,6 +352,12 @@ export const routes: Routes = [
         children: [{path: '', component: UserProfileMainComponent}]
     },
     {
+        path: 'all_my_permits', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
+        children: [{path: '', component: AllpermitsComponent}]
+    },
+    {
         path: 'smark/all_smark', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
 
@@ -486,9 +499,34 @@ export const routes: Routes = [
         children: [{path: '', component: ComStdJcJustificationComponent}]
     },
     {
+        path: 'comAppJustification', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: ComStdApproveJustificationComponent}]
+    },
+    {
         path: 'comStdJustificationList', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [{path: '', component: ComStdJcJustificationListComponent}]
+    },
+    {
+        path: 'comStdAppJustification', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: ComStdApproveJustificationComponent}]
+    },
+    {
+        path: 'comStdDraft', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: ComStdDraftComponent}]
+    },
+    {
+        path: 'comStdConfirmation', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: ComStdUploadComponent}]
+    },
+    {
+        path: 'comStdUpload', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: ComStdConfirmComponent}]
     },
 
     {
@@ -498,6 +536,14 @@ export const routes: Routes = [
     {
         path: 'nep_division_response', component: AdminLayoutComponent,
         children: [{path: '', component: DivisionresponseComponent}]
+    },
+    {
+        path: 'managernotification', component: AdminLayoutComponent,
+        children: [{path: '', component: ManagernotificationsComponent}]
+    },
+    {
+        path: 'nepnotification', component: AdminLayoutComponent,
+        children: [{path: '', component: NepNotificationComponent}]
     },
     {
         path: 'make_enquiry', component: MakeEnquiryComponent
@@ -521,20 +567,6 @@ export const routes: Routes = [
     {
         path: 'std-tc-task', component: AdminLayoutComponent,
         children: [{path: '', component: StdTcTasksComponent}]
-    },
-    {
-        path: 'upload-justification', component: AdminLayoutComponent,
-        children: [{path: '', component: StdJustificationComponent}]
-    },
-    {
-        path: 'decision-justification', component: AdminLayoutComponent,
-        //canActivate: [AuthGuard],
-        children: [{path: '', component: SpcSecTaskComponent}]
-    },
-    {
-        path: 'upload-workplan', component: AdminLayoutComponent,
-        //canActivate: [AuthGuard],
-        children: [{path: '', component: StdTcWorkplanComponent}]
     },
 
 ];

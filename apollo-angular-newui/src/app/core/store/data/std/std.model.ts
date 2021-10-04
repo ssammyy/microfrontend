@@ -348,7 +348,9 @@ export interface InfoAvailableNo{
     isAvailable: string;
 }
 
-
+export interface finalSubmit{
+    taskId: string;
+}
 //********************************************************** International Standards Adoption -START **********************************************************
 export interface ISAdoptionProposal{
     taskId : string;
@@ -519,6 +521,7 @@ export interface ComJcJustificationData{
     productName: string;
     productSubCategoryName: string;
     tcName: string;
+    ID: number;
 }
 
 export interface ComSecTasks{
@@ -592,10 +595,81 @@ export interface ComJcJustificationListData{
     dateAssigned : string;
     remarks : string;
     status : string;
+    tcName : string;
+    departmentName : string;
+    productName : string;
+    productSubCategoryName : string;
+    ID: number;
+}
+
+export interface ComJcJustificationDec{
+    taskId: string;
+    name: string;
+    taskData: ComJcJustificationDecData;
+}
+export interface ComJcJustificationDecData{
+    reason: string;
+    companyName: string;
+    slNumber : string;
+    tcAcceptanceDate : string;
+    submissionDate : string;
+    issuesAddressed : string;
+    assignedTo : string;
+    productCategory : string;
+    requestedBy : string;
+    requestNumber : string;
+    companyEmail : string;
+    referenceMaterial : string;
+    productSubCategory : string;
+    companyPhone : string;
+    projectLeader : string;
+    meetingDate : string;
+    department : string;
+    dateAssigned : string;
+    remarks : string;
+    status : string;
+    tcName : string;
+    departmentName : string;
+    productName : string;
+    productSubCategoryName : string;
+    ID: number;
+    title: number;
+    scope: string;
+    normativeReference:string;
+    clause: string;
+    special:string;
+    comments: string;
 }
 export interface ApproveJC{
-
+    taskId: string;
+    accentTo: boolean;
+    approvalID: bigint;
+    comments: string;
 }
+export interface ApproveSACJC{
+    taskId: string;
+    accentTo: boolean;
+    approvalID: bigint;
+    comments: string;
+}
+export interface ApproveDraft{
+    taskId: string;
+    accentTo: boolean;
+    approvalID: bigint;
+    comments: string;
+}
+export interface COMPreliminaryDraft{
+    id: number;
+    title: number;
+    scope: number;
+    normativeReference: string;
+    symbolsAbbreviatedTerms: string;
+    special: string;
+    clause: string;
+    taskId: string;
+    diJNumber: number;
+}
+
 //********************************************************** Company Standards Adoption -END **********************************************************
 //********************************************************** Systemic  Standards Standards Review -START **********************************************************
 export interface ReviewedStandards{

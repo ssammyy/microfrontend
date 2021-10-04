@@ -43,8 +43,8 @@ export class InformationcheckComponent implements OnInit {
               formattedArray = data.map(i => [i.taskData.requestDate, i.name, i.taskData.requesterName, i.taskData.requesterCountry,i.taskData.requesterInstitution,i.taskData.requesterEmail,i.taskData.requesterPhone,i.taskData.requesterSubject,i.taskData.requesterComment]);
 
               this.dataTable = {
-                  headerRow: ['Date', 'Status', 'Requester Name', 'Country', ' Institution', 'Email','Phone','Subject','Comment','Actions'],
-                  footerRow: ['Date', 'Status', 'Requester Name', 'Country', ' Institution', 'Email','Phone','Subject','Comment','Actions'],
+                  headerRow: ['Date', 'Status', 'Requester Name', 'Country', ' Institution', 'Email','Phone','View','Comment','Actions'],
+                  footerRow: ['Date', 'Status', 'Requester Name', 'Country', ' Institution', 'Email','Phone','View','Comment','Actions'],
                   dataRows: formattedArray
 
 
@@ -107,6 +107,10 @@ export class InformationcheckComponent implements OnInit {
       this.actionRequest = notification;
       button.setAttribute('data-target', '#yesmodals');
     }
+      if (mode === 'enquiry_message'){
+          this.actionRequest = notification;
+          button.setAttribute('data-target', '#enquirymodal');
+      }
     if (mode === 'SendEmail'){
       this.actionRequest = notification;
       button.setAttribute('data-target', '#sendemail');

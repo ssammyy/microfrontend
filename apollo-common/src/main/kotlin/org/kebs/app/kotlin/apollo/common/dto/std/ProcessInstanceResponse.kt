@@ -19,3 +19,11 @@ class ProcessInstanceWD (val savedRowID: Long?,val processId: String, val isEnde
 }
 class ProcessInstanceUS (val savedRowID: Long?,val processId: String, val isEnded: Boolean, val ksNumber: String) {
 }
+class ProcessInstanceComJc (val savedRowID: Long?,val processId: String, val isEnded: Boolean, val datePrepared: Timestamp) {
+}
+class ProcessInstanceComDraft (val savedRowID: Long?,val processId: String, val isEnded: Boolean, val draftNumber: String) {
+}
+class ProcessInstanceComStandard (val savedRowID: Long?,val processId: String, val isEnded: Boolean, val comStdNumber: String) {
+}
+class ProcessInstanceEditStandard (val savedRowID: Long?,val processId: String, val isEnded: Boolean, val comStdNumber: String) {
+}
