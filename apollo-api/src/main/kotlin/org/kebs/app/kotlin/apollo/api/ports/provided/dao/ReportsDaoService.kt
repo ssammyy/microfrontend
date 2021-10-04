@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 
 import com.google.common.io.Files
+import mu.KotlinLogging
 import net.sf.jasperreports.engine.JREmptyDataSource
 import net.sf.jasperreports.engine.JasperCompileManager
 import net.sf.jasperreports.engine.JasperExportManager
@@ -29,10 +30,10 @@ import javax.servlet.http.HttpServletResponse
 
 @Service
 class ReportsDaoService(
-    private val applicationMapProperties: ApplicationMapProperties,
-    private val resourceLoader: ResourceLoader,
-    private val commonDaoServices: CommonDaoServices,
-    private val invoiceDaoService: InvoiceDaoService
+        private val applicationMapProperties: ApplicationMapProperties,
+        private val resourceLoader: ResourceLoader,
+        private val commonDaoServices: CommonDaoServices,
+        private val invoiceDaoService: InvoiceDaoService
 ) {
 
     @Lazy
@@ -42,7 +43,6 @@ class ReportsDaoService(
     //Get KEBS Logo
     final val logoImageResource = resourceLoader.getResource(applicationMapProperties.mapKebsLogoPath)
     val logoImageFile = logoImageResource.inputStream.toString()
-
 
 
     fun addBankAndMPESADetails(map: HashMap<String, Any>, mpesaAccountNumber: String): HashMap<String, Any> {
@@ -83,28 +83,28 @@ class ReportsDaoService(
         map["branchCode2"] = bank2Details.branchCode.toString()
         map["swiftCode2"] = bank2Details.swiftCode.toString()
 
-        map["bankName3"] =bank3Details.bankAccountName.toString()
-        map["bank3"] =bank3Details.bankName.toString()
-        map["bankBranch3"] =bank3Details.bankBranch.toString()
-        map["kesAcNo3"] =bank3Details.bankAccountKesNumber.toString()
-        map["usdNo3"] =bank3Details.bankAccountUsdNumber.toString()
-        map["bankCode3"] =bank3Details.bankCode.toString()
-        map["branchCode3"] =bank3Details.branchCode.toString()
-        map["swiftCode3"] =bank3Details.swiftCode.toString()
+        map["bankName3"] = bank3Details.bankAccountName.toString()
+        map["bank3"] = bank3Details.bankName.toString()
+        map["bankBranch3"] = bank3Details.bankBranch.toString()
+        map["kesAcNo3"] = bank3Details.bankAccountKesNumber.toString()
+        map["usdNo3"] = bank3Details.bankAccountUsdNumber.toString()
+        map["bankCode3"] = bank3Details.bankCode.toString()
+        map["branchCode3"] = bank3Details.branchCode.toString()
+        map["swiftCode3"] = bank3Details.swiftCode.toString()
 
         return map
     }
 
     fun extractReport(
-        map: HashMap<String, Any>,
-        filePath: String,
-        listCollect: List<Any>
-    ): ByteArrayOutputStream{
-        map["imagePath"] = logoImageFile
+            map: HashMap<String, Any>,
+            filePath: String,
+            listCollect: List<Any>
+    ): ByteArrayOutputStream {
+//        map["imagePath"] = logoImageFile
         val dataSource = JRBeanCollectionDataSource(listCollect)
         // Handle classpath resource
         val file: InputStream?
-        if(filePath.startsWith("classpath:")){
+        if (filePath.startsWith("classpath:")) {
             file = resourceLoader.getResource(filePath).inputStream
         } else {
             file = ResourceUtils.getFile(filePath).inputStream()
@@ -125,10 +125,10 @@ class ReportsDaoService(
     i.e you're using Parameters only.
      */
     fun extractReportEmptyDataSource(map: HashMap<String, Any>, filePath: String): ByteArrayOutputStream {
-        map["imagePath"] = logoImageFile
+//        map["imagePath"] = logoImageFile
         // Handle classpath resource
         val file: InputStream?
-        if(filePath.startsWith("classpath:")){
+        if (filePath.startsWith("classpath:")) {
             file = resourceLoader.getResource(filePath).inputStream
         } else {
             file = ResourceUtils.getFile(filePath).inputStream()
@@ -147,77 +147,47 @@ class ReportsDaoService(
 
     }
 
-    fun generateLocalCoCReportWithDataSource(cdDetails: ConsignmentDocumentDetailsEntity, filePath: String): File? {
-        var map = hashMapOf<String, Any>()
-        map["imagePath"] = logoImageFile
-        cdDetails.ucrNumber?.let {
-            diDaoServices.findCocByUcrNumber(it)?.let { coc ->
-                map = diDaoServices.createLocalCocReportMap(coc)
-                val cocItems = cdDetails.let { diDaoServices.findCDItemsListWithCDID(it) }
-
-                val itemsReportInput: LocalCocItemsReportInput = assembleCocItemReportInput(cocItems)
-                val dataSource = JRMapArrayDataSource(arrayOf(itemsReportInput.getDataSources()))
-
-                val file = ResourceUtils.getFile(filePath)
-                val design = JRXmlLoader.load(file)
-                val jasperReport = JasperCompileManager.compileReport(design)
-
-                val jasperPrint = JasperFillManager.fillReport(jasperReport, map, dataSource)
-
-                val fileName: String = cdDetails.ucrNumber.plus("-coc-report.pdf")
-
-                val targetFile = File(Files.createTempDir(), fileName)
-                targetFile.deleteOnExit()
-
-                JasperExportManager.exportReportToPdfFile(jasperPrint, targetFile.absolutePath)
-
-                with(coc) {
-                    localCocFile = targetFile.readBytes()
-                    localCocFileName = targetFile.name
-                }
-                diDaoServices.saveCoc(coc)
-
-                return targetFile
-            }
+    /*
+   Note: Use this method if your report contains multiple data bands and you have not set any fields in the report,
+   i.e you're using Parameters only.
+    */
+    fun extractReportMapDataSource(map: HashMap<String, Any>, filePath: String, data: HashMap<String, List<Any>>): ByteArrayOutputStream {
+        val file: InputStream?
+        if (filePath.startsWith("classpath:")) {
+            file = resourceLoader.getResource(filePath).inputStream
+        } else {
+            file = ResourceUtils.getFile(filePath).inputStream()
         }
-        return null
-    }
-
-    fun assembleCocItemReportInput(items: List<CdItemDetailsEntity>): LocalCocItemsReportInput {
-        val itemDataSource = JRBeanCollectionDataSource(items, false)
-        var localCocItemsReportInput = LocalCocItemsReportInput()
-        localCocItemsReportInput.itemDataSource = itemDataSource
-
-        return localCocItemsReportInput
-    }
-
-    fun generateLocalCoRReport(cdDetails: ConsignmentDocumentDetailsEntity, filePath: String, itemId: Long): File? {
-        var map = hashMapOf<String, Any>()
-        map["imagePath"] = logoImageFile
-
-        map = diDaoServices.createLocalCorReportMap(cdDetails, itemId)
-
-        val file = ResourceUtils.getFile(filePath)
+        KotlinLogging.logger { }.info("COC ITEMS: $data")
+        val dataSources: MutableMap<String, JRBeanCollectionDataSource?> = HashMap()
+        for (k in data.keys) {
+            dataSources[k] = JRBeanCollectionDataSource(data[k], false)
+        }
+        val dataSourceMap = JRMapArrayDataSource(arrayOf(dataSources))
         val design = JRXmlLoader.load(file)
         val jasperReport = JasperCompileManager.compileReport(design)
+        val jasperPrint = JasperFillManager.fillReport(jasperReport, map, dataSourceMap)
+        val pdfExporter = JRPdfExporter()
+        val pdfReportStream = ByteArrayOutputStream()
+        pdfExporter.setExporterInput(SimpleExporterInput(jasperPrint))
+        pdfExporter.exporterOutput = SimpleOutputStreamExporterOutput(pdfReportStream)
+        pdfExporter.exportReport()
+        return pdfReportStream
 
-        val jasperPrint = JasperFillManager.fillReport(jasperReport, map, JREmptyDataSource())
+    }
 
-        val fileName: String = cdDetails.ucrNumber.plus("-cor-report.pdf")
-
-        val targetFile = File(Files.createTempDir(), fileName)
-        targetFile.deleteOnExit()
-
-        JasperExportManager.exportReportToPdfFile(jasperPrint, targetFile.absolutePath)
-
+    fun createFileFromBytes(pdfStream: ByteArrayOutputStream, filePath: String): File? {
+        val targetFile = File(filePath)
+        targetFile.writeBytes(pdfStream.toByteArray())
         return targetFile
     }
 
+
     fun generateEmailPDFReportWithDataSource(
-        fileName: String,
-        map: HashMap<String, Any>,
-        filePath: String,
-        dataSourceList: List<Any>
+            fileName: String,
+            map: HashMap<String, Any>,
+            filePath: String,
+            dataSourceList: List<Any>
     ): File {
 
         val file = ResourceUtils.getFile(filePath)

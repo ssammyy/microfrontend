@@ -22,7 +22,9 @@ class CdDemandNoteEntity : Serializable {
     @Column(name = "NAME_IMPORTER")
     @Basic
     var nameImporter: String? = null
-
+    @Column(name = "SW_STATUS")
+    @Basic
+    var swStatus: Int? = 0
 
     @Column(name = "ADDRESS")
     @Basic

@@ -473,13 +473,13 @@ class DestinationInspectionController(
                                         }
                                         KotlinLogging.logger { }.info { "localCoc = ${localCoc.id}" }
                                         //Generate PDF File & send to manufacturer
-                                        reportsDaoService.generateLocalCoCReportWithDataSource(updatedCDDetails, applicationMapProperties.mapReportLocalCocPath)?.let { file ->
-                                            updatedCDDetails.cdImporter?.let {
-                                                daoServices.findCDImporterDetails(it)
-                                            }?.let { importer ->
-                                                importer.email?.let { daoServices.sendLocalCocReportEmail(it, file.path) }
-                                            }
-                                        }
+//                                        reportsDaoService.generateLocalCoCReportWithDataSource(updatedCDDetails, applicationMapProperties.mapReportLocalCocPath)?.let { file ->
+//                                            updatedCDDetails.cdImporter?.let {
+//                                                daoServices.findCDImporterDetails(it)
+//                                            }?.let { importer ->
+//                                                importer.email?.let { daoServices.sendLocalCocReportEmail(it, file.path) }
+//                                            }
+//                                        }
                                     }
                                 }
                             } else if (updatedCDDetails.cdType?.localCorStatus == map.activeStatus) {
@@ -1451,31 +1451,31 @@ class DestinationInspectionController(
 
     @GetMapping("/coc-certificate/view")
     fun downloadCocCertificateFile(response: HttpServletResponse, @RequestParam("cocId") cocId: Long) {
-        daoServices.findCOCById(cocId)?.let { coc ->
-            coc.localCocFile?.let { file ->
-                //Create FileDTO Object
-                val fileDto: CommonDaoServices.FileDTO = CommonDaoServices.FileDTO()
-                fileDto.document = file
-                fileDto.fileType = "application/x-pdf"
-                fileDto.name = coc.localCocFileName
-
-                commonDaoServices.downloadFile(response, fileDto)
-            }
-        }
+//        daoServices.findCOCById(cocId)?.let { coc ->
+//            coc.localCocFile?.let { file ->
+//                //Create FileDTO Object
+//                val fileDto: CommonDaoServices.FileDTO = CommonDaoServices.FileDTO()
+//                fileDto.document = file
+//                fileDto.fileType = "application/x-pdf"
+//                fileDto.name = coc.localCocFileName
+//
+//                commonDaoServices.downloadFile(response, fileDto)
+//            }
+//        }
     }
 
     @GetMapping("/cor-certificate/view")
     fun downloadCorCertificateFile(response: HttpServletResponse, @RequestParam("corId") corId: Long) {
-        daoServices.findCorById(corId)?.let { cor ->
-            cor.localCorFile?.let { file ->
-                //Create FileDTO Object
-                val fileDto: CommonDaoServices.FileDTO = CommonDaoServices.FileDTO()
-                fileDto.document = file
-                fileDto.fileType = "application/x-pdf"
-                fileDto.name = cor.localCorFileName
-
-                commonDaoServices.downloadFile(response, fileDto)
-            }
-        }
+//        daoServices.findCorById(corId)?.let { cor ->
+//            cor.localCorFile?.let { file ->
+//                //Create FileDTO Object
+//                val fileDto: CommonDaoServices.FileDTO = CommonDaoServices.FileDTO()
+//                fileDto.document = file
+//                fileDto.fileType = "application/x-pdf"
+//                fileDto.name = cor.localCorFileName
+//
+//                commonDaoServices.downloadFile(response, fileDto)
+//            }
+//        }
     }
 }

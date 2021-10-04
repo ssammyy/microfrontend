@@ -32,6 +32,8 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.manufacturer.role.id}")
     val manufacturerRoleId: Long? = null
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.test.email.address}")
+    val defaultTestEmailAddres: String? = null
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.manufacturer.admin.role.id}")
     val manufacturerAdminRoleId: Long? = null

@@ -117,4 +117,8 @@ export class ItemDetailsComponent implements OnInit {
             )
     }
 
+    downloadReport(){
+        this.diService.downloadDocument("/api/v1/download/checklist/sampleSubmissionForm/" + this.itemUuid)
+    }
+
 }

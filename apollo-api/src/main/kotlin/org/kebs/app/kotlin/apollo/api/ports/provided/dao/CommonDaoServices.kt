@@ -220,6 +220,11 @@ class CommonDaoServices(
         return sdf.format(dateChange)
     }
 
+    fun convertDateToString(date: LocalDateTime, format: String): String {
+        val format = DateTimeFormatter.ofPattern(format)
+        return format.format(date)
+    }
+
     fun convertDateToString(date: Date, format: String): String {
         val format = SimpleDateFormat(format)
         return format.format(date)

@@ -73,6 +73,9 @@
                             <button class="btn-sm btn-primary" (click)="customAction(element,'downloadUnfilled')">
                                 Download Unfilled
                             </button>
+                            <button class="btn-sm btn-primary" (click)="customAction(element,'downloadUnMvir')">
+                                Download MVIR
+                            </button>
                             <button class="btn-sm btn-primary" *ngIf="element.hasMinistryInspection"
                                     (click)="customAction(element,'downloadChecklist')">Download Ministry Checklist
                             </button>

@@ -1,22 +1,22 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { ApproveRejectConsignmentComponent } from './approve-reject-consignment/approve-reject-consignment.component';
-import { ActivatedRoute, Router } from '@angular/router';
-import { DestinationInspectionService } from '../../../core/store/data/di/destination-inspection.service';
+import {Component, OnInit} from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
+import {ApproveRejectConsignmentComponent} from './approve-reject-consignment/approve-reject-consignment.component';
+import {ActivatedRoute, Router} from '@angular/router';
+import {DestinationInspectionService} from '../../../core/store/data/di/destination-inspection.service';
 import swal from 'sweetalert2';
-import { AttachmentDialogComponent } from './attachment-dialog/attachment-dialog.component';
-import { GenerateLocalCocComponent } from '../forms/generate-local-coc/generate-local-coc.component';
-import { GenerateLocalCorComponent } from '../forms/generate-local-cor/generate-local-cor.component';
-import { ManualAssignOfficerComponent } from '../forms/manual-assign-officer/manual-assign-officer.component';
-import { ReAssignOfficerComponent } from '../forms/re-assign-officer/re-assign-officer.component';
-import { AssignPortComponent } from '../forms/assign-port/assign-port.component';
-import { AssignOfficerComponent } from '../forms/assign-officer/assign-officer.component';
-import { CompliantComponent } from '../forms/compliant/compliant.component';
-import { SendCoiComponent } from '../forms/send-coi/send-coi.component';
-import { TargetItemComponent } from '../forms/target-item/target-item.component';
-import { TargetSupervisorComponent } from '../forms/target-supervisor/target-supervisor.component';
-import { SendDemandNoteTokwsComponent } from '../forms/send-demand-note-tokws/send-demand-note-tokws.component';
-import { BlacklistComponent } from '../forms/blacklist/blacklist.component';
+import {AttachmentDialogComponent} from './attachment-dialog/attachment-dialog.component';
+import {GenerateLocalCocComponent} from '../forms/generate-local-coc/generate-local-coc.component';
+import {GenerateLocalCorComponent} from '../forms/generate-local-cor/generate-local-cor.component';
+import {ManualAssignOfficerComponent} from '../forms/manual-assign-officer/manual-assign-officer.component';
+import {ReAssignOfficerComponent} from '../forms/re-assign-officer/re-assign-officer.component';
+import {AssignPortComponent} from '../forms/assign-port/assign-port.component';
+import {AssignOfficerComponent} from '../forms/assign-officer/assign-officer.component';
+import {CompliantComponent} from '../forms/compliant/compliant.component';
+import {SendCoiComponent} from '../forms/send-coi/send-coi.component';
+import {TargetItemComponent} from '../forms/target-item/target-item.component';
+import {TargetSupervisorComponent} from '../forms/target-supervisor/target-supervisor.component';
+import {SendDemandNoteTokwsComponent} from '../forms/send-demand-note-tokws/send-demand-note-tokws.component';
+import {BlacklistComponent} from '../forms/blacklist/blacklist.component';
 
 @Component({
     selector: 'app-view-single-consignment-document',
@@ -24,7 +24,7 @@ import { BlacklistComponent } from '../forms/blacklist/blacklist.component';
     styleUrls: ['./view-single-consignment-document.component.css']
 })
 export class ViewSingleConsignmentDocumentComponent implements OnInit {
-    active:Number= 1;
+    active: Number = 1;
     consignmentId: string;
     consignment: any;
     attachments: any[];
@@ -36,9 +36,9 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
     checkLists: any[];
 
     constructor(private diService: DestinationInspectionService,
-        private dialog: MatDialog,
-        private activatedRoute: ActivatedRoute,
-        private router: Router) {
+                private dialog: MatDialog,
+                private activatedRoute: ActivatedRoute,
+                private router: Router) {
     }
 
     ngOnInit(): void {
@@ -56,12 +56,14 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
     createInspectionChecklist() {
         this.router.navigate(['/di/inspection/checklist', this.consignmentId]);
     }
+
     loadChecklists() {
         this.diService.loadChecklists(this.consignment.cd_details.uuid)
             .subscribe(
                 res => {
                     if (res.responseCode === '00') {
                         this.checkLists = res.data;
+
                     } else {
                         console.log(res.message);
                     }
@@ -70,8 +72,8 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
     }
 
 
-    loadDemandNotes(reload: Boolean=true) {
-        if(!reload){
+    loadDemandNotes(reload: Boolean = true) {
+        if (!reload) {
             return
         }
         this.diService.listDemandNotes(this.consignment.cd_details.id)
@@ -84,6 +86,7 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
             );
 
     }
+
     generateDemandNote() {
         this.dialog.open(SendDemandNoteTokwsComponent, {
             data: {
@@ -93,10 +96,10 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
             }
         }).afterClosed()
             .subscribe(
-                res=>{
-                    if(res){
+                res => {
+                    if (res) {
                         this.loadDemandNotes()
-                        this.active=13
+                        this.active = 13
                     }
                 }
             );
@@ -202,13 +205,16 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
         }
         return false;
     }
+
     viewInspectionChecklists() {
         this.router.navigate(['/di/checklist/details/', this.consignment.cd_details.uuid]);
     }
+
     downloadDemandNote() {
         // let d=341
         this.diService.downloadDocument('/api/v1/download/demand/note/' + this.consignment.cd_details.id);
     }
+
     goBack() {
         this.router.navigate(['/di']);
     }
@@ -226,6 +232,9 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
                         this.listConsignmentAttachments();
                         this.loadComments();
                         this.loadDemandNotes();
+                    } else if (response.responseCode === "000") {
+                        // Reload consignment details
+                        this.loadConsignmentDetails()
                     } else {
                         swal.fire({
                             title: response.message,
@@ -382,6 +391,8 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
         const ref = this.dialog.open(CompliantComponent, {
             data: {
                 uuid: this.consignmentId,
+                cocRequest: this.consignment.ui.cocRequest,
+                corRequest: this.consignment.ui.corRequest,
                 configurations: this.configurations,
             }
         });

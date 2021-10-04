@@ -92,7 +92,7 @@ class DestinationInspectionBpmn(
         detail.varField9 = Timestamp.from(Instant.now()).toString()
         detail.varField10 = "Submitted to ministry"
         // Update CD status
-        this.daoServices.updateCdItemDetailsInDB(detail,null)
+        this.daoServices.updateCdItemDetailsInDB(detail, null)
         detail.cdDocId?.let {
             it.varField7 = processInstance.processDefinitionId
             it.varField8 = processStarted.toString()
@@ -109,20 +109,19 @@ class DestinationInspectionBpmn(
         consignmentDocument.diProcessStatus = processStarted
         consignmentDocument.diProcessStartedOn = Timestamp.from(Instant.now())
         consignmentDocument.varField10 = "Start Assign Inspection Officer"
-        // Update history
-        this.auditService.addHistoryRecord(consignmentDocument.id!!, consignmentDocument.ucrNumber, data["remarks"] as String?, "ASSIGN IO", "Consignment assignment")
         // Update document
         this.daoServices.updateCdDetailsInDB(consignmentDocument, this.commonDaoServices.getLoggedInUser())
     }
+
     // Check for modification disabled status
-    fun modifyDisabled(consignmentDocument: ConsignmentDocumentDetailsEntity, response: ApiResponseModel): Boolean{
-        if(consignmentDocument.oldCdStatus!=null){
+    fun modifyDisabled(consignmentDocument: ConsignmentDocumentDetailsEntity, response: ApiResponseModel): Boolean {
+        if (consignmentDocument.oldCdStatus != null) {
             return true
         }
         consignmentDocument.approveRejectCdStatusType?.let {
-            if(it.modificationAllowed!=1){
-                response.responseCode=ResponseCodes.INVALID_CODE
-                response.message="Consignment with status '${it.typeName}' cannot be modified"
+            if (it.modificationAllowed != 1) {
+                response.responseCode = ResponseCodes.INVALID_CODE
+                response.message = "Consignment with status '${it.typeName}' cannot be modified"
                 return true
             }
         }
@@ -132,7 +131,7 @@ class DestinationInspectionBpmn(
     fun startApprovalConsignment(cdUuid: String, form: ConsignmentUpdateRequest): ApiResponseModel {
         val response = ApiResponseModel()
         val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
-        if(modifyDisabled(consignmentDocument, response)){
+        if (modifyDisabled(consignmentDocument, response)) {
             return response
         }
         // Check already approved
@@ -173,14 +172,9 @@ class DestinationInspectionBpmn(
         val response = ApiResponseModel()
         // Check already approved
         try {
-            if (consignmentDocument.diProcessInstanceId != null) {
-                taskService.complete(taskId, data)
-                response.responseCode = ResponseCodes.SUCCESS_CODE
-                response.message = "Task updated successfully"
-            } else {
-                response.responseCode = ResponseCodes.FAILED_CODE
-                response.message = "Document does not have any tasks remaining"
-            }
+            taskService.complete(taskId, data)
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+            response.message = "Task updated successfully"
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("FAILED TO COMPLETE TASK", ex)
             response.responseCode = ResponseCodes.FAILED_CODE
@@ -235,12 +229,12 @@ class DestinationInspectionBpmn(
         this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
     }
 
-    fun startGenerateCoC(map: ServiceMapsEntity,data: MutableMap<String, Any?>, consignmentDocument: ConsignmentDocumentDetailsEntity) {
+    fun startGenerateCoC(map: ServiceMapsEntity, data: MutableMap<String, Any?>, consignmentDocument: ConsignmentDocumentDetailsEntity) {
         data.put("cfs_code", consignmentDocument.freightStation?.cfsCode)
         val processInstance = runtimeService.startProcessInstanceByKey("cocApprovalProcess", data)
         consignmentDocument.diProcessInstanceId = processInstance.processDefinitionId
         consignmentDocument.diProcessStatus = 1
-        consignmentDocument.localCocOrCorStatus=map.initStatus
+        consignmentDocument.localCocOrCorStatus = map.initStatus
         consignmentDocument.diProcessStartedOn = Timestamp.from(Instant.now())
         consignmentDocument.targetReason = data.get("remarks") as String?
         // Save process details
@@ -248,16 +242,16 @@ class DestinationInspectionBpmn(
         this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
     }
 
-    fun startGenerateCor(map: ServiceMapsEntity,data: MutableMap<String, Any?>, consignmentDocument: ConsignmentDocumentDetailsEntity) {
+    fun startGenerateCor(map: ServiceMapsEntity, data: MutableMap<String, Any?>, consignmentDocument: ConsignmentDocumentDetailsEntity) {
         val processInstance = runtimeService.startProcessInstanceByKey("corApprovalProcess", data)
         consignmentDocument.diProcessInstanceId = processInstance.processDefinitionId
         consignmentDocument.diProcessStatus = 1
-        consignmentDocument.localCocOrCorStatus=map.initStatus
+        consignmentDocument.localCocOrCorStatus = map.initStatus
         consignmentDocument.diProcessStartedOn = Timestamp.from(Instant.now())
         consignmentDocument.targetReason = data.get("remarks") as String?
         // Save process details
         this.auditService.addHistoryRecord(consignmentDocument.id!!, consignmentDocument.ucrNumber, data["remarks"] as String?, "REQUEST CONSIGNMENT COR", "Consignment CoR request")
-         this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
+        this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
     }
 
     fun startGenerateDemandNote(map: ServiceMapsEntity, data: MutableMap<String, Any?>, consignmentDocument: ConsignmentDocumentDetailsEntity) {
@@ -362,26 +356,17 @@ class DestinationInspectionBpmn(
         return bpmnCommonFunctions.fetchAllTasksByAssignee(assigneeId, pidPrefix)
     }
 
-    fun fetchAllTasks(): List<BpmnTaskDetails>? {
-        return bpmnCommonFunctions.fetchAllTasks(pidPrefix)
-    }
-
     //Trigger demand note paid bpm task
     fun triggerDemandNotePaidBpmTask(demandNote: CdDemandNoteEntity): Boolean {
         //Get Item from Demand Note
-        demandNote.itemId?.let { cdItemDetailsEntity ->
-            //Get the CD details entity
-            cdItemDetailsEntity.cdDocId?.let { consignmentDocumentDetailsEntity ->
-                consignmentDocumentDetailsEntity.id?.let {
-                    consignmentDocumentDetailsEntity.assignedInspectionOfficer?.id?.let { it1 ->
-                        return diReceivePaymentConfirmation(
-                                it,
-                                it1
-                        )
-                    }
-                }
-            }
-        }
+        val data = hashMapOf<String, Any?>()
+        data["demandNoteId"] = demandNote.id
+        data["cdId"] = demandNote.cdId
+        data["receiptNumber"] = demandNote.receiptNo
+        data["demandNoteNumber"] = demandNote.demandNoteNumber
+        val processInstance = runtimeService.startProcessInstanceByKey("demandNotePaymentProcess", data)
+        demandNote.varField1 = processInstance.processDefinitionId
+        daoServices.upDateDemandNote(demandNote)
         return false
     }
 

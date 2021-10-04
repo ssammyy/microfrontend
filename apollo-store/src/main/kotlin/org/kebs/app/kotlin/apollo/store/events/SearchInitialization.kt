@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.events
 
 import mu.KotlinLogging
+import org.hibernate.CacheMode
 import org.hibernate.search.jpa.FullTextEntityManager
 import org.hibernate.search.jpa.FullTextQuery
 import org.hibernate.search.jpa.Search
@@ -29,7 +30,11 @@ class SearchInitialization(
     @EventListener(ContextRefreshedEvent::class)
     fun onApplicationEvent(event: ContextRefreshedEvent) {
         try {
-            fullTextEntityManager.createIndexer().startAndWait()
+            fullTextEntityManager.createIndexer()
+                    .cacheMode(CacheMode.REFRESH)
+                    .purgeAllOnStart(false)
+                    .optimizeOnFinish(true)
+                    .startAndWait()
         } catch (e: InterruptedException) {
             KotlinLogging.logger { }.error("Error occurred trying to build Hibernate Search indexes ", e)
         }

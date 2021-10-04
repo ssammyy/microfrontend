@@ -1234,7 +1234,7 @@ class DITest {
                     )
                 }
                 KotlinLogging.logger { }.info { "localCoc = ${localCoc.id}" }
-                reportsDaoService.generateLocalCoCReportWithDataSource(consignmentDocumentEntity, applicationMapProperties.mapReportLocalCocPath)?.let { file ->
+//                reportsDaoService.generateLocalCoCReportWithDataSource(consignmentDocumentEntity, applicationMapProperties.mapReportLocalCocPath)?.let { file ->
 //            notifications.processEmail("anthonykihagi@gmail.com","Test subject","Test Message",file.path)
                     KotlinLogging.logger { }.info { " ::::::::::::: Success :::::::::::::::" }
                 }

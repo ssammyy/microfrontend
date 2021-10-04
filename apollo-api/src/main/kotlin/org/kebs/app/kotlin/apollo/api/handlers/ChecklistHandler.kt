@@ -230,7 +230,7 @@ class ChecklistHandler(
         } catch (ex: Exception) {
             KotlinLogging.logger {  }.error("Failed to update BS number",ex)
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
-            response.message = "Failed to save SSF details, check the supplied SSF number"
+            response.message = "BS number already in use, please enter another BS number"
         }
         return ServerResponse.ok().body(response)
     }

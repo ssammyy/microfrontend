@@ -17,7 +17,7 @@ export class SsfDetailsFormComponent implements OnInit {
 
     ngOnInit(): void {
         this.form = this.fb.group({
-            permitNumber:['', Validators.required],
+            permitNumber:['',],
             ssfSubmissionDate: ['', Validators.required],
             brandName: ['', [Validators.required, Validators.maxLength(150)]],
             productDescription: ['', [Validators.required, Validators.maxLength(150)]],
@@ -32,7 +32,7 @@ export class SsfDetailsFormComponent implements OnInit {
                 res => {
                     if (res.responseCode == "00") {
                         this.diService.showSuccess(res.message, () => {
-                            this.dialogRef.close(false)
+                            this.dialogRef.close(true)
                         })
 
                     } else {

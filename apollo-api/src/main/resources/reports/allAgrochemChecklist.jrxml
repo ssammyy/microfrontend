@@ -52,7 +52,7 @@
     <field name="category" class="java.lang.String">
         <property name="com.jaspersoft.studio.field.label" value="category"/>
     </field>
-    <field name="itemNumber" class="java.lang.String">
+    <field name="itemNumber" class="java.lang.Long">
         <property name="com.jaspersoft.studio.field.label" value="itemNumber"/>
     </field>
     <field name="productDescription" class="java.lang.String">

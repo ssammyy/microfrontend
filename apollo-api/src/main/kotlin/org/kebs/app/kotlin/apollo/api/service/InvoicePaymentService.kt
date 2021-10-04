@@ -4,6 +4,8 @@ import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteRepository
 import org.springframework.stereotype.Service
@@ -12,15 +14,32 @@ import org.springframework.stereotype.Service
 class InvoicePaymentService(
         private val iDemandNoteRepo: IDemandNoteRepository,
         private val auditService: ConsignmentDocumentAuditService,
+        private val reportsDaoService: ReportsDaoService,
         private val daoServices: DestinationInspectionDaoServices,
         private val invoiceDaoService: InvoiceDaoService,
         private val commonDaoServices: CommonDaoServices,
         private val applicationMapProperties: ApplicationMapProperties
 ) {
+    fun invoiceDetails(demandNoteId: Long): HashMap<String,Any>{
+        var map = hashMapOf<String, Any>()
 
+        daoServices.findDemandNoteWithID(demandNoteId)?.let {demandNote->
+            map["preparedBy"] = demandNote.generatedBy.toString()
+            map["datePrepared"] = demandNote.dateGenerated.toString()
+            map["demandNoteNo"] = demandNote.demandNoteNumber.toString()
+            map["importerName"] = demandNote.nameImporter.toString()
+            map["importerAddress"] = demandNote.address.toString()
+            map["importerTelephone"] = demandNote.telephone.toString()
+            map["ablNo"] = demandNote.entryAblNumber.toString()
+            map["totalAmount"] = demandNote.totalAmount.toString()
+            map["receiptNo"] = demandNote.receiptNo.toString()
+
+            map = reportsDaoService.addBankAndMPESADetails(map, demandNote.demandNoteNumber?:"")
+        }
+        return map
+    }
     fun rejectDemandNoteGeneration(cdUuid: String, demandNoteId: Long, remarks: String): Boolean {
         try {
-            val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             val demandNote = iDemandNoteRepo.findById(demandNoteId)
             if (demandNote.isPresent) {
@@ -100,6 +119,7 @@ class InvoicePaymentService(
     }
 
     fun generateInvoiceBatch(cdUuid: String, demandNoteId: Long): Boolean {
+        KotlinLogging.logger {  }.info("INVOICE GENERATION: $demandNoteId")
         try {
             val consignmentDocument = daoServices.findCDWithUuid(cdUuid)
             //Send Demand Note
@@ -125,6 +145,7 @@ class InvoicePaymentService(
                     accountNumber = importerDetails?.pin
                     currency = applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
                 }
+                KotlinLogging.logger {  }.info("ADD STAGING TO TABLE: $demandNoteId")
                 // Create payment on staging table
                 invoiceDaoService.createPaymentDetailsOnStgReconciliationTable(
                         loggedInUser.userName!!,
@@ -132,7 +153,7 @@ class InvoicePaymentService(
                         myAccountDetails
                 )
 
-            }
+            }?:ExpectedDataNotFound("Demand note number not set")
             return true
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Failed to generate batch number", ex)
@@ -141,6 +162,7 @@ class InvoicePaymentService(
     }
 
     fun updateDemandNoteSw(cdUuid: String, demandNoteId: Long): Boolean {
+        KotlinLogging.logger {  }.info("UPDATE DEMAND NOTE ON SW")
         try {
             val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             //2. Update payment status on KenTrade
@@ -154,18 +176,31 @@ class InvoicePaymentService(
         return false
     }
 
-    fun invoicePaymentCompleted(cdUuid: String, demandNoteId: Long): Boolean {
-        try {
-            val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
-            // 1. Send demand payment status to SW
-            daoServices.sendDemandNotePayedStatusToKWIS(demandNoteId)
+    fun sendDemandNoteStatus(demandNoteId: Long): Boolean {
+        daoServices.findDemandNoteWithID(demandNoteId)?.let {demandNote->
+            val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+            //1. Update Demand Note Status
+            demandNote.swStatus=map.activeStatus
+            demandNote.varField10="STATUS UPDATED ON SW"
+            demandNote.paymentStatus = map.initStatus
+            val demandNoteDetails = daoServices.upDateDemandNote(demandNote)
+            val consignmentDocument = demandNoteDetails.cdId?.let {cdId-> daoServices.findCD(cdId) }
             // 2. Update CD status
-            consignmentDocument.cdStandard?.let { cdStd ->
+            consignmentDocument?.cdStandard?.let { cdStd ->
                 daoServices.updateCDStatus(
                         cdStd,
                         daoServices.paymentMadeStatus.toLong()
                 )
             }
+        }
+        return true
+    }
+
+    fun invoicePaymentCompleted(cdId: Long, demandNoteId: Long): Boolean {
+        try {
+            val consignmentDocument = this.daoServices.findCD(cdId)
+            // 1. Send demand payment status to SW
+            daoServices.sendDemandNotePayedStatusToKWIS(demandNoteId)
             // Update application status
             consignmentDocument.varField10 = "INVOICE PAYMENT UPDATE ON SW"
             this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
@@ -175,4 +210,5 @@ class InvoicePaymentService(
         }
         return false
     }
+
 }

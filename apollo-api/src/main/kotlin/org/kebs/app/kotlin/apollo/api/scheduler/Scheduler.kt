@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.scheduler
 
+import mu.KotlinLogging
 import org.joda.time.DateTime
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SchedulerImpl
@@ -16,12 +17,13 @@ import org.springframework.stereotype.Component
 @EnableScheduling
 @Profile("prod")
 class Scheduler(
-    private val schedulerImpl: SchedulerImpl,
-    private val sftpSchedulerImpl: SftpSchedulerImpl,
-    private val qaDaoServices: QADaoServices
+        private val schedulerImpl: SchedulerImpl,
+        private val sftpSchedulerImpl: SftpSchedulerImpl,
+        private val qaDaoServices: QADaoServices
 ) {
     @Value("\${scheduler.run.send.notifications}")
     lateinit var runSendNotifications: String
+
     @Value("\${scheduler.run.ms.overdue.task.notifications}")
     lateinit var runMsOverdueTaskNotifications: String
 
@@ -34,18 +36,24 @@ class Scheduler(
 
         val currentDate = DateTime().toDate()
 
-        if (runSendNotifications.toInt()==1){
+        if (runSendNotifications.toInt() == 1) {
             schedulerImpl.sendNotifications(currentDate)
         }
 
-        if (runMsOverdueTaskNotifications.toInt()==1) {
-            schedulerImpl.sendOverdueTaskNotifications(currentDate,msMarketSurveillancePrefix)
+        if (runMsOverdueTaskNotifications.toInt() == 1) {
+            schedulerImpl.sendOverdueTaskNotifications(currentDate, msMarketSurveillancePrefix)
         }
+    }
+
+    @Scheduled(fixedDelay = 60_000)//60 Minutes for now
+    fun updateDemandNotes() {
+        KotlinLogging.logger {  }.info("UPDATING DEMAND NOTES on SW")
+        schedulerImpl.updatePaidDemandNotesStatus()
+        KotlinLogging.logger {  }.info("UPDATED DEMAND NOTES on SW")
     }
 
     @Scheduled(fixedDelay = 100000)//1.6666667 Minutes for now
     fun runSchedulerAfterEveryFiveMin() {
-        schedulerImpl.updatePaidDemandNotesStatus()
         qaDaoServices.assignPermitApplicationAfterPayment()
         qaDaoServices.updatePermitWithDiscountWithPaymentDetails()
         schedulerImpl.updateLabResultsWithDetails()
@@ -53,12 +61,9 @@ class Scheduler(
     }
 
     @Scheduled(fixedDelay = 600000)
+
     fun fetchKeswsFiles() {
         sftpSchedulerImpl.downloadKeswsFiles()
     }
 
-//    @Scheduled(fixedRate = 30 * 60000)
-//    fun runSchedulerAfterEvery30Min() {
-//
-//    }
 }

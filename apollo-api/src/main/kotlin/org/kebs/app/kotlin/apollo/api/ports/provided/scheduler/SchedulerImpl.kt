@@ -32,19 +32,19 @@ import java.util.*
 
 @Service
 class SchedulerImpl(
-    private val schedulerRepo: ISchedulerRepository,
-    private val notifications: Notifications,
-    private val bpmnCommonFunctions: BpmnCommonFunctions,
-    private val userRepo: IUserRepository,
-    private val companyRepo: ICompanyProfileRepository,
-    private val diBpmn: DestinationInspectionBpmn,
-    private val applicationMapProperties: ApplicationMapProperties,
+        private val schedulerRepo: ISchedulerRepository,
+        private val notifications: Notifications,
+        private val bpmnCommonFunctions: BpmnCommonFunctions,
+        private val userRepo: IUserRepository,
+        private val companyRepo: ICompanyProfileRepository,
+        private val diBpmn: DestinationInspectionBpmn,
+        private val applicationMapProperties: ApplicationMapProperties,
 //    private val qualityAssuranceBpmn: QualityAssuranceBpmn,
-    private val sampleSubmissionRepo: IQaSampleSubmissionRepository,
-    private val limsServices: LimsServices,
+        private val sampleSubmissionRepo: IQaSampleSubmissionRepository,
+        private val limsServices: LimsServices,
 //    private val qaDaoServices: QADaoServices,
 //    private val diDaoServices: DestinationInspectionDaoServices,
-    private val commonDaoServices: CommonDaoServices,
+        private val commonDaoServices: CommonDaoServices,
 ) {
 
     @Lazy
@@ -83,14 +83,14 @@ class SchedulerImpl(
     ): Boolean {
         KotlinLogging.logger { }.info("Creating scheduled alerts entry for PID $processInstanceId")
         try {
-            if (interval>0 && count > 0){
+            if (interval > 0 && count > 0) {
                 var i = 0
                 var schedDate = DateTime.now().toDate()
-                while(i < count){
+                while (i < count) {
                     schedDate = DateTime(schedDate).plusDays(interval).toDate()
                     val sched = SchedulerEntity()
                     sched.taskType = defaultTaskType
-                    taskType?.let{
+                    taskType?.let {
                         sched.taskType = taskType
                     }
                     sched.userId = assigneeId
@@ -115,7 +115,7 @@ class SchedulerImpl(
         return false
     }
 
-    fun createScheduledAlert(notificationId:Int, scheduledDate:Date, assigneeId: Long
+    fun createScheduledAlert(notificationId: Int, scheduledDate: Date, assigneeId: Long
     ): Boolean {
         KotlinLogging.logger { }.info("Creating scheduled alerts on $scheduledDate")
         try {
@@ -136,8 +136,8 @@ class SchedulerImpl(
     fun cancelScheduledAlert(processInstanceId: String, taskDefinitionKey: String): Boolean {
         KotlinLogging.logger { }.info("Cancel scheduled alerts entry for $processInstanceId -- $taskDefinitionKey")
         try {
-            schedulerRepo.findByProcessInstanceIdAndTaskDefinitionKeyAndStatus(processInstanceId, taskDefinitionKey, 1)?.let{ lstSchedulerEntity ->
-                for (sched in lstSchedulerEntity){
+            schedulerRepo.findByProcessInstanceIdAndTaskDefinitionKeyAndStatus(processInstanceId, taskDefinitionKey, 1)?.let { lstSchedulerEntity ->
+                for (sched in lstSchedulerEntity) {
                     sched.status = 0
                     sched.cancelledOn = Timestamp.from(Instant.now())
                     schedulerRepo.save(sched)
@@ -161,13 +161,13 @@ class SchedulerImpl(
                     .withMinuteOfHour(59)
                     .withSecondOfMinute(59).toDate()
             KotlinLogging.logger { }.info("Searching for messages between $startDate and $endDate ..............")
-            schedulerRepo.findByScheduledDateBetweenAndStatus(Timestamp.from(startDate.toInstant()), Timestamp.from(endDate.toInstant()),1)?.let{ lstSchedulerEntity ->
-                for (sched in lstSchedulerEntity){
+            schedulerRepo.findByScheduledDateBetweenAndStatus(Timestamp.from(startDate.toInstant()), Timestamp.from(endDate.toInstant()), 1)?.let { lstSchedulerEntity ->
+                for (sched in lstSchedulerEntity) {
                     //Build the notification
-                    sched.userId?.let{ userId->
-                        sched.notificationId?.let{ notificationId->
-                            notifications.sendEmailServiceTask(userId, notificationId).let{ result->
-                                if (result){
+                    sched.userId?.let { userId ->
+                        sched.notificationId?.let { notificationId ->
+                            notifications.sendEmailServiceTask(userId, notificationId).let { result ->
+                                if (result) {
                                     sched.result = successMessage
                                     sched.status = 0
                                     sched.executedOn = Timestamp.from(Instant.now())
@@ -189,14 +189,14 @@ class SchedulerImpl(
         return false
     }
 
-    fun sendOverdueTaskNotifications(dateParam: Date, processDefinitionKeyPrefix:String): Boolean {
+    fun sendOverdueTaskNotifications(dateParam: Date, processDefinitionKeyPrefix: String): Boolean {
         KotlinLogging.logger { }.info("Sending out ms overdue task  notifications for $dateParam")
         var message = ""
         try {
             KotlinLogging.logger { }.info("Fetching ms overdue tasks for $dateParam")
-            bpmnCommonFunctions.getOverdueTasks(dateParam,processDefinitionKeyPrefix)?.let { tasks ->
-                for (task in tasks){
-                    bpmnCommonFunctions.getTaskVariables(task.id)?.let{ taskVariable->
+            bpmnCommonFunctions.getOverdueTasks(dateParam, processDefinitionKeyPrefix)?.let { tasks ->
+                for (task in tasks) {
+                    bpmnCommonFunctions.getTaskVariables(task.id)?.let { taskVariable ->
                         task.let { task ->
                             userRepo.findByIdOrNull(task.assignee.toLong())?.let { usersEntity ->
                                 message += "${task.name} assigned to ${usersEntity.firstName} ${usersEntity.lastName} due on ${task.dueDate}\n"
@@ -205,7 +205,7 @@ class SchedulerImpl(
                     }
                 }
                 KotlinLogging.logger { }.info("Completed fetching ms overdue tasks for $dateParam")
-                notifications.sendEmailServiceTask(msDirectorId.toLong(),0,overdueTasksNotificationId.toInt(),null,message)
+                notifications.sendEmailServiceTask(msDirectorId.toLong(), 0, overdueTasksNotificationId.toInt(), null, message)
             }
 
         } catch (e: Exception) {
@@ -213,33 +213,18 @@ class SchedulerImpl(
         }
         return false
     }
-
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updatePaidDemandNotesStatus(): Boolean {
         val map = commonDaoServices.serviceMapDetails(diAppId)
-        diDaoServices.findAllDemandNotesWithPaidStatus(map.activeStatus)?.let { paidDemandNotesList ->
-            if (paidDemandNotesList.isEmpty()){
-                return true
-            }
-            //If list is not empty
-            for (demandNote in paidDemandNotesList) {
-                //Send to single window
-                demandNote.id?.let { diDaoServices.sendDemandNotePayedStatusToKWIS(it) }
-
-                //Trigger the payment received BPM task
-                diBpmn.triggerDemandNotePaidBpmTask(demandNote)
-                //Update the demandNote status
-                demandNote.paymentStatus = map.initStatus
-                val demandNoteDetails = diDaoServices.upDateDemandNote(demandNote)
-                //Update CD Status
-                val cdDetails = demandNoteDetails.cdId?.let { diDaoServices.findCD(it) }
-                cdDetails?.cdStandard?.let { cdStd ->
-                    diDaoServices.updateCDStatus(cdStd, diDaoServices.paymentMadeStatus.toLong())
-                }
-            }
+        val paidDemandNotesList = diDaoServices.findAllDemandNotesWithSwPending(map.activeStatus)
+        if (paidDemandNotesList.isEmpty()) {
             return true
         }
-        return false
+        //If list is not empty
+        for (demandNote in paidDemandNotesList) {
+            diBpmn.triggerDemandNotePaidBpmTask(demandNote)
+        }
+        return true
     }
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -249,7 +234,7 @@ class SchedulerImpl(
         for (cp in cps) {
             try {
                 val firmType = qaDaoServices.manufactureType(
-                    cp.yearlyTurnover ?: throw NullValueNotAllowedException("Invalid Record")
+                        cp.yearlyTurnover ?: throw NullValueNotAllowedException("Invalid Record")
                 ).id
                 cp.firmCategory = firmType
                 companyRepo.save(cp)
@@ -276,7 +261,7 @@ class SchedulerImpl(
             for (ssfFound in ssfFoundList) {
                 try {
                     KotlinLogging.logger { }
-                        .info { "::::::::::::::::::::::::SAMPLES WITH RESULTS FOUND = ${samples++}::::::::::::::::::" }
+                            .info { "::::::::::::::::::::::::SAMPLES WITH RESULTS FOUND = ${samples++}::::::::::::::::::" }
                     val bsNumber = ssfFound.bsNumber ?: throw Exception("DATA NOT FOUND")
                     when {
                         limsServices.mainFunctionLims(bsNumber) == true -> {
@@ -290,44 +275,45 @@ class SchedulerImpl(
                             when {
                                 ssfFound.permitRefNumber != null -> {
                                     qaDaoServices.findPermitWithPermitRefNumberLatest(
-                                        ssfFound.permitRefNumber ?: throw Exception("PERMIT WITH REF NO, NOT FOUND")
+                                            ssfFound.permitRefNumber ?: throw Exception("PERMIT WITH REF NO, NOT FOUND")
                                     )
-                                        .let { pm ->
-                                            with(pm) {
-                                                userTaskId = applicationMapProperties.mapUserTaskNameQAO
-                                                permitStatus =
-                                                    applicationMapProperties.mapQaStatusPLABResultsCompletness
-                                                modifiedBy = "SYSTEM SCHEDULER"
-                                                modifiedOn = commonDaoServices.getTimestamp()
-                                            }
-                                            permitRepo.save(pm)
+                                            .let { pm ->
+                                                with(pm) {
+                                                    userTaskId = applicationMapProperties.mapUserTaskNameQAO
+                                                    permitStatus =
+                                                            applicationMapProperties.mapQaStatusPLABResultsCompletness
+                                                    modifiedBy = "SYSTEM SCHEDULER"
+                                                    modifiedOn = commonDaoServices.getTimestamp()
+                                                }
+                                                permitRepo.save(pm)
 
-                                            qaDaoServices.sendEmailWithLabResultsFound(
-                                                commonDaoServices.findUserByID(
-                                                    pm.qaoId ?: throw Exception("QAO ID, NOT FOUND")
-                                                ).email ?: throw Exception("EMAIL FOR QAO, NOT FOUND"),
-                                                pm.permitRefNumber ?: throw Exception("PERMIT WITH REF NO, NOT FOUND")
-                                            )
-                                        }
+                                                qaDaoServices.sendEmailWithLabResultsFound(
+                                                        commonDaoServices.findUserByID(
+                                                                pm.qaoId ?: throw Exception("QAO ID, NOT FOUND")
+                                                        ).email ?: throw Exception("EMAIL FOR QAO, NOT FOUND"),
+                                                        pm.permitRefNumber
+                                                                ?: throw Exception("PERMIT WITH REF NO, NOT FOUND")
+                                                )
+                                            }
                                 }
                                 ssfFound.cdItemId != null -> {
                                     diDaoServices.findItemWithItemID(
-                                        ssfFound.cdItemId ?: throw Exception("CD ITEM ID NOT FOUND")
+                                            ssfFound.cdItemId ?: throw Exception("CD ITEM ID NOT FOUND")
                                     )
-                                        .let { cdItem ->
-                                            diDaoServices.findCD(
-                                                cdItem.cdDocId?.id ?: throw Exception("CD ID NOT FOUND")
-                                            )
-                                                .let { updatedCDDetails ->
-                                                    updatedCDDetails.cdStandard?.let { cdStd ->
-                                                        diDaoServices.updateCDStatus(
-                                                            cdStd,
-                                                            applicationMapProperties.mapDIStatusTypeInspectionSampleResultsReceivedId
-                                                        )
-                                                    }
-                                                }
+                                            .let { cdItem ->
+                                                diDaoServices.findCD(
+                                                        cdItem.cdDocId?.id ?: throw Exception("CD ID NOT FOUND")
+                                                )
+                                                        .let { updatedCDDetails ->
+                                                            updatedCDDetails.cdStandard?.let { cdStd ->
+                                                                diDaoServices.updateCDStatus(
+                                                                        cdStd,
+                                                                        applicationMapProperties.mapDIStatusTypeInspectionSampleResultsReceivedId
+                                                                )
+                                                            }
+                                                        }
 
-                                        }
+                                            }
                                 }
                             }
 
@@ -345,4 +331,4 @@ class SchedulerImpl(
             }
         }
     }
- }
+}

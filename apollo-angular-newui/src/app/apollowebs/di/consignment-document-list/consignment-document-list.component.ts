@@ -202,7 +202,7 @@ export class ConsignmentDocumentListComponent implements OnInit {
     }
 
     private viewRecord(data: any) {
-        console.log(data)
+        // console.log(data)
         this.router.navigate([`/di`, data.uuid]);
     }
 

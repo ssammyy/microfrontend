@@ -77,7 +77,7 @@ class ConsignmentEnableUI {
 
             ui.complianceDisabled = (cd.compliantStatus == map.activeStatus || cd.compliantStatus == map.initStatus) || !ui.checklistFilled || ui.targetRejected
             cd.cdType?.let {
-                ui.cocAvailable = it.localCocStatus == map.activeStatus && cd.localCocOrCorStatus == map.activeStatus
+                ui.cocAvailable = it.localCocStatus == map.activeStatus && (cd.localCocOrCorStatus == map.activeStatus||cd.localCoi == map.activeStatus)
                 ui.corAvailable = it.localCorStatus == map.activeStatus && cd.localCocOrCorStatus == map.activeStatus
 
                 ui.corRequest = it.localCorStatus == map.activeStatus

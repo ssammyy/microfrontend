@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.model
 
 import java.io.Serializable
+import java.math.BigDecimal
 import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*
@@ -34,7 +35,7 @@ class CocItemsEntity : Serializable {
     @NotNull(message = "Required field")
     @Column(name = "SHIPMENT_LINE_QUANTITY", nullable = false, precision = 2)
     @Basic
-    var shipmentLineQuantity: Long = 0
+    var shipmentLineQuantity: BigDecimal = BigDecimal.ZERO
 
     @NotEmpty(message = "Required field")
     @Column(name = "SHIPMENT_LINE_UNITOF_MEASURE", nullable = false, length = 400)

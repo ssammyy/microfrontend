@@ -13,9 +13,9 @@
             <select id="documentType" name="compliantStatus" class="waiver-form-input-master"
                     formControlName="documentType">
                 <option value="" disabled selected>Select Certificate</option>
-                <option value="COC">COC</option>
-                <option value="COI">COI</option>
-                <option value="COR">Certificate Of Roadworthiness</option>
+                <option value="COC" [hidden]="corRequest">COC</option>
+                <option value="COI" [hidden]="corRequest">COI</option>
+                <option value="COR" [hidden]="cocRequest">Certificate Of Roadworthiness</option>
 
             </select>
             <label for="compliantRemarks" class="waiver-form-label">Please write, in detail, your feedback for this

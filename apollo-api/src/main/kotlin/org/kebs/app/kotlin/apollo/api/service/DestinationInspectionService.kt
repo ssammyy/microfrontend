@@ -29,6 +29,10 @@ import java.sql.Timestamp
 import java.time.Instant
 import java.util.*
 import org.kebs.app.kotlin.apollo.store.events.SearchInitialization
+import java.io.ByteArrayOutputStream
+import java.math.BigDecimal
+import java.time.LocalDateTime
+import java.time.ZoneId
 
 
 @Service("diService")
@@ -114,13 +118,6 @@ class DestinationInspectionService(
         return false
     }
 
-    //    fun createVersion(consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity): Boolean{
-//        var consignmentDetailsCopy=ConsignmentDocumentDetailsEntity()
-//        ModelMapper().map(consignmentDocumentDetailsEntity,consignmentDetailsCopy)
-//        consignmentDetailsCopy.id=null
-//
-//        return true
-//    }
     fun updateStatus(cdUuid: String, cdStatusTypeId: Long, supervisor: String, remarks: String): Boolean {
         try {
             val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
@@ -276,35 +273,75 @@ class DestinationInspectionService(
                             applicationMapProperties.mapDICdStatusTypeCORGeneratedAndSendID
                     )
                 }
+                corDetails.varField10 = "COR Generated"
                 daoServices.saveCorDetails(corDetails)
-                val itemId = corDetails.varField1?.toLongOrDefault(0L) ?: 0L
-                //Send Cor to manufacturer
-                reportsDaoService.generateLocalCoRReport(consignmentDocument, applicationMapProperties.mapReportLocalCorPath, itemId)?.let { file ->
-                    with(corDetails) {
-                        localCorFile = file.readBytes()
-                        localCorFileName = file.name
-                        varField10 = "COR Generated"
-                    }
-                    // Update COR
-                    consignmentDocument.compliantStatus = map.activeStatus
-                    consignmentDocument.localCocOrCorStatus = map.activeStatus
-                    daoServices.updateCdDetailsInDB(consignmentDocument, null)
-                    //Send email
-                    consignmentDocument.cdImporter?.let {
-                        daoServices.findCDImporterDetails(it)
-                    }?.let { importer ->
-                        importer.email?.let { daoServices.sendLocalCorReportEmail(it, file.path) }
-                    }
+                //Send Cor to importer
+                consignmentDocument.compliantStatus = map.activeStatus
+                consignmentDocument.localCocOrCorStatus = map.activeStatus
+                daoServices.updateCdDetailsInDB(consignmentDocument, null)
+                //Send email to importer
+                consignmentDocument.cdImporter?.let {
+                    daoServices.findCDImporterDetails(it)
+                }?.let { importer ->
+                    val corFile = makeCorFile(corDetails.id)
+                    importer.email?.let { daoServices.sendLocalCorReportEmail(it, corFile) }
                 }
 
             }
             KotlinLogging.logger { }.info("COR GENERATION SUCCESS")
             return true
         } catch (ex: Exception) {
-            KotlinLogging.logger { }.error("COR GENERATIOn FAILED", ex)
+            KotlinLogging.logger { }.error("COR GENERATION FAILED", ex)
+            throw ex
         }
+    }
 
-        return false
+    fun localCorReportMap(corId: Long): HashMap<String, Any> {
+        val map = hashMapOf<String, Any>()
+        val corDetails = daoServices.findCORById(corId)
+        val importerDetails = corDetails?.consignmentDocId?.cdImporter?.let { daoServices.findCDImporterDetails(it) }
+        //Importer Details
+        map["ImporterName"] = importerDetails?.name.orEmpty()
+        map["ImporterAddress"] = importerDetails?.physicalAddress.orEmpty()
+        map["ImporterPhone"] = importerDetails?.telephone.orEmpty()
+
+        //COR Details
+        map["CorSerialNo"] = ""
+        map["CorIssueDate"] = commonDaoServices.convertDateToString(commonDaoServices.getCurrentDate(), "mm/dd/yyyy")
+        map["CorExpiryDate"] = commonDaoServices.convertDateToString(commonDaoServices.addMonthsToCurrentDate(3), "mm/dd/yyyy")
+
+
+        //Vehicle Details
+        map["ChassisNumber"] = corDetails?.chasisNumber.orEmpty()
+        map["EngineNo"] = corDetails?.engineNumber.orEmpty()
+        map["EngineCap"] = corDetails?.engineCapacity.orEmpty()
+        map["Yom"] = corDetails?.yearOfManufacture.orEmpty()
+        map["Yor"] = corDetails?.yearOfFirstRegistration.orEmpty()
+        map["CustomsIeNo"] = ""
+        map["Cos"] = corDetails?.countryOfSupply.orEmpty()
+        map["BodyType"] = corDetails?.typeOfBody.orEmpty()
+        map["Fuel"] = corDetails?.fuelType.orEmpty()
+        map["TareWeight"] = corDetails?.tareWeight.toString()
+        map["VehicleType"] = corDetails?.typeOfVehicle.orEmpty()
+        map["ExporterName"] = corDetails?.exporterName.orEmpty()
+        map["ExporterAddress"] = corDetails?.exporterAddress1.orEmpty()
+        map["ExporterEmail"] = corDetails?.exporterEmail.orEmpty()
+        map["IdfNumber"] = ""
+        map["UcrNumber"] = corDetails?.ucrNumber.orEmpty()
+        map["Make"] = corDetails?.make.orEmpty()
+        map["Model"] = corDetails?.model.orEmpty()
+        map["InspectedMileage"] = corDetails?.inspectionMileage.orEmpty()
+        map["UnitsOfMileage"] = corDetails?.unitsOfMileage.orEmpty()
+        map["Color"] = corDetails?.bodyColor.orEmpty()
+        map["AxleNo"] = corDetails?.numberOfAxles.toString()
+        map["Transmision"] = ""
+        map["NoOfPassengers"] = corDetails?.numberOfPassangers.toString()
+        map["PrevRegNo"] = corDetails?.previousCountryOfRegistration.orEmpty()
+        map["PrevCountryOfReg"] = corDetails?.previousCountryOfRegistration.orEmpty()
+        // todo: ADD CHECKLIST COMMENT
+        map["InspectionDetails"] = "to ADD"
+
+        return map
     }
 
     fun rejectCorGeneration(cdUuid: String, blacklistId: Long, supervisor: String, remarks: String): Boolean {
@@ -556,14 +593,13 @@ class DestinationInspectionService(
 
             KotlinLogging.logger { }.info("Local CoC = ${localCoc.id}")
             // Send to SW
-            daoServices.sendLocalCoi(localCoc.id)
-            //Generate PDF File & send to manufacturer
-            reportsDaoService.generateLocalCoCReportWithDataSource(consignmentDocument, applicationMapProperties.mapReportLocalCocPath)?.let { file ->
-                consignmentDocument.cdImporter?.let {
-                    daoServices.findCDImporterDetails(it)
-                }?.let { importer ->
-                    importer.email?.let { daoServices.sendLocalCocReportEmail(it, file.path) }
-                }
+            daoServices.sendLocalCoc(localCoc.id)
+            //Generate PDF File & send to importer
+            consignmentDocument.cdImporter?.let {
+                daoServices.findCDImporterDetails(it)
+            }?.let { importer ->
+                val fileName = makeCocOrCoiFile(localCoc.id!!)
+                importer.email?.let { daoServices.sendLocalCocReportEmail(it, fileName) }
             }
             this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
             KotlinLogging.logger { }.info("GENERATE COC/COI: ${cdUuid}")
@@ -572,6 +608,34 @@ class DestinationInspectionService(
             KotlinLogging.logger { }.error("REJECTION UPDATE STATUS", ex)
         }
         return false
+    }
+
+    fun makeCocOrCoiFile(cocCoiId: Long): String {
+        val data = this.createLocalCocReportMap(cocCoiId)
+        data["imagePath"] = reportsDaoService.logoImageFile
+
+        val items = data["dataSources"] as HashMap<String, List<Any>>
+
+        val pdfStream: ByteArrayOutputStream
+        val cocType = data["CoCType"] as String
+        val fileName = "/tmp/LOCAL-${cocType.toUpperCase()}-".plus(data["CocNo"] as String).plus(".pdf")
+        if ("COI".equals(cocType, true)) {
+            pdfStream = reportsDaoService.extractReportMapDataSource(data, "classpath:reports/LocalCoiReport.jrxml", items)
+        } else {
+            pdfStream = reportsDaoService.extractReportMapDataSource(data, applicationMapProperties.mapReportLocalCocPath, items)
+        }
+        reportsDaoService.createFileFromBytes(pdfStream, fileName)
+        return fileName
+    }
+
+    fun makeCorFile(corId: Long): String {
+        val data = createLocalCorReportMap(corId)
+        data["imagePath"] = reportsDaoService.logoImageFile
+        val corNumber = data["corNumber"] as String
+        val fileName = "/tmp/LOCAL-COR-${corNumber}.pdf"
+        val pdfStream = reportsDaoService.extractReportEmptyDataSource(data, "classpath:reports/LocalCoRReport.jrxml")
+        reportsDaoService.createFileFromBytes(pdfStream, fileName)
+        return fileName
     }
 
 
@@ -591,6 +655,13 @@ class DestinationInspectionService(
             consignmentDocument.localCocOrCorStatus = map.activeStatus
             consignmentDocument.cocNumber = localCoi.cocNumber
             consignmentDocument.varField10 = "Local COI Generated"
+            // Send coi to importer
+            consignmentDocument.cdImporter?.let {
+                daoServices.findCDImporterDetails(it)
+            }?.let { importer ->
+                val fileName = makeCocOrCoiFile(localCoi.id)
+                importer.email?.let { daoServices.sendLocalCocReportEmail(it, fileName) }
+            }
             daoServices.updateCdDetailsInDB(consignmentDocument, null)
             // Send to SW
             daoServices.sendLocalCoi(localCoi.id)
@@ -800,7 +871,7 @@ class DestinationInspectionService(
                                             cocId = entity.id
                                             shipmentLineNumber = cocItems.shipmentLineNumber
                                             shipmentLineHscode = cocItems.shipmentLineHscode ?: "UNDEFINED"
-                                            shipmentLineQuantity = cocItems.shipmentLineQuantity.toLong()
+                                            shipmentLineQuantity = BigDecimal.valueOf(cocItems.shipmentLineQuantity)
                                             shipmentLineUnitofMeasure = cocItems.shipmentLineUnitofMeasure
                                                     ?: "UNDEFINED"
                                             shipmentLineDescription = cocItems.shipmentLineDescription ?: "UNDEFINED"
@@ -843,6 +914,7 @@ class DestinationInspectionService(
     }
 
 
+    @Transactional
     fun consignmentDocumentDetails(cdUuid: String, isSupervisor: Boolean, isInspectionOfficer: Boolean): ApiResponseModel {
         val response = ApiResponseModel()
         try {
@@ -851,15 +923,18 @@ class DestinationInspectionService(
             // When IO requests for details, they are are auto assigned
             if (isInspectionOfficer && cdDetails.assignedInspectionOfficer == null) {
                 this.selfAssign(cdDetails)
-                // Reload CD on self assign BPM process
-                cdDetails = daoServices.findCD(cdDetails.id!!)
+                // Reload CD on self assign BPM
+                response.responseCode = ResponseCodes.RELOAD_PAGE
+                response.message = "Consignment Assigned reload details"
+            } else {
+                // Load inspection details
+                response.data = loadCDDetails(cdDetails, map, isSupervisor, isInspectionOfficer)
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+                response.message = "Consignment Document"
             }
-            // Load inspection details
-            response.data = loadCDDetails(cdDetails, map, isSupervisor, isInspectionOfficer)
-            response.responseCode = ResponseCodes.SUCCESS_CODE
-            response.message = "Consignment Document"
+
         } catch (ex: Exception) {
-            KotlinLogging.logger { }.error("FAILE TO LOAD DOCUMENT", ex)
+            KotlinLogging.logger { }.error("FAILED TO LOAD DOCUMENT", ex)
             response.data = null
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
             response.message = "Record not found"
@@ -1098,11 +1173,9 @@ class DestinationInspectionService(
                 uiDetails.demandNotePaid = false
             }
             try {
-                cdDetails.ucrNumber?.let {
-                    daoServices.findLocalCorByUcrNumber(it)
+                daoServices.findCORByCdId(cdDetails)?.let {
                     uiDetails.corAvailable = true
                 }
-
             } catch (ignored: Exception) {
                 uiDetails.corAvailable = false
             }
@@ -1169,11 +1242,10 @@ class DestinationInspectionService(
     fun certificateOfRoadWorthinessDetails(cdUuid: String): ApiResponseModel {
         val response = ApiResponseModel()
         try {
-            val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             val cdDetails = daoServices.findCDWithUuid(cdUuid)
-            val corDetails = cdDetails.ucrNumber?.let { daoServices.findLocalCorByUcrNumber(it) }
+            val corDetails = daoServices.findCORByCdId(cdDetails)
             val dataMap = mutableMapOf<String, Any?>()
-            dataMap.put("configuration", map)
+           corDetails?.consignmentDocId=null
             dataMap.put("cor_details", corDetails)
             dataMap.put("cd_details", ConsignmentDocumentDao.fromEntity(cdDetails))
             response.data = dataMap
@@ -1250,6 +1322,7 @@ class DestinationInspectionService(
         return response
     }
 
+    @Transactional
     fun selfAssign(cdDetails: ConsignmentDocumentDetailsEntity, comment: String? = null) {
         KotlinLogging.logger { }.info("START AUTO ASSIGN")
         var addedComment = comment
@@ -1312,4 +1385,79 @@ class DestinationInspectionService(
         return response
     }
 
+    fun createLocalCorReportMap(corId: Long): HashMap<String, Any> {
+        val map = hashMapOf<String, Any>()
+        daoServices.findCORById(corId)?.let { corDetails ->
+
+            val importerDetails = corDetails.consignmentDocId?.cdImporter?.let { daoServices.findCDImporterDetails(it) }
+            //Importer Details
+            map["corNumber"] = corDetails.corNumber ?: ""
+            map["ImporterName"] = importerDetails?.name.orEmpty()
+            map["ImporterAddress"] = importerDetails?.physicalAddress.orEmpty()
+            map["ImporterPhone"] = importerDetails?.telephone.orEmpty()
+
+            //COR Details
+            map["CorSerialNo"] = ""
+            corDetails.createdOn?.let {
+                val issuedOn = LocalDateTime.ofInstant(it.toInstant(), ZoneId.systemDefault())
+                map["CorIssueDate"] = commonDaoServices.convertDateToString(issuedOn, "mm/dd/yyyy")
+                map["CorExpiryDate"] = commonDaoServices.convertDateToString(issuedOn.plusMonths(3), "mm/dd/yyyy")
+            }
+            //Vehicle Details
+            map["ChassisNumber"] = corDetails.chasisNumber.orEmpty()
+            map["EngineNo"] = corDetails.engineNumber.orEmpty()
+            map["EngineCap"] = corDetails.engineCapacity.orEmpty()
+            map["Yom"] = corDetails.yearOfManufacture.orEmpty()
+            map["Yor"] = corDetails.yearOfFirstRegistration.orEmpty()
+            map["CustomsIeNo"] = corDetails.customsIeNo.toString()
+            map["Cos"] = corDetails.countryOfSupply.orEmpty()
+            map["BodyType"] = corDetails.typeOfBody.orEmpty()
+            map["Fuel"] = corDetails.fuelType.orEmpty()
+            map["TareWeight"] = corDetails.tareWeight.toString()
+            map["VehicleType"] = corDetails.typeOfVehicle.orEmpty()
+            map["ExporterName"] = corDetails.exporterName.orEmpty()
+            map["ExporterAddress"] = corDetails.exporterAddress1.orEmpty()
+            map["ExporterEmail"] = corDetails.exporterEmail.orEmpty()
+            map["IdfNumber"] = corDetails.consignmentDocId?.idfNumber.toString()
+            map["UcrNumber"] = corDetails.ucrNumber.orEmpty()
+            map["Make"] = corDetails.make.orEmpty()
+            map["Model"] = corDetails.model.orEmpty()
+            map["InspectedMileage"] = corDetails.inspectionMileage.orEmpty()
+            map["UnitsOfMileage"] = corDetails.unitsOfMileage.orEmpty()
+            map["Color"] = corDetails.bodyColor.orEmpty()
+            map["AxleNo"] = corDetails.numberOfAxles.toString()
+            map["Transmision"] = corDetails.transmission.toString()
+            map["OfficerName"]=corDetails.inspectionOfficer
+            map["NoOfPassengers"] = corDetails.numberOfPassangers.toString()
+            map["PrevRegNo"] = corDetails.previousCountryOfRegistration.orEmpty()
+            map["PrevCountryOfReg"] = corDetails.previousCountryOfRegistration.orEmpty()
+            // todo: ADD CHECKLIST COMMENT
+//        val inspectionChecklist = findMotorVehicleInspectionByCdItem(cdItem)
+            map["InspectionDetails"] = corDetails.inspectionRemarks?:"NA"
+        } ?: ExpectedDataNotFound("COR DOES NOT EXIST")
+        return map
+    }
+
+
+    fun createLocalCocReportMap(cocId: Long): HashMap<String, Any> {
+        val map = hashMapOf<String, Any>()
+        daoServices.findCOCById(cocId)?.let { localCocEntity ->
+            map["CocNo"] = localCocEntity.cocNumber.orEmpty()
+            map["IssueDate"] = localCocEntity.cocIssueDate.toString()
+            map["EntryNo"] = ""
+            map["IdfNo"] = localCocEntity.idfNumber.toString()
+            map["ImporterName"] = localCocEntity.importerName.orEmpty()
+            map["ImporterAddress"] = localCocEntity.importerAddress1.orEmpty()
+            map["ImporterPin"] = localCocEntity.importerPin.orEmpty()
+            map["ClearingAgent"] = ""
+            map["PortOfEntry"] = localCocEntity.portOfDestination.orEmpty()
+            map["UcrNo"] = localCocEntity.ucrNumber.orEmpty()
+            map["Status"] = localCocEntity.status.toString()
+            map["Remarks"] = localCocEntity.cocRemarks.toString()
+            map["CoCType"] = localCocEntity.cocType.toString()
+            val cocItems = daoServices.findCocItemList(cocId)
+            map["dataSources"] = hashMapOf(Pair("itemDataSource", cocItems))
+        } ?: throw ExpectedDataNotFound("Invalid local CocNumber")
+        return map
+    }
 }

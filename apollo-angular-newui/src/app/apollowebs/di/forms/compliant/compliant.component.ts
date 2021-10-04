@@ -12,6 +12,8 @@ export class CompliantComponent implements OnInit {
 
     public form: FormGroup;
     message: any
+    corRequest: Boolean=false
+    cocRequest: Boolean=false
 
     constructor(public dialogRef: MatDialogRef<any>, private fb: FormBuilder, @Inject(MAT_DIALOG_DATA) public data: any,
                 private diService: DestinationInspectionService) {
@@ -28,6 +30,8 @@ export class CompliantComponent implements OnInit {
             }
             return null
         };
+        this.corRequest=this.data.corRequest
+        this.cocRequest=this.data.cocRequest
         this.form = this.fb.group({
             compliantStatus: ['', Validators.required],
             documentType: [''],
