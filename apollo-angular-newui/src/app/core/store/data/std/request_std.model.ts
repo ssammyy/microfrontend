@@ -185,7 +185,7 @@ export interface StdJustificationTask {
 export interface StdSPCSECTask {
     taskId: string;
     name: string;
-    taskData: string;
+    taskData: StdJustification;
 }
 
 export interface StdTCDecision {
