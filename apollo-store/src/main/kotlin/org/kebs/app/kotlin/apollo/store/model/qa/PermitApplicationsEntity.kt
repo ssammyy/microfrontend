@@ -246,9 +246,9 @@ class PermitApplicationsEntity : Serializable {
     @Basic
     var dateOfExpiry: Date? = null
 
-    @Column(name = "SUSPENSION_STATUS")
-    @Basic
-    var applicationSuspensionStatus: Int? = null
+//    @Column(name = "SUSPENSION_STATUS")
+//    @Basic
+//    var applicationSuspensionStatus: Int? = null
 
     @Column(name = "PRODUCT_NAME")
     @Basic
