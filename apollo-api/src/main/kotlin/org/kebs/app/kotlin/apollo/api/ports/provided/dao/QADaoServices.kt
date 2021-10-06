@@ -389,14 +389,17 @@ class QADaoServices(
     fun findAllLoadedPermitList(user: UsersEntity, permitNumber: String, attachedPlant: UsersEntity): List<PermitApplicationsEntity> {
         val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
         val attachedPlantId = attachedPlant.plantId ?: throw ExpectedDataNotFound("No PLANT ID Found")
+        KotlinLogging.logger { }.info { userId }
+        KotlinLogging.logger { }.info { attachedPlantId }
+        KotlinLogging.logger { }.info { permitNumber }
         //  permitRepo.migratePermitsToNewUser(userId, permitNumber, attachedPlantId)
-        permitRepo.findByPermitRefNumber(permitNumber)?.let {
-
-            if (it.isNullOrEmpty()) {
-                throw ExpectedDataNotFound("This Permit is not assigned to you")
-
-
-            } else {
+//        permitRepo.findByPermitRefNumber(permitNumber)?.let {
+//
+//            if (it.isNullOrEmpty()) {
+//                throw ExpectedDataNotFound("This Permit is not assigned to you")
+//
+//
+//            } else {
                 try {
                     val response = permitRepo.migratePermitsToNewUser(userId, permitNumber, attachedPlantId)
                     KotlinLogging.logger { }.info("The response is $response")
@@ -412,12 +415,12 @@ class QADaoServices(
                 }
                     ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
             }
-        }
+      //  }
         //  return it
 
-            ?: throw ExpectedDataNotFound("This Permit is not assigned to you")
+//            ?: throw ExpectedDataNotFound("This Permit is not assigned to you")
 
-    }
+    //}
 
 
 //    fun listAllLoadedPermitList(
