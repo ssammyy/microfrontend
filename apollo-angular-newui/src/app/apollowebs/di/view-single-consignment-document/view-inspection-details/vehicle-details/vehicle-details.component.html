@@ -67,17 +67,17 @@
                     <mat-header-cell *matHeaderCellDef>Action/Download</mat-header-cell>
                     <mat-cell mat-cell *matCellDef="let element">
                         <div class="button-row">
-                            <button class="btn-sm btn-primary" (click)="customAction(element,'downloadReport')">Download
-                                Report
+                            <button class="btn-sm btn-primary" (click)="customAction(element,'downloadReport')"><i class="fa fa-download"></i>
+                                Ministry Report
                             </button>
                             <button class="btn-sm btn-primary" (click)="customAction(element,'downloadUnfilled')">
-                                Download Unfilled
+                                <i class="fa fa-download"></i> Ministry Unfilled
                             </button>
                             <button class="btn-sm btn-primary" (click)="customAction(element,'downloadUnMvir')">
-                                Download MVIR
+                                <i class="fa fa-download"></i> MVIR
                             </button>
                             <button class="btn-sm btn-primary" *ngIf="element.hasMinistryInspection"
-                                    (click)="customAction(element,'downloadChecklist')">Download Ministry Checklist
+                                    (click)="customAction(element,'downloadChecklist')"><i class="fa fa-download"></i> Ministry Checklist
                             </button>
                             <button class="btn-sm btn-primary" *ngIf="!element.ministryStation"
                                     (click)="customAction(element,'requestMinistryChecklist')">Request Ministry

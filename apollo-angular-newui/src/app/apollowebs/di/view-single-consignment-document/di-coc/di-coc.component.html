@@ -7,7 +7,8 @@
                         <div class="card-icon">
                             <i class="material-icons">C</i>
                         </div>
-                        <h4 class="card-title">Certificate of Compliance
+                        <h4 class="card-title" *ngIf="cocDetails">
+                            {{cocDetails.certificate_details.cocType=='COC' ? 'Certificate of Compliance(COC)': 'Certificate Of Inspection(COI)'}}
                             <button class="btn btn-sm btn-default pull-right mr-7"
                                     (click)="goBack()"> <i class="fa fa-arrow-left"></i> Back
 
@@ -105,6 +106,10 @@
                                         <ng-template ngbNavContent>
                                             <b class="text-primary">Certificate Of Compliance Details</b>
                                             <ul class="w-list-unstyled">
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Certificate Type</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.cocType}}</div>
+                                                </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">COC NUMBER</div>
                                                     <div class="list-text-accordion">{{cocDetails.certificate_details.cocNumber}}</div>

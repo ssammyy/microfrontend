@@ -1239,23 +1239,22 @@ class DITest {
                     KotlinLogging.logger { }.info { " ::::::::::::: Success :::::::::::::::" }
                 }
             }
-    }
 
-    @Test
-    @Ignore
-    fun testCorEmailAttachment() {
-        val consignmentDocumentEntity: ConsignmentDocumentDetailsEntity = destinationInspectionDaoServices.findCD(863)
-        reportsDaoService.generateLocalCoRReport(consignmentDocumentEntity, applicationMapProperties.mapReportLocalCorPath,0L)?.let { file ->
-            consignmentDocumentEntity.cdImporter?.let { destinationInspectionDaoServices.findCDImporterDetails(it)
-            }?.let { importer ->
-                importer.email?.let { destinationInspectionDaoServices.sendLocalCorReportEmail(it, file.path) }
-            }
-        }
-    }
-
-    @Test
-    @Ignore
-    fun testKebsEmailConfig() {
-        notifications.sendEmail("anthonykihagi@gmail.com","Test subject","Test Message")
-    }
+//    @Test
+//    @Ignore
+//    fun testCorEmailAttachment() {
+//        val consignmentDocumentEntity: ConsignmentDocumentDetailsEntity = destinationInspectionDaoServices.findCD(863)
+//        reportsDaoService.generateLocalCoRReport(consignmentDocumentEntity, applicationMapProperties.mapReportLocalCorPath,0L)?.let { file ->
+//            consignmentDocumentEntity.cdImporter?.let { destinationInspectionDaoServices.findCDImporterDetails(it)
+//            }?.let { importer ->
+//                importer.email?.let { destinationInspectionDaoServices.sendLocalCorReportEmail(it, file.path) }
+//            }
+//        }
+//    }
+//
+//    @Test
+//    @Ignore
+//    fun testKebsEmailConfig() {
+//        notifications.sendEmail("anthonykihagi@gmail.com","Test subject","Test Message")
+//    }
 }

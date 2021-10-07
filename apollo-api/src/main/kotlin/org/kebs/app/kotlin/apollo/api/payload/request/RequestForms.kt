@@ -273,7 +273,7 @@ class CheckListForm {
 }
 
 class SsfForm {
-    var permitNumber: Long? = null
+    var permitNumber: String? = null
     var description: String? = null
     var ssfSubmissionDate: String? = null
     var brandName: String? = null
@@ -281,7 +281,7 @@ class SsfForm {
     fun ssf(): QaSampleSubmissionEntity {
         val df = QaSampleSubmissionEntity()
         df.description = description
-        df.permitId = permitNumber
+        df.permitRefNumber = permitNumber
         df.brandName = brandName
         df.ssfSubmissionDate = Date(java.util.Date().time)
         df.productDescription = productDescription

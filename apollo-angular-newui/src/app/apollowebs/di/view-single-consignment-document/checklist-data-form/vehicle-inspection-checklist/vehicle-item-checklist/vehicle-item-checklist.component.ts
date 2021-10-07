@@ -26,7 +26,7 @@ export class VehicleItemChecklistComponent implements OnInit {
         this.stations=this.data.stations
         let formData = this.data.checklist
         this.form = this.fb.group({
-            stationId: [0],
+            stationId: [formData? formData.stationId: ''],
             makeVehicle: [formData ? formData.makeVehicle : '', [Validators.required, Validators.maxLength(256)]],
             engineNoCapacity: [formData ? formData.engineNoCapacity : '', Validators.maxLength(256)],
             manufacturerDate: [formData ? formData.manufacturerDate : '', Validators.maxLength(256)],
@@ -39,7 +39,7 @@ export class VehicleItemChecklistComponent implements OnInit {
             overallAppearance: [formData ? formData.overallAppearance : '', Validators.maxLength(256)],
             compliant: [formData ? formData.compliant : '', Validators.required],
             category: [formData ? formData.category : '',],
-            submitToMinistry: [formData ? formData.sampled : '', Validators.required],
+            submitToMinistry: [formData ? formData.submitToMinistry : '', Validators.required],
             remarks: [formData ? formData.remarks : '', Validators.required]
         })
     }

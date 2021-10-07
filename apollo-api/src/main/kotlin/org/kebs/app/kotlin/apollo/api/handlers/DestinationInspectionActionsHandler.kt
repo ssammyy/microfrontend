@@ -11,7 +11,6 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDa
 import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentAuditService
 import org.kebs.app.kotlin.apollo.api.service.DestinationInspectionService
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
-import org.kebs.app.kotlin.apollo.store.model.di.DeclarationDetailsEntity
 import org.springframework.stereotype.Service
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
@@ -176,7 +175,7 @@ class DestinationInspectionActionsHandler(
                             //Send Coi message To Single Window
                             val localCoi = updatedCDDetails.ucrNumber?.let { daoServices.findCOC(it) }
                             if (localCoi != null) {
-                                daoServices.localCoiItems(updatedCDDetails, localCoi, loggedInUser, map)
+                                daoServices.localCocCoiItems(updatedCDDetails, localCoi, loggedInUser, map)
                                 daoServices.sendLocalCoi(localCoi.id)
                                 updatedCDDetails.cdStandard?.let { cdStd ->
                                     daoServices.updateCDStatus(cdStd, applicationMapProperties.mapDICdStatusTypeCOIGeneratedAndSendID)

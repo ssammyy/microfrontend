@@ -886,7 +886,6 @@ class DestinationInspectionService(
                                             status = 1
                                             createdBy = loggedInUser.userName
                                             createdOn = Timestamp.from(Instant.now())
-                                            cocNumber = entity.cocNumber
                                             shipmentLineBrandName = "UNDEFINED"
 
 
@@ -988,11 +987,6 @@ class DestinationInspectionService(
             dataMap.put("cd_item", CdItemDetailsDao.fromEntity(cdItemDetails, true))
             // Check Certificate of Roadworthiness(CoR)
             cdItemDetails.cdDocId?.let { itemType ->
-                if (itemType.equals(corCdType)) {
-                    itemType.docTypeId?.let {
-                        dataMap.put("doc_type", daoServices.findCORById(it))
-                    }
-                }
                 dataMap.put("cd_details", ConsignmentDocumentDao.fromEntity(itemType))
                 // Standard
                 itemType.cdStandard?.let {
@@ -1442,10 +1436,14 @@ class DestinationInspectionService(
     fun createLocalCocReportMap(cocId: Long): HashMap<String, Any> {
         val map = hashMapOf<String, Any>()
         daoServices.findCOCById(cocId)?.let { localCocEntity ->
-            map["CocNo"] = localCocEntity.cocNumber.orEmpty()
+            if("COI".equals(localCocEntity.cocType)){
+                map["CocNo"] = localCocEntity.coiNumber.orEmpty()
+            }else {
+                map["CocNo"] = localCocEntity.cocNumber.orEmpty()
+            }
             map["IssueDate"] = localCocEntity.cocIssueDate.toString()
             map["EntryNo"] = ""
-            map["IdfNo"] = localCocEntity.idfNumber.toString()
+            map["IdfNo"] = localCocEntity.idfNumber.orEmpty()
             map["ImporterName"] = localCocEntity.importerName.orEmpty()
             map["ImporterAddress"] = localCocEntity.importerAddress1.orEmpty()
             map["ImporterPin"] = localCocEntity.importerPin.orEmpty()

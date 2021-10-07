@@ -37,6 +37,11 @@ class ChecklistHandler(
         private val applicationMapProperties: ApplicationMapProperties
 ) {
 
+    fun loadLabResult(req: ServerRequest): ServerResponse {
+        req.pathVariable("cdItemID").let {
+            return ServerResponse.ok().body(checlistService.getItemSampleAndLabResults(it))
+        }
+    }
 
     fun uploadMinistryCheckList(req: ServerRequest): ServerResponse {
         var response = ApiResponseModel()
@@ -209,7 +214,7 @@ class ChecklistHandler(
                 response = this.checlistService.saveSsfDetails(ssfDetails, item.id!!, map, loggedInUser)
             }
         } catch (ex: Exception) {
-            KotlinLogging.logger {  }.error("Failed to submit SSF", ex)
+            KotlinLogging.logger { }.error("Failed to submit SSF", ex)
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
             response.message = "Failed to save SSF details"
         }
@@ -228,7 +233,7 @@ class ChecklistHandler(
                 response = this.checlistService.updateSsfResult(form, item, map, loggedInUser)
             }
         } catch (ex: Exception) {
-            KotlinLogging.logger {  }.error("Failed to update BS number",ex)
+            KotlinLogging.logger { }.error("Failed to update BS number", ex)
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
             response.message = "BS number already in use, please enter another BS number"
         }

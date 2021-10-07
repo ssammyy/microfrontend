@@ -569,7 +569,6 @@ interface IQaSampleLabTestResultsRepository : HazelcastRepository<QaSampleLabTes
 
 @Repository
 interface IQaSampleLabTestParametersRepository : HazelcastRepository<QaSampleLabTestParametersEntity, Long> {
-//    fun findByOrderId(orderId: String): QaSampleLabTestParametersEntity?
     fun findByOrderId(orderId: String): List<QaSampleLabTestParametersEntity>?
 }
 

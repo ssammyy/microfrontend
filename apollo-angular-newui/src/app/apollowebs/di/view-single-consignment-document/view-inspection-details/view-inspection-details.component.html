@@ -166,7 +166,7 @@
                                         <a ngbNavLink>Sampled Items</a>
                                         <ng-template ngbNavContent>
                                             <b class="text-primary">Sampled item details and items</b>
-                                            <app-checklists [dataSet]="sampledItems" (reloadSample)="reloadChecklist()"></app-checklists>
+                                            <app-checklists [cdUuid]="documentId" [dataSet]="sampledItems" (reloadSample)="reloadChecklist()"></app-checklists>
                                         </ng-template>
                                     </li>
                                 </ul>

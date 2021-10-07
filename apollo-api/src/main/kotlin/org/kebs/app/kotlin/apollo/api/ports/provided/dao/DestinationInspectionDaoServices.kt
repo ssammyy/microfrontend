@@ -396,7 +396,6 @@ class DestinationInspectionDaoServices(
                             rfcDate = commonDaoServices.getTimestamp()
                             shipmentQuantityDelivered = "UNKNOWN"
                             cocIssueDate = commonDaoServices.getTimestamp()
-                            coiIssueDate = commonDaoServices.getTimestamp()
                             clean = "Y"
 
                             cocRemarks = "UNKNOWN"
@@ -439,7 +438,6 @@ class DestinationInspectionDaoServices(
                             shipmentSealNumbers = "UNKNOWN"
                             shipmentContainerNumber = "UNKNOWN"
                             shipmentGrossWeight = "UNKNOWN"
-//                        shipmentGrossWeightUnit = "UNKOWN"
                             route = routValue
                             consignmentDocId = consignmentDocumentDetailsEntity
                             cocType = "COC"
@@ -451,7 +449,7 @@ class DestinationInspectionDaoServices(
 
                         localCoc = cocRepo.save(localCoc)
                         KotlinLogging.logger { }.info { "localCoc = ${localCoc.id}" }
-                        localCocItems(consignmentDocumentDetailsEntity, localCoc, user, map)
+                        localCocCoiItems(consignmentDocumentDetailsEntity, localCoc, user, map)
                         sendLocalCoc(localCoc.id)
                     } catch (e: Exception) {
                         KotlinLogging.logger { }.debug("Threw error from forward express callback")
@@ -495,7 +493,6 @@ class DestinationInspectionDaoServices(
                         ucrNumber = consignmentDocumentDetailsEntity.ucrNumber
                         rfcDate = commonDaoServices.getTimestamp()
                         shipmentQuantityDelivered = "UNKNOWN"
-                        cocIssueDate = commonDaoServices.getTimestamp()
                         coiIssueDate = commonDaoServices.getTimestamp()
                         clean = "Y"
                         cocRemarks = "UNKNOWN"
@@ -546,39 +543,11 @@ class DestinationInspectionDaoServices(
                         createdBy = commonDaoServices.concatenateName(user)
                         createdOn = commonDaoServices.getTimestamp()
                     }
-                    return cocRepo.save(coc)
+                    val localCoi = cocRepo.save(coc)
+                    localCocCoiItems(consignmentDocumentDetailsEntity, localCoi, user, map)
+                    return localCoi
                 }
-
-
     }
-
-
-//    fun generateLocalCoc(cdLocalCocEntity: CdLocalCocEntity, consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity, user: UsersEntity, map: ServiceMapsEntity): CdLocalCocEntity {
-//        var localCoc = cdLocalCocEntity
-//        with(localCoc) {
-//            cocNo = "KEBS/COC/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
-//            cocStatus = findCdStatusValue(approvedStatus.toLong()).typeName
-//            cocType = "LOCAL COC 0"
-//            issueDate = commonDaoServices.getCurrentDate()
-//            entryNo = "ENTRY NUMBER"
-//            idfNo = consignmentDocumentDetailsEntity.idfNumber
-//            val cdImporter = consignmentDocumentDetailsEntity.cdImporter?.let { findCDImporterDetails(it) }
-//            importerName = cdImporter?.name
-//            importerAddress = cdImporter?.physicalAddress
-//            importerPin = cdImporter?.pin
-//            clearAgent = "CLEARING AGENT"
-//            val cdTransport = consignmentDocumentDetailsEntity.cdTransport?.let { findCdTransportDetails(it) }
-//            portEntry = cdTransport?.portOfArrivalDesc
-//            remarks = null
-//            ucrNumber = consignmentDocumentDetailsEntity.ucrNumber
-//            status = map.activeStatus
-//            createdBy = commonDaoServices.getUserName(user)
-//            createdOn = commonDaoServices.getTimestamp()
-//        }
-//        localCoc = iLocalCocRepo.save(localCoc)
-//        KotlinLogging.logger { }.info { "Generated Local coc WITH id = ${localCoc.id}" }
-//        return localCoc
-//    }
 
 
     fun generateLocalCocItem(
@@ -592,6 +561,7 @@ class DestinationInspectionDaoServices(
         var localCocItems = CocItemsEntity()
         with(localCocItems) {
             cocId = localCocEntity.id
+            itemId = cdItemDetails.id
             shipmentLineNumber = cdItemDetails.itemNo!!
             shipmentLineHscode = cdItemDetails.itemHsCode
             shipmentLineQuantity = cdItemDetails.quantity ?: BigDecimal.ZERO
@@ -606,8 +576,6 @@ class DestinationInspectionDaoServices(
             ownerPin = ownerPinValues
             ownerName = ownerNameValues
             status = map.activeStatus
-            cocNumber = localCocEntity.cocNumber
-            coiNumber = localCocEntity.coiNumber
             shipmentLineBrandName = "UNKNOWN"
             createdBy = commonDaoServices.getUserName(user)
             createdOn = commonDaoServices.getTimestamp()
@@ -618,7 +586,7 @@ class DestinationInspectionDaoServices(
     }
 
 
-    fun localCocItems(
+    fun localCocCoiItems(
             updatedCDDetails: ConsignmentDocumentDetailsEntity,
             localCocEntity: CocsEntity,
             user: UsersEntity,
@@ -628,33 +596,13 @@ class DestinationInspectionDaoServices(
                 .forEach { cdItemDetails ->
                     if (cdItemDetails.checklistStatus == map.activeStatus) { // If checklist was filled, only add compliant items only
                         if (cdItemDetails.approveStatus == map.activeStatus) {
-                            generateLocalCocItem(cdItemDetails, localCocEntity, user, map, "NA", "NA")
+                            generateLocalCocItem(cdItemDetails, localCocEntity, user, map, cdItemDetails.ownerPin
+                                    ?: "NA", cdItemDetails.ownerName ?: "NA")
                         }
                     } else {
-                        generateLocalCocItem(cdItemDetails, localCocEntity, user, map, "NA", "NA")
+                        generateLocalCocItem(cdItemDetails, localCocEntity, user, map, cdItemDetails.ownerPin
+                                ?: "NA", cdItemDetails.ownerName ?: "NA")
                     }
-                }
-
-
-    }
-
-
-    fun localCoiItems(
-            updatedCDDetails: ConsignmentDocumentDetailsEntity,
-            localCocEntity: CocsEntity,
-            user: UsersEntity,
-            map: ServiceMapsEntity
-    ) {
-
-        findCDItemsListWithCDID(updatedCDDetails)
-                .forEach { cdItemDetails ->
-                    val ownerPinValues =
-                            cdItemDetails.ownerPin
-                                    ?: throw Exception("Add OWNER PIN for ITEM number = ${cdItemDetails.itemNo}")
-                    val ownerNameValues = cdItemDetails.ownerName
-                            ?: throw Exception("Add OWNER NAME for ITEM number = ${cdItemDetails.itemNo}")
-                    generateLocalCocItem(cdItemDetails, localCocEntity, user, map, ownerPinValues, ownerNameValues)
-
                 }
 
 
@@ -717,68 +665,6 @@ class DestinationInspectionDaoServices(
             }
 
         }
-    }
-
-    //TODO: Figure out where to get the null details
-    fun generateLocalCor(
-            cdLocalCorEntity: CdLocalCorEntity, cdEntity: ConsignmentDocumentDetailsEntity, s: ServiceMapsEntity,
-            user: UsersEntity,
-    ): CdLocalCorEntity {
-        var localCor = cdLocalCorEntity
-        //Get CD Item by cd doc id
-        iCdInspectionGeneralRepo.findFirstByCdDetails(cdEntity)?.let { cdItemDetailsList ->
-            this.cdMotorVehicleInspectionChecklistRepo.findByInspectionGeneral(cdItemDetailsList)?.let { cdMvInspectionEntity ->
-                with(localCor) {
-                    corSerialNo =
-                            "KEBS/COR-NBI/${generateRandomText(5, s.secureRandom, s.messageDigestAlgorithm, false)}"
-                    corIssueDate = commonDaoServices.getCurrentDate()
-                    corExpiryDate = commonDaoServices.addMonthsToCurrentDate(3)
-
-                    val cdImporter = cdEntity.cdImporter?.let { findCDImporterDetails(it) }
-                    importerName = cdImporter?.name
-                    importerAddress = cdImporter?.physicalAddress
-                    importerPhone = cdImporter?.telephone
-
-                    val cdExporter = cdEntity.cdExporter?.let { findCdExporterDetails(it) }
-                    exporterName = cdExporter?.name
-                    exporterAddress = cdExporter?.physicalAddress
-                    exporterEmail = cdExporter?.email
-                    chassisNo = cdMvInspectionEntity.chassisNo
-                    engineNoModel = cdMvInspectionEntity.engineNoCapacity
-                    engineCapacity = cdMvInspectionEntity.engineNoCapacity
-                    yearOfManufacture = cdMvInspectionEntity.manufactureDate?.toString()
-                    yearOfFirstRegistration = cdMvInspectionEntity.registrationDate?.toString()
-                    customsIeNo = null
-                    val cdHeaderOne = cdEntity.cdHeaderOne?.let { findCdHeaderOneDetails(it) }
-                    countryOfSupply = cdHeaderOne?.countryOfSupply
-                    bodyType = null
-                    fuel = null
-                    tareWeight = null
-                    typeOfVehicle = null
-                    cdEntity.ucrNumber?.let {
-                        idfNo = findIdf(it)?.baseDocRefNo
-                    }
-                    ucrNumber = cdEntity.ucrNumber
-                    make = cdMvInspectionEntity.makeVehicle
-                    model = null
-                    inspectionMileage = cdMvInspectionEntity.odemetreReading
-                    unitsOfMileage = null
-                    color = cdMvInspectionEntity.colour
-                    axleNo = null
-                    transmission = cdMvInspectionEntity.transmissionAutoManual
-                    noOfPassengers = null
-                    prevRegNo = null
-                    prevCountryOfReg = null
-                    inspectionDetails = cdMvInspectionEntity.remarks
-                    status = s.activeStatus
-                    createdBy = commonDaoServices.getUserName(user)
-                    createdOn = commonDaoServices.getTimestamp()
-                }
-                localCor = iLocalCorRepo.save(localCor)
-                KotlinLogging.logger { }.info { "Generated Local CoR WITH id = ${localCor.id}" }
-            }
-        }
-        return localCor
     }
 
     fun generateCor(
@@ -2106,10 +1992,6 @@ class DestinationInspectionDaoServices(
 
     fun findCOCById(cocId: Long): CocsEntity? {
         return cocRepo.findByIdOrNull(cocId)
-    }
-
-    fun findCorById(corId: Long): CorsBakEntity? {
-        return corsBakRepository.findByIdOrNull(corId)
     }
 
     fun findCocByUcrNumber(ucrNumber: String): CocsEntity? {

@@ -84,8 +84,9 @@ import {ViewTasksComponent} from "./apollowebs/di/view-tasks/view-tasks.componen
 import {DiCorComponent} from "./apollowebs/di/view-single-consignment-document/di-cor/di-cor.component";
 import {DiCocComponent} from "./apollowebs/di/view-single-consignment-document/di-coc/di-coc.component";
 import {ViewInspectionDetailsComponent} from "./apollowebs/di/view-single-consignment-document/view-inspection-details/view-inspection-details.component";
-import {ChecklistDataFormComponent} from "./apollowebs/di/view-single-consignment-document/item-details-list-view/checklist-data-form/checklist-data-form.component";
+import {ChecklistDataFormComponent} from "./apollowebs/di/view-single-consignment-document/checklist-data-form/checklist-data-form.component";
 import {InspectionDashboardComponent} from "./apollowebs/di/inspection-dashboard/inspection-dashboard.component";
+import {LabResultsComponent} from "./apollowebs/di/view-single-consignment-document/item-details-list-view/lab-results/lab-results.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -463,6 +464,10 @@ const routes: Routes = [
             {
                 path: 'item/:cdUuid/:id',
                 component: ItemDetailsComponent
+            },
+            {
+                path: 'item/lab-results/:id/:page/:cdUuid',
+                component: LabResultsComponent
             },
             {
                 path: ':id',

@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {DestinationInspectionService} from "../../../../../core/store/data/di/destination-inspection.service";
+import {ConsignmentStatusComponent} from "../../../../../core/shared/customs/consignment-status/consignment-status.component";
 
 @Component({
   selector: 'app-agrochem-details',
@@ -59,7 +60,8 @@ export class AgrochemDetailsComponent implements OnInit {
       },
       sampleUpdated: {
         title: 'Sample Updated',
-        type: 'string'
+        type: 'custom',
+        renderComponent: ConsignmentStatusComponent
       }
     },
     pager: {

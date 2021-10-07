@@ -4,6 +4,8 @@ import {MatDialog} from "@angular/material/dialog";
 import {SsfDetailsFormComponent} from "../ssf-details-form/ssf-details-form.component";
 import {ScfDetailsFormComponent} from "../scf-details-form/scf-details-form.component";
 import {ComplianceUpdateFormComponent} from "../compliance-update-form/compliance-update-form.component";
+import {LabResultsComponent} from "../../item-details-list-view/lab-results/lab-results.component";
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'app-checklists',
@@ -13,9 +15,10 @@ import {ComplianceUpdateFormComponent} from "../compliance-update-form/complianc
 export class ChecklistsComponent implements OnInit {
     public displayedColumns = ['itemNo', 'itemHsCode', 'quantity', 'unitOfQuantity', 'countryOfOrgin', 'itemDescription', 'inspectionNotificationStatus', 'actions']
     @Input() dataSet: any = [];
+    @Input() cdUuid: any
     @Output() reloadSample = new EventEmitter<Boolean>()
 
-    constructor(private diService: DestinationInspectionService, private dialog: MatDialog) {
+    constructor(private diService: DestinationInspectionService,private router: Router, private dialog: MatDialog) {
     }
 
     ngOnInit(): void {
@@ -69,10 +72,17 @@ export class ChecklistsComponent implements OnInit {
             )
     }
 
+    viewLabResults(data: any) {
+      this.router.navigate(["/di/item/lab-results/",data.uuid,'inspection',this.cdUuid])
+    }
+
     customAction(data: any, action: string) {
         switch (action) {
             case 'sampleCollection':
                 this.openSampleCollection(data)
+                break
+            case 'labResults':
+                this.viewLabResults(data)
                 break
             case "sampleSubmission":
                 this.openSampleSubmission(data)

@@ -18,7 +18,8 @@ import { CurrencyFormatterPipe } from './currency-formatter.pipe';
         FilterPipe,
         PreventDoubleClickDirective,
         CurrencyFormatterComponent,
-        CurrencyFormatterPipe
+        CurrencyFormatterPipe,
+        ConsignmentStatusComponent
     ],
     imports: [
         CommonModule

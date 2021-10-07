@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {Form, FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {MatDialog} from "@angular/material/dialog";
-import {DestinationInspectionService} from "../../../../../core/store/data/di/destination-inspection.service";
-import swal from "sweetalert2";
+
 import {ActivatedRoute, Router} from "@angular/router";
+import {DestinationInspectionService} from "../../../../core/store/data/di/destination-inspection.service";
 
 @Component({
     selector: 'app-checklist-data-form',

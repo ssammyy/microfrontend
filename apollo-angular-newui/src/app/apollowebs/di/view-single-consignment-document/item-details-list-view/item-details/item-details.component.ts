@@ -4,7 +4,7 @@ import {DestinationInspectionService} from "../../../../../core/store/data/di/de
 import swal from "sweetalert2";
 import {MatDialog} from "@angular/material/dialog";
 import {MinistryInspectionRequestComponent} from "../ministry-inspection-request/ministry-inspection-request.component";
-import {ChecklistDataFormComponent} from "../checklist-data-form/checklist-data-form.component";
+import {ChecklistDataFormComponent} from "../../checklist-data-form/checklist-data-form.component";
 import {SsfDetailsFormComponent} from "../../view-inspection-details/ssf-details-form/ssf-details-form.component";
 import {ApproveRejectItemComponent} from "../approve-reject-item/approve-reject-item.component";
 
@@ -55,44 +55,8 @@ export class ItemDetailsComponent implements OnInit {
             )
     }
 
-    addSsfDetails() {
-        this.dialog.open(SsfDetailsFormComponent, {
-            data: {
-                uuid: this.itemUuid,
-                reject: false,
-                configs: this.statuses
-            }
-        }).afterClosed()
-            .subscribe(
-                res => {
-                    if (res) {
-                        // Reload
-                    }
-                }
-            )
-    }
+    loadLabResults() {
 
-    submitMinistryInspection() {
-        this.dialog.open(MinistryInspectionRequestComponent, {
-            data: {
-                uuid: this.itemUuid,
-                reinspection: false,
-                configs: this.checkListConfiguration
-            }
-        }).afterClosed()
-            .subscribe(
-                res => {
-                }
-            )
-    }
-
-    resubmitMinistryInspection() {
-        this.dialog.open(MinistryInspectionRequestComponent, {
-            data: {
-                uuid: this.itemUuid,
-                reinspection: true,
-            }
-        })
     }
 
     loadItemDetails() {

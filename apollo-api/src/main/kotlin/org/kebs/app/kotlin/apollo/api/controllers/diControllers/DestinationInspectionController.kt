@@ -442,7 +442,7 @@ class DestinationInspectionController(
                         cdDetails.sendCoiStatus == map.activeStatus -> {
                             val localCoi = updatedCDDetails.ucrNumber?.let { daoServices.findCOC(it) }
                             if (localCoi != null) {
-                                daoServices.localCoiItems(updatedCDDetails, localCoi, loggedInUser, map)
+                                daoServices.localCocCoiItems(updatedCDDetails, localCoi, loggedInUser, map)
                                 daoServices.sendLocalCoi(localCoi.id)
                                 updatedCDDetails.cdStandard?.let { cdStd ->
                                     daoServices.updateCDStatus(

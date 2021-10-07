@@ -17,27 +17,13 @@
 	<parameter name="dutyStation" class="java.lang.String"/>
 	<parameter name="importerName" class="java.lang.String"/>
 	<parameter name="importerAddress" class="java.lang.String"/>
-	<field name="mvirNum" class="java.math.BigDecimal">
-		<property name="com.jaspersoft.studio.field.label" value="mvirNum"/>
-	</field>
-	<field name="inspectionRegion" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="inspectionRegion"/>
-	</field>
-	<field name="genDate" class="java.sql.Date">
-		<property name="com.jaspersoft.studio.field.label" value="genDate"/>
-	</field>
-	<field name="officerName" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="officerName"/>
-	</field>
-	<field name="dutyStation" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="dutyStation"/>
-	</field>
-	<field name="importerName" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="importerName"/>
-	</field>
-	<field name="importerAddress" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="importerAddress"/>
-	</field>
+	<parameter name="makeVehicle" class="java.lang.String"/>
+	<parameter name="engineNumber" class="java.lang.String"/>
+	<parameter name="chassisNo" class="java.lang.String"/>
+	<parameter name="yearOfManufacture" class="java.lang.String"/>
+	<parameter name="remarks" class="java.lang.String"/>
+	<parameter name="idfNumber" class="java.lang.String"/>
+	<parameter name="customsIeNo" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>

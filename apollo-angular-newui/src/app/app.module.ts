@@ -158,20 +158,20 @@ import { ViewTasksComponent } from './apollowebs/di/view-tasks/view-tasks.compon
 import {MatButtonModule} from "@angular/material/button";
 import {MatTableModule} from "@angular/material/table";
 import { DemandNoteListComponent } from './apollowebs/di/demand-note-list/demand-note-list.component';
-import { ChecklistDataFormComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/checklist-data-form/checklist-data-form.component';
-import { AgrochemInspectionChecklistComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/checklist-data-form/agrochem-inspection-checklist/agrochem-inspection-checklist.component';
-import { EngineeringInspectionChecklistComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/checklist-data-form/engineering-inspection-checklist/engineering-inspection-checklist.component';
-import { OtherInspectionChecklistComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/checklist-data-form/other-inspection-checklist/other-inspection-checklist.component';
-import { VehicleInspectionChecklistComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/checklist-data-form/vehicle-inspection-checklist/vehicle-inspection-checklist.component';
+import { ChecklistDataFormComponent } from './apollowebs/di/view-single-consignment-document/checklist-data-form/checklist-data-form.component';
+import { AgrochemInspectionChecklistComponent } from './apollowebs/di/view-single-consignment-document/checklist-data-form/agrochem-inspection-checklist/agrochem-inspection-checklist.component';
+import { EngineeringInspectionChecklistComponent } from './apollowebs/di/view-single-consignment-document/checklist-data-form/engineering-inspection-checklist/engineering-inspection-checklist.component';
+import { OtherInspectionChecklistComponent } from './apollowebs/di/view-single-consignment-document/checklist-data-form/other-inspection-checklist/other-inspection-checklist.component';
+import { VehicleInspectionChecklistComponent } from './apollowebs/di/view-single-consignment-document/checklist-data-form/vehicle-inspection-checklist/vehicle-inspection-checklist.component';
 import { SsfDetailsFormComponent } from './apollowebs/di/view-single-consignment-document/view-inspection-details/ssf-details-form/ssf-details-form.component';
 import { ApproveRejectItemComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/approve-reject-item/approve-reject-item.component';
 import { ViewDemandNoteComponent } from './apollowebs/di/demand-note-list/view-demand-note/view-demand-note.component';
-import { ItemSelectionComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/checklist-data-form/item-selection/item-selection.component';
+import { ItemSelectionComponent } from './apollowebs/di/view-single-consignment-document/checklist-data-form/item-selection/item-selection.component';
 import { ViewInspectionDetailsComponent } from './apollowebs/di/view-single-consignment-document/view-inspection-details/view-inspection-details.component';
-import {ItemChecklistComponent} from "./apollowebs/di/view-single-consignment-document/item-details-list-view/checklist-data-form/agrochem-inspection-checklist/item-checklist/item-checklist.component";
-import { EngineeringItemChecklistComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/checklist-data-form/engineering-inspection-checklist/engineering-item-checklist/engineering-item-checklist.component';
-import { OtherItemChecklistComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/checklist-data-form/other-inspection-checklist/other-item-checklist/other-item-checklist.component';
-import { VehicleItemChecklistComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/checklist-data-form/vehicle-inspection-checklist/vehicle-item-checklist/vehicle-item-checklist.component';
+import {ItemChecklistComponent} from "./apollowebs/di/view-single-consignment-document/checklist-data-form/agrochem-inspection-checklist/item-checklist/item-checklist.component";
+import { EngineeringItemChecklistComponent } from './apollowebs/di/view-single-consignment-document/checklist-data-form/engineering-inspection-checklist/engineering-item-checklist/engineering-item-checklist.component';
+import { OtherItemChecklistComponent } from './apollowebs/di/view-single-consignment-document/checklist-data-form/other-inspection-checklist/other-item-checklist/other-item-checklist.component';
+import { VehicleItemChecklistComponent } from './apollowebs/di/view-single-consignment-document/checklist-data-form/vehicle-inspection-checklist/vehicle-item-checklist/vehicle-item-checklist.component';
 import { EngineeringDetailsComponent } from './apollowebs/di/view-single-consignment-document/view-inspection-details/engineering-details/engineering-details.component';
 import { AgrochemDetailsComponent } from './apollowebs/di/view-single-consignment-document/view-inspection-details/agrochem-details/agrochem-details.component';
 import { OtherDetailsComponent } from './apollowebs/di/view-single-consignment-document/view-inspection-details/other-details/other-details.component';
@@ -183,6 +183,7 @@ import { MatMultilineTabDirective } from './apollowebs/di/mat-multiline-tab.dire
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { InspectionDashboardComponent } from './apollowebs/di/inspection-dashboard/inspection-dashboard.component';
+import { LabResultsComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/lab-results/lab-results.component';
 
 
 @NgModule({
@@ -386,6 +387,7 @@ import { InspectionDashboardComponent } from './apollowebs/di/inspection-dashboa
         ComplianceUpdateFormComponent,
         MatMultilineTabDirective,
         InspectionDashboardComponent,
+        LabResultsComponent,
     ],
     providers: [
         MatNativeDateModule,

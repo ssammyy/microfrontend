@@ -197,8 +197,7 @@ class ReportsDaoService(
 
         val jasperPrint = JasperFillManager.fillReport(jasperReport, map, dataSource)
 
-        val targetFile = File(Files.createTempDir(), fileName)
-        targetFile.deleteOnExit()
+        val targetFile = File(fileName)
 
         JasperExportManager.exportReportToPdfFile(jasperPrint, targetFile.absolutePath)
 
@@ -214,8 +213,7 @@ class ReportsDaoService(
 
         val jasperPrint = JasperFillManager.fillReport(jasperReport, map, JREmptyDataSource())
 
-        val targetFile = File(Files.createTempDir(), fileName)
-        targetFile.deleteOnExit()
+        val targetFile = File(fileName)
 
         JasperExportManager.exportReportToPdfFile(jasperPrint, targetFile.absolutePath)
 

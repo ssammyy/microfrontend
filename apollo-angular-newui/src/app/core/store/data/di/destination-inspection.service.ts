@@ -11,6 +11,7 @@ import swal from "sweetalert2";
 })
 export class DestinationInspectionService {
 
+
     constructor(private client: HttpClient) {
     }
     loadPersonalDashboard(): Observable<any>{
@@ -185,7 +186,9 @@ export class DestinationInspectionService {
         }
         return filename
     }
-
+    loadLabResults(itemUuid: any): Observable<any>{
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/lab-results/" + itemUuid))
+    }
     deleteAttachmentDocument(attachmentId: any): Observable<any> {
         return this.client.delete(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/attachments/" + attachmentId))
     }

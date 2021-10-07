@@ -21,6 +21,8 @@ import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleCollectionEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmissionEntity
 import org.kebs.app.kotlin.apollo.store.repo.di.*
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleCollectionRepository
+import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleLabTestParametersRepository
+import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleLabTestResultsRepository
 import org.springframework.core.io.ResourceLoader
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -58,6 +60,7 @@ class ChecklistService(
         private val bpmn: DestinationInspectionBpmn,
         private val reportsDaoService: ReportsDaoService,
         private val notifications: Notifications,
+        private val sampleResultsRepository: IQaSampleLabTestParametersRepository,
         private val ministryStationRepo: IMinistryStationEntityRepository,
         private val ministryStationRepository: IMinistryStationEntityRepository,
         private val qaISampleCollectRepository: IQaSampleCollectionRepository,
@@ -270,7 +273,7 @@ class ChecklistService(
                         checklistItem.sampleUpdated = map.inactiveStatus
                     }
                     checklistItem.itemId = detail
-                    checklistItem.description = detail.hsDescription
+                    checklistItem.description = detail.itemDescription ?: detail.hsDescription
                     checklistItem.serialNumber = itm.serialNumber
                     checklistItem.compliant = itm.compliant
                     checklistItem.inspection = vehicleChecklist
@@ -525,18 +528,25 @@ class ChecklistService(
         val optional = this.motorVehicleItemChecklistRepository.findById(mvInspectionId)
         if (optional.isPresent) {
             val mvInspection = optional.get()
-            data.put("imagePath", "")
+            data.put("imagePath", reportsDaoService.logoImageFile)
+            data.put("customsIeNo", "${mvInspection.inspection?.inspectionGeneral?.customsEntryNumber}")
             data.put("mvirNum", mvInspection.serialNumber.toString())
             data.put("inspectionRegion", mvInspection.ministryStationId?.stationName.toString())
+            data["makeVehicle"] = mvInspection.makeVehicle ?: ""
+            data["engineNumber"] = mvInspection.engineNoCapacity ?: ""
+            data["chassisNo"] = mvInspection.chassisNo ?: ""
+            data["yearOfManufacture"] = "${mvInspection.manufactureDate?.year}"
+            data["remarks"] = mvInspection.remarks ?: ""
             data.put("genDate", SimpleDateFormat("dd/MM/yyyy HH:mm").format(mvInspection.createdOn))
-            data.put("officerName", mvInspection.assignedUser?.firstName.toString())
+            data.put("officerName", "${mvInspection.assignedUser?.firstName} ${mvInspection.assignedUser?.lastName}".trim())
             data.put("dutyStation", mvInspection.ministryStationId?.stationName.toString())
-            mvInspection.itemId?.cdDocId?.let {
-                it.cdImporter?.let { importerId ->
+            mvInspection.itemId?.cdDocId?.let { cdDetaisl ->
+                cdDetaisl.cdImporter?.let { importerId ->
                     val cdImporterDetails = daoServices.findCDImporterDetails(importerId)
-                    data.put("emailAddress", cdImporterDetails.email.toString())
-                    data.put("name", cdImporterDetails.name.toString())
-                    data.put("importerAddress", cdImporterDetails.email.toString())
+                    data["emailAddress"] = cdImporterDetails.email.toString()
+                    data["idfNumber"] = cdDetaisl.idfNumber.toString()
+                    data["name"] = cdImporterDetails.name.toString()
+                    data["importerAddress"] = cdImporterDetails.email.toString()
                     data.put("importerName", cdImporterDetails.name.toString())
                 }
             }
@@ -567,7 +577,7 @@ class ChecklistService(
             val messageBody = "Please Find The attached motor vehicle details submitted for inspection  \n" +
                     "\n "
             // Deliver email
-            notifications.sendEmail(importerEmail!!, subject, messageBody, fileName)
+            notifications.sendEmail(importerEmail, subject, messageBody, fileName)
             return true
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Error sending email", ex)
@@ -636,6 +646,36 @@ class ChecklistService(
             }
             map
         } ?: throw ExpectedDataNotFound("SSF details not found")
+    }
+
+    fun getItemSampleAndLabResults(itemUuid: String): ApiResponseModel {
+        val response = ApiResponseModel()
+        this.iCdItemsRepo.findByUuid(itemUuid)?.let {
+            val responseData = hashMapOf<String, Any?>()
+            responseData["cd_uuid"] = it.cdDocId?.uuid
+            responseData["item_details"] = CdItemDetailsDao.fromEntity(it)
+            // Sample Collection
+            this.qaISampleCollectRepository.findByItemId(it.id!!)?.let { sampleCollected ->
+                responseData["scf_details"] = sampleCollected
+            }
+            // Sample Submitted
+            this.daoServices.findSampleSubmittedItemID(it.id!!)?.let { sampleSubmitted ->
+                responseData["ssf_details"] = sampleSubmitted
+                // Lab Results
+                sampleSubmitted.bsNumber?.let { bsNo ->
+                    responseData["lab_results"] = sampleResultsRepository.findByOrderId(bsNo)
+                }
+            }
+            response.data = responseData
+            response.message = "Success"
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+            response
+        } ?: run {
+            response.message = "Invalid Item Reference Number"
+            response.responseCode = ResponseCodes.NOT_FOUND
+            response
+        }
+        return response
     }
 
     fun getScfDetails(itemId: Long): HashMap<String, Any> {
@@ -728,7 +768,7 @@ class ChecklistService(
                 iCdItemsRepo.save(item)
                 sample.bsNumber = form.bsNumber
                 sample.ssfNo = "SSF" + SimpleDateFormat("yyyyMMdd").format(java.util.Date()) + generateRandomText(4)
-                sample.permitId = null
+                sample.labResultsStatus = map.inactiveStatus
                 sample.ssfSubmissionDate = Date(Date().time)
                 form.submissionDate?.let {
                     try {
@@ -867,11 +907,11 @@ class ChecklistService(
         val map = hashMapOf<String, Any>()
         map["inspection"] = inspectionGeneral?.inspection.toString()
         map["cfs"] = inspectionGeneral?.cfs.toString()
-        map["csName"]=""
-        map["csDate"]=""
+        map["csName"] = ""
+        map["csDate"] = ""
 
-        map["oicDate"]=""
-        map["oicName"]=""
+        map["oicDate"] = ""
+        map["oicName"] = ""
         map["inspectionDate"] = inspectionGeneral?.inspectionDate.toString()
         map["importersName"] = inspectionGeneral?.importersName.toString()
         map["clearingAgent"] = inspectionGeneral?.clearingAgent.toString()
@@ -883,7 +923,7 @@ class ChecklistService(
             map["ucrNumber"] = it.ucrNumber ?: ""
             map["receiptNumber"] = "NA"
             map["feePaid"] = "NO"
-            map["createdOn"]=it.createdOn.toString()
+            map["createdOn"] = it.createdOn.toString()
             daoServices.findDemandNoteWithPaymentStatus(it.id!!, 1)?.let {
                 map["receiptNumber"] = it.demandNoteNumber.toString()
                 map["feePaid"] = "YES"
