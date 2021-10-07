@@ -2397,7 +2397,7 @@ class QADaoServices(
         return commonDaoServices.findAllUsersProfileWithDesignationAndStatus(designation, map.activeStatus)
     }
 
-    fun findAllPcmOfficers(): List<UsersEntity> {
+    fun findAllPcmOfficers(): MutableList<UsersEntity?>? {
         val map = commonDaoServices.serviceMapDetails(appId)
         val pcmUserProfiles = this.findAllUsersByDesignation(map, applicationMapProperties.mapQADesignationIDForPCMId)
 
