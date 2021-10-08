@@ -177,13 +177,6 @@
 				<text><![CDATA[Make/Type of Vehicle]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="137" y="174" width="404" height="20" uuid="29b8122b-75b1-41c8-9ba3-210fce371569"/>
-				<textElement verticalAlignment="Bottom">
-					<font size="10"/>
-				</textElement>
-				<text><![CDATA[__________________________________________________________________________________________________]]></text>
-			</staticText>
-			<staticText>
 				<reportElement style="TextStatic" x="5" y="273" width="540" height="27" uuid="bef99d51-faa4-4377-b8aa-a8f2c73f0dce">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -225,13 +218,6 @@
 					<font size="10" isBold="false"/>
 				</textElement>
 				<text><![CDATA[PRO No.]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="79" y="310" width="143" height="20" uuid="519ad724-f07a-4c3e-b15d-afe613cea38d"/>
-				<textElement verticalAlignment="Bottom">
-					<font size="10"/>
-				</textElement>
-				<text><![CDATA[__________________________________________]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="298" y="309" width="92" height="20" uuid="62bb5372-dbd7-4716-aab6-eff851cb0145"/>
@@ -316,20 +302,6 @@
 				<text><![CDATA[Engine No.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="136" y="199" width="404" height="20" uuid="62c02303-6ab3-499a-b6d4-92cce641f2b2"/>
-				<textElement verticalAlignment="Bottom">
-					<font size="10"/>
-				</textElement>
-				<text><![CDATA[_____________________________________________________________________________________________________________]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="136" y="222" width="408" height="20" uuid="191e48c8-8ac2-4545-a6fc-06506d2883ac"/>
-				<textElement verticalAlignment="Bottom">
-					<font size="10"/>
-				</textElement>
-				<text><![CDATA[_____________________________________________________________________________________________________________]]></text>
-			</staticText>
-			<staticText>
 				<reportElement style="TextField" x="7" y="223" width="111" height="20" uuid="2046efba-22cf-4e0b-835b-30259d0978ac">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -360,20 +332,6 @@
 				<text><![CDATA[Year of Manufacture]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="136" y="247" width="404" height="20" uuid="fec0d6b4-de80-4309-8f58-5ff05d1d5f22"/>
-				<textElement verticalAlignment="Bottom">
-					<font size="10"/>
-				</textElement>
-				<text><![CDATA[_____________________________________________________________________________________________________________]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="440" y="310" width="105" height="20" uuid="91493db1-38c5-4152-9b26-3f867a90e185"/>
-				<textElement verticalAlignment="Bottom">
-					<font size="10"/>
-				</textElement>
-				<text><![CDATA[_________________________________________________________________________________________________________________________________________]]></text>
-			</staticText>
-			<staticText>
 				<reportElement x="390" y="309" width="50" height="20" uuid="0c8293ca-b044-425c-915b-e757e99079bf"/>
 				<textElement>
 					<font size="10" isBold="false"/>
@@ -398,27 +356,70 @@
 				</textElement>
 				<text><![CDATA[Remarks]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="1" y="483" width="543" height="20" uuid="b2329107-af7d-4eb9-abc6-2744bfab897f"/>
-				<textElement verticalAlignment="Bottom">
+			<textField>
+				<reportElement style="TextField" x="137" y="174" width="421" height="20" uuid="2bf6a4d4-a616-403f-bbab-bd9995b69a58">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
 					<font size="10"/>
 				</textElement>
-				<text><![CDATA[______________________________________________________________________________________________________________________________________________________________________________________________________________]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="1" y="461" width="543" height="20" uuid="f10f4e43-c90d-48e1-bc22-564f1fa5b2c3"/>
-				<textElement verticalAlignment="Bottom">
+				<textFieldExpression><![CDATA[$P{makeVehicle}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="TextField" x="137" y="200" width="421" height="20" uuid="7a5a2710-314f-4320-8724-3c0a31581545">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
 					<font size="10"/>
 				</textElement>
-				<text><![CDATA[______________________________________________________________________________________________________________________________________________________________________________________________________________]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="1" y="505" width="543" height="20" uuid="fbddc308-6cb4-4306-8a92-94266433a9e5"/>
-				<textElement verticalAlignment="Bottom">
+				<textFieldExpression><![CDATA[$P{engineNumber}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="TextField" x="137" y="223" width="421" height="20" uuid="3efe0095-ef19-4069-9b61-69f7d3a0bad2">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
 					<font size="10"/>
 				</textElement>
-				<text><![CDATA[______________________________________________________________________________________________________________________________________________________________________________________________________________]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA[$P{chassisNo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="TextField" x="137" y="247" width="421" height="20" uuid="44da750f-f244-4c3e-99dc-a8e66dd8262a">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{yearOfManufacture}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="TextField" x="70" y="309" width="152" height="20" uuid="87046429-a993-4a8b-8fa1-f94e2089f2f7">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{customsIeNo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="TextField" x="429" y="308" width="121" height="20" uuid="b3c10c78-9557-4028-9330-579d92aa6532">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{idfNumber}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="TextField" x="0" y="455" width="558" height="96" uuid="2642267a-9a5c-4aa7-b32a-590ddf276742">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{remarks}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 </jasperReport>

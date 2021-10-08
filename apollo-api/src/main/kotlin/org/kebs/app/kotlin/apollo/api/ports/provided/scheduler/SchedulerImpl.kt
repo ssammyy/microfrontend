@@ -213,6 +213,7 @@ class SchedulerImpl(
         }
         return false
     }
+
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updatePaidDemandNotesStatus(): Boolean {
         val map = commonDaoServices.serviceMapDetails(diAppId)
@@ -220,6 +221,7 @@ class SchedulerImpl(
         if (paidDemandNotesList.isEmpty()) {
             return true
         }
+        KotlinLogging.logger { }.info("Found ${paidDemandNotesList.size} demand notes with paid status")
         //If list is not empty
         for (demandNote in paidDemandNotesList) {
             diBpmn.triggerDemandNotePaidBpmTask(demandNote)

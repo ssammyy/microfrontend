@@ -820,13 +820,6 @@ class DestinationInspectionDaoServices(
                 ?: throw Exception("Status Details with id = ${status}, does not Exist")
     }
 
-    fun findDIFeeList(status: Int): List<DestinationInspectionFeeEntity>? {
-        iDIFeeDetailsRepo.findByStatus(status)
-                ?.let { diFeeDetails ->
-                    return diFeeDetails
-                }
-                ?: throw Exception("DI fee Details with status = ${status}, do not Exist")
-    }
 
     fun findCocItemList(cocId: Long): List<CocItemsEntity> {
         iCocItemRepository.findByCocId(cocId)
@@ -842,14 +835,6 @@ class DestinationInspectionDaoServices(
                     return demandNote
                 }
                 ?: throw Exception("Demand Note Details with CD ID = ${cdId}, do not Exist")
-    }
-
-    fun findCoiItemList(coiId: Long): List<CocItemsEntity> {
-        iCocItemRepository.findByCocId(coiId)
-                ?.let { cocItemDetails ->
-                    return cocItemDetails
-                }
-                ?: throw Exception("COI ITEM(s) Details with COI ID = ${coiId}, do not Exist")
     }
 
     fun findIdfItemList(idf: IDFDetailsEntity): List<IDFItemDetailsEntity>? {
@@ -3052,32 +3037,6 @@ class DestinationInspectionDaoServices(
         map["CoCType"] = localCocEntity.cocType.toString()
 
         return map
-    }
-
-
-    //Update Inspection Notification status & date after KRA submission
-//    fun updateInspectionNotificationSent(cdItemId: Long) {
-//        iCdItemsRepo.findByIdOrNull(cdItemId)?.let { cdItem ->
-//            with(cdItem) {
-//                inspectionNotificationDate = commonDaoServices.getCurrentDate()
-//                inspectionNotificationStatus = commonDaoServices.activeStatus.toInt()
-//            }
-//            iCdItemsRepo.save(cdItem)
-//        }
-//    }
-
-    //Update Inspection schedule received from KRA
-//    fun updateInspectionScheduleReceived(cdItem: CdItemDetailsEntity, receivedInspectionDate: Date) {
-//        with(cdItem) {
-//            inspectionDate = receivedInspectionDate
-//            inspectionDateSetStatus = commonDaoServices.activeStatus.toInt()
-//        }
-//        iCdItemsRepo.save(cdItem)
-//    }
-
-    //Find all demand notes by payment status
-    fun findAllDemandNotesWithPaidStatus(paymentStatus: Int): List<CdDemandNoteEntity>? {
-        return iDemandNoteRepo.findAllByPaymentStatus(paymentStatus)
     }
 
     fun findAllDemandNotesWithSwPending(paymentStatus: Int): List<CdDemandNoteEntity> {

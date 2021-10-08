@@ -45,7 +45,7 @@ class Scheduler(
         }
     }
 
-    @Scheduled(fixedDelay = 60_000)//60 Minutes for now
+    @Scheduled(fixedDelay = 60_000)//60 Seconds for now
     fun updateDemandNotes() {
         KotlinLogging.logger {  }.info("UPDATING DEMAND NOTES on SW")
         schedulerImpl.updatePaidDemandNotesStatus()
