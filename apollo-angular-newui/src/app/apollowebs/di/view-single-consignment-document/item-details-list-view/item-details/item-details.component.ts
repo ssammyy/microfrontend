@@ -38,22 +38,7 @@ export class ItemDetailsComponent implements OnInit {
     goBack() {
         this.router.navigate(["/di", this.cdUuid])
     }
-    rejectItem() {
-        this.dialog.open(ApproveRejectItemComponent, {
-            data: {
-                uuid: this.itemUuid,
-                reinspection: false,
-                configs: this.checkListConfiguration
-            }
-        }).afterClosed()
-            .subscribe(
-                res => {
-                    if (res) {
-                        this.loadItemDetails()
-                    }
-                }
-            )
-    }
+
 
     loadLabResults() {
 

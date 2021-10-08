@@ -12,6 +12,7 @@ export class SendCoiComponent implements OnInit {
 
     public form: FormGroup;
     message: any;
+    loading = false
 
     constructor(public dialogRef: MatDialogRef<any>, private fb: FormBuilder, @Inject(MAT_DIALOG_DATA) public data: any,
                 private diService: DestinationInspectionService) {
@@ -25,14 +26,19 @@ export class SendCoiComponent implements OnInit {
     }
 
     saveRecord() {
+        this.loading = true
         this.diService.sendCertificateOfInspection(this.form.value, this.data.uuid)
             .subscribe(
                 res => {
+                    this.loading = false
                     if (res.responseCode === "00") {
                         this.dialogRef.close(true)
                     } else {
                         this.message = res.message
                     }
+                },
+                error => {
+                    this.loading = false
                 }
             )
     }

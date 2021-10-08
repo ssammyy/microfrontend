@@ -51,8 +51,12 @@
     <div class="row no_margin master-list-new-btn" *ngIf="demandDetails">
         <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
         <div *ngIf="demandDetails.deleteSubmitEnabled">
-        <button class="btn btn-warning" mat-button (click)="deleteDemandNote()">Delete</button>
-        <button class="btn btn-primary" mat-button (click)="submitDemandNote()">Submit</button>
+        <button [disabled]="deleteLoading || saveLoading" class="btn btn-warning" mat-button (click)="deleteDemandNote()">Delete
+            <mat-spinner [diameter]="20" color="warn" *ngIf="deleteLoading"></mat-spinner>
+        </button>
+        <button [disabled]="deleteLoading||saveLoading" class="btn btn-primary" mat-button (click)="submitDemandNote()">Submit
+            <mat-spinner [diameter]="20" color="primary" *ngIf="saveLoading"></mat-spinner>
+        </button>
         </div>
     </div>
 </mat-dialog-actions>

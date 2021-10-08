@@ -21,7 +21,8 @@
     <div class="row no_margin master-list-new-btn">
         <button class="next-btn btn-warning new-btn" (click)="closeDialog()">CLOSE
         </button>
-        <button [disabled]="(form.invalid || !selectedFile || selectedFile.size==0)"  class="next-btn btn-gen new-btn" (click)="saveRecord()">SAVE
+        <button [disabled]="(form.invalid || !selectedFile || selectedFile.size==0) ||loading"  class="next-btn btn-gen new-btn" (click)="saveRecord()">SAVE
+            <mat-spinner [diameter]="20" color="warn" *ngIf="loading"></mat-spinner>
         </button>
     </div>
 </mat-dialog-actions>

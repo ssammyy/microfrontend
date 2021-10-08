@@ -1,7 +1,8 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {DestinationInspectionService} from "../../../../../core/store/data/di/destination-inspection.service";
-import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
+import {ApproveRejectItemComponent} from "../approve-reject-item/approve-reject-item.component";
 
 @Component({
     selector: 'app-lab-results',
@@ -16,7 +17,7 @@ export class LabResultsComponent implements OnInit {
     itemUuid: any;
     cdUuid: any
 
-    constructor(private activatedRoute: ActivatedRoute, private router: Router, private diService: DestinationInspectionService) {
+    constructor(private activatedRoute: ActivatedRoute, private dialog: MatDialog, private router: Router, private diService: DestinationInspectionService) {
     }
 
     ngOnInit(): void {
@@ -28,6 +29,22 @@ export class LabResultsComponent implements OnInit {
                 this.loadLabResults()
             }
         )
+    }
+
+    rejectItem() {
+        this.dialog.open(ApproveRejectItemComponent, {
+            data: {
+                uuid: this.itemUuid,
+                reinspection: false,
+            }
+        }).afterClosed()
+            .subscribe(
+                res => {
+                    if(res) {
+                        this.loadLabResults()
+                    }
+                }
+            )
     }
 
     resultDetails(data: any) {

@@ -13,6 +13,7 @@ export class ApproveRejectConsignmentComponent implements OnInit {
     public form: FormGroup
     message: String;
     complianceStatus: number
+    loading: boolean = false
 
     constructor(public dialogRef: MatDialogRef<any>, private fb: FormBuilder,
                 @Inject(MAT_DIALOG_DATA) public data: any,
@@ -21,10 +22,10 @@ export class ApproveRejectConsignmentComponent implements OnInit {
 
     ngOnInit(): void {
         console.log(this.data)
-        this.complianceStatus=this.data.complianceStatus
+        this.complianceStatus = this.data.complianceStatus
         this.statuses = []
-        this.data.configurations.CDStatusTypes.forEach(item=>{
-            if(this.complianceStatus===1){
+        this.data.configurations.CDStatusTypes.forEach(item => {
+            if (this.complianceStatus === 1) {
                 switch (item.category) {
                     case 'QUERY':
                         break
@@ -35,8 +36,8 @@ export class ApproveRejectConsignmentComponent implements OnInit {
                     default:
                         this.statuses.push(item)
                 }
-            }else {
-                if(item.category!=="APPROVE"){
+            } else {
+                if (item.category !== "APPROVE") {
                     this.statuses.push(item)
                 }
             }
@@ -48,9 +49,11 @@ export class ApproveRejectConsignmentComponent implements OnInit {
     }
 
     saveRecord() {
+        this.loading = true
         this.diService.approveReject(this.form.value, this.data.uuid)
             .subscribe(
                 res => {
+                    this.loading = false
                     if (res.responseCode === "00") {
                         this.dialogRef.close(true)
                     } else {
@@ -58,6 +61,7 @@ export class ApproveRejectConsignmentComponent implements OnInit {
                     }
                 },
                 error => {
+                    this.loading = false
                     console.log(error)
                 }
             )

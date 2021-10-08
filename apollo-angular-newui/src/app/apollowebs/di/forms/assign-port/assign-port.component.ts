@@ -13,6 +13,7 @@ export class AssignPortComponent implements OnInit {
     public ports: any = [];
     public clusters: any[] = []
     public freightStations: any[] = []
+    loading: boolean = false
     message: string;
     sections: any
 
@@ -21,7 +22,7 @@ export class AssignPortComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.sections={}
+        this.sections = {}
         this.loadPorts()
         this.form = this.fb.group({
             portOfArrival: ['', Validators.required],
@@ -30,27 +31,29 @@ export class AssignPortComponent implements OnInit {
             assignPortRemarks: ['', Validators.required]
         })
     }
-    loadSubSections(event: any){
-        let portId=event.target.value
+
+    loadSubSections(event: any) {
+        let portId = event.target.value
         let section = this.sections[portId];
-        if(section){
-           this.freightStations=section
+        if (section) {
+            this.freightStations = section
         } else {
             this.diService.getAllPortFreightStations(portId)
                 .subscribe(
-                    res=>{
-                        if(res.responseCode==="00"){
-                            this.freightStations=res.data
+                    res => {
+                        if (res.responseCode === "00") {
+                            this.freightStations = res.data
                             // Cache result
-                            this.sections[portId]=this.freightStations
-                        }else {
-                            this.freightStations=[]
+                            this.sections[portId] = this.freightStations
+                        } else {
+                            this.freightStations = []
                             console.log(res.message)
                         }
                     }
                 )
         }
     }
+
     loadPorts() {
         this.diService.getAllPorts()
             .subscribe(
@@ -66,15 +69,20 @@ export class AssignPortComponent implements OnInit {
     }
 
     saveRecord() {
+        this.loading = true
         this.diService.assignPort(this.form.value, this.data.uuid)
             .subscribe(res => {
-                if (res.responseCode === "00") {
-                    this.diService.showSuccess(res.message,()=>{
-                        this.dialogRef.close(true)
-                    })
-                } else {
-                    this.message=res.message
-                }
-            })
+                    this.loading = false
+                    if (res.responseCode === "00") {
+                        this.diService.showSuccess(res.message, () => {
+                            this.dialogRef.close(true)
+                        })
+                    } else {
+                        this.message = res.message
+                    }
+                },
+                error => {
+                    this.loading = false
+                })
     }
 }

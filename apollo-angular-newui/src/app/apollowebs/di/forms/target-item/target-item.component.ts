@@ -11,6 +11,7 @@ import {DestinationInspectionService} from "../../../../core/store/data/di/desti
 export class TargetItemComponent implements OnInit {
   message: any;
   public form: FormGroup;
+  loading=false
   constructor(public dialogRef: MatDialogRef<any>, private fb: FormBuilder, @Inject(MAT_DIALOG_DATA) public data: any,
               private diService: DestinationInspectionService) {
   }
@@ -22,9 +23,11 @@ export class TargetItemComponent implements OnInit {
   }
  
   saveRecord() {
+      this.loading=true
     this.diService.sendConsignmentDocumentAction(this.form.value,this.data.uuid,"target")
         .subscribe(
             res=>{
+                this.loading=false
               if(res.responseCode==="00"){
                   this.diService.showSuccess(res.message,()=>{
                       this.dialogRef.close(true)
@@ -32,6 +35,9 @@ export class TargetItemComponent implements OnInit {
               } else {
                 this.message=res.message
               }
+            },
+            error => {
+                this.loading=true
             }
         )
   }

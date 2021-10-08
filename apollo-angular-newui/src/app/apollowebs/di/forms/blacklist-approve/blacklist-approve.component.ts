@@ -9,7 +9,7 @@ import {DestinationInspectionService} from "../../../../core/store/data/di/desti
     styleUrls: ['./blacklist-approve.component.css']
 })
 export class BlacklistApproveComponent implements OnInit {
-
+    loading: boolean = false
     message: any;
     public form: FormGroup;
 
@@ -24,16 +24,21 @@ export class BlacklistApproveComponent implements OnInit {
     }
 
     saveRecord() {
+        this.loading = true
         this.diService.sendConsignmentDocumentAction(this.data, this.data.uuid, "approve-blacklist")
             .subscribe(
                 res => {
+                    this.loading = false
                     if (res.responseCode === "00") {
-                        this.diService.showSuccess(res.message,()=>{
+                        this.diService.showSuccess(res.message, () => {
                             this.dialogRef.close(true)
                         })
                     } else {
                         this.message = res.message
                     }
+                },
+                error => {
+                    this.loading = false
                 }
             )
     }

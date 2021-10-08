@@ -22,6 +22,7 @@ export class ComplianceUpdateFormComponent implements OnInit {
     ]
     form: FormGroup
     message: any
+    loading=false
 
     constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialogRef: MatDialogRef<any>, private fb: FormBuilder, private diService: DestinationInspectionService) {
     }
@@ -35,10 +36,12 @@ export class ComplianceUpdateFormComponent implements OnInit {
     }
 
     saveSsfResult() {
+        this.loading=true
         this.message=null
         this.diService.updateSSFResults(this.form.value, this.data.uuid)
             .subscribe(
                 res => {
+                    this.loading=false
                     if (res.responseCode == "00") {
                         this.diService.showSuccess(res.message, () => {
                             this.dialogRef.close(true)
@@ -46,6 +49,9 @@ export class ComplianceUpdateFormComponent implements OnInit {
                     } else {
                         this.message = res.message
                     }
+                },
+                error => {
+                    this.loading=false
                 }
             )
     }

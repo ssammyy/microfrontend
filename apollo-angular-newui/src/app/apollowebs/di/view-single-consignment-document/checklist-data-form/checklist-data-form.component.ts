@@ -31,6 +31,7 @@ export class ChecklistDataFormComponent implements OnInit {
     consignment: any
     errors: any[]
     invalidSelection: Boolean = false;
+    loading=false
 
     constructor(private fb: FormBuilder, private dialog: MatDialog, private router: Router, private activatedRoute: ActivatedRoute,
                 private diService: DestinationInspectionService) {
@@ -244,9 +245,11 @@ export class ChecklistDataFormComponent implements OnInit {
             this.otherDetails["items"] = this.getItems(this.otherDetails.items)
             data["others"] = this.otherDetails
         }
+        this.loading=true
         this.diService.saveChecklist(this.consignmentId, data)
             .subscribe(
                 res => {
+                    this.loading=false
                     if (res.responseCode === "00") {
                         this.router.navigate(["/di/checklist/details", this.consignmentId])
                     } else {

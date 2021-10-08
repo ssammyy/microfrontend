@@ -43,8 +43,12 @@ export class AttachmentDialogComponent implements OnInit {
                         this.toastrService.success('Record Saved Successfully', 'Success');
                         this.dialogRef.close(true);
                     } else {
+                        this.loading=false
                         this.message = res.message;
                     }
+                },
+                error => {
+                    this.loading=false
                 }
             );
     }
