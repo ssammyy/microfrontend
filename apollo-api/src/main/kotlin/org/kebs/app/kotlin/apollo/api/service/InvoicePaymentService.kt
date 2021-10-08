@@ -182,7 +182,6 @@ class InvoicePaymentService(
             //1. Update Demand Note Status
             demandNote.swStatus=map.activeStatus
             demandNote.varField10="STATUS UPDATED ON SW"
-            demandNote.paymentStatus = map.initStatus
             val demandNoteDetails = daoServices.upDateDemandNote(demandNote)
             val consignmentDocument = demandNoteDetails.cdId?.let {cdId-> daoServices.findCD(cdId) }
             // 2. Update CD status

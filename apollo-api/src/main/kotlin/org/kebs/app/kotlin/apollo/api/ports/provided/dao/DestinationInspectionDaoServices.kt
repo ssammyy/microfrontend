@@ -1173,7 +1173,7 @@ class DestinationInspectionDaoServices(
                         paymentStatus = map.inactiveStatus
                         dateGenerated = commonDaoServices.getCurrentDate()
                         generatedBy = commonDaoServices.concatenateName(user)
-                        status = map.inactiveStatus
+                        status = map.workingStatus
                         createdOn = commonDaoServices.getTimestamp()
                         createdBy = commonDaoServices.getUserName(user)
                     }
@@ -2991,47 +2991,6 @@ class DestinationInspectionDaoServices(
 
                             }
                 }
-    }
-
-    fun updateDemandNotePayment(demandNoteNumber: String, amount: BigDecimal, user: UsersEntity) =//Get the demandNote
-            iDemandNoteRepo.findByDemandNoteNumber(demandNoteNumber)
-                    ?.let { demandNote ->
-                        demandNote.amountPayable?.let {
-                            //Amount paid is less than amount payable
-                            if (it < amount) {
-                                throw InvalidInputException("Amount paid is less than payable amount of: $it")
-                            }
-                            demandNote.paymentStatus = 1
-                            upDateDemandNoteWithUser(demandNote, user)
-                            //Get the consignment document
-                            demandNote.itemId?.cdDocId?.cdStandard?.applicationDate?.let {
-                                //TODO: Update CD status to previous one
-                            }
-                        }
-                    } ?: throw InvalidInputException("Demand note with Number = ${demandNoteNumber}, Does not exist")
-
-    fun findAllMinistryInspectionRequests(status: Int): List<CdItemDetailsEntity> {
-        iCdItemsRepo.findByMinistrySubmissionStatus(status)
-                ?.let { ministryInspectionItems ->
-                    return ministryInspectionItems
-                }
-                ?: throw ExpectedDataNotFound("Ministry Inspection requests with status = $status, do not exist")
-    }
-
-    fun findAllOngoingMinistryInspectionRequests(page: PageRequest): Page<CdItemDetailsEntity> {
-        return iCdItemsRepo.findOngoingMinistrySubmissions(page)
-    }
-
-//    fun findAllCompleteMinistryInspectionRequests(): List<CdItemDetailsEntity> {
-//        iCdItemsRepo.findCompletedMinistrySubmissions()
-//                ?.let { ministryInspectionItems ->
-//                    return ministryInspectionItems
-//                }
-//                ?: throw ExpectedDataNotFound("Complete Ministry Inspection requests, do not exist")
-//    }
-
-    fun findAllCompleteMinistryInspectionRequests(page: PageRequest): Page<CdItemDetailsEntity> {
-        return iCdItemsRepo.findByMinistrySubmissionStatus(1, page)
     }
 
     fun findAllCompleteMinistryInspectionRequests(status: Int, page: PageRequest): Page<CdItemDetailsEntity> {
