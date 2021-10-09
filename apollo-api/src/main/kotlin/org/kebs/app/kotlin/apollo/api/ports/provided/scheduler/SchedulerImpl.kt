@@ -216,7 +216,7 @@ class SchedulerImpl(
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updatePaidDemandNotesStatus(): Boolean {
-        val map = commonDaoServices.serviceMapDetails(diAppId)
+        val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
         val paidDemandNotesList = diDaoServices.findAllDemandNotesWithSwPending(map.activeStatus)
         if (paidDemandNotesList.isEmpty()) {
             return true

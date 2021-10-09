@@ -1240,6 +1240,7 @@ class DestinationInspectionDaoServices(
     }
 
     fun upDateDemandNote(demandNote: CdDemandNoteEntity): CdDemandNoteEntity {
+        KotlinLogging.logger {  }.info("Data: ${demandNote.paymentStatus} -> ${demandNote.status}")
         return iDemandNoteRepo.save(demandNote)
     }
 
@@ -1252,7 +1253,7 @@ class DestinationInspectionDaoServices(
 
     fun updateCDStatus(cdStandard: CdStandardsEntity, statusValue: Long): Boolean {
         var updateCD = cdStandard
-        var status = findCdStatusValue(statusValue)
+        val status = findCdStatusValue(statusValue)
         with(updateCD) {
             approvalStatus = status.typeName
             statusId = status.id

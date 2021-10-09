@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.annotation.Scheduled
-import org.springframework.stereotype.Component
 
 
 @Configuration
@@ -47,9 +46,9 @@ class Scheduler(
 
     @Scheduled(fixedDelay = 60_000)//60 Seconds for now
     fun updateDemandNotes() {
-        KotlinLogging.logger {  }.info("UPDATING DEMAND NOTES on SW")
+        KotlinLogging.logger { }.debug("UPDATING DEMAND NOTES on SW")
         schedulerImpl.updatePaidDemandNotesStatus()
-        KotlinLogging.logger {  }.info("UPDATED DEMAND NOTES on SW")
+        KotlinLogging.logger { }.debug("UPDATED DEMAND NOTES on SW")
     }
 
     @Scheduled(fixedDelay = 100000)//1.6666667 Minutes for now
@@ -66,4 +65,21 @@ class Scheduler(
         sftpSchedulerImpl.downloadKeswsFiles()
     }
 
+}
+
+/**
+ * Enabled only in dev environment
+ */
+@Configuration
+@EnableScheduling
+@Profile("default")
+class SchedulerDevelopment(
+        private val schedulerImpl: SchedulerImpl
+) {
+    @Scheduled(fixedDelay = 5_000)//60 Seconds for now
+    fun updateDemandNotes() {
+        KotlinLogging.logger { }.info("DEV: UPDATING DEMAND NOTES on SW")
+        schedulerImpl.updatePaidDemandNotesStatus()
+        KotlinLogging.logger { }.info("DEV: UPDATED DEMAND NOTES on SW")
+    }
 }

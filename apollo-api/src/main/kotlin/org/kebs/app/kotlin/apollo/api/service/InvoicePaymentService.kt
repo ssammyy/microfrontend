@@ -5,6 +5,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
+import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SchedulerImpl
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteRepository
@@ -200,7 +201,7 @@ class InvoicePaymentService(
             val consignmentDocument = this.daoServices.findCD(cdId)
             // 1. Send demand payment status to SW
             daoServices.sendDemandNotePayedStatusToKWIS(demandNoteId)
-            // Update application status
+            // 2. Update application status
             consignmentDocument.varField10 = "INVOICE PAYMENT UPDATED ON SW"
             this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
             return true

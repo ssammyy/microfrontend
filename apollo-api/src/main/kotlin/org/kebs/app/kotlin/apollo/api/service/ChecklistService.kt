@@ -60,7 +60,8 @@ class ChecklistService(
         private val bpmn: DestinationInspectionBpmn,
         private val reportsDaoService: ReportsDaoService,
         private val notifications: Notifications,
-        private val sampleResultsRepository: IQaSampleLabTestParametersRepository,
+        private val sampleParametersRepository: IQaSampleLabTestParametersRepository,
+        private val sampleResultsRepository: IQaSampleLabTestResultsRepository,
         private val ministryStationRepo: IMinistryStationEntityRepository,
         private val ministryStationRepository: IMinistryStationEntityRepository,
         private val qaISampleCollectRepository: IQaSampleCollectionRepository,
@@ -543,11 +544,11 @@ class ChecklistService(
             mvInspection.itemId?.cdDocId?.let { cdDetaisl ->
                 cdDetaisl.cdImporter?.let { importerId ->
                     val cdImporterDetails = daoServices.findCDImporterDetails(importerId)
-                    data["emailAddress"] = cdImporterDetails.email.toString()
-                    data["idfNumber"] = cdDetaisl.idfNumber.toString()
-                    data["name"] = cdImporterDetails.name.toString()
-                    data["importerAddress"] = cdImporterDetails.email.toString()
-                    data.put("importerName", cdImporterDetails.name.toString())
+                    data["emailAddress"] = cdImporterDetails.email.orEmpty()
+                    data["idfNumber"] = cdDetaisl.idfNumber.orEmpty()
+                    data["name"] = cdImporterDetails.name.orEmpty()
+                    data["importerAddress"] = cdImporterDetails.email.orEmpty()
+                    data.put("importerName", cdImporterDetails.name.orEmpty())
                 }
             }
             data.put("mvir", mvInspection)
@@ -663,6 +664,7 @@ class ChecklistService(
                 responseData["ssf_details"] = sampleSubmitted
                 // Lab Results
                 sampleSubmitted.bsNumber?.let { bsNo ->
+                    responseData["lab_parameters"] = sampleParametersRepository.findByOrderId(bsNo)
                     responseData["lab_results"] = sampleResultsRepository.findByOrderId(bsNo)
                 }
             }

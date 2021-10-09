@@ -49,6 +49,12 @@
                                     <tr>
                                         <td>{{labResults.item_details.countryOfOrgin}}</td>
                                     </tr>
+                                    <th>
+                                        Quantity
+                                    </th>
+                                    <tr>
+                                        <td>{{labResults.item_details.quantity}}-{{labResults.item_details.unitOfQuantityDesc}}</td>
+                                    </tr>
                                 </table>
                             </div>
                             <div class="col-md-9">
@@ -149,13 +155,13 @@
                                             </div>
                                         </div>
                                     </mat-tab>
-                                    <mat-tab *ngIf="labResults.ssf_details" label="3">
+                                    <mat-tab *ngIf="labResults.lab_parameters" label="3">
                                         <ng-template mat-tab-label>
                                             Tests Carried Out
                                         </ng-template>
                                         <b class="text-primary">Tests Carried Out</b>
                                         <mat-table class="table-striped table-responsive table-condensed"
-                                                   [dataSource]="labResults.lab_results">
+                                                   [dataSource]="labResults.lab_parameters">
                                             <ng-container matColumnDef="orderId">
                                                 <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
                                                 <mat-cell *matCellDef="let element"> {{element.orderId}} </mat-cell>
@@ -174,6 +180,15 @@
                                                 <mat-header-cell *matHeaderCellDef>TEST</mat-header-cell>
                                                 <mat-cell *matCellDef="let element"> {{element.test}} </mat-cell>
                                             </ng-container>
+                                            <ng-container matColumnDef="testPrice">
+                                                <mat-header-cell *matHeaderCellDef>TEST PRICE</mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.testPrice}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="storageLocation">
+                                                <mat-header-cell *matHeaderCellDef>STORAGE LOCATION</mat-header-cell>
+                                                <mat-cell
+                                                        *matCellDef="let element"> {{element.storageLocation}} </mat-cell>
+                                            </ng-container>
                                             <ng-container matColumnDef="method">
                                                 <mat-header-cell *matHeaderCellDef>METHOD</mat-header-cell>
                                                 <mat-cell *matCellDef="let element"> {{element.method}} </mat-cell>
@@ -183,24 +198,66 @@
                                                 <mat-cell *matCellDef="let element"> {{element.testGroup}} </mat-cell>
                                             </ng-container>
                                             <ng-container matColumnDef="priority">
-                                                <th mat-header-cell *matHeaderCellDef>Priority</th>
-                                                <td mat-cell *matCellDef="let element">{{element.priority}}</td>
+                                                <mat-header-cell *matHeaderCellDef>Priority</mat-header-cell>
+                                                <mat-cell *matCellDef="let element">{{element.priority}}</mat-cell>
                                             </ng-container>
                                             <ng-container matColumnDef="ts">
-                                                <th mat-header-cell *matHeaderCellDef>TS</th>
-                                                <td mat-cell *matCellDef="let element">{{element.ts}}</td>
-                                            </ng-container>
-                                            <ng-container matColumnDef="actions">
-                                                <th mat-header-cell *matHeaderCellDef>Actions</th>
-                                                <td mat-cell *matCellDef="let element">
-                                                    <button class="btn-sm btn-primary" (click)="resultDetails(element)">
-                                                        <i
-                                                                class="fa fa-eye"></i>More
-                                                    </button>
-                                                </td>
+                                                <mat-header-cell *matHeaderCellDef>TS</mat-header-cell>
+                                                <mat-cell *matCellDef="let element">{{element.ts}}</mat-cell>
                                             </ng-container>
                                             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
                                             <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                                        </mat-table>
+                                    </mat-tab>
+                                    <mat-tab *ngIf="labResults.lab_results" label="4">
+                                        <ng-template mat-tab-label>
+                                            Tests Results
+                                        </ng-template>
+                                        <b class="text-primary">Tests Results</b>
+                                        <mat-table class="table-striped table-responsive table-condensed"
+                                                   [dataSource]="labResults.lab_results">
+                                            <ng-container matColumnDef="orderId">
+                                                <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.orderId}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="sampleNumber">
+                                                <mat-header-cell *matHeaderCellDef>Sample Number</mat-header-cell>
+                                                <mat-cell
+                                                        *matCellDef="let element"> {{element.sampleNumber}} </mat-cell>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="result_param">
+                                                <mat-header-cell *matHeaderCellDef>PARAM</mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.param}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="percentMoisture">
+                                                <mat-header-cell *matHeaderCellDef>MOISTURE</mat-header-cell>
+                                                <mat-cell
+                                                        *matCellDef="let element">{{element.percentMoisture}}%
+                                                </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="lab_test">
+                                                <mat-header-cell *matHeaderCellDef>LAB TEST</mat-header-cell>
+                                                    <mat-cell *matCellDef="let element">{{element.test+""}}</mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="numeric_result">
+                                                <mat-header-cell *matHeaderCellDef>LAB RESULT(NUM)</mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.numericResult}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="lab_result">
+                                                <mat-header-cell *matHeaderCellDef>LAB RESULT</mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.result}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="tic">
+                                                <mat-header-cell *matHeaderCellDef> TIC</mat-header-cell>
+                                                <mat-cell *matCellDef="let element">{{element.tic}}</mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="ts">
+                                                <mat-header-cell *matHeaderCellDef> TS</mat-header-cell>
+                                                <mat-cell *matCellDef="let element">{{element.ts}}</mat-cell>
+                                            </ng-container>
+                                            <mat-header-row *matHeaderRowDef="displayedColumnResults"></mat-header-row>
+                                            <mat-row *matRowDef="let row; columns: displayedColumnResults;"></mat-row>
                                         </mat-table>
                                     </mat-tab>
                                 </mat-tab-group>
