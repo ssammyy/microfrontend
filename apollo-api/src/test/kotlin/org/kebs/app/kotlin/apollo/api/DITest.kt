@@ -892,7 +892,7 @@ class DITest {
                 destinationInspectionDaoServices.findCdWithUcrNumber("UCR2100006322")
                     ?.let { cdDetails ->
                         KotlinLogging.logger { }.debug("Starting background task")
-                        destinationInspectionDaoServices.createLocalCoc(loggedInUser, cdDetails, map, "A")
+                        destinationInspectionDaoServices.createLocalCoc(loggedInUser, cdDetails, map, "","A")
 
                     }
             }
@@ -1226,7 +1226,7 @@ class DITest {
             ?.let { loggedInUser ->
                 val map = commonDaoServices.serviceMapDetails(appId)
                 val consignmentDocumentEntity: ConsignmentDocumentDetailsEntity = destinationInspectionDaoServices.findCD(941)
-                val localCoc = destinationInspectionDaoServices.createLocalCoc(loggedInUser, consignmentDocumentEntity, map, "A")
+                val localCoc = destinationInspectionDaoServices.createLocalCoc(loggedInUser, consignmentDocumentEntity, map, "","A")
                 consignmentDocumentEntity.cdStandard?.let { cdStd ->
                     destinationInspectionDaoServices.updateCDStatus(
                         cdStd,

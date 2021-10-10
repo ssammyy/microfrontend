@@ -108,10 +108,10 @@
                                                 <td>{{consignment.cd_standard.amendedDate ? consignment.cd_standard.amendedDate : 'NA'}}
                                                 </td>
                                             </tr>
-                                            <th>
+                                            <th *ngIf="consignment.cd_standards_two">
                                                 Local CoC Type
                                             </th>
-                                            <tr>
+                                            <tr *ngIf="consignment.cd_standards_two">
                                                 <td>{{consignment.cd_standards_two.localCocType ? consignment.cd_standards_two.localCocType : 'NA'}}
                                                 </td>
                                             </tr>

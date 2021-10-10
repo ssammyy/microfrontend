@@ -594,19 +594,21 @@ class DestinationInspectionDaoServices(
             user: UsersEntity,
             map: ServiceMapsEntity
     ) {
-        findCDItemsListWithCDID(updatedCDDetails)
-                .forEach { cdItemDetails ->
-                    if (cdItemDetails.checklistStatus == map.activeStatus) { // If checklist was filled, only add compliant items only
+        if (updatedCDDetails.inspectionChecklist == map.activeStatus) { // If checklist was filled, only add compliant items only
+            findCDItemsListWithCDID(updatedCDDetails)
+                    .forEach { cdItemDetails ->
                         if (cdItemDetails.approveStatus == map.activeStatus || cdItemDetails.approveStatus == null || cdItemDetails.approveStatus == map.inactiveStatus) {
                             generateLocalCocItem(cdItemDetails, localCocEntity, user, map, cdItemDetails.ownerPin
                                     ?: "NA", cdItemDetails.ownerName ?: "NA")
                         }
-                    } else {
+                    }
+        } else {
+            findCDItemsListWithCDID(updatedCDDetails)
+                    .forEach { cdItemDetails ->
                         generateLocalCocItem(cdItemDetails, localCocEntity, user, map, cdItemDetails.ownerPin
                                 ?: "NA", cdItemDetails.ownerName ?: "NA")
                     }
-                }
-
+        }
 
     }
 
@@ -3150,7 +3152,11 @@ class DestinationInspectionDaoServices(
                 "Hello,  \n" +
                         "\n " +
                         "Find attached the Local COC Certificate."
-        notifications.sendEmail(recipientEmail, subject, messageBody, filePath)
+        var emailAddress = recipientEmail
+        if (!applicationMapProperties.defaultTestEmailAddres.isNullOrEmpty()) {
+            emailAddress = applicationMapProperties.defaultTestEmailAddres.orEmpty()
+        }
+        notifications.sendEmail(emailAddress, subject, messageBody, filePath)
         return true
     }
 
@@ -3160,12 +3166,16 @@ class DestinationInspectionDaoServices(
                 "Hello,  \n" +
                         "\n " +
                         "Find attached the Local COR Certificate."
-        notifications.sendEmail(recipientEmail, subject, messageBody, filePath)
+        var emailAddress = recipientEmail
+        if (!applicationMapProperties.defaultTestEmailAddres.isNullOrEmpty()) {
+            emailAddress = applicationMapProperties.defaultTestEmailAddres.orEmpty()
+        }
+        notifications.sendEmail(emailAddress, subject, messageBody, filePath)
         return true
     }
 
     fun convertCdItemDetailsToMinistryInspectionListResponseDto(cdItemDetails: CdItemDetailsEntity): MinistryInspectionListResponseDto {
-        var ministryInspectionItem = MinistryInspectionListResponseDto()
+        val ministryInspectionItem = MinistryInspectionListResponseDto()
         ministryInspectionItem.cdId = cdItemDetails.cdDocId?.id!!
         ministryInspectionItem.cdUcr = cdItemDetails.cdDocId?.ucrNumber
         ministryInspectionItem.cdItemDetailsId = cdItemDetails.id

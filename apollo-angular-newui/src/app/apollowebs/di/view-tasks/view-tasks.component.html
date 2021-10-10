@@ -34,7 +34,7 @@
                                         <button class="btn btn-sm btn-primary" *ngIf="task.map.demandNoteId"
                                                 (click)="viewDemandNote(task.map.demandNoteId)">VIEW DEMAND NOTE
                                         </button>
-                                        <br />
+                                        <br/>
                                         <button class="btn mr-1 btn-sm  btn-primary"
                                                 (click)="approveRejectTasks(task.objectId,task.map.cdUuid, task.task)">
                                             Approve/Reject
@@ -48,7 +48,7 @@
                                         <a ngbNavLink>Consignment Details</a>
                                         <ng-template ngbNavContent>
                                             <b class="text-primary">Consignment Details</b>
-                                            <ul class="w-list-unstyled" *ngIf="consignment.cd_consignee">
+                                            <ul class="w-list-unstyled" *ngIf="consignment &&consignment.cd_consignee">
                                                 <li class="list-item-accordion ">
                                                     <div class="list-title-accordion">Application Reference No #</div>
                                                     <div class="list-text-accordion">{{ consignment.cd_details.applicationRefNo ? consignment.cd_details.applicationRefNo : 'NA' }}</div>
@@ -93,7 +93,7 @@
                                                     <div class="list-title-accordion">Amended Date</div>
                                                     <div class="list-text-accordion">{{consignment.cd_standard.amendedDate ? consignment.cd_standard.amendedDate : 'NA'}}</div>
                                                 </li>
-                                                <li class="list-item-accordion ">
+                                                <li class="list-item-accordion " *ngIf="consignment.cd_standards_two">
                                                     <div class="list-title-accordion">Local CoC Type</div>
                                                     <div class="list-text-accordion">{{consignment.cd_standards_two.localCocType ? consignment.cd_standards_two.localCocType : 'NA'}}</div>
                                                 <li class="list-item-accordion ">
@@ -111,7 +111,7 @@
                                         <a ngbNavLink>Consignee Details</a>
                                         <ng-template ngbNavContent>
                                             <b class="text-primary">Consignee Details</b>
-                                            <ul class="w-list-unstyled" *ngIf="consignment.cd_consignee">
+                                            <ul class="w-list-unstyled" *ngIf="consignment && consignment.cd_consignee">
                                                 <li class="list-item-accordion ">
                                                     <div class="list-title-accordion">Name</div>
                                                     <div class="list-text-accordion">{{consignment.cd_consignee.name}}</div>
