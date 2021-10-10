@@ -73,6 +73,8 @@ class DestinationInspectionRoutes {
             POST("/consignment/document/supervisor-target/{cdUuid}", handler::supervisorTargetConsignment)
             POST("/consignment/document/process/approve-reject/{taskId}/{cdUuid}", handler::approveRejectTask)
             GET("/my/tasks", handler::supervisorTasks)
+            DELETE("/my/task/{taskId}", handler::deleteSupervisorTasks)
+
         }
     }
 
@@ -99,7 +101,7 @@ class DestinationInspectionRoutes {
             GET("/consignment/document/customs/declaration/{coUuid}", handler::consignmentDocumentCustomsDeclaration)
             GET("/consignment/document/invoices/{coUuid}", handler::consignmentDocumentInvoices)
             GET("/consignment/document/item/{coItemUuid}", handler::consignmentDocumentItemDetails)
-
+            GET("/consignment/document/tasks/{cdUuid}", handler::consignmentDocumentSupervisorTasks)
             GET("/consignment/documents/item/lab/{cdItemUuid}", handler::consignmentDocumentSSFLabDetails)
             // Foreign CoC/CoR
             POST("/foreign/cd/upload", handler::uploadForeignConsignmentDocument)

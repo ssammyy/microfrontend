@@ -29,6 +29,7 @@ import java.sql.Timestamp
 import java.time.Instant
 import java.util.*
 import org.kebs.app.kotlin.apollo.store.events.SearchInitialization
+import org.springframework.data.domain.PageRequest
 import java.io.ByteArrayOutputStream
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -61,6 +62,9 @@ class DestinationInspectionService(
     @Value("\${destination.inspection.cd.type.cor}")
     lateinit var corCdType: String
 
+    fun findDocumentsWithActions(usersEntity: UsersEntity, category: String?, myTask: Boolean,page: PageRequest):  ApiResponseModel{
+        return diBpmn.consignmentDocumentWithActions(usersEntity, category,myTask,page)
+    }
     fun markCompliant(cdUuid: String, compliantStatus: Int, supervisor: String, remarks: String, taskApproved: Boolean): Boolean {
         if (taskApproved) {
             val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
@@ -707,7 +711,7 @@ class DestinationInspectionService(
             val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             consignmentDocument.diProcessStatus = 0
             consignmentDocument.diProcessCompletedOn = Timestamp.from(Instant.now())
-            this.daoServices.updateCdDetailsInDB(consignmentDocument, this.commonDaoServices.getLoggedInUser())
+            this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("UPDATE STATUS", ex)
         }
@@ -1469,4 +1473,18 @@ class DestinationInspectionService(
         } ?: throw ExpectedDataNotFound("Invalid local CocNumber")
         return map
     }
+
+    fun consignmentDocumentTasks(cdUuid: String): ApiResponseModel {
+        val response=ApiResponseModel()
+        try {
+            response.data = this.diBpmn.consignmentDocumentActions(cdUuid)
+            response.message="Cd actions"
+            response.responseCode=ResponseCodes.SUCCESS_CODE
+        }catch (ex: Exception) {
+            response.message="failed to fetch actions"
+            response.responseCode=ResponseCodes.FAILED_CODE
+        }
+        return response
+    }
+
 }

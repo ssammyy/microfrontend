@@ -783,6 +783,10 @@ class DestinationInspectionDaoServices(
                 ?: throw Exception("CD Details with the following uuid = ${uuid}, does not Exist")
     }
 
+    fun findCDWithUuids(uuids: Iterable<String>): List<ConsignmentDocumentDetailsEntity> {
+        return iConsignmentDocumentDetailsRepo.findByUuidIn(uuids)
+    }
+
     fun findCORById(cdId: Long): CorsBakEntity? {
         return corsBakRepository.findByIdOrNull(cdId)
     }
@@ -1244,7 +1248,7 @@ class DestinationInspectionDaoServices(
     }
 
     fun upDateDemandNote(demandNote: CdDemandNoteEntity): CdDemandNoteEntity {
-        KotlinLogging.logger { }.info("Data: ${demandNote.paymentStatus} -> ${demandNote.status}")
+        KotlinLogging.logger { }.info("Demand Note data: ${demandNote.paymentStatus} -> ${demandNote.status}")
         return iDemandNoteRepo.save(demandNote)
     }
 

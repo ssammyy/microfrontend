@@ -17,12 +17,12 @@
                     </div>
                     <div class="card-body" *ngIf="consignment">
                         <div class="row">
-                            <div class="col-md-2">
+                            <div class="col-md-2 m-0 p-0">
                                 <div widget class=" border-0 box-shadow">
                                     <div class="text-center pt-2" style="color: green;">
                                         APPLICATION INFORMATION
                                     </div>
-                                    <div class="card-body pt-0 widget-body">
+                                    <div class="card-body p-0 m-0 widget-body">
                                         <table class="table-responsive">
                                             <th>
                                                 Application Reference No #
@@ -865,7 +865,7 @@
 
                                 </mat-tab-group>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-2 p-0 m-0">
                                 <b>Action:</b>
                                 <div *ngIf="consignment.ui">
                                     <div *ngIf="consignment.ui.inspector && !consignment.ui.completed">
@@ -896,7 +896,7 @@
                                                 class="btn btn-sm btn-warning" (click)="targetConsignment()">TARGET
                                         </button>
                                     </div>
-                                    <div *ngIf="consignment.ui.supervisor">
+                                    <div *ngIf="consignment.ui.supervisor && !consignment.ui.completed">
                                         <button *ngIf="!consignment.ui.assigned " class="btn btn-sm btn-primary"
                                                 (click)="assignInspectionOfficer()">ASSIGN IO
                                         </button>
@@ -906,6 +906,44 @@
                                         <button *ngIf="consignment.ui.supervisorTarget" class="btn btn-sm btn-warning"
                                                 (click)="supervisorTargetConsignment()">SUPERVISOR TARGET
                                         </button>
+                                        <div class="card border-0" *ngFor="let task of supervisorTasks">
+                                            <div class="text-center pt-2" style="color: green;">
+                                                {{task.task}}
+                                            </div>
+                                            <div class="card-body pt-1 pb-0 widget-body">
+                                                <p *ngIf="task.description"><b>DESCRIPTION:</b> {{task.description}}</p>
+                                                <div>
+                                                    <b>REMARKS:</b>
+                                                    <p>{{task.map.remarks}}</p>
+                                                </div>
+                                                <div *ngIf="task.map.hasAllItems">
+                                                    <b>HAS ALL ITEMS:</b>
+                                                    <p>{{task.map.hasAllItems ? 'YES' : 'NO'}}</p>
+                                                </div>
+                                                <div *ngIf="task.map.documentType">
+                                                    <b>GENERATED DOCUMENT:</b>
+                                                    <p>{{task.map.documentType}}</p>
+                                                </div>
+                                                <div *ngIf="task.map.compliantStatus">
+                                                    <b>COMPLIANCE:</b>
+                                                    <p>{{task.map.compliantStatus == 1 ? 'COMPLIANT' : 'NON-COMPLIANT'}}</p>
+                                                </div>
+
+                                            </div>
+                                            <div class="card-footer">
+                                                <button class="btn btn-sm btn-primary"
+                                                        (click)="approveRejectTasks(task.objectId,task.map.cdUuid, task.task)">
+                                                    Approve/Reject
+                                                </button>
+                                                <button class="btn btn-sm btn-primary" *ngIf="task.map.demandNoteId"
+                                                        (click)="viewDemandNote(task.map.demandNoteId)">VIEW DEMAND NOTE
+                                                </button>
+<!--                                                <button class="btn btn-sm  btn-danger"btn-primary-->
+<!--                                                        (click)="removeTasks(task.objectId)">-->
+<!--                                                    DELETE-->
+<!--                                                </button>-->
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 

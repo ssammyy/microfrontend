@@ -41,7 +41,10 @@ class ApiDestinationInspectionHandler(
         private val consignmentAuditService: ConsignmentDocumentAuditService,
         private val applicationMapProperties: ApplicationMapProperties
 ) {
-
+    fun consignmentDocumentSupervisorTasks(req: ServerRequest): ServerResponse {
+        val cdUuid = req.pathVariable("cdUuid")
+        return ServerResponse.ok().body(this.destinationInspectionService.consignmentDocumentTasks(cdUuid))
+    }
     fun listBlackListedUser(req: ServerRequest): ServerResponse {
         val response = ApiResponseModel()
         try {
@@ -276,7 +279,7 @@ class ApiDestinationInspectionHandler(
     @PreAuthorize("hasAuthority('DI_INSPECTION_OFFICER_READ') || hasAuthority('DI_OFFICER_CHARGE_READ')")
     fun assignedConsignmentDocuments(req: ServerRequest): ServerResponse {
         val auth = commonDaoServices.loggedInUserAuthentication()
-        val response = ApiResponseModel()
+        var response = ApiResponseModel()
         try {
             req.paramOrNull("cdTypeUuid").let { cdTypeUuid ->
                 var cdType: ConsignmentDocumentTypesEntity? = null
@@ -288,21 +291,29 @@ class ApiDestinationInspectionHandler(
                 var data: Page<ConsignmentDocumentDetailsEntity>? = null
                 when {
                     auth.authorities.stream().anyMatch { authority -> authority.authority == "DI_OFFICER_CHARGE_READ" } -> {
-                        data = daoServices.findAllCdWithAssigner(usersEntity, cdType, extractPage(req))
+                        val personalTasks = req.paramOrNull("personal")
+                        var personal=true
+                        personalTasks?.let {
+                            personal=it.toBoolean()
+                        }
+                        val supervisorCategory = req.paramOrNull("category")
+                        response = destinationInspectionService.findDocumentsWithActions(usersEntity,supervisorCategory, personal,extractPage(req))
                     }
                     auth.authorities.stream().anyMatch { authority -> authority.authority == "DI_INSPECTION_OFFICER_READ" } -> {
                         data = daoServices.findAllCdWithAssignedIoID(usersEntity, cdType, extractPage(req))
+                        // Add data to response
+                        response.data = ConsignmentDocumentDao.fromList(data.toList(), daoServices.ncrCdType)
+                        response.pageNo = data.number
+                        response.totalPages = data.totalPages
+                        response.totalCount = data.totalElements
+                        response.message = "Assigned CD"
+                        response.responseCode = ResponseCodes.SUCCESS_CODE
+                    }
+                    else -> {
+                        response.message = "Unauthorized access"
+                        response.responseCode = ResponseCodes.FAILED_CODE
                     }
                 }
-                // Add data to response
-                data?.let {
-                    response.data = ConsignmentDocumentDao.fromList(data.toList(), daoServices.ncrCdType)
-                    response.pageNo = data.number
-                    response.totalPages = data.totalPages
-                    response.totalCount = data.totalElements
-                }
-                response.message = "Assigned CD"
-                response.responseCode = ResponseCodes.SUCCESS_CODE
             }
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error { ex }

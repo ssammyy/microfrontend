@@ -62,6 +62,15 @@
                         <div widget class="card border-0 box-shadow">
                             <div class="card-body pt-0 widget-body">
                                 <div class="table-responsive table-striped">
+                                    <div *ngIf="supervisorCharge && activeStatus=='my-tasks'">
+                                        <label class="waiver-form-label col-sm-2" for="filter-tasks">Task Owner</label>
+                                        <select id="filter-tasks" class="waiver-form-input col-sm-3"
+                                                (change)="onSupervisorChange($event)">
+                                            <option value="">None</option>
+                                            <option value="true">Personal Tasks</option>
+                                            <option value="false">All Tasks</option>
+                                        </select>
+                                    </div>
                                     <ng2-smart-table class="table table-hover" [settings]="settings"
                                                      [source]="dataSet"
                                                      (custom)="onCustomAction($event)">

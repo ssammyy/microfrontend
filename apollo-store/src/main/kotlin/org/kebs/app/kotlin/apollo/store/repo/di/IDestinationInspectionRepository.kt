@@ -177,6 +177,7 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
     fun findByUcrNumberAndOldCdStatus(ucrNumber: String, oldCdStatus: Int): List<ConsignmentDocumentDetailsEntity>?
     fun findTopByUcrNumberOrderByIdDesc(ucrNumber: String): ConsignmentDocumentDetailsEntity?
     fun findByUuid(uuid: String): ConsignmentDocumentDetailsEntity?
+    fun findByUuidIn(uuid: Iterable<String>): List<ConsignmentDocumentDetailsEntity>
 }
 
 @Repository

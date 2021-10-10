@@ -298,7 +298,9 @@ class DestinationInspectionActionsHandler(
         }
         return ServerResponse.ok().body(response)
     }
-
+    fun deleteSupervisorTasks(req: ServerRequest): ServerResponse {
+        return ServerResponse.ok().body(this.diBpmn.deleteTask(req.pathVariable("taskId")))
+    }
     fun supervisorTasks(req: ServerRequest): ServerResponse {
         return ServerResponse.ok()
                 .body(this.diBpmn.listUserTasks())

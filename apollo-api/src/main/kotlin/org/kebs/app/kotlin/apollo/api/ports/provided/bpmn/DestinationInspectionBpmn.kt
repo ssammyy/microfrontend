@@ -3,8 +3,8 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.bpmn
 import mu.KotlinLogging
 import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
-import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
+import org.kebs.app.kotlin.apollo.api.payload.ConsignmentDocumentDao
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.request.ConsignmentUpdateRequest
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.di.BpmnTaskDetails
@@ -15,6 +15,7 @@ import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentAuditService
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.CdDemandNoteEntity
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
+import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.di.CdInspectionMotorVehicleItemChecklistEntity
 import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntity
@@ -22,6 +23,7 @@ import org.kebs.app.kotlin.apollo.store.repo.ICdItemDetailsRepo
 import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IConsignmentDocumentDetailsRepository
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.sql.Timestamp
@@ -276,6 +278,46 @@ class DestinationInspectionBpmn(
             }
         }
         return taskDetails
+    }
+
+    fun consignmentDocumentWithActions(loggedInUser: UsersEntity, category: String?, myTasks: Boolean, page: PageRequest): ApiResponseModel {
+        val response = ApiResponseModel()
+        // 1. Get tasks from BPM
+        val actionsQuery = taskService.createTaskQuery()
+                .active()
+                .processVariableExists("cdUuid")
+        if (myTasks) {
+            actionsQuery.taskOwner(loggedInUser.userName)
+        }
+        if (!category.isNullOrEmpty()) {
+            actionsQuery.taskCategory(category)
+        }
+        // 2. Get task details
+        val consignmentActions = actionsQuery
+                .orderByTaskCreateTime().desc()
+                .listPage(page.offset.toInt(), page.pageSize)
+        val taskDetails = getTaskDetails(consignmentActions)
+        // 3. add to list
+        val resultSet = mutableSetOf<String>()
+        for (task in taskDetails) {
+            resultSet.add(task.map.get("cdUuid") as String)
+        }
+        // 4. QUery for CD with uuids
+        response.data = ConsignmentDocumentDao.fromList(daoServices.findCDWithUuids(resultSet))
+        response.pageNo = page.pageNumber
+        response.totalCount = consignmentActions.size.toLong()
+        response.responseCode = ResponseCodes.SUCCESS_CODE
+        response.message = "Success"
+        return response
+    }
+
+    fun consignmentDocumentActions(cdUuid: String): List<DiTaskDetails> {
+        val consignmentActions = taskService.createTaskQuery()
+                .active() // Load active tasks only
+                .orderByTaskCreateTime().desc()
+                .processVariableValueEquals("cdUuid", cdUuid) // Tasks with parameter cdUuid
+                .list()
+        return getTaskDetails(consignmentActions)
     }
 
     fun listUserTasks(): ApiResponseModel {
@@ -849,6 +891,22 @@ class DestinationInspectionBpmn(
             }
         }
         return false
+    }
+
+    fun deleteTask(pathVariable: String): ApiResponseModel {
+        val response = ApiResponseModel()
+        try {
+            val task = taskService.createTaskQuery().taskId(pathVariable)
+                    .singleResult()
+            runtimeService.deleteProcessInstance(task.processInstanceId, "Not necessary")
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+            response.message = "Success"
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("FAILED to DELETE", ex)
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Failed to delete task"
+        }
+        return response
     }
 
 }

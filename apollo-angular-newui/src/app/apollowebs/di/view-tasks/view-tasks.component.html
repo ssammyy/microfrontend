@@ -12,32 +12,43 @@
                     </div>
                     <div class="card-body" *ngIf="tasks">
                         <div class="row">
-                            <div class="col-md-2">
-                                <div widget class="border-0 box-shadow" *ngFor="let task of tasks"
+                            <div class="col-md-2 m-0 p-0">
+                                <div widget class="card m-0" *ngFor="let task of tasks"
                                      (click)="loadSelectedConsignmentDetails(task)">
-                                    <div class="text-center pt-2" style="color: green;">
+                                    <div class="text-center pt-0" style="color: green;">
                                         {{task.task}}
                                     </div>
-                                    <div class="card-body pt-0 widget-body">
+                                    <div class="card-body widget-body">
                                         <p *ngIf="task.description"><b>DESCRIPTION:</b> {{task.description}}</p>
-                                        <p><b>REMARKS:</b> {{task.map.remarks}}</p>
-                                        <p *ngIf="task.map.hasAllItems"><b>HAS ALL
-                                            ITEMS:</b> {{task.map.hasAllItems ? 'YES' : 'NO'}}</p>
-                                        <p *ngIf="task.map.documentType"><b>GENERATED
-                                            DOCUMENT:</b> {{task.map.documentType}}</p>
-                                        <p *ngIf="task.map.compliantStatus">
-                                            <b>COMPLIANCE:</b> {{task.map.compliantStatus == 1 ? 'COMPLIANT' : 'NON-COMPLIANT'}}
-                                        </p>
-
+                                        <div>
+                                            <b>REMARKS:</b>
+                                            <p>{{task.map.remarks}}</p>
+                                        </div>
+                                        <div *ngIf="task.map.hasAllItems">
+                                            <b>HAS ALL ITEMS:</b>
+                                            <p>{{task.map.hasAllItems ? 'YES' : 'NO'}}</p>
+                                        </div>
+                                        <div *ngIf="task.map.documentType">
+                                            <b>GENERATED DOCUMENT:</b>
+                                            <p>{{task.map.documentType}}</p>
+                                        </div>
+                                        <div *ngIf="task.map.compliantStatus">
+                                            <b>COMPLIANCE:</b>
+                                            <p>{{task.map.compliantStatus == 1 ? 'COMPLIANT' : 'NON-COMPLIANT'}}</p>
+                                        </div>
                                     </div>
-                                    <div class="card-footer d-flex">
+                                    <div class="card-footer">
                                         <button class="btn btn-sm btn-primary" *ngIf="task.map.demandNoteId"
                                                 (click)="viewDemandNote(task.map.demandNoteId)">VIEW DEMAND NOTE
                                         </button>
                                         <br/>
-                                        <button class="btn mr-1 btn-sm  btn-primary"
+                                        <button class="btn btn-sm  btn-primary"
                                                 (click)="approveRejectTasks(task.objectId,task.map.cdUuid, task.task)">
                                             Approve/Reject
+                                        </button>
+                                        <button class="btn btn-sm  btn-primary"
+                                                (click)="removeTasks(task.objectId)">
+                                            DELETE
                                         </button>
                                     </div>
                                 </div>

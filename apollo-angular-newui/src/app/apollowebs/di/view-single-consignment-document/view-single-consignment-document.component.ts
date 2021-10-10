@@ -17,6 +17,10 @@ import {TargetItemComponent} from '../forms/target-item/target-item.component';
 import {TargetSupervisorComponent} from '../forms/target-supervisor/target-supervisor.component';
 import {SendDemandNoteTokwsComponent} from '../forms/send-demand-note-tokws/send-demand-note-tokws.component';
 import {BlacklistComponent} from '../forms/blacklist/blacklist.component';
+import {selectUserInfo} from "../../../core/store/data/auth";
+import {Store} from "@ngrx/store";
+import {ViewDemandNoteComponent} from "../demand-note-list/view-demand-note/view-demand-note.component";
+import {ProcessRejectionComponent} from "../forms/process-rejection/process-rejection.component";
 
 @Component({
     selector: 'app-view-single-consignment-document',
@@ -34,6 +38,9 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
     configurations: any[];
     demandNotes: any[];
     checkLists: any[];
+    supervisorTasks: any[]
+    supervisorCharge: boolean = false
+    inspectionOfficer: boolean = false
 
     constructor(private diService: DestinationInspectionService,
                 private dialog: MatDialog,
@@ -51,6 +58,56 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
             }
         );
 
+
+    }
+    removeTasks(taskId: any){
+        this.diService.deleteTask(taskId)
+            .subscribe(
+                res=>{
+                    if(res.responseCode=="00") {
+                        this.diService.showSuccess(res.message,()=>{
+                            this.loadSupervisorTasks()
+                        })
+                    } else {
+                        this.diService.showError(res.message,()=>{
+
+                        })
+                    }
+                }
+            )
+    }
+    viewDemandNote(demandNoteId: any) {
+        this.dialog.open(ViewDemandNoteComponent, {
+            data: {
+                id: demandNoteId
+            }
+        })
+    }
+
+    approveRejectTasks(taskId: any, docUuid: any, taskTitle: any) {
+        this.dialog.open(ProcessRejectionComponent, {
+            data: {
+                cdUuid: docUuid,
+                title: taskTitle,
+                taskId: taskId
+            }
+        }).afterClosed()
+            .subscribe(res => {
+                this.loadSupervisorTasks()
+            })
+    }
+
+    loadSupervisorTasks() {
+        this.diService.loadSupervisorTasks(this.consignment.cd_details.uuid)
+            .subscribe(
+                res => {
+                    if (res.responseCode == "00") {
+                        this.supervisorTasks = res.data
+                    } else {
+                        console.log(res.message)
+                    }
+                }
+            )
     }
 
     createInspectionChecklist() {
@@ -229,6 +286,10 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
                         this.consignment = response.data;
                         console.log(this.consignment.cd_consignee.name);
                         this.consignmentItems = this.consignment.items_cd;
+                        if (this.consignment.ui.supervisor) {
+                            this.supervisorCharge = true
+                            this.loadSupervisorTasks()
+                        }
                         this.listConsignmentAttachments();
                         this.loadComments();
                         this.loadDemandNotes();

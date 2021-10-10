@@ -1,5 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.payload
 
+import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.TaskDetails
+import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.di.DiTaskDetails
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.*
 import org.springframework.security.core.Authentication
@@ -134,6 +136,7 @@ class ConsignmentDocumentDao {
     var lastModifiedOn: Timestamp? = null
     var lastModifiedBy: String? = null
     var isNcrDocument: Boolean = false
+    var taskDetails: DiTaskDetails?=null
 
     companion object {
         fun fromEntity(doc: ConsignmentDocumentDetailsEntity, ncrId: String = ""): ConsignmentDocumentDao {
