@@ -28,7 +28,6 @@ import java.time.Instant
 @Component
 class ChecklistHandler(
         private val daoServices: DestinationInspectionDaoServices,
-        private val diService: DestinationInspectionService,
         private val checlistService: ChecklistService,
         private val iChecklistCategoryRepo: IChecklistCategoryRepository,
         private val iChecklistInspectionTypesRepo: IChecklistInspectionTypesRepository,
@@ -36,6 +35,34 @@ class ChecklistHandler(
         private val commonDaoServices: CommonDaoServices,
         private val applicationMapProperties: ApplicationMapProperties
 ) {
+    fun approveRejectSampledItem(req: ServerRequest): ServerResponse {
+        var response = ApiResponseModel()
+        try {
+            req.pathVariable("cdUuid").let { cdUuid ->
+                val form = req.body(ConsignmentUpdateRequest::class.java)
+                val document = daoServices.findCDWithUuid(cdUuid)
+                if (document.approveRejectCdStatusType == null || document.approveRejectCdStatusType?.modificationAllowed == 1) {
+                    val itemId = req.pathVariable("cdItemId").toLongOrDefault(0L)
+                    form.compliant?.let {
+                        response = checlistService.updateItemComplianceStatus(document, itemId, form.remarks.orEmpty(), it)
+                        response
+                    } ?: run {
+                        response.message = "Compliance status is required: ${document.approveRejectCdStatusType?.typeName}"
+                        response.responseCode = ResponseCodes.FAILED_CODE
+                        response
+                    }
+                } else {
+                    response.message = "Document modification is not allowed"
+                    response.responseCode = ResponseCodes.FAILED_CODE
+                }
+            }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("PROCESS ERROR", ex)
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.message = ex.localizedMessage
+        }
+        return ServerResponse.ok().body(response)
+    }
 
     fun loadLabResult(req: ServerRequest): ServerResponse {
         req.pathVariable("cdItemID").let {

@@ -438,12 +438,14 @@ interface ICdInspectionAgrochemChecklistRepository : HazelcastRepository<CdInspe
 @Repository
 interface ICdInspectionAgrochemItemChecklistRepository : HazelcastRepository<CdInspectionAgrochemItemChecklistEntity, Long> {
     fun findByInspectionAndItemId_Id(inspectionGeneral: CdInspectionAgrochemChecklist,itemId: Long?): CdInspectionAgrochemItemChecklistEntity?
+    fun findByInspection_InspectionGeneralAndItemId_Id(inspectionGeneral: CdInspectionGeneralEntity,itemId: Long?): CdInspectionAgrochemItemChecklistEntity?
     fun findByInspection(inspectionGeneral: CdInspectionAgrochemChecklist): List<CdInspectionAgrochemItemChecklistEntity>
 }
 
 @Repository
 interface ICdInspectionEngineeringItemChecklistRepository : HazelcastRepository<CdInspectionEngineeringItemChecklistEntity, Long> {
     fun findByInspectionAndItemId_Id(inspectionGeneral: CdInspectionEngineeringChecklist,itemId: Long?): CdInspectionEngineeringItemChecklistEntity?
+    fun findByInspection_InspectionGeneralAndItemId_Id(inspectionGeneral: CdInspectionGeneralEntity,itemId: Long?): CdInspectionEngineeringItemChecklistEntity?
     fun findByInspection(inspectionGeneral: CdInspectionEngineeringChecklist): List<CdInspectionEngineeringItemChecklistEntity>
 }
 
@@ -460,6 +462,7 @@ interface ICdInspectionOtherChecklistRepository : HazelcastRepository<CdInspecti
 interface ICdInspectionOtherItemChecklistRepository : HazelcastRepository<CdInspectionOtherItemChecklistEntity, Long> {
     fun findByInspectionAndItemId_Id(inspectionGeneral: CdInspectionOtherChecklist,itemId: Long?): CdInspectionOtherItemChecklistEntity?
     fun findByInspection(inspection: CdInspectionOtherChecklist): List<CdInspectionOtherItemChecklistEntity>
+    fun findByInspection_InspectionGeneralAndItemId_Id(inspectionGeneral: CdInspectionGeneralEntity, cdItemID: Long): CdInspectionOtherItemChecklistEntity?
 }
 
 @Repository

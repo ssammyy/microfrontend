@@ -21,14 +21,14 @@ export class ApproveRejectItemComponent implements OnInit {
 
     ngOnInit(): void {
         this.form = this.fb.group({
-            itemStatus: ['', Validators.required],
+            compliant: ['', Validators.required],
             remarks: ['', Validators.required]
         })
     }
 
     saveRecord() {
         this.loading=true
-        this.diService.sendCertificateOfInspection(this.form.value, this.data.uuid)
+        this.diService.approveRejectItems(this.form.value, this.data.cdUuid, this.data.id)
             .subscribe(
                 res => {
                     this.loading=false

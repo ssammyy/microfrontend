@@ -5,6 +5,7 @@ import mu.KotlinLogging
 import org.apache.http.HttpStatus
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
 import org.kebs.app.kotlin.apollo.api.service.ChecklistService
@@ -30,11 +31,11 @@ class GeneralController(
         private val daoServices: DestinationInspectionDaoServices,
         private val checklistService: ChecklistService,
         private val invoicePaymentService: InvoicePaymentService,
-        private val resourceLoader: ResourceLoader
+        private val commonDaoServices: CommonDaoServices,
 ) {
-    val checkMark = checklistService.readCheckmark(applicationMapProperties.mapCheckmarkImagePath)
-    val smarkImage = checklistService.readCheckmark(applicationMapProperties.mapSmarkImagePath)
-    val kebsLogoPath = checklistService.readCheckmark(applicationMapProperties.mapKebsLogoPath)
+    val checkMark = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapCheckmarkImagePath)
+    val smarkImage = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapSmarkImagePath)
+    val kebsLogoPath = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
 
     @GetMapping("/all/checklist/{downloadId}")
     fun downloadAllChecklist(@PathVariable("downloadId") downloadId: String, httResponse: HttpServletResponse) {

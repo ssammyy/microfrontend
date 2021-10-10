@@ -461,10 +461,10 @@ class DestinationInspectionController(
                                 when (cdDetails.localCoi) {
                                     //Todo : Ask Fred on where to get the routValue
                                     map.activeStatus -> {
-                                        val localCoi = daoServices.createLocalCoi(loggedInUser, updatedCDDetails, map, "D")
+                                        val localCoi = daoServices.createLocalCoi(loggedInUser, updatedCDDetails, map, "","D")
                                     }
                                     else -> {
-                                        val localCoc = daoServices.createLocalCoc(loggedInUser, updatedCDDetails, map, "A")
+                                        val localCoc = daoServices.createLocalCoc(loggedInUser, updatedCDDetails, map, "","A")
                                         updatedCDDetails.cdStandard?.let { cdStd ->
                                             daoServices.updateCDStatus(
                                                     cdStd,

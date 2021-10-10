@@ -2,19 +2,12 @@
 <mat-dialog-content>
     <div class="row no_margin" [formGroup]="form">
         <div class="col-sm-12 col-md-8">
-            <label for="sendCoiStatus" class="waiver-form-label">Select approval status</label>
-            <select id="sendCoiStatus" name="sendCoiStatus" class="waiver-form-input-master"
-                    formControlName="sendCoiStatus">
-                <option value="" disabled selected>Select approval status</option>
-                <option value="1">Approve</option>
-                <option value="0">Reject Item</option>
-            </select>
-        </div>
-        <div class="col-sm-12 col-md-8">
-            <label for="itemStatus" class="waiver-form-label">CoI Status</label>
-            <select id="itemStatus"  class="select-field w-select" formControlName="*{itemStatus}">
-                <option value="0">Select one...</option>
-                <option  *ngFor="let statusType of cdStatusTypes"  value="statusType.typeName">{{statusType.typeName}}</option>
+            <label for="compliant" class="waiver-form-label">Select approval status</label>
+            <select id="compliant" name="compliant" class="waiver-form-input-master"
+                    formControlName="compliant">
+                <option value="" disabled selected>Compliance Status</option>
+                <option value="YES">COMPLAINT</option>
+                <option value="NO">NON-COMPLIANCE</option>
             </select>
         </div>
         <div class="col-sm-12 col-md-8">

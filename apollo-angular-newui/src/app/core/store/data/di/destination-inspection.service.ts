@@ -72,6 +72,10 @@ export class DestinationInspectionService {
         return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/send-coi/" + consignmentUuid), data)
     }
 
+    approveRejectItems(data: any, consignmentUuid: any,itemId: any): Observable<any> {
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/item/compliance/approve-reject/" +itemId+"/"+consignmentUuid), data)
+    }
+
     sendConsignmentDocumentAction(data: any, consignmentUuid: any, actionName: string): Observable<any> {
         return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/" + actionName + "/" + consignmentUuid), data)
     }

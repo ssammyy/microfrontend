@@ -583,13 +583,14 @@ class DestinationInspectionService(
         return true
     }
 
+    @Transactional
     fun swGenerateCoC(cdUuid: String, remarks: String, supervisor: String): Boolean {
         KotlinLogging.logger { }.info("REQUESTING COC: ${cdUuid}")
         try {
             val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             val loggedInUser = commonDaoServices.findUserByUserName(supervisor)
-            val localCoc = daoServices.createLocalCoc(loggedInUser, consignmentDocument, map, "A")
+            val localCoc = daoServices.createLocalCoc(loggedInUser, consignmentDocument, map, remarks, "A")
             consignmentDocument.cdStandard?.let { cdStd ->
                 daoServices.updateCDStatus(
                         cdStd,
@@ -609,7 +610,7 @@ class DestinationInspectionService(
             consignmentDocument.cdImporter?.let {
                 daoServices.findCDImporterDetails(it)
             }?.let { importer ->
-                val fileName = makeCocOrCoiFile(localCoc.id!!)
+                val fileName = makeCocOrCoiFile(localCoc.id)
                 importer.email?.let { daoServices.sendLocalCocReportEmail(it, fileName) }
             }
             this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
@@ -623,7 +624,7 @@ class DestinationInspectionService(
 
     fun makeCocOrCoiFile(cocCoiId: Long): String {
         val data = this.createLocalCocReportMap(cocCoiId)
-        data["imagePath"] = reportsDaoService.logoImageFile
+        data["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
 
         val items = data["dataSources"] as HashMap<String, List<Any>>
 
@@ -641,7 +642,7 @@ class DestinationInspectionService(
 
     fun makeCorFile(corId: Long): String {
         val data = createLocalCorReportMap(corId)
-        data["imagePath"] = reportsDaoService.logoImageFile
+        data["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
         val corNumber = data["corNumber"] as String
         val fileName = "/tmp/LOCAL-COR-${corNumber}.pdf"
         val pdfStream = reportsDaoService.extractReportEmptyDataSource(data, "classpath:reports/LocalCoRReport.jrxml")
@@ -650,20 +651,21 @@ class DestinationInspectionService(
     }
 
 
+    @Transactional
     fun swGenerateCoI(cdUuid: String, remarks: String, supervisor: String): Boolean {
         KotlinLogging.logger { }.info("REQUESTING COI GENERATION: ${cdUuid}")
         try {
             val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             val loggedInUser = commonDaoServices.findUserByUserName(supervisor)
-            val localCoi = daoServices.createLocalCoi(loggedInUser, consignmentDocument, map, "D")
+            val localCoi = daoServices.createLocalCoi(loggedInUser, consignmentDocument, map, remarks, "D")
             consignmentDocument.cdStandard?.let { cdStd ->
                 daoServices.updateCDStatus(cdStd, applicationMapProperties.mapDICdStatusTypeCOIGeneratedAndSendID)
             }
             // Update CoI generation
-            consignmentDocument.localCoi = 1
+            consignmentDocument.localCoi = map.activeStatus
+            consignmentDocument.localCoiRemarks = remarks
             consignmentDocument.compliantStatus = map.activeStatus
-            consignmentDocument.localCocOrCorStatus = map.activeStatus
             consignmentDocument.cocNumber = localCoi.cocNumber
             consignmentDocument.varField10 = "Local COI Generated"
             // Send coi to importer

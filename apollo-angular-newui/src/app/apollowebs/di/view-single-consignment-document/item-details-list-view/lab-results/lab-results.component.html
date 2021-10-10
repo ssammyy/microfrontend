@@ -53,11 +53,12 @@
                                         Quantity
                                     </th>
                                     <tr>
-                                        <td>{{labResults.item_details.quantity}}-{{labResults.item_details.unitOfQuantityDesc}}</td>
+                                        <td>{{labResults.item_details.quantity}}
+                                            -{{labResults.item_details.unitOfQuantityDesc}}</td>
                                     </tr>
                                 </table>
                             </div>
-                            <div class="col-md-9">
+                            <div class="col-md-8">
                                 <mat-tab-group [(selectedIndex)]="activeTab" mat-stretch-tabs [disablePagination]="true"
                                                appMatMultilineTab
                                                class="tab-wraps">
@@ -238,11 +239,12 @@
                                             </ng-container>
                                             <ng-container matColumnDef="lab_test">
                                                 <mat-header-cell *matHeaderCellDef>LAB TEST</mat-header-cell>
-                                                    <mat-cell *matCellDef="let element">{{element.test+""}}</mat-cell>
+                                                <mat-cell *matCellDef="let element">{{element.test + ""}}</mat-cell>
                                             </ng-container>
                                             <ng-container matColumnDef="numeric_result">
                                                 <mat-header-cell *matHeaderCellDef>LAB RESULT(NUM)</mat-header-cell>
-                                                <mat-cell *matCellDef="let element"> {{element.numericResult}} </mat-cell>
+                                                <mat-cell
+                                                        *matCellDef="let element"> {{element.numericResult}} </mat-cell>
                                             </ng-container>
                                             <ng-container matColumnDef="lab_result">
                                                 <mat-header-cell *matHeaderCellDef>LAB RESULT</mat-header-cell>
@@ -261,6 +263,13 @@
                                         </mat-table>
                                     </mat-tab>
                                 </mat-tab-group>
+                            </div>
+                            <div class="col-md-2">
+                                <b>Action:</b>
+                                <button class="btn btn-sm btn-primary"
+                                        (click)="rejectItem()">UPDATE COMPLIANCE
+                                </button>
+                                <b>Document:</b>
                             </div>
                         </div>
                     </div>

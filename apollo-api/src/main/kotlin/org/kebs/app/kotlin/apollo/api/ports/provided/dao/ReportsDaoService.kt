@@ -36,14 +36,6 @@ class ReportsDaoService(
         private val invoiceDaoService: InvoiceDaoService
 ) {
 
-    @Lazy
-    @Autowired
-    lateinit var diDaoServices: DestinationInspectionDaoServices
-
-    //Get KEBS Logo
-    final val logoImageResource = resourceLoader.getResource(applicationMapProperties.mapKebsLogoPath)
-    val logoImageFile = logoImageResource.inputStream.toString()
-
 
     fun addBankAndMPESADetails(map: HashMap<String, Any>, mpesaAccountNumber: String): HashMap<String, Any> {
         //Get MPESA Logo
@@ -57,7 +49,7 @@ class ReportsDaoService(
 //        val map = hashMapOf<String, Any>()
 
 
-        map["imagePath"] = logoImageFile
+        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
         map["mpesaLogo"] = logoMpesaImageFile
         map["paybillNo"] = mpesaDetails.payBillNo.toString()
         map["mpesaACNo"] = mpesaAccountNumber

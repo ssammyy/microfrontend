@@ -38,6 +38,7 @@ class ConsignmentEnableUI {
     var idfAvailable: Boolean = false
     var cocAvailable: Boolean = false
     var corAvailable: Boolean = false
+    var coiAvailable: Boolean = false
     var complianceDisabled: Boolean = false
     var declarationDocument: Boolean = false
     var riskProfileImporter: Boolean = false
@@ -79,7 +80,7 @@ class ConsignmentEnableUI {
             cd.cdType?.let {
                 ui.cocAvailable = it.localCocStatus == map.activeStatus && (cd.localCocOrCorStatus == map.activeStatus||cd.localCoi == map.activeStatus)
                 ui.corAvailable = it.localCorStatus == map.activeStatus && cd.localCocOrCorStatus == map.activeStatus
-
+                ui.coiAvailable=it.localCocStatus == map.activeStatus && cd.localCoi==map.activeStatus
                 ui.corRequest = it.localCorStatus == map.activeStatus
                 ui.cocRequest = it.localCocStatus == map.activeStatus
                 ui.canInspect = it.inspectionStatus == map.activeStatus

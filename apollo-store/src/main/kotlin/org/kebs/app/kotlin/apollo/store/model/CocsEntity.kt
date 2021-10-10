@@ -12,11 +12,10 @@ import javax.validation.constraints.NotNull
 @Entity
 @Table(name = "DAT_KEBS_COCS")
 class CocsEntity : Serializable {
-    @Column(name = "ID", nullable = false, precision = 0)
     @Id
     @SequenceGenerator(name = "DAT_KEBS_COCS_SEQ_GEN", sequenceName = "DAT_KEBS_COCS_SEQ", allocationSize = 1)
     @GeneratedValue(generator = "DAT_KEBS_COCS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
-
+    @Column(name = "ID", nullable = false, precision = 0)
     var id: Long = 0
 
     //@NotEmpty(message = "Required field")
@@ -49,13 +48,13 @@ class CocsEntity : Serializable {
     var rfcDate: Timestamp? = null
 
     //@NotNull(message = "Required field")
-    @Column(name = "COC_ISSUE_DATE", nullable = false)
+    @Column(name = "COC_ISSUE_DATE", nullable = true)
     @Basic
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     var cocIssueDate: Timestamp? = null
 
     //@NotNull(message = "Required field")
-    @Column(name = "COI_ISSUE_DATE", nullable = false)
+    @Column(name = "COI_ISSUE_DATE", nullable = true)
     @Basic
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     var coiIssueDate: Timestamp? = null

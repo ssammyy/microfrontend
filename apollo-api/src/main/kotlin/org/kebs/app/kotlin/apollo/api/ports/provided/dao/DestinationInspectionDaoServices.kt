@@ -366,6 +366,7 @@ class DestinationInspectionDaoServices(
             user: UsersEntity,
             consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
             map: ServiceMapsEntity,
+            remarks: String,
             routValue: String
     ): CocsEntity {
         var localCoc = CocsEntity()
@@ -398,7 +399,7 @@ class DestinationInspectionDaoServices(
                             cocIssueDate = commonDaoServices.getTimestamp()
                             clean = "Y"
 
-                            cocRemarks = "UNKNOWN"
+                            cocRemarks = coiRemarks
                             coiRemarks = "UNKNOWN"
                             issuingOffice = "UNKNOWN"
 
@@ -466,6 +467,7 @@ class DestinationInspectionDaoServices(
             user: UsersEntity,
             consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
             map: ServiceMapsEntity,
+            remarks: String,
             routValue: String
     ): CocsEntity {
         val coc = CocsEntity()
@@ -496,7 +498,7 @@ class DestinationInspectionDaoServices(
                         coiIssueDate = commonDaoServices.getTimestamp()
                         clean = "Y"
                         cocRemarks = "UNKNOWN"
-                        coiRemarks = "UNKNOWN"
+                        coiRemarks = remarks
                         issuingOffice = "UNKNOWN"
 
                         val cdImporter = consignmentDocumentDetailsEntity.cdImporter?.let { findCDImporterDetails(it) }
@@ -535,7 +537,7 @@ class DestinationInspectionDaoServices(
                         shipmentSealNumbers = "UNKNOWN"
                         shipmentContainerNumber = "UNKNOWN"
                         shipmentGrossWeight = "UNKNOWN"
-//                    shipmentGrossWeightUnit = "UNKNOWN"
+                        consignmentDocId = consignmentDocumentDetailsEntity
                         route = routValue
                         cocType = "COI"
                         productCategory = "UNKNOWN"
@@ -595,7 +597,7 @@ class DestinationInspectionDaoServices(
         findCDItemsListWithCDID(updatedCDDetails)
                 .forEach { cdItemDetails ->
                     if (cdItemDetails.checklistStatus == map.activeStatus) { // If checklist was filled, only add compliant items only
-                        if (cdItemDetails.approveStatus == map.activeStatus) {
+                        if (cdItemDetails.approveStatus == map.activeStatus || cdItemDetails.approveStatus == null || cdItemDetails.approveStatus == map.inactiveStatus) {
                             generateLocalCocItem(cdItemDetails, localCocEntity, user, map, cdItemDetails.ownerPin
                                     ?: "NA", cdItemDetails.ownerName ?: "NA")
                         }
@@ -1240,7 +1242,7 @@ class DestinationInspectionDaoServices(
     }
 
     fun upDateDemandNote(demandNote: CdDemandNoteEntity): CdDemandNoteEntity {
-        KotlinLogging.logger {  }.info("Data: ${demandNote.paymentStatus} -> ${demandNote.status}")
+        KotlinLogging.logger { }.info("Data: ${demandNote.paymentStatus} -> ${demandNote.status}")
         return iDemandNoteRepo.save(demandNote)
     }
 
@@ -2400,7 +2402,7 @@ class DestinationInspectionDaoServices(
             updateCDItem.lastModifiedBy = commonDaoServices.getUserName(it)
         }
         updateCDItem.lastModifiedOn = commonDaoServices.getTimestamp()
-        KotlinLogging.logger { }.info { "MY UPDATED ITEM ID =  ${updateCDItem.id}" }
+        KotlinLogging.logger { }.debug("MY UPDATED ITEM ID =  ${updateCDItem.id}")
         return iCdItemsRepo.save(updateCDItem)
     }
 

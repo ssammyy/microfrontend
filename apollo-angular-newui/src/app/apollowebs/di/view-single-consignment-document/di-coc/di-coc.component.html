@@ -110,9 +110,13 @@
                                                     <div class="list-title-accordion">Certificate Type</div>
                                                     <div class="list-text-accordion">{{cocDetails.certificate_details.cocType}}</div>
                                                 </li>
-                                                <li class="list-item-accordion">
+                                                <li class="list-item-accordion" *ngIf="cocDetails.certificate_details.cocType=='COC'">
                                                     <div class="list-title-accordion">COC NUMBER</div>
                                                     <div class="list-text-accordion">{{cocDetails.certificate_details.cocNumber}}</div>
+                                                </li>
+                                                <li class="list-item-accordion" *ngIf="cocDetails.certificate_details.cocType=='COI'">
+                                                    <div class="list-title-accordion">COI NUMBER</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.coiNumber}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">IDF NUMBER</div>
@@ -130,13 +134,21 @@
                                                     <div class="list-title-accordion">RFC DATE</div>
                                                     <div class="list-text-accordion">{{cocDetails.certificate_details.rfcDate}}</div>
                                                 </li>
-                                                <li class="list-item-accordion">
+                                                <li class="list-item-accordion" *ngIf="cocDetails.certificate_details.cocType=='COC'">
                                                     <div class="list-title-accordion">COC ISSUE DATE</div>
-                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.dateOfInspection}}</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.cocIssueDate}}</div>
                                                 </li>
-                                                <li class="list-item-accordion">
+                                                <li class="list-item-accordion" *ngIf="cocDetails.certificate_details.cocType=='COI'">
+                                                    <div class="list-title-accordion">COI ISSUE DATE</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.coiIssueDate}}</div>
+                                                </li>
+                                                <li class="list-item-accordion" *ngIf="cocDetails.certificate_details.cocType=='COC'">
                                                     <div class="list-title-accordion">COC REMARKS</div>
                                                     <div class="list-text-accordion">{{cocDetails.certificate_details.cocRemarks}}</div>
+                                                </li>
+                                                <li class="list-item-accordion" *ngIf="cocDetails.certificate_details.cocType=='COI'">
+                                                    <div class="list-title-accordion">COI REMARKS</div>
+                                                    <div class="list-text-accordion">{{cocDetails.certificate_details.coiRemarks}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">ISSUING OFFICE</div>

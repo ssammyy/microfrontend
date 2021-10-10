@@ -10,8 +10,8 @@ import {ApproveRejectItemComponent} from "../approve-reject-item/approve-reject-
     styleUrls: ['./lab-results.component.css']
 })
 export class LabResultsComponent implements OnInit {
-    displayedColumns = ["orderId", "sampleNumber", "matrix", "test", "testPrice","storageLocation", "method", "testGroup", "priority", "ts"]
-    displayedColumnResults = ["orderId", "sampleNumber", "result_param", "percentMoisture","lab_test","numeric_result",  "lab_result","tic","ts"]
+    displayedColumns = ["orderId", "sampleNumber", "matrix", "test", "testPrice", "storageLocation", "method", "testGroup", "priority", "ts"]
+    displayedColumnResults = ["orderId", "sampleNumber", "result_param", "percentMoisture", "lab_test", "numeric_result", "lab_result", "tic", "ts"]
     labResults: any
     activeTab: 1
     prevPage: any;
@@ -35,8 +35,8 @@ export class LabResultsComponent implements OnInit {
     rejectItem() {
         this.dialog.open(ApproveRejectItemComponent, {
             data: {
-                uuid: this.itemUuid,
-                reinspection: false,
+                cdUuid: this.cdUuid,
+                id: this.labResults.item_details.id
             }
         }).afterClosed()
             .subscribe(

@@ -45,6 +45,7 @@ class DestinationInspectionRoutes {
             GET("/check-list/configurations",handler::checklistConfigurations)
             GET("/consignment/document/checklist/{cdUuid}", handler::consignmentDocumentChecklist)
             GET("/consignment/document/sampled-items/{cdUuid}", handler::consignmentDocumentChecklistSampled)
+            POST("/item/compliance/approve-reject/{cdItemId}/{cdUuid}", handler::approveRejectSampledItem)
 //            POST("/consignment/document/compliant-vehicle/{inspectionChecklistId}", handler::updateMotorVehicleComplianceStatus)
             // Ministry
             GET("/ministry/inspections/{inspectionStatus}", handler::ministryInspections)
