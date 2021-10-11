@@ -9,14 +9,10 @@ import org.kebs.app.kotlin.apollo.api.payload.request.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.service.ChecklistService
-import org.kebs.app.kotlin.apollo.api.service.DestinationInspectionService
-import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.repo.di.IChecklistCategoryRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IChecklistInspectionTypesRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
-import org.springframework.core.io.ByteArrayResource
-import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.multipart.MultipartHttpServletRequest
 import org.springframework.web.servlet.function.ServerRequest
@@ -35,6 +31,11 @@ class ChecklistHandler(
         private val commonDaoServices: CommonDaoServices,
         private val applicationMapProperties: ApplicationMapProperties
 ) {
+    fun ssfPdfFilesResults(req: ServerRequest): ServerResponse {
+        val ssfId = req.pathVariable("ssfId")
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        return ServerResponse.ok().body(checlistService.listLabPdfFiles(ssfId.toLongOrDefault(0L),loggedInUser))
+    }
     fun approveRejectSampledItem(req: ServerRequest): ServerResponse {
         var response = ApiResponseModel()
         try {

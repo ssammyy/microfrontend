@@ -214,12 +214,16 @@ export class DestinationInspectionService {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/lab-results/" + itemUuid))
     }
 
+    loadLabResultsDocuments(ssfId: any) : Observable<any>{
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/lab-result/ssf-files/" + ssfId))
+    }
+
     deleteAttachmentDocument(attachmentId: any): Observable<any> {
         return this.client.delete(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/attachments/" + attachmentId))
     }
 
-    downloadDocument(url) {
-        this.client.get(ApiEndpointService.getEndpoint(url), {observe: 'response', responseType: 'blob'})
+    downloadDocument(url, params: any={}) {
+        this.client.get(ApiEndpointService.getEndpoint(url), {observe: 'response', responseType: 'blob', params: params})
             .pipe(map((res: HttpResponse<any>) => {
                     if (res.ok) {
                         let fileName = this.getFileName(res)
@@ -381,5 +385,6 @@ export class DestinationInspectionService {
             }
         })
     }
+
 
 }

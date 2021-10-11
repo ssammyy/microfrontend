@@ -245,6 +245,7 @@ class DestinationInspectionBpmn(
     }
 
     fun startGenerateCor(map: ServiceMapsEntity, data: MutableMap<String, Any?>, consignmentDocument: ConsignmentDocumentDetailsEntity) {
+        data.put("cfs_code", consignmentDocument.freightStation?.cfsCode)
         val processInstance = runtimeService.startProcessInstanceByKey("corApprovalProcess", data)
         consignmentDocument.diProcessInstanceId = processInstance.processDefinitionId
         consignmentDocument.diProcessStatus = 1
@@ -293,6 +294,9 @@ class DestinationInspectionBpmn(
             actionsQuery.taskCategory(category)
         }
         // 2. Get task details
+//        val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+//        val userProfilesEntity =commonDaoServices.findUserProfileByUserID(loggedInUser, map.activeStatus)
+//        val codes = daoServices.findAllCFSUserCodes(userProfilesEntity.id ?: 0L)
         val consignmentActions = actionsQuery
                 .orderByTaskCreateTime().desc()
                 .listPage(page.offset.toInt(), page.pageSize)
@@ -302,7 +306,7 @@ class DestinationInspectionBpmn(
         for (task in taskDetails) {
             resultSet.add(task.map.get("cdUuid") as String)
         }
-        // 4. QUery for CD with uuids
+        // 4. Query for CD with UUIDs
         response.data = ConsignmentDocumentDao.fromList(daoServices.findCDWithUuids(resultSet))
         response.pageNo = page.pageNumber
         response.totalCount = consignmentActions.size.toLong()

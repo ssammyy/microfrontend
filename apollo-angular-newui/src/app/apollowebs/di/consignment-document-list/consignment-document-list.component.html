@@ -11,20 +11,33 @@
                     </div>
                     <div class="card-body">
                         <div class="toolbar">
-                            <div class="form-group" *ngIf="documentTypes">
-                                <label class="waiver-form-label col-sm-2" for="filter">Filter By
-                                    Type</label>
-                                <select id="filter" class="waiver-form-input col-sm-3"
-                                        (change)="onFilterChange($event)">
-                                    <option value="">None</option>
-                                    <option *ngFor="let d of documentTypes" [ngValue]="d" [value]="d">{{d.typeName}}
-                                        -{{d.category}}</option>
-                                </select>
-                                <input class="waiver-form-input col-sm-4" (keyup)="searchPhraseChanged()"
-                                       [(ngModel)]="keywords">
-                                <button class="btn-sm btn-primary ml-1" (click)="searchPhraseChanged()">Search
-                                </button>
-                                <mat-error *ngIf="message">{{message}}</mat-error>
+                            <div class="search-bar" *ngIf="documentTypes">
+                                <div class="input-group form-inline">
+                                    <div class="input-group-btn">
+                                        <select id="filter" class="search-form-input"
+                                                (change)="onFilterChange($event)"
+                                                *ngIf="!supervisorCharge || supervisorCharge && activeStatus!=='my-tasks'">
+                                            <option value="" selected>Filter CD Types</option>
+                                            <option *ngFor="let d of documentTypes" [ngValue]="d"
+                                                    [value]="d">{{d.typeName}}
+                                                -{{d.category}}</option>
+                                        </select>
+                                        <select *ngIf="supervisorCharge && activeStatus=='my-tasks'" id="filter-tasks"
+                                                (change)="onSupervisorChange($event)" class="search-form-input">
+                                            <option value="" selected>Task Owner</option>
+                                            <option value="true">Personal Tasks</option>
+                                            <option value="false">All Tasks</option>
+                                        </select>
+                                    </div>
+                                    <input id="searchDocument" class="search-form-input" (keyup)="searchPhraseChanged()"
+                                           [(ngModel)]="keywords" placeholder="Search Document">
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-primary btn-background"
+                                                (click)="searchPhraseChanged()">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                             <div class="btn-group btn-group-sm" role="group" aria-label="Applications Status">
                                 <button type="button" (click)="toggleStatus('my-tasks')"
@@ -62,15 +75,6 @@
                         <div widget class="card border-0 box-shadow">
                             <div class="card-body pt-0 widget-body">
                                 <div class="table-responsive table-striped">
-                                    <div *ngIf="supervisorCharge && activeStatus=='my-tasks'">
-                                        <label class="waiver-form-label col-sm-2" for="filter-tasks">Task Owner</label>
-                                        <select id="filter-tasks" class="waiver-form-input col-sm-3"
-                                                (change)="onSupervisorChange($event)">
-                                            <option value="">None</option>
-                                            <option value="true">Personal Tasks</option>
-                                            <option value="false">All Tasks</option>
-                                        </select>
-                                    </div>
                                     <ng2-smart-table class="table table-hover" [settings]="settings"
                                                      [source]="dataSet"
                                                      (custom)="onCustomAction($event)">

@@ -136,7 +136,7 @@ export const ROUTES: RouteInfo[] = [
     {
         path: '/tasks',
         title: 'Import Inspection Tasks',
-        privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
+        privilege: ['DI_INSPECTION_OFFICER_READ2', 'DI_OFFICER_CHARGE_READ2'],
         type: 'link',
         icontype: 'receipt'
     }

@@ -8,6 +8,7 @@ import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
+import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.api.service.ChecklistService
 import org.kebs.app.kotlin.apollo.api.service.DestinationInspectionService
 import org.kebs.app.kotlin.apollo.api.service.InvoicePaymentService
@@ -32,10 +33,32 @@ class GeneralController(
         private val checklistService: ChecklistService,
         private val invoicePaymentService: InvoicePaymentService,
         private val commonDaoServices: CommonDaoServices,
+        private val limsServices: LimsServices
 ) {
     val checkMark = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapCheckmarkImagePath)
     val smarkImage = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapSmarkImagePath)
     val kebsLogoPath = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
+
+    @GetMapping("/lims/lab-result/pdf")
+    fun downloadLimsReport(@RequestParam("bsNumber") bsNumber: String, @RequestParam("fileName") fileName: String, httResponse: HttpServletResponse) {
+        try {
+            val file = limsServices.mainFunctionLimsGetPDF(bsNumber, fileName)
+            httResponse.contentType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(file.name)
+            httResponse.setHeader(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"${file.name}\";")
+            httResponse.setHeader(HttpHeaders.CONTENT_TYPE,MediaType.APPLICATION_PDF_VALUE)
+            httResponse.setContentLengthLong(file.length())
+            httResponse.outputStream
+                    .let { responseOutputStream ->
+                        responseOutputStream.write(file.readBytes())
+                        responseOutputStream.close()
+                        file.deleteOnExit()
+                    }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("FAILED to download", ex)
+            httResponse.status = HttpStatus.SC_INTERNAL_SERVER_ERROR
+            httResponse.writer.println("PDF Download failed")
+        }
+    }
 
     @GetMapping("/all/checklist/{downloadId}")
     fun downloadAllChecklist(@PathVariable("downloadId") downloadId: String, httResponse: HttpServletResponse) {
@@ -45,7 +68,7 @@ class GeneralController(
             map["imagePath"] = kebsLogoPath ?: ""
             map["CheckMark"] = checkMark ?: ""
             map.putAll(this.checklistService.getAllChecklistDetails(downloadId))
-            val dataSources=map["dataSources"] as HashMap<String,List<Any>>
+            val dataSources = map["dataSources"] as HashMap<String, List<Any>>
 
             val stream = reportsDaoService.extractReportMapDataSource(map, "classpath:reports/allChecklist.jrxml", dataSources)
             download(stream, fileName, httResponse)
@@ -122,7 +145,7 @@ class GeneralController(
             val data = diServices.createLocalCorReportMap(corId)
             data["imagePath"] = kebsLogoPath ?: ""
             val fileName = "LOCAL-COR-".plus(data["corNumber"] as String).plus(".pdf")
-            KotlinLogging.logger {  }.info("COR DATA: $data")
+            KotlinLogging.logger { }.info("COR DATA: $data")
             val pdfStream = reportsDaoService.extractReportEmptyDataSource(data, "classpath:reports/LocalCoRReport.jrxml")
             download(pdfStream, fileName, httResponse)
         } catch (ex: Exception) {
@@ -138,13 +161,13 @@ class GeneralController(
             val data = diServices.createLocalCocReportMap(cocCoiId)
             data["imagePath"] = kebsLogoPath ?: ""
 
-            val items=data["dataSources"] as HashMap<String,List<Any>>
+            val items = data["dataSources"] as HashMap<String, List<Any>>
 
-            KotlinLogging.logger {  }.info("COC DATA: $data")
+            KotlinLogging.logger { }.info("COC DATA: $data")
             val pdfStream: ByteArrayOutputStream
-            val cocType= data["CoCType"] as String
+            val cocType = data["CoCType"] as String
             val fileName = "LOCAL-${cocType.toUpperCase()}-".plus(data["CocNo"] as String).plus(".pdf")
-            if("COI".equals(cocType,true)) {
+            if ("COI".equals(cocType, true)) {
                 pdfStream = reportsDaoService.extractReportMapDataSource(data, "classpath:reports/LocalCoiReport.jrxml", items)
             } else {
                 pdfStream = reportsDaoService.extractReportMapDataSource(data, applicationMapProperties.mapReportLocalCocPath, items)

@@ -54,3 +54,4 @@ package-lock.json
 *.zip
 *.txt
 DAT_KEBS_CONSIGNMENT_DOCUMENT_DETAILS_IDX/
+*.pdf

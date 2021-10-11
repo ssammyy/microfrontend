@@ -15,7 +15,7 @@
                         </h4>
 
                     </div>
-                    <div class="card-body" *ngIf="inspectionDetails">
+                    <div class="card-body" *ngIf="inspectionDetails; else loadingView">
                         <div class="row">
                             <div class="col-md-3">
                                 <div widget class=" border-0 box-shadow">
@@ -177,6 +177,13 @@
                         </div>
                         <!-- end content-->
                     </div>
+                    <ng-template #loadingView>
+                        <div class="card-body text-center">
+                            <div class="loader-view text-center spinner-border" style="width: 7rem; height: 7rem;" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </div>
+                    </ng-template>
                     <!--  end card  -->
                 </div>
                 <!-- end col-md-12 -->

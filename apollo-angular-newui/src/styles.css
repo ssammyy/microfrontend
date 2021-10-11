@@ -288,3 +288,42 @@ ul, ol {
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+.loader-view {
+    margin-left: auto;
+    margin-right: auto;
+    width: available;
+}
+
+
+.search-form-label{
+    color: #1878b3;
+    font-weight: 400;
+    width: 40%;
+}
+.search-bar {
+    width: available;
+}
+
+.search-bar .form-group{
+    width: available;
+}
+.search-form-input{
+    border: #1878b3 solid 1px;
+    border-radius: 1px;
+    width: 300px;
+    padding: 14px;
+    font-size: 18px;
+}
+
+.search-form-input-master{
+    border: #1878b3 solid 1px;
+    border-radius: 1px;
+    font-size: 18px;
+    width: 300px;
+    padding: 14px;
+}
+
+.btn-background {
+    background-color: #2196f3;
+    padding: 14px;
+}

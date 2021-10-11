@@ -3,3 +3,11 @@
     padding-left: 3px !important;
     padding-right: 2px !important;
 }
+
+.btn-primary {
+    background-color: #2196f3;
+    width: 150px;
+}
+.btn-warning {
+    width: 150px;
+}

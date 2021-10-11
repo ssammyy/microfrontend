@@ -9,7 +9,9 @@ import org.kebs.app.kotlin.apollo.api.payload.request.SsfResultForm
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
+import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.common.dto.MinistryInspectionListResponseDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
@@ -19,6 +21,7 @@ import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.di.*
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleCollectionEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmissionEntity
+import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmittedPdfListDetailsEntity
 import org.kebs.app.kotlin.apollo.store.repo.di.*
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleCollectionRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleLabTestParametersRepository
@@ -67,8 +70,38 @@ class ChecklistService(
         private val qaISampleCollectRepository: IQaSampleCollectionRepository,
         private val consignmentAuditService: ConsignmentDocumentAuditService,
         private val daoServices: DestinationInspectionDaoServices,
-        private val resourceLoader: ResourceLoader
+        private val limsServices: LimsServices,
+        private val qaDaoServices: QADaoServices
 ) {
+    fun listLabPdfFiles(ssfId: Long, loggedInUser: UsersEntity): ApiResponseModel {
+        val response = ApiResponseModel()
+        try {
+            val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+            val sample = this.qaDaoServices.findSampleSubmittedBYID(ssfId)
+            var savedPDFFiles = qaDaoServices.findSampleSubmittedListPdfBYSSFid(ssfId)
+            if (savedPDFFiles.isNullOrEmpty() && sample.labResultsStatus == map.activeStatus) {
+                savedPDFFiles = mutableListOf<QaSampleSubmittedPdfListDetailsEntity>()
+                sample.bsNumber?.let { bsNumber ->
+                    limsServices.checkPDFFiles(bsNumber)?.let { files ->
+                        for (index in files.indices) {
+                            val qaFile = QaSampleSubmittedPdfListDetailsEntity()
+                            qaFile.pdfName = files[index]
+                            qaFile.description="File ${index}"
+                            qaFile.sffId = sample.id
+                            qaFile.status = map.activeStatus
+                            savedPDFFiles.add(qaDaoServices.saveSampleSubmittedPdf(qaFile, loggedInUser))
+                        }
+                    }
+                }
+            }
+            response.data = LimsPdfFilesDto.fromList(savedPDFFiles)
+            response.message = "Success"
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("FAILED TO LOAD FILES", ex)
+        }
+        return response
+    }
 
     fun updateItemComplianceStatus(document: ConsignmentDocumentDetailsEntity, cdItemID: Long, remarks: String, compliant: String): ApiResponseModel {
         val response = ApiResponseModel()

@@ -14,7 +14,7 @@
                             </button>
                         </h4>
                     </div>
-                    <div class="card-body" *ngIf="labResults">
+                    <div class="card-body p-0 m-0" *ngIf="labResults; else loadingView">
                         <div class="row no_margin">
                             <div class="col-md-2">
                                 <table class="table-responsive">
@@ -58,7 +58,7 @@
                                     </tr>
                                 </table>
                             </div>
-                            <div class="col-md-8">
+                            <div class="col-md-8 m-0">
                                 <mat-tab-group [(selectedIndex)]="activeTab" mat-stretch-tabs [disablePagination]="true"
                                                appMatMultilineTab
                                                class="tab-wraps">
@@ -266,13 +266,31 @@
                             </div>
                             <div class="col-md-2">
                                 <b>Action:</b>
+                                <br/>
                                 <button class="btn btn-sm btn-primary"
                                         (click)="rejectItem()">UPDATE COMPLIANCE
                                 </button>
+                                <br/>
                                 <b>Document:</b>
+                                <br/>
+                                <div *ngIf="labDocuments">
+                                    <button *ngFor="let doc of labDocuments;let index=index"
+                                            class="btn btn-sm btn-primary"
+                                            (click)="downloadLabResult(doc.fileName)">
+                                        {{doc.description ? doc.description : "File " + (index + 1)}}
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <ng-template #loadingView>
+                        <div class="card-body text-center">
+                            <div class="loader-view text-center spinner-border" style="width: 7rem; height: 7rem;"
+                                 role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </div>
+                    </ng-template>
                 </div>
             </div>
         </div>

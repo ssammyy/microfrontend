@@ -13,6 +13,7 @@ export class LabResultsComponent implements OnInit {
     displayedColumns = ["orderId", "sampleNumber", "matrix", "test", "testPrice", "storageLocation", "method", "testGroup", "priority", "ts"]
     displayedColumnResults = ["orderId", "sampleNumber", "result_param", "percentMoisture", "lab_test", "numeric_result", "lab_result", "tic", "ts"]
     labResults: any
+    labDocuments: any[]
     activeTab: 1
     prevPage: any;
     itemUuid: any;
@@ -47,6 +48,26 @@ export class LabResultsComponent implements OnInit {
                 }
             )
     }
+    downloadLabResult(fileName: any){
+        let params={
+            fileName: fileName,
+            bsNumber: this.labResults.ssf_details.bsNumber
+        }
+        this.diService.downloadDocument("/api/v1/download/lims/lab-result/pdf",params)
+
+    }
+    loadLabPdfsResults() {
+        this.diService.loadLabResultsDocuments(this.labResults.ssf_details.id)
+            .subscribe(
+                res => {
+                    if (res.responseCode == "00") {
+                        this.labDocuments = res.data
+                    } else {
+                        console.log(res.message)
+                    }
+                }
+            )
+    }
 
     resultDetails(data: any) {
 
@@ -66,6 +87,8 @@ export class LabResultsComponent implements OnInit {
                 res => {
                     if (res.responseCode === "00") {
                         this.labResults = res.data
+                        // Load lab results
+                        this.loadLabPdfsResults()
                     } else {
                         this.diService.showError(res.message, () => {
                             this.goBack()
