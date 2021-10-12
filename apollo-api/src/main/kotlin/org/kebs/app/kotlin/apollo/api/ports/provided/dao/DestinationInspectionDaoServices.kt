@@ -1369,15 +1369,6 @@ class DestinationInspectionDaoServices(
                 }
                 ?: throw Exception("CD Item Details with the following CD ID= ${consignmentDocumentDetailsEntity.id} and  demand note status = ${map.activeStatus}, do not Exist")
     }
-//    fun findCDItemsListWithCDID(
-//            consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity
-//    ): List<CdItemDetailsEntity> {
-//        iCdItemsRepo.findByCdDocId(consignmentDocumentDetailsEntity)
-//                ?.let { cdItemsDetailsList ->
-//                    return cdItemsDetailsList
-//                }
-//                ?: throw Exception("CD Item Details with the following CD ID= ${consignmentDocumentDetailsEntity.id} and  demand note status = ${map.activeStatus}, do not Exist")
-//    }
 
     fun saveCheckListDetails(
             checklistEntity: CdInspectionChecklistEntity,

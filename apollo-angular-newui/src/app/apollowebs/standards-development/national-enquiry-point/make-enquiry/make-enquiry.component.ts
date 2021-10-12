@@ -4,6 +4,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {NepPointService} from "../../../../core/store/data/std/nep-point.service";
 import {RootObject} from "../../../../core/store/data/std/std.model";
 import {HttpErrorResponse} from "@angular/common/http";
+import swal from "sweetalert2";
 
 @Component({
   selector: 'app-make-enquiry',
@@ -35,7 +36,16 @@ export class MakeEnquiryComponent implements OnInit {
     this.notificationService.makeEnquiry(this.enquiryFormGroup.value).subscribe(
         (response: RootObject) => {
           console.log(response);
-          this.router.navigate(['/success']);
+          console.log(response);
+          swal.fire({
+            title: 'Your enquiry has been successfully sent. A response shall be made to your E-mail Address.',
+            buttonsStyling: false,
+            customClass: {
+              confirmButton: 'btn btn-success form-wizard-next-btn ',
+            },
+            icon: 'success'
+          });
+          window.location.href = 'http://kebs.org';
         },
         (error: HttpErrorResponse) => {
           alert(error.message);

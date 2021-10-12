@@ -9,23 +9,44 @@
       </div>
 
 
-            <ng-template [ngIf]="router.url == '/branches/add_branch'">
-              <a class="navbar-brand" href="branches/add_branch"> Add Branch</a>
-            </ng-template>
-            <ng-template [ngIf]="router.url == 'users/add_users'">
-              <a class="navbar-brand" href="users/add_users"> Add Users</a>
-            </ng-template>
-            <ng-template [ngIf]="router.url == '/company'">
-              <a class="navbar-brand" href="company"> Add Organisation</a>
-            </ng-template>
-      <div *ngIf="router.url == '/profile';else templateName">
-        <a class="navbar-brand" href="profile"> Profile</a>
-      </div>
+      <!--            <ng-template [ngIf]="router.url == '/branches/add_branch'">-->
+      <!--              <a class="navbar-brand" href="branches/add_branch"> Add Branch</a>-->
+      <!--            </ng-template>-->
+      <!--            <ng-template [ngIf]="router.url == 'users/add_users'">-->
+      <!--              <a class="navbar-brand" href="users/add_users"> Add Users</a>-->
+      <!--            </ng-template>-->
+      <!--            <ng-template [ngIf]="router.url == '/company'">-->
+      <!--              <a class="navbar-brand" href="company"> Add Organisation</a>-->
+      <!--            </ng-template>-->
+      <ng-container [ngSwitch]="true">
+        <div *ngSwitchCase="router.url == '/profile'">
+          <a class="navbar-brand" href="profile"> Profile</a>
+
+        </div>
+        <div *ngSwitchCase="router.url == '/all_my_permits'">
+          <a class="navbar-brand" href="all_my_permits"> All my Permits</a>
+        </div>
+        <div *ngSwitchCase="router.url == '/branches/add_branch'">
+          <a class="navbar-brand" href="branches/add_branch"> Add Branch</a>
+        </div>
+        <div *ngSwitchCase="router.url == '/users/add_users'">
+          <a class="navbar-brand" href="users/add_users"> Add Users</a>
+        </div>
+        <div *ngSwitchCase="router.url == '/company'">
+          <a class="navbar-brand" href="company"> Add Organisation</a>
+        </div>
+        <div *ngSwitchDefault>
+          <a class="navbar-brand" href="{{getPath()}}"> {{getTitle()}}</a>
+        </div>
+      </ng-container>
+      <!--      <div *ngIf="router.url == '/profile';else templateName">-->
+      <!--        <a class="navbar-brand" href="profile"> Profile</a>-->
+      <!--      </div>-->
+      <!--      <div *ngIf="router.url == '/all_my_permits';else templateName">-->
+      <!--        <a class="navbar-brand" href="all_my_permits"> All my Permits</a>-->
+      <!--      </div>-->
 
 
-      <ng-template #templateName>
-        <a class="navbar-brand" href="{{getPath()}}"> {{getTitle()}}</a>
-      </ng-template>
     </div>
     <button mat-button class="navbar-toggler btn-no-ripple" type="button" (click)="sidebarToggle()">
       <span class="sr-only">Toggle navigation</span>
@@ -45,7 +66,7 @@
       </form>
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link" href="">
+          <a class="nav-link" href="all_my_permits">
             <i class="material-icons">perm_media</i>
 
             <span>My Permits</span>

@@ -50,20 +50,20 @@ import {CsRequestFormComponent} from './apollowebs/standards-development/company
 import {InformationcheckComponent} from './apollowebs/standards-development/informationcheck/informationcheck.component';
 import {DivisionresponseComponent} from './apollowebs/standards-development/divisionresponse/divisionresponse.component';
 import {MakeEnquiryComponent} from './apollowebs/standards-development/national-enquiry-point/make-enquiry/make-enquiry.component';
-import {ComStdRequestListComponent} from "./apollowebs/standards-development/company-standard/com-std-request-list/com-std-request-list.component";
-import {IntStdResponsesListComponent} from "./apollowebs/standards-development/international-standard/int-std-responses-list/int-std-responses-list.component";
-import {ComStdJcJustificationComponent} from "./apollowebs/standards-development/company-standard/com-std-jc-justification/com-std-jc-justification.component";
-import {IntStdJustificationListComponent} from "./apollowebs/standards-development/international-standard/int-std-justification-list/int-std-justification-list.component";
-import {IntStdCommentsComponent} from "./apollowebs/standards-development/international-standard/int-std-comments/int-std-comments.component";
-import {ComStdJcJustificationListComponent} from "./apollowebs/standards-development/company-standard/com-std-jc-justification-list/com-std-jc-justification-list.component";
-import {SystemicReviewCommentsComponent} from "./apollowebs/standards-development/systemic-review/systemic-review-comments/systemic-review-comments.component";
-import {IntStdJustificationAppComponent} from "./apollowebs/standards-development/international-standard/int-std-justification-app/int-std-justification-app.component";
-import {SystemicAnalyseCommentsComponent} from "./apollowebs/standards-development/systemic-review/systemic-analyse-comments/systemic-analyse-comments.component";
-import {UsermanagementComponent} from "./apollowebs/usermanagement/usermanagement.component";
-import {UserManagementProfileComponent} from "./apollowebs/usermanagement/user-management-profile/user-management-profile.component";
-import {RequestStandardFormComponent} from "./apollowebs/standards-development/standard-request/request-standard-form/request-standard-form.component";
-import {StandardRequestComponent} from "./apollowebs/standards-development/standard-request/standard-request.component";
-import {StandardTaskComponent} from "./apollowebs/standards-development/standard-request/standard-task/standard-task.component";
+import {ComStdRequestListComponent} from './apollowebs/standards-development/company-standard/com-std-request-list/com-std-request-list.component';
+import {IntStdResponsesListComponent} from './apollowebs/standards-development/international-standard/int-std-responses-list/int-std-responses-list.component';
+import {ComStdJcJustificationComponent} from './apollowebs/standards-development/company-standard/com-std-jc-justification/com-std-jc-justification.component';
+import {IntStdJustificationListComponent} from './apollowebs/standards-development/international-standard/int-std-justification-list/int-std-justification-list.component';
+import {IntStdCommentsComponent} from './apollowebs/standards-development/international-standard/int-std-comments/int-std-comments.component';
+import {ComStdJcJustificationListComponent} from './apollowebs/standards-development/company-standard/com-std-jc-justification-list/com-std-jc-justification-list.component';
+import {SystemicReviewCommentsComponent} from './apollowebs/standards-development/systemic-review/systemic-review-comments/systemic-review-comments.component';
+import {IntStdJustificationAppComponent} from './apollowebs/standards-development/international-standard/int-std-justification-app/int-std-justification-app.component';
+import {SystemicAnalyseCommentsComponent} from './apollowebs/standards-development/systemic-review/systemic-analyse-comments/systemic-analyse-comments.component';
+import {UsermanagementComponent} from './apollowebs/usermanagement/usermanagement.component';
+import {UserManagementProfileComponent} from './apollowebs/usermanagement/user-management-profile/user-management-profile.component';
+import {RequestStandardFormComponent} from './apollowebs/standards-development/standard-request/request-standard-form/request-standard-form.component';
+import {StandardRequestComponent} from './apollowebs/standards-development/standard-request/standard-request.component';
+import {StandardTaskComponent} from './apollowebs/standards-development/standard-request/standard-task/standard-task.component';
 import {SmarkAllAwardedApplicationsComponent} from './apollowebs/quality-assurance/smark-all-awarded-applications/smark-all-awarded-applications.component';
 import {FmarkAllAwardedApplicationsComponent} from './apollowebs/quality-assurance/fmark-all-awarded-applications/fmark-all-awarded-applications.component';
 import {DmarkAllAwardedApplicationsComponent} from './apollowebs/quality-assurance/dmark-all-awarded-applications/dmark-all-awarded-applications.component';
@@ -71,6 +71,16 @@ import {QaTaskDetailsComponent} from './apollowebs/quality-assurance/qa-task-det
 import {CompanyViewComponent} from './apollowebs/company/company-view/company-view.component';
 import {BranchViewComponent} from './apollowebs/company/branch/branch-view/branch-view.component';
 import {QrCodeDetailsComponent} from './apollowebs/quality-assurance/qr-code-details/qr-code-details.component';
+import {ComStdApproveJustificationComponent} from "./apollowebs/standards-development/company-standard/com-std-approve-justification/com-std-approve-justification.component";
+import {ComStdDraftComponent} from "./apollowebs/standards-development/company-standard/com-std-draft/com-std-draft.component";
+import {ComStdUploadComponent} from "./apollowebs/standards-development/company-standard/com-std-upload/com-std-upload.component";
+import {ComStdConfirmComponent} from "./apollowebs/standards-development/company-standard/com-std-confirm/com-std-confirm.component";
+import {StdJustificationComponent} from "./apollowebs/standards-development/standard-request/std-justification/std-justification.component";
+import {SpcSecTaskComponent} from "./apollowebs/standards-development/standard-request/spc-sec-task/spc-sec-task.component";
+import {StdTcWorkplanComponent} from "./apollowebs/standards-development/standard-request/std-tc-workplan/std-tc-workplan.component";
+import {AllpermitsComponent} from "./apollowebs/quality-assurance/allpermits/allpermits.component";
+import {NepNotificationComponent} from "./apollowebs/standards-development/nep-notification/nep-notification.component";
+import {ManagernotificationsComponent} from "./apollowebs/standards-development/managernotifications/managernotifications.component";
 import {StdTscSecTasksComponentComponent} from "./apollowebs/standards-development/standard-request/std-tsc-sec-tasks-component/std-tsc-sec-tasks-component.component";
 import {StdTcTasksComponent} from "./apollowebs/standards-development/standard-request/std-tc-tasks/std-tc-tasks.component";
 import {InvoiceConsolidateComponent} from "./apollowebs/quality-assurance/invoice-consolidate/invoice-consolidate.component";
@@ -139,10 +149,11 @@ import {LabResultsComponent} from "./apollowebs/di/view-single-consignment-docum
 //     }
 // ];
 
-const routes: Routes = [
+export const routes: Routes = [
     {
         path: '',
         redirectTo: 'dashboard',
+        canActivate: [RouteGuard],
         pathMatch: 'prefix',
     },
     // {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
@@ -214,31 +225,26 @@ const routes: Routes = [
     {
         path: 'company', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-
         children: [{path: '', component: CompanyComponent}]
     },
     {
         path: 'company/view', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-
         children: [{path: '', component: CompanyViewComponent}]
     },
     {
         path: 'company/branches', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-
         children: [{path: '', component: BranchList}]
     },
     {
         path: 'companies/view/branch', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-
         children: [{path: '', component: BranchViewComponent}]
     },
     {
         path: 'branches', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-
         children: [{path: '', component: BranchList}]
 
     },
@@ -362,6 +368,12 @@ const routes: Routes = [
         canActivate: [RouteGuard],
 
         children: [{path: '', component: UserProfileMainComponent}]
+    },
+    {
+        path: 'all_my_permits', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
+        children: [{path: '', component: AllpermitsComponent}]
     },
     {
         path: 'smark/all_smark', component: AdminLayoutComponent,
@@ -609,9 +621,34 @@ const routes: Routes = [
         children: [{path: '', component: ComStdJcJustificationComponent}]
     },
     {
+        path: 'comAppJustification', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: ComStdApproveJustificationComponent}]
+    },
+    {
         path: 'comStdJustificationList', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [{path: '', component: ComStdJcJustificationListComponent}]
+    },
+    {
+        path: 'comStdAppJustification', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: ComStdApproveJustificationComponent}]
+    },
+    {
+        path: 'comStdDraft', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: ComStdDraftComponent}]
+    },
+    {
+        path: 'comStdConfirmation', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: ComStdUploadComponent}]
+    },
+    {
+        path: 'comStdUpload', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: ComStdConfirmComponent}]
     },
 
     {
@@ -621,6 +658,14 @@ const routes: Routes = [
     {
         path: 'nep_division_response', component: AdminLayoutComponent,
         children: [{path: '', component: DivisionresponseComponent}]
+    },
+    {
+        path: 'managernotification', component: AdminLayoutComponent,
+        children: [{path: '', component: ManagernotificationsComponent}]
+    },
+    {
+        path: 'nepnotification', component: AdminLayoutComponent,
+        children: [{path: '', component: NepNotificationComponent}]
     },
     {
         path: 'make_enquiry', component: MakeEnquiryComponent

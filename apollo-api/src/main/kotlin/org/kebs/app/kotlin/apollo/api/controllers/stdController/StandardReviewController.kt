@@ -17,8 +17,7 @@ import java.util.stream.Collectors
 
 
 @RestController
-@CrossOrigin(origins = ["http://localhost:4200"])
-@RequestMapping("api/v1/standard_review")
+@RequestMapping("api/v1/migration/standard_review")
 class StandardReviewController(
     val standardReviewService: StandardReviewService,
     val standardReviewFormService: StandardReviewFormService

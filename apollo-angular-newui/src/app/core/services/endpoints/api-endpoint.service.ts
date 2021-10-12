@@ -1,36 +1,35 @@
 import {Injectable} from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class ApiEndpointService {
 
-  /**
-   * Map of protocols for API endpoints.
-   */
-  public static PROTOCOL = {
-    HTTP: 'http://',
-    HTTPS: 'https://'
-  };
+    /**
+     * Map of protocols for API endpoints.
+     */
+    public static PROTOCOL = {
+        HTTP: `http://`,
+        HTTPS: `https://`
+    };
 
-  /**
-   * Map of domains for API endpoints.
-   */
-  public static DOMAIN = {
-   LOCAL_DEV: 'localhost:8006'
-    // LOCAL_DEV: 'kimsfluxint.kebs.org:8005'
-    // LOCAL_DEV: '41.72.209.58:8006'
-    //  LOCAL_DEV: 'kimsint.kebs.org:8006'
-     //LOCAL_DEV: 'nice-baboon-72.loca.lt'
-   //  LOCAL_DEV: 'kimsint.kebs.org'
-    //   LOCAL_DEV: 'kims.kebs.org:8006'
-  };
+    /**
+     * Map of domains for API endpoints.
+     */
+    public static DOMAIN = {
+       //  LOCAL_DEV: 'localhost:8006'
+        // LOCAL_DEV: '12:8006'
+        // LOCAL_DEV: '41.72.209.58:8006'
+        LOCAL_DEV: `kimsint.kebs.org:8006`
+        // LOCAL_DEV: `kims.kebs.org:8006`
+        // LOCAL_DEV: '10.10.0.149:8007'
 
+    };
 
-  /**
-   * Map of contexts for API endpoints.
-   */
-  public static CONTEXT = '';
+    /**
+     * Map of contexts for API endpoints.
+     */
+    public static CONTEXT = '';
 
     /**
      * Map of contexts for QA PROPERTIES endpoints.
@@ -56,6 +55,8 @@ export class ApiEndpointService {
      */
     public static AUTH_CONTEXT = '/api/v1/login';
     public static ANONYMOUS_CONTEXT = '/api/v1/migration/anonymous';
+    public static ANONYMOUS_CONTEXT_NEP = '/api/v1/migration/anonymous/National_enquiry_point';
+
     public static USER_CONTEXT = 'user';
     public static MASTERS_CONTEXT = '/api/v1/migration';
     public static SYSTEMS_ADMIN_SECURITY = `${ApiEndpointService.MASTERS_CONTEXT}/security`;
@@ -227,6 +228,8 @@ export class ApiEndpointService {
         QA_MPESA_STK_PUSH: `${ApiEndpointService.QA_CONTEXT}/permit/mpesa/stk-push`,
         PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/list`,
         PERMIT_LIST_AWARDED: `${ApiEndpointService.QA_CONTEXT}/permit/awarded-list`,
+        PERMIT_LIST_MIGRATION: `${ApiEndpointService.QA_CONTEXT}/permit/my-permits-loaded`,
+
         PERMIT_LIST_TO_GENERATE_FMRK: `${ApiEndpointService.QA_CONTEXT}/permit/awarded-list-fmark-generate`,
         PERMIT_VIEW_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/details`,
         PERMIT_SUBMIT_DETAILS_FOR_REVIEW: `${ApiEndpointService.QA_CONTEXT_APPLY}/submit-application-review`,
@@ -264,34 +267,33 @@ export class ApiEndpointService {
         INVOICE_DETAILS_PDF: `${ApiEndpointService.QA_CONTEXT}/report/proforma-invoice-with-Item`,
 
 
-      PERMIT_CERTIFICATE_ISSUED_DETAILS_PDF: `${ApiEndpointService.QA_CONTEXT}/report/permit-certificate`,
-      // INVOICE_DETAILS_PDF: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-pdf-details`,
+        PERMIT_CERTIFICATE_ISSUED_DETAILS_PDF: `${ApiEndpointService.QA_CONTEXT}/report/permit-certificate`,
         PERMIT_INVOICE_BREAK_DOWN_DETAILS_PDF: `${ApiEndpointService.QA_CONTEXT}/report/braked-down-invoice-with-Item`,
         PERMIT_VIEW_PDF: `${ApiEndpointService.QA_CONTEXT}/view/attached`,
         // INVOICE_DETAILS_PDF: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-pdf-details`,
 
-      PERMIT_APPLY_STA10_FIRM_DETAILS: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/firm_details`,
-      PERMIT_VIEW_STA10_FIRM_DETAILS: `${ApiEndpointService.QA_CONTEXT_VIEW}/sta10/firm-details`,
-      PERMIT_VIEW_STA10_DETAILS: `${ApiEndpointService.QA_CONTEXT_VIEW}/sta10/view-details`,
+        PERMIT_APPLY_STA10_FIRM_DETAILS: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/firm_details`,
+        PERMIT_VIEW_STA10_FIRM_DETAILS: `${ApiEndpointService.QA_CONTEXT_VIEW}/sta10/firm-details`,
+        PERMIT_VIEW_STA10_DETAILS: `${ApiEndpointService.QA_CONTEXT_VIEW}/sta10/view-details`,
 
 
-      PERMIT_APPLY_STA10_PERSONNEL_DETAILS: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/personnel_details`,
-      PERMIT_VIEW_STA10_PERSONNEL_DETAILS: `${ApiEndpointService.QA_CONTEXT_VIEW}/sta10/personnel_details`,
-      PERMIT_APPLY_STA10_PRODUCTS_BEING_MANUFACTURED: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/products_being_manufactured`,
-    PERMIT_VIEW_STA10_PRODUCTS_BEING_MANUFACTURED: `${ApiEndpointService.QA_CONTEXT_VIEW}/sta10/products_being_manufactured`,
-    PERMIT_APPLY_STA10_RAW_MATERIAL: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/raw_material`,
-    PERMIT_VIEW_STA10_RAW_MATERIAL: `${ApiEndpointService.QA_CONTEXT_VIEW}/sta10/raw_material`,
-    PERMIT_APPLY_STA10_MACHINERY_PLANT: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/machinery_plant`,
-    PERMIT_VIEW_STA10_MACHINERY_PLANT: `${ApiEndpointService.QA_CONTEXT_VIEW}/sta10/machinery_plant`,
-    PERMIT_APPLY_STA10_MANUFACTURING_PROCESS: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/manufacturing_process`,
-    PERMIT_VIEW_STA10_MANUFACTURING_PROCESS: `${ApiEndpointService.QA_CONTEXT_VIEW}/sta10/manufacturing_process`,
+        PERMIT_APPLY_STA10_PERSONNEL_DETAILS: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/personnel_details`,
+        PERMIT_VIEW_STA10_PERSONNEL_DETAILS: `${ApiEndpointService.QA_CONTEXT_VIEW}/sta10/personnel_details`,
+        PERMIT_APPLY_STA10_PRODUCTS_BEING_MANUFACTURED: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/products_being_manufactured`,
+        PERMIT_VIEW_STA10_PRODUCTS_BEING_MANUFACTURED: `${ApiEndpointService.QA_CONTEXT_VIEW}/sta10/products_being_manufactured`,
+        PERMIT_APPLY_STA10_RAW_MATERIAL: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/raw_material`,
+        PERMIT_VIEW_STA10_RAW_MATERIAL: `${ApiEndpointService.QA_CONTEXT_VIEW}/sta10/raw_material`,
+        PERMIT_APPLY_STA10_MACHINERY_PLANT: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/machinery_plant`,
+        PERMIT_VIEW_STA10_MACHINERY_PLANT: `${ApiEndpointService.QA_CONTEXT_VIEW}/sta10/machinery_plant`,
+        PERMIT_APPLY_STA10_MANUFACTURING_PROCESS: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/manufacturing_process`,
+        PERMIT_VIEW_STA10_MANUFACTURING_PROCESS: `${ApiEndpointService.QA_CONTEXT_VIEW}/sta10/manufacturing_process`,
 
-    PERMIT_UPDATE_STA10_FIRM_DETAILS: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/firm_details_update`,
-    PERMIT_UPDATE_STA10_PERSONNEL_DETAILS: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/personnel_details_update`,
-    PERMIT_UPDATE_STA10_PRODUCTS_BEING_MANUFACTURED: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/products_being_manufactured_update`,
-    PERMIT_UPDATE_STA10_RAW_MATERIAL: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/raw_material_update`,
-    PERMIT_UPDATE_STA10_MACHINERY_PLANT: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/machinery_plant_update`,
-    PERMIT_UPDATE_STA10_MANUFACTURING_PROCESS: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/manufacturing_process_update`,
+        PERMIT_UPDATE_STA10_FIRM_DETAILS: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/firm_details_update`,
+        PERMIT_UPDATE_STA10_PERSONNEL_DETAILS: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/personnel_details_update`,
+        PERMIT_UPDATE_STA10_PRODUCTS_BEING_MANUFACTURED: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/products_being_manufactured_update`,
+        PERMIT_UPDATE_STA10_RAW_MATERIAL: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/raw_material_update`,
+        PERMIT_UPDATE_STA10_MACHINERY_PLANT: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/machinery_plant_update`,
+        PERMIT_UPDATE_STA10_MANUFACTURING_PROCESS: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/manufacturing_process_update`,
 
 
         /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::SD ENDPOINTS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
@@ -344,13 +346,26 @@ export class ApiEndpointService {
         ICT_GET_TC_COMMITTEE: `${ApiEndpointService.SD_DR_CONTEXT}/getTechnicalCommittee`,
         // ICT_GET_PRODUCT_CATEGORIES: `${ApiEndpointService.SD_DR_CONTEXT}/getProductCategories/${id}`,
         ICT_GET_PRODUCT_CATEGORIES: `${ApiEndpointService.SD_DR_CONTEXT}/getProductCategories/`,
-        ICT_ADD_STD_REQUEST: `${ApiEndpointService.SD_ICT_CONTEXT}/request`,
+        ICT_ADD_STD_REQUEST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/request`,
         ICT_HOD_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getHODTasks`,
         ICT_ASSIGN_REQUEST: `${ApiEndpointService.SD_ICT_CONTEXT}/assignRequest`,
         ICT_PL_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getPlTasks`,
         ICT_PREPARE_JUSTIFICATION: `${ApiEndpointService.SD_ICT_CONTEXT}/prepareJustification`,
+        ICT_UPLOAD_JC: `${ApiEndpointService.SD_ICT_CONTEXT}/file-upload`,
         ICT_SPC_SEC_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getSpcSecTasks`,
         ICT_DECISION_ON_JUSTIFICATION: `${ApiEndpointService.SD_ICT_CONTEXT}/decisionOnJustification`,
+        ICT_SAC_SEC_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getSacSecTasks`,
+        ICT_DECISION_ON_APP_JUSTIFICATION: `${ApiEndpointService.SD_ICT_CONTEXT}/decisionOnAppJustification`,
+        ICT_PREPARE_PRELIMINARY_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/uploadDraft`,
+        ICT_UPLOAD_PD: `${ApiEndpointService.SD_ICT_CONTEXT}/draft-file-upload`,
+        ICT_JC_SEC_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getJcSecTasks`,
+        ICT_DECISION_ON_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/decisionOnCompanyStdDraft`,
+        ICT_COM_SEC_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getComSecTasks`,
+        ICT_PREPARE_COM_STANDARD: `${ApiEndpointService.SD_ICT_CONTEXT}/uploadComStandard`,
+        ICT_COM_UPLOAD_SD: `${ApiEndpointService.SD_ICT_CONTEXT}/std-file-upload`,
+        ICT_COM_HOP_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getHopTasks`,
+        ICT_COM_EDIT_STANDARD: `${ApiEndpointService.SD_ICT_CONTEXT}/editCompanyStandard`,
+        ICT_COM_UPLOAD_SD_EDIT: `${ApiEndpointService.SD_ICT_CONTEXT}/std-efile-upload`,
 
         // SD SYSTEMIC REVIEW
         SR_GET_REVIEWED_STANDARDS: `${ApiEndpointService.SD_SR_CONTEXT}/reviewedStandards`,
@@ -364,7 +379,7 @@ export class ApiEndpointService {
         // SD NATIONAL ENQUIRY POINT
         NEP_ENQUIRY_NEP_TASKS: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/nep_officer/tasks`,
         NEP_ENQUIRY_DIVISION_TASKS: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/division/tasks`,
-        NEP_MAKE_ENQUIRY: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/notification_request`,
+        NEP_MAKE_ENQUIRY: `${ApiEndpointService.ANONYMOUS_CONTEXT_NEP}/notification_request`,
         NEP_INFORMATION_AVAILABLE_YES: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/nep_officer/is_available`,
         NEP_DEPARTMENT_RESPONSE: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/division_response/send_response`,
         NEP_FEEDBACK_EMAIL: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/information_available/send_email`,
@@ -420,7 +435,7 @@ export class ApiEndpointService {
       || url.toLowerCase().indexOf(ApiEndpointService.AUTH_CONTEXT) > -1
     );
 
-  }
+    }
 
   /**
    * Determines if the requested URL is an API endpoint.

@@ -4,6 +4,7 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NepPointService} from "../../../core/store/data/std/nep-point.service";
 import {HttpErrorResponse} from "@angular/common/http";
+import swal from 'sweetalert2';
 
 declare interface DataTable {
     headerRow: string[];
@@ -43,8 +44,8 @@ export class InformationcheckComponent implements OnInit {
               formattedArray = data.map(i => [i.taskData.requestDate, i.name, i.taskData.requesterName, i.taskData.requesterCountry,i.taskData.requesterInstitution,i.taskData.requesterEmail,i.taskData.requesterPhone,i.taskData.requesterSubject,i.taskData.requesterComment]);
 
               this.dataTable = {
-                  headerRow: ['Date', 'Status', 'Requester Name', 'Country', ' Institution', 'Email','Phone','Subject','Comment','Actions'],
-                  footerRow: ['Date', 'Status', 'Requester Name', 'Country', ' Institution', 'Email','Phone','Subject','Comment','Actions'],
+                  headerRow: ['Date', 'Status', 'Requester Name', 'Country', ' Institution', 'Email','Phone','View','Comment','Actions'],
+                  footerRow: ['Date', 'Status', 'Requester Name', 'Country', ' Institution', 'Email','Phone','View','Comment','Actions'],
                   dataRows: formattedArray
 
 
@@ -60,6 +61,14 @@ export class InformationcheckComponent implements OnInit {
     this.notificationService.reviewTasks(notification).subscribe(
         (response: InfoAvailableYes) => {
           console.log(response);
+            swal.fire({
+                title: 'CONFIRMED!',
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: 'btn btn-success form-wizard-next-btn ',
+                },
+                icon: 'success'
+            });
           this.getRequests();
         },
         (error: HttpErrorResponse) => {
@@ -73,6 +82,14 @@ export class InformationcheckComponent implements OnInit {
     this.notificationService.feedbackEmail(notification).subscribe(
         (response: FeedbackEmail) => {
           console.log(response);
+            swal.fire({
+                title: 'E-MAIL SENT SUCCESSFULLY!',
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: 'btn btn-success form-wizard-next-btn ',
+                },
+                icon: 'success'
+            });
           this.getRequests();
         },
         (error: HttpErrorResponse) => {
@@ -85,6 +102,14 @@ export class InformationcheckComponent implements OnInit {
     this.notificationService.reviewTasks(notification).subscribe(
         (response: InfoAvailableYes) => {
           console.log(response);
+            swal.fire({
+                title: 'CONFIRMED!',
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: 'btn btn-success form-wizard-next-btn ',
+                },
+                icon: 'success'
+            });
           this.getRequests();
         },
         (error: HttpErrorResponse) => {
@@ -107,6 +132,10 @@ export class InformationcheckComponent implements OnInit {
       this.actionRequest = notification;
       button.setAttribute('data-target', '#yesmodals');
     }
+      if (mode === 'enquiry_message'){
+          this.actionRequest = notification;
+          button.setAttribute('data-target', '#enquirymodal');
+      }
     if (mode === 'SendEmail'){
       this.actionRequest = notification;
       button.setAttribute('data-target', '#sendemail');

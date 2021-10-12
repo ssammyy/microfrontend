@@ -17,6 +17,7 @@ import java.util.stream.Collectors
 
 @Controller
 @CrossOrigin("http://localhost:8081")
+@RequestMapping("api/v1/migration")
 class FilesController {
     @Autowired
     var storageService: FilesStorageService? = null

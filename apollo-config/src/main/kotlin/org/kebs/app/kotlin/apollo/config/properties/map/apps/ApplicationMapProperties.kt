@@ -146,6 +146,10 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.invoices.id}")
     val mapQAPermitTypeIdInvoices: Long = 0L
 
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.invoice.transactions.prefix}")
+    val mapInvoicesPrefix: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.importer.details}")
     val mapImporterDetails: Int = 0
 

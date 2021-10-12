@@ -387,6 +387,52 @@ class QADaoServices(
                 ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
     }
 
+    fun findAllLoadedPermitList(user: UsersEntity, permitNumber: String, attachedPlant: UsersEntity): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        val attachedPlantId = attachedPlant.plantId ?: throw ExpectedDataNotFound("No PLANT ID Found")
+        KotlinLogging.logger { }.info { userId }
+        KotlinLogging.logger { }.info { attachedPlantId }
+        KotlinLogging.logger { }.info { permitNumber }
+        //  permitRepo.migratePermitsToNewUser(userId, permitNumber, attachedPlantId)
+//        permitRepo.findByPermitRefNumber(permitNumber)?.let {
+//
+//            if (it.isNullOrEmpty()) {
+//                throw ExpectedDataNotFound("This Permit is not assigned to you")
+//
+//
+//            } else {
+                try {
+                    val response = permitRepo.migratePermitsToNewUser(userId, permitNumber, attachedPlantId)
+                    KotlinLogging.logger { }.info("The response is $response")
+                    permitRepo.findByUserId(userId)?.let { permitList ->
+                        return permitList
+                    }
+                } catch (e: Exception) {
+                    KotlinLogging.logger { }.error(e.message)
+
+                }
+                permitRepo.findByUserId(userId)?.let { permitList ->
+                    return permitList
+                }
+                    ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+            }
+      //  }
+        //  return it
+
+//            ?: throw ExpectedDataNotFound("This Permit is not assigned to you")
+
+    //}
+
+
+//    fun listAllLoadedPermitList(
+//        userId: Long,
+//        permitNumber: String,
+//        attachedPlantId: Long,
+//        map: ServiceMapsEntity
+//    ): List<PermitEntityDto> {
+//        return listPermits(findAllLoadedPermitList(userId, permitNumber, attachedPlantId), map)
+//    }
+
 
     fun findAllUserPermitWithPermitTypeAwardedStatusAndFmarkGeneratedSTatusISNull(
             user: UsersEntity,
@@ -1226,9 +1272,9 @@ class QADaoServices(
 
         if (permit.compliantStatus != null) {
             findSampleSubmittedListBYPermitRefNumberAndPermitID(
-                    permitRefNumber,
-                    1,
-                    permit.id ?: throw Exception("Missing Permit ID")
+                permitRefNumber,
+                1,
+                permit.id ?: throw Exception("Missing Permit ID")
             )
                     .forEach { ssf ->
 
@@ -2361,7 +2407,7 @@ class QADaoServices(
         return commonDaoServices.findAllUsersProfileWithDesignationAndStatus(designation, map.activeStatus)
     }
 
-    fun findAllPcmOfficers(): List<UsersEntity> {
+    fun findAllPcmOfficers(): MutableList<UsersEntity?>? {
         val map = commonDaoServices.serviceMapDetails(appId)
         val pcmUserProfiles = this.findAllUsersByDesignation(map, applicationMapProperties.mapQADesignationIDForPCMId)
 
@@ -4663,34 +4709,32 @@ class QADaoServices(
                                     }
                                     permitInvoiceFound = invoiceMasterDetailsRepo.save(permitInvoiceFound)
 
-                                    with(invoiceDetails) {
-                                        description = "${permitInvoiceFound.invoiceRef},$description"
-                                        totalAmount = totalAmount?.plus(
-                                                permitInvoiceFound.totalAmount ?: throw Exception("INVALID AMOUNT")
-                                        )
-                                    }
-                                    invoiceBatchDetails = invoiceQaBatchRepo.save(invoiceDetails)
-                                }
-                                ?: kotlin.run {
-                                    var batchInvoicePermit = QaBatchInvoiceEntity()
-                                    with(batchInvoicePermit) {
-                                        invoiceNumber = "KIMS${
-                                            generateRandomText(
-                                                    5,
-                                                    s.secureRandom,
-                                                    s.messageDigestAlgorithm,
-                                                    true
-                                            )
-                                        }".toUpperCase()
-                                        userId = userID
-                                        plantId = batchInvoiceDto.plantID
-                                        status = s.activeStatus
-                                        description = "${permitInvoiceFound.invoiceRef}"
-                                        totalAmount = permitInvoiceFound.totalAmount
-                                        createdBy = commonDaoServices.concatenateName(user)
-                                        createdOn = commonDaoServices.getTimestamp()
-                                    }
-                                    batchInvoicePermit = invoiceQaBatchRepo.save(batchInvoicePermit)
+                            with(invoiceDetails) {
+                                description = "${permitInvoiceFound.invoiceRef},$description"
+                                totalAmount = totalAmount?.plus(
+                                    permitInvoiceFound.totalAmount ?: throw Exception("INVALID AMOUNT")
+                                )
+                            }
+                            invoiceBatchDetails = invoiceQaBatchRepo.save(invoiceDetails)
+                        }
+                        ?: kotlin.run {
+                            var batchInvoicePermit = QaBatchInvoiceEntity()
+                            with(batchInvoicePermit) {
+                                invoiceNumber = applicationMapProperties.mapInvoicesPrefix + generateRandomText(
+                                    5,
+                                    s.secureRandom,
+                                    s.messageDigestAlgorithm,
+                                    true
+                                ).toUpperCase()
+                                userId = userID
+                                plantId = batchInvoiceDto.plantID
+                                status = s.activeStatus
+                                description = "${permitInvoiceFound.invoiceRef}"
+                                totalAmount = permitInvoiceFound.totalAmount
+                                createdBy = commonDaoServices.concatenateName(user)
+                                createdOn = commonDaoServices.getTimestamp()
+                            }
+                            batchInvoicePermit = invoiceQaBatchRepo.save(batchInvoicePermit)
 
                                     with(permitInvoiceFound) {
                                         batchInvoiceNo = batchInvoicePermit.id

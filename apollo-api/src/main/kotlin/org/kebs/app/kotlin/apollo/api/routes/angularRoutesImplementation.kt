@@ -445,6 +445,7 @@ class AngularRoutes {
                 GET("/task-list", handler::permitTaskListMigration)
                 GET("/list", handler::permitListMigration)
                 GET("/awarded-list", handler::permitListAwardedMigration)
+                GET("/my-permits-loaded", handler::permitListAwardedMigrationb)
                 GET("/awarded-list-fmark-generate", handler::permitListAwardedGenerateFmarkMigration)
                 GET("/firm-list", handler::firmPermitListMigration)
                 GET("/firm-branch-list", handler::firmBranchPermitListMigration)
@@ -532,4 +533,6 @@ class AngularRoutes {
 
         }
     }
+
+
 }
