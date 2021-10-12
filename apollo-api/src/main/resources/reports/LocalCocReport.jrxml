@@ -37,7 +37,6 @@
 		<field name="itemDescription" class="java.lang.String"/>
 		<field name="quantity" class="java.math.BigDecimal"/>
 	</subDataset>
-	<parameter name="CocType" class="java.lang.String"/>
 	<parameter name="CocNo" class="java.lang.String"/>
 	<parameter name="IssueDate" class="java.lang.String"/>
 	<parameter name="EntryNo" class="java.lang.String"/>
@@ -88,20 +87,20 @@ Standards]]></text>
 	<detail>
 		<band height="578" splitType="Stretch">
 			<rectangle>
-				<reportElement x="0" y="14" width="561" height="356" uuid="efcdec80-976d-4413-b7e5-d39c81742ba8"/>
+				<reportElement x="0" y="14" width="561" height="336" uuid="efcdec80-976d-4413-b7e5-d39c81742ba8"/>
 			</rectangle>
 			<line>
 				<reportElement x="0" y="36" width="561" height="1" uuid="7eb74fe2-a8b7-4323-a4be-5d459cb2e587"/>
 			</line>
 			<staticText>
-				<reportElement x="20" y="18" width="260" height="17" uuid="94b09c0c-3025-43ec-8935-2fc32458c6ef"/>
+				<reportElement x="20" y="18" width="196" height="17" uuid="94b09c0c-3025-43ec-8935-2fc32458c6ef"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[CERTIFICATE OF CONFORMITY]]></text>
+				<text><![CDATA[CERTIFICATE OF COMPLIANCE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="5" y="43" width="90" height="19" uuid="87af62a4-6893-4cbc-9b22-8fb13286807b"/>
+				<reportElement x="5" y="43" width="100" height="19" uuid="87af62a4-6893-4cbc-9b22-8fb13286807b"/>
 				<text><![CDATA[COC No:]]></text>
 			</staticText>
 			<textField>
@@ -165,43 +164,43 @@ Standards]]></text>
 				<textFieldExpression><![CDATA[$P{ClearingAgent}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="5" y="227" width="89" height="26" uuid="9c7ea310-031f-4d41-aba3-a213deb67242"/>
+				<reportElement x="5" y="227" width="89" height="20" uuid="9c7ea310-031f-4d41-aba3-a213deb67242"/>
 				<text><![CDATA[Port of Entry:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="150" y="227" width="198" height="23" uuid="5b450d37-4b48-479c-a6b7-ae7a83f47c10"/>
+				<reportElement x="150" y="227" width="198" height="17" uuid="5b450d37-4b48-479c-a6b7-ae7a83f47c10"/>
 				<textFieldExpression><![CDATA[$P{PortOfEntry}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="6" y="255" width="89" height="20" uuid="3a0783e7-b12d-4e9f-a073-6491130d0fcc"/>
+				<reportElement x="6" y="250" width="89" height="20" uuid="3a0783e7-b12d-4e9f-a073-6491130d0fcc"/>
 				<text><![CDATA[UCR No:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="150" y="254" width="197" height="21" uuid="3e4bc670-3dfb-4914-b7a3-1624f27585b7"/>
+				<reportElement x="150" y="249" width="197" height="21" uuid="3e4bc670-3dfb-4914-b7a3-1624f27585b7"/>
 				<textFieldExpression><![CDATA[$P{UcrNo}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="6" y="281" width="89" height="20" uuid="0f47727c-859c-4bbe-b969-9b4b3a4722ef"/>
+				<reportElement x="6" y="273" width="89" height="20" uuid="0f47727c-859c-4bbe-b969-9b4b3a4722ef"/>
 				<text><![CDATA[Status:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="150" y="281" width="197" height="20" uuid="1e5a1d50-d417-49e7-99e1-ad830df39a72"/>
+				<reportElement x="150" y="273" width="197" height="20" uuid="1e5a1d50-d417-49e7-99e1-ad830df39a72"/>
 				<textFieldExpression><![CDATA[$P{Status}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="6" y="307" width="89" height="20" uuid="534a29db-64cd-4dbf-ae28-7181e88e2abe"/>
+				<reportElement x="6" y="297" width="89" height="20" uuid="534a29db-64cd-4dbf-ae28-7181e88e2abe"/>
 				<text><![CDATA[Remarks:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="150" y="307" width="197" height="24" uuid="134508ab-c7c1-4578-b137-a0c4910ca65f"/>
+				<reportElement x="150" y="299" width="197" height="17" uuid="134508ab-c7c1-4578-b137-a0c4910ca65f"/>
 				<textFieldExpression><![CDATA[$P{Remarks}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="5" y="337" width="89" height="20" uuid="14133a65-a47f-422a-8a6c-70c84ed93ec8"/>
+				<reportElement x="5" y="320" width="89" height="20" uuid="14133a65-a47f-422a-8a6c-70c84ed93ec8"/>
 				<text><![CDATA[COC Type:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="150" y="336" width="197" height="23" uuid="391a473a-07b6-44df-ab7d-c51faad39ecd"/>
+				<reportElement x="150" y="319" width="197" height="23" uuid="391a473a-07b6-44df-ab7d-c51faad39ecd"/>
 				<textFieldExpression><![CDATA[$P{CoCType}]]></textFieldExpression>
 			</textField>
 			<componentElement>
