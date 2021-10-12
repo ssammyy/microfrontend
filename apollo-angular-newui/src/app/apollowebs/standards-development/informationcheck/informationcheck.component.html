@@ -24,7 +24,6 @@
                                         <th>{{ dataTable.headerRow[5] }}</th>
                                         <th>{{ dataTable.headerRow[6] }}</th>
                                         <th>{{ dataTable.headerRow[7] }}</th>
-                                        <th>{{ dataTable.headerRow[8] }}</th>
                                         <th class="disabled-sorting">{{ dataTable.headerRow[9] }}</th>
                                     </tr>
                                     </thead>
@@ -38,7 +37,6 @@
                                         <th>{{ dataTable.footerRow[5] }}</th>
                                         <th>{{ dataTable.footerRow[6] }}</th>
                                         <th>{{ dataTable.footerRow[7] }}</th>
-                                        <th>{{ dataTable.footerRow[8] }}</th>
                                         <th>{{ dataTable.footerRow[9] }}</th>
                                     </tr>
                                     </tfoot>
@@ -54,8 +52,8 @@
                                         <td>{{row[4]}}</td>
                                         <td>{{row[5]}}</td>
                                         <td>{{row[6]}}</td>
-                                        <td>{{row[7]}}</td>
-                                        <td>{{row[8]}}</td>
+                                        <td> <a (click)="onOpenModal(notifications[i],'enquiry_message')" class="btn btn-outline-primary tooltips" data-placement="top"  data-original-title="Yes"> Open Enquiry</a><br>
+                                        </td>
                                         <td>
                                             <h6 *ngIf="row[1] ==='New Notification'"><strong>Information Available?</strong></h6>
 
@@ -93,6 +91,28 @@
                 </div>
             </div>
         </div>
+
+                            <!-- View enquiry Modal content-->
+                            <div id="enquirymodal" class="modal fade" role="dialog">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title">View Enquiry From - {{actionRequest?.taskData?.requesterName}}</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <h3>Enquiry Subject</h3>
+                                            <p style="font-size: large;">{{actionRequest?.taskData?.requesterSubject}}</p>
+                                            <br>
+                                            <h4>Enquiry Comment</h4>
+                                            <p style="font-size: large;">{{actionRequest?.taskData?.requesterComment}}</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button"  class="btn btn-default" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
         <!-- Send email Modal content-->
         <div id="sendemail" class="modal fade" role="dialog">
             <div class="modal-dialog modal-lg">
@@ -103,7 +123,8 @@
                     <div class="modal-body">
                         <h4>Department Feedback</h4>
                         <p>{{actionRequest?.taskData?.feedbackProvided}}</p>
-                        <br>
+                        <hr>
+                        <h4>Compose response e-mail</h4>
                         <form #sendEmail="ngForm" >
                             <input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskId" id="taskId32" >
                             <input type="hidden" ngModel="34" name="nepOfficerId" id="nepOfficerId" >

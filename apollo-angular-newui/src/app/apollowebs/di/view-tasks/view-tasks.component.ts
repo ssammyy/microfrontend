@@ -31,7 +31,22 @@ export class ViewTasksComponent implements OnInit {
             }
         })
     }
+    removeTasks(taskId: any){
+        this.diService.deleteTask(taskId)
+            .subscribe(
+                res=>{
+                    if(res.responseCode=="00") {
+                        this.diService.showSuccess(res.message,()=>{
+                            this.loadMyTasks()
+                        })
+                    } else {
+                        this.diService.showError(res.message,()=>{
 
+                        })
+                    }
+                }
+            )
+    }
     approveRejectTasks(taskId: any, docUuid: any,taskTitle: any) {
         this.dialog.open(ProcessRejectionComponent, {
             data: {

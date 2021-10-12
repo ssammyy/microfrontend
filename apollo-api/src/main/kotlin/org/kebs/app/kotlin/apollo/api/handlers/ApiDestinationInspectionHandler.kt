@@ -4,6 +4,7 @@ import mu.KotlinLogging
 import okhttp3.internal.toLongOrDefault
 import org.kebs.app.kotlin.apollo.api.payload.*
 import org.kebs.app.kotlin.apollo.api.payload.request.MinistryRequestForm
+import org.kebs.app.kotlin.apollo.api.payload.request.SearchForms
 import org.kebs.app.kotlin.apollo.api.payload.request.SsfForm
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
@@ -40,7 +41,10 @@ class ApiDestinationInspectionHandler(
         private val consignmentAuditService: ConsignmentDocumentAuditService,
         private val applicationMapProperties: ApplicationMapProperties
 ) {
-
+    fun consignmentDocumentSupervisorTasks(req: ServerRequest): ServerResponse {
+        val cdUuid = req.pathVariable("cdUuid")
+        return ServerResponse.ok().body(this.destinationInspectionService.consignmentDocumentTasks(cdUuid))
+    }
     fun listBlackListedUser(req: ServerRequest): ServerResponse {
         val response = ApiResponseModel()
         try {
@@ -157,8 +161,6 @@ class ApiDestinationInspectionHandler(
     }
 
 
-
-
     fun listConsignmentDocumentTypes(req: ServerRequest): ServerResponse {
         return ServerResponse.ok()
                 .body(this.destinationInspectionService.loadCDTypes())
@@ -240,6 +242,7 @@ class ApiDestinationInspectionHandler(
         return ServerResponse.ok()
                 .body(response)
     }
+
     fun deleteConsignmentDocumentAttachment(req: ServerRequest): ServerResponse {
         req.pathVariable("attachmentId").let {
             return ServerResponse.ok().body(this.destinationInspectionService.deleteConsignmentDocumentAttachments(it.toLongOrDefault(0L)))
@@ -276,7 +279,7 @@ class ApiDestinationInspectionHandler(
     @PreAuthorize("hasAuthority('DI_INSPECTION_OFFICER_READ') || hasAuthority('DI_OFFICER_CHARGE_READ')")
     fun assignedConsignmentDocuments(req: ServerRequest): ServerResponse {
         val auth = commonDaoServices.loggedInUserAuthentication()
-        val response = ApiResponseModel()
+        var response = ApiResponseModel()
         try {
             req.paramOrNull("cdTypeUuid").let { cdTypeUuid ->
                 var cdType: ConsignmentDocumentTypesEntity? = null
@@ -285,24 +288,32 @@ class ApiDestinationInspectionHandler(
                 }
                 val usersEntity = commonDaoServices.findUserByUserName(auth.name)
                 // Query supervisor assigned or inspection officer assigned
-                var data: Page<ConsignmentDocumentDetailsEntity>?=null
-                when{
+                var data: Page<ConsignmentDocumentDetailsEntity>? = null
+                when {
                     auth.authorities.stream().anyMatch { authority -> authority.authority == "DI_OFFICER_CHARGE_READ" } -> {
-                        data = daoServices.findAllCdWithAssigner(usersEntity, cdType, extractPage(req))
+                        val personalTasks = req.paramOrNull("personal")
+                        var personal=true
+                        personalTasks?.let {
+                            personal=it.toBoolean()
+                        }
+                        val supervisorCategory = req.paramOrNull("category")
+                        response = destinationInspectionService.findDocumentsWithActions(usersEntity,supervisorCategory, personal,extractPage(req))
                     }
                     auth.authorities.stream().anyMatch { authority -> authority.authority == "DI_INSPECTION_OFFICER_READ" } -> {
                         data = daoServices.findAllCdWithAssignedIoID(usersEntity, cdType, extractPage(req))
+                        // Add data to response
+                        response.data = ConsignmentDocumentDao.fromList(data.toList(), daoServices.ncrCdType)
+                        response.pageNo = data.number
+                        response.totalPages = data.totalPages
+                        response.totalCount = data.totalElements
+                        response.message = "Assigned CD"
+                        response.responseCode = ResponseCodes.SUCCESS_CODE
+                    }
+                    else -> {
+                        response.message = "Unauthorized access"
+                        response.responseCode = ResponseCodes.FAILED_CODE
                     }
                 }
-                // Add data to response
-                data?.let {
-                    response.data = ConsignmentDocumentDao.fromList(data.toList(), daoServices.ncrCdType)
-                    response.pageNo = data.number
-                    response.totalPages = data.totalPages
-                    response.totalCount = data.totalElements
-                }
-                response.message = "Assigned CD"
-                response.responseCode = ResponseCodes.SUCCESS_CODE
             }
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error { ex }
@@ -359,7 +370,7 @@ class ApiDestinationInspectionHandler(
                 when {
                     auth.authorities.stream().anyMatch { authority -> authority.authority == "DI_OFFICER_CHARGE_READ" } -> {
                         val pp = daoServices.findAllCompleteCdWithAssigner(usersEntity, cdType, page)
-                        response.data = ConsignmentDocumentDao.fromList(pp.toList(),daoServices.ncrCdType)
+                        response.data = ConsignmentDocumentDao.fromList(pp.toList(), daoServices.ncrCdType)
                         response.totalPages = pp.totalPages
                         response.pageNo = pp.number
                         response.totalCount = pp.totalElements
@@ -368,7 +379,7 @@ class ApiDestinationInspectionHandler(
                     }
                     auth.authorities.stream().anyMatch { authority -> authority.authority == "DI_INSPECTION_OFFICER_READ" } -> {
                         val pp = daoServices.findAllCompleteCdWithAssignedIoID(usersEntity, cdType, page)
-                        response.data = ConsignmentDocumentDao.fromList(pp.toList(),daoServices.ncrCdType)
+                        response.data = ConsignmentDocumentDao.fromList(pp.toList(), daoServices.ncrCdType)
                         response.pageNo = pp.number
                         response.totalPages = pp.totalPages
                         response.totalCount = pp.totalElements
@@ -403,7 +414,7 @@ class ApiDestinationInspectionHandler(
                 val statuses = listOf(map.activeStatus, map.initStatus, map.successStatus, null)
                 // Find documents
                 val pp = daoServices.findAllAvailableCdWithPortOfEntry(allUserCFS, cdType, statuses, page)
-                response.data = ConsignmentDocumentDao.fromList(pp.toList(),daoServices.ncrCdType)
+                response.data = ConsignmentDocumentDao.fromList(pp.toList(), daoServices.ncrCdType)
                 response.totalPages = pp.totalPages
                 response.pageNo = pp.number
                 response.totalCount = pp.totalElements
@@ -424,7 +435,6 @@ class ApiDestinationInspectionHandler(
             return ServerResponse.ok().body(this.destinationInspectionService.certificateOfConformanceDetails(it))
         }
     }
-
 
 
     fun importDeclarationFormDetails(req: ServerRequest): ServerResponse {
@@ -463,5 +473,25 @@ class ApiDestinationInspectionHandler(
         }
     }
 
+    fun searchConsignmentDocuments(req: ServerRequest): ServerResponse {
+        var respose = ApiResponseModel()
+        try {
+            val auth = commonDaoServices.loggedInUserAuthentication()
+            val form = req.body(SearchForms::class.java)
+            when {
+                auth.authorities.stream().anyMatch { authority -> authority.authority == "DI_OFFICER_CHARGE_READ" } -> {
+                    respose = this.destinationInspectionService.searchConsignmentDocuments(form, true, false)
+                }
+                else -> {
+                    respose = this.destinationInspectionService.searchConsignmentDocuments(form, false, true)
+                }
+            }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("SEARCH FAILED", ex)
+            respose.responseCode = ResponseCodes.EXCEPTION_STATUS
+            respose.message = "Search failed"
+        }
+        return ServerResponse.ok().body(respose)
+    }
 
 }

@@ -51,5 +51,9 @@ package-lock.json
 /apollo-angular/yarn-error.log
 /apollo-angular/yarn.lock
 /apollo-api/src/main/resources/static/migration/
+/apollo-config/src/main/resources/
+
 *.zip
 *.txt
+DAT_KEBS_CONSIGNMENT_DOCUMENT_DETAILS_IDX/
+*.pdf

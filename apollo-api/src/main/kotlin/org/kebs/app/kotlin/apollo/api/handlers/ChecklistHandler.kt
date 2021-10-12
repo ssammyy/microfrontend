@@ -9,14 +9,10 @@ import org.kebs.app.kotlin.apollo.api.payload.request.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.service.ChecklistService
-import org.kebs.app.kotlin.apollo.api.service.DestinationInspectionService
-import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.repo.di.IChecklistCategoryRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IChecklistInspectionTypesRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
-import org.springframework.core.io.ByteArrayResource
-import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.multipart.MultipartHttpServletRequest
 import org.springframework.web.servlet.function.ServerRequest
@@ -28,7 +24,6 @@ import java.time.Instant
 @Component
 class ChecklistHandler(
         private val daoServices: DestinationInspectionDaoServices,
-        private val diService: DestinationInspectionService,
         private val checlistService: ChecklistService,
         private val iChecklistCategoryRepo: IChecklistCategoryRepository,
         private val iChecklistInspectionTypesRepo: IChecklistInspectionTypesRepository,
@@ -36,7 +31,45 @@ class ChecklistHandler(
         private val commonDaoServices: CommonDaoServices,
         private val applicationMapProperties: ApplicationMapProperties
 ) {
+    fun ssfPdfFilesResults(req: ServerRequest): ServerResponse {
+        val ssfId = req.pathVariable("ssfId")
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        return ServerResponse.ok().body(checlistService.listLabPdfFiles(ssfId.toLongOrDefault(0L),loggedInUser))
+    }
+    fun approveRejectSampledItem(req: ServerRequest): ServerResponse {
+        var response = ApiResponseModel()
+        try {
+            req.pathVariable("cdUuid").let { cdUuid ->
+                val form = req.body(ConsignmentUpdateRequest::class.java)
+                val document = daoServices.findCDWithUuid(cdUuid)
+                if (document.approveRejectCdStatusType == null || document.approveRejectCdStatusType?.modificationAllowed == 1) {
+                    val itemId = req.pathVariable("cdItemId").toLongOrDefault(0L)
+                    form.compliant?.let {
+                        response = checlistService.updateItemComplianceStatus(document, itemId, form.remarks.orEmpty(), it)
+                        response
+                    } ?: run {
+                        response.message = "Compliance status is required: ${document.approveRejectCdStatusType?.typeName}"
+                        response.responseCode = ResponseCodes.FAILED_CODE
+                        response
+                    }
+                } else {
+                    response.message = "Document modification is not allowed"
+                    response.responseCode = ResponseCodes.FAILED_CODE
+                }
+            }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("PROCESS ERROR", ex)
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.message = ex.localizedMessage
+        }
+        return ServerResponse.ok().body(response)
+    }
 
+    fun loadLabResult(req: ServerRequest): ServerResponse {
+        req.pathVariable("cdItemID").let {
+            return ServerResponse.ok().body(checlistService.getItemSampleAndLabResults(it))
+        }
+    }
 
     fun uploadMinistryCheckList(req: ServerRequest): ServerResponse {
         var response = ApiResponseModel()
@@ -209,7 +242,7 @@ class ChecklistHandler(
                 response = this.checlistService.saveSsfDetails(ssfDetails, item.id!!, map, loggedInUser)
             }
         } catch (ex: Exception) {
-            KotlinLogging.logger {  }.error("Failed to submit SSF", ex)
+            KotlinLogging.logger { }.error("Failed to submit SSF", ex)
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
             response.message = "Failed to save SSF details"
         }
@@ -228,9 +261,9 @@ class ChecklistHandler(
                 response = this.checlistService.updateSsfResult(form, item, map, loggedInUser)
             }
         } catch (ex: Exception) {
-            KotlinLogging.logger {  }.error("Failed to update BS number",ex)
+            KotlinLogging.logger { }.error("Failed to update BS number", ex)
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
-            response.message = "Failed to save SSF details, check the supplied SSF number"
+            response.message = "BS number already in use, please enter another BS number"
         }
         return ServerResponse.ok().body(response)
     }

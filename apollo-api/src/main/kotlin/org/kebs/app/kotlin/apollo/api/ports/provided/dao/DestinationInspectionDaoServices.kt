@@ -36,6 +36,7 @@ import java.time.Instant
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
+import javax.persistence.EntityManager
 import kotlin.collections.HashMap
 
 
@@ -110,9 +111,8 @@ class DestinationInspectionDaoServices(
         private val iCdInspectionOtherItemChecklistRepo: ICdInspectionOtherItemChecklistRepository,
         private val iCdInspectionMotorVehicleItemChecklistRepo: ICdInspectionMotorVehicleItemChecklistRepository,
         private val iPvocPartnersCountriesRepository: IPvocPartnersCountriesRepository,
-//        private val diBpmn: DestinationInspectionBpmn
 
-) {
+        ) {
 
     @Autowired
     lateinit var sftpService: SftpServiceImpl
@@ -366,6 +366,7 @@ class DestinationInspectionDaoServices(
             user: UsersEntity,
             consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
             map: ServiceMapsEntity,
+            remarks: String,
             routValue: String
     ): CocsEntity {
         var localCoc = CocsEntity()
@@ -396,10 +397,9 @@ class DestinationInspectionDaoServices(
                             rfcDate = commonDaoServices.getTimestamp()
                             shipmentQuantityDelivered = "UNKNOWN"
                             cocIssueDate = commonDaoServices.getTimestamp()
-                            coiIssueDate = commonDaoServices.getTimestamp()
                             clean = "Y"
 
-                            cocRemarks = "UNKNOWN"
+                            cocRemarks = coiRemarks
                             coiRemarks = "UNKNOWN"
                             issuingOffice = "UNKNOWN"
 
@@ -439,9 +439,9 @@ class DestinationInspectionDaoServices(
                             shipmentSealNumbers = "UNKNOWN"
                             shipmentContainerNumber = "UNKNOWN"
                             shipmentGrossWeight = "UNKNOWN"
-//                        shipmentGrossWeightUnit = "UNKOWN"
                             route = routValue
-                            cocType = "L"
+                            consignmentDocId = consignmentDocumentDetailsEntity
+                            cocType = "COC"
                             productCategory = "UNKNOWN"
                             partner = "UNKNOWN"
                             createdBy = commonDaoServices.concatenateName(user)
@@ -450,7 +450,7 @@ class DestinationInspectionDaoServices(
 
                         localCoc = cocRepo.save(localCoc)
                         KotlinLogging.logger { }.info { "localCoc = ${localCoc.id}" }
-                        localCocItems(consignmentDocumentDetailsEntity, localCoc, user, map)
+                        localCocCoiItems(consignmentDocumentDetailsEntity, localCoc, user, map)
                         sendLocalCoc(localCoc.id)
                     } catch (e: Exception) {
                         KotlinLogging.logger { }.debug("Threw error from forward express callback")
@@ -467,6 +467,7 @@ class DestinationInspectionDaoServices(
             user: UsersEntity,
             consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
             map: ServiceMapsEntity,
+            remarks: String,
             routValue: String
     ): CocsEntity {
         val coc = CocsEntity()
@@ -494,11 +495,10 @@ class DestinationInspectionDaoServices(
                         ucrNumber = consignmentDocumentDetailsEntity.ucrNumber
                         rfcDate = commonDaoServices.getTimestamp()
                         shipmentQuantityDelivered = "UNKNOWN"
-                        cocIssueDate = commonDaoServices.getTimestamp()
                         coiIssueDate = commonDaoServices.getTimestamp()
                         clean = "Y"
                         cocRemarks = "UNKNOWN"
-                        coiRemarks = "UNKNOWN"
+                        coiRemarks = remarks
                         issuingOffice = "UNKNOWN"
 
                         val cdImporter = consignmentDocumentDetailsEntity.cdImporter?.let { findCDImporterDetails(it) }
@@ -537,47 +537,19 @@ class DestinationInspectionDaoServices(
                         shipmentSealNumbers = "UNKNOWN"
                         shipmentContainerNumber = "UNKNOWN"
                         shipmentGrossWeight = "UNKNOWN"
-//                    shipmentGrossWeightUnit = "UNKNOWN"
+                        consignmentDocId = consignmentDocumentDetailsEntity
                         route = routValue
-                        cocType = "L"
+                        cocType = "COI"
                         productCategory = "UNKNOWN"
                         partner = "UNKNOWN"
                         createdBy = commonDaoServices.concatenateName(user)
                         createdOn = commonDaoServices.getTimestamp()
                     }
-                    return cocRepo.save(coc)
+                    val localCoi = cocRepo.save(coc)
+                    localCocCoiItems(consignmentDocumentDetailsEntity, localCoi, user, map)
+                    return localCoi
                 }
-
-
     }
-
-
-//    fun generateLocalCoc(cdLocalCocEntity: CdLocalCocEntity, consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity, user: UsersEntity, map: ServiceMapsEntity): CdLocalCocEntity {
-//        var localCoc = cdLocalCocEntity
-//        with(localCoc) {
-//            cocNo = "KEBS/COC/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
-//            cocStatus = findCdStatusValue(approvedStatus.toLong()).typeName
-//            cocType = "LOCAL COC 0"
-//            issueDate = commonDaoServices.getCurrentDate()
-//            entryNo = "ENTRY NUMBER"
-//            idfNo = consignmentDocumentDetailsEntity.idfNumber
-//            val cdImporter = consignmentDocumentDetailsEntity.cdImporter?.let { findCDImporterDetails(it) }
-//            importerName = cdImporter?.name
-//            importerAddress = cdImporter?.physicalAddress
-//            importerPin = cdImporter?.pin
-//            clearAgent = "CLEARING AGENT"
-//            val cdTransport = consignmentDocumentDetailsEntity.cdTransport?.let { findCdTransportDetails(it) }
-//            portEntry = cdTransport?.portOfArrivalDesc
-//            remarks = null
-//            ucrNumber = consignmentDocumentDetailsEntity.ucrNumber
-//            status = map.activeStatus
-//            createdBy = commonDaoServices.getUserName(user)
-//            createdOn = commonDaoServices.getTimestamp()
-//        }
-//        localCoc = iLocalCocRepo.save(localCoc)
-//        KotlinLogging.logger { }.info { "Generated Local coc WITH id = ${localCoc.id}" }
-//        return localCoc
-//    }
 
 
     fun generateLocalCocItem(
@@ -591,9 +563,10 @@ class DestinationInspectionDaoServices(
         var localCocItems = CocItemsEntity()
         with(localCocItems) {
             cocId = localCocEntity.id
+            itemId = cdItemDetails.id
             shipmentLineNumber = cdItemDetails.itemNo!!
             shipmentLineHscode = cdItemDetails.itemHsCode
-            shipmentLineQuantity = cdItemDetails.quantity?.toLong()!!
+            shipmentLineQuantity = cdItemDetails.quantity ?: BigDecimal.ZERO
             shipmentLineUnitofMeasure = cdItemDetails.unitOfQuantity
             shipmentLineDescription = cdItemDetails.itemDescription
             shipmentLineVin = "UNKNOWN"
@@ -605,8 +578,6 @@ class DestinationInspectionDaoServices(
             ownerPin = ownerPinValues
             ownerName = ownerNameValues
             status = map.activeStatus
-            cocNumber = localCocEntity.cocNumber
-            coiNumber = localCocEntity.coiNumber
             shipmentLineBrandName = "UNKNOWN"
             createdBy = commonDaoServices.getUserName(user)
             createdOn = commonDaoServices.getTimestamp()
@@ -617,45 +588,27 @@ class DestinationInspectionDaoServices(
     }
 
 
-    fun localCocItems(
+    fun localCocCoiItems(
             updatedCDDetails: ConsignmentDocumentDetailsEntity,
             localCocEntity: CocsEntity,
             user: UsersEntity,
             map: ServiceMapsEntity
     ) {
-        findCDItemsListWithCDID(updatedCDDetails)
-                .forEach { cdItemDetails ->
-                    if (cdItemDetails.checklistStatus==map.activeStatus) { // If checklist was filled, only add compliant items only
-                        if(cdItemDetails.approveStatus == map.activeStatus) {
-                            generateLocalCocItem(cdItemDetails, localCocEntity, user, map, "NA", "NA")
+        if (updatedCDDetails.inspectionChecklist == map.activeStatus) { // If checklist was filled, only add compliant items only
+            findCDItemsListWithCDID(updatedCDDetails)
+                    .forEach { cdItemDetails ->
+                        if (cdItemDetails.approveStatus == map.activeStatus || cdItemDetails.approveStatus == null || cdItemDetails.approveStatus == map.inactiveStatus) {
+                            generateLocalCocItem(cdItemDetails, localCocEntity, user, map, cdItemDetails.ownerPin
+                                    ?: "NA", cdItemDetails.ownerName ?: "NA")
                         }
-                    } else{
-                        generateLocalCocItem(cdItemDetails, localCocEntity, user, map, "NA", "NA")
                     }
-                }
-
-
-    }
-
-
-    fun localCoiItems(
-            updatedCDDetails: ConsignmentDocumentDetailsEntity,
-            localCocEntity: CocsEntity,
-            user: UsersEntity,
-            map: ServiceMapsEntity
-    ) {
-
-        findCDItemsListWithCDID(updatedCDDetails)
-                .forEach { cdItemDetails ->
-                    val ownerPinValues =
-                            cdItemDetails.ownerPin
-                                    ?: throw Exception("Add OWNER PIN for ITEM number = ${cdItemDetails.itemNo}")
-                    val ownerNameValues = cdItemDetails.ownerName
-                            ?: throw Exception("Add OWNER NAME for ITEM number = ${cdItemDetails.itemNo}")
-                    generateLocalCocItem(cdItemDetails, localCocEntity, user, map, ownerPinValues, ownerNameValues)
-
-                }
-
+        } else {
+            findCDItemsListWithCDID(updatedCDDetails)
+                    .forEach { cdItemDetails ->
+                        generateLocalCocItem(cdItemDetails, localCocEntity, user, map, cdItemDetails.ownerPin
+                                ?: "NA", cdItemDetails.ownerName ?: "NA")
+                    }
+        }
 
     }
 
@@ -718,68 +671,6 @@ class DestinationInspectionDaoServices(
         }
     }
 
-    //TODO: Figure out where to get the null details
-    fun generateLocalCor(
-            cdLocalCorEntity: CdLocalCorEntity, cdEntity: ConsignmentDocumentDetailsEntity, s: ServiceMapsEntity,
-            user: UsersEntity,
-    ): CdLocalCorEntity {
-        var localCor = cdLocalCorEntity
-        //Get CD Item by cd doc id
-        iCdInspectionGeneralRepo.findFirstByCdDetails(cdEntity)?.let { cdItemDetailsList ->
-            this.cdMotorVehicleInspectionChecklistRepo.findByInspectionGeneral(cdItemDetailsList)?.let { cdMvInspectionEntity ->
-                with(localCor) {
-                    corSerialNo =
-                            "KEBS/COR-NBI/${generateRandomText(5, s.secureRandom, s.messageDigestAlgorithm, false)}"
-                    corIssueDate = commonDaoServices.getCurrentDate()
-                    corExpiryDate = commonDaoServices.addMonthsToCurrentDate(3)
-
-                    val cdImporter = cdEntity.cdImporter?.let { findCDImporterDetails(it) }
-                    importerName = cdImporter?.name
-                    importerAddress = cdImporter?.physicalAddress
-                    importerPhone = cdImporter?.telephone
-
-                    val cdExporter = cdEntity.cdExporter?.let { findCdExporterDetails(it) }
-                    exporterName = cdExporter?.name
-                    exporterAddress = cdExporter?.physicalAddress
-                    exporterEmail = cdExporter?.email
-                    chassisNo = cdMvInspectionEntity.chassisNo
-                    engineNoModel = cdMvInspectionEntity.engineNoCapacity
-                    engineCapacity = cdMvInspectionEntity.engineNoCapacity
-                    yearOfManufacture = cdMvInspectionEntity.manufactureDate?.toString()
-                    yearOfFirstRegistration = cdMvInspectionEntity.registrationDate?.toString()
-                    customsIeNo = null
-                    val cdHeaderOne = cdEntity.cdHeaderOne?.let { findCdHeaderOneDetails(it) }
-                    countryOfSupply = cdHeaderOne?.countryOfSupply
-                    bodyType = null
-                    fuel = null
-                    tareWeight = null
-                    typeOfVehicle = null
-                    cdEntity.ucrNumber?.let {
-                        idfNo = findIdf(it)?.baseDocRefNo
-                    }
-                    ucrNumber = cdEntity.ucrNumber
-                    make = cdMvInspectionEntity.makeVehicle
-                    model = null
-                    inspectionMileage = cdMvInspectionEntity.odemetreReading
-                    unitsOfMileage = null
-                    color = cdMvInspectionEntity.colour
-                    axleNo = null
-                    transmission = cdMvInspectionEntity.transmissionAutoManual
-                    noOfPassengers = null
-                    prevRegNo = null
-                    prevCountryOfReg = null
-                    inspectionDetails = cdMvInspectionEntity.remarks
-                    status = s.activeStatus
-                    createdBy = commonDaoServices.getUserName(user)
-                    createdOn = commonDaoServices.getTimestamp()
-                }
-                localCor = iLocalCorRepo.save(localCor)
-                KotlinLogging.logger { }.info { "Generated Local CoR WITH id = ${localCor.id}" }
-            }
-        }
-        return localCor
-    }
-
     fun generateCor(
             cdEntity: ConsignmentDocumentDetailsEntity,
             s: ServiceMapsEntity,
@@ -803,7 +694,7 @@ class DestinationInspectionDaoServices(
                         corIssueDate = commonDaoServices.getTimestamp()
                         val cdHeaderOne = cdEntity.cdHeaderOne?.let { findCdHeaderOneDetails(it) }
                         countryOfSupply = cdHeaderOne?.countryOfSupply
-                        inspectionCenter = "test"
+                        inspectionCenter = cdItemDetailsList.cdDetails?.freightStation?.cfsName ?: "UNKNOWN"
                         val cdExporter = cdEntity.cdExporter?.let { findCdExporterDetails(it) }
                         exporterName = cdExporter?.name
                         exporterAddress1 = cdExporter?.physicalAddress
@@ -822,33 +713,39 @@ class DestinationInspectionDaoServices(
                         inspectionRemarks = cdMvInspectionEntity.remarks
                         previousRegistrationNumber = "test"
                         previousCountryOfRegistration = "test"
-                        tareWeight = 0
+                        tareWeight = cdMvInspectionEntity.itemId?.itemNetWeight?.toLong() ?: 0L
                         loadCapacity = 0
-                        grossWeight = 0
+                        grossWeight = cdMvInspectionEntity.itemId?.itemGrossWeight?.toLong() ?: 0L
                         numberOfAxles = 0
                         typeOfVehicle = cdMvInspectionEntity.makeVehicle
                         numberOfPassangers = 0
                         typeOfBody = "test"
                         bodyColor = cdMvInspectionEntity.colour
                         fuelType = "test"
+                        customsIeNo = cdItemDetailsList.customsEntryNumber
+                        transmission = cdMvInspectionEntity.transmissionAutoManual
                         inspectionFee = 0
                         approvalStatus = cdEntity.approveRejectCdStatus.toString()
                         ucrNumber = cdEntity.ucrNumber
                         inspectionFeeCurrency = "USD"
                         partner = "test"
+                        inspectionOfficer = cdItemDetailsList.cdDetails?.assignedInspectionOfficer?.let {
+                            "${it.firstName} ${it.lastName}"
+                        } ?: ""
                         inspectionFeeExchangeRate = 0
                         inspectionFeePaymentDate = commonDaoServices.getTimestamp()
-                        inspectionRemarks = "test"
+                        inspectionRemarks = mvInspectionEntity.remarks ?: "No Remarks"
+                        consignmentDocId = cdEntity
                         status = s.activeStatus
                         createdBy = commonDaoServices.getUserName(user)
                         createdOn = commonDaoServices.getTimestamp()
                     }
-                    localCor = saveCorDetails(localCor)
+                    KotlinLogging.logger { }.info("COR: $localCor")
+                    localCor = corsBakRepository.save(localCor)
                     KotlinLogging.logger { }.info { "Generated Local CoR WITH id = ${localCor.id}" }
-
-                }
-            }
-        }
+                } ?: throw ExpectedDataNotFound("ITEM MVR INSPECTION CHECKLIST")
+            } ?: throw ExpectedDataNotFound("NO MVR INSPECTION")
+        } ?: throw ExpectedDataNotFound("NO GENERAL INSPECTION")
         return localCor
     }
 
@@ -870,6 +767,7 @@ class DestinationInspectionDaoServices(
     }
 
     fun findCD(cdId: Long): ConsignmentDocumentDetailsEntity {
+
         iConsignmentDocumentDetailsRepo.findByIdOrNull(cdId)
                 ?.let { cdDetailsEntity ->
                     return cdDetailsEntity
@@ -885,8 +783,16 @@ class DestinationInspectionDaoServices(
                 ?: throw Exception("CD Details with the following uuid = ${uuid}, does not Exist")
     }
 
+    fun findCDWithUuids(uuids: Iterable<String>): List<ConsignmentDocumentDetailsEntity> {
+        return iConsignmentDocumentDetailsRepo.findByUuidIn(uuids)
+    }
+
     fun findCORById(cdId: Long): CorsBakEntity? {
         return corsBakRepository.findByIdOrNull(cdId)
+    }
+
+    fun findCORByCdId(cdId: ConsignmentDocumentDetailsEntity?): CorsBakEntity? {
+        return corsBakRepository.findByConsignmentDocId(cdId)
     }
 
     fun findCORByChassisNumber(chassisNo: String): CorsBakEntity {
@@ -906,28 +812,6 @@ class DestinationInspectionDaoServices(
     }
 
 
-    fun findDemandNoteListFromCdItemList(
-            cdItemList: List<CdItemDetailsEntity>,
-            status: Int
-    ): MutableList<CdDemandNoteEntity> {
-        val demandNotes: MutableList<CdDemandNoteEntity> = mutableListOf()
-        cdItemList.forEach { item ->
-//            val demandNote = findDemandNoteWithPaymentStatus(item, status)
-//            if (demandNote != null) {
-//                demandNotes.add(demandNote)
-//            }
-        }
-        return demandNotes
-    }
-
-    fun findLocalCocItemsList(localCocId: Long): List<CdLocalCocItemsEntity> {
-        iLocalCocItemRepo.findByLocalCocId(localCocId)
-                ?.let { localCocItemDetails ->
-                    return localCocItemDetails
-                }
-                ?: throw Exception("Local COC with ID = ${localCocId}, do not Exist")
-    }
-
     fun findCdStatusValue(statusID: Long): CdStatusTypesEntity {
         iCdStatusTypesDetailsRepo.findByIdOrNull(statusID)
                 ?.let { cdStatusDetails ->
@@ -944,13 +828,6 @@ class DestinationInspectionDaoServices(
                 ?: throw Exception("Status Details with id = ${status}, does not Exist")
     }
 
-    fun findDIFeeList(status: Int): List<DestinationInspectionFeeEntity>? {
-        iDIFeeDetailsRepo.findByStatus(status)
-                ?.let { diFeeDetails ->
-                    return diFeeDetails
-                }
-                ?: throw Exception("DI fee Details with status = ${status}, do not Exist")
-    }
 
     fun findCocItemList(cocId: Long): List<CocItemsEntity> {
         iCocItemRepository.findByCocId(cocId)
@@ -966,14 +843,6 @@ class DestinationInspectionDaoServices(
                     return demandNote
                 }
                 ?: throw Exception("Demand Note Details with CD ID = ${cdId}, do not Exist")
-    }
-
-    fun findCoiItemList(coiId: Long): List<CocItemsEntity> {
-        iCocItemRepository.findByCocId(coiId)
-                ?.let { cocItemDetails ->
-                    return cocItemDetails
-                }
-                ?: throw Exception("COI ITEM(s) Details with COI ID = ${coiId}, do not Exist")
     }
 
     fun findIdfItemList(idf: IDFDetailsEntity): List<IDFItemDetailsEntity>? {
@@ -1194,14 +1063,16 @@ class DestinationInspectionDaoServices(
         }
         demandNote.amountPayable = BigDecimal.ZERO
         demandNote.totalAmount = BigDecimal.ZERO
-        iDemandNoteItemRepo.findByDemandNoteId(demandNote.id!!)
-                ?.forEach { demandNoteItem ->
-                    demandNote.amountPayable = demandNote.amountPayable?.plus(demandNoteItem.adjustedAmount
-                            ?: BigDecimal.ZERO)
-                    demandNote.totalAmount = demandNote.totalAmount?.plus(demandNoteItem.amountPayable
-                            ?: BigDecimal.ZERO)
+        demandNote.cfvalue = BigDecimal.ZERO
+        iDemandNoteItemRepo.findByDemandNoteId(demandNote.id!!).forEach { demandNoteItem ->
+            demandNote.amountPayable = demandNote.amountPayable?.plus(demandNoteItem.adjustedAmount
+                    ?: BigDecimal.ZERO)
+            demandNote.totalAmount = demandNote.totalAmount?.plus(demandNoteItem.amountPayable
+                    ?: BigDecimal.ZERO)
+            demandNote.cfvalue = demandNote.cfvalue?.plus(demandNoteItem.cfvalue
+                    ?: BigDecimal.ZERO)
 
-                }
+        }
         return upDateDemandNoteWithUser(demandNote, user)
     }
 
@@ -1237,9 +1108,14 @@ class DestinationInspectionDaoServices(
             amount: Double,
             user: UsersEntity
     ): CdDemandNoteEntity {
-        return iDemandNoteRepo.findFirstByCdIdAndStatusIn(consignmentDocument.id!!, listOf(-1))
+        return iDemandNoteRepo.findFirstByCdIdAndStatusIn(consignmentDocument.id!!, listOf(map.workingStatus))
                 ?.let { demandNote ->
                     var demandNoteDetails = demandNote
+                    // Remove all items for update
+                    val demandNoteItems = iDemandNoteItemRepo.findByDemandNoteId(demandNote.id!!)
+                    for (itm in demandNoteItems) {
+                        iDemandNoteItemRepo.delete(itm)
+                    }
                     //Call Function to add Item Details To be attached To The Demand note
                     demandNote.totalAmount = BigDecimal.ZERO
                     itemList.forEach {
@@ -1290,7 +1166,7 @@ class DestinationInspectionDaoServices(
                         paymentStatus = map.inactiveStatus
                         dateGenerated = commonDaoServices.getCurrentDate()
                         generatedBy = commonDaoServices.concatenateName(user)
-                        status = map.inactiveStatus
+                        status = map.workingStatus
                         createdOn = commonDaoServices.getTimestamp()
                         createdBy = commonDaoServices.getUserName(user)
                     }
@@ -1372,6 +1248,7 @@ class DestinationInspectionDaoServices(
     }
 
     fun upDateDemandNote(demandNote: CdDemandNoteEntity): CdDemandNoteEntity {
+        KotlinLogging.logger { }.info("Demand Note data: ${demandNote.paymentStatus} -> ${demandNote.status}")
         return iDemandNoteRepo.save(demandNote)
     }
 
@@ -1384,8 +1261,10 @@ class DestinationInspectionDaoServices(
 
     fun updateCDStatus(cdStandard: CdStandardsEntity, statusValue: Long): Boolean {
         var updateCD = cdStandard
+        val status = findCdStatusValue(statusValue)
         with(updateCD) {
-            approvalStatus = findCdStatusValue(statusValue).typeName
+            approvalStatus = status.typeName
+            statusId = status.id
             approvalDate = commonDaoServices.getCurrentDate().toString()
         }
         updateCD = iCdStandardsRepo.save(updateCD)
@@ -1433,7 +1312,7 @@ class DestinationInspectionDaoServices(
 //                ?: throw Exception("Demand Note Details with [Item ID = ${item.id}], does not Exist")
     }
 
-    fun findDemandNoteItemDetails(demandNoteID: Long): List<CdDemandNoteItemsDetailsEntity>? {
+    fun findDemandNoteItemDetails(demandNoteID: Long): List<CdDemandNoteItemsDetailsEntity> {
         return iDemandNoteItemRepo.findByDemandNoteId(demandNoteID)
 //                ?.let { demandNoteDetails ->
 //                    return demandNoteDetails
@@ -1490,15 +1369,6 @@ class DestinationInspectionDaoServices(
                 }
                 ?: throw Exception("CD Item Details with the following CD ID= ${consignmentDocumentDetailsEntity.id} and  demand note status = ${map.activeStatus}, do not Exist")
     }
-//    fun findCDItemsListWithCDID(
-//            consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity
-//    ): List<CdItemDetailsEntity> {
-//        iCdItemsRepo.findByCdDocId(consignmentDocumentDetailsEntity)
-//                ?.let { cdItemsDetailsList ->
-//                    return cdItemsDetailsList
-//                }
-//                ?: throw Exception("CD Item Details with the following CD ID= ${consignmentDocumentDetailsEntity.id} and  demand note status = ${map.activeStatus}, do not Exist")
-//    }
 
     fun saveCheckListDetails(
             checklistEntity: CdInspectionChecklistEntity,
@@ -2109,10 +1979,6 @@ class DestinationInspectionDaoServices(
         return cocRepo.findByIdOrNull(cocId)
     }
 
-    fun findCorById(corId: Long): CorsBakEntity? {
-        return corsBakRepository.findByIdOrNull(corId)
-    }
-
     fun findCocByUcrNumber(ucrNumber: String): CocsEntity? {
         return cocRepo.findByUcrNumber(ucrNumber)
     }
@@ -2533,7 +2399,7 @@ class DestinationInspectionDaoServices(
             updateCDItem.lastModifiedBy = commonDaoServices.getUserName(it)
         }
         updateCDItem.lastModifiedOn = commonDaoServices.getTimestamp()
-        KotlinLogging.logger { }.info { "MY UPDATED ITEM ID =  ${updateCDItem.id}" }
+        KotlinLogging.logger { }.debug("MY UPDATED ITEM ID =  ${updateCDItem.id}")
         return iCdItemsRepo.save(updateCDItem)
     }
 
@@ -3040,14 +2906,14 @@ class DestinationInspectionDaoServices(
             }
         }
         // Mark compliant or non-compliant
-        when(compliant){
-            "COMPLIANT" ->{
-                updateItem.approveStatus=map.activeStatus
-                updateItem.approveDate=Date(Date().time)
+        when (compliant) {
+            "COMPLIANT" -> {
+                updateItem.approveStatus = map.activeStatus
+                updateItem.approveDate = Date(Date().time)
             }
-            else ->{
-                updateItem.approveStatus=map.invalidStatus
-                updateItem.approveDate=Date(Date().time)
+            else -> {
+                updateItem.approveStatus = map.invalidStatus
+                updateItem.approveDate = Date(Date().time)
             }
         }
         // Update CD Item
@@ -3112,47 +2978,6 @@ class DestinationInspectionDaoServices(
                 }
     }
 
-    fun updateDemandNotePayment(demandNoteNumber: String, amount: BigDecimal, user: UsersEntity) =//Get the demandNote
-            iDemandNoteRepo.findByDemandNoteNumber(demandNoteNumber)
-                    ?.let { demandNote ->
-                        demandNote.amountPayable?.let {
-                            //Amount paid is less than amount payable
-                            if (it < amount) {
-                                throw InvalidInputException("Amount paid is less than payable amount of: $it")
-                            }
-                            demandNote.paymentStatus = 1
-                            upDateDemandNoteWithUser(demandNote, user)
-                            //Get the consignment document
-                            demandNote.itemId?.cdDocId?.cdStandard?.applicationDate?.let {
-                                //TODO: Update CD status to previous one
-                            }
-                        }
-                    } ?: throw InvalidInputException("Demand note with Number = ${demandNoteNumber}, Does not exist")
-
-    fun findAllMinistryInspectionRequests(status: Int): List<CdItemDetailsEntity> {
-        iCdItemsRepo.findByMinistrySubmissionStatus(status)
-                ?.let { ministryInspectionItems ->
-                    return ministryInspectionItems
-                }
-                ?: throw ExpectedDataNotFound("Ministry Inspection requests with status = $status, do not exist")
-    }
-
-    fun findAllOngoingMinistryInspectionRequests(page: PageRequest): Page<CdItemDetailsEntity> {
-        return iCdItemsRepo.findOngoingMinistrySubmissions(page)
-    }
-
-//    fun findAllCompleteMinistryInspectionRequests(): List<CdItemDetailsEntity> {
-//        iCdItemsRepo.findCompletedMinistrySubmissions()
-//                ?.let { ministryInspectionItems ->
-//                    return ministryInspectionItems
-//                }
-//                ?: throw ExpectedDataNotFound("Complete Ministry Inspection requests, do not exist")
-//    }
-
-    fun findAllCompleteMinistryInspectionRequests(page: PageRequest): Page<CdItemDetailsEntity> {
-        return iCdItemsRepo.findByMinistrySubmissionStatus(1, page)
-    }
-
     fun findAllCompleteMinistryInspectionRequests(status: Int, page: PageRequest): Page<CdItemDetailsEntity> {
         return iCdItemsRepo.findByMinistrySubmissionStatus(status, page)
     }
@@ -3193,56 +3018,6 @@ class DestinationInspectionDaoServices(
                 ?: throw Exception("Local Cor Details with the following UCR NUMBER = ${ucrNumber}, does not Exist")
     }
 
-    fun createLocalCorReportMap(cdDetails: ConsignmentDocumentDetailsEntity, itemId: Long): HashMap<String, Any> {
-        val map = hashMapOf<String, Any>()
-        val importerDetails = cdDetails.cdImporter?.let { findCDImporterDetails(it) }
-        //Importer Details
-        map["ImporterName"] = importerDetails?.name.orEmpty()
-        map["ImporterAddress"] = importerDetails?.physicalAddress.orEmpty()
-        map["ImporterPhone"] = importerDetails?.telephone.orEmpty()
-
-        //COR Details
-        map["CorSerialNo"] = ""
-        map["CorIssueDate"] = commonDaoServices.convertDateToString(commonDaoServices.getCurrentDate(), "mm/dd/yyyy")
-        map["CorExpiryDate"] = commonDaoServices.convertDateToString(commonDaoServices.addMonthsToCurrentDate(3), "mm/dd/yyyy")
-
-        val cdItem = findItemWithItemID(itemId)
-        val itemNonStandardDetail = findCdItemNonStandardByItemID(cdItem)
-        val corDetails = itemNonStandardDetail?.chassisNo?.let { findCORByChassisNumber(it) }
-
-        //Vehicle Details
-        map["ChassisNumber"] = corDetails?.chasisNumber.orEmpty()
-        map["EngineNo"] = corDetails?.engineNumber.orEmpty()
-        map["EngineCap"] = corDetails?.engineCapacity.orEmpty()
-        map["Yom"] = corDetails?.yearOfManufacture.orEmpty()
-        map["Yor"] = corDetails?.yearOfFirstRegistration.orEmpty()
-        map["CustomsIeNo"] = ""
-        map["Cos"] = corDetails?.countryOfSupply.orEmpty()
-        map["BodyType"] = corDetails?.typeOfBody.orEmpty()
-        map["Fuel"] = corDetails?.fuelType.orEmpty()
-        map["TareWeight"] = corDetails?.tareWeight.toString()
-        map["VehicleType"] = corDetails?.typeOfVehicle.orEmpty()
-        map["ExporterName"] = corDetails?.exporterName.orEmpty()
-        map["ExporterAddress"] = corDetails?.exporterAddress1.orEmpty()
-        map["ExporterEmail"] = corDetails?.exporterEmail.orEmpty()
-        map["IdfNumber"] = ""
-        map["UcrNumber"] = corDetails?.ucrNumber.orEmpty()
-        map["Make"] = corDetails?.make.orEmpty()
-        map["Model"] = corDetails?.model.orEmpty()
-        map["InspectedMileage"] = corDetails?.inspectionMileage.orEmpty()
-        map["UnitsOfMileage"] = corDetails?.unitsOfMileage.orEmpty()
-        map["Color"] = corDetails?.bodyColor.orEmpty()
-        map["AxleNo"] = corDetails?.numberOfAxles.toString()
-        map["Transmision"] = ""
-        map["NoOfPassengers"] = corDetails?.numberOfPassangers.toString()
-        map["PrevRegNo"] = corDetails?.previousCountryOfRegistration.orEmpty()
-        map["PrevCountryOfReg"] = corDetails?.previousCountryOfRegistration.orEmpty()
-        // todo: ADD CHECKLIST COMMENT
-//        val inspectionChecklist = findMotorVehicleInspectionByCdItem(cdItem)
-        map["InspectionDetails"] = "to ADD"
-
-        return map
-    }
 
     fun createLocalCocReportMap(localCocEntity: CocsEntity): HashMap<String, Any> {
         val map = hashMapOf<String, Any>()
@@ -3264,30 +3039,8 @@ class DestinationInspectionDaoServices(
         return map
     }
 
-
-    //Update Inspection Notification status & date after KRA submission
-//    fun updateInspectionNotificationSent(cdItemId: Long) {
-//        iCdItemsRepo.findByIdOrNull(cdItemId)?.let { cdItem ->
-//            with(cdItem) {
-//                inspectionNotificationDate = commonDaoServices.getCurrentDate()
-//                inspectionNotificationStatus = commonDaoServices.activeStatus.toInt()
-//            }
-//            iCdItemsRepo.save(cdItem)
-//        }
-//    }
-
-    //Update Inspection schedule received from KRA
-//    fun updateInspectionScheduleReceived(cdItem: CdItemDetailsEntity, receivedInspectionDate: Date) {
-//        with(cdItem) {
-//            inspectionDate = receivedInspectionDate
-//            inspectionDateSetStatus = commonDaoServices.activeStatus.toInt()
-//        }
-//        iCdItemsRepo.save(cdItem)
-//    }
-
-    //Find all demand notes by payment status
-    fun findAllDemandNotesWithPaidStatus(paymentStatus: Int): List<CdDemandNoteEntity>? {
-        return iDemandNoteRepo.findAllByPaymentStatus(paymentStatus)
+    fun findAllDemandNotesWithSwPending(paymentStatus: Int): List<CdDemandNoteEntity> {
+        return iDemandNoteRepo.findAllByPaymentStatusAndSwStatusIn(paymentStatus, listOf(0, null))
     }
 
     //Send CD status to KeSWS
@@ -3394,7 +3147,11 @@ class DestinationInspectionDaoServices(
                 "Hello,  \n" +
                         "\n " +
                         "Find attached the Local COC Certificate."
-        notifications.sendEmail(recipientEmail, subject, messageBody, filePath)
+        var emailAddress = recipientEmail
+        if (!applicationMapProperties.defaultTestEmailAddres.isNullOrEmpty()) {
+            emailAddress = applicationMapProperties.defaultTestEmailAddres.orEmpty()
+        }
+        notifications.sendEmail(emailAddress, subject, messageBody, filePath)
         return true
     }
 
@@ -3404,12 +3161,16 @@ class DestinationInspectionDaoServices(
                 "Hello,  \n" +
                         "\n " +
                         "Find attached the Local COR Certificate."
-        notifications.sendEmail(recipientEmail, subject, messageBody, filePath)
+        var emailAddress = recipientEmail
+        if (!applicationMapProperties.defaultTestEmailAddres.isNullOrEmpty()) {
+            emailAddress = applicationMapProperties.defaultTestEmailAddres.orEmpty()
+        }
+        notifications.sendEmail(emailAddress, subject, messageBody, filePath)
         return true
     }
 
     fun convertCdItemDetailsToMinistryInspectionListResponseDto(cdItemDetails: CdItemDetailsEntity): MinistryInspectionListResponseDto {
-        var ministryInspectionItem = MinistryInspectionListResponseDto()
+        val ministryInspectionItem = MinistryInspectionListResponseDto()
         ministryInspectionItem.cdId = cdItemDetails.cdDocId?.id!!
         ministryInspectionItem.cdUcr = cdItemDetails.cdDocId?.ucrNumber
         ministryInspectionItem.cdItemDetailsId = cdItemDetails.id

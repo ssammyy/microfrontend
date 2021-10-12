@@ -5,9 +5,13 @@ import mu.KotlinLogging
 import org.apache.http.HttpStatus
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
+import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.api.service.ChecklistService
+import org.kebs.app.kotlin.apollo.api.service.DestinationInspectionService
+import org.kebs.app.kotlin.apollo.api.service.InvoicePaymentService
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.di.DiUploadsEntity
@@ -24,29 +28,49 @@ import kotlin.random.Random
 class GeneralController(
         private val applicationMapProperties: ApplicationMapProperties,
         private val reportsDaoService: ReportsDaoService,
+        private val diServices: DestinationInspectionService,
         private val daoServices: DestinationInspectionDaoServices,
         private val checklistService: ChecklistService,
-        private val resourceLoader: ResourceLoader
+        private val invoicePaymentService: InvoicePaymentService,
+        private val commonDaoServices: CommonDaoServices,
+        private val limsServices: LimsServices
 ) {
+    val checkMark = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapCheckmarkImagePath)
+    val smarkImage = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapSmarkImagePath)
+    val kebsLogoPath = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
+
+    @GetMapping("/lims/lab-result/pdf")
+    fun downloadLimsReport(@RequestParam("bsNumber") bsNumber: String, @RequestParam("fileName") fileName: String, httResponse: HttpServletResponse) {
+        try {
+            val file = limsServices.mainFunctionLimsGetPDF(bsNumber, fileName)
+            httResponse.contentType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(file.name)
+            httResponse.setHeader(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"${file.name}\";")
+            httResponse.setHeader(HttpHeaders.CONTENT_TYPE,MediaType.APPLICATION_PDF_VALUE)
+            httResponse.setContentLengthLong(file.length())
+            httResponse.outputStream
+                    .let { responseOutputStream ->
+                        responseOutputStream.write(file.readBytes())
+                        responseOutputStream.close()
+                        file.deleteOnExit()
+                    }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("FAILED to download", ex)
+            httResponse.status = HttpStatus.SC_INTERNAL_SERVER_ERROR
+            httResponse.writer.println("PDF Download failed")
+        }
+    }
 
     @GetMapping("/all/checklist/{downloadId}")
     fun downloadAllChecklist(@PathVariable("downloadId") downloadId: String, httResponse: HttpServletResponse) {
-        var imageFile = ""
-        try {
-//            val resource = resourceLoader.getResource("classpath:static/images/KEBS_SMARK.png")
-            val resource = resourceLoader.getResource("file:\${CONFIG_PATH}/reports/images/KEBS_SMARK.png")
-            imageFile = resource.file.toString()
-        } catch (e: Exception) {
-            KotlinLogging.logger { }.info("Incorrect path ${e.message}")
-        }
         try {
             val map = hashMapOf<String, Any>()
-//        map["ITEM_ID"] = id
             val fileName = "ALL_CHECKLIST.pdf"
-            val sampleCollect = listOf<Any>()
-            map["imagePath"] = imageFile
+            map["imagePath"] = kebsLogoPath ?: ""
+            map["CheckMark"] = checkMark ?: ""
             map.putAll(this.checklistService.getAllChecklistDetails(downloadId))
-            val stream = reportsDaoService.extractReportEmptyDataSource(map, "classpath:reports/allChecklist.jrxml")
+            val dataSources = map["dataSources"] as HashMap<String, List<Any>>
+
+            val stream = reportsDaoService.extractReportMapDataSource(map, "classpath:reports/allChecklist.jrxml", dataSources)
             download(stream, fileName, httResponse)
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("FAILED TO READ DATA", ex)
@@ -57,19 +81,12 @@ class GeneralController(
 
     @GetMapping("/checklist/{docType}/{downloadId}")
     fun downloadChecklist(@PathVariable("docType") docType: String, @PathVariable("downloadId") downloadId: Long, httResponse: HttpServletResponse) {
-        var imageFile = ""
-        try {
-//            val resource = resourceLoader.getResource("classpath:static/images/KEBS_SMARK.png")
-            val resource = resourceLoader.getResource("file:\${CONFIG_PATH}/reports/images/KEBS_SMARK.png")
-            imageFile = resource.file.toString()
-        } catch (e: Exception) {
-            KotlinLogging.logger { }.info("Incorrect path ${e.message}")
-        }
         try {
             val map = hashMapOf<String, Any>()
 //        map["ITEM_ID"] = id
             var sampleCollect: List<Any>? = null
-            map["imagePath"] = imageFile
+            map["imagePath"] = kebsLogoPath ?: ""
+            map["CheckMark"] = checkMark ?: ""
             val fileName = "${docType.toUpperCase()}_$downloadId.pdf"
             when {
                 docType.equals("sampleCollectionForm") -> {
@@ -125,20 +142,12 @@ class GeneralController(
     @GetMapping("/cor/{corId}")
     fun downloadCertificateOfRoadWorthines(@PathVariable("corId") corId: Long, httResponse: HttpServletResponse) {
         try {
-            daoServices.findCorById(corId)?.let { cor ->
-                cor.localCorFile?.let { file ->
-                    //Create FileDTO Object
-                    httResponse.setHeader(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"LOCAL_COR_${cor.corNumber}.pdf\";")
-                    httResponse.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION)
-                    httResponse.addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
-                    httResponse.setContentLength(file.size)
-                    httResponse.outputStream
-                            .let { responseOutputStream ->
-                                responseOutputStream.write(file)
-                                responseOutputStream.close()
-                            }
-                } ?: throw ExpectedDataNotFound("Local COR not generated")
-            } ?: throw ExpectedDataNotFound("Local COR not generated")
+            val data = diServices.createLocalCorReportMap(corId)
+            data["imagePath"] = kebsLogoPath ?: ""
+            val fileName = "LOCAL-COR-".plus(data["corNumber"] as String).plus(".pdf")
+            KotlinLogging.logger { }.info("COR DATA: $data")
+            val pdfStream = reportsDaoService.extractReportEmptyDataSource(data, "classpath:reports/LocalCoRReport.jrxml")
+            download(pdfStream, fileName, httResponse)
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("FAILED TO DOWNLOAD COC", ex)
         }
@@ -146,21 +155,30 @@ class GeneralController(
         httResponse.writer.println("Invalid COR identifier or COI")
     }
 
-    @GetMapping("/coc/{cocId}")
-    fun downloadCertificateOfConformance(@PathVariable("cocId") cocId: Long, httResponse: HttpServletResponse) {
+    @GetMapping("/coc-coi/{cocCoiId}")
+    fun downloadCertificateOfConformance(@PathVariable("cocCoiId") cocCoiId: Long, httResponse: HttpServletResponse) {
         try {
-            daoServices.findCOCById(cocId)?.let { coc ->
-                coc.localCocFile?.let { file ->
-                    //Create FileDTO Object
-                    downloadBytes(file,"LOCAL_COC_${coc.cocNumber}.pdf",httResponse)
-                } ?: throw ExpectedDataNotFound("Local COC file not generated")
-            } ?: throw ExpectedDataNotFound("Local COC not generated")
-            return
+            val data = diServices.createLocalCocReportMap(cocCoiId)
+            data["imagePath"] = kebsLogoPath ?: ""
+
+            val items = data["dataSources"] as HashMap<String, List<Any>>
+
+            KotlinLogging.logger { }.info("COC DATA: $data")
+            val pdfStream: ByteArrayOutputStream
+            val cocType = data["CoCType"] as String
+            val fileName = "LOCAL-${cocType.toUpperCase()}-".plus(data["CocNo"] as String).plus(".pdf")
+            if ("COI".equals(cocType, true)) {
+                pdfStream = reportsDaoService.extractReportMapDataSource(data, "classpath:reports/LocalCoiReport.jrxml", items)
+            } else {
+                pdfStream = reportsDaoService.extractReportMapDataSource(data, applicationMapProperties.mapReportLocalCocPath, items)
+            }
+            download(pdfStream, fileName, httResponse)
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("FAILED TO DOWNLOAD COD", ex)
+            httResponse.status = 500
+            httResponse.writer.println("Invalid COC identifier")
         }
-        httResponse.status = 500
-        httResponse.writer.println("Invalid COC identifier")
+
     }
 
 
@@ -181,6 +199,23 @@ class GeneralController(
         httResponse.writer.println("INVALID checklist")
     }
 
+    @GetMapping("/ministry/mvir/{checklistId}")
+    fun downloadMVIR(@PathVariable("checklistId") inspectionId: Long, httResponse: HttpServletResponse) {
+        try {
+            val data = checklistService.mvirRportData(inspectionId)
+            data["imagePath"] = kebsLogoPath ?: ""
+            val pdfStream = reportsDaoService.extractReportEmptyDataSource(data, "classpath:reports/motorVehicleInspectionReport.jrxml")
+            val serialNumber = data["mvirNum"] as String
+            val fileName = "MVIR-${serialNumber}.pdf"
+            download(pdfStream, fileName, httResponse)
+
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("MVIR DOWNLOAD FAILED", ex)
+            httResponse.status = HttpStatus.SC_INTERNAL_SERVER_ERROR
+            httResponse.writer.println("INVALID checklist")
+        }
+    }
+
     /*
    Get Ministry inspection report
     */
@@ -188,6 +223,7 @@ class GeneralController(
     fun motorInspectionReport(httpResponse: HttpServletResponse, @PathVariable(value = "mvInspectionChecklistId") mvInspectionChecklistid: Long) {
         try {
             val data = this.checklistService.motorVehicleInspectionReportDetails(mvInspectionChecklistid)
+            data["imagePath"] = kebsLogoPath ?: ""
             val pdfStream = reportsDaoService.extractReportEmptyDataSource(data, applicationMapProperties.mapReportMotorVehicleChecklistPath)
             val serialNumber = data.getOrDefault("SerialNo", Random(mvInspectionChecklistid).nextLong())
             val fileName = "INSPECTION_REPORT_${serialNumber}.pdf"
@@ -210,6 +246,7 @@ class GeneralController(
         try {
             checklistService.findInspectionMotorVehicleById(checklistId)?.let { mvInspectionChecklist ->
                 map["VehicleMake"] = mvInspectionChecklist.makeVehicle.toString()
+                map["imagePath"] = kebsLogoPath ?: ""
                 map["EngineCapacity"] = mvInspectionChecklist.engineNoCapacity.toString()
                 map["ManufactureDate"] = mvInspectionChecklist.manufactureDate.toString()
                 map["OdometerReading"] = mvInspectionChecklist.odemetreReading.toString()
@@ -271,31 +308,17 @@ class GeneralController(
     fun downloadDemandNote(@PathVariable("demandNoteId") demandNoteId: Long, httResponse: HttpServletResponse) {
         val response = ApiResponseModel()
         try {
-            var map = hashMapOf<String, Any>()
-
-            val demandNote = daoServices.findDemandNoteWithID(demandNoteId)
-            val demandNoteItemList = demandNote?.id?.let { daoServices.findDemandNoteItemDetails(it) }
-                    ?: throw ExpectedDataNotFound("No List Of Details Available does not exist")
-
-            map["preparedBy"] = demandNote.generatedBy.toString()
-            map["datePrepared"] = demandNote.dateGenerated.toString()
-            map["demandNoteNo"] = demandNote.demandNoteNumber.toString()
-            map["importerName"] = demandNote.nameImporter.toString()
-            map["importerAddress"] = demandNote.address.toString()
-            map["importerTelephone"] = demandNote.telephone.toString()
-            map["ablNo"] = demandNote.entryAblNumber.toString()
-            map["totalAmount"] = demandNote.totalAmount.toString()
-            map["receiptNo"] = demandNote.receiptNo.toString()
-
-            map = reportsDaoService.addBankAndMPESADetails(map, "")
-
+            val demandNoteItemList = daoServices.findDemandNoteItemDetails(demandNoteId)
+            val map = invoicePaymentService.invoiceDetails(demandNoteId)
+            map["imagePath"] = kebsLogoPath ?: ""
             val extractReport = reportsDaoService.extractReport(
                     map,
                     applicationMapProperties.mapReportDemandNoteWithItemsPath,
                     demandNoteItemList
             )
+            val demandNoteNumber = map["demandNoteNo"] as String
             // Response with file
-            download(extractReport, "NOTE-${demandNoteId}-${demandNote.demandNoteNumber}.pdf", httResponse)
+            download(extractReport, "DEMAND-NOTE-${demandNoteId}-${demandNoteNumber}.pdf", httResponse)
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Download failed", ex)
             response.responseCode = ResponseCodes.EXCEPTION_STATUS

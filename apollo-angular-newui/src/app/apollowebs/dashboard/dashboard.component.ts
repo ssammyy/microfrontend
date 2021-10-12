@@ -90,13 +90,15 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         // this.qaService.loadFirmPermitList(this.)
         this.store$.select(selectCompanyInfoDtoStateData).subscribe(
             (d) => {
-                console.log(`${d.companyId} and ${d.branchId}`);
-                this.store$.dispatch(loadCompanyId({payload: d.companyId, company: null}));
-                this.store$.dispatch(loadBranchId({payload: d.branchId, branch: null}));
-                this.branchCount = d.branchCount;
-                this.turnOver = d.turnover;
-                this.countAwarded = d.countAwarded;
-                this.countExpired = d.countExpired;
+                if (d) {
+                    console.log(`${d.companyId} and ${d.branchId}`);
+                    this.store$.dispatch(loadCompanyId({payload: d.companyId, company: null}));
+                    this.store$.dispatch(loadBranchId({payload: d.branchId, branch: null}));
+                    this.branchCount = d.branchCount;
+                    this.turnOver = d.turnover;
+                    this.countAwarded = d.countAwarded;
+                    this.countExpired = d.countExpired;
+                }
             }
         );
     }

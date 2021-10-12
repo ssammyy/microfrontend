@@ -20,7 +20,7 @@ class DestinationInspectionRoutes {
     @CrossOrigin
     fun invoicing(handlers: InvoiceHandlers)= router{
         "/api/v1/di".nest {
-            POST("/demand/note/payment/{cdUuid}",handlers::simulateDemandNotePayment)
+            GET("/update/demand/note/payment-status/{invoiceId}",handlers::checkPaymentDemandNotePayment)
             GET("/demand/note/details/{invoiceId}",handlers::cdInvoiceDetails)
             POST("/demand/note/submit/{invoiceId}",handlers::submitDemandNoteForApproval)
             DELETE("/demand/note/delete/{invoiceId}",handlers::deleteDemandNote)
@@ -41,9 +41,12 @@ class DestinationInspectionRoutes {
             POST("/consignment/document/checklist-ssf/{category}/{cdItemID}", handler::addChecklistSsfDetails) // Per inspection item
             POST("/consignment/document/item-ssf/{cdItemID}", handler::addSsfDetails) // Per inspection item
             POST("/consignment/document/item-ssf-result/{cdItemID}", handler::updateSsfResults) // Per inspection item
+            GET("/lab-result/ssf-files/{ssfId}", handler::ssfPdfFilesResults) // Per inspection item
+            GET("/consignment/document/lab-results/{cdItemID}", handler::loadLabResult) // Lab Reult Per item
             GET("/check-list/configurations",handler::checklistConfigurations)
             GET("/consignment/document/checklist/{cdUuid}", handler::consignmentDocumentChecklist)
             GET("/consignment/document/sampled-items/{cdUuid}", handler::consignmentDocumentChecklistSampled)
+            POST("/item/compliance/approve-reject/{cdItemId}/{cdUuid}", handler::approveRejectSampledItem)
 //            POST("/consignment/document/compliant-vehicle/{inspectionChecklistId}", handler::updateMotorVehicleComplianceStatus)
             // Ministry
             GET("/ministry/inspections/{inspectionStatus}", handler::ministryInspections)
@@ -71,6 +74,8 @@ class DestinationInspectionRoutes {
             POST("/consignment/document/supervisor-target/{cdUuid}", handler::supervisorTargetConsignment)
             POST("/consignment/document/process/approve-reject/{taskId}/{cdUuid}", handler::approveRejectTask)
             GET("/my/tasks", handler::supervisorTasks)
+            DELETE("/my/task/{taskId}", handler::deleteSupervisorTasks)
+
         }
     }
 
@@ -97,7 +102,7 @@ class DestinationInspectionRoutes {
             GET("/consignment/document/customs/declaration/{coUuid}", handler::consignmentDocumentCustomsDeclaration)
             GET("/consignment/document/invoices/{coUuid}", handler::consignmentDocumentInvoices)
             GET("/consignment/document/item/{coItemUuid}", handler::consignmentDocumentItemDetails)
-
+            GET("/consignment/document/tasks/{cdUuid}", handler::consignmentDocumentSupervisorTasks)
             GET("/consignment/documents/item/lab/{cdItemUuid}", handler::consignmentDocumentSSFLabDetails)
             // Foreign CoC/CoR
             POST("/foreign/cd/upload", handler::uploadForeignConsignmentDocument)
@@ -106,6 +111,8 @@ class DestinationInspectionRoutes {
             GET("/consignment/documents/ongoing", handler::ongoingAssignedConsignmentDocuments)
             GET("/consignment/documents/manual/assigned", handler::availableConsignmentDocuments)
             GET("/consignment/documents/completed", handler::completedConsignmentDocuments)
+            // CD Search
+            POST("/consignment/documents/search", handler::searchConsignmentDocuments)
             // CD Extra Details
             GET("/inspection/coc/details/{coUuid}", handler::certificateOfConformance)
             GET("/inspection/idf/details/{coUuid}", handler::importDeclarationFormDetails)

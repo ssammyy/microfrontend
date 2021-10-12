@@ -1,5 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.payload
 
+import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.TaskDetails
+import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.di.DiTaskDetails
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.*
 import org.springframework.security.core.Authentication
@@ -20,7 +22,7 @@ class ConsignmentEnableUI {
     var supervisor: Boolean? = null
     var inspector: Boolean? = null
     var demandNote: Boolean = false
-    var demandNoteRejected: Boolean=false
+    var demandNoteRejected: Boolean = false
     var demandNoteDisabled: Boolean = false
     var sendCoi: Boolean? = null
     var targetItem: Boolean? = null
@@ -38,6 +40,7 @@ class ConsignmentEnableUI {
     var idfAvailable: Boolean = false
     var cocAvailable: Boolean = false
     var corAvailable: Boolean = false
+    var coiAvailable: Boolean = false
     var complianceDisabled: Boolean = false
     var declarationDocument: Boolean = false
     var riskProfileImporter: Boolean = false
@@ -61,8 +64,8 @@ class ConsignmentEnableUI {
                 targeted = cd.targetStatus == map.activeStatus
                 targetRejected = cd.targetStatus == map.invalidStatus
                 idfAvailable = cd.idfNumber != null
-                demandNoteRejected=cd.sendDemandNote==map.invalidStatus
-                demandNoteDisabled = (cd.sendDemandNote == map.initStatus || cd.sendDemandNote == map.activeStatus || cd.inspectionChecklist==map.activeStatus)
+                demandNoteRejected = cd.sendDemandNote == map.invalidStatus
+                demandNoteDisabled = (cd.sendDemandNote == map.initStatus || cd.sendDemandNote == map.activeStatus || cd.inspectionChecklist == map.activeStatus)
                 owner = cd.assignedInspectionOfficer?.userName == authentication.name
                 demandNote = cd.sendDemandNote == map.activeStatus
                 sendCoi = modify && cd.localCoi == map.activeStatus
@@ -71,15 +74,15 @@ class ConsignmentEnableUI {
                 attachments = (change || modify)
                 checklistFilled = cd.inspectionChecklist == map.activeStatus
                 hasPort = (cd.portOfArrival != null && cd.freightStation != null)
-                completed = cd.approveRejectCdStatusType?.let { it.category == "APPROVE" || it.category == "REJECT" }
+                completed = cd.approveRejectCdStatusType?.let { it.modificationAllowed != map.activeStatus } == true || cd.oldCdStatus != null
                 approveReject = (cd.targetApproveStatus == null || cd.inspectionDateSetStatus == map.activeStatus) && modify
             }
 
             ui.complianceDisabled = (cd.compliantStatus == map.activeStatus || cd.compliantStatus == map.initStatus) || !ui.checklistFilled || ui.targetRejected
             cd.cdType?.let {
-                ui.cocAvailable = it.localCocStatus == map.activeStatus && cd.localCocOrCorStatus == map.activeStatus
+                ui.cocAvailable = it.localCocStatus == map.activeStatus && (cd.localCocOrCorStatus == map.activeStatus||cd.localCoi == map.activeStatus)
                 ui.corAvailable = it.localCorStatus == map.activeStatus && cd.localCocOrCorStatus == map.activeStatus
-
+                ui.coiAvailable=it.localCocStatus == map.activeStatus && cd.localCoi==map.activeStatus
                 ui.corRequest = it.localCorStatus == map.activeStatus
                 ui.cocRequest = it.localCocStatus == map.activeStatus
                 ui.canInspect = it.inspectionStatus == map.activeStatus
@@ -130,7 +133,10 @@ class ConsignmentDocumentDao {
     var approvalStatus: String? = null
     var applicationStatus: String? = null
     var assigned: Boolean = false
+    var lastModifiedOn: Timestamp? = null
+    var lastModifiedBy: String? = null
     var isNcrDocument: Boolean = false
+    var taskDetails: DiTaskDetails?=null
 
     companion object {
         fun fromEntity(doc: ConsignmentDocumentDetailsEntity, ncrId: String = ""): ConsignmentDocumentDao {
@@ -138,6 +144,8 @@ class ConsignmentDocumentDao {
             dt.id = doc.id
             dt.summaryPageURL = doc.summaryPageURL
             dt.uuid = doc.uuid
+            dt.lastModifiedOn = doc.modifiedOn
+            dt.lastModifiedBy = doc.modifiedBy
             doc.cdType?.let {
                 dt.cdType = it.id
                 dt.cdTypeCategory = it.category
@@ -153,7 +161,7 @@ class ConsignmentDocumentDao {
             dt.assigned = doc.assignedInspectionOfficer != null
             dt.localCoi = doc.localCoi
             dt.sendDemandNote = doc.sendDemandNote
-
+            dt.version = doc.version
             dt.docTypeId = doc.docTypeId
             dt.cocNumber = doc.cocNumber
             dt.cdRefNumber = doc.cdRefNumber

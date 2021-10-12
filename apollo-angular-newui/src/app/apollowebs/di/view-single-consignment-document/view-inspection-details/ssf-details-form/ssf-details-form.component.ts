@@ -10,6 +10,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 })
 export class SsfDetailsFormComponent implements OnInit {
     message: any
+    loading = false
     form: FormGroup
 
     constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialogRef: MatDialogRef<any>, private fb: FormBuilder, private diService: DestinationInspectionService) {
@@ -17,27 +18,32 @@ export class SsfDetailsFormComponent implements OnInit {
 
     ngOnInit(): void {
         this.form = this.fb.group({
-            permitNumber:['', Validators.required],
+            permitNumber: ['',],
             ssfSubmissionDate: ['', Validators.required],
             brandName: ['', [Validators.required, Validators.maxLength(150)]],
             productDescription: ['', [Validators.required, Validators.maxLength(150)]],
-            description: ['',Validators.maxLength(256)],
+            description: ['', Validators.maxLength(256)],
         })
     }
 
     saveSsfRecord() {
+        this.loading = true
         this.message = null
         this.diService.saveSSFDetails(this.form.value, this.data.uuid)
             .subscribe(
                 res => {
+                    this.loading = false
                     if (res.responseCode == "00") {
                         this.diService.showSuccess(res.message, () => {
-                            this.dialogRef.close(false)
+                            this.dialogRef.close(true)
                         })
 
                     } else {
                         this.message = res.message
                     }
+                },
+                error => {
+                    this.loading = false
                 }
             )
     }

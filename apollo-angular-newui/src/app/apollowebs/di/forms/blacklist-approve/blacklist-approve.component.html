@@ -13,7 +13,8 @@
 <mat-dialog-actions>
     <div class="row no_margin master-list-new-btn">
         <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
-        <button [disabled]="form.invalid" class="next-btn btn-gen new-btn" (click)="saveRecord()">SAVE
+        <button [disabled]="form.invalid||loading" class="next-btn btn-gen new-btn" (click)="saveRecord()">SAVE
+            <mat-spinner [diameter]="20" color="warn" *ngIf="loading"></mat-spinner>
         </button>
     </div>
 </mat-dialog-actions>

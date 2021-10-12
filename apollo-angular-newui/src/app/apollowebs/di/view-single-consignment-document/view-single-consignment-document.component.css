@@ -78,3 +78,13 @@ ul, ol {
     width: 150px;
 }
 
+.card .card-footer {
+    display: list-item;
+    list-style-type: none;
+    font-size: 0.85em;
+    align-content: center;
+}
+.card-footer button{
+    font-size: 0.75em;
+    max-width: available;
+}

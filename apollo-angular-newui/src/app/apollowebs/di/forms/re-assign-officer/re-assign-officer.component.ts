@@ -13,6 +13,7 @@ export class ReAssignOfficerComponent implements OnInit {
     public form: FormGroup;
     public officers: any;
     message: any
+    loading = false
 
     constructor(public dialogRef: MatDialogRef<any>, private fb: FormBuilder, @Inject(MAT_DIALOG_DATA) public data: any,
                 private diService: DestinationInspectionService) {
@@ -43,20 +44,26 @@ export class ReAssignOfficerComponent implements OnInit {
                 }
             )
     }
+
     // Reassign Inspection Officer
     saveRecord() {
+        this.loading = true
         let data = this.form.value
         data['reassign'] = true
         this.diService.sendConsignmentDocumentAction(data, this.data.uuid, "reassign-io")
             .subscribe(
                 res => {
+                    this.loading = false
                     if (res.responseCode === "00") {
-                        this.diService.showSuccess(res.message,()=>{
+                        this.diService.showSuccess(res.message, () => {
                             this.dialogRef.close(this.form.value)
                         })
                     } else {
                         this.message = res.message
                     }
+                },
+                error => {
+                    this.loading = false
                 }
             )
     }

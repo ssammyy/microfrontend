@@ -32,6 +32,8 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.manufacturer.role.id}")
     val manufacturerRoleId: Long? = null
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.test.email.address}")
+    val defaultTestEmailAddres: String? = null
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.manufacturer.admin.role.id}")
     val manufacturerAdminRoleId: Long? = null
@@ -143,6 +145,10 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.invoices.id}")
     val mapQAPermitTypeIdInvoices: Long = 0L
+
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.invoice.transactions.prefix}")
+    val mapInvoicesPrefix: String = ""
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.importer.details}")
     val mapImporterDetails: Int = 0

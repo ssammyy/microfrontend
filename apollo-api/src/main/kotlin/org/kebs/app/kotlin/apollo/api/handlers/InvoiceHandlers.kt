@@ -50,7 +50,9 @@ class InvoiceHandlers(
             req.pathVariable("invoiceId").let { invoiceId ->
                 val noteWithID = daoServices.findDemandNoteWithID(invoiceId.toLongOrDefault(0L))
                 val noteItems = daoServices.findDemandNoteItemDetails(noteWithID?.id!!)
+                val map = commonDaoServices.serviceMapDetails(appId)
                 response.data = mapOf(
+                        Pair("deleteSubmitEnabled", noteWithID.status == map.workingStatus),
                         Pair("items", noteItems),
                         Pair("note", noteWithID)
                 )
@@ -145,7 +147,7 @@ class InvoiceHandlers(
                 response.responseCode = ResponseCodes.SUCCESS_CODE
                 response.message = "Success"
             } else {
-                demandNote.status = -1
+                demandNote.status = map.workingStatus
                 demandNote.varField1 = invoiceForm.remarks
                 demandNote.varField2 = (itemList.size == totalItems).toString()
                 demandNote.varField3 = "NEW"
@@ -200,7 +202,8 @@ class InvoiceHandlers(
             req.pathVariable("invoiceId").let { invoiceId ->
                 val demandNote = daoServices.findDemandNoteWithID(invoiceId.toLongOrDefault(0L))
                 if (demandNote != null) {
-                    if (demandNote.status!! < 0) {
+                    val map = commonDaoServices.serviceMapDetails(appId)
+                    if (demandNote.status == map.workingStatus) {
                         val cdDetails = daoServices.findCD(demandNote.cdId!!)
                         val data = mutableMapOf<String, Any?>()
                         data["demandNoteId"] = demandNote.id
@@ -211,7 +214,7 @@ class InvoiceHandlers(
                         data["cdUuid"] = cdDetails.uuid
                         demandNote.status = 0
                         demandNote.varField3 = "SUBMITTED"
-                        val map = commonDaoServices.serviceMapDetails(appId)
+
                         this.diBpmn.startGenerateDemandNote(map, data, cdDetails)
                         daoServices.upDateDemandNote(demandNote)
                         response.responseCode = ResponseCodes.SUCCESS_CODE
@@ -233,12 +236,25 @@ class InvoiceHandlers(
         return ServerResponse.ok().body(response)
     }
 
-    fun simulateDemandNotePayment(req: ServerRequest): ServerResponse {
+    fun checkPaymentDemandNotePayment(req: ServerRequest): ServerResponse {
         val response = ApiResponseModel()
         try {
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-            val cdUuid = req.pathVariable("cdUuid")
-            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val invoiceId = req.pathVariable("invoiceId").toLongOrDefault(0L)
+            daoServices.findDemandNoteWithID(invoiceId)?.let { demandNote ->
+                if (demandNote.paymentStatus == map.activeStatus) {
+                    response.responseCode = ResponseCodes.SUCCESS_CODE
+                    response.message = "Demand note payment status submitted to KenTrade"
+                    diBpmn.triggerDemandNotePaidBpmTask(demandNote)
+                } else {
+                    response.responseCode = ResponseCodes.FAILED_CODE
+                    response.message = "Demand note payment is not paid"
+                }
+                response
+            } ?: run {
+                response.responseCode = ResponseCodes.NOT_FOUND
+                response.message = "Invoice with id $invoiceId does not exist"
+            }
             // Update demand note
 
         } catch (ex: Exception) {

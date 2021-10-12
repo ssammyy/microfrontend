@@ -10,6 +10,7 @@ import {DestinationInspectionService} from "../../../../core/store/data/di/desti
 })
 export class ManualAssignOfficerComponent implements OnInit {
     message: any;
+    loading=false
     public form: FormGroup;
 
     constructor(public dialogRef: MatDialogRef<any>, private fb: FormBuilder, @Inject(MAT_DIALOG_DATA) public data: any,
@@ -24,9 +25,11 @@ export class ManualAssignOfficerComponent implements OnInit {
     }
 
     saveRecord() {
+        this.loading=true
         this.diService.sendConsignmentDocumentAction(this.form.value, this.data.uuid, "manual-pick")
             .subscribe(
                 res => {
+                    this.loading=false
                     if (res.responseCode === "00") {
                         this.diService.showSuccess(res.message,()=>{
                             this.dialogRef.close(true)
@@ -36,6 +39,7 @@ export class ManualAssignOfficerComponent implements OnInit {
                     }
                 },
                 error => {
+                    this.loading=false
                     console.log(error)
                 }
             )

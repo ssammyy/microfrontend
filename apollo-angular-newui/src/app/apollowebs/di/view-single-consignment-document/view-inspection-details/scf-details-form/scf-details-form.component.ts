@@ -11,6 +11,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 export class ScfDetailsFormComponent implements OnInit {
     form: FormGroup
     message: any
+    loading=false
     samplingMethods=[
         {
             name: "Random Sampling",
@@ -66,17 +67,22 @@ export class ScfDetailsFormComponent implements OnInit {
     }
 
     saveScfRecord() {
+        this.loading=true
         this.message = null
         this.diService.saveSCFDetails(this.form.value, this.data.uuid)
             .subscribe(
                 res => {
+                    this.loading=false
                     if (res.responseCode == "00") {
                         this.diService.showSuccess(res.message, () => {
-                            this.dialogRef.close(false)
+                            this.dialogRef.close(true)
                         })
                     } else {
                         this.message = res.message
                     }
+                },
+                error => {
+                    this.loading=false
                 }
             )
     }

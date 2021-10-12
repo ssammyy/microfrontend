@@ -122,6 +122,14 @@ import {RequestStandardFormComponent} from './apollowebs/standards-development/s
 import {ReviewApplicationsComponent} from './apollowebs/standards-development/standard-request/review-applications/review-applications.component';
 import {StandardTaskComponent} from './apollowebs/standards-development/standard-request/standard-task/standard-task.component';
 import {ModalModule} from "ngb-modal";
+import {SmarkAllAwardedApplicationsComponent} from './apollowebs/quality-assurance/smark-all-awarded-applications/smark-all-awarded-applications.component';
+import {DmarkAllAwardedApplicationsComponent} from './apollowebs/quality-assurance/dmark-all-awarded-applications/dmark-all-awarded-applications.component';
+import {FmarkAllAwardedApplicationsComponent} from './apollowebs/quality-assurance/fmark-all-awarded-applications/fmark-all-awarded-applications.component';
+import {QaTaskDetailsComponent} from './apollowebs/quality-assurance/qa-task-details/qa-task-details.component';
+import {CompanyViewComponent} from './apollowebs/company/company-view/company-view.component';
+import {BranchViewComponent} from './apollowebs/company/branch/branch-view/branch-view.component';
+import {QrCodeDetailsComponent} from './apollowebs/quality-assurance/qr-code-details/qr-code-details.component';
+import {StdTscSecTasksComponentComponent} from './apollowebs/standards-development/standard-request/std-tsc-sec-tasks-component/std-tsc-sec-tasks-component.component';
 import {NgMultiSelectDropDownModule} from "ng-multiselect-dropdown";
 import {DataTablesModule} from "angular-datatables";
 import {ViewDiDeclarationDocumentsComponent} from "./apollowebs/di/view-single-consignment-document/view-di-declaration-documents/view-di-declaration-documents.component";
@@ -158,20 +166,20 @@ import { ViewTasksComponent } from './apollowebs/di/view-tasks/view-tasks.compon
 import {MatButtonModule} from "@angular/material/button";
 import {MatTableModule} from "@angular/material/table";
 import { DemandNoteListComponent } from './apollowebs/di/demand-note-list/demand-note-list.component';
-import { ChecklistDataFormComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/checklist-data-form/checklist-data-form.component';
-import { AgrochemInspectionChecklistComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/checklist-data-form/agrochem-inspection-checklist/agrochem-inspection-checklist.component';
-import { EngineeringInspectionChecklistComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/checklist-data-form/engineering-inspection-checklist/engineering-inspection-checklist.component';
-import { OtherInspectionChecklistComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/checklist-data-form/other-inspection-checklist/other-inspection-checklist.component';
-import { VehicleInspectionChecklistComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/checklist-data-form/vehicle-inspection-checklist/vehicle-inspection-checklist.component';
+import { ChecklistDataFormComponent } from './apollowebs/di/view-single-consignment-document/checklist-data-form/checklist-data-form.component';
+import { AgrochemInspectionChecklistComponent } from './apollowebs/di/view-single-consignment-document/checklist-data-form/agrochem-inspection-checklist/agrochem-inspection-checklist.component';
+import { EngineeringInspectionChecklistComponent } from './apollowebs/di/view-single-consignment-document/checklist-data-form/engineering-inspection-checklist/engineering-inspection-checklist.component';
+import { OtherInspectionChecklistComponent } from './apollowebs/di/view-single-consignment-document/checklist-data-form/other-inspection-checklist/other-inspection-checklist.component';
+import { VehicleInspectionChecklistComponent } from './apollowebs/di/view-single-consignment-document/checklist-data-form/vehicle-inspection-checklist/vehicle-inspection-checklist.component';
 import { SsfDetailsFormComponent } from './apollowebs/di/view-single-consignment-document/view-inspection-details/ssf-details-form/ssf-details-form.component';
 import { ApproveRejectItemComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/approve-reject-item/approve-reject-item.component';
 import { ViewDemandNoteComponent } from './apollowebs/di/demand-note-list/view-demand-note/view-demand-note.component';
-import { ItemSelectionComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/checklist-data-form/item-selection/item-selection.component';
+import { ItemSelectionComponent } from './apollowebs/di/view-single-consignment-document/checklist-data-form/item-selection/item-selection.component';
 import { ViewInspectionDetailsComponent } from './apollowebs/di/view-single-consignment-document/view-inspection-details/view-inspection-details.component';
-import {ItemChecklistComponent} from "./apollowebs/di/view-single-consignment-document/item-details-list-view/checklist-data-form/agrochem-inspection-checklist/item-checklist/item-checklist.component";
-import { EngineeringItemChecklistComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/checklist-data-form/engineering-inspection-checklist/engineering-item-checklist/engineering-item-checklist.component';
-import { OtherItemChecklistComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/checklist-data-form/other-inspection-checklist/other-item-checklist/other-item-checklist.component';
-import { VehicleItemChecklistComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/checklist-data-form/vehicle-inspection-checklist/vehicle-item-checklist/vehicle-item-checklist.component';
+import {ItemChecklistComponent} from "./apollowebs/di/view-single-consignment-document/checklist-data-form/agrochem-inspection-checklist/item-checklist/item-checklist.component";
+import { EngineeringItemChecklistComponent } from './apollowebs/di/view-single-consignment-document/checklist-data-form/engineering-inspection-checklist/engineering-item-checklist/engineering-item-checklist.component';
+import { OtherItemChecklistComponent } from './apollowebs/di/view-single-consignment-document/checklist-data-form/other-inspection-checklist/other-item-checklist/other-item-checklist.component';
+import { VehicleItemChecklistComponent } from './apollowebs/di/view-single-consignment-document/checklist-data-form/vehicle-inspection-checklist/vehicle-item-checklist/vehicle-item-checklist.component';
 import { EngineeringDetailsComponent } from './apollowebs/di/view-single-consignment-document/view-inspection-details/engineering-details/engineering-details.component';
 import { AgrochemDetailsComponent } from './apollowebs/di/view-single-consignment-document/view-inspection-details/agrochem-details/agrochem-details.component';
 import { OtherDetailsComponent } from './apollowebs/di/view-single-consignment-document/view-inspection-details/other-details/other-details.component';
@@ -183,13 +191,284 @@ import { MatMultilineTabDirective } from './apollowebs/di/mat-multiline-tab.dire
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { InspectionDashboardComponent } from './apollowebs/di/inspection-dashboard/inspection-dashboard.component';
+import { LabResultsComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/lab-results/lab-results.component';
+import {StdTcTasksComponent} from './apollowebs/standards-development/standard-request/std-tc-tasks/std-tc-tasks.component';
+import {ComStdApproveJustificationComponent} from './apollowebs/standards-development/company-standard/com-std-approve-justification/com-std-approve-justification.component';
+import {ComStdDraftComponent} from './apollowebs/standards-development/company-standard/com-std-draft/com-std-draft.component';
+import {ComStdUploadComponent} from './apollowebs/standards-development/company-standard/com-std-upload/com-std-upload.component';
+import {ComStdConfirmComponent} from './apollowebs/standards-development/company-standard/com-std-confirm/com-std-confirm.component';
+import {NepSuccessComponent} from './apollowebs/standards-development/nep-success/nep-success.component';
+import {ManagernotificationsComponent} from './apollowebs/standards-development/managernotifications/managernotifications.component';
+import {AllpermitsComponent} from "./apollowebs/quality-assurance/allpermits/allpermits.component";
+import {MatExpansionModule} from "@angular/material/expansion";
+import {MatGridListModule} from "@angular/material/grid-list";
+import {MatChipsModule} from "@angular/material/chips";
+import {MatCardModule} from "@angular/material/card";
+import {MatButtonToggleModule} from "@angular/material/button-toggle";
+import {MatAutocompleteModule} from "@angular/material/autocomplete";
+import {MatPaginatorModule} from "@angular/material/paginator";
+import {MatProgressBarModule} from "@angular/material/progress-bar";
+import {MatRadioModule} from "@angular/material/radio";
+import {MatListModule} from "@angular/material/list";
+import {MatMenuModule} from "@angular/material/menu";
+import {MatDatepickerModule} from "@angular/material/datepicker";
+import {MatSidenavModule} from "@angular/material/sidenav";
+import {MatSliderModule} from "@angular/material/slider";
+import {MatSlideToggleModule} from "@angular/material/slide-toggle";
+import {MatSnackBarModule} from "@angular/material/snack-bar";
+import {MatSortModule} from "@angular/material/sort";
+import {MatToolbarModule} from "@angular/material/toolbar";
+import {MatTooltipModule} from "@angular/material/tooltip";
+import {HttpClientModule} from "@angular/common/http";
+import {FooterModule} from "./shared/footer/footer.module";
 
+
+// @NgModule({
+//     exports: [
+//         MatAutocompleteModule,
+//         MatButtonToggleModule,
+//         MatCardModule,
+//         MatChipsModule,
+//         MatCheckboxModule,
+//         MatStepperModule,
+//         MatDialogModule,
+//         MatExpansionModule,
+//         MatGridListModule,
+//         MatIconModule,
+//         MatInputModule,
+//         MatListModule,
+//         MatMenuModule,
+//         MatPaginatorModule,
+//         MatProgressBarModule,
+//         MatProgressSpinnerModule,
+//         MatRadioModule,
+//         MatSelectModule,
+//         MatDatepickerModule,
+//         MatButtonModule,
+//         MatSidenavModule,
+//         MatSliderModule,
+//         MatSlideToggleModule,
+//         MatSnackBarModule,
+//         MatSortModule,
+//         MatTableModule,
+//         MatTabsModule,
+//         MatToolbarModule,
+//         MatTooltipModule,
+//         MatNativeDateModule,
+//
+//         CoreModule,
+//     ],
+//     imports: [
+//         AppRoutingModule,
+//         RouterModule,
+//         BrowserAnimationsModule,
+//         FormsModule,
+//         ReactiveFormsModule,
+//         DragDropModule,
+//         MdModule,
+//         CommonModule,
+//         BrowserModule,
+//         ModalModule,
+//         RouterModule,
+//         CoreModule,
+//         PdfViewerModule,
+//         NgxExtendedPdfViewerModule,
+//         FileUploadModule,
+//         NgxSpinnerModule,
+//         DataTablesModule,
+//         NgxPaginationModule,
+//         Ng2SmartTableModule,
+//         NgbNavModule,
+//         MatDialogModule,
+//         MatCheckboxModule,
+//         MatSelectModule,
+//         MatIconModule,
+//         MatStepperModule,
+//         MatOptionModule,
+//         MatInputModule,
+//         NavbarModule,
+//         ToastrModule.forRoot({
+//             timeOut: 10000,
+//             enableHtml: true,
+//             newestOnTop: false,
+//             maxOpened: 1,
+//             autoDismiss: false,
+//             positionClass: 'toast-top-right',
+//             preventDuplicates: true,
+//         }),
+//         SidebarModule,
+//         MatFormFieldModule,
+//         MatButtonModule,
+//         NgbPaginationModule,
+//         MatTableModule,
+//         NgMultiSelectDropDownModule,
+//         MatTabsModule,
+//         MatProgressSpinnerModule,
+//         NgxSpinnerModule,
+//         FontAwesomeModule
+//         // CoreModule
+//     ],
+//     declarations: [
+//         AppComponent,
+//         LoginComponent,
+//         ResetCredentialsComponent,
+//         SignUpComponent,
+//         RegistrationComponent,
+//         DashboardComponent,
+//         InvoiceComponent,
+//         FmarkComponent,
+//         DmarkComponent,
+//         SmarkComponent,
+//         St10FormComponent,
+//         FmarkallappsComponent,
+//         NewDmarkPermitComponent,
+//         PermitReportComponent,
+//         NewSmarkPermitComponent,
+//         DmarkApplicationsAllComponent,
+//         InvoiceDetailsComponent,
+//         CompaniesList,
+//         CompanyComponent,
+//         BranchComponent,
+//         BranchList,
+//         UserComponent,
+//         UserList,
+//         UserProfileComponent,
+//         SmarkApplicationsAllComponent,
+//         UserProfileMainComponent,
+//         AddBranchComponent,
+//         OtpComponent,
+//         InvoiceConsolidateComponent,
+//         PdfViewComponent,
+//         TaskManagerComponent,
+//         PdfViewComponent,
+//         AddUserComponent,
+//         FmarkApplicationComponent,
+//         LoaderComponent,
+//         FormsComponent,
+//         FieldErrorDisplayComponent,
+//         NwaJustificationFormComponent,
+//         StandardsDevelopmentComponent,
+//         InformationcheckComponent,
+//         UsermanagementComponent,
+//         NwaJustificationTasksComponent,
+//         NwaKnwSecTasksComponent,
+//         NwaDiSdtTasksComponent,
+//         NwaHopTasksComponent,
+//         SacSecTasksComponent,
+//         HoSicTasksComponent,
+//         InternationalStandardProposalComponent,
+//         IntStdCommentsComponent,
+//         IntStdJustificationAppComponent,
+//         IntStdJustificationListComponent,
+//         IntStdResponsesListComponent,
+//         IsProposalFormComponent,
+//         RequestStandardReviewComponent,
+//         ReviewStandardsComponent,
+//         SystemicReviewCommentsComponent,
+//         SystemicAnalyseCommentsComponent,
+//         CompanyStandardRequestComponent,
+//         CsRequestFormComponent,
+//         ComStdRequestListComponent,
+//         AllpermitsComponent,
+//         ComStdJcJustificationComponent,
+//         ComStdJcJustificationListComponent,
+//         InformationcheckComponent,
+//         DivisionresponseComponent,
+//         NationalEnquiryPointComponent,
+//         MakeEnquiryComponent,
+//         UserManagementProfileComponent,
+//         NepNotificationComponent,
+//         StandardRequestComponent,
+//         RequestStandardFormComponent,
+//         ReviewApplicationsComponent,
+//         StandardTaskComponent,
+//         ProductDetailsComponent,
+//         ImportationWaiverComponent,
+//         MainProductionMachineryComponent,
+//         RawMaterialsComponent,
+//         WaiverProductComponent,
+//         IndustrialSparesComponent,
+//         ConsignmentDocumentListComponent,
+//         ViewSingleConsignmentDocumentComponent,
+//         ItemDetailsListViewComponent,
+//         OtherVersionDetailsComponent,
+//         ApproveRejectConsignmentComponent,
+//         MinistryInspectionHomeComponent,
+//         MotorVehicleInspectionSingleViewComponent,
+//         UploadForeignFormComponent,
+//         ViewDiDeclarationDocumentsComponent,
+//         ViewIdfDocumentDetailsComponent,
+//         ViewDeclarationDocumentsItemDetailsListComponent,
+//         MvInspectionUploadFileReportComponent,
+//         AttachmentListComponent,
+//         AttachmentDialogComponent,
+//         AssignOfficerComponent,
+//         AssignPortComponent,
+//         SendCoiComponent,
+//         GenerateLocalCocComponent,
+//         GenerateLocalCorComponent,
+//         CompliantComponent,
+//         ReAssignOfficerComponent,
+//         BlacklistComponent,
+//         BlacklistApproveComponent,
+//         TargetItemComponent,
+//         TargetSupervisorComponent,
+//         TargetApproveItemComponent,
+//         ManualAssignOfficerComponent,
+//         SendDemandNoteTokwsComponent,
+//         ViewRemarksHistoryComponent,
+//         ItemDetailsComponent,
+//         ProcessRejectionComponent,
+//         SmarkAllAwardedApplicationsComponent,
+//         DmarkAllAwardedApplicationsComponent,
+//         FmarkAllAwardedApplicationsComponent,
+//         QaTaskDetailsComponent,
+//         CompanyViewComponent,
+//         BranchViewComponent,
+//         QrCodeDetailsComponent,
+//         StdTscSecTasksComponentComponent,
+//         StdTcTasksComponent,
+//         ComStdApproveJustificationComponent,
+//         ComStdDraftComponent,
+//         ComStdUploadComponent,
+//         ComStdConfirmComponent,
+//         StdTcTasksComponent,
+//         NepSuccessComponent,
+//         ManagernotificationsComponent
+//
+//     ]
+//
+// })
+// export class MaterialModule {}
 
 @NgModule({
-    exports: [
-        CoreModule,
-    ],
     imports: [
+        CommonModule,
+        BrowserAnimationsModule,
+        FormsModule,
+        PdfViewerModule,
+        HttpClientModule,
+        SidebarModule,
+        NavbarModule,
+        FooterModule,
+        RouterModule,
+        AppRoutingModule,
+        CoreModule,
+        ToastrModule.forRoot({
+            timeOut: 10000,
+            enableHtml: true,
+            newestOnTop: false,
+            maxOpened: 1,
+            autoDismiss: false,
+            positionClass: 'toast-top-right',
+            preventDuplicates: true,
+        }),
+        ReactiveFormsModule,
+        FormsModule,
+        // NgbModule,
+        NgxPaginationModule,
+        FontAwesomeModule,
+        NgxSpinnerModule,
         AppRoutingModule,
         RouterModule,
         BrowserAnimationsModule,
@@ -218,15 +497,6 @@ import { InspectionDashboardComponent } from './apollowebs/di/inspection-dashboa
         MatOptionModule,
         MatInputModule,
         NavbarModule,
-        ToastrModule.forRoot({
-            timeOut: 10000,
-            enableHtml: true,
-            newestOnTop: false,
-            maxOpened: 1,
-            autoDismiss: false,
-            positionClass: 'toast-top-right',
-            preventDuplicates: true,
-        }),
         SidebarModule,
         MatFormFieldModule,
         MatButtonModule,
@@ -237,9 +507,47 @@ import { InspectionDashboardComponent } from './apollowebs/di/inspection-dashboa
         MatProgressSpinnerModule,
         NgxSpinnerModule,
         FontAwesomeModule
-        // CoreModule
     ],
     declarations: [
+        AppComponent,
+        AdminLayoutComponent,
+        AuthLayoutComponent,
+        ImportInspectionComponent,
+        ExceptionsApplicationComponent,
+        WaiverApplicationComponent,
+        GoodsDetailsComponent,
+        WaiverSubmittedDialogComponent,
+        ManufacturerDetailsComponent,
+        ChecklistsComponent,
+        MinistryInspectionRequestComponent,
+        DiCorComponent,
+        DiCocComponent,
+        DiCocItemDetailsComponent,
+        ViewTasksComponent,
+        DemandNoteListComponent,
+        ChecklistDataFormComponent,
+        AgrochemInspectionChecklistComponent,
+        EngineeringInspectionChecklistComponent,
+        OtherInspectionChecklistComponent,
+        VehicleInspectionChecklistComponent,
+        SsfDetailsFormComponent,
+        ApproveRejectItemComponent,
+        ViewDemandNoteComponent,
+        ItemSelectionComponent,
+        ViewInspectionDetailsComponent,
+        ItemChecklistComponent,
+        EngineeringItemChecklistComponent,
+        OtherItemChecklistComponent,
+        VehicleItemChecklistComponent,
+        EngineeringDetailsComponent,
+        AgrochemDetailsComponent,
+        OtherDetailsComponent,
+        VehicleDetailsComponent,
+        ScfDetailsFormComponent,
+        ComplianceUpdateFormComponent,
+        MatMultilineTabDirective,
+        InspectionDashboardComponent,
+        LabResultsComponent,
         AppComponent,
         LoginComponent,
         ResetCredentialsComponent,
@@ -300,6 +608,7 @@ import { InspectionDashboardComponent } from './apollowebs/di/inspection-dashboa
         CompanyStandardRequestComponent,
         CsRequestFormComponent,
         ComStdRequestListComponent,
+        AllpermitsComponent,
         ComStdJcJustificationComponent,
         ComStdJcJustificationListComponent,
         InformationcheckComponent,
@@ -349,43 +658,22 @@ import { InspectionDashboardComponent } from './apollowebs/di/inspection-dashboa
         ViewRemarksHistoryComponent,
         ItemDetailsComponent,
         ProcessRejectionComponent,
-        AdminLayoutComponent,
-        AuthLayoutComponent,
-        ImportInspectionComponent,
-        ExceptionsApplicationComponent,
-        WaiverApplicationComponent,
-        GoodsDetailsComponent,
-        WaiverSubmittedDialogComponent,
-        ManufacturerDetailsComponent,
-        ChecklistsComponent,
-        MinistryInspectionRequestComponent,
-        DiCorComponent,
-        DiCocComponent,
-        DiCocItemDetailsComponent,
-        ViewTasksComponent,
-        DemandNoteListComponent,
-        ChecklistDataFormComponent,
-        AgrochemInspectionChecklistComponent,
-        EngineeringInspectionChecklistComponent,
-        OtherInspectionChecklistComponent,
-        VehicleInspectionChecklistComponent,
-        SsfDetailsFormComponent,
-        ApproveRejectItemComponent,
-        ViewDemandNoteComponent,
-        ItemSelectionComponent,
-        ViewInspectionDetailsComponent,
-        ItemChecklistComponent,
-        EngineeringItemChecklistComponent,
-        OtherItemChecklistComponent,
-        VehicleItemChecklistComponent,
-        EngineeringDetailsComponent,
-        AgrochemDetailsComponent,
-        OtherDetailsComponent,
-        VehicleDetailsComponent,
-        ScfDetailsFormComponent,
-        ComplianceUpdateFormComponent,
-        MatMultilineTabDirective,
-        InspectionDashboardComponent,
+        SmarkAllAwardedApplicationsComponent,
+        DmarkAllAwardedApplicationsComponent,
+        FmarkAllAwardedApplicationsComponent,
+        QaTaskDetailsComponent,
+        CompanyViewComponent,
+        BranchViewComponent,
+        QrCodeDetailsComponent,
+        StdTscSecTasksComponentComponent,
+        StdTcTasksComponent,
+        ComStdApproveJustificationComponent,
+        ComStdDraftComponent,
+        ComStdUploadComponent,
+        ComStdConfirmComponent,
+        StdTcTasksComponent,
+        NepSuccessComponent,
+        ManagernotificationsComponent
     ],
     providers: [
         MatNativeDateModule,

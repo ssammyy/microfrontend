@@ -13,6 +13,7 @@ export class BlacklistComponent implements OnInit {
   blacklists: any = []
   public form: FormGroup;
   message: any;
+  loading=false
   constructor(public dialogRef: MatDialogRef<any>, private fb: FormBuilder, @Inject(MAT_DIALOG_DATA) public data: any,
               private diService: DestinationInspectionService) {
   }
@@ -39,9 +40,11 @@ export class BlacklistComponent implements OnInit {
   }
  
   saveRecord() {
+      this.loading=true
     this.diService.sendConsignmentDocumentAction(this.form.value,this.data.uuid,"blacklist")
         .subscribe(
             res=>{
+                this.loading=false
               if(res.responseCode=="00"){
                   this.diService.showSuccess(res.message,()=>{
                       this.dialogRef.close(true)
@@ -49,6 +52,9 @@ export class BlacklistComponent implements OnInit {
               } else {
                 this.message=res.message
               }
+            },
+            error => {
+                this.loading=false
             }
         )
 

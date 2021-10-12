@@ -9,6 +9,7 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NepPointService} from "../../../core/store/data/std/nep-point.service";
 import {HttpErrorResponse} from "@angular/common/http";
+import swal from "sweetalert2";
 
 declare interface DataTable {
   headerRow: string[];
@@ -65,6 +66,14 @@ export class DivisionresponseComponent implements OnInit {
     this.notificationService.deptResponse(notification).subscribe(
         (response: DepartmentResponse) => {
           console.log(response);
+          swal.fire({
+            title: 'Confirmed.',
+            buttonsStyling: false,
+            customClass: {
+              confirmButton: 'btn btn-success form-wizard-next-btn ',
+            },
+            icon: 'success'
+          });
           this.getRequests();
         },
         (error: HttpErrorResponse) => {
@@ -78,6 +87,14 @@ export class DivisionresponseComponent implements OnInit {
     this.notificationService.feedbackEmail(notification).subscribe(
         (response: FeedbackEmail) => {
           console.log(response);
+          swal.fire({
+            title: 'Confirmed.',
+            buttonsStyling: false,
+            customClass: {
+              confirmButton: 'btn btn-success form-wizard-next-btn ',
+            },
+            icon: 'success'
+          });
           this.getRequests();
         },
         (error: HttpErrorResponse) => {
@@ -90,6 +107,14 @@ export class DivisionresponseComponent implements OnInit {
     this.notificationService.reviewTasks(notification).subscribe(
         (response: InfoAvailableYes) => {
           console.log(response);
+          swal.fire({
+            title: 'Confirmed.',
+            buttonsStyling: false,
+            customClass: {
+              confirmButton: 'btn btn-success form-wizard-next-btn ',
+            },
+            icon: 'success'
+          });
           this.getRequests();
         },
         (error: HttpErrorResponse) => {

@@ -42,7 +42,8 @@ export class DiCocComponent implements OnInit {
 
     downloadCocFile(): void {
         if(this.cocDetails) {
-            this.diService.downloadDocument("/api/v1/download/coc/" + this.cocDetails.certificate_details.id)
+            this.diService.downloadDocument("/api/v1/download/coc-coi/" + this.cocDetails.certificate_details.id)
+            // this.diService.downloadDocument("/api/v1/download/coc-coi/843126")
         }
     }
 

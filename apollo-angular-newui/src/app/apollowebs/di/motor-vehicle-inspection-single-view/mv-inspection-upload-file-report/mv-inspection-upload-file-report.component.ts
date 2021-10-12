@@ -13,6 +13,7 @@ export class MvInspectionUploadFileReportComponent implements OnInit {
     public form: FormGroup
     public selectedFile: File
     public message: String
+    loading=false
 
     constructor(public dialogRef: MatDialogRef<any>,
                 private fb: FormBuilder,
@@ -40,14 +41,19 @@ export class MvInspectionUploadFileReportComponent implements OnInit {
 
     saveRecord() {
         if(this.selectedFile) {
+            this.loading=true
             this.diService.uploadMinistryChecklist(this.selectedFile, this.form.value.comment, this.data.id)
                 .subscribe(
                     res => {
+                        this.loading=false
                         if (res.responseCode === "00") {
                             this.dialogRef.close(true)
                         } else {
                             this.message = res.message
                         }
+                    },
+                    error => {
+                        this.loading=false
                     }
                 )
         }else {

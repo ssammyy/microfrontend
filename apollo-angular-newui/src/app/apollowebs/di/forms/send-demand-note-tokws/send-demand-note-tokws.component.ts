@@ -120,8 +120,8 @@ export class SendDemandNoteTokwsComponent implements OnInit {
         this.diService.sendDemandNote(data, this.data.uuid)
             .subscribe(
                 res => {
+                    this.saveDisabled = false
                     if (res.responseCode == "00") {
-                        this.saveDisabled = false
                         if (presentment) {
                             this.presentmentData = res.data
                         } else {

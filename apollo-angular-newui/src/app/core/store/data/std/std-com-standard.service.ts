@@ -2,11 +2,13 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
 import {Observable, throwError} from 'rxjs';
 import {
+  ApproveDraft,
+  ApproveJC, ApproveSACJC,
   ComHodTasks,
-  ComJcJustification, ComJcJustificationAction,
-  ComJcJustificationList, CompanyStandardRequest,
+  ComJcJustification, ComJcJustificationAction, ComJcJustificationDec,
+  ComJcJustificationList, CompanyStandardRequest, COMPreliminaryDraft,
   ComStdAction,
-  Department, Product,
+  Department, NWAPreliminaryDraft, NWAWDDecision, NWAWorkShopDraft, Product,
   UsersEntity
 } from './std.model';
 import {ApiEndpointService} from '../../../services/endpoints/api-endpoint.service';
@@ -131,14 +133,170 @@ export class StdComStandardService {
     return this.http.get<ComJcJustificationList[]>(url, {params}).pipe();
   }
 
-  public decisionOnJustification(comJcJustification: ComJcJustification): Observable<any> {
+  public decisionOnJustification(approveJC: ApproveJC): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_DECISION_ON_JUSTIFICATION);
     const params = new HttpParams();
-    return this.http.post<ComJcJustification>(url, comJcJustification, {params}).pipe(
+    return this.http.post<ApproveJC>(url, approveJC, {params}).pipe(
         map(function (response: any) {
           return response;
         }),
         catchError((fault: HttpErrorResponse) => {
+          return throwError(fault);
+        })
+    );
+  }
+
+  public getSacSecTasks(): Observable<ComJcJustificationDec[]> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_SAC_SEC_TASKS);
+    const params = new HttpParams();
+    return this.http.get<ComJcJustificationDec[]>(url, {params}).pipe();
+  }
+
+  public decisionOnAppJustification(approveSACJC: ApproveSACJC): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_DECISION_ON_APP_JUSTIFICATION);
+    const params = new HttpParams();
+    return this.http.post<ApproveSACJC>(url, approveSACJC, {params}).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          return throwError(fault);
+        })
+    );
+  }
+
+
+
+  public uploadFileDetails(comJustificationID: string, data: FormData): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_UPLOAD_JC);
+
+    return this.http.post<any>(url, data, {
+      headers: {
+        'enctype': 'multipart/form-data'
+      }, params: {'comJustificationID': comJustificationID}
+    }).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          // console.warn(`getAllFault( ${fault.message} )`);
+          return throwError(fault);
+        })
+    );
+  }
+  public prepareCompanyPreliminaryDraft(comPreliminaryDraft: COMPreliminaryDraft): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_PREPARE_PRELIMINARY_DRAFT);
+    const params = new HttpParams();
+    return this.http.post<COMPreliminaryDraft>(url, comPreliminaryDraft, {params}).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          return throwError(fault);
+        })
+    );
+  }
+  public uploadPDFileDetails(comPreID: string, data: FormData): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_UPLOAD_PD);
+
+    return this.http.post<any>(url, data, {
+      headers: {
+        'enctype': 'multipart/form-data'
+      }, params: {'comPreID': comPreID}
+    }).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          // console.warn(`getAllFault( ${fault.message} )`);
+          return throwError(fault);
+        })
+    );
+  }
+  public getJcSecTasks(): Observable<ComJcJustificationDec[]> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_JC_SEC_TASKS);
+    const params = new HttpParams();
+    return this.http.get<ComJcJustificationDec[]>(url, {params}).pipe();
+  }
+
+  public decisionOnDraft(approveDraft: ApproveDraft): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_DECISION_ON_DRAFT);
+    const params = new HttpParams();
+    return this.http.post<ApproveDraft>(url, approveDraft, {params}).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          return throwError(fault);
+        })
+    );
+  }
+  public getComSecTasks(): Observable<ComJcJustificationDec[]> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_SEC_TASKS);
+    const params = new HttpParams();
+    return this.http.get<ComJcJustificationDec[]>(url, {params}).pipe();
+  }
+
+  public prepareCompanyStandard(comJcJustificationDec: ComJcJustificationDec): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_PREPARE_COM_STANDARD);
+    const params = new HttpParams();
+    return this.http.post<ComJcJustificationDec>(url, comJcJustificationDec, {params}).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          return throwError(fault);
+        })
+    );
+  }
+  public uploadSDFileDetails(comStdID: string, data: FormData): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_UPLOAD_SD);
+
+    return this.http.post<any>(url, data, {
+      headers: {
+        'enctype': 'multipart/form-data'
+      }, params: {'comStdID': comStdID}
+    }).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          // console.warn(`getAllFault( ${fault.message} )`);
+          return throwError(fault);
+        })
+    );
+  }
+  public getHopTasks(): Observable<ComJcJustificationDec[]> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_HOP_TASKS);
+    const params = new HttpParams();
+    return this.http.get<ComJcJustificationDec[]>(url, {params}).pipe();
+  }
+
+  public editCompanyStandard(comJcJustificationDec: ComJcJustificationDec): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_EDIT_STANDARD);
+    const params = new HttpParams();
+    return this.http.post<ComJcJustificationDec>(url, comJcJustificationDec, {params}).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          return throwError(fault);
+        })
+    );
+  }
+  public uploadESDFileDetails(comStdID: string, data: FormData): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_UPLOAD_SD_EDIT);
+
+    return this.http.post<any>(url, data, {
+      headers: {
+        'enctype': 'multipart/form-data'
+      }, params: {'comStdID': comStdID}
+    }).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          // console.warn(`getAllFault( ${fault.message} )`);
           return throwError(fault);
         })
     );

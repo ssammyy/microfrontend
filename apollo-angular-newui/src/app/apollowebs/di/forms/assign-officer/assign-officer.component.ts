@@ -13,6 +13,7 @@ export class AssignOfficerComponent implements OnInit {
 
     public form: FormGroup;
     public officers: any;
+    loading: boolean = false
     message: string
 
     constructor(public dialogRef: MatDialogRef<any>, private fb: FormBuilder, @Inject(MAT_DIALOG_DATA) public data: any,
@@ -48,9 +49,11 @@ export class AssignOfficerComponent implements OnInit {
 
     // Load data here
     loadOfficers(): void {
+        this.loading = true
         this.diService.listOfficersForConsignment(this.data.uuid)
             .subscribe(
                 res => {
+                    this.loading = false
                     if (res.responseCode === "00") {
                         this.officers = res.data
                     } else {
@@ -58,6 +61,7 @@ export class AssignOfficerComponent implements OnInit {
                     }
                 },
                 error => {
+                    this.loading = false
                     console.log(error)
                 }
             )

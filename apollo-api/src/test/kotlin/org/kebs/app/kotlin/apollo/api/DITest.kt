@@ -892,7 +892,7 @@ class DITest {
                 destinationInspectionDaoServices.findCdWithUcrNumber("UCR2100006322")
                     ?.let { cdDetails ->
                         KotlinLogging.logger { }.debug("Starting background task")
-                        destinationInspectionDaoServices.createLocalCoc(loggedInUser, cdDetails, map, "A")
+                        destinationInspectionDaoServices.createLocalCoc(loggedInUser, cdDetails, map, "","A")
 
                     }
             }
@@ -1226,7 +1226,7 @@ class DITest {
             ?.let { loggedInUser ->
                 val map = commonDaoServices.serviceMapDetails(appId)
                 val consignmentDocumentEntity: ConsignmentDocumentDetailsEntity = destinationInspectionDaoServices.findCD(941)
-                val localCoc = destinationInspectionDaoServices.createLocalCoc(loggedInUser, consignmentDocumentEntity, map, "A")
+                val localCoc = destinationInspectionDaoServices.createLocalCoc(loggedInUser, consignmentDocumentEntity, map, "","A")
                 consignmentDocumentEntity.cdStandard?.let { cdStd ->
                     destinationInspectionDaoServices.updateCDStatus(
                         cdStd,
@@ -1234,28 +1234,27 @@ class DITest {
                     )
                 }
                 KotlinLogging.logger { }.info { "localCoc = ${localCoc.id}" }
-                reportsDaoService.generateLocalCoCReportWithDataSource(consignmentDocumentEntity, applicationMapProperties.mapReportLocalCocPath)?.let { file ->
+//                reportsDaoService.generateLocalCoCReportWithDataSource(consignmentDocumentEntity, applicationMapProperties.mapReportLocalCocPath)?.let { file ->
 //            notifications.processEmail("anthonykihagi@gmail.com","Test subject","Test Message",file.path)
                     KotlinLogging.logger { }.info { " ::::::::::::: Success :::::::::::::::" }
                 }
             }
-    }
 
-    @Test
-    @Ignore
-    fun testCorEmailAttachment() {
-        val consignmentDocumentEntity: ConsignmentDocumentDetailsEntity = destinationInspectionDaoServices.findCD(863)
-        reportsDaoService.generateLocalCoRReport(consignmentDocumentEntity, applicationMapProperties.mapReportLocalCorPath,0L)?.let { file ->
-            consignmentDocumentEntity.cdImporter?.let { destinationInspectionDaoServices.findCDImporterDetails(it)
-            }?.let { importer ->
-                importer.email?.let { destinationInspectionDaoServices.sendLocalCorReportEmail(it, file.path) }
-            }
-        }
-    }
-
-    @Test
-    @Ignore
-    fun testKebsEmailConfig() {
-        notifications.sendEmail("anthonykihagi@gmail.com","Test subject","Test Message")
-    }
+//    @Test
+//    @Ignore
+//    fun testCorEmailAttachment() {
+//        val consignmentDocumentEntity: ConsignmentDocumentDetailsEntity = destinationInspectionDaoServices.findCD(863)
+//        reportsDaoService.generateLocalCoRReport(consignmentDocumentEntity, applicationMapProperties.mapReportLocalCorPath,0L)?.let { file ->
+//            consignmentDocumentEntity.cdImporter?.let { destinationInspectionDaoServices.findCDImporterDetails(it)
+//            }?.let { importer ->
+//                importer.email?.let { destinationInspectionDaoServices.sendLocalCorReportEmail(it, file.path) }
+//            }
+//        }
+//    }
+//
+//    @Test
+//    @Ignore
+//    fun testKebsEmailConfig() {
+//        notifications.sendEmail("anthonykihagi@gmail.com","Test subject","Test Message")
+//    }
 }

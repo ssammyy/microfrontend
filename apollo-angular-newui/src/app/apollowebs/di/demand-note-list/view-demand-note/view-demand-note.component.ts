@@ -70,6 +70,8 @@ export class ViewDemandNoteComponent implements OnInit {
     demandNoteId: any
     demandDetails: any
     message: any
+    saveLoading=false
+    deleteLoading = false
 
     constructor(private diService: DestinationInspectionService,
                 public dialogRef: MatDialogRef<any>,
@@ -93,35 +95,48 @@ export class ViewDemandNoteComponent implements OnInit {
                 }
             )
     }
-    deleteDemandNote(){
+
+    deleteDemandNote() {
+        this.deleteLoading=true
         this.diService.deleteDemandNote(this.demandNoteId)
             .subscribe(
-                res=>{
-                    if(res.responseCode=="00") {
-                        this.diService.showSuccess(res.message, ()=>{
+                res => {
+                    this.deleteLoading=false
+                    if (res.responseCode == "00") {
+                        this.diService.showSuccess(res.message, () => {
                             this.dialogRef.close(true)
                         })
                     } else {
                         this.message = res.message
                     }
+                },
+                error => {
+                    this.deleteLoading=false
                 }
             )
     }
+
     submitDemandNote() {
-        this.diService.submitDemandNote(this.demandNoteId,{})
+        this.saveLoading = true
+        this.diService.submitDemandNote(this.demandNoteId, {})
             .subscribe(
-                res=>{
-                    if(res.responseCode=="00"){
-                        this.diService.showSuccess(res.message, ()=>{
+                res => {
+                    this.saveLoading = false
+                    if (res.responseCode == "00") {
+                        this.diService.showSuccess(res.message, () => {
                             this.dialogRef.close(true)
                         })
                     } else {
                         this.message = res.message
                     }
+                },
+                error => {
+                    this.saveLoading = false
                 }
             )
     }
-    onCustomAction(action){
+
+    onCustomAction(action) {
 
     }
 }

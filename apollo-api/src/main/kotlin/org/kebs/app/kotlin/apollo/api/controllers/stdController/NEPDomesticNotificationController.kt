@@ -6,7 +6,7 @@ import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("api/v1/Domestic_notification")
+@RequestMapping("api/v1/migration/Domestic_notification")
 class NEPDomesticNotificationController(val nepDomesticNotificationService: NEPDomesticNotificationService) {
 
     //********************************************************** deployment endpoints **********************************************************

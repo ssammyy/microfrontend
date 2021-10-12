@@ -177,6 +177,7 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
     fun findByUcrNumberAndOldCdStatus(ucrNumber: String, oldCdStatus: Int): List<ConsignmentDocumentDetailsEntity>?
     fun findTopByUcrNumberOrderByIdDesc(ucrNumber: String): ConsignmentDocumentDetailsEntity?
     fun findByUuid(uuid: String): ConsignmentDocumentDetailsEntity?
+    fun findByUuidIn(uuid: Iterable<String>): List<ConsignmentDocumentDetailsEntity>
 }
 
 @Repository
@@ -379,13 +380,14 @@ interface IDemandNoteRepository : HazelcastRepository<CdDemandNoteEntity, Long> 
     fun findByItemId(itemId: CdItemDetailsEntity): CdDemandNoteEntity?
     fun findByItemIdAndPaymentStatus(itemId: CdItemDetailsEntity, paymentStatus: Int): CdDemandNoteEntity?
     fun findByCdIdAndPaymentStatus(cdId:Long, paymentStatus: Int): CdDemandNoteEntity?
+    fun findAllByPaymentStatusAndSwStatusIn(paymentStatus: Int,swStatus: List<Int?>): List<CdDemandNoteEntity>
     fun findAllByPaymentStatus(paymentStatus: Int): List<CdDemandNoteEntity>?
 }
 
 @Repository
 interface IDemandNoteItemsDetailsRepository : HazelcastRepository<CdDemandNoteItemsDetailsEntity, Long> {
 //    fun findByCdId(id: Long, status: Int): CdChecklistCategoryEntity?
-    fun findByDemandNoteId(demandNoteId: Long): List<CdDemandNoteItemsDetailsEntity>?
+    fun findByDemandNoteId(demandNoteId: Long): List<CdDemandNoteItemsDetailsEntity>
     fun findByItemId(itemId: Long?): CdDemandNoteItemsDetailsEntity?
 }
 
@@ -437,12 +439,14 @@ interface ICdInspectionAgrochemChecklistRepository : HazelcastRepository<CdInspe
 @Repository
 interface ICdInspectionAgrochemItemChecklistRepository : HazelcastRepository<CdInspectionAgrochemItemChecklistEntity, Long> {
     fun findByInspectionAndItemId_Id(inspectionGeneral: CdInspectionAgrochemChecklist,itemId: Long?): CdInspectionAgrochemItemChecklistEntity?
+    fun findByInspection_InspectionGeneralAndItemId_Id(inspectionGeneral: CdInspectionGeneralEntity,itemId: Long?): CdInspectionAgrochemItemChecklistEntity?
     fun findByInspection(inspectionGeneral: CdInspectionAgrochemChecklist): List<CdInspectionAgrochemItemChecklistEntity>
 }
 
 @Repository
 interface ICdInspectionEngineeringItemChecklistRepository : HazelcastRepository<CdInspectionEngineeringItemChecklistEntity, Long> {
     fun findByInspectionAndItemId_Id(inspectionGeneral: CdInspectionEngineeringChecklist,itemId: Long?): CdInspectionEngineeringItemChecklistEntity?
+    fun findByInspection_InspectionGeneralAndItemId_Id(inspectionGeneral: CdInspectionGeneralEntity,itemId: Long?): CdInspectionEngineeringItemChecklistEntity?
     fun findByInspection(inspectionGeneral: CdInspectionEngineeringChecklist): List<CdInspectionEngineeringItemChecklistEntity>
 }
 
@@ -459,6 +463,7 @@ interface ICdInspectionOtherChecklistRepository : HazelcastRepository<CdInspecti
 interface ICdInspectionOtherItemChecklistRepository : HazelcastRepository<CdInspectionOtherItemChecklistEntity, Long> {
     fun findByInspectionAndItemId_Id(inspectionGeneral: CdInspectionOtherChecklist,itemId: Long?): CdInspectionOtherItemChecklistEntity?
     fun findByInspection(inspection: CdInspectionOtherChecklist): List<CdInspectionOtherItemChecklistEntity>
+    fun findByInspection_InspectionGeneralAndItemId_Id(inspectionGeneral: CdInspectionGeneralEntity, cdItemID: Long): CdInspectionOtherItemChecklistEntity?
 }
 
 @Repository

@@ -8,9 +8,16 @@ import {
     DecisionFeedback,
     HOFFeedback,
     LiaisonOrganization,
-    StandardTasks, StdTCDecision,
+    StandardTasks,
+    StdJustification,
+    StdJustificationDecision,
+    StdSPCSECTask,
+    StdTCDecision,
+    StdTCSecWorkPlan,
     StdTCTask,
-    Stdtsectask
+    Stdtsectask,
+    StdtsecTaskJustification,
+    StdWorkPlan
 } from './request_std.model';
 
 @Injectable({
@@ -113,11 +120,40 @@ export class StandardDevelopmentService {
         console.log(uploadNWI);
         return this.http.post<Stdtsectask>(`${this.apiServerUrl}` + 'uploadNWI', uploadNWI)
     }
+
     public getTCTasks(): Observable<StdTCTask[]> {
         return this.http.get<StdTCTask[]>(`${this.apiServerUrl}` + 'getTCTasks')
     }
+
     public decisionOnNWI(reviewTask: StdTCDecision): Observable<StandardTasks> {
         return this.http.post<StandardTasks>(`${this.apiServerUrl}` + 'decisionOnNWI', reviewTask)
     }
 
+    public uploadJustification(stdJustification: StdJustification): Observable<Stdtsectask> {
+
+        console.log(stdJustification);
+        return this.http.post<Stdtsectask>(`${this.apiServerUrl}` + 'uploadJustification', stdJustification)
+    }
+
+    public getTCSECTasksJustification(): Observable<StdtsecTaskJustification[]> {
+        return this.http.get<StdtsecTaskJustification[]>(`${this.apiServerUrl}` + 'getTCSECTasks')
+    }
+
+    public getSPCSECTasks(): Observable<StdSPCSECTask[]> {
+        return this.http.get<StdSPCSECTask[]>(`${this.apiServerUrl}` + 'spc-sec/tasks')
+    }
+
+    public decisionOnJustification(stdJustificationDecision: StdJustificationDecision): Observable<StandardTasks> {
+        return this.http.post<StandardTasks>(`${this.apiServerUrl}` + 'decisionOnJustification', stdJustificationDecision)
+    }
+
+    public getTCSECWorkPlan(): Observable<StdTCSecWorkPlan[]> {
+        return this.http.get<StdTCSecWorkPlan[]>(`${this.apiServerUrl}` + 'getTCSECTasks')
+    }
+
+    public uploadWorkPlan(stdWorkPlan: StdWorkPlan): Observable<StdWorkPlan> {
+
+        console.log(stdWorkPlan);
+        return this.http.post<StdWorkPlan>(`${this.apiServerUrl}` + 'uploadWorkPlan', stdWorkPlan)
+    }
 }

@@ -12,6 +12,9 @@ export class CompliantComponent implements OnInit {
 
     public form: FormGroup;
     message: any
+    loading: boolean = false
+    corRequest: Boolean = false
+    cocRequest: Boolean = false
 
     constructor(public dialogRef: MatDialogRef<any>, private fb: FormBuilder, @Inject(MAT_DIALOG_DATA) public data: any,
                 private diService: DestinationInspectionService) {
@@ -28,24 +31,31 @@ export class CompliantComponent implements OnInit {
             }
             return null
         };
+        this.corRequest = this.data.corRequest
+        this.cocRequest = this.data.cocRequest
         this.form = this.fb.group({
             compliantStatus: ['', Validators.required],
             documentType: [''],
-            remarks: ['', [Validators.required,Validators.minLength(5)]]
+            remarks: ['', [Validators.required, Validators.minLength(5)]]
         }, DocumentTypeSelectionValidator)
     }
 
     saveRecord() {
+        this.loading = true
         this.diService.sendConsignmentDocumentAction(this.form.value, this.data.uuid, "mark-compliant")
             .subscribe(
                 res => {
+                    this.loading = false
                     if (res.responseCode === "00") {
-                        this.diService.showSuccess(res.message,()=>{
+                        this.diService.showSuccess(res.message, () => {
                             this.dialogRef.close(true)
                         })
                     } else {
                         this.message = res.message
                     }
+                },
+                error => {
+                    this.loading = false
                 }
             )
     }

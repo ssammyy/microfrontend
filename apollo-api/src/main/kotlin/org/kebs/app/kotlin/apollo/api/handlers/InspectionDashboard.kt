@@ -104,7 +104,7 @@ class InspectionDashboard(
             query.resultList.get(0).let {
                 stats.put("samples", fromTuple(it as Tuple))
             }
-            KotlinLogging.logger { }.info(consignmentDocumentStats)
+            KotlinLogging.logger { }.debug(consignmentDocumentStats)
             val cdStats = entityManager.createNativeQuery(consignmentDocumentStats, Tuple::class.java)
             cdStats.resultList.forEach {
                 val dt = fromTuple(it as Tuple)
@@ -156,7 +156,7 @@ class InspectionDashboard(
             sampleQuery.resultList.get(0).let {
                 stats.put("samples", fromTuple(it as Tuple))
             }
-            KotlinLogging.logger { }.info(queryStr)
+            KotlinLogging.logger { }.debug(queryStr)
             val cdStats = entityManager.createNativeQuery(queryStr, Tuple::class.java)
             cdStats.setParameter(1, loggedInUser.id)
             cdStats.resultList.forEach {

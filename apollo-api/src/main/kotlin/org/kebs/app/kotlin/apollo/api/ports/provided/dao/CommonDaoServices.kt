@@ -79,11 +79,13 @@ import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
 import org.modelmapper.ModelMapper
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.core.io.ResourceLoader
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.mock.web.MockMultipartFile
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
+import org.springframework.util.ResourceUtils
 import org.springframework.util.StringUtils
 import org.springframework.web.multipart.MultipartFile
 import java.io.*
@@ -108,57 +110,57 @@ import javax.xml.stream.XMLOutputFactory
 
 @Service
 class CommonDaoServices(
-    private val jasyptStringEncryptor: StringEncryptor,
-    private val usersRepo: IUserRepository,
-    private val companyProfileRepo: ICompanyProfileRepository,
-    private val workPlanYearsCodesRepo: IWorkplanYearsCodesRepository,
-    private val manufacturePlantRepository: IManufacturePlantDetailsRepository,
-    private val batchJobRepository: IBatchJobDetailsRepository,
-    private val iSubSectionsLevel2Repo: ISubSectionsLevel2Repository,
-    private val iSubSectionsLevel1Repo: ISubSectionsLevel1Repository,
-    private val configurationRepository: IIntegrationConfigurationRepository,
-    private val workflowTransactionsRepository: IWorkflowTransactionsRepository,
-    private val iUserProfilesRepo: IUserProfilesRepository,
-    private val iImporterRepo: IImporterContactRepository,
-    private val serviceRequestsRepository: IServiceRequestsRepository,
-    private val verificationTokensRepo: IUserVerificationTokensRepository,
-    private val iUserRepository: IUserRepository,
-    private val emailVerificationTokenEntityRepo: EmailVerificationTokenEntityRepo,
-    private val serviceMapsRepository: IServiceMapsRepository,
-    private val countriesRepository: ICountriesRepository,
-    private val notifications: Notifications,
-    private val directorateRepo: IDirectoratesRepository,
-    private val businessLinesRepo: IBusinessLinesRepository,
-    private val businessNatureRepo: IBusinessNatureRepository,
-    private val notificationsRepo: INotificationsRepository,
-    private val notificationsBufferRepo: INotificationsBufferRepository,
-    private val manufacturerContactDetailsRepository: IManufacturerContactsRepository,
-    private val manufacturersRepo: IManufacturerRepository,
-    private val iDivisionsRepo: IDivisionsRepository,
-    private val designationRepo: IDesignationsRepository,
-    private val iSectionsRepo: ISectionsRepository,
-    private val departmentRepo: IDepartmentsRepository,
-    private val regionsRepo: IRegionsRepository,
-    private val countiesRepo: ICountiesRepository,
-    private val townsRepo: ITownsRepository,
-    private val userTypesRepo: IUserTypesEntityRepository,
-    private val companyProfileDirectorsRepo: ICompanyProfileDirectorsRepository,
-    private val companyProfileCommoditiesManufactureRepo: ICompanyProfileCommoditiesManufactureRepository,
-    private val companyProfileContractsUndertakenRepo: ICompanyProfileContractsUndertakenRepository,
+        private val jasyptStringEncryptor: StringEncryptor,
+        private val usersRepo: IUserRepository,
+        private val companyProfileRepo: ICompanyProfileRepository,
+        private val workPlanYearsCodesRepo: IWorkplanYearsCodesRepository,
+        private val manufacturePlantRepository: IManufacturePlantDetailsRepository,
+        private val batchJobRepository: IBatchJobDetailsRepository,
+        private val iSubSectionsLevel2Repo: ISubSectionsLevel2Repository,
+        private val iSubSectionsLevel1Repo: ISubSectionsLevel1Repository,
+        private val configurationRepository: IIntegrationConfigurationRepository,
+        private val workflowTransactionsRepository: IWorkflowTransactionsRepository,
+        private val iUserProfilesRepo: IUserProfilesRepository,
+        private val iImporterRepo: IImporterContactRepository,
+        private val serviceRequestsRepository: IServiceRequestsRepository,
+        private val verificationTokensRepo: IUserVerificationTokensRepository,
+        private val iUserRepository: IUserRepository,
+        private val emailVerificationTokenEntityRepo: EmailVerificationTokenEntityRepo,
+        private val serviceMapsRepository: IServiceMapsRepository,
+        private val countriesRepository: ICountriesRepository,
+        private val notifications: Notifications,
+        private val directorateRepo: IDirectoratesRepository,
+        private val businessLinesRepo: IBusinessLinesRepository,
+        private val businessNatureRepo: IBusinessNatureRepository,
+        private val notificationsRepo: INotificationsRepository,
+        private val notificationsBufferRepo: INotificationsBufferRepository,
+        private val manufacturerContactDetailsRepository: IManufacturerContactsRepository,
+        private val manufacturersRepo: IManufacturerRepository,
+        private val iDivisionsRepo: IDivisionsRepository,
+        private val designationRepo: IDesignationsRepository,
+        private val iSectionsRepo: ISectionsRepository,
+        private val departmentRepo: IDepartmentsRepository,
+        private val regionsRepo: IRegionsRepository,
+        private val countiesRepo: ICountiesRepository,
+        private val townsRepo: ITownsRepository,
+        private val userTypesRepo: IUserTypesEntityRepository,
+        private val companyProfileDirectorsRepo: ICompanyProfileDirectorsRepository,
+        private val companyProfileCommoditiesManufactureRepo: ICompanyProfileCommoditiesManufactureRepository,
+        private val companyProfileContractsUndertakenRepo: ICompanyProfileContractsUndertakenRepository,
 
-    private val countyRepo: ICountiesRepository,
-    private val standardCategoryRepo: IStandardCategoryRepository,
-    private val productCategoriesRepository: IKebsProductCategoriesRepository,
-    private val broadProductCategoryRepository: IBroadProductCategoryRepository,
-    private val productsRepo: IProductsRepository,
-    private val productSubCategoryRepo: IProductSubcategoryRepository,
+        private val countyRepo: ICountiesRepository,
+        private val standardCategoryRepo: IStandardCategoryRepository,
+        private val productCategoriesRepository: IKebsProductCategoriesRepository,
+        private val broadProductCategoryRepository: IBroadProductCategoryRepository,
+        private val productsRepo: IProductsRepository,
+        private val productSubCategoryRepo: IProductSubcategoryRepository,
 
-    private val iProcessesStagesRepo: IProcessesStagesRepository,
-    private val iLaboratoryRepo: ILaboratoryRepository,
-
-    private val bufferRepo: INotificationsBufferRepository,
-    private val applicationMapProperties: ApplicationMapProperties,
-    private val smsService: SmsServiceImpl,
+        private val iProcessesStagesRepo: IProcessesStagesRepository,
+        private val iLaboratoryRepo: ILaboratoryRepository,
+        private val resourceLoader: ResourceLoader,
+        private val bufferRepo: INotificationsBufferRepository,
+        private val applicationMapProperties: ApplicationMapProperties,
+        private val smsService: SmsServiceImpl,
 ) {
 
     @Value("\${common.page.view.name}")
@@ -174,7 +176,18 @@ class CommonDaoServices(
     lateinit var pointOfEntries: String
 
     val successLink = "redirect:/api/auth/signup/notification/success/message"
-
+    fun resolveAbsoluteFilePath(fileName: String): String {
+        try {
+            if (fileName.startsWith("classpath:")) {
+                return resourceLoader.getResource(fileName).toString()
+            } else {
+                return ResourceUtils.getFile(fileName).toString()
+            }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("READ FAILED", ex)
+        }
+        return ""
+    }
     //Deserialize XML to POJO
     final inline fun <reified T> deserializeFromXML(xmlString: String, toExclude: String = ""): T {
         try {
@@ -218,6 +231,11 @@ class CommonDaoServices(
     fun convertDateToSAGEDate(dateChange: Date): String {
         val sdf = SimpleDateFormat("mm/dd/yyyy")
         return sdf.format(dateChange)
+    }
+
+    fun convertDateToString(date: LocalDateTime, format: String): String {
+        val format = DateTimeFormatter.ofPattern(format)
+        return format.format(date)
     }
 
     fun convertDateToString(date: Date, format: String): String {

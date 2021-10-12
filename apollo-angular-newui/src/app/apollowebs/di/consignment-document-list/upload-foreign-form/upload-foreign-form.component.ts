@@ -12,12 +12,14 @@ export class UploadForeignFormComponent implements OnInit {
     selectedFile: File
     message: String
     form: FormGroup
-    constructor(private fb: FormBuilder,private dialogRef: MatDialogRef<any>, private diService: DestinationInspectionService) {
+    loading = false
+
+    constructor(private fb: FormBuilder, private dialogRef: MatDialogRef<any>, private diService: DestinationInspectionService) {
     }
 
     ngOnInit(): void {
-        this.form=this.fb.group({
-            fileType: ["",Validators.required]
+        this.form = this.fb.group({
+            fileType: ["", Validators.required]
         })
     }
 
@@ -30,13 +32,16 @@ export class UploadForeignFormComponent implements OnInit {
         }
     }
 
-    isValid(): Boolean{
+    isValid(): Boolean {
         return this.selectedFile && this.form.valid
     }
+
     saveForeignDocument() {
-        this.diService.uploadForeignDocuments(this.selectedFile, this.form.value.fileType,"coc")
+        this.loading = true
+        this.diService.uploadForeignDocuments(this.selectedFile, this.form.value.fileType, "coc")
             .subscribe(
                 res => {
+                    this.loading = false
                     if (res.responseCode === "000") {
                         this.dialogRef.close(true)
                     } else {
@@ -44,6 +49,7 @@ export class UploadForeignFormComponent implements OnInit {
                     }
                 },
                 error => {
+                    this.loading = false
                     this.message = error.message
                 }
             )

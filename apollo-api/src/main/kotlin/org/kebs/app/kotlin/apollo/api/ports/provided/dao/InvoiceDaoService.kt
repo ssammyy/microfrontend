@@ -111,7 +111,6 @@ class InvoiceDaoService(
                 var dNote = addDetails as CdDemandNoteEntity
                 with(dNote) {
                     invoiceBatchNumberId = invoiceBatchDetails.id
-//                    invoiceNumber = invoiceBatchDetails.batchNumber
                     paymentStatus = map.inactiveStatus
                 }
                 dNote = diDaoServices.upDateDemandNoteWithUser(dNote, user)

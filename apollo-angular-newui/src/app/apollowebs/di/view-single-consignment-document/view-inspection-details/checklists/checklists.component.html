@@ -27,7 +27,9 @@
         </ng-container>
         <ng-container matColumnDef="inspectionNotificationStatus">
             <th mat-header-cell *matHeaderCellDef>Inspection Status</th>
-            <td mat-cell *matCellDef="let element"> {{element.inspectionNotificationStatus}} </td>
+            <td mat-cell *matCellDef="let element">
+                <app-consignment-status [value]="element.inspectionReportStatus" ></app-consignment-status>
+            </td>
         </ng-container>
         <ng-container matColumnDef="actions">
             <mat-header-cell *matHeaderCellDef>Action/Download</mat-header-cell>
@@ -39,6 +41,9 @@
                     </button>
                     <button class="btn-sm btn-primary" *ngIf="element.sampledCollectedStatus==1"
                             (click)="customAction(element,'downlodScf')"><i class="fa fa-download"></i>SCF
+                    </button>
+                    <button class="btn-sm btn-primary" *ngIf="element.sampleBsNumberStatus==1"
+                            (click)="customAction(element,'labResults')"><i class="fa fa-eye"></i>Lab Result
                     </button>
                     <button class="btn-sm btn-primary" *ngIf="element.sampleSubmissionStatus==1"
                             (click)="customAction(element,'downlodSsf')"><i class="fa fa-download"></i>SSF

@@ -7,6 +7,7 @@ import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
 import org.flowable.engine.repository.Deployment
 import org.flowable.task.api.Task
+import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponse
 import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
 import org.kebs.app.kotlin.apollo.store.model.std.DepartmentResponse
@@ -27,7 +28,8 @@ class NationalEnquiryPointService(
         private val repositoryService: RepositoryService,
         private val nationalEnquiryPointRepository: NationalEnquiryPointRepository,
         private val informationTrackerRepository: InformationTrackerRepository,
-        private val departmentResponseRepository: DepartmentResponseRepository
+        private val departmentResponseRepository: DepartmentResponseRepository,
+        private val notifications: Notifications
 ) {
 
     var PROCESS_DEFINITION_KEY: String = "nationalEnquiryPoint"
@@ -97,18 +99,29 @@ class NationalEnquiryPointService(
     }
 
     //send feedback email if info is available and save response
-    fun sendEmailInfoAvailable(informationTracker: InformationTracker, taskId: String): String {
+    fun sendEmailInfoAvailable(informationTracker: InformationTracker, taskId: String): Boolean {
         val variable: MutableMap<String, Any> = HashMap()
         informationTracker.nepOfficerId?.let { variable.put("NEPOfficer", it) }
         informationTracker.feedbackSent?.let { variable.put("feedbackSent", it) }
         informationTracker.requesterEmail?.let { variable.put("requesterEmail", it) }
 
         informationTrackerRepository.save(informationTracker)
-
         taskService.complete(taskId, variable)
+
+        //email send 
+        val subject = "ENQUIRY RESPONSE"
+        val messageBody = informationTracker.feedbackSent
+        informationTracker.requesterEmail?.let {
+            if (messageBody != null) {
+                notifications.sendEmail(it, subject, messageBody)
+            }
+        }
+        //
+
+
         println("Process has ended and an email has been sent out with feedback")
 
-        return "Email Sent Successfully"
+        return true
     }
 
     //function to handle the response by departments or organizations responding to enquiries

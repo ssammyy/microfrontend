@@ -37,11 +37,14 @@ export class VehicleDetailsComponent implements OnInit {
             case 'downloadReport':
                 this.diService.downloadDocument('/api/v1/download/motor/inspection/report/'+data.id)
                 break
+            case 'downloadUnMvir':
+                this.diService.downloadDocument('/api/v1/download/ministry/mvir/'+data.id)
+                break
             case 'downloadUnfilled':
                 this.diService.downloadDocument('/api/v1/download/ministry/checklist/unfilled/'+data.id)
                 break
             case 'downloadChecklist':
-                this.diService.downloadDocument("/api/v1/di/ministry/inspection/checklist/download/" + data.id)
+                this.diService.downloadDocument("/api/v1/download/ministry/checklist/" + data.id)
                 break
             default:
                 console.log("Invalid action: " + action)
