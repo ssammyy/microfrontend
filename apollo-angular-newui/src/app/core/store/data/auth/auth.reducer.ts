@@ -118,13 +118,13 @@ const authStateInternalReducer = createReducer(
             error
         };
     }),
-    on(loadLogoutSuccess, (state, {data, profile, loggedIn}) => {
+    on(loadLogoutSuccess, (state, {data,loggedIn, profile}) => {
         return {
             ...state,
             data, profile, loggedIn
         };
     }),
-    on(loadLogoutFailure, (state, {error, profile, loggedIn}) => {
+    on(loadLogoutFailure, (state, {error, loggedIn,profile}) => {
         return {
             ...state,
             error, profile, loggedIn
