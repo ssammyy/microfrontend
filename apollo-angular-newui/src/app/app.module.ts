@@ -221,6 +221,7 @@ import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {HttpClientModule} from "@angular/common/http";
 import {FooterModule} from "./shared/footer/footer.module";
+import { CurrencyExchangeRatesComponent } from './apollowebs/di/currency-exchange-rates/currency-exchange-rates.component';
 
 
 // @NgModule({
@@ -673,7 +674,8 @@ import {FooterModule} from "./shared/footer/footer.module";
         ComStdConfirmComponent,
         StdTcTasksComponent,
         NepSuccessComponent,
-        ManagernotificationsComponent
+        ManagernotificationsComponent,
+        CurrencyExchangeRatesComponent
     ],
     providers: [
         MatNativeDateModule,

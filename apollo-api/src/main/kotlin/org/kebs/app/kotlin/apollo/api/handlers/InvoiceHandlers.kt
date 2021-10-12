@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.api.handlers
 
 import mu.KotlinLogging
 import okhttp3.internal.toLongOrDefault
+import org.joda.time.DateTime
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.request.ConsignmentUpdateRequest
@@ -10,14 +11,22 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionB
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
+import org.kebs.app.kotlin.apollo.api.service.InvoicePaymentService
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
 import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteRepository
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
+import org.springframework.web.multipart.MultipartHttpServletRequest
+import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
+import org.springframework.web.servlet.function.paramOrNull
 import java.sql.Timestamp
 import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @Component
 class InvoiceHandlers(
@@ -26,10 +35,58 @@ class InvoiceHandlers(
         private val applicationMapProperties: ApplicationMapProperties,
         private val daoServices: DestinationInspectionDaoServices,
         private val invoiceDaoService: InvoiceDaoService,
-        private val diBpmn: DestinationInspectionBpmn
+        private val diBpmn: DestinationInspectionBpmn,
+        private val invoicePaymentService: InvoicePaymentService
 ) {
     final val appId = applicationMapProperties.mapPermitApplication
     final val errors = mutableMapOf<String, String>()
+    final val DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+    fun applicationUploadExchangeRates(req: ServerRequest): ServerResponse {
+        val response = ApiResponseModel()
+        try {
+            val multipartRequest = (req.servletRequest() as? MultipartHttpServletRequest)
+                    ?: throw ResponseStatusException(
+                            HttpStatus.NOT_ACCEPTABLE,
+                            "Request is not a multipart request"
+                    )
+            val multipartFile = multipartRequest.getFile("file")
+            val fileType = multipartRequest.getParameter("file_type")
+            if (multipartFile != null) {
+                response.data = invoicePaymentService.uploadExchangeRates(multipartFile, fileType)
+                response.message = "Success"
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+            } else {
+                response.message = "Failed, no file received"
+                response.responseCode = ResponseCodes.FAILED_CODE
+            }
+        } catch (e: Exception) {
+            response.message = "Invalid file type provided"
+            response.responseCode = ResponseCodes.FAILED_CODE
+        }
+        return ServerResponse.ok().body(response)
+    }
+
+    fun applicationExchangeRates(req: ServerRequest): ServerResponse {
+        val response = ApiResponseModel()
+        try {
+            val date = req.paramOrNull("date")?.let {
+                var dt = LocalDate.now()
+                if (!it.trim().isEmpty()) {
+                    val parsedDate = LocalDate.from(DATE_FORMAT.parse(it))
+                    dt = parsedDate
+                }
+                dt
+            } ?: LocalDate.now()
+            response.data = daoServices.listExchangeRates(DATE_FORMAT.format(date))
+            response.message = "Success"
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error("FAILED to LOAD rates", e)
+            response.message = "Invalid date provided"
+            response.responseCode = ResponseCodes.FAILED_CODE
+        }
+        return ServerResponse.ok().body(response)
+    }
 
     fun applicationFee(req: ServerRequest): ServerResponse {
         val response = ApiResponseModel()
@@ -170,7 +227,8 @@ class InvoiceHandlers(
             req.pathVariable("invoiceId").let { invoiceId ->
                 val demandNote = daoServices.findDemandNoteWithID(invoiceId.toLongOrDefault(0L))
                 if (demandNote != null) {
-                    if (demandNote.status!! < 0) {
+                    val map = commonDaoServices.serviceMapDetails(appId)
+                    if (demandNote.status==map.workingStatus) {
                         val loggedInUser = commonDaoServices.loggedInUserDetails()
                         demandNote.status = 50
                         demandNote.varField3 = "DELETED"

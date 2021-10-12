@@ -17,7 +17,7 @@ export class DestinationInspectionService {
     }
 
     // Check if role is in required privileges
-    hasRole(privileges: string[],roles: any[]): boolean {
+    hasRole(privileges: string[], roles: any[]): boolean {
         for (let role of roles) {
             for (let p of privileges) {
                 if (role == p) {
@@ -36,6 +36,22 @@ export class DestinationInspectionService {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/dashboard/all"))
     }
 
+    uploadConversionRates(file: File, fileType: any): Observable<any> {
+        let fd = new FormData()
+        fd.append("file", file)
+        fd.append("docType", fileType)
+        fd.append("file_type", fileType)
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/demand/note/upload/exchange-rate"), fd)
+    }
+
+    loadConversionRates(rateDate: any): Observable<any> {
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/demand/note/exchange-rates"), {
+            params: {
+                date: rateDate
+            }
+        })
+    }
+
     sendDemandNote(data: any, consignmentUuid: any): Observable<any> {
         return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/demand/note/generate/" + consignmentUuid), data)
     }
@@ -47,8 +63,9 @@ export class DestinationInspectionService {
     loadMyTasks(): Observable<any> {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/my/tasks"))
     }
-    deleteTask(taskId: any) : Observable<any> {
-        return this.client.delete(ApiEndpointService.getEndpoint("/api/v1/di/my/task/"+taskId))
+
+    deleteTask(taskId: any): Observable<any> {
+        return this.client.delete(ApiEndpointService.getEndpoint("/api/v1/di/my/task/" + taskId))
     }
 
     loadChecklists(itemUuid: any): Observable<any> {
@@ -214,7 +231,7 @@ export class DestinationInspectionService {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/lab-results/" + itemUuid))
     }
 
-    loadLabResultsDocuments(ssfId: any) : Observable<any>{
+    loadLabResultsDocuments(ssfId: any): Observable<any> {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/lab-result/ssf-files/" + ssfId))
     }
 
@@ -222,8 +239,12 @@ export class DestinationInspectionService {
         return this.client.delete(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/attachments/" + attachmentId))
     }
 
-    downloadDocument(url, params: any={}) {
-        this.client.get(ApiEndpointService.getEndpoint(url), {observe: 'response', responseType: 'blob', params: params})
+    downloadDocument(url, params: any = {}) {
+        this.client.get(ApiEndpointService.getEndpoint(url), {
+            observe: 'response',
+            responseType: 'blob',
+            params: params
+        })
             .pipe(map((res: HttpResponse<any>) => {
                     if (res.ok) {
                         let fileName = this.getFileName(res)
@@ -335,9 +356,11 @@ export class DestinationInspectionService {
     demandNoteDetails(demandNoteId: any): Observable<any> {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/demand/note/details/" + demandNoteId))
     }
-    loadSupervisorTasks(uuid: any) : Observable<any>{
+
+    loadSupervisorTasks(uuid: any): Observable<any> {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/tasks/" + uuid));
     }
+
     submitDemandNote(demandNoteId: any, data: any): Observable<any> {
         return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/demand/note/submit/" + demandNoteId), data)
     }
@@ -353,7 +376,6 @@ export class DestinationInspectionService {
     updateSSFResults(data: any, itemUuid: any): Observable<any> {
         return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/item-ssf-result/" + itemUuid), data);
     }
-
 
 
     showSuccess(message: string, fn?: Function) {

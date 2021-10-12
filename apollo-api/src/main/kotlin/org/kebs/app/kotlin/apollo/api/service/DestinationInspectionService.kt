@@ -51,6 +51,7 @@ class DestinationInspectionService(
         private val importerDaoServices: ImporterDaoServices,
         private val cdAuditService: ConsignmentDocumentAuditService,
         private val qaDaoServices: QADaoServices,
+        private val exchangeRateRepository: ICfgCurrencyExchangeRateRepository,
         private val cdItemsDetailsRepository: ICdItemDetailsRepo,
         private val diBpmn: DestinationInspectionBpmn,
         private val cfsTypesEntity: ICfsTypeCodesRepository,
@@ -62,9 +63,10 @@ class DestinationInspectionService(
     @Value("\${destination.inspection.cd.type.cor}")
     lateinit var corCdType: String
 
-    fun findDocumentsWithActions(usersEntity: UsersEntity, category: String?, myTask: Boolean,page: PageRequest):  ApiResponseModel{
-        return diBpmn.consignmentDocumentWithActions(usersEntity, category,myTask,page)
+    fun findDocumentsWithActions(usersEntity: UsersEntity, category: String?, myTask: Boolean, page: PageRequest): ApiResponseModel {
+        return diBpmn.consignmentDocumentWithActions(usersEntity, category, myTask, page)
     }
+
     fun markCompliant(cdUuid: String, compliantStatus: Int, supervisor: String, remarks: String, taskApproved: Boolean): Boolean {
         if (taskApproved) {
             val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
@@ -604,6 +606,11 @@ class DestinationInspectionService(
             consignmentDocument.varField10 = "Local COC Generated"
             consignmentDocument.localCocOrCorStatus = map.activeStatus
             consignmentDocument.compliantStatus = map.activeStatus
+            // Generate NCR if applicable
+            daoServices.createLocalNcr(loggedInUser, consignmentDocument, map, remarks, "A")?.let {
+                consignmentDocument.ncrNumber = it.cocNumber
+                consignmentDocument
+            }
             consignmentDocument.cocNumber = localCoc.cocNumber
             daoServices.updateCdDetailsInDB(consignmentDocument, null)
 
@@ -672,6 +679,11 @@ class DestinationInspectionService(
             consignmentDocument.compliantStatus = map.activeStatus
             consignmentDocument.cocNumber = localCoi.cocNumber
             consignmentDocument.varField10 = "Local COI Generated"
+            // Generate NCR if applicable
+            daoServices.createLocalNcr(loggedInUser, consignmentDocument, map, remarks, "A")?.let {
+                consignmentDocument.ncrNumber = it.cocNumber
+                consignmentDocument
+            }
             // Send coi to importer
             consignmentDocument.cdImporter?.let {
                 daoServices.findCDImporterDetails(it)
@@ -1475,16 +1487,15 @@ class DestinationInspectionService(
     }
 
     fun consignmentDocumentTasks(cdUuid: String): ApiResponseModel {
-        val response=ApiResponseModel()
+        val response = ApiResponseModel()
         try {
             response.data = this.diBpmn.consignmentDocumentActions(cdUuid)
-            response.message="Cd actions"
-            response.responseCode=ResponseCodes.SUCCESS_CODE
-        }catch (ex: Exception) {
-            response.message="failed to fetch actions"
-            response.responseCode=ResponseCodes.FAILED_CODE
+            response.message = "Cd actions"
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+        } catch (ex: Exception) {
+            response.message = "failed to fetch actions"
+            response.responseCode = ResponseCodes.FAILED_CODE
         }
         return response
     }
-
 }

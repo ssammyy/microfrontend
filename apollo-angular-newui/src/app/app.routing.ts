@@ -97,6 +97,7 @@ import {ViewInspectionDetailsComponent} from "./apollowebs/di/view-single-consig
 import {ChecklistDataFormComponent} from "./apollowebs/di/view-single-consignment-document/checklist-data-form/checklist-data-form.component";
 import {InspectionDashboardComponent} from "./apollowebs/di/inspection-dashboard/inspection-dashboard.component";
 import {LabResultsComponent} from "./apollowebs/di/view-single-consignment-document/item-details-list-view/lab-results/lab-results.component";
+import {CurrencyExchangeRatesComponent} from "./apollowebs/di/currency-exchange-rates/currency-exchange-rates.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -502,6 +503,16 @@ export const routes: Routes = [
             {
                 path: 'inspection',
                 component: InspectionDashboardComponent
+            }
+        ]
+    },
+    {
+        path: 'currency',
+        component: AdminLayoutComponent,
+        children: [
+            {
+                path: 'rates',
+                component: CurrencyExchangeRatesComponent
             }
         ]
     },
