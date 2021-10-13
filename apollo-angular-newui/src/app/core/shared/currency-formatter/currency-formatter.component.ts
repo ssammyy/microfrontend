@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {ViewCell} from "ng2-smart-table";
+import {ViewCell} from 'ng2-smart-table';
 
 @Component({
     selector: 'app-currency-formatter',
@@ -18,12 +18,12 @@ export class CurrencyFormatterComponent implements ViewCell, OnInit {
     ngOnInit(): void {
         if (this.value) {
             try {
-                this.renderValue = Number(this.value)
+                this.renderValue = Number(this.value);
             } catch (e) {
-                console.log(e)
+                console.log(e);
             }
         } else {
-            this.renderValue = 0.0
+            this.renderValue = 0.0;
         }
     }
 

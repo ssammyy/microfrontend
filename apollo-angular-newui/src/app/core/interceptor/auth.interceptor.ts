@@ -1,12 +1,12 @@
-import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from "@angular/common/http";
-import {select, Store} from "@ngrx/store";
-import {HandleErrorService} from "../services/errors/handle-error.service";
-import {ApiEndpointService} from "../services/endpoints/api-endpoint.service";
-import {Observable, of, throwError} from "rxjs";
-import {catchError, first, mergeMap, switchMap} from "rxjs/operators";
+import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {select, Store} from '@ngrx/store';
+import {HandleErrorService} from '../services/errors/handle-error.service';
+import {ApiEndpointService} from '../services/endpoints/api-endpoint.service';
+import {Observable, of, throwError} from 'rxjs';
+import {catchError, first, mergeMap, switchMap} from 'rxjs/operators';
 
-import {Injectable} from "@angular/core";
-import {LoggedInUser, selectUserInfo} from "../store";
+import {Injectable} from '@angular/core';
+import {LoggedInUser, selectUserInfo} from '../store';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -58,7 +58,7 @@ export class AuthInterceptor implements HttpInterceptor {
       .pipe(
         select(selectUserInfo),
         switchMap((profile: LoggedInUser) => {
-          const token = profile.accessToken
+          const token = profile.accessToken;
           if (!token) {
             console.warn(`addToken( Invalid token!!! Cannot use token "${token}" for endpoint: ${request.url} ).`);
           } else {
