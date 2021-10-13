@@ -40,6 +40,7 @@ class ConsignmentEnableUI {
     var idfAvailable: Boolean = false
     var cocAvailable: Boolean = false
     var corAvailable: Boolean = false
+    var ncrAvailable: Boolean = false
     var coiAvailable: Boolean = false
     var complianceDisabled: Boolean = false
     var declarationDocument: Boolean = false
@@ -72,6 +73,7 @@ class ConsignmentEnableUI {
                 targetItem = change && cd.targetStatus != map.activeStatus
                 supervisorTarget = modify && cd.targetStatus != map.activeStatus
                 attachments = (change || modify)
+                ncrAvailable=!cd.ncrNumber.isNullOrEmpty()
                 checklistFilled = cd.inspectionChecklist == map.activeStatus
                 hasPort = (cd.portOfArrival != null && cd.freightStation != null)
                 completed = cd.approveRejectCdStatusType?.let { it.modificationAllowed != map.activeStatus } == true || cd.oldCdStatus != null
@@ -84,6 +86,7 @@ class ConsignmentEnableUI {
                 ui.corAvailable = it.localCorStatus == map.activeStatus && cd.localCocOrCorStatus == map.activeStatus
                 ui.coiAvailable=it.localCocStatus == map.activeStatus && cd.localCoi==map.activeStatus
                 ui.corRequest = it.localCorStatus == map.activeStatus
+
                 ui.cocRequest = it.localCocStatus == map.activeStatus
                 ui.canInspect = it.inspectionStatus == map.activeStatus
             }

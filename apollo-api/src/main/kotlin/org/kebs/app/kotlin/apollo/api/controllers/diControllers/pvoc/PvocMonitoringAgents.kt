@@ -83,7 +83,7 @@ class PvocMonitoringAgents(
         // get coc using ucrno
         cdIds.forEach { consignmentId ->
             iDestinationInspectionRepository.findByIdOrNull(consignmentId).let { consignment ->
-                consignment?.ucrNumber?.let { ucr -> iCocsRepository.findByUcrNumber(ucr)?.let { cocsDocs.add(it) } }
+                consignment?.ucrNumber?.let { ucr -> iCocsRepository.findByUcrNumberAndCocType(ucr,"coc")?.let { cocsDocs.add(it) } }
             }
         }
         model.addAttribute("sampled_goods", cocsDocs)

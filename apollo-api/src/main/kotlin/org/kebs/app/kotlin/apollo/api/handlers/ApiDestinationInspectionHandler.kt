@@ -432,7 +432,7 @@ class ApiDestinationInspectionHandler(
 
     fun certificateOfConformance(req: ServerRequest): ServerResponse {
         req.pathVariable("coUuid").let {
-            return ServerResponse.ok().body(this.destinationInspectionService.certificateOfConformanceDetails(it))
+            return ServerResponse.ok().body(this.destinationInspectionService.certificateOfConformanceDetails(it,req.pathVariable("docType")))
         }
     }
 

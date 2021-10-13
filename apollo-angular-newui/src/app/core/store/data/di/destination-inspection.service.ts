@@ -5,7 +5,6 @@ import {Observable} from "rxjs";
 import * as fileSaver from 'file-saver';
 import {map} from "rxjs/operators";
 import swal from "sweetalert2";
-import {Store} from "@ngrx/store";
 
 @Injectable({
     providedIn: 'root'
@@ -341,8 +340,8 @@ export class DestinationInspectionService {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/inspection/cor/details/" + cdUuid));
     }
 
-    loadCocDetails(cdUuid: any): Observable<any> {
-        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/inspection/coc/details/" + cdUuid));
+    loadCocDetails(cdUuid: any,docType: any): Observable<any> {
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/inspection/"+docType+"/details/" + cdUuid));
     }
 
     saveSSFDetails(data: any, itemUuid: any): Observable<any> {

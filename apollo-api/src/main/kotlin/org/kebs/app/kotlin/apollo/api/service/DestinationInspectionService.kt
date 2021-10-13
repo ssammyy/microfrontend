@@ -827,10 +827,10 @@ class DestinationInspectionService(
             it
                     ?.let { u ->
                         val coc = cocs.firstOrNull { it.cocNumber == u }
-                        cocsRepository.findByUcrNumber(
+                        cocsRepository.findByUcrNumberAndCocType(
                                 coc?.ucrNumber
                                         ?: throw InvalidValueException("Record with empty UCR Number not allowed")
-                        )
+                        ,"coc")
                                 ?.let {
                                     throw InvalidValueException("CoC with UCR number already exists")
                                 }
@@ -1204,7 +1204,7 @@ class DestinationInspectionService(
             uiDetails.cocAvailable = false
             try {
                 cdDetails.ucrNumber?.let {
-                    daoServices.findCOC(it)
+                    daoServices.findCOC(it,"coc")
                     uiDetails.cocAvailable = true
                 }
 
@@ -1218,13 +1218,13 @@ class DestinationInspectionService(
         return dataMap
     }
 
-    fun certificateOfConformanceDetails(cdUuid: String): ApiResponseModel {
+    fun certificateOfConformanceDetails(cdUuid: String,docType: String): ApiResponseModel {
         val response = ApiResponseModel()
         try {
             val dataMap = mutableMapOf<String, Any?>()
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             val cdDetails = daoServices.findCDWithUuid(cdUuid)
-            val cocDetails = cdDetails.ucrNumber?.let { daoServices.findCOC(it) }
+            val cocDetails = cdDetails.ucrNumber?.let { daoServices.findCOC(it,docType) }
             dataMap.put("configuration", map)
             dataMap.put("certificate_details", cocDetails)
             dataMap.put("consignment_document_details", ConsignmentDocumentDao.fromEntity(cdDetails))

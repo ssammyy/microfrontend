@@ -340,7 +340,7 @@ class DestinationInspectionDaoServices(
     ): CocsEntity {
         var localCoc = CocsEntity()
         consignmentDocumentDetailsEntity.ucrNumber?.let {
-            cocRepo.findByUcrNumber(it)
+            cocRepo.findByUcrNumberAndCocType(it,"coc")
                     ?.let { coc ->
                         return coc
                     }
@@ -445,7 +445,7 @@ class DestinationInspectionDaoServices(
         var localNcr = CocsEntity()
 
         consignmentDocumentDetailsEntity.ucrNumber?.let {
-            cocRepo.findByUcrNumber(it)
+            cocRepo.findByUcrNumberAndCocType(it,"ncr")
                     ?.let { coc ->
                         return coc
                     }
@@ -548,7 +548,7 @@ class DestinationInspectionDaoServices(
     ): CocsEntity {
         val coc = CocsEntity()
         consignmentDocumentDetailsEntity.ucrNumber?.let {
-            cocRepo.findByUcrNumber(it)
+            cocRepo.findByUcrNumberAndCocType(it,"coui")
                     ?.let { coc ->
                         throw Exception("There is an Existing COI with the following UCR No = ${coc.ucrNumber}")
                     }
@@ -2077,12 +2077,12 @@ class DestinationInspectionDaoServices(
         return true
     }
 
-    fun findCOC(ucrNumber: String): CocsEntity {
-        cocRepo.findByUcrNumber(ucrNumber)
+    fun findCOC(ucrNumber: String,docType: String): CocsEntity {
+        cocRepo.findByUcrNumberAndCocType(ucrNumber,docType.toUpperCase())
                 ?.let { cocEntity ->
                     return cocEntity
                 }
-                ?: throw Exception("COC Details with the following UCR NUMBER = ${ucrNumber}, does not Exist")
+                ?: throw Exception(docType+" Details with the following UCR NUMBER = ${ucrNumber}, does not Exist")
     }
 
     fun findCOCById(cocId: Long): CocsEntity? {
@@ -2090,19 +2090,7 @@ class DestinationInspectionDaoServices(
     }
 
     fun findCocByUcrNumber(ucrNumber: String): CocsEntity? {
-        return cocRepo.findByUcrNumber(ucrNumber)
-    }
-
-    fun findCOI(ucrNumber: String): CocsEntity {
-        cocRepo.findByUcrNumber(ucrNumber)
-                ?.let { coiEntity ->
-                    return coiEntity
-                }
-                ?: throw Exception("COI Details with the following UCR NUMBER = ${ucrNumber}, does not Exist")
-    }
-
-    fun saveCoc(cocDetails: CocsEntity): CocsEntity {
-        return cocRepo.save(cocDetails)
+        return cocRepo.findByUcrNumberAndCocType(ucrNumber,"coc")
     }
 
     fun findCdTypeDetails(cdTypeID: Long): ConsignmentDocumentTypesEntity {

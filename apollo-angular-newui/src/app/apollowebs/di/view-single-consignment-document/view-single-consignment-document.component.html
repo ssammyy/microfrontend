@@ -966,10 +966,13 @@
                                         ROADWORTHINESS
                                     </button>
                                     <button *ngIf="consignment.ui.cocAvailable" class="btn btn-sm btn-primary"
-                                            (click)="viewCoC()">CERTIFICATE OF COMPLIANCE
+                                            (click)="viewCoC('coc')">CERTIFICATE OF COMPLIANCE
+                                    </button>
+                                    <button *ngIf="consignment.ui.ncrAvailable" class="btn btn-sm btn-primary"
+                                            (click)="viewCoC('ncr')">NCR
                                     </button>
                                     <button *ngIf="consignment.ui.coiAvailable" class="btn btn-sm btn-primary"
-                                            (click)="viewCoC()">CERTIFICATE OF Inspection
+                                            (click)="viewCoC('coi')">CERTIFICATE OF Inspection
                                     </button>
                                     <button *ngIf="consignment.ui.idfAvailable" class="btn btn-sm btn-primary"
                                             (click)="viewIdfDocument()">IDF DOCUMENT

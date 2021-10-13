@@ -76,26 +76,35 @@ export class CurrencyExchangeRatesComponent implements OnInit {
     ngOnInit(): void {
         this.loadConversionRates(null)
     }
+
     filterByCurrency(event: any) {
-        const date =new DatePipe('en-US').transform(event.target.value,'dd-MM-yyyy');
+        const date = new DatePipe('en-US').transform(event.target.value, 'dd-MM-yyyy');
         this.loadConversionRates(date)
     }
-    uploadRates(event: any){
-        let files=event.target.files
-        if(files && files.length>0) {
-            this.diService.uploadConversionRates(files[0],"csv")
-                .subscribe(
-                    res=>{
 
+    uploadRates(event: any) {
+        let files = event.target.files
+        if (files && files.length > 0) {
+            this.diService.uploadConversionRates(files[0], "csv")
+                .subscribe(
+                    res => {
+                        if (res.responseCode == "00") {
+                            this.diService.showSuccess(res.message, () => {
+                                this.filterByCurrency(null)
+                            })
+                        } else {
+                            this.diService.showError(res.message, null)
+                        }
                     },
-                    err=>{
+                    err => {
                         console.log(err)
                     }
                 )
         }
     }
-    loadConversionRates(date:string) {
-        this.diService.loadConversionRates(date?date:"")
+
+    loadConversionRates(date: string) {
+        this.diService.loadConversionRates(date ? date : "")
             .subscribe(
                 res => {
                     if (res.responseCode == "00") {

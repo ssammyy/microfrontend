@@ -298,7 +298,7 @@ interface ICfgMoneyTypeCodesRepository : HazelcastRepository<MoneyTypeCodesEntit
 interface ICfgCurrencyExchangeRateRepository : HazelcastRepository<CurrencyExchangeRates, Long> {
     @Query("SELECT * from CFG_CURRENCY_EXCHANGE_RATES where to_char(APPLICABLE_DATE,'DD-MM-YYYY')=:date and STATUS=:status",nativeQuery = true)
     fun findByApplicableDateAndStatus(@Param("date")date: String, @Param("status")status: Int): List<CurrencyExchangeRates>
-    @Query("SELECT * from CFG_CURRENCY_EXCHANGE_RATES where CURRENCY_CODE=:code and to_char(APPLICABLE_DATE,'DD-MM-YYYY')=:date and STATUS=1 fetch first 1 row only order by  APPLICABLE_DATE desc",nativeQuery = true)
+    @Query("SELECT * from CFG_CURRENCY_EXCHANGE_RATES where CURRENCY_CODE=:code and to_char(APPLICABLE_DATE,'DD-MM-YYYY')=:date and STATUS=1 order by  APPLICABLE_DATE desc fetch first 1 row only",nativeQuery = true)
     fun findFirstByCurrencyCodeAndApplicableDateOrderByApplicableDateDesc(@Param("code")currencyCode: String, @Param("date")date: String): CurrencyExchangeRates?
 }
 

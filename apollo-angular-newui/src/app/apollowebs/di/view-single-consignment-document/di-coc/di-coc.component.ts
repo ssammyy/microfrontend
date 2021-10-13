@@ -13,6 +13,7 @@ export class DiCocComponent implements OnInit {
     activeTab = 'coc-details'
     cdDetailsId: any
     cocDetails: any
+    docType: any
 
     constructor(private fileService: FileService, private diService: DestinationInspectionService, private activatedRoute: ActivatedRoute,private router:Router) {
     }
@@ -22,6 +23,7 @@ export class DiCocComponent implements OnInit {
             .subscribe(
                 res => {
                     this.cdDetailsId = res.get("id")
+                    this.docType=res.get('docType')
                     this.loadCocDetails()
                 }
             )
@@ -30,7 +32,7 @@ export class DiCocComponent implements OnInit {
         this.router.navigate(["/di", this.cdDetailsId])
     }
     loadCocDetails() {
-        this.diService.loadCocDetails(this.cdDetailsId)
+        this.diService.loadCocDetails(this.cdDetailsId,this.docType)
             .subscribe(
                 res => {
                     if (res.responseCode == "00") {

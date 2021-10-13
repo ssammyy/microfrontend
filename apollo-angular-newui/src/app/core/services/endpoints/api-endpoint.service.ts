@@ -17,7 +17,8 @@ export class ApiEndpointService {
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-        LOCAL_DEV: 'localhost:8006'
+        // LOCAL_DEV: 'localhost:8006'
+        LOCAL_DEV: 'kimsfluxint.kebs.org:8005'
         // LOCAL_DEV: '12:8006'
         // LOCAL_DEV: '41.72.209.58:8006'
         // LOCAL_DEV: `kimsint.kebs.org:8006`
