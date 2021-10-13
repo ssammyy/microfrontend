@@ -15,7 +15,7 @@
                         </h4>
 
                     </div>
-                    <div class="card-body p-0 m-0" *ngIf="consignment; else loadingView">
+                    <div class="card-body" *ngIf="consignment; else loadingView">
                         <div class="row">
                             <div class="col-md-2 m-0 p-0">
                                 <div widget class=" border-0 box-shadow">
@@ -906,7 +906,7 @@
                                         <button *ngIf="consignment.ui.supervisorTarget" class="btn btn-sm btn-warning"
                                                 (click)="supervisorTargetConsignment()">SUPERVISOR TARGET
                                         </button>
-                                        <div class="card border-0" *ngFor="let task of supervisorTasks">
+                                        <div class="card" *ngFor="let task of supervisorTasks">
                                             <div class="text-center pt-2" style="color: green;">
                                                 {{task.task}}
                                             </div>

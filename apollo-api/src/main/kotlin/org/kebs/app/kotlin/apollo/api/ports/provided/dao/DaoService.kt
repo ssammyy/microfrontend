@@ -33,6 +33,7 @@ import org.apache.http.conn.ssl.NoopHostnameVerifier
 import org.jasypt.encryption.StringEncryptor
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.SftpServiceImpl
 import org.kebs.app.kotlin.apollo.common.dto.CocsItemsEntityDto
+import org.kebs.app.kotlin.apollo.common.dto.CurrencyExchangeRatesEntityDto
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -367,6 +368,8 @@ class DaoService(
     val csvMapper = CsvMapper().apply {
         registerModule(KotlinModule())
     }
+    fun readExchangeRatesFromController(separator: Char, reader: Reader) =
+            readCsvFile<CurrencyExchangeRatesEntityDto>(separator, reader)
 
     fun readCocFileFromController(separator: Char, reader: Reader) =
         readCsvFile<CocsItemsEntityDto>(separator, reader)

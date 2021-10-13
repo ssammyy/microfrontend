@@ -202,6 +202,7 @@ import {ManagernotificationsComponent} from './apollowebs/standards-development/
 import {AllpermitsComponent} from './apollowebs/quality-assurance/allpermits/allpermits.component';
 import {HttpClientModule} from '@angular/common/http';
 import {FooterModule} from './shared/footer/footer.module';
+import { CurrencyExchangeRatesComponent } from './apollowebs/di/currency-exchange-rates/currency-exchange-rates.component';
 
 
 // @NgModule({
@@ -654,7 +655,8 @@ import {FooterModule} from './shared/footer/footer.module';
         ComStdConfirmComponent,
         StdTcTasksComponent,
         NepSuccessComponent,
-        ManagernotificationsComponent
+        ManagernotificationsComponent,
+        CurrencyExchangeRatesComponent
     ],
     providers: [
         MatNativeDateModule,

@@ -26,6 +26,8 @@ class DestinationInspectionRoutes {
             DELETE("/demand/note/delete/{invoiceId}",handlers::deleteDemandNote)
             GET("/demand/note/list/{cdId}",handlers::listDemandNotes)
             GET("/demand-note/fees",handlers::applicationFee)
+            POST("/demand/note/upload/exchange-rate",handlers::applicationUploadExchangeRates)
+            GET("/demand/note/exchange-rates",handlers::applicationExchangeRates)
             POST("/demand/note/generate/{cdUuid}",handlers::generateDemandNote)
         }
     }
