@@ -135,16 +135,16 @@ import {QaTaskDetailsComponent} from './apollowebs/quality-assurance/qa-task-det
 import {CompanyViewComponent} from './apollowebs/company/company-view/company-view.component';
 import {BranchViewComponent} from './apollowebs/company/branch/branch-view/branch-view.component';
 import {QrCodeDetailsComponent} from './apollowebs/quality-assurance/qr-code-details/qr-code-details.component';
-import { StdTscSecTasksComponentComponent } from './apollowebs/standards-development/standard-request/std-tsc-sec-tasks-component/std-tsc-sec-tasks-component.component';
+import {StdTscSecTasksComponentComponent} from './apollowebs/standards-development/standard-request/std-tsc-sec-tasks-component/std-tsc-sec-tasks-component.component';
 import {NgMultiSelectDropDownModule} from "ng-multiselect-dropdown";
-import { StdTcTasksComponent } from './apollowebs/standards-development/standard-request/std-tc-tasks/std-tc-tasks.component';
-import {NgSelectModule} from "@ng-select/ng-select";
-import { ComStdApproveJustificationComponent } from './apollowebs/standards-development/company-standard/com-std-approve-justification/com-std-approve-justification.component';
-import { ComStdDraftComponent } from './apollowebs/standards-development/company-standard/com-std-draft/com-std-draft.component';
-import { ComStdUploadComponent } from './apollowebs/standards-development/company-standard/com-std-upload/com-std-upload.component';
-import { ComStdConfirmComponent } from './apollowebs/standards-development/company-standard/com-std-confirm/com-std-confirm.component';
-import { NepSuccessComponent } from './apollowebs/standards-development/nep-success/nep-success.component';
-import { ManagernotificationsComponent } from './apollowebs/standards-development/managernotifications/managernotifications.component';
+import {StdTcTasksComponent} from './apollowebs/standards-development/standard-request/std-tc-tasks/std-tc-tasks.component';
+import {ComStdApproveJustificationComponent} from './apollowebs/standards-development/company-standard/com-std-approve-justification/com-std-approve-justification.component';
+import {ComStdDraftComponent} from './apollowebs/standards-development/company-standard/com-std-draft/com-std-draft.component';
+import {ComStdUploadComponent} from './apollowebs/standards-development/company-standard/com-std-upload/com-std-upload.component';
+import {ComStdConfirmComponent} from './apollowebs/standards-development/company-standard/com-std-confirm/com-std-confirm.component';
+import {NepSuccessComponent} from './apollowebs/standards-development/nep-success/nep-success.component';
+import {ManagernotificationsComponent} from './apollowebs/standards-development/managernotifications/managernotifications.component';
+import {AllpermitsComponent} from "./apollowebs/quality-assurance/allpermits/allpermits.component";
 
 
 // import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -204,7 +204,6 @@ import { ManagernotificationsComponent } from './apollowebs/standards-developmen
         DataTablesModule,
         NgxPaginationModule,
         NgMultiSelectDropDownModule,
-        NgSelectModule
         // CoreModule
     ],
     declarations: [
@@ -267,6 +266,7 @@ import { ManagernotificationsComponent } from './apollowebs/standards-developmen
         CompanyStandardRequestComponent,
         CsRequestFormComponent,
         ComStdRequestListComponent,
+        AllpermitsComponent,
         ComStdJcJustificationComponent,
         ComStdJcJustificationListComponent,
         InformationcheckComponent,

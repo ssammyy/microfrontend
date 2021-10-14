@@ -5,16 +5,12 @@ import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
-import javax.persistence.NamedStoredProcedureQuery
-import javax.persistence.ParameterMode
-import javax.persistence.StoredProcedureParameter
 
 @Repository
 interface IPermitApplicationsRepository : HazelcastRepository<PermitApplicationsEntity, Long> {
     fun findByUserId(userId: Long): List<PermitApplicationsEntity>?
     fun findByAwardedPermitNumber(awardedPermitNumber: String): PermitApplicationsEntity?
     fun findTopByAwardedPermitNumberOrderByIdDesc(awardedPermitNumber: String): PermitApplicationsEntity?
-
     fun countByCompanyIdAndPermitAwardStatus(companyId: Long, permitAwardStatus: Int): Long
     fun countByCompanyIdAndPermitAwardStatusAndPermitExpiredStatus(
         companyId: Long,

@@ -24,18 +24,16 @@
                                     <th class="task">Product Name</th>
                                     <th class="task">Trademark</th>
                                     <th class="action">Version Number</th>
+
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr *ngFor="let tcTask of tcTasks let i= index; ">
                                     <td>{{i + 1}}</td>
-
                                     <td>{{tcTask.permitRefNumber}}</td>
                                     <td>{{tcTask.productName}}</td>
                                     <td>{{tcTask.tradeMark}}</td>
                                     <td>{{tcTask.versionNumber}}</td>
-
-
                                 </tr>
                                 </tbody>
                             </table>
