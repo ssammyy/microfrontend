@@ -79,7 +79,6 @@ class InvoicePaymentService(
                 demand.varField3 = "APPROVED"
                 demand.varField10 = remarks
                 // Update CD status
-                consignmentDocument.varField10 = "Demand Approved"
                 consignmentDocument.sendDemandNote = map.activeStatus
                 this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
                 // Update demand note
@@ -109,7 +108,7 @@ class InvoicePaymentService(
                     )
                 }
                 demand.varField3 = "UPDATED DEMAND NOTE STATUS"
-                consignmentDocument.varField10 = "UPDATED DEMAND NOTE STATUS"
+                consignmentDocument.varField10 = "Demand Approved, awaiting payment"
                 this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
                 // Update Demand note status
                 this.iDemandNoteRepo.save(demand)
@@ -175,7 +174,7 @@ class InvoicePaymentService(
             val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             //2. Update payment status on KenTrade
             daoServices.sendDemandNotGeneratedToKWIS(demandNoteId)
-            consignmentDocument.varField10 = "DEMAND NOTE SENT TO KENTRADE"
+            consignmentDocument.varField10 = "DEMAND NOTE SENT TO KENTRADE, AWAITING PAYMENT"
             this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
             return true
         } catch (ex: Exception) {
@@ -189,7 +188,7 @@ class InvoicePaymentService(
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             //1. Update Demand Note Status
             demandNote.swStatus=map.activeStatus
-            demandNote.varField10="STATUS UPDATED ON SW"
+            demandNote.varField10="PAYMENT COMPLETED"
             val demandNoteDetails = daoServices.upDateDemandNote(demandNote)
             val consignmentDocument = demandNoteDetails.cdId?.let {cdId-> daoServices.findCD(cdId) }
             // 2. Update CD status
@@ -209,7 +208,7 @@ class InvoicePaymentService(
             // 1. Send demand payment status to SW
             daoServices.sendDemandNotePayedStatusToKWIS(demandNoteId)
             // 2. Update application status
-            consignmentDocument.varField10 = "INVOICE PAYMENT UPDATED ON SW"
+            consignmentDocument.varField10 = "DEMAND NOTE PAID,AWAITING INSPECTION"
             this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
             return true
         } catch (ex: Exception) {

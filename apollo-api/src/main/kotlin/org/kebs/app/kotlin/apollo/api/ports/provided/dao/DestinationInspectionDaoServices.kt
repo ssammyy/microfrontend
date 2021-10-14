@@ -28,6 +28,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import java.math.BigDecimal
 import java.sql.Date
@@ -110,6 +111,7 @@ class DestinationInspectionDaoServices(
 
         ) {
     final val DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+
     @Autowired
     lateinit var sftpService: SftpServiceImpl
 
@@ -340,7 +342,7 @@ class DestinationInspectionDaoServices(
     ): CocsEntity {
         var localCoc = CocsEntity()
         consignmentDocumentDetailsEntity.ucrNumber?.let {
-            cocRepo.findByUcrNumberAndCocType(it,"coc")
+            cocRepo.findByUcrNumberAndCocType(it, "coc")
                     ?.let { coc ->
                         return coc
                     }
@@ -368,7 +370,7 @@ class DestinationInspectionDaoServices(
                             cocIssueDate = commonDaoServices.getTimestamp()
                             clean = "Y"
 
-                            cocRemarks = coiRemarks
+                            cocRemarks = coiRemarks?:"NA"
                             coiRemarks = "UNKNOWN"
                             issuingOffice = "${consignmentDocumentDetailsEntity.assignedInspectionOfficer?.firstName} ${consignmentDocumentDetailsEntity.assignedInspectionOfficer?.lastName}"
 
@@ -445,7 +447,7 @@ class DestinationInspectionDaoServices(
         var localNcr = CocsEntity()
 
         consignmentDocumentDetailsEntity.ucrNumber?.let {
-            cocRepo.findByUcrNumberAndCocType(it,"ncr")
+            cocRepo.findByUcrNumberAndCocType(it, "ncr")
                     ?.let { coc ->
                         return coc
                     }
@@ -473,8 +475,8 @@ class DestinationInspectionDaoServices(
                             cocIssueDate = commonDaoServices.getTimestamp()
                             clean = "N"
 
-                            cocRemarks = coiRemarks
-                            coiRemarks = "UNKNOWN"
+                            cocRemarks = "NA"
+                            coiRemarks = coiRemarks?:"MA"
                             issuingOffice = "${consignmentDocumentDetailsEntity.assignedInspectionOfficer?.firstName} ${consignmentDocumentDetailsEntity.assignedInspectionOfficer?.lastName}"
 
                             val cdImporter = consignmentDocumentDetailsEntity.cdImporter?.let { findCDImporterDetails(it) }
@@ -548,7 +550,7 @@ class DestinationInspectionDaoServices(
     ): CocsEntity {
         val coc = CocsEntity()
         consignmentDocumentDetailsEntity.ucrNumber?.let {
-            cocRepo.findByUcrNumberAndCocType(it,"coui")
+            cocRepo.findByUcrNumberAndCocType(it, "coui")
                     ?.let { coc ->
                         throw Exception("There is an Existing COI with the following UCR No = ${coc.ucrNumber}")
                     }
@@ -1088,9 +1090,9 @@ class DestinationInspectionDaoServices(
             }
             "FIXED" -> {
                 amount = fixedAmount
-                KotlinLogging.logger { }.info("FIXED AMOUNT BEFORE CALCULATION = $amount")
-                demandNoteItem.adjustedAmount = amount
-                demandNoteItem.amountPayable = amount
+                KotlinLogging.logger { }.info("FIXED AMOUNT BEFORE CALCULATION = $fixedAmount")
+                demandNoteItem.adjustedAmount = fixedAmount
+                demandNoteItem.amountPayable = fixedAmount
             }
             "MANUAL" -> {
                 // Not-Applicable to items
@@ -1126,14 +1128,16 @@ class DestinationInspectionDaoServices(
             else -> {
                 currencyExchangeRateRepository.findFirstByCurrencyCodeAndApplicableDateOrderByApplicableDateDesc("${itemDetails.foreignCurrencyCode?.toUpperCase()}", DATE_FORMAT.format(LocalDate.now()))?.let { exchangeRateEntity ->
                     demandNoteItem.exchangeRateId = exchangeRateEntity.id
-                    demandNote.cfvalue = itemDetails.totalPriceNcy?.times(exchangeRateEntity.exchangeRate
+                    demandNoteItem.cfvalue = itemDetails.totalPriceNcy?.times(exchangeRateEntity.exchangeRate
                             ?: BigDecimal.ONE) ?: BigDecimal.ZERO
+                    KotlinLogging.logger {  }.warn("Exchange Rate for ${itemDetails.foreignCurrencyCode}:${itemDetails.totalPriceNcy} => ${demandNoteItem.cfvalue}")
+                } ?: run {
+                    KotlinLogging.logger {  }.warn("Exchange Rate for ${itemDetails.foreignCurrencyCode} is not configured")
+                    demandNoteItem.cfvalue = itemDetails.totalPriceNcy?: BigDecimal.ZERO
+                    // TODO: uncomment exception in production
+                    throw ExpectedDataNotFound("Conversion rate for currency ${itemDetails.foreignCurrencyCode} not found")
+
                 }
-                        ?: run {
-                            // TODO: uncomment exception in production
-//                            throw ExpectedDataNotFound("Conversion rate for currency ${itemDetails.foreignCurrencyCode} not found")
-                            demandNoteItem.cfvalue = itemDetails.totalPriceNcy
-                        }
 
             }
         }
@@ -1210,6 +1214,7 @@ class DestinationInspectionDaoServices(
         }
     }
 
+    @Transactional
     fun generateDemandNoteWithItemList(
             itemList: List<CdItemDetailsEntity>,
             map: ServiceMapsEntity,
@@ -2077,12 +2082,12 @@ class DestinationInspectionDaoServices(
         return true
     }
 
-    fun findCOC(ucrNumber: String,docType: String): CocsEntity {
-        cocRepo.findByUcrNumberAndCocType(ucrNumber,docType.toUpperCase())
+    fun findCOC(ucrNumber: String, docType: String): CocsEntity {
+        cocRepo.findByUcrNumberAndCocType(ucrNumber, docType.toUpperCase())
                 ?.let { cocEntity ->
                     return cocEntity
                 }
-                ?: throw Exception(docType+" Details with the following UCR NUMBER = ${ucrNumber}, does not Exist")
+                ?: throw Exception(docType + " Details with the following UCR NUMBER = ${ucrNumber}, does not Exist")
     }
 
     fun findCOCById(cocId: Long): CocsEntity? {
@@ -2090,7 +2095,7 @@ class DestinationInspectionDaoServices(
     }
 
     fun findCocByUcrNumber(ucrNumber: String): CocsEntity? {
-        return cocRepo.findByUcrNumberAndCocType(ucrNumber,"coc")
+        return cocRepo.findByUcrNumberAndCocType(ucrNumber, "coc")
     }
 
     fun findCdTypeDetails(cdTypeID: Long): ConsignmentDocumentTypesEntity {
@@ -2464,32 +2469,6 @@ class DestinationInspectionDaoServices(
         }
         return jsonObject
     }
-
-//    fun loopAllItemsInCDToBeTargeted(
-//        cdId: Long,
-//        cdDetails: ConsignmentDocumentDetailsEntity,
-//        s: ServiceMapsEntity,
-//        user: UsersEntity
-//    ): Boolean {
-//        findCDItemsListWithCDID(findCD(cdId))
-//            .forEach { cdItemDetails ->
-//                with(cdItemDetails) {
-//                    targetApproveDate = commonDaoServices.getCurrentDate()
-//                    targetApproveRemarks = cdDetails.blacklistApprovedRemarks
-//                    targetApproveStatus = s.activeStatus
-//                    targetStatus = s.activeStatus
-//                    targetReason = cdDetails.blacklistApprovedRemarks
-//                    targetDate = commonDaoServices.getCurrentDate()
-//                    inspectionNotificationDate = commonDaoServices.getCurrentDate()
-//                    inspectionNotificationStatus = s.activeStatus
-//                }
-//
-//                notifyKRATargetedItem(updateCdItemDetailsInDB(cdItemDetails, user), s, user)
-//
-//
-//            }
-//        return true
-//    }
 
 
     fun updateCdItemDetailsInDB(updateCDItem: CdItemDetailsEntity, user: UsersEntity?): CdItemDetailsEntity {

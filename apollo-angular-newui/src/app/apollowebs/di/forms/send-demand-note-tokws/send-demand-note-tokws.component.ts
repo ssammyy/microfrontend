@@ -12,7 +12,7 @@ import {error} from "@angular/compiler/src/util";
     styleUrls: ['./send-demand-note-tokws.component.css']
 })
 export class SendDemandNoteTokwsComponent implements OnInit {
-    displayedColumns: string[] = ['select', 'hsCode', 'description', 'price', 'pricing'];
+    displayedColumns: string[] = ['select', 'hsCode', 'description','quantity','unit_price', 'price', 'pricing'];
     @Input() items: any[]
     paymentFees: any[]
     presentmentData: any

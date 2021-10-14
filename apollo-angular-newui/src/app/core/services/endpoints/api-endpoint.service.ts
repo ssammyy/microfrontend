@@ -24,7 +24,6 @@ export class ApiEndpointService {
         // LOCAL_DEV: `kimsint.kebs.org:8006`
         // LOCAL_DEV: `kims.kebs.org:8006`
         // LOCAL_DEV: '10.10.0.149:8007'
-
     };
 
     /**

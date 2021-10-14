@@ -467,7 +467,7 @@ export const routes: Routes = [
                 component: DiCorComponent
             },
             {
-                path: ':docType/details/:id',
+                path: 'certificate/:docType/details/:id',
                 component: DiCocComponent
             },
             {

@@ -209,6 +209,8 @@ class InvoiceHandlers(
                 demandNote.varField2 = (itemList.size == totalItems).toString()
                 demandNote.varField3 = "NEW"
                 daoServices.upDateDemandNote(demandNote)
+                cdDetails.varField10="DEMAND NOTE GENERATED AWAITING SUBMISSION"
+                daoServices.updateCdDetailsInDB(cdDetails, loggedInUser)
                 response.responseCode = ResponseCodes.SUCCESS_CODE
                 response.message = "Demand note generated, review under demand note tab and submit for approval"
             }
@@ -275,8 +277,10 @@ class InvoiceHandlers(
 
                         this.diBpmn.startGenerateDemandNote(map, data, cdDetails)
                         daoServices.upDateDemandNote(demandNote)
+                        cdDetails.varField10="DEMAND NOTE SUBMITTED AWAITING APPROVAL"
+                        this.daoServices.updateCdDetailsInDB(cdDetails, commonDaoServices.getLoggedInUser())
                         response.responseCode = ResponseCodes.SUCCESS_CODE
-                        response.message = "Demand note submitted"
+                        response.message = "Demand note submitted, awaiting supervisor approval"
                     } else {
                         response.responseCode = ResponseCodes.FAILED_CODE
                         response.message = "Demand has already been submitted"

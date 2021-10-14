@@ -39,15 +39,16 @@
                     <button class="btn-sm btn-primary" *ngIf="element.sampledCollectedStatus==1 &&element.sampleSubmissionStatus!==1" (click)="customAction(element,'sampleSubmission')">Fill SSF</button>
                     <button class="btn-sm btn-primary" *ngIf="element.sampleSubmissionStatus==1 && element.sampleBsNumberStatus!==1"  (click)="customAction(element,'sampleUpdate')">Add BS Number
                     </button>
-                    <button class="btn-sm btn-primary" *ngIf="element.sampledCollectedStatus==1"
-                            (click)="customAction(element,'downlodScf')"><i class="fa fa-download"></i>SCF
-                    </button>
                     <button class="btn-sm btn-primary" *ngIf="element.sampleBsNumberStatus==1"
                             (click)="customAction(element,'labResults')"><i class="fa fa-eye"></i>Lab Result
+                    </button>
+                    <button class="btn-sm btn-primary" *ngIf="element.sampledCollectedStatus==1"
+                            (click)="customAction(element,'downlodScf')"><i class="fa fa-download"></i>SCF
                     </button>
                     <button class="btn-sm btn-primary" *ngIf="element.sampleSubmissionStatus==1"
                             (click)="customAction(element,'downlodSsf')"><i class="fa fa-download"></i>SSF
                     </button>
+
                 </div>
             </mat-cell>
         </ng-container>

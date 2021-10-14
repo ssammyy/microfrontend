@@ -167,10 +167,16 @@ class GeneralController(
             val pdfStream: ByteArrayOutputStream
             val cocType = data["CoCType"] as String
             val fileName = "LOCAL-${cocType.toUpperCase()}-".plus(data["CocNo"] as String).plus(".pdf")
-            if ("COI".equals(cocType, true)) {
-                pdfStream = reportsDaoService.extractReportMapDataSource(data, "classpath:reports/LocalCoiReport.jrxml", items)
-            } else {
-                pdfStream = reportsDaoService.extractReportMapDataSource(data, applicationMapProperties.mapReportLocalCocPath, items)
+            when(cocType){
+                "COI" ->{
+                    pdfStream = reportsDaoService.extractReportMapDataSource(data, "classpath:reports/LocalCoiReport.jrxml", items)
+                }
+                "NCR" -> {
+                    pdfStream = reportsDaoService.extractReportMapDataSource(data, "classpath:reports/NcrReport.jrxml", items)
+                }
+                else ->{
+                    pdfStream = reportsDaoService.extractReportMapDataSource(data, applicationMapProperties.mapReportLocalCocPath, items)
+                }
             }
             download(pdfStream, fileName, httResponse)
         } catch (ex: Exception) {

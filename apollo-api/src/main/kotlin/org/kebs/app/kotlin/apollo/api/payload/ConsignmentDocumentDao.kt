@@ -73,7 +73,7 @@ class ConsignmentEnableUI {
                 targetItem = change && cd.targetStatus != map.activeStatus
                 supervisorTarget = modify && cd.targetStatus != map.activeStatus
                 attachments = (change || modify)
-                ncrAvailable=!cd.ncrNumber.isNullOrEmpty()
+                ncrAvailable = !cd.ncrNumber.isNullOrEmpty()
                 checklistFilled = cd.inspectionChecklist == map.activeStatus
                 hasPort = (cd.portOfArrival != null && cd.freightStation != null)
                 completed = cd.approveRejectCdStatusType?.let { it.modificationAllowed != map.activeStatus } == true || cd.oldCdStatus != null
@@ -82,9 +82,9 @@ class ConsignmentEnableUI {
 
             ui.complianceDisabled = (cd.compliantStatus == map.activeStatus || cd.compliantStatus == map.initStatus) || !ui.checklistFilled || ui.targetRejected
             cd.cdType?.let {
-                ui.cocAvailable = it.localCocStatus == map.activeStatus && (cd.localCocOrCorStatus == map.activeStatus||cd.localCoi == map.activeStatus)
+                ui.cocAvailable = it.localCocStatus == map.activeStatus && (cd.localCocOrCorStatus == map.activeStatus || cd.localCoi == map.activeStatus)
                 ui.corAvailable = it.localCorStatus == map.activeStatus && cd.localCocOrCorStatus == map.activeStatus
-                ui.coiAvailable=it.localCocStatus == map.activeStatus && cd.localCoi==map.activeStatus
+                ui.coiAvailable = it.localCocStatus == map.activeStatus && cd.localCoi == map.activeStatus
                 ui.corRequest = it.localCorStatus == map.activeStatus
 
                 ui.cocRequest = it.localCocStatus == map.activeStatus
@@ -139,7 +139,7 @@ class ConsignmentDocumentDao {
     var lastModifiedOn: Timestamp? = null
     var lastModifiedBy: String? = null
     var isNcrDocument: Boolean = false
-    var taskDetails: DiTaskDetails?=null
+    var taskDetails: DiTaskDetails? = null
 
     companion object {
         fun fromEntity(doc: ConsignmentDocumentDetailsEntity, ncrId: String = ""): ConsignmentDocumentDao {
@@ -316,6 +316,8 @@ class CdItemDetailsDao {
                 sampledStatus = item.sampledStatus
                 unitOfQuantity = item.unitOfQuantity
                 packageQuantity = item.packageQuantity
+                totalPriceNcy = item.totalPriceNcy
+                unitPriceNcy = item.unitPriceNcy
                 totalPriceFcy = item.totalPriceFcy
                 unitPriceFcy = item.unitPriceFcy
             }

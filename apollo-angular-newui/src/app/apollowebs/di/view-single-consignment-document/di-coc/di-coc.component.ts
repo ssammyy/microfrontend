@@ -13,9 +13,10 @@ export class DiCocComponent implements OnInit {
     activeTab = 'coc-details'
     cdDetailsId: any
     cocDetails: any
+    documentType: any
     docType: any
 
-    constructor(private fileService: FileService, private diService: DestinationInspectionService, private activatedRoute: ActivatedRoute,private router:Router) {
+    constructor(private fileService: FileService, private diService: DestinationInspectionService, private activatedRoute: ActivatedRoute, private router: Router) {
     }
 
     ngOnInit(): void {
@@ -23,27 +24,42 @@ export class DiCocComponent implements OnInit {
             .subscribe(
                 res => {
                     this.cdDetailsId = res.get("id")
-                    this.docType=res.get('docType')
+                    this.docType = res.get('docType')
                     this.loadCocDetails()
                 }
             )
     }
+
     goBack() {
         this.router.navigate(["/di", this.cdDetailsId])
     }
+
     loadCocDetails() {
-        this.diService.loadCocDetails(this.cdDetailsId,this.docType)
+        this.diService.loadCocDetails(this.cdDetailsId, this.docType)
             .subscribe(
                 res => {
                     if (res.responseCode == "00") {
                         this.cocDetails = res.data
+                        switch (this.cocDetails.certificate_details.cocType) {
+                            case 'COC':
+                                this.documentType = 'Certificate of Compliance (COC)'
+                                break
+                            case 'COI':
+                                this.documentType = 'Certificate Of Inspection (COI)'
+                                break
+                            case 'NCR':
+                                this.documentType = "Non-Conformity Report (NCR)"
+                                break
+                            default:
+                                this.documentType = "Other"
+                        }
                     }
                 }
             )
     }
 
     downloadCocFile(): void {
-        if(this.cocDetails) {
+        if (this.cocDetails) {
             this.diService.downloadDocument("/api/v1/download/coc-coi/" + this.cocDetails.certificate_details.id)
             // this.diService.downloadDocument("/api/v1/download/coc-coi/843126")
         }

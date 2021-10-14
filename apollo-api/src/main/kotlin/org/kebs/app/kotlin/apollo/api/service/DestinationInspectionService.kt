@@ -60,8 +60,6 @@ class DestinationInspectionService(
         private val userEntityRepository: IUserRepository,
         private val searchService: SearchInitialization,
 ) {
-    @Value("\${destination.inspection.cd.type.cor}")
-    lateinit var corCdType: String
 
     fun findDocumentsWithActions(usersEntity: UsersEntity, category: String?, myTask: Boolean, page: PageRequest): ApiResponseModel {
         return diBpmn.consignmentDocumentWithActions(usersEntity, category, myTask, page)
@@ -84,6 +82,7 @@ class DestinationInspectionService(
         val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
         val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
         consignmentDocument.compliantStatus = map.inactiveStatus
+        consignmentDocument.varField10 = "COMPLIANCE REJECTED"
         daoServices.updateCdDetailsInDB(consignmentDocument, null)
         cdAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, remarks, "KEBS_REJECT_COMPLIANCE", "Reject compliance request", supervisor)
         return false
@@ -239,6 +238,7 @@ class DestinationInspectionService(
         val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
         //If CD without COR, auto-target
         try {
+
             if (consignmentDocument.cdType?.autoTargetStatus == map.activeStatus) {
                 with(consignmentDocument) {
                     targetStatus = map.activeStatus
@@ -290,7 +290,7 @@ class DestinationInspectionService(
                             applicationMapProperties.mapDICdStatusTypeCORGeneratedAndSendID
                     )
                 }
-                corDetails.varField10 = "COR Generated"
+                corDetails.varField10 = "COMPLIANCE APPROVED, COR GENERATED"
                 daoServices.saveCorDetails(corDetails)
                 //Send Cor to importer
                 consignmentDocument.compliantStatus = map.activeStatus
@@ -565,8 +565,9 @@ class DestinationInspectionService(
     fun swScheduledTargeting(cdUuid: String, remarks: String, supervisor: String?): Boolean {
         KotlinLogging.logger { }.info("REQUESTING TARGETING SCHEDULE: ${cdUuid}")
         try {
+            val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
-            consignmentDocument.targetStatus = 1
+            consignmentDocument.targetStatus = map.activeStatus
             consignmentDocument.varField10 = "Target approved awaiting inspection"
             consignmentDocument.targetApproveDate = Date(Date().time)
             consignmentDocument.targetApproveRemarks = remarks
@@ -603,7 +604,7 @@ class DestinationInspectionService(
                         applicationMapProperties.mapDICdStatusTypeCOCGeneratedAndSendID
                 )
             }
-            consignmentDocument.varField10 = "Local COC Generated"
+            consignmentDocument.varField10 = "COMPLIANCE APPROVED, COC GENERATED"
             consignmentDocument.localCocOrCorStatus = map.activeStatus
             consignmentDocument.compliantStatus = map.activeStatus
             // Generate NCR if applicable
@@ -678,7 +679,7 @@ class DestinationInspectionService(
             consignmentDocument.localCoiRemarks = remarks
             consignmentDocument.compliantStatus = map.activeStatus
             consignmentDocument.cocNumber = localCoi.cocNumber
-            consignmentDocument.varField10 = "Local COI Generated"
+            consignmentDocument.varField10 = "COMPLIANCE APPROVED, COI GENERATED"
             // Generate NCR if applicable
             daoServices.createLocalNcr(loggedInUser, consignmentDocument, map, remarks, "A")?.let {
                 consignmentDocument.ncrNumber = it.cocNumber
@@ -829,8 +830,7 @@ class DestinationInspectionService(
                         val coc = cocs.firstOrNull { it.cocNumber == u }
                         cocsRepository.findByUcrNumberAndCocType(
                                 coc?.ucrNumber
-                                        ?: throw InvalidValueException("Record with empty UCR Number not allowed")
-                        ,"coc")
+                                        ?: throw InvalidValueException("Record with empty UCR Number not allowed"), "coc")
                                 ?.let {
                                     throw InvalidValueException("CoC with UCR number already exists")
                                 }
@@ -1204,7 +1204,7 @@ class DestinationInspectionService(
             uiDetails.cocAvailable = false
             try {
                 cdDetails.ucrNumber?.let {
-                    daoServices.findCOC(it,"coc")
+                    daoServices.findCOC(it, "coc")
                     uiDetails.cocAvailable = true
                 }
 
@@ -1218,13 +1218,13 @@ class DestinationInspectionService(
         return dataMap
     }
 
-    fun certificateOfConformanceDetails(cdUuid: String,docType: String): ApiResponseModel {
+    fun certificateOfConformanceDetails(cdUuid: String, docType: String): ApiResponseModel {
         val response = ApiResponseModel()
         try {
             val dataMap = mutableMapOf<String, Any?>()
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             val cdDetails = daoServices.findCDWithUuid(cdUuid)
-            val cocDetails = cdDetails.ucrNumber?.let { daoServices.findCOC(it,docType) }
+            val cocDetails = cdDetails.ucrNumber?.let { daoServices.findCOC(it, docType) }
             dataMap.put("configuration", map)
             dataMap.put("certificate_details", cocDetails)
             dataMap.put("consignment_document_details", ConsignmentDocumentDao.fromEntity(cdDetails))

@@ -8,7 +8,7 @@
                             <i class="material-icons">C</i>
                         </div>
                         <h4 class="card-title" *ngIf="cocDetails">
-                            {{cocDetails.certificate_details.cocType=='COC' ? 'Certificate of Compliance(COC)': 'Certificate Of Inspection(COI)'}}
+                            {{documentType}}
                             <button class="btn btn-sm btn-default pull-right mr-7"
                                     (click)="goBack()"> <i class="fa fa-arrow-left"></i> Back
 
@@ -110,8 +110,8 @@
                                                     <div class="list-title-accordion">Certificate Type</div>
                                                     <div class="list-text-accordion">{{cocDetails.certificate_details.cocType}}</div>
                                                 </li>
-                                                <li class="list-item-accordion" *ngIf="cocDetails.certificate_details.cocType=='COC'">
-                                                    <div class="list-title-accordion">COC NUMBER</div>
+                                                <li class="list-item-accordion" *ngIf="cocDetails.certificate_details.cocType!=='COI'">
+                                                    <div class="list-title-accordion">{{cocDetails.certificate_details.cocType}} NUMBER</div>
                                                     <div class="list-text-accordion">{{cocDetails.certificate_details.cocNumber}}</div>
                                                 </li>
                                                 <li class="list-item-accordion" *ngIf="cocDetails.certificate_details.cocType=='COI'">
@@ -134,16 +134,16 @@
                                                     <div class="list-title-accordion">RFC DATE</div>
                                                     <div class="list-text-accordion">{{cocDetails.certificate_details.rfcDate}}</div>
                                                 </li>
-                                                <li class="list-item-accordion" *ngIf="cocDetails.certificate_details.cocType=='COC'">
-                                                    <div class="list-title-accordion">COC ISSUE DATE</div>
+                                                <li class="list-item-accordion" *ngIf="cocDetails.certificate_details.cocType!=='COI'">
+                                                    <div class="list-title-accordion">{{cocDetails.certificate_details.cocType}} ISSUE DATE</div>
                                                     <div class="list-text-accordion">{{cocDetails.certificate_details.cocIssueDate}}</div>
                                                 </li>
                                                 <li class="list-item-accordion" *ngIf="cocDetails.certificate_details.cocType=='COI'">
                                                     <div class="list-title-accordion">COI ISSUE DATE</div>
                                                     <div class="list-text-accordion">{{cocDetails.certificate_details.coiIssueDate}}</div>
                                                 </li>
-                                                <li class="list-item-accordion" *ngIf="cocDetails.certificate_details.cocType=='COC'">
-                                                    <div class="list-title-accordion">COC REMARKS</div>
+                                                <li class="list-item-accordion" *ngIf="cocDetails.certificate_details.cocType!=='COI'">
+                                                    <div class="list-title-accordion">{{cocDetails.certificate_details.cocType}} REMARKS</div>
                                                     <div class="list-text-accordion">{{cocDetails.certificate_details.cocRemarks}}</div>
                                                 </li>
                                                 <li class="list-item-accordion" *ngIf="cocDetails.certificate_details.cocType=='COI'">
@@ -359,7 +359,7 @@
                             <div class="col-md-2">
                                 <h5>Action:</h5>
                                 <h5>Documents:</h5>
-                                <button class="btn btn-sm btn-primary" (click)="downloadCocFile()">DOWNLOAD COC/COI File </button>
+                                <button class="btn btn-sm btn-primary" (click)="downloadCocFile()">DOWNLOAD {{cocDetails.certificate_details.cocType}} File </button>
                                
                             </div>
                         </div>

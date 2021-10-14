@@ -17,7 +17,7 @@ export class ConsignmentDocumentListComponent implements OnInit {
     activeStatus: string = 'my-tasks';
     previousStatus: string = 'my-tasks'
     searchStatus: any
-    personalTasks = "true"
+    personalTasks = "false"
     defaultPageSize: number = 20
     currentPage: number = 0
     currentPageInternal: number = 0

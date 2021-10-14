@@ -173,7 +173,7 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
     }
 
     viewCoC(docType: string) {
-        this.router.navigate(['/di',docType,'details', this.consignmentId]);
+        this.router.navigate(['/di/certificate',docType,'details', this.consignmentId]);
     }
 
     loadUiConfigurations() {

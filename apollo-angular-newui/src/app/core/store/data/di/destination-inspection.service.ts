@@ -341,7 +341,7 @@ export class DestinationInspectionService {
     }
 
     loadCocDetails(cdUuid: any,docType: any): Observable<any> {
-        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/inspection/"+docType+"/details/" + cdUuid));
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/cd/certificate/"+docType+"/details/" + cdUuid));
     }
 
     saveSSFDetails(data: any, itemUuid: any): Observable<any> {
