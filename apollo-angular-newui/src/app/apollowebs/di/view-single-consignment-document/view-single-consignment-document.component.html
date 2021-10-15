@@ -15,7 +15,7 @@
                         </h4>
 
                     </div>
-                    <div class="card-body p-0 m-0" *ngIf="consignment; else loadingView">
+                    <div class="card-body" *ngIf="consignment; else loadingView">
                         <div class="row">
                             <div class="col-md-2 m-0 p-0">
                                 <div widget class=" border-0 box-shadow">
@@ -903,10 +903,10 @@
                                         <button *ngIf="consignment.ui.assigned" class="btn btn-sm btn-primary"
                                                 (click)="reassignInspectionOfficer()">REASSIGN IO
                                         </button>
-                                        <button *ngIf="consignment.ui.supervisorTarget" class="btn btn-sm btn-warning"
+                                        <button *ngIf="consignment.ui.supervisorTarget && !consignment.ui.targeted" class="btn btn-sm btn-warning"
                                                 (click)="supervisorTargetConsignment()">SUPERVISOR TARGET
                                         </button>
-                                        <div class="card border-0" *ngFor="let task of supervisorTasks">
+                                        <div class="card" *ngFor="let task of supervisorTasks">
                                             <div class="text-center pt-2" style="color: green;">
                                                 {{task.task}}
                                             </div>
@@ -954,9 +954,6 @@
                                        *ngIf="consignment.cd_details.summaryPageURL" target="_blank">View on
                                         KenTrade</a>
                                     <br/>
-                                    <button *ngIf="consignment.ui.demandNote" class="btn btn-sm btn-primary"
-                                            (click)="downloadDemandNote()">DEMAND NOTE PDF
-                                    </button>
                                     <button *ngIf="consignment.ui.checklistFilled" class="btn btn-sm btn-primary"
                                             (click)="viewInspectionChecklists()">VIEW INSPECTION REPORT
                                     </button>
@@ -966,10 +963,13 @@
                                         ROADWORTHINESS
                                     </button>
                                     <button *ngIf="consignment.ui.cocAvailable" class="btn btn-sm btn-primary"
-                                            (click)="viewCoC()">CERTIFICATE OF COMPLIANCE
+                                            (click)="viewCoC('coc')">CERTIFICATE OF COMPLIANCE
+                                    </button>
+                                    <button *ngIf="consignment.ui.ncrAvailable" class="btn btn-sm btn-primary"
+                                            (click)="viewCoC('ncr')">NCR
                                     </button>
                                     <button *ngIf="consignment.ui.coiAvailable" class="btn btn-sm btn-primary"
-                                            (click)="viewCoC()">CERTIFICATE OF Inspection
+                                            (click)="viewCoC('coi')">CERTIFICATE OF Inspection
                                     </button>
                                     <button *ngIf="consignment.ui.idfAvailable" class="btn btn-sm btn-primary"
                                             (click)="viewIdfDocument()">IDF DOCUMENT

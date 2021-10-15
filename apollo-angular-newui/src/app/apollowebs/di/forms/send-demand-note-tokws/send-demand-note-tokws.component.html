@@ -21,9 +21,17 @@
                     <mat-header-cell *matHeaderCellDef>HS Code</mat-header-cell>
                     <mat-cell *matCellDef="let row"> {{row.itemHsCode}} </mat-cell>
                 </ng-container>
+                <ng-container matColumnDef="quantity">
+                    <mat-header-cell *matHeaderCellDef>Total Amount</mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.quantity?row.quantity:'NA'}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="unit_price">
+                    <mat-header-cell *matHeaderCellDef>Total Amount</mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.unitPriceNcy?row.totalPriceFcy:'0'}} </mat-cell>
+                </ng-container>
                 <ng-container matColumnDef="price">
                     <mat-header-cell *matHeaderCellDef>Total Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let row"> {{row.totalPriceFcy?row.totalPriceFcy:'NA'}} </mat-cell>
+                    <mat-cell *matCellDef="let row"> {{row.totalPriceNcy?row.totalPriceFcy:'0'}} </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="details">
                     <mat-header-cell *matHeaderCellDef>HS Cde Description</mat-header-cell>
@@ -53,8 +61,8 @@
             <mat-error *ngIf="message">{{message}}</mat-error>
         </div>
         <div class="col-sm-12 col-md-11" *ngIf="presentmentData">
-            <label class="waiver-form-label">CD PAYABLE AMOUNT: {{presentmentData.totalAmount}}</label>
-            <label class="waiver-form-label">CD ADJUSTED AMOUNT: {{presentmentData.amountPayable}}</label>
+            <label class="waiver-form-label">CD PAYABLE AMOUNT: {{presentmentData.totalAmount | money}}</label>
+            <label class="waiver-form-label">CD ADJUSTED AMOUNT: {{presentmentData.amountPayable| money}}</label>
         </div>
         <div class="col-sm-12 col-md-11" *ngIf="items && items.length==0">
             <label for="fcorDemandAmount" class="waiver-form-label">Total Amount</label>

@@ -2,6 +2,9 @@
  * Load `$localize` onto the global scope - used if i18n tags appear in Angular templates.
  */
 import '@angular/localize/init';
+/***************************************************************************************************
+ * Load `$localize` onto the global scope - used if i18n tags appear in Angular templates.
+ */
 /**
  * This file includes polyfills needed by Angular and is loaded before the app.
  * You can add your own extra polyfills to this file.
@@ -17,11 +20,9 @@ import '@angular/localize/init';
  *
  * Learn more in https://angular.io/docs/ts/latest/guide/browser-support.html
  */
-
 /***************************************************************************************************
  * BROWSER POLYFILLS
  */
-
 /** IE9, IE10 and IE11 requires all of the following polyfills. **/
 import 'core-js/es/symbol';
 import 'core-js/es/object';
@@ -39,25 +40,18 @@ import 'core-js/es/set';
 
 /** IE10 and IE11 requires the following for NgClass support on SVG elements */
 // import 'classlist.js';  // Run `npm install --save classlist.js`.
-
 /** IE10 and IE11 requires the following to support `@angular/animation`. */
 // import 'web-animations-js';  // Run `npm install --save web-animations-js`.
-
-
 /** Evergreen browsers require these. **/
 import 'core-js/es/reflect';
 
 
 /** ALL Firefox browsers require the following to support `@angular/animation`. **/
 // import 'web-animations-js';  // Run `npm install --save web-animations-js`.
-
-
-
 /***************************************************************************************************
  * Zone JS is required by Angular itself.
  */
-import 'zone.js/dist/zone';  // Included with Angular CLI.
-
+import 'zone.js/dist/zone'; // Included with Angular CLI.
 
 
 /***************************************************************************************************

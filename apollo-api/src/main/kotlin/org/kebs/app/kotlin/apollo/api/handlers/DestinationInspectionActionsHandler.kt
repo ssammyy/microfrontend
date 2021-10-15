@@ -173,7 +173,7 @@ class DestinationInspectionActionsHandler(
                             //updating of Details in DB
                             val updatedCDDetails = daoServices.updateCdDetailsInDB(consignmentDocument, loggedInUser)
                             //Send Coi message To Single Window
-                            val localCoi = updatedCDDetails.ucrNumber?.let { daoServices.findCOC(it) }
+                            val localCoi = updatedCDDetails.ucrNumber?.let { daoServices.findCOC(it,"coi") }
                             if (localCoi != null) {
                                 daoServices.localCocCoiItems(updatedCDDetails, localCoi, loggedInUser, map)
                                 daoServices.sendLocalCoi(localCoi.id)

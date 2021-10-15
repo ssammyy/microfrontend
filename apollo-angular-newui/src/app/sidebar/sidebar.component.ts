@@ -55,7 +55,6 @@ export const ROUTES: RouteInfo[] = [
             {path: 'users', title: 'View Users ', ab: 'VU'}
         ]
     },
-
     {
         path: '/dmark',
         title: 'Diamond Mark',
@@ -139,6 +138,13 @@ export const ROUTES: RouteInfo[] = [
         privilege: ['DI_INSPECTION_OFFICER_READ2', 'DI_OFFICER_CHARGE_READ2'],
         type: 'link',
         icontype: 'receipt'
+    },
+    {
+        path: '/currency/rates',
+        title: 'Exchange Rates',
+        type: 'link',
+        icontype: 'money',
+        privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
     }
 ];
 

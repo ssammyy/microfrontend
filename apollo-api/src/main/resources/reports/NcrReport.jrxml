@@ -98,11 +98,11 @@ Standards]]></text>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[CERTIFICATE OF INSPECTION (COI)]]></text>
+				<text><![CDATA[NON-CONFORMITY REPORT (NCR)]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="5" y="43" width="90" height="19" uuid="87af62a4-6893-4cbc-9b22-8fb13286807b"/>
-				<text><![CDATA[COI No:]]></text>
+				<text><![CDATA[NCR No:]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="150" y="44" width="198" height="16" uuid="5d0596a0-5198-4828-8d99-94f22f44edee"/>
@@ -198,7 +198,7 @@ Standards]]></text>
 			</textField>
 			<staticText>
 				<reportElement x="5" y="337" width="89" height="20" uuid="14133a65-a47f-422a-8a6c-70c84ed93ec8"/>
-				<text><![CDATA[DOcument Type:]]></text>
+				<text><![CDATA[Document Type:]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="150" y="336" width="197" height="23" uuid="391a473a-07b6-44df-ab7d-c51faad39ecd"/>

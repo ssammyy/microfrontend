@@ -26,6 +26,8 @@ class DestinationInspectionRoutes {
             DELETE("/demand/note/delete/{invoiceId}",handlers::deleteDemandNote)
             GET("/demand/note/list/{cdId}",handlers::listDemandNotes)
             GET("/demand-note/fees",handlers::applicationFee)
+            POST("/demand/note/upload/exchange-rate",handlers::applicationUploadExchangeRates)
+            GET("/demand/note/exchange-rates",handlers::applicationExchangeRates)
             POST("/demand/note/generate/{cdUuid}",handlers::generateDemandNote)
         }
     }
@@ -113,8 +115,8 @@ class DestinationInspectionRoutes {
             GET("/consignment/documents/completed", handler::completedConsignmentDocuments)
             // CD Search
             POST("/consignment/documents/search", handler::searchConsignmentDocuments)
-            // CD Extra Details
-            GET("/inspection/coc/details/{coUuid}", handler::certificateOfConformance)
+            // CD Certificate Details
+            GET("/cd/certificate/{docType}/details/{coUuid}", handler::certificateOfConformance)
             GET("/inspection/idf/details/{coUuid}", handler::importDeclarationFormDetails)
             GET("/inspection/cor/details/{coUuid}", handler::certificateOfRoadWorthines)
 

@@ -1038,3 +1038,13 @@ data class SideBarChildMenusEntityDto(
         @JsonProperty("ab")
         var ab: String?
 )
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+data class CurrencyExchangeRatesEntityDto(
+        @JsonProperty("CURRENCY_CODE")
+        var currencyCode: String?,
+        @JsonProperty("RATE")
+        var exchangeRate: BigDecimal?,
+        @JsonProperty("DESCRIPTION")
+        var description: String?,
+)

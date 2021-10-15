@@ -17,7 +17,7 @@ export class ConsignmentDocumentListComponent implements OnInit {
     activeStatus: string = 'my-tasks';
     previousStatus: string = 'my-tasks'
     searchStatus: any
-    personalTasks = "true"
+    personalTasks = "false"
     defaultPageSize: number = 20
     currentPage: number = 0
     currentPageInternal: number = 0
@@ -221,7 +221,7 @@ export class ConsignmentDocumentListComponent implements OnInit {
         }
     }
 
-    private viewRecord(data: any) {
+    viewRecord(data: any) {
         // console.log(data)
         this.router.navigate([`/di`, data.uuid]);
     }

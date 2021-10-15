@@ -1,21 +1,28 @@
 package org.kebs.app.kotlin.apollo.api.service
 
 import mu.KotlinLogging
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SchedulerImpl
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.kebs.app.kotlin.apollo.store.model.di.CurrencyExchangeRates
+import org.kebs.app.kotlin.apollo.store.repo.di.ICfgCurrencyExchangeRateRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteRepository
 import org.springframework.stereotype.Service
+import org.springframework.web.multipart.MultipartFile
+import java.io.ByteArrayInputStream
+import java.io.InputStreamReader
+import java.io.Reader
+import java.sql.Timestamp
+import java.time.Instant
 
 @Service("invoiceService")
 class InvoicePaymentService(
         private val iDemandNoteRepo: IDemandNoteRepository,
         private val auditService: ConsignmentDocumentAuditService,
         private val reportsDaoService: ReportsDaoService,
+        private val exchangeRateRepository: ICfgCurrencyExchangeRateRepository,
+        private val service: DaoService,
         private val daoServices: DestinationInspectionDaoServices,
         private val invoiceDaoService: InvoiceDaoService,
         private val commonDaoServices: CommonDaoServices,
@@ -72,7 +79,6 @@ class InvoicePaymentService(
                 demand.varField3 = "APPROVED"
                 demand.varField10 = remarks
                 // Update CD status
-                consignmentDocument.varField10 = "Demand Approved"
                 consignmentDocument.sendDemandNote = map.activeStatus
                 this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
                 // Update demand note
@@ -102,7 +108,7 @@ class InvoicePaymentService(
                     )
                 }
                 demand.varField3 = "UPDATED DEMAND NOTE STATUS"
-                consignmentDocument.varField10 = "UPDATED DEMAND NOTE STATUS"
+                consignmentDocument.varField10 = "Demand Approved, awaiting payment"
                 this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
                 // Update Demand note status
                 this.iDemandNoteRepo.save(demand)
@@ -168,7 +174,7 @@ class InvoicePaymentService(
             val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             //2. Update payment status on KenTrade
             daoServices.sendDemandNotGeneratedToKWIS(demandNoteId)
-            consignmentDocument.varField10 = "DEMAND NOTE SENT TO KENTRADE"
+            consignmentDocument.varField10 = "DEMAND NOTE SENT TO KENTRADE, AWAITING PAYMENT"
             this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
             return true
         } catch (ex: Exception) {
@@ -182,7 +188,7 @@ class InvoicePaymentService(
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             //1. Update Demand Note Status
             demandNote.swStatus=map.activeStatus
-            demandNote.varField10="STATUS UPDATED ON SW"
+            demandNote.varField10="PAYMENT COMPLETED"
             val demandNoteDetails = daoServices.upDateDemandNote(demandNote)
             val consignmentDocument = demandNoteDetails.cdId?.let {cdId-> daoServices.findCD(cdId) }
             // 2. Update CD status
@@ -202,13 +208,41 @@ class InvoicePaymentService(
             // 1. Send demand payment status to SW
             daoServices.sendDemandNotePayedStatusToKWIS(demandNoteId)
             // 2. Update application status
-            consignmentDocument.varField10 = "INVOICE PAYMENT UPDATED ON SW"
+            consignmentDocument.varField10 = "DEMAND NOTE PAID,AWAITING INSPECTION"
             this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
             return true
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("INVOICE UPDATE FAILED", ex)
         }
         return false
+    }
+
+    fun uploadExchangeRates(multipartFile: MultipartFile, fileType:String) {
+        var separator = ','
+        if ("TSV".equals(fileType)) {
+            KotlinLogging.logger { }.info("TAB SEPARATED DATA")
+            separator = '\t'
+        } else {
+            KotlinLogging.logger { }.info("COMMA SEPARATED DATA")
+        }
+        val loggedInUser=commonDaoServices.getLoggedInUser()
+        val targetReader: Reader = InputStreamReader(ByteArrayInputStream(multipartFile.bytes))
+        val exchangeRates=service.readExchangeRatesFromController(separator,targetReader)
+        for(rate in exchangeRates) {
+            val exchangeRateEntity= CurrencyExchangeRates()
+            with(exchangeRateEntity){
+                applicableDate= Timestamp.from(Instant.now())
+                currencyCode=rate.currencyCode
+                exchangeRate=rate.exchangeRate
+                description=rate.description
+                status=1
+                createdBy=loggedInUser?.userName
+                createdOn= Timestamp.from(Instant.now())
+                modifiedOn= Timestamp.from(Instant.now())
+                modifiedBy=loggedInUser?.userName
+            }
+            this.exchangeRateRepository.save(exchangeRateEntity)
+        }
     }
 
 }

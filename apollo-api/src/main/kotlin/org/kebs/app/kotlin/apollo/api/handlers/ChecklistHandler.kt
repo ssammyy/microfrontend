@@ -311,7 +311,7 @@ class ChecklistHandler(
                         checlistService.addOtherChecklist(map, inspectionGeneral, form.otherChecklistItems(), otherItemInspectionChecklist, loggedInUser)
                     }
                     cdItem.inspectionChecklist = map.activeStatus
-                    cdItem.varField10 = "CHECKLIST ITEM FILLED"
+                    cdItem.varField10 = "CHECKLIST FILLED, AWAITING COMPLIANCE STATUS"
                     daoServices.updateCdDetailsInDB(cdItem, loggedInUser)
                 }
                 response.message = "Checklist submitted successfully"

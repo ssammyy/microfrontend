@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
-  <process id="targetConsignmentDocument" name="Target Consignment Documet" isExecutable="true" activiti:candidateStarterUsers="supervisor">
+  <process id="targetConsignmentDocument" name="Target Consignment Document" isExecutable="true" activiti:candidateStarterUsers="supervisor">
     <startEvent id="startTargetConsignmentDocument" name="Start Targeting"></startEvent>
-    <userTask id="usertask1" name="ApproveTargeting" activiti:assignee="${supervisor}" activiti:candidateUsers="supervisor" activiti:category="${cfs_code}"></userTask>
+    <userTask id="usertask1" name="ApproveTargeting" activiti:assignee="${supervisor}" activiti:candidateUsers="supervisor" activiti:candidateGroups="${cfs_code}" activiti:category="${cfs_code}"></userTask>
     <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
     <sequenceFlow id="flow2" sourceRef="usertask1" targetRef="exclusivegateway1"></sequenceFlow>
     <sequenceFlow id="flow3" name="Approved" sourceRef="exclusivegateway1" targetRef="targetingApprovedStatus">
@@ -11,13 +11,10 @@
     <sequenceFlow id="flow4" name="Rejected" sourceRef="exclusivegateway1" targetRef="updateTargetRejectionStatus">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!taskApproved}]]></conditionExpression>
     </sequenceFlow>
-    <userTask id="targetingScheduledKra" name="Consignment Target Update" activiti:assignee="${supervisor}"></userTask>
-    <sequenceFlow id="flow5" sourceRef="targetingApprovedStatus" targetRef="targetingScheduledKra"></sequenceFlow>
     <serviceTask id="targetingApprovedStatus" name="Target Consignment" activiti:async="true" activiti:expression="#{diService.swScheduledTargeting(cdUuid,remarks,supervisor)}"></serviceTask>
     <serviceTask id="updateTargetRejectionStatus" name="Update  Rejection Status" activiti:async="true" activiti:expression="#{diService.rejectTargeting(cdUuid,remarks,supervisor)}"></serviceTask>
     <sequenceFlow id="flow6" sourceRef="updateTargetRejectionStatus" targetRef="updateConsignmentDocumentProcessFields"></sequenceFlow>
     <serviceTask id="updateConsignmentDocumentProcessFields" name="Update Consignment Document" activiti:async="true" activiti:expression="${diService.clearCurrentProcess(cdUuid)}"></serviceTask>
-    <sequenceFlow id="flow7" sourceRef="targetingScheduledKra" targetRef="updateConsignmentDocumentProcessFields"></sequenceFlow>
     <endEvent id="endTargetConsignmentDocument" name="End"></endEvent>
     <sequenceFlow id="flow8" sourceRef="updateConsignmentDocumentProcessFields" targetRef="endTargetConsignmentDocument"></sequenceFlow>
     <sequenceFlow id="flow9" sourceRef="exclusivegateway2" targetRef="usertask1">
@@ -28,6 +25,7 @@
     <sequenceFlow id="flow11" name="Supervisor Targeting" sourceRef="exclusivegateway2" targetRef="targetingApprovedStatus">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${isSupervisor}]]></conditionExpression>
     </sequenceFlow>
+    <sequenceFlow id="flow12" sourceRef="targetingApprovedStatus" targetRef="updateConsignmentDocumentProcessFields"></sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_targetConsignmentDocument">
     <bpmndi:BPMNPlane bpmnElement="targetConsignmentDocument" id="BPMNPlane_targetConsignmentDocument">
@@ -39,9 +37,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
         <omgdc:Bounds height="40.0" width="40.0" x="446.0" y="252.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="targetingScheduledKra" id="BPMNShape_targetingScheduledKra">
-        <omgdc:Bounds height="66.0" width="105.0" x="751.0" y="240.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="targetingApprovedStatus" id="BPMNShape_targetingApprovedStatus">
         <omgdc:Bounds height="55.0" width="105.0" x="570.0" y="245.0"></omgdc:Bounds>
@@ -76,17 +71,9 @@
           <omgdc:Bounds height="13.0" width="42.0" x="466.0" y="292.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
-        <omgdi:waypoint x="675.0" y="272.0"></omgdi:waypoint>
-        <omgdi:waypoint x="751.0" y="273.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
         <omgdi:waypoint x="519.0" y="387.0"></omgdi:waypoint>
         <omgdi:waypoint x="751.0" y="390.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
-        <omgdi:waypoint x="803.0" y="306.0"></omgdi:waypoint>
-        <omgdi:waypoint x="803.0" y="360.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
         <omgdi:waypoint x="856.0" y="390.0"></omgdi:waypoint>
@@ -108,6 +95,11 @@
         <bpmndi:BPMNLabel>
           <omgdc:Bounds height="13.0" width="98.0" x="130.0" y="191.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow12" id="BPMNEdge_flow12">
+        <omgdi:waypoint x="675.0" y="272.0"></omgdi:waypoint>
+        <omgdi:waypoint x="803.0" y="272.0"></omgdi:waypoint>
+        <omgdi:waypoint x="803.0" y="360.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
