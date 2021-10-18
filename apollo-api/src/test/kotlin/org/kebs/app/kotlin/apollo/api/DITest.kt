@@ -798,6 +798,7 @@ class DITest {
         val stringToExclude = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
         val consignmentDoc: ConsignmentDocument =
             commonDaoServices.deserializeFromXML(consignmentDocument, stringToExclude)
+        KotlinLogging.logger {  }.info("DDD: "+consignmentDoc.documentDetails?.consignmentDocDetails?.cdStandardTwo?.attachments?.get(0)?.fileName)
         val details = CdTransportDetailsEntity()
         details.cargoTypeIndicator =
             consignmentDoc.documentDetails?.consignmentDocDetails?.cdTransport?.cargoTypeIndicator

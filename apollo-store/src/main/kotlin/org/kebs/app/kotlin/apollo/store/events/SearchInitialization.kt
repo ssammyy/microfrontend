@@ -40,22 +40,27 @@ class SearchInitialization(
         }
     }
 
-    fun searchConsignmentDocuments(keywords: String?, category: String?, cdType: ConsignmentDocumentTypesEntity?, inspectionOfficer: Boolean, loggedInUser: UsersEntity?,page: Int=20): List<ConsignmentDocumentDetailsEntity> {
+    fun searchConsignmentDocuments(keywords: String?, category: String?, cdType: ConsignmentDocumentTypesEntity?, inspectionOfficer: Boolean, loggedInUser: UsersEntity?, page: Int = 0): List<ConsignmentDocumentDetailsEntity> {
 //        val loggedInUser = commonDaoServices.getLoggedInUser()
         val searchManager = Search.getFullTextEntityManager(entityManager)
-        val builder: QueryBuilder = searchManager.getSearchFactory()
+        val builder: QueryBuilder = searchManager.searchFactory
                 .buildQueryBuilder()
                 .forEntity(ConsignmentDocumentDetailsEntity::class.java)
                 .get()
+// Remove Old CD from result
         val query = builder.bool()
+                .must(builder.range().onField("oldCdStatus").above(0).createQuery())
         if (StringUtils.hasLength(keywords)) {
-            query.should(builder.keyword().fuzzy()
-                    .withEditDistanceUpTo(2)
-                    .onFields("ucrNumber","cdRefNumber", "cocNumber", "idfNumber", "varField10", "description")
+            // Key words on application status
+            query.should(builder.phrase().withSlop(2).boostedTo(6.5f).withConstantScore().onField("varField10").sentence(keywords).createQuery())
+            query.should(builder.phrase().withSlop(2).boostedTo(4.5f).withConstantScore().onField("description").sentence(keywords).createQuery())
+            // Others
+            query.should(builder.keyword().wildcard()
+                    .boostedTo(1.5f)
+                    .withConstantScore()
+                    .onFields("ucrNumber", "cdRefNumber", "cocNumber", "idfNumber")
                     .matching(keywords).createQuery())
         }
-        // Remove Old CD from result
-        query.must(builder.keyword().onField("oldCdStatus").matching(-1).createQuery())
         // Filter by Assigner
         if (StringUtils.hasLength(category)) {
             when (category) {
@@ -71,16 +76,20 @@ class SearchInitialization(
                     }
                 }
                 "completed" -> {
-                    query.must(builder.keyword().onField("approveRejectCdStatus").matching("NULL").createQuery()).not()
+                    query.must(builder.keyword().onField("approveRejectCdStatus").matching("NULL").createQuery())
                 }
             }
         }
+
         // Filter by area of consignment document type
         cdType?.let {
-            query.must(builder.keyword().onField("cdType").matching(it).createQuery())
+            query.must(builder.keyword().boostedTo(9.5f).withConstantScore().onField("cdType").matching(it).createQuery())
         }
+        val q=query.createQuery()
+        KotlinLogging.logger {  }.info("Query: ${q}")
         // Retrieve search result
-        val queryResult: FullTextQuery = searchManager.createFullTextQuery(query.createQuery(), ConsignmentDocumentDetailsEntity::class.java)
+        val queryResult: FullTextQuery = searchManager.createFullTextQuery(q, ConsignmentDocumentDetailsEntity::class.java)
+                .setFirstResult(page * 30)
                 .setMaxResults(30)
         return queryResult.getResultList() as List<ConsignmentDocumentDetailsEntity>
     }

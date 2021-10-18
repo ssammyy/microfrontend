@@ -317,6 +317,21 @@ class CDStandardTwoResponse {
     @JsonProperty("DocumentFee")
     var documentFeeResponse: DocumentFeeResponse? = null
 
+    @JsonProperty("Attachments")
+    var attachments: List<CdStandardTwoAttachments>? = null
+
+
+}
+
+class CdStandardTwoAttachments {
+    @JsonProperty("AttachDocumentCode")
+    var attachmentCode: String? = null
+    @JsonProperty("AttachDocumentCode")
+    var attachmentCodeDesc: String? = null
+    @JsonProperty("AttachDocumentRefNo")
+    var refNo: String? = null
+    @JsonProperty("AttachDocumentInternalRefNo")
+    var fileName: String? = null
 
 }
 
@@ -406,22 +421,6 @@ class ThirdPartiesResponse {
 
     @JsonProperty("ThirdPartyAccount")
     var thirdPartyAccount: String? = null
-}
-
-
-class CDStandardTwoAttachmentsResponse {
-    @JsonProperty("AttachDocumentCode")
-    var attachDocumentCode: String? = null
-
-    @JsonProperty("AttachDocumentCodeDesc")
-    var attachDocumentCodeDesc: String? = null
-
-    @JsonProperty("AttachDocumentRefNo")
-    var attachDocumentRefNo: String? = null
-
-    @JsonProperty("AttachDocumentInternalRefNo")
-    var attachDocumentInternalRefNo: String? = null
-
 }
 
 

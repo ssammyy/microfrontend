@@ -136,18 +136,22 @@ class DestinationInspectionService(
                 consignmentDocument.cdStandard?.let { cdStd ->
                     daoServices.updateCDStatus(cdStd, cdStatusTypeId)
                 }
+                cdAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, remarks, "KEBS DOCUMENT APPROVED", "Consignment approved", username = supervisor)
             } else if (cdStatusType.category == "AMENDMENT") {
                 consignmentDocument.cdStandard?.let { cdStd ->
                     daoServices.updateCDStatus(cdStd, cdStatusTypeId)
                 }
+                cdAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, remarks, "KEBS AMENDMENT REQUEST", "Consignment rejected for amendment", username = supervisor)
             } else if (cdStatusType.category === "QUERY") {
                 consignmentDocument.cdStandard?.let { cdStd ->
                     daoServices.updateCDStatus(cdStd, cdStatusTypeId)
                 }
+                cdAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, remarks, "KEBS QUERY IMPORTER", "Consignment query for importer submitted", username = supervisor)
             } else {
                 consignmentDocument.cdStandard?.let { cdStd ->
                     daoServices.updateCDStatus(cdStd, cdStatusTypeId)
                 }
+                cdAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, remarks, "KEBS DOCUMENT STATUS TO ${cdStatusType.category}", "Consignment document ${cdStatusType.category?.toLowerCase()}", username = supervisor)
             }
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("FAILED TO UPDATE STATUS", ex)
