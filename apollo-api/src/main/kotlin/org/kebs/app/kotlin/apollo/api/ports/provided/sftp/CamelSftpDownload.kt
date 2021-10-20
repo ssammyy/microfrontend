@@ -6,6 +6,7 @@ import org.apache.camel.Exchange
 import org.apache.camel.builder.RouteBuilder
 import org.apache.camel.model.dataformat.JacksonXMLDataFormat
 import org.apache.http.client.utils.URIBuilder
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.common.dto.kesws.receive.*
 import org.kebs.app.kotlin.apollo.config.properties.camel.CamelFtpProperties
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -18,33 +19,81 @@ import java.lang.Class as Class
 
 @Service
 @Profile("default")
-class SFTPService {
-    fun processConsignmentDocument(exchange: Exchange) {
-        KotlinLogging.logger { }.info("File: ${exchange.message.headers} | Content: ${exchange.message.body}|")
+class SFTPService(
+        private val iDFDaoService: IDFDaoService,
+        private val declarationDaoService: DeclarationDaoService,
+        private val manifestDaoService: ManifestDaoService,
+        private val destinationInspectionDaoServices: DestinationInspectionDaoServices,
+        private val consignmentDocumentDaoService: ConsignmentDocumentDaoService
+) {
+    fun processConsignmentDocumentType(exchange: Exchange) {
+        KotlinLogging.logger { }.info("CD File: ${exchange.message.headers} | Content: ${exchange.message.body}|")
+        val consignmentDoc=exchange.message.body as ConsignmentDocument
+        // TOD: see this document saving xml
+        val updated=consignmentDocumentDaoService.insertConsignmentDetailsFromXml(consignmentDoc, byteArrayOf())
+        KotlinLogging.logger { }.info("CD File: ${exchange.message.headers} | Save Status: ${updated}|")
     }
 
     fun processDocumentResponses(exchange: Exchange) {
-        KotlinLogging.logger { }.info("UCR RES: ${exchange.message.headers} | Content: ${exchange.message.body}|")
+        KotlinLogging.logger { }.info("Manifest Document: ${exchange.message.headers} | Content: ${exchange.message.body}|")
+        val ucrNumberMessage = exchange.message.body as UCRNumberMessage
+        val baseDocRefNo = ucrNumberMessage.data?.dataIn?.sadId
+        val ucrNumber = ucrNumberMessage.data?.dataIn?.ucrNumber
+        if (baseDocRefNo == null || ucrNumber == null) {
+            KotlinLogging.logger { }.error { "BaseDocRef Number or UcrNumber missing" }
+            throw Exception("BaseDocRef Number or UcrNumber missing")
+        }
+        val idfUpdated = iDFDaoService.updateIdfUcrNumber(baseDocRefNo, ucrNumber)
+        KotlinLogging.logger { }.info("Manifest Document: ${exchange.message.headers} | Saved: ${idfUpdated}|")
     }
 
-    fun processDeclarationDocument(exchange: Exchange) {
-        KotlinLogging.logger { }.info("Declaration Document: ${exchange.message.headers} | Content: ${exchange.message.body}|")
+    fun processDeclarationVerificationDocumentType(exchange: Exchange) {
+        KotlinLogging.logger { }.info("Verification Document Type: ${exchange.message.headers} | Content: ${exchange.message.body}|")
+        val declarationVerificationDocumentMessage = exchange.message.body as DeclarationVerificationMessage
+        val docSaved=destinationInspectionDaoServices.updateCdVerificationSchedule(declarationVerificationDocumentMessage)
+        KotlinLogging.logger { }.info("Verification Document Type: ${exchange.message.headers} | Saved Status: ${docSaved}|")
+    }
+
+    fun processUcrResultDocument(exchange: Exchange) {
+        KotlinLogging.logger { }.info("UCR Res Document: ${exchange.message.headers} | Content: ${exchange.message.body}|")
+        val ucrNumberMessage = exchange.message.body as UCRNumberMessage
+        val baseDocRefNo = ucrNumberMessage.data?.dataIn?.sadId
+        val ucrNumber = ucrNumberMessage.data?.dataIn?.ucrNumber
+        if (baseDocRefNo == null || ucrNumber == null) {
+            KotlinLogging.logger { }.error { "BaseDocRef Number or Uc" +
+                    "rNumber missing" }
+            throw Exception("BaseDocRef Number or UcrNumber missing")
+        }
+        val idfUpdated = iDFDaoService.updateIdfUcrNumber(baseDocRefNo, ucrNumber)
+        KotlinLogging.logger { }.info("UCR Res Document: ${exchange.message.headers} | Saved Status: ${idfUpdated}|")
     }
 
     fun processAirManifestDocument(exchange: Exchange) {
         KotlinLogging.logger { }.info("Air Manifest Document: ${exchange.message.headers} | Content: ${exchange.message.body}|")
+        val manifestDocumentMessage = exchange.message.body as ManifestDocumentMessage
+        val docSaved = manifestDaoService.mapManifestMessageToManifestEntity(manifestDocumentMessage)
+        KotlinLogging.logger { }.info("Air Manifest Document: ${exchange.message.headers} | Saved Status: ${docSaved}|")
     }
 
     fun processManifestDocument(exchange: Exchange) {
         KotlinLogging.logger { }.info("Manifest Document: ${exchange.message.headers} | Content: ${exchange.message.body}|")
+        val manifestDocumentMessage = exchange.message.body as ManifestDocumentMessage
+        val docSaved = manifestDaoService.mapManifestMessageToManifestEntity(manifestDocumentMessage)
+        KotlinLogging.logger { }.info("Manifest Document: ${exchange.message.headers} | Saved Status: ${docSaved}|")
     }
 
-    fun processDeclarationResDocument(exchange: Exchange) {
-        KotlinLogging.logger { }.info("Manifest Document: ${exchange.message.headers} | Content: ${exchange.message.body}|")
+    fun processDeclarationDocumentType(exchange: Exchange) {
+        KotlinLogging.logger { }.info("DECLARATION DOC RES: ${exchange.message.headers} | Content: ${exchange.message.body}|")
+        val declarationDocumentMessage = exchange.message.body as DeclarationDocumentMessage
+        val docSaved = declarationDaoService.mapDeclarationMessageToEntities(declarationDocumentMessage)
+        KotlinLogging.logger { }.info("DECLARATION DOC RES: ${exchange.message.headers} | Result: ${docSaved}|")
     }
 
     fun processBaseDocumentType(exchange: Exchange) {
         KotlinLogging.logger { }.info("Base Document Type: ${exchange.message.headers} | Content: ${exchange.message.body}|")
+        val baseDocumentResponse = exchange.message.body as BaseDocumentResponse
+        val docSaved = iDFDaoService.mapBaseDocumentToIDF(baseDocumentResponse)
+        KotlinLogging.logger { }.info("Base Document Type: ${exchange.message.headers} | Save status: ${docSaved}|")
     }
 }
 
@@ -60,7 +109,9 @@ class CamelSftpDownload(
             .setPort(properties.port)
             .setPath(properties.path)
     private lateinit var fromFtpUrl: URI;
-
+    val keswsDocTypes = listOf(applicationMapProperties.mapKeswsBaseDocumentDoctype, applicationMapProperties.mapKeswsUcrResDoctype,
+            applicationMapProperties.mapKeswsDeclarationDoctype, applicationMapProperties.mapKeswsManifestDoctype, applicationMapProperties.mapKeswsAirManifestDoctype,
+            applicationMapProperties.mapKeswsCdDoctype, applicationMapProperties.mapKeswsDeclarationVerificationDoctype)
     init {
         ftpBuilder
                 .addParameter("username", properties.userName)
@@ -89,6 +140,7 @@ class CamelSftpDownload(
             "sftp" -> {
                 ftpBuilder.addParameter("runLoggingLevel", properties.logLevel)
                         .addParameter("readLock", properties.readLock)
+                        .addParameter("maxMessagesPerPoll","50")
                         .addParameter("autoCreate", "false")
                         .addParameter("timeUnit", TimeUnit.MILLISECONDS.name)
                         .addParameter("useFixedDelay", "true")
@@ -125,15 +177,15 @@ class CamelSftpDownload(
                 .choice()
                 .`when`(header("CamelFileName").startsWith(applicationMapProperties.mapKeswsCdDoctype)) // Process consignment documents
                 .unmarshal(createXmlMapper(ConsignmentDocument::class.java))
-                .bean(SFTPService::class.java, "processConsignmentDocument")
+                .bean(SFTPService::class.java, "processConsignmentDocumentType")
                 .log("Downloaded file \${in.headers.CamelFileName} processed.")
                 .`when`(header("CamelFileName").startsWith(applicationMapProperties.mapKeswsUcrResDoctype))
                 .unmarshal(createXmlMapper(UCRNumberMessage::class.java))
-                .bean(SFTPService::class.java, "processDocumentResponses")
+                .bean(SFTPService::class.java, "processUcrResultDocument")
                 .log("UCR Response file \${in.headers.CamelFileName} processed.")
-                .`when`(header("CamelFileName").startsWith(applicationMapProperties.mapKeswsUcrResDoctype))
+                .`when`(header("CamelFileName").startsWith(applicationMapProperties.mapKeswsDeclarationVerificationDoctype))
                 .unmarshal(createXmlMapper(DeclarationVerificationMessage::class.java))
-                .bean(SFTPService::class.java, "processDeclarationResDocument")
+                .bean(SFTPService::class.java, "processDeclarationVerificationDocumentType")
                 .log("Declaration document \${in.headers.CamelFileName} processed.")
                 .`when`(header("CamelFileName").startsWith(applicationMapProperties.mapKeswsAirManifestDoctype))
                 .unmarshal(createXmlMapper(ManifestDocumentMessage::class.java))
@@ -145,7 +197,7 @@ class CamelSftpDownload(
                 .log("Manifest document \${in.headers.CamelFileName} processed.")
                 .`when`(header("CamelFileName").startsWith(applicationMapProperties.mapKeswsDeclarationDoctype))
                 .unmarshal(createXmlMapper(DeclarationDocumentMessage::class.java))
-                .bean(SFTPService::class.java, "processManifestDocument")
+                .bean(SFTPService::class.java, "processDeclarationDocumentType")
                 .log("Manifest document \${in.headers.CamelFileName} processed.")
                 .`when`(header("CamelFileName").startsWith(applicationMapProperties.mapKeswsBaseDocumentDoctype))
                 .unmarshal(createXmlMapper(BaseDocumentResponse::class.java))

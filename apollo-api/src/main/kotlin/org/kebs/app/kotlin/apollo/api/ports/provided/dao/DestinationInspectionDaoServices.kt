@@ -714,7 +714,7 @@ class DestinationInspectionDaoServices(
             val coc: CustomCocXmlDto = it.toCocXmlRecordRefl()
             //COC ITEM
             val cocItem = iCocItemRepository.findByCocId(cocsEntity.id)?.get(0)
-            cocItem?.toCocItemDetailsXmlRecordRefl().let {
+            cocItem?.toCocItemDetailsXmlRecordRefl(cocsEntity.cocNumber?:"NA").let {
                 coc.cocDetals = it
                 val cocFinalDto = COCXmlDTO()
                 cocFinalDto.coc = coc
@@ -744,7 +744,7 @@ class DestinationInspectionDaoServices(
 //            val coc: CustomCocXmlDto = it.toCocXmlRecordRefl()
             //COC ITEM
             val cocItem = iCocItemRepository.findByCocId(cocsEntity.id)?.get(0)
-            cocItem?.toCocItemDetailsXmlRecordRefl().let {
+            cocItem?.toCocItemDetailsXmlRecordRefl(cocsEntity.cocNumber?:"NA").let {
                 val coiFinalDto = COIXmlDTO()
                 coiFinalDto.coi = coi
 

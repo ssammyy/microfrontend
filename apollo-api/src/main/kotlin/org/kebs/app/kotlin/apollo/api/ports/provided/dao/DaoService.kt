@@ -397,7 +397,7 @@ class DaoService(
     fun submitCocToKeSWS(cocData: CocsEntity) {
         val coc: CustomCocXmlDto = cocData.toCocXmlRecordRefl()
         val cocItem = cocItemsRepository.findByCocId(cocData.id)?.get(0)
-        cocItem?.toCocItemDetailsXmlRecordRefl().let { cocDetails ->
+        cocItem?.toCocItemDetailsXmlRecordRefl(cocData.cocNumber?:"NA").let { cocDetails ->
             coc.cocDetals = cocDetails
             val cocFinalDto = COCXmlDTO()
             cocFinalDto.coc = coc

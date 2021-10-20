@@ -1,7 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.service
 
 import mu.KotlinLogging
-import okhttp3.internal.toLongOrDefault
 import org.kebs.app.kotlin.apollo.api.payload.*
 import org.kebs.app.kotlin.apollo.api.payload.request.SearchForms
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
@@ -16,7 +15,6 @@ import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.di.*
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.*
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -850,7 +848,7 @@ class DestinationInspectionService(
                                         shipmentGrossWeight = coc.shipmentGrossWeight ?: "0.0"
                                         importerPin = coc.importerPin ?: "NA"
                                         shipmentQuantityDelivered = coc.shipmentQuantityDelivered ?: "0"
-                                        cocRemarks = coc.cocRemarks
+                                        cocRemarks = coc.cocRemarks?:"NA"
                                         issuingOffice = coc.issuingOffice
                                         importerName = coc.importerName
                                         importerPin = coc.importerPin ?: "NA"
@@ -897,6 +895,15 @@ class DestinationInspectionService(
 
 
                                     }
+
+                                    if (coc.placeOfInspection.isNullOrEmpty()) {
+                                        entity.placeOfInspection = "UNDEFINED"
+                                    } else {
+                                        entity.placeOfInspection = coc.placeOfInspection.toString()
+                                    }
+                                    if(entity.cocRemarks.isNullOrEmpty()){
+                                        entity.cocRemarks="NA"
+                                    }
                                     entity = cocsRepository.save(entity)
                                     cocs.filter { dto -> dto.cocNumber == u }.forEach { cocItems ->
                                         val itemEntity = CocItemsEntity().apply {
@@ -913,7 +920,6 @@ class DestinationInspectionService(
                                             shipmentLineIcs = cocItems.shipmentLineIcs ?: "UNDEFINED"
                                             shipmentLineStandardsReference =
                                                     cocItems.shipmentLineStandardsReference ?: "UNDEFINED"
-                                            shipmentLineRegistration = cocItems.shipmentLineRegistration ?: "UNDEFINED"
                                             shipmentLineRegistration = cocItems.shipmentLineRegistration ?: "UNDEFINED"
                                             status = 1
                                             createdBy = loggedInUser.userName
