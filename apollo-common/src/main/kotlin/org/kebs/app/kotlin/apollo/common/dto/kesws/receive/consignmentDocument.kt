@@ -318,6 +318,7 @@ class CDStandardTwoResponse {
     var documentFeeResponse: DocumentFeeResponse? = null
 
     @JsonProperty("Attachments")
+    @JacksonXmlElementWrapper(useWrapping = false)
     var attachments: List<CdStandardTwoAttachments>? = null
 
 
@@ -326,7 +327,7 @@ class CDStandardTwoResponse {
 class CdStandardTwoAttachments {
     @JsonProperty("AttachDocumentCode")
     var attachmentCode: String? = null
-    @JsonProperty("AttachDocumentCode")
+    @JsonProperty("AttachDocumentCodeDesc")
     var attachmentCodeDesc: String? = null
     @JsonProperty("AttachDocumentRefNo")
     var refNo: String? = null
