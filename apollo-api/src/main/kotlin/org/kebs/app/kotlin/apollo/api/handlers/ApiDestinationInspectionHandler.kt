@@ -45,6 +45,7 @@ class ApiDestinationInspectionHandler(
         val cdUuid = req.pathVariable("cdUuid")
         return ServerResponse.ok().body(this.destinationInspectionService.consignmentDocumentTasks(cdUuid))
     }
+
     fun listBlackListedUser(req: ServerRequest): ServerResponse {
         val response = ApiResponseModel()
         try {
@@ -286,21 +287,22 @@ class ApiDestinationInspectionHandler(
                 if (cdTypeUuid != null) {
                     cdType = daoServices.findCdTypeDetailsWithUuid(cdTypeUuid)
                 }
+                val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
                 val usersEntity = commonDaoServices.findUserByUserName(auth.name)
                 // Query supervisor assigned or inspection officer assigned
                 var data: Page<ConsignmentDocumentDetailsEntity>? = null
                 when {
                     auth.authorities.stream().anyMatch { authority -> authority.authority == "DI_OFFICER_CHARGE_READ" } -> {
                         val personalTasks = req.paramOrNull("personal")
-                        var personal=true
+                        var personal = true
                         personalTasks?.let {
-                            personal=it.toBoolean()
+                            personal = it.toBoolean()
                         }
                         val supervisorCategory = req.paramOrNull("category")
-                        response = destinationInspectionService.findDocumentsWithActions(usersEntity,supervisorCategory, personal,extractPage(req))
+                        response = destinationInspectionService.findDocumentsWithActions(usersEntity, supervisorCategory, personal, extractPage(req))
                     }
                     auth.authorities.stream().anyMatch { authority -> authority.authority == "DI_INSPECTION_OFFICER_READ" } -> {
-                        data = daoServices.findAllCdWithAssignedIoID(usersEntity, cdType, extractPage(req))
+                        data = daoServices.findAllCdWithAssignedIoID(usersEntity, cdType, arrayListOf(0, null), extractPage(req))
                         // Add data to response
                         response.data = ConsignmentDocumentDao.fromList(data.toList(), daoServices.ncrCdType)
                         response.pageNo = data.number
@@ -339,7 +341,7 @@ class ApiDestinationInspectionHandler(
                 val userProfilesEntity = commonDaoServices.findUserProfileByUserID(usersEntity, map.activeStatus)
                 val allUserCFS = daoServices.findAllCFSUserList(userProfilesEntity.id!!)
 
-                val pp = daoServices.findAllOngoingCdWithFreightStationID(allUserCFS, cdType, listOf(map.activeStatus, map.initStatus, map.failedStatus, null), page)
+                val pp = daoServices.findAllOngoingCdWithFreightStationID(allUserCFS, cdType, listOf(map.activeStatus, map.inactiveStatus), page)
                 response.data = ConsignmentDocumentDao.fromList(pp.toList(), daoServices.ncrCdType)
                 response.pageNo = pp.number
                 response.totalPages = pp.totalPages
@@ -366,10 +368,11 @@ class ApiDestinationInspectionHandler(
                 if (cdTypeUuid != null) {
                     cdType = daoServices.findCdTypeDetailsWithUuid(cdTypeUuid)
                 }
+                val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
                 val usersEntity = commonDaoServices.findUserByUserName(auth.name)
                 when {
                     auth.authorities.stream().anyMatch { authority -> authority.authority == "DI_OFFICER_CHARGE_READ" } -> {
-                        val pp = daoServices.findAllCompleteCdWithAssigner(usersEntity, cdType, page)
+                        val pp = daoServices.findAllCompleteCdWithAssigner(usersEntity, cdType, arrayListOf(map.inactiveStatus, map.activeStatus), page)
                         response.data = ConsignmentDocumentDao.fromList(pp.toList(), daoServices.ncrCdType)
                         response.totalPages = pp.totalPages
                         response.pageNo = pp.number
@@ -378,7 +381,7 @@ class ApiDestinationInspectionHandler(
                         response.message = "Success"
                     }
                     auth.authorities.stream().anyMatch { authority -> authority.authority == "DI_INSPECTION_OFFICER_READ" } -> {
-                        val pp = daoServices.findAllCompleteCdWithAssignedIoID(usersEntity, cdType, page)
+                        val pp = daoServices.findAllCompleteCdWithAssignedIoID(usersEntity, cdType, arrayListOf(map.inactiveStatus, map.activeStatus, map.initStatus), page)
                         response.data = ConsignmentDocumentDao.fromList(pp.toList(), daoServices.ncrCdType)
                         response.pageNo = pp.number
                         response.totalPages = pp.totalPages
@@ -411,7 +414,7 @@ class ApiDestinationInspectionHandler(
                 val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
                 val userProfilesEntity = commonDaoServices.findUserProfileByUserID(usersEntity, map.activeStatus)
                 val allUserCFS = daoServices.findAllCFSUserList(userProfilesEntity.id!!)
-                val statuses = listOf(map.activeStatus, map.initStatus, map.successStatus, null)
+                val statuses = listOf(0, -1, null)
                 // Find documents
                 val pp = daoServices.findAllAvailableCdWithPortOfEntry(allUserCFS, cdType, statuses, page)
                 response.data = ConsignmentDocumentDao.fromList(pp.toList(), daoServices.ncrCdType)
@@ -432,7 +435,7 @@ class ApiDestinationInspectionHandler(
 
     fun certificateOfConformance(req: ServerRequest): ServerResponse {
         req.pathVariable("coUuid").let {
-            return ServerResponse.ok().body(this.destinationInspectionService.certificateOfConformanceDetails(it,req.pathVariable("docType")))
+            return ServerResponse.ok().body(this.destinationInspectionService.certificateOfConformanceDetails(it, req.pathVariable("docType")))
         }
     }
 

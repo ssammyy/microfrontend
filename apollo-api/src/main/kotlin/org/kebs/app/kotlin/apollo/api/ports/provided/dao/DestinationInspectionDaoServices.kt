@@ -806,9 +806,10 @@ class DestinationInspectionDaoServices(
                         inspectionRemarks = cdMvInspectionEntity.remarks
                         previousRegistrationNumber = "test"
                         previousCountryOfRegistration = "test"
-                        tareWeight = cdMvInspectionEntity.itemId?.itemNetWeight?.toLong() ?: 0L
+
+                        tareWeight = (cdMvInspectionEntity.itemId?.itemNetWeight?.toBigDecimal()?: BigDecimal.ZERO).toLong()
                         loadCapacity = 0
-                        grossWeight = cdMvInspectionEntity.itemId?.itemGrossWeight?.toLong() ?: 0L
+                        grossWeight = (cdMvInspectionEntity.itemId?.itemGrossWeight?.toBigDecimal()?: BigDecimal.ZERO).toLong()
                         numberOfAxles = 0
                         typeOfVehicle = cdMvInspectionEntity.makeVehicle
                         numberOfPassangers = 0
@@ -818,7 +819,7 @@ class DestinationInspectionDaoServices(
                         customsIeNo = cdItemDetailsList.customsEntryNumber
                         transmission = cdMvInspectionEntity.transmissionAutoManual
                         inspectionFee = 0
-                        approvalStatus = cdEntity.approveRejectCdStatus.toString()
+                        approvalStatus = cdEntity.compliantStatus.toString()
                         ucrNumber = cdEntity.ucrNumber
                         inspectionFeeCurrency = "USD"
                         partner = "test"
@@ -1129,7 +1130,7 @@ class DestinationInspectionDaoServices(
                 currencyExchangeRateRepository.findFirstByCurrencyCodeAndApplicableDateOrderByApplicableDateDesc("${itemDetails.foreignCurrencyCode?.toUpperCase()}", DATE_FORMAT.format(LocalDate.now()))?.let { exchangeRateEntity ->
                     demandNoteItem.exchangeRateId = exchangeRateEntity.id
                     demandNoteItem.cfvalue = itemDetails.totalPriceNcy?.times(exchangeRateEntity.exchangeRate
-                            ?: BigDecimal.ONE) ?: BigDecimal.ZERO
+                            ?: BigDecimal.ZERO) ?: BigDecimal.ZERO
                     KotlinLogging.logger {  }.warn("Exchange Rate for ${itemDetails.foreignCurrencyCode}:${itemDetails.totalPriceNcy} => ${demandNoteItem.cfvalue}")
                 } ?: run {
                     KotlinLogging.logger {  }.warn("Exchange Rate for ${itemDetails.foreignCurrencyCode} is not configured")
@@ -2125,13 +2126,13 @@ class DestinationInspectionDaoServices(
             it.cfsId?.let { it1 -> cfsIds.add(it1) }
         }
         return cdType?.let {
-            iConsignmentDocumentDetailsRepo.findByFreightStation_IdInAndCdTypeAndAssignedInspectionOfficerIsNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+            iConsignmentDocumentDetailsRepo.findByFreightStation_IdInAndCdTypeAndAssignedInspectionOfficerIsNullAndOldCdStatusIsNull(
                     cfsIds,
                     cdType,
                     page
             )
         } ?: run {
-            iConsignmentDocumentDetailsRepo.findByFreightStation_IdInAndAssignedInspectionOfficerIsNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+            iConsignmentDocumentDetailsRepo.findByFreightStation_IdInAndAssignedInspectionOfficerIsNullAndOldCdStatusIsNull(
                     cfsIds,
                     page
             )
@@ -2139,19 +2140,6 @@ class DestinationInspectionDaoServices(
 
     }
 
-    fun findAllOngoingCdWithFreightStationID(
-            cfsEntity: CfsTypeCodesEntity,
-            cdType: ConsignmentDocumentTypesEntity
-    ): List<ConsignmentDocumentDetailsEntity> {
-        iConsignmentDocumentDetailsRepo.findByFreightStationAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
-                cfsEntity.id,
-                cdType
-        )?.let {
-            return it
-        }
-                ?: throw Exception("COC List with the following  Freight STATION = ${cfsEntity.cfsName} and CD Type = ${cdType.typeName}, does not Exist")
-
-    }
 
     fun findAllOngoingCdWithFreightStationID(
             cfsEntity: List<UsersCfsAssignmentsEntity>,
@@ -2164,143 +2152,33 @@ class DestinationInspectionDaoServices(
             it.cfsId?.let { it1 -> cfsIds.add(it1) }
         }
         return cdType?.let {
-            return iConsignmentDocumentDetailsRepo.findByFreightStation_IdInAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIn(
+            return iConsignmentDocumentDetailsRepo.findByFreightStation_IdInAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIsNullAndApproveRejectCdStatusIsNull(
                     cfsIds,
-                    cdType, statuses, page)
-        } ?: run {
-            return iConsignmentDocumentDetailsRepo.findByFreightStation_IdInAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIn(
-                    cfsIds, statuses, page)
-        }
-
-    }
-
-    fun findAllOngoingCdWithFreightStationID(cfsEntity: CfsTypeCodesEntity): List<ConsignmentDocumentDetailsEntity> {
-        iConsignmentDocumentDetailsRepo.findByFreightStationAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
-                cfsEntity.id
-        )?.let {
-            return it
-        }
-                ?: throw Exception("COC List with the following  Freight STATION = ${cfsEntity.cfsName}, does not Exist")
-    }
-
-    fun findAllOngoingCdWithPortOfEntry(
-            sectionsEntity: SectionsEntity
-    ): List<ConsignmentDocumentDetailsEntity> {
-        iConsignmentDocumentDetailsRepo.findByPortOfArrivalAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
-                sectionsEntity.id
-        )
-                ?.let {
-                    return it
-                }
-                ?: throw Exception("COC List with the following Port arrival = ${sectionsEntity.section}, does not Exist")
-
-    }
-
-    fun findAllCompleteCdWithPortOfEntry(
-            sectionsEntity: SectionsEntity,
-            cdType: ConsignmentDocumentTypesEntity?,
-            page: PageRequest
-    ): Page<ConsignmentDocumentDetailsEntity> {
-        return cdType?.let {
-            iConsignmentDocumentDetailsRepo.findByPortOfArrivalAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
-                    sectionsEntity.id,
-                    it,
-                    page
-            )
-        } ?: run {
-            iConsignmentDocumentDetailsRepo.findByPortOfArrivalAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
-                    sectionsEntity.id,
-                    page
-            )
-        }
-
-    }
-
-    fun findAllCompleteCdWithPortOfEntry(
-            sectionsEntity: SectionsEntity
-    ): List<ConsignmentDocumentDetailsEntity> {
-        iConsignmentDocumentDetailsRepo.findByPortOfArrivalAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
-                sectionsEntity.id
-        )
-                ?.let {
-                    return it
-                }
-                ?: throw Exception("COC List with the following Port arrival = ${sectionsEntity.section}, does not Exist")
-
-    }
-
-    fun findAllCompleteCdWithFreightStation(
-            cfsEntity: CfsTypeCodesEntity
-    ): List<ConsignmentDocumentDetailsEntity> {
-        iConsignmentDocumentDetailsRepo.findByFreightStationAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
-                cfsEntity.id
-        )?.let {
-            return it
-        }
-                ?: throw Exception("COC List with the following Freight Station = ${cfsEntity.cfsName}, does not Exist")
-
-    }
-
-    fun findAllCdWithNoPortOfEntry(cdType: ConsignmentDocumentTypesEntity?, page: PageRequest): Page<ConsignmentDocumentDetailsEntity> {
-        return cdType?.let {
-            iConsignmentDocumentDetailsRepo.findByPortOfArrivalIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
                     cdType,
-                    page
-            )
+                    page)
         } ?: run {
-            iConsignmentDocumentDetailsRepo.findByPortOfArrivalIsNullAndUcrNumberIsNotNullAndOldCdStatusIsNull(
-                    page
-            )
+            return iConsignmentDocumentDetailsRepo.findByFreightStation_IdInAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIsNullAndApproveRejectCdStatusIsNull(
+                    cfsIds, page)
         }
+
     }
 
-    fun findAllCdWithNoFreghitStation(cdType: ConsignmentDocumentTypesEntity): List<ConsignmentDocumentDetailsEntity>? {
-        return iConsignmentDocumentDetailsRepo.findByFreightStationIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
-                cdType
-        )
-    }
-
-    fun findAllCdWithNoFreightStation(): List<ConsignmentDocumentDetailsEntity>? {
-        return iConsignmentDocumentDetailsRepo.findByFreightStationIsNullAndUcrNumberIsNotNullAndOldCdStatusIsNull()
-    }
-
-    fun findAllCdWithNoPortOfEntry(): List<ConsignmentDocumentDetailsEntity>? {
-        return iConsignmentDocumentDetailsRepo.findByPortOfArrivalIsNullAndUcrNumberIsNotNullAndOldCdStatusIsNull()
-    }
 
     fun findAllCdWithAssignedIoID(
             usersEntity: UsersEntity,
             cdType: ConsignmentDocumentTypesEntity?,
+            statuses: List<Int?>,
             page: PageRequest
     ): Page<ConsignmentDocumentDetailsEntity> {
         return cdType?.let {
-            iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+            iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIsNull(
                     usersEntity,
                     it,
                     page
             )
         } ?: run {
-            iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+            iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIsNull(
                     usersEntity,
-                    page
-            )
-        }
-    }
-
-    fun findAllCdWithAssigner(
-            officerCharge: UsersEntity,
-            cdType: ConsignmentDocumentTypesEntity?,
-            page: PageRequest
-    ): Page<ConsignmentDocumentDetailsEntity> {
-        return cdType?.let {
-            iConsignmentDocumentDetailsRepo.findAllByAssignerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
-                    officerCharge,
-                    it,
-                    page
-            )
-        } ?: run {
-            iConsignmentDocumentDetailsRepo.findAllByAssignerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
-                    officerCharge,
                     page
             )
         }
@@ -2309,17 +2187,20 @@ class DestinationInspectionDaoServices(
     fun findAllCompleteCdWithAssignedIoID(
             usersEntity: UsersEntity,
             cdType: ConsignmentDocumentTypesEntity?,
+            statuses: List<Int>,
             page: PageRequest
     ): Page<ConsignmentDocumentDetailsEntity> {
         return cdType?.let {
-            iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
+            iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIn(
                     usersEntity,
                     it,
+                    statuses,
                     page
             )
         } ?: run {
-            iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
+            iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIn(
                     usersEntity,
+                    statuses,
                     page
             )
         }
@@ -2328,96 +2209,23 @@ class DestinationInspectionDaoServices(
     fun findAllCompleteCdWithAssigner(
             usersEntity: UsersEntity,
             cdType: ConsignmentDocumentTypesEntity?,
+            statuses: List<Int>,
             page: PageRequest
     ): Page<ConsignmentDocumentDetailsEntity> {
         return cdType?.let {
-            iConsignmentDocumentDetailsRepo.findAllByAssignerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
+            iConsignmentDocumentDetailsRepo.findAllByAssignerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIsNotNullOrApproveRejectCdStatusIsNotNull(
                     usersEntity,
                     it,
                     page
             )
         } ?: run {
-            iConsignmentDocumentDetailsRepo.findAllByAssignerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
+            iConsignmentDocumentDetailsRepo.findAllByAssignerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIsNotNullOrApproveRejectCdStatusIsNotNull(
                     usersEntity,
                     page
             )
         }
     }
 
-    fun findAllCompleteCdWithAssignedIoID(
-            usersEntity: UsersEntity,
-            page: PageRequest
-    ): Page<ConsignmentDocumentDetailsEntity> {
-        return iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
-                usersEntity,
-                page
-        )
-    }
-
-
-    fun findAllCdWithNoAssignedIoID(
-            cfsEntity: SubSectionsLevel2Entity,
-            cdType: ConsignmentDocumentTypesEntity?,
-            page: PageRequest
-    ): Page<ConsignmentDocumentDetailsEntity> {
-        return cdType?.let {
-            iConsignmentDocumentDetailsRepo.findByFreightStationAndAssignedInspectionOfficerIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
-                    cfsEntity.id,
-                    it,
-                    page
-            )
-        } ?: run {
-            iConsignmentDocumentDetailsRepo.findByFreightStationAndAssignedInspectionOfficerIsNullAndUcrNumberIsNotNullAndOldCdStatusIsNull(
-                    cfsEntity.id,
-                    page
-            )
-        }
-    }
-
-    fun findAllCdWithNoAssignedIoID(cfsEntity: CfsTypeCodesEntity): List<ConsignmentDocumentDetailsEntity>? {
-        return iConsignmentDocumentDetailsRepo.findByFreightStationAndAssignedInspectionOfficerIsNullAndUcrNumberIsNotNullAndOldCdStatusIsNull(
-                cfsEntity.id
-        )
-    }
-
-    fun findAllCdWithNoAssignedIoID(
-            subSectionsLevel2Entity: SubSectionsLevel2Entity
-    ): List<ConsignmentDocumentDetailsEntity>? {
-        return iConsignmentDocumentDetailsRepo.findByFreightStationAndAssignedInspectionOfficerIsNullAndUcrNumberIsNotNullAndOldCdStatusIsNull(
-                subSectionsLevel2Entity.id
-        )
-    }
-
-    fun addFreightStation(freightStation: String, status: Int): SubSectionsLevel2Entity =
-            iSubSectionsLevel2Repo.findBySubSectionAndStatus(freightStation, status)
-                    ?.let { subSectionsLevel2Entity ->
-                        return subSectionsLevel2Entity
-                    }
-                    ?: throw Exception("The freight station with name = $freightStation and status = ${status}, does not Exist")
-
-
-    fun findFreightStation(freightStationID: Long): SubSectionsLevel2Entity =
-            iSubSectionsLevel2Repo.findByIdOrNull(freightStationID)
-                    ?.let { subSectionsLevel2Entity ->
-                        return subSectionsLevel2Entity
-                    }
-                    ?: throw Exception("The freight station with ID = $freightStationID, does not Exist")
-
-    fun addPortOfArrival(freightStation: SubSectionsLevel2Entity): SectionsEntity {
-        freightStation.sectionId
-                ?.let { sectionsEntity ->
-                    return sectionsEntity
-                }
-                ?: throw Exception("The Port of arrival for freight Station with name = ${freightStation.subSection}, does not Exist")
-    }
-
-//    fun findPortOfArrival(freightStation: SubSectionsLevel2Entity): SectionsEntity {
-//        freightStation.sectionId
-//                ?.let { sectionsEntity ->
-//                    return sectionsEntity
-//                }
-//                ?: throw Exception("The Port of arrival for freight Station with name = ${freightStation.subSection}, does not Exist")
-//    }
 
     fun findUserById(officerId: Long?): Optional<UsersEntity> {
         if (officerId != null) {
@@ -2852,6 +2660,9 @@ class DestinationInspectionDaoServices(
         return true
     }
 
+    fun getVersionCount(ucrNumber: String): Long{
+        return iConsignmentDocumentDetailsRepo.countByUcrNumber(ucrNumber)
+    }
     fun updateCdDetailsInDB(
             updateCD: ConsignmentDocumentDetailsEntity,
             user: UsersEntity?

@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.store.repo.di
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.di.*
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.Query
@@ -18,172 +19,77 @@ import java.sql.Timestamp
 
 @Repository
 interface IConsignmentDocumentDetailsRepository : HazelcastRepository<ConsignmentDocumentDetailsEntity, Long> {
-    fun findAllById(Id: Long): List<ConsignmentDocumentDetailsEntity>?
-//    fun findByPortOfArrivalAndCocIdIsNotNull(portOfArrival: SectionsEntity, pageable: Pageable): Page<ConsignmentDocumentDetailsEntity>?
-
-    fun findByPortOfArrivalAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
-            portOfArrival: Long,
-            cdType: Long
-    ): List<ConsignmentDocumentDetailsEntity>?
-
-    fun findByPortOfArrivalAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
-            portOfArrival: Long,
-            cdType: Long,
-            page: Pageable
-    ): Page<ConsignmentDocumentDetailsEntity>
-
-    fun findByPortOfArrivalAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
-            portOfArrival: Long,
-            page: Pageable
-    ): Page<ConsignmentDocumentDetailsEntity>
-
-    fun findByFreightStationAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
-            freightStation: Long,
-            cdType: ConsignmentDocumentTypesEntity
-    ): List<ConsignmentDocumentDetailsEntity>?
-
-
-    fun findByFreightStation_IdInAndCdTypeAndAssignedInspectionOfficerIsNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+    fun findByFreightStation_IdInAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIsNullAndApproveRejectCdStatusIsNull(
             freightStation: List<Long>,
             cdType: ConsignmentDocumentTypesEntity,
             page: Pageable
     ): Page<ConsignmentDocumentDetailsEntity>
 
-    fun findByFreightStation_IdInAndAssignedInspectionOfficerIsNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+    fun findByFreightStation_IdInAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIsNullAndApproveRejectCdStatusIsNull(
             freightStation: List<Long>,
             page: Pageable
     ): Page<ConsignmentDocumentDetailsEntity>
 
 
-    fun findByFreightStation_IdInAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIn(
-            freightStation: List<Long>,
-            cdType: ConsignmentDocumentTypesEntity,
-            statuses: List<Int?>,
-            page: Pageable
-    ): Page<ConsignmentDocumentDetailsEntity>
-
-    fun findByFreightStation_IdInAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIn(
-            freightStation: List<Long>,
-            statuses: List<Int?>,
-            page: Pageable
-    ): Page<ConsignmentDocumentDetailsEntity>
-
-    fun findByFreightStationAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(freightStation: Long
-    ): List<ConsignmentDocumentDetailsEntity>?
-
-    fun findByPortOfArrivalAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
-            portOfArrival: Long
-    ): List<ConsignmentDocumentDetailsEntity>?
-
-    fun findByPortOfArrivalAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
-            portOfArrival: Long,
-            cdType: Long
-    ): List<ConsignmentDocumentDetailsEntity>?
-
-    fun findByPortOfArrivalAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
-            portOfArrival: Long,
-            cdType: ConsignmentDocumentTypesEntity,
-            page: Pageable
-    ): Page<ConsignmentDocumentDetailsEntity>
-
-    fun findByPortOfArrivalAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
-            portOfArrival: Long,
-            page: Pageable
-    ): Page<ConsignmentDocumentDetailsEntity>
-
-    fun findByPortOfArrivalAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
-            portOfArrival: Long
-    ): List<ConsignmentDocumentDetailsEntity>?
-
-    fun findByFreightStationAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
-            freightStation: Long
-    ): List<ConsignmentDocumentDetailsEntity>?
-
-    fun findByPortOfArrivalIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(cdType: Long): List<ConsignmentDocumentDetailsEntity>?
-    fun findByPortOfArrivalIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(cdType: ConsignmentDocumentTypesEntity, page: Pageable): Page<ConsignmentDocumentDetailsEntity>
-    fun findByPortOfArrivalIsNullAndUcrNumberIsNotNullAndOldCdStatusIsNull(page: Pageable): Page<ConsignmentDocumentDetailsEntity>
-    fun findByFreightStationIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(cdType: ConsignmentDocumentTypesEntity): List<ConsignmentDocumentDetailsEntity>?
-
-    fun findByFreightStationIsNullAndUcrNumberIsNotNullAndOldCdStatusIsNull(): List<ConsignmentDocumentDetailsEntity>?
-
-    fun findByPortOfArrivalIsNullAndUcrNumberIsNotNullAndOldCdStatusIsNull(): List<ConsignmentDocumentDetailsEntity>?
-
-    fun findByPortOfArrivalOrderByIdDesc(
-            portOfArrival: Long,
-            pageable: Pageable
-    ): Page<ConsignmentDocumentDetailsEntity>?
-
-    fun findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
-            assignedInspectionOfficer: UsersEntity,
-            cdType: ConsignmentDocumentTypesEntity,
-            pageable: Pageable
-    ): Page<ConsignmentDocumentDetailsEntity>
-
-    fun findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
-            assignedInspectionOfficer: UsersEntity,
-            page: Pageable,
-    ): Page<ConsignmentDocumentDetailsEntity>
-
-    fun findAllByAssignerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(officerCharge: UsersEntity,
-                                                                                                 page: Pageable): Page<ConsignmentDocumentDetailsEntity>
-
-    fun findAllByAssignerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
-            officerCharge: UsersEntity,
-            cdType: ConsignmentDocumentTypesEntity,
-            pageable: Pageable
-    ): Page<ConsignmentDocumentDetailsEntity>
-
-    fun findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
-            assignedInspectionOfficer: UsersEntity, cdType: ConsignmentDocumentTypesEntity
-    ): List<ConsignmentDocumentDetailsEntity>?
-
-    fun findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
+    fun findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIsNull(
             assignedInspectionOfficer: UsersEntity,
             cdType: ConsignmentDocumentTypesEntity,
             page: Pageable
     ): Page<ConsignmentDocumentDetailsEntity>
 
-    fun findAllByAssignerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
+
+    fun findAllByAssignerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIsNotNullOrApproveRejectCdStatusIsNotNull(
             assignedInspectionOfficer: UsersEntity,
             cdType: ConsignmentDocumentTypesEntity,
             page: Pageable
     ): Page<ConsignmentDocumentDetailsEntity>
 
-    fun findAllByAssignerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
+    fun findAllByAssignerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIsNotNullOrApproveRejectCdStatusIsNotNull(
             assignedInspectionOfficer: UsersEntity,
             page: Pageable
     ): Page<ConsignmentDocumentDetailsEntity>
 
-    fun findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
-            assignedInspectionOfficer: UsersEntity,
-            cdType: Long,
-            page: Pageable
-    ): Page<ConsignmentDocumentDetailsEntity>
-
-    fun findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
-            assignedInspectionOfficer: UsersEntity,
-            page: Pageable
-    ): Page<ConsignmentDocumentDetailsEntity>
-
-    fun findByFreightStationAndAssignedInspectionOfficerIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
-            freightStation: Long,
-            cdType: ConsignmentDocumentTypesEntity,
-            page: Pageable
-    ): Page<ConsignmentDocumentDetailsEntity>
-
-    fun findByFreightStationAndAssignedInspectionOfficerIsNullAndUcrNumberIsNotNullAndOldCdStatusIsNull(
-            freightStation: Long,
-            page: Pageable
-    ): Page<ConsignmentDocumentDetailsEntity>
-
-    fun findByFreightStationAndAssignedInspectionOfficerIsNullAndUcrNumberIsNotNullAndOldCdStatusIsNull(
-            freightStation: Long): List<ConsignmentDocumentDetailsEntity>?
+    fun countByUcrNumber(ucrNumber: String): Long
 
     fun findByUcrNumber(ucrNumber: String): ConsignmentDocumentDetailsEntity?
     fun findByUcrNumberAndOldCdStatus(ucrNumber: String, oldCdStatus: Int): List<ConsignmentDocumentDetailsEntity>?
     fun findTopByUcrNumberOrderByIdDesc(ucrNumber: String): ConsignmentDocumentDetailsEntity?
     fun findByUuid(uuid: String): ConsignmentDocumentDetailsEntity?
     fun findByUuidIn(uuid: Iterable<String>): List<ConsignmentDocumentDetailsEntity>
+    fun findByFreightStation_IdInAndCdTypeAndAssignedInspectionOfficerIsNullAndOldCdStatusIsNullAndCompliantStatusIn(
+            cfsIds: MutableList<Long>,
+            cdType: ConsignmentDocumentTypesEntity,
+            statuses: List<Int?>,
+            page: Pageable): Page<ConsignmentDocumentDetailsEntity>
+
+    fun findByFreightStation_IdInAndCdTypeAndAssignedInspectionOfficerIsNullAndOldCdStatusIsNull(
+            cfsIds: MutableList<Long>,
+            cdType: ConsignmentDocumentTypesEntity,
+            page: Pageable): Page<ConsignmentDocumentDetailsEntity>
+
+    fun findByFreightStation_IdInAndAssignedInspectionOfficerIsNullAndOldCdStatusIsNull(
+            cfsIds: MutableList<Long>,
+            page: Pageable):  Page<ConsignmentDocumentDetailsEntity>
+
+    fun findByFreightStation_IdInAndAssignedInspectionOfficerIsNullAndOldCdStatusIsNullAndCompliantStatusIn(
+            cfsIds: MutableList<Long>,
+            statuses: List<Int?>,
+            page: Pageable):  Page<ConsignmentDocumentDetailsEntity>
+
+
+    fun findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIsNull(
+            usersEntity: UsersEntity,
+            page: Pageable): Page<ConsignmentDocumentDetailsEntity>
+
+    fun findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIn(
+            usersEntity: UsersEntity,
+            cdStatus: ConsignmentDocumentTypesEntity,
+            statuses: List<Int>, page: Pageable) : Page<ConsignmentDocumentDetailsEntity>
+
+    fun findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIn(
+            usersEntity: UsersEntity,
+            statuses: List<Int>,
+            page: Pageable): Page<ConsignmentDocumentDetailsEntity>
 }
 
 @Repository
@@ -296,10 +202,11 @@ interface ICfgMoneyTypeCodesRepository : HazelcastRepository<MoneyTypeCodesEntit
 
 @Repository
 interface ICfgCurrencyExchangeRateRepository : HazelcastRepository<CurrencyExchangeRates, Long> {
-    @Query("SELECT * from CFG_CURRENCY_EXCHANGE_RATES where to_char(APPLICABLE_DATE,'DD-MM-YYYY')=:date and STATUS=:status",nativeQuery = true)
-    fun findByApplicableDateAndStatus(@Param("date")date: String, @Param("status")status: Int): List<CurrencyExchangeRates>
-    @Query("SELECT * from CFG_CURRENCY_EXCHANGE_RATES where CURRENCY_CODE=:code and to_char(APPLICABLE_DATE,'DD-MM-YYYY')=:date and STATUS=1 order by  APPLICABLE_DATE desc fetch first 1 row only",nativeQuery = true)
-    fun findFirstByCurrencyCodeAndApplicableDateOrderByApplicableDateDesc(@Param("code")currencyCode: String, @Param("date")date: String): CurrencyExchangeRates?
+    @Query("SELECT * from CFG_CURRENCY_EXCHANGE_RATES where to_char(APPLICABLE_DATE,'DD-MM-YYYY')=:date and STATUS=:status", nativeQuery = true)
+    fun findByApplicableDateAndStatus(@Param("date") date: String, @Param("status") status: Int): List<CurrencyExchangeRates>
+
+    @Query("SELECT * from CFG_CURRENCY_EXCHANGE_RATES where CURRENCY_CODE=:code and to_char(APPLICABLE_DATE,'DD-MM-YYYY')=:date and STATUS=1 order by  APPLICABLE_DATE desc fetch first 1 row only", nativeQuery = true)
+    fun findFirstByCurrencyCodeAndApplicableDateOrderByApplicableDateDesc(@Param("code") currencyCode: String, @Param("date") date: String): CurrencyExchangeRates?
 }
 
 @Repository

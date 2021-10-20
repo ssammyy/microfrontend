@@ -7,6 +7,8 @@ import {LocalDataSource} from "ng2-smart-table";
 import {DatePipe} from "@angular/common";
 import {selectUserInfo} from "../../../core/store/data/auth";
 import {Store} from "@ngrx/store";
+import {fromEvent, interval, Observable, Subject} from "rxjs";
+import {debounce} from "rxjs/operators";
 
 @Component({
     selector: 'app-consignment-document-list',
@@ -135,6 +137,7 @@ export class ConsignmentDocumentListComponent implements OnInit {
     private documentTypeId: any
     supervisorCharge: boolean=false
     inspectionOfficer: boolean=false
+    search: Subject<string>
 
     constructor(private store$: Store<any>,private dialog: MatDialog, private router: Router, private diService: DestinationInspectionService) {
     }
@@ -142,6 +145,15 @@ export class ConsignmentDocumentListComponent implements OnInit {
     ngOnInit(): void {
         this.documentTypeUuid = null;
         this.loadTypes(() => {
+            this.search=new Subject<string>()
+            this.search.pipe(
+                debounce((keyword)=>interval(500))
+            ).subscribe(
+                res=>{
+                    console.log(res)
+                    this.searchDocuments(res)
+                }
+            )
             this.loadData(this.documentTypeUuid, 0, this.defaultPageSize);
         })
 
@@ -227,12 +239,11 @@ export class ConsignmentDocumentListComponent implements OnInit {
     }
 
     public onFilterChange(event: any) {
-        // console.log(event)
         if (event.target.value != this.documentTypeUuid) {
             this.documentTypeUuid = event.target.value.uuid
             this.documentTypeId = event.target.value.id
             if (this.searchStatus) {
-                this.searchDocuments()
+                this.searchDocuments(this.keywords)
             } else {
                 this.loadData(this.documentTypeUuid, 0, this.defaultPageSize)
             }
@@ -256,10 +267,10 @@ export class ConsignmentDocumentListComponent implements OnInit {
     }
 
     searchPhraseChanged() {
-        this.searchDocuments()
+        this.search.next(this.keywords)
     }
 
-    searchDocuments() {
+    searchDocuments(keywords: string) {
         this.dataSet.load([])
         this.previousStatus = this.activeStatus
         this.searchStatus = 'search-result'
@@ -267,7 +278,7 @@ export class ConsignmentDocumentListComponent implements OnInit {
         console.log(event)
         let data = {
             'documentType': this.documentTypeId,
-            'keywords': this.keywords,
+            'keywords': keywords,
             'category': this.activeStatus
         }
         console.log(data)

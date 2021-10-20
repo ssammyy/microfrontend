@@ -171,8 +171,6 @@ class ConsignmentDocumentDao {
             dt.ucrNumber = doc.ucrNumber
             dt.applicantName = doc.createdBy
             dt.applicationDate = doc.createdOn
-            dt.approveRejectCdDate = doc.approveRejectCdDate
-            dt.approveRejectCdStatus = doc.approveRejectCdStatus
             dt.assignedStatus = doc.assignedStatus
             doc.assignedInspectionOfficer?.let {
                 dt.assignedTo = it.firstName + " " + it.lastName
