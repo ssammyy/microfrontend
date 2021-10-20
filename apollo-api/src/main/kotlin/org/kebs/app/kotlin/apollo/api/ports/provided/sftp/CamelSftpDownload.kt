@@ -7,6 +7,7 @@ import org.apache.camel.builder.RouteBuilder
 import org.apache.camel.model.dataformat.JacksonXMLDataFormat
 import org.apache.http.client.utils.URIBuilder
 import org.kebs.app.kotlin.apollo.common.dto.kesws.receive.ConsignmentDocument
+import org.kebs.app.kotlin.apollo.common.dto.kesws.receive.UCRNumberMessage
 import org.kebs.app.kotlin.apollo.config.properties.camel.CamelFtpProperties
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
@@ -17,7 +18,11 @@ import java.util.concurrent.TimeUnit
 @Service
 @Profile("default")
 class SFTPService {
-    fun downloadAndProcessFile(exchange: Exchange) {
+    fun processConsignmentDocument(exchange: Exchange) {
+        KotlinLogging.logger { }.info("File: ${exchange.message.headers} | Content: ${exchange.message.body}|")
+    }
+
+    fun processDocumentResponses(exchange: Exchange) {
         KotlinLogging.logger { }.info("File: ${exchange.message.headers} | Content: ${exchange.message.body}|")
     }
 }
@@ -63,8 +68,8 @@ class CamelSftpDownload(
                 ftpBuilder.addParameter("runLoggingLevel", properties.logLevel)
                         .addParameter("readLock", properties.readLock)
                         .addParameter("autoCreate", "false")
-                        .addParameter("timeUnit",TimeUnit.MILLISECONDS.name)
-                        .addParameter("useFixedDelay","true")
+                        .addParameter("timeUnit", TimeUnit.MILLISECONDS.name)
+                        .addParameter("useFixedDelay", "true")
                         .addParameter("antInclude", properties.antInclude)
                         .addParameter("strictHostKeyChecking", "yes")
                         .addParameter("useUserKnownHostsFile", properties.useUserKnownHostsFile)
@@ -101,9 +106,18 @@ class CamelSftpDownload(
 
         from(fromFtpUrl.toString())
                 .log("Polling.... \${in.body} \${in.headers.CamelFileName}")
-                .setHeader("fileName").simple("\${in.headers.CamelFileName}")
+                .setHeader("fileName").simple("\${}")
+                .choice()
+                .`when`(simple("\${in.headers.CamelFileName regex '*OG_SUB_CD*.xml$'}")) // Process consignment documents
                 .unmarshal(documentFormat)
-                .bean(SFTPService::class.java, "downloadAndProcessFile")
+                .bean(SFTPService::class.java, "processConsignmentDocument")
                 .log("Downloaded file \${file:name} complete.")
+                .`when`(simple("\${in.headers.CamelFileName regex '*KEBS_UCR_RES*.xml$'}"))
+                .unmarshal(documentFormat)
+                .bean(UCRNumberMessage::class.java, "processDocumentResponses")
+                .log("UCR Response file \${file:name} complete.")
+                .otherwise()
+                .log("Invalid file \${file:name} complete.")
+                .endChoice()
     }
 }
