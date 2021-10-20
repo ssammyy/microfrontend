@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit
 import java.lang.Class as Class
 
 @Service
-@Profile("default")
+@Profile("dev")
 class SFTPService(
         private val iDFDaoService: IDFDaoService,
         private val declarationDaoService: DeclarationDaoService,
@@ -28,9 +28,9 @@ class SFTPService(
 ) {
     fun processConsignmentDocumentType(exchange: Exchange) {
         KotlinLogging.logger { }.info("CD File: ${exchange.message.headers} | Content: ${exchange.message.body}|")
-        val consignmentDoc=exchange.message.body as ConsignmentDocument
+        val consignmentDoc = exchange.message.body as ConsignmentDocument
         // TOD: see this document saving xml
-        val updated=consignmentDocumentDaoService.insertConsignmentDetailsFromXml(consignmentDoc, byteArrayOf())
+        val updated = consignmentDocumentDaoService.insertConsignmentDetailsFromXml(consignmentDoc, byteArrayOf())
         KotlinLogging.logger { }.info("CD File: ${exchange.message.headers} | Save Status: ${updated}|")
     }
 
@@ -50,7 +50,7 @@ class SFTPService(
     fun processDeclarationVerificationDocumentType(exchange: Exchange) {
         KotlinLogging.logger { }.info("Verification Document Type: ${exchange.message.headers} | Content: ${exchange.message.body}|")
         val declarationVerificationDocumentMessage = exchange.message.body as DeclarationVerificationMessage
-        val docSaved=destinationInspectionDaoServices.updateCdVerificationSchedule(declarationVerificationDocumentMessage)
+        val docSaved = destinationInspectionDaoServices.updateCdVerificationSchedule(declarationVerificationDocumentMessage)
         KotlinLogging.logger { }.info("Verification Document Type: ${exchange.message.headers} | Saved Status: ${docSaved}|")
     }
 
@@ -60,8 +60,10 @@ class SFTPService(
         val baseDocRefNo = ucrNumberMessage.data?.dataIn?.sadId
         val ucrNumber = ucrNumberMessage.data?.dataIn?.ucrNumber
         if (baseDocRefNo == null || ucrNumber == null) {
-            KotlinLogging.logger { }.error { "BaseDocRef Number or Uc" +
-                    "rNumber missing" }
+            KotlinLogging.logger { }.error {
+                "BaseDocRef Number or Uc" +
+                        "rNumber missing"
+            }
             throw Exception("BaseDocRef Number or UcrNumber missing")
         }
         val idfUpdated = iDFDaoService.updateIdfUcrNumber(baseDocRefNo, ucrNumber)
@@ -98,7 +100,7 @@ class SFTPService(
 }
 
 @Component
-@Profile("default")
+@Profile("dev")
 class CamelSftpDownload(
         private val properties: CamelFtpProperties,
         private val applicationMapProperties: ApplicationMapProperties,
@@ -112,6 +114,7 @@ class CamelSftpDownload(
     val keswsDocTypes = listOf(applicationMapProperties.mapKeswsBaseDocumentDoctype, applicationMapProperties.mapKeswsUcrResDoctype,
             applicationMapProperties.mapKeswsDeclarationDoctype, applicationMapProperties.mapKeswsManifestDoctype, applicationMapProperties.mapKeswsAirManifestDoctype,
             applicationMapProperties.mapKeswsCdDoctype, applicationMapProperties.mapKeswsDeclarationVerificationDoctype)
+
     init {
         ftpBuilder
                 .addParameter("username", properties.userName)
@@ -140,7 +143,7 @@ class CamelSftpDownload(
             "sftp" -> {
                 ftpBuilder.addParameter("runLoggingLevel", properties.logLevel)
                         .addParameter("readLock", properties.readLock)
-                        .addParameter("maxMessagesPerPoll","50")
+                        .addParameter("maxMessagesPerPoll", "50")
                         .addParameter("autoCreate", "false")
                         .addParameter("timeUnit", TimeUnit.MILLISECONDS.name)
                         .addParameter("useFixedDelay", "true")
@@ -204,8 +207,9 @@ class CamelSftpDownload(
                 .bean(SFTPService::class.java, "processBaseDocumentType")
                 .log("Base document type \${in.headers.CamelFileName} processed.")
                 .otherwise()
-                .setHeader("error", header("CamelFileName"))
+                .setHeader("error", simple("Invalid file received: \${in.headers.CamelFileName}"))
                 .log("Invalid file \${file:name} complete.")
+                .throwException(java.lang.Exception(header("error").toString()))
                 .endChoice()
     }
 }
