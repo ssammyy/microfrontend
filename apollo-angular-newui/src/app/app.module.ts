@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {BrowserAnimationsModule, NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
 import {HttpClientModule} from '@angular/common/http';
 import {CommonModule} from '@angular/common';
@@ -145,6 +145,7 @@ import {ComStdConfirmComponent} from './apollowebs/standards-development/company
 import {NepSuccessComponent} from './apollowebs/standards-development/nep-success/nep-success.component';
 import {ManagernotificationsComponent} from './apollowebs/standards-development/managernotifications/managernotifications.component';
 import {AllpermitsComponent} from "./apollowebs/quality-assurance/allpermits/allpermits.component";
+import {NgSelectModule} from "@ng-select/ng-select";
 
 
 // import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -204,6 +205,8 @@ import {AllpermitsComponent} from "./apollowebs/quality-assurance/allpermits/all
         DataTablesModule,
         NgxPaginationModule,
         NgMultiSelectDropDownModule,
+        NgSelectModule,
+        NoopAnimationsModule
         // CoreModule
     ],
     declarations: [

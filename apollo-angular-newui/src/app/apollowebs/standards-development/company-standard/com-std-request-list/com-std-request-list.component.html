@@ -72,12 +72,11 @@
                                                         <div class="row col-12">
                                                             <div class="form-group col-12">
                                                                 <label>Assign To</label>
-                                                                <ng-select [(ngModel)]="selectedUser"  class="form-control" ngModel name="assignedTo" style="border-color: #0d0505">
-                                                                    <ng-option *ngFor="let user of users" [value]="user.id">{{user.firstName}} {{user.lastName}}</ng-option>
+                                                                <ng-select [(ngModel)]="selectedUser"  class="form-control" ngModel name="assignedTo" >
+                                                                    <ng-option *ngFor="let user of users" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
                                                                 </ng-select>
 
                                                             </div>
-
                                                             <input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskId" >
                                                             <input type="hidden" ngModel="{{actionRequest?.taskData?.requestNumber}}" name="requestNumber" >
                                                         </div>
