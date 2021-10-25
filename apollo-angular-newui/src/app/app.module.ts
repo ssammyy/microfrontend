@@ -101,7 +101,7 @@ import {NwaKnwSecTasksComponent} from './apollowebs/standards-development/worksh
 import {NwaDiSdtTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-di-sdt-tasks/nwa-di-sdt-tasks.component';
 import {NwaHopTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-hop-tasks/nwa-hop-tasks.component';
 import {SacSecTasksComponent} from './apollowebs/standards-development/workshop-agreement/sac-sec-tasks/sac-sec-tasks.component';
-import {HoSicTasksComponent} from './apollowebs/standards-development/ho-sic-tasks/ho-sic-tasks.component';
+import {HoSicTasksComponent} from './apollowebs/standards-development/workshop-agreement/ho-sic-tasks/ho-sic-tasks.component';
 import {ReviewStandardsComponent} from './apollowebs/standards-development/systemic-review/request-standard-review/review-standards/review-standards.component';
 import {CsRequestFormComponent} from './apollowebs/standards-development/company-standard/company-standard-request/cs-request-form/cs-request-form.component';
 import {DivisionresponseComponent} from "./apollowebs/standards-development/divisionresponse/divisionresponse.component";
