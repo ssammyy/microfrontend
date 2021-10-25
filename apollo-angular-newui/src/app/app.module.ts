@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {BrowserAnimationsModule, NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
 import {HttpClientModule} from '@angular/common/http';
 import {CommonModule} from '@angular/common';
@@ -149,6 +149,9 @@ import { CreateDepartmentComponent } from './apollowebs/standards-development/st
 import { CreatetechnicalcommitteeComponent } from './apollowebs/standards-development/standard-request/createtechnicalcommittee/createtechnicalcommittee.component';
 import { CreateproductComponent } from './apollowebs/standards-development/standard-request/createproduct/createproduct.component';
 import { CreateproductSubCategoryComponent } from './apollowebs/standards-development/standard-request/createproduct-sub-category/createproduct-sub-category.component';
+import {NgSelectModule} from "@ng-select/ng-select";
+import { IntStdUploadStandardComponent } from './apollowebs/standards-development/international-standard/int-std-upload-standard/int-std-upload-standard.component';
+import { IntStdGazzetteComponent } from './apollowebs/standards-development/international-standard/int-std-gazzette/int-std-gazzette.component';
 
 
 // import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -208,6 +211,8 @@ import { CreateproductSubCategoryComponent } from './apollowebs/standards-develo
         DataTablesModule,
         NgxPaginationModule,
         NgMultiSelectDropDownModule,
+        NgSelectModule,
+        NoopAnimationsModule
         // CoreModule
     ],
     declarations: [
@@ -298,6 +303,9 @@ import { CreateproductSubCategoryComponent } from './apollowebs/standards-develo
         ComStdConfirmComponent,
         StdTcTasksComponent,
         NepSuccessComponent,
+        ManagernotificationsComponent,
+        IntStdUploadStandardComponent,
+        IntStdGazzetteComponent
         ManagernotificationsComponent,
         CreateDepartmentComponent,
         CreatetechnicalcommitteeComponent,

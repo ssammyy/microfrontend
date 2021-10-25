@@ -81,6 +81,8 @@ import {NepNotificationComponent} from "./apollowebs/standards-development/nep-n
 import {ManagernotificationsComponent} from "./apollowebs/standards-development/managernotifications/managernotifications.component";
 import {CreateDepartmentComponent} from "./apollowebs/standards-development/standard-request/create-department/create-department.component";
 import {CreatetechnicalcommitteeComponent} from "./apollowebs/standards-development/standard-request/createtechnicalcommittee/createtechnicalcommittee.component";
+import {IntStdUploadStandardComponent} from "./apollowebs/standards-development/international-standard/int-std-upload-standard/int-std-upload-standard.component";
+import {IntStdGazzetteComponent} from "./apollowebs/standards-development/international-standard/int-std-gazzette/int-std-gazzette.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -446,7 +448,7 @@ export const routes: Routes = [
     },
     {
         path: 'isProposalComments', component: AdminLayoutComponent,
-        canActivate: [RouteGuard],
+        //canActivate: [RouteGuard],
         children: [{path: '', component: IntStdCommentsComponent}]
     },
     {
@@ -463,6 +465,16 @@ export const routes: Routes = [
         path: 'isJustificationApp', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [{path: '', component: IntStdJustificationAppComponent}]
+    },
+    {
+        path: 'isUploadStd', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdUploadStandardComponent}]
+    },
+    {
+        path: 'isUploadNotice', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdGazzetteComponent}]
     },
     // SD SYSTEMIC REVIEW
     {

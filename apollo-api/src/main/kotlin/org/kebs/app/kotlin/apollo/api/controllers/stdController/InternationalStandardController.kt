@@ -4,7 +4,10 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.*
 import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.store.model.std.*
+import org.kebs.app.kotlin.apollo.store.repo.std.ISAdoptionJustificationRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.ISAdoptionProposalRepository
+import org.kebs.app.kotlin.apollo.store.repo.std.ISStandardUploadsRepository
+import org.kebs.app.kotlin.apollo.store.repo.std.ISUploadStandardRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
@@ -21,6 +24,9 @@ class InternationalStandardController(
     val internationalStandardService: InternationalStandardService,
     private val commonDaoServices: CommonDaoServices,
     private val isAdoptionProposalRepository: ISAdoptionProposalRepository,
+    private val isAdoptionJustificationRepository: ISAdoptionJustificationRepository,
+    private val isStandardUploadsRepository: ISStandardUploadsRepository,
+    private val isUploadStandardRepository: ISUploadStandardRepository
     ) {
     //********************************************************** deployment endpoints **********************************************************
     @PostMapping("/deploy")
@@ -81,14 +87,14 @@ class InternationalStandardController(
 
 
     //********************************************************** get Stakeholders Tasks **********************************************************
-    @PreAuthorize("hasAuthority('STAKEHOLDERS_SD_READ')")
+    //@PreAuthorize("hasAuthority('STAKEHOLDERS_SD_READ')")
     @GetMapping("/getISProposals")
     fun getISProposals():List<TaskDetails>
     {
         return internationalStandardService.getISProposals()
     }
     //********************************************************** Submit Comments **********************************************************
-    @PreAuthorize("hasAuthority('STAKEHOLDERS_SD_MODIFY')")
+    //@PreAuthorize("hasAuthority('STAKEHOLDERS_SD_MODIFY')")
     @PostMapping("/SubmitAPComments")
     @ResponseBody
     fun submitAPComments(@RequestBody isAdoptionComments: ISAdoptionComments): ServerResponse{
@@ -105,9 +111,9 @@ class InternationalStandardController(
     //decision on Adoption Proposal
     @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY')")
     @PostMapping("/decisionOnProposal")
-    fun decisionOnProposal(@RequestBody iSAdoptionProposal: ISAdoptionProposal)
+    fun decisionOnProposal(@RequestBody iSDecision: ISDecision) : List<TaskDetails>
     {
-        internationalStandardService.decisionOnProposal(iSAdoptionProposal)
+        return internationalStandardService.decisionOnProposal(iSDecision)
     }
 
     //********************************************************** get TC SEC Tasks **********************************************************
@@ -124,6 +130,37 @@ class InternationalStandardController(
     fun prepareJustification(@RequestBody iSAdoptionJustification: ISAdoptionJustification): ServerResponse{
         return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",internationalStandardService.prepareJustification(iSAdoptionJustification))
     }
+    @PostMapping("/js-file-upload")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadIJSFiles(
+        @RequestParam("isJustificationID") isJustificationID: Long,
+        @RequestParam("docFile") docFile: List<MultipartFile>,
+        model: Model
+    ): CommonDaoServices.MessageSuccessFailDTO {
+
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val iSAdoptionJustification = isAdoptionJustificationRepository.findByIdOrNull(isJustificationID)?: throw Exception("IS JUSTIFICATION DOCUMENT ID DOES NOT EXIST")
+
+        docFile.forEach { u ->
+            val upload = ISJustificationUploads()
+            with(upload) {
+                isJSDocumentId = iSAdoptionJustification.id
+
+            }
+            internationalStandardService.uploadISJFile(
+                upload,
+                u,
+                "UPLOADS",
+                loggedInUser,
+                "IS Justification"
+            )
+        }
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.message = "Document Uploaded successfully"
+
+        return sm
+    }
 
     //********************************************************** get SPC SEC Tasks **********************************************************
     @PreAuthorize("hasAuthority('SPC_SEC_SD_READ')")
@@ -137,9 +174,9 @@ class InternationalStandardController(
     //decision
     @PreAuthorize("hasAuthority('SPC_SEC_SD_MODIFY')")
     @PostMapping("/decisionOnJustification")
-    fun decisionOnJustification(@RequestBody iSAdoptionJustification: ISAdoptionJustification)
+    fun decisionOnJustification(@RequestBody isJustificationDecision: ISJustificationDecision) : List<TaskDetails>
     {
-        internationalStandardService.decisionOnJustification(iSAdoptionJustification)
+        return internationalStandardService.decisionOnJustification(isJustificationDecision)
     }
 
     //********************************************************** get SPC SEC Tasks **********************************************************
@@ -153,9 +190,9 @@ class InternationalStandardController(
     //approve International Standard
     @PreAuthorize("hasAuthority('SAC_SEC_SD_MODIFY')")
     @PostMapping("/approveStandard")
-    fun approveStandard(@RequestBody iSAdoptionJustification: ISAdoptionJustification)
+    fun approveStandard(@RequestBody isJustificationDecision: ISJustificationDecision) : List<TaskDetails>
     {
-        internationalStandardService.approveStandard(iSAdoptionJustification)
+        return internationalStandardService.approveStandard(isJustificationDecision)
     }
 
     //********************************************************** get Head of Publishing Tasks **********************************************************
@@ -173,6 +210,37 @@ class InternationalStandardController(
     fun uploadISStandard(@RequestBody iSUploadStandard: ISUploadStandard): ServerResponse
     {
         return ServerResponse(HttpStatus.OK,"Successfully uploaded Standard",internationalStandardService.uploadISStandard(iSUploadStandard))
+    }
+    @PostMapping("/std-file-upload")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadISFiles(
+        @RequestParam("isStandardID") isStandardID: Long,
+        @RequestParam("docFile") docFile: List<MultipartFile>,
+        model: Model
+    ): CommonDaoServices.MessageSuccessFailDTO {
+
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val isStandard = isUploadStandardRepository.findByIdOrNull(isStandardID)?: throw Exception("IS STANDARD DOCUMENT ID DOES NOT EXIST")
+
+        docFile.forEach { u ->
+            val upload = ISStandardUploads()
+            with(upload) {
+                isStdDocumentId = isStandard.id
+
+            }
+            internationalStandardService.uploadISFile(
+                upload,
+                u,
+                "UPLOADS",
+                loggedInUser,
+                "IS STANDARD"
+            )
+        }
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.message = "Document Uploaded successfully"
+
+        return sm
     }
 
     //********************************************************** get Head of HO SIC Tasks **********************************************************
@@ -205,6 +273,18 @@ class InternationalStandardController(
     fun getPRNumber(): String
     {
         return internationalStandardService.getPRNumber();
+    }
+    @GetMapping("/getISNumber")
+    @ResponseBody
+    fun getISNumber(): String
+    {
+        return internationalStandardService.getISNumber();
+    }
+    @GetMapping("/getRQNumber")
+    @ResponseBody
+    fun getRQNumber(): String
+    {
+        return internationalStandardService.getRQNumber();
     }
 
 }

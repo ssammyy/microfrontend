@@ -3,7 +3,11 @@ import {Subject} from "rxjs";
 import {NgxSpinnerService} from "ngx-spinner";
 import {HttpErrorResponse} from "@angular/common/http";
 import {StdIntStandardService} from "../../../../core/store/data/std/std-int-standard.service";
-import {ISAdoptionJustification, ISSacSecTASKS} from "../../../../core/store/data/std/std.model";
+import {
+  ISAdoptionJustification, ISAdoptionProposal,
+  ISJustificationDecision,
+  ISSacSecTASKS
+} from "../../../../core/store/data/std/std.model";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 
 @Component({
@@ -28,12 +32,21 @@ export class IntStdJustificationAppComponent implements OnInit,OnDestroy {
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
   }
+  showToasterError(title:string,message:string){
+    this.notifyService.showError(message, title)
+
+  }
+  showToasterSuccess(title:string,message:string){
+    this.notifyService.showSuccess(message, title)
+
+  }
   public getSACSECTasks(): void{
     this.SpinnerService.show();
     this.stdIntStandardService.getSACSECTasks().subscribe(
         (response: ISSacSecTASKS[])=> {
           this.tasks = response;
           this.SpinnerService.hide();
+          this.dtTrigger.next();
         },
         (error: HttpErrorResponse)=>{
           this.SpinnerService.hide();
@@ -61,17 +74,40 @@ export class IntStdJustificationAppComponent implements OnInit,OnDestroy {
 
   }
   // onDecision
-  public onDecision(iSAdoptionJustification: ISAdoptionJustification): void{
+
+  public onDecision(isJustificationDecision: ISJustificationDecision): void{
     this.SpinnerService.show();
-    this.stdIntStandardService.approveStandard(iSAdoptionJustification).subscribe(
-        (response: ISAdoptionJustification) => {
-          console.log(response);
+    this.stdIntStandardService.approveStandard(isJustificationDecision).subscribe(
+        (response: ISAdoptionProposal) => {
           this.SpinnerService.hide();
+          this.showToasterSuccess('Success', `Standard Approved`);
+          console.log(response);
           this.getSACSECTasks();
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
-          alert(error.message);
+          this.showToasterError('Error', `Try Again`);
+          console.log(error.message);
+          this.getSACSECTasks();
+          //alert(error.message);
+        }
+    );
+  }
+  public onDecisionReject(isJustificationDecision: ISJustificationDecision): void{
+    this.SpinnerService.show();
+    this.stdIntStandardService.approveStandard(isJustificationDecision).subscribe(
+        (response: ISAdoptionProposal) => {
+          this.SpinnerService.hide();
+          this.showToasterSuccess('Success', `Standard Declined`);
+          console.log(response);
+          this.getSACSECTasks();
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          this.showToasterError('Error', `Try Again`);
+          console.log(error.message);
+          this.getSACSECTasks();
+          //alert(error.message);
         }
     );
   }

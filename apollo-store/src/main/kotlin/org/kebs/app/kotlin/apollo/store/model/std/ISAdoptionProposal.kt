@@ -10,11 +10,11 @@ class ISAdoptionProposal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
-    val id: Long = 0
+    var id: Long = 0
 
     @Column(name = "DOC_NAME")
     @Basic
-    val proposal_doc_name: String? = null
+    var proposal_doc_name: String? = null
 
     @Column(name="DATE_PREPARED")
     @Basic
@@ -26,12 +26,16 @@ class ISAdoptionProposal {
 
     @Column(name = "UPLOADED_BY")
     @Basic
-    val uploadedBy: String? = null
+    var uploadedBy: String? = null
+
+    @Column(name = "REMARKS")
+    @Basic
+    var remarks: String? = null
 
     @Transient
     @Column(name = "ACCENT_TO")
     @Basic
-    val accentTo: Boolean = false
+    var accentTo: Boolean = false
     @Column(name = "TASKID")
     @Basic
     var taskId: String? = null

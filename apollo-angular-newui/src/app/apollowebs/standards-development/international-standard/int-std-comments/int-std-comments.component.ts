@@ -5,6 +5,8 @@ import {Subject} from "rxjs";
 import {StdIntStandardService} from "../../../../core/store/data/std/std-int-standard.service";
 import {ISAdoptionComments, ProposalComments} from "../../../../core/store/data/std/std.model";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
+import {Store} from "@ngrx/store";
+import {selectUserInfo} from "../../../../core/store";
 
 @Component({
   selector: 'app-int-std-comments',
@@ -12,11 +14,13 @@ import {NotificationService} from "../../../../core/store/data/std/notification.
   styleUrls: ['./int-std-comments.component.css']
 })
 export class IntStdCommentsComponent implements OnInit,OnDestroy {
+  fullname = '';
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
   tasks: ProposalComments[] = [];
   public actionRequest: ProposalComments | undefined;
   constructor(
+      private store$: Store<any>,
       private stdIntStandardService : StdIntStandardService,
       private SpinnerService: NgxSpinnerService,
       private notifyService : NotificationService
@@ -24,10 +28,22 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
 
   ngOnInit(): void {
     this.getISProposals();
+
+    this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+      return this.fullname = u.fullName;
+    });
   }
 
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
+  }
+  showToasterError(title:string,message:string){
+    this.notifyService.showError(message, title)
+
+  }
+  showToasterSuccess(title:string,message:string){
+    this.notifyService.showSuccess(message, title)
+
   }
 
   public getISProposals(): void{
@@ -35,6 +51,7 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
     this.stdIntStandardService.getISProposals().subscribe(
         (response: ProposalComments[])=> {
           this.tasks = response;
+          this.dtTrigger.next();
           this.SpinnerService.hide();
         },
         (error: HttpErrorResponse)=>{
@@ -63,10 +80,12 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
         (response: ISAdoptionComments) => {
           console.log(response);
           this.SpinnerService.hide();
+          this.showToasterSuccess('Success', `Comment Submitted`);
           this.getISProposals();
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
+          this.showToasterError('Error', `Error Processing Request`);
           alert(error.message);
         }
     );

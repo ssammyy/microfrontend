@@ -4,7 +4,12 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {Subject} from "rxjs";
 import {StdIntStandardService} from "../../../../core/store/data/std/std-int-standard.service";
 import {StandardDevelopmentService} from "../../../../core/store/data/std/standard-development.service";
-import {ISAdoptionJustification, ListJustification} from "../../../../core/store/data/std/std.model";
+import {
+  ISAdoptionJustification,
+  ISAdoptionProposal,
+  ISDecision, ISJustificationDecision,
+  ListJustification
+} from "../../../../core/store/data/std/std.model";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 
 @Component({
@@ -30,11 +35,20 @@ export class IntStdJustificationListComponent implements OnInit, OnDestroy{
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
   }
+  showToasterError(title:string,message:string){
+    this.notifyService.showError(message, title)
+
+  }
+  showToasterSuccess(title:string,message:string){
+    this.notifyService.showSuccess(message, title)
+
+  }
   public getSPCSECTasks(): void{
     this.SpinnerService.show();
     this.stdIntStandardService.getSPCSECTasks().subscribe(
         (response: ListJustification[])=> {
           this.SpinnerService.hide();
+          this.dtTrigger.next();
           this.tasks = response;
         },
         (error: HttpErrorResponse)=>{
@@ -63,19 +77,43 @@ export class IntStdJustificationListComponent implements OnInit, OnDestroy{
 
   }
   // onDecision
-  public onDecision(iSAdoptionJustification: ISAdoptionJustification): void{
+  public onDecision(isJustificationDecision: ISJustificationDecision): void{
     this.SpinnerService.show();
-    this.stdIntStandardService.decisionOnJustification(iSAdoptionJustification).subscribe(
-        (response: ISAdoptionJustification) => {
-          console.log(response);
+    this.stdIntStandardService.decisionOnJustification(isJustificationDecision).subscribe(
+        (response: ISAdoptionProposal) => {
           this.SpinnerService.hide();
+          this.showToasterSuccess('Success', `Justification Approved`);
+          console.log(response);
           this.getSPCSECTasks();
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
-          alert(error.message);
+          this.showToasterError('Error', `Try Again`);
+          console.log(error.message);
+          this.getSPCSECTasks();
+          //alert(error.message);
         }
     );
   }
+  public onDecisionReject(isJustificationDecision: ISJustificationDecision): void{
+    this.SpinnerService.show();
+    this.stdIntStandardService.decisionOnJustification(isJustificationDecision).subscribe(
+        (response: ISAdoptionProposal) => {
+          this.SpinnerService.hide();
+          this.showToasterSuccess('Success', `Justification Declined`);
+          console.log(response);
+          this.getSPCSECTasks();
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          this.showToasterError('Error', `Try Again`);
+          console.log(error.message);
+          this.getSPCSECTasks();
+          //alert(error.message);
+        }
+    );
+  }
+
+
 
 }

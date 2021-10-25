@@ -27,3 +27,5 @@ class ProcessInstanceComStandard (val savedRowID: Long?,val processId: String, v
 }
 class ProcessInstanceEditStandard (val savedRowID: Long?,val processId: String, val isEnded: Boolean, val comStdNumber: String) {
 }
+class ProcessInstanceResponseValues (val savedRowID: Long?,val processId: String, val isEnded: Boolean, val isNumber: String) {
+}

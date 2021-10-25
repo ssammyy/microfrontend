@@ -12,6 +12,7 @@ import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.sql.Timestamp
@@ -30,7 +31,13 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
                                     private val iSGazetteNoticeRepository: ISGazetteNoticeRepository,
                                     private val iSGazettementRepository: ISGazettementRepository,
                                     private val commonDaoServices: CommonDaoServices,
-                                    private val sdIsDocumentUploadsRepository: SdIsDocumentUploadsRepository
+                                    private val sdIsDocumentUploadsRepository: SdIsDocumentUploadsRepository,
+                                    private val technicalCommitteeRepository: TechnicalCommitteeRepository,
+                                    private val technicalComListRepository: TechnicalComListRepository,
+                                    private val departmentRepository: DepartmentRepository,
+                                    private val departmentListRepository: DepartmentListRepository,
+                                    private val isJustificationUploadsRepository: ISJustificationUploadsRepository,
+                                    private val isStandardUploadsRepository: ISStandardUploadsRepository
 
                                     )
 {
@@ -76,9 +83,11 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
 
 
         val ispDetails = isAdoptionProposalRepository.save(iSAdoptionProposal)
+        variables["ID"] = ispDetails.id
         val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
         return ProcessInstanceProposal(ispDetails.id, processInstance.id, processInstance.isEnded,
-            iSAdoptionProposal.proposalNumber!!)
+            iSAdoptionProposal.proposalNumber!!
+        )
 
     }
 
@@ -132,7 +141,9 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
         val variables: MutableMap<String, Any> = HashMap()
         isAdoptionComments.user_id?.let{ variables.put("user_id", it)}
         isAdoptionComments.adoption_proposal_comment?.let{ variables.put("adoption_proposal_comment", it)}
-        isAdoptionComments.comment_time?.let{ variables.put("comment_time", it)}
+
+        isAdoptionComments.comment_time = Timestamp(System.currentTimeMillis())
+        variables["comment_time"] = isAdoptionComments.comment_time!!
 
         print(isAdoptionComments.toString())
 
@@ -150,11 +161,34 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
     }
 
 //    // Decision on Proposal
-    fun decisionOnProposal(iSAdoptionProposal: ISAdoptionProposal)
-    {
+    fun decisionOnProposal(iSDecision: ISDecision) : List<TaskDetails> {
         val variables: MutableMap<String, Any> = java.util.HashMap()
-        variables["Yes"] = iSAdoptionProposal.accentTo
-        taskService.complete(iSAdoptionProposal.taskId, variables)
+        variables["Yes"] = iSDecision.accentTo
+        variables["No"] = iSDecision.accentTo
+        iSDecision.comments.let { variables.put("comments", it) }
+        if(variables["Yes"]==true){
+            isAdoptionProposalRepository.findByIdOrNull(iSDecision.approvalID)?.let { iSAdoptionProposal->
+
+                with(iSAdoptionProposal){
+                    remarks=iSDecision.comments
+                    accentTo = true
+                }
+                isAdoptionProposalRepository.save(iSAdoptionProposal)
+            }?: throw Exception("TASK NOT FOUND")
+
+        }else if(variables["No"]==false) {
+            isAdoptionProposalRepository.findByIdOrNull(iSDecision.approvalID)?.let { iSAdoptionProposal->
+
+                with(iSAdoptionProposal){
+                    remarks=iSDecision.comments
+                    accentTo = false
+                }
+                isAdoptionProposalRepository.save(iSAdoptionProposal)
+            }?: throw Exception("TASK NOT FOUND")
+
+        }
+        taskService.complete(iSDecision.taskId, variables)
+        return  getTCSECTasks()
     }
 
     //Return task details for TC_SEC
@@ -166,14 +200,14 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
     }
 
     //prepare justification
-    fun prepareJustification(iSAdoptionJustification: ISAdoptionJustification)
+    fun prepareJustification(iSAdoptionJustification: ISAdoptionJustification) : ProcessInstanceResponseValue
     {
         val variables: MutableMap<String, Any> = HashMap()
         iSAdoptionJustification.meetingDate?.let{ variables.put("meetingDate", it)}
         iSAdoptionJustification.tc_id?.let{ variables.put("tc_id", it)}
         iSAdoptionJustification.tcSec_id?.let{ variables.put("tcSec_id", it)}
         iSAdoptionJustification.slNumber?.let{ variables.put("slNumber", it)}
-        iSAdoptionJustification.requestNumber?.let{ variables.put("requestNumber", it)}
+        //iSAdoptionJustification.requestNumber?.let{ variables.put("requestNumber", it)}
         iSAdoptionJustification.requestedBy?.let{ variables.put("requestedBy", it)}
         iSAdoptionJustification.issuesAddressed?.let{ variables.put("issuesAddressed", it)}
         iSAdoptionJustification.tcAcceptanceDate?.let{ variables.put("tcAcceptanceDate", it)}
@@ -182,15 +216,55 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
         iSAdoptionJustification.status?.let{ variables.put("status", it)}
         iSAdoptionJustification.remarks?.let{ variables.put("remarks", it)}
 
+        iSAdoptionJustification.submissionDate = Timestamp(System.currentTimeMillis())
+        variables["submissionDate"] = iSAdoptionJustification.submissionDate!!
 
-        print(iSAdoptionJustification.toString())
+        iSAdoptionJustification.requestNumber = getRQNumber()
 
-        iSAdoptionJustificationRepository.save(iSAdoptionJustification)
+        variables["requestNumber"] = iSAdoptionJustification.requestNumber!!
+
+        variables["tcCommittee"] = technicalComListRepository.findNameById(iSAdoptionJustification.tc_id?.toLong())
+        iSAdoptionJustification.tcCommittee = technicalComListRepository.findNameById(iSAdoptionJustification.tc_id?.toLong())
+
+        variables["departmentName"] = departmentListRepository.findNameById(iSAdoptionJustification.department?.toLong())
+        iSAdoptionJustification.departmentName = departmentListRepository.findNameById(iSAdoptionJustification.department?.toLong())
+
+
+        val ispDetails = iSAdoptionJustificationRepository.save(iSAdoptionJustification)
+        variables["ID"] = ispDetails.id
         taskService.complete(iSAdoptionJustification.taskId, variables)
-        println("Justification Prepared")
-
+        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
+        return ProcessInstanceResponseValue(ispDetails.id, processInstance.id, processInstance.isEnded,
+            iSAdoptionJustification.requestNumber!!
+        )
 
     }
+    fun uploadISJFile(
+        uploads: ISJustificationUploads,
+        docFile: MultipartFile,
+        doc: String,
+        user: UsersEntity,
+        DocDescription: String
+    ): ISJustificationUploads {
+
+        with(uploads) {
+//            filepath = docFile.path
+            name = commonDaoServices.saveDocuments(docFile)
+//            fileType = docFile.contentType
+            fileType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(docFile.name)
+            documentType = doc
+            description=DocDescription
+            document = docFile.bytes
+            transactionDate = commonDaoServices.getCurrentDate()
+            status = 1
+            createdBy = commonDaoServices.concatenateName(user)
+            createdOn = commonDaoServices.getTimestamp()
+        }
+
+        return isJustificationUploadsRepository.save(uploads)
+    }
+
+
 
     //Return task details for SPC_SEC
     fun getSPCSECTasks():List<TaskDetails>
@@ -201,11 +275,34 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
 
 
     // Decision
-    fun decisionOnJustification(iSAdoptionJustification: ISAdoptionJustification)
-    {
+    fun decisionOnJustification(isJustificationDecision: ISJustificationDecision) : List<TaskDetails> {
         val variables: MutableMap<String, Any> = java.util.HashMap()
-        variables["Yes"] = iSAdoptionJustification.accentTo
-        taskService.complete(iSAdoptionJustification.taskId, variables)
+        variables["Yes"] = isJustificationDecision.accentTo
+        variables["No"] = isJustificationDecision.accentTo
+        isJustificationDecision.comments.let { variables.put("comments", it) }
+        if(variables["Yes"]==true){
+            iSAdoptionJustificationRepository.findByIdOrNull(isJustificationDecision.approvalID)?.let { iSAdoptionJustification->
+
+                with(iSAdoptionJustification){
+                    remarks=isJustificationDecision.comments
+                    accentTo = true
+                }
+                iSAdoptionJustificationRepository.save(iSAdoptionJustification)
+            }?: throw Exception("TASK NOT FOUND")
+
+        }else if(variables["No"]==false) {
+            iSAdoptionJustificationRepository.findByIdOrNull(isJustificationDecision.approvalID)?.let { iSAdoptionJustification->
+
+                with(iSAdoptionJustification){
+                    remarks=isJustificationDecision.comments
+                    accentTo = false
+                }
+                iSAdoptionJustificationRepository.save(iSAdoptionJustification)
+            }?: throw Exception("TASK NOT FOUND")
+
+        }
+        taskService.complete(isJustificationDecision.taskId, variables)
+        return  getSPCSECTasks()
     }
 
     //Return task details for SAC_SEC
@@ -216,11 +313,34 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
     }
 
     // Decision
-    fun approveStandard(iSAdoptionJustification: ISAdoptionJustification)
-    {
+    fun approveStandard(isJustificationDecision: ISJustificationDecision) : List<TaskDetails> {
         val variables: MutableMap<String, Any> = java.util.HashMap()
-        variables["Yes"] = iSAdoptionJustification.accentTo
-        taskService.complete(iSAdoptionJustification.taskId, variables)
+        variables["Yes"] = isJustificationDecision.accentTo
+        variables["No"] = isJustificationDecision.accentTo
+        isJustificationDecision.comments.let { variables.put("comments", it) }
+        if(variables["Yes"]==true){
+            iSAdoptionJustificationRepository.findByIdOrNull(isJustificationDecision.approvalID)?.let { iSAdoptionJustification->
+
+                with(iSAdoptionJustification){
+                    remarks=isJustificationDecision.comments
+                    accentTo = true
+                }
+                iSAdoptionJustificationRepository.save(iSAdoptionJustification)
+            }?: throw Exception("TASK NOT FOUND")
+
+        }else if(variables["No"]==false) {
+            iSAdoptionJustificationRepository.findByIdOrNull(isJustificationDecision.approvalID)?.let { iSAdoptionJustification->
+
+                with(iSAdoptionJustification){
+                    remarks=isJustificationDecision.comments
+                    accentTo = false
+                }
+                iSAdoptionJustificationRepository.save(iSAdoptionJustification)
+            }?: throw Exception("TASK NOT FOUND")
+
+        }
+        taskService.complete(isJustificationDecision.taskId, variables)
+        return  getSACSECTasks()
     }
 
     //Return task details for Head of Publishing
@@ -231,7 +351,7 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
     }
 
     // Upload NWA Standard
-    fun uploadISStandard(iSUploadStandard: ISUploadStandard)
+    fun uploadISStandard(iSUploadStandard: ISUploadStandard): ProcessInstanceResponseValues
     {
         val variable:MutableMap<String, Any> = HashMap()
         iSUploadStandard.title?.let{variable.put("title", it)}
@@ -240,15 +360,50 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
         iSUploadStandard.symbolsAbbreviatedTerms?.let{variable.put("symbolsAbbreviatedTerms", it)}
         iSUploadStandard.clause?.let{variable.put("clause", it)}
         iSUploadStandard.special?.let{variable.put("special", it)}
-        iSUploadStandard.iSNumber?.let{variable.put("ISNumber", it)}
+        //iSUploadStandard.iSNumber?.let{variable.put("ISNumber", it)}
 
-        print(iSUploadStandard.toString())
 
-        iSUploadStandardRepository.save(iSUploadStandard)
+        iSUploadStandard.uploadDate = Timestamp(System.currentTimeMillis())
+        variable["uploadDate"] = iSUploadStandard.uploadDate!!
+
+        iSUploadStandard.iSNumber = getISNumber()
+
+        variable["iSNumber"] = iSUploadStandard.iSNumber!!
+
+        val isuDetails = iSUploadStandardRepository.save(iSUploadStandard)
+        variable["ID"] = isuDetails.id
         taskService.complete(iSUploadStandard.taskId, variable)
-        println("International Standard Uploaded")
+        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variable)
+        return ProcessInstanceResponseValues(isuDetails.id, processInstance.id, processInstance.isEnded,
+            iSUploadStandard.iSNumber!!
+        )
 
     }
+    fun uploadISFile(
+        uploads: ISStandardUploads,
+        docFile: MultipartFile,
+        doc: String,
+        user: UsersEntity,
+        DocDescription: String
+    ): ISStandardUploads {
+
+        with(uploads) {
+//            filepath = docFile.path
+            name = commonDaoServices.saveDocuments(docFile)
+//            fileType = docFile.contentType
+            fileType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(docFile.name)
+            documentType = doc
+            description=DocDescription
+            document = docFile.bytes
+            transactionDate = commonDaoServices.getCurrentDate()
+            status = 1
+            createdBy = commonDaoServices.concatenateName(user)
+            createdOn = commonDaoServices.getTimestamp()
+        }
+
+        return isStandardUploadsRepository.save(uploads)
+    }
+
 
     //Return task details for HO SIC
     fun getHoSiCTasks():List<TaskDetails>
@@ -261,10 +416,11 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
     fun uploadGazetteNotice(iSGazetteNotice: ISGazetteNotice)
     {
         val variable:MutableMap<String, Any> = HashMap()
-        iSGazetteNotice.iSNumber?.let{variable.put("ISNumber", it)}
-        iSGazetteNotice.dateUploaded?.let{variable.put("dateUploaded", it)}
+        iSGazetteNotice.iSNumber?.let{variable.put("iSNumber", it)}
         iSGazetteNotice.description?.let{variable.put("description", it)}
 
+        iSGazetteNotice.dateUploaded = Timestamp(System.currentTimeMillis())
+        variable["dateUploaded"] = iSGazetteNotice.dateUploaded!!
         print(iSGazetteNotice.toString())
 
         iSGazetteNoticeRepository.save(iSGazetteNotice)
@@ -278,15 +434,85 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
     {
         val variable:MutableMap<String, Any> = HashMap()
         iSGazettement.iSNumber?.let{variable.put("iSNumber", it)}
-        iSGazettement.dateOfGazettement?.let{variable.put("dateOfGazettement", it)}
+        iSGazettement.dateOfGazettement = Timestamp(System.currentTimeMillis())
+        variable["dateOfGazettement"] = iSGazettement.dateOfGazettement!!
         iSGazettement.description?.let{variable.put("description", it)}
 
         print(iSGazettement.toString())
 
         iSGazettementRepository.save(iSGazettement)
         taskService.complete(iSGazettement.taskId, variable)
-        println("IS Gazettement date has been updated")
+        println("IS Gazzettement date has been updated")
 
+    }
+
+    fun getRQNumber(): String
+    {
+        val allRequests =iSAdoptionJustificationRepository.findAllByOrderByIdDesc()
+
+        var lastId:String?="0"
+        var finalValue =1
+        var startId="RQ"
+
+
+        for(item in allRequests){
+            println(item)
+            lastId = item.requestNumber
+            break
+        }
+
+        if(lastId != "0")
+        {
+            val strs = lastId?.split(":")?.toTypedArray()
+
+            val firstPortion = strs?.get(0)
+
+            val lastPortArray = firstPortion?.split("/")?.toTypedArray()
+
+            val intToIncrement =lastPortArray?.get(1)
+
+            finalValue = (intToIncrement?.toInt()!!)
+            finalValue += 1
+        }
+
+
+        val year = Calendar.getInstance()[Calendar.YEAR]
+
+        return "$startId/$finalValue:$year"
+    }
+    fun getISNumber(): String
+    {
+        val allRequests =iSUploadStandardRepository.findAllByOrderByIdDesc()
+
+        var lastId:String?="0"
+        var finalValue =1
+        var startId="IS"
+
+
+        for(item in allRequests){
+            println(item)
+            lastId = item.iSNumber
+            break
+        }
+
+        if(lastId != "0")
+        {
+            val strs = lastId?.split(":")?.toTypedArray()
+
+            val firstPortion = strs?.get(0)
+
+            val lastPortArray = firstPortion?.split("/")?.toTypedArray()
+
+            val intToIncrement =lastPortArray?.get(1)
+
+            finalValue = (intToIncrement?.toInt()!!)
+            finalValue += 1
+        }
+
+
+        val year = Calendar.getInstance()[Calendar.YEAR]
+
+        return "$startId/$finalValue:$year"
     }
 
     fun getPRNumber(): String
@@ -295,7 +521,7 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
 
         var lastId:String?="0"
         var finalValue =1
-        var startId="ISP"
+        var startId="PR"
 
 
         for(item in allRequests){
