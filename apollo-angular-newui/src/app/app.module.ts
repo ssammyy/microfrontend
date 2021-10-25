@@ -149,7 +149,7 @@ import { CreateDepartmentComponent } from './apollowebs/standards-development/st
 import { CreatetechnicalcommitteeComponent } from './apollowebs/standards-development/standard-request/createtechnicalcommittee/createtechnicalcommittee.component';
 import { CreateproductComponent } from './apollowebs/standards-development/standard-request/createproduct/createproduct.component';
 import { CreateproductSubCategoryComponent } from './apollowebs/standards-development/standard-request/createproduct-sub-category/createproduct-sub-category.component';
-import {NgSelectModule} from "@ng-select/ng-select";
+import {NgSelectModule} from '@ng-select/ng-select';
 import { IntStdUploadStandardComponent } from './apollowebs/standards-development/international-standard/int-std-upload-standard/int-std-upload-standard.component';
 import { IntStdGazzetteComponent } from './apollowebs/standards-development/international-standard/int-std-gazzette/int-std-gazzette.component';
 
@@ -305,7 +305,7 @@ import { IntStdGazzetteComponent } from './apollowebs/standards-development/inte
         NepSuccessComponent,
         ManagernotificationsComponent,
         IntStdUploadStandardComponent,
-        IntStdGazzetteComponent
+        IntStdGazzetteComponent,
         ManagernotificationsComponent,
         CreateDepartmentComponent,
         CreatetechnicalcommitteeComponent,
