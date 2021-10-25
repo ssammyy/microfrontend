@@ -212,33 +212,33 @@ class SchedulerImpl(
         return false
     }
 
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun updatePaidDemandNotesStatus(): Boolean {
-        val map = commonDaoServices.serviceMapDetails(diAppId)
-        diDaoServices.findAllDemandNotesWithPaidStatus(map.activeStatus)?.let { paidDemandNotesList ->
-            if (paidDemandNotesList.isEmpty()){
-                return true
-            }
-            //If list is not empty
-            for (demandNote in paidDemandNotesList) {
-                //Send to single window
-                demandNote.id?.let { diDaoServices.sendDemandNotePayedStatusToKWIS(it) }
-
-                //Trigger the payment received BPM task
-                diDaoServices.triggerDemandNotePaidBpmTask(demandNote)
-                //Update the demandNote status
-                demandNote.paymentStatus = map.initStatus
-                val demandNoteDetails = diDaoServices.upDateDemandNote(demandNote)
-                //Update CD Status
-                val cdDetails = demandNoteDetails.cdId?.let { diDaoServices.findCD(it) }
-                cdDetails?.cdStandard?.let { cdStd ->
-                    diDaoServices.updateCDStatus(cdStd, diDaoServices.paymentMadeStatus.toLong())
-                }
-            }
-            return true
-        }
-        return false
-    }
+//    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+//    fun updatePaidDemandNotesStatus(): Boolean {
+//        val map = commonDaoServices.serviceMapDetails(diAppId)
+//        diDaoServices.findAllDemandNotesWithPaidStatus(map.activeStatus)?.let { paidDemandNotesList ->
+//            if (paidDemandNotesList.isEmpty()){
+//                return true
+//            }
+//            //If list is not empty
+//            for (demandNote in paidDemandNotesList) {
+//                //Send to single window
+//                demandNote.id?.let { diDaoServices.sendDemandNotePayedStatusToKWIS(it) }
+//
+//                //Trigger the payment received BPM task
+//                diDaoServices.triggerDemandNotePaidBpmTask(demandNote)
+//                //Update the demandNote status
+//                demandNote.paymentStatus = map.initStatus
+//                val demandNoteDetails = diDaoServices.upDateDemandNote(demandNote)
+//                //Update CD Status
+//                val cdDetails = demandNoteDetails.cdId?.let { diDaoServices.findCD(it) }
+//                cdDetails?.cdStandard?.let { cdStd ->
+//                    diDaoServices.updateCDStatus(cdStd, diDaoServices.paymentMadeStatus.toLong())
+//                }
+//            }
+//            return true
+//        }
+//        return false
+//    }
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updateFirmTypeStatus() {

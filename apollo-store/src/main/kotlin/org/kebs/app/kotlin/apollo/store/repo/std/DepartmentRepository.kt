@@ -10,4 +10,8 @@ import org.springframework.stereotype.Repository
 interface DepartmentRepository : JpaRepository<Department,Long>{
     @Query("SELECT d.name FROM Department d WHERE d.id=:id")
     fun findNameById(@Param("id") id: Long?): String
+
+
+    @Query("SELECT d.id FROM Department d WHERE d.name=:name")
+    fun findByName(@Param("name") name: String?):String
 }

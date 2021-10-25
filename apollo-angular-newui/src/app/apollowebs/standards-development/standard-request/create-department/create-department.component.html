@@ -1,0 +1,94 @@
+<div class="container-fluid" style="margin-top: 5%">
+    <div class="loading-spinner ">
+        <ngx-spinner
+                bdColor="rgba(51,51,51,0.8)"
+                size="medium"
+                color="#fff"
+                type="ball-scale-multiple"
+        >
+            <p style="font-size: 20px; color: white">Saving Please Wait...</p>
+        </ngx-spinner>
+    </div>
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-primary card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">assignment</i>
+                            </div>
+                            <h4 class="card-title"><b>Create Department/Division</b></h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="toolbar">
+
+                            </div>
+                            <form (ngSubmit)="saveDepartment()" [formGroup]="createDepartmentFormGroup" class="form">
+                                <div class="form-body">
+
+
+                                    <div class="row col-12">
+                                        <div class="form-group col-6">
+                                            <label><b>Department Name</b><span style="font-size: xx-small; color: red;"> (*)Required</span></label>
+                                            <input
+                                                    oninput="this.value = this.value.toUpperCase()"
+                                                    [class.is-invalid]="formCreateDepartment.name.invalid && formCreateDepartment.name.touched"
+                                                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                    class="form-control one-column-input"
+                                                    formControlName="name" name="name"
+                                                    placeholder="Department Name" type="text">
+                                        </div>
+                                        <div class="form-group col-6">
+                                            <label><b>Department Abbreviations</b><span
+                                                    style="font-size: xx-small; color: red;"> (*)Required</span></label>
+                                            <input
+                                                    oninput="this.value = this.value.toUpperCase()"
+                                                    [class.is-invalid]="formCreateDepartment.abbreviations.invalid && formCreateDepartment.abbreviations.touched"
+                                                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                    class="form-control one-column-input"
+                                                    formControlName="abbreviations"
+                                                    name="abbreviations"
+                                                    placeholder="Department Abbreviations" type="text">
+                                        </div>
+                                    </div>
+
+                                    <div class="row col-12">
+                                        <div class="form-group col-6">
+                                            <label><b>Department Code</b><span style="font-size: xx-small; color: red;"> (*)Required</span></label>
+                                            <input
+                                                    oninput="this.value = this.value.toUpperCase()"
+                                                    [class.is-invalid]="formCreateDepartment.codes.invalid && formCreateDepartment.codes.touched"
+                                                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                    class="form-control one-column-input"
+                                                    formControlName="codes" name="codes"
+                                                    placeholder="Department Code" type="text"></div>
+                                    </div>
+
+
+                                    <div class="row col-12 float-right " style="margin: 3em 0 2em 0">
+                                        <button mat-raised-button *ngIf="createDepartmentFormGroup.valid"
+                                                [disabled]="!createDepartmentFormGroup.valid"
+                                                class="btn btn-info pull-right" type="submit">Submit
+                                        </button>
+
+
+                                    </div>
+                                </div>
+
+
+                            </form>
+                            <div class="row col-12 float-right " style="margin: 3em 0 2em 0">
+                                <button mat-raised-button *ngIf="!createDepartmentFormGroup.valid"
+                                        class="btn btn-info pull-right"
+                                        (click)="showNotification('top','right')">Submit
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

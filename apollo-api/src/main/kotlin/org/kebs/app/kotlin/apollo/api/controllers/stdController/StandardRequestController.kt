@@ -6,6 +6,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.ReferenceMaterialJu
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.RelevantDocumentsNWIService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.StandardRequestService
 import org.kebs.app.kotlin.apollo.common.dto.std.*
+import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -349,5 +350,29 @@ class StandardRequestController(
             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDB!!.name + "\"")
             .body(fileDB.data)
     }
+
+    @PostMapping("standard/createDepartment")
+    @ResponseBody
+    fun createDepartment(@RequestBody department: Department): ServerResponse {
+        return ServerResponse(HttpStatus.OK, "Upload Department", standardRequestService.createStandardsDepartment(department))
+    }
+    @PostMapping("standard/createTechnicalCommittee")
+    @ResponseBody
+    fun createTechnicalCommittee(@RequestBody technicalCommittee: TechnicalCommittee): ServerResponse {
+        return ServerResponse(HttpStatus.OK, "Upload Technical Committee", standardRequestService.createTechnicalCommittee(technicalCommittee))
+    }
+
+    @PostMapping("standard/createProductCategory")
+    @ResponseBody
+    fun createProductCategory(@RequestBody product: Product): ServerResponse {
+        return ServerResponse(HttpStatus.OK, "Upload Product Category", standardRequestService.createProductCategory(product))
+    }
+
+    @PostMapping("standard/createProductSubCategory")
+    @ResponseBody
+    fun createProductSubCategory(@RequestBody productSubCategory: ProductSubCategory): ServerResponse {
+        return ServerResponse(HttpStatus.OK, "Upload Department", standardRequestService.createProductSubCategory(productSubCategory))
+    }
+
 
 }
