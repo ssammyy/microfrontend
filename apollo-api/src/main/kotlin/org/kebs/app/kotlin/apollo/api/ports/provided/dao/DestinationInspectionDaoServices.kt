@@ -3155,9 +3155,9 @@ fun createLocalCoc(
 //    }
 
     //Find all demand notes by payment status
-    fun findAllDemandNotesWithPaidStatus(paymentStatus: Int): List<CdDemandNoteEntity>? {
-        return iDemandNoteRepo.findAllByPaymentStatus(paymentStatus)
-    }
+//    fun findAllDemandNotesWithPaidStatus(paymentStatus: Int): List<CdDemandNoteEntity>? {
+////        return iDemandNoteRepo.findAllByPaymentStatus(paymentStatus)
+//    }
 
     //Trigger demand note paid bpm task
     fun triggerDemandNotePaidBpmTask(demandNote: CdDemandNoteEntity): Boolean {

@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.store.model.std
 
+import java.sql.Timestamp
 import javax.persistence.*
 
 
@@ -51,6 +52,13 @@ class TechnicalCommittee {
     @Basic
     var comment : String?= null
 
+    @Column(name = "CREATED_BY")
+    @Basic
+    var createdBy: String? = null
+
+    @Column(name = "CREATED_ON")
+    @Basic
+    var createdOn: Timestamp? = null
 
 
 
@@ -70,6 +78,8 @@ class TechnicalCommittee {
         if (title != other.title) return false
         if (status != other.status) return false
         if (comment != other.comment) return false
+        if (createdBy != other.createdBy) return false
+        if (createdOn != other.createdOn) return false
 
 
         return true
@@ -86,12 +96,14 @@ class TechnicalCommittee {
         result = 31 * result + (title?.hashCode() ?: 0)
         result = 31 * result + (status?.hashCode() ?: 0)
         result = 31 * result + (comment?.hashCode() ?: 0)
-
+        result = 31 * result + (createdBy?.hashCode() ?: 0)
+        result = 31 * result + (createdOn?.hashCode() ?: 0)
         return result
     }
 
     override fun toString(): String {
-        return "TechnicalCommittee(id=$id, technical_committee_no=$technical_committee_no, type=$type, tc=$tc, sc=$sc, wg=$wg, parentCommitte=$parentCommitte, title=$title, status=$status, comment=$comment)"
+        return "TechnicalCommittee(id=$id, technical_committee_no=$technical_committee_no, type=$type, tc=$tc, sc=$sc, wg=$wg, parentCommitte=$parentCommitte, title=$title, status=$status," +
+                " comment=$comment,createdBy=$createdBy,createdOn=$createdOn)"
     }
 
 

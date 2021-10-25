@@ -79,6 +79,8 @@ import {StdTcWorkplanComponent} from "./apollowebs/standards-development/standar
 import {AllpermitsComponent} from "./apollowebs/quality-assurance/allpermits/allpermits.component";
 import {NepNotificationComponent} from "./apollowebs/standards-development/nep-notification/nep-notification.component";
 import {ManagernotificationsComponent} from "./apollowebs/standards-development/managernotifications/managernotifications.component";
+import {CreateDepartmentComponent} from "./apollowebs/standards-development/standard-request/create-department/create-department.component";
+import {CreatetechnicalcommitteeComponent} from "./apollowebs/standards-development/standard-request/createtechnicalcommittee/createtechnicalcommittee.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -567,6 +569,14 @@ export const routes: Routes = [
     {
         path: 'std-tc-task', component: AdminLayoutComponent,
         children: [{path: '', component: StdTcTasksComponent}]
+    },
+    {
+        path: 'department', component: AdminLayoutComponent,
+        children: [{path: '', component: CreateDepartmentComponent}]
+    },
+    {
+        path: 'technicalCommittee', component: AdminLayoutComponent,
+        children: [{path: '', component: CreatetechnicalcommitteeComponent}]
     },
 
 ];

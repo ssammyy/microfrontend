@@ -1,11 +1,12 @@
 import {Injectable} from '@angular/core';
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
 import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
-import {Department, ReviewApplicationTask, StandardRequest} from "./std.model";
+import {ReviewApplicationTask, StandardRequest} from "./std.model";
 import {Observable, throwError} from "rxjs";
 import {catchError, map} from "rxjs/operators";
 import {
     DecisionFeedback,
+    Department,
     HOFFeedback,
     LiaisonOrganization,
     StandardTasks,
@@ -17,7 +18,7 @@ import {
     StdTCTask,
     Stdtsectask,
     StdtsecTaskJustification,
-    StdWorkPlan
+    StdWorkPlan, TechnicalCommittee, TechnicalCommitteeb
 } from './request_std.model';
 
 @Injectable({
@@ -155,5 +156,30 @@ export class StandardDevelopmentService {
 
         console.log(stdWorkPlan);
         return this.http.post<StdWorkPlan>(`${this.apiServerUrl}` + 'uploadWorkPlan', stdWorkPlan)
+    }
+
+    public createDepartment(department: Department): Observable<any> {
+        return this.http.post<Department>(`${this.apiServerUrl}` + 'createDepartment', department).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+
+
+    }
+    public createTechnicalCommittee(technicalCommitteeb: TechnicalCommitteeb): Observable<any> {
+        return this.http.post<Department>(`${this.apiServerUrl}` + 'createTechnicalCommittee', technicalCommitteeb).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+
+
     }
 }

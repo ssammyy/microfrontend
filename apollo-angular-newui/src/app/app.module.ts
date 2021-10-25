@@ -145,6 +145,10 @@ import {ComStdConfirmComponent} from './apollowebs/standards-development/company
 import {NepSuccessComponent} from './apollowebs/standards-development/nep-success/nep-success.component';
 import {ManagernotificationsComponent} from './apollowebs/standards-development/managernotifications/managernotifications.component';
 import {AllpermitsComponent} from "./apollowebs/quality-assurance/allpermits/allpermits.component";
+import { CreateDepartmentComponent } from './apollowebs/standards-development/standard-request/create-department/create-department.component';
+import { CreatetechnicalcommitteeComponent } from './apollowebs/standards-development/standard-request/createtechnicalcommittee/createtechnicalcommittee.component';
+import { CreateproductComponent } from './apollowebs/standards-development/standard-request/createproduct/createproduct.component';
+import { CreateproductSubCategoryComponent } from './apollowebs/standards-development/standard-request/createproduct-sub-category/createproduct-sub-category.component';
 
 
 // import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -294,7 +298,11 @@ import {AllpermitsComponent} from "./apollowebs/quality-assurance/allpermits/all
         ComStdConfirmComponent,
         StdTcTasksComponent,
         NepSuccessComponent,
-        ManagernotificationsComponent
+        ManagernotificationsComponent,
+        CreateDepartmentComponent,
+        CreatetechnicalcommitteeComponent,
+        CreateproductComponent,
+        CreateproductSubCategoryComponent
 
     ]
 

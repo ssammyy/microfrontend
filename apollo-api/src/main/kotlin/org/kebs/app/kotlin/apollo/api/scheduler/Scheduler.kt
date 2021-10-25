@@ -43,7 +43,7 @@ class Scheduler(
 
     @Scheduled(fixedDelay = 100000)//1.6666667 Minutes for now
     fun runSchedulerAfterEveryFiveMin() {
-        schedulerImpl.updatePaidDemandNotesStatus()
+        //schedulerImpl.updatePaidDemandNotesStatus()
         qaDaoServices.assignPermitApplicationAfterPayment()
         qaDaoServices.updatePermitWithDiscountWithPaymentDetails()
         schedulerImpl.updateLabResultsWithDetails()

@@ -37,11 +37,18 @@ export interface ProductSubCategory {
     id: number;
     name: string;
 
+
 }
 
 export interface Department {
     id: number;
     name: string;
+    abbreviations:string;
+    codes:string;
+    createdBy:string;
+    createdOn:string;
+    status:string;
+
 }
 
 export class LiaisonOrganization {
@@ -51,6 +58,17 @@ export class LiaisonOrganization {
 
 }
 
+export interface TechnicalCommitteeb {
+    id: number;
+    departmentId: number;
+    title: string;
+    technical_committee_no: string;
+    parentCommitte: string;
+    createdBy:string;
+    createdOn:string;
+    status:string;
+
+}
 export interface TechnicalCommittee {
     id: number;
     technical_committee_no: string;
