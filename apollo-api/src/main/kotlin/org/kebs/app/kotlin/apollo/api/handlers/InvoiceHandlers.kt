@@ -107,7 +107,8 @@ class InvoiceHandlers(
             req.pathVariable("invoiceId").let { invoiceId ->
                 val noteWithID = daoServices.findDemandNoteWithID(invoiceId.toLongOrDefault(0L))
                 val noteItems = daoServices.findDemandNoteItemDetails(noteWithID?.id!!)
-                val map = commonDaoServices.serviceMapDetails(appId)
+                val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+                KotlinLogging.logger {  }.info("TTT: ${map.workingStatus}")
                 response.data = mapOf(
                         Pair("deleteSubmitEnabled", noteWithID.status == map.workingStatus),
                         Pair("items", noteItems),
@@ -190,6 +191,7 @@ class InvoiceHandlers(
                     )
                 }
             }
+            KotlinLogging.logger {  }.info("Total Items: ${itemList.size}")
             // Calculate demand note amount and save
             val demandNote = daoServices.generateDemandNoteWithItemList(
                     itemList,

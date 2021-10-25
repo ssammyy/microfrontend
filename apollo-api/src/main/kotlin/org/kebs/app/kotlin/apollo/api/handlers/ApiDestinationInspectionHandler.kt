@@ -133,24 +133,29 @@ class ApiDestinationInspectionHandler(
                 )
         val multipartFile = multipartRequest.getFile("file")
         val fileType = multipartRequest.getParameter("file_type")
+        val docType = multipartRequest.getParameter("docType")
         val response = ApiResponseModel()
         if (multipartFile != null) {
             commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
                     .let { map ->
                         commonDaoServices.loggedInUserDetails()
                                 .let { loggedInUser ->
-
                                     try {
                                         val uploads = DiUploadsEntity()
-                                        uploads.fileType = fileType as String?
+                                        uploads.documentType = docType.toUpperCase()
+                                        uploads.fileType = fileType
                                         this.destinationInspectionService.saveUploadedCsvFileAndSendToKeSWS(multipartFile, uploads, loggedInUser, map)
                                         response.data = fileType
-                                        response.message = "Request received"
+                                        response.message = "${uploads.documentType?.toUpperCase()} successfully uploaded"
                                         response.responseCode = ResponseCodes.SUCCESS_CODE
-                                    } catch (e: Exception) {
+                                    } catch (e: ExpectedDataNotFound) {
                                         KotlinLogging.logger { }.error("FAILED TO UPLOAD COCs", e)
                                         response.responseCode = ResponseCodes.FAILED_CODE
                                         response.message = e.localizedMessage
+                                    } catch (e: Exception) {
+                                        KotlinLogging.logger { }.error("FAILED TO UPLOAD COCs", e)
+                                        response.responseCode = ResponseCodes.FAILED_CODE
+                                        response.message = "Upload failed, please check document format and try again"
                                     }
                                 }
                     }

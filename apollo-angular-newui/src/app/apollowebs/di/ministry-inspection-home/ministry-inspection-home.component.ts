@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {DestinationInspectionService} from "../../../core/store/data/di/destination-inspection.service";
-import swal from "sweetalert2";
 import {LocalDataSource} from "ng2-smart-table";
 
 @Component({
@@ -79,16 +78,16 @@ export class MinistryInspectionHomeComponent implements OnInit {
     }
 
     pageChange(pageIndex?:number){
-        if(pageIndex){
+        if(pageIndex && pageIndex!=this.currentPage){
             this.currentPage=pageIndex-1;
             this.loadData(this.currentPage, this.defaultPageSize)
         }
     }
 
     private loadData(page: number, size: number): any {
-        let status=1;
+        let status=0;
         if(this.activeStatus==='completed'){
-            status=2
+            status=1
         }
         this.diService.listMinistryInspections(status, page, size)
             .subscribe(
@@ -96,16 +95,7 @@ export class MinistryInspectionHomeComponent implements OnInit {
                     if (result.responseCode === "00") {
                         this.dataSet.load(result.data);
                     } else {
-                        swal.fire({
-                            title: result.message,
-                            buttonsStyling: false,
-                            customClass: {
-                                confirmButton: 'btn btn-success form-wizard-next-btn ',
-                            },
-                            icon: 'error'
-                        }).then(() => {
-                            console.log("data")
-                        });
+                        this.diService.showError(result.message,null)
                     }
                 }
             );

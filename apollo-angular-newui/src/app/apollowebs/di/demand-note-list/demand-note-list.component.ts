@@ -50,11 +50,6 @@ export class DemandNoteListComponent implements OnInit {
                 type: 'custom',
                 renderComponent: CurrencyFormatterComponent,
             },
-            totalAmount: {
-                title: 'TOTAL AMOUNT',
-                type: 'custom',
-                renderComponent: CurrencyFormatterComponent,
-            },
             varField10:{
                 title: 'Remarks',
                 type: 'string'

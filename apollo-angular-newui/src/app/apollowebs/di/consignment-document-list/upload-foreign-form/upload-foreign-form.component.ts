@@ -1,6 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {DestinationInspectionService} from "../../../../core/store/data/di/destination-inspection.service";
-import {MatDialogRef} from "@angular/material/dialog";
+import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 
 @Component({
@@ -14,7 +14,7 @@ export class UploadForeignFormComponent implements OnInit {
     form: FormGroup
     loading = false
 
-    constructor(private fb: FormBuilder, private dialogRef: MatDialogRef<any>, private diService: DestinationInspectionService) {
+    constructor(private fb: FormBuilder, @Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<any>, private diService: DestinationInspectionService) {
     }
 
     ngOnInit(): void {
@@ -38,12 +38,14 @@ export class UploadForeignFormComponent implements OnInit {
 
     saveForeignDocument() {
         this.loading = true
-        this.diService.uploadForeignDocuments(this.selectedFile, this.form.value.fileType, "coc")
+        this.diService.uploadForeignDocuments(this.selectedFile, this.form.value.fileType, this.data.documentType)
             .subscribe(
                 res => {
                     this.loading = false
-                    if (res.responseCode === "000") {
-                        this.dialogRef.close(true)
+                    if (res.responseCode === "00") {
+                        this.diService.showSuccess(res.message,()=>{
+                            this.dialogRef.close(true)
+                        })
                     } else {
                         this.message = res.message
                     }

@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.sftp
 import com.fasterxml.jackson.databind.DeserializationFeature
 import mu.KotlinLogging
 import org.apache.camel.Exchange
+import org.apache.camel.ProducerTemplate
 import org.apache.camel.builder.RouteBuilder
 import org.apache.camel.model.dataformat.JacksonXMLDataFormat
 import org.apache.http.client.utils.URIBuilder
@@ -14,18 +15,32 @@ import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
 import java.net.URI
+import java.nio.file.Paths
 import java.util.concurrent.TimeUnit
-import java.lang.Class as Class
+
 
 @Service
-@Profile("dev")
+@Profile("!prod")
 class SFTPService(
         private val iDFDaoService: IDFDaoService,
         private val declarationDaoService: DeclarationDaoService,
         private val manifestDaoService: ManifestDaoService,
         private val destinationInspectionDaoServices: DestinationInspectionDaoServices,
-        private val consignmentDocumentDaoService: ConsignmentDocumentDaoService
+        private val consignmentDocumentDaoService: ConsignmentDocumentDaoService,
+        private val producerTemplate: ProducerTemplate
 ) {
+    fun uploadFile(fileName: String) {
+        try {
+            val endpointName = "direct:uploadFileToFtp"
+            val exchange: Exchange = producerTemplate.camelContext.getEndpoint(endpointName).createExchange()
+            exchange.message.headers.put("fileName", fileName)
+            // Deliver message
+            producerTemplate.send(endpointName, exchange)
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Faile to send file via exchange: ", ex)
+        }
+    }
+
     fun processConsignmentDocumentType(exchange: Exchange) {
         KotlinLogging.logger { }.info("CD File: ${exchange.message.headers} | Content: ${exchange.message.body}|")
         val consignmentDoc = exchange.message.body as ConsignmentDocument
@@ -99,8 +114,12 @@ class SFTPService(
     }
 }
 
+/**
+ * Camel component to download files from FTP server and unmarshal to expected class
+ * Ref: https://access.redhat.com/documentation/en-us/red_hat_jboss_fuse/6.2/html/apache_camel_component_reference/idu-ftp2
+ */
 @Component
-@Profile("dev")
+@Profile("!prod")
 class CamelSftpDownload(
         private val properties: CamelFtpProperties,
         private val applicationMapProperties: ApplicationMapProperties,
@@ -143,8 +162,10 @@ class CamelSftpDownload(
             "sftp" -> {
                 ftpBuilder.addParameter("runLoggingLevel", properties.logLevel)
                         .addParameter("readLock", properties.readLock)
-                        .addParameter("maxMessagesPerPoll", "50")
+                        .addParameter("maxMessagesPerPoll", "10")
+                        .addParameter("moveFailed", properties.moveFailed)
                         .addParameter("autoCreate", "false")
+                        .addParameter("greedy", "true") // If you find file, don't delay the next check for more files
                         .addParameter("timeUnit", TimeUnit.MILLISECONDS.name)
                         .addParameter("useFixedDelay", "true")
                         .addParameter("antInclude", properties.antInclude)
@@ -209,7 +230,49 @@ class CamelSftpDownload(
                 .otherwise()
                 .setHeader("error", simple("Invalid file received: \${in.headers.CamelFileName}"))
                 .log("Invalid file \${file:name} complete.")
+                .setHeader("moveFailed", simple( "\${in.headers.CamelFileName}"))
                 .throwException(java.lang.Exception(header("error").toString()))
                 .endChoice()
+                .end()
+    }
+}
+
+/**
+ * Endpoint to upload files to SFTP
+ *
+ */
+@Component
+@Profile("!prod")
+class CamelSftpUpload(
+        private val properties: CamelFtpProperties,
+) : RouteBuilder() {
+    private val ftpBuilder = URIBuilder()
+            .setScheme(properties.scheme)
+            .setHost(properties.host)
+            .setPort(properties.port)
+            .setPath(properties.uploadDirectory)
+    private val fileBuilder = URIBuilder()
+            .setScheme("file")
+            .setPath(Paths.get("")
+                    .toAbsolutePath()
+                    .toString() + properties.outboundDirectory)
+            .setParameter("runLoggingLevel", properties.logLevel)
+            .setParameter("delete", "true")
+            .setParameter("moveFailed", "error")
+            .setParameter("antInclude", properties.antInclude)
+            .setParameter("autoCreate", "true")
+    private lateinit var uploadURI: URI
+
+    init {
+        ftpBuilder.addParameter("autoCreate", "false")
+        uploadURI = ftpBuilder.build()
+    }
+
+    override fun configure() {
+        // Upload file to FTP
+        from(fileBuilder.build().toString())
+                .log("Uploading file to FTP server: \${in.headers.CamelFileName}")
+                .to(uploadURI.toString())
+                .log("Uploaded file to FTP server: \${in.headers.CamelFileName}")
     }
 }

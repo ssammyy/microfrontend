@@ -253,7 +253,7 @@ export class ConsignmentDocumentListComponent implements OnInit {
     uploadForeignCoROrCor(event: any, type: string) {
         let ref = this.dialog.open(UploadForeignFormComponent, {
             data: {
-                "type": type
+                documentType: type
             }
         })
         ref.afterClosed()

@@ -379,8 +379,10 @@ class DestinationInspectionActionsHandler(
                         data["officerId"] = form.officerId
                         data["owner"] = officer.get().userName
                         data["supervisor"] = loggedInUser.userName
-                        data["isAutoRejected"] = consignmentDocument.cdType?.autoRejectStatus == map.activeStatus
-                        data["isAutoTargeted"] = consignmentDocument.cdType?.autoTargetStatus == map.activeStatus
+                        // True for BPM processes
+                        data["isAutoRejected"] = true
+                        data["isAutoTargeted"] = true
+                        //
                         data["cdUuid"] = cdUuid
                         // Start BPM process
                         this.diBpmn.startAssignmentProcesses(data, consignmentDocument);

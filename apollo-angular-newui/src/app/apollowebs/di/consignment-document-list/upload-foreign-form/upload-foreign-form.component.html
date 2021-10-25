@@ -10,7 +10,7 @@
         </select>
         <label for="select-file" class="col-5 col-form-label">SELECT UPLOAD DOCUMENT</label>
         <div class="col-7">
-            <input id="select-file" type="file" accept="text/*" (change)="uploadForeignCoROrCor($event)"
+            <input id="select-file" type="file" accept=".csv,.txt" (change)="uploadForeignCoROrCor($event)"
                    class="display-nothing" #cocFiles>
             <button type="button" (click)="cocFiles.click()"
                     class="btn btn-sm btn-primary mr-2">Select File

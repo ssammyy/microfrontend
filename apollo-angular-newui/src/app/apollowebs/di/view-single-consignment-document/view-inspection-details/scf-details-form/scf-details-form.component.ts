@@ -52,9 +52,6 @@ export class ScfDetailsFormComponent implements OnInit {
 
     ngOnInit(): void {
         this.form = this.fb.group({
-            manufacturerTraderName: ['', Validators.required],
-            manufacturerTraderAddress: ['', Validators.required],
-            brandName: ['', Validators.required],
             batchNumber: ['', Validators.required],
             batchSize: ['', Validators.required],
             sampleSize: ['', Validators.required],

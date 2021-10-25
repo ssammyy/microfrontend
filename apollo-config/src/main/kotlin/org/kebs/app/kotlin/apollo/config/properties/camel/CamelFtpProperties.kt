@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EncryptablePropertySource(value = ["file:\${CONFIG_PATH}/camel-sftp.properties"])
 public class CamelFtpProperties {
-    @Value("\${org.app.properties.camel.sftp.scheme}")
+    @Value("\${org.app.properties.camel.sftp.scheme:sftp}")
     var scheme = "sftp"
 
     @Value("\${org.app.properties.camel.sftp.host}")
@@ -65,4 +65,9 @@ public class CamelFtpProperties {
     var useUserKnownHostsFile = "false"
     @Value("\${org.app.properties.camel.sftp.log.level}")
     var logLevel = "WARN"
+    @Value("\${org.app.properties.camel.sftp.upload.path}")
+    var uploadDirectory = "\\C\\mhxapps\\outbound"
+    @Value("\${org.app.properties.camel.sftp.outbound:outbound}")
+    var outboundDirectory = ""
+
 }

@@ -84,6 +84,7 @@ dependencies {
      */
     implementation("org.apache.camel:camel-ftp:3.12.0")
     implementation("org.apache.camel:camel-bean:3.12.0")
+    implementation("org.apache.camel:camel-direct:3.12.0")
     implementation("org.apache.httpcomponents:httpclient:4.5.13")
     implementation("org.apache.camel.springboot:camel-spring-boot:3.12.0")
     implementation("org.apache.camel:camel-jacksonxml:3.12.0")

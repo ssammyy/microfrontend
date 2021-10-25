@@ -8,6 +8,7 @@ import com.ctc.wstx.stax.WstxOutputFactory
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.MapperFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
@@ -33,6 +34,7 @@ import org.apache.http.conn.ssl.NoopHostnameVerifier
 import org.jasypt.encryption.StringEncryptor
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.SftpServiceImpl
 import org.kebs.app.kotlin.apollo.common.dto.CocsItemsEntityDto
+import org.kebs.app.kotlin.apollo.common.dto.CorItemsEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.CurrencyExchangeRatesEntityDto
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
@@ -366,15 +368,18 @@ class DaoService(
     }
 
     val csvMapper = CsvMapper().apply {
+        configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true)
+        configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         registerModule(KotlinModule())
     }
+
     fun readExchangeRatesFromController(separator: Char, reader: Reader) =
             readCsvFile<CurrencyExchangeRatesEntityDto>(separator, reader)
 
     fun readCocFileFromController(separator: Char, reader: Reader) =
         readCsvFile<CocsItemsEntityDto>(separator, reader)
 
-    fun readCorFileFromController(separator: Char, reader: FileReader) = readCsvFile<CorsBakEntity>(separator, reader)
+    fun readCorFileFromController(separator: Char, reader: Reader) = readCsvFile<CorItemsEntityDto>(separator, reader)
 
     private inline fun <reified T> readCsvFile(separator: Char, reader: Reader): List<T> {
 //        FileReader(fileName).use { reader ->
@@ -466,6 +471,7 @@ class DaoService(
 
         return finalFileName
     }
+
 
 
     class TrustAllX509TrustManager : X509TrustManager {

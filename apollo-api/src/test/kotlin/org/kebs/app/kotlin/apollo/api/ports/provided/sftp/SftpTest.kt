@@ -116,7 +116,7 @@ class SftpTest {
             val coc: CustomCocXmlDto = it.toCocXmlRecordRefl()
             //COC ITEM
             val cocItem = iCocItemRepository.findByCocId(cocsEntity.id)?.get(0)
-            cocItem?.toCocItemDetailsXmlRecordRefl().let {
+            cocItem?.toCocItemDetailsXmlRecordRefl(cocsEntity.cocNumber?:cocsEntity.coiNumber?:"NA").let {
                 coc.cocDetals = it
                 val cocFinalDto = COCXmlDTO()
                 cocFinalDto.coc = coc
