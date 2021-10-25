@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import {
+    GazetteNotice,
     ISAdoptionComments, ISAdoptionJustification,
-    ISAdoptionProposal, ISDecision, ISHopTASKS, ISJustificationDecision,
-    ISSacSecTASKS, ISTcSecTASKS, ListJustification,
+    ISAdoptionProposal, ISDecision, ISHopTASKS, ISHosSicTASKS, ISJustificationDecision,
+    ISSacSecTASKS, ISStandard, ISTcSecTASKS, ListJustification, NWAStandard,
     ProposalComments
 } from "./std.model";
 import {Observable, throwError} from "rxjs";
@@ -152,6 +153,64 @@ export class StdIntStandardService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_HOP_TASKS);
         const params = new HttpParams();
         return this.http.get<ISHopTASKS[]>(url, {params}).pipe();
+    }
+    public uploadISStandard(isStandard: ISStandard): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IS_UPLOAD_STANDARD);
+        const params = new HttpParams();
+        return this.http.post<ISStandard>(url, isStandard, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+    public uploadSDFile(isStandardID: string, data: FormData): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IS_UPLOAD_STD);
+
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data'
+            }, params: {'isStandardID': isStandardID}
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+    public getHoSiCTasks(): Observable<ISHosSicTASKS[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_HOS_SIC_TASKS);
+        const params = new HttpParams();
+        return this.http.get<ISHosSicTASKS[]>(url, {params}).pipe();
+    }
+    public uploadGazetteNotice(gazetteNotice: GazetteNotice): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IS_UPLOAD_GAZETTE_NOTICE);
+        const params = new HttpParams();
+        return this.http.post<GazetteNotice>(url, gazetteNotice, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+    public updateGazetteDate(gazetteNotice: GazetteNotice): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IS_UPDATE_GAZETTE_DATE);
+        const params = new HttpParams();
+        return this.http.post<GazetteNotice>(url, gazetteNotice, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
     }
 
 

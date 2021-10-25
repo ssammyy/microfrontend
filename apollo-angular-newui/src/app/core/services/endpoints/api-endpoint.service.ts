@@ -17,10 +17,10 @@ export class ApiEndpointService {
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-         LOCAL_DEV: 'localhost:8006'
+       // LOCAL_DEV: 'localhost:8006'
         // LOCAL_DEV: '12:8006'
         // LOCAL_DEV: '41.72.209.58:8006'
-       // LOCAL_DEV: `kimsint.kebs.org:8006`
+        LOCAL_DEV: `kimsint.kebs.org:8006`
         // LOCAL_DEV: `kims.kebs.org:8006`
         // LOCAL_DEV: '10.10.0.149:8007'
 
@@ -337,6 +337,12 @@ export class ApiEndpointService {
         IST_SAC_SEC_TASKS: `${ApiEndpointService.SD_IST_CONTEXT}/getSACSECTasks`,
         IST_APPROVE_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/approveStandard`,
         IST_HOP_TASKS: `${ApiEndpointService.SD_IST_CONTEXT}/getHOPTasks`,
+        IS_UPLOAD_STD: `${ApiEndpointService.SD_IST_CONTEXT}/std-file-upload`,
+        IS_UPLOAD_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/uploadISStandard`,
+        IST_HOS_SIC_TASKS: `${ApiEndpointService.SD_IST_CONTEXT}/getHoSiCTasks`,
+        IS_UPLOAD_GAZETTE_NOTICE: `${ApiEndpointService.SD_IST_CONTEXT}/uploadGazetteNotice`,
+        IS_UPDATE_GAZETTE_DATE: `${ApiEndpointService.SD_IST_CONTEXT}/updateGazettementDate`,
+
 
         // SD COMPANY STANDARDS
         ICT_GET_PRODUCTS: `${ApiEndpointService.SD_ICT_CONTEXT}/getProducts`,

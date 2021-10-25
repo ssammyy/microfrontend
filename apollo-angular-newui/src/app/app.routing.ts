@@ -80,6 +80,7 @@ import {AllpermitsComponent} from "./apollowebs/quality-assurance/allpermits/all
 import {NepNotificationComponent} from "./apollowebs/standards-development/nep-notification/nep-notification.component";
 import {ManagernotificationsComponent} from "./apollowebs/standards-development/managernotifications/managernotifications.component";
 import {IntStdUploadStandardComponent} from "./apollowebs/standards-development/international-standard/int-std-upload-standard/int-std-upload-standard.component";
+import {IntStdGazzetteComponent} from "./apollowebs/standards-development/international-standard/int-std-gazzette/int-std-gazzette.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -467,6 +468,11 @@ export const routes: Routes = [
         path: 'isUploadStd', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [{path: '', component: IntStdUploadStandardComponent}]
+    },
+    {
+        path: 'isUploadNotice', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdGazzetteComponent}]
     },
     // SD SYSTEMIC REVIEW
     {

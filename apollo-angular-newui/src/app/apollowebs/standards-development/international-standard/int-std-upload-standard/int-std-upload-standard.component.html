@@ -41,7 +41,6 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
 <th class="knw">Acceptance Date</th>
 <th class="sl">Reference Material</th>
 <th class="action">Action</th>
-<th></th>
 </tr>
 </thead>
 <tbody>
@@ -56,338 +55,83 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
 <td>{{task.taskData.tcAcceptanceDate}}</td>
 <td>{{task.taskData.referenceMaterial}}</td>
 <td ><a  (click)="onOpenModal(task,'upload')" class="btn btn-success btn-sm tooltips" data-placement="top">Upload Standard</a></td>
-<td><button (click)="onOpenModal(task,'reject')" type="submit" class="btn btn-danger btn-sm">Reject</button></td>
 </tr>
 </tbody>
 </table>
 
 
-<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="approveExampleModalLabel" aria-hidden="true">a
+<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadExampleModalLabel" aria-hidden="true">a
 <div class="modal-dialog modal-lg" role="document">
 <div class="modal-content">
 <div class="modal-header">
-<h5 class="modal-title" id="approveExampleModalLabel">Accept Justification</h5>
+<h5 class="modal-title" id="uploadExampleModalLabel">Upload Standard</h5>
 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 <span aria-hidden="true">&times;</span>
 </button>
 </div>
-<form #approveForm="ngForm" >
+    <form (ngSubmit)="onUpload()" [formGroup]="prepareStandardFormGroup" class="form">
 <div class="modal-body">
-<div class="list-group list-group-flush">
-<a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-<div class="d-flex w-100 justify-content-between">
-<div>
-<div class="d-flex w-100 align-items-center">
-<h5 class="mb-1" style="color: #0d0505"><b>Proposal Document</b></h5>
-</div>
-</div>
+    <div class="row col-12">
+        <div class="form-group col-6">
+            <label>Title <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+            <input [class.is-invalid]="formPrepareWD.title.invalid && formPrepareWD.title.touched"
+                   class="form-control"  formControlName="title" ngModel="" name="title" type="text">
+        </div>
+        <div class="form-group col-6">
+            <label>Scope <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+            <input [class.is-invalid]="formPrepareWD.scope.invalid && formPrepareWD.scope.touched"
+                   class="form-control"  formControlName="scope" ngModel="" name="scope" type="text">
+        </div>
 
-</div>
 
-<p class="text-sm mb-0">{{actionRequest?.taskData?.proposal_doc_name}}.</p>
-</a>
-<a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-<div class="d-flex w-100 justify-content-between">
-<div>
-<div class="d-flex w-100 align-items-center">
-<h5 class="mb-1" style="color: #0d0505"><b>Meeting Date</b></h5>
-</div>
-</div>
+    </div>
+    <div class="row col-12">
+        <div class="form-group col-6">
+            <label>Normative Reference <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+            <input [class.is-invalid]="formPrepareWD.normativeReference.invalid && formPrepareWD.normativeReference.touched"
+                   class="form-control"  formControlName="normativeReference" ngModel="" name="normativeReference" type="text">
+        </div>
+        <div class="form-group col-6">
+            <label>Symbols Abbreviated Terms <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+            <input [class.is-invalid]="formPrepareWD.symbolsAbbreviatedTerms.invalid && formPrepareWD.symbolsAbbreviatedTerms.touched"
+                   class="form-control"  formControlName="symbolsAbbreviatedTerms" ngModel="" name="symbolsAbbreviatedTerms" type="text">
+        </div>
 
-</div>
+    </div>
+    <div class="row col-12">
+        <div class="form-group col-6">
+            <label>Clause <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+            <input [class.is-invalid]="formPrepareWD.clause.invalid && formPrepareWD.clause.touched"
+                   class="form-control"  formControlName="clause" ngModel="" name="clause" type="text">
+        </div>
+        <div class="form-group col-6">
+            <label>Special <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+            <input [class.is-invalid]="formPrepareWD.special.invalid && formPrepareWD.special.touched"
+                   class="form-control"  formControlName="special" ngModel="" name="special" type="text">
+        </div>
+        <input type="hidden" formControlName="taskId" ngModel="{{actionRequest?.taskId}}" name="taskId" >
+    </div>
+    <div class="row col-12">
+        <div class="form-group col-12">
+            <label><b>Upload Standard  </b> <span style="font-size: xx-small; color: red;">(*)Required</span></label><br>
+            <form #demoForm="ngForm">
+                <input type="file" name="uploadedFiles" [(ngModel)]="uploadedFiles"  multiple>
+                <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles"   fileslimit="2" accept=".pdf, .doc, .docx" ></file-upload>
+            </form>
+        </div>
 
-<p class="text-sm mb-0">{{actionRequest?.taskData?.meetingDate}}.</p>
-</a>
-<a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-<div class="d-flex w-100 justify-content-between">
-<div>
-<div class="d-flex w-100 align-items-center">
-<h5 class="mb-1" style="color: #0d0505"><b>Department/Sector</b></h5>
-</div>
-</div>
 
+    </div>
 </div>
-
-<p class="text-sm mb-0">{{actionRequest?.taskData?.department}}.</p>
-</a>
-<a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-<div class="d-flex w-100 justify-content-between">
-<div>
-<div class="d-flex w-100 align-items-center">
-<h5 class="mb-1" style="color: #0d0505"><b>Technical Committee</b></h5>
-</div>
-</div>
-
-</div>
-
-<p class="text-sm mb-0">{{actionRequest?.taskData?.tc_id}}.</p>
-</a>
-<a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-<div class="d-flex w-100 justify-content-between">
-<div>
-<div class="d-flex w-100 align-items-center">
-<h5 class="mb-1" style="color: #0d0505"><b>TC Secretary</b></h5>
-</div>
-</div>
-
-</div>
-
-<p class="text-sm mb-0">{{actionRequest?.taskData?.tcSec_id}}.</p>
-</a>
-<a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-<div class="d-flex w-100 justify-content-between">
-<div>
-<div class="d-flex w-100 align-items-center">
-<h5 class="mb-1" style="color: #0d0505"><b>SL Number</b></h5>
-</div>
-</div>
-
-</div>
-
-<p class="text-sm mb-0">{{actionRequest?.taskData?.slNumber}}.</p>
-</a>
-<a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-<div class="d-flex w-100 justify-content-between">
-<div>
-<div class="d-flex w-100 align-items-center">
-<h5 class="mb-1" style="color: #0d0505"><b>Request Number</b></h5>
-</div>
-</div>
-
-</div>
-
-<p class="text-sm mb-0">{{actionRequest?.taskData?.requestNumber}}.</p>
-</a>
-<a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-<div class="d-flex w-100 justify-content-between">
-<div>
-<div class="d-flex w-100 align-items-center">
-<h5 class="mb-1" style="color: #0d0505"><b>Requested By</b></h5>
-</div>
-</div>
-
-</div>
-
-<p class="text-sm mb-0">{{actionRequest?.taskData?.requestedBy}}.</p>
-</a>
-<a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-<div class="d-flex w-100 justify-content-between">
-<div>
-<div class="d-flex w-100 align-items-center">
-<h5 class="mb-1" style="color: #0d0505"><b>Issues Addressed</b></h5>
-</div>
-</div>
-
-</div>
-
-<p class="text-sm mb-0">{{actionRequest?.taskData?.issuesAddressed}}.</p>
-</a>
-<a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-<div class="d-flex w-100 justify-content-between">
-<div>
-<div class="d-flex w-100 align-items-center">
-<h5 class="mb-1" style="color: #0d0505"><b>Acceptance Date</b></h5>
-</div>
-</div>
-
-</div>
-
-<p class="text-sm mb-0">{{actionRequest?.taskData?.tcAcceptanceDate}}.</p>
-</a>
-<a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-<div class="d-flex w-100 justify-content-between">
-<div>
-<div class="d-flex w-100 align-items-center">
-<h5 class="mb-1" style="color: #0d0505"><b>Reference Material</b></h5>
-</div>
-</div>
-
-</div>
-
-<p class="text-sm mb-0">{{actionRequest?.taskData?.referenceMaterial}}.</p>
-</a>
-</div>
-<div class="row">
-<div class="form-group col-12">
-<label><b>Comments/Remarks</b><span style="font-size: xx-small; color: orangered;">(*)Optional</span></label>
-<textarea class="form-control" ngModel name="comments" rows="2" ></textarea>
-</div>
-</div>
-</div>
-<input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskId" >
-<input type="hidden" name="approvalID" ngModel="{{actionRequest?.taskData.ID}}" >
-<input type="hidden" ngModel="true" name="accentTo"  >
-<div class="modal-footer">
-<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
-<button type="submit" class="btn btn-primary btn-sm" (click)="onDecision(approveForm.value)" data-dismiss="modal">Approve</button>
-</div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+            <button  class="btn btn-sm btn-primary float-right" type="submit">Upload</button>
+        </div>
 </form>
 </div>
 </div>
 </div>
-<div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-labelledby="rejectExampleModalLabel" aria-hidden="true">a
-<div class="modal-dialog " role="document">
-<div class="modal-content">
-<div class="modal-header">
-<h5 class="modal-title" id="rejectExampleModalLabel">Reject Justification</h5>
-<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-<span aria-hidden="true">&times;</span>
-</button>
-</div>
-<form #rejectForm="ngForm" >
-<div class="modal-body">
-<div class="list-group list-group-flush">
-<a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-<div class="d-flex w-100 justify-content-between">
-<div>
-<div class="d-flex w-100 align-items-center">
-<h5 class="mb-1" style="color: #0d0505"><b>Proposal Document</b></h5>
-</div>
-</div>
 
-</div>
-
-<p class="text-sm mb-0">{{actionRequest?.taskData?.proposal_doc_name}}.</p>
-</a>
-<a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-<div class="d-flex w-100 justify-content-between">
-<div>
-<div class="d-flex w-100 align-items-center">
-<h5 class="mb-1" style="color: #0d0505"><b>Meeting Date</b></h5>
-</div>
-</div>
-
-</div>
-
-<p class="text-sm mb-0">{{actionRequest?.taskData?.meetingDate}}.</p>
-</a>
-<a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-<div class="d-flex w-100 justify-content-between">
-<div>
-<div class="d-flex w-100 align-items-center">
-<h5 class="mb-1" style="color: #0d0505"><b>Department/Sector</b></h5>
-</div>
-</div>
-
-</div>
-
-<p class="text-sm mb-0">{{actionRequest?.taskData?.department}}.</p>
-</a>
-<a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-<div class="d-flex w-100 justify-content-between">
-<div>
-<div class="d-flex w-100 align-items-center">
-<h5 class="mb-1" style="color: #0d0505"><b>Technical Committee</b></h5>
-</div>
-</div>
-
-</div>
-
-<p class="text-sm mb-0">{{actionRequest?.taskData?.tc_id}}.</p>
-</a>
-<a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-<div class="d-flex w-100 justify-content-between">
-<div>
-<div class="d-flex w-100 align-items-center">
-<h5 class="mb-1" style="color: #0d0505"><b>TC Secretary</b></h5>
-</div>
-</div>
-
-</div>
-
-<p class="text-sm mb-0">{{actionRequest?.taskData?.tcSec_id}}.</p>
-</a>
-<a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-<div class="d-flex w-100 justify-content-between">
-<div>
-<div class="d-flex w-100 align-items-center">
-<h5 class="mb-1" style="color: #0d0505"><b>SL Number</b></h5>
-</div>
-</div>
-
-</div>
-
-<p class="text-sm mb-0">{{actionRequest?.taskData?.slNumber}}.</p>
-</a>
-<a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-<div class="d-flex w-100 justify-content-between">
-<div>
-<div class="d-flex w-100 align-items-center">
-<h5 class="mb-1" style="color: #0d0505"><b>Request Number</b></h5>
-</div>
-</div>
-
-</div>
-
-<p class="text-sm mb-0">{{actionRequest?.taskData?.requestNumber}}.</p>
-</a>
-<a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-<div class="d-flex w-100 justify-content-between">
-<div>
-<div class="d-flex w-100 align-items-center">
-<h5 class="mb-1" style="color: #0d0505"><b>Requested By</b></h5>
-</div>
-</div>
-
-</div>
-
-<p class="text-sm mb-0">{{actionRequest?.taskData?.requestedBy}}.</p>
-</a>
-<a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-<div class="d-flex w-100 justify-content-between">
-<div>
-<div class="d-flex w-100 align-items-center">
-<h5 class="mb-1" style="color: #0d0505"><b>Issues Addressed</b></h5>
-</div>
-</div>
-
-</div>
-
-<p class="text-sm mb-0">{{actionRequest?.taskData?.issuesAddressed}}.</p>
-</a>
-<a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-<div class="d-flex w-100 justify-content-between">
-<div>
-<div class="d-flex w-100 align-items-center">
-<h5 class="mb-1" style="color: #0d0505"><b>Acceptance Date</b></h5>
-</div>
-</div>
-
-</div>
-
-<p class="text-sm mb-0">{{actionRequest?.taskData?.tcAcceptanceDate}}.</p>
-</a>
-<a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-<div class="d-flex w-100 justify-content-between">
-<div>
-<div class="d-flex w-100 align-items-center">
-<h5 class="mb-1" style="color: #0d0505"><b>Reference Material</b></h5>
-</div>
-</div>
-
-</div>
-
-<p class="text-sm mb-0">{{actionRequest?.taskData?.referenceMaterial}}.</p>
-</a>
-</div>
-<div class="row">
-<div class="form-group col-12">
-<label><b>Comments/Remarks</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-<textarea class="form-control" ngModel name="comments" rows="2" ></textarea>
-</div>
-</div>
-</div>
-<input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskId" >
-<input type="hidden" name="approvalID" ngModel="{{actionRequest?.taskData.ID}}" >
-<input type="hidden" ngModel="false" name="accentTo"  >
-<div class="modal-footer">
-<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
-<button type="submit" class="btn btn-primary btn-sm" (click)="onDecisionReject(rejectForm.value)" data-dismiss="modal">Submit</button>
-</div>
-</form>
-</div>
-</div>
-</div>
 </div>
 </div>
 </div>

@@ -494,6 +494,53 @@ export interface ISHopTaskData{
     proposal_doc_name: string;
     ID: number;
 }
+export interface ISStandard{
+    id: number;
+    title: number;
+    scope: number;
+    normativeReference: string;
+    symbolsAbbreviatedTerms: string;
+    special: string;
+    taskId: string;
+}
+export interface ISHosSicTASKS{
+    taskId : string;
+    name: string;
+    taskData: ISHosSicTaskData;
+}
+export interface ISHosSicTaskData{
+    id: number;
+    meetingDate: string;
+    tc_id: string;
+    tcSec_id: string;
+    slNumber: string;
+    requestNumber: string;
+    requestedBy: string;
+    issuesAddressed: string;
+    tcAcceptanceDate: string;
+    referenceMaterial: string;
+    department: string;
+    taskId: string;
+    status: string;
+    remarks: string;
+    adoption_proposal_comment: string;
+    user_id: string;
+    comment_time: string;
+    proposal_doc_name: string;
+    ID: number;
+    title: number;
+    scope: number;
+    normativeReference: string;
+    symbolsAbbreviatedTerms: string;
+    special: string;
+    iSNumber: string;
+}
+export interface GazetteNotice{
+    id: number;
+    description: string;
+    iSNumber: string;
+
+}
 
 //********************************************************** International Standards Adoption -END **********************************************************
 //********************************************************** Company Standards Adoption -START **********************************************************

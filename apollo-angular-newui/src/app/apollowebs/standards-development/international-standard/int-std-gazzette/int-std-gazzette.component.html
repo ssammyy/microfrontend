@@ -1,1 +1,138 @@
-<p>int-std-gazzette works!</p>
+<div class="container-fluid" style="margin-top: 5%" id="main-container">
+<div  class="loading-spinner ">
+<ngx-spinner
+bdColor="rgba(51,51,51,0.8)"
+size="medium"
+color="#fff"
+type="ball-scale-multiple"
+>
+<p style="font-size: 20px; color: white">Loading...</p>
+</ngx-spinner>
+</div>
+<div class="main-content" >
+<div class="container-fluid">
+<div class="row">
+<div class="col-md-12">
+<div class="card">
+<div class="card-header card-header-primary card-header-icon">
+<div class="card-icon">
+<i class="material-icons">assignment</i>
+</div>
+<div class="card-title float-right"><button type="button" class="btn btn-sm btn-outline-warning">
+Tasks <span class="badge badge-primary">{{tasks.length}}</span>
+</button></div>
+</div>
+<div class="card-body">
+<div class="toolbar">
+
+</div>
+<div class="material-datatables">
+<table  class="table table-striped table-bordered table-hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+
+<thead>
+<tr>
+<th>#</th>
+    <th class="knw">Standard Number</th>
+<th class="knw">Title</th>
+<th class="sl">Scope</th>
+<th class="requestNumber">Normative Reference</th>
+<th class="knw">Symbols Abbreviated Terms</th>
+<th class="sl">Special</th>
+<th class="action">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr  *ngFor="let task of tasks let i=index">
+<td>{{i+1}}</td>
+<td>{{task.taskData.iSNumber}}</td>
+<td>{{task.taskData.title}}</td>
+<td>{{task.taskData.scope}}</td>
+<td>{{task.taskData.normativeReference}}</td>
+<td>{{task.taskData.symbolsAbbreviatedTerms}}</td>
+<td>{{task.taskData.special}}</td>
+
+<td *ngIf="task.name ==='Upload Gazzette notice on the Website'" ><a  (click)="onOpenModal(task,'upload')" class="btn btn-success btn-sm tooltips" data-placement="top">Upload Gazzette Notice</a></td>
+    <td *ngIf="task.name ==='Update Gazzzettement Date'"><a  (click)="onOpenModal(task,'update')" class="btn btn-info btn-sm tooltips" data-placement="top">Update Gazzettement Date</a></td>
+</tr>
+</tbody>
+</table>
+
+
+<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadExampleModalLabel" aria-hidden="true">a
+<div class="modal-dialog modal-lg" role="document">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title" id="uploadExampleModalLabel">Upload Gazette Notice</h5>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<form (ngSubmit)="onUpload()" [formGroup]="prepareGazetteNotice" class="form">
+<div class="modal-body">
+<div class="row col-12">
+
+    <div class="form-group col-12">
+        <label>Standard Number <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+        <input [class.is-invalid]="formPrepareGN.iSNumber.invalid && formPrepareGN.iSNumber.touched"
+               class="form-control"  formControlName="iSNumber" ngModel="{{actionRequest?.taskData?.iSNumber}}" name="iSNumber" type="text" disabled>
+    </div>
+<div class="form-group col-12">
+<label>Description <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+<input [class.is-invalid]="formPrepareGN.description.invalid && formPrepareGN.description.touched"
+class="form-control"  formControlName="description" ngModel="" name="description" type="text">
+</div>
+    <input type="hidden" formControlName="taskId" ngModel="{{actionRequest?.taskId}}" name="taskId" >
+</div>
+</div>
+
+<div class="modal-footer">
+<button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+<button  class="btn btn-sm btn-primary float-right" type="submit">Upload</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+    <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateExampleModalLabel" aria-hidden="true">a
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateExampleModalLabel">Update Gazzettement Date</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form (ngSubmit)="onUpdate()" [formGroup]="prepareGazetteNotice" class="form">
+                    <div class="modal-body">
+                        <div class="row col-12">
+                            <div class="form-group col-12">
+                                <label>Standard Number <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <input [class.is-invalid]="formPrepareGN.iSNumber.invalid && formPrepareGN.iSNumber.touched"
+                                       class="form-control"  formControlName="iSNumber" ngModel="{{actionRequest?.taskData?.iSNumber}}" name="iSNumber" type="text">
+                            </div>
+                            <input type="hidden" formControlName="taskId" ngModel="{{actionRequest?.taskId}}" name="taskId" >
+                            <div class="form-group col-12">
+                                <label>Description <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <input [class.is-invalid]="formPrepareGN.description.invalid && formPrepareGN.description.touched"
+                                       class="form-control"  formControlName="description" ngModel="" name="description" type="text">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+                        <button  class="btn btn-sm btn-primary float-right" type="submit">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
