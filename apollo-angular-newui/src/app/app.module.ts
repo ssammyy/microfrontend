@@ -146,6 +146,8 @@ import {NepSuccessComponent} from './apollowebs/standards-development/nep-succes
 import {ManagernotificationsComponent} from './apollowebs/standards-development/managernotifications/managernotifications.component';
 import {AllpermitsComponent} from "./apollowebs/quality-assurance/allpermits/allpermits.component";
 import {NgSelectModule} from "@ng-select/ng-select";
+import { IntStdUploadStandardComponent } from './apollowebs/standards-development/international-standard/int-std-upload-standard/int-std-upload-standard.component';
+import { IntStdGazzetteComponent } from './apollowebs/standards-development/international-standard/int-std-gazzette/int-std-gazzette.component';
 
 
 // import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -297,7 +299,9 @@ import {NgSelectModule} from "@ng-select/ng-select";
         ComStdConfirmComponent,
         StdTcTasksComponent,
         NepSuccessComponent,
-        ManagernotificationsComponent
+        ManagernotificationsComponent,
+        IntStdUploadStandardComponent,
+        IntStdGazzetteComponent
 
     ]
 

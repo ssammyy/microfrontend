@@ -364,6 +364,8 @@ export interface ProposalComments{
 }
 export interface PropComments{
     proposal_doc_name: string;
+    ID: number;
+    comments: string;
 
 }
 export interface ISAdoptionComments{
@@ -371,6 +373,7 @@ export interface ISAdoptionComments{
     adoption_proposal_comment: string;
     user_id: string;
     comment_time: string;
+    ID: number;
 }
 export interface ISTcSecTASKS{
     taskId : string;
@@ -382,6 +385,13 @@ export interface IsTcSecTaskData{
     user_id: string;
     comment_time: string;
     proposal_doc_name: string;
+    ID: number;
+}
+export interface ISDecision{
+    taskId: string;
+    accentTo: boolean;
+    approvalID: bigint;
+    comments: string;
 }
 export interface ISAdoptionJustification{
     id: number;
@@ -424,6 +434,13 @@ export interface JSListTaskData{
     user_id: string;
     comment_time: string;
     proposal_doc_name: string;
+    ID: number;
+}
+export interface ISJustificationDecision{
+    taskId: string;
+    accentTo: boolean;
+    approvalID: bigint;
+    comments: string;
 }
 export interface ISSacSecTASKS{
     taskId : string;
@@ -449,6 +466,33 @@ export interface ISSacSecTaskData{
     user_id: string;
     comment_time: string;
     proposal_doc_name: string;
+    ID: number;
+}
+export interface ISHopTASKS{
+    taskId : string;
+    name: string;
+    taskData: ISHopTaskData;
+}
+export interface ISHopTaskData{
+    id: number;
+    meetingDate: string;
+    tc_id: string;
+    tcSec_id: string;
+    slNumber: string;
+    requestNumber: string;
+    requestedBy: string;
+    issuesAddressed: string;
+    tcAcceptanceDate: string;
+    referenceMaterial: string;
+    department: string;
+    taskId: string;
+    status: string;
+    remarks: string;
+    adoption_proposal_comment: string;
+    user_id: string;
+    comment_time: string;
+    proposal_doc_name: string;
+    ID: number;
 }
 
 //********************************************************** International Standards Adoption -END **********************************************************

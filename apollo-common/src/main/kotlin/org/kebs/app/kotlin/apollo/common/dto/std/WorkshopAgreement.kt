@@ -55,3 +55,17 @@ class EditCompanyStandard(
     @JsonProperty("comStdNumber")  var comStdNumber: String,
     @JsonProperty("savedRowID")  var id: Long,
 ){}
+class ISDecision(
+    @JsonProperty("taskId") val taskId: String,
+    @JsonProperty("accentTo") val accentTo: Boolean,
+    @JsonProperty("approvalID")  val approvalID: Long,
+    @JsonProperty("comments") val comments: String
+) {
+}
+class ISJustificationDecision(
+    @JsonProperty("taskId") val taskId: String,
+    @JsonProperty("accentTo") val accentTo: Boolean,
+    @JsonProperty("approvalID")  val approvalID: Long,
+    @JsonProperty("comments") val comments: String
+) {
+}

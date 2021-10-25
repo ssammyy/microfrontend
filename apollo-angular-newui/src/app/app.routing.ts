@@ -79,6 +79,7 @@ import {StdTcWorkplanComponent} from "./apollowebs/standards-development/standar
 import {AllpermitsComponent} from "./apollowebs/quality-assurance/allpermits/allpermits.component";
 import {NepNotificationComponent} from "./apollowebs/standards-development/nep-notification/nep-notification.component";
 import {ManagernotificationsComponent} from "./apollowebs/standards-development/managernotifications/managernotifications.component";
+import {IntStdUploadStandardComponent} from "./apollowebs/standards-development/international-standard/int-std-upload-standard/int-std-upload-standard.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -444,7 +445,7 @@ export const routes: Routes = [
     },
     {
         path: 'isProposalComments', component: AdminLayoutComponent,
-        canActivate: [RouteGuard],
+        //canActivate: [RouteGuard],
         children: [{path: '', component: IntStdCommentsComponent}]
     },
     {
@@ -461,6 +462,11 @@ export const routes: Routes = [
         path: 'isJustificationApp', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [{path: '', component: IntStdJustificationAppComponent}]
+    },
+    {
+        path: 'isUploadStd', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdUploadStandardComponent}]
     },
     // SD SYSTEMIC REVIEW
     {

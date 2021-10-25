@@ -37,6 +37,7 @@ interface ComStandardDraftUploadsRepository : JpaRepository<ComStandardDraftUplo
 interface ComStandardUploadsRepository : JpaRepository<ComStandardUploads, Long> {
 }
 interface ISAdoptionJustificationRepository : JpaRepository<ISAdoptionJustification, Long> {
+    fun findAllByOrderByIdDesc(): MutableList<ISAdoptionJustification>
 }
 interface ISAdoptionProposalRepository: JpaRepository<ISAdoptionProposal, Long> {
     fun findAllByOrderByIdDesc(): MutableList<ISAdoptionProposal>
@@ -46,6 +47,12 @@ interface ISGazettementRepository : JpaRepository<ISGazettement, Long> {
 interface ISGazetteNoticeRepository : JpaRepository<ISGazetteNotice, Long> {
 }
 interface ISUploadStandardRepository : JpaRepository<ISUploadStandard, Long> {
+    fun findAllByOrderByIdDesc(): MutableList<ISUploadStandard>
+}
+interface ISJustificationUploadsRepository : JpaRepository<ISJustificationUploads, Long> {
+}
+interface ISStandardUploadsRepository : JpaRepository<ISStandardUploads, Long> {
+
 }
 
 interface NWADISDTJustificationRepository : HazelcastRepository<NWADiSdtJustification, Long>{
