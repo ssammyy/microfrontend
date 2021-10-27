@@ -51,14 +51,13 @@ export class CurrencyExchangeRatesComponent implements OnInit {
                 type: 'date',
                 valuePrepareFunction: (date) => {
                     if (date) {
-                        // return new DatePipe('he-IL').transform(date, 'dd/MM/yyyy hh:mm');
-                        return date
+                        return new DatePipe('en-US').transform(date, 'dd/MM/yyyy hh:mm');
                     }
                     return ""
                 },
             },
             status: {
-                title: 'Application Date',
+                title: 'Status',
                 type: 'custom',
                 renderComponent: ConsignmentStatusComponent
             }
@@ -90,7 +89,7 @@ export class CurrencyExchangeRatesComponent implements OnInit {
                     res => {
                         if (res.responseCode == "00") {
                             this.diService.showSuccess(res.message, () => {
-                                this.filterByCurrency(null)
+                                this.loadConversionRates(null)
                             })
                         } else {
                             this.diService.showError(res.message, null)

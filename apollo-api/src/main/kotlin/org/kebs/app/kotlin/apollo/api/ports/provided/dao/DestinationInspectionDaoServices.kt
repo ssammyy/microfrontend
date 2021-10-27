@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import java.math.BigDecimal
+import java.math.RoundingMode
 import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
@@ -966,6 +967,17 @@ class DestinationInspectionDaoServices(
             val bank3Details = invoiceDaoService.findPaymentMethodtype(applicationMapProperties.mapBankThreeDetails)
 
             val demandNote: CustomDemandNoteXmlDto = it.toCdDemandNoteXmlRecordRefl()
+            demandNote.demandNoteNumber = it.demandNoteNumber
+            demandNote.address = it.address
+            demandNote.amountPayable = it.amountPayable
+            demandNote.cfvalue = it.cfvalue
+            demandNote.id = it.id
+            demandNote.totalAmount = it.totalAmount
+            demandNote.entryAblNumber = it.entryAblNumber
+            demandNote.dateGenerated = demandNote.convertTimestampToKeswsValidDate(it.dateGenerated
+                    ?: Date(java.util.Date().time))
+            demandNote.rate = it.rate
+            demandNote.product = it.product
             demandNote.paymentInstruction1 = PaymenInstruction1(bank1Details)
             demandNote.paymentInstruction2 = PaymenInstruction2(bank2Details)
             demandNote.paymentInstruction3 = PaymenInstruction3(bank3Details)
@@ -975,15 +987,16 @@ class DestinationInspectionDaoServices(
             val demandNoteFinalDto = DemandNoteXmlDTO()
             demandNoteFinalDto.customDemandNote = demandNote
 
-            val fileName = demandNoteFinalDto.customDemandNote?.demandNoteNumber?.let {
+            val fileName = it.demandNoteNumber?.let {
                 commonDaoServices.createKesWsFileName(applicationMapProperties.mapKeswsDemandNoteDoctype, it)
-            }
+            } ?: throw ExpectedDataNotFound("Demand note number not found")
+            KotlinLogging.logger { }.debug("DEMAND NOTE FILE NAME: $fileName")
+            val xmlFile = fileName.let { commonDaoServices.serializeToXml(it, demandNoteFinalDto) }
+                    ?: throw ExpectedDataNotFound("File name was null")
 
-            val xmlFile = fileName?.let { commonDaoServices.serializeToXml(it, demandNoteFinalDto) }
+            xmlFile.let { it1 -> sftpService.uploadFile(it1) } ?: throw ExpectedDataNotFound("XML file was not created")
 
-            xmlFile?.let { it1 -> sftpService.uploadFile(it1) }
-
-        }
+        } ?: throw  ExpectedDataNotFound("Demand note not found on the server")
     }
 
 
@@ -1055,7 +1068,7 @@ class DestinationInspectionDaoServices(
             maximumKes = diInspectionFeeId.maximumKsh?.toBigDecimal() ?: BigDecimal.ZERO
             fixedAmount = diInspectionFeeId.amountKsh?.toBigDecimal() ?: BigDecimal.ZERO
             rate = diInspectionFeeId.rate
-            feeType=diInspectionFeeId.rateType
+            feeType = diInspectionFeeId.rateType
         }
         val percentage = 100
         var amount: BigDecimal? = null
@@ -1197,6 +1210,11 @@ class DestinationInspectionDaoServices(
                     ?: BigDecimal.ZERO)
 
         }
+
+        demandNote.cfvalue = demandNote.cfvalue?.setScale(2, RoundingMode.HALF_UP)
+        demandNote.totalAmount = demandNote.totalAmount?.setScale(2, RoundingMode.HALF_UP)
+        demandNote.amountPayable = demandNote.amountPayable?.setScale(2, RoundingMode.HALF_UP)
+
         if (presentment) {
             return demandNote
         }

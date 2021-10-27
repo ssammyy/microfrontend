@@ -178,8 +178,8 @@ class InvoicePaymentService(
             return true
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Failed to update status", ex)
+            throw ex
         }
-        return false
     }
 
     fun sendDemandNoteStatus(demandNoteId: Long): Boolean {

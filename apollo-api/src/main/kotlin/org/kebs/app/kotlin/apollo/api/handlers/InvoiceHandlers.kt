@@ -2,15 +2,12 @@ package org.kebs.app.kotlin.apollo.api.handlers
 
 import mu.KotlinLogging
 import okhttp3.internal.toLongOrDefault
-import org.joda.time.DateTime
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
-import org.kebs.app.kotlin.apollo.api.payload.request.ConsignmentUpdateRequest
 import org.kebs.app.kotlin.apollo.api.payload.request.DemandNoteForm
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
 import org.kebs.app.kotlin.apollo.api.service.InvoicePaymentService
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
@@ -25,7 +22,6 @@ import org.springframework.web.servlet.function.paramOrNull
 import java.sql.Timestamp
 import java.time.Instant
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Component
@@ -34,11 +30,9 @@ class InvoiceHandlers(
         private val commonDaoServices: CommonDaoServices,
         private val applicationMapProperties: ApplicationMapProperties,
         private val daoServices: DestinationInspectionDaoServices,
-        private val invoiceDaoService: InvoiceDaoService,
         private val diBpmn: DestinationInspectionBpmn,
         private val invoicePaymentService: InvoicePaymentService
 ) {
-    final val appId = applicationMapProperties.mapPermitApplication
     final val errors = mutableMapOf<String, String>()
     final val DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy")
     fun applicationUploadExchangeRates(req: ServerRequest): ServerResponse {
@@ -129,7 +123,7 @@ class InvoiceHandlers(
 
     fun generateDemandNote(req: ServerRequest): ServerResponse {
         val response = ApiResponseModel()
-        val map = commonDaoServices.serviceMapDetails(appId)
+        val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         try {
             val cdUuid = req.pathVariable("cdUuid")
@@ -231,7 +225,7 @@ class InvoiceHandlers(
             req.pathVariable("invoiceId").let { invoiceId ->
                 val demandNote = daoServices.findDemandNoteWithID(invoiceId.toLongOrDefault(0L))
                 if (demandNote != null) {
-                    val map = commonDaoServices.serviceMapDetails(appId)
+                    val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
                     if (demandNote.status==map.workingStatus) {
                         val loggedInUser = commonDaoServices.loggedInUserDetails()
                         demandNote.status = 50
@@ -264,7 +258,7 @@ class InvoiceHandlers(
             req.pathVariable("invoiceId").let { invoiceId ->
                 val demandNote = daoServices.findDemandNoteWithID(invoiceId.toLongOrDefault(0L))
                 if (demandNote != null) {
-                    val map = commonDaoServices.serviceMapDetails(appId)
+                    val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
                     if (demandNote.status == map.workingStatus) {
                         val cdDetails = daoServices.findCD(demandNote.cdId!!)
                         val data = mutableMapOf<String, Any?>()
@@ -334,7 +328,7 @@ class InvoiceHandlers(
 
         req.pathVariable("cdId").let {
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-            response.data = demandNoteRepository.findAllByCdIdAndStatusIn(it.toLongOrDefault(0L), listOf(-1, 0, map.activeStatus, map.initStatus, map.invalidStatus))
+            response.data = demandNoteRepository.findAllByCdIdAndStatusIn(it.toLongOrDefault(0L), listOf(-1, 0, map.activeStatus,map.workingStatus, map.initStatus, map.invalidStatus))
             response.message = "Success"
             response.responseCode = ResponseCodes.SUCCESS_CODE
             return ServerResponse.ok().body(response)

@@ -77,8 +77,7 @@ export class ConsignmentDocumentListComponent implements OnInit {
                 type: 'date',
                 valuePrepareFunction: (date) => {
                     if (date) {
-                        // return new DatePipe('he-IL').transform(date, 'dd/MM/yyyy hh:mm');
-                        return date
+                        return new DatePipe('en-US').transform(date, 'dd/MM/yyyy hh:mm');
                     }
                     return ""
                 },
