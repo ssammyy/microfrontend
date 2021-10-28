@@ -755,26 +755,6 @@ class DITest {
     }
 
     @Test
-    fun demandNoteUpadetePaymentDetails() {
-        val appId = applicationMapProperties.mapImportInspection
-
-        usersRepo.findByUserName("kpaul7747@gmail.com")
-            ?.let { loggedInUser ->
-//                    val payload = "Assigned Inspection Officer [assignedStatus= 1, assignedRemarks= test]"
-                val map = commonDaoServices.serviceMapDetails(appId)
-                val itemDetails = destinationInspectionDaoServices.findItemWithItemID(281)
-                val demandNote = destinationInspectionDaoServices.findDemandNote(itemDetails)
-                if (demandNote != null) {
-//                        val demandNoteNumber = destinationInspectionDaoServices.demandNotePayment(demandNote, loggedInUser)
-//                        KotlinLogging.logger { }.info { "demandNoteNumber Payment Status = ${demandNoteNumber.paymentStatus} " }
-                }
-//                    = destinationInspectionDaoServices.generateDemandNoteNumber()
-
-            }
-//        assertTrue { demandNoteNumber.isNotEmpty() }
-    }
-
-    @Test
     fun testPvocReconciliationReportDtoIsReturned() {
         val dateFromstr = "2021-01-13"
         val dateTostr = "2021-01-15"

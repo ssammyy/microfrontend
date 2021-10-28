@@ -291,17 +291,8 @@ interface IDemandNoteRepository : HazelcastRepository<CdDemandNoteEntity, Long> 
     fun findAllByCdIdAndStatusIn(cdId: Long, statuses: List<Int>): List<CdDemandNoteEntity>
     fun findFirstByCdIdAndStatusIn(cdId: Long, statuses: List<Int>): CdDemandNoteEntity?
     fun findByCdId(cdId: Long): CdDemandNoteEntity?
-    fun findAllByCdId(cdId: Long): List<CdDemandNoteEntity>
     fun findByDemandNoteNumber(demandNoteNumber: String): CdDemandNoteEntity?
-
-//    fun findFirstByItemIdNo(itemIdNo: Long): List<CdDemandNoteEntity>
-
-    fun findFirstByItemId(itemId: CdItemDetailsEntity): List<CdDemandNoteEntity>
     fun findByInvoiceBatchNumberId(invoiceBatchNumberId: Long): List<CdDemandNoteEntity>?
-
-    fun findByItemIdNo(itemIdNo: Long): CdDemandNoteEntity?
-    fun findByItemId(itemId: CdItemDetailsEntity): CdDemandNoteEntity?
-    fun findByItemIdAndPaymentStatus(itemId: CdItemDetailsEntity, paymentStatus: Int): CdDemandNoteEntity?
     fun findByCdIdAndPaymentStatus(cdId: Long, paymentStatus: Int): CdDemandNoteEntity?
     fun findAllByPaymentStatusAndSwStatusIn(paymentStatus: Int, swStatus: List<Int?>): List<CdDemandNoteEntity>
     fun findAllByPaymentStatus(paymentStatus: Int): List<CdDemandNoteEntity>?
@@ -400,7 +391,7 @@ interface ICdInspectionMotorVehicleChecklistRepository : HazelcastRepository<CdI
 interface ICdInspectionMotorVehicleItemChecklistRepository : HazelcastRepository<CdInspectionMotorVehicleItemChecklistEntity, Long> {
     fun findByInspectionAndItemId(inspectionGeneral: CdInspectionMotorVehicleChecklist, itemId: CdItemDetailsEntity?): CdInspectionMotorVehicleItemChecklistEntity?
     fun findByInspection(inspectionGeneral: CdInspectionMotorVehicleChecklist): List<CdInspectionMotorVehicleItemChecklistEntity>
-    fun findByMinistryReportSubmitStatusIn(status: List<Int>, page: Pageable): Page<CdInspectionMotorVehicleItemChecklistEntity>
+    fun findByMinistryReportSubmitStatusInAndSampled(status: List<Int>, ministrySubmitted:String, page: Pageable): Page<CdInspectionMotorVehicleItemChecklistEntity>
     fun findAllByInspection(inspectionGeneral: CdInspectionMotorVehicleChecklist): List<CdInspectionMotorVehicleItemChecklistEntity>
     fun findFirstByInspection(inspectionGeneral: CdInspectionMotorVehicleChecklist): CdInspectionMotorVehicleItemChecklistEntity?
 }

@@ -211,10 +211,17 @@ class LimsServices(
 
     }
 
-    fun labPdfResponseResults(response: String): String {
-        return response
+    fun checkBsNumberExistOnLims(bsNumber: String): Boolean {
+        var results = false
+        val hmap = HashMap<String, String>()
+        hmap["bsnumber"] = bsNumber
+        val myResults = performPostCall(hmap, applicationMapProperties.mapLimsConfigIntegration)
+        if (myResults != null) {
+            results = true
+        }
+        return results
     }
-
+    
     fun mainFunctionLims(bsNumber: String): Boolean {
         var results = false
         val hmap = HashMap<String, String>()

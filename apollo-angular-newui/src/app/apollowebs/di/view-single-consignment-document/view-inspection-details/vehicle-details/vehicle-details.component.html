@@ -68,13 +68,13 @@
                     <mat-cell mat-cell *matCellDef="let element">
                         <div class="button-row">
                             <button class="btn-sm btn-primary" (click)="customAction(element,'downloadReport')"><i class="fa fa-download"></i>
-                                Ministry Report
+                                KEBS Checklist
                             </button>
                             <button class="btn-sm btn-primary" (click)="customAction(element,'downloadUnMvir')">
                                 <i class="fa fa-download"></i> MVIR
                             </button>
                             <button class="btn-sm btn-primary" *ngIf="element.hasMinistryInspection"
-                                    (click)="customAction(element,'downloadChecklist')"><i class="fa fa-download"></i>Vehicle Inspection Checklist
+                                    (click)="customAction(element,'downloadChecklist')"><i class="fa fa-download"></i>Ministry Report
                             </button>
                             <button class="btn-sm btn-primary" *ngIf="!element.ministryStation"
                                     (click)="customAction(element,'requestMinistryChecklist')">Request Ministry

@@ -889,7 +889,7 @@
                                                 class="btn btn-sm btn-warning" (click)="generateDemandNote()">GENERATE
                                             DEMAND NOTE
                                         </button>
-                                        <button *ngIf="consignment.ui.owner" class="btn btn-sm btn-warning"
+                                        <button *ngIf="consignment.ui.owner && consignment.ui.approveReject" class="btn btn-sm btn-warning"
                                                 (click)="approveRejectConsignment()">Approve / Reject Consignment
                                         </button>
                                         <button *ngIf="consignment.ui.owner && consignment.ui.targetItem && !consignment.ui.targetDisabled"
@@ -903,7 +903,7 @@
                                         <button *ngIf="consignment.ui.assigned" class="btn btn-sm btn-primary"
                                                 (click)="reassignInspectionOfficer()">REASSIGN IO
                                         </button>
-                                        <button *ngIf="consignment.ui.supervisorTarget && !consignment.ui.targeted" class="btn btn-sm btn-warning"
+                                        <button *ngIf="consignment.ui.supervisorTarget && (!consignment.ui.targeted || !consignment.ui.targetDisabled)" class="btn btn-sm btn-warning"
                                                 (click)="supervisorTargetConsignment()">SUPERVISOR TARGET
                                         </button>
                                         <div class="card" *ngFor="let task of supervisorTasks">

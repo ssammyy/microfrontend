@@ -276,15 +276,11 @@ class SsfForm {
     var permitNumber: String? = null
     var description: String? = null
     var ssfSubmissionDate: String? = null
-    var brandName: String? = null
-    var productDescription: String? = null
     fun ssf(): QaSampleSubmissionEntity {
         val df = QaSampleSubmissionEntity()
         df.description = description
         df.permitRefNumber = permitNumber
-        df.brandName = brandName
         df.ssfSubmissionDate = Date(java.util.Date().time)
-        df.productDescription = productDescription
         return df
     }
 }
@@ -297,10 +293,7 @@ class SsfResultForm {
 
 class ScfForm {
     var itemId: Long = 0
-    var manufacturerTraderName: String? = null
-    var manufacturerTraderAddress: String? = null
     var productName: String? = null
-    var brandName: String? = null
     var batchNumber: String? = null
     var batchSize: String? = null
     var sampleSize: String? = null
@@ -313,9 +306,6 @@ class ScfForm {
     fun scf(): QaSampleCollectionEntity {
         val df = QaSampleCollectionEntity()
         df.anyRemarks = remarks
-        df.nameOfManufacture = manufacturerTraderName
-        df.addressOfManufacture = manufacturerTraderAddress
-        df.brandName = brandName
         df.batchNo = batchNumber
         df.batchSize = batchSize
         df.sampleSize = sampleSize

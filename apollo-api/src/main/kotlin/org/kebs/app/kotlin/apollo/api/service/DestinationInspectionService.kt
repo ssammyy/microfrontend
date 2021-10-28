@@ -1,22 +1,18 @@
 package org.kebs.app.kotlin.apollo.api.service
 
 import mu.KotlinLogging
-import okhttp3.internal.toLongOrDefault
 import org.kebs.app.kotlin.apollo.api.payload.*
 import org.kebs.app.kotlin.apollo.api.payload.request.SearchForms
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
+import org.kebs.app.kotlin.apollo.common.dto.CocsItemsEntityDto
+import org.kebs.app.kotlin.apollo.common.dto.CorItemsEntityDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
-import org.kebs.app.kotlin.apollo.store.model.CocItemsEntity
-import org.kebs.app.kotlin.apollo.store.model.CocsEntity
-import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
-import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.di.*
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.*
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -29,11 +25,13 @@ import java.sql.Timestamp
 import java.time.Instant
 import java.util.*
 import org.kebs.app.kotlin.apollo.store.events.SearchInitialization
+import org.kebs.app.kotlin.apollo.store.model.*
 import org.springframework.data.domain.PageRequest
 import java.io.ByteArrayOutputStream
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.time.ZoneId
+import kotlinx.coroutines.*
 
 
 @Service("diService")
@@ -45,13 +43,13 @@ class DestinationInspectionService(
         private val service: DaoService,
         private val iDIUploadsRepo: IDiUploadsRepository,
         private val cocsRepository: ICocsRepository,
+        private val corRepository: ICorsBakRepository,
         private val cocItemsRepository: ICocItemsRepository,
         private val daoServices: DestinationInspectionDaoServices,
         private val cdTypesRepo: IConsignmentDocumentTypesEntityRepository,
         private val importerDaoServices: ImporterDaoServices,
         private val cdAuditService: ConsignmentDocumentAuditService,
         private val qaDaoServices: QADaoServices,
-        private val exchangeRateRepository: ICfgCurrencyExchangeRateRepository,
         private val cdItemsDetailsRepository: ICdItemDetailsRepo,
         private val diBpmn: DestinationInspectionBpmn,
         private val cfsTypesEntity: ICfsTypeCodesRepository,
@@ -242,21 +240,33 @@ class DestinationInspectionService(
         val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
         //If CD without COR, auto-target
         try {
-
-            if (consignmentDocument.cdType?.autoTargetStatus == map.activeStatus) {
-                with(consignmentDocument) {
-                    targetStatus = map.activeStatus
-                    targetReason = "Auto Target ${consignmentDocument.cdType?.typeName}"
-                    targetApproveStatus = map.activeStatus
-                    targetApproveDate = Date(Date().time)
+            consignmentDocument.cdType?.let { cdType ->
+                if (cdType.autoTargetStatus == map.activeStatus) {
+                    val conditions=cdType.autoTargetCondition?.split(",")?: listOf()
+                    if(cdType.autoTargetCondition.isNullOrEmpty() || conditions.contains(consignmentDocument.cdStandardsTwo?.localCocType)) {
+                        with(consignmentDocument) {
+                            targetStatus = map.activeStatus
+                            targetReason = "Auto Target ${consignmentDocument.cdType?.typeName}"
+                            targetApproveStatus = map.activeStatus
+                            targetApproveDate = Date(Date().time)
+                        }
+                        consignmentDocument.assigner?.let { this.daoServices.updateCdDetailsInDB(consignmentDocument, it) }
+                    } else {
+                        KotlinLogging.logger {  }.info("Consignment document does not meet condition for auto target")
+                    }
+                } else if (cdType.autoRejectStatus == map.activeStatus) {
+                    // Reject CD due to auto reject
+                    val conditions=cdType.autoTargetCondition?.split(",")?: listOf()
+                    if(cdType.autoTargetCondition.isNullOrEmpty() || conditions.contains(consignmentDocument.cdStandardsTwo?.localCocType)) {
+                        daoServices.findCdStatusCategory("REJECT").let {
+                            this.updateStatus(cdUuid, it.id, "Auto Rejected Consignment ${consignmentDocument.cdType?.typeName}")
+                        }
+                    }else {
+                        KotlinLogging.logger {  }.info("Consignment document does not meet condition for auto reject")
+                    }
+                }else {
+                    KotlinLogging.logger {  }.debug("Consignment document does not have auto reject/target")
                 }
-                consignmentDocument.assigner?.let { this.daoServices.updateCdDetailsInDB(consignmentDocument, it) }
-            } else if (consignmentDocument.cdType?.autoRejectStatus == map.activeStatus) {
-                // Reject CD due to auto reject
-                daoServices.findCdStatusCategory("REJECT").let {
-                    this.updateStatus(cdUuid, it.id, "Auto Rejected Consignment ${consignmentDocument.cdType?.typeName}")
-                }
-
             }
             return true
         } catch (ex: Exception) {
@@ -315,54 +325,6 @@ class DestinationInspectionService(
             KotlinLogging.logger { }.error("COR GENERATION FAILED", ex)
             throw ex
         }
-    }
-
-    fun localCorReportMap(corId: Long): HashMap<String, Any> {
-        val map = hashMapOf<String, Any>()
-        val corDetails = daoServices.findCORById(corId)
-        val importerDetails = corDetails?.consignmentDocId?.cdImporter?.let { daoServices.findCDImporterDetails(it) }
-        //Importer Details
-        map["ImporterName"] = importerDetails?.name.orEmpty()
-        map["ImporterAddress"] = importerDetails?.physicalAddress.orEmpty()
-        map["ImporterPhone"] = importerDetails?.telephone.orEmpty()
-
-        //COR Details
-        map["CorSerialNo"] = ""
-        map["CorIssueDate"] = commonDaoServices.convertDateToString(commonDaoServices.getCurrentDate(), "mm/dd/yyyy")
-        map["CorExpiryDate"] = commonDaoServices.convertDateToString(commonDaoServices.addMonthsToCurrentDate(3), "mm/dd/yyyy")
-
-
-        //Vehicle Details
-        map["ChassisNumber"] = corDetails?.chasisNumber.orEmpty()
-        map["EngineNo"] = corDetails?.engineNumber.orEmpty()
-        map["EngineCap"] = corDetails?.engineCapacity.orEmpty()
-        map["Yom"] = corDetails?.yearOfManufacture.orEmpty()
-        map["Yor"] = corDetails?.yearOfFirstRegistration.orEmpty()
-        map["CustomsIeNo"] = ""
-        map["Cos"] = corDetails?.countryOfSupply.orEmpty()
-        map["BodyType"] = corDetails?.typeOfBody.orEmpty()
-        map["Fuel"] = corDetails?.fuelType.orEmpty()
-        map["TareWeight"] = corDetails?.tareWeight.toString()
-        map["VehicleType"] = corDetails?.typeOfVehicle.orEmpty()
-        map["ExporterName"] = corDetails?.exporterName.orEmpty()
-        map["ExporterAddress"] = corDetails?.exporterAddress1.orEmpty()
-        map["ExporterEmail"] = corDetails?.exporterEmail.orEmpty()
-        map["IdfNumber"] = ""
-        map["UcrNumber"] = corDetails?.ucrNumber.orEmpty()
-        map["Make"] = corDetails?.make.orEmpty()
-        map["Model"] = corDetails?.model.orEmpty()
-        map["InspectedMileage"] = corDetails?.inspectionMileage.orEmpty()
-        map["UnitsOfMileage"] = corDetails?.unitsOfMileage.orEmpty()
-        map["Color"] = corDetails?.bodyColor.orEmpty()
-        map["AxleNo"] = corDetails?.numberOfAxles.toString()
-        map["Transmision"] = ""
-        map["NoOfPassengers"] = corDetails?.numberOfPassangers.toString()
-        map["PrevRegNo"] = corDetails?.previousCountryOfRegistration.orEmpty()
-        map["PrevCountryOfReg"] = corDetails?.previousCountryOfRegistration.orEmpty()
-        // todo: ADD CHECKLIST COMMENT
-        map["InspectionDetails"] = "to ADD"
-
-        return map
     }
 
     fun rejectCorGeneration(cdUuid: String, blacklistId: Long, supervisor: String, remarks: String): Boolean {
@@ -819,24 +781,46 @@ class DestinationInspectionService(
         daoServices.saveUploads(
                 upLoads,
                 docFile,
-                "File upload",
+                upLoads.documentType ?: "File Upload",
                 loggedInUser,
                 map,
                 null,
                 null
         )
         val targetReader: Reader = InputStreamReader(ByteArrayInputStream(docFile.bytes))
-        val cocs = service.readCocFileFromController(separator, targetReader)
+        when (upLoads.documentType) {
+            "COC" -> {
+                val cocs = service.readCocFileFromController(separator, targetReader)
+                GlobalScope.launch(Dispatchers.IO) {
+                    delay(500L)
+                    processCocDocuments(cocs, loggedInUser)
+                }
+            }
+            "COR" -> {
+                val cors = service.readCorFileFromController(separator, targetReader)
+                GlobalScope.launch(Dispatchers.IO) {
+                    delay(500L)
+                    processCorDocuments(cors, loggedInUser)
+                }
+            }
+            else -> {
+                throw ExpectedDataNotFound("Invalid document type: ${upLoads.documentType}")
+            }
+        }
+    }
+
+    fun processCocDocuments(cocs: List<CocsItemsEntityDto>, loggedInUser: UsersEntity) {
         val uniqueCoc = cocs.map { it.cocNumber }.distinct()
         uniqueCoc.forEach {
             it
                     ?.let { u ->
                         val coc = cocs.firstOrNull { it.cocNumber == u }
-                        cocsRepository.findByUcrNumberAndCocType(
-                                coc?.ucrNumber
-                                        ?: throw InvalidValueException("Record with empty UCR Number not allowed"), "coc")
+                        if (coc == null) {
+                            return
+                        }
+                        cocsRepository.findByUcrNumberAndCocType(coc.ucrNumber ?: "NA", "coc")
                                 ?.let {
-                                    throw InvalidValueException("CoC with UCR number already exists")
+                                    KotlinLogging.logger {}.warn("CoC with UCR number already exists: ${coc.ucrNumber}")
                                 }
                                 ?: run {
                                     var entity = CocsEntity().apply {
@@ -850,7 +834,7 @@ class DestinationInspectionService(
                                         shipmentGrossWeight = coc.shipmentGrossWeight ?: "0.0"
                                         importerPin = coc.importerPin ?: "NA"
                                         shipmentQuantityDelivered = coc.shipmentQuantityDelivered ?: "0"
-                                        cocRemarks = coc.cocRemarks
+                                        cocRemarks = coc.cocRemarks ?: "NA"
                                         issuingOffice = coc.issuingOffice
                                         importerName = coc.importerName
                                         importerPin = coc.importerPin ?: "NA"
@@ -897,6 +881,15 @@ class DestinationInspectionService(
 
 
                                     }
+
+                                    if (coc.placeOfInspection.isNullOrEmpty()) {
+                                        entity.placeOfInspection = "UNDEFINED"
+                                    } else {
+                                        entity.placeOfInspection = coc.placeOfInspection.toString()
+                                    }
+                                    if (entity.cocRemarks.isNullOrEmpty()) {
+                                        entity.cocRemarks = "NA"
+                                    }
                                     entity = cocsRepository.save(entity)
                                     cocs.filter { dto -> dto.cocNumber == u }.forEach { cocItems ->
                                         val itemEntity = CocItemsEntity().apply {
@@ -914,16 +907,14 @@ class DestinationInspectionService(
                                             shipmentLineStandardsReference =
                                                     cocItems.shipmentLineStandardsReference ?: "UNDEFINED"
                                             shipmentLineRegistration = cocItems.shipmentLineRegistration ?: "UNDEFINED"
-                                            shipmentLineRegistration = cocItems.shipmentLineRegistration ?: "UNDEFINED"
                                             status = 1
                                             createdBy = loggedInUser.userName
                                             createdOn = Timestamp.from(Instant.now())
                                             shipmentLineBrandName = "UNDEFINED"
 
-
                                         }
                                         cocItemsRepository.save(itemEntity)
-
+                                        KotlinLogging.logger { }.info("SEND FOREIGN COC: ${entity.cocNumber}")
                                         service.submitCocToKeSWS(entity)
 
                                     }
@@ -933,6 +924,65 @@ class DestinationInspectionService(
 
                     }
                     ?: KotlinLogging.logger { }.info("Empty value")
+        }
+    }
+
+    fun processCorDocuments(cors: List<CorItemsEntityDto>, loggedInUser: UsersEntity) {
+        cors.forEach { cor ->
+            corRepository.findByChasisNumber(cor.chassisNumber ?: "")
+                    ?.let {
+                        KotlinLogging.logger {}.info("CoR with chassis number already exists: ${cor.chassisNumber}")
+                    }
+                    ?: run {
+                        var entity = CorsBakEntity().apply {
+                            corNumber = cor.corNumber
+                            corIssueDate = cor.dateOfIssue
+                            countryOfSupply = cor.countryOfSupply
+                            inspectionCenter = cor.inspectionCenter
+                            applicationBookingDate = cor.applicationBookingDate
+                            inspectionDate = cor.inspectionDate
+                            make = cor.vehicleMake
+                            typeOfVehicle = "UNKNOWN"
+                            typeOfBody = "UNKNOWN"
+                            bodyColor = "UNKNOWN"
+                            customsIeNo = "UNKNOWN"
+                            fuelType = "UNKNOWN"
+                            transmission = "UNKNOWN"
+                            inspectionFee = -1
+                            inspectionFeeCurrency = "NA"
+                            inspectionFeePaymentDate = Timestamp.from(Instant.now())
+                            inspectionOfficer = loggedInUser.userName ?: "NA"
+                            tareWeight = -1
+                            grossWeight = -1
+                            model = cor.vehicleModel
+                            chasisNumber = cor.chassisNumber
+                            engineNumber = cor.engineNumber
+                            engineCapacity = cor.engineCapacity
+                            yearOfFirstRegistration = cor.yearOfFirstReg ?: "UNDEFINED"
+                            yearOfManufacture = cor.yearOfManufacture
+                            inspectionMileage = cor.millage.toString()
+                            unitsOfMileage = cor.millageUnit
+                            inspectionRemarks = cor.remarks ?: "UNDEFINED"
+                            exporterName = "UNDEFINED"
+                            exporterAddress1 = "UNDEFINED"
+                            exporterAddress2 = "UNDEFINED"
+                            exporterEmail = "UNDEFINED"
+                            previousCountryOfRegistration = cor.countryOfSupply
+                            previousRegistrationNumber = "UNKNOWN"
+                            status = 1
+                            createdBy = loggedInUser.userName
+                            createdOn = Timestamp.from(Instant.now())
+                            partner = loggedInUser.userName
+                            partner = loggedInUser.userName
+                        }
+                        if (entity.inspectionRemarks.isNullOrEmpty()) {
+                            entity.inspectionRemarks = "NA"
+                        }
+                        entity = corRepository.save(entity)
+                        // Submit to cor
+                        KotlinLogging.logger { }.info("SEND FOREIGN COR: ${entity.chasisNumber}")
+                        this.daoServices.submitCoRToKesWS(entity)
+                    }
         }
     }
 
@@ -950,7 +1000,7 @@ class DestinationInspectionService(
         val response = ApiResponseModel()
         try {
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-            var cdDetails = daoServices.findCDWithUuid(cdUuid)
+            val cdDetails = daoServices.findCDWithUuid(cdUuid)
             // When IO requests for details, they are are auto assigned
             if (isInspectionOfficer && cdDetails.assignedInspectionOfficer == null) {
                 this.selfAssign(cdDetails)

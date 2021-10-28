@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.store.customdto
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
+import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.store.model.CocItemsEntity
 import org.kebs.app.kotlin.apollo.store.model.CocsEntity
 import java.sql.Timestamp
@@ -173,7 +174,7 @@ class CustomCocXmlDto {
 
     fun convertTimestampToKeswsValidDate(timestamp: Timestamp): String {
         val sdf = SimpleDateFormat("yyyy-MM-dd")
-        val date =sdf.format(timestamp)
+        val date = sdf.format(timestamp)
         return date
     }
 }
@@ -232,11 +233,11 @@ fun CocsEntity.toCocXmlRecordRefl() = with(CustomCocXmlDto::class.primaryConstru
     })
 }
 
-fun CocItemsEntity.toCocItemDetailsXmlRecordRefl() = with(CocDetails::class.primaryConstructor!!) {
-    val propertiesByName = CocItemsEntity::class.memberProperties.associateBy { it.name }
-    callBy(args = parameters.associate { parameter ->
-        parameter to when (parameter.name) {
-            else -> propertiesByName[parameter.name]?.get(this@toCocItemDetailsXmlRecordRefl)
-        }
-    })
-}
+fun CocItemsEntity.toCocItemDetailsXmlRecordRefl(cocNumber: String) = CocDetails(
+        this.shipmentLineNumber, this.shipmentLineHscode?:"NA", this.shipmentLineQuantity.toLong(),
+        this.shipmentLineUnitofMeasure?:"NA",
+        this.shipmentLineDescription?:"NA", this.shipmentLineVin?:"NA",
+        this.shipmentLineStickerNumber?:"NA", this.shipmentLineIcs?:"NA",
+        this.shipmentLineStandardsReference?:"NA", this.shipmentLineLicenceReference?:"NA",
+        this.shipmentLineRegistration?:"NA",cocNumber ,this.shipmentLineBrandName?:"NA"
+)

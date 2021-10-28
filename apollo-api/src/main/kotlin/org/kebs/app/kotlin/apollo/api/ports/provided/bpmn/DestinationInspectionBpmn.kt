@@ -93,6 +93,7 @@ class DestinationInspectionBpmn(
         detail.varField8 = processStarted.toString()
         detail.varField9 = Timestamp.from(Instant.now()).toString()
         detail.varField10 = "Submitted to ministry"
+        saved.varField1=processInstance.processDefinitionId
         // Update CD status
         this.daoServices.updateCdItemDetailsInDB(detail, null)
         detail.cdDocId?.let {

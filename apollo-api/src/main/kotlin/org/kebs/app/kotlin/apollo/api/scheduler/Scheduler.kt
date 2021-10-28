@@ -60,7 +60,7 @@ class Scheduler(
     }
 
     @Scheduled(fixedDelay = 600000)
-
+    @Profile("prod")
     fun fetchKeswsFiles() {
         sftpSchedulerImpl.downloadKeswsFiles()
     }

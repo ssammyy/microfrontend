@@ -20,8 +20,6 @@ export class SsfDetailsFormComponent implements OnInit {
         this.form = this.fb.group({
             permitNumber: ['',],
             ssfSubmissionDate: ['', Validators.required],
-            brandName: ['', [Validators.required, Validators.maxLength(150)]],
-            productDescription: ['', [Validators.required, Validators.maxLength(150)]],
             description: ['', Validators.maxLength(256)],
         })
     }

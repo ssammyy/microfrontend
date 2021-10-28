@@ -50,10 +50,6 @@ class CdDemandNoteEntity : Serializable {
     @Basic
     var destinationFeeValue: Long? = 0
 
-    @Column(name = "ITEM_ID_NO")
-    @Basic
-    var itemIdNo: Long? = null
-
     @Column(name = "RATE")
     @Basic
     var rate: String? = null
@@ -73,18 +69,6 @@ class CdDemandNoteEntity : Serializable {
     @Column(name = "PRO_IDE_NUMBER")
     @Basic
     var proIdeNumber: String? = null
-
-    @Column(name = "KPA_KAHL_NUMBER")
-    @Basic
-    var kpaKahlNumber: String? = null
-
-    @Column(name = "KYC")
-    @Basic
-    var kyc: String? = null
-
-    @Column(name = "ITEM_HSCODE")
-    @Basic
-    var itemHscode: String? = null
 
     @Column(name = "DATE_GENERATED")
     @Basic
@@ -170,10 +154,6 @@ class CdDemandNoteEntity : Serializable {
     @Basic
     var deletedOn: Timestamp? = null
 
-    @JoinColumn(name = "ITEM_ID", referencedColumnName = "ID")
-    @ManyToOne
-    var itemId: CdItemDetailsEntity? = null
-
     @JoinColumn(name = "DESTINATION_FEE_ID", referencedColumnName = "ID")
     @ManyToOne
     var destinationFeeId: DestinationInspectionFeeEntity? = null
@@ -220,20 +200,16 @@ class CdDemandNoteEntity : Serializable {
                 cdId == that.cdId &&
                 destinationFeeValue == that.destinationFeeValue &&
                 invoiceBatchNumberId == that.invoiceBatchNumberId &&
-                itemHscode == that.itemHscode &&
                 nameImporter == that.nameImporter &&
                 address == that.address &&
                 telephone == that.telephone &&
                 product == that.product &&
                 cfvalue == that.cfvalue &&
                 rate == that.rate &&
-                itemIdNo == that.itemIdNo &&
                 totalAmount == that.totalAmount &&
                 amountPayable == that.amountPayable &&
                 entryAblNumber == that.entryAblNumber &&
                 proIdeNumber == that.proIdeNumber &&
-                kpaKahlNumber == that.kpaKahlNumber &&
-                kyc == that.kyc &&
                 dateGenerated == that.dateGenerated &&
                 descriptionGoods == that.descriptionGoods &&
                 ucrNumber == that.ucrNumber &&
@@ -272,7 +248,6 @@ class CdDemandNoteEntity : Serializable {
             destinationFeeValue,
             nameImporter,
             address,
-            itemHscode,
             telephone,
             product,
                 cfvalue,
@@ -281,9 +256,6 @@ class CdDemandNoteEntity : Serializable {
                 amountPayable,
                 entryAblNumber,
                 proIdeNumber,
-                kpaKahlNumber,
-                kyc,
-                itemIdNo,
                 dateGenerated,
                 descriptionGoods,
                 ucrNumber,

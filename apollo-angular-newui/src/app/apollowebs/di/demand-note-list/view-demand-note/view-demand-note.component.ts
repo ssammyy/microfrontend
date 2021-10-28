@@ -38,6 +38,10 @@ export class ViewDemandNoteComponent implements OnInit {
                 title: 'PRODUCT',
                 type: 'string'
             },
+            "varField1": {
+                title: "QUANTITY",
+                type: "string"
+            },
             cfvalue: {
                 title: 'CF VALUE',
                 type: 'custom',
@@ -70,7 +74,7 @@ export class ViewDemandNoteComponent implements OnInit {
     demandNoteId: any
     demandDetails: any
     message: any
-    saveLoading=false
+    saveLoading = false
     deleteLoading = false
 
     constructor(private diService: DestinationInspectionService,
@@ -97,11 +101,11 @@ export class ViewDemandNoteComponent implements OnInit {
     }
 
     deleteDemandNote() {
-        this.deleteLoading=true
+        this.deleteLoading = true
         this.diService.deleteDemandNote(this.demandNoteId)
             .subscribe(
                 res => {
-                    this.deleteLoading=false
+                    this.deleteLoading = false
                     if (res.responseCode == "00") {
                         this.diService.showSuccess(res.message, () => {
                             this.dialogRef.close(true)
@@ -111,7 +115,7 @@ export class ViewDemandNoteComponent implements OnInit {
                     }
                 },
                 error => {
-                    this.deleteLoading=false
+                    this.deleteLoading = false
                 }
             )
     }

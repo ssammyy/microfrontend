@@ -132,7 +132,7 @@ class ChecklistHandler(
             val status = taskId.toInt()
             val page = extractPage(req)
             return ServerResponse.ok()
-                    .body(this.checlistService.listMinistryInspection(listOf(status), page))
+                    .body(this.checlistService.listMinistryInspection(status, page))
         }
     }
 
