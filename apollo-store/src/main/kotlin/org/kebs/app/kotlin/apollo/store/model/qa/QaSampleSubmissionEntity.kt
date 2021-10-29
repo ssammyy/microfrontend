@@ -81,6 +81,14 @@ class QaSampleSubmissionEntity : Serializable {
     @Basic
     var labReportFileId: Long? = null
 
+    @Column(name = "RETURN_OR_DISPOSE")
+    @Basic
+    var returnOrDispose: String? = null
+
+    @Column(name = "CONDITION_OF_SAMPLE")
+    @Basic
+    var conditionOfSample: String? = null
+
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null

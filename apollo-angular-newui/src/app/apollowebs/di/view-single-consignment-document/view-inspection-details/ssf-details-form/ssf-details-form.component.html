@@ -10,6 +10,20 @@
             <input class="waiver-form-input-master" type="date" id="ssfSubmissionDate" name="ssfSubmissionDate"
                    formControlName="ssfSubmissionDate">
         </div>
+        <div class="col-sm-7 col-md-6">
+            <label for="conditionOfSample" class="waiver-form-label">Condition Of Sample</label>
+            <input class="waiver-form-input-master" type="date" id="conditionOfSample" name="conditionOfSample"
+                   formControlName="conditionOfSample">
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="returnOrDispose" class="waiver-form-label">Disposal Method</label>
+            <select id="returnOrDispose" name="returnOrDispose" class="waiver-form-input-master"
+                    formControlName="returnOrDispose">
+                <option value="" disabled selected>Select Disposal method</option>
+                <option value="RETURN">Return Sample</option>
+                <option value="DISPOSE">Dispose Sample</option>
+            </select>
+        </div>
         <div class="col-sm-12 col-md-12">
             <label for="description" class="waiver-form-label">Remarks</label>
             <textarea class="waiver-form-input-master" id="description" name="description" formControlName="description" rows="4">

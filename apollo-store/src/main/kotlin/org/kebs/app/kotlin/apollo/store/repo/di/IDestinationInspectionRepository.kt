@@ -301,7 +301,8 @@ interface IDemandNoteRepository : HazelcastRepository<CdDemandNoteEntity, Long> 
 @Repository
 interface IDemandNoteItemsDetailsRepository : HazelcastRepository<CdDemandNoteItemsDetailsEntity, Long> {
     fun findByDemandNoteId(demandNoteId: Long): List<CdDemandNoteItemsDetailsEntity>
-    fun findByItemId(itemId: Long?): CdDemandNoteItemsDetailsEntity?
+    fun findByItemId(itemId: Long?): List<CdDemandNoteItemsDetailsEntity>
+    fun findByItemIdAndDemandNoteId(itemId: Long?,demandNoteId: Long?): CdDemandNoteItemsDetailsEntity?
 }
 
 

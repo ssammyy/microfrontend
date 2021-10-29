@@ -194,12 +194,6 @@ class ChecklistHandler(
         return ServerResponse.ok().body(response)
     }
 
-    fun completeSsfDetails(req: ServerRequest): ServerResponse {
-        val form = req.body(SsfForm::class.java)
-        // Update sample
-        return ServerResponse.ok().body("OK")
-    }
-
     fun addChecklistSsfDetails(req: ServerRequest): ServerResponse {
         var response = ApiResponseModel()
         val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)

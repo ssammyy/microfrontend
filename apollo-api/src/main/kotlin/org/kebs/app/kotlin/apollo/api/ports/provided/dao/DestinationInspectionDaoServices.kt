@@ -1152,7 +1152,7 @@ class DestinationInspectionDaoServices(
     ) {
         val fee = itemDetails.paymentFeeIdSelected
                 ?: throw Exception("Item details with Id = ${itemDetails.id}, does not Have any Details For payment Fee Id Selected ")
-        var demandNoteItem = iDemandNoteItemRepo.findByItemId(itemDetails.id)
+        var demandNoteItem = iDemandNoteItemRepo.findByItemIdAndDemandNoteId(itemDetails.id, demandNote.id)
         if (demandNoteItem == null) {
             demandNoteItem = CdDemandNoteItemsDetailsEntity()
         }
@@ -1445,6 +1445,16 @@ class DestinationInspectionDaoServices(
         return iDemandNoteRepo.findByIdOrNull(cdID)
     }
 
+    fun findDemandNoteItemByID(itemId: Long): CdDemandNoteItemsDetailsEntity? {
+        val items =iDemandNoteItemRepo.findByItemId(itemId)
+        for(item in items){
+            val dnn=iDemandNoteRepo.findByIdOrNull(item.demandNoteId)?.let { dn -> dn.status == 10 || dn.status == 1}
+            if(dnn==true){
+                return item
+            }
+        }
+        return null
+    }
 
     fun findDemandNoteItemDetails(demandNoteID: Long): List<CdDemandNoteItemsDetailsEntity> {
         return iDemandNoteItemRepo.findByDemandNoteId(demandNoteID)
@@ -1457,14 +1467,6 @@ class DestinationInspectionDaoServices(
     fun findDemandNoteWithPaymentStatus(cdId: Long, status: Int): CdDemandNoteEntity? {
         return iDemandNoteRepo.findByCdIdAndPaymentStatus(cdId, status)
     }
-
-//    fun findDemandNoteByCDID(invoiceBatchId:Long): List<CdDemandNoteEntity> {
-//        iDemandNoteRepo.findByInvoiceBatchNumberId(invoiceBatchId)
-//                ?.let { demandNoteDetails ->
-//                    return demandNoteDetails
-//                }
-//                ?: throw Exception("Demand Note Details with [Invoice Batch ID = ${invoiceBatchId}], do not exist")
-//    }
 
     fun findDemandNoteByBatchID(invoiceBatchId: Long): List<CdDemandNoteEntity> {
         iDemandNoteRepo.findByInvoiceBatchNumberId(invoiceBatchId)

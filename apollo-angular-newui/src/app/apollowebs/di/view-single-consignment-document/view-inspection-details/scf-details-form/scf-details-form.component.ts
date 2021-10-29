@@ -56,6 +56,8 @@ export class ScfDetailsFormComponent implements OnInit {
             batchSize: ['', Validators.required],
             sampleSize: ['', Validators.required],
             samplingMethod: ['', Validators.required],
+            referenceStandard: ['', Validators.required],
+            quantityDeclared: ['', Validators.required],
             reasonsForCollectingSamples: ['', Validators.required],
             witnessName: ['', Validators.required],
             witnessDesignation: ['', Validators.required],
