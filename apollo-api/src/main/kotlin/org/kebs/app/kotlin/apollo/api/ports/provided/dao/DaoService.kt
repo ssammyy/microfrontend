@@ -36,6 +36,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.SftpServiceImpl
 import org.kebs.app.kotlin.apollo.common.dto.CocsItemsEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.CorItemsEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.CurrencyExchangeRatesEntityDto
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -79,11 +80,11 @@ import javax.xml.stream.XMLOutputFactory
 
 @Service
 class DaoService(
-    private val sslContextFactory: SslContextFactory,
-    private val jasyptStringEncryptor: StringEncryptor,
-    private val cocItemsRepository: ICocItemsRepository,
-    private val applicationMapProperties: ApplicationMapProperties,
-    private val sftpService: SftpServiceImpl
+        private val sslContextFactory: SslContextFactory,
+        private val jasyptStringEncryptor: StringEncryptor,
+        private val cocItemsRepository: ICocItemsRepository,
+        private val applicationMapProperties: ApplicationMapProperties,
+        private val sftpService: SftpServiceImpl
 ) {
 
 
@@ -133,37 +134,37 @@ class DaoService(
                     .format(now)
 
     final suspend inline fun <reified T : Any> processResponses(
-        response: HttpResponse?,
-        log: WorkflowTransactionsEntity,
-        url: String,
-        config: IntegrationConfigurationEntity,
+            response: HttpResponse?,
+            log: WorkflowTransactionsEntity,
+            url: String,
+            config: IntegrationConfigurationEntity,
     ): Triple<WorkflowTransactionsEntity, T?, HttpResponse?> {
         var res: T? = null
         try {
 
 
             response
-                ?.let { r ->
-                    when {
-                        r.status.value >= config.okLower && r.status.value <= config.okUpper -> {
+                    ?.let { r ->
+                        when {
+                            r.status.value >= config.okLower && r.status.value <= config.okUpper -> {
 
-                            val responseText = r.readText()
+                                val responseText = r.readText()
 
-                            KotlinLogging.logger { }.error(responseText)
+                                KotlinLogging.logger { }.error(responseText)
 
-                            log.integrationResponse = responseText
-                            val message =
-                                "Received [HttpStatus = ${r.status.value}, Text = ${r.status.description}, URL = $url]!"
-                            KotlinLogging.logger { }.info(message)
-                            res = mapper().readValue<T>(responseText)
+                                log.integrationResponse = responseText
+                                val message =
+                                        "Received [HttpStatus = ${r.status.value}, Text = ${r.status.description}, URL = $url]!"
+                                KotlinLogging.logger { }.info(message)
+                                res = mapper().readValue<T>(responseText)
 
-                            log.responseMessage = log.responseMessage?.let { "${it}||$message" } ?: message
-                            log.responseStatus = config.successCode
+                                log.responseMessage = log.responseMessage?.let { "${it}||$message" } ?: message
+                                log.responseStatus = config.successCode
 
 
-                            log.transactionCompletedDate = Timestamp.from(Instant.now())
+                                log.transactionCompletedDate = Timestamp.from(Instant.now())
 
-                        }
+                            }
                             else -> {
                                 log.integrationResponse = r.readText()
                                 val message =
@@ -223,12 +224,12 @@ class DaoService(
     }
 
     suspend fun getHttpResponseFromGetCall(
-        auth: Boolean,
-        url: String,
-        config: IntegrationConfigurationEntity,
-        payload: Any? = null,
-        bodyParams: Map<String, String?>? = null,
-        headerParams: Map<String, String>? = null,
+            auth: Boolean,
+            url: String,
+            config: IntegrationConfigurationEntity,
+            payload: Any? = null,
+            bodyParams: Map<String, String?>? = null,
+            headerParams: Map<String, String>? = null,
     ): HttpResponse? {
         return buildClient(auth, config)?.get<HttpResponse>(url) {
             method = HttpMethod.Get
@@ -277,10 +278,10 @@ class DaoService(
                          */
 
                         setSSLContext(
-                            SSLContext.getInstance("TLS")
-                                .apply {
-                                    init(null, arrayOf(TrustAllX509TrustManager()), SecureRandom())
-                                }
+                                SSLContext.getInstance("TLS")
+                                        .apply {
+                                            init(null, arrayOf(TrustAllX509TrustManager()), SecureRandom())
+                                        }
                         )
                         setSSLHostnameVerifier(NoopHostnameVerifier())
                     }
@@ -353,9 +354,9 @@ class DaoService(
     }
 
     private fun evaluateFinalStatus(
-        log: WorkflowTransactionsEntity,
-        config: IntegrationConfigurationEntity,
-        jobDetails: BatchJobDetails
+            log: WorkflowTransactionsEntity,
+            config: IntegrationConfigurationEntity,
+            jobDetails: BatchJobDetails
     ): Int? {
         return when (log.responseStatus) {
             config.exceptionCode -> jobDetails.endExceptionStatus
@@ -377,59 +378,24 @@ class DaoService(
             readCsvFile<CurrencyExchangeRatesEntityDto>(separator, reader)
 
     fun readCocFileFromController(separator: Char, reader: Reader) =
-        readCsvFile<CocsItemsEntityDto>(separator, reader)
+            readCsvFile<CocsItemsEntityDto>(separator, reader)
 
     fun readCorFileFromController(separator: Char, reader: Reader) = readCsvFile<CorItemsEntityDto>(separator, reader)
 
     private inline fun <reified T> readCsvFile(separator: Char, reader: Reader): List<T> {
 //        FileReader(fileName).use { reader ->
         return csvMapper
-            .readerFor(T::class.java)
-            .with(
-                    CsvSchema
-                            .emptySchema()
-                            .withColumnSeparator(separator)
-                            .withLineSeparator("\n")
-                            .withHeader()
-            )
-            .readValues<T>(reader)
-            .readAll()
-            .toList()
-//        }
-    }
-
-
-    fun submitCocToKeSWS(cocData: CocsEntity) {
-        val coc: CustomCocXmlDto = cocData.toCocXmlRecordRefl()
-        val cocItem = cocItemsRepository.findByCocId(cocData.id)?.get(0)
-        cocItem?.toCocItemDetailsXmlRecordRefl(cocData.cocNumber?:"NA").let { cocDetails ->
-            coc.cocDetals = cocDetails
-            val cocFinalDto = COCXmlDTO()
-            cocFinalDto.coc = coc
-            val fileName = cocFinalDto.coc?.ucrNumber?.let { s ->
-                createKesWsFileName(
-                    applicationMapProperties.mapKeswsCocDoctype,
-                    s
+                .readerFor(T::class.java)
+                .with(
+                        CsvSchema
+                                .emptySchema()
+                                .withColumnSeparator(separator)
+                                .withLineSeparator("\n")
+                                .withHeader()
                 )
-            }
-            val xmlFile = fileName?.let { s -> serializeToXml(s, cocFinalDto) }
-            xmlFile.let { it1 -> it1?.let { file -> sftpService.uploadFile(file) } }
-        }
-    }
-
-    fun serializeToXml(fileName: String, obj: Any): File {
-        try {
-            val xmlString = xmlMapper.writeValueAsString(obj)
-            val targetFile = File(Files.createTempDir(), fileName)
-            targetFile.deleteOnExit()
-            val fileWriter = FileWriter(targetFile)
-            fileWriter.write(xmlString)
-            fileWriter.close()
-            return targetFile
-        } catch (e: Exception) {
-            KotlinLogging.logger { }.error("An error occurred with xml serialization", e)
-            throw RuntimeException("An error occurred while serializing xml")
-        }
+                .readValues<T>(reader)
+                .readAll()
+                .toList()
     }
 
     val xmlMapper: ObjectMapper = run {
@@ -439,7 +405,7 @@ class DaoService(
         oFactory.setProperty(WstxOutputProperties.P_OUTPUT_CDATA_AS_TEXT, true)
         val xf = XmlFactory(iFactory, oFactory)
         val xmlMapper: ObjectMapper = XmlMapper(xf)
-            .registerModule(KotlinModule())
+                .registerModule(KotlinModule())
         xmlMapper.configure(SerializationFeature.WRITE_SELF_REFERENCES_AS_NULL, false)
         xmlMapper.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false)
         xmlMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
@@ -462,16 +428,15 @@ class DaoService(
         val formatted = current.format(formatter)
 
         var finalFileName = filePrefix
-            .plus("-")
-            .plus(documentIdentifier)
-            .plus("-1-B-")
-            .plus(formatted)
-            .plus(".xml")
+                .plus("-")
+                .plus(documentIdentifier)
+                .plus("-1-B-")
+                .plus(formatted)
+                .plus(".xml")
         finalFileName = finalFileName.replace("\\s".toRegex(), "")
 
         return finalFileName
     }
-
 
 
     class TrustAllX509TrustManager : X509TrustManager {

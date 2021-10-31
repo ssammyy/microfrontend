@@ -6,6 +6,8 @@ import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleCollectionEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmissionEntity
 import java.sql.Date
 import java.time.Instant
+import javax.persistence.Basic
+import javax.persistence.Column
 import kotlin.random.Random
 import kotlin.random.nextUInt
 import kotlin.random.nextULong
@@ -302,6 +304,9 @@ class ScfForm {
     var batchSize: String? = null
     var sampleSize: String? = null
     var samplingMethod: String? = null
+    var modeOfRelease: String? = null
+    var labelDetails: String? = null
+    var expiryDate: String? = null
     var reasonsForCollectingSamples: String? = null
     var referenceStandard: String?=null
     var quantityDeclared: String? = null
@@ -311,6 +316,9 @@ class ScfForm {
     fun scf(): QaSampleCollectionEntity {
         val df = QaSampleCollectionEntity()
         df.anyRemarks = remarks
+        df.expiryDate=expiryDate
+        df.labelDetails=labelDetails
+        df.modeOfRelease=modeOfRelease
         df.batchNo = batchNumber
         df.batchSize = batchSize
         df.referenceStandard=referenceStandard

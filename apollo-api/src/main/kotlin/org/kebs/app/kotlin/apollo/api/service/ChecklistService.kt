@@ -836,8 +836,8 @@ class ChecklistService(
             map["batchNo"] = inspectionGeneral.batchNo.orEmpty()
             map["scfNo"] = inspectionGeneral.scfNo.orEmpty()
             map["officerDesignation"] = "IO"
-            map["expiryDate"] = ""
-            map["modeOfRelease"] = ""
+            map["expiryDate"] = inspectionGeneral.expiryDate.orEmpty()
+            map["modeOfRelease"] = inspectionGeneral.modeOfRelease.orEmpty()
             map["quantityDeclared"] = inspectionGeneral.quantityDeclared.orEmpty()
             map["manufacturerName"] = inspectionGeneral.nameOfManufacture.orEmpty()
             map["remarks"] = inspectionGeneral.anyRemarks.orEmpty()
@@ -845,7 +845,7 @@ class ChecklistService(
             map["witnessDesignation"] = inspectionGeneral.witnessDesignation.orEmpty()
             map["witnessDate"] = inspectionGeneral.witnessDate?.let { commonDaoServices.convertDateToString(it, "dd-MM-yyyy") }
                     ?: ""
-            map["labelDetails"]=""
+            map["labelDetails"] = inspectionGeneral.labelDetails.orEmpty()
             map["referenceStandard"] = inspectionGeneral.referenceStandard.orEmpty()
             map["purposeOfTest"] = inspectionGeneral.reasonForCollectingSample.orEmpty()
             val itemDetails = this.daoServices.findItemWithItemID(inspectionGeneral.itemId!!)
@@ -895,6 +895,9 @@ class ChecklistService(
             collectionEntity.brandName = sampleCollectionForm.brandName
             collectionEntity.batchNo = sampleCollectionForm.batchNo
             collectionEntity.permitId = sampleCollectionForm.permitId
+            collectionEntity.modeOfRelease = sampleCollectionForm.modeOfRelease
+            collectionEntity.expiryDate = sampleCollectionForm.expiryDate
+            collectionEntity.labelDetails = sampleCollectionForm.labelDetails
             collectionEntity.batchSize = sampleCollectionForm.batchSize
             collectionEntity.sampleSize = sampleCollectionForm.sampleSize
             collectionEntity.samplingMethod = sampleCollectionForm.samplingMethod

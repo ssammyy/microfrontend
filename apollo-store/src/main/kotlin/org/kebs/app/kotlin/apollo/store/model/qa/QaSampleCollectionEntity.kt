@@ -60,6 +60,17 @@ class QaSampleCollectionEntity : Serializable {
     @Basic
     var batchSize: String? = null
 
+    @Column(name = "MODE_OF_RELEASE")
+    @Basic
+    var modeOfRelease: String? = null
+    @Column(name = "LABEL_DETAILS")
+    @Basic
+    var labelDetails: String? = null
+
+    @Column(name = "EXPIRY_DATE")
+    @Basic
+    var expiryDate: String? = null
+
     @Column(name = "SAMPLE_SIZE")
     @Basic
     var sampleSize: String? = null

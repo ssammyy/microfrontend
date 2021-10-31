@@ -297,7 +297,9 @@ class DestinationInspectionService(
 
             val loggedInUser = this.commonDaoServices.findUserByUserName(supervisor)
             daoServices.generateCor(consignmentDocument, map, loggedInUser).let { corDetails ->
+                // Send to KENTRADE
                 daoServices.submitCoRToKesWS(corDetails)
+                // Update CD
                 consignmentDocument.cdStandard?.let { cdStd ->
                     daoServices.updateCDStatus(
                             cdStd,
@@ -582,8 +584,8 @@ class DestinationInspectionService(
             daoServices.updateCdDetailsInDB(consignmentDocument, null)
 
             KotlinLogging.logger { }.info("Local CoC = ${localCoc.id}")
-            // Send to SW
-            daoServices.sendLocalCoc(localCoc.id)
+            // Send to single window
+            daoServices.sendLocalCoc(localCoc)
             //Generate PDF File & send to importer
             consignmentDocument.cdImporter?.let {
                 daoServices.findCDImporterDetails(it)
@@ -790,6 +792,7 @@ class DestinationInspectionService(
         val targetReader: Reader = InputStreamReader(ByteArrayInputStream(docFile.bytes))
         when (upLoads.documentType) {
             "COC" -> {
+            //Generate PDF File &
                 val cocs = service.readCocFileFromController(separator, targetReader)
                 GlobalScope.launch(Dispatchers.IO) {
                     delay(500L)
@@ -914,10 +917,10 @@ class DestinationInspectionService(
 
                                         }
                                         cocItemsRepository.save(itemEntity)
-                                        KotlinLogging.logger { }.info("SEND FOREIGN COC: ${entity.cocNumber}")
-                                        service.submitCocToKeSWS(entity)
-
                                     }
+                                    // Send to KENTRADE
+                                    KotlinLogging.logger { }.info("SEND FOREIGN COC: ${entity.cocNumber}")
+                                    daoServices.sendLocalCoc(entity)
 
 
                                 }

@@ -423,7 +423,6 @@ class DestinationInspectionDaoServices(
                         localCoc = cocRepo.save(localCoc)
                         KotlinLogging.logger { }.info { "localCoc = ${localCoc.id}" }
                         localCocCoiItems(consignmentDocumentDetailsEntity, localCoc, user, map)
-                        sendLocalCoc(localCoc.id)
                     } catch (e: Exception) {
                         KotlinLogging.logger { }.debug("Threw error from forward express callback")
                         KotlinLogging.logger { }.debug(e.message)
@@ -707,42 +706,36 @@ class DestinationInspectionDaoServices(
     }
 
 
-    fun sendLocalCoc(cocId: Long) {
-
-        val cocsEntity: CocsEntity = cocRepo.findById(cocId).get()
-
-        cocsEntity.let {
-            val coc: CustomCocXmlDto = it.toCocXmlRecordRefl()
+    fun sendLocalCoc(cocsEntity: CocsEntity) {
+            val coc: CustomCocXmlDto = cocsEntity.toCocXmlRecordRefl()
             //COC ITEM
-            val cocItem = iCocItemRepository.findByCocId(cocsEntity.id)?.get(0)
-            cocItem?.toCocItemDetailsXmlRecordRefl(cocsEntity.cocNumber ?: "NA").let {
-                coc.cocDetals = it
-                val cocFinalDto = COCXmlDTO()
-                cocFinalDto.coc = coc
-
-                val fileName = cocFinalDto.coc?.ucrNumber?.let {
-                    commonDaoServices.createKesWsFileName(
-                            applicationMapProperties.mapKeswsCocDoctype,
-                            it
-                    )
+            val listItems = mutableListOf<CocDetails>()
+            iCocItemRepository.findByCocId(cocsEntity.id)?.forEach { cocItem ->
+                cocItem.toCocItemDetailsXmlRecordRefl(cocsEntity.cocNumber ?: "NA").let { cocItemXml ->
+                    listItems.add(cocItemXml)
                 }
-
-                val xmlFile = fileName?.let { commonDaoServices.serializeToXml(it, cocFinalDto) }
-
-                xmlFile?.let { it1 -> sftpService.uploadFile(it1) }
-
             }
+            if (!listItems.isEmpty()) {
+                coc.cocDetals = listItems
+            }
+            val cocFinalDto = COCXmlDTO()
+            cocFinalDto.coc = coc
 
-        }
+            val fileName = cocsEntity.ucrNumber?.let {
+                commonDaoServices.createKesWsFileName(
+                        applicationMapProperties.mapKeswsCocDoctype,
+                        it
+                )
+            } ?: throw ExpectedDataNotFound("Invalid Local UCR NUmber")
+            val xmlFile = commonDaoServices.serializeToXml(fileName, cocFinalDto)
+            sftpService.uploadFile(xmlFile)
     }
 
     fun sendLocalCoi(cocId: Long) {
-
         val cocsEntity: CocsEntity = cocRepo.findById(cocId).get()
 
         cocsEntity.let {
             val coi: CustomCoiXmlDto = it.toCoiXmlRecordRefl()
-//            val coc: CustomCocXmlDto = it.toCocXmlRecordRefl()
             //COC ITEM
             val cocItem = iCocItemRepository.findByCocId(cocsEntity.id)?.get(0)
             cocItem?.toCocItemDetailsXmlRecordRefl(cocsEntity.cocNumber ?: "NA").let {
@@ -1446,10 +1439,10 @@ class DestinationInspectionDaoServices(
     }
 
     fun findDemandNoteItemByID(itemId: Long): CdDemandNoteItemsDetailsEntity? {
-        val items =iDemandNoteItemRepo.findByItemId(itemId)
-        for(item in items){
-            val dnn=iDemandNoteRepo.findByIdOrNull(item.demandNoteId)?.let { dn -> dn.status == 10 || dn.status == 1}
-            if(dnn==true){
+        val items = iDemandNoteItemRepo.findByItemId(itemId)
+        for (item in items) {
+            val dnn = iDemandNoteRepo.findByIdOrNull(item.demandNoteId)?.let { dn -> dn.status == 10 || dn.status == 1 }
+            if (dnn == true) {
                 return item
             }
         }
@@ -2632,32 +2625,6 @@ class DestinationInspectionDaoServices(
                 ?: throw ServiceMapNotFoundException("Parameter with ID = ${paramId}, Does not exist")
     }
 
-    fun findSavedSampleSubmissionParameterList(paramId: Long): List<CdSampleSubmissionParamatersEntity> {
-        iSampleSubmissionParamRepo.findByIdAndStatus(paramId, commonDaoServices.activeStatus.toInt())
-                ?.let { sampleSubmittedParameter ->
-                    return sampleSubmittedParameter
-                }
-                ?: throw ServiceMapNotFoundException("Parameter with ID = ${paramId}, Does not exist")
-    }
-
-//    fun notifyKRATargetedItem(CDItem: CdItemDetailsEntity, map: ServiceMapsEntity, user: UsersEntity): Boolean {
-//        // TODO: Logic for notifying KRA for inspection
-//        var item = CDItem
-//        with(item) {
-//            inspectionRemarks = "Agreed on the item to be inspected "
-//            inspectionDate = commonDaoServices.getCalculatedDate(7)
-//            inspectionDateSetStatus = map.activeStatus
-//        }
-//        item = updateCdItemDetailsInDB(item, user)
-//
-////        val subject = "INSPECTION SCHEDULED"
-////        val messageBody = "We have scheduled the inspection Date for CD with UCR NUMBER = ${item.cdDocId?.ucrNumber} and ITEM with number =${item.itemNo} , to the following Date......${item.inspectionDate} \n" +
-////                "\n " +
-////                "https://localhost:8006/api/di/cd-item-details?cdItemUuid=${item.id}"
-////        item.cdDocId?.assignedInspectionOfficer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
-//        return true
-//    }
-
     fun sendMotorVehicleInspectionRequestEmail(recipientEmail: String, paramatersEntity: CdItemDetailsEntity): Boolean {
         val subject = "Motor Vehicle Inspection Request"
         val messageBody = "Please Find The attached motor vehicle details submitted for inspection  \n" +
@@ -2742,60 +2709,6 @@ class DestinationInspectionDaoServices(
 
                             }
                 }
-    }
-
-
-    fun updateCDSampleParamsDetails(
-            sampleSubmitParamEntity: CdSampleSubmissionParamatersEntity,
-            paramID: Long,
-            user: UsersEntity,
-            s: ServiceMapsEntity
-    ): CdSampleSubmissionParamatersEntity {
-        // Getting an Object with fields that user Has Updated that are needed to be updated to the database
-        JSONObject(ObjectMapper().writeValueAsString(sampleSubmitParamEntity))
-                .let { addValues ->
-                    // Creating of a json object that can be user to map the details from Database with the updated fields from user
-                    JSONObject(ObjectMapper().writeValueAsString(findSavedSampleSubmissionParameter(paramID)))
-                            .let { JCD ->
-                                // Looping each field of the updated Entity to be updated
-                                for (key in addValues.keys()) {
-                                    key.let { keyStr ->
-                                        // Checks if the field with the following Key is null or not Null (meaning it is the field that is updated)
-                                        when {
-                                            addValues.isNull(keyStr) -> {
-                                                KotlinLogging.logger { }
-                                                        .info { "MY null values key: $keyStr value: ${addValues.get(keyStr)}" }
-                                            }
-//                                            keyStr.equals("confirmAssignedUserId").and(addValues.get(keyStr) != null) -> {
-//                                                KotlinLogging.logger { }.info { "My values key: $keyStr value: ${addValues.get(keyStr)}" }
-//
-//                                                removeKeyAndUpdateValueJsonObject(JCD,"assignedInspectionOfficer", convertEntityToJsonObject(commonDaoServices.findUserByID(addValues.getLong(keyStr))))
-//                                                KotlinLogging.logger { }.info { "My values key: $keyStr value: ${addValues.get(keyStr)}" }
-//                                            }
-                                            // Field with Key Have values so we will update the  database value with the updated one
-                                            else -> {
-                                                removeKeyAndUpdateValueJsonObject(JCD, keyStr, addValues.get(keyStr))
-                                                KotlinLogging.logger { }
-                                                        .info { "My values key: $keyStr value: ${addValues.get(keyStr)}" }
-                                            }
-                                        }
-                                    }
-                                }
-                                // Change the JCD to an Entity to be saved
-                                ObjectMapper().readValue(JCD.toString(), CdSampleSubmissionParamatersEntity::class.java)
-                                        .let { updateParam ->
-                                            return updateCdItemSampleParamDetailsInDB(updateParam, user)
-                                        }
-
-                            }
-                }
-    }
-
-    fun makeItemNotBeNull(itemId: Long, itemDetails: CdItemDetailsEntity): CdItemDetailsEntity {
-        with(itemDetails) {
-            this.id = itemId
-        }
-        return itemDetails
     }
 
     fun checkIfChecklistUndergoesSampling(
@@ -2887,10 +2800,6 @@ class DestinationInspectionDaoServices(
                 }
     }
 
-    fun findAllCompleteMinistryInspectionRequests(status: Int, page: PageRequest): Page<CdItemDetailsEntity> {
-        return iCdItemsRepo.findByMinistrySubmissionStatus(status, page)
-    }
-
 
     fun updateCdInspectionMotorVehicleItemChecklistInDB(
             cdInspectionMotorVehicleItemChecklistEntity: CdInspectionMotorVehicleItemChecklistEntity,
@@ -2907,46 +2816,6 @@ class DestinationInspectionDaoServices(
         return iCdInspectionMotorVehicleItemChecklistRepo.save(cdInspectionMotorVehicleItemChecklistEntity)
     }
 
-    fun updateCdInspectionGeneralChecklistInDB(
-            cdInspectionGeneralEntity: CdInspectionGeneralEntity,
-            user: UsersEntity
-    ): CdInspectionGeneralEntity {
-        with(cdInspectionGeneralEntity) {
-            modifiedBy = commonDaoServices.getUserName(user)
-            modifiedOn = commonDaoServices.getTimestamp()
-        }
-        KotlinLogging.logger { }.info { "CdInspectionGeneralEntity UPDATED with ID =  ${cdInspectionGeneralEntity.id}" }
-        return iCdInspectionGeneralRepo.save(cdInspectionGeneralEntity)
-    }
-
-    fun findLocalCorByUcrNumber(ucrNumber: String): CdLocalCorEntity {
-        iLocalCorRepo.findByUcrNumber(ucrNumber)
-                ?.let { cocEntity ->
-                    return cocEntity
-                }
-                ?: throw Exception("Local Cor Details with the following UCR NUMBER = ${ucrNumber}, does not Exist")
-    }
-
-
-    fun createLocalCocReportMap(localCocEntity: CocsEntity): HashMap<String, Any> {
-        val map = hashMapOf<String, Any>()
-
-        map["CocNo"] = localCocEntity.cocNumber.orEmpty()
-        map["IssueDate"] = localCocEntity.cocIssueDate.toString()
-        map["EntryNo"] = ""
-        map["IdfNo"] = ""
-        map["ImporterName"] = localCocEntity.importerName.orEmpty()
-        map["ImporterAddress"] = localCocEntity.importerAddress1.orEmpty()
-        map["ImporterPin"] = localCocEntity.importerPin.orEmpty()
-        map["ClearingAgent"] = ""
-        map["PortOfEntry"] = localCocEntity.portOfDestination.orEmpty()
-        map["UcrNo"] = localCocEntity.ucrNumber.orEmpty()
-        map["Status"] = localCocEntity.status.toString()
-        map["Remarks"] = localCocEntity.cocRemarks.toString()
-        map["CoCType"] = localCocEntity.cocType.toString()
-
-        return map
-    }
 
     fun findAllDemandNotesWithSwPending(paymentStatus: Int): List<CdDemandNoteEntity> {
         return iDemandNoteRepo.findAllByPaymentStatusAndSwStatusIn(paymentStatus, listOf(0, null))
@@ -3004,14 +2873,14 @@ class DestinationInspectionDaoServices(
         val cor: CustomCorXmlDto = corsBakEntity.toCorXmlRecordRefl()
         val corDto = CORXmlDTO()
         corDto.cor = cor
-        val fileName = corDto.cor?.chasisNumber?.let {
+        val fileName = corsBakEntity.chasisNumber?.let {
             commonDaoServices.createKesWsFileName(
                     applicationMapProperties.mapKeswsCorDoctype,
                     it
             )
-        }
-        val xmlFile = fileName?.let { commonDaoServices.serializeToXml(it, corDto) }
-        xmlFile?.let { it1 -> sftpService.uploadFile(it1) }
+        } ?: throw ExpectedDataNotFound("Invalid chassis number")
+        val xmlFile = commonDaoServices.serializeToXml(fileName, corDto)
+        sftpService.uploadFile(xmlFile)
     }
 
     /*

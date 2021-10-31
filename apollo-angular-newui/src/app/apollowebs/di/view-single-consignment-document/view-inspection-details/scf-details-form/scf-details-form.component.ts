@@ -12,6 +12,12 @@ export class ScfDetailsFormComponent implements OnInit {
     form: FormGroup
     message: any
     loading=false
+    modesOfRelease=[
+        {
+            name: "RRE",
+            description: "Test"
+        }
+    ]
     samplingMethods=[
         {
             name: "Random Sampling",
@@ -55,6 +61,9 @@ export class ScfDetailsFormComponent implements OnInit {
             batchNumber: ['', Validators.required],
             batchSize: ['', Validators.required],
             sampleSize: ['', Validators.required],
+            modeOfRelease: ['', Validators.required],
+            labelDetails: ['', Validators.required],
+            expiryDate: ['', Validators.required],
             samplingMethod: ['', Validators.required],
             referenceStandard: ['', Validators.required],
             quantityDeclared: ['', Validators.required],
