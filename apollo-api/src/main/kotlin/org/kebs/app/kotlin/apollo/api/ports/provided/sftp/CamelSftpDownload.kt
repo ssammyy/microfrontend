@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit
 
 
 @Service
-@Profile("!prod")
+@Profile("prod")
 class SFTPService(
         private val iDFDaoService: IDFDaoService,
         private val declarationDaoService: DeclarationDaoService,
@@ -112,6 +112,11 @@ class SFTPService(
         val docSaved = iDFDaoService.mapBaseDocumentToIDF(baseDocumentResponse)
         KotlinLogging.logger { }.info("Base Document Type: ${exchange.message.headers} | Save status: ${docSaved}|")
     }
+
+    fun errorProcessingRequest(exchange: Exchange) {
+        val caused = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Throwable::class.java)
+        // TODO: handle failed upload
+    }
 }
 
 /**
@@ -119,7 +124,7 @@ class SFTPService(
  * Ref: https://access.redhat.com/documentation/en-us/red_hat_jboss_fuse/6.2/html/apache_camel_component_reference/idu-ftp2
  */
 @Component
-@Profile("!prod")
+@Profile("prod")
 class CamelSftpDownload(
         private val properties: CamelFtpProperties,
         private val applicationMapProperties: ApplicationMapProperties,
@@ -129,7 +134,7 @@ class CamelSftpDownload(
             .setHost(properties.host)
             .setPort(properties.port)
             .setPath(properties.path)
-    private lateinit var fromFtpUrl: URI;
+    private lateinit var fromFtpUrl: URI
     val keswsDocTypes = listOf(applicationMapProperties.mapKeswsBaseDocumentDoctype, applicationMapProperties.mapKeswsUcrResDoctype,
             applicationMapProperties.mapKeswsDeclarationDoctype, applicationMapProperties.mapKeswsManifestDoctype, applicationMapProperties.mapKeswsAirManifestDoctype,
             applicationMapProperties.mapKeswsCdDoctype, applicationMapProperties.mapKeswsDeclarationVerificationDoctype)
@@ -141,6 +146,7 @@ class CamelSftpDownload(
                 .addParameter("passiveMode", properties.passiveMode)
                 .addParameter("initialDelay", properties.initialDelay)
                 .addParameter("delay", properties.delay)
+                .addParameter("sortBy","file:modified") // Oldest file first
                 .addParameter("noop", "false")
                 .addParameter("move", properties.move)
                 .addParameter("preMove", properties.preMove)
@@ -198,6 +204,8 @@ class CamelSftpDownload(
 
         from(fromFtpUrl.toString())
                 .log("Processing file.... \${in.headers.CamelFileName}")
+//                .onException()
+//                .bean(SFTPService::class.java, "errorProcessingRequest")
                 .choice()
                 .`when`(header("CamelFileName").startsWith(applicationMapProperties.mapKeswsCdDoctype)) // Process consignment documents
                 .unmarshal(createXmlMapper(ConsignmentDocument::class.java))
@@ -230,7 +238,7 @@ class CamelSftpDownload(
                 .otherwise()
                 .setHeader("error", simple("Invalid file received: \${in.headers.CamelFileName}"))
                 .log("Invalid file \${file:name} complete.")
-                .setHeader("moveFailed", simple( "\${in.headers.CamelFileName}"))
+                .setHeader("moveFailed", simple("\${in.headers.CamelFileName}"))
                 .throwException(java.lang.Exception(header("error").toString()))
                 .endChoice()
                 .end()
@@ -242,7 +250,7 @@ class CamelSftpDownload(
  *
  */
 @Component
-@Profile("!prod")
+@Profile("prod")
 class CamelSftpUpload(
         private val properties: CamelFtpProperties,
 ) : RouteBuilder() {
@@ -251,13 +259,18 @@ class CamelSftpUpload(
             .setHost(properties.host)
             .setPort(properties.port)
             .setPath(properties.uploadDirectory)
+            .addParameter("username", properties.userName)
+            .addParameter("password", properties.password)
     private val fileBuilder = URIBuilder()
             .setScheme("file")
-            .setPath(Paths.get("")
+            .setPath(Paths.get("", properties.outboundDirectory)
                     .toAbsolutePath()
-                    .toString() + properties.outboundDirectory)
+                    .toString())
             .setParameter("runLoggingLevel", properties.logLevel)
-            .setParameter("delete", "true")
+            .setParameter("delete", "false")
+            .setParameter("move", Paths.get("", "sent-files")
+                    .toAbsolutePath()
+                    .toString())
             .setParameter("moveFailed", "error")
             .setParameter("antInclude", properties.antInclude)
             .setParameter("autoCreate", "true")

@@ -15,6 +15,7 @@ import org.kebs.app.kotlin.apollo.api.utils.Delimiters
 import org.kebs.app.kotlin.apollo.api.utils.XMLDocument
 import org.kebs.app.kotlin.apollo.common.dto.UserEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.kesws.receive.ConsignmentDocument
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.customdto.PvocReconciliationReportDto
@@ -23,6 +24,7 @@ import org.kebs.app.kotlin.apollo.store.model.di.*
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.ICountryTypeCodesRepository
+import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IDestinationInspectionFeeRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -98,6 +100,9 @@ class DITest {
 
     @Autowired
     lateinit var destinationInspectionBpmn: DestinationInspectionBpmn
+
+    @Autowired
+    lateinit var demandNoteRepository: IDemandNoteRepository
 
     @Autowired
     lateinit var notifications: Notifications
@@ -690,7 +695,12 @@ class DITest {
 //        schedulerImpl.updateLabResultsWithDetails()
     }
 
-
+    @Test
+    fun demandNoteSubmission() {
+        this.demandNoteRepository.findFirstByPaymentStatus(1)?.let { demandNote->
+            destinationInspectionDaoServices.sendDemandNotGeneratedToKWIS(demandNote.id!!)
+        }?:throw ExpectedDataNotFound("Could not find a single payment")
+    }
     @Test
     fun demandNoteCreationDetails() {
         val appId = applicationMapProperties.mapImportInspection

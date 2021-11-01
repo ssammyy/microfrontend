@@ -8,14 +8,15 @@ import com.jcraft.jsch.Session
 import mu.KotlinLogging
 import org.apache.commons.io.FileUtils
 import org.jasypt.encryption.StringEncryptor
+import org.kebs.app.kotlin.apollo.config.properties.camel.CamelFtpProperties
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.SftpTransmissionEntity
 import org.kebs.app.kotlin.apollo.store.repo.ISftpTransmissionEntityRepository
-import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
+import java.nio.file.Paths
 import java.sql.Timestamp
 import java.time.Instant
 import java.util.*
@@ -25,6 +26,7 @@ import java.util.*
 class SftpServiceImpl(
     private val applicationMapProperties: ApplicationMapProperties,
     private val jasyptStringEncryptor: StringEncryptor,
+    private val camelFtpProperties: CamelFtpProperties,
     private val sftpLogRepo: ISftpTransmissionEntityRepository
 ) : ISftpService {
 
@@ -86,6 +88,10 @@ class SftpServiceImpl(
     }
 
     override fun uploadFile(file: File): Boolean {
+
+        // On failure, copy file to camel so that it can be uploaded later
+
+        //
         val sftp: ChannelSftp = this.createSftp()
         val log = SftpTransmissionEntity()
         try {
@@ -97,7 +103,6 @@ class SftpServiceImpl(
             log.flowDirection = "OUT"
 
             sftp.cd(applicationMapProperties.mapSftpUploadRoot)
-
 
             KotlinLogging.logger { }.info(":::: Uploading file to: ${applicationMapProperties.mapSftpUploadRoot} ::::")
 
@@ -112,7 +117,11 @@ class SftpServiceImpl(
             return true
         } catch (e: Exception) {
             KotlinLogging.logger { }.error("An error occurred while uploading sftp file: ${file.name}", e)
-
+            // On failure, copy file to camel so that it can be uploaded later
+            val camelPath = Paths.get(camelFtpProperties.outboundDirectory,file.name)
+            KotlinLogging.logger {  }.info(camelPath.toString())
+            file.copyTo(camelPath.toFile(),overwrite = true)
+            //
             log.transactionStatus = 20
             log.responseMessage = e.message
             log.responseStatus = "99"

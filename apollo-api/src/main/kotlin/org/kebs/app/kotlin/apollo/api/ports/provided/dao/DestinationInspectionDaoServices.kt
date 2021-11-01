@@ -744,7 +744,7 @@ class DestinationInspectionDaoServices(
 
                 val fileName = coiFinalDto.coi?.ucrNumber?.let {
                     commonDaoServices.createKesWsFileName(
-                            applicationMapProperties.mapKeswsCocDoctype,
+                            applicationMapProperties.mapKeswsCoiDoctype,
                             it
                     )
                 }
@@ -961,12 +961,18 @@ class DestinationInspectionDaoServices(
 
             val demandNote: CustomDemandNoteXmlDto = it.toCdDemandNoteXmlRecordRefl()
             demandNote.demandNoteNumber = it.demandNoteNumber
+            demandNote.transactionNumber=it.ucrNumber
+            demandNote.nameImporter=it.nameImporter
             demandNote.address = it.address
+            demandNote.telephone=it.telephone
             demandNote.amountPayable = it.amountPayable
             demandNote.cfvalue = it.cfvalue
             demandNote.id = it.id
+            demandNote.receiptNo=it.receiptNo?:"UNKNOWN"
+            demandNote.entryAblNumber=it.entryAblNumber?:"UNKNOWN"
             demandNote.totalAmount = it.totalAmount
             demandNote.entryAblNumber = it.entryAblNumber
+            demandNote.transactionType="PAYMENT"
             demandNote.dateGenerated = demandNote.convertTimestampToKeswsValidDate(it.dateGenerated
                     ?: Date(java.util.Date().time))
             demandNote.rate = it.rate
