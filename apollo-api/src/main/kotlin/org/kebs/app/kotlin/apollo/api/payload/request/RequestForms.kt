@@ -6,6 +6,8 @@ import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleCollectionEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmissionEntity
 import java.sql.Date
 import java.time.Instant
+import javax.persistence.Basic
+import javax.persistence.Column
 import kotlin.random.Random
 import kotlin.random.nextUInt
 import kotlin.random.nextULong
@@ -276,9 +278,13 @@ class SsfForm {
     var permitNumber: String? = null
     var description: String? = null
     var ssfSubmissionDate: String? = null
+    val returnOrDispose: String?=null
+    val conditionOfSample:String?=null
     fun ssf(): QaSampleSubmissionEntity {
         val df = QaSampleSubmissionEntity()
         df.description = description
+        df.conditionOfSample=conditionOfSample
+        df.returnOrDispose=returnOrDispose
         df.permitRefNumber = permitNumber
         df.ssfSubmissionDate = Date(java.util.Date().time)
         return df
@@ -298,16 +304,25 @@ class ScfForm {
     var batchSize: String? = null
     var sampleSize: String? = null
     var samplingMethod: String? = null
+    var modeOfRelease: String? = null
+    var labelDetails: String? = null
+    var expiryDate: String? = null
     var reasonsForCollectingSamples: String? = null
-    var remarks: String? = null
+    var referenceStandard: String?=null
+    var quantityDeclared: String? = null
     var witnessName: String? = null
     var witnessDesignation: String? = null
-    var dateSignedByWitness: String? = null
+    var remarks: String? = null
     fun scf(): QaSampleCollectionEntity {
         val df = QaSampleCollectionEntity()
         df.anyRemarks = remarks
+        df.expiryDate=expiryDate
+        df.labelDetails=labelDetails
+        df.modeOfRelease=modeOfRelease
         df.batchNo = batchNumber
         df.batchSize = batchSize
+        df.referenceStandard=referenceStandard
+        df.quantityDeclared=quantityDeclared
         df.sampleSize = sampleSize
         df.samplingMethod = samplingMethod
         df.reasonForCollectingSample = reasonsForCollectingSamples

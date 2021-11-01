@@ -44,9 +44,11 @@ import java.text.SimpleDateFormat
 import java.time.Instant
 import java.util.*
 import kotlin.collections.HashMap
-enum class ChecklistType{
-    AGROCHEM,ENGINEERING, VEHICLE,OTHER, NONE
+
+enum class ChecklistType {
+    AGROCHEM, ENGINEERING, VEHICLE, OTHER, NONE
 }
+
 @Service("checklistService")
 class ChecklistService(
         private val inspectionGeneralRepo: ICdInspectionGeneralRepository,
@@ -121,7 +123,7 @@ class ChecklistService(
                 }
                 // Handle Not found
                 response.responseCode = ResponseCodes.NOT_FOUND
-                response.message = "Checklist item not found: "+checklistType.varField1
+                response.message = "Checklist item not found: " + checklistType.varField1
                 // Checklist update
                 when (checklistType.typeName) {
                     ChecklistType.AGROCHEM.name -> {
@@ -731,24 +733,59 @@ class ChecklistService(
         return this.daoServices.findSampleSubmittedItemID(itemId)?.let { inspectionGeneral ->
 
             map["id"] = inspectionGeneral.id.toString()
-            map["ssfNum"] = inspectionGeneral.ssfNo.toString()
-            map["product"] = inspectionGeneral.productDescription.toString()
+            map["ssfNum"] = inspectionGeneral.ssfNo.orEmpty()
+            map["product"] = inspectionGeneral.productDescription.orEmpty()
             map["genDate"] = inspectionGeneral.createdOn.toString()
+            map["disposalMode"] = inspectionGeneral.returnOrDispose.orEmpty()
+            map["conditionOfSample"] = inspectionGeneral.conditionOfSample.orEmpty()
             val itemDetails = this.daoServices.findItemWithItemID(inspectionGeneral.cdItemId!!)
             itemDetails.cdDocId?.let {
-                map["cocNum"] = it.cocNumber.toString()
-                map["dutyStation"] = it.freightStation?.cfsName.toString()
+                map["cocNum"] = it.cocNumber.orEmpty()
+                map["ucrNumber"] = it.ucrNumber.orEmpty()
+                map["dutyStation"] = it.freightStation?.cfsName.orEmpty()
                 map["officerName"] = "${it.assignedInspectionOfficer?.firstName} ${it.assignedInspectionOfficer?.lastName}"
-                val importerDetailsEntity = it.cdImporter?.let { it1 -> this.daoServices.findCDImporterDetails(it1) }
-                importerDetailsEntity?.let { importer ->
-                    map["importerName"] = importer.name.toString()
-                    map["importerAddress"] = importer.physicalAddress ?: importer.postalAddress.toString()
-                }
                 val consgnorDetails = it.cdConsignor?.let { it3 -> daoServices.findCdConsignorDetails(it3) }
                 consgnorDetails?.let { consignor ->
                     map["supplierName"] = consignor.name.toString()
                     map["supplierAddress"] = consignor.physicalAddress ?: consignor.postalAddress.toString()
+                    map["importerTelNo"] = consignor.telephone.orEmpty()
+                    map["importerEmail"] = consignor.email.orEmpty()
                 }
+            }
+            // Payment details for this item
+            this.daoServices.findDemandNoteItemByID(itemId)?.let { itemNote ->
+                map["amount"] = itemNote.amountPayable.toString()
+                this.daoServices.findDemandNoteWithID(itemNote.demandNoteId ?: -2)?.let { demandNote ->
+                    map["receiptNo"] = demandNote.receiptNo.orEmpty()
+                    map["invoiceNo"] = demandNote.demandNoteNumber.orEmpty()
+                    map["paid"] = when (demandNote.paymentStatus) {
+                        1 -> "YES"
+                        else -> "NO"
+                    }
+                    map
+                } ?: run {
+                    map["receiptNo"] = ""
+                    map["invoiceNo"] = ""
+                    map["paid"] = "NA"
+                    map
+                }
+            } ?: run {
+                map["amount"] = "0.00"
+                map
+            }
+            this.qaISampleCollectRepository.findByItemId(itemId)?.let { scf ->
+                map["sampleSize"] = scf.sampleSize.toString()
+                map["batchSize"] = scf.batchSize.toString()
+                map["batchNo"] = scf.batchNo.orEmpty()
+                map["scfNo"] = scf.scfNo.orEmpty()
+                map["tradeMark"] = scf.brandName.orEmpty()
+                map["transmissionResult"] = ""
+                map["referenceStandard"] = scf.referenceStandard.orEmpty()
+                map["purposeOfTest"] = scf.reasonForCollectingSample.orEmpty()
+                map["contentDeclared"] = scf.quantityDeclared.orEmpty()
+                map["product"] = scf.nameOfProduct.orEmpty()
+                map["importerName"] = scf.nameOfManufacture.orEmpty()
+                map["importerAddress"] = scf.addressOfManufacture.orEmpty()
             }
             map
         } ?: throw ExpectedDataNotFound("SSF details not found")
@@ -789,23 +826,48 @@ class ChecklistService(
         val map = hashMapOf<String, Any>()
         return this.qaISampleCollectRepository.findByItemId(itemId)?.let { inspectionGeneral ->
             map["id"] = inspectionGeneral.id.toString()
-            map["slNum"] = inspectionGeneral.batchNo.toString()
-            map["product"] = inspectionGeneral.nameOfProduct.toString()
-            map["genDate"] = inspectionGeneral.createdOn.toString()
+            map["slNum"] = inspectionGeneral.batchNo.orEmpty()
+            map["product"] = inspectionGeneral.nameOfProduct.orEmpty()
+            map["genDate"] = inspectionGeneral.createdOn?.let { commonDaoServices.convertDateToString(it.toLocalDateTime(), "dd-MM-yyyy") }
+                    ?: ""
+            map["samplingMethod"] = inspectionGeneral.samplingMethod.orEmpty()
+            map["sampleSize"] = inspectionGeneral.sampleSize.toString()
+            map["batchSize"] = inspectionGeneral.batchSize.toString()
+            map["batchNo"] = inspectionGeneral.batchNo.orEmpty()
+            map["scfNo"] = inspectionGeneral.scfNo.orEmpty()
+            map["officerDesignation"] = "IO"
+            map["expiryDate"] = inspectionGeneral.expiryDate.orEmpty()
+            map["modeOfRelease"] = inspectionGeneral.modeOfRelease.orEmpty()
+            map["quantityDeclared"] = inspectionGeneral.quantityDeclared.orEmpty()
+            map["manufacturerName"] = inspectionGeneral.nameOfManufacture.orEmpty()
+            map["remarks"] = inspectionGeneral.anyRemarks.orEmpty()
+            map["witnessName"] = inspectionGeneral.nameOfWitness.orEmpty()
+            map["witnessDesignation"] = inspectionGeneral.witnessDesignation.orEmpty()
+            map["witnessDate"] = inspectionGeneral.witnessDate?.let { commonDaoServices.convertDateToString(it, "dd-MM-yyyy") }
+                    ?: ""
+            map["labelDetails"] = inspectionGeneral.labelDetails.orEmpty()
+            map["referenceStandard"] = inspectionGeneral.referenceStandard.orEmpty()
+            map["purposeOfTest"] = inspectionGeneral.reasonForCollectingSample.orEmpty()
             val itemDetails = this.daoServices.findItemWithItemID(inspectionGeneral.itemId!!)
+            map["countryOfOrigin"] = itemDetails.countryOfOrginDesc.orEmpty()
+            map["nonComplianceDetails"] = itemDetails.rejectReason.orEmpty()
             itemDetails.cdDocId?.let {
-                map["cocNum"] = it.cocNumber.toString()
-                map["dutyStation"] = it.freightStation?.cfsName.toString()
+                map["cocNum"] = it.cocNumber.orEmpty()
+                map["dutyStation"] = it.freightStation?.cfsName.orEmpty()
                 map["officerName"] = "${it.assignedInspectionOfficer?.firstName} ${it.assignedInspectionOfficer?.lastName}"
                 val importerDetailsEntity = it.cdImporter?.let { it1 -> this.daoServices.findCDImporterDetails(it1) }
                 importerDetailsEntity?.let { importer ->
-                    map["importerName"] = importer.name.toString()
-                    map["importerAddress"] = importer.physicalAddress ?: importer.postalAddress.toString()
+                    map["importerName"] = importer.name.orEmpty()
+                    map["importerAddress"] = importer.physicalAddress ?: importer.postalAddress.orEmpty()
+                    map["importerFaxNo"] = importer.fax.orEmpty()
+                    map["importerTelNo"] = importer.telephone.orEmpty()
+                    map["importerPhysicalLocation"] = importer.physicalAddress ?: importer.postalAddress.orEmpty()
                 }
                 val consgnorDetails = it.cdConsignor?.let { it3 -> daoServices.findCdConsignorDetails(it3) }
                 consgnorDetails?.let { consignor ->
-                    map["supplierName"] = consignor.name.toString()
-                    map["supplierAddress"] = consignor.physicalAddress ?: consignor.postalAddress.toString()
+                    map["contactName"] = consignor.name.orEmpty()
+                    map["contactFullAddress"] = consignor.postalAddress ?: consignor.physicalAddress.orEmpty()
+                    map["contactPhone"] = consignor.telephone.orEmpty()
                 }
             }
             map
@@ -821,6 +883,7 @@ class ChecklistService(
             collectionEntity.modifiedOn = Timestamp.from(Instant.now())
             collectionEntity.nameOfOfficer = "${loggedInUser.firstName} ${loggedInUser.lastName}"
             collectionEntity.officerDesignation = "IO"
+            collectionEntity.scfNo = "SCF" + SimpleDateFormat("yyyyMMdd").format(java.util.Date()) + generateRandomText(4)
             sampleCollectionForm.createdBy = loggedInUser.createdBy
             sampleCollectionForm.createdOn = Timestamp.from(Instant.now())
         } else {
@@ -832,6 +895,9 @@ class ChecklistService(
             collectionEntity.brandName = sampleCollectionForm.brandName
             collectionEntity.batchNo = sampleCollectionForm.batchNo
             collectionEntity.permitId = sampleCollectionForm.permitId
+            collectionEntity.modeOfRelease = sampleCollectionForm.modeOfRelease
+            collectionEntity.expiryDate = sampleCollectionForm.expiryDate
+            collectionEntity.labelDetails = sampleCollectionForm.labelDetails
             collectionEntity.batchSize = sampleCollectionForm.batchSize
             collectionEntity.sampleSize = sampleCollectionForm.sampleSize
             collectionEntity.samplingMethod = sampleCollectionForm.samplingMethod
@@ -1006,11 +1072,11 @@ class ChecklistService(
         val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
         val response = ApiResponseModel()
         if (statuses > 0) {
-            KotlinLogging.logger {  }.info("Completed ministry inspections")
-            requests = motorVehicleItemChecklistRepository.findByMinistryReportSubmitStatusInAndSampled(listOf(map.activeStatus),"YES", page)
+            KotlinLogging.logger { }.info("Completed ministry inspections")
+            requests = motorVehicleItemChecklistRepository.findByMinistryReportSubmitStatusInAndSampled(listOf(map.activeStatus), "YES", page)
         } else {
-            KotlinLogging.logger {  }.info("On Going ministry inspections")
-            requests = motorVehicleItemChecklistRepository.findByMinistryReportSubmitStatusInAndSampled(listOf(map.initStatus,map.activeStatus, map.workingStatus, map.testStatus, 2, 10),"YES", page)
+            KotlinLogging.logger { }.info("On Going ministry inspections")
+            requests = motorVehicleItemChecklistRepository.findByMinistryReportSubmitStatusInAndSampled(listOf(map.initStatus, map.activeStatus, map.workingStatus, map.testStatus, 2, 10), "YES", page)
         }
         // Get inspection items
         requests.toList().forEach {
@@ -1092,6 +1158,7 @@ class ChecklistService(
                 map["feePaid"] = "NO"
                 daoServices.findDemandNoteWithPaymentStatus(it.id!!, 1)?.let {
                     map["receiptNumber"] = it.demandNoteNumber.toString()
+                    map["amount"] = it.amountPayable.toString()
                     map["feePaid"] = "YES"
                 }
                 map["entryPoint"] = it.freightStation?.cfsName ?: "NA"

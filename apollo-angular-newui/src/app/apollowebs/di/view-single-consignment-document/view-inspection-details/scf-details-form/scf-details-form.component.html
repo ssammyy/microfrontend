@@ -17,6 +17,16 @@
                    formControlName="sampleSize">
         </div>
         <div class="col-sm-12 col-md-6">
+            <label for="referenceStandard" class="waiver-form-label">Reference Standard</label>
+            <input class="waiver-form-input-master" type="text"  id="referenceStandard" name="referenceStandard"
+                   formControlName="referenceStandard">
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="quantityDeclared" class="waiver-form-label">Quantity Declared</label>
+            <input class="waiver-form-input-master" type="text"  id="quantityDeclared" name="quantityDeclared"
+                   formControlName="quantityDeclared">
+        </div>
+        <div class="col-sm-12 col-md-6">
             <label for="samplingMethod" class="waiver-form-label">Sampling Method</label>
             <select id="samplingMethod" name="samplingMethod" class="waiver-form-input-master"
                     formControlName="samplingMethod">
@@ -24,6 +34,16 @@
                 <option *ngFor="let mthd of samplingMethods"
                         [value]="mthd.name">{{mthd.description}}</option>
             </select>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="labelDetails" class="waiver-form-label">Sample Label</label>
+            <input class="waiver-form-input-master" type="text"  id="labelDetails" name="labelDetails"
+                   formControlName="labelDetails">
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="expiryDate" class="waiver-form-label">Sample Expiry Date</label>
+            <input class="waiver-form-input-master" type="date"  id="expiryDate" name="expiryDate"
+                   formControlName="expiryDate">
         </div>
         <div class="col-sm-12 col-md-6">
             <label for="reasonsForCollectingSamples" class="waiver-form-label">Reason For Sampled Collection</label>
@@ -39,6 +59,15 @@
             <label for="witnessDesignation" class="waiver-form-label">Witness Designation</label>
             <input class="waiver-form-input-master" type="text" id="witnessDesignation"
                    name="witnessDesignation" formControlName="witnessDesignation">
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="modeOfRelease" class="waiver-form-label">Mode Of Release</label>
+            <select id="modeOfRelease" name="modeOfRelease" class="waiver-form-input-master"
+                    formControlName="modeOfRelease">
+                <option value="" disabled selected>Select Mode Of release</option>
+                <option *ngFor="let mode of modesOfRelease"
+                        [value]="mode.name">{{mode.description}}</option>
+            </select>
         </div>
         <div class="col-sm-12 col-md-12">
             <label for="remarks" class="waiver-form-label">Remarks</label>

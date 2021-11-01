@@ -92,7 +92,7 @@ class GeneralController(
                 docType.equals("sampleCollectionForm") -> {
                     map.putAll(this.checklistService.getScfDetails(downloadId))
                 }
-                docType.equals("sampleSubmissionForm") -> {
+                docType.equals("sampleSubmissionFormV2") -> {
                     map.putAll(this.checklistService.getSsfDetails(downloadId))
                 }
                 docType.equals("agrochemChecklist") -> {

@@ -4,7 +4,6 @@ import {MatDialog} from "@angular/material/dialog";
 import {SsfDetailsFormComponent} from "../ssf-details-form/ssf-details-form.component";
 import {ScfDetailsFormComponent} from "../scf-details-form/scf-details-form.component";
 import {ComplianceUpdateFormComponent} from "../compliance-update-form/compliance-update-form.component";
-import {LabResultsComponent} from "../../item-details-list-view/lab-results/lab-results.component";
 import {Router} from "@angular/router";
 
 @Component({
@@ -91,7 +90,7 @@ export class ChecklistsComponent implements OnInit {
                 this.openSampleUpdate(data)
                 break
             case "downlodSsf":
-                this.diService.downloadDocument("/api/v1/download/checklist/sampleSubmissionForm/" + data.id)
+                this.diService.downloadDocument("/api/v1/download/checklist/sampleSubmissionFormV2/" + data.id)
                 break
             case "downlodScf":
                 this.diService.downloadDocument("/api/v1/download/checklist/sampleCollectionForm/" + data.id)
