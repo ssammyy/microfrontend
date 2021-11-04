@@ -152,6 +152,19 @@ import { CreateproductSubCategoryComponent } from './apollowebs/standards-develo
 import {NgSelectModule} from '@ng-select/ng-select';
 import { IntStdUploadStandardComponent } from './apollowebs/standards-development/international-standard/int-std-upload-standard/int-std-upload-standard.component';
 import { IntStdGazzetteComponent } from './apollowebs/standards-development/international-standard/int-std-gazzette/int-std-gazzette.component';
+import { RoleSwitcherComponent } from './apollowebs/standards-levy/standards-levy-home/role-switcher/role-switcher.component';
+import { CustomerRegistrationComponent } from './apollowebs/standards-levy/standards-levy-home/customer-registration/customer-registration.component';
+import { StandardsLevyHomeComponent } from './apollowebs/standards-levy/standards-levy-home/standards-levy-home.component';
+import { ComStandardLevyComponent } from './apollowebs/standards-levy/com-standard-levy/com-standard-levy.component';
+import { ComPaymentHistoryComponent } from './apollowebs/standards-levy/com-payment-history/com-payment-history.component';
+import { ComStdLevyFormComponent } from './apollowebs/standards-levy/com-std-levy-form/com-std-levy-form.component';
+import { StandardLevyDashboardComponent } from './apollowebs/standards-levy/standard-levy-dashboard/standard-levy-dashboard.component';
+import { StandardLevyPaidComponent } from './apollowebs/standards-levy/standard-levy-paid/standard-levy-paid.component';
+import { StandardLevyPenaltiesComponent } from './apollowebs/standards-levy/standard-levy-penalties/standard-levy-penalties.component';
+import { StandardLevyDefaulterComponent } from './apollowebs/standards-levy/standard-levy-defaulter/standard-levy-defaulter.component';
+import { StandardLevyPaidHistoryComponent } from './apollowebs/standards-levy/standard-levy-paid-history/standard-levy-paid-history.component';
+import { StandardLevyPenaltyHistoryComponent } from './apollowebs/standards-levy/standard-levy-penalty-history/standard-levy-penalty-history.component';
+import { StandardLevyDefaulterHistoryComponent } from './apollowebs/standards-levy/standard-levy-defaulter-history/standard-levy-defaulter-history.component';
 
 
 // import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -310,7 +323,20 @@ import { IntStdGazzetteComponent } from './apollowebs/standards-development/inte
         CreateDepartmentComponent,
         CreatetechnicalcommitteeComponent,
         CreateproductComponent,
-        CreateproductSubCategoryComponent
+        CreateproductSubCategoryComponent,
+        RoleSwitcherComponent,
+        CustomerRegistrationComponent,
+        StandardsLevyHomeComponent,
+        ComStandardLevyComponent,
+        ComPaymentHistoryComponent,
+        ComStdLevyFormComponent,
+        StandardLevyDashboardComponent,
+        StandardLevyPaidComponent,
+        StandardLevyPenaltiesComponent,
+        StandardLevyDefaulterComponent,
+        StandardLevyPaidHistoryComponent,
+        StandardLevyPenaltyHistoryComponent,
+        StandardLevyDefaulterHistoryComponent
 
     ]
 

@@ -83,6 +83,19 @@ import {CreateDepartmentComponent} from "./apollowebs/standards-development/stan
 import {CreatetechnicalcommitteeComponent} from "./apollowebs/standards-development/standard-request/createtechnicalcommittee/createtechnicalcommittee.component";
 import {IntStdUploadStandardComponent} from "./apollowebs/standards-development/international-standard/int-std-upload-standard/int-std-upload-standard.component";
 import {IntStdGazzetteComponent} from "./apollowebs/standards-development/international-standard/int-std-gazzette/int-std-gazzette.component";
+import {RoleSwitcherComponent} from "./apollowebs/standards-levy/standards-levy-home/role-switcher/role-switcher.component";
+import {CustomerRegistrationComponent} from "./apollowebs/standards-levy/standards-levy-home/customer-registration/customer-registration.component";
+import {StandardsLevyHomeComponent} from "./apollowebs/standards-levy/standards-levy-home/standards-levy-home.component";
+import {ComStandardLevyComponent} from "./apollowebs/standards-levy/com-standard-levy/com-standard-levy.component";
+import {ComPaymentHistoryComponent} from "./apollowebs/standards-levy/com-payment-history/com-payment-history.component";
+import {ComStdLevyFormComponent} from "./apollowebs/standards-levy/com-std-levy-form/com-std-levy-form.component";
+import {StandardLevyDashboardComponent} from "./apollowebs/standards-levy/standard-levy-dashboard/standard-levy-dashboard.component";
+import {StandardLevyPaidComponent} from "./apollowebs/standards-levy/standard-levy-paid/standard-levy-paid.component";
+import {StandardLevyPenaltiesComponent} from "./apollowebs/standards-levy/standard-levy-penalties/standard-levy-penalties.component";
+import {StandardLevyDefaulterComponent} from "./apollowebs/standards-levy/standard-levy-defaulter/standard-levy-defaulter.component";
+import {StandardLevyPenaltyHistoryComponent} from "./apollowebs/standards-levy/standard-levy-penalty-history/standard-levy-penalty-history.component";
+import {StandardLevyPaidHistoryComponent} from "./apollowebs/standards-levy/standard-levy-paid-history/standard-levy-paid-history.component";
+import {StandardLevyDefaulterHistoryComponent} from "./apollowebs/standards-levy/standard-levy-defaulter-history/standard-levy-defaulter-history.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -590,6 +603,57 @@ export const routes: Routes = [
         path: 'technicalCommittee', component: AdminLayoutComponent,
         children: [{path: '', component: CreatetechnicalcommitteeComponent}]
     },
+
+    // STANDARDS LEVY
+    {
+        path: 'roleSwitcher', component: StandardsLevyHomeComponent,
+        children: [{path: '', component: RoleSwitcherComponent}]
+    },
+    {
+        path: 'levyRegistration', component: StandardsLevyHomeComponent,
+        children: [{path: '', component: CustomerRegistrationComponent}]
+    },
+    {
+        path: 'comStdLevy', component: AdminLayoutComponent,
+        children: [{path: '', component: ComStandardLevyComponent}]
+    },
+    {
+        path: 'comPaymentHistory', component: AdminLayoutComponent,
+        children: [{path: '', component: ComPaymentHistoryComponent}]
+    },
+    {
+        path: 'comStdLevyForm', component: AdminLayoutComponent,
+        children: [{path: '', component: ComStdLevyFormComponent}]
+    },
+    {
+        path: 'stdLevyHome', component: AdminLayoutComponent,
+        children: [{path: '', component: StandardLevyDashboardComponent}]
+    },
+    {
+        path: 'stdLevyPaid', component: AdminLayoutComponent,
+        children: [{path: '', component: StandardLevyPaidComponent}]
+    },
+    {
+        path: 'stdLevyPenalties', component: AdminLayoutComponent,
+        children: [{path: '', component: StandardLevyPenaltiesComponent}]
+    },
+    {
+        path: 'stdLevyDefaulters', component: AdminLayoutComponent,
+        children: [{path: '', component: StandardLevyDefaulterComponent}]
+    },
+    {
+        path: 'stdLevyPaidHistory', component: AdminLayoutComponent,
+        children: [{path: '', component: StandardLevyPaidHistoryComponent}]
+    },
+    {
+        path: 'stdLevyPenaltiesHistory', component: AdminLayoutComponent,
+        children: [{path: '', component: StandardLevyPenaltyHistoryComponent}]
+    },
+    {
+        path: 'stdLevyDefaultersHistory', component: AdminLayoutComponent,
+        children: [{path: '', component: StandardLevyDefaulterHistoryComponent}]
+    },
+
 
 ];
 
