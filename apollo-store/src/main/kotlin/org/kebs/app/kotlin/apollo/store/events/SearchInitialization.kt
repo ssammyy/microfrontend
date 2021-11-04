@@ -59,8 +59,7 @@ class SearchInitialization(
 //                    .boostedTo(4.5f).withConstantScore()
                     .onField("description").sentence(keywords).createQuery())
             // Others
-            query.should(builder.keyword().wildcard()
-//                    .boostedTo(1.5f).withConstantScore()
+            query.should(builder.keyword()
                     .onFields("ucrNumber", "cdRefNumber", "cocNumber", "idfNumber")
                     .matching(keywords).createQuery())
         }

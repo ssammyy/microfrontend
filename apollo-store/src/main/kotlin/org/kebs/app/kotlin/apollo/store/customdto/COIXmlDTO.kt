@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.customdto
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 import org.kebs.app.kotlin.apollo.store.model.CocsEntity
@@ -9,7 +10,7 @@ import java.text.SimpleDateFormat
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.full.primaryConstructor
 
-@JacksonXmlRootElement(localName = "APOLLO.DAT_KEBS_COISS")
+@JacksonXmlRootElement(localName = "APOLLO.DAT_KEBS_COIS")
 class COIXmlDTO {
 
     @JacksonXmlProperty(isAttribute = true, localName = "xmlns")
@@ -25,7 +26,8 @@ class COIXmlDTO {
     private val xmlnsXsi = "http://www.w3.org/2001/XMLSchema-instance"
 
     @JacksonXmlProperty(localName = "APOLLO.DAT_KEBS_COIS")
-    var coi: CustomCoiXmlDto? = null
+    @JacksonXmlElementWrapper(useWrapping = false)
+    var coi: List<CustomCoiXmlDto>? = null
 }
 
 class CustomCoiXmlDto {

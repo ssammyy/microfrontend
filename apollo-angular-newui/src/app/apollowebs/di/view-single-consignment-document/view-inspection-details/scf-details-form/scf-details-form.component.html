@@ -8,7 +8,7 @@
         </div>
         <div class="col-sm-12 col-md-6">
             <label for="batchSize" class="waiver-form-label">Batch Size</label>
-            <input class="waiver-form-input-master" type="text" id="batchSize" name="batchNumber"
+            <input class="waiver-form-input-master" type="text" id="batchSize" name="batchSize"
                    formControlName="batchSize">
         </div>
         <div class="col-sm-12 col-md-6">
@@ -20,11 +20,6 @@
             <label for="referenceStandard" class="waiver-form-label">Reference Standard</label>
             <input class="waiver-form-input-master" type="text"  id="referenceStandard" name="referenceStandard"
                    formControlName="referenceStandard">
-        </div>
-        <div class="col-sm-12 col-md-6">
-            <label for="quantityDeclared" class="waiver-form-label">Quantity Declared</label>
-            <input class="waiver-form-input-master" type="text"  id="quantityDeclared" name="quantityDeclared"
-                   formControlName="quantityDeclared">
         </div>
         <div class="col-sm-12 col-md-6">
             <label for="samplingMethod" class="waiver-form-label">Sampling Method</label>
@@ -46,11 +41,6 @@
                    formControlName="expiryDate">
         </div>
         <div class="col-sm-12 col-md-6">
-            <label for="reasonsForCollectingSamples" class="waiver-form-label">Reason For Sampled Collection</label>
-            <input class="waiver-form-input-master" type="text" id="reasonsForCollectingSamples"
-                   name="reasonsForCollectingSamples" formControlName="reasonsForCollectingSamples">
-        </div>
-        <div class="col-sm-12 col-md-6">
             <label for="witnessName" class="waiver-form-label">Witness Name</label>
             <input class="waiver-form-input-master" type="text" id="witnessName" name="sampleSize"
                    formControlName="witnessName">
@@ -61,7 +51,12 @@
                    name="witnessDesignation" formControlName="witnessDesignation">
         </div>
         <div class="col-sm-12 col-md-6">
-            <label for="modeOfRelease" class="waiver-form-label">Mode Of Release</label>
+            <label for="reasonsForCollectingSamples" class="waiver-form-label">Reason for Sample Collection</label>
+            <input class="waiver-form-input-master" type="text" id="reasonsForCollectingSamples"
+                   name="reasonsForCollectingSamples" formControlName="reasonsForCollectingSamples">
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="modeOfRelease" class="waiver-form-label">Mode of Release</label>
             <select id="modeOfRelease" name="modeOfRelease" class="waiver-form-input-master"
                     formControlName="modeOfRelease">
                 <option value="" disabled selected>Select Mode Of release</option>

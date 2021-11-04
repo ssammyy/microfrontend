@@ -176,7 +176,7 @@ class DestinationInspectionActionsHandler(
                             val localCoi = updatedCDDetails.ucrNumber?.let { daoServices.findCOC(it,"coi") }
                             if (localCoi != null) {
                                 daoServices.localCocCoiItems(updatedCDDetails, localCoi, loggedInUser, map)
-                                daoServices.sendLocalCoi(localCoi.id)
+                                daoServices.sendLocalCoi(localCoi)
                                 updatedCDDetails.cdStandard?.let { cdStd ->
                                     daoServices.updateCDStatus(cdStd, applicationMapProperties.mapDICdStatusTypeCOIGeneratedAndSendID)
                                 }
@@ -372,17 +372,12 @@ class DestinationInspectionActionsHandler(
                         KotlinLogging.logger { }.error("FAILED to Assign IO, MODIFICATION disabled")
                     } else {
                         val loggedInUser = commonDaoServices.loggedInUserDetails()
-                        val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
                         val data = mutableMapOf<String, Any?>()
                         data["remarks"] = form.remarks
                         data["reassign"] = form.reassign
                         data["officerId"] = form.officerId
                         data["owner"] = officer.get().userName
                         data["supervisor"] = loggedInUser.userName
-                        // True for BPM processes
-                        data["isAutoRejected"] = true
-                        data["isAutoTargeted"] = true
-                        //
                         data["cdUuid"] = cdUuid
                         // Start BPM process
                         this.diBpmn.startAssignmentProcesses(data, consignmentDocument);

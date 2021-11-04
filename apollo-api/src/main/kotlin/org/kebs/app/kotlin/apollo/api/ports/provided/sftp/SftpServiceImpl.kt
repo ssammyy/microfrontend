@@ -90,7 +90,7 @@ class SftpServiceImpl(
     override fun uploadFile(file: File): Boolean {
 
         // On failure, copy file to camel so that it can be uploaded later
-
+        KotlinLogging.logger {  }.info("FILE NAME: ${file.name}")
         //
         val sftp: ChannelSftp = this.createSftp()
         val log = SftpTransmissionEntity()

@@ -172,9 +172,11 @@ class InvoicePaymentService(
         try {
             val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             //2. Update payment status on KenTrade
-            daoServices.sendDemandNotGeneratedToKWIS(demandNoteId)
-            consignmentDocument.varField10 = "DEMAND NOTE SENT TO KENTRADE, AWAITING PAYMENT"
-            this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
+            daoServices.findDemandNoteWithID(demandNoteId)?.let {
+                daoServices.sendDemandNotGeneratedToKWIS(it)
+                consignmentDocument.varField10 = "DEMAND NOTE SENT TO KENTRADE, AWAITING PAYMENT"
+                this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
+            }
             return true
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Failed to update status", ex)

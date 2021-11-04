@@ -76,7 +76,7 @@
                             <button class="btn-sm btn-primary" *ngIf="element.hasMinistryInspection"
                                     (click)="customAction(element,'downloadChecklist')"><i class="fa fa-download"></i>Ministry Report
                             </button>
-                            <button class="btn-sm btn-primary" *ngIf="!element.ministryStation"
+                            <button class="btn-sm btn-primary" *ngIf="!element.ministryInspectionActive"
                                     (click)="customAction(element,'requestMinistryChecklist')">Request Ministry
                                 Inspection
                             </button>

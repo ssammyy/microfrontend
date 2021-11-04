@@ -280,9 +280,13 @@ class SsfForm {
     var ssfSubmissionDate: String? = null
     val returnOrDispose: String?=null
     val conditionOfSample:String?=null
+    val testParameters: String?=null
+    val laboratoryName: String?=null
     fun ssf(): QaSampleSubmissionEntity {
         val df = QaSampleSubmissionEntity()
         df.description = description
+        df.laboratoryName=laboratoryName
+        df.testParameters=testParameters
         df.conditionOfSample=conditionOfSample
         df.returnOrDispose=returnOrDispose
         df.permitRefNumber = permitNumber
@@ -309,7 +313,6 @@ class ScfForm {
     var expiryDate: String? = null
     var reasonsForCollectingSamples: String? = null
     var referenceStandard: String?=null
-    var quantityDeclared: String? = null
     var witnessName: String? = null
     var witnessDesignation: String? = null
     var remarks: String? = null
@@ -322,7 +325,6 @@ class ScfForm {
         df.batchNo = batchNumber
         df.batchSize = batchSize
         df.referenceStandard=referenceStandard
-        df.quantityDeclared=quantityDeclared
         df.sampleSize = sampleSize
         df.samplingMethod = samplingMethod
         df.reasonForCollectingSample = reasonsForCollectingSamples

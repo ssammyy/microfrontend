@@ -154,14 +154,6 @@ class CdDemandNoteEntity : Serializable {
     @Basic
     var deletedOn: Timestamp? = null
 
-    @JoinColumn(name = "DESTINATION_FEE_ID", referencedColumnName = "ID")
-    @ManyToOne
-    var destinationFeeId: DestinationInspectionFeeEntity? = null
-
-    @JoinColumn(name = "CURRENCY_ID", referencedColumnName = "ID")
-    @ManyToOne
-    var currencyId: CurrencyMasterEntity? = null
-
     @Column(name = "DEMAND_NOTE_NUMBER")
     @Basic
     var demandNoteNumber: String? = null
@@ -182,15 +174,6 @@ class CdDemandNoteEntity : Serializable {
     @Basic
     var cdId: Long? = 0
 
-//    @Basic
-//    @Column(name = "C_F_VALUE")
-//    fun getcFValue(): String? {
-//        return cFValue
-//    }
-//
-//    fun setcFValue(cFValue: String?) {
-//        this.cFValue = cFValue
-//    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

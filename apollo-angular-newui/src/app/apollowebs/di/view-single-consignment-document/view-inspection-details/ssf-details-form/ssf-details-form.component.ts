@@ -21,6 +21,8 @@ export class SsfDetailsFormComponent implements OnInit {
             permitNumber: ['',],
             ssfSubmissionDate: ['', Validators.required],
             returnOrDispose: ['', Validators.required],
+            laboratoryName: ['', Validators.required],
+            testParameters: ['', Validators.required],
             conditionOfSample: ['', [Validators.required, Validators.maxLength(100)]],
             description: ['', Validators.maxLength(256)],
         })

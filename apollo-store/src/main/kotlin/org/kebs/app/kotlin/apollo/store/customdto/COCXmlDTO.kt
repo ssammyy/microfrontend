@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.store.customdto
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 import org.kebs.app.kotlin.apollo.store.model.CocItemsEntity
@@ -167,6 +168,7 @@ class CustomCocXmlDto(cocNumber: String?, idfNumber: String?, rfiNumber: String?
     var partner: String? = partner
 
     @JacksonXmlProperty(localName = "COC_DETAILS")
+    @JacksonXmlElementWrapper(useWrapping = false)
     var cocDetals: List<CocDetails>? = null
 
     fun convertTimestampToKeswsValidDate(timestamp: Timestamp): String {
@@ -253,3 +255,12 @@ fun CocItemsEntity.toCocItemDetailsXmlRecordRefl(cocNumber: String) = CocDetails
         this.shipmentLineStandardsReference?:"NA", this.shipmentLineLicenceReference?:"NA",
         this.shipmentLineRegistration?:"NA",cocNumber ,this.shipmentLineBrandName?:"NA"
 )
+
+//fun CocItemsEntity.toCoiItemDetailsXmlRecordRefl(cocNumber: String) = CustomCoiXmlDto(
+//        this.shipmentLineNumber, this.shipmentLineHscode?:"NA", this.shipmentLineQuantity.toLong(),
+//        this.shipmentLineUnitofMeasure?:"NA",
+//        this.shipmentLineDescription?:"NA", this.shipmentLineVin?:"NA",
+//        this.shipmentLineStickerNumber?:"NA", this.shipmentLineIcs?:"NA",
+//        this.shipmentLineStandardsReference?:"NA", this.shipmentLineLicenceReference?:"NA",
+//        this.shipmentLineRegistration?:"NA",cocNumber ,this.shipmentLineBrandName?:"NA"
+//)

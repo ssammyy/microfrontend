@@ -155,13 +155,6 @@ class SftpTest {
 //        }
 //    }
 
-    @Test
-    fun whenDemandNotepojoSerializedToXmlFile_thenCorrect() {
-        val coiId: Long = 641
-
-        destinationInspectionDaoServices.sendDemandNotGeneratedToKWIS(coiId)
-    }
-
 
     @Test
     fun whenDemandNotePaypojoSerializedToXmlFile_thenCorrect() {

@@ -85,6 +85,14 @@ class QaSampleSubmissionEntity : Serializable {
     @Basic
     var returnOrDispose: String? = null
 
+    @Column(name = "TEST_PARAMETERS")
+    @Basic
+    var testParameters: String? = null
+
+    @Column(name = "LABORATORY_NAME")
+    @Basic
+    var laboratoryName: String? = null
+
     @Column(name = "CONDITION_OF_SAMPLE")
     @Basic
     var conditionOfSample: String? = null

@@ -4,6 +4,7 @@ import mu.KotlinLogging
 import org.apache.commons.io.FileUtils
 import org.junit.Assert.assertTrue
 import org.junit.Ignore
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
@@ -23,6 +24,7 @@ import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.di.*
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
+import org.kebs.app.kotlin.apollo.store.repo.di.ICdInspectionMotorVehicleItemChecklistRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.ICountryTypeCodesRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IDestinationInspectionFeeRepository
@@ -30,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Lazy
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.context.junit4.SpringRunner
 import java.io.File
@@ -106,10 +109,9 @@ class DITest {
 
     @Autowired
     lateinit var notifications: Notifications
-
-    @Lazy
     @Autowired
-    lateinit var reportsDaoService: ReportsDaoService
+    lateinit var motorVehicleInspectionEntityRepo: ICdInspectionMotorVehicleItemChecklistRepository
+
 
     @Value("\${bpmn.di.mv.cor.process.definition.key}")
     lateinit var diMvWithCorProcessDefinitionKey: String
@@ -681,6 +683,13 @@ class DITest {
         schedulerImpl.updateLabResultsWithDetails()
     }
 
+    @Test
+    fun loadListOfMinistry() {
+        val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+        val page=PageRequest.of(1,10)
+        val items=this.motorVehicleInspectionEntityRepo.findByMinistryReportSubmitStatusInAndSampled(listOf(map.workingStatus,map.initStatus, map.testStatus),"YES",page)
+        Assertions.assertFalse(items.isEmpty,"Expected some list for ministry inspection")
+    }
 
     @Test
     fun generateQaRandomInvoice() {
@@ -697,10 +706,31 @@ class DITest {
 
     @Test
     fun demandNoteSubmission() {
-        this.demandNoteRepository.findFirstByPaymentStatus(1)?.let { demandNote->
-            destinationInspectionDaoServices.sendDemandNotGeneratedToKWIS(demandNote.id!!)
+        this.demandNoteRepository.findFirstByPaymentStatusAndCdRefNoIsNotNull(1)?.let { demandNote->
+            destinationInspectionDaoServices.sendDemandNotGeneratedToKWIS(demandNote)
         }?:throw ExpectedDataNotFound("Could not find a single payment")
     }
+
+    @Test
+    fun cocSubmission() {
+        this.cocRepository.findFirstByCocNumberIsNotNullAndCocTypeAndConsignmentDocIdIsNotNull("COC")?.let { coc->
+            destinationInspectionDaoServices.sendLocalCoc(coc)
+        }?:throw ExpectedDataNotFound("Could not find a COC document")
+    }
+    @Test
+    fun coiSubmission() {
+        this.cocRepository.findFirstByCoiNumberIsNotNullAndCocTypeAndConsignmentDocIdIsNotNull("COI")?.let { coi->
+            destinationInspectionDaoServices.sendLocalCoi(coi)
+        }?:throw ExpectedDataNotFound("Could not find a COI document")
+    }
+
+    @Test
+    fun corSubmission() {
+        this.corsEntityRepository.findFirstByChasisNumberIsNotNull()?.let { cor->
+            destinationInspectionDaoServices.submitCoRToKesWS(cor)
+        }?:throw ExpectedDataNotFound("Could not find a COR document")
+    }
+
     @Test
     fun demandNoteCreationDetails() {
         val appId = applicationMapProperties.mapImportInspection

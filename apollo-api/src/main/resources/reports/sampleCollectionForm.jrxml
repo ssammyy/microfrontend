@@ -270,7 +270,7 @@
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{supplierAddress}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{contactFullAddress}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="TextField" x="204" y="206" width="346" height="20" uuid="b9189c0e-022d-41a7-a3b4-6617192cb6e5">
@@ -279,7 +279,7 @@
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{supplierName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{contactName}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="257" y="286" width="76" height="20" uuid="2db97edf-3489-46ca-9782-4b06af3fec8f"/>
@@ -571,7 +571,7 @@
 				<textFieldExpression><![CDATA[$P{officerDesignation}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="TextField" x="421" y="640" width="131" height="20" uuid="9f44ed8b-f754-4c24-8089-d1c3dc1719b9"/>
+				<reportElement style="TextField" x="421" y="640" width="128" height="20" uuid="9f44ed8b-f754-4c24-8089-d1c3dc1719b9"/>
 				<textFieldExpression><![CDATA[$P{witnessDate}]]></textFieldExpression>
 			</textField>
 			<textField>

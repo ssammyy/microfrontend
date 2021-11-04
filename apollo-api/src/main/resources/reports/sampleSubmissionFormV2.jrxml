@@ -42,7 +42,10 @@
 	<parameter name="otherMarkings" class="java.lang.String"/>
 	<parameter name="referenceStandard" class="java.lang.String"/>
 	<parameter name="transmissionResult" class="java.lang.String"/>
+	<parameter name="testParameters" class="java.lang.String"/>
 	<parameter name="purposeOfTest" class="java.lang.String"/>
+	<parameter name="laboratoryName" class="java.lang.String"/>
+	<parameter name="ssfDescription" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -244,14 +247,7 @@
 				<text><![CDATA[Parameters to be tested (** Indicate whether measurement uncertainity is required with Y/N):]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="1" y="584" width="271" height="20" uuid="f9a916e6-0c27-4a77-8532-03325bbe7fa3"/>
-				<textElement verticalAlignment="Bottom">
-					<font size="10"/>
-				</textElement>
-				<text><![CDATA[_________________________________________________________________]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="TextStatic" x="1" y="466" width="75" height="19" uuid="5a28bad9-2306-4f25-b61f-360be32b16cc">
+				<reportElement style="TextStatic" x="1" y="466" width="75" height="22" uuid="5a28bad9-2306-4f25-b61f-360be32b16cc">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
@@ -267,20 +263,6 @@
 					<font size="10"/>
 				</textElement>
 				<text><![CDATA[8. Customer Name ]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="80" y="661" width="474" height="20" uuid="52a1353c-7cec-4a7d-8de6-4493b46ad634"/>
-				<textElement verticalAlignment="Bottom">
-					<font size="10"/>
-				</textElement>
-				<text><![CDATA[ ___________________________________________________________________________________________________________________________________________________________________________________________________]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="1" y="686" width="549" height="20" uuid="afe79833-27b4-47ae-8539-108fa9b12788"/>
-				<textElement verticalAlignment="Bottom">
-					<font size="10"/>
-				</textElement>
-				<text><![CDATA[______________________________________________________________________________________________________________________________________________________________________________________________________________]]></text>
 			</staticText>
 			<staticText>
 				<reportElement style="TextField" x="296" y="390" width="258" height="20" uuid="925401a3-5b44-4e5a-b0bc-14ff566c9050">
@@ -319,13 +301,6 @@
 				<text><![CDATA[Date]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="TextStatic" x="384" y="463" width="168" height="20" uuid="b5176b62-1178-4991-824e-59b1e1fe1ce2"/>
-				<textElement verticalAlignment="Bottom">
-					<font size="10"/>
-				</textElement>
-				<text><![CDATA[__________________________________________]]></text>
-			</staticText>
-			<staticText>
 				<reportElement style="TextField" x="296" y="488" width="254" height="20" uuid="0b7b71b6-ee27-4d21-9aae-4d2d09b42284">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -339,13 +314,6 @@
 					<font size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[14. Notes on transmission of results]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="100" y="439" width="174" height="20" uuid="1323214b-d1cf-451d-aa0e-c2987139f82b"/>
-				<textElement verticalAlignment="Bottom">
-					<font size="10"/>
-				</textElement>
-				<text><![CDATA[______________________________________________________________________________________________________________________________________________________________________________________________________________]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="5" y="631" width="76" height="20" uuid="d1620b67-b738-4bef-8b00-cf7e222ced4e"/>
@@ -391,20 +359,13 @@
 				<text><![CDATA[4. Size of test sample]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="TextStatic" x="2" y="437" width="91" height="22" uuid="b87c2ae7-4b28-4ce3-9f37-0ccf785eced7">
+				<reportElement style="TextStatic" x="2" y="437" width="275" height="22" uuid="b87c2ae7-4b28-4ce3-9f37-0ccf785eced7">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
 					<font size="10"/>
 				</textElement>
 				<text><![CDATA[7. Test Request]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="78" y="467" width="198" height="20" uuid="eaa23bd7-590e-4ac1-92cf-9b7d30d7fedb"/>
-				<textElement verticalAlignment="Bottom">
-					<font size="10"/>
-				</textElement>
-				<text><![CDATA[______________________________________________________________________________________________________________________________________________________________________________________________________________]]></text>
 			</staticText>
 			<staticText>
 				<reportElement style="TextStatic" x="1" y="492" width="276" height="19" uuid="33b28b87-0016-4311-b971-2ed8e8041340">
@@ -414,13 +375,6 @@
 					<font size="10" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Purpose of Test]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="2" y="607" width="272" height="20" uuid="9d8d8ec5-bb0b-4254-ae22-a4a58cf1f773"/>
-				<textElement verticalAlignment="Bottom">
-					<font size="10"/>
-				</textElement>
-				<text><![CDATA[______________________________________________________________________________________________________________________________________________________________________________________________________________]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="298" y="35" width="76" height="20" uuid="d45713f5-1f45-4fe7-a774-769fe3b379dd"/>
@@ -650,7 +604,7 @@
 				<textFieldExpression><![CDATA[$P{officerName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="294" y="590" width="256" height="21" uuid="b788838a-1808-4597-8150-ebe82ce90c73"/>
+				<reportElement style="TextField" x="294" y="590" width="256" height="21" uuid="b788838a-1808-4597-8150-ebe82ce90c73"/>
 				<textFieldExpression><![CDATA[$P{disposalMode}]]></textFieldExpression>
 			</textField>
 			<textField>
@@ -666,16 +620,25 @@
 				<textFieldExpression><![CDATA[$P{ucrNumber}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="516" width="276" height="19" uuid="29f4637c-50e6-4214-913c-f1c778f28c8c"/>
+				<reportElement style="TextField" x="0" y="516" width="276" height="19" uuid="29f4637c-50e6-4214-913c-f1c778f28c8c"/>
 				<textFieldExpression><![CDATA[$P{purposeOfTest}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="0" y="710" width="549" height="20" uuid="7618d0de-9b87-407d-91d4-c41b1731ecd0"/>
-				<textElement verticalAlignment="Bottom">
-					<font size="10"/>
-				</textElement>
-				<text><![CDATA[______________________________________________________________________________________________________________________________________________________________________________________________________________]]></text>
-			</staticText>
+			<textField>
+				<reportElement style="TextField" x="6" y="583" width="270" height="37" uuid="68452423-ec58-4674-8732-b1acd9a18dde"/>
+				<textFieldExpression><![CDATA[$P{testParameters}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="TextField" x="85" y="466" width="186" height="21" uuid="f070a8f6-e81a-4638-8089-0a112ab2001b"/>
+				<textFieldExpression><![CDATA[$P{laboratoryName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="TextField" x="384" y="458" width="167" height="25" uuid="22c75608-caf8-4831-8a63-d3b84fbf6428"/>
+				<textFieldExpression><![CDATA[$P{genDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="TextField" x="79" y="661" width="474" height="78" uuid="4c9fb223-df9c-4ad8-a206-d89fa58e5f3d"/>
+				<textFieldExpression><![CDATA[$P{ssfDescription}]]></textFieldExpression>
+			</textField>
 		</band>
 		<band height="740" splitType="Prevent">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>

@@ -29,6 +29,10 @@ export class MotorVehicleInspectionSingleViewComponent implements OnInit {
             }
         )
     }
+
+    goBack() {
+        this.router.navigate(["/ministry/inspection"])
+    }
     uploadReport() {
         let ref=this.dialog.open(MvInspectionUploadFileReportComponent,{
             data: {
@@ -39,7 +43,7 @@ export class MotorVehicleInspectionSingleViewComponent implements OnInit {
             .subscribe(res=>{
                     // Navigate on successful upload
                     if(res) {
-                        this.router.navigate(["/ministry/inspection"])
+                       this.goBack()
                     }
                 }
             )

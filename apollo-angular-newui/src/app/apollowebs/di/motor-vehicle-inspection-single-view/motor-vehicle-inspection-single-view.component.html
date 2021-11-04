@@ -7,7 +7,11 @@
                         <div class="card-icon">
                             <i class="material-icons">Motor Vehicle Inspection</i>
                         </div>
-                        <h4 class="card-title">Motor Vehicle Inspection Checklist Details</h4>
+                        <h4 class="card-title">Motor Vehicle Inspection Checklist Details
+                            <button class="btn btn-sm btn-default pull-right mr-7"
+                                    (click)="goBack()"><i class="fa fa-arrow-left"></i> Back
+                            </button>
+                        </h4>
                        
                     </div>
                     <div class="card-body" *ngIf="itemDetails">
@@ -162,7 +166,7 @@
                             <div class="col-md-2">
                                 <b>Action:</b>
                                 <button *ngIf="itemDetails.mvInspectionChecklist.ministryInspectionComplete" class="btn btn-sm btn-primary" (click)="downloadReport()">Download Report Checklist</button>
-                                <button class="btn btn-sm btn-primary" (click)="downloadMinistryUnfilled()">Download Unfilled Checklist</button>
+                                <button *ngIf="!itemDetails.mvInspectionChecklist.ministryInspectionComplete" class="btn btn-sm btn-primary" (click)="downloadMinistryUnfilled()">Download Unfilled Checklist</button>
                                 <button *ngIf="!itemDetails.mvInspectionChecklist.ministryInspectionComplete" class="btn btn-sm btn-primary" (click)="uploadReport()" >Upload Filled Report</button>
                             </div>
                         </div>

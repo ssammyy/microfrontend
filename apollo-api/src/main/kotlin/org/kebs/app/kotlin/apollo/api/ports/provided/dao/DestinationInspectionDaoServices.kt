@@ -343,7 +343,7 @@ class DestinationInspectionDaoServices(
     ): CocsEntity {
         var localCoc = CocsEntity()
         consignmentDocumentDetailsEntity.ucrNumber?.let {
-            cocRepo.findByUcrNumberAndCocType(it, "coc")
+            cocRepo.findByUcrNumberAndCocType(it, "COC")
                     ?.let { coc ->
                         return coc
                     }
@@ -447,7 +447,7 @@ class DestinationInspectionDaoServices(
         var localNcr = CocsEntity()
 
         consignmentDocumentDetailsEntity.ucrNumber?.let {
-            cocRepo.findByUcrNumberAndCocType(it, "ncr")
+            cocRepo.findByUcrNumberAndCocType(it, "NCR")
                     ?.let { coc ->
                         return coc
                     }
@@ -550,7 +550,7 @@ class DestinationInspectionDaoServices(
     ): CocsEntity {
         val coc = CocsEntity()
         consignmentDocumentDetailsEntity.ucrNumber?.let {
-            cocRepo.findByUcrNumberAndCocType(it, "coui")
+            cocRepo.findByUcrNumberAndCocType(it, "COI")
                     ?.let { coc ->
                         throw Exception("There is an Existing COI with the following UCR No = ${coc.ucrNumber}")
                     }
@@ -707,55 +707,51 @@ class DestinationInspectionDaoServices(
 
 
     fun sendLocalCoc(cocsEntity: CocsEntity) {
-            val coc: CustomCocXmlDto = cocsEntity.toCocXmlRecordRefl()
-            //COC ITEM
-            val listItems = mutableListOf<CocDetails>()
-            iCocItemRepository.findByCocId(cocsEntity.id)?.forEach { cocItem ->
-                cocItem.toCocItemDetailsXmlRecordRefl(cocsEntity.cocNumber ?: "NA").let { cocItemXml ->
-                    listItems.add(cocItemXml)
-                }
+        val coc: CustomCocXmlDto = cocsEntity.toCocXmlRecordRefl()
+        //COC ITEM
+        val listItems = mutableListOf<CocDetails>()
+        iCocItemRepository.findByCocId(cocsEntity.id)?.forEach { cocItem ->
+            cocItem.toCocItemDetailsXmlRecordRefl(cocsEntity.cocNumber ?: "NA").let { cocItemXml ->
+                listItems.add(cocItemXml)
             }
-            if (!listItems.isEmpty()) {
-                coc.cocDetals = listItems
-            }
-            val cocFinalDto = COCXmlDTO()
-            cocFinalDto.coc = coc
+        }
+        if (!listItems.isEmpty()) {
+            coc.cocDetals = listItems
+        }
+        val cocFinalDto = COCXmlDTO()
+        cocFinalDto.coc = coc
 
-            val fileName = cocsEntity.ucrNumber?.let {
-                commonDaoServices.createKesWsFileName(
-                        applicationMapProperties.mapKeswsCocDoctype,
-                        it
-                )
-            } ?: throw ExpectedDataNotFound("Invalid Local UCR NUmber")
-            val xmlFile = commonDaoServices.serializeToXml(fileName, cocFinalDto)
-            sftpService.uploadFile(xmlFile)
+        val fileName = cocsEntity.consignmentDocId?.let {
+            commonDaoServices.createKesWsFileName(
+                    applicationMapProperties.mapKeswsCocDoctype,
+                    it.ucrNumber ?: ""
+            )
+        } ?: throw ExpectedDataNotFound("Invalid Local UCR NUmber")
+        val xmlFile = commonDaoServices.serializeToXml(fileName, cocFinalDto)
+        sftpService.uploadFile(xmlFile)
     }
 
-    fun sendLocalCoi(cocId: Long) {
-        val cocsEntity: CocsEntity = cocRepo.findById(cocId).get()
+    fun sendLocalCoi(coiEntity: CocsEntity) {
+        val coi: CustomCoiXmlDto = coiEntity.toCoiXmlRecordRefl()
+        //COC ITEM
+        val coiFinalDto = COIXmlDTO()
+        val itemList = mutableListOf<CustomCoiXmlDto>()
+//        val cocItem = iCocItemRepository.findByCocId(coiEntity.id)?.forEach { coiItem ->
+//            val coi = coiItem.toCocItemDetailsXmlRecordRefl(coiEntity.coiNumber?:"")
+            itemList.add(coi)
+//        }
+        coiFinalDto.coi = itemList
 
-        cocsEntity.let {
-            val coi: CustomCoiXmlDto = it.toCoiXmlRecordRefl()
-            //COC ITEM
-            val cocItem = iCocItemRepository.findByCocId(cocsEntity.id)?.get(0)
-            cocItem?.toCocItemDetailsXmlRecordRefl(cocsEntity.cocNumber ?: "NA").let {
-                val coiFinalDto = COIXmlDTO()
-                coiFinalDto.coi = coi
-
-                val fileName = coiFinalDto.coi?.ucrNumber?.let {
-                    commonDaoServices.createKesWsFileName(
-                            applicationMapProperties.mapKeswsCoiDoctype,
-                            it
-                    )
-                }
-
-                val xmlFile = fileName?.let { commonDaoServices.serializeToXml(it, coiFinalDto) }
-
-                xmlFile?.let { it1 -> sftpService.uploadFile(it1) }
-
-            }
-
+        val fileName = coiEntity.consignmentDocId?.let {
+            commonDaoServices.createKesWsFileName(
+                    applicationMapProperties.mapKeswsCoiDoctype,
+                    it.ucrNumber ?: ""
+            )
         }
+
+        val xmlFile = fileName?.let { commonDaoServices.serializeToXml(it, coiFinalDto) }
+
+        xmlFile?.let { it1 -> sftpService.uploadFile(it1) }
     }
 
     fun generateCor(
@@ -951,9 +947,8 @@ class DestinationInspectionDaoServices(
 //                ?: throw Exception("IDF ITEM(s) Details with IDF ID = ${idfId}, do not Exist")
     }
 
-    fun sendDemandNotGeneratedToKWIS(demandNoteId: Long) {
-        val demandNoteEntity: CdDemandNoteEntity = iDemandNoteRepo.findById(demandNoteId).get()
-        demandNoteEntity.let {
+    fun sendDemandNotGeneratedToKWIS(demandNoteEntity: CdDemandNoteEntity?) {
+        demandNoteEntity?.let {
             val mpesaDetails = invoiceDaoService.findPaymentMethodtype(applicationMapProperties.mapMpesaDetails)
             val bank1Details = invoiceDaoService.findPaymentMethodtype(applicationMapProperties.mapBankOneDetails)
             val bank2Details = invoiceDaoService.findPaymentMethodtype(applicationMapProperties.mapBankTwoDetails)
@@ -961,18 +956,18 @@ class DestinationInspectionDaoServices(
 
             val demandNote: CustomDemandNoteXmlDto = it.toCdDemandNoteXmlRecordRefl()
             demandNote.demandNoteNumber = it.demandNoteNumber
-            demandNote.transactionNumber=it.ucrNumber
-            demandNote.nameImporter=it.nameImporter
+            demandNote.transactionNumber = it.cdRefNo
+            demandNote.nameImporter = it.nameImporter
             demandNote.address = it.address
-            demandNote.telephone=it.telephone
+            demandNote.telephone = it.telephone
             demandNote.amountPayable = it.amountPayable
             demandNote.cfvalue = it.cfvalue
             demandNote.id = it.id
-            demandNote.receiptNo=it.receiptNo?:"UNKNOWN"
-            demandNote.entryAblNumber=it.entryAblNumber?:"UNKNOWN"
+            demandNote.receiptNo = it.receiptNo ?: "UNKNOWN"
+            demandNote.entryAblNumber = it.entryAblNumber ?: "UNKNOWN"
             demandNote.totalAmount = it.totalAmount
             demandNote.entryAblNumber = it.entryAblNumber
-            demandNote.transactionType="PAYMENT"
+            demandNote.transactionType = "PAYMENT"
             demandNote.dateGenerated = demandNote.convertTimestampToKeswsValidDate(it.dateGenerated
                     ?: Date(java.util.Date().time))
             demandNote.rate = it.rate
@@ -990,10 +985,9 @@ class DestinationInspectionDaoServices(
                 commonDaoServices.createKesWsFileName(applicationMapProperties.mapKeswsDemandNoteDoctype, it)
             } ?: throw ExpectedDataNotFound("Demand note number not found")
             KotlinLogging.logger { }.debug("DEMAND NOTE FILE NAME: $fileName")
-            val xmlFile = fileName.let { commonDaoServices.serializeToXml(it, demandNoteFinalDto) }
-                    ?: throw ExpectedDataNotFound("File name was null")
+            val xmlFile =  commonDaoServices.serializeToXml(fileName, demandNoteFinalDto)
 
-            xmlFile.let { it1 -> sftpService.uploadFile(it1) } ?: throw ExpectedDataNotFound("XML file was not created")
+            sftpService.uploadFile(xmlFile)
 
         } ?: throw  ExpectedDataNotFound("Demand note not found on the server")
     }
@@ -2953,9 +2947,10 @@ class DestinationInspectionDaoServices(
         return true
     }
 
-    fun convertCdItemDetailsToMinistryInspectionListResponseDto(cdItemDetails: CdItemDetailsEntity): MinistryInspectionListResponseDto {
+    fun convertCdItemDetailsToMinistryInspectionListResponseDto(cdItemDetails: CdItemDetailsEntity, completed: Boolean): MinistryInspectionListResponseDto {
         val ministryInspectionItem = MinistryInspectionListResponseDto()
         ministryInspectionItem.cdId = cdItemDetails.cdDocId?.id!!
+        ministryInspectionItem.ministryInspectionComplete=completed
         ministryInspectionItem.cdUcr = cdItemDetails.cdDocId?.ucrNumber
         ministryInspectionItem.cdItemDetailsId = cdItemDetails.id
         this.findCdItemNonStandardByItemID(cdItemDetails)?.let { cdItemNonStandard ->

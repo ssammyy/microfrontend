@@ -13,7 +13,7 @@ export class MvInspectionUploadFileReportComponent implements OnInit {
     public form: FormGroup
     public selectedFile: File
     public message: String
-    loading=false
+    loading = false
 
     constructor(public dialogRef: MatDialogRef<any>,
                 private fb: FormBuilder,
@@ -26,38 +26,42 @@ export class MvInspectionUploadFileReportComponent implements OnInit {
             comment: ['', Validators.required]
         })
     }
-    closeDialog(){
+
+    closeDialog() {
         this.dialogRef.close(false)
     }
+
     onFileSelected(event: any) {
-        let files=event.target.files
-        if(files.length>0){
-            this.selectedFile=files[0]
+        let files = event.target.files
+        if (files.length > 0) {
+            this.selectedFile = files[0]
         } else {
-            this.selectedFile=null
+            this.selectedFile = null
         }
         console.log(this.selectedFile)
     }
 
     saveRecord() {
-        if(this.selectedFile) {
-            this.loading=true
+        if (this.selectedFile) {
+            this.loading = true
             this.diService.uploadMinistryChecklist(this.selectedFile, this.form.value.comment, this.data.id)
                 .subscribe(
                     res => {
-                        this.loading=false
+                        this.loading = false
                         if (res.responseCode === "00") {
-                            this.dialogRef.close(true)
+                            this.diService.showSuccess(res.message, () => {
+                                this.dialogRef.close(true)
+                            })
                         } else {
-                            this.message = res.message
+                            this.diService.showError(res.message, null)
                         }
                     },
                     error => {
-                        this.loading=false
+                        this.loading = false
                     }
                 )
-        }else {
-            this.message="Please select file to upload"
+        } else {
+            this.message = "Please select file to upload"
         }
 
     }

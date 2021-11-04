@@ -630,6 +630,7 @@ Ministry Inspection table view details
  */
 data class MinistryInspectionListResponseDto(
         var cdId: Long = 0,
+        var ministryInspectionComplete: Boolean=false,
         var inspectionId: Long? = 0,
         var remarks: String? = null,
         var cdUcr: String? = null,

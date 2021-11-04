@@ -48,9 +48,9 @@ class QaSampleCollectionEntity : Serializable {
     @Basic
     var batchNo: String? = null
 
-    @Column(name = "QUANTITY_DECLARED")
+    @Column(name = "TRANSMISSION_RESULT")
     @Basic
-    var quantityDeclared: String? = null
+    var transmissionResult: String? = null
 
     @Column(name = "REFERENCE_STANDARD")
     @Basic
