@@ -1,1 +1,120 @@
-<p>createproduct works!</p>
+<div class="container-fluid" style="margin-top: 5%">
+    <div class="loading-spinner ">
+        <ngx-spinner
+                bdColor="rgba(51,51,51,0.8)"
+                size="medium"
+                color="#fff"
+                type="ball-scale-multiple"
+        >
+            <p style="font-size: 20px; color: white">Saving Please Wait...</p>
+        </ngx-spinner>
+    </div>
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-primary card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">assignment</i>
+                            </div>
+                            <h4 class="card-title"><b>Create Product Category</b></h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="toolbar">
+
+                            </div>
+                            <form (ngSubmit)="saveProductCategory()" [formGroup]="createProductCategoryFormGroup"
+                                  class="form">
+                                <div class="form-body">
+                                    <div class="row col-12">
+
+                                        <div class="form-group col-10">
+                                            <label><b>Product Category Name</b><span
+                                                    style="font-size: xx-small; color: red;"> (*)Required</span></label>
+                                            <input
+                                                    oninput="this.value = this.value.capitaliseFirstLetter"
+                                                    [class.is-invalid]="formCreateProduct.name.invalid && formCreateProduct.name.touched"
+                                                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                    class="form-control one-column-input"
+                                                    formControlName="name" name="name"
+                                                    placeholder="Product Category Name" type="text">
+                                        </div>
+                                    </div>
+                                    <div class="row col-12">
+
+                                        <div class="form-group col-6">
+                                            <label><b>Select Department</b><span
+                                                    style="font-size: xx-small; color: red;"> (*)Required</span></label>
+                                            <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                                                    class="form-control" required
+                                                    formControlName="departmentId"
+                                                    name="departmentId"
+                                                    (change)="onSelectDepartment($event.target.value)"
+                                                    [class.is-invalid]="formCreateProduct.departmentId.invalid && formCreateProduct.departmentId.touched">
+                                                <option disabled>--Select Department--</option>
+                                                <option *ngFor="let department of departments"
+                                                        value="{{department.id}}">{{department.name}}</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group col-6">
+                                            <label><b>Select Technical Committee</b><span
+                                                    style="font-size: xx-small; color: red;"> (*)Required</span></label>
+                                            <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                                                    class="form-control" required
+                                                    formControlName="technicalCommitteeId"
+                                                    name="technicalCommitteeId"
+                                                    [class.is-invalid]="formCreateProduct.departmentId.invalid && formCreateProduct.departmentId.touched">
+                                                <option disabled>--Select committee--</option>
+                                                <option *ngFor="let committee of technicalCommittees"
+                                                        [value]="committee.id">{{committee.title}}
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row col-12">
+                                        <div class="form-group col-6">
+                                            <label><b>Category Description</b><span
+                                                    style="font-size: xx-small; color: red;"> (*)Required</span></label>
+                                            <input
+                                                    oninput="this.value = this.value.capitaliseFirstLetter"
+                                                    [class.is-invalid]="formCreateProduct.description.invalid && formCreateProduct.description.touched"
+                                                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                    class="form-control one-column-input"
+                                                    formControlName="description"
+                                                    name="description"
+                                                    placeholder="Product Category Description" type="text">
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="row col-12 float-right " style="margin: 3em 0 2em 0">
+                                        <button mat-raised-button *ngIf="createProductCategoryFormGroup.valid"
+                                                [disabled]="!createProductCategoryFormGroup.valid"
+                                                class="btn btn-info pull-right" type="submit">Submit
+                                        </button>
+
+
+                                    </div>
+                                </div>
+
+
+                            </form>
+                            <div class="row col-12 float-right " style="margin: 3em 0 2em 0">
+                                <button mat-raised-button *ngIf="!createProductCategoryFormGroup.valid"
+                                        class="btn btn-info pull-right"
+                                        (click)="showNotification('top','right')">Submit
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

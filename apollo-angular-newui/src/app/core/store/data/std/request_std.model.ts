@@ -69,6 +69,26 @@ export interface TechnicalCommitteeb {
     status:string;
 
 }
+export interface ProductCategory {
+    id: number;
+    technicalCommitteeId: number;
+    name: string;
+    description: string;
+    createdBy:string;
+    createdOn:string;
+    status:string;
+
+}
+export interface ProductSubCategoryB {
+    id: number;
+    productId: number;
+    name: string;
+    description: string;
+    createdBy:string;
+    createdOn:string;
+    status:string;
+
+}
 export interface TechnicalCommittee {
     id: number;
     technical_committee_no: string;
