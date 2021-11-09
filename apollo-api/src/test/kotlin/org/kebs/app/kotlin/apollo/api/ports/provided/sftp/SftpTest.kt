@@ -159,8 +159,9 @@ class SftpTest {
     @Test
     fun whenDemandNotePaypojoSerializedToXmlFile_thenCorrect() {
         val coiId: Long = 641
-        destinationInspectionDaoServices.sendDemandNotePayedStatusToKWIS(coiId)
-
+        destinationInspectionDaoServices.findDemandNoteWithID(coiId)?.let {
+            destinationInspectionDaoServices.sendDemandNotePayedStatusToKWIS(it)
+        }
     }
 
 

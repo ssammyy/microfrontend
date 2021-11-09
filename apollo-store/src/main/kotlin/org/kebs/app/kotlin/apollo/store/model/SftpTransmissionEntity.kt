@@ -23,6 +23,12 @@ class SftpTransmissionEntity : Serializable {
     @Column(name = "FLOW_DIRECTION")
     var flowDirection: String? = null
 
+    @Column(name = "FILE_TYPE")
+    var fileType: String? = null
+
+    @Column(name = "REMOTE_REFERENCE")
+    var remoteReference: String? = null
+
     @Column(name = "TRANSACTION_DATE", nullable = false)
     var transactionDate: Date? = null
 

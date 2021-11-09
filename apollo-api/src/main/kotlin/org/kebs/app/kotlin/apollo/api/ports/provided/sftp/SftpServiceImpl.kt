@@ -12,6 +12,7 @@ import org.kebs.app.kotlin.apollo.config.properties.camel.CamelFtpProperties
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.SftpTransmissionEntity
 import org.kebs.app.kotlin.apollo.store.repo.ISftpTransmissionEntityRepository
+import org.springframework.core.io.ResourceLoader
 import org.springframework.stereotype.Service
 import java.io.File
 import java.io.IOException
@@ -20,14 +21,18 @@ import java.nio.file.Paths
 import java.sql.Timestamp
 import java.time.Instant
 import java.util.*
+import javax.xml.XMLConstants
+import javax.xml.transform.stream.StreamSource
+import javax.xml.validation.SchemaFactory
 
 
 @Service("sftpService")
 class SftpServiceImpl(
-    private val applicationMapProperties: ApplicationMapProperties,
-    private val jasyptStringEncryptor: StringEncryptor,
-    private val camelFtpProperties: CamelFtpProperties,
-    private val sftpLogRepo: ISftpTransmissionEntityRepository
+        private val applicationMapProperties: ApplicationMapProperties,
+        private val jasyptStringEncryptor: StringEncryptor,
+        private val camelFtpProperties: CamelFtpProperties,
+        private val sftpLogRepo: ISftpTransmissionEntityRepository,
+        private val resourceLoader: ResourceLoader
 ) : ISftpService {
 
     //    val SESSION_CONFIG_STRICT_HOST_KEY_CHECKING: String = "StrictHostKeyChecking"
@@ -42,7 +47,7 @@ class SftpServiceImpl(
 
         val jsch = JSch()
         KotlinLogging.logger { }
-            .info(":::: Trying to connect sftp[$username @ $host], using password: $decryptedPassword ::::")
+                .info(":::: Trying to connect sftp[$username @ $host], using password: $decryptedPassword ::::")
 
         val session: Session = createSession(jsch, host, username, port = applicationMapProperties.mapSftpPort)
         try {
@@ -62,7 +67,7 @@ class SftpServiceImpl(
     }
 
     fun createSession(jSch: JSch, host: String, username: String, port: String): Session {
-        var session: Session?
+        val session: Session?
         try {
             session = jSch.getSession(username, host, port.toInt())
         } catch (e: IOException) {
@@ -87,51 +92,82 @@ class SftpServiceImpl(
         }
     }
 
-    override fun uploadFile(file: File): Boolean {
+    fun validateAgainstXsd(file: File, xsdFile: String?): Boolean {
+        return xsdFile?.let {
+            return try {
+                val sf: SchemaFactory = SchemaFactory.newDefaultInstance()
+                val schema = sf.newSchema(resourceLoader.getResource("classpath:kentrade-xsd/${it}.xsd").file)
+                val validator = schema.newValidator()
+                validator.validate(StreamSource(file))
+                true
+            } catch (ex: Exception) {
+                KotlinLogging.logger { }.error("Error loading file: ", ex)
+                false
+            }
+        } ?: true
+    }
 
-        // On failure, copy file to camel so that it can be uploaded later
-        KotlinLogging.logger {  }.info("FILE NAME: ${file.name}")
-        //
-        val sftp: ChannelSftp = this.createSftp()
-        val log = SftpTransmissionEntity()
-        try {
-            log.filename = file.name
-            log.transactionDate = Date()
-            log.transactionStartDate = Timestamp.from(Instant.now())
-            log.transactionStatus = 0
-            log.callingMethod = Thread.currentThread().name
-            log.flowDirection = "OUT"
-
-            sftp.cd(applicationMapProperties.mapSftpUploadRoot)
-
-            KotlinLogging.logger { }.info(":::: Uploading file to: ${applicationMapProperties.mapSftpUploadRoot} ::::")
-
-            val fileName = file.name
-            sftp.put(file.inputStream(), fileName)
-
-            log.transactionStatus = 30
-            log.responseMessage = "Successfully sent"
-            log.responseStatus = "00"
-            log.transactionCompletedDate = Timestamp.from(Instant.now())
-
-            return true
-        } catch (e: Exception) {
-            KotlinLogging.logger { }.error("An error occurred while uploading sftp file: ${file.name}", e)
-            // On failure, copy file to camel so that it can be uploaded later
-            val camelPath = Paths.get(camelFtpProperties.outboundDirectory,file.name)
-            KotlinLogging.logger {  }.info(camelPath.toString())
-            file.copyTo(camelPath.toFile(),overwrite = true)
-            //
-            log.transactionStatus = 20
-            log.responseMessage = e.message
-            log.responseStatus = "99"
-            log.transactionCompletedDate = Timestamp.from(Instant.now())
-            throw RuntimeException("An error occurred while uploading sftp file")
-        } finally {
-            KotlinLogging.logger { }.info(":::: Disconnect sftp after upload ::::")
-            this.disconnect(sftp)
-            sftpLogRepo.save(log)
+    override fun uploadFile(file: File, fileType: String?): Boolean {
+        if (validateAgainstXsd(file, fileType)) {
+            KotlinLogging.logger { }.info("File: ${file.name} is valid using XSD: $fileType")
+        }else {
+            KotlinLogging.logger { }.warn("File: ${file.name} is invalidate using XSD: $fileType")
         }
+        // On failure, copy file to camel so that it can be uploaded later
+        KotlinLogging.logger { }.info("FILE NAME: ${file.name}")
+        if (this.camelFtpProperties.useCamelForUploads) {
+            // On failure, copy file to camel so that it can be uploaded later
+            val camelPath = Paths.get(camelFtpProperties.outboundDirectory, file.name)
+            KotlinLogging.logger { }.info(camelPath.toString())
+            file.copyTo(camelPath.toFile(), overwrite = true)
+        } else {
+            val sftp: ChannelSftp = this.createSftp()
+            val log = SftpTransmissionEntity()
+            try {
+                log.filename = file.name
+                val fileProps = file.name.split("-")
+                log.fileType = fileProps[0]
+                log.remoteReference = fileProps[1]
+                log.transactionDate = Date()
+                log.transactionStartDate = Timestamp.from(Instant.now())
+                log.transactionStatus = 1
+                log.callingMethod = Thread.currentThread().name
+                log.flowDirection = "OUT"
+
+                sftp.cd(applicationMapProperties.mapSftpUploadRoot)
+
+                KotlinLogging.logger { }.info(":::: Uploading file to: ${applicationMapProperties.mapSftpUploadRoot} ::::")
+
+                val fileName = file.name
+                sftp.put(file.inputStream(), fileName)
+
+                log.transactionStatus = 30
+                log.responseMessage = "Successfully sent"
+                log.responseStatus = "00"
+                log.transactionCompletedDate = Timestamp.from(Instant.now())
+                // Move to processed
+                val camelPath = Paths.get(camelFtpProperties.outboundDirectory, camelFtpProperties.uploadPreMove, file.name)
+                KotlinLogging.logger { }.info(camelPath.toString())
+                file.copyTo(camelPath.toFile(), overwrite = true)
+                return true
+            } catch (e: Exception) {
+                KotlinLogging.logger { }.error("An error occurred while uploading sftp file: ${file.name}", e)
+                val camelPath = Paths.get(camelFtpProperties.outboundDirectory, "error", file.name)
+                KotlinLogging.logger { }.info(camelPath.toString())
+                file.copyTo(camelPath.toFile(), overwrite = true)
+                //
+                log.transactionStatus = 20
+                log.responseMessage = e.message
+                log.responseStatus = "99"
+                log.transactionCompletedDate = Timestamp.from(Instant.now())
+                throw RuntimeException("An error occurred while uploading sftp file")
+            } finally {
+                KotlinLogging.logger { }.info(":::: Disconnect sftp after upload ::::")
+                this.disconnect(sftp)
+                sftpLogRepo.save(log)
+            }
+        }
+        return true
     }
 
     override fun downloadFilesByDocType(docType: String): List<File> {
@@ -143,7 +179,7 @@ class SftpServiceImpl(
             sftp.cd(applicationMapProperties.mapSftpDownloadRoot)
 
             val allFiles = sftp.ls(applicationMapProperties.mapSftpDownloadRoot)
-            if (allFiles.size>0) {
+            if (allFiles.size > 0) {
                 for (file in allFiles) {
                     val log = SftpTransmissionEntity()
                     log.transactionDate = Date()
@@ -164,7 +200,7 @@ class SftpServiceImpl(
                         log.transactionCompletedDate = Timestamp.from(Instant.now())
                     } catch (e: Exception) {
                         KotlinLogging.logger { }
-                            .error("An error occurred while downloading sftp files in the inner loop: ", e)
+                                .error("An error occurred while downloading sftp files in the inner loop: ", e)
                         log.transactionStatus = 20
                         log.responseMessage = e.message
                         log.responseStatus = "99"
@@ -172,8 +208,8 @@ class SftpServiceImpl(
                     }
                     sftpLogRepo.save(log)
                 }
-            }else{
-                KotlinLogging.logger { }.error("No files to pull in directory ",applicationMapProperties.mapSftpDownloadRoot )
+            } else {
+                KotlinLogging.logger { }.error("No files to pull in directory ", applicationMapProperties.mapSftpDownloadRoot)
             }
         } catch (e: Exception) {
             KotlinLogging.logger { }.error("An error occurred while downloading sftp files", e)
@@ -190,10 +226,10 @@ class SftpServiceImpl(
         try {
             val fileName = file.name
             KotlinLogging.logger { }
-                .info(":::: Moving file: $fileName from directory: ${applicationMapProperties.mapSftpDownloadRoot}" + " to directory: ${destinationFolder}   ::::")
+                    .info(":::: Moving file: $fileName from directory: ${applicationMapProperties.mapSftpDownloadRoot}" + " to directory: ${destinationFolder}   ::::")
             sftp.rename(
-                applicationMapProperties.mapSftpDownloadRoot.plus("/").plus(fileName),
-                destinationFolder.plus("/").plus(fileName)
+                    applicationMapProperties.mapSftpDownloadRoot.plus("/").plus(fileName),
+                    destinationFolder.plus("/").plus(fileName)
             )
         } catch (e: Exception) {
             KotlinLogging.logger { }.error("An error occurred while moving sftp files", e)

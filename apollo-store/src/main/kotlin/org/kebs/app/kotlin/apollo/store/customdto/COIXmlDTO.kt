@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.full.primaryConstructor
 
-@JacksonXmlRootElement(localName = "APOLLO.DAT_KEBS_COIS")
+@JacksonXmlRootElement(localName = "APOLLO.DAT_KEBS_COISS")
 class COIXmlDTO {
 
     @JacksonXmlProperty(isAttribute = true, localName = "xmlns")

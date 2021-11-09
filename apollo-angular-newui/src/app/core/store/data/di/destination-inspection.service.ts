@@ -27,6 +27,38 @@ export class DestinationInspectionService {
         return false
     }
 
+    loadExchangeMessages(status: any, direction: any, date: any, page: any, size: any): Observable<any> {
+        let params = {
+            direction: direction,
+            page: page,
+            size: size
+        }
+        if (date) {
+            params['date'] = date
+        }
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/files/list/" + status), {
+            params: params
+        })
+    }
+
+    loadExchangeMessageFile(messageId): Observable<any> {
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/files/get/" + messageId), {
+            params: {}
+        })
+    }
+
+    loadExchangeStats(date: any): Observable<any> {
+        let params = {}
+        if (date) {
+            params['date'] = date
+        }
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/files/stats/" + status), {
+            params: params
+        })
+    }
+
+
+
     loadPersonalDashboard(): Observable<any> {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/dashboard/personal"))
     }
@@ -340,8 +372,8 @@ export class DestinationInspectionService {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/inspection/cor/details/" + cdUuid));
     }
 
-    loadCocDetails(cdUuid: any,docType: any): Observable<any> {
-        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/cd/certificate/"+docType+"/details/" + cdUuid));
+    loadCocDetails(cdUuid: any, docType: any): Observable<any> {
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/cd/certificate/" + docType + "/details/" + cdUuid));
     }
 
     saveSSFDetails(data: any, itemUuid: any): Observable<any> {

@@ -27,10 +27,10 @@ class InvoicePaymentService(
         private val commonDaoServices: CommonDaoServices,
         private val applicationMapProperties: ApplicationMapProperties
 ) {
-    fun invoiceDetails(demandNoteId: Long): HashMap<String,Any>{
+    fun invoiceDetails(demandNoteId: Long): HashMap<String, Any> {
         var map = hashMapOf<String, Any>()
 
-        daoServices.findDemandNoteWithID(demandNoteId)?.let {demandNote->
+        daoServices.findDemandNoteWithID(demandNoteId)?.let { demandNote ->
             map["preparedBy"] = demandNote.generatedBy.toString()
             map["datePrepared"] = demandNote.dateGenerated.toString()
             map["demandNoteNo"] = demandNote.demandNoteNumber.toString()
@@ -41,10 +41,11 @@ class InvoicePaymentService(
             map["totalAmount"] = demandNote.totalAmount.toString()
             map["receiptNo"] = demandNote.receiptNo.toString()
 
-            map = reportsDaoService.addBankAndMPESADetails(map, demandNote.demandNoteNumber?:"")
+            map = reportsDaoService.addBankAndMPESADetails(map, demandNote.demandNoteNumber ?: "")
         }
         return map
     }
+
     fun rejectDemandNoteGeneration(cdUuid: String, demandNoteId: Long, remarks: String): Boolean {
         try {
             val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
@@ -125,7 +126,7 @@ class InvoicePaymentService(
     }
 
     fun generateInvoiceBatch(cdUuid: String, demandNoteId: Long): Boolean {
-        KotlinLogging.logger {  }.info("INVOICE GENERATION: $demandNoteId")
+        KotlinLogging.logger { }.info("INVOICE GENERATION: $demandNoteId")
         try {
             val consignmentDocument = daoServices.findCDWithUuid(cdUuid)
             //Send Demand Note
@@ -151,7 +152,7 @@ class InvoicePaymentService(
                     accountNumber = importerDetails?.pin
                     currency = applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
                 }
-                KotlinLogging.logger {  }.info("ADD STAGING TO TABLE: $demandNoteId")
+                KotlinLogging.logger { }.info("ADD STAGING TO TABLE: $demandNoteId")
                 // Create payment on staging table
                 invoiceDaoService.createPaymentDetailsOnStgReconciliationTable(
                         loggedInUser.userName!!,
@@ -159,7 +160,7 @@ class InvoicePaymentService(
                         myAccountDetails
                 )
 
-            }?:ExpectedDataNotFound("Demand note number not set")
+            } ?: ExpectedDataNotFound("Demand note number not set")
             return true
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Failed to generate batch number", ex)
@@ -168,7 +169,7 @@ class InvoicePaymentService(
     }
 
     fun updateDemandNoteSw(cdUuid: String, demandNoteId: Long): Boolean {
-        KotlinLogging.logger {  }.info("UPDATE DEMAND NOTE ON SW")
+        KotlinLogging.logger { }.info("UPDATE DEMAND NOTE ON SW")
         try {
             val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             //2. Update payment status on KenTrade
@@ -185,13 +186,13 @@ class InvoicePaymentService(
     }
 
     fun sendDemandNoteStatus(demandNoteId: Long): Boolean {
-        daoServices.findDemandNoteWithID(demandNoteId)?.let {demandNote->
+        daoServices.findDemandNoteWithID(demandNoteId)?.let { demandNote ->
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             //1. Update Demand Note Status
-            demandNote.swStatus=map.activeStatus
-            demandNote.varField10="PAYMENT COMPLETED"
+            demandNote.swStatus = map.activeStatus
+            demandNote.varField10 = "PAYMENT COMPLETED"
             val demandNoteDetails = daoServices.upDateDemandNote(demandNote)
-            val consignmentDocument = demandNoteDetails.cdId?.let {cdId-> daoServices.findCD(cdId) }
+            val consignmentDocument = demandNoteDetails.cdId?.let { cdId -> daoServices.findCD(cdId) }
             // 2. Update CD status
             consignmentDocument?.cdStandard?.let { cdStd ->
                 daoServices.updateCDStatus(
@@ -207,7 +208,9 @@ class InvoicePaymentService(
         try {
             val consignmentDocument = this.daoServices.findCD(cdId)
             // 1. Send demand payment status to SW
-            daoServices.sendDemandNotePayedStatusToKWIS(demandNoteId)
+            daoServices.findDemandNoteWithID(demandNoteId)?.let { demandNote ->
+                daoServices.sendDemandNotePayedStatusToKWIS(demandNote)
+            } ?: throw ExpectedDataNotFound("Demand note with $demandNoteId was not found")
             // 2. Update application status
             consignmentDocument.varField10 = "DEMAND NOTE PAID,AWAITING INSPECTION"
             this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
@@ -218,7 +221,7 @@ class InvoicePaymentService(
         return false
     }
 
-    fun uploadExchangeRates(multipartFile: MultipartFile, fileType:String) {
+    fun uploadExchangeRates(multipartFile: MultipartFile, fileType: String) {
         var separator = ','
         if ("TSV".equals(fileType)) {
             KotlinLogging.logger { }.info("TAB SEPARATED DATA")
@@ -226,21 +229,21 @@ class InvoicePaymentService(
         } else {
             KotlinLogging.logger { }.info("COMMA SEPARATED DATA")
         }
-        val loggedInUser=commonDaoServices.getLoggedInUser()
+        val loggedInUser = commonDaoServices.getLoggedInUser()
         val targetReader: Reader = InputStreamReader(ByteArrayInputStream(multipartFile.bytes))
-        val exchangeRates=service.readExchangeRatesFromController(separator,targetReader)
-        for(rate in exchangeRates) {
-            val exchangeRateEntity= CurrencyExchangeRates()
-            with(exchangeRateEntity){
-                applicableDate= Timestamp.from(Instant.now())
-                currencyCode=rate.currencyCode
-                exchangeRate=rate.exchangeRate
-                description=rate.description
-                status=1
-                createdBy=loggedInUser?.userName
-                createdOn= Timestamp.from(Instant.now())
-                modifiedOn= Timestamp.from(Instant.now())
-                modifiedBy=loggedInUser?.userName
+        val exchangeRates = service.readExchangeRatesFromController(separator, targetReader)
+        for (rate in exchangeRates) {
+            val exchangeRateEntity = CurrencyExchangeRates()
+            with(exchangeRateEntity) {
+                applicableDate = Timestamp.from(Instant.now())
+                currencyCode = rate.currencyCode
+                exchangeRate = rate.exchangeRate
+                description = rate.description
+                status = 1
+                createdBy = loggedInUser?.userName
+                createdOn = Timestamp.from(Instant.now())
+                modifiedOn = Timestamp.from(Instant.now())
+                modifiedBy = loggedInUser?.userName
             }
             this.exchangeRateRepository.save(exchangeRateEntity)
         }

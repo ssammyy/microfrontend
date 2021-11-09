@@ -45,6 +45,7 @@ import kotlin.test.assertNotNull
 import org.w3c.dom.Document
 import org.xml.sax.InputSource
 import java.io.StringReader
+import java.util.concurrent.TimeUnit
 
 
 @SpringBootTest
@@ -706,8 +707,17 @@ class DITest {
 
     @Test
     fun demandNoteSubmission() {
-        this.demandNoteRepository.findFirstByPaymentStatusAndCdRefNoIsNotNull(1)?.let { demandNote->
+        this.demandNoteRepository.findFirstByPaymentStatusAndCdRefNoIsNotNull(0)?.let { demandNote->
             destinationInspectionDaoServices.sendDemandNotGeneratedToKWIS(demandNote)
+            Thread.sleep(TimeUnit.SECONDS.toMillis(20))
+        }?:throw ExpectedDataNotFound("Could not find a single payment")
+    }
+
+    @Test
+    fun demandNotePaymentSubmission() {
+        this.demandNoteRepository.findFirstByPaymentStatusAndCdRefNoIsNotNull(1)?.let { demandNote->
+            destinationInspectionDaoServices.sendDemandNotePayedStatusToKWIS(demandNote)
+            Thread.sleep(TimeUnit.SECONDS.toMillis(20))
         }?:throw ExpectedDataNotFound("Could not find a single payment")
     }
 
