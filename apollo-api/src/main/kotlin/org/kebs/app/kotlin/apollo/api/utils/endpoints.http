@@ -115,6 +115,32 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJJYW5fS2lwcm9ubyIsImlzcyI6I
 #{
 #  "permitNumber": "SM#85A38"
 #}
+###POST apply for standard request
+
+POST https://localhost:8006/api/v1/migration/standard/createProductCategory
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJJYW5fS2lwcm9ubyIsImlzcyI6ImtpbXMua2Vicy5vcmciLCJpYXQiOjE2MzYzNTIyOTcsImV4cCI6MTYzNjM1ODI5NywiYWRkcmVzcyI6IjEyNy4wLjAuMSIsInVzZXJBZ2VudCI6IltBcGFjaGUtSHR0cENsaWVudC80LjUuMTIgKEphdmEvMTEuMC4xMCldIiwiZnVsbE5hbWUiOiJJYW4gS2lwcm9ubyIsInJvbGVzIjoiUEVSTUlUX0FQUExJQ0FUSU9OLFBFUk1JVF9SRU5FV0FMLFBWT0NfQVBQTElDQVRJT05fUkVBRCxMSVNUX0NPTVBBTlksTU9ESUZZX0NPTVBBTlkifQ.6HMW8HTYf2klHiu2H2xxTj2kCRGuqgzxJiv_EiWXhCKiBx9IKDVBeGdE_yMAPj_nLqi0BfDyms1FHrWM4aK94g
+Content-Type: application/json
+
+{
+  "technicalCommitteeId": "264",
+  "name": "THYME",
+  "description": "THIS IS THYME"
+}
+
+###POST apply for standard request
+
+POST https://localhost:8006/api/v1/migration/standard/createProductSubCategory
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJJYW5fS2lwcm9ubyIsImlzcyI6ImtpbXMua2Vicy5vcmciLCJpYXQiOjE2MzYzNTg4ODgsImV4cCI6MTYzNjM2NDg4OCwiYWRkcmVzcyI6IjEyNy4wLjAuMSIsInVzZXJBZ2VudCI6IltBcGFjaGUtSHR0cENsaWVudC80LjUuMTIgKEphdmEvMTEuMC4xMCldIiwiZnVsbE5hbWUiOiJJYW4gS2lwcm9ubyIsInJvbGVzIjoiUEVSTUlUX0FQUExJQ0FUSU9OLFBFUk1JVF9SRU5FV0FMLFBWT0NfQVBQTElDQVRJT05fUkVBRCxMSVNUX0NPTVBBTlksTU9ESUZZX0NPTVBBTlkifQ.j3hf6tdtZuByu64MuUl9NYenVOIa2sn9ZdhjHuDMfHS8jun1ffsLEVKveify2bz_ro2PC6RIRv5y79njh5xPhw
+Content-Type: application/json
+
+{
+  "departmentId": "615",
+  "description": "THIS IS A TEST",
+  "name": "TESTINGHB",
+  "productId": "263",
+  "technicalCommitteeId": "263"
+}
+
 
 
 

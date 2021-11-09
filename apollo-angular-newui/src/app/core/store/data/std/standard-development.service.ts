@@ -8,7 +8,7 @@ import {
     DecisionFeedback,
     Department,
     HOFFeedback,
-    LiaisonOrganization,
+    LiaisonOrganization, ProductCategory, ProductSubCategory, ProductSubCategoryB,
     StandardTasks,
     StdJustification,
     StdJustificationDecision,
@@ -172,6 +172,30 @@ export class StandardDevelopmentService {
     }
     public createTechnicalCommittee(technicalCommitteeb: TechnicalCommitteeb): Observable<any> {
         return this.http.post<Department>(`${this.apiServerUrl}` + 'createTechnicalCommittee', technicalCommitteeb).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+
+
+    }
+    public createProductCategory(productCategory: ProductCategory): Observable<any> {
+        return this.http.post<ProductCategory>(`${this.apiServerUrl}` + 'createProductCategory', productCategory).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+
+
+    }
+    public createProductSubCategory(productSubCategory: ProductSubCategoryB): Observable<any> {
+        return this.http.post<ProductSubCategoryB>(`${this.apiServerUrl}` + 'createProductSubCategory', productSubCategory).pipe(
             map(function (response: any) {
                 return response;
             }),

@@ -83,6 +83,8 @@ import {CreateDepartmentComponent} from "./apollowebs/standards-development/stan
 import {CreatetechnicalcommitteeComponent} from "./apollowebs/standards-development/standard-request/createtechnicalcommittee/createtechnicalcommittee.component";
 import {IntStdUploadStandardComponent} from "./apollowebs/standards-development/international-standard/int-std-upload-standard/int-std-upload-standard.component";
 import {IntStdGazzetteComponent} from "./apollowebs/standards-development/international-standard/int-std-gazzette/int-std-gazzette.component";
+import {CreateproductComponent} from "./apollowebs/standards-development/standard-request/createproduct/createproduct.component";
+import {CreateproductSubCategoryComponent} from "./apollowebs/standards-development/standard-request/createproduct-sub-category/createproduct-sub-category.component";
 import {RoleSwitcherComponent} from "./apollowebs/standards-levy/standards-levy-home/role-switcher/role-switcher.component";
 import {CustomerRegistrationComponent} from "./apollowebs/standards-levy/standards-levy-home/customer-registration/customer-registration.component";
 import {StandardsLevyHomeComponent} from "./apollowebs/standards-levy/standards-levy-home/standards-levy-home.component";
@@ -602,6 +604,14 @@ export const routes: Routes = [
     {
         path: 'technicalCommittee', component: AdminLayoutComponent,
         children: [{path: '', component: CreatetechnicalcommitteeComponent}]
+    },
+    {
+        path: 'productCategory', component: AdminLayoutComponent,
+        children: [{path: '', component: CreateproductComponent}]
+    },
+    {
+        path: 'productSubCategory', component: AdminLayoutComponent,
+        children: [{path: '', component: CreateproductSubCategoryComponent}]
     },
 
     // STANDARDS LEVY
