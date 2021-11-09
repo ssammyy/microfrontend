@@ -59,7 +59,6 @@ export class NwaJustificationFormComponent implements OnInit {
       department: ['', Validators.required],
       issuesAddressed: ['', Validators.required],
       knwAcceptanceDate: ['', Validators.required],
-      knwSecretary: ['', Validators.required],
         uploadedFiles: []
       // postalAddress: ['', [Validators.required, Validators.pattern('P.O.BOX [0-9]{5}')]]
     });

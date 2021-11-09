@@ -9,7 +9,9 @@ import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.*
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
+import org.kebs.app.kotlin.apollo.store.model.qa.QaUploadsEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.beans.factory.annotation.Qualifier
@@ -184,6 +186,12 @@ class NWAService(private val runtimeService: RuntimeService,
         return getTaskDetails(tasks)
     }
 
+    //Get justification Document
+    fun findUploadedFileBYId(nwaDocumentId: Long): DatKebsSdNwaUploadsEntity {
+        sdNwaUploadsEntityRepository.findByIdOrNull(nwaDocumentId)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No File found with the following [ id=$nwaDocumentId]")
+    }
 
     // Decision
 

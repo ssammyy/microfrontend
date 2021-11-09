@@ -1,6 +1,8 @@
 package org.kebs.app.kotlin.apollo.store.repo.std
 
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
+import org.kebs.app.kotlin.apollo.store.model.qa.QaRawMaterialEntity
+import org.kebs.app.kotlin.apollo.store.model.qa.QaUploadsEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.JpaRepository
@@ -109,6 +111,8 @@ interface UserListRepository : JpaRepository<UsersEntity,Long>{
     fun findNameById(@Param("id") id: Long?): String
 }
 interface DatKebsSdNwaUploadsEntityRepository : JpaRepository<DatKebsSdNwaUploadsEntity, Long> {
+    @Query(value = "SELECT * FROM DAT_KEBS_SD_NWA_UPLOADS WHERE nwaDocumentId = :nwaDocumentId", nativeQuery = true)
+    fun findNwaJustification(@Param("nwaDocumentId") nwaDocumentId: Long?): Collection<DatKebsSdNwaUploadsEntity?>?
 }
 interface SDDIJustificationUploadsRepository : JpaRepository<SDDIJustificationUploads, Long> {
 }
