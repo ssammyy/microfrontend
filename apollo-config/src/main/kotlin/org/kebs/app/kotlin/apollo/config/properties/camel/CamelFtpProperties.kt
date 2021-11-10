@@ -37,6 +37,9 @@ public class CamelFtpProperties {
     @Value("\${org.app.properties.camel.sftp.initial.delay}")
     var initialDelay = "10s"
 
+    @Value("\${org.app.properties.camel.sftp.implicit.security:false}")
+    var implicitSecurity = "false"
+
     @Value("\${org.app.properties.camel.sftp.delay}")
     var delay = "50"
 

@@ -237,7 +237,6 @@ class SFTPService(
  * Ref: https://access.redhat.com/documentation/en-us/red_hat_jboss_fuse/6.2/html/apache_camel_component_reference/idu-ftp2
  */
 @Component
-@Profile("!prod")
 class CamelSftpDownload(
         private val properties: CamelFtpProperties,
         private val applicationMapProperties: ApplicationMapProperties,
@@ -263,6 +262,7 @@ class CamelSftpDownload(
                 .addParameter("delay", properties.delay)
                 .addParameter("sortBy", "file:modified") // Oldest file first
                 .addParameter("noop", "false")
+//                .addParameter("implicit",properties.implicitSecurity)
                 .addParameter("move", properties.move)
                 .addParameter("preMove", properties.preMove)
                 .addParameter("streamDownload", "true") // Avoid in memory loading of files
@@ -376,7 +376,6 @@ class CamelSftpDownload(
  *
  */
 @Component
-@Profile("!prod")
 class CamelSftpUpload(
         private val properties: CamelFtpProperties,
 ) : RouteBuilder() {

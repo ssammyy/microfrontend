@@ -58,3 +58,4 @@ package-lock.json
 DAT_KEBS_CONSIGNMENT_DOCUMENT_DETAILS_IDX/
 *.pdf
 outbound/
+sent-files/
