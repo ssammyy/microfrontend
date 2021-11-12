@@ -50,6 +50,21 @@ export class StdNwaService {
         })
     );
   }
+    public loadFileDetailsPDF(nwaDocumentId: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_UPLOAD_DATA_VIEW);
+        const params = new HttpParams()
+            .set('nwaDocumentId', nwaDocumentId);
+        // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
+        return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
 
   public getSPCSECTasks(): Observable<SPCSECTasks[]> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_SPC_SEC_TASKS);

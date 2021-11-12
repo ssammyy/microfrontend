@@ -1,7 +1,7 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {StdNwaService} from "../../../../core/store/data/std/std-nwa.service";
 import {
-    DiSdtDECISION,
+    DiSdtDECISION, KnwSecTasks,
     NWADiSdtJustification,
     NWAJustification, NWAJustificationDecision,
     SPCSECTasks
@@ -25,7 +25,7 @@ export class NwaJustificationTasksComponent implements OnInit , OnDestroy {
   tasks: SPCSECTasks[] = [];
   public actionRequest: SPCSECTasks | undefined;
   public approveFormGroup!: FormGroup;
-
+  blob: Blob;
   constructor(
       private formBuilder: FormBuilder,
       private stdNwaService: StdNwaService,
@@ -44,22 +44,36 @@ export class NwaJustificationTasksComponent implements OnInit , OnDestroy {
     });
 
   }
+    public getSPCSECTasks(): void{
+        this.SpinnerService.show();
+        this.stdNwaService.getSPCSECTasks().subscribe(
+            (response: SPCSECTasks[])=> {
+                this.tasks = response;
+                this.dtTrigger.next();
+                this.SpinnerService.hide();
+            },
+            (error: HttpErrorResponse)=>{
+                this.SpinnerService.hide();
+                alert(error.message);
+            }
+        );
+    }
 
-  public getSPCSECTasks(): void {
-    this.SpinnerService.show();
-    this.stdNwaService.getSPCSECTasks().subscribe(
-        (response: SPCSECTasks[]) => {
-          this.hideModel()
-          this.tasks = response;
-          this.dtTrigger.next();
-          this.SpinnerService.hide();
-        },
-        (error: HttpErrorResponse) => {
-          this.SpinnerService.hide();
-          console.log(error.message);
-        }
-    );
-  }
+  // public getSPCSECTasks(): void {
+  //   this.SpinnerService.show();
+  //   this.stdNwaService.getSPCSECTasks().subscribe(
+  //       (response: SPCSECTasks[]) => {
+  //         this.hideModel()
+  //         this.tasks = response;
+  //         this.dtTrigger.next();
+  //         this.SpinnerService.hide();
+  //       },
+  //       (error: HttpErrorResponse) => {
+  //         this.SpinnerService.hide();
+  //         console.log(error.message);
+  //       }
+  //   );
+  // }
   public onOpenModal(task: SPCSECTasks,mode:string): void{
     const container = document.getElementById('main-container');
     const button = document.createElement('button');
@@ -133,13 +147,30 @@ export class NwaJustificationTasksComponent implements OnInit , OnDestroy {
         );
     }
 
+    viewPdfFile(pdfId: number,applicationType: string): void {
+        this.SpinnerService.show();
+        this.stdNwaService.loadFileDetailsPDF(pdfId).subscribe(
+            (dataPdf: any) => {
+                this.SpinnerService.hide();
+                this.blob = new Blob([dataPdf], {type: applicationType});
+
+                // tslint:disable-next-line:prefer-const
+                let downloadURL = window.URL.createObjectURL(this.blob);
+                const link = document.createElement('a');
+                link.href = downloadURL;
+                //link.download = fileName;
+                link.click();
+                // this.pdfUploadsView = dataPdf;
+            },
+        );
+    }
 
 
 
 
-  ngOnDestroy(): void {
-    this.dtTrigger.unsubscribe();
-  }
+    ngOnDestroy(): void {
+        this.dtTrigger.unsubscribe();
+    }
 
 
 
