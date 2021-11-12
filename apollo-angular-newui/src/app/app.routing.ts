@@ -69,33 +69,33 @@ import {BranchViewComponent} from './apollowebs/company/branch/branch-view/branc
 import {QrCodeDetailsComponent} from './apollowebs/quality-assurance/qr-code-details/qr-code-details.component';
 import {StdTscSecTasksComponentComponent} from './apollowebs/standards-development/standard-request/std-tsc-sec-tasks-component/std-tsc-sec-tasks-component.component';
 import {StdTcTasksComponent} from './apollowebs/standards-development/standard-request/std-tc-tasks/std-tc-tasks.component';
-import {ComStdApproveJustificationComponent} from "./apollowebs/standards-development/company-standard/com-std-approve-justification/com-std-approve-justification.component";
-import {ComStdDraftComponent} from "./apollowebs/standards-development/company-standard/com-std-draft/com-std-draft.component";
-import {ComStdUploadComponent} from "./apollowebs/standards-development/company-standard/com-std-upload/com-std-upload.component";
-import {ComStdConfirmComponent} from "./apollowebs/standards-development/company-standard/com-std-confirm/com-std-confirm.component";
-import {SpcSecTaskComponent} from "./apollowebs/standards-development/standard-request/spc-sec-task/spc-sec-task.component";
-import {AllpermitsComponent} from "./apollowebs/quality-assurance/allpermits/allpermits.component";
-import {NepNotificationComponent} from "./apollowebs/standards-development/nep-notification/nep-notification.component";
-import {ManagernotificationsComponent} from "./apollowebs/standards-development/managernotifications/managernotifications.component";
-import {CreateDepartmentComponent} from "./apollowebs/standards-development/standard-request/create-department/create-department.component";
-import {CreatetechnicalcommitteeComponent} from "./apollowebs/standards-development/standard-request/createtechnicalcommittee/createtechnicalcommittee.component";
-import {IntStdUploadStandardComponent} from "./apollowebs/standards-development/international-standard/int-std-upload-standard/int-std-upload-standard.component";
-import {IntStdGazzetteComponent} from "./apollowebs/standards-development/international-standard/int-std-gazzette/int-std-gazzette.component";
-import {CreateproductComponent} from "./apollowebs/standards-development/standard-request/createproduct/createproduct.component";
-import {CreateproductSubCategoryComponent} from "./apollowebs/standards-development/standard-request/createproduct-sub-category/createproduct-sub-category.component";
-import {RoleSwitcherComponent} from "./apollowebs/standards-levy/standards-levy-home/role-switcher/role-switcher.component";
-import {CustomerRegistrationComponent} from "./apollowebs/standards-levy/standards-levy-home/customer-registration/customer-registration.component";
-import {StandardsLevyHomeComponent} from "./apollowebs/standards-levy/standards-levy-home/standards-levy-home.component";
-import {ComStandardLevyComponent} from "./apollowebs/standards-levy/com-standard-levy/com-standard-levy.component";
-import {ComPaymentHistoryComponent} from "./apollowebs/standards-levy/com-payment-history/com-payment-history.component";
-import {ComStdLevyFormComponent} from "./apollowebs/standards-levy/com-std-levy-form/com-std-levy-form.component";
-import {StandardLevyDashboardComponent} from "./apollowebs/standards-levy/standard-levy-dashboard/standard-levy-dashboard.component";
-import {StandardLevyPaidComponent} from "./apollowebs/standards-levy/standard-levy-paid/standard-levy-paid.component";
-import {StandardLevyPenaltiesComponent} from "./apollowebs/standards-levy/standard-levy-penalties/standard-levy-penalties.component";
-import {StandardLevyDefaulterComponent} from "./apollowebs/standards-levy/standard-levy-defaulter/standard-levy-defaulter.component";
-import {StandardLevyPenaltyHistoryComponent} from "./apollowebs/standards-levy/standard-levy-penalty-history/standard-levy-penalty-history.component";
-import {StandardLevyPaidHistoryComponent} from "./apollowebs/standards-levy/standard-levy-paid-history/standard-levy-paid-history.component";
-import {StandardLevyDefaulterHistoryComponent} from "./apollowebs/standards-levy/standard-levy-defaulter-history/standard-levy-defaulter-history.component";
+import {ComStdApproveJustificationComponent} from './apollowebs/standards-development/company-standard/com-std-approve-justification/com-std-approve-justification.component';
+import {ComStdDraftComponent} from './apollowebs/standards-development/company-standard/com-std-draft/com-std-draft.component';
+import {ComStdUploadComponent} from './apollowebs/standards-development/company-standard/com-std-upload/com-std-upload.component';
+import {ComStdConfirmComponent} from './apollowebs/standards-development/company-standard/com-std-confirm/com-std-confirm.component';
+import {SpcSecTaskComponent} from './apollowebs/standards-development/standard-request/spc-sec-task/spc-sec-task.component';
+import {AllpermitsComponent} from './apollowebs/quality-assurance/allpermits/allpermits.component';
+import {NepNotificationComponent} from './apollowebs/standards-development/nep-notification/nep-notification.component';
+import {ManagernotificationsComponent} from './apollowebs/standards-development/managernotifications/managernotifications.component';
+import {CreateDepartmentComponent} from './apollowebs/standards-development/standard-request/create-department/create-department.component';
+import {CreatetechnicalcommitteeComponent} from './apollowebs/standards-development/standard-request/createtechnicalcommittee/createtechnicalcommittee.component';
+import {IntStdUploadStandardComponent} from './apollowebs/standards-development/international-standard/int-std-upload-standard/int-std-upload-standard.component';
+import {IntStdGazzetteComponent} from './apollowebs/standards-development/international-standard/int-std-gazzette/int-std-gazzette.component';
+import {CreateproductComponent} from './apollowebs/standards-development/standard-request/createproduct/createproduct.component';
+import {CreateproductSubCategoryComponent} from './apollowebs/standards-development/standard-request/createproduct-sub-category/createproduct-sub-category.component';
+import {RoleSwitcherComponent} from './apollowebs/standards-levy/standards-levy-home/role-switcher/role-switcher.component';
+import {CustomerRegistrationComponent} from './apollowebs/standards-levy/standards-levy-home/customer-registration/customer-registration.component';
+import {StandardsLevyHomeComponent} from './apollowebs/standards-levy/standards-levy-home/standards-levy-home.component';
+import {ComStandardLevyComponent} from './apollowebs/standards-levy/com-standard-levy/com-standard-levy.component';
+import {ComPaymentHistoryComponent} from './apollowebs/standards-levy/com-payment-history/com-payment-history.component';
+import {ComStdLevyFormComponent} from './apollowebs/standards-levy/com-std-levy-form/com-std-levy-form.component';
+import {StandardLevyDashboardComponent} from './apollowebs/standards-levy/standard-levy-dashboard/standard-levy-dashboard.component';
+import {StandardLevyPaidComponent} from './apollowebs/standards-levy/standard-levy-paid/standard-levy-paid.component';
+import {StandardLevyPenaltiesComponent} from './apollowebs/standards-levy/standard-levy-penalties/standard-levy-penalties.component';
+import {StandardLevyDefaulterComponent} from './apollowebs/standards-levy/standard-levy-defaulter/standard-levy-defaulter.component';
+import {StandardLevyPenaltyHistoryComponent} from './apollowebs/standards-levy/standard-levy-penalty-history/standard-levy-penalty-history.component';
+import {StandardLevyPaidHistoryComponent} from './apollowebs/standards-levy/standard-levy-paid-history/standard-levy-paid-history.component';
+import {StandardLevyDefaulterHistoryComponent} from './apollowebs/standards-levy/standard-levy-defaulter-history/standard-levy-defaulter-history.component';
 
 // export const AppRoutes: Routes = [
 //     {
@@ -461,7 +461,7 @@ export const routes: Routes = [
     },
     {
         path: 'isProposalComments', component: AdminLayoutComponent,
-        //canActivate: [RouteGuard],
+        // canActivate: [RouteGuard],
         children: [{path: '', component: IntStdCommentsComponent}]
     },
     {
@@ -623,6 +623,7 @@ export const routes: Routes = [
     },
     {
         path: 'levyRegistration', component: StandardsLevyHomeComponent,
+        canActivate: [RouteGuard],
         children: [{path: '', component: CustomerRegistrationComponent}]
     },
     {

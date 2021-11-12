@@ -6,6 +6,7 @@ import mu.KotlinLogging
 import org.apache.commons.io.input.ObservableInputStream
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.*
+import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
 import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.*
@@ -21,6 +22,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
+import javax.servlet.http.HttpServletResponse
 
 
 @RestController
@@ -118,8 +120,37 @@ class NWAController(val nwaService: NWAService,
     {
         return nwaService.getSPCSECTasks()
     }
+   // ********************************************************** get Justification document **********************************************************
+//    @GetMapping("/view/justification")
+//    fun downloadJustification(
+//        response: HttpServletResponse,
+//        @RequestParam("nwaDocumentId") nwaDocumentId: Long
+//    ) {
+//        val fileUploaded = nwaService.findUploadedFileBYId(nwaDocumentId)
+//        val mappedFileClass = commonDaoServices.mapClass(fileUploaded)
+//        commonDaoServices.downloadFile(response, mappedFileClass)
+//    }
 
+    // ********************************************************** get Justification document **********************************************************
+    @GetMapping("/view/justification")
+    fun downloadJustification(
+        response: HttpServletResponse,
+        @RequestParam("nwaDocumentId") nwaDocumentId: Long
+    ) {
+        val fileUploaded = nwaService.findUploadedFileBYId(nwaDocumentId)
+        val fileDoc = commonDaoServices.mapClass(fileUploaded)
+        response.contentType = "application/pdf"
+//                    response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
+        response.outputStream
+            .let { responseOutputStream ->
+                responseOutputStream.write(fileDoc.document?.let { makeAnyNotBeNull(it) } as ByteArray)
+                responseOutputStream.close()
+            }
 
+        KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
+
+    }
     //decision
     @PreAuthorize("hasAuthority('SPC_SEC_SD_MODIFY')")
     @PostMapping("/decisionOnJustification")

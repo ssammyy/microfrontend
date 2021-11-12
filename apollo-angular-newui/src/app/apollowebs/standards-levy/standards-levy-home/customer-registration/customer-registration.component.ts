@@ -9,6 +9,11 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {LoadingService} from "../../../../core/services/loader/loadingservice.service";
 import {NgxSpinnerService} from "ngx-spinner";
+import {NotificationService} from "../../../../core/store/data/std/notification.service";
+import {LevyService} from "../../../../core/store/data/levy/levy.service";
+import {HttpErrorResponse} from "@angular/common/http";
+import {Store} from "@ngrx/store";
+import {Company, selectCompanyData} from "../../../../core/store";
 
 declare const $: any;
 @Component({
@@ -17,6 +22,7 @@ declare const $: any;
   styleUrls: ['./customer-registration.component.css']
 })
 export class CustomerRegistrationComponent implements OnInit {
+  company: Company;
   manufacturerInfoForm: FormGroup;
   manufacturingInfoForm: FormGroup;
   branchFormA: FormGroup;
@@ -34,7 +40,10 @@ export class CustomerRegistrationComponent implements OnInit {
       private formBuilder: FormBuilder,
       private _loading: LoadingService,
       private SpinnerService: NgxSpinnerService,
-      private route: ActivatedRoute
+      private notifyService : NotificationService,
+      private route: ActivatedRoute,
+      private levyService : LevyService,
+      private store$: Store<any>,
   ) { }
 
   ngOnInit(): void {
@@ -47,7 +56,10 @@ export class CustomerRegistrationComponent implements OnInit {
       companyEmail: ['', Validators.required],
       postalAddress: ['', Validators.required],
       telephone: ['', Validators.required],
-      mainPhysicalLocation: ['', Validators.required]
+      mainPhysicalLocation: ['', Validators.required],
+      location: ['', Validators.required],
+      plotNumber: ['', Validators.required],
+      entryNo: ['', Validators.required]
 
 
     });
@@ -70,7 +82,18 @@ export class CustomerRegistrationComponent implements OnInit {
       addressOfBranch: []
 
     });
+    this.store$.select(selectCompanyData).subscribe((d) => {
+      //console.log(`The id ${d.id}`);
+      //console.log(this.selectCompanyData);
+      return this.company = d;
+    });
   }
+
+  showToasterSuccess(title:string,message:string){
+    this.notifyService.showSuccess(message, title)
+
+  }
+
   get manufacturerInfo(): any {
     return this.manufacturerInfoForm.controls;
   }
@@ -127,11 +150,25 @@ export class CustomerRegistrationComponent implements OnInit {
     }
   }
 
-  onClickSaveManufacturer(valid: boolean) {
-    if (valid) {
+  onClickSaveManufacturer(): void {
 
-    }
+      this.SpinnerService.show();
+      this.levyService.addManufactureDetails(this.manufacturerInfoForm.value).subscribe(
+          (response ) => {
+            console.log(response);
+            this.SpinnerService.hide();
+            this.showToasterSuccess(response.httpStatus, `Manufacture Details Saved`);
+            this.manufacturerInfoForm.reset();
+          },
+          (error: HttpErrorResponse) => {
+            this.SpinnerService.hide();
+            console.log(error.message);
+          }
+      );
+
+
   }
+
   onClickSaveManufacturing(valid: boolean) {
     if (valid) {
 

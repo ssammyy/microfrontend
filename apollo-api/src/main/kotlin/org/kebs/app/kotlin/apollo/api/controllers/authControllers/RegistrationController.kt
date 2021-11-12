@@ -75,6 +75,7 @@ import javax.validation.Valid
 
 
 @Controller
+@CrossOrigin(origins = ["http://localhost:4200"])
 @RequestMapping("/api/auth/")
 class RegisterController(
     private val applicationMapProperties: ApplicationMapProperties,
