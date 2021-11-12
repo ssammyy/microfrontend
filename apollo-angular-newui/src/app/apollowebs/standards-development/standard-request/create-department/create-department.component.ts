@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Store} from "@ngrx/store";
 import {Router} from "@angular/router";
@@ -7,6 +7,9 @@ import {NotificationService} from "../../../../core/store/data/std/notification.
 import {NgxSpinnerService} from "ngx-spinner";
 import {StandardDevelopmentService} from "../../../../core/store/data/std/standard-development.service";
 import {HttpErrorResponse} from "@angular/common/http";
+import {Subject} from "rxjs";
+import {DataTableDirective} from "angular-datatables";
+import {Department, Stdtsectask} from "../../../../core/store/data/std/request_std.model";
 
 declare const $: any;
 
@@ -19,6 +22,17 @@ declare const $: any;
 export class CreateDepartmentComponent implements OnInit {
   fullname = '';
   title = 'toaster-not';
+  p = 1;
+  p2 = 1;
+  dtOptions: DataTables.Settings = {};
+  dtTrigger: Subject<any> = new Subject<any>();
+  @ViewChild(DataTableDirective, {static: false})
+  dtElement: DataTableDirective;
+  isDtInitialized: boolean = false
+  public itemId: number;
+  public departments !: Department[];
+
+  public department !: Department | undefined;
 
   public createDepartmentFormGroup!: FormGroup;
 
@@ -46,6 +60,10 @@ export class CreateDepartmentComponent implements OnInit {
 
   }
 
+  ngAfterViewInit(): void {
+    this.getAllDepartments();
+  }
+
   get formCreateDepartment(): any {
     return this.createDepartmentFormGroup.controls;
   }
@@ -63,6 +81,7 @@ export class CreateDepartmentComponent implements OnInit {
           this.SpinnerService.hide();
           this.showToasterSuccess(response.httpStatus, `Department Created`);
           this.createDepartmentFormGroup.reset();
+          this.getAllDepartments();
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
@@ -98,5 +117,70 @@ export class CreateDepartmentComponent implements OnInit {
           '</div>'
     });
   }
+
+  public getAllDepartments(): void {
+    this.standardDevelopmentService.getAllDepartments().subscribe(
+        (response: Department[]) => {
+          this.departments = response;
+
+          if (this.isDtInitialized) {
+            this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+              dtInstance.destroy();
+              this.dtTrigger.next();
+            });
+          } else {
+            this.isDtInitialized = true
+            this.dtTrigger.next();
+          }
+        },
+        (error: HttpErrorResponse) => {
+          alert(error.message);
+        }
+    )
+  }
+
+  public onOpenModal(tcTask: Department, mode: string): void {
+
+    const container = document.getElementById('main-container');
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.style.display = 'none';
+    button.setAttribute('data-toggle', 'modal');
+    if (mode === 'edit') {
+      this.department = tcTask;
+      this.itemId = this.department.id;
+      button.setAttribute('data-target', '#uploadSPCJustification');
+    }
+
+    // @ts-ignore
+    container.appendChild(button);
+    button.click();
+
+  }
+
+  @ViewChild('closeModal') private closeModal: ElementRef | undefined;
+
+  public hideModel() {
+    this.closeModal?.nativeElement.click();
+  }
+
+  updateDepartment(department: Department): void {
+    this.SpinnerService.show();
+
+    this.standardDevelopmentService.updateDepartment(department).subscribe(
+        (response) => {
+          console.log(response);
+          this.SpinnerService.hide();
+          this.showToasterSuccess(response.httpStatus, `Department Details Updated`);
+          this.hideModel();
+          this.getAllDepartments();
+
+        },
+        (error: HttpErrorResponse) => {
+          alert(error.message);
+        }
+    )
+  }
+
 
 }

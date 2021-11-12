@@ -165,6 +165,8 @@ import { StandardLevyDefaulterComponent } from './apollowebs/standards-levy/stan
 import { StandardLevyPaidHistoryComponent } from './apollowebs/standards-levy/standard-levy-paid-history/standard-levy-paid-history.component';
 import { StandardLevyPenaltyHistoryComponent } from './apollowebs/standards-levy/standard-levy-penalty-history/standard-levy-penalty-history.component';
 import { StandardLevyDefaulterHistoryComponent } from './apollowebs/standards-levy/standard-levy-defaulter-history/standard-levy-defaulter-history.component';
+import {SpcSecTaskComponent} from "./apollowebs/standards-development/standard-request/spc-sec-task/spc-sec-task.component";
+import {StdJustificationComponent} from "./apollowebs/standards-development/standard-request/std-justification/std-justification.component";
 
 
 // import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -300,6 +302,7 @@ import { StandardLevyDefaulterHistoryComponent } from './apollowebs/standards-le
         StandardRequestComponent,
         RequestStandardFormComponent,
         ReviewApplicationsComponent,
+        StdJustificationComponent,
         StandardTaskComponent,
         SmarkAllAwardedApplicationsComponent,
         DmarkAllAwardedApplicationsComponent,
@@ -316,6 +319,7 @@ import { StandardLevyDefaulterHistoryComponent } from './apollowebs/standards-le
         ComStdConfirmComponent,
         StdTcTasksComponent,
         NepSuccessComponent,
+        SpcSecTaskComponent,
         ManagernotificationsComponent,
         IntStdUploadStandardComponent,
         IntStdGazzetteComponent,

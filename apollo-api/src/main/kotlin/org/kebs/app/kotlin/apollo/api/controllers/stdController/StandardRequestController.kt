@@ -6,7 +6,6 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.ReferenceMaterialJu
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.RelevantDocumentsNWIService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.StandardRequestService
 import org.kebs.app.kotlin.apollo.common.dto.std.*
-import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -181,8 +180,7 @@ class StandardRequestController(
     @PostMapping("standard/uploadNWI")
     @ResponseBody
     fun uploadNWI(@RequestBody standardNWI: StandardNWI): ServerResponse {
-        println("hereeeeee")
-        print(standardNWI)
+
         return ServerResponse(HttpStatus.OK, "Upload new work item", standardRequestService.uploadNWI(standardNWI))
     }
 
@@ -365,14 +363,61 @@ class StandardRequestController(
     @PostMapping("standard/createProductCategory")
     @ResponseBody
     fun createProductCategory(@RequestBody product: Product): ServerResponse {
-        return ServerResponse(HttpStatus.OK, "Upload Product Category", standardRequestService.createProductCategory(product))
+        return ServerResponse(
+            HttpStatus.OK,
+            "Upload Product Category",
+            standardRequestService.createProductCategory(product)
+        )
     }
 
     @PostMapping("standard/createProductSubCategory")
     @ResponseBody
     fun createProductSubCategory(@RequestBody productSubCategory: ProductSubCategory): ServerResponse {
-        return ServerResponse(HttpStatus.OK, "Upload Department", standardRequestService.createProductSubCategory(productSubCategory))
+        return ServerResponse(
+            HttpStatus.OK,
+            "Upload Department",
+            standardRequestService.createProductSubCategory(productSubCategory)
+        )
     }
 
+    @GetMapping("standard/getAllDepartments")
+    fun getAllDepartments(): MutableList<Department> {
+        return standardRequestService.getAllDepartments()
+    }
+
+    @GetMapping("standard/getAllTcs")
+    fun getAllTechnicalCommittees(): List<DataHolder> {
+        return standardRequestService.getAllTcs()
+    }
+
+
+    @GetMapping("standard/getAllProductCategories")
+    fun getAllProductCategories(): List<DataHolder> {
+        return standardRequestService.getAllProductCategories()
+    }
+
+    @GetMapping("standard/getAllProductSubCategories")
+    fun getAllProductSubCategories(): List<DataHolder> {
+        return standardRequestService.getAllProductSubCategories()
+    }
+
+
+    @PostMapping("standard/updateDepartment")
+    @ResponseBody
+    fun updateDepartment(@RequestBody department: Department): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Updated Department",
+            standardRequestService.createStandardsDepartment(department)
+        )
+    }
+
+    @PostMapping("standard/deleteDepartment")
+    @ResponseBody
+    fun deleteDepartment(@RequestBody department: Department): ServerResponse {
+        return ServerResponse(HttpStatus.OK,
+            "Deleted Department",
+            standardRequestService.deleteDepartment(department.id))
+    }
 
 }

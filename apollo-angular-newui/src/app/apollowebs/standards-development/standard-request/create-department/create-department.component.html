@@ -1,4 +1,4 @@
-<div class="container-fluid" style="margin-top: 5%">
+<div class="container-fluid" style="margin-top: 5%" id="main-container">
     <div class="loading-spinner ">
         <ngx-spinner
                 bdColor="rgba(51,51,51,0.8)"
@@ -89,6 +89,138 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-primary card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">assignment</i>
+                            </div>
+                            <h4 class="card-title"> All Departments
+                            </h4>
+
+                        </div>
+                        <div class="card-body">
+                            <div class="toolbar">
+
+                            </div>
+
+
+                            <div class="material-datatables">
+                                <table class="table table-striped table-bordered table-hover" datatable
+                                       [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+                                    <thead>
+                                    <tr>
+                                        <th class="id">Number</th>
+                                        <th class="task">Department Name</th>
+                                        <th class="task">Department Abbreviations</th>
+
+                                        <th class="action">Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr *ngFor="let dpt of departments let i= index; ">
+                                        <td>{{i + 1}}</td>
+
+                                        <td>{{dpt.name}}</td>
+                                        <td>{{dpt.abbreviations}}</td>
+                                        <td><a (click)="onOpenModal(dpt,'edit')" class="btn btn-info"
+                                               data-placement="top"
+                                               data-original-title="Upload NWI">Edit</a>
+                                            <br>
+                                            <a class="btn btn-danger"
+                                               data-placement="top"
+                                               data-original-title="Upload NWI">Delete</a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade " id="uploadSPCJustification" tabindex="-1" role="dialog"
+                 aria-labelledby="updateExampleModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="updateExampleModalLabel">Edit Department</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form #editForm="ngForm">
+                            <div class="modal-body">
+
+                                <div class="row col-12">
+
+                                    <div class="form-group col-6">
+                                        <label><b>Department Name</b><span
+                                                style="font-size: xx-small; color: red;"> (*)Required</span></label>
+                                        <input
+                                                oninput="this.value = this.value.toUpperCase()"
+                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                class="form-control one-column-input"
+                                                ngModel="{{department?.name}}"
+                                                name="name"
+                                                type="text">
+                                    </div>
+
+
+                                </div>
+
+                                <div class="row col-12">
+                                    <div class="form-group col-6">
+                                        <label><b>Department Abbreviations</b><span
+                                                style="font-size: xx-small; color: red;"> (*)Required</span></label>
+                                        <input
+                                                oninput="this.value = this.value.toUpperCase()"
+                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                class="form-control one-column-input"
+                                                name="abbreviations"
+                                                ngModel="{{department?.abbreviations}}"
+
+                                                type="text">
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <label><b>Department Code</b><span
+                                                style="font-size: xx-small; color: red;"> (*)Required</span></label>
+                                        <input
+                                                oninput="this.value = this.value.toUpperCase()"
+                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                class="form-control one-column-input"
+                                                name="codes"
+                                                ngModel="{{department?.codes}}"
+                                                type="text">
+                                    </div>
+                                    <input name="id"
+                                           ngModel="{{department?.id}}"
+                                           type="hidden">
+                                </div>
+
+
+                            </div>
+
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" #closeModal
+                                        (click)="hideModel()" data-dismiss="modal">Close
+                                </button>
+                                <button class="btn btn-info"
+                                        (click)="updateDepartment(editForm.value)">Submit
+                                </button>
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>

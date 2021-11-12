@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Department, Product, TechnicalCommittee} from "../../../../core/store/data/std/std.model";
 import {StandardDevelopmentService} from "../../../../core/store/data/std/standard-development.service";
@@ -8,45 +8,65 @@ import {NotificationService} from "../../../../core/store/data/std/notification.
 import {NgxSpinnerService} from "ngx-spinner";
 import {HttpErrorResponse} from "@angular/common/http";
 import {selectUserInfo} from "../../../../core/store";
+import {DataHolder, StdJustification, Stdtsectask} from "../../../../core/store/data/std/request_std.model";
+import {Subject} from "rxjs";
+import {DataTableDirective} from "angular-datatables";
 
 declare const $: any;
 
 @Component({
-  selector: 'app-createproduct-sub-category',
-  templateUrl: './createproduct-sub-category.component.html',
-  styleUrls: ['./createproduct-sub-category.component.css']
+    selector: 'app-createproduct-sub-category',
+    templateUrl: './createproduct-sub-category.component.html',
+    styleUrls: ['./createproduct-sub-category.component.css']
 })
 export class CreateproductSubCategoryComponent implements OnInit {
-  fullname = '';
-  title = 'toaster-not';
+    fullname = '';
+    title = 'toaster-not';
 
-  public createProductSubCategoryFormGroup!: FormGroup;
-  public products !: Product[];
-  public departments !: Department[];
-  public technicalCommittees !: TechnicalCommittee[];
+    public createProductSubCategoryFormGroup!: FormGroup;
+    public products !: Product[];
+    public productsB !: Product[];
 
-  constructor(private formBuilder: FormBuilder,
-              private standardDevelopmentService: StandardDevelopmentService,
-              private store$: Store<any>,
-              private router: Router,
-              private notifyService: NotificationService,
-              private SpinnerService: NgxSpinnerService) {
-  }
+    public departments !: Department[];
+    public technicalCommittees !: TechnicalCommittee[];
+    public technicalCommitteesB !: TechnicalCommittee[];
 
-  ngOnInit(): void {
-    this.getDepartments();
+    dtOptions: DataTables.Settings = {};
+    dtTrigger: Subject<any> = new Subject<any>();
+    @ViewChild(DataTableDirective, {static: false})
+    dtElement: DataTableDirective;
+    isDtInitialized: boolean = false
+    public itemId: number;
+    public tcsb !: DataHolder[];
+    public tscsecRequestb !: DataHolder | undefined;
 
-  }
+    constructor(private formBuilder: FormBuilder,
+                private standardDevelopmentService: StandardDevelopmentService,
+                private store$: Store<any>,
+                private router: Router,
+                private notifyService: NotificationService,
+                private SpinnerService: NgxSpinnerService) {
+    }
 
-  public getDepartments(): void {
-    this.standardDevelopmentService.getDepartmentsb().subscribe(
-        (response: Department[]) => {
-          this.departments = response;
-        },
-        (error: HttpErrorResponse) => {
-          alert(error.message);
-        }
-    );
+    ngOnInit(): void {
+        this.getDepartments();
+
+    }
+
+    ngAfterViewInit(): void {
+        this.getProductSubCategories();
+
+    }
+
+    public getDepartments(): void {
+        this.standardDevelopmentService.getDepartmentsb().subscribe(
+            (response: Department[]) => {
+                this.departments = response;
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        );
     this.store$.select(selectUserInfo).pipe().subscribe((u) => {
       return this.fullname = u.fullName;
     });
@@ -74,17 +94,37 @@ export class CreateproductSubCategoryComponent implements OnInit {
     this.standardDevelopmentService.createProductSubCategory(this.createProductSubCategoryFormGroup.value).subscribe(
         (response) => {
           console.log(response);
-          this.SpinnerService.hide();
-          this.showToasterSuccess(response.httpStatus, `Product SubCategory Created`);
-          this.createProductSubCategoryFormGroup.reset();
+            this.SpinnerService.hide();
+            this.showToasterSuccess(response.httpStatus, `Product SubCategory Created`);
+            this.createProductSubCategoryFormGroup.reset();
         },
         (error: HttpErrorResponse) => {
-          this.SpinnerService.hide();
-          console.log(error.message);
+            this.SpinnerService.hide();
+            console.log(error.message);
         }
     );
   }
 
+    public getProductSubCategories(): void {
+        this.standardDevelopmentService.getProductSubCategories().subscribe(
+            (response: DataHolder[]) => {
+                this.tcsb = response;
+
+                if (this.isDtInitialized) {
+                    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                        dtInstance.destroy();
+                        this.dtTrigger.next();
+                    });
+                } else {
+                    this.isDtInitialized = true
+                    this.dtTrigger.next();
+                }
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        )
+    }
   showNotification(from: any, align: any) {
     const type = ['', 'info', 'success', 'warning', 'danger', 'rose', 'primary'];
 
@@ -126,15 +166,77 @@ export class CreateproductSubCategoryComponent implements OnInit {
   }
 
   onSelectTechnicalCommittee(value: any): any {
-    this.standardDevelopmentService.getProductsb(value).subscribe(
-        (response: Product[]) => {
-          console.log(response);
-          this.products = response
-        },
-        (error: HttpErrorResponse) => {
-          alert(error.message);
-        }
-    );
+      this.standardDevelopmentService.getProductsb(value).subscribe(
+          (response: Product[]) => {
+              console.log(response);
+              this.products = response
+          },
+          (error: HttpErrorResponse) => {
+              alert(error.message);
+          }
+      );
   }
+
+    public onOpenModal(tcTask: DataHolder, mode: string): void {
+
+        const container = document.getElementById('main-container');
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.style.display = 'none';
+        button.setAttribute('data-toggle', 'modal');
+        if (mode === 'edit') {
+            this.tscsecRequestb = tcTask;
+            const any = tcTask.v6
+            this.standardDevelopmentService.getTechnicalCommitteeb(any).subscribe(
+                (response: TechnicalCommittee[]) => {
+                    this.technicalCommitteesB = response
+                },
+                (error: HttpErrorResponse) => {
+                    alert(error.message);
+                }
+            );
+
+            const technicalCommitteeId = tcTask.v5
+            this.standardDevelopmentService.getProductsb(technicalCommitteeId).subscribe(
+                (response: Product[]) => {
+                    console.log(response);
+                    this.productsB = response
+                },
+                (error: HttpErrorResponse) => {
+                    alert(error.message);
+                }
+            );
+            this.itemId = this.tscsecRequestb.id;
+            button.setAttribute('data-target', '#uploadSPCJustification');
+        }
+
+        // @ts-ignore
+        container.appendChild(button);
+        button.click();
+
+    }
+
+    @ViewChild('closeModal') private closeModal: ElementRef | undefined;
+
+    public hideModel() {
+        this.closeModal?.nativeElement.click();
+    }
+
+    uploadJustification(stdJustification: StdJustification): void {
+
+        console.log(stdJustification);
+
+        this.standardDevelopmentService.uploadJustification(stdJustification).subscribe(
+            (response: Stdtsectask) => {
+                console.log(response);
+                // this.getTCSECTasksJustification();
+                this.hideModel();
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        )
+    }
+
 
 }

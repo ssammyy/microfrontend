@@ -18,7 +18,7 @@ import {
     StdTCTask,
     Stdtsectask,
     StdtsecTaskJustification,
-    StdWorkPlan, TechnicalCommittee, TechnicalCommitteeb
+    StdWorkPlan, TechnicalCommittee, TechnicalCommitteeb,DataHolder
 } from './request_std.model';
 
 @Injectable({
@@ -72,7 +72,7 @@ export class StandardDevelopmentService {
         return this.http.get<any>(url, {params}).pipe();
     }
 
-    public getProductsb(id: bigint): any {
+    public getProductsb(id: string): any {
         return this.http.get<any>(`${this.apiServerUrl2}getProducts/${id}`)
     }
 
@@ -84,7 +84,7 @@ export class StandardDevelopmentService {
         return this.http.get<any>(`${this.apiServerUrl2}getProductCategories/${id}`)
     }
 
-    public getTechnicalCommitteeb(id: bigint): any {
+    public getTechnicalCommitteeb(id: string): any {
         return this.http.get<any>(`${this.apiServerUrl2}getTechnicalCommittee/${id}`)
     }
 
@@ -196,6 +196,30 @@ export class StandardDevelopmentService {
     }
     public createProductSubCategory(productSubCategory: ProductSubCategoryB): Observable<any> {
         return this.http.post<ProductSubCategoryB>(`${this.apiServerUrl}` + 'createProductSubCategory', productSubCategory).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+
+
+    }
+    public getAllDepartments(): any {
+        return this.http.get<Department[]>(`${this.apiServerUrl}` + 'getAllDepartments')
+    }
+    public getTechnicalCommittees(): any {
+        return this.http.get<Department[]>(`${this.apiServerUrl}` + 'getAllTcs')
+    }
+    public getProductCategories(): any {
+        return this.http.get<Department[]>(`${this.apiServerUrl}` + 'getAllProductCategories')
+    }
+    public getProductSubCategories(): any {
+        return this.http.get<Department[]>(`${this.apiServerUrl}` + 'getAllProductSubCategories')
+    }
+    public updateDepartment(department: Department): Observable<any> {
+        return this.http.post<Department>(`${this.apiServerUrl}` + 'updateDepartment', department).pipe(
             map(function (response: any) {
                 return response;
             }),
