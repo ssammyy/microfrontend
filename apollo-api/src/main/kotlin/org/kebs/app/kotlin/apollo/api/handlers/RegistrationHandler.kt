@@ -571,7 +571,7 @@ class RegistrationHandler(
                             }
                             ?: throw NullValueNotAllowedException("Invalid Request")
 
-                        return ok().render("auth/forgot-pass", req.attributes())
+                        return ok().render("auth/forgot-pass-new", req.attributes())
 
                     }
                     ?: throw NullValueNotAllowedException("Provide a valid email")
@@ -584,7 +584,7 @@ class RegistrationHandler(
     fun forgotPasswordView(req: ServerRequest): ServerResponse {
 
         req.attributes()["usersEntity"] = UsersEntity()
-        return ok().render("auth/forgot-pass", req.attributes())
+        return ok().render("auth/forgot-pass-new", req.attributes())
     }
 
     fun confirmOtpView(req: ServerRequest): ServerResponse {

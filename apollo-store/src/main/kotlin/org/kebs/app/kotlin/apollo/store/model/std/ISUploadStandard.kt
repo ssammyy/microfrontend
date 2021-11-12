@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.model.std
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.sql.Timestamp
 import javax.persistence.*
 
 @Entity
@@ -10,10 +11,6 @@ class ISUploadStandard {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="ID")
     var id:Long=0
-
-    @Transient
-    @JsonProperty("taskId")
-    var taskId:String?=null
 
     @Column(name="TITLE")
     @Basic
@@ -43,8 +40,16 @@ class ISUploadStandard {
     @Basic
     var iSNumber:String? =null
 
+    @Column(name="UPLOAD_DATE")
+    @Basic
+    var uploadDate: Timestamp?=null
+
     @Transient
     @Column(name = "ACCENT_TO")
     @Basic
     val accentTo: Boolean = false
+
+    @Column(name = "TASK_ID")
+    @Basic
+    var taskId: String? = null
 }

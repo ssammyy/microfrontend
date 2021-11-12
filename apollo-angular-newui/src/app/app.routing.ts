@@ -42,7 +42,7 @@ import {NwaJustificationTasksComponent} from './apollowebs/standards-development
 import {NwaKnwSecTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-knw-sec-tasks/nwa-knw-sec-tasks.component';
 import {NwaDiSdtTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-di-sdt-tasks/nwa-di-sdt-tasks.component';
 import {SacSecTasksComponent} from './apollowebs/standards-development/workshop-agreement/sac-sec-tasks/sac-sec-tasks.component';
-import {HoSicTasksComponent} from './apollowebs/standards-development/ho-sic-tasks/ho-sic-tasks.component';
+import {HoSicTasksComponent} from './apollowebs/standards-development/workshop-agreement/ho-sic-tasks/ho-sic-tasks.component';
 import {NwaHopTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-hop-tasks/nwa-hop-tasks.component';
 import {IsProposalFormComponent} from './apollowebs/standards-development/international-standard/international-standard-proposal/is-proposal-form/is-proposal-form.component';
 import {ReviewStandardsComponent} from './apollowebs/standards-development/systemic-review/request-standard-review/review-standards/review-standards.component';
@@ -75,12 +75,29 @@ import {ComStdApproveJustificationComponent} from "./apollowebs/standards-develo
 import {ComStdDraftComponent} from "./apollowebs/standards-development/company-standard/com-std-draft/com-std-draft.component";
 import {ComStdUploadComponent} from "./apollowebs/standards-development/company-standard/com-std-upload/com-std-upload.component";
 import {ComStdConfirmComponent} from "./apollowebs/standards-development/company-standard/com-std-confirm/com-std-confirm.component";
-import {StdJustificationComponent} from "./apollowebs/standards-development/standard-request/std-justification/std-justification.component";
 import {SpcSecTaskComponent} from "./apollowebs/standards-development/standard-request/spc-sec-task/spc-sec-task.component";
-import {StdTcWorkplanComponent} from "./apollowebs/standards-development/standard-request/std-tc-workplan/std-tc-workplan.component";
 import {AllpermitsComponent} from "./apollowebs/quality-assurance/allpermits/allpermits.component";
 import {NepNotificationComponent} from "./apollowebs/standards-development/nep-notification/nep-notification.component";
 import {ManagernotificationsComponent} from "./apollowebs/standards-development/managernotifications/managernotifications.component";
+import {CreateDepartmentComponent} from "./apollowebs/standards-development/standard-request/create-department/create-department.component";
+import {CreatetechnicalcommitteeComponent} from "./apollowebs/standards-development/standard-request/createtechnicalcommittee/createtechnicalcommittee.component";
+import {IntStdUploadStandardComponent} from "./apollowebs/standards-development/international-standard/int-std-upload-standard/int-std-upload-standard.component";
+import {IntStdGazzetteComponent} from "./apollowebs/standards-development/international-standard/int-std-gazzette/int-std-gazzette.component";
+import {CreateproductComponent} from "./apollowebs/standards-development/standard-request/createproduct/createproduct.component";
+import {CreateproductSubCategoryComponent} from "./apollowebs/standards-development/standard-request/createproduct-sub-category/createproduct-sub-category.component";
+import {RoleSwitcherComponent} from "./apollowebs/standards-levy/standards-levy-home/role-switcher/role-switcher.component";
+import {CustomerRegistrationComponent} from "./apollowebs/standards-levy/standards-levy-home/customer-registration/customer-registration.component";
+import {StandardsLevyHomeComponent} from "./apollowebs/standards-levy/standards-levy-home/standards-levy-home.component";
+import {ComStandardLevyComponent} from "./apollowebs/standards-levy/com-standard-levy/com-standard-levy.component";
+import {ComPaymentHistoryComponent} from "./apollowebs/standards-levy/com-payment-history/com-payment-history.component";
+import {ComStdLevyFormComponent} from "./apollowebs/standards-levy/com-std-levy-form/com-std-levy-form.component";
+import {StandardLevyDashboardComponent} from "./apollowebs/standards-levy/standard-levy-dashboard/standard-levy-dashboard.component";
+import {StandardLevyPaidComponent} from "./apollowebs/standards-levy/standard-levy-paid/standard-levy-paid.component";
+import {StandardLevyPenaltiesComponent} from "./apollowebs/standards-levy/standard-levy-penalties/standard-levy-penalties.component";
+import {StandardLevyDefaulterComponent} from "./apollowebs/standards-levy/standard-levy-defaulter/standard-levy-defaulter.component";
+import {StandardLevyPenaltyHistoryComponent} from "./apollowebs/standards-levy/standard-levy-penalty-history/standard-levy-penalty-history.component";
+import {StandardLevyPaidHistoryComponent} from "./apollowebs/standards-levy/standard-levy-paid-history/standard-levy-paid-history.component";
+import {StandardLevyDefaulterHistoryComponent} from "./apollowebs/standards-levy/standard-levy-defaulter-history/standard-levy-defaulter-history.component";
 import {StdTscSecTasksComponentComponent} from "./apollowebs/standards-development/standard-request/std-tsc-sec-tasks-component/std-tsc-sec-tasks-component.component";
 import {StdTcTasksComponent} from "./apollowebs/standards-development/standard-request/std-tc-tasks/std-tc-tasks.component";
 import {InvoiceConsolidateComponent} from "./apollowebs/quality-assurance/invoice-consolidate/invoice-consolidate.component";
@@ -582,7 +599,7 @@ export const routes: Routes = [
     },
     {
         path: 'isProposalComments', component: AdminLayoutComponent,
-        canActivate: [RouteGuard],
+        //canActivate: [RouteGuard],
         children: [{path: '', component: IntStdCommentsComponent}]
     },
     {
@@ -599,6 +616,16 @@ export const routes: Routes = [
         path: 'isJustificationApp', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [{path: '', component: IntStdJustificationAppComponent}]
+    },
+    {
+        path: 'isUploadStd', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdUploadStandardComponent}]
+    },
+    {
+        path: 'isUploadNotice', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdGazzetteComponent}]
     },
     // SD SYSTEMIC REVIEW
     {
@@ -706,6 +733,77 @@ export const routes: Routes = [
         path: 'std-tc-task', component: AdminLayoutComponent,
         children: [{path: '', component: StdTcTasksComponent}]
     },
+    {
+        path: 'spc-sec-tc-task', component: AdminLayoutComponent,
+        children: [{path: '', component: SpcSecTaskComponent}]
+    },
+    {
+        path: 'department', component: AdminLayoutComponent,
+        children: [{path: '', component: CreateDepartmentComponent}]
+    },
+    {
+        path: 'technicalCommittee', component: AdminLayoutComponent,
+        children: [{path: '', component: CreatetechnicalcommitteeComponent}]
+    },
+    {
+        path: 'productCategory', component: AdminLayoutComponent,
+        children: [{path: '', component: CreateproductComponent}]
+    },
+    {
+        path: 'productSubCategory', component: AdminLayoutComponent,
+        children: [{path: '', component: CreateproductSubCategoryComponent}]
+    },
+
+    // STANDARDS LEVY
+    {
+        path: 'roleSwitcher', component: StandardsLevyHomeComponent,
+        children: [{path: '', component: RoleSwitcherComponent}]
+    },
+    {
+        path: 'levyRegistration', component: StandardsLevyHomeComponent,
+        children: [{path: '', component: CustomerRegistrationComponent}]
+    },
+    {
+        path: 'comStdLevy', component: AdminLayoutComponent,
+        children: [{path: '', component: ComStandardLevyComponent}]
+    },
+    {
+        path: 'comPaymentHistory', component: AdminLayoutComponent,
+        children: [{path: '', component: ComPaymentHistoryComponent}]
+    },
+    {
+        path: 'comStdLevyForm', component: AdminLayoutComponent,
+        children: [{path: '', component: ComStdLevyFormComponent}]
+    },
+    {
+        path: 'stdLevyHome', component: AdminLayoutComponent,
+        children: [{path: '', component: StandardLevyDashboardComponent}]
+    },
+    {
+        path: 'stdLevyPaid', component: AdminLayoutComponent,
+        children: [{path: '', component: StandardLevyPaidComponent}]
+    },
+    {
+        path: 'stdLevyPenalties', component: AdminLayoutComponent,
+        children: [{path: '', component: StandardLevyPenaltiesComponent}]
+    },
+    {
+        path: 'stdLevyDefaulters', component: AdminLayoutComponent,
+        children: [{path: '', component: StandardLevyDefaulterComponent}]
+    },
+    {
+        path: 'stdLevyPaidHistory', component: AdminLayoutComponent,
+        children: [{path: '', component: StandardLevyPaidHistoryComponent}]
+    },
+    {
+        path: 'stdLevyPenaltiesHistory', component: AdminLayoutComponent,
+        children: [{path: '', component: StandardLevyPenaltyHistoryComponent}]
+    },
+    {
+        path: 'stdLevyDefaultersHistory', component: AdminLayoutComponent,
+        children: [{path: '', component: StandardLevyDefaulterHistoryComponent}]
+    },
+
 
 ];
 

@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.store.model.std
 
+import java.sql.Timestamp
 import javax.persistence.*
 
 @Entity
@@ -17,7 +18,7 @@ class ISGazetteNotice {
 
     @Column(name="DATE_UPLOADED")
     @Basic
-    var dateUploaded:String? =null
+    var dateUploaded: Timestamp?=null
 
     @Column(name="DESCRIPTION")
     @Basic

@@ -1,13 +1,14 @@
 import {Injectable} from '@angular/core';
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
 import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
-import {Department, ReviewApplicationTask, StandardRequest} from "./std.model";
+import {ReviewApplicationTask, StandardRequest} from "./std.model";
 import {Observable, throwError} from "rxjs";
 import {catchError, map} from "rxjs/operators";
 import {
     DecisionFeedback,
+    Department,
     HOFFeedback,
-    LiaisonOrganization,
+    LiaisonOrganization, ProductCategory, ProductSubCategory, ProductSubCategoryB,
     StandardTasks,
     StdJustification,
     StdJustificationDecision,
@@ -17,7 +18,7 @@ import {
     StdTCTask,
     Stdtsectask,
     StdtsecTaskJustification,
-    StdWorkPlan
+    StdWorkPlan, TechnicalCommittee, TechnicalCommitteeb,DataHolder
 } from './request_std.model';
 
 @Injectable({
@@ -71,7 +72,7 @@ export class StandardDevelopmentService {
         return this.http.get<any>(url, {params}).pipe();
     }
 
-    public getProductsb(id: bigint): any {
+    public getProductsb(id: string): any {
         return this.http.get<any>(`${this.apiServerUrl2}getProducts/${id}`)
     }
 
@@ -83,7 +84,7 @@ export class StandardDevelopmentService {
         return this.http.get<any>(`${this.apiServerUrl2}getProductCategories/${id}`)
     }
 
-    public getTechnicalCommitteeb(id: bigint): any {
+    public getTechnicalCommitteeb(id: string): any {
         return this.http.get<any>(`${this.apiServerUrl2}getTechnicalCommittee/${id}`)
     }
 
@@ -155,5 +156,78 @@ export class StandardDevelopmentService {
 
         console.log(stdWorkPlan);
         return this.http.post<StdWorkPlan>(`${this.apiServerUrl}` + 'uploadWorkPlan', stdWorkPlan)
+    }
+
+    public createDepartment(department: Department): Observable<any> {
+        return this.http.post<Department>(`${this.apiServerUrl}` + 'createDepartment', department).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+
+
+    }
+    public createTechnicalCommittee(technicalCommitteeb: TechnicalCommitteeb): Observable<any> {
+        return this.http.post<Department>(`${this.apiServerUrl}` + 'createTechnicalCommittee', technicalCommitteeb).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+
+
+    }
+    public createProductCategory(productCategory: ProductCategory): Observable<any> {
+        return this.http.post<ProductCategory>(`${this.apiServerUrl}` + 'createProductCategory', productCategory).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+
+
+    }
+    public createProductSubCategory(productSubCategory: ProductSubCategoryB): Observable<any> {
+        return this.http.post<ProductSubCategoryB>(`${this.apiServerUrl}` + 'createProductSubCategory', productSubCategory).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+
+
+    }
+    public getAllDepartments(): any {
+        return this.http.get<Department[]>(`${this.apiServerUrl}` + 'getAllDepartments')
+    }
+    public getTechnicalCommittees(): any {
+        return this.http.get<Department[]>(`${this.apiServerUrl}` + 'getAllTcs')
+    }
+    public getProductCategories(): any {
+        return this.http.get<Department[]>(`${this.apiServerUrl}` + 'getAllProductCategories')
+    }
+    public getProductSubCategories(): any {
+        return this.http.get<Department[]>(`${this.apiServerUrl}` + 'getAllProductSubCategories')
+    }
+    public updateDepartment(department: Department): Observable<any> {
+        return this.http.post<Department>(`${this.apiServerUrl}` + 'updateDepartment', department).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+
+
     }
 }

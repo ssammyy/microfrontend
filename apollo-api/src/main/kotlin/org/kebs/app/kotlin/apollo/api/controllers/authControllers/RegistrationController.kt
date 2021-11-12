@@ -400,7 +400,7 @@ class RegisterController(
         )
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/auth/signup/authorize/${user.userName}"
-        sm.message = "You have successful your Email, check your email, Get the OTP For activation"
+        sm.message = "You have successfully reset your password. Please check your email to get the OTP For activation"
 
         return returnValues(result, map, sm)
     }

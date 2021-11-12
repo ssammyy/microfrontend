@@ -69,13 +69,14 @@ class NWAJustification : Serializable {
     @Basic
     var submissionDate: Timestamp?=null
 
-    @Transient
-    @JsonProperty("KNW_COMMITTEE")
-    var knwCommittee: String?=null
+    @Column(name = "KNW_COMMITTEE")
+    @Basic
+    var knwCommittee: String? = null
 
-    @Transient
-    @JsonProperty("DEPARTMENT_NAME")
-    var departmentName: String?=null
+    @Column(name = "DEPARTMENT_NAME")
+    @Basic
+    var departmentName: String? = null
+
 
     @Transient
     @Column(name = "ACCENT_TO")

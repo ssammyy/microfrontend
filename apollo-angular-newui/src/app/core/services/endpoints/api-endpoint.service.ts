@@ -17,13 +17,13 @@ export class ApiEndpointService {
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-        // LOCAL_DEV: 'localhost:8006'
-        LOCAL_DEV: 'kimsfluxint.kebs.org:8005'
+         //LOCAL_DEV: 'localhost:8006'
         // LOCAL_DEV: '12:8006'
         // LOCAL_DEV: '41.72.209.58:8006'
-        // LOCAL_DEV: `kimsint.kebs.org:8006`
+        LOCAL_DEV: `kimsint.kebs.org:8006`
         // LOCAL_DEV: `kims.kebs.org:8006`
         // LOCAL_DEV: '10.10.0.149:8007'
+
     };
 
     /**
@@ -296,7 +296,7 @@ export class ApiEndpointService {
         PERMIT_UPDATE_STA10_MANUFACTURING_PROCESS: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/manufacturing_process_update`,
 
 
-        /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::SD ENDPOINTS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+        /*::::::::::::::::::::::::::::::SD ENDPOINTS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
         // SD Kenya National Workshop Agreement
         NWA_PREPARE_JUSTIFICATION: `${ApiEndpointService.SD_NWA_CONTEXT}/prepareJustification`,
         NWA_DEPARTMENTS: `${ApiEndpointService.SD_NWA_CONTEXT}/getKNWDepartments`,
@@ -318,6 +318,7 @@ export class ApiEndpointService {
         NWA_UPLOAD_GAZETTE_NOTICE: `${ApiEndpointService.SD_NWA_CONTEXT}/uploadGazetteNotice`,
         NWA_UPDATE_GAZETTEMENT_DATE: `${ApiEndpointService.SD_NWA_CONTEXT}/updateGazettementDate`,
         NWA_UPLOAD_DATA: `${ApiEndpointService.SD_NWA_CONTEXT}/file-upload`,
+        NWA_UPLOAD_DATA_VIEW: `${ApiEndpointService.SD_NWA_CONTEXT}/view/justification`,
         NWA_UPLOAD_DATA_DI: `${ApiEndpointService.SD_NWA_CONTEXT}/di-file-upload`,
         NWA_UPLOAD_DATA_PD: `${ApiEndpointService.SD_NWA_CONTEXT}/pd-file-upload`,
         NWA_UPLOAD_DATA_WD: `${ApiEndpointService.SD_NWA_CONTEXT}/wd-file-upload`,
@@ -331,10 +332,18 @@ export class ApiEndpointService {
         IST_TC_SEC_TASKS: `${ApiEndpointService.SD_IST_CONTEXT}/getTCSECTasks`,
         IST_DECISION_ON_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/decisionOnProposal`,
         IST_PREPARE_JUSTIFICATION: `${ApiEndpointService.SD_IST_CONTEXT}/prepareJustification`,
+        IST_UPLOAD_JS_DOCUMENT: `${ApiEndpointService.SD_IST_CONTEXT}/js-file-upload`,
         IST_SPC_SEC_TASKS: `${ApiEndpointService.SD_IST_CONTEXT}/getSPCSECTasks`,
         IST_DECISION_ON_JUSTIFICATION: `${ApiEndpointService.SD_IST_CONTEXT}/decisionOnJustification`,
         IST_SAC_SEC_TASKS: `${ApiEndpointService.SD_IST_CONTEXT}/getSACSECTasks`,
         IST_APPROVE_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/approveStandard`,
+        IST_HOP_TASKS: `${ApiEndpointService.SD_IST_CONTEXT}/getHOPTasks`,
+        IS_UPLOAD_STD: `${ApiEndpointService.SD_IST_CONTEXT}/std-file-upload`,
+        IS_UPLOAD_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/uploadISStandard`,
+        IST_HOS_SIC_TASKS: `${ApiEndpointService.SD_IST_CONTEXT}/getHoSiCTasks`,
+        IS_UPLOAD_GAZETTE_NOTICE: `${ApiEndpointService.SD_IST_CONTEXT}/uploadGazetteNotice`,
+        IS_UPDATE_GAZETTE_DATE: `${ApiEndpointService.SD_IST_CONTEXT}/updateGazettementDate`,
+
 
         // SD COMPANY STANDARDS
         ICT_GET_PRODUCTS: `${ApiEndpointService.SD_ICT_CONTEXT}/getProducts`,

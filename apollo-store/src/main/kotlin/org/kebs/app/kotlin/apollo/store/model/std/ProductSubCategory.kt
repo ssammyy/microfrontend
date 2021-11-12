@@ -8,11 +8,10 @@ import javax.persistence.*
 @Entity
 @Table(name = "SD_PRODUCT_SUBCATEGORY")
 class ProductSubCategory  : Serializable {
-    @Column(name = "ID")
     @Id
-    @SequenceGenerator(name = "CFG_PRODUCT_SUBCATEGORY_SEQ_GEN", sequenceName = "CFG_PRODUCT_SUBCATEGORY_SEQ", allocationSize = 1)
-    @GeneratedValue(generator = "CFG_PRODUCT_SUBCATEGORY_SEQ_GEN", strategy = GenerationType.SEQUENCE)
-    var id: Long? = 0
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    var id: Long = 0
 
     //    @JoinColumn(name = "PRODUCT_ID", referencedColumnName = "ID")
 //    @ManyToOne
@@ -20,7 +19,7 @@ class ProductSubCategory  : Serializable {
 
     @Column(name = "PRODUCT_ID")
     @Basic
-    var productId: Long =0
+    var productId: Long = 0
 
     @Column(name = "NAME")
     @Basic
@@ -98,9 +97,6 @@ class ProductSubCategory  : Serializable {
     @Basic
     var deletedOn: Timestamp? = null
 
-    @Column(name = "MODIFIED_STATUS")
-    @Basic
-    var modifiedStatus: Long? = null
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -124,11 +120,10 @@ class ProductSubCategory  : Serializable {
                 modifiedBy == that.modifiedBy &&
                 modifiedOn == that.modifiedOn &&
                 deleteBy == that.deleteBy &&
-                deletedOn == that.deletedOn &&
-                modifiedStatus == that.modifiedStatus
+                deletedOn == that.deletedOn
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(id, name, description, status, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn, modifiedStatus)
+        return Objects.hash(id, name, description, status, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn)
     }
 }

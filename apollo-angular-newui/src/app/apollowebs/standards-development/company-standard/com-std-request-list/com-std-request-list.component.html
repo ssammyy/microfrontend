@@ -1,103 +1,102 @@
 <div class="container-fluid" style="margin-top: 5%" id="main-container">
-    <div  class="loading-spinner ">
-        <ngx-spinner
-                bdColor="rgba(51,51,51,0.8)"
-                size="medium"
-                color="#fff"
-                type="ball-scale-multiple"
-        >
-            <p style="font-size: 20px; color: white">Loading...</p>
-        </ngx-spinner>
-    </div>
-    <div class="main-content" >
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-header card-header-primary card-header-icon">
-                            <div class="card-icon">
-                                <i class="material-icons">assignment</i>
-                            </div>
-                            <div class="card-title float-right"><button type="button" class="btn btn-sm btn-outline-warning">
-                                Tasks <span class="badge badge-primary">{{tasks.length}}</span>
-                            </button></div>
-                        </div>
-                        <div class="card-body">
-                            <div class="toolbar">
+<div  class="loading-spinner ">
+<ngx-spinner
+bdColor="rgba(51,51,51,0.8)"
+size="medium"
+color="#fff"
+type="ball-scale-multiple"
+>
+<p style="font-size: 20px; color: white">Loading...</p>
+</ngx-spinner>
+</div>
+<div class="main-content" >
+<div class="container-fluid">
+<div class="row">
+<div class="col-md-12">
+<div class="card">
+<div class="card-header card-header-primary card-header-icon">
+<div class="card-icon">
+<i class="material-icons">assignment</i>
+</div>
+<div class="card-title float-right"><button type="button" class="btn btn-sm btn-outline-warning">
+Tasks <span class="badge badge-primary">{{tasks.length}}</span>
+</button></div>
+</div>
+<div class="card-body">
+<div class="toolbar">
 
-                            </div>
-                            <div class="material-datatables table-responsive">
-                                <table  class="table table-striped table-bordered table-hover " datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"  cellspacing="0" width="100%">
-                                        <thead>
-                                        <tr>
-                                            <th>#</th>
-                                        <th class="knw">Request Number</th>
-                                        <th class="sl">Company Name</th>
-                                        <th class="requestNumber">Department </th>
-                                        <th class="knw">Product</th>
-                                        <th class="sl">Sub Category</th>
-                                        <th class="requestNumber">Submission Date </th>
-                                        <th class="sl">Phone Number</th>
-                                        <th class="action">Action</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr  *ngFor="let task of tasks let i=index">
-                                            <td>{{i+1}}</td>
-                                            <td>{{task.taskData.requestNumber}}</td>
-                                            <td>{{task.taskData.companyName}}</td>
-                                            <td>{{task.taskData.departmentName}}</td>
-                                            <td>{{task.taskData.productName}}</td>
-                                            <td>{{task.taskData.productSubCategoryName}}</td>
-                                            <td>{{task.taskData.submissionDate | date: 'dd/MM/yyyy hh:mm:ss'}}</td>
-                                            <td>{{task.taskData.companyPhone}}</td>
-                                            <td><a  (click)="onOpenModal(task,'approve')" class="btn btn-info btn-sm tooltips" data-placement="top"  data-original-title="Approve"> Assign To Project Leader</a></td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
+</div>
+<div class="material-datatables table-responsive">
+<table  class="table table-striped table-bordered table-hover " datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"  cellspacing="0" width="100%">
+<thead>
+<tr>
+<th>#</th>
+<th class="knw">Request Number</th>
+<th class="sl">Company Name</th>
+<th class="requestNumber">Department </th>
+<th class="knw">Product</th>
+<th class="sl">Sub Category</th>
+<th class="requestNumber">Submission Date </th>
+<th class="sl">Phone Number</th>
+<th class="action">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr  *ngFor="let task of tasks let i=index">
+<td>{{i+1}}</td>
+<td>{{task.taskData.requestNumber}}</td>
+<td>{{task.taskData.companyName}}</td>
+<td>{{task.taskData.departmentName}}</td>
+<td>{{task.taskData.productName}}</td>
+<td>{{task.taskData.productSubCategoryName}}</td>
+<td>{{task.taskData.submissionDate | date: 'dd/MM/yyyy hh:mm:ss'}}</td>
+<td>{{task.taskData.companyPhone}}</td>
+<td><a  (click)="onOpenModal(task,'approve')" class="btn btn-info btn-sm tooltips" data-placement="top"  data-original-title="Approve"> Assign To Project Leader</a></td>
+</tr>
+</tbody>
+</table>
 
 
-                                    <div class="modal fade" id="assignModal" tabindex="-1" role="dialog" aria-labelledby="assignExampleModalLabel" aria-hidden="true">a
-                                        <div class="modal-dialog modal-lg" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h3 class="modal-title" id="assignExampleModalLabel">Assign To Project Leader</h3>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                <form #assignForm="ngForm" >
-                                                    <div class="modal-body">
-                                                        <div class="form-body">
-                                                        <div class="row col-12">
-                                                            <div class="form-group col-12">
-                                                                <label>Assign To</label>
-                                                                <ng-select [(ngModel)]="selectedUser"  class="form-control" ngModel name="assignedTo" style="border-color: #0d0505">
-                                                                    <ng-option *ngFor="let user of users" [value]="user.id">{{user.firstName}} {{user.lastName}}</ng-option>
-                                                                </ng-select>
+<div class="modal fade" id="assignModal" tabindex="-1" role="dialog" aria-labelledby="assignExampleModalLabel" aria-hidden="true">a
+<div class="modal-dialog modal-lg" role="document">
+<div class="modal-content">
+<div class="modal-header">
+<h3 class="modal-title" id="assignExampleModalLabel">Assign To Project Leader</h3>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<form #assignForm="ngForm" >
+<div class="modal-body">
+<div class="form-body">
+<div class="row col-12">
+<div class="form-group col-12">
+<label>Assign To</label>
+<ng-select [(ngModel)]="selectedUser"  class="form-control" ngModel name="assignedTo" >
+<ng-option *ngFor="let user of users" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
+</ng-select>
 
-                                                            </div>
+</div>
+<input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskId" >
+<input type="hidden" ngModel="{{actionRequest?.taskData?.requestNumber}}" name="requestNumber" >
+</div>
+</div>
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+<button type="submit" class="btn btn-primary btn-sm" (click)="onAssign(assignForm.value)" data-dismiss="modal">Assign</button>
+</div>
+</form>
+</div>
+</div>
+</div>
 
-                                                            <input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskId" >
-                                                            <input type="hidden" ngModel="{{actionRequest?.taskData?.requestNumber}}" name="requestNumber" >
-                                                        </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
-                                                        <button type="submit" class="btn btn-primary btn-sm" (click)="onAssign(assignForm.value)" data-dismiss="modal">Assign</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 

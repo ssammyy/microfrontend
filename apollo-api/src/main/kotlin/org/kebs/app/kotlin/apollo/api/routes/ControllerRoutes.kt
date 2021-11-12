@@ -331,6 +331,8 @@ class ControllerRoutes {
             GET("logout", handler::signOut)
             GET("login", handler::loginPageView)
             GET(pattern = "/otp-confirmation", f = handler::confirmOtpView)
+            GET(pattern = "/forgot-password", f = handler::forgotPasswordView)
+            POST(pattern = "/forgotPassword", f = handler::forgotPasswordAction)
         }
 
 //        POST(pattern = "/api/signup/manufacturer", f = handler::signupManufacturer)

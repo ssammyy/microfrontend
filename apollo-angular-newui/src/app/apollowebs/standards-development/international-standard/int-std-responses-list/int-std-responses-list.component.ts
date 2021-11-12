@@ -4,14 +4,17 @@ import {NgxSpinnerService} from "ngx-spinner";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Subject} from "rxjs";
 import {
-    Department, ISAdoptionJustification,
-    ISAdoptionProposal,
-    ISTcSecTASKS,
+    Department, DiSdtDECISION, ISAdoptionJustification,
+    ISAdoptionProposal, ISDecision,
+    ISTcSecTASKS, NWADiSdtJustification,
     TechnicalCommittee
 } from "../../../../core/store/data/std/std.model";
 import {StdIntStandardService} from "../../../../core/store/data/std/std-int-standard.service";
 import {StandardDevelopmentService} from "../../../../core/store/data/std/standard-development.service";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
+import {Store} from "@ngrx/store";
+import {selectUserInfo} from "../../../../core/store";
+import swal from "sweetalert2";
 
 @Component({
   selector: 'app-int-std-responses-list',
@@ -19,13 +22,17 @@ import {NotificationService} from "../../../../core/store/data/std/notification.
   styleUrls: ['./int-std-responses-list.component.css']
 })
 export class IntStdResponsesListComponent implements OnInit ,OnDestroy{
+    fullname = '';
     dtOptions: DataTables.Settings = {};
     dtTrigger: Subject<any> = new Subject<any>();
   public departments !: Department[] ;
   public committees !: TechnicalCommittee[] ;
   tasks: ISTcSecTASKS[] = [];
   public actionRequest: ISTcSecTASKS | undefined;
+    public technicalCommittees !: TechnicalCommittee[];
+    public uploadedFiles: FileList;
   constructor(
+      private store$: Store<any>,
       private stdIntStandardService : StdIntStandardService,
       private standardDevelopmentService : StandardDevelopmentService,
       private SpinnerService: NgxSpinnerService,
@@ -35,11 +42,23 @@ export class IntStdResponsesListComponent implements OnInit ,OnDestroy{
   ngOnInit(): void {
     this.getTCSECTasks();
     this.getDepartments();
+      this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+          return this.fullname = u.fullName;
+      });
   }
+    showToasterError(title:string,message:string){
+        this.notifyService.showError(message, title)
+
+    }
+    showToasterSuccess(title:string,message:string){
+        this.notifyService.showSuccess(message, title)
+
+    }
   public getTCSECTasks(): void{
     this.stdIntStandardService.getTCSECTasks().subscribe(
         (response: ISTcSecTASKS[])=> {
           this.tasks = response;
+          this.dtTrigger.next();
         },
         (error: HttpErrorResponse)=>{
           alert(error.message);
@@ -56,17 +75,22 @@ export class IntStdResponsesListComponent implements OnInit ,OnDestroy{
         }
     );
   }
-  onSelectDepartment(value: any): any {
-    this.standardDevelopmentService.getTechnicalCommittee(value).subscribe(
-        (response: TechnicalCommittee[]) => {
-          console.log(response);
-          this.committees = response
-        },
-        (error: HttpErrorResponse) => {
-          alert(error.message);
-        }
-    );
-  }
+    onSelectDepartment(value: any): any {
+        this.SpinnerService.show();
+        this.standardDevelopmentService.getTechnicalCommitteeb(value).subscribe(
+            (response: TechnicalCommittee[]) => {
+                console.log(response);
+                this.SpinnerService.hide();
+                this.technicalCommittees = response
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                alert(error.message);
+            }
+        );
+    }
+
+
 
 
   public onOpenModal(task: ISTcSecTASKS,mode:string): void{
@@ -94,28 +118,51 @@ export class IntStdResponsesListComponent implements OnInit ,OnDestroy{
 
   }
   // onDecision
-  public onDecision(iSAdoptionProposal: ISAdoptionProposal): void{
-      this.SpinnerService.show();
-    this.stdIntStandardService.decisionOnProposal(iSAdoptionProposal).subscribe(
-        (response: ISAdoptionProposal) => {
-          console.log(response);
-            this.SpinnerService.hide();
-          this.getTCSECTasks();
-        },
-        (error: HttpErrorResponse) => {
-            this.SpinnerService.hide();
-          alert(error.message);
-        }
-    );
-  }
+
+    public onDecision(iSDecision: ISDecision): void{
+        this.SpinnerService.show();
+        this.stdIntStandardService.decisionOnProposal(iSDecision).subscribe(
+            (response: ISAdoptionProposal) => {
+                this.SpinnerService.hide();
+                this.showToasterSuccess('Success', `Proposal Approved`);
+                console.log(response);
+                this.getTCSECTasks();
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Try Again`);
+                console.log(error.message);
+                this.getTCSECTasks();
+                //alert(error.message);
+            }
+        );
+    }
+    public onDecisionReject(iSDecision: ISDecision): void{
+        this.SpinnerService.show();
+        this.stdIntStandardService.decisionOnProposal(iSDecision).subscribe(
+            (response: ISAdoptionProposal) => {
+                this.SpinnerService.hide();
+                this.showToasterSuccess('Success', `Proposal Not Approved`);
+                console.log(response);
+                this.getTCSECTasks();
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Try Again`);
+                console.log(error.message);
+                this.getTCSECTasks();
+                //alert(error.message);
+            }
+        );
+    }
   //save justification
   public uploadJustification(iSAdoptionJustification: ISAdoptionJustification): void{
       this.SpinnerService.show();
     this.stdIntStandardService.prepareJustification(iSAdoptionJustification).subscribe(
-        (response: ISAdoptionJustification) => {
+        (response) => {
           console.log(response);
             this.SpinnerService.hide();
-          this.getTCSECTasks();
+            this.onClickSaveUploads(response.body.savedRowID)
         },
         (error: HttpErrorResponse) => {
             this.SpinnerService.hide();
@@ -123,6 +170,37 @@ export class IntStdResponsesListComponent implements OnInit ,OnDestroy{
         }
     );
   }
+
+    onClickSaveUploads(isJustificationID: string) {
+        if (this.uploadedFiles.length > 0) {
+            const file = this.uploadedFiles;
+            const formData = new FormData();
+            for (let i = 0; i < file.length; i++) {
+                console.log(file[i]);
+                formData.append('docFile', file[i], file[i].name);
+            }
+
+            this.SpinnerService.show();
+            this.stdIntStandardService.uploadJSFile(isJustificationID, formData).subscribe(
+                (data: any) => {
+                    this.SpinnerService.hide();
+                    this.uploadedFiles = null;
+                    console.log(data);
+                    swal.fire({
+                        title: 'Justification Prepared.',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+                    this.getTCSECTasks();
+                },
+            );
+        }
+
+    }
+
     ngOnDestroy(): void {
         this.dtTrigger.unsubscribe();
     }

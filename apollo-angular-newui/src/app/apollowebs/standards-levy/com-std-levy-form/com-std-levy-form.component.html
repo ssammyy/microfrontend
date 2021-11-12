@@ -1,0 +1,144 @@
+<div class="container-fluid" style="margin-top: 5%" id="main-container">
+<div  class="loading-spinner ">
+<ngx-spinner
+bdColor="rgba(51,51,51,0.8)"
+size="medium"
+color="#fff"
+type="ball-scale-multiple"
+>
+<p style="font-size: 20px; color: white">Loading...</p>
+</ngx-spinner>
+</div>
+<div class="main-content" >
+<div class="container-fluid">
+<div class="row">
+<div class="col-md-12">
+<div class="card">
+<div class="card-header card-header-primary card-header-icon">
+<div class="card-icon">
+<i class="material-icons">assignment</i>
+
+</div>
+    <div class="card-title" style="color: #0d47a1; font-weight: bold">Standards Levy Notification Form (SL/1)</div>
+</div>
+<div class="card-body">
+<div class="toolbar">
+
+</div>
+    <form (ngSubmit)="uploadNotification()" [formGroup]="notificationForm" class="form">
+        <div class="modal-body">
+            <div class="form-body">
+                <h3 style="color: #0d47a1; font-weight: bold">Company Information</h3>
+                <div class="row col-12">
+                    <div class="form-group col-6">
+                        <label><b>Name Of Business</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                        <input [class.is-invalid]="formUploadNotification.nameOfBusiness.invalid && formUploadNotification.nameOfBusiness.touched"
+                               class="form-control"  formControlName="nameOfBusiness" name="nameOfBusiness" type="text">
+                    </div>
+                    <div class="form-group col-6">
+                        <label><b>Plot Number</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                        <input [class.is-invalid]="formUploadNotification.plotNumber.invalid && formUploadNotification.plotNumber.touched"
+                               class="form-control"  formControlName="plotNumber" name="plotNumber" type="text">
+                    </div>
+                </div>
+
+
+                <div class="row col-12">
+                    <div class="form-group col-6">
+                        <label><b>Road/Street</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                        <input [class.is-invalid]="formUploadNotification.roadOrStreet.invalid && formUploadNotification.roadOrStreet.touched"
+                               class="form-control"  formControlName="roadOrStreet"  name="roadOrStreet" type="text" >
+
+                    </div>
+
+                    <div class="form-group col-6">
+                        <label><b>Address</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                        <input [class.is-invalid]="formUploadNotification.address.invalid && formUploadNotification.address.touched"
+                               class="form-control"  formControlName="address"  name="address" type="text" >
+
+                    </div>
+                </div>
+                <div class="row col-12">
+                    <div class="form-group col-6">
+                        <label><b>Telephone</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                        <input [class.is-invalid]="formUploadNotification.telephoneNumber.invalid && formUploadNotification.telephoneNumber.touched"
+                               class="form-control"  formControlName="telephoneNumber" name="telephoneNumber" type="text">
+                    </div>
+                    <div class="form-group col-6">
+                        <label><b>Admin. Location</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                        <input [class.is-invalid]="formUploadNotification.adminLocation.invalid && formUploadNotification.adminLocation.touched"
+                               class="form-control"  formControlName="adminLocation" name="adminLocation" type="text">
+
+                    </div>
+                </div><br>
+<h3 style="color: #0d47a1; font-weight: bold">Manufacturing Information</h3><br>
+                <div class="row">
+                    <div class="form-group col-12">
+                        <label for="NameAndBusinessOfProprietors">Name and Business of Proprietors and Partners; and In the case of Companies, the Chief Executive and Directors<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                        <textarea [class.is-invalid]="formUploadNotification.NameAndBusinessOfProprietors.invalid && formUploadNotification.NameAndBusinessOfProprietors.touched" type="text"  id="NameAndBusinessOfProprietors" formControlName="NameAndBusinessOfProprietors" name="NameAndBusinessOfProprietors" class="form-control" placeholder=""></textarea>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="form-group col-12">
+                        <label for="AllCommoditiesManufuctured">All Commodities Manufactured or to be Manufactured<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                        <textarea [class.is-invalid]="formUploadNotification.AllCommoditiesManufuctured.invalid && formUploadNotification.AllCommoditiesManufuctured.touched" type="text"  id="AllCommoditiesManufuctured" formControlName="AllCommoditiesManufuctured" name="AllCommoditiesManufuctured" class="form-control" placeholder=""></textarea>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="form-group col-6">
+                        <label for="DateOfManufacture">Date upon which Manufacture Commenced or will Commence <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                        <input type="date"
+                               [class.is-invalid]="formUploadNotification.DateOfManufacture.invalid && formUploadNotification.DateOfManufacture.touched"
+                               class="form-control" id="DateOfManufacture"
+                               formControlName="DateOfManufacture"
+                               name="DateOfManufacture" class="form-control" placeholder="" >
+                    </div>
+                    <div class="form-group col-6">
+                        <label for="totalValueOfManufacture">Total value of Manufacture in last Calender Year KSH</label>
+                        <input type="number"
+                               [class.is-invalid]="formUploadNotification.totalValueOfManufacture.invalid && formUploadNotification.totalValueOfManufacture.touched"
+                               class="form-control" id="totalValueOfManufacture" formControlName="totalValueOfManufacture"
+                               name="totalValueOfManufacture" class="form-control" placeholder="Total value of Manufacture in last Calender Year KSH" min="0" step="0"
+                               oninput="validity.valid||(value='');">
+                    </div>
+
+                </div>
+                <h5 style=" color: red; font-weight: bold">If applicant has branches operating, give name and address of branches</h5><br>
+
+                <div class="row">
+
+                    <div class="col-6">
+                        <label for="nameOfBranch">Name of Branch<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                        <input [class.is-invalid]="formUploadNotification.nameOfBranch.invalid && formUploadNotification.nameOfBranch.touched"
+                                type="text"  class="form-control" id="nameOfBranch" formControlName="nameOfBranch"  name="nameOfBranch"
+                               placeholder="Name of Branch" >
+                    </div>
+                    <div class="col-6">
+                        <label for="addressOfBranch">Address of Branch <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                        <input [class.is-invalid]="formUploadNotification.addressOfBranch.invalid && formUploadNotification.addressOfBranch.touched"
+                                type="text"  class="form-control" id="addressOfBranch"  formControlName="addressOfBranch" name="addressOfBranch"
+                               placeholder="Address of Branch" required="">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div *ngIf="notificationForm.valid" class="form-group clearfix">
+            <button type="button" class="btn btn-warning btn-sm float-left" data-dismiss="modal">Back</button>
+            <button type="submit" class="btn btn-sm btn-primary float-right">Apply</button>
+        </div>
+        <div *ngIf="!notificationForm.valid" class="form-group clearfix">
+            <button type="button" class="btn btn-primary btn-sm float-left" data-dismiss="modal">Back</button>
+            <button  class="btn btn-sm btn-warning float-right" (click)="showNotification('top','right')">Apply</button>
+        </div>
+
+    </form>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>

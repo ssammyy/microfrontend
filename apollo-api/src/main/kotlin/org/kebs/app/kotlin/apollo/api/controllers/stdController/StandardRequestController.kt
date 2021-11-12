@@ -180,8 +180,7 @@ class StandardRequestController(
     @PostMapping("standard/uploadNWI")
     @ResponseBody
     fun uploadNWI(@RequestBody standardNWI: StandardNWI): ServerResponse {
-        println("hereeeeee")
-        print(standardNWI)
+
         return ServerResponse(HttpStatus.OK, "Upload new work item", standardRequestService.uploadNWI(standardNWI))
     }
 
@@ -348,6 +347,77 @@ class StandardRequestController(
         return ResponseEntity.ok()
             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDB!!.name + "\"")
             .body(fileDB.data)
+    }
+
+    @PostMapping("standard/createDepartment")
+    @ResponseBody
+    fun createDepartment(@RequestBody department: Department): ServerResponse {
+        return ServerResponse(HttpStatus.OK, "Upload Department", standardRequestService.createStandardsDepartment(department))
+    }
+    @PostMapping("standard/createTechnicalCommittee")
+    @ResponseBody
+    fun createTechnicalCommittee(@RequestBody technicalCommittee: TechnicalCommittee): ServerResponse {
+        return ServerResponse(HttpStatus.OK, "Upload Technical Committee", standardRequestService.createTechnicalCommittee(technicalCommittee))
+    }
+
+    @PostMapping("standard/createProductCategory")
+    @ResponseBody
+    fun createProductCategory(@RequestBody product: Product): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Upload Product Category",
+            standardRequestService.createProductCategory(product)
+        )
+    }
+
+    @PostMapping("standard/createProductSubCategory")
+    @ResponseBody
+    fun createProductSubCategory(@RequestBody productSubCategory: ProductSubCategory): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Upload Department",
+            standardRequestService.createProductSubCategory(productSubCategory)
+        )
+    }
+
+    @GetMapping("standard/getAllDepartments")
+    fun getAllDepartments(): MutableList<Department> {
+        return standardRequestService.getAllDepartments()
+    }
+
+    @GetMapping("standard/getAllTcs")
+    fun getAllTechnicalCommittees(): List<DataHolder> {
+        return standardRequestService.getAllTcs()
+    }
+
+
+    @GetMapping("standard/getAllProductCategories")
+    fun getAllProductCategories(): List<DataHolder> {
+        return standardRequestService.getAllProductCategories()
+    }
+
+    @GetMapping("standard/getAllProductSubCategories")
+    fun getAllProductSubCategories(): List<DataHolder> {
+        return standardRequestService.getAllProductSubCategories()
+    }
+
+
+    @PostMapping("standard/updateDepartment")
+    @ResponseBody
+    fun updateDepartment(@RequestBody department: Department): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Updated Department",
+            standardRequestService.createStandardsDepartment(department)
+        )
+    }
+
+    @PostMapping("standard/deleteDepartment")
+    @ResponseBody
+    fun deleteDepartment(@RequestBody department: Department): ServerResponse {
+        return ServerResponse(HttpStatus.OK,
+            "Deleted Department",
+            standardRequestService.deleteDepartment(department.id))
     }
 
 }
