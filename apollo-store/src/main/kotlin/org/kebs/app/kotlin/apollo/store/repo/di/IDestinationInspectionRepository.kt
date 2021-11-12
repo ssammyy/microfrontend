@@ -294,8 +294,10 @@ interface IDemandNoteRepository : HazelcastRepository<CdDemandNoteEntity, Long> 
     fun findByDemandNoteNumber(demandNoteNumber: String): CdDemandNoteEntity?
     fun findByInvoiceBatchNumberId(invoiceBatchNumberId: Long): List<CdDemandNoteEntity>?
     fun findByCdIdAndPaymentStatus(cdId: Long, paymentStatus: Int): CdDemandNoteEntity?
+    fun findByCdIdAndPaymentStatusIn(cdId: Long, paymentStatuses: List<Int>): List<CdDemandNoteEntity>
     fun findAllByPaymentStatusAndSwStatusIn(paymentStatus: Int, swStatus: List<Int?>): List<CdDemandNoteEntity>
     fun findAllByPaymentStatus(paymentStatus: Int): List<CdDemandNoteEntity>?
+    fun findFirstByPaymentStatusAndCdRefNoIsNotNull(paymentStatus: Int): CdDemandNoteEntity?
 }
 
 @Repository
@@ -394,6 +396,7 @@ interface ICdInspectionMotorVehicleItemChecklistRepository : HazelcastRepository
     fun findByMinistryReportSubmitStatusInAndSampled(status: List<Int>, ministrySubmitted:String, page: Pageable): Page<CdInspectionMotorVehicleItemChecklistEntity>
     fun findAllByInspection(inspectionGeneral: CdInspectionMotorVehicleChecklist): List<CdInspectionMotorVehicleItemChecklistEntity>
     fun findFirstByInspection(inspectionGeneral: CdInspectionMotorVehicleChecklist): CdInspectionMotorVehicleItemChecklistEntity?
+    fun findByInspection_InspectionGeneralAndItemId(inspectionGeneral: CdInspectionGeneralEntity, itemId: CdItemDetailsEntity?): CdInspectionMotorVehicleItemChecklistEntity?
 }
 
 @Repository

@@ -18,9 +18,11 @@ export class SsfDetailsFormComponent implements OnInit {
 
     ngOnInit(): void {
         this.form = this.fb.group({
-            permitNumber: ['',],
+            permitNumber: ['DI',],
             ssfSubmissionDate: ['', Validators.required],
             returnOrDispose: ['', Validators.required],
+            laboratoryName: ['', Validators.required],
+            testParameters: ['', Validators.required],
             conditionOfSample: ['', [Validators.required, Validators.maxLength(100)]],
             description: ['', Validators.maxLength(256)],
         })

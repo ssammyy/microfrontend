@@ -23,6 +23,7 @@ class Scheduler(
     @Value("\${scheduler.run.send.notifications}")
     lateinit var runSendNotifications: String
 
+
     @Value("\${scheduler.run.ms.overdue.task.notifications}")
     lateinit var runMsOverdueTaskNotifications: String
 
@@ -59,11 +60,10 @@ class Scheduler(
         schedulerImpl.updateFirmTypeStatus()
     }
 
-    @Scheduled(fixedDelay = 600000)
-    @Profile("prod")
-    fun fetchKeswsFiles() {
-        sftpSchedulerImpl.downloadKeswsFiles()
-    }
+//    @Scheduled(fixedDelay = 600000)
+//    fun fetchKeswsFiles() {
+//        sftpSchedulerImpl.downloadKeswsFiles()
+//    }
 
 }
 

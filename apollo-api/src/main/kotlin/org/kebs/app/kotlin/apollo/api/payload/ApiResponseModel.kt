@@ -5,7 +5,7 @@ import org.springframework.data.domain.Sort
 import org.springframework.web.servlet.function.ServerRequest
 
 class ApiResponseModel {
-    var totalCount: Long?=null
+    var totalCount: Long? = null
     var extras: Any? = null
     lateinit var message: String
     lateinit var responseCode: String
@@ -29,6 +29,8 @@ fun extractPage(req: ServerRequest, field: String = "id"): PageRequest {
         p.toIntOrNull()?.let {
             if (it in 1..100) {
                 size = it
+            } else {
+                size = 20
             }
         }
     }

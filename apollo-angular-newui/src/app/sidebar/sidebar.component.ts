@@ -114,6 +114,7 @@ export const ROUTES: RouteInfo[] = [
         path: '/pvoc',
         title: 'PVOC',
         type: 'link',
+        collapse: 'pvoc',
         privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
         icontype: 'receipt'
     },
@@ -121,6 +122,7 @@ export const ROUTES: RouteInfo[] = [
         path: '/ministry/inspection',
         title: 'Motor Vehicle Inspection',
         type: 'link',
+        collapse: 'ministry-inspection',
         privilege: ['MINISTRY_OF_TRANSPORT_READ','MINISTRY_OF_TRANSPORT_MODIFY'],
         icontype: 'receipt'
     },
@@ -128,21 +130,33 @@ export const ROUTES: RouteInfo[] = [
         path: '/di',
         title: 'Import Inspection',
         type: 'link',
+        children: [],
+        collapse: 'import-inspection',
         privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
         icontype: 'receipt'
     },
-
+    {
+        path: '/di/exchange/dashboard',
+        title: 'Exchange Monitoring',
+        type: 'link',
+        collapse: 'exchange-messages',
+        privilege: ['SYSADMIN_VIEW','DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
+        children: [],
+        icontype: 'message'
+    },
     {
         path: '/tasks',
         title: 'Import Inspection Tasks',
         privilege: ['DI_INSPECTION_OFFICER_READ2', 'DI_OFFICER_CHARGE_READ2'],
         type: 'link',
+        collapse: 'tasks',
         icontype: 'receipt'
     },
     {
         path: '/currency/rates',
         title: 'Exchange Rates',
         type: 'link',
+        collapse: 'currency-exchange-rates',
         icontype: 'money',
         privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
     }

@@ -16,6 +16,16 @@ class DestinationInspectionRoutes {
             GET("/personal", handler::myInspectionStatistics)
         }
     }
+
+    @Bean
+    @CrossOrigin
+    fun fileService(handler: FtpFileHandler)= router {
+        "/api/v1/files".nest {
+            GET("/stats", handler::loadStats)
+            GET("/get/{messageId}", handler::loadFileContent)
+            GET("/list/{fileStatus}", handler::listFilesByStatus)
+        }
+    }
     @Bean
     @CrossOrigin
     fun invoicing(handlers: InvoiceHandlers)= router{

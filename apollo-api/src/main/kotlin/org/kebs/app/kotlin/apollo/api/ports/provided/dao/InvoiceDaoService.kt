@@ -5,11 +5,13 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.sage.PostInvoiceToSageServi
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.di.CdDemandNoteItemsDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.invoice.InvoiceBatchDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaBatchInvoiceEntity
 import org.kebs.app.kotlin.apollo.store.repo.IPaymentMethodsRepository
 import org.kebs.app.kotlin.apollo.store.repo.IStagingPaymentReconciliationRepo
 import org.kebs.app.kotlin.apollo.store.repo.InvoiceBatchDetailsRepo
+import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.data.repository.findByIdOrNull
@@ -26,6 +28,7 @@ class InvoiceDaoService(
     private val invoicePaymentRepo: IStagingPaymentReconciliationRepo,
     private val iPaymentMethodsRepo: IPaymentMethodsRepository,
     private val applicationMapProperties: ApplicationMapProperties,
+    private val iDemandNoteRepository: IDemandNoteRepository,
     private val commonDaoServices: CommonDaoServices
 ) {
 
@@ -236,6 +239,10 @@ class InvoiceDaoService(
     fun findAllInvoicesPaid(): List<StagingPaymentReconciliation>? {
         val map = commonDaoServices.serviceMapDetails(appId)
         return invoicePaymentRepo.findByPaymentTablesUpdatedStatus(map.activeStatus)
+    }
+
+    fun findDemandNoteCdId(cdId: Long): CdDemandNoteEntity? {
+        return iDemandNoteRepository.findFirstByCdIdAndStatusIn(cdId, listOf(10,1))
     }
 
     fun updateOfInvoiceTables() {

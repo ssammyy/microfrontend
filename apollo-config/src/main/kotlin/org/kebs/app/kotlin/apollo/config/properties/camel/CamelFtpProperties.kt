@@ -7,13 +7,16 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EncryptablePropertySource(value = ["file:\${CONFIG_PATH}/camel-sftp.properties"])
 public class CamelFtpProperties {
+    @Value("\${org.app.properties.camel.enable.uploads:false}")
+    val useCamelForUploads: Boolean=false
+
     @Value("\${org.app.properties.camel.sftp.scheme:sftp}")
     var scheme = "sftp"
 
     @Value("\${org.app.properties.camel.sftp.host}")
     var host = "10.10.0.127"
 
-    @Value("\${org.app.properties.camel.sftp.port}")
+    @Value("\${org.app.properties.camel.sftp.port:922}")
     var port = 922
 
     @Value("\${org.app.properties.camel.sftp.path}")
@@ -33,6 +36,9 @@ public class CamelFtpProperties {
 
     @Value("\${org.app.properties.camel.sftp.initial.delay}")
     var initialDelay = "10s"
+
+    @Value("\${org.app.properties.camel.sftp.implicit.security:false}")
+    var implicitSecurity = "false"
 
     @Value("\${org.app.properties.camel.sftp.delay}")
     var delay = "50"
@@ -67,6 +73,9 @@ public class CamelFtpProperties {
     var logLevel = "WARN"
     @Value("\${org.app.properties.camel.sftp.upload.path}")
     var uploadDirectory = "\\C\\mhxapps\\outbound"
+
+    @Value("\${org.app.properties.camel.sftp.upload.pre-move:sent-files}")
+    var uploadPreMove = "sent-files"
     @Value("\${org.app.properties.camel.sftp.outbound:outbound}")
     var outboundDirectory = ""
 

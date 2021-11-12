@@ -199,17 +199,22 @@ class ConsignmentDocumentDaoService(
 
     fun saveDownLoadedCDXmlFile(
             docFileByteArray: ByteArray,
-            consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
+            documentId: Long?,
             map: ServiceMapsEntity,
-            user: UsersEntity
+            user: UsersEntity,
+            throwable: Throwable?,
     ): CdFileXmlEntity {
         var cdFileXml = CdFileXmlEntity()
+        if (docFileByteArray.isEmpty()) {
+            return cdFileXml
+        }
         with(cdFileXml) {
-            cdId = consignmentDocumentDetailsEntity.id
+            cdId = documentId
             name = applicationMapProperties.mapSftpUploadName
             fileType = commonDaoServices.getFileType(docFileByteArray)
             documentType = applicationMapProperties.mapKeswsDocType
             document = docFileByteArray
+            fileErrors = throwable?.stackTraceToString()
             status = map.activeStatus
             createdBy = commonDaoServices.getUserName(user)
             createdOn = commonDaoServices.getTimestamp()
@@ -241,9 +246,7 @@ class ConsignmentDocumentDaoService(
         var createdCDDetails =
                 processesStages.process1?.let { createConsignmentDocumentDetails(user, map, it, versionNumber) }
         if (createdCDDetails != null) {
-            saveDownLoadedCDXmlFile(downloadByteArray, createdCDDetails, map, user)
-            createdCDDetails =
-                    consignmentDetails(createdCDDetails, consignmentDocDetails, documentSummary, user, map, processesStages)
+            createdCDDetails = consignmentDetails(createdCDDetails, consignmentDocDetails, documentSummary, user, map, processesStages)
         }
         return createdCDDetails ?: throw ExpectedDataNotFound("No CD Details EXISTING")
     }
@@ -837,18 +840,18 @@ class ConsignmentDocumentDaoService(
                     }
                 }
         cdStandardsTwoResponse.attachments?.forEach {
-            val attachment=DiUploadsEntity()
-            attachment.name=it.fileName
-            attachment.description=it.attachmentCodeDesc
-            attachment.documentType=it.attachmentCode
-            attachment.cdId=consignmentDocumentDetailsEntity
+            val attachment = DiUploadsEntity()
+            attachment.name = it.fileName
+            attachment.description = it.attachmentCodeDesc
+            attachment.documentType = it.attachmentCode
+            attachment.cdId = consignmentDocumentDetailsEntity
             this.downloadAttachment(attachment)
         }
 
         return consignmentDocumentDetails
     }
 
-    fun downloadAttachment(attachment: DiUploadsEntity){
+    fun downloadAttachment(attachment: DiUploadsEntity) {
 
     }
 

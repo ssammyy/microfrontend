@@ -1,0 +1,69 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">MM</i>
+                        </div>
+                        <h4 class="card-title">Message Monitoring</h4>
+                    </div>
+                    <div class="card-body">
+                        <div style="display: block;max-height: 70%" *ngIf="exchangeStats">
+                            <canvas mdbChart
+                                    [chartType]="chartType"
+                                    [datasets]="chartDatasets"
+                                    [labels]="chartLabels"
+                                    [colors]="chartColors"
+                                    [options]="chartOptions"
+                                    [legend]="true"
+                                    (chartHover)="chartHovered($event)"
+                                    (chartClick)="chartClicked($event)"
+                            >
+                            </canvas>
+                        </div>
+                        <div class="toolbar">
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Applications Status">
+                                <button type="button" (click)="toggleStatus('incoming')"
+                                        [className]="activeStatus == 'incoming' ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-default'">
+                                    INCOMING
+                                </button>
+                                <button type="button" (click)="toggleStatus('outgoing')"
+                                        [className]="activeStatus == 'outgoing' ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-default'">
+                                    OUTGOING
+                                </button>
+                            </div>
+                        </div>
+                        <div widget class="card border-0 box-shadow">
+                            <div class="card-body pt-0 widget-body">
+                                <div class="table-responsive table-striped">
+                                    <ng2-smart-table class="table table-hover" [settings]="settings"
+                                                     [source]="documentData"
+                                                     (custom)="onCustomAction($event)">
+                                    </ng2-smart-table>
+                                    <ngb-pagination [(page)]="currentPage" [pageSize]="defaultPageSize"
+                                                    [collectionSize]="totalCount"
+                                                    (pageChange)=pageChange($event)>
+                                        <ng-template ngbPaginationFirst>First</ng-template>
+                                        <ng-template ngbPaginationLast>Last</ng-template>
+                                        <ng-template ngbPaginationPrevious>Prev</ng-template>
+                                        <ng-template ngbPaginationNext>Next</ng-template>
+                                        <ng-template ngbPaginationEllipsis>...</ng-template>
+                                        <ng-template ngbPaginationNumber let-page>{{ page }}</ng-template>
+                                    </ngb-pagination>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- end content-->
+                </div>
+                <!--  end card  -->
+            </div>
+            <!-- end col-md-12 -->
+        </div>
+        <!-- end row -->
+    </div>
+</div>
+

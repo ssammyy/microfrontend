@@ -30,6 +30,8 @@ import java.math.BigDecimal
 @EncryptablePropertySource("file:\${CONFIG_PATH}/application-map.properties")
 class ApplicationMapProperties {
 
+    val mapKeswsErrorDocument: String? = "ERR_MSG"
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.manufacturer.role.id}")
     val manufacturerRoleId: Long? = null
     @Value("\${org.kebs.app.kotlin.apollo.application.map.test.email.address}")

@@ -14,7 +14,7 @@
                             </button>
                         </h4>
                     </div>
-                    <div class="card-body p-0 m-0" *ngIf="labResults; else loadingView">
+                    <div class="card-body p-0" *ngIf="labResults; else loadingView">
                         <div class="row no_margin">
                             <div class="col-md-2">
                                 <table class="table-responsive">
@@ -58,7 +58,7 @@
                                     </tr>
                                 </table>
                             </div>
-                            <div class="col-md-8 m-0">
+                            <div class="col-md-8 p-0">
                                 <mat-tab-group [(selectedIndex)]="activeTab" mat-stretch-tabs [disablePagination]="true"
                                                appMatMultilineTab
                                                class="tab-wraps">
@@ -68,6 +68,14 @@
                                         </ng-template>
                                         <b class="text-primary">Sample Collection Details</b>
                                         <div class="row no_margin">
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">SCF NO</label>
+                                                <p>{{labResults.scf_details.scfNo}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Mode of Release</label>
+                                                <p>{{labResults.scf_details.modeOfRelease}}</p>
+                                            </div>
                                             <div class="col-sm-3 col-md-4">
                                                 <label class="waiver-form-label">Batch Number</label>
                                                 <p>{{labResults.scf_details.batchNo}}</p>
@@ -93,10 +101,6 @@
                                                 <p>{{labResults.scf_details.nameOfManufacture}}</p>
                                             </div>
                                             <div class="col-sm-3 col-md-4">
-                                                <label class="waiver-form-label">Product Name</label>
-                                                <p>{{labResults.scf_details.nameOfProduct}}</p>
-                                            </div>
-                                            <div class="col-sm-3 col-md-4">
                                                 <label class="waiver-form-label">Witness Name</label>
                                                 <p>{{labResults.scf_details.nameOfWitness}}</p>
                                             </div>
@@ -105,13 +109,28 @@
                                                 <p>{{labResults.scf_details.officerDate}}</p>
                                             </div>
                                             <div class="col-sm-3 col-md-4">
-                                                <label class="waiver-form-label">Sampled</label>
-                                                <p>{{labResults.scf_details.sampled}}</p>
+                                                <label class="waiver-form-label">Sampling Method</label>
+                                                <p>{{labResults.scf_details.samplingMethod}}</p>
                                             </div>
-
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Sample Label</label>
+                                                <p>{{labResults.scf_details.labelDetails}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Batch No</label>
+                                                <p>{{labResults.scf_details.batchNo}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Batch Size</label>
+                                                <p>{{labResults.scf_details.batchSize}}</p>
+                                            </div>
                                             <div class="col-sm-3 col-md-4">
                                                 <label class="waiver-form-label">Sampling Methods</label>
                                                 <p>{{labResults.scf_details.samplingMethod}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Reason for Sampling</label>
+                                                <p>{{labResults.scf_details.reasonForCollectingSample}}</p>
                                             </div>
                                             <div class="col-sm-3 col-md-4">
                                                 <label class="waiver-form-label">OFFICER NAME</label>
@@ -139,8 +158,12 @@
                                                 <p>{{labResults.ssf_details.ssfSubmissionDate}}</p>
                                             </div>
                                             <div class="col-sm-3 col-md-4">
-                                                <label class="waiver-form-label">Remarks</label>
-                                                <p>{{labResults.ssf_details.description}}</p>
+                                                <label class="waiver-form-label">Return/Dispose</label>
+                                                <p>{{labResults.ssf_details.returnOrDispose}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Condition of Sample</label>
+                                                <p>{{labResults.ssf_details.conditionOfSample}}</p>
                                             </div>
                                             <div class="col-sm-3 col-md-4">
                                                 <label class="waiver-form-label">BS Number</label>
@@ -151,8 +174,17 @@
                                                 <p>{{labResults.ssf_details.permitRefNumber}}</p>
                                             </div>
                                             <div class="col-sm-3 col-md-4">
-                                                <label class="waiver-form-label">Product Description</label>
-                                                <p>{{labResults.ssf_details.productDescription}}</p>
+                                                <label class="waiver-form-label">Test Parameter</label>
+                                                <p>{{labResults.ssf_details.testParameters}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Laboratory Name</label>
+                                                <p>{{labResults.ssf_details.laboratoryName}}</p>
+                                            </div>
+
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Remarks</label>
+                                                <p>{{labResults.ssf_details.description}}</p>
                                             </div>
                                         </div>
                                     </mat-tab>

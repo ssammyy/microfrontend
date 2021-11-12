@@ -203,6 +203,9 @@ import {AllpermitsComponent} from './apollowebs/quality-assurance/allpermits/all
 import {HttpClientModule} from '@angular/common/http';
 import {FooterModule} from './shared/footer/footer.module';
 import { CurrencyExchangeRatesComponent } from './apollowebs/di/currency-exchange-rates/currency-exchange-rates.component';
+import { MessageDashboardComponent } from './apollowebs/di/message-dashboard/message-dashboard.component';
+import { ViewMessageComponent } from './apollowebs/di/message-dashboard/view-message/view-message.component';
+import {ChartsModule, MDBBootstrapModule, WavesModule} from 'angular-bootstrap-md';
 
 @NgModule({
     imports: [
@@ -217,6 +220,7 @@ import { CurrencyExchangeRatesComponent } from './apollowebs/di/currency-exchang
         RouterModule,
         AppRoutingModule,
         CoreModule,
+        ChartsModule, WavesModule,
         ToastrModule.forRoot({
             timeOut: 10000,
             enableHtml: true,
@@ -261,6 +265,7 @@ import { CurrencyExchangeRatesComponent } from './apollowebs/di/currency-exchang
         NgMultiSelectDropDownModule,
         MatTabsModule,
         MatProgressSpinnerModule,
+        MDBBootstrapModule.forRoot(),
     ],
     declarations: [
         AppComponent,
@@ -428,7 +433,9 @@ import { CurrencyExchangeRatesComponent } from './apollowebs/di/currency-exchang
         StdTcTasksComponent,
         NepSuccessComponent,
         ManagernotificationsComponent,
-        CurrencyExchangeRatesComponent
+        CurrencyExchangeRatesComponent,
+        MessageDashboardComponent,
+        ViewMessageComponent
     ],
     providers: [
         MatNativeDateModule,

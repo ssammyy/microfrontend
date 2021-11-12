@@ -1,10 +1,10 @@
 <h2 mat-dialog-title>SSF Details (Sample Submission Form)</h2>
 <mat-dialog-content>
     <div class="row no_margin" [formGroup]="form">
-        <div class="col-sm-12 col-md-6">
-            <label for="permitNumber" class="waiver-form-label">Permit No:</label>
-            <input class="waiver-form-input-master" type="text" id="permitNumber" name="permitNumber" formControlName="permitNumber">
-        </div>
+<!--        <div class="col-sm-12 col-md-6">-->
+<!--            <label for="permitNumber" class="waiver-form-label">Permit No:</label>-->
+<!--            <input class="waiver-form-input-master" type="text" id="permitNumber" name="permitNumber" formControlName="permitNumber">-->
+<!--        </div>-->
         <div class="col-sm-7 col-md-6">
             <label for="ssfSubmissionDate" class="waiver-form-label">SSF Submission Date:</label>
             <input class="waiver-form-input-master" type="date" id="ssfSubmissionDate" name="ssfSubmissionDate"
@@ -12,8 +12,18 @@
         </div>
         <div class="col-sm-7 col-md-6">
             <label for="conditionOfSample" class="waiver-form-label">Condition Of Sample</label>
-            <input class="waiver-form-input-master" type="date" id="conditionOfSample" name="conditionOfSample"
+            <input class="waiver-form-input-master" type="text" id="conditionOfSample" name="conditionOfSample"
                    formControlName="conditionOfSample">
+        </div>
+        <div class="col-sm-7 col-md-6">
+            <label for="testParameters" class="waiver-form-label">List of test parameters</label>
+            <input class="waiver-form-input-master" type="text" id="testParameters" name="testParameters"
+                   formControlName="testParameters">
+        </div>
+        <div class="col-sm-7 col-md-6">
+            <label for="laboratoryName" class="waiver-form-label">Laboratory Name</label>
+            <input class="waiver-form-input-master" type="text" id="laboratoryName" name="laboratoryName"
+                   formControlName="laboratoryName">
         </div>
         <div class="col-sm-12 col-md-6">
             <label for="returnOrDispose" class="waiver-form-label">Disposal Method</label>

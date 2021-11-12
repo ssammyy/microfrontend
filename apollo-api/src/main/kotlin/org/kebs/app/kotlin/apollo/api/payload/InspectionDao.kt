@@ -479,8 +479,8 @@ class InspectionMotorVehicleItemDto {
         fun fromEntity(entity: CdInspectionMotorVehicleItemChecklistEntity): InspectionMotorVehicleItemDto {
             val dto = InspectionMotorVehicleItemDto().apply {
                 id = entity.id
-                hasMinistryInspection = entity.ministryReportFile != null
-                ministryInspectionActive = entity.ministryReportSubmitStatus == 1
+                hasMinistryInspection = entity.ministryReportFile !=null
+                ministryInspectionActive = "YES".equals(entity.sampled)
                 remarks = entity.remarks
                 makeVehicle = entity.makeVehicle
                 inspection = entity.inspection?.id

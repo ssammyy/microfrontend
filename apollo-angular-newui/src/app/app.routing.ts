@@ -98,6 +98,7 @@ import {ChecklistDataFormComponent} from "./apollowebs/di/view-single-consignmen
 import {InspectionDashboardComponent} from "./apollowebs/di/inspection-dashboard/inspection-dashboard.component";
 import {LabResultsComponent} from "./apollowebs/di/view-single-consignment-document/item-details-list-view/lab-results/lab-results.component";
 import {CurrencyExchangeRatesComponent} from "./apollowebs/di/currency-exchange-rates/currency-exchange-rates.component";
+import {MessageDashboardComponent} from "./apollowebs/di/message-dashboard/message-dashboard.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -493,6 +494,10 @@ export const routes: Routes = [
             {
                 path: 'checklist/details/:id',
                 component: ViewInspectionDetailsComponent
+            },
+            {
+                path: 'exchange/dashboard',
+                component: MessageDashboardComponent
             }
         ]
     },
