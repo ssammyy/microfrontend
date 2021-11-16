@@ -81,8 +81,23 @@ class WebSecurityConfig {
             val configuration = CorsConfiguration()
             // MOVE TO CONFIGURATION FILE
             configuration.allowedOrigins = listOf(*exclusionsCros)
-            configuration.allowedMethods = listOf("*")
-            configuration.allowedHeaders = listOf("*")
+            configuration.allowedHeaders =
+                    Arrays.asList(
+                            "Origin",
+                            "Access-Control-Allow-Origin",
+                            "Content-Type",
+                            "Accept",
+                            "Authorization",
+                            "Origin,Accept",
+                            "X-Requested-With",
+                            "Access-Control-Request-Method",
+                            "Access-Control-Request-Headers"
+                    )
+            configuration.exposedHeaders = Arrays.asList(
+                    "Origin", "Content-Type", "Accept", "Authorization",
+                    "Access-Control-Allow-Origin", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials"
+            )
+            configuration.allowedMethods = Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")
             configuration.allowCredentials = true
             val source = UrlBasedCorsConfigurationSource()
             source.registerCorsConfiguration("/**", configuration)

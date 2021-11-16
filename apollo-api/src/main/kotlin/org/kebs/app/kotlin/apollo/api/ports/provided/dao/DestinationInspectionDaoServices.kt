@@ -1223,12 +1223,15 @@ class DestinationInspectionDaoServices(
      *
      * @param cdId Consignment ID
      */
-    fun demandNotePaid(cdId: Long): Boolean {
+    fun demandNotePaid(cdId: Long,demandNoteRequired: Boolean ): Boolean {
         val noteEntity = iDemandNoteRepo.findAllByCdIdAndStatusIn(cdId, listOf(-1, 0, 1, 10))
         return when {
             noteEntity.isEmpty() -> {
                 KotlinLogging.logger { }.info("No Demand note")
-                true
+                if(demandNoteRequired){
+                    return false
+                }
+                return true
             }
             else -> {
                 noteEntity.forEach {

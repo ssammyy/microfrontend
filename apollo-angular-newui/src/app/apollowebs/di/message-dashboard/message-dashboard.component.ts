@@ -184,6 +184,7 @@ export class MessageDashboardComponent implements OnInit {
             failedData.push(d.failed)
             this.chartLabels.push(d.label)
         }
+        // Success Count
         this.chartDatasets.push({
             data: successData,
             label: 'Successful Requests',

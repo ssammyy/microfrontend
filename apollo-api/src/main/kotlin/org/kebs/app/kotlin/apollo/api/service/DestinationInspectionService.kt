@@ -237,17 +237,17 @@ class DestinationInspectionService(
     }
 
     fun checkForAutoTarget(cdUuid: String): Boolean {
-        KotlinLogging.logger {  }.info("START AUTO TARGET/REJECT PROCESS")
+        KotlinLogging.logger { }.info("START AUTO TARGET/REJECT PROCESS")
         val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
         val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
         //If CD without COR, auto-target
         try {
             consignmentDocument.cdType?.let { cdType ->
                 if (cdType.autoTargetStatus == map.activeStatus) {
-                    KotlinLogging.logger {  }.info("START AUTO TARGET PROCESS")
-                    val conditions=cdType.autoTargetCondition?.toUpperCase()?.split(",")?: listOf()
+                    KotlinLogging.logger { }.info("START AUTO TARGET PROCESS")
+                    val conditions = cdType.autoTargetCondition?.toUpperCase()?.split(",") ?: listOf()
 
-                    if(conditions.isEmpty() || conditions.contains(consignmentDocument.cdStandardsTwo?.localCocType.orEmpty().toUpperCase())) {
+                    if (conditions.isEmpty() || conditions.contains(consignmentDocument.cdStandardsTwo?.localCocType.orEmpty().toUpperCase())) {
                         with(consignmentDocument) {
                             targetStatus = map.activeStatus
                             targetReason = "Auto Target ${consignmentDocument.cdType?.typeName}"
@@ -256,21 +256,21 @@ class DestinationInspectionService(
                         }
                         this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
                     } else {
-                        KotlinLogging.logger {  }.info("Consignment document does not meet condition for auto target")
+                        KotlinLogging.logger { }.info("Consignment document does not meet condition for auto target")
                     }
                 } else if (cdType.autoRejectStatus == map.activeStatus) {
-                    KotlinLogging.logger {  }.info("START AUTO REJECT PROCESS")
+                    KotlinLogging.logger { }.info("START AUTO REJECT PROCESS")
                     // Reject CD due to auto reject
-                    val conditions=cdType.autoRejectCondition?.split(",")?: listOf()
-                    if(cdType.autoTargetCondition.isNullOrEmpty() || conditions.contains(consignmentDocument.cdStandardsTwo?.localCocType)) {
+                    val conditions = cdType.autoRejectCondition?.split(",") ?: listOf()
+                    if (cdType.autoTargetCondition.isNullOrEmpty() || conditions.contains(consignmentDocument.cdStandardsTwo?.localCocType)) {
                         daoServices.findCdStatusCategory("REJECT").let {
                             this.updateStatus(cdUuid, it.id, "Auto Rejected Consignment ${consignmentDocument.cdType?.typeName}")
                         }
-                    }else {
-                        KotlinLogging.logger {  }.info("Consignment document does not meet condition for auto reject")
+                    } else {
+                        KotlinLogging.logger { }.info("Consignment document does not meet condition for auto reject")
                     }
-                }else {
-                    KotlinLogging.logger {  }.info("Consignment document does not have auto reject/target")
+                } else {
+                    KotlinLogging.logger { }.info("Consignment document does not have auto reject/target")
                 }
             }
             return true
@@ -677,8 +677,10 @@ class DestinationInspectionService(
     }
 
     fun clearItemProcess(mvInspectionId: Long, cdItemId: Long): Boolean {
+        val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
         try {
             val itemDetails = this.daoServices.findItemWithItemID(cdItemId)
+            itemDetails.inspectionProcessInstanceId = null
             itemDetails.varField9 = null
             itemDetails.varField8 = null
             itemDetails.varField7 = null
@@ -696,6 +698,7 @@ class DestinationInspectionService(
         try {
             val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             consignmentDocument.diProcessStatus = 0
+            consignmentDocument.diProcessInstanceId = null
             consignmentDocument.diProcessCompletedOn = Timestamp.from(Instant.now())
             this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
         } catch (ex: Exception) {
@@ -797,7 +800,7 @@ class DestinationInspectionService(
         val targetReader: Reader = InputStreamReader(ByteArrayInputStream(docFile.bytes))
         when (upLoads.documentType) {
             "COC" -> {
-            //Generate PDF File &
+                //Generate PDF File &
                 val cocs = service.readCocFileFromController(separator, targetReader)
                 GlobalScope.launch(Dispatchers.IO) {
                     delay(500L)
@@ -1252,7 +1255,7 @@ class DestinationInspectionService(
             uiDetails.supervisor = isSupervisor
             uiDetails.inspector = isInspectionOfficer
             try {
-                uiDetails.demandNotePaid = daoServices.demandNotePaid(cdDetails.id!!)
+                uiDetails.demandNotePaid = daoServices.demandNotePaid(cdDetails.id!!,uiDetails.demandNoteRequired)
             } catch (ex: Exception) {
                 uiDetails.demandNotePaid = false
             }
@@ -1424,7 +1427,8 @@ class DestinationInspectionService(
             // Start BPM process for assigneing inspection
             this.diBpmn.startAssignmentProcesses(data, cdDetails)
             // Wait for BPM process to complete
-            Thread.sleep(5000)
+            Thread.sleep(10_000)
+
             KotlinLogging.logger { }.info("AUTO ASSIGN COMPLETED: ${cdDetails.uuid}-> Supervisor[${it.userName}]")
         } ?: KotlinLogging.logger { }.info("AUTO ASSIGN FAILED UNABLE TO GET SUPERVISOR for CFS")
     }

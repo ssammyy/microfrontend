@@ -42,7 +42,7 @@
                                                 Document Version
                                             </th>
                                             <tr>
-                                                <td>{{ consignment.cd_details.version ? 'VERSION '+consignment.cd_details.version : 'CURRENT' }}
+                                                <td>{{ consignment.cd_details.version ? 'VERSION ' + consignment.cd_details.version : 'CURRENT' }}
                                                 </td>
                                             </tr>
                                             <th>
@@ -132,7 +132,8 @@
                                 </div>
                             </div>
                             <div class="col-md-8">
-                                <mat-tab-group [(selectedIndex)]="active"  mat-stretch-tabs [disablePagination]="true" appMatMultilineTab
+                                <mat-tab-group [(selectedIndex)]="active" mat-stretch-tabs [disablePagination]="true"
+                                               appMatMultilineTab
                                                class="tab-wraps">
                                     <mat-tab *ngIf="consignment.cd_consignee" label="1">
                                         <ng-template mat-tab-label>
@@ -844,7 +845,8 @@
                                                              [dataSet]="attachments"></app-attachment-list>
 
                                     </mat-tab>
-                                    <mat-tab [hidden]="!consignment.old_versions" *ngIf="consignment.old_versions" label="13">
+                                    <mat-tab [hidden]="!consignment.old_versions" *ngIf="consignment.old_versions"
+                                             label="13">
                                         <ng-template mat-tab-label>
                                             Other Version Details
                                         </ng-template>
@@ -859,7 +861,8 @@
                                         </ng-template>
 
                                         <b class="text-primary">Other Version Details</b>
-                                        <app-demand-note-list [dataSet]="demandNotes" (reloadDemandNotes)="loadDemandNotes($event)"></app-demand-note-list>
+                                        <app-demand-note-list [dataSet]="demandNotes"
+                                                              (reloadDemandNotes)="loadDemandNotes($event)"></app-demand-note-list>
 
                                     </mat-tab>
 
@@ -869,32 +872,38 @@
                                 <b>Action:</b>
                                 <div *ngIf="consignment.ui">
                                     <div *ngIf="consignment.ui.inspector && !consignment.ui.completed">
-                                        <button *ngIf="consignment.ui.owner" class="btn btn-sm btn-primary"
-                                                (click)="uploadAttachment()">UPLOAD
-                                            ATTACHMENT
-                                        </button>
-                                        <button
-                                                *ngIf="consignment.ui.owner && (consignment.ui.cocRequest || consignment.ui.corRequest) && (!consignment.ui.complianceDisabled || consignment.ui.targetRejected || !consignment.ui.targeted)"
-                                                class="btn btn-sm btn-primary" (click)="markAsCompliant()">COMPLIANT
-                                        </button>
-                                        <button *ngIf="consignment.ui.owner && !consignment.ui.checklistFilled && (consignment.ui.demandNotePaid || consignment.ui.demandNoteRejected) && consignment.ui.targeted"
-                                                class="btn btn-sm btn-primary" (click)="createInspectionChecklist()">
-                                            FILL
-                                            INSPECTION CHECKLIST
-                                        </button>
-                                        <button *ngIf="consignment.ui.owner && consignment.ui.blacklistEnabled"
-                                                class="btn btn-sm btn-warning" (click)="blacklistUser()">BLACKLIST USER
-                                        </button>
-                                        <button *ngIf="consignment.ui.owner && consignment.ui.targeted && !consignment.ui.demandNoteDisabled"
-                                                class="btn btn-sm btn-warning" (click)="generateDemandNote()">GENERATE
-                                            DEMAND NOTE
-                                        </button>
-                                        <button *ngIf="consignment.ui.owner && consignment.ui.approveReject" class="btn btn-sm btn-warning"
-                                                (click)="approveRejectConsignment()">Approve / Reject Consignment
-                                        </button>
-                                        <button *ngIf="consignment.ui.owner && consignment.ui.targetItem && !consignment.ui.targetDisabled"
-                                                class="btn btn-sm btn-warning" (click)="targetConsignment()">TARGET
-                                        </button>
+                                        <div *ngIf="!consignment.ui.hasActiveProcess">
+                                            <button *ngIf="consignment.ui.owner" class="btn btn-sm btn-primary"
+                                                    (click)="uploadAttachment()">UPLOAD
+                                                ATTACHMENT
+                                            </button>
+                                            <button
+                                                    *ngIf="consignment.ui.owner && (consignment.ui.cocRequest || consignment.ui.corRequest) && (!consignment.ui.complianceDisabled || consignment.ui.targetRejected || !consignment.ui.targeted)"
+                                                    class="btn btn-sm btn-primary" (click)="markAsCompliant()">COMPLIANT
+                                            </button>
+                                            <button *ngIf="consignment.ui.owner && !consignment.ui.checklistFilled && (consignment.ui.demandNotePaid || consignment.ui.demandNoteRejected) && consignment.ui.targeted"
+                                                    class="btn btn-sm btn-primary"
+                                                    (click)="createInspectionChecklist()">
+                                                FILL
+                                                INSPECTION CHECKLIST
+                                            </button>
+                                            <button *ngIf="consignment.ui.owner && consignment.ui.blacklistEnabled"
+                                                    class="btn btn-sm btn-warning" (click)="blacklistUser()">BLACKLIST
+                                                USER
+                                            </button>
+                                            <button *ngIf="consignment.ui.owner && consignment.ui.targeted && !consignment.ui.demandNoteDisabled"
+                                                    class="btn btn-sm btn-warning" (click)="generateDemandNote()">
+                                                GENERATE
+                                                DEMAND NOTE
+                                            </button>
+                                            <button *ngIf="consignment.ui.owner && consignment.ui.approveReject"
+                                                    class="btn btn-sm btn-warning"
+                                                    (click)="approveRejectConsignment()">Approve / Reject Consignment
+                                            </button>
+                                            <button *ngIf="consignment.ui.owner && consignment.ui.targetItem && !consignment.ui.targetDisabled"
+                                                    class="btn btn-sm btn-warning" (click)="targetConsignment()">TARGET
+                                            </button>
+                                        </div>
                                     </div>
                                     <div *ngIf="consignment.ui.supervisor && !consignment.ui.completed">
                                         <button *ngIf="!consignment.ui.assigned " class="btn btn-sm btn-primary"
@@ -903,7 +912,8 @@
                                         <button *ngIf="consignment.ui.assigned" class="btn btn-sm btn-primary"
                                                 (click)="reassignInspectionOfficer()">REASSIGN IO
                                         </button>
-                                        <button *ngIf="consignment.ui.supervisorTarget && (!consignment.ui.targeted || !consignment.ui.targetDisabled)" class="btn btn-sm btn-warning"
+                                        <button *ngIf="consignment.ui.supervisorTarget && !consignment.ui.targeted"
+                                                class="btn btn-sm btn-warning"
                                                 (click)="supervisorTargetConsignment()">SUPERVISOR TARGET
                                         </button>
                                         <div class="card" *ngFor="let task of supervisorTasks">
@@ -938,10 +948,10 @@
                                                 <button class="btn btn-sm btn-primary" *ngIf="task.map.demandNoteId"
                                                         (click)="viewDemandNote(task.map.demandNoteId)">VIEW DEMAND NOTE
                                                 </button>
-<!--                                                <button class="btn btn-sm  btn-danger"btn-primary-->
-<!--                                                        (click)="removeTasks(task.objectId)">-->
-<!--                                                    DELETE-->
-<!--                                                </button>-->
+                                                <!--                                                <button class="btn btn-sm  btn-danger"btn-primary-->
+                                                <!--                                                        (click)="removeTasks(task.objectId)">-->
+                                                <!--                                                    DELETE-->
+                                                <!--                                                </button>-->
                                             </div>
                                         </div>
                                     </div>
@@ -983,7 +993,8 @@
                     </div>
                     <ng-template #loadingView>
                         <div class="card-body text-center">
-                            <div class="loader-view text-center spinner-border" style="width: 7rem; height: 7rem;" role="status">
+                            <div class="loader-view text-center spinner-border" style="width: 7rem; height: 7rem;"
+                                 role="status">
                                 <span class="sr-only">Loading...</span>
                             </div>
                         </div>

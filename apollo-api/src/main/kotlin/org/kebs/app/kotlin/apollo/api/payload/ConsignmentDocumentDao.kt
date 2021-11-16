@@ -50,7 +50,8 @@ class ConsignmentEnableUI {
     var canInspect: Boolean? = null
     var checklistFilled: Boolean = false
     var hasPort: Boolean? = null
-    var blacklistEnabled = false
+    var demandNoteRequired: Boolean=false
+    var hasActiveProcess = false
 
     companion object {
         fun fromEntity(cd: ConsignmentDocumentDetailsEntity, map: ServiceMapsEntity, authentication: Authentication): ConsignmentEnableUI {
@@ -60,6 +61,7 @@ class ConsignmentEnableUI {
             val ui = ConsignmentEnableUI().apply {
                 supervisor = modify
                 inspector = change
+                hasActiveProcess = cd.diProcessStatus == map.activeStatus
                 targetDisabled = (cd.targetStatus == map.initStatus || cd.targetStatus == map.invalidStatus)
                 assigned = cd.assignedInspectionOfficer != null
                 targeted = cd.targetStatus == map.activeStatus
@@ -71,7 +73,7 @@ class ConsignmentEnableUI {
                 demandNote = cd.sendDemandNote == map.activeStatus
                 sendCoi = modify && cd.localCoi == map.activeStatus
                 targetItem = change && cd.targetStatus != map.activeStatus
-                supervisorTarget = modify && cd.targetStatus != map.activeStatus
+                supervisorTarget = !(cd.targetStatus == map.initStatus || cd.targetStatus == map.invalidStatus)
                 attachments = (change || modify)
                 ncrAvailable = !cd.ncrNumber.isNullOrEmpty()
                 checklistFilled = cd.inspectionChecklist == map.activeStatus
@@ -79,8 +81,11 @@ class ConsignmentEnableUI {
                 completed = cd.approveRejectCdStatusType?.let { it.modificationAllowed != map.activeStatus } == true || cd.oldCdStatus != null
                 approveReject = (cd.targetApproveStatus == null || cd.inspectionDateSetStatus == map.activeStatus) && modify
             }
+            cd.cdStandardsTwo?.let {
+                ui.demandNoteRequired="DES_INSP".equals(it.cocType, true)
+            }
             ui.complianceDisabled = (cd.compliantStatus == map.activeStatus || cd.compliantStatus == map.initStatus) || !ui.checklistFilled || ui.targetRejected
-            ui.approveReject=!(ui.targetDisabled && ui.demandNoteDisabled&& ui.complianceDisabled)
+            ui.approveReject = !(ui.targetDisabled && ui.demandNoteDisabled && ui.complianceDisabled)
             cd.cdType?.let {
                 ui.cocAvailable = it.localCocStatus == map.activeStatus && (cd.localCocOrCorStatus == map.activeStatus || cd.localCoi == map.activeStatus)
                 ui.corAvailable = it.localCorStatus == map.activeStatus && cd.localCocOrCorStatus == map.activeStatus

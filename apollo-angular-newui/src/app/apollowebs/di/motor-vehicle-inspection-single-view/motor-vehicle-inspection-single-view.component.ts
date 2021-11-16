@@ -50,13 +50,15 @@ export class MotorVehicleInspectionSingleViewComponent implements OnInit {
     }
 
     downloadReport() {
-        this.diService.downloadDocument("/api/v1/di/ministry/inspection/checklist/download/" + this.itemId)
+        this.diService.downloadDocument("/api/v1/download/motor/inspection/report/" + this.itemId)
     }
 
     downloadMinistryUnfilled() {
         this.diService.downloadDocument('/api/v1/download/ministry/checklist/unfilled/'+this.itemId)
     }
-
+    downloadMvir() {
+        this.diService.downloadDocument('/api/v1/download/ministry/mvir/'+this.itemDetails.mvInspectionChecklist.id)
+    }
     loadData(itemId: any) {
         this.diService.getMinistryInspections(itemId)
             .subscribe(

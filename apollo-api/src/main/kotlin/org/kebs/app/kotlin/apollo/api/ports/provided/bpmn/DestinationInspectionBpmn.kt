@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.bpmn
 
 import mu.KotlinLogging
+import org.flowable.engine.HistoryService
 import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
@@ -41,6 +42,7 @@ import kotlin.collections.set
 class DestinationInspectionBpmn(
         private val taskService: TaskService,
         private val runtimeService: RuntimeService,
+        private val historyService: HistoryService,
         private val userRepo: IUserRepository,
         private val bpmnCommonFunctions: BpmnCommonFunctions,
         private val iConsignmentDocumentDetailsRepo: IConsignmentDocumentDetailsRepository,
@@ -158,6 +160,8 @@ class DestinationInspectionBpmn(
                             val processInstance = runtimeService.startProcessInstanceByKey("updateConsignmentStatus", processProperties)
                             consignmentDocument.varField9 = processInstance.processDefinitionId
                             consignmentDocument.varField8 = processInstance.id
+                            consignmentDocument.diProcessInstanceId=processInstance.id
+                            consignmentDocument.diProcessStatus=map.activeStatus
                             this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
 
                             response.responseCode = ResponseCodes.SUCCESS_CODE
@@ -190,7 +194,7 @@ class DestinationInspectionBpmn(
         data.put("cfs_code", consignmentDocument.freightStation?.cfsCode)
         val processInstance = runtimeService.startProcessInstanceByKey("targetConsignmentDocument", data)
         consignmentDocument.diProcessInstanceId = processInstance.processDefinitionId
-        consignmentDocument.diProcessStatus = 1
+        consignmentDocument.diProcessStatus = map.activeStatus
         consignmentDocument.diProcessStartedOn = Timestamp.from(Instant.now())
         consignmentDocument.varField10 = "Request Targeting"
         consignmentDocument.targetStatus = map.initStatus
@@ -208,7 +212,7 @@ class DestinationInspectionBpmn(
         data.put("cfs_code", consignmentDocument.freightStation?.cfsCode)
         val processInstance = runtimeService.startProcessInstanceByKey("consignmentCompliantApprovalProcess", data)
         consignmentDocument.diProcessInstanceId = processInstance.processDefinitionId
-        consignmentDocument.diProcessStatus = 1
+        consignmentDocument.diProcessStatus = map.activeStatus
         consignmentDocument.localCocOrCorStatus = map.initStatus
         consignmentDocument.compliantStatus = map.initStatus
         consignmentDocument.diProcessStartedOn = Timestamp.from(Instant.now())
@@ -236,7 +240,7 @@ class DestinationInspectionBpmn(
         data.put("cfs_code", consignmentDocument.freightStation?.cfsCode)
         val processInstance = runtimeService.startProcessInstanceByKey("cocApprovalProcess", data)
         consignmentDocument.diProcessInstanceId = processInstance.processDefinitionId
-        consignmentDocument.diProcessStatus = 1
+        consignmentDocument.diProcessStatus = map.activeStatus
         consignmentDocument.localCocOrCorStatus = map.initStatus
         consignmentDocument.diProcessStartedOn = Timestamp.from(Instant.now())
         consignmentDocument.targetReason = data.get("remarks") as String?
@@ -249,7 +253,7 @@ class DestinationInspectionBpmn(
         data.put("cfs_code", consignmentDocument.freightStation?.cfsCode)
         val processInstance = runtimeService.startProcessInstanceByKey("corApprovalProcess", data)
         consignmentDocument.diProcessInstanceId = processInstance.processDefinitionId
-        consignmentDocument.diProcessStatus = 1
+        consignmentDocument.diProcessStatus = map.activeStatus
         consignmentDocument.localCocOrCorStatus = map.initStatus
         consignmentDocument.diProcessStartedOn = Timestamp.from(Instant.now())
         consignmentDocument.targetReason = data.get("remarks") as String?
@@ -262,7 +266,7 @@ class DestinationInspectionBpmn(
         data.put("cfs_code", consignmentDocument.freightStation?.cfsCode)
         val processInstance = runtimeService.startProcessInstanceByKey("demandNoteGenerationProcess", data)
         consignmentDocument.diProcessInstanceId = processInstance.processDefinitionId
-        consignmentDocument.diProcessStatus = 1
+        consignmentDocument.diProcessStatus = map.activeStatus
         consignmentDocument.sendDemandNote = map.initStatus
         consignmentDocument.diProcessStartedOn = Timestamp.from(Instant.now())
         consignmentDocument.targetReason = data.get("remarks") as String?

@@ -39,7 +39,7 @@
         </div>
         <div class="col-sm-3 col-md-4">
             <label class="waiver-form-label">Error Code</label>
-            <p>{{messageDetails.responseStatus | money}}</p>
+            <p>{{messageDetails.responseStatus}}</p>
         </div>
         <div class="col-sm-3 col-md-4">
             <label class="waiver-form-label">Error Description</label>
@@ -52,7 +52,7 @@
         </div>
 
         <div class="col-sm-3 col-md-4">
-            <label class="waiver-form-label">REMARKS</label>
+            <label class="waiver-form-label">EXCEPTION DETAILS</label>
             <p>{{messageDetails.varField10}}</p>
         </div>
         <div class="col-sm-12 col-md-12" *ngIf="messageContent">

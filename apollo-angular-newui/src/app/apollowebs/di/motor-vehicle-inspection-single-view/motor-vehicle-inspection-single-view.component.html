@@ -165,9 +165,14 @@
                             </div>
                             <div class="col-md-2">
                                 <b>Action:</b>
-                                <button *ngIf="itemDetails.mvInspectionChecklist.ministryInspectionComplete" class="btn btn-sm btn-primary" (click)="downloadReport()">Download Report Checklist</button>
+                                <br />
                                 <button *ngIf="!itemDetails.mvInspectionChecklist.ministryInspectionComplete" class="btn btn-sm btn-primary" (click)="downloadMinistryUnfilled()">Download Unfilled Checklist</button>
                                 <button *ngIf="!itemDetails.mvInspectionChecklist.ministryInspectionComplete" class="btn btn-sm btn-primary" (click)="uploadReport()" >Upload Filled Report</button>
+                                <br />
+                                <b>Document:</b>
+                                <br />
+                                <button *ngIf="itemDetails.mvInspectionChecklist.ministryInspectionComplete" class="btn btn-sm btn-primary" (click)="downloadReport()">Download Report Checklist</button>
+                                <button class="btn btn-sm btn-primary" (click)="downloadMvir()" >MVIR</button>
                             </div>
                         </div>
                         <!-- end content-->
