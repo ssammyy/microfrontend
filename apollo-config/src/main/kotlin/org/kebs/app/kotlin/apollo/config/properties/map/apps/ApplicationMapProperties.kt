@@ -39,6 +39,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.base.url.value}")
     val baseUrlValue: String = "https://127.0.0.1:8005/api"
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.base.url.value}")
+    val baseUrlValueb: String = "https://127.0.0.1:8005"
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.base.url.value.angular}")
     val baseUrlQRValue: String = "https://127.0.0.1/qr-code-qa-permit-scan"
 

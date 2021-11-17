@@ -5401,7 +5401,7 @@ class QADaoServices(
             )
         }.firstOrNull() ?: throw NullValueNotAllowedException("Rate not found")
 
-        KotlinLogging.logger { }.info { "selected Rate fixed cost = ${selectedRate.id} and  ${selectedRate.firmType}" }
+        KotlinLogging.logger { }.debug { "selected Rate fixed cost = ${selectedRate.id} and  ${selectedRate.firmType}" }
 
         return selectedRate
     }
@@ -5417,7 +5417,7 @@ class QADaoServices(
         map: ServiceMapsEntity,
         m: MutableList<BigDecimal?>
     ): MutableList<BigDecimal?> {
-        KotlinLogging.logger { }.info { "Turnover is less than 200, 000" }
+        KotlinLogging.logger { }.debug { "Turnover is less than 200, 000" }
 
         var stgAmt: BigDecimal? = null
         var taxAmount: BigDecimal? = null
@@ -5447,7 +5447,7 @@ class QADaoServices(
         taxAmount = taxRate.times(stgAmt ?: throw Exception("INVALID STG AMOUNT"))
         amountToPay = taxAmount.let { stgAmt.plus(it) }
 
-        KotlinLogging.logger { }.info { "Total Amount To Pay   = " + amountToPay.toDouble() }
+        KotlinLogging.logger { }.debug { "Total Amount To Pay   = " + amountToPay.toDouble() }
 
         m1 = myReturPaymentValues(
             m1,
