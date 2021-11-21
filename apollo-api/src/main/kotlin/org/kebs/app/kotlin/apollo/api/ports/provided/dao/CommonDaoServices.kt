@@ -147,7 +147,7 @@ class CommonDaoServices(
         private val companyProfileDirectorsRepo: ICompanyProfileDirectorsRepository,
         private val companyProfileCommoditiesManufactureRepo: ICompanyProfileCommoditiesManufactureRepository,
         private val companyProfileContractsUndertakenRepo: ICompanyProfileContractsUndertakenRepository,
-
+        private val verificationTokensRepoB: IUserVerificationTokensRepositoryB,
         private val countyRepo: ICountiesRepository,
         private val standardCategoryRepo: IStandardCategoryRepository,
         private val productCategoriesRepository: IKebsProductCategoriesRepository,
