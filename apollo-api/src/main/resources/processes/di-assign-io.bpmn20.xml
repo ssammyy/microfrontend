@@ -5,20 +5,22 @@
         <sequenceFlow id="flow1" sourceRef="exclusivegateway1" targetRef="servicetask1">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!reassign}]]></conditionExpression>
         </sequenceFlow>
-        <serviceTask id="servicetask1" name="Assign Inspection Officer" activiti:async="true" activiti:expression="#{diService.assignInspectionOfficer(cdUuid,officerId,supervisor,remarks)}"></serviceTask>
+        <serviceTask id="servicetask1" name="Assign Inspection Officer" activiti:expression="#{diService.assignInspectionOfficer(cdUuid,officerId,supervisor,remarks)}"></serviceTask>
         <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
         <sequenceFlow id="flow2" sourceRef="startAssignIo" targetRef="exclusivegateway1"></sequenceFlow>
         <sequenceFlow id="flow3" sourceRef="exclusivegateway1" targetRef="reassignInspectionOfficer">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[${reassign}]]></conditionExpression>
         </sequenceFlow>
-        <serviceTask id="reassignInspectionOfficer" name="Reassign Inspection Officer" activiti:async="true" activiti:expression="#{diService.reassignInspectionOfficer(cdUuid,officerId,supervisor,remarks)}"></serviceTask>
+        <serviceTask id="reassignInspectionOfficer" name="Reassign Inspection Officer" activiti:expression="#{diService.reassignInspectionOfficer(cdUuid,officerId,supervisor,remarks)}"></serviceTask>
         <sequenceFlow id="flow5" sourceRef="servicetask1" targetRef="servicetask3"></sequenceFlow>
         <sequenceFlow id="flow6" sourceRef="reassignInspectionOfficer" targetRef="servicetask4"></sequenceFlow>
-        <serviceTask id="servicetask3" name="Auto Target or Reject Documents" activiti:async="true" activiti:expression="#{diService.checkForAutoTarget(cdUuid)}"></serviceTask>
-        <serviceTask id="servicetask4" name="Complete Assignment" activiti:async="true" activiti:expression="#{diService.completeIOAssignment(cdUuid,officerId,supervisor)}"></serviceTask>
+        <serviceTask id="servicetask3" name="Auto Target or Reject Documents" activiti:expression="#{diService.checkForAutoTarget(cdUuid)}"></serviceTask>
+        <serviceTask id="servicetask4" name="Complete Assignment" activiti:expression="#{diService.completeIOAssignment(cdUuid,officerId,supervisor)}"></serviceTask>
         <sequenceFlow id="flow9" sourceRef="servicetask3" targetRef="servicetask4"></sequenceFlow>
         <endEvent id="endevent1" name="End"></endEvent>
-        <sequenceFlow id="flow10" sourceRef="servicetask4" targetRef="endevent1"></sequenceFlow>
+        <sequenceFlow id="flow10" sourceRef="servicetask5" targetRef="endevent1"></sequenceFlow>
+        <sequenceFlow id="flow11" sourceRef="servicetask4" targetRef="servicetask5"></sequenceFlow>
+        <serviceTask id="servicetask5" name="Clear CD Process" activiti:expression="#{diService.clearCurrentProcess(cdUuid)}"></serviceTask>
     </process>
     <bpmndi:BPMNDiagram id="BPMNDiagram_assignInspectionOfficer">
         <bpmndi:BPMNPlane bpmnElement="assignInspectionOfficer" id="BPMNPlane_assignInspectionOfficer">
@@ -41,7 +43,10 @@
                 <omgdc:Bounds height="55.0" width="105.0" x="1010.0" y="223.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
             <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
-                <omgdc:Bounds height="35.0" width="35.0" x="1220.0" y="230.0"></omgdc:Bounds>
+                <omgdc:Bounds height="35.0" width="35.0" x="1400.0" y="230.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="servicetask5" id="BPMNShape_servicetask5">
+                <omgdc:Bounds height="55.0" width="105.0" x="1203.0" y="221.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
             <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
                 <omgdi:waypoint x="300.0" y="248.0"></omgdi:waypoint>
@@ -71,8 +76,12 @@
                 <omgdi:waypoint x="1010.0" y="250.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
+                <omgdi:waypoint x="1308.0" y="248.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1400.0" y="247.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
                 <omgdi:waypoint x="1115.0" y="250.0"></omgdi:waypoint>
-                <omgdi:waypoint x="1220.0" y="247.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1203.0" y="248.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
         </bpmndi:BPMNPlane>
     </bpmndi:BPMNDiagram>

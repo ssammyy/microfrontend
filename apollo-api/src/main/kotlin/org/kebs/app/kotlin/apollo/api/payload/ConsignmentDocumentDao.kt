@@ -82,7 +82,7 @@ class ConsignmentEnableUI {
                 approveReject = (cd.targetApproveStatus == null || cd.inspectionDateSetStatus == map.activeStatus) && modify
             }
             cd.cdStandardsTwo?.let {
-                ui.demandNoteRequired="DES_INSP".equals(it.cocType, true)
+                ui.demandNoteRequired="DES_INSP".equals(it.localCocType, true)
             }
             ui.complianceDisabled = (cd.compliantStatus == map.activeStatus || cd.compliantStatus == map.initStatus) || !ui.checklistFilled || ui.targetRejected
             ui.approveReject = !(ui.targetDisabled && ui.demandNoteDisabled && ui.complianceDisabled)

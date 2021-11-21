@@ -20,7 +20,7 @@
     <sequenceFlow id="flow13" sourceRef="requestApproval" targetRef="exclusivegateway1"></sequenceFlow>
     <sequenceFlow id="flow14" sourceRef="processLocalBlacklist" targetRef="sendBlacklistToSingleWindow"></sequenceFlow>
     <sequenceFlow id="flow15" sourceRef="rejectBlacklist" targetRef="servicetask3"></sequenceFlow>
-    <serviceTask id="servicetask3" name="Update Consignment" activiti:expression="#{diService.clearCurrentProcess(cdUuid)}"></serviceTask>
+    <serviceTask id="servicetask3" name="Clear CD Process" activiti:expression="#{diService.clearCurrentProcess(cdUuid)}"></serviceTask>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_blacklistUser">
     <bpmndi:BPMNPlane bpmnElement="blacklistUser" id="BPMNPlane_blacklistUser">

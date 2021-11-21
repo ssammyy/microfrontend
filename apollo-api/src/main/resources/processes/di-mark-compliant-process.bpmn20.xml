@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="${cfs_code}">
     <process id="consignmentCompliantApprovalProcess" name="Consignment Documet Compliant Process" isExecutable="true" activiti:candidateStarterUsers="supervisor">
         <startEvent id="startTargetConsignmentDocument" name="Start Targeting"></startEvent>
         <userTask id="usertask1" name="Approve Compliant" activiti:assignee="${supervisor}" activiti:candidateUsers="supervisor" activiti:category="${cfs_code}"></userTask>
@@ -16,7 +16,7 @@
         <serviceTask id="cocApprovedStatus" name="Generate CoC" activiti:expression="#{diService.swGenerateCoC(cdUuid,remarks,supervisor)}"></serviceTask>
         <serviceTask id="updateCocRejectionStatus" name="Update  Rejection Status" activiti:expression="#{diService.rejectComplianceRequests(cdUuid,supervisor, remarks)}"></serviceTask>
         <sequenceFlow id="flow6" sourceRef="updateCocRejectionStatus" targetRef="updateConsignmentDocumentProcessFields"></sequenceFlow>
-        <serviceTask id="updateConsignmentDocumentProcessFields" name="Update Consignment Document" activiti:expression="${diService.clearCurrentProcess(cdUuid)}"></serviceTask>
+        <serviceTask id="updateConsignmentDocumentProcessFields" name="Clear CD Process" activiti:expression="${diService.clearCurrentProcess(cdUuid)}"></serviceTask>
         <endEvent id="endTargetConsignmentDocument" name="End"></endEvent>
         <sequenceFlow id="flow8" sourceRef="updateConsignmentDocumentProcessFields" targetRef="endTargetConsignmentDocument"></sequenceFlow>
         <sequenceFlow id="flow9" sourceRef="startTargetConsignmentDocument" targetRef="usertask1"></sequenceFlow>
@@ -90,7 +90,7 @@
                 <omgdi:waypoint x="740.0" y="272.0"></omgdi:waypoint>
                 <omgdi:waypoint x="838.0" y="272.0"></omgdi:waypoint>
                 <bpmndi:BPMNLabel>
-                    <omgdc:Bounds height="13.0" width="100.0" x="740.0" y="272.0"></omgdc:Bounds>
+                    <omgdc:Bounds height="13.0" width="24.0" x="740.0" y="272.0"></omgdc:Bounds>
                 </bpmndi:BPMNLabel>
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
@@ -137,7 +137,7 @@
                 <omgdi:waypoint x="719.0" y="107.0"></omgdi:waypoint>
                 <omgdi:waypoint x="838.0" y="107.0"></omgdi:waypoint>
                 <bpmndi:BPMNLabel>
-                    <omgdc:Bounds height="13.0" width="100.0" x="720.0" y="252.0"></omgdc:Bounds>
+                    <omgdc:Bounds height="13.0" width="24.0" x="720.0" y="252.0"></omgdc:Bounds>
                 </bpmndi:BPMNLabel>
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow16" id="BPMNEdge_flow16">
@@ -165,7 +165,7 @@
                 <omgdi:waypoint x="720.0" y="357.0"></omgdi:waypoint>
                 <omgdi:waypoint x="830.0" y="357.0"></omgdi:waypoint>
                 <bpmndi:BPMNLabel>
-                    <omgdc:Bounds height="13.0" width="100.0" x="720.0" y="292.0"></omgdc:Bounds>
+                    <omgdc:Bounds height="13.0" width="19.0" x="720.0" y="292.0"></omgdc:Bounds>
                 </bpmndi:BPMNLabel>
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow21" id="BPMNEdge_flow21">

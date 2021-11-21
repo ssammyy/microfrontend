@@ -701,10 +701,12 @@ class DestinationInspectionService(
             consignmentDocument.diProcessInstanceId = null
             consignmentDocument.diProcessCompletedOn = Timestamp.from(Instant.now())
             this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
+            KotlinLogging.logger { }.info("CLEARED PROCESS")
+            return true
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("UPDATE STATUS", ex)
         }
-        return true
+        return false
     }
 
     fun applicationConfigurations(appId: Int): ApiResponseModel {
@@ -1255,7 +1257,7 @@ class DestinationInspectionService(
             uiDetails.supervisor = isSupervisor
             uiDetails.inspector = isInspectionOfficer
             try {
-                uiDetails.demandNotePaid = daoServices.demandNotePaid(cdDetails.id!!,uiDetails.demandNoteRequired)
+                uiDetails.demandNotePaid = daoServices.demandNotePaid(cdDetails.id!!)
             } catch (ex: Exception) {
                 uiDetails.demandNotePaid = false
             }

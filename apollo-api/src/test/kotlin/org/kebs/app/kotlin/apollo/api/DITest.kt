@@ -707,7 +707,7 @@ class DITest {
 
     @Test
     fun demandNoteSubmission() {
-        this.demandNoteRepository.findFirstByPaymentStatusAndCdRefNoIsNotNull(0)?.let { demandNote->
+        this.demandNoteRepository.findFirstByPaymentStatusAndCdRefNoIsNotNullOrderByCreatedOnDesc(0)?.let { demandNote->
             destinationInspectionDaoServices.sendDemandNotGeneratedToKWIS(demandNote)
             Thread.sleep(TimeUnit.SECONDS.toMillis(20))
         }?:throw ExpectedDataNotFound("Could not find a single payment")
@@ -727,9 +727,10 @@ class DITest {
             destinationInspectionDaoServices.sendLocalCoc(coc)
         }?:throw ExpectedDataNotFound("Could not find a COC document")
     }
+
     @Test
     fun coiSubmission() {
-        this.cocRepository.findFirstByCoiNumberIsNotNullAndCocTypeAndConsignmentDocIdIsNotNull("COI")?.let { coi->
+        this.cocRepository.findFirstByCoiNumberIsNotNullAndCocTypeAndConsignmentDocIdIsNotNullOrderByCreatedOnDesc("COI")?.let { coi->
             destinationInspectionDaoServices.sendLocalCoi(coi)
         }?:throw ExpectedDataNotFound("Could not find a COI document")
     }

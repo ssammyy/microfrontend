@@ -111,7 +111,7 @@ class DestinationInspectionBpmn(
         data.put("cfs_code", consignmentDocument.freightStation?.cfsCode)
         val processInstance = runtimeService.startProcessInstanceByKey("assignInspectionOfficer", data)
         consignmentDocument.diProcessInstanceId = processInstance.processDefinitionId
-        consignmentDocument.diProcessStatus = processStarted
+        consignmentDocument.diProcessStatus = 0
         consignmentDocument.diProcessStartedOn = Timestamp.from(Instant.now())
         consignmentDocument.varField10 = "Start Assign Inspection Officer"
         // Update document
@@ -270,9 +270,10 @@ class DestinationInspectionBpmn(
         consignmentDocument.sendDemandNote = map.initStatus
         consignmentDocument.diProcessStartedOn = Timestamp.from(Instant.now())
         consignmentDocument.targetReason = data.get("remarks") as String?
+
         // Save process details
         this.auditService.addHistoryRecord(consignmentDocument.id!!, consignmentDocument.ucrNumber, data["remarks"] as String?, "DEMAND NOTE CONSIGNMENT", "Consignment demand note request")
-        this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
+        this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
     }
 
     private fun getTaskDetails(tasks: MutableList<org.flowable.task.api.Task>?): List<DiTaskDetails> {

@@ -877,29 +877,54 @@
                                                     (click)="uploadAttachment()">UPLOAD
                                                 ATTACHMENT
                                             </button>
-                                            <button
-                                                    *ngIf="consignment.ui.owner && (consignment.ui.cocRequest || consignment.ui.corRequest) && (!consignment.ui.complianceDisabled || consignment.ui.targetRejected || !consignment.ui.targeted)"
-                                                    class="btn btn-sm btn-primary" (click)="markAsCompliant()">COMPLIANT
-                                            </button>
-                                            <button *ngIf="consignment.ui.owner && !consignment.ui.checklistFilled && (consignment.ui.demandNotePaid || consignment.ui.demandNoteRejected) && consignment.ui.targeted"
-                                                    class="btn btn-sm btn-primary"
-                                                    (click)="createInspectionChecklist()">
-                                                FILL
-                                                INSPECTION CHECKLIST
-                                            </button>
-                                            <button *ngIf="consignment.ui.owner && consignment.ui.blacklistEnabled"
-                                                    class="btn btn-sm btn-warning" (click)="blacklistUser()">BLACKLIST
-                                                USER
-                                            </button>
                                             <button *ngIf="consignment.ui.owner && consignment.ui.targeted && !consignment.ui.demandNoteDisabled"
                                                     class="btn btn-sm btn-warning" (click)="generateDemandNote()">
                                                 GENERATE
                                                 DEMAND NOTE
                                             </button>
-                                            <button *ngIf="consignment.ui.owner && consignment.ui.approveReject"
-                                                    class="btn btn-sm btn-warning"
-                                                    (click)="approveRejectConsignment()">Approve / Reject Consignment
+                                            <div *ngIf="consignment.ui.demandNoteRequired; else othersLists">
+                                                <div *ngIf="consignment.ui.demandNotePaid">
+                                                    <button *ngIf="consignment.ui.owner && !consignment.ui.checklistFilled && (consignment.ui.demandNotePaid || consignment.ui.demandNoteRejected) && consignment.ui.targeted"
+                                                            class="btn btn-sm btn-primary"
+                                                            (click)="createInspectionChecklist()">
+                                                        FILL
+                                                        INSPECTION CHECKLIST
+                                                    </button>
+                                                    <button
+                                                            *ngIf="consignment.ui.owner && (consignment.ui.cocRequest || consignment.ui.corRequest) && (!consignment.ui.complianceDisabled || consignment.ui.targetRejected || !consignment.ui.targeted)"
+                                                            class="btn btn-sm btn-primary" (click)="markAsCompliant()">
+                                                        COMPLIANT
+                                                    </button>
+                                                    <button *ngIf="consignment.ui.owner && consignment.ui.approveReject"
+                                                            class="btn btn-sm btn-warning"
+                                                            (click)="approveRejectConsignment()">Approve / Reject
+                                                        Consignment
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <template #othersLists>
+                                                <button *ngIf="consignment.ui.owner && !consignment.ui.checklistFilled && (consignment.ui.demandNotePaid || consignment.ui.demandNoteRejected) && consignment.ui.targeted"
+                                                        class="btn btn-sm btn-primary"
+                                                        (click)="createInspectionChecklist()">
+                                                    FILL
+                                                    INSPECTION CHECKLIST
+                                                </button>
+                                                <button
+                                                        *ngIf="consignment.ui.owner && (consignment.ui.cocRequest || consignment.ui.corRequest) && (!consignment.ui.complianceDisabled || consignment.ui.targetRejected || !consignment.ui.targeted)"
+                                                        class="btn btn-sm btn-primary" (click)="markAsCompliant()">
+                                                    COMPLIANT
+                                                </button>
+                                                <button *ngIf="consignment.ui.owner && consignment.ui.approveReject"
+                                                        class="btn btn-sm btn-warning"
+                                                        (click)="approveRejectConsignment()">Approve / Reject
+                                                    Consignment
+                                                </button>
+                                            </template>
+                                            <button *ngIf="consignment.ui.owner && consignment.ui.blacklistEnabled"
+                                                    class="btn btn-sm btn-warning" (click)="blacklistUser()">BLACKLIST
+                                                USER
                                             </button>
+
                                             <button *ngIf="consignment.ui.owner && consignment.ui.targetItem && !consignment.ui.targetDisabled"
                                                     class="btn btn-sm btn-warning" (click)="targetConsignment()">TARGET
                                             </button>

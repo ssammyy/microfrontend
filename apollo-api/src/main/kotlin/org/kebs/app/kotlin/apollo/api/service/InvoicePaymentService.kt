@@ -58,6 +58,8 @@ class InvoicePaymentService(
                 demand.varField10 = remarks
                 consignmentDocument.varField10 = "Demand note rejected"
                 consignmentDocument.sendDemandNote = map.invalidStatus
+                consignmentDocument.diProcessStatus=map.inactiveStatus
+                consignmentDocument.diProcessInstanceId=null
                 this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
                 this.iDemandNoteRepo.save(demand)
                 this.auditService.addHistoryRecord(consignmentDocument.id!!, consignmentDocument.ucrNumber, remarks, "REJECT DEMAND NOTE", "Demand note ${demandNoteId} rejected")
@@ -213,6 +215,9 @@ class InvoicePaymentService(
             } ?: throw ExpectedDataNotFound("Demand note with $demandNoteId was not found")
             // 2. Update application status
             consignmentDocument.varField10 = "DEMAND NOTE PAID,AWAITING INSPECTION"
+            // 3. Clear Payment process completed
+            consignmentDocument.diProcessStatus=0
+            consignmentDocument.diProcessInstanceId=null
             this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
             return true
         } catch (ex: Exception) {

@@ -82,6 +82,14 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
                 id: demandNoteId
             }
         })
+            .afterClosed()
+            .subscribe(
+                res=>{
+                    if(res){
+                        this.loadConsignmentDetails()
+                    }
+                }
+            )
     }
 
     approveRejectTasks(taskId: any, docUuid: any, taskTitle: any) {

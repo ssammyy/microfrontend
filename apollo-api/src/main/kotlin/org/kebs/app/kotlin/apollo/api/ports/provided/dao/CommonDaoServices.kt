@@ -279,7 +279,7 @@ class CommonDaoServices(
     fun createKesWsFileName(filePrefix: String, documentIdentifier: String): String {
         val current = LocalDateTime.now()
 
-        val formatter = DateTimeFormatter.ofPattern("yyyymmddhhmmss")
+        val formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
         val formatted = current.format(formatter)
         KotlinLogging.logger { }.info(":::::: Formatted datetime: $formatted :::::::")
 

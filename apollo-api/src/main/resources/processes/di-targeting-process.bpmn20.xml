@@ -14,7 +14,7 @@
     <serviceTask id="targetingApprovedStatus" name="Target Consignment" activiti:async="true" activiti:expression="#{diService.swScheduledTargeting(cdUuid,remarks,supervisor)}"></serviceTask>
     <serviceTask id="updateTargetRejectionStatus" name="Update  Rejection Status" activiti:async="true" activiti:expression="#{diService.rejectTargeting(cdUuid,remarks,supervisor)}"></serviceTask>
     <sequenceFlow id="flow6" sourceRef="updateTargetRejectionStatus" targetRef="updateConsignmentDocumentProcessFields"></sequenceFlow>
-    <serviceTask id="updateConsignmentDocumentProcessFields" name="Update Consignment Document" activiti:async="true" activiti:expression="${diService.clearCurrentProcess(cdUuid)}"></serviceTask>
+    <serviceTask id="updateConsignmentDocumentProcessFields" name="Clear CD Proccess" activiti:async="true" activiti:expression="${diService.clearCurrentProcess(cdUuid)}"></serviceTask>
     <endEvent id="endTargetConsignmentDocument" name="End"></endEvent>
     <sequenceFlow id="flow8" sourceRef="updateConsignmentDocumentProcessFields" targetRef="endTargetConsignmentDocument"></sequenceFlow>
     <sequenceFlow id="flow9" sourceRef="exclusivegateway2" targetRef="usertask1">

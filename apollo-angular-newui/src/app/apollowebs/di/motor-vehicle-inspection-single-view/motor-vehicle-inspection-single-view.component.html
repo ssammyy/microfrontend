@@ -166,13 +166,13 @@
                             <div class="col-md-2">
                                 <b>Action:</b>
                                 <br />
-                                <button *ngIf="!itemDetails.mvInspectionChecklist.ministryInspectionComplete" class="btn btn-sm btn-primary" (click)="downloadMinistryUnfilled()">Download Unfilled Checklist</button>
-                                <button *ngIf="!itemDetails.mvInspectionChecklist.ministryInspectionComplete" class="btn btn-sm btn-primary" (click)="uploadReport()" >Upload Filled Report</button>
+                                <button *ngIf="!itemDetails.mvInspectionChecklist.ministryInspectionComplete" class="btn btn-sm btn-primary" (click)="downloadMinistryUnfilled()"><span class="fa-download">Unfilled Checklist</span></button>
+                                <button *ngIf="!itemDetails.mvInspectionChecklist.ministryInspectionComplete" class="btn btn-sm btn-primary" (click)="uploadReport()" ><span class="fa-upload">Filled Report</span></button>
                                 <br />
                                 <b>Document:</b>
                                 <br />
-                                <button *ngIf="itemDetails.mvInspectionChecklist.ministryInspectionComplete" class="btn btn-sm btn-primary" (click)="downloadReport()">Download Report Checklist</button>
-                                <button class="btn btn-sm btn-primary" (click)="downloadMvir()" >MVIR</button>
+                                <button *ngIf="itemDetails.mvInspectionChecklist.ministryInspectionComplete" class="btn btn-sm btn-primary" (click)="downloadReport()"><span class="fa-download">Ministry Inspection Report</span></button>
+                                <button class="btn btn-sm btn-primary" (click)="downloadMvir()" ><span class="fa-download">MVIR</span></button>
                             </div>
                         </div>
                         <!-- end content-->
