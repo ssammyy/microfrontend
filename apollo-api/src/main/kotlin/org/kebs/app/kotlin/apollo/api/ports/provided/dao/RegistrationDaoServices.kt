@@ -260,8 +260,7 @@ class RegistrationDaoServices(
     ): ServiceRequestsEntity? {
         sr ?: commonDaoServices.createServiceRequest(s)
         try {
-            var user = usersEntity
-            with(user) {
+            var user = usersEntity.apply {
                 confirmCredentials = ""
                 accountExpired = s.inactiveStatus
                 accountLocked = s.inactiveStatus
@@ -270,9 +269,9 @@ class RegistrationDaoServices(
                 approvedDate = commonDaoServices.getTimestamp()
                 modifiedBy = userName
                 modifiedOn = commonDaoServices.getTimestamp()
-                user = usersRepo.save(user)
-
             }
+            user = usersRepo.save(user)
+
             sr?.payload = "User[id= ${user.id}] Activated"
 //            when {
 //
@@ -298,6 +297,11 @@ class RegistrationDaoServices(
             sr?.responseMessage = "Success ${sr?.payload}"
             sr?.status = s.successStatus
             sr?.processingEndDate = Timestamp.from(Instant.now())
+            sr?.let { serviceRequestsRepository.save(it) }
+
+            KotlinLogging.logger { }.trace("${sr?.id} ${sr?.responseStatus}")
+
+            return sr
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
@@ -305,14 +309,11 @@ class RegistrationDaoServices(
             sr?.status = sr?.serviceMapsId?.exceptionStatus
             sr?.responseStatus = sr?.serviceMapsId?.exceptionStatusCode
             sr?.responseMessage = e.message
+            throw e
 
         }
 
-        sr?.let { serviceRequestsRepository.save(it) }
 
-        KotlinLogging.logger { }.trace("${sr?.id} ${sr?.responseStatus}")
-
-        return sr
     }
 
 

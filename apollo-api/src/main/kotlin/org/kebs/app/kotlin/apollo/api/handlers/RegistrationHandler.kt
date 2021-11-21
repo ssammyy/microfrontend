@@ -171,6 +171,7 @@ class RegistrationHandler(
                 )
             )
 
+
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)
             KotlinLogging.logger { }.debug(e.message, e)
@@ -585,6 +586,18 @@ class RegistrationHandler(
 
         req.attributes()["usersEntity"] = UsersEntity()
         return ok().render("auth/forgot-pass-new", req.attributes())
+    }
+
+    fun forgotPasswordOtp(req: ServerRequest): ServerResponse {
+
+        req.attributes()["userVerificationTokensEntity"] = UserVerificationTokensEntity()
+        return ok().render("auth/otp-verification", req.attributes())
+    }
+
+    fun resetPasswordOtp(req: ServerRequest): ServerResponse {
+
+        req.attributes()["userVerificationTokensEntity"] = UserVerificationTokensEntity()
+        return ok().render("auth/reset-password", req.attributes())
     }
 
     fun confirmOtpView(req: ServerRequest): ServerResponse {

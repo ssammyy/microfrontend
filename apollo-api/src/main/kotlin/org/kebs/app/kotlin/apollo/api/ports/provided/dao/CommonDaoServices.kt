@@ -899,6 +899,45 @@ class CommonDaoServices(
                 ?: throw ExpectedDataNotFound("Username  = ${userName}, does not Exist")
     }
 
+    fun findOTPByToken(userName: String): UserVerificationTokensEntity {
+        verificationTokensRepoB.findByToken(userName)
+            ?.let { UserVerificationTokensEntity ->
+                return UserVerificationTokensEntity
+            }
+            ?: throw ExpectedDataNotFound("OTP  = ${userName}, does not Exist")
+    }
+
+    fun findTokenStringByUserid(userId: Long): UserVerificationTokensEntity {
+
+        verificationTokensRepoB.findAllByTokenByUserId(userId)
+            ?.let { UserVerificationTokensEntity ->
+                return UserVerificationTokensEntity
+            }
+            ?: throw ExpectedDataNotFound("Token, does not Exist")
+    }
+
+    fun findByToken(token: Long?): UserVerificationTokensEntity {
+
+        token?.let {
+            verificationTokensRepoB.findByVersion(it)
+                ?.let { UserVerificationTokensEntity ->
+                    return UserVerificationTokensEntity
+                }
+        }
+            ?: throw ExpectedDataNotFound("Token, does not Exist")
+    }
+
+//    fun findUserIdByToken(token: String?): UserVerificationTokensEntity {
+//
+//        token?.let {
+//            verificationTokensRepoB.findAllByVarField1(it)
+//                ?.let { UserVerificationTokensEntity ->
+//                    return UserVerificationTokensEntity
+//                }
+//        }
+//            ?: throw ExpectedDataNotFound("Token, does not Exist")
+//    }
+
 
     fun findCompanyProfile(userID: Long): CompanyProfileEntity {
         companyProfileRepo.findByUserId(userID)
@@ -1286,24 +1325,32 @@ class CommonDaoServices(
     }
 
     fun generateVerificationToken(
-            sr: ServiceRequestsEntity,
-            user: UsersEntity,
-            map: ServiceMapsEntity
+        sr: ServiceRequestsEntity,
+        user: UsersEntity,
+        map: ServiceMapsEntity
     ): UserVerificationTokensEntity? {
-        var tokensEntity = UserVerificationTokensEntity()
-        with(tokensEntity) {
-            token = sr.transactionReference
-            userId = user
-            status = map.initStatus
-            createdBy = sr.transactionReference
-            createdOn = Timestamp.from(Instant.now())
-            map.tokenExpiryHours?.let { h -> tokenExpiryDate = Timestamp.from(Instant.now().plus(h, ChronoUnit.HOURS)) }
+        try {
+            val tokensEntity = UserVerificationTokensEntity().apply {
+                token = sr.transactionReference
+                userId = user
+                status = map.initStatus
+                createdBy = sr.transactionReference
+                createdOn = Timestamp.from(Instant.now())
+                map.tokenExpiryHours?.let { h ->
+                    tokenExpiryDate = Timestamp.from(Instant.now().plus(h, ChronoUnit.HOURS))
+                }
                     ?: throw Exception("Missing Configuration: Hours to Token Expiry")
-            transactionDate = Date(Date().time)
+                transactionDate = Date(Date().time)
+                varField1 = UUID.randomUUID().toString()
+            }
+            return verificationTokensRepo.save(tokensEntity)
+        } catch (e: Exception) {
+            KotlinLogging.logger {}.error(e.message, e)
+            throw e
+
         }
 
-        tokensEntity = verificationTokensRepo.save(tokensEntity)
-        return tokensEntity
+
     }
 
     fun generateEmailVerificationToken(
@@ -1753,6 +1800,8 @@ class CommonDaoServices(
             createdOn = Timestamp.from(Instant.now())
             tokenExpiryDate = Timestamp.from(Instant.now().plus(10, ChronoUnit.MINUTES))
             transactionDate = Date(java.util.Date().time)
+            varField1 = UUID.randomUUID().toString()
+
         }
 
 

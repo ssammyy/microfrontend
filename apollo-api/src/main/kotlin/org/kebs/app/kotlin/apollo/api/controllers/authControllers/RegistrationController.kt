@@ -39,6 +39,7 @@ package org.kebs.app.kotlin.apollo.api.controllers.authControllers
 
 
 //import org.flowable.engine.RuntimeService
+
 import mu.KotlinLogging
 import org.apache.commons.lang3.StringUtils
 import org.kebs.app.kotlin.apollo.adaptor.kafka.producer.service.SendToKafkaQueue
@@ -54,7 +55,6 @@ import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.common.exceptions.PasswordsMismatchException
 import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
-import org.kebs.app.kotlin.apollo.store.model.ServiceRequestsEntity
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileCommoditiesManufactureEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileContractsUndertakenEntity
@@ -69,7 +69,9 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.servlet.function.paramOrNull
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
+import java.time.LocalDate
 import javax.servlet.http.HttpServletResponse
 import javax.validation.Valid
 
@@ -86,6 +88,7 @@ class RegisterController(
     private val masterDataDaoService: MasterDataDaoService,
     private val manufacturePlantRepository: IManufacturePlantDetailsRepository,
     private val usersRepo: IUserRepository,
+    private val verificationTokensRepoB: IUserVerificationTokensRepositoryB,
 
     private val systemsAdminDaoService: SystemsAdminDaoService,
 
@@ -385,25 +388,197 @@ class RegisterController(
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun forgotPasswordReset(
         model: Model,
-        @ModelAttribute("usersEntity") usersEntity: UsersEntity,
+        @ModelAttribute("userName") userName: String?,
         results: BindingResult,
         redirectAttributes: RedirectAttributes
     ): String? {
         val result: ServiceRequestsEntity?
         val map = commonDaoServices.serviceMapDetails(appId)
-        val user = usersEntity.userName?.let { commonDaoServices.findUserByUserName(it) }
-            ?: throw NullValueNotAllowedException("User with user name ${usersEntity.userName} do not exist")
-        result = systemsAdminDaoService.userRegistrationMailSending(
-            user,
-            null,
-            applicationMapProperties.mapUserPasswordResetNotification
-        )
-        val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/auth/signup/authorize/${user.userName}"
-        sm.message = "You have successfully reset your password. Please check your email to get the OTP For activation"
+        userName
+            ?.let {
+                val user = commonDaoServices.findUserByUserName(it)
+                systemsAdminDaoService.userRegistrationMailSending(
+                    user,
+                    null,
+                    applicationMapProperties.mapUserPasswordResetNotification
+                )
+//        val sm = CommonDaoServices.MessageSuccessFailDTO()
+////        sm.closeLink = "${applicationMapProperties.baseUrlValue}/auth/signup/authorize/${user.userName?.encodeURLQueryComponent(
+////            encodeFull = true,
+////            spaceToPlus = true,
+////            charset = Charset.defaultCharset()
+////        )}"
+//        sm.closeLink = "redirect:/otp-verification"
+//
+//        sm.message = "You have successfully reset your password. Please check your email and phone to get the OTP For activation"
+//
+//        return returnValues(result, map, sm)
+                // return ServerResponse.ok().render("auth/forgot-pass-new")
+                user.id
+                    ?.let { id ->
 
-        return returnValues(result, map, sm)
+                        val confirmationToken = commonDaoServices.findTokenStringByUserid(id)
+                        return "redirect:auth/otp-verification?token=" + confirmationToken.varField1;
+
+                    }
+                    ?: throw NullValueNotAllowedException("Token with user name ${user.userName} does not exist")
+
+            }
+            ?: throw NullValueNotAllowedException("User with user name $userName is empty")
+
+        //val user = usersEntity.userName?.let { }
+
+
     }
+
+    @RequestMapping("/api/auth/kebs/signup/authorize/auth/otp-verification")
+    @GetMapping()
+    fun viewPage(
+        @RequestParam(name = "token", required = false) token: String?,
+        model: Model,
+        @ModelAttribute("userVerificationTokensEntity") userVerificationTokensEntity: UserVerificationTokensEntity,
+
+        ): String? {
+//        val passwordResetToken: UserVerificationTokensEntity = commonDaoServices.findByToken(token.toString().toLong())
+
+
+        val passwordResetToken =
+            userVerificationTokensEntity.varField1?.let { commonDaoServices.findByToken(token.toString().toLong()) }
+                ?: throw NullValueNotAllowedException("Token  does not exist")
+
+        if (LocalDate.parse(passwordResetToken.tokenExpiryDate.toString()).isBefore(LocalDate.now())) {
+            throw NullValueNotAllowedException("Token has expired")
+        } else {
+            model.addAttribute("token", passwordResetToken.varField1)
+        }
+
+        return "/api/auth/kebs/signup/authorize/auth/otp-verification"
+    }
+
+    @PostMapping("kebs/signup/authorize/confirm-otp")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun resetPassword(
+        model: Model,
+        @ModelAttribute("otp") userName: String?,
+        results: BindingResult,
+        redirectAttributes: RedirectAttributes
+    ): String? {
+        val result: ServiceRequestsEntity?
+        val map = commonDaoServices.serviceMapDetails(appId)
+        userName
+            ?.let {
+                val confirmationToken = commonDaoServices.findOTPByToken(it)
+                return "redirect:auth/reset-password?token=" + confirmationToken.varField1;
+            }
+            ?: throw NullValueNotAllowedException("You have entered the wrong OTP")
+
+    }
+
+    @RequestMapping("/api/auth/kebs/signup/authorize/auth/reset-password")
+    @GetMapping()
+    fun viewResetPwdPage(
+        @RequestParam(name = "token", required = false) token: String?,
+        model: Model,
+        @ModelAttribute("userVerificationTokensEntity") userVerificationTokensEntity: UserVerificationTokensEntity,
+
+        ): String? {
+//        val passwordResetToken: UserVerificationTokensEntity = commonDaoServices.findByToken(token.toString().toLong())
+
+
+        val passwordResetToken =
+            userVerificationTokensEntity.varField1?.let { commonDaoServices.findByToken(token.toString().toLong()) }
+                ?: throw NullValueNotAllowedException("Token  does not exist")
+
+        if (LocalDate.parse(passwordResetToken.tokenExpiryDate.toString()).isBefore(LocalDate.now())) {
+            throw NullValueNotAllowedException("Token has expired")
+        } else {
+            model.addAttribute("token", passwordResetToken.varField1)
+        }
+
+        return "/api/auth/kebs/signup/authorize/auth/reset-password"
+    }
+
+    @PostMapping("kebs/signup/authorize/reset-password")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun resetPasswordfinal(
+        model: Model,
+        @ModelAttribute("passwordReset") usersEntity: UsersEntity,
+        results: BindingResult,
+        redirectAttributes: RedirectAttributes
+    ): String? {
+        var result = ServiceRequestsEntity()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+
+        var status = false
+
+//        val userb = commonDaoServices.findUserIdByToken(usersEntity.varField1)
+        verificationTokensRepoB.findAllByVarField1(usersEntity.varField1)
+            ?.let { b->
+                println("@#@#@#@" + b)
+                daoServices.findUserById(b)
+                    ?.let { user ->
+
+                        val credentials = usersEntity.credentials
+                        val confirmCredentials = usersEntity.varField2
+                        when (StringUtils.equals(credentials, confirmCredentials)) {
+
+                            true -> {
+
+                                user.credentials =
+                                    BCryptPasswordEncoder().encode(credentials)
+                                user.confirmCredentials =
+                                    BCryptPasswordEncoder().encode(confirmCredentials)
+                                val sr = null
+                                try {
+                                    status =daoServices.resetUserPassword(map, user, true, sr)?.let { true }?: throw NullValueNotAllowedException("Unable to reset password try again later")
+
+                                } catch (e:Exception){
+                                    KotlinLogging.logger {  }.error(e.message)
+                              }
+                                sm.closeLink = "index"
+
+                                sm.message =
+                                    "You have successfully reset your password. You can now login with your new password."
+                                val maps = mutableMapOf<String, Any>()
+
+                                maps["message"] = "You have successfully reset your password. You can now login with your new password."
+                                maps["closeLink"] = "/"
+                                maps["activateAccountLink"] = ""
+                                maps["activateAccountLinkText"] = ""
+                                maps["otherActionLink"] = ""
+                                maps["otherActionLinkText"] = ""
+                                model.addAllAttributes(maps)
+                                return "/auth/register-success-view"
+
+                            }
+                            else -> throw PasswordsMismatchException("Passwords and Confirmation do not match")
+
+                        }
+
+                    }
+            }
+            ?: throw NullValueNotAllowedException("User not found")
+
+
+    }
+
+    private fun returnValues(
+        status: Boolean,
+        map: ServiceMapsEntity,
+        sm: CommonDaoServices.MessageSuccessFailDTO
+    ): String? {
+        return when (status) {
+            true -> {
+
+                "${commonDaoServices.successLink}?message=${sm.message}&closeLink=${sm.closeLink}"
+
+
+            }
+            else -> map.failureNotificationUrl
+        }
+    }
+
 
     private fun returnValues(
         result: ServiceRequestsEntity,
@@ -499,7 +674,6 @@ class RegisterController(
 //        manufacturePlantRepository.save(manufacturePlantDetailsEntity)
 //        return true
 //    }
-
 
 
     @PostMapping("/signup/importer/save")

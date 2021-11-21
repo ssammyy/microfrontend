@@ -69,6 +69,8 @@ class SystemsAdminDaoService(
     private val countiesRepo: ICountiesRepository,
     private val townsRepo: ITownsRepository,
     private val serviceRequestsRepository: IServiceRequestsRepository,
+    private val verificationTokensRepo: IUserVerificationTokensRepositoryB,
+
     private val companyProfileDirectorsRepo: ICompanyProfileDirectorsRepository,
 ) {
 
@@ -216,19 +218,19 @@ class SystemsAdminDaoService(
                         u.userPinIdNumber,
                         u.personalContactNumber,
                         u.typeOfUser,
-                                u.email,
-                                u.userRegNo,
-                                u.enabled == 1,
-                                u.accountExpired == 1,
-                                u.accountLocked == 1,
-                                u.credentialsExpired == 1,
-                                u.status == 1,
-                                u.registrationDate,
-                                u.userTypes,
-                                u.title,
-                            )
-                        )
-                    }
+                        u.email,
+                        u.userRegNo,
+                        u.enabled == 1,
+                        u.accountExpired == 1,
+                        u.accountLocked == 1,
+                        u.credentialsExpired == 1,
+                        u.status == 1,
+                        u.registrationDate,
+                        u.userTypes,
+                        u.title,
+                    )
+                )
+            }
 //            }
 
 //        return usersRepo.findAll().toList().sortedBy { it.id }
@@ -505,25 +507,26 @@ class SystemsAdminDaoService(
         userRole: UserRoleAssignmentsEntity?,
         emailUuid: String
     ): ServiceRequestsEntity {
-
-
         val map = commonDaoServices.serviceMapDetails(appId)
-
         var sr = commonDaoServices.createServiceRequest(map)
         try {
             val payload = "$user $userRole"
             sr = commonDaoServices.mapServiceRequestForSuccess(map, payload, user)
             val emailEntity = commonDaoServices.userRegisteredSuccessfulEmailCompose(user, sr, map, null)
             commonDaoServices.sendEmailAfterCompose(user, emailUuid, emailEntity, appId, payload)
-
             sr.payload = "User[id= ${user.id}]"
             sr.names = "${user.firstName} ${user.lastName}"
-
             sr.responseStatus = sr.serviceMapsId?.successStatusCode
             sr.responseMessage = "Success ${sr.payload}"
             sr.status = map.successStatus
             sr = serviceRequestsRepository.save(sr)
             sr.processingEndDate = Timestamp.from(Instant.now())
+            val b = verificationTokensRepo.findTokenByUserId(user.id)
+            val token = commonDaoServices.generateVerificationToken(
+                b,
+                commonDaoServices.makeKenyanMSISDNFormat(user.personalContactNumber)
+            )
+            commonDaoServices.sendOtpViaSMS(token)
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)
@@ -532,9 +535,7 @@ class SystemsAdminDaoService(
             sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
             sr.responseMessage = e.message
             sr = serviceRequestsRepository.save(sr)
-
         }
-
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
         return sr
     }
