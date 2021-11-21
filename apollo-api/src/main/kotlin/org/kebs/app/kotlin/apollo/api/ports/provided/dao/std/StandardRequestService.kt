@@ -120,9 +120,11 @@ class StandardRequestService(
 
         variables["requestNumber"] = standardRequest.requestNumber!!
 
-        standardRequest.rank = evaluateStandardRequest(standardRequest.tcId!!, standardRequest.departmentId!!)
+        // standardRequest.rank = evaluateStandardRequest(standardRequest.tcId!!, standardRequest.departmentId!!)
 
-        variables["rank"] = standardRequest.rank!!
+        variables["rank"] = '3'
+        standardRequest.rank = '3'.toString()
+        variable["rank"] = standardRequest.rank!!
 
         standardRequestRepository.save(standardRequest)
 
