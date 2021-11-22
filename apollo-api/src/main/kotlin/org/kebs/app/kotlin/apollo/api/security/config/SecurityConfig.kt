@@ -177,7 +177,7 @@ class WebSecurityConfig {
                 .loginProcessingUrl("/auth/login-service")
                 .successHandler(loginSuccessHandler(authenticationProperties.homePage))
                 .failureUrl("/auth/login?error")
-                .permitAll()
+                //.permitAll()
 //            .failureHandler(authenticationFailureHandler())
 //            .and()
 //            .logout()

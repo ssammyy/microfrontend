@@ -1,203 +1,211 @@
 <div class="main-content">
     <div class="container-fluid">
-        <div class="row">
+        <div *ngIf="roles?.includes('PERMIT_APPLICATION')">
 
-            <div class="col-lg-3 col-md-6 col-sm-6">
-                <div class="card card-stats">
-                    <div class="card-header card-header-warning card-header-icon">
-                        <div class="card-icon">
-                            <i class="material-icons">verified</i>
+            <div class="row">
+
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-warning card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">verified</i>
+                            </div>
+                            <p class="card-category">Awarded Permits</p>
+                            <h3 class="card-title">{{countAwarded}}</h3>
                         </div>
-                        <p class="card-category">Awarded Permits</p>
-                        <h3 class="card-title">{{countAwarded}}</h3>
-                    </div>
-                    <div class="card-footer">
-                        <div class="stats">
+                        <div class="card-footer">
+                            <div class="stats">
 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-rose card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">report_problem</i>
+                            </div>
+                            <p class="card-category">Expired Permits</p>
+                            <h3 class="card-title">{{countExpired}}</h3>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-success card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">format_list_numbered_rtl</i>
+                            </div>
+                            <p class="card-category">No. of Branches</p>
+                            <h3 class="card-title">{{branchCount}}</h3>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-info card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">price_change</i>
+                            </div>
+                            <p class="card-category">Turnover</p>
+                            <h3 class="card-title" style="font-size: 16px"> KES {{turnOver | number: '1.2'}}</h3>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6 col-sm-6">
-                <div class="card card-stats">
-                    <div class="card-header card-header-rose card-header-icon">
-                        <div class="card-icon">
-                            <i class="material-icons">report_problem</i>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card card-chart" (click)="gotoSMarkApplication()">
+                        <div class="card-header card-header-rose l-bg-cherry" data-header-animation="true">
+                            <div class="l-bg-cherry">
+                                <div class="card-statistic-3 p-4">
+                                    <div class="card-icon card-icon-large"><i class="fas fa-shopping-cart"></i></div>
+                                    <div class="mb-4">
+                                        <h3 class="card-title mb-0">Standardization Mark</h3>
+                                    </div>
+                                    <div class="row align-items-center mb-2 d-flex">
+                                        <div class="col-8">
+                                            <h4 class="d-flex align-items-center mb-0">
+                                                <a href="smark/newSmarkPermit" style="color: white">Apply</a>
+                                            </h4>
+                                        </div>
+                                        <div class="col-4 text-right">
+                                            <span (click)="gotoSMarkApplication()"> <i
+                                                    class="fa fa-arrow-right"></i></span>
+                                        </div>
+                                    </div>
+                                    <div class="progress mt-1 " data-height="8" style="height: 8px;">
+                                        <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="25"
+                                             class="progress-bar l-bg-cyan" data-width="25%" role="progressbar"
+                                             style="width: 25%;"></div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <p class="card-category">Expired Permits</p>
-                        <h3 class="card-title">{{countExpired}}</h3>
-                    </div>
-                    <div class="card-footer">
-                        <div class="stats">
+                        <div class="card-body">
 
+                            <h4 class="card-title">Description</h4>
+                            <p class="card-category">This is a mandatory product certification scheme for locally
+                                manufactured products</p>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+                                <button (click)="gotoSMarkApplication()"
+                                        class="btn btn-sm btn-primary btn-round btn-block">
+                                    Make Application
+
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-6">
-                <div class="card card-stats">
-                    <div class="card-header card-header-success card-header-icon">
-                        <div class="card-icon">
-                            <i class="material-icons">format_list_numbered_rtl</i>
+                <div class="col-md-4">
+                    <div class="card card-chart" (click)="gotoDMarkApplication()">
+                        <div class="card-header card-header-rose l-bg-cherry" data-header-animation="true">
+                            <div class="l-bg-cherry">
+                                <div class="card-statistic-3 p-4">
+                                    <div class="card-icon card-icon-large"><i class="fas fa-shopping-cart"></i></div>
+                                    <div class="mb-4">
+                                        <h3 class="card-title mb-0">Diamond Mark</h3>
+                                    </div>
+                                    <div class="row align-items-center mb-2 d-flex">
+                                        <div class="col-8">
+                                            <h4 class="d-flex align-items-center mb-0">
+                                                <a href="dmark/newDmarkPermit" style="color: white">Apply</a>
+                                            </h4>
+                                        </div>
+                                        <div class="col-4 text-right">
+                                            <span> <i class="fa fa-arrow-right"></i></span>
+                                        </div>
+                                    </div>
+                                    <div class="progress mt-1 " data-height="8" style="height: 8px;">
+                                        <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="25"
+                                             class="progress-bar l-bg-cyan" data-width="25%" role="progressbar"
+                                             style="width: 25%;"></div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <p class="card-category">No. of Branches</p>
-                        <h3 class="card-title">{{branchCount}}</h3>
-                    </div>
-                    <div class="card-footer">
-                        <div class="stats">
+                        <div class="card-body">
 
+                            <h4 class="card-title">Description</h4>
+                            <p class="card-category">The D-Mark is a voluntary product certification scheme operated by
+                                (KEBS)</p>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+                                <button (click)="gotoDMarkApplication()"
+                                        class="btn btn-sm btn-primary btn-round btn-block">
+                                    Make Application
+
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-6">
-                <div class="card card-stats">
-                    <div class="card-header card-header-info card-header-icon">
-                        <div class="card-icon">
-                            <i class="material-icons">price_change</i>
+                <div class="col-md-4">
+                    <div class="card card-chart">
+                        <div class="card-header card-header-rose l-bg-cherry" data-header-animation="true">
+                            <div class="l-bg-cherry">
+                                <div class="card-statistic-3 p-4">
+                                    <div class="card-icon card-icon-large"><i class="fas fa-shopping-cart"></i></div>
+                                    <div class="mb-4">
+                                        <h3 class="card-title mb-0">Fortification Mark</h3>
+                                    </div>
+                                    <div class="row align-items-center mb-2 d-flex">
+                                        <div class="col-8">
+                                            <h4 class="d-flex align-items-center mb-0">
+                                                <a href="fmark/application" style="color: white">Apply</a>
+                                            </h4>
+                                        </div>
+                                        <div class="col-4 text-right">
+                                            <span> <i class="fa fa-arrow-right"></i></span>
+                                        </div>
+                                    </div>
+                                    <div class="progress mt-1 " data-height="8" style="height: 8px;">
+                                        <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="25"
+                                             class="progress-bar l-bg-cyan" data-width="25%" role="progressbar"
+                                             style="width: 25%;"></div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <p class="card-category">Turnover</p>
-                        <h3 class="card-title" style="font-size: 16px"> KES {{turnOver | number: '1.2'}}</h3>
-                    </div>
-                    <div class="card-footer">
-                        <div class="stats">
+                        <div class="card-body">
 
+                            <h4 class="card-title">Description</h4>
+                            <p class="card-category">Any manufacturer applying for Fortification logo must have acquired
+                                the
+                                S-Mark in accordance with KEBS procedures</p>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+                                <button (click)="gotoFMarkApplication()"
+                                        class="btn btn-sm btn-primary btn-round btn-block" href="#pablo">Make
+                                    Application
+
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="card card-chart" (click)="gotoSMarkApplication()">
-                    <div class="card-header card-header-rose l-bg-cherry" data-header-animation="true">
-                        <div class="l-bg-cherry">
-                            <div class="card-statistic-3 p-4">
-                                <div class="card-icon card-icon-large"><i class="fas fa-shopping-cart"></i></div>
-                                <div class="mb-4">
-                                    <h3 class="card-title mb-0">Standardization Mark</h3>
-                                </div>
-                                <div class="row align-items-center mb-2 d-flex">
-                                    <div class="col-8">
-                                        <h4 class="d-flex align-items-center mb-0">
-                                            <a href="smark/newSmarkPermit" style="color: white">Apply</a>
-                                        </h4>
-                                    </div>
-                                    <div class="col-4 text-right">
-                                        <span (click)="gotoSMarkApplication()"> <i class="fa fa-arrow-right"></i></span>
-                                    </div>
-                                </div>
-                                <div class="progress mt-1 " data-height="8" style="height: 8px;">
-                                    <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="25"
-                                         class="progress-bar l-bg-cyan" data-width="25%" role="progressbar"
-                                         style="width: 25%;"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-
-                        <h4 class="card-title">Description</h4>
-                        <p class="card-category">This is a mandatory product certification scheme for locally
-                            manufactured products</p>
-                    </div>
-                    <div class="card-footer">
-                        <div class="stats">
-                            <button (click)="gotoSMarkApplication()" class="btn btn-sm btn-primary btn-round btn-block">
-                                Make Application
-
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card card-chart" (click)="gotoDMarkApplication()">
-                    <div class="card-header card-header-rose l-bg-cherry" data-header-animation="true">
-                        <div class="l-bg-cherry">
-                            <div class="card-statistic-3 p-4">
-                                <div class="card-icon card-icon-large"><i class="fas fa-shopping-cart"></i></div>
-                                <div class="mb-4">
-                                    <h3 class="card-title mb-0">Diamond Mark</h3>
-                                </div>
-                                <div class="row align-items-center mb-2 d-flex">
-                                    <div class="col-8">
-                                        <h4 class="d-flex align-items-center mb-0">
-                                            <a href="dmark/newDmarkPermit" style="color: white">Apply</a>
-                                        </h4>
-                                    </div>
-                                    <div class="col-4 text-right">
-                                        <span> <i class="fa fa-arrow-right"></i></span>
-                                    </div>
-                                </div>
-                                <div class="progress mt-1 " data-height="8" style="height: 8px;">
-                                    <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="25"
-                                         class="progress-bar l-bg-cyan" data-width="25%" role="progressbar"
-                                         style="width: 25%;"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-
-                        <h4 class="card-title">Description</h4>
-                        <p class="card-category">The D-Mark is a voluntary product certification scheme operated by
-                            (KEBS)</p>
-                    </div>
-                    <div class="card-footer">
-                        <div class="stats">
-                            <button (click)="gotoDMarkApplication()" class="btn btn-sm btn-primary btn-round btn-block">
-                                Make Application
-
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card card-chart">
-                    <div class="card-header card-header-rose l-bg-cherry" data-header-animation="true">
-                        <div class="l-bg-cherry">
-                            <div class="card-statistic-3 p-4">
-                                <div class="card-icon card-icon-large"><i class="fas fa-shopping-cart"></i></div>
-                                <div class="mb-4">
-                                    <h3 class="card-title mb-0">Fortification Mark</h3>
-                                </div>
-                                <div class="row align-items-center mb-2 d-flex">
-                                    <div class="col-8">
-                                        <h4 class="d-flex align-items-center mb-0">
-                                            <a href="fmark/application" style="color: white">Apply</a>
-                                        </h4>
-                                    </div>
-                                    <div class="col-4 text-right">
-                                        <span> <i class="fa fa-arrow-right"></i></span>
-                                    </div>
-                                </div>
-                                <div class="progress mt-1 " data-height="8" style="height: 8px;">
-                                    <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="25"
-                                         class="progress-bar l-bg-cyan" data-width="25%" role="progressbar"
-                                         style="width: 25%;"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-
-                        <h4 class="card-title">Description</h4>
-                        <p class="card-category">Any manufacturer applying for Fortification logo must have acquired the
-                            S-Mark in accordance with KEBS procedures</p>
-                    </div>
-                    <div class="card-footer">
-                        <div class="stats">
-                            <button (click)="gotoFMarkApplication()" class="btn btn-sm btn-primary btn-round btn-block" href="#pablo">Make Application
-
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
 
 
     </div>

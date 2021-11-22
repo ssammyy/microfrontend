@@ -307,11 +307,19 @@ class ControllerRoutes {
 //            POST(pattern = "/activated", f = handler::submitActivateUserAccount)
 //            POST(pattern = "/forgot-password", f = handler::submitAuthorizeUserAccount)
         }
+        "/api/auth/kebs/signup/authorize/auth".nest {
+            GET(pattern = "/otp-verification", f = handler::forgotPasswordOtp)
+            GET(pattern = "/reset-password", f = handler::resetPasswordOtp)
+
+        }
+
         "/auth".nest {
             GET("logout", handler::signOut)
             GET("login", handler::loginPageView)
             GET(pattern = "/otp-confirmation", f = handler::confirmOtpView)
             GET(pattern = "/forgot-password", f = handler::forgotPasswordView)
+            GET(pattern = "/reset-password", f = handler::resetPasswordOtp)
+
             POST(pattern = "/forgotPassword", f = handler::forgotPasswordAction)
         }
 

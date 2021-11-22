@@ -4,7 +4,13 @@ import {TableData} from '../../md/md-table/md-table.component';
 import * as Chartist from 'chartist';
 import {Router} from '@angular/router';
 import {Store} from '@ngrx/store';
-import {loadBranchId, loadCompanyId, selectCompanyInfoDtoStateData} from 'src/app/core/store';
+import {
+    loadBranchId,
+    loadCompanyId,
+    selectCompanyInfoDtoStateData,
+    selectUserInfo,
+    UserEntityDto
+} from 'src/app/core/store';
 
 declare const $: any;
 
@@ -20,6 +26,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     branchCount = 0;
     countAwarded = 0;
     countExpired = 0;
+
+    user: UserEntityDto;
+
+    roles: string[];
 
 
     startAnimationForLineChart(chart: any) {
@@ -101,6 +111,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
                 }
             }
         );
+        this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+            this.roles = u.roles;
+            return this.roles = u.roles;
+        });
     }
 
     ngAfterViewInit() {

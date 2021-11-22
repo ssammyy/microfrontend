@@ -42,6 +42,7 @@ import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.registration.*
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
+import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
@@ -424,4 +425,30 @@ interface IStatusValuesRepository : HazelcastRepository<StatusValuesEntity, Long
 interface IUserVerificationTokensRepository : HazelcastRepository<UserVerificationTokensEntity, Long> {
     fun findByUserIdAndStatus(userId: UsersEntity, status: Int): UserVerificationTokensEntity?
     fun findByTokenAndStatus(token: String?, status: Int): UserVerificationTokensEntity?
+
+
 }
+
+@Repository
+interface IUserVerificationTokensRepositoryB : JpaRepository<UserVerificationTokensEntity, Long> {
+    @Query(
+        "SELECT p.TOKEN as getTc_Title FROM DAT_KEBS_USER_VERIFICATION_TOKEN p WHERE p.USER_ID=:id  AND TRANSACTION_DATE=(SELECT MAX(p.TRANSACTION_DATE)  FROM DAT_KEBS_USER_VERIFICATION_TOKEN p   WHERE p.USER_ID=:id) ORDER BY p.id DESC",
+        nativeQuery = true
+    )
+    fun findTokenByUserId(@Param("id") id: Long?): String
+
+    @Query(
+        "SELECT p.*  FROM DAT_KEBS_USER_VERIFICATION_TOKEN p WHERE p.USER_ID=:id  AND TRANSACTION_DATE=(SELECT MAX(p.TRANSACTION_DATE)  FROM DAT_KEBS_USER_VERIFICATION_TOKEN p   WHERE p.USER_ID=:id) ORDER BY p.id DESC",
+        nativeQuery = true
+    )
+    fun findAllByTokenByUserId(@Param("id") id: Long?): UserVerificationTokensEntity?
+    fun findByVersion(version: Long): UserVerificationTokensEntity?
+    fun findByToken(token: String): UserVerificationTokensEntity?
+
+    @Query(
+        "SELECT p.USER_ID as getTc_Title FROM DAT_KEBS_USER_VERIFICATION_TOKEN p WHERE p.VAR_FIELD_1=:id ",
+        nativeQuery = true
+    )
+    fun findAllByVarField1(@Param("id") id: String?): String?
+}
+
