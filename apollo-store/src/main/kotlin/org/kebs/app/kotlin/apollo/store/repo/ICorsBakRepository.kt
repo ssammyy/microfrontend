@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository
 @Repository
 interface ICorsBakRepository : HazelcastRepository<CorsBakEntity, Long> {
     fun findByChasisNumber(chasisNumber: String): CorsBakEntity?
-    fun findFirstByChasisNumberIsNotNull(): CorsBakEntity?
+    fun findFirstByChasisNumberIsNotNullAndConsignmentDocIdIsNotNull(): CorsBakEntity?
     fun findByConsignmentDocId(entity: ConsignmentDocumentDetailsEntity?): CorsBakEntity?
 }

@@ -1256,10 +1256,12 @@ class DestinationInspectionService(
             val uiDetails = ConsignmentEnableUI.fromEntity(cdDetails, map, commonDaoServices.loggedInUserAuthentication())
             uiDetails.supervisor = isSupervisor
             uiDetails.inspector = isInspectionOfficer
-            try {
-                uiDetails.demandNotePaid = daoServices.demandNotePaid(cdDetails.id!!)
-            } catch (ex: Exception) {
-                uiDetails.demandNotePaid = false
+            daoServices.demandNotePaid(cdDetails.id!!)?.let {
+                uiDetails.demandNotePaid = true
+                uiDetails
+            } ?: run {
+                uiDetails.demandNotePaid = !uiDetails.demandNoteRequired
+                uiDetails
             }
             try {
                 daoServices.findCORByCdId(cdDetails)?.let {

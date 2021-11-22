@@ -708,7 +708,17 @@ class DITest {
     @Test
     fun demandNoteSubmission() {
         this.demandNoteRepository.findFirstByPaymentStatusAndCdRefNoIsNotNullOrderByCreatedOnDesc(0)?.let { demandNote->
+            KotlinLogging.logger {  }.info("CdRef No: ${demandNote.cdRefNo}")
             destinationInspectionDaoServices.sendDemandNotGeneratedToKWIS(demandNote)
+            Thread.sleep(TimeUnit.SECONDS.toMillis(20))
+        }?:throw ExpectedDataNotFound("Could not find a single payment")
+    }
+
+    @Test
+    fun demandNotePaymentSubmissionByRef() {
+        this.demandNoteRepository.findByDemandNoteNumber("KIMSDN202111174A794")?.let { demandNote->
+            KotlinLogging.logger {  }.info("CdRef No: ${demandNote.cdRefNo}")
+            destinationInspectionDaoServices.sendDemandNotePayedStatusToKWIS(demandNote)
             Thread.sleep(TimeUnit.SECONDS.toMillis(20))
         }?:throw ExpectedDataNotFound("Could not find a single payment")
     }
@@ -716,6 +726,7 @@ class DITest {
     @Test
     fun demandNotePaymentSubmission() {
         this.demandNoteRepository.findFirstByPaymentStatusAndCdRefNoIsNotNull(1)?.let { demandNote->
+            KotlinLogging.logger {  }.info("CdRef No: ${demandNote.cdRefNo}")
             destinationInspectionDaoServices.sendDemandNotePayedStatusToKWIS(demandNote)
             Thread.sleep(TimeUnit.SECONDS.toMillis(20))
         }?:throw ExpectedDataNotFound("Could not find a single payment")
@@ -724,6 +735,7 @@ class DITest {
     @Test
     fun cocSubmission() {
         this.cocRepository.findFirstByCocNumberIsNotNullAndCocTypeAndConsignmentDocIdIsNotNull("COC")?.let { coc->
+            KotlinLogging.logger {  }.info("Ref No: ${coc.consignmentDocId?.cdStandard?.applicationRefNo}")
             destinationInspectionDaoServices.sendLocalCoc(coc)
         }?:throw ExpectedDataNotFound("Could not find a COC document")
     }
@@ -737,7 +749,8 @@ class DITest {
 
     @Test
     fun corSubmission() {
-        this.corsEntityRepository.findFirstByChasisNumberIsNotNull()?.let { cor->
+        this.corsEntityRepository.findFirstByChasisNumberIsNotNullAndConsignmentDocIdIsNotNull()?.let { cor->
+            KotlinLogging.logger {  }.info("Ref No: ${cor.consignmentDocId?.cdStandard?.applicationRefNo}")
             destinationInspectionDaoServices.submitCoRToKesWS(cor)
         }?:throw ExpectedDataNotFound("Could not find a COR document")
     }
