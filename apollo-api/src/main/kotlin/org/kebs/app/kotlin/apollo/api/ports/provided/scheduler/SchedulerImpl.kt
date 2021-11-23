@@ -254,7 +254,7 @@ class SchedulerImpl(
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updateLabResultsWithDetails() {
-        val map = commonDaoServices.serviceMapDetails(diAppId)
+        val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
         //Find all Sample with Lab results inactive
         KotlinLogging.logger { }.info { "::::::::::::::::::::::::STARTED LAB RESULTS SCHEDULER::::::::::::::::::" }
         var samples = 1

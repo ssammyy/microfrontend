@@ -10,6 +10,7 @@ import org.junit.runner.RunWith
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
+import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SchedulerImpl
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.UpAndDownLoad
 import org.kebs.app.kotlin.apollo.api.utils.Delimiters
@@ -109,7 +110,7 @@ class DITest {
     lateinit var demandNoteRepository: IDemandNoteRepository
 
     @Autowired
-    lateinit var notifications: Notifications
+    lateinit var limsService: LimsServices
     @Autowired
     lateinit var motorVehicleInspectionEntityRepo: ICdInspectionMotorVehicleItemChecklistRepository
 
@@ -703,6 +704,13 @@ class DITest {
             qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, null)
         }
 //        schedulerImpl.updateLabResultsWithDetails()
+    }
+    @Test
+    fun testBsNumberLookup(){
+        var result=this.limsService.checkBsNumberExistOnLims("90LP0000000000001")
+        Assertions.assertFalse(result,"BS number was not expected to succeed")
+        result=this.limsService.checkBsNumberExistOnLims("BS202117903")
+        Assertions.assertTrue(result,"BS number is expected to exist")
     }
 
     @Test

@@ -17,7 +17,6 @@ import org.springframework.scheduling.annotation.Scheduled
 @Profile("prod")
 class Scheduler(
         private val schedulerImpl: SchedulerImpl,
-        private val sftpSchedulerImpl: SftpSchedulerImpl,
         private val qaDaoServices: QADaoServices
 ) {
     @Value("\${scheduler.run.send.notifications}")
@@ -52,18 +51,13 @@ class Scheduler(
         KotlinLogging.logger { }.debug("UPDATED DEMAND NOTES on SW")
     }
 
-    @Scheduled(fixedDelay = 100000)//1.6666667 Minutes for now
+    @Scheduled(fixedDelay = 120_000) //2 Minutes for now
     fun runSchedulerAfterEveryFiveMin() {
         qaDaoServices.assignPermitApplicationAfterPayment()
         qaDaoServices.updatePermitWithDiscountWithPaymentDetails()
         schedulerImpl.updateLabResultsWithDetails()
         schedulerImpl.updateFirmTypeStatus()
     }
-
-//    @Scheduled(fixedDelay = 600000)
-//    fun fetchKeswsFiles() {
-//        sftpSchedulerImpl.downloadKeswsFiles()
-//    }
 
 }
 

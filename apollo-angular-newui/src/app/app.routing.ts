@@ -438,6 +438,7 @@ export const routes: Routes = [
     {
         path: 'pvoc',
         component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
         children: [
             {
                 path: '',
@@ -457,6 +458,7 @@ export const routes: Routes = [
     {
         path: 'tasks',
         component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
         children: [
             {
                 path: '',
@@ -467,6 +469,7 @@ export const routes: Routes = [
     {
         path: 'di',
         component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
         children: [
             {
                 path: '',
@@ -478,42 +481,52 @@ export const routes: Routes = [
             },
             {
                 path: 'inspection/checklist/:id',
+                canActivate: [RouteGuard],
                 component: ChecklistDataFormComponent
             },
             {
                 path: 'cor/details/:id',
+                canActivate: [RouteGuard],
                 component: DiCorComponent
             },
             {
                 path: 'certificate/:docType/details/:id',
+                canActivate: [RouteGuard],
                 component: DiCocComponent
             },
             {
                 path: 'idf/details/:id',
+                canActivate: [RouteGuard],
                 component: ViewIdfDocumentDetailsComponent
             },
             {
                 path: 'item/:cdUuid/:id',
+                canActivate: [RouteGuard],
                 component: ItemDetailsComponent
             },
             {
                 path: 'item/lab-results/:id/:page/:cdUuid',
+                canActivate: [RouteGuard],
                 component: LabResultsComponent
             },
             {
                 path: ':id',
+                canActivate: [RouteGuard],
                 component: ViewSingleConsignmentDocumentComponent
             },
             {
                 path: 'version/:id',
+                canActivate: [RouteGuard],
                 component: ViewSingleConsignmentDocumentComponent
             },
             {
                 path: 'checklist/details/:id',
+                canActivate: [RouteGuard],
                 component: ViewInspectionDetailsComponent
             },
             {
                 path: 'exchange/dashboard',
+                canActivate: [RouteGuard],
                 component: MessageDashboardComponent
             }
         ]
@@ -521,9 +534,11 @@ export const routes: Routes = [
     {
         path: 'dashboard',
         component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
         children: [
             {
                 path: 'inspection',
+                canActivate: [RouteGuard],
                 component: InspectionDashboardComponent
             }
         ]
@@ -531,6 +546,7 @@ export const routes: Routes = [
     {
         path: 'currency',
         component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
         children: [
             {
                 path: 'rates',
@@ -541,13 +557,16 @@ export const routes: Routes = [
     {
         path: 'ministry',
         component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
         children: [
             {
                 path: 'inspection',
+                canActivate: [RouteGuard],
                 component: MinistryInspectionHomeComponent
             },
             {
                 path: 'inspection/:id',
+                canActivate: [RouteGuard],
                 component: MotorVehicleInspectionSingleViewComponent
             }
         ]
