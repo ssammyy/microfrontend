@@ -412,6 +412,7 @@ class DestinationInspectionDaoServices(
                             shipmentContainerNumber = "UNKNOWN"
                             shipmentGrossWeight = "UNKNOWN"
                             route = routValue
+                            version = consignmentDocumentDetailsEntity.version ?: 1
                             consignmentDocId = consignmentDocumentDetailsEntity
                             cocType = "COC"
                             productCategory = "UNKNOWN"
@@ -421,12 +422,12 @@ class DestinationInspectionDaoServices(
                         }
                         // Add invoice details
                         consignmentDocumentDetailsEntity.id?.let { cdId ->
-                                this.invoiceDaoService.findDemandNoteCdId(cdId)?.let { itemNote ->
-                                    localCoc.finalInvoiceCurrency = "KES"
-                                    localCoc.finalInvoiceExchangeRate = 0.0
-                                    localCoc.finalInvoiceDate = itemNote.createdOn
-                                    localCoc.finalInvoiceFobValue = itemNote.cfvalue?.toDouble()?:0.0
-                                }
+                            this.invoiceDaoService.findDemandNoteCdId(cdId)?.let { itemNote ->
+                                localCoc.finalInvoiceCurrency = "KES"
+                                localCoc.finalInvoiceExchangeRate = 0.0
+                                localCoc.finalInvoiceDate = itemNote.createdOn
+                                localCoc.finalInvoiceFobValue = itemNote.cfvalue?.toDouble() ?: 0.0
+                            }
                         }
                         localCoc = cocRepo.save(localCoc)
                         KotlinLogging.logger { }.info { "localCoc = ${localCoc.id}" }
@@ -524,6 +525,7 @@ class DestinationInspectionDaoServices(
                             shipmentContainerNumber = "UNKNOWN"
                             shipmentGrossWeight = "UNKNOWN"
                             route = routValue
+                            version = consignmentDocumentDetailsEntity.version ?: 1
                             consignmentDocId = consignmentDocumentDetailsEntity
                             cocType = "NCR"
                             productCategory = "UNKNOWN"
@@ -623,6 +625,7 @@ class DestinationInspectionDaoServices(
                         shipmentSealNumbers = "UNKNOWN"
                         shipmentContainerNumber = "UNKNOWN"
                         shipmentGrossWeight = "UNKNOWN"
+                        version = consignmentDocumentDetailsEntity.version ?: 1
                         consignmentDocId = consignmentDocumentDetailsEntity
                         route = routValue
                         cocType = "COI"
@@ -726,8 +729,10 @@ class DestinationInspectionDaoServices(
         if (!listItems.isEmpty()) {
             coc.cocDetals = listItems
         }
+        coc.version = (cocsEntity.version ?: 1).toString()
         val cocFinalDto = COCXmlDTO()
         cocFinalDto.coc = coc
+
 
         val fileName = cocsEntity.consignmentDocId?.let {
             commonDaoServices.createKesWsFileName(
@@ -747,6 +752,7 @@ class DestinationInspectionDaoServices(
 //        val cocItem = iCocItemRepository.findByCocId(coiEntity.id)?.forEach { coiItem ->
 //            val coi = coiItem.toCocItemDetailsXmlRecordRefl(coiEntity.coiNumber?:"")
         itemList.add(coi)
+        coi.version = (coiEntity.version ?: 1).toString()
 //        }
         coiFinalDto.coi = itemList
 
@@ -759,7 +765,7 @@ class DestinationInspectionDaoServices(
 
         val xmlFile = commonDaoServices.serializeToXml(fileName, coiFinalDto)
 
-        sftpService.uploadFile(xmlFile,"COI")
+        sftpService.uploadFile(xmlFile, "COI")
     }
 
     fun generateCor(
@@ -819,6 +825,7 @@ class DestinationInspectionDaoServices(
                         customsIeNo = cdItemDetailsList.customsEntryNumber
                         transmission = cdMvInspectionEntity.transmissionAutoManual
                         inspectionFee = 0
+                        version = cdItemDetailsList.cdDetails?.version ?: 1
                         approvalStatus = cdEntity.compliantStatus.toString()
                         ucrNumber = cdEntity.ucrNumber
                         inspectionFeeCurrency = "USD"
@@ -968,8 +975,8 @@ class DestinationInspectionDaoServices(
             demandNote.nameImporter = it.nameImporter
             demandNote.address = it.address
             demandNote.telephone = it.telephone
-            demandNote.amountPayable = it.amountPayable?: BigDecimal.ZERO
-            demandNote.cfvalue = it.cfvalue?: BigDecimal.ZERO
+            demandNote.amountPayable = it.amountPayable ?: BigDecimal.ZERO
+            demandNote.cfvalue = it.cfvalue ?: BigDecimal.ZERO
             demandNote.id = it.id
             demandNote.receiptNo = it.receiptNo ?: "UNKNOWN"
             demandNote.entryAblNumber = it.entryAblNumber ?: "UNKNOWN"
@@ -985,6 +992,7 @@ class DestinationInspectionDaoServices(
             demandNote.paymentInstruction3 = PaymenInstruction3(bank3Details)
             demandNote.paymentInstructionMpesa = PaymenInstructionMpesa(mpesaDetails)
             demandNote.paymentInstructionOther = PaymenInstructionOther(mpesaDetails)
+            demandNote.version = demandNote.version ?: 1
 
             val demandNoteFinalDto = DemandNoteXmlDTO()
             demandNoteFinalDto.customDemandNote = demandNote
@@ -1223,7 +1231,7 @@ class DestinationInspectionDaoServices(
      *
      * @param cdId Consignment ID
      */
-    fun demandNotePaid(cdId: Long ): CdDemandNoteEntity? {
+    fun demandNotePaid(cdId: Long): CdDemandNoteEntity? {
         val noteEntity = iDemandNoteRepo.findAllByCdIdAndStatusIn(cdId, listOf(-1, 0, 1, 10))
         when {
             noteEntity.isEmpty() -> {
@@ -2876,6 +2884,7 @@ class DestinationInspectionDaoServices(
     fun submitCoRToKesWS(corsBakEntity: CorsBakEntity) {
         val cor: CustomCorXmlDto = corsBakEntity.toCorXmlRecordRefl()
         val corDto = CORXmlDTO()
+        cor.version = (corsBakEntity.version ?: 1).toString()
         corDto.cor = cor
         val fileName = corsBakEntity.chasisNumber?.let {
             commonDaoServices.createKesWsFileName(
@@ -2884,7 +2893,7 @@ class DestinationInspectionDaoServices(
             )
         } ?: throw ExpectedDataNotFound("Invalid chassis number")
         val xmlFile = commonDaoServices.serializeToXml(fileName, corDto)
-        sftpService.uploadFile(xmlFile,"COR")
+        sftpService.uploadFile(xmlFile, "COR")
     }
 
     /*

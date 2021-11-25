@@ -1,7 +1,7 @@
 <xsd:schema
-	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-	xmlns:xdb="http://xmlns.oracle.com/xdb" targetNamespace="http://DAT_KEBS_CORS_BAK/xsd"
-	xmlns:tns="http://DAT_KEBS_CORS_BAK/xsd" elementFormDefault="qualified">
+		xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+		xmlns:xdb="http://xmlns.oracle.com/xdb" targetNamespace="http://DAT_KEBS_CORS_BAK/xsd"
+		xmlns:tns="http://DAT_KEBS_CORS_BAK/xsd" elementFormDefault="qualified">
 	<xsd:complexType name="APOLLO.Base_T"/>
 	<xsd:element name="APOLLO.DAT_KEBS_CORS_BAKS" type="tns:APOLLO.DAT_KEBS_CORS_BAKS_T"/>
 	<xsd:complexType name="APOLLO.DAT_KEBS_CORS_BAKS_T">

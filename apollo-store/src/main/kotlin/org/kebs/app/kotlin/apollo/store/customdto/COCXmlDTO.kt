@@ -171,8 +171,8 @@ class CustomCocXmlDto(cocNumber: String?, idfNumber: String?, rfiNumber: String?
     @JacksonXmlElementWrapper(useWrapping = false)
     var cocDetals: List<CocDetails>? = null
 
-//    @JacksonXmlProperty(localName = "VERSION")
-//    var version: String? = "1.1"
+    @JacksonXmlProperty(localName = "VERSION")
+    var version: String? = "1"
 
     fun convertTimestampToKeswsValidDate(timestamp: Timestamp): String {
         val sdf = SimpleDateFormat("yyyy-MM-dd")

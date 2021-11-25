@@ -351,6 +351,10 @@ class CocsEntity : Serializable {
     @Basic
     var deletedOn: Timestamp? = null
 
+    @Column(name = "VERSION", nullable = true)
+    @Basic
+    var version: Long? = null
+
     @Column(name = "PARTNER", nullable = true, length = 50)
     @Basic
     var partner: String? = null

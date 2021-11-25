@@ -252,6 +252,10 @@ class CorsBakEntity : Serializable {
     @Basic
     var deletedOn: Timestamp? = null
 
+    @Column(name = "VERSION")
+    @Basic
+    var version: Long? = null
+
     @JoinColumn(name = "CONSIGNMENT_DOC_ID", referencedColumnName = "ID")
     @ManyToOne
     var consignmentDocId: ConsignmentDocumentDetailsEntity? = null
