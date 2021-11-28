@@ -23,12 +23,15 @@ import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
 import java.io.File
 import java.net.URI
+import java.nio.file.Files
 import java.nio.file.Paths
 import java.sql.Timestamp
 import java.time.Instant
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.io.path.exists
 
+val directUploadEndpoint = "direct:save-ftp-file"
 
 @Service
 class SFTPService(
@@ -40,25 +43,45 @@ class SFTPService(
         private val producerTemplate: ProducerTemplate,
         private val properties: CamelFtpProperties,
         private val resourceLoader: ResourceLoader,
+        private val applicationMapProperties: ApplicationMapProperties,
         private val sftpRepository: ISftpTransmissionEntityRepository
 ) {
-    fun uploadFile(fileName: String) {
+    val ignoreDocuments = setOf(applicationMapProperties.mapKeswsErrorDocument, applicationMapProperties.mapKeswsUcrResDoctype)
+    fun uploadFile(file: File, move: Boolean = false): Boolean {
         try {
-            val endpointName = "direct:uploadFileToFtp"
-            val exchange: Exchange = producerTemplate.camelContext.getEndpoint(endpointName).createExchange()
-            exchange.message.headers.put("fileName", fileName)
-            // Deliver message
-            producerTemplate.send(endpointName, exchange)
+            val fileCp = Paths.get(properties.outboundDirectory, file.name).toFile()
+            if (move) {
+                // Move file to outbound folder
+                file.renameTo(fileCp)
+            } else {
+                // Copy to destination
+                file.copyTo(fileCp, overwrite = true)
+            }
+            KotlinLogging.logger { }.info("Sending file manually")
+            return true
         } catch (ex: Exception) {
-            KotlinLogging.logger { }.error("Faile to send file via exchange: ", ex)
+            KotlinLogging.logger { }.error("Failed to send file via exchange: ", ex)
         }
+        return false
     }
+
+    fun resubmitFile(fileDetails: SftpTransmissionEntity): Boolean {
+        val successPath = Paths.get(properties.preMove, fileDetails.filename)
+        val failedPath = Paths.get(properties.outboundDirectory, "error", fileDetails.filename)
+        if (Files.exists(successPath)) {
+            return this.uploadFile(successPath.toFile(), move = true)
+        } else if (Files.exists(failedPath)) {
+            return this.uploadFile(failedPath.toFile(), move = true)
+        }
+        return false
+    }
+
     fun getUploadedDownloadedFile(fileName: String?, flowDirection: String?, successful: Boolean): String {
-        return when(flowDirection){
-            "IN" ->{
+        return when (flowDirection) {
+            "IN" -> {
                 return ""
             }
-            "OUT" ->{
+            "OUT" -> {
                 try {
                     val resouce: Resource
                     if (successful) {
@@ -67,14 +90,14 @@ class SFTPService(
                         resouce = this.resourceLoader.getResource("${this.properties.outboundDirectory}/error/${fileName}")
                     }
                     return resouce.file.readText()
-                }catch (ex: Exception) {
-                    KotlinLogging.logger {  }.error("Failed to open file")
+                } catch (ex: Exception) {
+                    KotlinLogging.logger { }.error("Failed to open file")
                     throw ExpectedDataNotFound("Could not find file specified")
                 }
 
             }
-            else ->{
-                throw ExpectedDataNotFound("invalid message direction: "+flowDirection)
+            else -> {
+                throw ExpectedDataNotFound("invalid message direction: " + flowDirection)
             }
         }
     }
@@ -151,58 +174,91 @@ class SFTPService(
         KotlinLogging.logger { }.info("Base Document Type: ${exchange.message.headers} | Save status: ${docSaved}|")
     }
 
+    /**
+     * Process ERR_MSG documents
+     *
+     */
     fun processErrorDocument(exchange: Exchange) {
         KotlinLogging.logger { }.info("Error Document: ${exchange.message.headers} | Content: ${exchange.message.body}|")
+        val keswsErrorResponse = exchange.message.body as KeswsErrorResponse
+        val log = keswsErrorResponse.documentDetails?.fileName?.let { sftpRepository.findFirstByFilenameOrderByCreatedOn(it) }
+        log?.let { fileLog ->
+            fileLog.keswErrorCode = keswsErrorResponse.errorInformation?.errorCode
+            fileLog.keswErrorMessage = keswsErrorResponse.errorInformation?.errorDescription
+            sftpRepository.save(fileLog)
+        }?:run{
+            KotlinLogging.logger {  }.warn("Could not attach error message to any document")
+            log
+        }
     }
-
+    /**
+     * Update retries if file exists
+     */
     fun addDownloadProcessing(exchange: Exchange) {
-        val log = SftpTransmissionEntity()
-        log.transactionDate = Date()
-        log.transactionStartDate = Timestamp.from(Instant.now())
-        log.callingMethod = Thread.currentThread().name
-        log.flowDirection = exchange.message.getHeader("documentDirection") as String
-        try {
-            val fileName = exchange.`in`.getHeader("CamelFileName") as String
-            when (exchange.`in`.body) {
-                is GenericFile<*> -> {
-                    val file = exchange.message.body as GenericFile<*>
-                    val fileProps = file.fileName.split("-")
-                    log.fileType = fileProps[0]
-                    log.remoteReference = fileProps[1]
-                    log.filename = fileName
-                    log.varField2 = file.fileLength.toString()
-                }
-                is File -> {
-                    val file = exchange.message.body as File
-                    val fileProps = file.name.split("-")
-                    log.fileType = fileProps[0]
-                    log.remoteReference = fileProps[1]
-                    log.filename = fileName
-                    log.varField2 = file.length().toString()
-                }
-                else ->{
-                    val fileProps = fileName.split("-")
-                    log.fileType = fileProps[0]
-                    log.remoteReference = fileProps[1]
-                    log.filename = fileName
-                }
-            }
-            log.transactionReference = exchange.exchangeId
-            log.transactionStatus = 1
-            log.responseMessage = "Successfully "
-            log.responseStatus = "00"
-            log.transactionCompletedDate = Timestamp.from(Instant.now())
-            sftpRepository.save(log)
-        } catch (e: Exception) {
-            log.transactionStatus = 10
-            log.responseMessage = e.message
-            log.transactionCompletedDate = Timestamp.from(Instant.now())
-            KotlinLogging.logger { }.error("An error occurred while downloading sftp files in the inner loop: ", e)
+        val fileName = exchange.`in`.getHeader("CamelFileName") as String
+        this.sftpRepository.findFirstByFilenameOrderByCreatedOn(fileName)?.let { log ->
+            log.retryCount = (log.retryCount ?: 0) + 1
+            log.retries = (log.retries ?: 0) + 1
+            log.lastUpdated = Date()
+            this.sftpRepository.save(log)
+            log
+        } ?: run {
+            val log = SftpTransmissionEntity()
+            log.transactionDate = Date()
+            log.retries = 0
+            log.retryCount = 0
+            log.transactionStartDate = Timestamp.from(Instant.now())
+            log.callingMethod = Thread.currentThread().name
+            log.flowDirection = exchange.message.getHeader("documentDirection") as String
             try {
+                when (exchange.`in`.body) {
+                    is GenericFile<*> -> {
+                        val file = exchange.message.body as GenericFile<*>
+                        val fileProps = file.fileName.split("-")
+                        log.fileType = fileProps[0]
+                        log.remoteReference = fileProps[1]
+                        log.filename = fileName
+                        log.varField2 = file.fileLength.toString()
+                    }
+                    is File -> {
+                        val file = exchange.message.body as File
+                        val fileProps = file.name.split("-")
+                        log.fileType = fileProps[0]
+                        log.remoteReference = fileProps[1]
+                        log.filename = fileName
+                        log.varField2 = file.length().toString()
+                    }
+                    else -> {
+                        val fileProps = fileName.split("-")
+                        log.fileType = fileProps[0]
+                        log.remoteReference = fileProps[1]
+                        log.filename = fileName
+                    }
+                }
+                // Ignore Saving Error and Response documents
+                if (ignoreDocuments.contains(log.fileType)) {
+                    return
+                }
+                log.transactionReference = exchange.exchangeId
+                log.transactionStatus = 1
+                log.responseMessage = "Successfully "
+                log.responseStatus = "00"
+                log.transactionCompletedDate = Timestamp.from(Instant.now())
                 sftpRepository.save(log)
-            } catch (ex: Exception) {
-                KotlinLogging.logger { }.error("FAILED to save on error", ex)
+            } catch (ex: ClassCastException) {
+                KotlinLogging.logger { }.warn("FAILED to save on error", ex)
+            } catch (e: Exception) {
+                log.transactionStatus = 10
+                log.responseMessage = e.message
+                log.transactionCompletedDate = Timestamp.from(Instant.now())
+                KotlinLogging.logger { }.error("An error occurred while downloading sftp files in the inner loop: ", e)
+                try {
+                    sftpRepository.save(log)
+                } catch (ex: Exception) {
+                    KotlinLogging.logger { }.error("FAILED to save on error", ex)
+                }
             }
+            log
         }
 
     }
@@ -217,6 +273,9 @@ class SFTPService(
             logData.responseStatus = "99"
             logData.transactionCompletedDate = Timestamp.from(Instant.now())
             sftpRepository.save(logData)
+        }?:run{
+            KotlinLogging.logger {  }.warn("Could not attach error message to any document")
+            caused
         }
     }
 
@@ -241,7 +300,6 @@ class CamelSftpDownload(
         private val properties: CamelFtpProperties,
         private val applicationMapProperties: ApplicationMapProperties,
 ) : RouteBuilder() {
-    val wireTapResult = "direct:save-ftp-file"
     val documentTypeHeader = "documentDirection"
     private val ftpBuilder = URIBuilder()
             .setScheme(properties.scheme)
@@ -249,9 +307,6 @@ class CamelSftpDownload(
             .setPort(properties.port)
             .setPath(properties.path)
     private lateinit var fromFtpUrl: URI
-    val keswsDocTypes = listOf(applicationMapProperties.mapKeswsBaseDocumentDoctype, applicationMapProperties.mapKeswsUcrResDoctype,
-            applicationMapProperties.mapKeswsDeclarationDoctype, applicationMapProperties.mapKeswsManifestDoctype, applicationMapProperties.mapKeswsAirManifestDoctype,
-            applicationMapProperties.mapKeswsCdDoctype, applicationMapProperties.mapKeswsDeclarationVerificationDoctype)
 
     init {
         ftpBuilder
@@ -354,6 +409,7 @@ class CamelSftpDownload(
                 .bean(SFTPService::class.java, "processBaseDocumentType")
                 .log("Base document type \${in.headers.CamelFileName} processed.")
                 .`when`(header("CamelFileName").startsWith(applicationMapProperties.mapKeswsErrorDocument))
+                .unmarshal(createXmlMapper(KeswsErrorResponse::class.java))
                 .bean(SFTPService::class.java, "processErrorDocument")
                 .otherwise()
                 .setHeader("error", simple("Invalid file received: \${in.headers.CamelFileName}"))
@@ -400,7 +456,6 @@ class CamelSftpUpload(
             .setParameter("antInclude", properties.antInclude)
             .setParameter("autoCreate", "true")
     private lateinit var uploadURI: URI
-    val wireTapResult = "direct:save-ftp-file"
     val documentTypeHeader = "documentDirection"
 
     init {
@@ -409,7 +464,14 @@ class CamelSftpUpload(
     }
 
     override fun configure() {
-        // Upload file to FTP
+        // Upload file manualy
+        from(directUploadEndpoint)
+                .setHeader(documentTypeHeader, constant("OUT"))
+                .log("Manual: Uploading file to FTP server: \${in.headers.CamelFileName}")
+                .to(uploadURI.toString())
+                .bean(SFTPService::class.java, "successfulProcessingRequest") // Save Download status
+                .log("Manual: Uploaded file to FTP server: \${in.headers.CamelFileName}")
+        // Upload file to FTP from folder
         from(fileBuilder.build().toString())
                 .setHeader(documentTypeHeader, constant("OUT"))
                 .bean(SFTPService::class.java, "addDownloadProcessing")

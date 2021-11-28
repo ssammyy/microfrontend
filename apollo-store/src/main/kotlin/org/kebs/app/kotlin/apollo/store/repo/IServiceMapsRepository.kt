@@ -78,7 +78,7 @@ interface ISftpTransmissionEntityRepository : HazelcastRepository<SftpTransmissi
     fun findFirstByFilenameOrderByCreatedOn(fileName: String): SftpTransmissionEntity?
     fun findFirstByVarField10(exchangeId: String): SftpTransmissionEntity?
     fun findFirstByTransactionReference(exchangeId: String): SftpTransmissionEntity?
-
+    fun findFirstByFilenameContainingOrderByCreatedOn(fileName: String,pageable: Pageable): Page<SftpTransmissionEntity>
     fun findByTransactionStatusInAndFlowDirection(statuses: List<Int>, flowDirection: String?,pageable: Pageable): Page<SftpTransmissionEntity>
     fun findByTransactionStatusNotInAndFlowDirection(statuses: List<Int>, flowDirection: String?,pageable: Pageable): Page<SftpTransmissionEntity>
 

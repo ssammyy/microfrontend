@@ -18,6 +18,7 @@ import java.io.IOException
 import java.sql.Timestamp
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 @Service
 class FileStorageService(
@@ -51,11 +52,11 @@ class FileStorageService(
         this.sftpRepository.findByIdOrNull(messageId)?.let {
             try {
                 response.data = this.ftpService.getUploadedDownloadedFile(it.fileType, it.flowDirection, it.transactionStatus == 1)
-                response.responseCode=ResponseCodes.SUCCESS_CODE
-                response.message="Succces"
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+                response.message = "Succces"
             } catch (ex: Exception) {
-                response.responseCode=ex.localizedMessage
-                response.message="Succces"
+                response.responseCode = ex.localizedMessage
+                response.message = "Succces"
             }
         } ?: run {
             response.message = "Not found"
@@ -65,7 +66,7 @@ class FileStorageService(
         return response
     }
 
-    fun loadFilesByStatus(status: Int, date: String?, flowDirection: String?, page: PageRequest): ApiResponseModel {
+    fun loadFilesByStatus(statusOpt: Optional<String>, fileName: Optional<String>, date: String?, flowDirection: String?, page: PageRequest): ApiResponseModel {
         val response = ApiResponseModel()
         var referenceDate = date
         if (referenceDate.isNullOrEmpty()) {
@@ -73,10 +74,21 @@ class FileStorageService(
         }
         val data: Page<SftpTransmissionEntity>
         // Date
-        if (status > 0) {
-            data = this.sftpRepository.findByTransactionStatusInAndFlowDirection(listOf(1), flowDirection, page)
-        } else {
-            data = this.sftpRepository.findByTransactionStatusNotInAndFlowDirection(listOf(1), flowDirection, page)
+        data = when {
+            fileName.isPresent->{
+                this.sftpRepository.findFirstByFilenameContainingOrderByCreatedOn(fileName.get(), page)
+            }
+            statusOpt.isPresent -> {
+                val status = statusOpt.get().toInt()
+                if (status > 0) {
+                    this.sftpRepository.findByTransactionStatusInAndFlowDirection(listOf(status), flowDirection, page)
+                } else {
+                    this.sftpRepository.findByTransactionStatusNotInAndFlowDirection(listOf(1), flowDirection, page)
+                }
+            }
+            else -> {
+                this.sftpRepository.findByTransactionStatusNotInAndFlowDirection(listOf(1, 0), flowDirection, page)
+            }
         }
         response.data = data.toList()
         response.pageNo = data.number
@@ -102,5 +114,34 @@ class FileStorageService(
 //        val FileDB = SdlFactoryVisitReportsUploadEntity(name = fileName, file.contentType, file.bytes)
         iSdlFactoryVisitReportsUploadEntityRepository.save(sdlFactoryVisitReportsUploadEntity)
         KotlinLogging.logger { }.info { "Saved uploaded file OK" }
+    }
+
+    fun resendFile(messageId: Long): ApiResponseModel {
+        val response = ApiResponseModel()
+        this.sftpRepository.findByIdOrNull(messageId)?.let {
+            try {
+                if ("OUT".equals(it.flowDirection, false) && !it.filename.isNullOrEmpty()) {
+                    if (this.ftpService.resubmitFile(it)) {
+                        response.data = true
+                        response.responseCode = ResponseCodes.SUCCESS_CODE
+                        response.message = "File resubmitted successfully"
+                    } else {
+                        response.responseCode = ResponseCodes.FAILED_CODE
+                        response.message = "File resubmitted failed"
+                    }
+                } else {
+                    response.responseCode = ResponseCodes.NOT_IMPLEMENTED
+                    response.message = "Incoming files cannot be resubmitted"
+                }
+            } catch (ex: Exception) {
+                response.responseCode = ResponseCodes.FAILED_CODE
+                response.message = "Failed to resubmit file: ${ex.message}"
+            }
+        } ?: run {
+            response.message = "File Not found"
+            response.responseCode = ResponseCodes.NOT_FOUND
+            response
+        }
+        return response
     }
 }

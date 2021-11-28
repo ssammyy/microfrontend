@@ -56,6 +56,15 @@ class SftpTransmissionEntity : Serializable {
     @Column(name = "RESPONSE_MESSAGE")
     var responseMessage: String? = null
 
+    @Column(name = "MESSAGE_RETRY_COUNT")
+    var retryCount: Long? = null
+
+    @Column(name = "KESW_ERROR_CODE")
+    var keswErrorCode: String? = null
+
+    @Column(name = "KESW_ERROR_MESSAGE")
+    var keswErrorMessage: String? = null
+
     @Column(name = "TRANSACTION_START_DATE")
     var transactionStartDate: Timestamp? = null
 

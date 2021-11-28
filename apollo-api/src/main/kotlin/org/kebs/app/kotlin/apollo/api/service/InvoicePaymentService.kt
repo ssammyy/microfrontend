@@ -4,16 +4,22 @@ import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.kebs.app.kotlin.apollo.store.model.CdDemandNoteEntity
 import org.kebs.app.kotlin.apollo.store.model.di.CurrencyExchangeRates
 import org.kebs.app.kotlin.apollo.store.repo.di.ICfgCurrencyExchangeRateRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.io.ByteArrayInputStream
 import java.io.InputStreamReader
 import java.io.Reader
 import java.sql.Timestamp
-import java.time.Instant
+import java.time.*
+import java.time.format.DateTimeFormatter
+import java.util.*
+
 
 @Service("invoiceService")
 class InvoicePaymentService(
@@ -27,8 +33,10 @@ class InvoicePaymentService(
         private val commonDaoServices: CommonDaoServices,
         private val applicationMapProperties: ApplicationMapProperties
 ) {
+    var dateTimeFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy")
     fun invoiceDetails(demandNoteId: Long): HashMap<String, Any> {
         var map = hashMapOf<String, Any>()
+
 
         daoServices.findDemandNoteWithID(demandNoteId)?.let { demandNote ->
             map["preparedBy"] = demandNote.generatedBy.toString()
@@ -58,8 +66,8 @@ class InvoicePaymentService(
                 demand.varField10 = remarks
                 consignmentDocument.varField10 = "Demand note rejected"
                 consignmentDocument.sendDemandNote = map.invalidStatus
-                consignmentDocument.diProcessStatus=map.inactiveStatus
-                consignmentDocument.diProcessInstanceId=null
+                consignmentDocument.diProcessStatus = map.inactiveStatus
+                consignmentDocument.diProcessInstanceId = null
                 this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
                 this.iDemandNoteRepo.save(demand)
                 this.auditService.addHistoryRecord(consignmentDocument.id!!, consignmentDocument.ucrNumber, remarks, "REJECT DEMAND NOTE", "Demand note ${demandNoteId} rejected")
@@ -216,8 +224,8 @@ class InvoicePaymentService(
             // 2. Update application status
             consignmentDocument.varField10 = "DEMAND NOTE PAID,AWAITING INSPECTION"
             // 3. Clear Payment process completed
-            consignmentDocument.diProcessStatus=0
-            consignmentDocument.diProcessInstanceId=null
+            consignmentDocument.diProcessStatus = 0
+            consignmentDocument.diProcessInstanceId = null
             this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
             return true
         } catch (ex: Exception) {
@@ -252,6 +260,55 @@ class InvoicePaymentService(
             }
             this.exchangeRateRepository.save(exchangeRateEntity)
         }
+    }
+
+    fun toSqlDate(date: LocalDateTime): java.sql.Date {
+        val defaultZoneId = ZoneOffset.systemDefault()
+        val sDate=Date.from(date.atZone(ZoneId.systemDefault()).toInstant());
+        return java.sql.Date(sDate.time)
+    }
+
+    fun toSqlTimestamp(date: LocalDateTime): java.sql.Timestamp {
+        val sDate=Date.from(date.atZone(ZoneId.systemDefault()).toInstant());
+        return java.sql.Timestamp(sDate.time)
+    }
+
+    /**
+     * List any active demand note transaction(approved by supervisor)
+     */
+    fun listTransactions(status: Int?, date: Optional<String>, transactionNo: Optional<String>, page: PageRequest): Page<CdDemandNoteEntity> {
+        val demandNotes: Page<CdDemandNoteEntity>
+        val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+        when {
+            transactionNo.isPresent -> {
+                KotlinLogging.logger {  }.info("Search by transaction NO")
+                demandNotes = iDemandNoteRepo.findByDemandNoteNumberContainingAndStatusOrderByIdAsc(transactionNo.get(), map.activeStatus, page)
+            }
+            date.isPresent -> {
+                val searchDate = LocalDate.parse(date.get(), dateTimeFormat)
+                val startDate = searchDate.atStartOfDay()
+                val endDate = searchDate.plusDays(1).atStartOfDay()
+                KotlinLogging.logger {  }.info("Start Date: ${startDate}, End Date: ${endDate}")
+                demandNotes = when (status) {
+                    null -> iDemandNoteRepo.findByModifiedOnGreaterThanEqualAndModifiedOnLessThanAndStatusOrderByIdAsc(toSqlTimestamp(startDate), toSqlTimestamp(endDate), map.activeStatus, page)
+                    else -> iDemandNoteRepo.findByModifiedOnGreaterThanEqualAndModifiedOnLessThanAndPaymentStatusAndStatusOrderByIdAsc(toSqlTimestamp(startDate), toSqlTimestamp(endDate), status, map.activeStatus, page)
+                }
+            }
+            status!=null -> {
+                KotlinLogging.logger {  }.info("Search by transaction status")
+                demandNotes = iDemandNoteRepo.findByPaymentStatusAndStatusOrderByIdAsc(status, map.activeStatus, page)
+            }
+            else -> {
+                KotlinLogging.logger {  }.info("Search by all transactions")
+                demandNotes = iDemandNoteRepo.findByStatusOrderByIdAsc(map.activeStatus, page)
+            }
+        }
+        return demandNotes
+    }
+
+    fun getTransactionStatsOnDate(date: Optional<String>): Any? {
+        val currentDate=date.orElse(dateTimeFormat.format(LocalDate.now()))
+        return iDemandNoteRepo.transactionStats(currentDate)
     }
 
 }

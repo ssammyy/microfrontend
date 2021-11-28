@@ -20,6 +20,18 @@ export class ViewMessageComponent implements OnInit {
         this.messageDetails = this.data
             this.loadFileContent()
     }
+    resendFile(){
+        this.diService.resendExchangeMessageFile(this.messageDetails.id)
+            .subscribe(
+                res=>{
+                    if(res.responseCode==="00"){
+                        this.diService.showSuccess(res.message,null)
+                    } else {
+                        this.diService.showError(res.message,null)
+                    }
+                }
+            )
+    }
 
     loadFileContent() {
         this.diService.loadExchangeMessageFile(this.messageDetails.id)

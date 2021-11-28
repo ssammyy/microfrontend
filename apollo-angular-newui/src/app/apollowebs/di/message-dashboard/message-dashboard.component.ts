@@ -11,12 +11,14 @@ import {ViewMessageComponent} from "./view-message/view-message.component";
 export class MessageDashboardComponent implements OnInit {
     activeStatus = 'incoming'
     chartType: string = 'bar';
-    requestStatus = "1"
+    requestStatus = ""
     exchangeDate: any = null
+    exchangeFile:any=null
     documentData: any[]
     exchangeStats: any[]
     chartDatasets: any[] = []
     chartLabels: any[] = []
+
     public chartColors: Array<any> = [
         {
             backgroundColor: [
@@ -128,8 +130,14 @@ export class MessageDashboardComponent implements OnInit {
                 type: 'string'
             },
             transactionStatus: {
-                title: 'Status',
-                type: 'string'
+                title: 'Successful',
+                type: 'string',
+                valuePrepareFunction: (status) => {
+                    if (status === 1) {
+                        return 'Yes'
+                    }
+                    return "No"
+                },
             }
         },
         pager: {
@@ -152,6 +160,10 @@ export class MessageDashboardComponent implements OnInit {
             this.loadData()
         }
     }
+    searchMessages() {
+        this.currentPage=0
+        this.loadData()
+    }
 
     summarizeDataset() {
         this.chartDatasets = []
@@ -166,11 +178,22 @@ export class MessageDashboardComponent implements OnInit {
             }
             if (documentData.hasOwnProperty(key)) {
                 data = d[key]
+                if (!data) {
+                    data = {
+                        label: key,
+                        success: 0,
+                        failed: 0
+                    }
+                }
             }
-            if (d.transactionStatus === 1) {
-                data.success += d.totalDocuments
+            if (d.responseStatus === 1) {
+                if (d.totalDocuments) {
+                    data.success += d.totalDocuments
+                }
             } else {
-                data.failed += d.totalDocuments
+                if (d.totalDocuments) {
+                    data.failed += d.totalDocuments
+                }
             }
             documentData[key] = data
         }
@@ -218,12 +241,16 @@ export class MessageDashboardComponent implements OnInit {
         }
         this.documentData = []
         // Load data
-        this.diService.loadExchangeMessages(this.requestStatus, direction, this.exchangeDate, this.currentPage, this.defaultPageSize)
+        this.diService.loadExchangeMessages(this.requestStatus, direction, this.exchangeFile, this.exchangeDate, this.currentPage, this.defaultPageSize)
             .subscribe(
                 res => {
-                    if (res.responseCode == "00") {
+                    if (res.responseCode === "00") {
                         this.documentData = res.data
-                        this.totalCount = res.totalCount
+                        if(res.totalCount>1000) {
+                            this.totalCount = 1000
+                        }else {
+                            this.totalCount=res.totalCount
+                        }
                     } else {
                         this.diService.showError(res.message, null)
                     }

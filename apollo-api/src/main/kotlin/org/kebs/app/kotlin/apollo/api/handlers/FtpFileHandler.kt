@@ -10,6 +10,7 @@ import org.springframework.web.servlet.function.ServerResponse
 @Component
 class FtpFileHandler(val fileStorage: FileStorageService) {
 
+
     fun loadStats(req: ServerRequest): ServerResponse {
         val dateCreated = req.param("date")
         return ServerResponse
@@ -24,13 +25,21 @@ class FtpFileHandler(val fileStorage: FileStorageService) {
                 .body(fileStorage.loadFilesById(messageId.toLongOrDefault(0L)))
     }
 
+    fun resendFileViaSftp(req: ServerRequest): ServerResponse{
+        val messageId = req.pathVariable("messageId")
+        return ServerResponse
+                .ok()
+                .body(fileStorage.resendFile(messageId.toLongOrDefault(0L)))
+    }
+
     fun listFilesByStatus(req: ServerRequest): ServerResponse {
-        val status = req.pathVariable("fileStatus")
+        val status = req.param("fileStatus")
         val dateCreated = req.param("date")
         val flowDirection = req.param("direction")
+        val fileName = req.param("exchangeFile")
         val page = extractPage(req)
         return ServerResponse
                 .ok()
-                .body(fileStorage.loadFilesByStatus(status.toInt(), dateCreated.orElse(""), flowDirection.orElse(null), page))
+                .body(fileStorage.loadFilesByStatus(status, fileName,dateCreated.orElse(""), flowDirection.orElse(null), page))
     }
 }

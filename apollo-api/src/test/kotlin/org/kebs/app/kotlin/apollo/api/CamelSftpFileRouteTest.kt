@@ -1,14 +1,29 @@
 package org.kebs.app.kotlin.apollo.api
 
+import mu.KotlinLogging
 import org.apache.camel.RoutesBuilder
 import org.apache.camel.builder.RouteBuilder
-import org.apache.camel.test.junit5.CamelTestSupport
-import org.apache.http.client.utils.URIBuilder
+import org.junit.Assert
+import org.junit.jupiter.api.Test
+import org.junit.runner.RunWith
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.SFTPService
+import org.kebs.app.kotlin.apollo.api.service.FileStorageService
+import org.kebs.app.kotlin.apollo.store.repo.ISftpTransmissionEntityRepository
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.core.io.ResourceLoader
+import org.springframework.test.context.junit4.SpringRunner
+import java.io.File
 
-
-class CamelSftpFileRouteTest() : CamelTestSupport() {
-
+@SpringBootTest
+@RunWith(SpringRunner::class)
+class CamelSftpFileRouteTest{
+    @Autowired
+    private lateinit var sftpService: SFTPService
+    @Autowired
+    private lateinit var resourceLoader: ResourceLoader
+    @Autowired
+    private lateinit var sftpRepository: ISftpTransmissionEntityRepository
     fun createRouteBuilder2(): RoutesBuilder {
         return object : RouteBuilder() {
             override fun configure() {
@@ -17,25 +32,23 @@ class CamelSftpFileRouteTest() : CamelTestSupport() {
         }
     }
 
-    @Throws(Exception::class)
-    override fun createRouteBuilder(): RouteBuilder {
-        val fromFtpUrl = URIBuilder()
-                .setScheme("sftp")
-                .setHost("10.10.0.127")
-                .setPath("/C/mhxapps/inbound/")
-                .addParameter("username", "kebs\\\\bsk")
-                .addParameter("password", "1ntegrat10n@!234")
-
-        return object : RouteBuilder() {
-            override fun configure() {
-                from(fromFtpUrl.toString())
-                        .setHeader("useId").simple("system123")
-                        .setHeader("fileName").simple("\${file:name}")
-                        .bean(SFTPService::class.java, "downloadAndProcessFile(\${body}, \${headers})")
-                        .log("Downloaded file \${file:name} complete.")
-            }
+    @Test
+    fun resubmitFile() {
+        val file=sftpRepository.findById(100)
+        if(file.isPresent) {
+            val exchange = this.sftpService.resubmitFile(file.get())
+            Assert.assertNotNull("Expected delivery to be successful", exchange)
+        } else {
+            Assert.fail("Expected file not found")
         }
     }
 
+    @Test
+    fun resubmitFileViaSftp() {
+        val file=File("sent-files/KEBS_DEMAND-DN20210407C4C3D-1-B-20211508091506.xml")
+        KotlinLogging.logger {  }.info("File: ${file.absoluteFile}")
+        val exchange = this.sftpService.uploadFile(file)
+        Assert.assertTrue("Expected delivery to be successful",exchange)
+    }
 
 }

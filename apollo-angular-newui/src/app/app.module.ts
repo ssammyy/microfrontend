@@ -230,6 +230,7 @@ import {MessageDashboardComponent} from './apollowebs/di/message-dashboard/messa
 import {ViewMessageComponent} from './apollowebs/di/message-dashboard/view-message/view-message.component';
 import {ChartsModule, MDBBootstrapModule, WavesModule} from 'angular-bootstrap-md';
 import {StdTcWorkplanComponent} from "./apollowebs/standards-development/standard-request/std-tc-workplan/std-tc-workplan.component";
+import { TransactionViewComponent } from './apollowebs/di/transaction-view/transaction-view.component';
 
 @NgModule({
     imports: [
@@ -484,6 +485,7 @@ import {StdTcWorkplanComponent} from "./apollowebs/standards-development/standar
         StandardLevyPenaltyHistoryComponent,
         StandardLevyDefaulterHistoryComponent,
         StdTcWorkplanComponent,
+        TransactionViewComponent,
     ],
     providers: [
         MatNativeDateModule,

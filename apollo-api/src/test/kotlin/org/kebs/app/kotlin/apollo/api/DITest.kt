@@ -762,6 +762,7 @@ class DITest {
         }?:throw ExpectedDataNotFound("Could not find a COR document")
     }
 
+
     @Test
     fun demandNoteCreationDetails() {
         val appId = applicationMapProperties.mapImportInspection

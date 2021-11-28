@@ -10,7 +10,7 @@
                         <h4 class="card-title">Message Monitoring</h4>
                     </div>
                     <div class="card-body">
-                        <div style="display: block;max-height: 70%" *ngIf="exchangeStats">
+                        <div style="display: block;max-height: 50%" *ngIf="exchangeStats">
                             <canvas mdbChart
                                     [chartType]="chartType"
                                     [datasets]="chartDatasets"
@@ -24,6 +24,23 @@
                             </canvas>
                         </div>
                         <div class="toolbar">
+                            <div class="form-inline">
+<!--                                <input id="transaction-date" type="date" class="search-form-input"-->
+<!--                                       [(ngModel)]="exchangeDate" placeholder="Transaction Date"-->
+<!--                                       min="2021-01-01" max="2050-12-31">-->
+                                <input id="search-file" type="text" class="search-form-input"
+                                       [(ngModel)]="exchangeFile" placeholder="File Name">
+                                <select [(ngModel)]="requestStatus" id="payment-status" class="search-form-input">
+                                    <option [defaultSelected]="true">Transmission Status</option>
+                                    <option value="">All Status</option>
+                                    <option value="1">Successful</option>
+                                    <option value="0">Failed</option>
+                                </select>
+                                <button type="button" class="btn btn-primary btn-background"
+                                        (click)="searchMessages()">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
                             <div class="btn-group btn-group-sm" role="group" aria-label="Applications Status">
                                 <button type="button" (click)="toggleStatus('incoming')"
                                         [className]="activeStatus == 'incoming' ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-default'">

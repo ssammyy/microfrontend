@@ -116,6 +116,7 @@ import {InspectionDashboardComponent} from "./apollowebs/di/inspection-dashboard
 import {LabResultsComponent} from "./apollowebs/di/view-single-consignment-document/item-details-list-view/lab-results/lab-results.component";
 import {CurrencyExchangeRatesComponent} from "./apollowebs/di/currency-exchange-rates/currency-exchange-rates.component";
 import {MessageDashboardComponent} from "./apollowebs/di/message-dashboard/message-dashboard.component";
+import {TransactionViewComponent} from "./apollowebs/di/transaction-view/transaction-view.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -467,6 +468,28 @@ export const routes: Routes = [
         ]
     },
     {
+        path: 'demand/notes',
+        component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [
+            {
+                path: '',
+                component: TransactionViewComponent
+            }
+        ]
+    },
+    {
+        path: 'kentrade/exchange/messages',
+        component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [
+            {
+                path: '',
+                component: MessageDashboardComponent
+            }
+        ]
+    },
+    {
         path: 'di',
         component: AdminLayoutComponent,
         canActivate: [RouteGuard],
@@ -524,11 +547,6 @@ export const routes: Routes = [
                 canActivate: [RouteGuard],
                 component: ViewInspectionDetailsComponent
             },
-            {
-                path: 'exchange/dashboard',
-                canActivate: [RouteGuard],
-                component: MessageDashboardComponent
-            }
         ]
     },
     {

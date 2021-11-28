@@ -136,8 +136,16 @@ export const ROUTES: RouteInfo[] = [
         icontype: 'receipt'
     },
     {
-        path: '/di/exchange/dashboard',
-        title: 'Exchange Monitoring',
+        path: '/demand/notes',
+        title: 'Transaction Monitoring',
+        type: 'link',
+        collapse: 'transactions',
+        privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
+        icontype: 'money'
+    },
+    {
+        path: '/kentrade/exchange/messages',
+        title: 'KENTRADE Monitoring',
         type: 'link',
         collapse: 'exchange-messages',
         privilege: ['SYSADMIN_VIEW','DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],

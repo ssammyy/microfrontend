@@ -55,6 +55,18 @@
             <label class="waiver-form-label">EXCEPTION DETAILS</label>
             <p>{{messageDetails.varField10}}</p>
         </div>
+        <div class="col-sm-3 col-md-4">
+            <label class="waiver-form-label">RETRANSMISSION ATTEMPTS</label>
+            <p>{{messageDetails.retryCount}}</p>
+        </div>
+        <div class="col-sm-3 col-md-4">
+            <label class="waiver-form-label">KESW ERROR CODE</label>
+            <p>{{messageDetails.keswErrorCode}}</p>
+        </div>
+        <div class="col-sm-3 col-md-4">
+            <label class="waiver-form-label">KESW ERROR DESCRIPTION</label>
+            <p>{{messageDetails.keswErrorMessage}}</p>
+        </div>
         <div class="col-sm-12 col-md-12" *ngIf="messageContent">
             <label class="waiver-form-label">XML DATA</label>
             <pre >{{messageContent}}</pre>
@@ -64,8 +76,8 @@
 <mat-dialog-actions>
     <div class="row no_margin master-list-new-btn" *ngIf="messageDetails">
         <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
-        <div *ngIf="messageDetails.transactionStatus!==1">
-            <button  class="btn btn-warning" mat-button>Retry Message
+        <div *ngIf="messageDetails.flowDirection!=='IN'">
+            <button  class="btn btn-warning" mat-button (click)="resendFile()">Resend Message
                 <mat-spinner [diameter]="20" color="warn" *ngIf="reSubmittingMessage"></mat-spinner>
             </button>
         </div>

@@ -5,6 +5,7 @@ import {Observable} from "rxjs";
 import * as fileSaver from 'file-saver';
 import {map} from "rxjs/operators";
 import swal from "sweetalert2";
+import {DatePipe} from "@angular/common";
 
 @Injectable({
     providedIn: 'root'
@@ -27,16 +28,22 @@ export class DestinationInspectionService {
         return false
     }
 
-    loadExchangeMessages(status: any, direction: any, date: any, page: any, size: any): Observable<any> {
+    loadExchangeMessages(status: any, direction: any, exchangeFile: any, date: any, page: any, size: any): Observable<any> {
         let params = {
             direction: direction,
             page: page,
             size: size
         }
-        if (date) {
-            params['date'] = date
+        if (exchangeFile) {
+            params['exchangeFile'] = exchangeFile
         }
-        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/files/list/" + status), {
+        if (status) {
+            params['fileStatus'] = status
+        }
+        if (date) {
+            params['date'] = new DatePipe('en-US').transform(date, 'dd-MM-yyyy');
+        }
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/files/list"), {
             params: params
         })
     }
@@ -45,6 +52,10 @@ export class DestinationInspectionService {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/files/get/" + messageId), {
             params: {}
         })
+    }
+
+    resendExchangeMessageFile(messageId): Observable<any> {
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/files/resend/" + messageId), {})
     }
 
     loadExchangeStats(date: any): Observable<any> {
@@ -56,7 +67,6 @@ export class DestinationInspectionService {
             params: params
         })
     }
-
 
 
     loadPersonalDashboard(): Observable<any> {
@@ -161,6 +171,35 @@ export class DestinationInspectionService {
 
     demandNoteFees(): Observable<any> {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/demand-note/fees"))
+    }
+
+    demandNoteStats(date: any): Observable<any> {
+        let params = {}
+        if (date) {
+            params['date'] = date
+        }
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/demand-notes/stats"), {
+            params: params
+        })
+    }
+
+    demandNoteListAndSearch(search: any, date: any, status: number, page: number, size: number): Observable<any> {
+        let params = {
+            page: page.toString(),
+            size: size.toString()
+        }
+        if (search) {
+            params['trx'] = search
+        }
+        if (date) {
+            params['date'] = new DatePipe('en-US').transform(date, 'dd-MM-yyyy');
+        }
+        if (status) {
+            params['status'] = status
+        }
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/demand-notes/list"), {
+            params: params
+        })
     }
 
     uploadMinistryChecklist(file: File, comment: string, id: any): Observable<any> {

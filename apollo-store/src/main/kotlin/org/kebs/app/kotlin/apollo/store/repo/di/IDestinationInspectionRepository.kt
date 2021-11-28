@@ -10,7 +10,9 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 import java.math.BigDecimal
+import java.sql.Date
 import java.sql.Timestamp
+import java.time.LocalDateTime
 
 
 /***********
@@ -285,6 +287,11 @@ interface ICdConsignorEntityRepository : HazelcastRepository<CdConsignorDetailsE
     fun findAllById(Id: Long): List<CdConsignorDetailsEntity>?
 }
 
+interface TransactionStats {
+    fun setTotalCount(): Long
+    fun setTotalAmount() : BigDecimal
+    fun setPaymentStatus(): Int
+}
 @Repository
 interface IDemandNoteRepository : HazelcastRepository<CdDemandNoteEntity, Long> {
     fun findByUcrNumber(ucrNumber: String): CdDemandNoteEntity?
@@ -292,6 +299,11 @@ interface IDemandNoteRepository : HazelcastRepository<CdDemandNoteEntity, Long> 
     fun findFirstByCdIdAndStatusIn(cdId: Long, statuses: List<Int>): CdDemandNoteEntity?
     fun findByCdId(cdId: Long): CdDemandNoteEntity?
     fun findByDemandNoteNumber(demandNoteNumber: String): CdDemandNoteEntity?
+    fun findByModifiedOnGreaterThanEqualAndModifiedOnLessThanAndStatusOrderByIdAsc(dateGenerated: Timestamp, endGenerated2: Timestamp, status: Int, pageable: Pageable): Page<CdDemandNoteEntity>
+    fun findByModifiedOnGreaterThanEqualAndModifiedOnLessThanAndPaymentStatusAndStatusOrderByIdAsc(start: Timestamp,end: Timestamp, paymentStatus: Int,status: Int,page: Pageable): Page<CdDemandNoteEntity>
+    fun findByPaymentStatusAndStatusOrderByIdAsc(paymentStatus: Int,status: Int,page: Pageable): Page<CdDemandNoteEntity>
+    fun findByStatusOrderByIdAsc(status: Int,page: Pageable): Page<CdDemandNoteEntity>
+    fun findByDemandNoteNumberContainingAndStatusOrderByIdAsc(demandNoteNumber: String, status: Int,page: Pageable): Page<CdDemandNoteEntity>
     fun findByInvoiceBatchNumberId(invoiceBatchNumberId: Long): List<CdDemandNoteEntity>?
     fun findByCdIdAndPaymentStatus(cdId: Long, paymentStatus: Int): CdDemandNoteEntity?
     fun findByCdIdAndPaymentStatusIn(cdId: Long, paymentStatuses: List<Int>): List<CdDemandNoteEntity>
@@ -299,6 +311,8 @@ interface IDemandNoteRepository : HazelcastRepository<CdDemandNoteEntity, Long> 
     fun findAllByPaymentStatus(paymentStatus: Int): List<CdDemandNoteEntity>?
     fun findFirstByPaymentStatusAndCdRefNoIsNotNull(paymentStatus: Int): CdDemandNoteEntity?
     fun findFirstByPaymentStatusAndCdRefNoIsNotNullOrderByCreatedOnDesc(paymentStatus: Int): CdDemandNoteEntity?
+    @Query("select count(*) as totalCount, sum(AMOUNT_PAYABLE) totalAmount,paymentStatus from DAT_KEBS_CD_DEMAND_NOTE where  to_char(DATE_GENERATED,'DD-MM-YYYY')=:date group by PAYMENT_STATUS",nativeQuery = true)
+    fun transactionStats(date: String): List<TransactionStats>
 }
 
 @Repository

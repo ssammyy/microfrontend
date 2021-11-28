@@ -4,6 +4,7 @@ import mu.KotlinLogging
 import okhttp3.internal.toLongOrDefault
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
+import org.kebs.app.kotlin.apollo.api.payload.extractPage
 import org.kebs.app.kotlin.apollo.api.payload.request.DemandNoteForm
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
@@ -23,6 +24,8 @@ import java.sql.Timestamp
 import java.time.Instant
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
+import java.util.*
 
 @Component
 class InvoiceHandlers(
@@ -102,7 +105,7 @@ class InvoiceHandlers(
                 val noteWithID = daoServices.findDemandNoteWithID(invoiceId.toLongOrDefault(0L))
                 val noteItems = daoServices.findDemandNoteItemDetails(noteWithID?.id!!)
                 val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-                KotlinLogging.logger {  }.info("TTT: ${map.workingStatus}")
+                KotlinLogging.logger { }.info("TTT: ${map.workingStatus}")
                 response.data = mapOf(
                         Pair("deleteSubmitEnabled", noteWithID.status == map.workingStatus),
                         Pair("items", noteItems),
@@ -185,7 +188,7 @@ class InvoiceHandlers(
                     )
                 }
             }
-            KotlinLogging.logger {  }.info("Total Items: ${itemList.size}")
+            KotlinLogging.logger { }.info("Total Items: ${itemList.size}")
             // Calculate demand note amount and save
             val demandNote = daoServices.generateDemandNoteWithItemList(
                     itemList,
@@ -205,7 +208,7 @@ class InvoiceHandlers(
                 demandNote.varField2 = (itemList.size == totalItems).toString()
                 demandNote.varField3 = "NEW"
                 daoServices.upDateDemandNote(demandNote)
-                cdDetails.varField10="DEMAND NOTE GENERATED AWAITING SUBMISSION"
+                cdDetails.varField10 = "DEMAND NOTE GENERATED AWAITING SUBMISSION"
                 daoServices.updateCdDetailsInDB(cdDetails, loggedInUser)
                 response.responseCode = ResponseCodes.SUCCESS_CODE
                 response.message = "Demand note generated, review under demand note tab and submit for approval"
@@ -226,7 +229,7 @@ class InvoiceHandlers(
                 val demandNote = daoServices.findDemandNoteWithID(invoiceId.toLongOrDefault(0L))
                 if (demandNote != null) {
                     val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-                    if (demandNote.status==map.workingStatus) {
+                    if (demandNote.status == map.workingStatus) {
                         val loggedInUser = commonDaoServices.loggedInUserDetails()
                         demandNote.status = 50
                         demandNote.varField3 = "DELETED"
@@ -273,7 +276,7 @@ class InvoiceHandlers(
 
                         this.diBpmn.startGenerateDemandNote(map, data, cdDetails)
                         daoServices.upDateDemandNote(demandNote)
-                        cdDetails.varField10="DEMAND NOTE SUBMITTED AWAITING APPROVAL"
+                        cdDetails.varField10 = "DEMAND NOTE SUBMITTED AWAITING APPROVAL"
                         this.daoServices.updateCdDetailsInDB(cdDetails, commonDaoServices.getLoggedInUser())
                         response.responseCode = ResponseCodes.SUCCESS_CODE
                         response.message = "Demand note submitted, awaiting supervisor approval"
@@ -328,11 +331,60 @@ class InvoiceHandlers(
 
         req.pathVariable("cdId").let {
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-            response.data = demandNoteRepository.findAllByCdIdAndStatusIn(it.toLongOrDefault(0L), listOf(-1, 0, map.activeStatus,map.workingStatus, map.initStatus, map.invalidStatus))
+            response.data = demandNoteRepository.findAllByCdIdAndStatusIn(it.toLongOrDefault(0L), listOf(-1, 0, map.activeStatus, map.workingStatus, map.initStatus, map.invalidStatus))
             response.message = "Success"
             response.responseCode = ResponseCodes.SUCCESS_CODE
             return ServerResponse.ok().body(response)
         }
+    }
+
+    fun listAllDemandNotes(req: ServerRequest): ServerResponse {
+        val response = ApiResponseModel()
+        try {
+            val status = req.param("status")
+            var transactionStatus: Int? = null
+            if (status.isPresent) {
+                transactionStatus = status.get().toInt()
+            }
+            val date = req.param("date")
+            val transactionNo = req.param("trx")
+            val page = extractPage(req)
+
+            val documents = this.invoicePaymentService.listTransactions(transactionStatus, date, transactionNo, page)
+            response.data = documents.toList()
+            response.pageNo = documents.number
+            response.totalPages = documents.totalPages
+            response.totalCount = documents.totalElements
+            response.message = "Success"
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+        } catch (ex: DateTimeParseException) {
+            KotlinLogging.logger { }.error("invalid date transaction", ex)
+            response.message = "Invalid date selected"
+            response.responseCode = ResponseCodes.FAILED_CODE
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to load transaction", ex)
+            response.message = "Could not load transactions"
+            response.responseCode = ResponseCodes.FAILED_CODE
+        }
+        return ServerResponse.ok().body(response)
+    }
+
+    fun getDemandNoteStats(req: ServerRequest): ServerResponse {
+        val response = ApiResponseModel()
+        try {
+            val date = req.param("date")
+            response.data = this.invoicePaymentService.getTransactionStatsOnDate(date)
+            response.message = "Success"
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+        } catch (ex: DateTimeParseException) {
+            response.message = "Invalid date selected"
+            response.responseCode = ResponseCodes.FAILED_CODE
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to load transaction", ex)
+            response.message = "Could not load transactions"
+            response.responseCode = ResponseCodes.FAILED_CODE
+        }
+        return ServerResponse.ok().body(response)
     }
 }
 
