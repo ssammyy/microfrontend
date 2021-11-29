@@ -3,7 +3,7 @@ import {Observable, throwError} from "rxjs";
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
 import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
 import {catchError, map} from "rxjs/operators";
-import {ManufactureInfo} from "./levy.model";
+import {CompanyModel, ManufactureInfo, ManufacturePenalty, PaidLevy} from "./levy.model";
 
 @Injectable({
   providedIn: 'root'
@@ -24,5 +24,20 @@ export class LevyService {
         })
     );
   }
+    public getManufacturerPenaltyHistory(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_PENALTY_DETAILS);
+        const params = new HttpParams();
+        return this.http.get<ManufacturePenalty>(url, {params}).pipe();
+    }
+    public getPaidLevies(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_PAID_DETAILS);
+        const params = new HttpParams();
+        return this.http.get<PaidLevy>(url, {params}).pipe();
+    }
+    public getCompanyProfile(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_COMPANY_DETAILS);
+        const params = new HttpParams();
+        return this.http.get<CompanyModel>(url, {params}).pipe();
+    }
 
 }
