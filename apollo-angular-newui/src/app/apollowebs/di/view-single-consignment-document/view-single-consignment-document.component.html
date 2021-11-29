@@ -8,7 +8,7 @@
                             <i class="material-icons" *ngIf="consignment">Consignment</i>
                         </div>
                         <h4 class="card-title" *ngIf="consignment">Consignment #{{consignment.cd_details.ucrNumber}}
-                            <button class="btn btn-sm btn-default pull-right mr-7"
+                            <button class="btn btn-sm btn-default float-right mr-7"
                                     (click)="goBack()"><i class="fa fa-arrow-left"></i> Back
 
                             </button>
@@ -882,7 +882,9 @@
                                                 GENERATE
                                                 DEMAND NOTE
                                             </button>
-                                            <div *ngIf="consignment.ui.demandNoteRequired; else othersLists">
+                                            <ng-container *ngIf="consignment.ui.demandNoteRequired; then requirePayment else othersLists">
+                                            </ng-container>
+                                            <ng-template #requirePayment>
                                                 <div *ngIf="consignment.ui.demandNotePaid">
                                                     <button *ngIf="consignment.ui.owner && !consignment.ui.checklistFilled && (consignment.ui.demandNotePaid || consignment.ui.demandNoteRejected) && consignment.ui.targeted"
                                                             class="btn btn-sm btn-primary"
@@ -892,7 +894,8 @@
                                                     </button>
                                                     <button
                                                             *ngIf="consignment.ui.owner && (consignment.ui.cocRequest || consignment.ui.corRequest) && (!consignment.ui.complianceDisabled || consignment.ui.targetRejected || !consignment.ui.targeted)"
-                                                            class="btn btn-sm btn-primary" (click)="markAsCompliant()">
+                                                            class="btn btn-sm btn-primary"
+                                                            (click)="markAsCompliant()">
                                                         COMPLIANT
                                                     </button>
                                                     <button *ngIf="consignment.ui.owner && consignment.ui.approveReject"
@@ -901,8 +904,8 @@
                                                         Consignment
                                                     </button>
                                                 </div>
-                                            </div>
-                                            <template #othersLists>
+                                            </ng-template>
+                                            <ng-template #othersLists>
                                                 <button *ngIf="consignment.ui.owner && !consignment.ui.checklistFilled && (consignment.ui.demandNotePaid || consignment.ui.demandNoteRejected) && consignment.ui.targeted"
                                                         class="btn btn-sm btn-primary"
                                                         (click)="createInspectionChecklist()">
@@ -919,7 +922,7 @@
                                                         (click)="approveRejectConsignment()">Approve / Reject
                                                     Consignment
                                                 </button>
-                                            </template>
+                                            </ng-template>
                                             <button *ngIf="consignment.ui.owner && consignment.ui.blacklistEnabled"
                                                     class="btn btn-sm btn-warning" (click)="blacklistUser()">BLACKLIST
                                                 USER
