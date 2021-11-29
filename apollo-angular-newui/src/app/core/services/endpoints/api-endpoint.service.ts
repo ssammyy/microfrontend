@@ -17,10 +17,10 @@ export class ApiEndpointService {
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-         //LOCAL_DEV: 'localhost:8006'
+        //  LOCAL_DEV: 'localhost:8006'
         // LOCAL_DEV: '12:8006'
         // LOCAL_DEV: '41.72.209.58:8006'
-        LOCAL_DEV: `kimsint.kebs.org:8006`
+         LOCAL_DEV: `kimsint.kebs.org:8006`
         // LOCAL_DEV: `kims.kebs.org:8006`
         // LOCAL_DEV: '10.10.0.149:8007'
 
@@ -57,11 +57,14 @@ export class ApiEndpointService {
     public static ANONYMOUS_CONTEXT = '/api/v1/migration/anonymous';
     public static ANONYMOUS_CONTEXT_NEP = '/api/v1/migration/anonymous/National_enquiry_point';
 
+
     public static USER_CONTEXT = 'user';
     public static MASTERS_CONTEXT = '/api/v1/migration';
     public static SYSTEMS_ADMIN_SECURITY = `${ApiEndpointService.MASTERS_CONTEXT}/security`;
     public static SYSTEMS_ADMIN_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/system/admin/masters`;
     public static QA_CONTEXT = '/api/v1/migration/qa';
+    public static STL_CONTEXT = '/api/v1/migration/stdLevy';
+    public static SL_CONTEXT = '/api/auth';
     public static QA_CONTEXT_APPLY = `${ApiEndpointService.QA_CONTEXT}/permit/apply`;
     public static QA_CONTEXT_VIEW = `${ApiEndpointService.QA_CONTEXT}/permit/view`;
     public static ADMIN_CONTEXT = 'api/admin/v1';
@@ -406,7 +409,13 @@ export class ApiEndpointService {
         // REQUEST STANDARDS
         REQ_STANDARD: `${ApiEndpointService.REQUEST_STANDARD}/request`,
         REQ_PRODUCTS: `${ApiEndpointService.REQUEST_STANDARD}/getProducts`,
-        REQ_PRODUCTS_SUBCATEGORY: `${ApiEndpointService.REQUEST_STANDARD}/getProductCategories`
+        REQ_PRODUCTS_SUBCATEGORY: `${ApiEndpointService.REQUEST_STANDARD}/getProductCategories`,
+
+        // STANDARDS LEVY
+        REG_MANUFACTURE_DETAILS: `${ApiEndpointService.SL_CONTEXT}/kebs/add/manufacture-details/save`,
+        STD_LEVY_PENALTY_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getManufacturerPenalty`,
+        STD_LEVY_PAID_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getPaidLevies`,
+        STD_LEVY_COMPANY_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getCompanyProfile`,
 
     };
 
