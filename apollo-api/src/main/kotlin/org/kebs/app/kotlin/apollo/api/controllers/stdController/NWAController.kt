@@ -1,12 +1,10 @@
 package org.kebs.app.kotlin.apollo.api.controllers.stdController
 
 import com.google.gson.Gson
-import com.nhaarman.mockitokotlin2.any
 import mu.KotlinLogging
-import org.apache.commons.io.input.ObservableInputStream
+import org.kebs.app.kotlin.apollo.api.payload.request.JustificationTaskDataDto
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.*
-import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
 import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.*
@@ -75,9 +73,13 @@ class NWAController(val nwaService: NWAService,
     @ResponseBody
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun prepareJustification(
-        @RequestBody nwaJustification: NWAJustification
+        @ModelAttribute nwaJustification: NWAJustification,
+        //@RequestParam("nwaJustificationID") nwaJustificationID: Long,
+        @ModelAttribute("docFile") docFile: List<MultipartFile>,
+        model: Model
     ): ServerResponse{
-        return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",nwaService.prepareJustification(nwaJustification))
+        val response = nwaService.prepareJustification(nwaJustification, docFile)
+        return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",response)
     }
 
 //    @PreAuthorize("hasAuthority('KNW_SEC_MODIFY')")
@@ -116,7 +118,7 @@ class NWAController(val nwaService: NWAService,
     //********************************************************** get spc_sec Tasks **********************************************************
     @PreAuthorize("hasAuthority('SPC_SEC_SD_READ')")
     @GetMapping("/getSpcSecTasks")
-    fun getSPCSECTasks():List<TaskDetails>
+    fun getSPCSECTasks():List<JustificationTaskDataDto>
     {
         return nwaService.getSPCSECTasks()
     }
@@ -144,7 +146,7 @@ class NWAController(val nwaService: NWAService,
         response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
         response.outputStream
             .let { responseOutputStream ->
-                responseOutputStream.write(fileDoc.document?.let { makeAnyNotBeNull(it) } as ByteArray)
+                responseOutputStream.write(fileDoc.document?.let { it } as ByteArray)
                 responseOutputStream.close()
             }
 
@@ -154,7 +156,7 @@ class NWAController(val nwaService: NWAService,
     //decision
     @PreAuthorize("hasAuthority('SPC_SEC_SD_MODIFY')")
     @PostMapping("/decisionOnJustification")
-    fun decisionOnJustification(@RequestBody nwaJustificationDecision: NWAJustificationDecision) : List<TaskDetails>
+    fun decisionOnJustification(@RequestBody nwaJustificationDecision: NWAJustificationDecision) : List<JustificationTaskDataDto>
     {
         return nwaService.decisionOnJustification(nwaJustificationDecision)
     }
