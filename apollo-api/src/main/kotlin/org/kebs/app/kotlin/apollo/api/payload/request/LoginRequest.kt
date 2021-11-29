@@ -21,6 +21,10 @@
 
 package org.kebs.app.kotlin.apollo.api.payload.request
 
+import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
+import org.kebs.app.kotlin.apollo.store.model.std.DatKebsSdNwaUploadsEntity
+import org.kebs.app.kotlin.apollo.store.model.std.NWAJustification
+
 class LoginRequest {
     var username: String? = null
     var password: String? = null
@@ -32,3 +36,8 @@ class CustomResponse {
     var status: Int? = null
     var payload: String? = null
 }
+
+class JustificationTaskDataDto(
+    var task: TaskDetails,
+    var justification: NWAJustification?,
+    var uploads: List<DatKebsSdNwaUploadsEntity>?)

@@ -32,7 +32,10 @@ Content-Type: application/json
 
 
 ###GET Department
-GET https://localhost:8006/api/v1/migration/anonymous/standard/dropdown/getDepartments
+GET https://localhost:8006/api/v1/migration/nwa/getSpcSecTasks
+
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzcGNzZWNzZEBrZWJzLmNvbSIsImlzcyI6ImtpbXMua2Vicy5vcmciLCJpYXQiOjE2MzczMTk5MjMsImV4cCI6MTYzNzMyNTkyMywiYWRkcmVzcyI6IjEyNy4wLjAuMSIsInVzZXJBZ2VudCI6IltBcGFjaGUtSHR0cENsaWVudC80LjUuMTMgKEphdmEvMTEuMC4xMildIiwiZnVsbE5hbWUiOiJMb2NhdGkgTyIsInJvbGVzIjoiVVNFUixFTVBMT1lFRSxTUENfU0VDX1NEX01PRElGWSxTUENfU0VDX1NEX1JFQUQifQ.LMJBR-33CMlGxGzNd8Gnr6QNeJYdvXlvI91h3BWXTi-j6kym3EUw913nTzJptr0v0IyzgSBODRPQaMGJt42O_w
+
 
 
 ###GET Department
@@ -167,8 +170,27 @@ Content-Type: application/json
   "id": "681"
 
 }
+###
 
+###
+POST https://localhost:8006/api/v1/login
+Content-Type: application/json
 
+{
+  "username": "jackRobin@kebs.com",
+  "password": "password"}
 
+> {%
+    client.global.set("auth_token", response.headers.valuesOf('accessToken')[0]);
+%}
 
+####
+GET https://localhost:8006/api/stdLevy/getManufacturerPenaltyHistory
+
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJJYW5fS2lwcm9ubyIsImlzcyI6ImtpbXMua2Vicy5vcmciLCJpYXQiOjE2Mzc1NjQyMjUsImV4cCI6MTYzNzU3MDIyNSwiYWRkcmVzcyI6IjEyNy4wLjAuMSIsInVzZXJBZ2VudCI6IltBcGFjaGUtSHR0cENsaWVudC80LjUuMTMgKEphdmEvMTEuMC4xMildIiwiZnVsbE5hbWUiOiJJYW4gS2lwcm9ubyIsInJvbGVzIjoiUEVSTUlUX0FQUExJQ0FUSU9OLFBFUk1JVF9SRU5FV0FMLFBWT0NfQVBQTElDQVRJT05fUkVBRCxMSVNUX0NPTVBBTlksTU9ESUZZX0NPTVBBTlkifQ.nfYS20B0_uvQ14FVOD3XHBZ3CMd2Z5QhpM_5Wlmbp3YMIuURF7k-Bw9_h9EvVS2dHN3rqeWp0b023WFi1Cum8w
+###GET Department
+
+GET https://localhost:8006/api/v1/migration/nwa/getSpcSecTasks
+
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzcGNzZWNzZEBrZWJzLmNvbSIsImlzcyI6ImtpbXMua2Vicy5vcmciLCJpYXQiOjE2Mzc1NjYxOTgsImV4cCI6MTYzNzU3MjE5OCwiYWRkcmVzcyI6IjEyNy4wLjAuMSIsInVzZXJBZ2VudCI6IltBcGFjaGUtSHR0cENsaWVudC80LjUuMTMgKEphdmEvMTEuMC4xMildIiwiZnVsbE5hbWUiOiJMb2NhdGkgTyIsInJvbGVzIjoiVVNFUixFTVBMT1lFRSxTUENfU0VDX1NEX01PRElGWSxTUENfU0VDX1NEX1JFQUQifQ.zItcKZBiAHCMU1ZPKBM1qnzpPXUb7rmVm3QajVQkr6mDtfRn1OOZJnHobdCLd0RlRrfgsffLku7JDN1jlzme8Q
 

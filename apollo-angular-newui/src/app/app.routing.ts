@@ -103,7 +103,6 @@ import {StdTcTasksComponent} from "./apollowebs/standards-development/standard-r
 import {InvoiceConsolidateComponent} from "./apollowebs/quality-assurance/invoice-consolidate/invoice-consolidate.component";
 import {FmarkApplicationComponent} from "./apollowebs/quality-assurance/fmark-application/fmark-application.component";
 import {SmarkComponent} from "./apollowebs/quality-assurance/smark/smark.component";
-import {ViewDeclarationDocumentsItemDetailsListComponent} from "./apollowebs/di/view-single-consignment-document/view-di-declaration-documents/view-declaration-documents-item-details-list/view-declaration-documents-item-details-list.component";
 import {ViewDiDeclarationDocumentsComponent} from "./apollowebs/di/view-single-consignment-document/view-di-declaration-documents/view-di-declaration-documents.component";
 import {ViewIdfDocumentDetailsComponent} from "./apollowebs/di/view-single-consignment-document/view-idf-document-details/view-idf-document-details.component";
 import {ItemDetailsComponent} from "./apollowebs/di/view-single-consignment-document/item-details-list-view/item-details/item-details.component";
@@ -636,7 +635,7 @@ export const routes: Routes = [
     },
     {
         path: 'isProposalComments', component: AdminLayoutComponent,
-        //canActivate: [RouteGuard],
+        // canActivate: [RouteGuard],
         children: [{path: '', component: IntStdCommentsComponent}]
     },
     {
@@ -798,6 +797,7 @@ export const routes: Routes = [
     },
     {
         path: 'levyRegistration', component: StandardsLevyHomeComponent,
+        canActivate: [RouteGuard],
         children: [{path: '', component: CustomerRegistrationComponent}]
     },
     {

@@ -5,7 +5,7 @@ import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.servi
 import {catchError, map} from "rxjs/operators";
 import {
     DiSdtDECISION,
-    DISDTTasks, HOPTasks,
+    DISDTTasks, FileData, HOPTasks,
     HoSicTasks,
     KNWCommittee, KNWDepartment,
     KnwSecTasks, NWADiSdtJustification,
@@ -38,18 +38,36 @@ export class StdNwaService {
     return this.http.get<KnwSecTasks[]>(url, {params}).pipe();
   }
 
-  public prepareJustification(nwaJustification: NWAJustification): Observable<any> {
-    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_PREPARE_JUSTIFICATION);
-    const params = new HttpParams();
-    return this.http.post<NWAJustification>(url, nwaJustification, {params}).pipe(
-        map(function (response: any) {
-          return response;
-        }),
-        catchError((fault: HttpErrorResponse) => {
-          return throwError(fault);
-        })
-    );
-  }
+  // public prepareJustification(nwaJustification: NWAJustification): Observable<any> {
+  //   const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_PREPARE_JUSTIFICATION);
+  //   const params = new HttpParams();
+  //   return this.http.post<NWAJustification>(url, nwaJustification, {params}).pipe(
+  //       map(function (response: any) {
+  //         return response;
+  //       }),
+  //       catchError((fault: HttpErrorResponse) => {
+  //         return throwError(fault);
+  //       })
+  //   );
+  // }
+    public prepareJustification(permitID: string, data: FormData): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_PREPARE_JUSTIFICATION);
+        // const params = new HttpParams()
+        //     .set('permitID', permitID);
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data'
+            }, params: {'permitID': permitID}
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
     public loadFileDetailsPDF(nwaDocumentId: any): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_UPLOAD_DATA_VIEW);
         const params = new HttpParams()

@@ -113,6 +113,9 @@ interface UserListRepository : JpaRepository<UsersEntity,Long>{
 interface DatKebsSdNwaUploadsEntityRepository : JpaRepository<DatKebsSdNwaUploadsEntity, Long> {
     @Query(value = "SELECT * FROM DAT_KEBS_SD_NWA_UPLOADS WHERE nwaDocumentId = :nwaDocumentId", nativeQuery = true)
     fun findNwaJustification(@Param("nwaDocumentId") nwaDocumentId: Long?): Collection<DatKebsSdNwaUploadsEntity?>?
+    @Query(value = "SELECT max(ID)  FROM DAT_KEBS_SD_NWA_UPLOADS", nativeQuery = true)
+    fun getMaxUploadedID(): Long
+    fun findByNwaDocumentId(id: Long):List<DatKebsSdNwaUploadsEntity>?
 }
 interface SDDIJustificationUploadsRepository : JpaRepository<SDDIJustificationUploads, Long> {
 }

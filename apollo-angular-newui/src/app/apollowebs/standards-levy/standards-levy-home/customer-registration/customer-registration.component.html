@@ -33,7 +33,7 @@ type="ball-scale-multiple"
 <h2 style="text-align: center"><b >Step</b> <b > 1</b><b > of</b> <b > 2</b></h2>
 
 <fieldset class="wizard-fieldset show">
-<form (ngSubmit)="onClickSaveManufacturer(manufacturerInfoForm.valid)" [formGroup]="manufacturerInfoForm" class="form"
+<form (ngSubmit)="onClickSaveManufacturer()" [formGroup]="manufacturerInfoForm" class="form"
 enctype="multipart/form-data" >
 <h4>Manufacturer Information</h4>
 <h5>Kindly Fill the details below</h5>
@@ -41,31 +41,30 @@ enctype="multipart/form-data" >
 <div class="row">
 <div class="form-group col-6">
 <label for="businessCompanyName">Business/Company Name <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-<input [class.is-invalid]="manufacturerInfo.businessCompanyName.invalid && manufacturerInfo.businessCompanyName.touched" type="text" class="form-control" id="businessCompanyName" formControlName="businessCompanyName"
-name="businessCompanyName" placeholder="Business/Company Name" required="">
+    <input type="text"  class="form-control" ngModel="BSK GLOBAL TECHNOLOGIES LIMITED" id="businessCompanyName" formControlName="businessCompanyName" name="businessCompanyName"
+           placeholder="Business/Company Name" >
 
 </div>
 
 <div class="form-group col-6">
 <label for="comKraPin">Company KRA Pin <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-<input type="text" [class.is-invalid]="manufacturerInfo.comKraPin.invalid && manufacturerInfo.comKraPin.touched" class="form-control" id="comKraPin" formControlName="comKraPin" name="comKraPin"
-placeholder="Company KRA Pin" required="">
+<input type="text"  class="form-control" ngModel="12312132313" id="comKraPin" formControlName="comKraPin" name="comKraPin"
+placeholder="Company KRA Pin" >
 </div>
 </div>
 <div class="row">
 <div class="form-group col-6">
 <label for="lineOfBusiness">Select your line of business <span style="font-size: xx-small; color: red;">(*)Select One</span></label>
-<select id="lineOfBusiness" class="form-control" formControlName="lineOfBusiness" name="lineOfBusiness"
-[class.is-invalid]="manufacturerInfo.lineOfBusiness.invalid && manufacturerInfo.lineOfBusiness.touched">
+<select id="lineOfBusiness" class="form-control" formControlName="lineOfBusiness" name="lineOfBusiness">
 <option selected>Select your line of business</option>
-<option selected>Construction and Engineering</option>
+<option value="1" >Construction and Engineering</option>
 
 </select>
 </div>
 <div class="form-group col-6">
 <label for="certificateOfIncorporation">Certificate of Incorporation<span style="font-size: xx-small; color: red;">(*)Required</span></label>
-<input type="text" [class.is-invalid]="manufacturerInfo.certificateOfIncorporation.invalid && manufacturerInfo.certificateOfIncorporation.touched" class="form-control" id="certificateOfIncorporation" formControlName="certificateOfIncorporation" name="certificateOfIncorporation"
-placeholder="Certificate of Incorporation" required="">
+<input type="text" ngModel="12312132313" class="form-control" id="certificateOfIncorporation" formControlName="certificateOfIncorporation" name="certificateOfIncorporation"
+placeholder="Certificate of Incorporation" >
 </div>
 
 
@@ -74,83 +73,95 @@ placeholder="Certificate of Incorporation" required="">
 <div class="row">
 <div class="form-group col-6">
 <label for="companyEmail">Company Email <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-<input type="text" [class.is-invalid]="manufacturerInfo.companyEmail.invalid && manufacturerInfo.companyEmail.touched" class="form-control" id="companyEmail" formControlName="certificateOfIncorporation" name="certificateOfIncorporation"
-placeholder="Certificate of Incorporation" required="">
+<input type="text" ngModel="1123@ewe.com" class="form-control" id="companyEmail" formControlName="certificateOfIncorporation" name="certificateOfIncorporation"
+placeholder="Company Email" >
 </div>
 <div class="form-group col-6">
 <label for="postalAddress">Postal Address <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-<input type="text" [class.is-invalid]="manufacturerInfo.postalAddress.invalid && manufacturerInfo.postalAddress.touched" class="form-control" id="postalAddress" formControlName="postalAddress" name="postalAddress"
-placeholder="Postal Address" required="">
+<input type="text" ngModel="14193-00800" class="form-control" id="postalAddress" formControlName="postalAddress" name="postalAddress"
+placeholder="Postal Address" >
 </div>
 </div>
 <div class="row">
 <div class="form-group col-6">
 <label for="telephone">Telephone<span style="font-size: xx-small; color: red;">(*)Required</span></label>
-<input type="text" [class.is-invalid]="manufacturerInfo.telephone.invalid && manufacturerInfo.telephone.touched" class="form-control" id="telephone" formControlName="telephone" name="telephone"
-placeholder="Telephone" required="">
+<input type="text" ngModel="120832" class="form-control" id="telephone" formControlName="telephone" name="telephone"
+placeholder="Telephone" >
 </div>
 <div class="form-group col-6">
 <label for="mainPhysicalLocation">Main Physical Location <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-<input type="text" [class.is-invalid]="manufacturerInfo.mainPhysicalLocation.invalid && manufacturerInfo.mainPhysicalLocation.touched" class="form-control" id="mainPhysicalLocation" formControlName="mainPhysicalLocation" name="mainPhysicalLocation"
-placeholder="Main Physical Location" required="">
+<input type="text" ngModel="LR NO. 209/8526/2, HOUSE NO. 14, MUTHAIGA COURT 6TH PARKLANDS AVENUE OFF LIMURU ROAD NAIROBI" class="form-control" id="mainPhysicalLocation" formControlName="mainPhysicalLocation" name="mainPhysicalLocation"
+placeholder="Main Physical Location" >
 </div>
 </div>
     <h4 style=" color: red;">If you have branches kindly add them here</h4>
 <div class="row">
 
-<div class="col-4">
-<label for="location">Location<span style="font-size: xx-small; color: red;">(*)Required</span></label>
-<input type="text"  class="form-control" id="location"  name="location"
-placeholder="Location" >
-</div>
-<div class="col-4">
-<label for="plotNumber">Plot Number <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-<input type="text" class="form-control" id="plotNumber"  name="plotNumber"
-placeholder="Plot Number" required="">
-</div>
-<div class="col-2">
+    <div class="form-group col-6">
+        <label for="location">Location <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+        <input type="text" ngModel="" class="form-control" id="location" formControlName="location" name="location"
+               placeholder="Location" >
+        <input type="hidden" ngModel="13093" class="form-control" id="entryNo" formControlName="entryNo" name="entryNo"
+               placeholder="entryNo" >
+    </div>
+    <div class="form-group col-6">
+        <label for="plotNumber">Plot Number<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+        <input type="text" ngModel="123123"  class="form-control" id="plotNumber" formControlName="plotNumber" name="plotNumber"
+               placeholder="Plot Number">
+    </div>
+<!--<div class="col-4">-->
+<!--<label for="location">Location<span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
+<!--<input type="text"  class="form-control" id="location"  name="location"-->
+<!--placeholder="Location" >-->
+<!--</div>-->
+<!--<div class="col-4">-->
+<!--<label for="plotNumber">Plot Number <span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
+<!--<input type="text" class="form-control" id="plotNumber"  name="plotNumber"-->
+<!--placeholder="Plot Number" required="">-->
+<!--</div>-->
+<!--<div class="col-2">-->
 
-<span class="input-group-btn">
-    <label for="plotNumber" style="font-size: xx-small; color: transparent;">Plot Number</label><br>
-<button (click)="onClickAddBranches()"
-type="button" class="btn btn-success btn-sm">
-<span class="" aria-hidden="true">ADD</span>
-</button>
-</span>
-<br><br>
+<!--<span class="input-group-btn">-->
+<!--    <label for="plotNumber" style="font-size: xx-small; color: transparent;">Plot Number</label><br>-->
+<!--<button (click)="onClickAddBranches()"-->
+<!--type="button" class="btn btn-success btn-sm">-->
+<!--<span class="" aria-hidden="true">ADD</span>-->
+<!--</button>-->
+<!--</span>-->
+<!--<br><br>-->
+<!--</div>-->
 </div>
-</div>
-<div class="material-datatables" >
-<div class="table-responsive">
-<table id="datatables" class="table table-striped table-bordered table-hover"
->
-<thead>
-<tr>
-<th>Location</th>
-<th>Plot Number</th>
-<th>Action</th>
-</tr>
-</thead>
-<tbody>
-<tr *ngFor="let r of manufacturerBranchDetails; let i=index">
-<td>{{r.location}}</td>
-<td>{{r.plotNumber}}</td>
-<td><button (click)="removeBranches(i)"
-type="button" class="btn btn-warning btn-sm">
-<span class="" aria-hidden="true">Remove</span>
-</button></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<!--<div class="material-datatables" >-->
+<!--<div class="table-responsive">-->
+<!--<table id="datatables" class="table table-striped table-bordered table-hover"-->
+<!--&gt;-->
+<!--<thead>-->
+<!--<tr>-->
+<!--<th>Location</th>-->
+<!--<th>Plot Number</th>-->
+<!--<th>Action</th>-->
+<!--</tr>-->
+<!--</thead>-->
+<!--<tbody>-->
+<!--<tr *ngFor="let r of manufacturerBranchDetails; let i=index">-->
+<!--<td>{{r.location}}</td>-->
+<!--<td>{{r.plotNumber}}</td>-->
+<!--<td><button (click)="removeBranches(i)"-->
+<!--type="button" class="btn btn-warning btn-sm">-->
+<!--<span class="" aria-hidden="true">Remove</span>-->
+<!--</button></td>-->
+<!--</tr>-->
+<!--</tbody>-->
+<!--</table>-->
+<!--</div>-->
+<!--</div>-->
 
-<div *ngIf="manufacturerInfoForm.valid" class="form-group clearfix">
-<button type="submit" class="form-wizard-next-btn btn-sm float-right">Next</button>
+<div  class="form-group clearfix">
+<button type="submit" class="form-wizard-next-btn btn-sm float-right btn-primary">Next</button>
 </div>
-<div *ngIf="!manufacturerInfoForm.valid" class="form-group clearfix">
-<button  class="btn btn-sm btn-primary float-right" (click)="showNotification('top','right')">Next</button>
-</div>
+<!--<div *ngIf="!manufacturerInfoForm.valid" class="form-group clearfix">-->
+<!--<button  class="form-wizard-next-btn btn-sm float-right" (click)="showNotification('top','right')">Next</button>-->
+<!--</div>-->
 
 </form>
 

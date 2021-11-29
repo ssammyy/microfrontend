@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.repo
 
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.qa.PermitApplicationsEntity
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
@@ -29,7 +30,6 @@ interface IStagingStandardsLevyManufacturerEntryNumberRepository : HazelcastRepo
 
 interface IStagingStandardsLevyManufacturerPenaltyRepository : HazelcastRepository<StagingStandardsLevyManufacturerPenalty, Long> {
     fun findAllByStatus(status: Int, page: Pageable?): Page<StagingStandardsLevyManufacturerPenalty>?
-
     @Query(value = "SELECT count(*) FROM STG_STANDARDS_LEVY_MANUFACTURER_PENALTY p WHERE p.STATUS = :status", nativeQuery = true)
     fun findRecordCount(@Param("status") status: Int): Int
 }
