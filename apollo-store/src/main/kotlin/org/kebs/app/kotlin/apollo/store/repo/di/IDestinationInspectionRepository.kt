@@ -299,8 +299,10 @@ interface IDemandNoteRepository : HazelcastRepository<CdDemandNoteEntity, Long> 
     fun findFirstByCdIdAndStatusIn(cdId: Long, statuses: List<Int>): CdDemandNoteEntity?
     fun findByCdId(cdId: Long): CdDemandNoteEntity?
     fun findByDemandNoteNumber(demandNoteNumber: String): CdDemandNoteEntity?
-    fun findByModifiedOnGreaterThanEqualAndModifiedOnLessThanAndStatusOrderByIdAsc(dateGenerated: Timestamp, endGenerated2: Timestamp, status: Int, pageable: Pageable): Page<CdDemandNoteEntity>
-    fun findByModifiedOnGreaterThanEqualAndModifiedOnLessThanAndPaymentStatusAndStatusOrderByIdAsc(start: Timestamp,end: Timestamp, paymentStatus: Int,status: Int,page: Pageable): Page<CdDemandNoteEntity>
+    @Query("select * from DAT_KEBS_CD_DEMAND_NOTE where  to_char(DATE_GENERATED,'DD-MM-YYYY')=:date and STATUS in(:status)", nativeQuery = true)
+    fun findByModifiedOnAndModifiedOnLessThanAndStatusOrderByIdAsc(@Param("date")dateGenerated: String, @Param("status") status: List<Int>, pageable: Pageable): Page<CdDemandNoteEntity>
+    @Query("select * from DAT_KEBS_CD_DEMAND_NOTE where  to_char(DATE_GENERATED,'DD-MM-YYYY')=:date and PAYMENT_STATUS=:paymentStatus and STATUS in(:status)", nativeQuery = true)
+    fun findByModifiedOnAndModifiedOnLessThanAndPaymentStatusAndStatusOrderByIdAsc(@Param("date")dateGenerated: String, @Param("paymentStatus") paymentStatus: Int, @Param("status") status: List<Int>, page: Pageable): Page<CdDemandNoteEntity>
     fun findByPaymentStatusAndStatusOrderByIdAsc(paymentStatus: Int,status: Int,page: Pageable): Page<CdDemandNoteEntity>
     fun findByStatusOrderByIdAsc(status: Int,page: Pageable): Page<CdDemandNoteEntity>
     fun findByDemandNoteNumberContainingAndStatusOrderByIdAsc(demandNoteNumber: String, status: Int,page: Pageable): Page<CdDemandNoteEntity>

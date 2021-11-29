@@ -7,7 +7,9 @@ import javax.persistence.*
 
 
 @Entity
-@Table(name = "LOG_SFTP_TRANSMISSION")
+@Table(name = "LOG_SFTP_TRANSMISSION",indexes = arrayOf(
+    Index(name = "log_sftp_transmission_filename_indx",columnList = "filename",unique = false)
+))
 class SftpTransmissionEntity : Serializable {
 
 
@@ -16,6 +18,7 @@ class SftpTransmissionEntity : Serializable {
     @GeneratedValue(generator = "LOG_SFTP_TRANSMISSION_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Column(name = "ID", nullable = false)
     var id: Long? = null
+
 
     @Column(name = "FILENAME")
     var filename: String? = null

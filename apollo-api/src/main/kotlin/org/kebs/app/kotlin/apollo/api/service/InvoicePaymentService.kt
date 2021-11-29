@@ -290,8 +290,8 @@ class InvoicePaymentService(
                 val endDate = searchDate.plusDays(1).atStartOfDay()
                 KotlinLogging.logger {  }.info("Start Date: ${startDate}, End Date: ${endDate}")
                 demandNotes = when (status) {
-                    null -> iDemandNoteRepo.findByModifiedOnGreaterThanEqualAndModifiedOnLessThanAndStatusOrderByIdAsc(toSqlTimestamp(startDate), toSqlTimestamp(endDate), map.activeStatus, page)
-                    else -> iDemandNoteRepo.findByModifiedOnGreaterThanEqualAndModifiedOnLessThanAndPaymentStatusAndStatusOrderByIdAsc(toSqlTimestamp(startDate), toSqlTimestamp(endDate), status, map.activeStatus, page)
+                    null -> iDemandNoteRepo.findByModifiedOnAndModifiedOnLessThanAndStatusOrderByIdAsc(dateTimeFormat.format(startDate), listOf(map.activeStatus, map.initStatus, map.workingStatus), page)
+                    else -> iDemandNoteRepo.findByModifiedOnAndModifiedOnLessThanAndPaymentStatusAndStatusOrderByIdAsc(dateTimeFormat.format(startDate), status, listOf(map.activeStatus, map.initStatus, map.workingStatus), page)
                 }
             }
             status!=null -> {
