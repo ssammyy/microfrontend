@@ -44,11 +44,15 @@
                             <div class="btn-group btn-group-sm" role="group" aria-label="Applications Status">
                                 <button type="button" (click)="toggleStatus('incoming')"
                                         [className]="activeStatus == 'incoming' ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-default'">
-                                    INCOMING
+                                    INCOMING FILES
                                 </button>
                                 <button type="button" (click)="toggleStatus('outgoing')"
                                         [className]="activeStatus == 'outgoing' ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-default'">
-                                    OUTGOING
+                                    OUTGOING FILES
+                                </button>
+                                <button type="button" (click)="toggleStatus('others')"
+                                        [className]="activeStatus == 'others' ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-default'">
+                                    UNPROCESSABLE
                                 </button>
                             </div>
                         </div>

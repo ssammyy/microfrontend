@@ -327,3 +327,31 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     background-color: #2196f3;
     padding: 14px;
 }
+
+
+.mat-tab-label {
+    border-width: 1px;
+    border-style: solid;
+    padding-right: 1px;
+    border-top-left-radius: 0.37rem;
+    border-top-right-radius: 0.37rem;
+    border-color: #dee2e6 #dee2e6 #1878b3;
+    -moz-border-radius-topleft: 0.37rem;
+    -moz-border-radius-topright: 0.37rem;
+    -moz-border-left-colors: #dee2e6;
+    -moz-border-right-colors: #dee2e6;
+}
+
+.mat-tab-label-active {
+    border-width: 1px;
+    border-style: solid;
+    color: #495057;
+    font-weight: bold;
+    background-color: #fff;
+    border-color: #dee2e6 #dee2e6 #1878b3;
+    border-bottom: rgb(9, 132, 233);
+}
+
+.mat-ink-bar {
+    display: none;
+}

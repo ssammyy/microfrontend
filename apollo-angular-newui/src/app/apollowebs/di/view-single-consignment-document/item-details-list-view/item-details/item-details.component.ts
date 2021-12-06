@@ -14,7 +14,7 @@ import {ApproveRejectItemComponent} from "../approve-reject-item/approve-reject-
     styleUrls: ['./item-details.component.css']
 })
 export class ItemDetailsComponent implements OnInit {
-    activeTab = 'declarationGeneralDetails'
+    activeTab = 1
     itemUuid: any
     cdUuid: any
     itemDetails: any

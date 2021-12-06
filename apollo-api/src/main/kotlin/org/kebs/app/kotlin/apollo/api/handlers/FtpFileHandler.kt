@@ -35,7 +35,7 @@ class FtpFileHandler(val fileStorage: FileStorageService) {
     fun listFilesByStatus(req: ServerRequest): ServerResponse {
         val status = req.param("fileStatus")
         val dateCreated = req.param("date")
-        val flowDirection = req.param("direction")
+        val flowDirection = req.param("flowDirection")
         val fileName = req.param("exchangeFile")
         val page = extractPage(req)
         return ServerResponse

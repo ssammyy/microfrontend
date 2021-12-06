@@ -122,8 +122,8 @@ class WebSecurityConfig {
                 .exceptionHandling()
                 .authenticationEntryPoint(HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                 .accessDeniedHandler { _, response, accessDeniedException ->
-                    response?.status = HttpStatus.UNAUTHORIZED.value()
-                    response?.outputStream?.println("message: ${accessDeniedException.message}, timestamp: ${Calendar.getInstance().time}")
+                    response?.status = HttpStatus.FORBIDDEN.value()
+                    response?.outputStream?.println("message: access denied to perform this actions, please consult your administrator")
                 }
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

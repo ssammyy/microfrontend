@@ -132,7 +132,7 @@
                                 </div>
                             </div>
                             <div class="col-md-8">
-                                <mat-tab-group [(selectedIndex)]="active" mat-stretch-tabs [disablePagination]="true"
+                                <mat-tab-group [(selectedIndex)]="active" [disablePagination]="true"
                                                appMatMultilineTab
                                                class="tab-wraps">
                                     <mat-tab *ngIf="consignment.cd_consignee" label="1">
@@ -868,7 +868,7 @@
 
                                 </mat-tab-group>
                             </div>
-                            <div class="col-md-2 p-0 m-0">
+                            <div class="col-md-2 p-0">
                                 <b>Action:</b>
                                 <div *ngIf="consignment.ui">
                                     <div *ngIf="consignment.ui.inspector && !consignment.ui.completed">

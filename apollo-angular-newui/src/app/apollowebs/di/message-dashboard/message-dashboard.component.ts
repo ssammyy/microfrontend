@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {DestinationInspectionService} from "../../../core/store/data/di/destination-inspection.service";
 import {MatDialog} from "@angular/material/dialog";
 import {ViewMessageComponent} from "./view-message/view-message.component";
+import {DatePipe} from "@angular/common";
 
 @Component({
     selector: 'app-message-dashboard',
@@ -127,13 +128,19 @@ export class MessageDashboardComponent implements OnInit {
             },
             transactionCompletedDate: {
                 title: 'Completed ON',
-                type: 'string'
+                type: 'string',
+                valuePrepareFunction: (date) => {
+                    if (date) {
+                        return new DatePipe("En-Us").transform(date,'dd-MM-yyyy HH:mm')
+                    }
+                    return "01-01-1970 00:00"
+                },
             },
-            transactionStatus: {
+            responseStatus: {
                 title: 'Successful',
                 type: 'string',
                 valuePrepareFunction: (status) => {
-                    if (status === 1) {
+                    if (status === '00') {
                         return 'Yes'
                     }
                     return "No"
@@ -238,6 +245,8 @@ export class MessageDashboardComponent implements OnInit {
         let direction = "IN"
         if (this.activeStatus == "outgoing") {
             direction = "OUT"
+        } else if(this.activeStatus=="other"){
+            direction="UNPROCESSABLE"
         }
         this.documentData = []
         // Load data

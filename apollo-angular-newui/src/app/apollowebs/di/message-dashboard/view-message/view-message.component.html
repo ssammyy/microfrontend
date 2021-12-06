@@ -35,7 +35,7 @@
         </div>
         <div class="col-sm-3 col-md-4">
             <label class="waiver-form-label">Transaction Status</label>
-            <p>{{messageDetails.transactionStatus===1?'SUCCESS':'FAILED'}}</p>
+            <p>{{messageDetails.responseStatus==='00'?'SUCCESS':'FAILED'}}</p>
         </div>
         <div class="col-sm-3 col-md-4">
             <label class="waiver-form-label">Error Code</label>

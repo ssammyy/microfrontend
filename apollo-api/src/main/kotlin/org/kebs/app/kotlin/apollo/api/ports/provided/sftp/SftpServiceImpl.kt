@@ -193,8 +193,7 @@ class SftpServiceImpl(
                         if (validateKeswsFileByDocType(entry.filename, docType)) {
                             filesList.add(convertInputstreamToFile(sftp.get(entry.filename), entry.filename))
                         }
-
-                        log.transactionStatus = 30
+                        log.transactionStatus = 1
                         log.responseMessage = "Successfully downloaded"
                         log.responseStatus = "00"
                         log.transactionCompletedDate = Timestamp.from(Instant.now())

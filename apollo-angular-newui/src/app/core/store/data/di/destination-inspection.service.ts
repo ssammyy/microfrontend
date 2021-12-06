@@ -28,9 +28,10 @@ export class DestinationInspectionService {
         return false
     }
 
-    loadExchangeMessages(status: any, direction: any, exchangeFile: any, date: any, page: any, size: any): Observable<any> {
+    loadExchangeMessages(status: any, flowDirection: any, exchangeFile: any, date: any, page: any, size: any): Observable<any> {
         let params = {
-            direction: direction,
+            direction: 'desc',
+            flowDirection: flowDirection,
             page: page,
             size: size
         }

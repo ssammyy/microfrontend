@@ -49,7 +49,7 @@
                                         <mat-error *ngIf="message">{{message}}</mat-error>
                                     </div>
                                 </div>
-                                <div class="pull-right pr-4">
+                                <div class="float-right pr-4">
                                     <button [disabled]="generalCheckList.invalid" class="btn btn-primary" mat-button
                                             matStepperNext>NEXT
                                     </button>
@@ -65,7 +65,7 @@
                                 ></app-agrochem-inspection-checklist>
 
                                 <button class="btn btn-warning" mat-button matStepperPrevious>Back</button>
-                                <div class="pull-right pr-4">
+                                <div class="float-right pr-4">
                                     <button [disabled]="!agroChemValid" class="btn btn-primary"
                                             mat-button
                                             matStepperNext>NEXT
@@ -80,7 +80,7 @@
                                         (valid)="validationUpdate($event,'engineering')"
                                 ></app-engineering-inspection-checklist>
                                 <button class="btn btn-warning" mat-button matStepperPrevious>Back</button>
-                                <div class="pull-right pr-4">
+                                <div class="float-right pr-4">
                                     <button [disabled]="!engineringValid" class="btn btn-primary"
                                             mat-button
                                             matStepperNext>NEXT
@@ -95,7 +95,7 @@
                                                                   (valid)="validationUpdate($event,'vehicle')"
                                 ></app-vehicle-inspection-checklist>
                                 <button class="btn btn-warning" mat-button matStepperPrevious>Back</button>
-                                <div class="pull-right pr-4">
+                                <div class="float-right pr-4">
                                     <button [disabled]="!vehicleValid" class="btn btn-primary"
                                             mat-button
                                             matStepperNext>NEXT
