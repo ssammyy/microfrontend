@@ -4,6 +4,9 @@ import {StdTCSecWorkPlan, StdWorkPlan} from "../../../../core/store/data/std/req
 import {FormBuilder} from "@angular/forms";
 import {StandardDevelopmentService} from "../../../../core/store/data/std/standard-development.service";
 import {HttpErrorResponse} from "@angular/common/http";
+import {DataTableDirective} from "angular-datatables";
+import {NgxSpinnerService} from "ngx-spinner";
+import {NotificationService} from "../../../../core/store/data/std/notification.service";
 
 @Component({
   selector: 'app-std-tc-workplan',
@@ -17,10 +20,15 @@ export class StdTcWorkplanComponent implements OnInit {
   p2 = 1;
   public secTasks: StdTCSecWorkPlan[] = [];
   public tscsecRequest !: StdTCSecWorkPlan | undefined;
+  @ViewChild(DataTableDirective, {static: false})
+  dtElement: DataTableDirective;
+  isDtInitialized: boolean = false
 
   constructor(
       private formBuilder: FormBuilder,
-      private  standardDevelopmentService: StandardDevelopmentService
+      private  standardDevelopmentService: StandardDevelopmentService,
+      private SpinnerService: NgxSpinnerService,
+      private notifyService: NotificationService,
   ) {
   }
 
@@ -34,8 +42,15 @@ export class StdTcWorkplanComponent implements OnInit {
         (response: StdTCSecWorkPlan[]) => {
           console.log(response);
           this.secTasks = response;
-          this.dtTrigger.next();
-
+          if (this.isDtInitialized) {
+            this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+              dtInstance.destroy();
+              this.dtTrigger.next();
+            });
+          } else {
+            this.isDtInitialized = true
+            this.dtTrigger.next();
+          }
         },
         (error: HttpErrorResponse) => {
           alert(error.message);
@@ -62,18 +77,27 @@ export class StdTcWorkplanComponent implements OnInit {
 
   }
 
+  showToasterSuccess(title: string, message: string) {
+    this.notifyService.showSuccess(message, title)
+
+  }
 
   uploadWorkPlan(stdWorkPlan: StdWorkPlan): void {
+    this.SpinnerService.show();
 
     console.log(stdWorkPlan);
 
     this.standardDevelopmentService.uploadWorkPlan(stdWorkPlan).subscribe(
-        (response: StdWorkPlan) => {
+        (response) => {
           console.log(response);
+          this.showToasterSuccess(response.httpStatus, `Your Work plan Has Been Submitted. Prepare A Preliminary Draft`);
+          this.SpinnerService.hide();
           this.getTCSECWorkPlan();
           this.hideModel();
         },
         (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+
           alert(error.message);
         }
     )

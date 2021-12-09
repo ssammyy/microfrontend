@@ -1,17 +1,28 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
 import {Observable, throwError} from "rxjs";
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
 import {catchError, map} from "rxjs/operators";
 import {
     DiSdtDECISION,
-    DISDTTasks, FileData, HOPTasks,
+    DISDTTasks,
+    HOPTasks,
     HoSicTasks,
-    KNWCommittee, KNWDepartment,
-    KnwSecTasks, NWADiSdtJustification,
-    NWAJustification, NWAJustificationDecision, NWAPDDecision, NWAPreliminaryDraft,
-    NWAStandard, NWAWDDecision, NWAWorkShopDraft, SacSecTasks, SPCSECTasks,
-    UpdateNwaGazette, UploadNwaGazette
+    KNWCommittee,
+    KNWDepartment,
+    KnwSecTasks,
+    NWADiSdtJustification,
+    NWAJustification,
+    NWAJustificationDecision,
+    NWAPDDecision,
+    NWAPreliminaryDraft,
+    NWAStandard,
+    NWAWDDecision,
+    NWAWorkShopDraft,
+    SacSecTasks,
+    SPCSECTasks,
+    UpdateNwaGazette,
+    UploadNwaGazette
 } from "./std.model";
 
 @Injectable({

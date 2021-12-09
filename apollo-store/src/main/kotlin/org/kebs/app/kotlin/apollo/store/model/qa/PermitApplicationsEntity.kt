@@ -1,6 +1,5 @@
 package org.kebs.app.kotlin.apollo.store.model.qa
 
-import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import java.io.Serializable
 import java.math.BigDecimal
 import java.sql.Date

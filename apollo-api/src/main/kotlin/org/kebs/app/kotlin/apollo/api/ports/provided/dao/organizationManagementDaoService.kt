@@ -52,31 +52,35 @@ class RegistrationManagementDaoService(
      */
     fun provideCompanyDetailsForUser(): UserCompanyDetailsDto? {
         val user = commonDaoServices.loggedInUserDetails()
-        val counter = user.companyId?.let {
-            manufacturePlantRepository.countByCompanyProfileId(
-                it
+        user.companyId?.let {
+
+            val counter = user.companyId?.let {
+                manufacturePlantRepository.countByCompanyProfileId(
+                    it
+                )
+            }
+            val turnOver = companyRepo.findByIdOrNull(user.companyId)?.yearlyTurnover
+            val countAwarded = user.companyId?.let {
+                permitRepo.countByCompanyIdAndPermitAwardStatus(
+                    it, 1
+                )
+            }
+            val countExpired = user.companyId?.let {
+                permitRepo.countByCompanyIdAndPermitAwardStatusAndPermitExpiredStatus(
+                    it, 1, 1
+                )
+            }
+            return UserCompanyDetailsDto(
+                user.companyId,
+                user.plantId,
+                counter,
+                turnOver,
+                user.id,
+                countAwarded,
+                countExpired
             )
         }
-        val turnOver = companyRepo.findByIdOrNull(user.companyId)?.yearlyTurnover
-        val countAwarded = user.companyId?.let {
-            permitRepo.countByCompanyIdAndPermitAwardStatus(
-                it, 1
-            )
-        }
-        val countExpired = user.companyId?.let {
-            permitRepo.countByCompanyIdAndPermitAwardStatusAndPermitExpiredStatus(
-                it, 1, 1
-            )
-        }
-        return UserCompanyDetailsDto(
-            user.companyId,
-            user.plantId,
-            counter,
-            turnOver,
-            user.id,
-            countAwarded,
-            countExpired
-        )
+        return null
     }
 
     /**
@@ -1067,7 +1071,7 @@ class RegistrationManagementDaoService(
     fun loggedInUserDetails(): UsersEntity {
         SecurityContextHolder.getContext().authentication?.name
             ?.let { username ->
-                usersRepo.findByUserName(username)
+                usersRepo.findByEmail(username)
                     ?.let { loggedInUser ->
                         return loggedInUser
                     }

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*
 //@RequestMapping("/committee")
 @CrossOrigin(origins = ["http://localhost:4200"])
 
-@RequestMapping("api/v1/committee")
+@RequestMapping("api/v1/migration/committee")
 
 
 class CommitteeController(val committeeService: CommitteeService) {
@@ -37,6 +37,12 @@ class CommitteeController(val committeeService: CommitteeService) {
         committeeService.uploadDrafts(committeeDrafts, taskId)
     }
 
+    @GetMapping("/getAllNwis")
+    fun getAllTechnicalCommittees(): List<ApprovedNwi> {
+        return committeeService.getApprovedNwis()
+    }
+
+
     @PostMapping("/preparePD")
     fun preparePD(@RequestBody committeePD: CommitteePD): ProcessInstanceResponse {
         return committeeService.preparePD(committeePD)
@@ -51,6 +57,7 @@ class CommitteeController(val committeeService: CommitteeService) {
     fun prepareCD(@RequestBody committeeCD: CommitteeCD): ProcessInstanceResponse {
         return committeeService.prepareCD(committeeCD)
     }
+
 
     @PostMapping("/approveCD/{taskId}/{approved}")
     fun approveCD(@PathVariable("taskId") taskId: String, @PathVariable("approved") approved: Boolean) {

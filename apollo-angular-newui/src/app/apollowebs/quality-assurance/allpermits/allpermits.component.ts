@@ -1,14 +1,15 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {UserEntityDto, UserEntityService} from "../../../core/store";
 import {Observable, Subject} from "rxjs";
 import {Titles, TitlesService} from "../../../core/store/data/title";
 import {FormGroup} from "@angular/forms";
 import {Store} from "@ngrx/store";
-import {HttpErrorResponse} from "@angular/common/http";
-import swal from "sweetalert2";
 import {Router} from "@angular/router";
 import {QaService} from "../../../core/store/data/qa/qa.service";
 import {PermitEntityDto} from "../../../core/store/data/qa/qa.model";
+import {HttpErrorResponse} from "@angular/common/http";
+import {DataTableDirective} from "angular-datatables";
+import swal from "sweetalert2";
 
 @Component({
     selector: 'app-allpermits',
@@ -24,8 +25,13 @@ export class AllpermitsComponent implements OnInit {
     permitNumberFinal: string
     user: UserEntityDto;
     title$: Observable<Titles[]>;
+
+    @ViewChild(DataTableDirective, {static: false})
+    dtElement: DataTableDirective;
+    isDtInitialized: boolean = false
     stepOneForm: FormGroup = new FormGroup({});
     public static permitId: string | number | string[];
+
     constructor(private store$: Store<any>,
                 private service: UserEntityService,
                 private titleService: TitlesService,
@@ -35,6 +41,40 @@ export class AllpermitsComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.getAllPermits();
+
+        // loadAllPermits()
+
+
+    }
+
+    public gotoHome() {
+        this.router.navigate(['/home']);  // define your component where you want to go
+
+    }
+
+    public getAllPermits(): void {
+        this.qaService.loadAllMyPermits().subscribe(
+            (response: PermitEntityDto[]) => {
+                this.tcTasks = response;
+
+                if (this.isDtInitialized) {
+                    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                        dtInstance.destroy();
+                        this.dtTrigger.next();
+                    });
+                } else {
+                    this.isDtInitialized = true
+                    this.dtTrigger.next();
+                }
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        )
+    }
+
+    clickFunction() {
 
         swal.fire({
             title: 'Enter Permit Number',
@@ -59,7 +99,7 @@ export class AllpermitsComponent implements OnInit {
                             buttonsStyling: false
                         }).then((result) => {
                             if (result.value) {
-                                window.location.href = "/dashboard";
+                                // window.location.href = "/dashboard";
                             }
                         });
                     }
@@ -83,15 +123,11 @@ export class AllpermitsComponent implements OnInit {
                     buttonsStyling: false
                 }).then((result) => {
                     if (result.value) {
-                        window.location.href = "/dashboard";
+                        // window.location.href = "/dashboard";
                     }
                 });
             }
         });
-    }
-    public gotoHome() {
-        this.router.navigate(['/home']);  // define your component where you want to go
-
     }
 
 

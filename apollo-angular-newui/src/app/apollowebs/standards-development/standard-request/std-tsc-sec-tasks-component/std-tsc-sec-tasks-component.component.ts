@@ -1,11 +1,14 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {FormBuilder} from "@angular/forms";
 import {LiaisonOrganization, Stdtsectask} from "../../../../core/store/data/std/request_std.model";
 import {StandardDevelopmentService} from "../../../../core/store/data/std/standard-development.service";
 import {HttpErrorResponse} from "@angular/common/http";
-import { IDropdownSettings } from 'ng-multiselect-dropdown';
+import {IDropdownSettings} from 'ng-multiselect-dropdown';
 import {ListItem} from "ng-multiselect-dropdown/multiselect.model";
 import {Subject} from "rxjs";
+import {DataTableDirective} from "angular-datatables";
+import {NgxSpinnerService} from "ngx-spinner";
+import {NotificationService} from "../../../../core/store/data/std/notification.service";
 
 @Component({
   selector: 'app-std-tsc-sec-tasks-component',
@@ -15,11 +18,14 @@ import {Subject} from "rxjs";
 export class StdTscSecTasksComponentComponent implements OnInit {
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
+  @ViewChild(DataTableDirective, {static: false})
+  dtElement: DataTableDirective;
+  isDtInitialized: boolean = false
   p = 1;
   p2 = 1;
-  public itemId :string="";
-  public filePurposeAnnex: string="FilePurposeAnnex";
-  public relevantDocumentsNWI: string="RelevantDocumentsNWI";
+  public itemId: string = "";
+  public filePurposeAnnex: string = "FilePurposeAnnex";
+  public relevantDocumentsNWI: string = "RelevantDocumentsNWI";
 
   public secTasks: Stdtsectask[] = [];
   public tscsecRequest !: Stdtsectask | undefined;
@@ -38,7 +44,9 @@ export class StdTscSecTasksComponentComponent implements OnInit {
 
   constructor(
       private formBuilder: FormBuilder,
-      private  standardDevelopmentService: StandardDevelopmentService
+      private  standardDevelopmentService: StandardDevelopmentService,
+      private SpinnerService: NgxSpinnerService,
+      private notifyService: NotificationService,
   ) {
   }
 
@@ -92,8 +100,16 @@ export class StdTscSecTasksComponentComponent implements OnInit {
         (response: Stdtsectask[]) => {
           console.log(response);
           this.secTasks = response;
-          this.dtTrigger.next();
 
+          if (this.isDtInitialized) {
+            this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+              dtInstance.destroy();
+              this.dtTrigger.next();
+            });
+          } else {
+            this.isDtInitialized = true
+            this.dtTrigger.next();
+          }
         },
         (error: HttpErrorResponse) => {
           alert(error.message);
@@ -102,11 +118,18 @@ export class StdTscSecTasksComponentComponent implements OnInit {
   }
 
   @ViewChild('closeModal') private closeModal: ElementRef | undefined;
+
   public hideModel() {
     this.closeModal?.nativeElement.click();
   }
 
+  showToasterSuccess(title: string, message: string) {
+    this.notifyService.showSuccess(message, title)
+
+  }
+
   public onUpload(secTask: Stdtsectask): void {
+    this.SpinnerService.show();
 
     if (secTask.liaisonOrganisationData != null) {
       //console.log(JSON.stringify(secTask.liaisonOrganisationData.name));
@@ -115,13 +138,17 @@ export class StdTscSecTasksComponentComponent implements OnInit {
     }
 
     this.standardDevelopmentService.uploadNWI(secTask).subscribe(
-        (response: Stdtsectask) => {
+        (response) => {
           console.log(response);
+          this.showToasterSuccess(response.httpStatus, `New Work Item Uploaded`);
           this.hideModel();
           this.getTCSECTasks();
-        },
+          this.SpinnerService.hide();
+          },
         (error: HttpErrorResponse) => {
           alert(error.message);
+          this.SpinnerService.hide();
+
         }
     )
   }
