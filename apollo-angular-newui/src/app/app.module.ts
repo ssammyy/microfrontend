@@ -169,6 +169,7 @@ import {SpcSecTaskComponent} from "./apollowebs/standards-development/standard-r
 import {StdJustificationComponent} from "./apollowebs/standards-development/standard-request/std-justification/std-justification.component";
 import {StdTcWorkplanComponent} from "./apollowebs/standards-development/standard-request/std-tc-workplan/std-tc-workplan.component";
 import { PreparePreliminaryDraftComponent } from './apollowebs/standards-development/committee-module/prepare-preliminary-draft/prepare-preliminary-draft.component';
+import { NwaPreliminaryDraftComponent } from './apollowebs/standards-development/workshop-agreement/nwa-preliminary-draft/nwa-preliminary-draft.component';
 
 
 // import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -345,6 +346,8 @@ import { PreparePreliminaryDraftComponent } from './apollowebs/standards-develop
         StandardLevyPenaltyHistoryComponent,
         StandardLevyDefaulterHistoryComponent,
         PreparePreliminaryDraftComponent
+        StandardLevyDefaulterHistoryComponent,
+        NwaPreliminaryDraftComponent
 
     ]
 

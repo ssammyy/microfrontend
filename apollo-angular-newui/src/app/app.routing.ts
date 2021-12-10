@@ -99,6 +99,7 @@ import {StandardLevyDefaulterHistoryComponent} from './apollowebs/standards-levy
 import {StdJustificationComponent} from "./apollowebs/standards-development/standard-request/std-justification/std-justification.component";
 import {StdTcWorkplanComponent} from "./apollowebs/standards-development/standard-request/std-tc-workplan/std-tc-workplan.component";
 import {PreparePreliminaryDraftComponent} from "./apollowebs/standards-development/committee-module/prepare-preliminary-draft/prepare-preliminary-draft.component";
+import {NwaPreliminaryDraftComponent} from "./apollowebs/standards-development/workshop-agreement/nwa-preliminary-draft/nwa-preliminary-draft.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -455,6 +456,11 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
         children: [{path: '', component: HoSicTasksComponent}]
     },
+    {
+        path: 'nwaPreparePD', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: NwaPreliminaryDraftComponent}]
+    },
 
     // SD International Standards
     {
@@ -660,7 +666,7 @@ export const routes: Routes = [
         children: [{path: '', component: RoleSwitcherComponent}]
     },
     {
-        path: 'levyRegistration', component: StandardsLevyHomeComponent,
+        path: 'levyRegistration', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [{path: '', component: CustomerRegistrationComponent}]
     },

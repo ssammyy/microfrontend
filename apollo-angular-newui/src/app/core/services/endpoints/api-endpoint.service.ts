@@ -17,7 +17,7 @@ export class ApiEndpointService {
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-        //  LOCAL_DEV: 'localhost:8006'
+         // LOCAL_DEV: 'localhost:8006'
         // LOCAL_DEV: '12:8006'
         // LOCAL_DEV: '41.72.209.58:8006'
          LOCAL_DEV: `kimsint.kebs.org:8006`
@@ -308,11 +308,13 @@ export class ApiEndpointService {
         NWA_KNW_TASKS: `${ApiEndpointService.SD_NWA_CONTEXT}/knwtasks`,
         NWA_SPC_SEC_TASKS: `${ApiEndpointService.SD_NWA_CONTEXT}/getSpcSecTasks`,
         NWA_DECISION_ON_JUSTIFICATION: `${ApiEndpointService.SD_NWA_CONTEXT}/decisionOnJustification`,
+        NWA_DECISION_ON_JUSTIFICATION_KNW: `${ApiEndpointService.SD_NWA_CONTEXT}/decisionOnJustificationKNW`,
         NWA_PREPARE_DISDT_JUSTIFICATION: `${ApiEndpointService.SD_NWA_CONTEXT}/prepareDiSdtJustification`,
         NWA_DISDT_TASKS: `${ApiEndpointService.SD_NWA_CONTEXT}/getDiSdtTasks`,
         NWA_DECISION_ON_DISDT_JUSTIFICATION: `${ApiEndpointService.SD_NWA_CONTEXT}/decisionOnDiSdtJustification`,
         NWA_PREPARE_PRELIMINARY_DRAFT: `${ApiEndpointService.SD_NWA_CONTEXT}/preparePreliminaryDraft`,
         NWA_DECISION_ON_PRELIMINARY_DRAFT: `${ApiEndpointService.SD_NWA_CONTEXT}/decisionOnPd`,
+        NWA_TC_SEC_TASKS: `${ApiEndpointService.SD_NWA_CONTEXT}/getTCSeCTasks`,
         NWA_HOP_TASKS: `${ApiEndpointService.SD_NWA_CONTEXT}/getHOPTasks`,
         NWA_EDIT_WORKSHOP_DRAFT: `${ApiEndpointService.SD_NWA_CONTEXT}/editWorkshopDraft`,
         NWA_SAC_SEC_TASKS: `${ApiEndpointService.SD_NWA_CONTEXT}/getSacSecTasks`,
@@ -322,11 +324,15 @@ export class ApiEndpointService {
         NWA_UPLOAD_GAZETTE_NOTICE: `${ApiEndpointService.SD_NWA_CONTEXT}/uploadGazetteNotice`,
         NWA_UPDATE_GAZETTEMENT_DATE: `${ApiEndpointService.SD_NWA_CONTEXT}/updateGazettementDate`,
         NWA_UPLOAD_DATA: `${ApiEndpointService.SD_NWA_CONTEXT}/file-upload`,
-        NWA_UPLOAD_DATA_VIEW: `${ApiEndpointService.SD_NWA_CONTEXT}/view/justification`,
         NWA_UPLOAD_DATA_DI: `${ApiEndpointService.SD_NWA_CONTEXT}/di-file-upload`,
         NWA_UPLOAD_DATA_PD: `${ApiEndpointService.SD_NWA_CONTEXT}/pd-file-upload`,
         NWA_UPLOAD_DATA_WD: `${ApiEndpointService.SD_NWA_CONTEXT}/wd-file-upload`,
         NWA_UPLOAD_DATA_STD: `${ApiEndpointService.SD_NWA_CONTEXT}/std-file-upload`,
+        NWA_UPLOAD_DATA_VIEW: `${ApiEndpointService.SD_NWA_CONTEXT}/view/justification`,
+        NWA_UPLOAD_DATA_VIEW_DI: `${ApiEndpointService.SD_NWA_CONTEXT}/view/di-justification`,
+        NWA_UPLOAD_DATA_VIEW_PD: `${ApiEndpointService.SD_NWA_CONTEXT}/view/preliminaryDraft`,
+        NWA_UPLOAD_DATA_VIEW_WD: `${ApiEndpointService.SD_NWA_CONTEXT}/view/workShopDraft`,
+        NWA_UPLOAD_DATA_VIEW_STD: `${ApiEndpointService.SD_NWA_CONTEXT}/view/knwStandard`,
 
         // SD INTERNATIONAL STANDARDS
         IST_PREPARE_ADOPTION_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/prepareAdoptionProposal`,
@@ -417,6 +423,7 @@ export class ApiEndpointService {
         STD_LEVY_PENALTY_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getManufacturerPenalty`,
         STD_LEVY_PAID_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getPaidLevies`,
         STD_LEVY_COMPANY_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getCompanyProfile`,
+        STD_LEVY_SL10_FORM: `${ApiEndpointService.STL_CONTEXT}/submit-registration-manufacture`,
 
     };
 

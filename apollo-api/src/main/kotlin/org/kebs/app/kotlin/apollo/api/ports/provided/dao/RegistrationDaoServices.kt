@@ -611,6 +611,8 @@ class RegistrationDaoServices(
         var sr = commonDaoServices.createServiceRequest(s)
         try {
 
+
+
             val userCompanyDetails = UserCompanyEntityDto()
             with(userCompanyDetails) {
                 name = brs.businessName
@@ -646,6 +648,8 @@ class RegistrationDaoServices(
                     }
                 }
             }
+
+
 //            systemsAdminDaoService.assignRoleToUser(u.id?:throw NullValueNotAllowedException(""),applicationMapProperties.mapUserManufactureRoleID, s.activeStatus)
 
             val userAssignRole = u.id?.let {
@@ -999,14 +1003,23 @@ class RegistrationDaoServices(
         return add
     }
 
-    private fun manufacturerStdLevyInit(
+     fun manufacturerStdLevyInit(
         stdLevyNotificationFormEntity: StdLevyNotificationFormEntity,
         manufacturer: ManufacturersEntity,
+        companySl1DTO: CompanySl1DTO,
         s: ServiceMapsEntity,
         sr: ServiceRequestsEntity
     ): StdLevyNotificationFormEntity {
         var add = stdLevyNotificationFormEntity
+
         with(add) {
+            nameBusinessProprietor = companySl1DTO.NameAndBusinessOfProprietors
+            commoditiesManufactured = companySl1DTO.AllCommoditiesManufuctured
+            dateManufactureCommenced = companySl1DTO.DateOfManufacture
+            totalValueOfManufacture = companySl1DTO.totalValueOfManufacture
+            varField1 = companySl1DTO.nameOfBranch
+            varField2 = companySl1DTO.location
+
             manufacturerId = manufacturer
             createdOn = Timestamp.from(Instant.now())
             createdBy = manufacturer.userId?.firstName + " " + manufacturer.userId?.lastName
@@ -1044,8 +1057,9 @@ class RegistrationDaoServices(
     private fun manufacturersInit(
         manufacturersEntity: ManufacturersEntity,
         sr: ServiceRequestsEntity,
-        user: UsersEntity?,
-        s: ServiceMapsEntity
+        user: UsersEntity,
+        s: ServiceMapsEntity,
+        brs: BrsLookUpRecords
     ): ManufacturersEntity {
         var manufacturer = manufacturersEntity
         with(manufacturer) {
@@ -1057,7 +1071,14 @@ class RegistrationDaoServices(
             version = s.initStatus
             createdOn = Date(Date().time)
             createdBy = user?.id
+            name= commonDaoServices.concatenateName(user)
+            kraPin= brs.kraPin
+            registrationNumber= brs.registrationNumber
+            postalAddress= brs.postalAddress
+            companyEmail = brs.email
+            companyTelephone = brs.phoneNumber
         }
+
         manufacturer = manufacturersRepo.save(manufacturer)
         return manufacturer
     }

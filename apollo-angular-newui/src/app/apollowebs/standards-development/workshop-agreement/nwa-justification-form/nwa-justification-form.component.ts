@@ -43,7 +43,7 @@ export class NwaJustificationFormComponent implements OnInit {
   ngOnInit(): void {
     this.getKNWDepartments();
     this.getKNWCommittee();
-    this.knwtasks();
+    //this.knwtasks();
 
       this.store$.select(selectUserInfo).pipe().subscribe((u) => {
           return this.fullname = u.fullName;
@@ -92,7 +92,7 @@ export class NwaJustificationFormComponent implements OnInit {
     this.stdNwaService.getKNWCommittee().subscribe(
         (response: KNWCommittee[]) => {
           this.nwaCommittees = response;
-          console.log(this.nwaCommittees)
+          //console.log(this.nwaCommittees)
         },
         (error: HttpErrorResponse) => {
           console.log(error.message);
@@ -100,49 +100,49 @@ export class NwaJustificationFormComponent implements OnInit {
     );
   }
 
-  // saveJustification(): void {
-  //   this.SpinnerService.show();
-  //   this.stdNwaService.prepareJustification(this.prepareJustificationFormGroup.value).subscribe(
-  //       (response ) => {
-  //         console.log(response);
-  //         this.SpinnerService.hide();
-  //         this.showToasterSuccess(response.httpStatus, `Request Number is ${response.body.requestNumber}`);
-  //        this.onClickSaveUploads(response.body.savedRowID)
-  //         this.prepareJustificationFormGroup.reset();
-  //       },
-  //       (error: HttpErrorResponse) => {
-  //           this.SpinnerService.hide();
-  //         console.log(error.message);
-  //       }
-  //   );
-  // }
-    saveJustification() {
-        const file = this.uploadedFiles;
-        const formData = new FormData();
-        for (let i = 0; i < file.length; i++) {
-            console.log(file[i]);
-            formData.append('docFile', file[i], file[i].name);
+  saveJustification(): void {
+    this.SpinnerService.show();
+    this.stdNwaService.prepareJustification(this.prepareJustificationFormGroup.value).subscribe(
+        (response ) => {
+          console.log(response);
+          this.SpinnerService.hide();
+          this.showToasterSuccess(response.httpStatus, `Request Number is ${response.body.requestNumber}`);
+         this.onClickSaveUploads(response.body.savedRowID)
+          this.prepareJustificationFormGroup.reset();
+        },
+        (error: HttpErrorResponse) => {
+            this.SpinnerService.hide();
+          console.log(error.message);
         }
-        this.SpinnerService.show();
-        this.stdNwaService.prepareJustification(this.prepareJustificationFormGroup.value, formData).subscribe(
-            (data: any) => {
-                this.SpinnerService.hide();
-                this.showToasterSuccess(data.httpStatus, `Request Number is ${data.body.requestNumber}`);
-                //console.log(data);
-                this.prepareJustificationFormGroup.reset();
-                swal.fire({
-                    title: 'Justification Prepared.',
-                    buttonsStyling: false,
-                    icon: 'success'
-                });
-            },
-            (error: HttpErrorResponse) => {
-                this.SpinnerService.hide();
-                console.log(error.message);
-            }
-        );
-
-    }
+    );
+  }
+  //   saveJustification() {
+  //       const file = this.uploadedFiles;
+  //       const formData = new FormData();
+  //       for (let i = 0; i < file.length; i++) {
+  //           console.log(file[i]);
+  //           formData.append('docFile', file[i], file[i].name);
+  //       }
+  //       this.SpinnerService.show();
+  //       this.stdNwaService.prepareJustification(this.prepareJustificationFormGroup.value, formData).subscribe(
+  //           (data: any) => {
+  //               this.SpinnerService.hide();
+  //               this.showToasterSuccess(data.httpStatus, `Request Number is ${data.body.requestNumber}`);
+  //               //console.log(data);
+  //               this.prepareJustificationFormGroup.reset();
+  //               swal.fire({
+  //                   title: 'Justification Prepared.',
+  //                   buttonsStyling: false,
+  //                   icon: 'success'
+  //               });
+  //           },
+  //           (error: HttpErrorResponse) => {
+  //               this.SpinnerService.hide();
+  //               console.log(error.message);
+  //           }
+  //       );
+  //
+  //   }
 
   public knwtasks(): void {
     this.stdNwaService.knwtasks().subscribe(

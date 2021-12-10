@@ -45,13 +45,14 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
 </thead>
 <tbody>
 <tr  >
-<td>1 <input class="" type="checkbox" value="" id=""></td>
-<td>PEN12DC56</td>
-<td>Daima Whole Milk</td>
-<td>13/06/2018</td>
-<td>KSH 50000</td>
-<td>Pending</td>
-<td>Jane Doe</td>
+<tr  *ngFor="let task of tasks let i=index">
+    <td >{{i+1}} <input class="" type="checkbox" value="{{task.id}}" id="{{task.id}}"></td>
+<td>{{task.manufacturerEntity}}</td>
+<td>{{task.manufacturerEntity}}</td>
+<td>{{task.paymentDate}}</td>
+<td>KSH {{task.paymentAmount}}</td>
+<td>{{task.visitStatus}}</td>
+<td>{{task.officerAssigned}}</td>
 
 </tr>
 </tbody>
