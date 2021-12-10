@@ -605,7 +605,7 @@ class CommonDaoServices(
     fun loggedInUserDetails(): UsersEntity {
         SecurityContextHolder.getContext().authentication?.name
             ?.let { username ->
-                usersRepo.findByUserName(username)
+                usersRepo.findByEmail(username)
                     ?.let { loggedInUser ->
                         return loggedInUser
                     }
@@ -871,11 +871,11 @@ class CommonDaoServices(
 
 
     fun findUserByUserName(userName: String): UsersEntity {
-        usersRepo.findByUserName(userName)
+        usersRepo.findByEmail(userName)
             ?.let { userEntity ->
                 return userEntity
             }
-            ?: throw ExpectedDataNotFound("Username  = ${userName}, does not Exist")
+            ?: throw ExpectedDataNotFound("Email  = ${userName}, does not Exist")
     }
 
     fun findOTPByToken(userName: String): UserVerificationTokensEntity {

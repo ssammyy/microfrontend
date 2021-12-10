@@ -386,6 +386,7 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
     }
 
+    // load all migrated permits to user
     fun findAllLoadedPermitList(user: UsersEntity, permitNumber: String, attachedPlant: UsersEntity): List<PermitApplicationsEntity> {
         val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
         val attachedPlantId = attachedPlant.plantId ?: throw ExpectedDataNotFound("No PLANT ID Found")
@@ -400,23 +401,35 @@ class QADaoServices(
 //
 //
 //            } else {
-                try {
-                    val response = permitRepo.migratePermitsToNewUser(userId, permitNumber, attachedPlantId)
-                    KotlinLogging.logger { }.info("The response is $response")
-                    permitRepo.findByUserId(userId)?.let { permitList ->
-                        return permitList
-                    }
-                } catch (e: Exception) {
-                    KotlinLogging.logger { }.error(e.message)
-
-                }
-                permitRepo.findByUserId(userId)?.let { permitList ->
-                    return permitList
-                }
-                    ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+        try {
+            val response = permitRepo.migratePermitsToNewUser(userId, permitNumber, attachedPlantId)
+            KotlinLogging.logger { }.info("The response is $response")
+            permitRepo.findByUserId(userId)?.let { permitList ->
+                return permitList
             }
-      //  }
-        //  return it
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+
+        }
+        permitRepo.findByUserId(userId)?.let { permitList ->
+            return permitList
+        }
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+    // find all user permits
+    fun findAllMyPermits(user: UsersEntity): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        KotlinLogging.logger { }.info { userId }
+        permitRepo.findByUserId(userId)?.let { permitList ->
+            return permitList
+        }
+            ?: throw ExpectedDataNotFound("No Permits Found for the following user with USERNAME = ${user.userName}")
+    }
+
+
+    //  }
+    //  return it
 
 //            ?: throw ExpectedDataNotFound("This Permit is not assigned to you")
 

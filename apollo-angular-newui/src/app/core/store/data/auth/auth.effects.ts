@@ -185,7 +185,8 @@ export class AuthEffects {
                                         expiry: undefined,
                                         email: '',
                                         accessToken: '',
-                                        fullName: ''
+                                        fullName: '',
+                                        companyID: 0,
                                     }
                                 }),
                                 loadUserCompanyInfoSuccess({data: null}),
@@ -219,15 +220,27 @@ export class AuthEffects {
                 switchMap((action) => this.service.login(action.payload)
                     .pipe(
                         mergeMap((data) => {
-                            return [
-                                loadAuthsSuccess({profile: data, loggedIn: true}),
-                                loadUserCompanyInfo(),
-                                Go({
-                                    payload: action.redirectUrl,
-                                    link: action.redirectUrl,
-                                    redirectUrl: action.redirectUrl
-                                })
-                            ];
+                            if (data.companyID != null) {
+
+                                return [
+                                    loadAuthsSuccess({profile: data, loggedIn: true}),
+                                    loadUserCompanyInfo(),
+                                    Go({
+                                        payload: action.redirectUrl,
+                                        link: action.redirectUrl,
+                                        redirectUrl: action.redirectUrl
+                                    })
+                                ];
+                            } else {
+                                return [
+                                    loadAuthsSuccess({profile: data, loggedIn: true}),
+                                    Go({
+                                        payload: action.redirectUrl,
+                                        link: action.redirectUrl,
+                                        redirectUrl: action.redirectUrl
+                                    })
+                                ];
+                            }
                         }),
                         catchError(
                             (err: HttpErrorResponse) => of(loadResponsesFailure({

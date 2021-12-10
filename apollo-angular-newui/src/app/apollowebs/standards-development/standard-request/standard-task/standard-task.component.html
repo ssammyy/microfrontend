@@ -110,76 +110,81 @@
                                                     </div>
                                                     <div class="col-md-4">
                                                         <div class="col-sm-12 checkbox-radios">
-                                                            <mat-radio-button
-                                                                    aria-describedby="inputGroup-sizing-sm"
-                                                                    aria-label="Small"
-                                                                    name="sdOutput"
+                                                            <mat-radio-group
+                                                                    aria-labelledby="example-radio-group-label"
+                                                                    class="example-radio-group"
                                                                     ngModel="{{hofFeedback?.sdOutput}}"
-                                                                    class="form-check-input"
-                                                                    value="Develop a standard through committee draft"
-                                                                    id="defaultCheck4">
-                                                                Develop a standard through committee draft
+                                                                    name="sdOutput"
 
-                                                            </mat-radio-button>
-                                                            <br>
-                                                            <mat-radio-button
-                                                                    aria-describedby="inputGroup-sizing-sm"
-                                                                    aria-label="Small"
-                                                                    name="sdOutput"
-                                                                    ngModel="{{hofFeedback?.sdOutput}}"
-                                                                    class="form-check-input"
-                                                                    value="Adopt existing International Standard"
-                                                                    id="defaultCheck5">
-                                                                Review existing Kenyan Standard
-                                                            </mat-radio-button>
-                                                            <br>
+                                                            >
+                                                                <mat-radio-button
+                                                                        aria-describedby="inputGroup-sizing-sm"
+                                                                        aria-label="Small"
+                                                                        *ngFor="let season of seasons"
+                                                                        [value]="season">
+                                                                    {{season}}
 
-                                                            <mat-radio-button
-                                                                    aria-describedby="inputGroup-sizing-sm"
-                                                                    aria-label="Small"
-                                                                    name="sdOutput"
-                                                                    ngModel="{{hofFeedback?.sdOutput}}"
-                                                                    class="form-check-input"
-                                                                    value="Review existing Kenyan Standard"
-                                                                    id="defaultCheck6">
-                                                                Adopt existing International Standard
-                                                            </mat-radio-button>
+                                                                </mat-radio-button>
+                                                            </mat-radio-group>
                                                             <br>
+                                                            <!--                                                            <mat-radio-button-->
+                                                            <!--                                                                    aria-describedby="inputGroup-sizing-sm"-->
+                                                            <!--                                                                    aria-label="Small"-->
+                                                            <!--                                                                    name="sdOutput"-->
+                                                            <!--                                                                    ngModel="{{hofFeedback?.sdOutput}}"-->
+                                                            <!--                                                                    class="form-check-input"-->
+                                                            <!--                                                                    value="Adopt existing International Standard"-->
+                                                            <!--                                                                    id="defaultCheck5">-->
+                                                            <!--                                                                Review existing Kenyan Standard-->
+                                                            <!--                                                            </mat-radio-button>-->
+                                                            <!--                                                            <br>-->
 
-                                                            <mat-radio-button
-                                                                    aria-describedby="inputGroup-sizing-sm"
-                                                                    aria-label="Small"
-                                                                    name="sdOutput"
-                                                                    ngModel="{{hofFeedback?.sdOutput}}"
-                                                                    class="form-check-input"
-                                                                    value="Development of urgent Kenyan standard"
-                                                                    id="defaultCheck8">
-                                                                Development of urgent Kenyan standard
-                                                            </mat-radio-button>
-                                                            <br>
+                                                            <!--                                                            <mat-radio-button-->
+                                                            <!--                                                                    aria-describedby="inputGroup-sizing-sm"-->
+                                                            <!--                                                                    aria-label="Small"-->
+                                                            <!--                                                                    name="sdOutput"-->
+                                                            <!--                                                                    ngModel="{{hofFeedback?.sdOutput}}"-->
+                                                            <!--                                                                    class="form-check-input"-->
+                                                            <!--                                                                    value="Review existing Kenyan Standard"-->
+                                                            <!--                                                                    id="defaultCheck6">-->
+                                                            <!--                                                                Adopt existing International Standard-->
+                                                            <!--                                                            </mat-radio-button>-->
+                                                            <!--                                                            <br>-->
 
-                                                            <mat-radio-button
-                                                                    aria-describedby="inputGroup-sizing-sm"
-                                                                    aria-label="Small"
-                                                                    name="sdOutput"
-                                                                    ngModel="{{hofFeedback?.sdOutput}}"
-                                                                    class="form-check-input"
-                                                                    value="Development of publicly available specification"
-                                                                    id="defaultCheck9">
-                                                                Development of publicly available specification
-                                                            </mat-radio-button>
-                                                            <br>
+                                                            <!--                                                            <mat-radio-button-->
+                                                            <!--                                                                    aria-describedby="inputGroup-sizing-sm"-->
+                                                            <!--                                                                    aria-label="Small"-->
+                                                            <!--                                                                    name="sdOutput"-->
+                                                            <!--                                                                    ngModel="{{hofFeedback?.sdOutput}}"-->
+                                                            <!--                                                                    class="form-check-input"-->
+                                                            <!--                                                                    value="Development of urgent Kenyan standard"-->
+                                                            <!--                                                                    id="defaultCheck8">-->
+                                                            <!--                                                                Development of urgent Kenyan standard-->
+                                                            <!--                                                            </mat-radio-button>-->
+                                                            <!--                                                            <br>-->
 
-                                                            <mat-radio-button
-                                                                    aria-describedby="inputGroup-sizing-sm"
-                                                                    aria-label="Small"
-                                                                    name="sdOutput"
-                                                                    ngModel="{{hofFeedback?.sdOutput}}"
-                                                                    class="form-check-input"
-                                                                    value="Development of national workshop agreement"
-                                                                    id="defaultCheck10">
-                                                                Development of national workshop agreement
-                                                            </mat-radio-button>
+                                                            <!--                                                            <mat-radio-button-->
+                                                            <!--                                                                    aria-describedby="inputGroup-sizing-sm"-->
+                                                            <!--                                                                    aria-label="Small"-->
+                                                            <!--                                                                    name="sdOutput"-->
+                                                            <!--                                                                    ngModel="{{hofFeedback?.sdOutput}}"-->
+                                                            <!--                                                                    class="form-check-input"-->
+                                                            <!--                                                                    value="Development of publicly available specification"-->
+                                                            <!--                                                                    id="defaultCheck9">-->
+                                                            <!--                                                                Development of publicly available specification-->
+                                                            <!--                                                            </mat-radio-button>-->
+                                                            <!--                                                            <br>-->
+
+                                                            <!--                                                            <mat-radio-button-->
+                                                            <!--                                                                    aria-describedby="inputGroup-sizing-sm"-->
+                                                            <!--                                                                    aria-label="Small"-->
+                                                            <!--                                                                    name="sdOutput"-->
+                                                            <!--                                                                    ngModel="{{hofFeedback?.sdOutput}}"-->
+                                                            <!--                                                                    class="form-check-input"-->
+                                                            <!--                                                                    value="Development of national workshop agreement"-->
+                                                            <!--                                                                    id="defaultCheck10">-->
+                                                            <!--                                                                Development of national workshop agreement-->
+                                                            <!--                                                            </mat-radio-button>-->
 
                                                             <br>
 

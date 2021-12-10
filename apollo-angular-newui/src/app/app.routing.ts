@@ -96,6 +96,9 @@ import {StandardLevyDefaulterComponent} from './apollowebs/standards-levy/standa
 import {StandardLevyPenaltyHistoryComponent} from './apollowebs/standards-levy/standard-levy-penalty-history/standard-levy-penalty-history.component';
 import {StandardLevyPaidHistoryComponent} from './apollowebs/standards-levy/standard-levy-paid-history/standard-levy-paid-history.component';
 import {StandardLevyDefaulterHistoryComponent} from './apollowebs/standards-levy/standard-levy-defaulter-history/standard-levy-defaulter-history.component';
+import {StdJustificationComponent} from "./apollowebs/standards-development/standard-request/std-justification/std-justification.component";
+import {StdTcWorkplanComponent} from "./apollowebs/standards-development/standard-request/std-tc-workplan/std-tc-workplan.component";
+import {PreparePreliminaryDraftComponent} from "./apollowebs/standards-development/committee-module/prepare-preliminary-draft/prepare-preliminary-draft.component";
 import {NwaPreliminaryDraftComponent} from "./apollowebs/standards-development/workshop-agreement/nwa-preliminary-draft/nwa-preliminary-draft.component";
 
 // export const AppRoutes: Routes = [
@@ -590,20 +593,35 @@ export const routes: Routes = [
         children: [{path: '', component: RequestStandardFormComponent}]
     },
     {
+        //Review Standard Requests
         path: 'ms-standards', component: AdminLayoutComponent,
         children: [{path: '', component: StandardTaskComponent}]
     },
     {
+        //Prepare New Work Item
         path: 'std-tsc-sec-task', component: AdminLayoutComponent,
         children: [{path: '', component: StdTscSecTasksComponentComponent}]
     },
     {
+        //Vote On New Work Item
         path: 'std-tc-task', component: AdminLayoutComponent,
         children: [{path: '', component: StdTcTasksComponent}]
     },
     {
-        path: 'spc-sec-tc-task', component: AdminLayoutComponent,
+        //Upload Justification
+        path: 'upload-justification', component: AdminLayoutComponent,
+        children: [{path: '', component: StdJustificationComponent}]
+    },
+
+    //Decision On Justification
+    {
+        path: 'decision-justification', component: AdminLayoutComponent,
         children: [{path: '', component: SpcSecTaskComponent}]
+    },
+    //Upload WorkPlan
+    {
+        path: 'upload-workplan', component: AdminLayoutComponent,
+        children: [{path: '', component: StdTcWorkplanComponent}]
     },
     {
         path: 'department', component: AdminLayoutComponent,
@@ -618,6 +636,26 @@ export const routes: Routes = [
         children: [{path: '', component: CreateproductComponent}]
     },
     {
+        path: 'productSubCategory', component: AdminLayoutComponent,
+        children: [{path: '', component: CreateproductSubCategoryComponent}]
+    },
+
+
+    /****************************************************************
+     * STANDARD DEVELOPMENT - COMMITTEE MODULE ROUTES
+     ***************************************************************/
+
+    {
+        // prepare Preliminary Draft
+        path: 'preparePd', component: AdminLayoutComponent,
+        children: [{path: '', component: PreparePreliminaryDraftComponent}]
+    },
+
+
+
+    /****************************************************************
+     * END OF STANDARD DEVELOPMENT - COMMITTEE MODULE ROUTES
+     ***************************************************************/    {
         path: 'productSubCategory', component: AdminLayoutComponent,
         children: [{path: '', component: CreateproductSubCategoryComponent}]
     },

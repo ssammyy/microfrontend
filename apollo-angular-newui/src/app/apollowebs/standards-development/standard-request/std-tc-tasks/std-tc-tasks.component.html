@@ -78,39 +78,110 @@
                                                         <h5>Please tick and fill your preference of the listed
                                                             option.</h5>
                                                     </div>
-                                                    <div class="col-sm-5 checkbox-radios">
-<!--                                                        <input-->
-<!--                                                                name="decision"-->
-<!--                                                                ngModel="{{formActionRequest?.decision}}"-->
-<!--                                                                class="form-check-input" type="radio" value="true"-->
-<!--                                                                id="yesVote">-->
-<!--                                                        <label class="form-check-label" for="yesVote">-->
-<!--                                                            Proposal acceptable-->
-<!--                                                        </label>-->
-                                                        <mat-radio-button name="decision"
-                                                                          ngModel="{{formActionRequest?.decision}}"
-                                                                          class="form-check-input"  value="true"
-                                                                          id="yesVote">Proposal acceptable</mat-radio-button>
+                                                    <!--                                                    <div class="col-sm-5 checkbox-radios">-->
+                                                    <!--&lt;!&ndash;                                                        <input&ndash;&gt;-->
+                                                    <!--&lt;!&ndash;                                                                name="decision"&ndash;&gt;-->
+                                                    <!--&lt;!&ndash;                                                                ngModel="{{formActionRequest?.decision}}"&ndash;&gt;-->
+                                                    <!--&lt;!&ndash;                                                                class="form-check-input" type="radio" value="true"&ndash;&gt;-->
+                                                    <!--&lt;!&ndash;                                                                id="yesVote">&ndash;&gt;-->
+                                                    <!--&lt;!&ndash;                                                        <label class="form-check-label" for="yesVote">&ndash;&gt;-->
+                                                    <!--&lt;!&ndash;                                                            Proposal acceptable&ndash;&gt;-->
+                                                    <!--&lt;!&ndash;                                                        </label>&ndash;&gt;-->
+                                                    <!--                                                        <mat-radio-button name="decision"-->
+                                                    <!--                                                                          ngModel="{{formActionRequest?.decision}}"-->
+                                                    <!--                                                                          class="form-check-input"  value="true"-->
+                                                    <!--                                                                          id="yesVote">Proposal acceptable</mat-radio-button>-->
+
+                                                    <!--                                                    </div>-->
+                                                    <!--                                                    <br><br>-->
+                                                    <!--                                                    <div class="col-sm-5 checkbox-radios">-->
+                                                    <!--&lt;!&ndash;                                                        <input&ndash;&gt;-->
+                                                    <!--&lt;!&ndash;                                                                aria-describedby="inputGroup-sizing-sm"&ndash;&gt;-->
+                                                    <!--&lt;!&ndash;                                                                aria-label="Small"&ndash;&gt;-->
+                                                    <!--&lt;!&ndash;                                                                name="decision"&ndash;&gt;-->
+                                                    <!--&lt;!&ndash;                                                                ngModel="{{formActionRequest?.decision}}"&ndash;&gt;-->
+                                                    <!--&lt;!&ndash;                                                                class="form-check-input" type="radio" value="false"&ndash;&gt;-->
+                                                    <!--&lt;!&ndash;                                                                id="noVote">&ndash;&gt;-->
+                                                    <!--&lt;!&ndash;                                                        <label class="form-check-label" for="noVote">&ndash;&gt;-->
+                                                    <!--&lt;!&ndash;                                                            Proposal not acceptable&ndash;&gt;-->
+                                                    <!--&lt;!&ndash;                                                        </label>&ndash;&gt;-->
+                                                    <!--                                                        <mat-radio-button name="decision"-->
+                                                    <!--                                                                          ngModel="{{formActionRequest?.decision}}"-->
+                                                    <!--                                                                          class="form-check-input"  value="true"-->
+                                                    <!--                                                                          id="noVote">Proposal not acceptable</mat-radio-button>-->
+                                                    <!--                                                    </div>-->
+                                                    <!--                                                    <br><br>-->
+                                                    <div class="col-sm-12 checkbox-radios">
+
+                                                        <mat-radio-group
+                                                                aria-labelledby="example-radio-group-label"
+                                                                class="example-radio-group"
+                                                                ngModel="{{formActionRequest?.decision}}"
+                                                                name="decision"
+
+                                                        >
+                                                            <div class="col-sm-6">
+
+                                                                <mat-radio-button
+                                                                        aria-describedby="inputGroup-sizing-sm"
+                                                                        aria-label="Small"
+                                                                        [value]="true">
+                                                                    Proposal acceptable
+
+                                                                </mat-radio-button>
+                                                            </div>
+
+                                                            <div class="col-sm-6">
+
+                                                                <mat-radio-button
+                                                                        aria-describedby="inputGroup-sizing-sm"
+                                                                        aria-label="Small"
+                                                                        [value]="false">
+                                                                    Proposal not acceptable
+
+                                                                </mat-radio-button>
+                                                            </div>
+                                                        </mat-radio-group>
+
+
+                                                        <!--                                                    <div class="col-sm-5 checkbox-radios">-->
+                                                        <!--&lt;!&ndash;                                                        <input&ndash;&gt;-->
+                                                        <!--&lt;!&ndash;                                                                name="decision"&ndash;&gt;-->
+                                                        <!--&lt;!&ndash;                                                                ngModel="{{formActionRequest?.decision}}"&ndash;&gt;-->
+                                                        <!--&lt;!&ndash;                                                                class="form-check-input" type="radio" value="true"&ndash;&gt;-->
+                                                        <!--&lt;!&ndash;                                                                id="yesVote">&ndash;&gt;-->
+                                                        <!--&lt;!&ndash;                                                        <label class="form-check-label" for="yesVote">&ndash;&gt;-->
+                                                        <!--&lt;!&ndash;                                                            Proposal acceptable&ndash;&gt;-->
+                                                        <!--&lt;!&ndash;                                                        </label>&ndash;&gt;-->
+                                                        <!--                                                        <mat-radio-button name="decision"-->
+                                                        <!--                                                                          ngModel="{{formActionRequest?.decision}}"-->
+                                                        <!--                                                                          class="form-check-input"  value="true"-->
+                                                        <!--                                                                          id="yesVote">Proposal acceptable</mat-radio-button>-->
+
+                                                        <!--                                                    </div>-->
+                                                        <!--                                                    <br><br>-->
+                                                        <!--                                                    <div class="col-sm-5 checkbox-radios">-->
+                                                        <!--&lt;!&ndash;                                                        <input&ndash;&gt;-->
+                                                        <!--&lt;!&ndash;                                                                aria-describedby="inputGroup-sizing-sm"&ndash;&gt;-->
+                                                        <!--&lt;!&ndash;                                                                aria-label="Small"&ndash;&gt;-->
+                                                        <!--&lt;!&ndash;                                                                name="decision"&ndash;&gt;-->
+                                                        <!--&lt;!&ndash;                                                                ngModel="{{formActionRequest?.decision}}"&ndash;&gt;-->
+                                                        <!--&lt;!&ndash;                                                                class="form-check-input" type="radio" value="false"&ndash;&gt;-->
+                                                        <!--&lt;!&ndash;                                                                id="noVote">&ndash;&gt;-->
+                                                        <!--&lt;!&ndash;                                                        <label class="form-check-label" for="noVote">&ndash;&gt;-->
+                                                        <!--&lt;!&ndash;                                                            Proposal not acceptable&ndash;&gt;-->
+                                                        <!--&lt;!&ndash;                                                        </label>&ndash;&gt;-->
+                                                        <!--                                                        <mat-radio-button name="decision"-->
+                                                        <!--                                                                          ngModel="{{formActionRequest?.decision}}"-->
+                                                        <!--                                                                          class="form-check-input"  value="false"-->
+                                                        <!--                                                                          id="noVote">Proposal not acceptable</mat-radio-button>-->
+                                                        <!--                                                    </div>-->
+                                                        <!--                                                    <br><br>-->
+
+
+
 
                                                     </div>
-                                                    <br><br>
-                                                    <div class="col-sm-5 checkbox-radios">
-<!--                                                        <input-->
-<!--                                                                aria-describedby="inputGroup-sizing-sm"-->
-<!--                                                                aria-label="Small"-->
-<!--                                                                name="decision"-->
-<!--                                                                ngModel="{{formActionRequest?.decision}}"-->
-<!--                                                                class="form-check-input" type="radio" value="false"-->
-<!--                                                                id="noVote">-->
-<!--                                                        <label class="form-check-label" for="noVote">-->
-<!--                                                            Proposal not acceptable-->
-<!--                                                        </label>-->
-                                                        <mat-radio-button name="decision"
-                                                                          ngModel="{{formActionRequest?.decision}}"
-                                                                          class="form-check-input"  value="true"
-                                                                          id="noVote">Proposal not acceptable</mat-radio-button>
-                                                    </div>
-                                                    <br><br>
 
 
 

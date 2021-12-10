@@ -12,7 +12,9 @@ import {
     MPesaPushDto,
     PermitEntityDetails,
     PermitEntityDto,
-    PermitProcessStepDto, PlantDetailsDto, QRCodeScannedQADto,
+    PermitProcessStepDto,
+    PlantDetailsDto,
+    QRCodeScannedQADto,
     ResubmitApplicationDto,
     SSCApprovalRejectionDto,
     STA1,
@@ -22,7 +24,8 @@ import {
     STA10PersonnelDto,
     STA10ProductsManufactureDto,
     STA10RawMaterialsDto,
-    STA3, StgInvoiceBalanceDto,
+    STA3,
+    StgInvoiceBalanceDto,
     TaskDto
 } from './qa.model';
 
@@ -169,6 +172,20 @@ export class QaService {
         const params = new HttpParams()
             .set('permitNumber', permitTypeID);
         return this.http.get<PermitEntityDto[]>(url, {params}).pipe(
+            map(function (response: PermitEntityDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public loadAllMyPermits(): Observable<PermitEntityDto[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_LIST_ALL);
+
+        return this.http.get<PermitEntityDto[]>(url).pipe(
             map(function (response: PermitEntityDto[]) {
                 return response;
             }),

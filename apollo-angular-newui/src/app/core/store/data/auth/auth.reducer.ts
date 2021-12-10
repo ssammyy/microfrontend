@@ -50,7 +50,7 @@ export const initialState: AuthState = {
         roles: [],
         username: '',
         expiry: new Date(),
-        // companyID: 0,
+        companyID: 0,
         // branchID: 0,
         // turnover: 0
     },

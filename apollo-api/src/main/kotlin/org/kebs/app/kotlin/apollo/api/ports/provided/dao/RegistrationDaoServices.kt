@@ -316,6 +316,72 @@ class RegistrationDaoServices(
 
     }
 
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun resetUserPasswordb(
+        s: ServiceMapsEntity,
+        usersEntity: UsersEntity,
+        initial: Boolean,
+        sr: ServiceRequestsEntity? = null
+    ): Boolean {
+        sr ?: commonDaoServices.createServiceRequest(s)
+        try {
+            var user = usersEntity.apply {
+                confirmCredentials = ""
+                accountExpired = s.inactiveStatus
+                accountLocked = s.inactiveStatus
+                credentialsExpired = s.inactiveStatus
+                status = 1
+                enabled = 1
+                approvedDate = commonDaoServices.getTimestamp()
+                modifiedBy = userName
+                modifiedOn = commonDaoServices.getTimestamp()
+            }
+            user = usersRepo.save(user)
+
+            sr?.payload = "User[id= ${user.id}] Activated"
+//            when {
+//
+//                initial -> {
+//                    /**
+//                     ** Assign default role and /or profile
+//                     **/
+//                    userTypesRepo.findByIdOrNull(user.userTypes)
+//                            ?.let { userType ->
+//                                if (user.id?.let { userRolesAssignmentsRepository.findByUserId(it) } == null) {
+//                                    val assignmentsEntity = userRolesAssignmentsRepository.save(userRoleAssignment(user, s))
+//                                    sr?.payload = "${sr?.payload}: Default Role Assigned[id=${assignmentsEntity.id}]"
+//                                }
+//                            }
+//
+//
+//                }
+//            }
+//
+//
+
+            sr?.responseStatus = sr?.serviceMapsId?.successStatusCode
+            sr?.responseMessage = "Success ${sr?.payload}"
+            sr?.status = s.successStatus
+            sr?.processingEndDate = Timestamp.from(Instant.now())
+            sr?.let { serviceRequestsRepository.save(it) }
+
+            KotlinLogging.logger { }.trace("${sr?.id} ${sr?.responseStatus}")
+
+            return true
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.trace(e.message, e)
+            sr?.status = sr?.serviceMapsId?.exceptionStatus
+            sr?.responseStatus = sr?.serviceMapsId?.exceptionStatusCode
+            sr?.responseMessage = e.message
+            throw e
+
+        }
+
+
+    }
+
 
     /***********************************************************************************
      * OLD REGISTRATIONION SERVICES

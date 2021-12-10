@@ -87,9 +87,14 @@ interface IUserRepository : HazelcastRepository<UsersEntity, Long>, JpaSpecifica
     ): List<UsersEntity>?
 
     @Query(
-        "SELECT distinct u.* from DAT_KEBS_PERMIT_TRANSACTION p, DAT_KEBS_MANUFACTURE_PLANT_DETAILS b, DAT_KEBS_USER_PROFILES pf, CFG_USER_ROLES_ASSIGNMENTS r," +
-                " DAT_KEBS_USERS u where p.ATTACHED_PLANT_ID=b.ID and b.REGION= pf.REGION_ID and p.SECTION_ID = pf.SECTION_ID and pf.USER_ID = r.USER_ID and u.ID = pf.USER_ID " +
-                "and r.ROLE_ID = :roleId and pf.SECTION_ID = :sectionId and pf.REGION_ID = :regionId and pf.STATUS = :status",
+//        "SELECT distinct u.* from DAT_KEBS_PERMIT_TRANSACTION p, DAT_KEBS_MANUFACTURE_PLANT_DETAILS b, DAT_KEBS_USER_PROFILES pf, CFG_USER_ROLES_ASSIGNMENTS r," +
+//                " DAT_KEBS_USERS u where p.ATTACHED_PLANT_ID=b.ID and b.REGION= pf.REGION_ID and p.SECTION_ID = pf.SECTION_ID and pf.USER_ID = r.USER_ID and u.ID = pf.USER_ID " +
+//                "and r.ROLE_ID = :roleId and pf.SECTION_ID = :sectionId and pf.REGION_ID = :regionId and pf.STATUS = :status",
+//        nativeQuery = true
+        "SELECT distinct u.* from APOLLO.DAT_KEBS_PERMIT_TRANSACTION p, APOLLO.DAT_KEBS_MANUFACTURE_PLANT_DETAILS b, APOLLO.DAT_KEBS_USER_PROFILES pf, " +
+                "APOLLO.CFG_USER_SECTION_ASSIGNMENTS q ,APOLLO.CFG_USER_ROLES_ASSIGNMENTS r,APOLLO.DAT_KEBS_USERS u where p.ATTACHED_PLANT_ID=b.ID and b.REGION= pf.REGION_ID" +
+                " and p.SECTION_ID = q.SECTION_ID and pf.USER_ID = r.USER_ID and u.ID = pf.USER_ID and r.ROLE_ID = :roleId and q.SECTION_ID = :sectionId " +
+                "and pf.REGION_ID = :regionId and pf.STATUS = :status",
         nativeQuery = true
     )
     fun findOfficerPermitUsersBySectionAndRegion(

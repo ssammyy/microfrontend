@@ -52,7 +52,7 @@ class CustomUserDetailsService(
 
     override fun loadUserByUsername(username: String): UserDetails {
 //        KotlinLogging.logger {  }.info("Using $username")
-        val usernameAndDomain: Array<String> = StringUtils.split(username, "||")
+        val usernameAndDomain: Array<String> = StringUtils.split(username.toLowerCase(), "||")
         if (usernameAndDomain.size != 2) {
             throw UsernameNotFoundException("Username and otp must be provided")
         }
@@ -65,7 +65,7 @@ class CustomUserDetailsService(
                     throw InvalidValueException("Token has expired")
                 } else {
 
-                    userRepository.findByUserName(u)
+                    userRepository.findByEmail(u)
                         ?.let { user ->
                             if (user.id != token.userId?.id) {
                                 throw InvalidValueException("Invalid token, User mismatch")

@@ -145,28 +145,30 @@ import {ComStdConfirmComponent} from './apollowebs/standards-development/company
 import {NepSuccessComponent} from './apollowebs/standards-development/nep-success/nep-success.component';
 import {ManagernotificationsComponent} from './apollowebs/standards-development/managernotifications/managernotifications.component';
 import {AllpermitsComponent} from "./apollowebs/quality-assurance/allpermits/allpermits.component";
-import { CreateDepartmentComponent } from './apollowebs/standards-development/standard-request/create-department/create-department.component';
-import { CreatetechnicalcommitteeComponent } from './apollowebs/standards-development/standard-request/createtechnicalcommittee/createtechnicalcommittee.component';
-import { CreateproductComponent } from './apollowebs/standards-development/standard-request/createproduct/createproduct.component';
-import { CreateproductSubCategoryComponent } from './apollowebs/standards-development/standard-request/createproduct-sub-category/createproduct-sub-category.component';
+import {CreateDepartmentComponent} from './apollowebs/standards-development/standard-request/create-department/create-department.component';
+import {CreatetechnicalcommitteeComponent} from './apollowebs/standards-development/standard-request/createtechnicalcommittee/createtechnicalcommittee.component';
+import {CreateproductComponent} from './apollowebs/standards-development/standard-request/createproduct/createproduct.component';
+import {CreateproductSubCategoryComponent} from './apollowebs/standards-development/standard-request/createproduct-sub-category/createproduct-sub-category.component';
 import {NgSelectModule} from '@ng-select/ng-select';
-import { IntStdUploadStandardComponent } from './apollowebs/standards-development/international-standard/int-std-upload-standard/int-std-upload-standard.component';
-import { IntStdGazzetteComponent } from './apollowebs/standards-development/international-standard/int-std-gazzette/int-std-gazzette.component';
-import { RoleSwitcherComponent } from './apollowebs/standards-levy/standards-levy-home/role-switcher/role-switcher.component';
-import { CustomerRegistrationComponent } from './apollowebs/standards-levy/standards-levy-home/customer-registration/customer-registration.component';
-import { StandardsLevyHomeComponent } from './apollowebs/standards-levy/standards-levy-home/standards-levy-home.component';
-import { ComStandardLevyComponent } from './apollowebs/standards-levy/com-standard-levy/com-standard-levy.component';
-import { ComPaymentHistoryComponent } from './apollowebs/standards-levy/com-payment-history/com-payment-history.component';
-import { ComStdLevyFormComponent } from './apollowebs/standards-levy/com-std-levy-form/com-std-levy-form.component';
-import { StandardLevyDashboardComponent } from './apollowebs/standards-levy/standard-levy-dashboard/standard-levy-dashboard.component';
-import { StandardLevyPaidComponent } from './apollowebs/standards-levy/standard-levy-paid/standard-levy-paid.component';
-import { StandardLevyPenaltiesComponent } from './apollowebs/standards-levy/standard-levy-penalties/standard-levy-penalties.component';
-import { StandardLevyDefaulterComponent } from './apollowebs/standards-levy/standard-levy-defaulter/standard-levy-defaulter.component';
-import { StandardLevyPaidHistoryComponent } from './apollowebs/standards-levy/standard-levy-paid-history/standard-levy-paid-history.component';
-import { StandardLevyPenaltyHistoryComponent } from './apollowebs/standards-levy/standard-levy-penalty-history/standard-levy-penalty-history.component';
-import { StandardLevyDefaulterHistoryComponent } from './apollowebs/standards-levy/standard-levy-defaulter-history/standard-levy-defaulter-history.component';
+import {IntStdUploadStandardComponent} from './apollowebs/standards-development/international-standard/int-std-upload-standard/int-std-upload-standard.component';
+import {IntStdGazzetteComponent} from './apollowebs/standards-development/international-standard/int-std-gazzette/int-std-gazzette.component';
+import {RoleSwitcherComponent} from './apollowebs/standards-levy/standards-levy-home/role-switcher/role-switcher.component';
+import {CustomerRegistrationComponent} from './apollowebs/standards-levy/standards-levy-home/customer-registration/customer-registration.component';
+import {StandardsLevyHomeComponent} from './apollowebs/standards-levy/standards-levy-home/standards-levy-home.component';
+import {ComStandardLevyComponent} from './apollowebs/standards-levy/com-standard-levy/com-standard-levy.component';
+import {ComPaymentHistoryComponent} from './apollowebs/standards-levy/com-payment-history/com-payment-history.component';
+import {ComStdLevyFormComponent} from './apollowebs/standards-levy/com-std-levy-form/com-std-levy-form.component';
+import {StandardLevyDashboardComponent} from './apollowebs/standards-levy/standard-levy-dashboard/standard-levy-dashboard.component';
+import {StandardLevyPaidComponent} from './apollowebs/standards-levy/standard-levy-paid/standard-levy-paid.component';
+import {StandardLevyPenaltiesComponent} from './apollowebs/standards-levy/standard-levy-penalties/standard-levy-penalties.component';
+import {StandardLevyDefaulterComponent} from './apollowebs/standards-levy/standard-levy-defaulter/standard-levy-defaulter.component';
+import {StandardLevyPaidHistoryComponent} from './apollowebs/standards-levy/standard-levy-paid-history/standard-levy-paid-history.component';
+import {StandardLevyPenaltyHistoryComponent} from './apollowebs/standards-levy/standard-levy-penalty-history/standard-levy-penalty-history.component';
+import {StandardLevyDefaulterHistoryComponent} from './apollowebs/standards-levy/standard-levy-defaulter-history/standard-levy-defaulter-history.component';
 import {SpcSecTaskComponent} from "./apollowebs/standards-development/standard-request/spc-sec-task/spc-sec-task.component";
 import {StdJustificationComponent} from "./apollowebs/standards-development/standard-request/std-justification/std-justification.component";
+import {StdTcWorkplanComponent} from "./apollowebs/standards-development/standard-request/std-tc-workplan/std-tc-workplan.component";
+import { PreparePreliminaryDraftComponent } from './apollowebs/standards-development/committee-module/prepare-preliminary-draft/prepare-preliminary-draft.component';
 import { NwaPreliminaryDraftComponent } from './apollowebs/standards-development/workshop-agreement/nwa-preliminary-draft/nwa-preliminary-draft.component';
 
 
@@ -305,6 +307,7 @@ import { NwaPreliminaryDraftComponent } from './apollowebs/standards-development
         ReviewApplicationsComponent,
         StdJustificationComponent,
         StandardTaskComponent,
+        StdTcWorkplanComponent,
         SmarkAllAwardedApplicationsComponent,
         DmarkAllAwardedApplicationsComponent,
         FmarkAllAwardedApplicationsComponent,
@@ -341,6 +344,8 @@ import { NwaPreliminaryDraftComponent } from './apollowebs/standards-development
         StandardLevyDefaulterComponent,
         StandardLevyPaidHistoryComponent,
         StandardLevyPenaltyHistoryComponent,
+        StandardLevyDefaulterHistoryComponent,
+        PreparePreliminaryDraftComponent,
         StandardLevyDefaulterHistoryComponent,
         NwaPreliminaryDraftComponent
 
