@@ -46,6 +46,10 @@ class NWAWorkShopDraft : Serializable {
     @Basic
     var dateWdPrepared: Timestamp?=null
 
+    @Column(name = "KNWA_NUMBER")
+    @Basic
+    var ksNumber: String? = null
+
     @Transient
     @Column(name = "ACCENT_TO")
     @Basic

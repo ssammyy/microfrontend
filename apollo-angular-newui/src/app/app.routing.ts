@@ -96,6 +96,7 @@ import {StandardLevyDefaulterComponent} from './apollowebs/standards-levy/standa
 import {StandardLevyPenaltyHistoryComponent} from './apollowebs/standards-levy/standard-levy-penalty-history/standard-levy-penalty-history.component';
 import {StandardLevyPaidHistoryComponent} from './apollowebs/standards-levy/standard-levy-paid-history/standard-levy-paid-history.component';
 import {StandardLevyDefaulterHistoryComponent} from './apollowebs/standards-levy/standard-levy-defaulter-history/standard-levy-defaulter-history.component';
+import {NwaPreliminaryDraftComponent} from "./apollowebs/standards-development/workshop-agreement/nwa-preliminary-draft/nwa-preliminary-draft.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -452,6 +453,11 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
         children: [{path: '', component: HoSicTasksComponent}]
     },
+    {
+        path: 'nwaPreparePD', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: NwaPreliminaryDraftComponent}]
+    },
 
     // SD International Standards
     {
@@ -622,7 +628,7 @@ export const routes: Routes = [
         children: [{path: '', component: RoleSwitcherComponent}]
     },
     {
-        path: 'levyRegistration', component: StandardsLevyHomeComponent,
+        path: 'levyRegistration', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [{path: '', component: CustomerRegistrationComponent}]
     },

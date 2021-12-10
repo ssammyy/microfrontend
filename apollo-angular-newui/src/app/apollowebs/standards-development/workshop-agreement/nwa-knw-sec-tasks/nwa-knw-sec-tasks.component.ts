@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {StdNwaService} from "../../../../core/store/data/std/std-nwa.service";
 import {NgxSpinnerService} from "ngx-spinner";
 import {
-    KnwSecTasks,
+    KnwSecTasks, NWAJustification, NWAJustificationDecision,
     NWAPDDecision,
     NWAPreliminaryDraft
 } from "../../../../core/store/data/std/std.model";
@@ -23,6 +23,8 @@ declare const $: any;
 export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
+    displayTable: boolean = false;
+    blob: Blob;
   p = 1;
   p2 = 1;
   tasks: KnwSecTasks[] = [];
@@ -87,6 +89,7 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
         (response: KnwSecTasks[])=> {
           this.tasks = response;
           this.dtTrigger.next();
+            this.displayTable = true;
           this.SpinnerService.hide();
         },
         (error: HttpErrorResponse)=>{
@@ -102,14 +105,19 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
     button.type = 'button';
     button.style.display = 'none';
     button.setAttribute('data-toggle','modal');
-    if (mode==='prepareJustification'){
+    if (mode==='reviewJustification'){
       this.actionRequest=task;
-      button.setAttribute('data-target','#prepareJustification');
+      button.setAttribute('data-target','#reviewJustification');
     }
+      if (mode==='rejectJustification'){
+          this.actionRequest=task;
+          button.setAttribute('data-target','#rejectJustification');
+      }
     if (mode==='prepDiSdt'){
       this.actionRequest=task;
       button.setAttribute('data-target','#prepDiSdt');
     }
+
     if (mode==='prepPd'){
       this.actionRequest=task;
       button.setAttribute('data-target','#prepPd');
@@ -119,9 +127,9 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
       button.setAttribute('data-target','#approvePd');
     }
 
-    if (mode==='reject'){
+    if (mode==='rejectPd'){
       this.actionRequest=task;
-      button.setAttribute('data-target','#reject');
+      button.setAttribute('data-target','#rejectPd');
     }
 
     // @ts-ignore
@@ -129,6 +137,42 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
     button.click();
 
   }
+    public approveJustification(nwaJustificationDecision: NWAJustificationDecision): void{
+        this.SpinnerService.show();
+        this.stdNwaService.decisionOnJustificationKNW(nwaJustificationDecision).subscribe(
+            (response: NWAJustification) => {
+                this.SpinnerService.hide();
+                this.showToasterSuccess('Success', `Justification Approved`);
+                console.log(response);
+                this.knwtasks();
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                console.log(error.message);
+                this.showToasterError('Error', `Justification Was Not Approved`);
+                this.knwtasks();
+                //alert(error.message);
+            }
+        );
+    }
+    public rejectJustification(nwaJustificationDecision: NWAJustificationDecision): void{
+        this.SpinnerService.show();
+        this.stdNwaService.decisionOnJustificationKNW(nwaJustificationDecision).subscribe(
+            (response: NWAJustification) => {
+                this.SpinnerService.hide();
+                this.showToasterSuccess('Success', `Justification Was Declined`);
+                console.log(response);
+                this.knwtasks();
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                console.log(error.message);
+                this.showToasterError('Error', `Justification Was Not Approved`);
+                this.knwtasks();
+                //alert(error.message);
+            }
+        );
+    }
 
     uploadDiSdt(): void {
 
@@ -150,24 +194,7 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
         );
     }
 
-    uploadPreliminaryDraft(): void {
-        this.SpinnerService.show();
-        //console.log(this.preparePreliminaryDraftFormGroup.value);
-        this.stdNwaService.preparePreliminaryDraft(this.preparePreliminaryDraftFormGroup.value).subscribe(
-            (response ) => {
-                console.log(response);
-                this.SpinnerService.hide();
-                this.showToasterSuccess(response.httpStatus, `Preliminary Draft Preparation Process Started`);
-                this.onClickPDUPLOADs(response.body.savedRowID)
-                this.preparePreliminaryDraftFormGroup.reset();
-            },
-            (error: HttpErrorResponse) => {
-                this.SpinnerService.hide();
-                this.showToasterError('Error', `Preliminary Draft Was Not Prepared`);
-                console.log(error.message);
-            }
-        );
-    }
+
 
 
   public approvePreliminaryDraft(nwaPDDecision: NWAPDDecision): void{
@@ -239,36 +266,7 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
         }
 
     }
-    onClickPDUPLOADs(nwaPDid: string) {
-        if (this.uploadedFiles.length > 0) {
-            const file = this.uploadedFiles;
-            const formData = new FormData();
-            for (let i = 0; i < file.length; i++) {
-                console.log(file[i]);
-                formData.append('docFile', file[i], file[i].name);
-            }
 
-            this.SpinnerService.show();
-            this.stdNwaService.uploadPDFileDetails(nwaPDid, formData).subscribe(
-                (data: any) => {
-                    this.SpinnerService.hide();
-                    this.showToasterSuccess(data.httpStatus, `Preliminary Draft Prepared`);
-                    this.uploadedFiles = null;
-                    console.log(data);
-                    swal.fire({
-                        title: 'Preliminary Draft Prepared.',
-                        buttonsStyling: false,
-                        customClass: {
-                            confirmButton: 'btn btn-success ',
-                        },
-                        icon: 'success'
-                    });
-
-                },
-            );
-        }
-
-    }
 
 
     // onClickSaveUPLOADS(nwaJustificationID: string) {
@@ -321,5 +319,40 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
         });
     }
 
+    viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
+        this.SpinnerService.show();
+        this.stdNwaService.viewJustificationPDF(pdfId).subscribe(
+            (dataPdf: any) => {
+                this.SpinnerService.hide();
+                this.blob = new Blob([dataPdf], {type: applicationType});
+
+                // tslint:disable-next-line:prefer-const
+                let downloadURL = window.URL.createObjectURL(this.blob);
+                const link = document.createElement('a');
+                link.href = downloadURL;
+                link.download = fileName;
+                link.click();
+                // this.pdfUploadsView = dataPdf;
+            },
+        );
+    }
+
+    viewPDFile(pdfId: number, fileName: string, applicationType: string): void {
+        this.SpinnerService.show();
+        this.stdNwaService.viewPreliminaryDraftPDF(pdfId).subscribe(
+            (dataPdf: any) => {
+                this.SpinnerService.hide();
+                this.blob = new Blob([dataPdf], {type: applicationType});
+
+                // tslint:disable-next-line:prefer-const
+                let downloadURL = window.URL.createObjectURL(this.blob);
+                const link = document.createElement('a');
+                link.href = downloadURL;
+                link.download = fileName;
+                link.click();
+                // this.pdfUploadsView = dataPdf;
+            },
+        );
+    }
 
 }

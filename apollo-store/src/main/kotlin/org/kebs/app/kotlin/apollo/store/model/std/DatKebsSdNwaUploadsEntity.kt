@@ -117,6 +117,7 @@ class DatKebsSdNwaUploadsEntity: Serializable {
     @Basic
     var deleteBy: String? = null
 
+
     @Column(name = "DELETED_ON")
     @Basic
     var deletedOn: Timestamp? = null

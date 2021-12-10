@@ -20,6 +20,15 @@ export class ManufactureInfo{
     location: string;
     plotNumber: string;
 }
+export class SLevySL1{
+    NameAndBusinessOfProprietors : String;
+    AllCommoditiesManufuctured :String;
+    DateOfManufacture :Date;
+    totalValueOfManufacture : number;
+    companyProfileID :number;
+    nameOfBranch :String;
+    location: String;
+}
 export class ManufacturingInfo{
     NameAndBusinessOfProprietors: string;
     AllCommoditiesManufuctured: string;

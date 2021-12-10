@@ -140,7 +140,36 @@ export interface KnwSecTaskData {
     comments: string;
     diJNumber: bigint;
 }
+export interface PreliminaryDraftTasks {
+    taskId: string;
+    name: string;
+    taskData: PDTaskData;
+}
 
+export interface PDTaskData {
+    ID: number;
+    requestedBy: string;
+    requestNumber: string;
+    referenceMaterial: string;
+    knw: string;
+    knwSecretary: string;
+    meetingDate: string;
+    Yes: string;
+    sl: string;
+    department: string;
+    issuesAddressed: string;
+    knwAcceptanceDate: string;
+    title: string;
+    scope: string;
+    normativeReference: string;
+    symbolsAbbreviatedTerms: string;
+    clause: string;
+    special: string;
+    knwCommittee: string;
+    departmentName: string;
+    comments: string;
+    diJNumber: bigint;
+}
 
 export interface SPCSECTasks {
     taskId: string;
@@ -259,6 +288,7 @@ export interface SacSeCTaskData {
     clause: string;
     referenceMaterial: string;
     comments: string;
+    ksNumber: string;
 
 }
 
@@ -276,6 +306,8 @@ export interface HOPTaskData {
     clause: string;
     special: string;
     comments: string;
+    ID: number;
+    ksNumber: string;
 }
 export interface NWAStandard {
     id: number;
@@ -305,6 +337,7 @@ export interface HoSicTaskData {
     description: string;
     dateUploaded: string;
     comments: string;
+    ID: number;
 }
 export interface UploadNwaGazette {
     id: number;

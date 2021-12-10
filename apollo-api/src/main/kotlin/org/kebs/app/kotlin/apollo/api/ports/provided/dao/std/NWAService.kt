@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao.std
 
+import mu.KotlinLogging
 import org.flowable.engine.ProcessEngine
 import org.flowable.engine.RepositoryService
 import org.flowable.engine.RuntimeService
@@ -22,8 +23,9 @@ import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.sql.Timestamp
 import java.util.*
-import kotlin.collections.HashMap
+import javax.servlet.http.HttpServletResponse
 import kotlin.collections.set
+
 
 @Service
 class NWAService(private val runtimeService: RuntimeService,
@@ -53,6 +55,7 @@ class NWAService(private val runtimeService: RuntimeService,
 ) {
 
     val PROCESS_DEFINITION_KEY = "sd_KenyaNationalWorkshopAgreementModule"
+    val TASK_CANDIDATE_TC_SEC ="TC_SEC"
     val TASK_CANDIDATE_KNW_SEC ="KNW_SEC"
     val TASK_CANDIDATE_SPC_SEC ="SPC_SEC"
     val TASK_CANDIDATE_DI_SDT ="DI_SDT"
@@ -74,10 +77,7 @@ class NWAService(private val runtimeService: RuntimeService,
         return ProcessInstanceResponse( processInstance.id, processInstance.isEnded)
     }
 
-    //*** Not used *** but closes any Task, linked to task close endpoint
-    fun closeTask(taskId: String) {
-        taskService.complete(taskId)
-    }
+
 
     fun getKNWDepartments(): MutableList<Department>
     {
@@ -95,11 +95,7 @@ class NWAService(private val runtimeService: RuntimeService,
 //    }
 
     //prepare justification
-    fun prepareJustification(
-        nwaJustification: NWAJustification,
-        docFiles: List<MultipartFile>
-
-    ): ProcessInstanceResponseValue
+    fun prepareJustification(nwaJustification: NWAJustification) : ProcessInstanceResponseValue
     {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
@@ -132,42 +128,94 @@ class NWAService(private val runtimeService: RuntimeService,
         //var justificationUploadId =sdNwaUploadsEntityRepository.getMaxUploadedID()
         val nwaDetails = nwaJustificationRepository.save(nwaJustification)
         variables["ID"] = nwaDetails.id
-        //variables["jsUploadDocId"] = justificationUploadId.plus(1)
+
+        //taskService.complete(nwaJustification.taskId, variables)
         val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
-        docFiles.forEach { docFile ->
-            var uploads = DatKebsSdNwaUploadsEntity()
-                .apply {
-//            filepath = docFile.path
-                    nwaDocumentId = nwaDetails.id
-                    name = commonDaoServices.saveDocuments(docFile)
-//            fileType = docFile.contentType
-                    fileType = docFile.contentType
-                    document = docFile.bytes
-                    transactionDate = commonDaoServices.getCurrentDate()
-                    status = 1
- //                   createdBy = commonDaoServices.concatenateName(user)
-                    createdOn = commonDaoServices.getTimestamp()
-                }
-
-            uploads = sdNwaUploadsEntityRepository.save(uploads)
-            val docVariables: MutableMap<String, Any> = HashMap()
-            docVariables["jsNwaJustification"] = "${ uploads.nwaDocumentId }"
-            docVariables["jsUploadDocId"] = "${ uploads.id }"
-            docVariables["jsUploadDocName"] = "${ uploads.name }"
-            docVariables["jsUploadDocType"] = "${ uploads.fileType }"
-//
-//            processInstance.processVariables.putAll(docVariables)
-
-        }
-
-
-
-
         return ProcessInstanceResponseValue(nwaDetails.id, processInstance.id, processInstance.isEnded,
             nwaJustification.requestNumber?: throw NullValueNotAllowedException("Request Number is required")
         )
 
+
+
+
     }
+
+
+
+//    fun prepareJustification(
+//        nwaJustification: NWAJustification,
+//        docFiles: List<MultipartFile>
+//
+//    ): ProcessInstanceResponseValue
+//    {
+//        val loggedInUser = commonDaoServices.loggedInUserDetails()
+//
+//        val variables: MutableMap<String, Any> = HashMap()
+//        nwaJustification.knw?.let{ variables.put("knw", it)}
+//        nwaJustification.meetingDate?.let{ variables.put("meetingDate", it)}
+//        nwaJustification.knwSecretary?.let{ variables.put("knwSecretary", it)}
+//        nwaJustification.sl?.let{ variables.put("sl", it)}
+//        //nwaJustification.requestNumber?.let{ variables.put("requestNumber", it)}
+//        nwaJustification.requestedBy?.let{ variables.put("requestedBy", it)}
+//        nwaJustification.issuesAddressed?.let{ variables.put("issuesAddressed", it)}
+//        nwaJustification.knwAcceptanceDate?.let{ variables.put("knwAcceptanceDate", it)}
+//        nwaJustification.referenceMaterial?.let{ variables.put("referenceMaterial", it)}
+//        nwaJustification.department?.let{ variables.put("department", it)}
+//        nwaJustification.status?.let{ variables.put("status", it)}
+//        nwaJustification.remarks?.let{ variables.put("remarks", it)}
+//
+//        nwaJustification.submissionDate = Timestamp(System.currentTimeMillis())
+//        variables["submissionDate"] = nwaJustification.submissionDate!!
+//
+//        nwaJustification.requestNumber = getRQNumber()
+//
+//        variables["requestNumber"] = nwaJustification.requestNumber!!
+//
+//        variables["knwCommittee"] = technicalComListRepository.findNameById(nwaJustification.knw?.toLong())
+//        nwaJustification.knwCommittee = technicalComListRepository.findNameById(nwaJustification.knw?.toLong())
+//
+//        variables["departmentName"] = departmentListRepository.findNameById(nwaJustification.department?.toLong())
+//        nwaJustification.departmentName = departmentListRepository.findNameById(nwaJustification.department?.toLong())
+//        //var justificationUploadId =sdNwaUploadsEntityRepository.getMaxUploadedID()
+//        val nwaDetails = nwaJustificationRepository.save(nwaJustification)
+//        variables["ID"] = nwaDetails.id
+//        //variables["jsUploadDocId"] = justificationUploadId.plus(1)
+//        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
+//
+//        docFiles.forEach { docFile ->
+//            var uploads = DatKebsSdNwaUploadsEntity()
+//                .apply {
+////            filepath = docFile.path
+//                    nwaDocumentId = nwaDetails.id
+//                    name = commonDaoServices.saveDocuments(docFile)
+////            fileType = docFile.contentType
+//                    fileType = docFile.contentType
+//                    document = docFile.bytes
+//                    transactionDate = commonDaoServices.getCurrentDate()
+//                    status = 1
+// //                   createdBy = commonDaoServices.concatenateName(user)
+//                    createdOn = commonDaoServices.getTimestamp()
+//                }
+//
+//            uploads = sdNwaUploadsEntityRepository.save(uploads)
+//            val docVariables: MutableMap<String, Any> = HashMap()
+//            docVariables["jsNwaJustification"] = "${ uploads.nwaDocumentId }"
+//            docVariables["jsUploadDocId"] = "${ uploads.id }"
+//            docVariables["jsUploadDocName"] = "${ uploads.name }"
+//            docVariables["jsUploadDocType"] = "${ uploads.fileType }"
+////
+// //          processInstance.processVariables.putAll(docVariables)
+//
+//        }
+//
+//
+//
+//
+//        return ProcessInstanceResponseValue(nwaDetails.id, processInstance.id, processInstance.isEnded,
+//            nwaJustification.requestNumber?: throw NullValueNotAllowedException("Request Number is required")
+//        )
+//
+//    }
 
 
     fun uploadSDFile(
@@ -214,39 +262,98 @@ class NWAService(private val runtimeService: RuntimeService,
         return getTaskDetails(tasks)
     }
 
+//
 
-
-    //Return task details for SPC_SEC
-    fun getSPCSECTasks():List<JustificationTaskDataDto>
-    {
-        val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_SPC_SEC).processDefinitionKey(PROCESS_DEFINITION_KEY).list()
-        val justificationTasks = mutableListOf<JustificationTaskDataDto>()
-        tasks.forEach { task->
-            val processVariables = taskService.getVariables(task.id)
-            val justificationID = processVariables["ID"] as Long?
-            nwaJustificationRepository.findByIdOrNull(justificationID?:0L)
-            //throw NullValueNotAllowedException("Justification ID cannot be empty"))
-            ?.let { justification  ->
-
-                val uploads =sdNwaUploadsEntityRepository.findByNwaDocumentId(justification.id)
-
-                val justificationTask = JustificationTaskDataDto(TaskDetails(task.id, task.name,processVariables) ,justification, uploads )
-                justificationTasks.add(justificationTask)
-            }
-        }
-        return justificationTasks
-    }
+//    fun getSPCSECTasks():List<JustificationTaskDataDto>
+//    {
+//        val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_SPC_SEC).processDefinitionKey(PROCESS_DEFINITION_KEY).list()
+//        val justificationTasks = mutableListOf<JustificationTaskDataDto>()
+//        tasks.forEach { task->
+//            val processVariables = taskService.getVariables(task.id)
+//            val justificationID = processVariables["ID"] as Long?
+//            nwaJustificationRepository.findByIdOrNull(justificationID?:0L)
+//            //throw NullValueNotAllowedException("Justification ID cannot be empty"))
+//            ?.let { justification  ->
+//
+//                val uploads =sdNwaUploadsEntityRepository.findByNwaDocumentId(justification.id)
+//
+//                val justificationTask = JustificationTaskDataDto(TaskDetails(task.id, task.name,processVariables) ,justification, uploads )
+//                justificationTasks.add(justificationTask)
+//            }
+//        }
+//        return justificationTasks
+//    }
 
     //Get justification Document
     fun findUploadedFileBYId(nwaDocumentId: Long): DatKebsSdNwaUploadsEntity {
-        return   sdNwaUploadsEntityRepository.findByIdOrNull(nwaDocumentId)?.let {
-             it
-        } ?: throw ExpectedDataNotFound("No File found with the following [ id=$nwaDocumentId]")
+        return sdNwaUploadsEntityRepository.findByNwaDocumentId(nwaDocumentId) ?: throw ExpectedDataNotFound("No File found with the following [ id=$nwaDocumentId]")
     }
 
-    // Decision
 
-    fun decisionOnJustification(nwaJustificationDecision: NWAJustificationDecision) : List<JustificationTaskDataDto> {
+    fun getJustification(nwaDocumentId: Long): DatKebsSdNwaUploadsEntity? {
+        return sdNwaUploadsEntityRepository.findById(nwaDocumentId).get()
+    }
+
+    fun downloadFile(response: HttpServletResponse, doc: CommonDaoServices.FileDTO) {
+        response.contentType = doc.fileType
+//                    response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Disposition", "inline; filename=${doc.name};")
+        response.outputStream
+            .let { responseOutputStream ->
+                responseOutputStream.write(doc.document?.let { makeAnyNotBeNull(it) } as ByteArray)
+                responseOutputStream.close()
+            }
+
+        KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
+    }
+
+    fun makeAnyNotBeNull(anyValue: Any): Any {
+        return anyValue
+    }
+
+    // KNW SEC Decision on Justification
+    fun decisionOnJustificationKNW(nwaJustificationDecision: NWAJustificationDecision) : List<TaskDetails> {
+        val variables: MutableMap<String, Any> = java.util.HashMap()
+        variables["Yes"] = nwaJustificationDecision.accentTo
+        variables["No"] = nwaJustificationDecision.accentTo
+        nwaJustificationDecision.comments.let { variables.put("comments", it) }
+        if(variables["Yes"]==true){
+            nwaJustificationRepository.findByIdOrNull(nwaJustificationDecision.approvalID)?.let { nwaJustification->
+
+                with(nwaJustification){
+                    remarks=nwaJustificationDecision.comments
+                    accentTo = true
+                }
+                nwaJustificationRepository.save(nwaJustification)
+            }?: throw Exception("TASK NOT FOUND")
+
+        }else if(variables["No"]==false) {
+            nwaJustificationRepository.findByIdOrNull(nwaJustificationDecision.approvalID)?.let { nwaJustification->
+
+                with(nwaJustification){
+                    remarks=nwaJustificationDecision.comments
+                    accentTo = false
+                }
+                nwaJustificationRepository.save(nwaJustification)
+            }?: throw Exception("TASK NOT FOUND")
+
+        }
+        taskService.complete(nwaJustificationDecision.taskId, variables)
+        return  getKNWTasks()
+    }
+
+    //Return task details for SPC_SEC
+    fun getSPCSECTasks():List<TaskDetails>
+    {
+        val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_SPC_SEC).processDefinitionKey(PROCESS_DEFINITION_KEY).list()
+        return getTaskDetails(tasks)
+    }
+
+
+
+    // SPC Decision on Justification
+
+    fun decisionOnJustification(nwaJustificationDecision: NWAJustificationDecision) : List<TaskDetails> {
         val variables: MutableMap<String, Any> = java.util.HashMap()
         variables["Yes"] = nwaJustificationDecision.accentTo
         variables["No"] = nwaJustificationDecision.accentTo
@@ -299,10 +406,12 @@ class NWAService(private val runtimeService: RuntimeService,
         taskService.complete(nwaDiSdtJustification.taskId, variable)
         println("Justification for DI-SDT prepared")
         val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variable)
-        return ProcessInstanceDISDT(nwaDetails.id, processInstance.id, processInstance.isEnded,nwaDiSdtJustification.datePrepared!!)
-
+        return ProcessInstanceDISDT(nwaDetails.id, processInstance.id, processInstance.isEnded,
+            nwaDiSdtJustification.datePrepared?: throw NullValueNotAllowedException("Date is required")
+        )
 
     }
+    // Upload document for DI SDT
     fun uploadSDIFile(
         uploads: SDDIJustificationUploads,
         docFile: MultipartFile,
@@ -332,6 +441,18 @@ class NWAService(private val runtimeService: RuntimeService,
     fun getDISDTTasks():List<TaskDetails>
     {
         val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_DI_SDT).processDefinitionKey(PROCESS_DEFINITION_KEY).list()
+        return getTaskDetails(tasks)
+    }
+
+    // View DI SDT Document upload
+    fun findUploadedDIFileBYId(diDocumentId: Long): SDDIJustificationUploads {
+        return sdDiJustificationUploadsRepository.findByDiDocumentId(diDocumentId) ?: throw ExpectedDataNotFound("No File found with the following [ id=$diDocumentId]")
+    }
+    //Return task details for TC_SEC
+    fun getTCSeCTasks():List<TaskDetails>
+    {
+
+        val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_TC_SEC).processDefinitionKey(PROCESS_DEFINITION_KEY).list()
         return getTaskDetails(tasks)
     }
 
@@ -393,6 +514,8 @@ class NWAService(private val runtimeService: RuntimeService,
         return ProcessInstancePD(nwaDetails.id, processInstance.id, processInstance.isEnded,nwaPreliminaryDraft.datePdPrepared!!)
 
     }
+
+    // Upload PD document
     fun uploadPDFile(
         uploads: NWAPreliminaryDraftUploads,
         docFile: MultipartFile,
@@ -416,6 +539,11 @@ class NWAService(private val runtimeService: RuntimeService,
         }
 
         return nwaPreliminaryDraftUploadsRepository.save(uploads)
+    }
+
+    // View PD Document upload
+    fun findUploadedPDFileBYId(nwaPDDocumentId: Long): NWAPreliminaryDraftUploads {
+        return nwaPreliminaryDraftUploadsRepository.findByNwaPDDocumentId(nwaPDDocumentId) ?: throw ExpectedDataNotFound("No File found with the following [ id=$nwaPDDocumentId]")
     }
 
     //Decision on Preliminary Draft
@@ -479,6 +607,7 @@ class NWAService(private val runtimeService: RuntimeService,
         return ProcessInstanceWD(nwaDetails.id, processInstance.id, processInstance.isEnded,nwaWorkShopDraft.dateWdPrepared!!)
 
     }
+
     //upload Workshop draft Document
     fun uploadWDFile(
         uploads: NWAWorkShopDraftUploads,
@@ -505,11 +634,17 @@ class NWAService(private val runtimeService: RuntimeService,
         return nwaWorkShopDraftUploadsRepository.save(uploads)
     }
 
+
     //Return task details for SAC SEC
     fun getSacSecTasks():List<TaskDetails>
     {
         val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_SAC_SEC).processDefinitionKey(PROCESS_DEFINITION_KEY).list()
         return getTaskDetails(tasks)
+    }
+
+    // View WD Document upload
+    fun findUploadedWDFileBYId(nwaWDDocumentId: Long): NWAWorkShopDraftUploads {
+        return nwaWorkShopDraftUploadsRepository.findByNwaWDDocumentId(nwaWDDocumentId) ?: throw ExpectedDataNotFound("No File found with the following [ id=$nwaWDDocumentId]")
     }
 
     //Decision on WorkShop Draft
@@ -519,10 +654,13 @@ class NWAService(private val runtimeService: RuntimeService,
         nwaWorkshopDraftDecision.comments.let { variables.put("comments", it) }
         if(variables["Yes"]==true){
             nwaWorkshopDraftRepository.findByIdOrNull(nwaWorkshopDraftDecision.approvalID)?.let { nwaWorkShopDraft->
-
+                val assignedKsNumber= getKSNumber()
                 with(nwaWorkShopDraft){
                     remarks=nwaWorkshopDraftDecision.comments
                     accentTo = true
+                    ksNumber = assignedKsNumber
+
+                    // auto assign KNWA  number
                 }
                 nwaWorkshopDraftRepository.save(nwaWorkShopDraft)
             }?: throw Exception("TASK NOT FOUND")
@@ -551,16 +689,14 @@ class NWAService(private val runtimeService: RuntimeService,
         nWAStandard.symbolsAbbreviatedTerms?.let{variable.put("symbolsAbbreviatedTerms", it)}
         nWAStandard.clause?.let{variable.put("clause", it)}
         nWAStandard.special?.let{variable.put("special", it)}
-        //nWAStandard.ksNumber?.let{variable.put("ksNumber", it)}
+        nWAStandard.ksNumber?.let{variable.put("ksNumber", it)}
         nWAStandard.dateSdUploaded = commonDaoServices.getTimestamp()
         variable["dateSdUploaded"] = nWAStandard.dateSdUploaded!!
-        nWAStandard.ksNumber = getKSNumber()
 
-        variable["ksNumber"] = nWAStandard.ksNumber!!
         //print(nWAStandard.toString())
-
-
         val nwaDetails = nwaStandardRepository.save(nWAStandard)
+
+        // Send email to Legal
         variable["ID"] = nwaDetails.id
         taskService.complete(nWAStandard.taskId, variable)
         println("NWA Standard Uploaded")
@@ -600,6 +736,11 @@ class NWAService(private val runtimeService: RuntimeService,
     {
         val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_HO_SIC).processDefinitionKey(PROCESS_DEFINITION_KEY).list()
         return getTaskDetails(tasks)
+    }
+
+    // View STD Document upload
+    fun findUploadedSTDFileBYId(nwaStdDocumentId: Long): NWAStandardUploads {
+        return nwaStandardUploadsRepository.findByNwaStdDocumentId(nwaStdDocumentId) ?: throw ExpectedDataNotFound("No File found with the following [ id=$nwaStdDocumentId]")
     }
 
     // Upload NWA Gazette notice on Website
@@ -747,5 +888,22 @@ class NWAService(private val runtimeService: RuntimeService,
         val year = Calendar.getInstance()[Calendar.YEAR]
 
         return "$startId/$finalValue:$year"
+    }
+
+//    fun closeTask(taskId: String) {
+//        taskService.complete(taskId)
+//    }
+    //*** Not used *** but closes any Task, linked to task close endpoint
+    fun closeTask(taskId: String) {
+        taskService.complete(taskId)
+        taskService.deleteTask(taskId, true)
+
+    }
+
+    fun closeProcess(taskId: String) {
+        // taskService.complete(taskId)
+        // taskService.deleteTask(taskId, true)
+
+        runtimeService.deleteProcessInstance(taskId, "cleaning")
     }
 }

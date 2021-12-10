@@ -34,12 +34,12 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
 <tr>
 <th>#</th>
 <th class="knw">Title</th>
-<th class="sl">Reference Material</th>
 <th class="requestNumber">Scope</th>
 <th class="department">Normative Reference</th>
 <th class="issuesAddressed">Issues Addressed</th>
 <th class="referenceMaterial">Clause</th>
 <th class="referenceMaterial">Special</th>
+    <th class="sl">Reference Material</th>
 <th class="action">Action</th>
 </tr>
 </thead>
@@ -47,14 +47,27 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
 <tr  *ngFor="let task of tasks let i=index">
 <td>{{i+1}}</td>
 <td>{{task.taskData.title}}</td>
-<td>{{task.taskData.referenceMaterial}}</td>
 <td>{{task.taskData.scope}}</td>
 <td>{{task.taskData.normativeReference}}</td>
 <td>{{task.taskData.issuesAddressed}}</td>
 <td>{{task.taskData.clause}}</td>
 <td>{{task.taskData.special}}</td>
-<td *ngIf="task.name ==='Editing of FDKNWA (Workshop Draft)'"><a  (click)="onOpenModal(task,'edit')" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 110px; " data-original-title="Edit"> Edit Draft</a></td>
-<td *ngIf="task.name ==='Upload on  KNWA Standards Database'"><a  (click)="onOpenModal(task,'upload')" class="btn btn-success btn-sm tooltips" data-placement="top" style="width: 110px;" data-original-title="Edit">Save Standard</a></td>
+    <td *ngIf="task.name ==='Editing of FDKNWA (Workshop Draft)'">
+        <button mat-raised-button type="button" data-toggle="modal"
+                (click)="viewPDFile( task.taskData.ID,'Preliminary Draft'+task.taskData.ID, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
+            <i class="material-icons">visibility</i>
+
+        </button>
+    </td>
+    <td *ngIf="task.name ==='Upload on  KNWA Standards Database'">
+        <button mat-raised-button type="button" data-toggle="modal"
+                (click)="viewWDFile( task.taskData.ID,'Workshop Draft'+task.taskData.ID, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
+            <i class="material-icons">visibility</i>
+
+        </button>
+    </td>
+<td *ngIf="task.name ==='Editing of FDKNWA (Workshop Draft)'"><a  (click)="onOpenModal(task,'edit')" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 110px; " data-original-title="Edit"> Edit Workshop Draft</a></td>
+<td *ngIf="task.name ==='Upload on  KNWA Standards Database'"><a  (click)="onOpenModal(task,'upload')" class="btn btn-success btn-sm tooltips" data-placement="top" style="width: 110px;" data-original-title="Edit">Upload Standard</a></td>
 </tr>
 </tbody>
 </table>
@@ -114,7 +127,7 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
                             <label><b>Upload Workshop Draft  </b> <span style="font-size: xx-small; color: red;">(*)Required</span></label><br>
                             <form #demoForm="ngForm">
                                 <input type="file" name="uploadedFiles" [(ngModel)]="uploadedFiles"  multiple>
-                                <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles"   fileslimit="2" accept=".pdf, .doc, .docx" ></file-upload>
+                                <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles"   fileslimit="2" accept=".pdf" ></file-upload>
                             </form>
                         </div>
 

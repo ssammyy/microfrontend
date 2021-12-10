@@ -14,6 +14,7 @@ import {NotificationService} from "../../../../core/store/data/std/notification.
 export class NwaDiSdtTasksComponent implements OnInit ,OnDestroy{
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
+    blob: Blob;
   p = 1;
   p2 = 1;
   tasks: DISDTTasks[] = [];
@@ -111,5 +112,22 @@ export class NwaDiSdtTasksComponent implements OnInit ,OnDestroy{
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
   }
+    viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
+        this.SpinnerService.show();
+        this.stdNwaService.viewDIJustificationPDF(pdfId).subscribe(
+            (dataPdf: any) => {
+                this.SpinnerService.hide();
+                this.blob = new Blob([dataPdf], {type: applicationType});
+
+                // tslint:disable-next-line:prefer-const
+                let downloadURL = window.URL.createObjectURL(this.blob);
+                const link = document.createElement('a');
+                link.href = downloadURL;
+                link.download = fileName;
+                link.click();
+                // this.pdfUploadsView = dataPdf;
+            },
+        );
+    }
 
 }

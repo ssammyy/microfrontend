@@ -115,19 +115,23 @@ interface DatKebsSdNwaUploadsEntityRepository : JpaRepository<DatKebsSdNwaUpload
     fun findNwaJustification(@Param("nwaDocumentId") nwaDocumentId: Long?): Collection<DatKebsSdNwaUploadsEntity?>?
     @Query(value = "SELECT max(ID)  FROM DAT_KEBS_SD_NWA_UPLOADS", nativeQuery = true)
     fun getMaxUploadedID(): Long
-    fun findByNwaDocumentId(id: Long):List<DatKebsSdNwaUploadsEntity>?
+    fun findByNwaDocumentId(id: Long):DatKebsSdNwaUploadsEntity
 }
 interface SDDIJustificationUploadsRepository : JpaRepository<SDDIJustificationUploads, Long> {
+    fun findByDiDocumentId(id: Long):SDDIJustificationUploads
 }
 
 interface SdIsDocumentUploadsRepository : JpaRepository<SdIsDocumentUploads, Long> {
 }
 
 interface NWAPreliminaryDraftUploadsRepository : JpaRepository<NWAPreliminaryDraftUploads, Long> {
+    fun findByNwaPDDocumentId(id: Long):NWAPreliminaryDraftUploads
 }
 interface NWAWorkShopDraftUploadsRepository : JpaRepository<NWAWorkShopDraftUploads, Long> {
+    fun findByNwaWDDocumentId(id: Long):NWAWorkShopDraftUploads
 }
 interface NWAStandardUploadsRepository : JpaRepository<NWAStandardUploads, Long> {
+    fun findByNwaStdDocumentId(id: Long):NWAStandardUploads
 }
 interface DepartmentListRepository : JpaRepository<Department,Long>{
     @Query("SELECT name FROM SD_DEPARTMENT WHERE id=:id", nativeQuery = true)

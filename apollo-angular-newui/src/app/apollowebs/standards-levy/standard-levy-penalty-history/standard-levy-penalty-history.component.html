@@ -46,12 +46,12 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr  >
-                                            <td>1 </td>
-                                            <td>DEC 19</td>
-                                            <td>KSH 50000</td>
-                                            <td>KSH 1000</td>
-                                            <td>-</td>
+                                        <tr  *ngFor="let task of tasks let i=index">
+                                            <td>{{i+1}}</td>
+                                            <td>{{task.penaltyGenerationDate | date: 'MM/dd/'}}</td>
+                                            <td>Ksh -</td>
+                                            <td>KSH -</td>
+                                            <td>{{task.penaltyPayable}}</td>
                                             <td>13/06/2018</td>
                                             <td>KSH 1000</td>
 

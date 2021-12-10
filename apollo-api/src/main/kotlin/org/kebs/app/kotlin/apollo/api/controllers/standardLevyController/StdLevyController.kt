@@ -4,12 +4,15 @@ import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.adaptor.kafka.producer.service.SendToKafkaQueue
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
+import org.kebs.app.kotlin.apollo.common.dto.CompanySl1DTO
+import org.kebs.app.kotlin.apollo.common.dto.ManufactureSubmitEntityDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidInputException
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
+import org.kebs.app.kotlin.apollo.store.model.std.NWAJustification
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.prepost.PreAuthorize
@@ -448,9 +451,45 @@ class StdLevyController(
     }
 
     @GetMapping("/getCompanyProfile")
-    fun getCompanyProfile(): CompanyProfileEntity {
+    fun getCompanyProfile(): MutableList<CompanyProfileEntity> {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        return commonDaoServices.findCompanyProfile(loggedInUser.id?:throw  Exception("INVALID USER ID FOUND"))
+        return commonDaoServices.findCompanyProfileDetail(loggedInUser.id?:throw  Exception("INVALID USER ID FOUND"))
 
+    }
+
+    @PreAuthorize("hasAuthority('USER')")
+    @PostMapping("/submit-registration-manufacture")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun submitRegistrationDetails(
+       // @RequestParam( "companyProfileID") companyProfileID: Long,
+        @ModelAttribute stdLevyNotificationFormEntity: StdLevyNotificationFormEntity,
+        @ModelAttribute("companyProfileEntity") companyProfileEntity: CompanyProfileEntity,
+        manufacturer: ManufacturersEntity,
+        companySl1DTO: CompanySl1DTO,
+        s: ServiceMapsEntity,
+        sr: ServiceRequestsEntity,
+        model: Model
+    ): String? {
+
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        val result: ServiceRequestsEntity?
+
+        val myDetails = ManufactureSubmitEntityDto()
+        with(myDetails){
+            submittedStatus = 1
+        }
+
+
+        result = daoServices.closeManufactureRegistrationDetails(map, loggedInUser, myDetails)
+        //Generation of Entry Number
+         daoServices.generateEntryNumberDetails(map,loggedInUser)
+        daoServices.manufacturerStdLevyInit(stdLevyNotificationFormEntity,manufacturer,companySl1DTO,s,sr)
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/user/user-profile?userName=${loggedInUser.userName}"
+        sm.message = "You have Successful Register, Email Has been sent with Entry Number "
+
+        return commonDaoServices.returnValues(result, map, sm)
     }
 }

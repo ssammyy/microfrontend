@@ -37,6 +37,7 @@ type="ball-scale-multiple"
 <th class="department">Symbols Abbreviation</th>
 <th class="issuesAddressed">Clause</th>
 <th class="referenceMaterial">Special</th>
+    <th class="referenceMaterial">Reference Material</th>
 <th class="action">Action</th>
 <th></th>
 </tr>
@@ -50,6 +51,11 @@ type="ball-scale-multiple"
 <td>{{task.taskData.symbolsAbbreviatedTerms}}</td>
 <td>{{task.taskData.clause}}</td>
 <td>{{task.taskData.special}}</td>
+    <td><button mat-raised-button type="button" data-toggle="modal"
+                (click)="viewWDFile( task.taskData.ID,'Workshop Draft'+task.taskData.ID, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
+        <i class="material-icons">visibility</i>
+
+    </button></td>
 <td><a  (click)="onOpenModal(task,'approve')" class="btn btn-info btn-sm tooltips" data-placement="top"  data-original-title="Approve"> Approve</a></td>
 <td><button (click)="onOpenModal(task,'reject')" type="submit" class="btn btn-danger btn-sm">Reject</button></td>
 </tr>
