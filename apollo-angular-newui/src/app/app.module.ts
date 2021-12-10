@@ -345,7 +345,7 @@ import { NwaPreliminaryDraftComponent } from './apollowebs/standards-development
         StandardLevyPaidHistoryComponent,
         StandardLevyPenaltyHistoryComponent,
         StandardLevyDefaulterHistoryComponent,
-        PreparePreliminaryDraftComponent
+        PreparePreliminaryDraftComponent,
         StandardLevyDefaulterHistoryComponent,
         NwaPreliminaryDraftComponent
 
