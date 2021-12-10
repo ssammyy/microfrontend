@@ -25,7 +25,7 @@ export class NwaJustificationTasksComponent implements OnInit , OnDestroy {
   tasks: SPCSECTasks[] = [];
   public actionRequest: SPCSECTasks | undefined;
   public approveFormGroup!: FormGroup;
-    displayTable: boolean = false;
+    //displayTable: boolean = false;
   blob: Blob;
   constructor(
       private formBuilder: FormBuilder,
@@ -51,7 +51,7 @@ export class NwaJustificationTasksComponent implements OnInit , OnDestroy {
             (response: SPCSECTasks[])=> {
                 this.tasks = response;
                 this.dtTrigger.next();
-                this.displayTable = true;
+               // this.displayTable = true;
                 this.SpinnerService.hide();
             },
             (error: HttpErrorResponse)=>{
