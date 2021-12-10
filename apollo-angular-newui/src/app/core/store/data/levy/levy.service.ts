@@ -3,7 +3,7 @@ import {Observable, throwError} from "rxjs";
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
 import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
 import {catchError, map} from "rxjs/operators";
-import {CompanyModel, ManufactureInfo, ManufacturePenalty, PaidLevy} from "./levy.model";
+import {CompanyModel, ManufactureInfo, ManufacturePenalty, PaidLevy, SLevySL1} from "./levy.model";
 
 @Injectable({
   providedIn: 'root'
@@ -12,10 +12,10 @@ export class LevyService {
 
   constructor(private http: HttpClient) { }
 
-  public addManufactureDetails(manufactureInfo: ManufactureInfo): Observable<any> {
-    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.REG_MANUFACTURE_DETAILS);
+  public addSL1Details(sLevySL1: SLevySL1): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_SL10_FORM);
     const params = new HttpParams();
-    return this.http.post<ManufactureInfo>(url, manufactureInfo, {params}).pipe(
+    return this.http.post<SLevySL1>(url, sLevySL1, {params}).pipe(
         map(function (response: any) {
           return response;
         }),

@@ -6,7 +6,7 @@ size="medium"
 color="#fff"
 type="ball-scale-multiple"
 >
-<p style="font-size: 20px; color: white">Saving Please Wait...</p>
+<p style="font-size: 20px; color: white">Loading Please Wait...</p>
 </ngx-spinner>
 </div>
 <div class="main-content">
@@ -23,261 +23,308 @@ type="ball-scale-multiple"
 <div class="toolbar">
 
 </div>
-<div class="material-datatables">
-<section class="wizard-section">
-<div class="row no-gutters">
-<div class="col-lg-12 col-md-12 col-sm-12">
-<div class="form-wizard">
-<div [ngSwitch]="step">
-<div *ngSwitchCase="1">
-<h2 style="text-align: center"><b >Step</b> <b > 1</b><b > of</b> <b > 2</b></h2>
+    <div *ngFor="let companyDetail of companyDetails"  class="row col-12">
+        <div *ngIf="companyDetail.manufactureStatus==1"  class="row col-12">
+    <form (ngSubmit)="onClickSaveSL1()" [formGroup]="manufacturerInfoForm" class="form col-12"
+          enctype="multipart/form-data" >
+        <h3 style="color: #0d0505; font-weight: bold">SL1 Form</h3>
+        <h5>Kindly Fill the details below</h5>
+        <div class="form-body">
+        <div class="row">
+            <div class="form-group col-6">
+                <label for="businessCompanyName1">Business/Company Name <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                <input type="text"  class="form-control" ngModel="{{companyDetail.name}}" id="businessCompanyName1" formControlName="businessCompanyName"  name="businessCompanyName"
+                       placeholder="Business/Company Name" disabled >
 
-<fieldset class="wizard-fieldset show">
-<form (ngSubmit)="onClickSaveManufacturer()" [formGroup]="manufacturerInfoForm" class="form"
-enctype="multipart/form-data" >
-<h4>Manufacturer Information</h4>
-<h5>Kindly Fill the details below</h5>
+            </div>
 
-<div class="row">
-<div class="form-group col-6">
-<label for="businessCompanyName">Business/Company Name <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-    <input type="text"  class="form-control" ngModel="BSK GLOBAL TECHNOLOGIES LIMITED" id="businessCompanyName" formControlName="businessCompanyName" name="businessCompanyName"
-           placeholder="Business/Company Name" >
-
-</div>
-
-<div class="form-group col-6">
-<label for="comKraPin">Company KRA Pin <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-<input type="text"  class="form-control" ngModel="12312132313" id="comKraPin" formControlName="comKraPin" name="comKraPin"
-placeholder="Company KRA Pin" >
-</div>
-</div>
-<div class="row">
-<div class="form-group col-6">
-<label for="lineOfBusiness">Select your line of business <span style="font-size: xx-small; color: red;">(*)Select One</span></label>
-<select id="lineOfBusiness" class="form-control" formControlName="lineOfBusiness" name="lineOfBusiness">
-<option selected>Select your line of business</option>
-<option value="1" >Construction and Engineering</option>
-
-</select>
-</div>
-<div class="form-group col-6">
-<label for="certificateOfIncorporation">Certificate of Incorporation<span style="font-size: xx-small; color: red;">(*)Required</span></label>
-<input type="text" ngModel="12312132313" class="form-control" id="certificateOfIncorporation" formControlName="certificateOfIncorporation" name="certificateOfIncorporation"
-placeholder="Certificate of Incorporation" >
-</div>
-
-
-</div>
-
-<div class="row">
-<div class="form-group col-6">
-<label for="companyEmail">Company Email <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-<input type="text" ngModel="1123@ewe.com" class="form-control" id="companyEmail" formControlName="certificateOfIncorporation" name="certificateOfIncorporation"
-placeholder="Company Email" >
-</div>
-<div class="form-group col-6">
-<label for="postalAddress">Postal Address <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-<input type="text" ngModel="14193-00800" class="form-control" id="postalAddress" formControlName="postalAddress" name="postalAddress"
-placeholder="Postal Address" >
-</div>
-</div>
-<div class="row">
-<div class="form-group col-6">
-<label for="telephone">Telephone<span style="font-size: xx-small; color: red;">(*)Required</span></label>
-<input type="text" ngModel="120832" class="form-control" id="telephone" formControlName="telephone" name="telephone"
-placeholder="Telephone" >
-</div>
-<div class="form-group col-6">
-<label for="mainPhysicalLocation">Main Physical Location <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-<input type="text" ngModel="LR NO. 209/8526/2, HOUSE NO. 14, MUTHAIGA COURT 6TH PARKLANDS AVENUE OFF LIMURU ROAD NAIROBI" class="form-control" id="mainPhysicalLocation" formControlName="mainPhysicalLocation" name="mainPhysicalLocation"
-placeholder="Main Physical Location" >
-</div>
-</div>
-    <h4 style=" color: red;">If you have branches kindly add them here</h4>
-<div class="row">
-
-    <div class="form-group col-6">
-        <label for="location">Location <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-        <input type="text" ngModel="" class="form-control" id="location" formControlName="location" name="location"
-               placeholder="Location" >
-        <input type="hidden" ngModel="13093" class="form-control" id="entryNo" formControlName="entryNo" name="entryNo"
-               placeholder="entryNo" >
-    </div>
-    <div class="form-group col-6">
-        <label for="plotNumber">Plot Number<span style="font-size: xx-small; color: red;">(*)Required</span></label>
-        <input type="text" ngModel="123123"  class="form-control" id="plotNumber" formControlName="plotNumber" name="plotNumber"
-               placeholder="Plot Number">
-    </div>
-<!--<div class="col-4">-->
-<!--<label for="location">Location<span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
-<!--<input type="text"  class="form-control" id="location"  name="location"-->
-<!--placeholder="Location" >-->
-<!--</div>-->
-<!--<div class="col-4">-->
-<!--<label for="plotNumber">Plot Number <span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
-<!--<input type="text" class="form-control" id="plotNumber"  name="plotNumber"-->
-<!--placeholder="Plot Number" required="">-->
-<!--</div>-->
-<!--<div class="col-2">-->
-
-<!--<span class="input-group-btn">-->
-<!--    <label for="plotNumber" style="font-size: xx-small; color: transparent;">Plot Number</label><br>-->
-<!--<button (click)="onClickAddBranches()"-->
-<!--type="button" class="btn btn-success btn-sm">-->
-<!--<span class="" aria-hidden="true">ADD</span>-->
-<!--</button>-->
-<!--</span>-->
-<!--<br><br>-->
-<!--</div>-->
-</div>
-<!--<div class="material-datatables" >-->
-<!--<div class="table-responsive">-->
-<!--<table id="datatables" class="table table-striped table-bordered table-hover"-->
-<!--&gt;-->
-<!--<thead>-->
-<!--<tr>-->
-<!--<th>Location</th>-->
-<!--<th>Plot Number</th>-->
-<!--<th>Action</th>-->
-<!--</tr>-->
-<!--</thead>-->
-<!--<tbody>-->
-<!--<tr *ngFor="let r of manufacturerBranchDetails; let i=index">-->
-<!--<td>{{r.location}}</td>-->
-<!--<td>{{r.plotNumber}}</td>-->
-<!--<td><button (click)="removeBranches(i)"-->
-<!--type="button" class="btn btn-warning btn-sm">-->
-<!--<span class="" aria-hidden="true">Remove</span>-->
-<!--</button></td>-->
-<!--</tr>-->
-<!--</tbody>-->
-<!--</table>-->
-<!--</div>-->
-<!--</div>-->
-
-<div  class="form-group clearfix">
-<button type="submit" class="form-wizard-next-btn btn-sm float-right btn-primary">Next</button>
-</div>
-<!--<div *ngIf="!manufacturerInfoForm.valid" class="form-group clearfix">-->
-<!--<button  class="form-wizard-next-btn btn-sm float-right" (click)="showNotification('top','right')">Next</button>-->
-<!--</div>-->
-
-</form>
-
-
-</fieldset>
-</div>
-<div *ngSwitchCase="2">
-<h2 style="text-align: center"><b >Step</b> <b > 2</b><b > of</b> <b > 2</b></h2>
-
-<fieldset class="wizard-fieldset show">
-<h2>MANUFACTURING PROCESS</h2>
-<form (ngSubmit)="onClickSaveManufacturing(manufacturingInfoForm.valid)" [formGroup]="manufacturingInfoForm" class="form"
-enctype="multipart/form-data" >
-
-
-<div class="row">
-<div class="form-group col-12">
-<label for="NameAndBusinessOfProprietors">Name and Business of Proprietors and Partners; and In the case of Companies, the Chief Executive and Directors<span style="font-size: xx-small; color: red;">(*)Required</span></label>
-<textarea [class.is-invalid]="manufacturingInfo.NameAndBusinessOfProprietors.invalid && manufacturingInfo.NameAndBusinessOfProprietors.touched" type="text"  id="NameAndBusinessOfProprietors" formControlName="NameAndBusinessOfProprietors" name="NameAndBusinessOfProprietors" class="form-control" placeholder=""></textarea>
-</div>
-
-</div>
-<div class="row">
-<div class="form-group col-12">
-<label for="AllCommoditiesManufuctured">All Commodities Manufactured or to be Manufactured<span style="font-size: xx-small; color: red;">(*)Required</span></label>
-<textarea [class.is-invalid]="manufacturingInfo.AllCommoditiesManufuctured.invalid && manufacturingInfo.AllCommoditiesManufuctured.touched" type="text"  id="AllCommoditiesManufuctured" formControlName="AllCommoditiesManufuctured" name="AllCommoditiesManufuctured" class="form-control" placeholder=""></textarea>
-</div>
-
-</div>
-<div class="row">
-<div class="form-group col-6">
-<label for="DateOfManufacture">Date upon which Manufacture Commenced or will Commence <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-<input type="date"
-[class.is-invalid]="manufacturingInfo.DateOfManufacture.invalid && manufacturingInfo.DateOfManufacture.touched"
-class="form-control" id="DateOfManufacture"
-formControlName="DateOfManufacture"
-name="DateOfManufacture" class="form-control" placeholder="" >
-</div>
-<div class="form-group col-6">
-<label for="totalValueOfManufacture">Total value of Manufacture in last Calender Year KSH</label>
-<input type="number"
-[class.is-invalid]="manufacturingInfo.totalValueOfManufacture.invalid && manufacturingInfo.totalValueOfManufacture.touched"
-class="form-control" id="totalValueOfManufacture" formControlName="totalValueOfManufacture"
-name="totalValueOfManufacture" class="form-control" placeholder="Total value of Manufacture in last Calender Year KSH" min="0" step="0"
-oninput="validity.valid||(value='');">
-</div>
-
-</div>
-    <h4 style=" color: red;">If applicant has branches operating, give name and address of branches</h4>
-    <div class="row">
-
-        <div class="col-4">
-            <label for="nameOfBranch">Name of Branch<span style="font-size: xx-small; color: red;">(*)Required</span></label>
-            <input type="text"  class="form-control" id="nameOfBranch"  name="nameOfBranch"
-                   placeholder="Name of Branch" >
+            <div class="form-group col-6">
+                <label for="plotNumber1">Plot Number<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                <input type="text" ngModel="{{companyDetail.plotNumber}}"  class="form-control" id="plotNumber1" formControlName="plotNumber"  name="plotNumber"
+                       placeholder="Plot Number" disabled>
+            </div>
         </div>
-        <div class="col-4">
-            <label for="addressOfBranch">Address of Branch <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-            <input type="text"  class="form-control" id="addressOfBranch"  name="addressOfBranch"
-                   placeholder="Address of Branch" required="">
+        <div class="row">
+            <div class="form-group col-6">
+                <label for="roadStreet1">Road / Street  <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                <input type="text" ngModel="{{companyDetail.streetName}}" class="form-control" id="roadStreet1"  formControlName="roadStreet"  name="roadStreet"
+                       placeholder="Road / Street " disabled>
+            </div>
+            <div class="form-group col-6">
+                <label for="postalAddress1">Postal Address <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                <input type="text" ngModel="{{companyDetail.postalAddress}}" class="form-control" id="postalAddress1" formControlName="postalAddress"  name="postalAddress"
+                       placeholder="Postal Address" disabled>
+            </div>
         </div>
-        <div class="col-2">
-<span class="input-group-btn">
-    <label for="plotNumber" style="font-size: xx-small; color: transparent;">Plot Number</label><br>
-<button (click)="onClickAddBranchDetails()"
-        type="button" class="btn btn-success btn-sm">
-<span class="" aria-hidden="true">ADD</span>
-</button>
-</span>
-            <br><br>
+        <div class="row">
+            <div class="form-group col-6">
+                <label for="telephone1">Telephone<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                <input type="text" ngModel="{{companyDetail.companyTelephone}}" class="form-control" id="telephone1" formControlName="telephone" name="telephone"
+                       placeholder="Telephone" disabled>
+            </div>
         </div>
-    </div>
-    <div class="material-datatables" >
-        <div class="table-responsive">
-            <table id="datatabless" class="table table-striped table-bordered table-hover"
+            <div class="row">
+                <div class="form-group col-12">
+                    <label for="mainPhysicalLocation1">Main Physical Location <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                    <textarea type="text" ngModel="{{companyDetail.physicalAddress}}" class="form-control" id="mainPhysicalLocation1"  name="mainPhysicalLocation"
+                              formControlName="mainPhysicalLocation" placeholder="Main Physical Location" disabled></textarea>
+
+                </div>
+            </div>
+        <div class="row">
+            <div class="form-group col-12">
+                <label for="NameAndBusinessOfProprietors1">Name and Business of Proprietors and Partners; and In the case of Companies, the Chief Executive and Directors<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                <textarea  type="text"  id="NameAndBusinessOfProprietors1" ngModel="{{companyDetail.directorIdNumber}}"  name="NameAndBusinessOfProprietors" formControlName="NameAndBusinessOfProprietors" class="form-control" placeholder="" disabled></textarea>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-12">
+                <label for="AllCommoditiesManufuctured1">All Commodities Manufactured or to be Manufactured<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                <textarea [class.is-invalid]="manufacturerInfo.AllCommoditiesManufuctured.invalid && manufacturerInfo.AllCommoditiesManufuctured.touched" type="text"  id="AllCommoditiesManufuctured1" formControlName="AllCommoditiesManufuctured" name="AllCommoditiesManufuctured" class="form-control" placeholder=""></textarea>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="form-group col-6">
+                <label for="DateOfManufacture1">Date upon which Manufacture Commenced or will Commence <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                <input type="date"
+                       [class.is-invalid]="manufacturerInfo.DateOfManufacture.invalid && manufacturerInfo.DateOfManufacture.touched"
+                       class="form-control" id="DateOfManufacture1"
+                       formControlName="DateOfManufacture"
+                       name="DateOfManufacture" class="form-control" placeholder="" >
+            </div>
+            <div class="form-group col-6">
+                <label for="totalValueOfManufacture1">Total value of Manufacture in last Calender Year KSH</label>
+                <input type="number"
+                       [class.is-invalid]="manufacturerInfo.totalValueOfManufacture.invalid && manufacturerInfo.totalValueOfManufacture.touched"
+                       class="form-control" id="totalValueOfManufacture1" formControlName="totalValueOfManufacture"
+                       name="totalValueOfManufacture" class="form-control" placeholder="Total value of Manufacture in last Calender Year KSH" min="0" step="0"
+                       oninput="validity.valid||(value='');">
+            </div>
+            <input type="hidden" ngModel="{{companyDetail.id}}" class="form-control" id="companyProfileID1" formControlName="companyProfileID" name="companyProfileID"
             >
-                <thead>
-                <tr>
-                    <th>Name of Branch</th>
-                    <th>Address of Branch</th>
-                    <th>Action</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr *ngFor="let r of manufacturingBranchDetails; let i=index">
-                    <td>{{r.nameOfBranch}}</td>
-                    <td>{{r.addressOfBranch}}</td>
-                    <td><button (click)="removeBranchDetails(i)"
-                                type="button" class="btn btn-warning btn-sm">
-                        <span class="" aria-hidden="true">Remove</span>
-                    </button></td>
-                </tr>
-                </tbody>
-            </table>
         </div>
+
+        <h4 style=" color: red;">If you have branches kindly add them here</h4>
+        <div class="row">
+            <div class="form-group col-6">
+                <label for="nameOfBranch1">Name of Branch <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                <input type="text" ngModel="" class="form-control" id="nameOfBranch1" formControlName="nameOfBranch" name="nameOfBranch"
+                       placeholder="Name of Branch" >
+            </div>
+                <div class="form-group col-6">
+                    <label for="location1">Location <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                    <input type="text" ngModel="" class="form-control" id="location1" formControlName="location" name="location"
+                           placeholder="Location" >
+
+                </div>
+            <!--<div class="col-4">-->
+            <!--<label for="location">Location<span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
+            <!--<input type="text"  class="form-control" id="location"  name="location"-->
+            <!--placeholder="Location" >-->
+            <!--</div>-->
+            <!--<div class="col-4">-->
+            <!--<label for="plotNumber">Plot Number <span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
+            <!--<input type="text" class="form-control" id="plotNumber"  name="plotNumber"-->
+            <!--placeholder="Plot Number" required="">-->
+            <!--</div>-->
+            <!--<div class="col-2">-->
+
+            <!--<span class="input-group-btn">-->
+            <!--    <label for="plotNumber" style="font-size: xx-small; color: transparent;">Plot Number</label><br>-->
+            <!--<button (click)="onClickAddBranches()"-->
+            <!--type="button" class="btn btn-success btn-sm">-->
+            <!--<span class="" aria-hidden="true">ADD</span>-->
+            <!--</button>-->
+            <!--</span>-->
+            <!--<br><br>-->
+            <!--</div>-->
+        </div>
+        <!--<div class="material-datatables" >-->
+        <!--<div class="table-responsive">-->
+        <!--<table id="datatables" class="table table-striped table-bordered table-hover"-->
+        <!--&gt;-->
+        <!--<thead>-->
+        <!--<tr>-->
+        <!--<th>Location</th>-->
+        <!--<th>Plot Number</th>-->
+        <!--<th>Action</th>-->
+        <!--</tr>-->
+        <!--</thead>-->
+        <!--<tbody>-->
+        <!--<tr *ngFor="let r of manufacturerBranchDetails; let i=index">-->
+        <!--<td>{{r.location}}</td>-->
+        <!--<td>{{r.plotNumber}}</td>-->
+        <!--<td><button (click)="removeBranches(i)"-->
+        <!--type="button" class="btn btn-warning btn-sm">-->
+        <!--<span class="" aria-hidden="true">Remove</span>-->
+        <!--</button></td>-->
+        <!--</tr>-->
+        <!--</tbody>-->
+        <!--</table>-->
+        <!--</div>-->
+        <!--</div>-->
+
+            <div class="row col-12 float-right " style="margin: 3em 0 2em 0">
+                <button  class="btn btn-sm btn-primary float-right" type="submit">Apply</button>
+
+            </div>
+        </div>
+    </form>
+
     </div>
-<div *ngIf="manufacturingInfoForm.valid" class="form-group clearfix">
-<button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
-<button type="submit" class="form-wizard-next-btn btn-sm float-right">Next</button>
-</div>
-<div *ngIf="!manufacturingInfoForm.valid" class="form-group clearfix">
-<button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
-<button  class="btn btn-sm btn-primary float-right" (click)="showNotification('top','right')">Next</button>
-</div>
+    <div *ngIf="companyDetail.manufactureStatus!=1"  class="row col-12">
+        <form (ngSubmit)="onClickSaveManufacturing(manufacturingInfoForm.valid)" [formGroup]="manufacturingInfoForm" class="form col-12"
+              enctype="multipart/form-data" >
+            <h3 style="color: #0d0505; font-weight: bold">SL1C</h3>
+            <h5>Kindly Fill the details below</h5>
+            <div class="form-body">
+                <div class="row">
+                    <div class="form-group col-6">
+                        <label for="businessCompanyName2">Business/Company Name <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                        <input type="text"  class="form-control" ngModel="{{companyDetail.name}}" id="businessCompanyName2"  name="businessCompanyName"
+                               formControlName="businessCompanyName"   placeholder="Business/Company Name" disabled>
 
+                    </div>
 
-</form>
-</fieldset>
-</div>
+                    <div class="form-group col-6">
+                        <label for="plotNumber2">Plot Number<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                        <input type="text" ngModel="{{companyDetail.plotNumber}}"  class="form-control" id="plotNumber2"  name="plotNumber"
+                               formControlName="plotNumber"   placeholder="Plot Number" disabled>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-6">
+                        <label for="roadStreet2">Road / Street  <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                        <input type="text" ngModel="{{companyDetail.streetName}}" class="form-control" id="roadStreet2"  name="roadStreet"
+                               formControlName="roadStreet"  placeholder="Road / Street " disabled >
+                    </div>
+                    <div class="form-group col-6">
+                        <label for="postalAddress2">Postal Address <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                        <input type="text" ngModel="14{{companyDetail.postalAddress}}" class="form-control" id="postalAddress2"  name="postalAddress"
+                               formControlName="postalAddress" placeholder="Postal Address" disabled>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-6">
+                        <label for="telephone2">Telephone<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                        <input type="text" ngModel="{{companyDetail.companyTelephone}}" class="form-control" id="telephone2"  name="telephone"
+                               formControlName="telephone" placeholder="Telephone" disabled>
+                    </div>
 
-</div>
-</div>
-</div>
-</div>
-</section>
-</div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-12">
+                        <label for="NameAndBusinessOfProprietors2">Name and Business of Proprietors and Partners; and In the case of Companies, the Chief Executive and Directors<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                        <textarea  type="text"  id="NameAndBusinessOfProprietors2"  name="NameAndBusinessOfProprietors" formControlName="NameAndBusinessOfProprietors" ngModel="{{companyDetail.directorIdNumber}}" class="form-control" placeholder="" disabled></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-12">
+                        <label for="mainPhysicalLocation2">Main Physical Location <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                        <textarea type="text" ngModel="{{companyDetail.physicalAddress}}" class="form-control" id="mainPhysicalLocation2"  name="mainPhysicalLocation"
+                                  formControlName="mainPhysicalLocation" placeholder="Main Physical Location"></textarea>
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-12">
+                        <label for="AllCommoditiesManufuctured2">All Commodities Manufactured or to be Manufactured<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                        <textarea [class.is-invalid]="manufacturingInfo.AllCommoditiesManufuctured.invalid && manufacturingInfo.AllCommoditiesManufuctured.touched" type="text"  id="AllCommoditiesManufuctured2" formControlName="AllCommoditiesManufuctured" name="AllCommoditiesManufuctured" class="form-control" placeholder=""></textarea>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="form-group col-6">
+                        <label for="DateOfManufacture2">Date upon which Manufacture Commenced or will Commence <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                        <input type="date"
+                               [class.is-invalid]="manufacturingInfo.DateOfManufacture.invalid && manufacturingInfo.DateOfManufacture.touched"
+                               class="form-control" id="DateOfManufacture2"
+                               name="DateOfManufacture" class="form-control" formControlName="DateOfManufacture" placeholder="" >
+                    </div>
+                    <div class="form-group col-6">
+                        <label for="totalValueOfManufacture2">Total value of Manufacture in last Calender Year KSH</label>
+                        <input type="number"
+                               [class.is-invalid]="manufacturingInfo.totalValueOfManufacture.invalid && manufacturingInfo.totalValueOfManufacture.touched"
+                               class="form-control" id="totalValueOfManufacture2" formControlName="totalValueOfManufacture"
+                               name="totalValueOfManufacture" class="form-control" placeholder="Total value of Manufacture in last Calender Year KSH" min="0" step="0"
+                               oninput="validity.valid||(value='');">
+                    </div>
+                    <input type="hidden" ngModel="{{companyDetail.id}}" class="form-control" id="companyProfileID2" formControlName="companyProfileID" name="companyProfileID"
+                    >
+
+                </div>
+
+                <h4 style=" color: red;">If you have branches kindly add them here</h4>
+                <div class="row">
+                    <div class="form-group col-6">
+                        <label for="nameOfBranch2">Name of Branch <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                        <input type="text" ngModel="" class="form-control" id="nameOfBranch2" formControlName="nameOfBranch" name="nameOfBranch"
+                               placeholder="Name of Branch" >
+                    </div>
+                    <div class="form-group col-6">
+                        <label for="location2">Location <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                        <input type="text" ngModel="" class="form-control" id="location2" formControlName="location" name="location"
+                               placeholder="Location" >
+
+                    </div>
+
+                    <!--<div class="col-4">-->
+                    <!--<label for="location">Location<span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
+                    <!--<input type="text"  class="form-control" id="location"  name="location"-->
+                    <!--placeholder="Location" >-->
+                    <!--</div>-->
+                    <!--<div class="col-4">-->
+                    <!--<label for="plotNumber">Plot Number <span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
+                    <!--<input type="text" class="form-control" id="plotNumber"  name="plotNumber"-->
+                    <!--placeholder="Plot Number" required="">-->
+                    <!--</div>-->
+                    <!--<div class="col-2">-->
+
+                    <!--<span class="input-group-btn">-->
+                    <!--    <label for="plotNumber" style="font-size: xx-small; color: transparent;">Plot Number</label><br>-->
+                    <!--<button (click)="onClickAddBranches()"-->
+                    <!--type="button" class="btn btn-success btn-sm">-->
+                    <!--<span class="" aria-hidden="true">ADD</span>-->
+                    <!--</button>-->
+                    <!--</span>-->
+                    <!--<br><br>-->
+                    <!--</div>-->
+                </div>
+                <!--<div class="material-datatables" >-->
+                <!--<div class="table-responsive">-->
+                <!--<table id="datatables" class="table table-striped table-bordered table-hover"-->
+                <!--&gt;-->
+                <!--<thead>-->
+                <!--<tr>-->
+                <!--<th>Location</th>-->
+                <!--<th>Plot Number</th>-->
+                <!--<th>Action</th>-->
+                <!--</tr>-->
+                <!--</thead>-->
+                <!--<tbody>-->
+                <!--<tr *ngFor="let r of manufacturerBranchDetails; let i=index">-->
+                <!--<td>{{r.location}}</td>-->
+                <!--<td>{{r.plotNumber}}</td>-->
+                <!--<td><button (click)="removeBranches(i)"-->
+                <!--type="button" class="btn btn-warning btn-sm">-->
+                <!--<span class="" aria-hidden="true">Remove</span>-->
+                <!--</button></td>-->
+                <!--</tr>-->
+                <!--</tbody>-->
+                <!--</table>-->
+                <!--</div>-->
+                <!--</div>-->
+
+                <div class="row col-12 float-right " style="margin: 3em 0 2em 0">
+                    <button  class="btn btn-sm btn-primary float-right" type="submit">Apply</button>
+
+                </div>
+            </div>
+
+        </form>
+    </div>
+    </div>
 </div>
 </div>
 </div>

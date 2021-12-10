@@ -167,6 +167,7 @@ import { StandardLevyPenaltyHistoryComponent } from './apollowebs/standards-levy
 import { StandardLevyDefaulterHistoryComponent } from './apollowebs/standards-levy/standard-levy-defaulter-history/standard-levy-defaulter-history.component';
 import {SpcSecTaskComponent} from "./apollowebs/standards-development/standard-request/spc-sec-task/spc-sec-task.component";
 import {StdJustificationComponent} from "./apollowebs/standards-development/standard-request/std-justification/std-justification.component";
+import { NwaPreliminaryDraftComponent } from './apollowebs/standards-development/workshop-agreement/nwa-preliminary-draft/nwa-preliminary-draft.component';
 
 
 // import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -340,7 +341,8 @@ import {StdJustificationComponent} from "./apollowebs/standards-development/stan
         StandardLevyDefaulterComponent,
         StandardLevyPaidHistoryComponent,
         StandardLevyPenaltyHistoryComponent,
-        StandardLevyDefaulterHistoryComponent
+        StandardLevyDefaulterHistoryComponent,
+        NwaPreliminaryDraftComponent
 
     ]
 

@@ -107,7 +107,7 @@ placeholder="Date" type="date">
 <div class="form-group col-12">
 <label><b>Reference Material</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <form #demoForm="ngForm">
-<file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles"  fileslimit="2" accept=".pdf, .doc, .docx" ></file-upload>
+<file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles"  fileslimit="2" accept=".pdf" ></file-upload>
 <input class="form-control one-column-input" ngModel="NWA Justification"  name="DocDescription" type="hidden">
 </form>
 </div>

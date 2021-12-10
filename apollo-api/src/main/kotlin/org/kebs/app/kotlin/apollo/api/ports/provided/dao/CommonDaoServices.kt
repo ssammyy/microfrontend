@@ -926,6 +926,11 @@ class CommonDaoServices(
             ?: throw ExpectedDataNotFound("Company Profile with [user ID= ${userID}], does not Exist")
     }
 
+    fun findCompanyProfileDetail(userID: Long): MutableList<CompanyProfileEntity> {
+        return companyProfileRepo.findCompanyByUserId(userID)
+
+    }
+
     fun findCompanyProfileWithRegistrationNumber(registrationNumber: String): CompanyProfileEntity? {
         return companyProfileRepo.findByRegistrationNumber(registrationNumber)
 //                ?.let { userCompanyDetails ->

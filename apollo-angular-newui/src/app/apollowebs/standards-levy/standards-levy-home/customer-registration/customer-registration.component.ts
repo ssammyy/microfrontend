@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {
+  CompanyModel,
   ManufactureBranchDto,
-  ManufactureInfo,
+  ManufactureInfo, ManufacturePenalty,
   ManufacturingBranchDto,
   ManufacturingInfo
 } from "../../../../core/store/data/levy/levy.model";
@@ -13,7 +14,6 @@ import {NotificationService} from "../../../../core/store/data/std/notification.
 import {LevyService} from "../../../../core/store/data/levy/levy.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Store} from "@ngrx/store";
-import {Company, selectCompanyData} from "../../../../core/store";
 
 declare const $: any;
 @Component({
@@ -22,7 +22,9 @@ declare const $: any;
   styleUrls: ['./customer-registration.component.css']
 })
 export class CustomerRegistrationComponent implements OnInit {
-  company: Company;
+  companySoFar: Partial<CompanyModel> | undefined;
+  //company: CompanyModel;
+  companyDetails !: CompanyModel[];
   manufacturerInfoForm: FormGroup;
   manufacturingInfoForm: FormGroup;
   branchFormA: FormGroup;
@@ -47,27 +49,41 @@ export class CustomerRegistrationComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+      this.getCompanyProfile();
 
     this.manufacturerInfoForm = this.formBuilder.group({
-      businessCompanyName: ['', Validators.required],
-      comKraPin: ['', Validators.required],
-      lineOfBusiness: ['', Validators.required],
-      certificateOfIncorporation: ['', Validators.required],
-      companyEmail: ['', Validators.required],
-      postalAddress: ['', Validators.required],
-      telephone: ['', Validators.required],
-      mainPhysicalLocation: ['', Validators.required],
+      businessCompanyName: [],
+      plotNumber: [],
+      roadStreet: [],
+      postalAddress: [],
+      telephone: [],
+      mainPhysicalLocation: [],
+      NameAndBusinessOfProprietors: [],
+      AllCommoditiesManufuctured: ['', Validators.required],
+      DateOfManufacture: ['', Validators.required],
+      totalValueOfManufacture: ['', Validators.required],
       location: ['', Validators.required],
-      plotNumber: ['', Validators.required],
-      entryNo: ['', Validators.required]
+      registrationNo: [],
+      nameOfBranch: ['', Validators.required],
+      companyProfileID: []
 
 
     });
     this.manufacturingInfoForm = this.formBuilder.group({
-      NameAndBusinessOfProprietors: ['', Validators.required],
+      businessCompanyName: [],
+      plotNumber: [],
+      roadStreet: [],
+      postalAddress: [],
+      telephone: [],
+      mainPhysicalLocation: [],
+      NameAndBusinessOfProprietors: [],
       AllCommoditiesManufuctured: ['', Validators.required],
       DateOfManufacture: ['', Validators.required],
-      totalValueOfManufacture: ['', Validators.required]
+      totalValueOfManufacture: ['', Validators.required],
+      location: ['', Validators.required],
+      registrationNo: [],
+      nameOfBranch: ['', Validators.required],
+      companyProfileID: []
 
     });
 
@@ -82,12 +98,22 @@ export class CustomerRegistrationComponent implements OnInit {
       addressOfBranch: []
 
     });
-    this.store$.select(selectCompanyData).subscribe((d) => {
-      //console.log(`The id ${d.id}`);
-      //console.log(this.selectCompanyData);
-      return this.company = d;
-    });
   }
+    public getCompanyProfile(): void{
+        this.SpinnerService.show();
+        this.levyService.getCompanyProfile().subscribe(
+            (response: CompanyModel[])=> {
+                this.companyDetails = response;
+                console.log(this.companyDetails);
+                this.SpinnerService.hide();
+            },
+            (error: HttpErrorResponse)=>{
+                this.SpinnerService.hide();
+                console.log(error.message)
+                //alert(error.message);
+            }
+        );
+    }
 
   showToasterSuccess(title:string,message:string){
     this.notifyService.showSuccess(message, title)
@@ -150,14 +176,14 @@ export class CustomerRegistrationComponent implements OnInit {
     }
   }
 
-  onClickSaveManufacturer(): void {
+  onClickSaveSL1(): void {
 
       this.SpinnerService.show();
-      this.levyService.addManufactureDetails(this.manufacturerInfoForm.value).subscribe(
+      this.levyService.addSL1Details(this.manufacturerInfoForm.value).subscribe(
           (response ) => {
             console.log(response);
             this.SpinnerService.hide();
-            this.showToasterSuccess(response.httpStatus, `Manufacture Details Saved`);
+            this.showToasterSuccess(response.httpStatus, `SL1 Details Saved`);
             this.manufacturerInfoForm.reset();
           },
           (error: HttpErrorResponse) => {
