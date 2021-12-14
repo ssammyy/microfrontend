@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {Subject} from "rxjs";
 import {ComHodTasks, ComStandardJC, ComStdAction, UsersEntity} from "../../../../core/store/data/std/std.model";
 import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
@@ -8,14 +8,18 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import swal from "sweetalert2";
+import {Store} from "@ngrx/store";
+import {selectUserInfo} from "../../../../core/store";
 
 declare const $: any;
 @Component({
   selector: 'app-com-std-pl-task',
   templateUrl: './com-std-pl-task.component.html',
-  styleUrls: ['./com-std-pl-task.component.css']
+  styleUrls: ['./com-std-pl-task.component.css','../../../../../../node_modules/@ng-select/ng-select/themes/default.theme.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class ComStdPlTaskComponent implements OnInit {
+  user_id: number ;
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
   public users !: UsersEntity[] ;
@@ -25,6 +29,7 @@ export class ComStdPlTaskComponent implements OnInit {
   public preparePreliminaryDraftFormGroup!: FormGroup;
   public uploadedFiles: FileList;
   constructor(
+      private store$: Store<any>,
       private stdComStandardService:StdComStandardService,
       private SpinnerService: NgxSpinnerService,
       private notifyService : NotificationService,
@@ -35,6 +40,9 @@ export class ComStdPlTaskComponent implements OnInit {
   ngOnInit(): void {
     this.getPlTasks();
     this.getUserList();
+    this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+      return this.user_id = u.id;
+    });
 
     this.preparePreliminaryDraftFormGroup = this.formBuilder.group({
       title: ['', Validators.required],
@@ -44,10 +52,12 @@ export class ComStdPlTaskComponent implements OnInit {
       clause: ['', Validators.required],
       special: ['', Validators.required],
       taskId: [],
-      diJNumber: []
+      diJNumber: [],
+      uploadedBy:[]
 
     });
   }
+
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
   }
@@ -131,7 +141,8 @@ export class ComStdPlTaskComponent implements OnInit {
         }
     );
   }
-  onClickSaveUPLOADS(comPreID: string) {
+
+  onClickSaveUPLOADS(comStdDraftID: string) {
     if (this.uploadedFiles.length > 0) {
       const file = this.uploadedFiles;
       const formData = new FormData();
@@ -139,29 +150,28 @@ export class ComStdPlTaskComponent implements OnInit {
         console.log(file[i]);
         formData.append('docFile', file[i], file[i].name);
       }
-
       this.SpinnerService.show();
-      this.stdComStandardService.uploadPDFileDetails(comPreID, formData).subscribe(
+      this.stdComStandardService.uploadPDFileDetails(comStdDraftID, formData).subscribe(
           (data: any) => {
             this.SpinnerService.hide();
-            this.showToasterSuccess(data.httpStatus, `Preliminary Draft Prepared`);
             this.uploadedFiles = null;
             console.log(data);
             swal.fire({
-              title: 'Preliminary Draft Prepared.',
+              title: 'Company Draft Prepared.',
               buttonsStyling: false,
               customClass: {
-                confirmButton: 'btn btn-success ',
+                confirmButton: 'btn btn-success form-wizard-next-btn ',
               },
               icon: 'success'
             });
-            this.router.navigate(['/comStdJustification']);
+            //this.router.navigate(['/nwaJustification']);
           },
       );
     }
 
-
   }
+
+
   //Assign Project Leader
   public onAssign(comStandardJC: ComStandardJC): void{
     this.SpinnerService.show();

@@ -173,7 +173,7 @@ class ComStandardService(
 
     }
 
-    fun formJointCommittee(comStandardJC: ComStandardJC ){
+    fun formJointCommittee(comStandardJC: ComStandardJC,user: UsersEntity ){
         val variables: MutableMap<String, Any> = HashMap()
         comStandardJC.requestNumber?.let{variables.put("requestNumber", it)}
         comStandardJC.idOfJc?.let{ variables.put("idOfJc", it)}
@@ -181,6 +181,8 @@ class ComStandardService(
         variables["dateOfFormation"] = comStandardJC.dateOfFormation!!
         variables["nameOfJc"] = userListRepository.findNameById(comStandardJC.idOfJc?.toLong())
         comStandardJC.nameOfJc = userListRepository.findNameById(comStandardJC.idOfJc?.toLong())
+        comStandardJC.createdBy= commonDaoServices.concatenateName(user)
+        comStandardJC.createdOn = commonDaoServices.getTimestamp()
         print(comStandardJC.toString())
 
         comStandardJCRepository.save(comStandardJC)
@@ -377,40 +379,37 @@ class ComStandardService(
 
 
 
+
     fun getDRNumber(): String
     {
-        //val allRequests: Int
-        val allRequests =comStdDraftRepository.findAllByOrderByIdDesc()
+        var allRequests =comStdDraftRepository.findAllByOrderByIdDesc()
 
         var lastId:String?="0"
         var finalValue =1
-        var startId="DRAFT"
+        var startId="DR"
 
-        for(item in allRequests){
-            println(item)
-            lastId = item.draftNumber
-            break
-        }
-
-        if(lastId != "0")
-        {
-            val strs = lastId?.split(":")?.toTypedArray()
-
-            val firstPortion = strs?.get(0)
-
-            val lastPortArray = firstPortion?.split("/")?.toTypedArray()
-
-            val intToIncrement =lastPortArray?.get(1)
-
-            finalValue = (intToIncrement?.toInt()!!)
-            finalValue += 1
-        }
+//        for(item in allRequests){
+//            println(item)
+//            lastId = item.draftNumber
+//            break
+//        }
+        allRequests = allRequests.plus(1) as MutableList<ComStdDraft>
+        println(allRequests)
+//        if(lastId != "0")
+//        {
+//            val strs = lastId?.split(":")?.toTypedArray()
+//            val firstPortion = strs?.get(0)
+//            val lastPortArray = firstPortion?.split("/")?.toTypedArray()
+//            val intToIncrement =lastPortArray?.get(1)
+//            finalValue = (intToIncrement?.toInt()!!)
+//            finalValue += 1
+//        }
 
 
         val year = Calendar.getInstance()[Calendar.YEAR]
         val month = Calendar.getInstance()[Calendar.MONTH]
 
-        return "$finalValue/$startId/$month:$year"
+        return "$startId/$allRequests/$month:$year"
     }
 
     //Return task details for JC_SEC
@@ -424,6 +423,7 @@ class ComStandardService(
     fun findUploadedCDRFileBYId(comDraftDocumentId: Long): ComStandardDraftUploads {
         return comStandardDraftUploadsRepository.findByComDraftDocumentId(comDraftDocumentId) ?: throw ExpectedDataNotFound("No File found with the following [ id=$comDraftDocumentId]")
     }
+
 
     // Decision on Company Draft
     fun decisionOnCompanyStdDraft(comDraftDecision: ComDraftDecision) : List<TaskDetails> {

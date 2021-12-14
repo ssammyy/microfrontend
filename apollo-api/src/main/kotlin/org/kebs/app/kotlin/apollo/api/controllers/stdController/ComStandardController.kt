@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.controllers.stdController
 
+import com.google.gson.Gson
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.*
@@ -99,8 +100,8 @@ class ComStandardController (val comStandardService: ComStandardService,
     @PreAuthorize("hasAuthority('PL_SD_MODIFY')")
     @PostMapping("/company_standard/formJointCommittee")
     @ResponseBody
-    fun formJointCommittee(@RequestBody comStandardJC: ComStandardJC): ServerResponse{
-        return ServerResponse(HttpStatus.OK,"Successfully Formed Joint Committee",comStandardService.formJointCommittee(comStandardJC))
+    fun formJointCommittee(@RequestBody comStandardJC: ComStandardJC,user: UsersEntity): ServerResponse{
+        return ServerResponse(HttpStatus.OK,"Successfully Formed Joint Committee",comStandardService.formJointCommittee(comStandardJC,user))
     }
 
     //********************************************************** process upload Justification **********************************************************
@@ -175,6 +176,9 @@ class ComStandardController (val comStandardService: ComStandardService,
     @PostMapping("/company_standard/uploadDraft")
     @ResponseBody
     fun uploadDraft(@RequestBody comStdDraft: ComStdDraft): ServerResponse{
+
+        val gson = Gson()
+        KotlinLogging.logger { }.info { "WORKSHOP DRAFT" + gson.toJson(comStdDraft) }
         return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",comStandardService.uploadDraft(comStdDraft))
     }
 
@@ -242,6 +246,10 @@ class ComStandardController (val comStandardService: ComStandardService,
 
         KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
 
+    }
+
+    fun makeAnyNotBeNull(anyValue: Any): Any {
+        return anyValue
     }
 
     //Decision on Company Draft

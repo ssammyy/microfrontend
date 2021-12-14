@@ -208,13 +208,14 @@ export class StdComStandardService {
         })
     );
   }
-  public uploadPDFileDetails(comPreID: string, data: FormData): Observable<any> {
+  //upload Draft Document
+  public uploadPDFileDetails(comStdDraftID: string, data: FormData): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_UPLOAD_PD);
 
     return this.http.post<any>(url, data, {
       headers: {
         'enctype': 'multipart/form-data'
-      }, params: {'comPreID': comPreID}
+      }, params: {'comStdDraftID': comStdDraftID}
     }).pipe(
         map(function (response: any) {
           return response;
@@ -225,16 +226,16 @@ export class StdComStandardService {
         })
     );
   }
+
   public getJcSecTasks(): Observable<ComJcJustificationDec[]> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_JC_SEC_TASKS);
     const params = new HttpParams();
     return this.http.get<ComJcJustificationDec[]>(url, {params}).pipe();
   }
-
-  public viewCompanyDraft(comStdDraftID: any): Observable<any> {
+  public viewCompanyDraft(comDraftDocumentId: any): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_UPLOAD_DATA_VIEW_PD);
     const params = new HttpParams()
-        .set('comStdDraftID', comStdDraftID);
+        .set('comDraftDocumentId', comDraftDocumentId);
     // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
     return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
         map(function (response: any) {
@@ -246,6 +247,8 @@ export class StdComStandardService {
         })
     );
   }
+
+
   public decisionOnDraft(approveDraft: ApproveDraft): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_DECISION_ON_DRAFT);
     const params = new HttpParams();
@@ -303,6 +306,7 @@ export class StdComStandardService {
         })
     );
   }
+  //upload justification Document
   public uploadSDFileDetails(comStdID: string, data: FormData): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_UPLOAD_SD);
 
@@ -320,6 +324,7 @@ export class StdComStandardService {
         })
     );
   }
+
   public getHopTasks(): Observable<ComJcJustificationDec[]> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_HOP_TASKS);
     const params = new HttpParams();

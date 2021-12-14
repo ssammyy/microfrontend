@@ -126,28 +126,27 @@ export class ComStdUploadComponent implements OnInit {
         console.log(file[i]);
         formData.append('docFile', file[i], file[i].name);
       }
-
       this.SpinnerService.show();
       this.stdComStandardService.uploadSDFileDetails(comStdID, formData).subscribe(
           (data: any) => {
             this.SpinnerService.hide();
-            this.showToasterSuccess(data.httpStatus, `Company Standard Prepared`);
             this.uploadedFiles = null;
             console.log(data);
             swal.fire({
               title: 'Company Standard Prepared.',
               buttonsStyling: false,
               customClass: {
-                confirmButton: 'btn btn-success ',
+                confirmButton: 'btn btn-success form-wizard-next-btn ',
               },
               icon: 'success'
             });
-            this.router.navigate(['/comStdJustification']);
+            //this.router.navigate(['/nwaJustification']);
           },
       );
     }
 
   }
+
   showNotification(from: any, align: any) {
     const type = ['', 'info', 'success', 'warning', 'danger', 'rose', 'primary'];
 

@@ -21,6 +21,7 @@ declare const $: any;
 
 export class NwaJustificationFormComponent implements OnInit {
     fullname = '';
+
   public itemId :string="1";
   public justification: string="Justification";
   public nwaDepartments !: KNWDepartment[];

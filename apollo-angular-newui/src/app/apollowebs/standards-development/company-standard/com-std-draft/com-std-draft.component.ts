@@ -83,7 +83,7 @@ export class ComStdDraftComponent implements OnInit {
     this.stdComStandardService.decisionOnDraft(approveDraft).subscribe(
         (response: ComJcJustificationDec) => {
           this.SpinnerService.hide();
-          this.showToasterSuccess('Success', `Justification Approved`);
+          this.showToasterSuccess('Success', `Draft Approved`);
           console.log(response);
           this.getJcSecTasks();
         },
@@ -101,7 +101,7 @@ export class ComStdDraftComponent implements OnInit {
     this.stdComStandardService.decisionOnDraft(approveDraft).subscribe(
         (response: ComJcJustificationDec) => {
           this.SpinnerService.hide();
-          this.showToasterSuccess('Success', `Justification Rejected`);
+          this.showToasterSuccess('Success', `Draft Rejected`);
           console.log(response);
           this.getJcSecTasks();
         },
@@ -114,21 +114,22 @@ export class ComStdDraftComponent implements OnInit {
         }
     );
   }
-  viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
-    this.SpinnerService.show();
-    this.stdComStandardService.viewCompanyDraft(pdfId).subscribe(
-        (dataPdf: any) => {
-          this.SpinnerService.hide();
-          this.blob = new Blob([dataPdf], {type: applicationType});
+    viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
+        this.SpinnerService.show();
+        this.stdComStandardService.viewCompanyDraft(pdfId).subscribe(
+            (dataPdf: any) => {
+                this.SpinnerService.hide();
+                this.blob = new Blob([dataPdf], {type: applicationType});
 
-          // tslint:disable-next-line:prefer-const
-          let downloadURL = window.URL.createObjectURL(this.blob);
-          const link = document.createElement('a');
-          link.href = downloadURL;
-          link.download = fileName;
-          link.click();
-          // this.pdfUploadsView = dataPdf;
-        },
-    );
-  }
+                // tslint:disable-next-line:prefer-const
+                let downloadURL = window.URL.createObjectURL(this.blob);
+                const link = document.createElement('a');
+                link.href = downloadURL;
+                link.download = fileName;
+                link.click();
+                // this.pdfUploadsView = dataPdf;
+            },
+        );
+    }
+
 }

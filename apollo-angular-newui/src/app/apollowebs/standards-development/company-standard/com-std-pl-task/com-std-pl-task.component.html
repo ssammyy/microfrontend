@@ -74,7 +74,7 @@
                                                             <div class="form-group col-12">
                                                                 <label>Assign To</label>
                                                                 <ng-select [(ngModel)]="selectedUser"  class="form-control" ngModel name="idOfJc" >
-                                                                    <ng-option *ngFor="let user of users" [value]="user.id" multiple>{{user.firstName}} {{user.lastName}}</ng-option>
+                                                                    <ng-option *ngFor="let user of users" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
                                                                 </ng-select>
 
                                                             </div>
@@ -113,6 +113,10 @@
                                                             <input [class.is-invalid]="formPreparePD.scope.invalid && formPreparePD.scope.touched"
                                                                    class="form-control"  formControlName="scope" name="scope" type="text">
                                                         </div>
+                                                        <input
+                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                class="form-control one-column-input" formControlName="uploadedBy" ngModel="{{user_id}}" name="uploadedBy"
+                                                                placeholder="ID" type="hidden" disabled>
 
                                                     </div>
                                                     <div class="row col-12">

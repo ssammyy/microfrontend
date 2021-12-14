@@ -43,7 +43,6 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
 <th class="requestNumber">Submission Date </th>
 <th class="sl">Phone Number</th>
 <th class="action">Action</th>
-<th></th>
 </tr>
 </thead>
 <tbody>
@@ -65,8 +64,7 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
 <td>{{task.taskData.productSubCategoryName}}</td>
 <td>{{task.taskData.submissionDate | date: 'dd/MM/yyyy hh:mm:ss'}}</td>
 <td>{{task.taskData.companyPhone}}</td>
-<td ><a  (click)="onOpenModal(task,'approveDraft')" class="btn btn-success btn-sm tooltips" data-placement="top" style=" " data-original-title="preparePD">Approve Draft</a></td>
-<td><button (click)="onOpenModal(task,'reject')" type="submit" class="btn btn-danger btn-sm">Reject</button></td>
+<td ><a  (click)="onOpenModal(task,'approveDraft')" class="btn btn-success btn-sm tooltips" data-placement="top" style=" " data-original-title="preparePD">Edit Draft</a></td>
 </tr>
 </tbody>
 </table>

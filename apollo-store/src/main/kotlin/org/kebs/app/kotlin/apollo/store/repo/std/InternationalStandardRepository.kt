@@ -34,6 +34,7 @@ interface ComStdActionRepository: JpaRepository<ComStdAction,Long> {
 }
 interface ComStdDraftRepository: JpaRepository<ComStdDraft,Long> {
     fun findAllByOrderByIdDesc(): MutableList<ComStdDraft>
+
 }
 interface ComStandardDraftUploadsRepository : JpaRepository<ComStandardDraftUploads, Long> {
     fun findByComDraftDocumentId(id: Long):ComStandardDraftUploads
