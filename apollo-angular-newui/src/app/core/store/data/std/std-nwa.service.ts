@@ -258,10 +258,10 @@ export class StdNwaService {
         })
     );
   }
-    public viewWorkshopDraftPDF(nwaPDDocumentId: any): Observable<any> {
+    public viewWorkshopDraftPDF(nwaWDDocumentId: any): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_UPLOAD_DATA_VIEW_WD);
         const params = new HttpParams()
-            .set('nwaPDDocumentId', nwaPDDocumentId);
+            .set('nwaWDDocumentId', nwaWDDocumentId);
         // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
         return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
             map(function (response: any) {

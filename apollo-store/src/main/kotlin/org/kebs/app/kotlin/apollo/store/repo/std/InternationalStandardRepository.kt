@@ -25,6 +25,7 @@ interface ComJcJustificationUploadsRepository: JpaRepository<ComJcJustificationU
 
 interface CompanyStandardRepository : JpaRepository<CompanyStandard,Long> {
     fun findAllByOrderByIdDesc(): MutableList<CompanyStandard>
+
 }
 interface ComStandardRequestRepository : JpaRepository<CompanyStandardRequest,Long> {
     fun findAllByOrderByIdDesc(): MutableList<CompanyStandardRequest>
@@ -35,8 +36,11 @@ interface ComStdDraftRepository: JpaRepository<ComStdDraft,Long> {
     fun findAllByOrderByIdDesc(): MutableList<ComStdDraft>
 }
 interface ComStandardDraftUploadsRepository : JpaRepository<ComStandardDraftUploads, Long> {
+    fun findByComDraftDocumentId(id: Long):ComStandardDraftUploads
 }
 interface ComStandardUploadsRepository : JpaRepository<ComStandardUploads, Long> {
+    fun findByComStdDocumentId(id: Long):ComStandardUploads
+
 }
 interface ISAdoptionJustificationRepository : JpaRepository<ISAdoptionJustification, Long> {
     fun findAllByOrderByIdDesc(): MutableList<ISAdoptionJustification>
@@ -141,6 +145,10 @@ interface DepartmentListRepository : JpaRepository<Department,Long>{
 interface TechnicalComListRepository : JpaRepository<TechnicalCommittee,Long>{
     @Query("SELECT TC_TITLE FROM SD_TECHNICAL_COMMITTEE  WHERE id=:id", nativeQuery = true)
     fun findNameById(@Param("id") id: Long?): String
+}
+
+interface ComStandardJCRepository : JpaRepository<ComStandardJC, Long>{
+
 }
 //interface UserNameRepository : JpaRepository<UsersEntity,Long>{
 //    fun findByUserId(assignedTo: Long?) : MutableList<UsersEntity>

@@ -1,17 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import {Subject} from "rxjs";
-import {ApproveDraft, ApproveSACJC, ComJcJustificationDec} from "../../../../core/store/data/std/std.model";
+import {ApproveDraft, ComJcJustificationDec} from "../../../../core/store/data/std/std.model";
 import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
-  selector: 'app-com-std-draft',
-  templateUrl: './com-std-draft.component.html',
-  styleUrls: ['./com-std-draft.component.css']
+  selector: 'app-com-std-draft-view',
+  templateUrl: './com-std-draft-view.component.html',
+  styleUrls: ['./com-std-draft-view.component.css']
 })
-export class ComStdDraftComponent implements OnInit {
+export class ComStdDraftViewComponent implements OnInit {
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
   tasks: ComJcJustificationDec[] = [];
@@ -24,8 +24,9 @@ export class ComStdDraftComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.getJcSecTasks();
+    this.getComSecTasks();
   }
+
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
   }
@@ -36,9 +37,9 @@ export class ComStdDraftComponent implements OnInit {
     this.notifyService.showSuccess(message, title)
 
   }
-  public getJcSecTasks(): void{
+  public getComSecTasks(): void{
     this.SpinnerService.show();
-    this.stdComStandardService.getJcSecTasks().subscribe(
+    this.stdComStandardService.getComSecTasks().subscribe(
         (response: ComJcJustificationDec[])=> {
           this.SpinnerService.hide();
           this.dtTrigger.next();
@@ -80,55 +81,38 @@ export class ComStdDraftComponent implements OnInit {
   }
   public decisionOnAccept(approveDraft: ApproveDraft): void{
     this.SpinnerService.show();
-    this.stdComStandardService.decisionOnDraft(approveDraft).subscribe(
+    this.stdComStandardService.companyDecisionOnDraft(approveDraft).subscribe(
         (response: ComJcJustificationDec) => {
           this.SpinnerService.hide();
           this.showToasterSuccess('Success', `Justification Approved`);
           console.log(response);
-          this.getJcSecTasks();
+          this.getComSecTasks();
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
           this.showToasterError('Error', `Error Processing Action`);
           console.log(error.message);
-          this.getJcSecTasks();
+          this.getComSecTasks();
           //alert(error.message);
         }
     );
   }
   public onDecisionReject(approveDraft: ApproveDraft): void{
     this.SpinnerService.show();
-    this.stdComStandardService.decisionOnDraft(approveDraft).subscribe(
+    this.stdComStandardService.companyDecisionOnDraft(approveDraft).subscribe(
         (response: ComJcJustificationDec) => {
           this.SpinnerService.hide();
           this.showToasterSuccess('Success', `Justification Rejected`);
           console.log(response);
-          this.getJcSecTasks();
+          this.getComSecTasks();
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
           this.showToasterError('Error', `Error Processing Action`);
           console.log(error.message);
-          this.getJcSecTasks();
+          this.getComSecTasks();
           //alert(error.message);
         }
-    );
-  }
-  viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
-    this.SpinnerService.show();
-    this.stdComStandardService.viewCompanyDraft(pdfId).subscribe(
-        (dataPdf: any) => {
-          this.SpinnerService.hide();
-          this.blob = new Blob([dataPdf], {type: applicationType});
-
-          // tslint:disable-next-line:prefer-const
-          let downloadURL = window.URL.createObjectURL(this.blob);
-          const link = document.createElement('a');
-          link.href = downloadURL;
-          link.download = fileName;
-          link.click();
-          // this.pdfUploadsView = dataPdf;
-        },
     );
   }
 }

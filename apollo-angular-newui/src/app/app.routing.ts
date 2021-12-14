@@ -100,6 +100,9 @@ import {StdJustificationComponent} from "./apollowebs/standards-development/stan
 import {StdTcWorkplanComponent} from "./apollowebs/standards-development/standard-request/std-tc-workplan/std-tc-workplan.component";
 import {PreparePreliminaryDraftComponent} from "./apollowebs/standards-development/committee-module/prepare-preliminary-draft/prepare-preliminary-draft.component";
 import {NwaPreliminaryDraftComponent} from "./apollowebs/standards-development/workshop-agreement/nwa-preliminary-draft/nwa-preliminary-draft.component";
+import {ComStdPlTaskComponent} from "./apollowebs/standards-development/company-standard/com-std-pl-task/com-std-pl-task.component";
+import {ComStdDraftViewComponent} from "./apollowebs/standards-development/company-standard/com-std-draft-view/com-std-draft-view.component";
+import {ComStdListComponent} from "./apollowebs/standards-development/company-standard/com-std-list/com-std-list.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -529,6 +532,7 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
         children: [{path: '', component: ComStdRequestListComponent}]
     },
+
     {
         path: 'comStdJustification', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
@@ -550,6 +554,11 @@ export const routes: Routes = [
         children: [{path: '', component: ComStdApproveJustificationComponent}]
     },
     {
+        path: 'comPlTasks', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: ComStdPlTaskComponent}]
+    },
+    {
         path: 'comStdDraft', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [{path: '', component: ComStdDraftComponent}]
@@ -557,14 +566,18 @@ export const routes: Routes = [
     {
         path: 'comStdConfirmation', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: ComStdUploadComponent}]
+        children: [{path: '', component: ComStdDraftViewComponent}]
     },
     {
         path: 'comStdUpload', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: ComStdConfirmComponent}]
+        children: [{path: '', component: ComStdUploadComponent}]
     },
-
+    {
+        path: 'comStdList', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: ComStdListComponent}]
+    },
     {
         path: 'nep_information_received', component: AdminLayoutComponent,
         children: [{path: '', component: InformationcheckComponent}]

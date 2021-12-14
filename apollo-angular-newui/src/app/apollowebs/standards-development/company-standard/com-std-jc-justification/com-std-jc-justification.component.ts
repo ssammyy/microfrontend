@@ -3,7 +3,7 @@ import {Subject} from "rxjs";
 import {NgxSpinnerService} from "ngx-spinner";
 import Swal from "sweetalert2";
 import {HttpErrorResponse} from "@angular/common/http";
-import {ComJcJustification, ComJcJustificationAction} from "../../../../core/store/data/std/std.model";
+import {ComHodTasks, ComJcJustification, ComJcJustificationAction} from "../../../../core/store/data/std/std.model";
 import {User} from "../../../../core/store";
 import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
@@ -20,8 +20,8 @@ declare const $: any;
 export class ComStdJcJustificationComponent implements OnInit, OnDestroy {
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
-  tasks: ComJcJustification[] = [];
-  public actionRequest: ComJcJustification | undefined;
+  tasks: ComHodTasks[] = [];
+  public actionRequest: ComHodTasks | undefined;
   public prepareJustificationFormGroup!: FormGroup;
   public preparePreliminaryDraftFormGroup!: FormGroup;
   user?: User;
@@ -93,7 +93,7 @@ export class ComStdJcJustificationComponent implements OnInit, OnDestroy {
   public getPlTasks(): void{
     this.SpinnerService.show();
     this.stdComStandardService.getPlTasks().subscribe(
-        (response: ComJcJustification[])=> {
+        (response: ComHodTasks[])=> {
           this.SpinnerService.hide();
           this.dtTrigger.next();
           this.tasks = response;
@@ -104,7 +104,7 @@ export class ComStdJcJustificationComponent implements OnInit, OnDestroy {
         }
     );
   }
-  public onOpenModal(task: ComJcJustification,mode:string): void{
+  public onOpenModal(task: ComHodTasks,mode:string): void{
     const container = document.getElementById('main-container');
     const button = document.createElement('button');
     button.type = 'button';
@@ -187,13 +187,13 @@ export class ComStdJcJustificationComponent implements OnInit, OnDestroy {
         (response ) => {
           console.log(response);
           this.SpinnerService.hide();
-          this.showToasterSuccess(response.httpStatus, `Preliminary Draft Preparation Process Started`);
+          this.showToasterSuccess(response.httpStatus, `Company Draft Preparation Process Started`);
           this.onClickSaveUPLOADS(response.body.savedRowID)
           this.preparePreliminaryDraftFormGroup.reset();
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
-          this.showToasterError('Error', `Preliminary Draft Was Not Prepared`);
+          this.showToasterError('Error', `Company Draft Was Not Prepared`);
           console.log(error.message);
         }
     );
@@ -211,18 +211,18 @@ export class ComStdJcJustificationComponent implements OnInit, OnDestroy {
       this.stdComStandardService.uploadPDFileDetails(comPreID, formData).subscribe(
           (data: any) => {
             this.SpinnerService.hide();
-            this.showToasterSuccess(data.httpStatus, `Preliminary Draft Prepared`);
+            this.showToasterSuccess(data.httpStatus, `Company Draft Prepared`);
             this.uploadedFiles = null;
             console.log(data);
             swal.fire({
-              title: 'Preliminary Draft Prepared.',
+              title: 'Company Draft Prepared.',
               buttonsStyling: false,
               customClass: {
                 confirmButton: 'btn btn-success ',
               },
               icon: 'success'
             });
-            this.router.navigate(['/comStdJustification']);
+           // this.router.navigate(['/comStdJustification']);
           },
       );
     }

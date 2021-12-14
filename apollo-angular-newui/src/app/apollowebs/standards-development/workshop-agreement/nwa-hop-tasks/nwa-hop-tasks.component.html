@@ -54,20 +54,20 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
 <td>{{task.taskData.special}}</td>
     <td *ngIf="task.name ==='Editing of FDKNWA (Workshop Draft)'">
         <button mat-raised-button type="button" data-toggle="modal"
-                (click)="viewPDFile( task.taskData.ID,'Preliminary Draft'+task.taskData.ID, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
+                (click)="viewPDFile( task.taskData.ID,'PreliminaryDraft'+task.taskData.ID, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
             <i class="material-icons">visibility</i>
 
         </button>
     </td>
     <td *ngIf="task.name ==='Upload on  KNWA Standards Database'">
         <button mat-raised-button type="button" data-toggle="modal"
-                (click)="viewWDFile( task.taskData.ID,'Workshop Draft'+task.taskData.ID, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
+                (click)="viewWDFile( task.taskData.ID,'WorkshopDraft'+task.taskData.ID, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
             <i class="material-icons">visibility</i>
 
         </button>
     </td>
-<td *ngIf="task.name ==='Editing of FDKNWA (Workshop Draft)'"><a  (click)="onOpenModal(task,'edit')" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 110px; " data-original-title="Edit"> Edit Workshop Draft</a></td>
-<td *ngIf="task.name ==='Upload on  KNWA Standards Database'"><a  (click)="onOpenModal(task,'upload')" class="btn btn-success btn-sm tooltips" data-placement="top" style="width: 110px;" data-original-title="Edit">Upload Standard</a></td>
+<td *ngIf="task.name ==='Editing of FDKNWA (Workshop Draft)'"><a  (click)="onOpenModal(task,'edit')" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 162px; " data-original-title="Edit"> Edit Workshop Draft</a></td>
+<td *ngIf="task.name ==='Upload on  KNWA Standards Database'"><a  (click)="onOpenModal(task,'upload')" class="btn btn-success btn-sm tooltips" data-placement="top" style="width: 162px;" data-original-title="Edit">Upload Standard</a></td>
 </tr>
 </tbody>
 </table>
@@ -174,9 +174,9 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
                                        class="form-control"  formControlName="normativeReference" ngModel="{{actionRequest?.taskData?.normativeReference}}" name="normativeReference" type="text">
                             </div>
                             <div class="form-group col-6">
-                                <label>Reference Material <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                <input [class.is-invalid]="formStandard.referenceMaterial.invalid && formStandard.referenceMaterial.touched"
-                                       class="form-control"  formControlName="referenceMaterial" ngModel="{{actionRequest?.taskData?.referenceMaterial}}" name="referenceMaterial" type="text">
+                                <label>Standard Number <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <input
+                                       class="form-control"  formControlName="ksNumber" ngModel="{{actionRequest?.taskData?.ksNumber}}" name="ksNumber" type="text" disabled>
                             </div>
 
                         </div>

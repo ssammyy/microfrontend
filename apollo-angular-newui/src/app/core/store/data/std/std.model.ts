@@ -619,6 +619,7 @@ export interface ComHodTaskData {
     tcName: string;
 
 
+
 }
 
 export interface ComStdAction {
@@ -626,6 +627,13 @@ export interface ComStdAction {
     requestNumber: string;
     dateAssigned: string;
     assignedTo: string;
+    taskId: string;
+}
+
+export interface ComStandardJC {
+    id: string;
+    requestNumber: string;
+    idOfJc: string;
     taskId: string;
 }
 

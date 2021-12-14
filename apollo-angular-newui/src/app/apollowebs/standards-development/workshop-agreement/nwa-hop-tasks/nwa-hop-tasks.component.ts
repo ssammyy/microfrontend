@@ -52,7 +52,8 @@ export class NwaHopTasksComponent implements OnInit ,OnDestroy {
           referenceMaterial: ['', Validators.required],
           clause: ['', Validators.required],
           special: ['', Validators.required],
-          taskId: []
+          taskId: [],
+          ksNumber: []
 
       });
   }

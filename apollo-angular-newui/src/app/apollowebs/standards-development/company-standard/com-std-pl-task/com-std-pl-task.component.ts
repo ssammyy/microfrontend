@@ -1,67 +1,75 @@
 import { Component, OnInit } from '@angular/core';
 import {Subject} from "rxjs";
-import {ComJcJustificationDec} from "../../../../core/store/data/std/std.model";
+import {ComHodTasks, ComStandardJC, ComStdAction, UsersEntity} from "../../../../core/store/data/std/std.model";
 import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {HttpErrorResponse} from "@angular/common/http";
-import swal from "sweetalert2";
-import {Router} from "@angular/router";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-declare const $: any;
+import {Router} from "@angular/router";
+import swal from "sweetalert2";
 
+declare const $: any;
 @Component({
-  selector: 'app-com-std-upload',
-  templateUrl: './com-std-upload.component.html',
-  styleUrls: ['./com-std-upload.component.css']
+  selector: 'app-com-std-pl-task',
+  templateUrl: './com-std-pl-task.component.html',
+  styleUrls: ['./com-std-pl-task.component.css']
 })
-export class ComStdUploadComponent implements OnInit {
+export class ComStdPlTaskComponent implements OnInit {
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
-  tasks: ComJcJustificationDec[] = [];
-  blob: Blob;
-  public actionRequest: ComJcJustificationDec | undefined;
-  public prepareJustificationFormGroup!: FormGroup;
-  public prepareStandardFormGroup!: FormGroup;
+  public users !: UsersEntity[] ;
+  selectedUser: number;
+  tasks: ComHodTasks[] = [];
+  public actionRequest: ComHodTasks | undefined;
+  public preparePreliminaryDraftFormGroup!: FormGroup;
   public uploadedFiles: FileList;
   constructor(
-      private router: Router,
       private stdComStandardService:StdComStandardService,
       private SpinnerService: NgxSpinnerService,
       private notifyService : NotificationService,
-      private formBuilder: FormBuilder
-  ){}
+      private formBuilder: FormBuilder,
+      private router: Router,
+  ) { }
 
   ngOnInit(): void {
-    this.getHopTasks();
-    this.prepareStandardFormGroup = this.formBuilder.group({
+    this.getPlTasks();
+    this.getUserList();
+
+    this.preparePreliminaryDraftFormGroup = this.formBuilder.group({
       title: ['', Validators.required],
       scope: ['', Validators.required],
       normativeReference: ['', Validators.required],
-      referenceMaterial: ['', Validators.required],
+      symbolsAbbreviatedTerms: ['', Validators.required],
       clause: ['', Validators.required],
       special: ['', Validators.required],
-      taskId: []
+      taskId: [],
+      diJNumber: []
 
     });
   }
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
   }
-  showToasterError(title:string,message:string){
-    this.notifyService.showError(message, title)
+  get formPreparePD(): any {
+    return this.preparePreliminaryDraftFormGroup.controls;
   }
   showToasterSuccess(title:string,message:string){
     this.notifyService.showSuccess(message, title)
 
   }
-  get formPrepareSD(): any {
-    return this.prepareStandardFormGroup.controls;
+  showToasterError(title:string,message:string){
+    this.notifyService.showError(message, title)
+
   }
-  public getHopTasks(): void{
+  showToasterWarning(title:string,message:string){
+    this.notifyService.showWarning(message, title)
+
+  }
+  public getPlTasks(): void{
     this.SpinnerService.show();
-    this.stdComStandardService.getHopTasks().subscribe(
-        (response: ComJcJustificationDec[])=> {
+    this.stdComStandardService.getPlTasks().subscribe(
+        (response: ComHodTasks[])=> {
           this.SpinnerService.hide();
           this.dtTrigger.next();
           this.tasks = response;
@@ -72,44 +80,49 @@ export class ComStdUploadComponent implements OnInit {
         }
     );
   }
-  public onOpenModal(task: ComJcJustificationDec,mode:string): void{
+  public onOpenModal(task: ComHodTasks,mode:string): void{
     const container = document.getElementById('main-container');
     const button = document.createElement('button');
     button.type = 'button';
     button.style.display = 'none';
     button.setAttribute('data-toggle','modal');
-    if (mode==='uploadStandard'){
+    if (mode==='formJc'){
       this.actionRequest=task;
-      button.setAttribute('data-target','#uploadStandard');
+      button.setAttribute('data-target','#formJc');
     }
     if (mode==='prepPd'){
       this.actionRequest=task;
       button.setAttribute('data-target','#prepPd');
-    }
-    if (mode==='approveDraft'){
-      this.actionRequest=task;
-      button.setAttribute('data-target','#approveDraft');
-    }
-
-    if (mode==='reject'){
-      this.actionRequest=task;
-      button.setAttribute('data-target','#reject');
     }
     // @ts-ignore
     container.appendChild(button);
     button.click();
 
   }
-  onSaveStandard(): void {
+  public getUserList(): void {
+    this.SpinnerService.show();
+    this.stdComStandardService.getUserList().subscribe(
+        (response: UsersEntity[]) => {
+          this.SpinnerService.hide();
+          this.users = response;
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          alert(error.message);
+        }
+    );
+  }
+
+  uploadPreliminaryDraft(): void {
     this.SpinnerService.show();
     //console.log(this.preparePreliminaryDraftFormGroup.value);
-    this.stdComStandardService.prepareCompanyStandard(this.prepareStandardFormGroup.value).subscribe(
+    this.stdComStandardService.prepareCompanyPreliminaryDraft(this.preparePreliminaryDraftFormGroup.value).subscribe(
         (response ) => {
           console.log(response);
           this.SpinnerService.hide();
           this.showToasterSuccess(response.httpStatus, `Preliminary Draft Preparation Process Started`);
           this.onClickSaveUPLOADS(response.body.savedRowID)
-          this.prepareStandardFormGroup.reset();
+          this.preparePreliminaryDraftFormGroup.reset();
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
@@ -118,7 +131,7 @@ export class ComStdUploadComponent implements OnInit {
         }
     );
   }
-  onClickSaveUPLOADS(comStdID: string) {
+  onClickSaveUPLOADS(comPreID: string) {
     if (this.uploadedFiles.length > 0) {
       const file = this.uploadedFiles;
       const formData = new FormData();
@@ -128,14 +141,14 @@ export class ComStdUploadComponent implements OnInit {
       }
 
       this.SpinnerService.show();
-      this.stdComStandardService.uploadSDFileDetails(comStdID, formData).subscribe(
+      this.stdComStandardService.uploadPDFileDetails(comPreID, formData).subscribe(
           (data: any) => {
             this.SpinnerService.hide();
-            this.showToasterSuccess(data.httpStatus, `Company Standard Prepared`);
+            this.showToasterSuccess(data.httpStatus, `Preliminary Draft Prepared`);
             this.uploadedFiles = null;
             console.log(data);
             swal.fire({
-              title: 'Company Standard Prepared.',
+              title: 'Preliminary Draft Prepared.',
               buttonsStyling: false,
               customClass: {
                 confirmButton: 'btn btn-success ',
@@ -147,6 +160,22 @@ export class ComStdUploadComponent implements OnInit {
       );
     }
 
+
+  }
+  //Assign Project Leader
+  public onAssign(comStandardJC: ComStandardJC): void{
+    this.SpinnerService.show();
+    this.stdComStandardService.formJointCommittee(comStandardJC).subscribe(
+        (response: ComStandardJC) => {
+          this.SpinnerService.hide();
+          console.log(response);
+          this.getPlTasks();
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          alert(error.message);
+        }
+    );
   }
   showNotification(from: any, align: any) {
     const type = ['', 'info', 'success', 'warning', 'danger', 'rose', 'primary'];
@@ -174,23 +203,6 @@ export class ComStdUploadComponent implements OnInit {
           '<a href="{3}" target="{4}" data-notify="url"></a>' +
           '</div>'
     });
-  }
-  viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
-    this.SpinnerService.show();
-    this.stdComStandardService.viewCompanyDraft(pdfId).subscribe(
-        (dataPdf: any) => {
-          this.SpinnerService.hide();
-          this.blob = new Blob([dataPdf], {type: applicationType});
-
-          // tslint:disable-next-line:prefer-const
-          let downloadURL = window.URL.createObjectURL(this.blob);
-          const link = document.createElement('a');
-          link.href = downloadURL;
-          link.download = fileName;
-          link.click();
-          // this.pdfUploadsView = dataPdf;
-        },
-    );
   }
 
 }

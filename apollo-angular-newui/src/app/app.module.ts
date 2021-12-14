@@ -170,6 +170,9 @@ import {StdJustificationComponent} from "./apollowebs/standards-development/stan
 import {StdTcWorkplanComponent} from "./apollowebs/standards-development/standard-request/std-tc-workplan/std-tc-workplan.component";
 import { PreparePreliminaryDraftComponent } from './apollowebs/standards-development/committee-module/prepare-preliminary-draft/prepare-preliminary-draft.component';
 import { NwaPreliminaryDraftComponent } from './apollowebs/standards-development/workshop-agreement/nwa-preliminary-draft/nwa-preliminary-draft.component';
+import { ComStdPlTaskComponent } from './apollowebs/standards-development/company-standard/com-std-pl-task/com-std-pl-task.component';
+import { ComStdDraftViewComponent } from './apollowebs/standards-development/company-standard/com-std-draft-view/com-std-draft-view.component';
+import { ComStdListComponent } from './apollowebs/standards-development/company-standard/com-std-list/com-std-list.component';
 
 
 // import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -347,7 +350,10 @@ import { NwaPreliminaryDraftComponent } from './apollowebs/standards-development
         StandardLevyDefaulterHistoryComponent,
         PreparePreliminaryDraftComponent,
         StandardLevyDefaulterHistoryComponent,
-        NwaPreliminaryDraftComponent
+        NwaPreliminaryDraftComponent,
+        ComStdPlTaskComponent,
+        ComStdDraftViewComponent,
+        ComStdListComponent
 
     ]
 

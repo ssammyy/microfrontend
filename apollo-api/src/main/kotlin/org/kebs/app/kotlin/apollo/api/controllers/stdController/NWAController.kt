@@ -462,7 +462,7 @@ class NWAController(val nwaService: NWAService,
         val fileUploaded = nwaService.findUploadedWDFileBYId(nwaWDDocumentId)
         val fileDoc = commonDaoServices.mapClass(fileUploaded)
         response.contentType = "application/pdf"
-//                    response.setHeader("Content-Length", pdfReportStream.size().toString())
+       // response.setHeader("Content-Length", pdfReportStream.size().toString())
         response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
         response.outputStream
             .let { responseOutputStream ->
@@ -536,7 +536,7 @@ class NWAController(val nwaService: NWAService,
         return nwaService.getHoSiCTasks()
     }
 
-    // View WD Uploaded document
+    // View STD Uploaded document
     @GetMapping("/view/knwStandard")
     fun viewKnwStandardFile(
         response: HttpServletResponse,
@@ -545,7 +545,7 @@ class NWAController(val nwaService: NWAService,
         val fileUploaded = nwaService.findUploadedSTDFileBYId(nwaStdDocumentId)
         val fileDoc = commonDaoServices.mapClass(fileUploaded)
         response.contentType = "application/pdf"
-//                    response.setHeader("Content-Length", pdfReportStream.size().toString())
+        // response.setHeader("Content-Length", pdfReportStream.size().toString())
         response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
         response.outputStream
             .let { responseOutputStream ->
@@ -661,10 +661,10 @@ class NWAController(val nwaService: NWAService,
 
 
 
-    @GetMapping("/process/{processId}")
-    fun checkState(@PathVariable("processId") processId: String?) {
-        nwaService.checkProcessHistory(processId)
-    }
+//    @GetMapping("/process/{processId}")
+//    fun checkState(@PathVariable("processId") processId: String?) {
+//        nwaService.checkProcessHistory(processId)
+//    }
 
     @GetMapping("/getRQNumber")
     @ResponseBody
@@ -696,5 +696,15 @@ class NWAController(val nwaService: NWAService,
     @PostMapping("/anonymous/standard/closetask")
     fun closeTask(@RequestBody responseMessage: ResponseMessage) {
         return nwaService.closeTask(responseMessage.message)
+    }
+
+    @PostMapping("/workshop/process")
+    @ResponseBody
+    fun checkState(@RequestBody id: ID): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Successfully returned process history",
+            nwaService.checkProcessHistory(id)
+        )
     }
 }

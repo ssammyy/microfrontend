@@ -64,21 +64,21 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
     </button>
     </td>
     <td *ngIf="task.name ==='View and Edit Preliminary Draft'"><button mat-raised-button type="button" data-toggle="modal"
-                                                                       (click)="viewPDFile( task.taskData.ID,'Preliminary Draft'+task.taskData.ID, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
+                                                                       (click)="viewPDFile( task.taskData.ID,'PreliminaryDraft'+task.taskData.ID, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
         <i class="material-icons">visibility</i>
 
     </button>
     </td>
 <td>{{task.taskData.requestedBy}}</td>
 <td style="width: fit-content">{{task.taskData.comments}}</td>
-<td *ngIf="task.name ==='Review Justification'"><a  (click)="onOpenModal(task,'reviewJustification')" class="btn btn-primary btn-sm tooltips" data-placement="top" style="width: 160px;" data-original-title="reviewJustification">Review Justification</a></td>
-    <td *ngIf="task.name ==='Review Justification'"><button (click)="onOpenModal(task,'rejectJustification')"  class="btn btn-danger btn-sm">Reject</button></td>
-<td *ngIf="task.name ==='Prepare Justification for DI-SDT Approval'"><a  (click)="onOpenModal(task,'prepDiSdt')" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 160px;" data-original-title="prepareDISDTJustification"> DI-SDT Justification</a></td>
-    <td *ngIf="task.name ==='Prepare Justification for DI-SDT Approval'"><button   class="btn btn-danger btn-sm">NA</button></td>
+<td *ngIf="task.name ==='Review Justification'"><a  (click)="onOpenModal(task,'reviewJustification')" class="btn btn-primary btn-sm tooltips" data-placement="top" style="width: 160px; color: white;" data-original-title="reviewJustification">Review Justification</a></td>
+    <td *ngIf="task.name ==='Review Justification'"><button (click)="onOpenModal(task,'rejectJustification')" style="width: 160px;" class="btn btn-danger btn-sm">Reject</button></td>
+<td *ngIf="task.name ==='Prepare Justification for DI-SDT Approval'"><a  (click)="onOpenModal(task,'prepDiSdt')" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 160px; color: white;" data-original-title="prepareDISDTJustification"> DI-SDT Justification</a></td>
+    <td *ngIf="task.name ==='Prepare Justification for DI-SDT Approval'"><button  style="width: 160px;" class="btn btn-danger btn-sm">NA</button></td>
 
-    <td *ngIf="task.name ==='View and Edit Preliminary Draft'"><a  (click)="onOpenModal(task,'approvePd')" class="btn btn-warning btn-sm tooltips" data-placement="top" style="width: 160px;" data-original-title="approvePD"> Approve PD</a></td>
+    <td *ngIf="task.name ==='View and Edit Preliminary Draft'"><a  (click)="onOpenModal(task,'approvePd')" class="btn btn-warning btn-sm tooltips" data-placement="top" style="width: 160px; color: white;" data-original-title="approvePD"> Approve PD</a></td>
 
-    <td *ngIf="task.name ==='View and Edit Preliminary Draft'"><a  (click)="onOpenModal(task,'rejectPd')" class="btn btn-danger btn-sm tooltips" data-placement="top" style="width: 160px;" data-original-title="approvePD"> Reject PD</a></td>
+    <td *ngIf="task.name ==='View and Edit Preliminary Draft'"><a  (click)="onOpenModal(task,'rejectPd')" class="btn btn-danger btn-sm tooltips" data-placement="top" style="width: 160px; color: white;" data-original-title="approvePD"> Reject PD</a></td>
 
 </tr>
 </tbody>

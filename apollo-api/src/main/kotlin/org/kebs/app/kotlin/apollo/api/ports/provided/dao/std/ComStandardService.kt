@@ -11,6 +11,8 @@ import org.flowable.engine.repository.Deployment
 import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
+import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.repository.findByIdOrNull
@@ -40,9 +42,10 @@ class ComStandardService(
     private val notifications: Notifications,
     private val commonDaoServices: CommonDaoServices,
     private val comStandardDraftUploadsRepository: ComStandardDraftUploadsRepository,
-    private val comStandardUploadsRepository: ComStandardUploadsRepository
+    private val comStandardUploadsRepository: ComStandardUploadsRepository,
+    private val comStandardJCRepository: ComStandardJCRepository
 ) {
-    val PROCESS_DEFINITION_KEY = "sd_CompanyStandardsProcessFlow"
+    val PROCESS_DEFINITION_KEY = "sd_CompanyStandard"
     val TASK_CANDIDATE_COM_SEC ="COM_SEC"
     val TASK_CANDIDATE_HOD ="HOD"
     val TASK_CANDIDATE_PL ="PL"
@@ -54,7 +57,7 @@ class ComStandardService(
     //deploy bpmn file
     fun deployProcessDefinition(): Deployment =repositoryService
         .createDeployment()
-        .addClasspathResource("processes/std/Company_Standards_Process_Flow.bpmn20.xml")
+        .addClasspathResource("processes/std/Company_Standard.bpmn20.xml")
         .deploy()
 
     //start the process by process Key
@@ -170,6 +173,21 @@ class ComStandardService(
 
     }
 
+    fun formJointCommittee(comStandardJC: ComStandardJC ){
+        val variables: MutableMap<String, Any> = HashMap()
+        comStandardJC.requestNumber?.let{variables.put("requestNumber", it)}
+        comStandardJC.idOfJc?.let{ variables.put("idOfJc", it)}
+        comStandardJC.dateOfFormation = Timestamp(System.currentTimeMillis())
+        variables["dateOfFormation"] = comStandardJC.dateOfFormation!!
+        variables["nameOfJc"] = userListRepository.findNameById(comStandardJC.idOfJc?.toLong())
+        comStandardJC.nameOfJc = userListRepository.findNameById(comStandardJC.idOfJc?.toLong())
+        print(comStandardJC.toString())
+
+        comStandardJCRepository.save(comStandardJC)
+        taskService.complete(comStandardJC.taskId, variables)
+        println("Joint Committee formed")
+    }
+
     //Return task details for Project Leader
     fun getPlTasks():List<TaskDetails>
     {
@@ -270,12 +288,7 @@ class ComStandardService(
         return  getSpcSecTasks()
     }
 
-    //Return task details for SAC_SEC
-    fun getSacSecTasks():List<TaskDetails>
-    {
-        val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_SAC_SEC).processDefinitionKey(PROCESS_DEFINITION_KEY).list()
-        return getTaskDetails(tasks)
-    }
+
 
     // Decision
     fun approveJustification(comJustificationDecision: ComJustificationDecision) : List<TaskDetails> {
@@ -336,6 +349,7 @@ class ComStandardService(
 
 
     }
+    // Upload nwa Standard Document
     fun uploadDrFile(
         uploads: ComStandardDraftUploads,
         docFile: MultipartFile,
@@ -348,7 +362,7 @@ class ComStandardService(
 //            filepath = docFile.path
             name = commonDaoServices.saveDocuments(docFile)
 //            fileType = docFile.contentType
-            fileType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(docFile.name)
+            fileType = docFile.contentType
             documentType = doc
             description=DocDescription
             document = docFile.bytes
@@ -360,6 +374,7 @@ class ComStandardService(
 
         return comStandardDraftUploadsRepository.save(uploads)
     }
+
 
 
     fun getDRNumber(): String
@@ -405,6 +420,11 @@ class ComStandardService(
         return getTaskDetails(tasks)
     }
 
+    //View Company Draft
+    fun findUploadedCDRFileBYId(comDraftDocumentId: Long): ComStandardDraftUploads {
+        return comStandardDraftUploadsRepository.findByComDraftDocumentId(comDraftDocumentId) ?: throw ExpectedDataNotFound("No File found with the following [ id=$comDraftDocumentId]")
+    }
+
     // Decision on Company Draft
     fun decisionOnCompanyStdDraft(comDraftDecision: ComDraftDecision) : List<TaskDetails> {
         val variables: MutableMap<String, Any> = java.util.HashMap()
@@ -443,6 +463,44 @@ class ComStandardService(
         return getTaskDetails(tasks)
     }
 
+    // Decision on Company Draft
+    fun decisionOnComStdDraft(comDraftDecision: ComDraftDecision) : List<TaskDetails> {
+        val variables: MutableMap<String, Any> = java.util.HashMap()
+        variables["Yes"] = comDraftDecision.accentTo
+        variables["No"] = comDraftDecision.accentTo
+        comDraftDecision.comments.let { variables.put("comments", it) }
+        if(variables["Yes"]==true){
+            comStdDraftRepository.findByIdOrNull(comDraftDecision.approvalID)?.let { comStdDraft->
+                with(comStdDraft){
+
+                    remarks=comDraftDecision.comments
+                    accentTo = true
+                }
+                comStdDraftRepository.save(comStdDraft)
+            }?: throw Exception("TASK NOT FOUND")
+
+        }else if(variables["No"]==false) {
+            comStdDraftRepository.findByIdOrNull(comDraftDecision.approvalID)?.let { comStdDraft->
+
+                with(comStdDraft){
+                    remarks=comDraftDecision.comments
+                    // accentTo = false
+                }
+                comStdDraftRepository.save(comStdDraft)
+            }?: throw Exception("TASK NOT FOUND")
+
+        }
+        taskService.complete(comDraftDecision.taskId, variables)
+        return  getComSecTasks()
+    }
+
+    //Return task details for HOP
+    fun getHopTasks():List<TaskDetails>
+    {
+        val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_HOP).processDefinitionKey(PROCESS_DEFINITION_KEY).list()
+        return getTaskDetails(tasks)
+    }
+
     // Upload Company Standard
     fun uploadComStandard(companyStandard: CompanyStandard) : ProcessInstanceComStandard
     {
@@ -463,7 +521,7 @@ class ComStandardService(
         taskService.complete(companyStandard.taskId, variable)
         println("Company Standard Uploaded")
         val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variable)
-        return ProcessInstanceComStandard(comDetails.id, processInstance.id, processInstance.isEnded,companyStandard.comStdNumber!!)
+        return ProcessInstanceComStandard(comDetails.id, processInstance.id, processInstance.isEnded,companyStandard.comStdNumber?: throw NullValueNotAllowedException("Standard Number is required"))
 
     }
     fun getCSNumber(): String
@@ -501,6 +559,8 @@ class ComStandardService(
 
         return "$finalValue/$startId/$month:$year"
     }
+
+    // Upload nwa Standard Document
     fun uploadSTDFile(
         uploads: ComStandardUploads,
         docFile: MultipartFile,
@@ -513,7 +573,7 @@ class ComStandardService(
 //            filepath = docFile.path
             name = commonDaoServices.saveDocuments(docFile)
 //            fileType = docFile.contentType
-            fileType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(docFile.name)
+            fileType = docFile.contentType
             documentType = doc
             description=DocDescription
             document = docFile.bytes
@@ -526,13 +586,19 @@ class ComStandardService(
         return comStandardUploadsRepository.save(uploads)
     }
 
-
-    //Return task details for HOP
-    fun getHopTasks():List<TaskDetails>
+    //Return task details for SAC_SEC
+    fun getSacSecTasks():List<TaskDetails>
     {
-        val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_HOP).processDefinitionKey(PROCESS_DEFINITION_KEY).list()
+        val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_SAC_SEC).processDefinitionKey(PROCESS_DEFINITION_KEY).list()
         return getTaskDetails(tasks)
     }
+
+
+    // View STD Document upload
+    fun findUploadedSTDFileBYId(comStdDocumentId: Long): ComStandardUploads {
+        return comStandardUploadsRepository.findByComStdDocumentId(comStdDocumentId) ?: throw ExpectedDataNotFound("No File found with the following [ id=$comStdDocumentId]")
+    }
+
 
     fun editCompanyStandard(editCompanyStandard: EditCompanyStandard): ProcessInstanceEditStandard
     {

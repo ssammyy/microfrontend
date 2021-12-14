@@ -5,6 +5,7 @@ import org.flowable.engine.ProcessEngine
 import org.flowable.engine.RepositoryService
 import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
+import org.flowable.engine.history.HistoricActivityInstance
 import org.flowable.engine.repository.Deployment
 import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
@@ -653,8 +654,11 @@ class NWAService(private val runtimeService: RuntimeService,
         variables["Yes"] = nwaWorkshopDraftDecision.accentTo
         nwaWorkshopDraftDecision.comments.let { variables.put("comments", it) }
         if(variables["Yes"]==true){
+            val assignedKsNumber= getKSNumber()
+
+            variables["ksNumber"] = assignedKsNumber
             nwaWorkshopDraftRepository.findByIdOrNull(nwaWorkshopDraftDecision.approvalID)?.let { nwaWorkShopDraft->
-                val assignedKsNumber= getKSNumber()
+
                 with(nwaWorkShopDraft){
                     remarks=nwaWorkshopDraftDecision.comments
                     accentTo = true
@@ -701,7 +705,7 @@ class NWAService(private val runtimeService: RuntimeService,
         taskService.complete(nWAStandard.taskId, variable)
         println("NWA Standard Uploaded")
         val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variable)
-        return ProcessInstanceUS(nwaDetails.id, processInstance.id, processInstance.isEnded,nWAStandard.ksNumber!!)
+        return ProcessInstanceUS(nwaDetails.id, processInstance.id, processInstance.isEnded,nWAStandard.ksNumber?: throw NullValueNotAllowedException("Standard Number is required"))
 
     }
     // Upload nwa Standard Document
@@ -781,19 +785,37 @@ class NWAService(private val runtimeService: RuntimeService,
     }
 
     //Get Process History
-    fun checkProcessHistory(processId: String?) {
+//    fun checkProcessHistory(processId: String?) {
+//        val historyService = processEngine.historyService
+//        val activities = historyService
+//            .createHistoricActivityInstanceQuery()
+//            .processInstanceId(processId)
+//            .finished()
+//            .orderByHistoricActivityInstanceEndTime()
+//            .asc()
+//            .list()
+//        for (activity in activities) {
+//            println(
+//                activity.activityId + " took " + activity.durationInMillis + " milliseconds")
+//        }
+//
+//    }
+    fun checkProcessHistory(id: ID): List<HistoricActivityInstance> {
         val historyService = processEngine.historyService
         val activities = historyService
             .createHistoricActivityInstanceQuery()
-            .processInstanceId(processId)
+            .processInstanceId(id.ID)
             .finished()
             .orderByHistoricActivityInstanceEndTime()
             .asc()
             .list()
         for (activity in activities) {
             println(
-                activity.activityId + " took " + activity.durationInMillis + " milliseconds")
+                activity.activityId + " took " + activity.durationInMillis + " milliseconds" + activity.processInstanceId
+            )
         }
+
+        return activities
 
     }
     fun getRQNumber(): String

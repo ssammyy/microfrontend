@@ -90,7 +90,7 @@ export class NwaPreliminaryDraftComponent implements OnInit {
     button.style.display = 'none';
     button.setAttribute('data-toggle','modal');
 
-    if (mode==='prepPd'){
+    if (mode==='preparePD'){
       this.actionRequest=task;
       button.setAttribute('data-target','#prepPd');
     }
