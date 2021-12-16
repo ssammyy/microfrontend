@@ -46,8 +46,15 @@ class CorporateCustomerAccounts : Serializable {
     @Column(name = "ACCOUNT_SUSPENDEND", nullable = false)
     var accountSuspendend: Int? = null
 
+    @Column(name = "CIAK_MEMBER", nullable = false)
+    var isCiakMember: Boolean? = false
+
+    @Column(name = "PAYMENT_DAYS", nullable = false)
+    var paymentDays: Int? = 0
+
     @Column(name = "ACCOUNT_BLOCKED", nullable = false)
     var accountBlocked: Int? = null
+
 
     @Column(name = "STATUS")
     @Basic

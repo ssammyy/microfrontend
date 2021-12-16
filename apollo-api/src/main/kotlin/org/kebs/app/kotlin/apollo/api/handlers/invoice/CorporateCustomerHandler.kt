@@ -6,6 +6,7 @@ import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.extractPage
 import org.kebs.app.kotlin.apollo.api.payload.request.CorporateForm
 import org.kebs.app.kotlin.apollo.api.payload.request.CorporateStatusUpdateForm
+import org.kebs.app.kotlin.apollo.api.service.BillingService
 import org.kebs.app.kotlin.apollo.api.service.CorporateCustomerService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.function.ServerRequest
@@ -13,8 +14,44 @@ import org.springframework.web.servlet.function.ServerResponse
 
 @Component
 class CorporateCustomerHandler(
-        private val corporateService: CorporateCustomerService
+        private val corporateService: CorporateCustomerService,
+        private val billService: BillingService
 ) {
+
+    fun currentCorporateBills(req: ServerRequest): ServerResponse {
+        val corporateId = req.pathVariable("corporateId").toLong()
+        return ServerResponse.ok().body(billService.corporateBills(corporateId))
+    }
+
+    fun corporateBillDetails(req: ServerRequest): ServerResponse {
+        val corporateId = req.pathVariable("corporateId").toLong()
+        val billId = req.pathVariable("billId").toLong()
+        return ServerResponse.ok().body(billService.billTransactions(billId, corporateId))
+    }
+
+    fun corporateBillStatus(req: ServerRequest): ServerResponse {
+        val corporateId = req.pathVariable("corporateId").toLong()
+        val billStatus = req.pathVariable("billStatus")
+        val statues = mutableListOf<Int>()
+        when (billStatus) {
+            "paid" -> {
+                statues.add(1)
+            }
+            "pending" -> {
+                statues.add(0)
+                statues.add(10)
+                statues.add(15)
+            }
+            else -> {
+                val res = ApiResponseModel()
+                res.message = "Invalid bill statue: ${billStatus}"
+                res.responseCode = ResponseCodes.INVALID_CODE
+                return ServerResponse.ok().body(res)
+            }
+        }
+        return ServerResponse.ok().body(billService.corporateBillByPaymentStatus(corporateId, statues))
+    }
+
     fun listCorporateCustomers(req: ServerRequest): ServerResponse {
         val page = extractPage(req)
         val keywords = req.param("keywords")

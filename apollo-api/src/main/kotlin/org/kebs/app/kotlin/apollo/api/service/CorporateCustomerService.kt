@@ -25,13 +25,15 @@ class CorporateCustomerService(
                 val customer = CorporateCustomerAccounts()
                 customer.corporateIdentifier = form.corporateIdentifier
                 customer.contactEmail = form.contactEmail
-                customer.lastPayment=Timestamp.from(Instant.now())
+                customer.lastPayment = Timestamp.from(Instant.now())
                 customer.contactName = form.contactName
                 customer.contactPhone = form.contactPhone
                 customer.corporateBillNumber = form.corporateBillNumber
                 customer.corporateEmail = form.corporateEmail
                 customer.corporateName = form.corporateName
                 customer.corporateType = form.corporateType
+                customer.isCiakMember = form.isCiakMember
+                customer.paymentDays = form.mouDays
                 customer.status = 1
                 customer.accountBlocked = 0
                 customer.accountSuspendend = 0

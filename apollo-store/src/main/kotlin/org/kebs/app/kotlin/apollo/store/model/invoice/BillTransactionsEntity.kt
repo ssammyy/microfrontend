@@ -1,14 +1,15 @@
 package org.kebs.app.kotlin.apollo.store.model.invoice
 
 import java.io.Serializable
+import java.math.BigDecimal
 import java.sql.Time
 import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*
 
 @Entity
-@Table(name = "DAT_KEBS_INVOICE_TRANSACTIONS")
-class InvoiceTransactionsEntity : Serializable {
+@Table(name = "DAT_KEBS_BILL_TRANSACTIONS")
+class BillTransactionsEntity : Serializable {
     @Column(name = "ID")
     @SequenceGenerator(name = "DAT_KEBS_INVOICE_TRANSACTIONS_SEQ_GEN", sequenceName = "DAT_KEBS_INVOICE_TRANSACTIONS_SEQ", allocationSize = 1)
     @GeneratedValue(generator = "DAT_KEBS_INVOICE_TRANSACTIONS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
@@ -18,9 +19,16 @@ class InvoiceTransactionsEntity : Serializable {
     @Column(name = "CORPORATE_ID")
     var corporateId: Long = 0
 
+    @Column(name = "BILL_ID")
+    var billId: Long = 0
+
     @Column(name = "INVOICE_NUMBER")
     @Basic
     var invoiceNumber: String? = null
+
+    @Column(name = "TEMP_RECEIPT_NUMBER")
+    @Basic
+    var tempReceiptNumber: String? = null
 
     @Column(name = "PAYMENT_METHOD")
     @Basic
@@ -32,11 +40,11 @@ class InvoiceTransactionsEntity : Serializable {
 
     @Column(name = "TRANSACTION_DATE")
     @Basic
-    var transactionDate: Time? = null
+    var transactionDate: Timestamp? = null
 
     @Column(name = "AMOUNT")
     @Basic
-    var amount: String? = null
+    var amount: BigDecimal? = null
 
     @Column(name = "PAID_STATUS")
     @Basic
@@ -117,7 +125,7 @@ class InvoiceTransactionsEntity : Serializable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
-        val that = other as InvoiceTransactionsEntity
+        val that = other as BillTransactionsEntity
         return id == that.id &&
                 invoiceNumber == that.invoiceNumber &&
                 paymentMethod == that.paymentMethod &&

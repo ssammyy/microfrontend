@@ -14,10 +14,13 @@ class PvocRouter {
 
     @Bean
     @CrossOrigin
-    fun pvocCorporates(handler: CorporateCustomerHandler) = router {
+    fun pvocCorporatesManagement(handler: CorporateCustomerHandler) = router {
         "/api/v1/corporate".nest {
             GET("/list", handler::listCorporateCustomers)
             POST("/add", handler::addCorporateCustomer)
+            GET("/bills/{corporateId}", handler::currentCorporateBills)
+            GET("/bills/{corporateId}/status/{billStatus}", handler::corporateBillStatus)
+            GET("/bill/{corporateId}/details/{billId}", handler::corporateBillDetails)
             PUT("/update/{corporateId}", handler::updateCorporateCustomer)
             PATCH("/status/{corporateId}", handler::updateCorporateCustomerStatus)
         }
@@ -29,6 +32,7 @@ class PvocRouter {
         "/api/v1/partners".nest {
             GET("/list", handler::listPartners)
             POST("/add", handler::createPartner)
+
             PUT("/update/{corporateId}", handler::updatePartnerDetails)
             POST("/create/api-client/{corporateId}", handler::createPartnerApiClient)
         }

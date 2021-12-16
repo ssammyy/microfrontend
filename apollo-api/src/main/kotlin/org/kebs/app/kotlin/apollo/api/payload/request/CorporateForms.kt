@@ -12,7 +12,8 @@ class CorporateForm {
     var contactName: String? = null
     var contactPhone: String? = null
     var contactEmail: String? = null
-
+    var isCiakMember: Boolean? = false
+    var mouDays: Int? = 0
 }
 
 class CorporateStatusUpdateForm {
