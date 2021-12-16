@@ -295,7 +295,7 @@
 						</xsd:simpleType>
 					</xsd:element>
 
-					<xsd:element name="COC_DETAILS">
+					<xsd:element maxOccurs="unbounded" name="COC_DETAILS">
 						<xsd:complexType>
 							<xsd:sequence>
 								<xsd:element name="SHIPMENT_LINE_NUMBER" type="xsd:double" minOccurs="1" xdb:SQLName="SHIPMENT_LINE_NUMBER" xdb:SQLTYPE="NUMBER"></xsd:element>

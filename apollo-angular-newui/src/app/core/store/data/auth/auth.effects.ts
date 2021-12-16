@@ -210,8 +210,16 @@ export class AuthEffects {
             ),
         {dispatch: true}
     );
-
-
+    hasRole(privileges: string[], roles: any[]): boolean {
+        for (let role of roles) {
+            for (let p of privileges) {
+                if (role == p) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
     doLogin: Observable<Action> = createEffect(
         () =>
             this.actions$.pipe(
@@ -219,9 +227,19 @@ export class AuthEffects {
                 switchMap((action) => this.service.login(action.payload)
                     .pipe(
                         mergeMap((data) => {
+                            if(this.hasRole(["PERMIT_APPLICATION"], data.roles)){
+                                return [
+                                    loadAuthsSuccess({profile: data, loggedIn: true}),
+                                    loadUserCompanyInfo(),
+                                    Go({
+                                        payload: action.redirectUrl,
+                                        link: action.redirectUrl,
+                                        redirectUrl: action.redirectUrl
+                                    })
+                                ];
+                            }
                             return [
                                 loadAuthsSuccess({profile: data, loggedIn: true}),
-                                loadUserCompanyInfo(),
                                 Go({
                                     payload: action.redirectUrl,
                                     link: action.redirectUrl,

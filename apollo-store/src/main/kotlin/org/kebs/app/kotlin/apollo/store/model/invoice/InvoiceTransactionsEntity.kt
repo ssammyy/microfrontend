@@ -15,6 +15,9 @@ class InvoiceTransactionsEntity : Serializable {
     @Id
     var id: Long = 0
 
+    @Column(name = "CORPORATE_ID")
+    var corporateId: Long = 0
+
     @Column(name = "INVOICE_NUMBER")
     @Basic
     var invoiceNumber: String? = null

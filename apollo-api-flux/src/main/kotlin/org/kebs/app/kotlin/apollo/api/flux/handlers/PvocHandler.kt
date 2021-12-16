@@ -9,6 +9,9 @@ import org.kebs.app.kotlin.apollo.api.flux.ports.provided.validation.AbstractVal
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocQueriesDataEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocStdMonitoringDataEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocTimelinesDataEntity
 import org.springframework.stereotype.Component
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.Errors

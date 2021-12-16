@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.api.service
 
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
+import org.kebs.app.kotlin.apollo.api.ports.provided.sage.response.PaymentStatusResult
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.CdDemandNoteEntity
@@ -309,6 +310,10 @@ class InvoicePaymentService(
     fun getTransactionStatsOnDate(date: Optional<String>): Any? {
         val currentDate=date.orElse(dateTimeFormat.format(LocalDate.now()))
         return iDemandNoteRepo.transactionStats(currentDate)
+    }
+
+    fun paymentReceived(responseStatus: PaymentStatusResult) : Boolean {
+        return true
     }
 
 }

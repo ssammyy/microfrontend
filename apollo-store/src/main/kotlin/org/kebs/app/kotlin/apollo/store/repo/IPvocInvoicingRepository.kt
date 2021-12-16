@@ -1,11 +1,9 @@
 package org.kebs.app.kotlin.apollo.store.repo
 
-import org.kebs.app.kotlin.apollo.store.model.PvocInvoicingEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocInvoicingEntity
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.stereotype.Repository
 import java.sql.Date
-import java.sql.Timestamp
-import java.util.*
 
 @Repository
 interface IPvocInvoicingRepository:HazelcastRepository<PvocInvoicingEntity, Long> {

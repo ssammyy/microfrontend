@@ -124,6 +124,7 @@ class ApiAuthenticationHandler(
                     val token = tokenService.tokenFromAuthentication(auth, commonDaoServices.concatenateName(user), request)
 
                     val roles = tokenService.extractRolesFromToken(token)?.map { it.authority }
+                    // TODO: Delay this part until correct token is provided
                     val response = JwtResponse(
                         token,
                         user.id,
@@ -138,8 +139,7 @@ class ApiAuthenticationHandler(
 //                        val localDate = LocalDateTime.now().plusMinutes(authenticationProperties.jwtExpirationMs).minusSeconds(20L)
 //                        val timestamp: Timestamp = Timestamp.valueOf(localDate)
 //                        expiry = timestamp
-                        expiry =
-                            LocalDateTime.now().plusMinutes(authenticationProperties.jwtExpirationMs).minusSeconds(20L)
+                        expiry = LocalDateTime.now().plusMinutes(authenticationProperties.jwtExpirationMs).minusSeconds(20L)
                     }
 
                     /**

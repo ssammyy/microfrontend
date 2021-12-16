@@ -89,8 +89,6 @@ export const initialTokenSentState: TokenSentState = {
 
 };
 
-
-// @ts-ignore
 const authStateInternalReducer = createReducer(
     initialState,
     on(loadAuthsSuccess, (state, {profile, loggedIn}) => {
@@ -119,8 +117,13 @@ const authStateInternalReducer = createReducer(
             error
         };
     }),
-    on(loadLogoutSuccess, LogoutSuccess),
-    on(loadLogoutFailure, (state, {error, loggedIn, profile}) => {
+    on(loadLogoutSuccess, (state, {data,  profile,loggedIn}) => {
+        return {
+            ...state,
+            data, profile, loggedIn
+        };
+    }),
+    on(loadLogoutFailure, (state, {error,  profile,loggedIn}) => {
         return {
             ...state,
             error, profile, loggedIn

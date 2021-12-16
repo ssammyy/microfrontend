@@ -57,3 +57,19 @@ class RootRequest {
     var request: Request? = null
 }
 
+
+
+class PaymentStatusBody {
+    @JsonProperty("DocumentNo")
+    var documentNo: String? = null
+
+    @JsonProperty("PaymentReferenceNo")
+    var paymentReferenceNo: String? = null
+}
+
+class PaymentStatusRequest {
+    @JsonProperty("header")
+    var header: Header? = null
+    @JsonProperty("request")
+    var request: PaymentStatusBody? = null
+}

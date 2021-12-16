@@ -258,12 +258,3 @@ fun CocItemsEntity.toCocItemDetailsXmlRecordRefl(cocNumber: String) = CocDetails
         this.shipmentLineStandardsReference?:"NA", this.shipmentLineLicenceReference?:"NA",
         this.shipmentLineRegistration?:"NA",cocNumber ,this.shipmentLineBrandName?:"NA"
 )
-
-//fun CocItemsEntity.toCoiItemDetailsXmlRecordRefl(cocNumber: String) = CustomCoiXmlDto(
-//        this.shipmentLineNumber, this.shipmentLineHscode?:"NA", this.shipmentLineQuantity.toLong(),
-//        this.shipmentLineUnitofMeasure?:"NA",
-//        this.shipmentLineDescription?:"NA", this.shipmentLineVin?:"NA",
-//        this.shipmentLineStickerNumber?:"NA", this.shipmentLineIcs?:"NA",
-//        this.shipmentLineStandardsReference?:"NA", this.shipmentLineLicenceReference?:"NA",
-//        this.shipmentLineRegistration?:"NA",cocNumber ,this.shipmentLineBrandName?:"NA"
-//)
