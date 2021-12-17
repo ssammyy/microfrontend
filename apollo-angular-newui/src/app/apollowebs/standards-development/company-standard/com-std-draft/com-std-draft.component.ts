@@ -129,6 +129,13 @@ export class ComStdDraftComponent implements OnInit {
                 link.click();
                 // this.pdfUploadsView = dataPdf;
             },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Processing Request`);
+                console.log(error.message);
+                this.getJcSecTasks();
+                //alert(error.message);
+            }
         );
     }
 

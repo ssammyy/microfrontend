@@ -37,7 +37,7 @@ interface ComStdDraftRepository: JpaRepository<ComStdDraft,Long> {
 
 }
 interface ComStandardDraftUploadsRepository : JpaRepository<ComStandardDraftUploads, Long> {
-    fun findByComDraftDocumentId(id: Long):ComStandardDraftUploads
+    fun findByComDraftDocumentId(id: Long): MutableList<ComStandardDraftUploads>
 }
 interface ComStandardUploadsRepository : JpaRepository<ComStandardUploads, Long> {
     fun findByComStdDocumentId(id: Long):ComStandardUploads
@@ -112,7 +112,7 @@ interface StandardReviewRecommendationsRepository : JpaRepository<StandardReview
 interface StandardReviewRepository : JpaRepository<StandardReview, Long> {
 }
 interface UserListRepository : JpaRepository<UsersEntity,Long>{
-    @Query("SELECT u.firstName,u.lastName,u.id FROM UsersEntity u WHERE u.id =:id")
+    @Query("SELECT u.firstName,u.lastName FROM UsersEntity u WHERE u.id =:id")
     fun findNameById(@Param("id") id: Long?): String
 }
 interface DatKebsSdNwaUploadsEntityRepository : JpaRepository<DatKebsSdNwaUploadsEntity, Long> {
@@ -136,7 +136,7 @@ interface NWAWorkShopDraftUploadsRepository : JpaRepository<NWAWorkShopDraftUplo
     fun findByNwaWDDocumentId(id: Long):NWAWorkShopDraftUploads
 }
 interface NWAStandardUploadsRepository : JpaRepository<NWAStandardUploads, Long> {
-    fun findByNwaStdDocumentId(id: Long):NWAStandardUploads
+    fun findByNwaSDocumentId(id: Long):NWAStandardUploads
 }
 interface DepartmentListRepository : JpaRepository<Department,Long>{
     @Query("SELECT name FROM SD_DEPARTMENT WHERE id=:id", nativeQuery = true)

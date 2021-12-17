@@ -107,18 +107,18 @@ export class ComStdUploadComponent implements OnInit {
         (response ) => {
           console.log(response);
           this.SpinnerService.hide();
-          this.showToasterSuccess(response.httpStatus, `Preliminary Draft Preparation Process Started`);
+          this.showToasterSuccess(response.httpStatus, `Company Standard Preparation Process Started`);
           this.onClickSaveUPLOADS(response.body.savedRowID)
           this.prepareStandardFormGroup.reset();
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
-          this.showToasterError('Error', `Preliminary Draft Was Not Prepared`);
+          this.showToasterError('Error', `Company Standard Was Not Prepared`);
           console.log(error.message);
         }
     );
   }
-  onClickSaveUPLOADS(comStdID: string) {
+  onClickSaveUPLOADS(comStandardID: string) {
     if (this.uploadedFiles.length > 0) {
       const file = this.uploadedFiles;
       const formData = new FormData();
@@ -127,7 +127,7 @@ export class ComStdUploadComponent implements OnInit {
         formData.append('docFile', file[i], file[i].name);
       }
       this.SpinnerService.show();
-      this.stdComStandardService.uploadSDFileDetails(comStdID, formData).subscribe(
+      this.stdComStandardService.uploadSDFileDetails(comStandardID, formData).subscribe(
           (data: any) => {
             this.SpinnerService.hide();
             this.uploadedFiles = null;
@@ -189,6 +189,11 @@ export class ComStdUploadComponent implements OnInit {
           link.click();
           // this.pdfUploadsView = dataPdf;
         },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          this.showToasterError('Error', `Error Processing Request`);
+          console.log(error.message);
+        }
     );
   }
 

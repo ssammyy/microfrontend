@@ -8,9 +8,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
 import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
-import org.kebs.app.kotlin.apollo.store.repo.std.ComJcJustificationRepository
-import org.kebs.app.kotlin.apollo.store.repo.std.ComStdDraftRepository
-import org.kebs.app.kotlin.apollo.store.repo.std.CompanyStandardRepository
+import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
@@ -227,9 +225,18 @@ class ComStandardController (val comStandardService: ComStandardService,
     {
         return comStandardService.getJcSecTasks()
     }
-
+    @GetMapping("/view/attached")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun downloadFileDocument(
+        response: HttpServletResponse,
+        @RequestParam("comDraftDocumentId") comDraftDocumentId: Long
+    ) {
+        val fileUploaded = comStandardService.findUploadedFileBYId(comDraftDocumentId)
+        val mappedFileClass = commonDaoServices.mapClass(fileUploaded)
+        commonDaoServices.downloadFile(response, mappedFileClass)
+    }
     @GetMapping("/view/comDraft")
-    fun viewComDraftFile(
+    fun viewCompanyDraftFile(
         response: HttpServletResponse,
         @RequestParam("comDraftDocumentId") comDraftDocumentId: Long
     ) {
@@ -248,9 +255,30 @@ class ComStandardController (val comStandardService: ComStandardService,
 
     }
 
-    fun makeAnyNotBeNull(anyValue: Any): Any {
-        return anyValue
-    }
+//    @GetMapping("/view/comDraft")
+//    fun viewComDraftFile(
+//        response: HttpServletResponse,
+//        @RequestParam("comDraftDocumentId") comDraftDocumentId: Long
+//    ) {
+//        val fileUploaded = comStandardService.findUploadedCDRFileBYId(comDraftDocumentId)
+//        val fileDoc = commonDaoServices.mapClass(fileUploaded)
+//        response.contentType = "application/pdf"
+////                    response.setHeader("Content-Length", pdfReportStream.size().toString())
+//        response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
+//        response.outputStream
+//            .let { responseOutputStream ->
+//                responseOutputStream.write(fileDoc.document?.let {
+//                    org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull(
+//                        it
+//                    )
+//                } as ByteArray)
+//                responseOutputStream.close()
+//            }
+//
+//        KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
+//
+//    }
+
 
     //Decision on Company Draft
     @PreAuthorize("hasAuthority('JC_SEC_SD_MODIFY')")
@@ -300,7 +328,7 @@ class ComStandardController (val comStandardService: ComStandardService,
     {
         return comStandardService.getCSNumber();
     }
-
+    // upload Workshop draft
     @PostMapping("/company_standard/std-file-upload")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadStandardFiles(
@@ -332,6 +360,7 @@ class ComStandardController (val comStandardService: ComStandardService,
 
         return sm
     }
+
 
     //********************************************************** get SAC SEC Tasks **********************************************************
     @PreAuthorize("hasAuthority('SAC_SEC_SD_READ')")

@@ -17,10 +17,10 @@ export class ApiEndpointService {
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-         LOCAL_DEV: 'localhost:8006'
+        // LOCAL_DEV: 'localhost:8006'
         // LOCAL_DEV: '12:8006'
         // LOCAL_DEV: '41.72.209.58:8006'
-       //  LOCAL_DEV: `kimsint.kebs.org:8006`
+         LOCAL_DEV: `kimsint.kebs.org:8006`
         // LOCAL_DEV: `kims.kebs.org:8006`
         // LOCAL_DEV: '10.10.0.149:8007'
 
@@ -375,7 +375,7 @@ export class ApiEndpointService {
         ICT_SPC_SEC_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getSpcSecTasks`,
         ICT_DECISION_ON_JUSTIFICATION: `${ApiEndpointService.SD_ICT_CONTEXT}/decisionOnJustification`,
         ICT_SAC_SEC_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getSacSecTasks`,
-        ICT_UPLOAD_DATA_VIEW_STD: `${ApiEndpointService.SD_ICT_CONTEXT}/view/comDraft`,
+        ICT_UPLOAD_DATA_VIEW_STD: `${ApiEndpointService.SD_ICT_CONTEXT}/view/comStandard`,
         ICT_DECISION_ON_APP_JUSTIFICATION: `${ApiEndpointService.SD_ICT_CONTEXT}/decisionOnAppJustification`,
         ICT_PREPARE_PRELIMINARY_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/uploadDraft`,
         ICT_UPLOAD_PD: `${ApiEndpointService.SD_ICT_CONTEXT}/draft-file-upload`,

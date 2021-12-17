@@ -12,7 +12,7 @@ POST https://localhost:8006/api/v1/login
 Content-Type: application/json
 
 {
-  "username": "vincentmuriuki42@gmail.com",
+  "username": "jackRobin@kebs.com",
   "password": "password"}
 
 > {%
@@ -203,7 +203,7 @@ POST https://localhost:8006/api/v1/login
 Content-Type: application/json
 
 {
-  "username": "plsd@kebs.com",
+  "username": "disdtsd@kebs.com",
   "password": "password"}
 
 > {%
@@ -279,7 +279,7 @@ Content-Type: application/json
 
 ###
 GET https://localhost:8006/api/v1/migration/nwa/knwtasks
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYWNrUm9iaW5Aa2Vicy5jb20iLCJpc3MiOiJraW1zLmtlYnMub3JnIiwiaWF0IjoxNjM5MDU2OTEzLCJleHAiOjE2MzkwNjI5MTMsImFkZHJlc3MiOiIxMjcuMC4wLjEiLCJ1c2VyQWdlbnQiOiJbQXBhY2hlLUh0dHBDbGllbnQvNC41LjEzIChKYXZhLzExLjAuMTIpXSIsImZ1bGxOYW1lIjoiSmFjayBSb2JpbiIsInJvbGVzIjoiVVNFUixFTVBMT1lFRSxLTldfU0VDX01PRElGWSxLTldfU0VDX1JFQUQifQ.IHhDnPHHeQS2I8I28eHawIz36zI81I9YL7pa3axr2vVj3qwTrWYH8dOxp0KBye4_aXMCIb30493WBCBVgT6uKw
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYWNrUm9iaW5Aa2Vicy5jb20iLCJpc3MiOiJraW1zLmtlYnMub3JnIiwiaWF0IjoxNjM5NTcxNDYwLCJleHAiOjE2Mzk1Nzc0NjAsImFkZHJlc3MiOiIxMjcuMC4wLjEiLCJ1c2VyQWdlbnQiOiJbQXBhY2hlLUh0dHBDbGllbnQvNC41LjEzIChKYXZhLzExLjAuMTIpXSIsImZ1bGxOYW1lIjoiSmFjayBSb2JpbiIsInJvbGVzIjoiVVNFUixFTVBMT1lFRSxLTldfU0VDX01PRElGWSxLTldfU0VDX1JFQUQifQ.xV-p9DtSjPXXPBxRixVveC-otdtfeiAchx26YF_1bUo3SUDmce8VbtSo0t3D_lgUZmAJfCD6GK4lcJcQZv7MuQ
 
 ###
 GET https://localhost:8006/api/v1/migration/nwa/getSpcSecTasks

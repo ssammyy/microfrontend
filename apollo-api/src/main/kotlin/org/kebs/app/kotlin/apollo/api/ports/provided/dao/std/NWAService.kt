@@ -699,7 +699,10 @@ class NWAService(private val runtimeService: RuntimeService,
 
         //print(nWAStandard.toString())
         val nwaDetails = nwaStandardRepository.save(nWAStandard)
-
+        val recipient= "Ashraf.Mohammed@bskglobaltech.com"
+        val subject = "New Standard"+  nWAStandard.ksNumber
+        val messageBody= "New standard has been approved and uploaded"
+        notifications.sendEmail(recipient, subject, messageBody)
         // Send email to Legal
         variable["ID"] = nwaDetails.id
         taskService.complete(nWAStandard.taskId, variable)
@@ -743,8 +746,8 @@ class NWAService(private val runtimeService: RuntimeService,
     }
 
     // View STD Document upload
-    fun findUploadedSTDFileBYId(nwaStdDocumentId: Long): NWAStandardUploads {
-        return nwaStandardUploadsRepository.findByNwaStdDocumentId(nwaStdDocumentId) ?: throw ExpectedDataNotFound("No File found with the following [ id=$nwaStdDocumentId]")
+    fun findUploadedSTDFileBYId(nwaSDocumentId: Long): NWAStandardUploads {
+        return nwaStandardUploadsRepository.findByNwaSDocumentId(nwaSDocumentId) ?: throw ExpectedDataNotFound("No File found with the following [ id=$nwaSDocumentId]")
     }
 
     // Upload NWA Gazette notice on Website

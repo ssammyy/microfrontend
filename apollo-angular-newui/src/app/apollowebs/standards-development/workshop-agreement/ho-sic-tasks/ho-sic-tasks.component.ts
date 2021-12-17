@@ -123,6 +123,10 @@ export class HoSicTasksComponent implements OnInit,OnDestroy {
                 link.click();
                 // this.pdfUploadsView = dataPdf;
             },
+            (error: HttpErrorResponse)=>{
+                this.SpinnerService.hide();
+                alert(error.message);
+            }
         );
     }
 

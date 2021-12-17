@@ -39,6 +39,7 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
 <th class="issuesAddressed">Issues Addressed</th>
 <th class="referenceMaterial">Clause</th>
 <th class="referenceMaterial">Special</th>
+    <th>Remarks</th>
     <th class="sl">Reference Material</th>
 <th class="action">Action</th>
 </tr>
@@ -52,6 +53,7 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
 <td>{{task.taskData.issuesAddressed}}</td>
 <td>{{task.taskData.clause}}</td>
 <td>{{task.taskData.special}}</td>
+    <td>{{task.taskData.comments}}</td>
     <td *ngIf="task.name ==='Editing of FDKNWA (Workshop Draft)'">
         <button mat-raised-button type="button" data-toggle="modal"
                 (click)="viewPDFile( task.taskData.ID,'PreliminaryDraft'+task.taskData.ID, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
@@ -198,7 +200,7 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
                                 <label><b>Upload Standard  </b> <span style="font-size: xx-small; color: red;">(*)Required</span></label><br>
                                 <form #demoForm="ngForm">
                                     <input type="file" name="uploadedFiles" [(ngModel)]="uploadedFiles"  multiple>
-                                    <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles"   fileslimit="2" accept=".pdf, .doc, .docx" ></file-upload>
+                                    <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles"   fileslimit="2" accept=".pdf" ></file-upload>
                                 </form>
                             </div>
 

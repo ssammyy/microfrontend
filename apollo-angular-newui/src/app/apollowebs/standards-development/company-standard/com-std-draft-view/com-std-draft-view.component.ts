@@ -47,7 +47,7 @@ export class ComStdDraftViewComponent implements OnInit {
         },
         (error: HttpErrorResponse)=>{
           this.SpinnerService.hide();
-          alert(error.message);
+          console.log(error.message);
         }
     );
   }
@@ -84,7 +84,7 @@ export class ComStdDraftViewComponent implements OnInit {
     this.stdComStandardService.companyDecisionOnDraft(approveDraft).subscribe(
         (response: ComJcJustificationDec) => {
           this.SpinnerService.hide();
-          this.showToasterSuccess('Success', `Justification Approved`);
+          this.showToasterSuccess('Success', `Draft Approved`);
           console.log(response);
           this.getComSecTasks();
         },
@@ -102,7 +102,7 @@ export class ComStdDraftViewComponent implements OnInit {
     this.stdComStandardService.companyDecisionOnDraft(approveDraft).subscribe(
         (response: ComJcJustificationDec) => {
           this.SpinnerService.hide();
-          this.showToasterSuccess('Success', `Justification Rejected`);
+          this.showToasterSuccess('Success', `Draft Rejected`);
           console.log(response);
           this.getComSecTasks();
         },
@@ -130,6 +130,11 @@ export class ComStdDraftViewComponent implements OnInit {
           link.click();
           // this.pdfUploadsView = dataPdf;
         },
+        (error: HttpErrorResponse) => {
+            this.SpinnerService.hide();
+            this.showToasterError('Error', `Error Processing Action`);
+            console.log(error.message);
+        }
     );
   }
 }

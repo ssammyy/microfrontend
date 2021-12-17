@@ -509,7 +509,7 @@ class NWAController(val nwaService: NWAService,
         docFile.forEach { u ->
             val upload = NWAStandardUploads()
             with(upload) {
-                nwaStdDocumentId = nWAStandard.id
+                nwaSDocumentId = nWAStandard.id
 
             }
             nwaService.uploadSTDFile(
@@ -540,9 +540,9 @@ class NWAController(val nwaService: NWAService,
     @GetMapping("/view/knwStandard")
     fun viewKnwStandardFile(
         response: HttpServletResponse,
-        @RequestParam("nwaStdDocumentId") nwaStdDocumentId: Long
+        @RequestParam("nwaSDocumentId") nwaSDocumentId: Long
     ) {
-        val fileUploaded = nwaService.findUploadedSTDFileBYId(nwaStdDocumentId)
+        val fileUploaded = nwaService.findUploadedSTDFileBYId(nwaSDocumentId)
         val fileDoc = commonDaoServices.mapClass(fileUploaded)
         response.contentType = "application/pdf"
         // response.setHeader("Content-Length", pdfReportStream.size().toString())

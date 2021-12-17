@@ -249,6 +249,7 @@ export class StdComStandardService {
   }
 
 
+
   public decisionOnDraft(approveDraft: ApproveDraft): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_DECISION_ON_DRAFT);
     const params = new HttpParams();
@@ -270,13 +271,11 @@ export class StdComStandardService {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_UPLOAD_DATA_VIEW_STD);
     const params = new HttpParams()
         .set('comStdDocumentId', comStdDocumentId);
-    // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
     return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
         map(function (response: any) {
           return response;
         }),
         catchError((fault: HttpErrorResponse) => {
-          // console.warn(`getAllFault( ${fault.message} )`);
           return throwError(fault);
         })
     );
@@ -307,13 +306,13 @@ export class StdComStandardService {
     );
   }
   //upload justification Document
-  public uploadSDFileDetails(comStdID: string, data: FormData): Observable<any> {
+  public uploadSDFileDetails(comStandardID: string, data: FormData): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_UPLOAD_SD);
 
     return this.http.post<any>(url, data, {
       headers: {
         'enctype': 'multipart/form-data'
-      }, params: {'comStdID': comStdID}
+      }, params: {'comStandardID': comStandardID}
     }).pipe(
         map(function (response: any) {
           return response;
@@ -324,6 +323,7 @@ export class StdComStandardService {
         })
     );
   }
+
 
   public getHopTasks(): Observable<ComJcJustificationDec[]> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_HOP_TASKS);

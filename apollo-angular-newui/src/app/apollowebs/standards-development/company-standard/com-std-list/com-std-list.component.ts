@@ -62,6 +62,10 @@ export class ComStdListComponent implements OnInit {
           link.click();
           // this.pdfUploadsView = dataPdf;
         },
+        (error: HttpErrorResponse)=>{
+            this.SpinnerService.hide();
+            console.log(error.message);
+        }
     );
   }
 

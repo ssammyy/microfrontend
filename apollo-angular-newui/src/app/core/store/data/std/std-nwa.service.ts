@@ -309,10 +309,10 @@ export class StdNwaService {
     return this.http.get<HoSicTasks[]>(url, {params}).pipe();
   }
 
-    public viewStandardPDF(nwaSTDid: any): Observable<any> {
+    public viewStandardPDF(nwaSDocumentId: any): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_UPLOAD_DATA_VIEW_STD);
         const params = new HttpParams()
-            .set('nwaSTDid', nwaSTDid);
+            .set('nwaSDocumentId', nwaSDocumentId);
         // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
         return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
             map(function (response: any) {

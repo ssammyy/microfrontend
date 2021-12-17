@@ -574,7 +574,7 @@ export const routes: Routes = [
         children: [{path: '', component: ComStdUploadComponent}]
     },
     {
-        path: 'comStdList', component: AdminLayoutComponent,
+        path: 'comStdListed', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [{path: '', component: ComStdListComponent}]
     },

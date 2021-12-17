@@ -169,6 +169,9 @@ export interface PDTaskData {
     departmentName: string;
     comments: string;
     diJNumber: bigint;
+    cost: string;
+    numberOfMeetings: number;
+    identifiedNeed: string;
 }
 
 export interface SPCSECTasks {
@@ -617,6 +620,8 @@ export interface ComHodTaskData {
     productName: string;
     productSubCategoryName: string;
     tcName: string;
+    plAssigned: string;
+    nameOfJc: string;
 
 
 
@@ -778,6 +783,8 @@ export interface ComJcJustificationDecData {
     clause: string;
     special:string;
     comments: string;
+    symbolsAbbreviatedTerms: string;
+    draftNumber: string;
 }
 export interface ApproveJC{
     taskId: string;

@@ -31,13 +31,12 @@
                                     <thead>
                                     <tr>
                                         <th>#</th>
+                                        <th class="knw">Request Number</th>
                                         <th class="knw">KNW Committee</th>
-                                        <th class="sl">SL</th>
-                                        <th class="requestNumber">Request Number</th>
                                         <th class="department">Department</th>
-                                        <th class="issuesAddressed">Issues Addressed</th>
-                                        <th class="referenceMaterial">Reference Material</th>
-                                        <th class="referenceMaterial">Requested By</th>
+                                        <th class="issuesAddressed">Cost</th>
+                                        <th class="requestNumber">Number of Meetings</th>
+                                        <th class="sl">Identified Need</th>
                                         <th class="referenceMaterial" style="width: fit-content">Remarks</th>
                                         <th class="action">Action</th>
                                     </tr>
@@ -45,20 +44,19 @@
                                     <tbody>
                                     <tr  *ngFor="let task of tasks  let i=index">
                                         <td>{{i+1}}</td>
-                                        <td>{{task.taskData.knwCommittee}}</td>
-                                        <td>{{task.taskData.sl}}</td>
                                         <td>{{task.taskData.requestNumber}}</td>
+                                        <td>{{task.taskData.knwCommittee}}</td>
                                         <td>{{task.taskData.departmentName}}</td>
-                                        <td>{{task.taskData.issuesAddressed}}</td>
+                                        <td>{{task.taskData.cost}}</td>
+                                        <td>{{task.taskData.numberOfMeetings}}</td>
+                                        <td>{{task.taskData.identifiedNeed}}</td>
+                                        <td style="width: fit-content">{{task.taskData.comments}}</td>
                                         <td><button mat-raised-button type="button" data-toggle="modal"
                                                     (click)="viewPdfFile( task.taskData.ID,'DI-Justification'+task.taskData.ID, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
                                             <i class="material-icons">visibility</i>
 
                                         </button>
                                         </td>
-                                        <td>{{task.taskData.requestedBy}}</td>
-                                        <td style="width: fit-content">{{task.taskData.comments}}</td>
-
                                         <td *ngIf="task.name ==='Prepare Preliminary Draft'"><a  (click)="onOpenModal(task,'preparePD')" class="btn btn-info btn-sm tooltips" data-placement="top"  data-original-title="preparePD">Prepare Preliminary Draft</a></td>
                                     </tr>
                                     </tbody>

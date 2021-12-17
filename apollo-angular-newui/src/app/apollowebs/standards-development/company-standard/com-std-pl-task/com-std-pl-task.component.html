@@ -38,6 +38,7 @@
                                         <th class="sl">Sub Category</th>
                                         <th class="requestNumber">Submission Date </th>
                                         <th class="sl">Phone Number</th>
+                                        <th  class="sl">Project Leader / Joint Committee</th>
                                         <th class="action">Action</th>
                                     </tr>
                                     </thead>
@@ -51,6 +52,8 @@
                                         <td>{{task.taskData.productSubCategoryName}}</td>
                                         <td>{{task.taskData.submissionDate | date: 'dd/MM/yyyy hh:mm:ss'}}</td>
                                         <td>{{task.taskData.companyPhone}}</td>
+                                        <td *ngIf="task.name ==='Form Joint Committee'">{{task.taskData.plAssigned}}</td>
+                                        <td *ngIf="task.name ==='Upload Draft Company standard'">{{task.taskData.nameOfJc}}</td>
                                         <td *ngIf="task.name ==='Form Joint Committee'"><a  (click)="onOpenModal(task,'formJc')" class="btn btn-info btn-sm tooltips" data-placement="top"  data-original-title="Approve"> Form Joint Committee</a></td>
                                         <td *ngIf="task.name ==='Upload Draft Company standard'"><a  (click)="onOpenModal(task,'prepPd')" class="btn btn-info btn-sm tooltips" data-placement="top"  data-original-title="Approve"> Upload Company Draft</a></td>
                                     </tr>

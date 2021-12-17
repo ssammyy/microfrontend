@@ -14,6 +14,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
+import org.kebs.app.kotlin.apollo.store.model.qa.QaUploadsEntity
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -342,6 +343,8 @@ class ComStandardService(
 
         variables["draftNumber"] = comStdDraft.draftNumber!!
 
+        //send email to JC
+
         val comDetails = comStdDraftRepository.save(comStdDraft)
         variables["ID"] = comDetails.id
         taskService.complete(comStdDraft.taskId, variables)
@@ -420,9 +423,15 @@ class ComStandardService(
     }
 
     //View Company Draft
-    fun findUploadedCDRFileBYId(comDraftDocumentId: Long): ComStandardDraftUploads {
+    fun findUploadedCDRFileBYId(comDraftDocumentId: Long): MutableList<ComStandardDraftUploads> {
         return comStandardDraftUploadsRepository.findByComDraftDocumentId(comDraftDocumentId) ?: throw ExpectedDataNotFound("No File found with the following [ id=$comDraftDocumentId]")
     }
+    fun findUploadedFileBYId(comDraftDocumentId: Long): MutableList<ComStandardDraftUploads> {
+        comStandardDraftUploadsRepository.findByComDraftDocumentId(comDraftDocumentId)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No File found with the following [ id=$comDraftDocumentId]")
+    }
+
 
 
     // Decision on Company Draft
@@ -524,40 +533,21 @@ class ComStandardService(
         return ProcessInstanceComStandard(comDetails.id, processInstance.id, processInstance.isEnded,companyStandard.comStdNumber?: throw NullValueNotAllowedException("Standard Number is required"))
 
     }
+
     fun getCSNumber(): String
     {
-        //val allRequests: Int
-        val allRequests =companyStandardRepository.findAllByOrderByIdDesc()
+        var allRequests =companyStandardRepository.findAllByOrderByIdDesc()
 
         var lastId:String?="0"
         var finalValue =1
         var startId="CS"
-
-        for(item in allRequests){
-            println(item)
-            lastId = item.comStdNumber
-            break
-        }
-
-        if(lastId != "0")
-        {
-            val strs = lastId?.split(":")?.toTypedArray()
-
-            val firstPortion = strs?.get(0)
-
-            val lastPortArray = firstPortion?.split("/")?.toTypedArray()
-
-            val intToIncrement =lastPortArray?.get(1)
-
-            finalValue = (intToIncrement?.toInt()!!)
-            finalValue += 1
-        }
-
+        allRequests = allRequests.plus(1) as MutableList<CompanyStandard>
+        println(allRequests)
 
         val year = Calendar.getInstance()[Calendar.YEAR]
         val month = Calendar.getInstance()[Calendar.MONTH]
 
-        return "$finalValue/$startId/$month:$year"
+        return "$startId/$allRequests/$month:$year"
     }
 
     // Upload nwa Standard Document
@@ -585,6 +575,8 @@ class ComStandardService(
 
         return comStandardUploadsRepository.save(uploads)
     }
+
+
 
     //Return task details for SAC_SEC
     fun getSacSecTasks():List<TaskDetails>
