@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.service;
 
 
+import mu.KotlinLogging
 import org.apache.commons.codec.binary.Base32
 import org.apache.commons.net.util.Base64
 
@@ -9,6 +10,7 @@ import org.kebs.app.kotlin.apollo.api.payload.ApiClientUpdateForm
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.response.ApiClientDao
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.store.model.external.SystemApiClient
 import org.kebs.app.kotlin.apollo.store.repo.external.ApiClientRepo
 import org.springframework.data.domain.PageRequest
@@ -16,11 +18,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import java.security.SecureRandom
+import java.sql.Timestamp
+import java.time.Instant
 
 @Service
 class ApiClientService(
         val apiClientRepo: ApiClientRepo,
-        val passwordEncoder: PasswordEncoder
+        val passwordEncoder: PasswordEncoder,
+        val commonDaoServices: CommonDaoServices
 ) {
 
     fun generateRandom(size: Int, userFriendly: Boolean = false): String {
@@ -64,9 +69,15 @@ class ApiClientService(
             val apiClient = SystemApiClient()
             val map = mutableMapOf<String, Any?>()
             apiClient.callbackURL = form.callbackURL
+            apiClient.eventsURL = form.eventsURL
             apiClient.clientName = form.clientName
             apiClient.clientType = form.clientType
             apiClient.clientRole = form.clientRole
+            apiClient.descriptions = form.descriptions
+            apiClient.clientBlocked = 0
+            apiClient.status = 1
+            apiClient.createdBy = commonDaoServices.checkLoggedInUser()
+            apiClient.createdOn = Timestamp.from(Instant.now())
             apiClient.clientId = "${form.clientType}${generateRandom(15, true)}"
             val apiSecret = generateRandom(15, true)
             apiClient.clientSecret = this.passwordEncoder.encode(apiSecret)
@@ -78,6 +89,7 @@ class ApiClientService(
             response.message = "Client created"
             response.data = map
         } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to add client:", ex)
             response.responseCode = ResponseCodes.FAILED_CODE
             response.message = "Failed to process request"
             response.errors = ex.toString()
@@ -115,39 +127,39 @@ class ApiClientService(
     }
 
     fun updateClientStatus(form: ApiClientUpdateForm): ApiResponseModel {
-        val response=ApiResponseModel()
+        val response = ApiResponseModel()
         val client = this.apiClientRepo.findByClientId(form.clientId!!)
         if (client.isPresent) {
             val c = client.get()
-            c.varField1=form.remarks
-            if(c.status==4){
-                response.message="Account deleted and cannot be updated"
-                response.responseCode=ResponseCodes.FAILED_CODE
+            c.varField1 = form.remarks
+            if (c.status == 4) {
+                response.message = "Account deleted and cannot be updated"
+                response.responseCode = ResponseCodes.FAILED_CODE
                 return response
             }
             when (form.actionCode) {
                 "BLOCK" -> {
                     c.clientBlocked = 1
                     this.apiClientRepo.save(c)
-                    response.message="Account blocked"
-                    response.responseCode=ResponseCodes.SUCCESS_CODE
+                    response.message = "Account blocked"
+                    response.responseCode = ResponseCodes.SUCCESS_CODE
                 }
                 "UNBLOCK" -> {
                     c.clientBlocked = 0
                     this.apiClientRepo.save(c)
-                    response.message="Account unblocked"
-                    response.responseCode=ResponseCodes.SUCCESS_CODE
+                    response.message = "Account unblocked"
+                    response.responseCode = ResponseCodes.SUCCESS_CODE
                 }
                 "DELETE" -> {
                     c.clientBlocked = 2
                     c.status = 4
                     this.apiClientRepo.save(c)
-                    response.message="Account deleted"
-                    response.responseCode=ResponseCodes.SUCCESS_CODE
+                    response.message = "Account deleted"
+                    response.responseCode = ResponseCodes.SUCCESS_CODE
                 }
                 else -> {
-                    response.message="Unsurported action code: ${form.actionCode}"
-                    response.responseCode=ResponseCodes.FAILED_CODE
+                    response.message = "Unsurported action code: ${form.actionCode}"
+                    response.responseCode = ResponseCodes.FAILED_CODE
                 }
             }
         } else {

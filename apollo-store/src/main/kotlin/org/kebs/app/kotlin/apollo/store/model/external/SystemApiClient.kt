@@ -2,15 +2,14 @@ package org.kebs.app.kotlin.apollo.store.model.external
 
 import java.io.Serializable
 import java.sql.Timestamp
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.Table
+import javax.persistence.*
 
 @Entity
 @Table(name = "API_APPLICATION_CLIENT")
-class SystemApiClient: Serializable {
+class SystemApiClient : Serializable {
     @Id
+    @SequenceGenerator(name = "API_APPLICATION_CLIENT_SEQ_GEN", sequenceName = "API_APPLICATION_CLIENT_SEQ", allocationSize = 1)
+    @GeneratedValue(generator = "API_APPLICATION_CLIENT_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Column(name = "ID", nullable = false)
     var id: Long? = null
 
@@ -18,26 +17,26 @@ class SystemApiClient: Serializable {
     @Column(name = "CLIENT_TYPE", nullable = false)
     var clientType: String? = null
 
-    @Column(name = "CLIENT_ID", nullable = false)
+    @Column(name = "CLIENT_ID", nullable = false, unique = true)
     var clientId: String? = null
 
-    @Column(name = "CLIENT_NAME", nullable = false)
+    @Column(name = "CLIENT_NAME")
     var clientName: String? = null
 
     // PVOC_READ, PVOC_WRITE, PVOC_AGENT, PVOC_ADMIN
-    @Column(name = "CLIENT_ROLE", nullable = false)
+    @Column(name = "CLIENT_ROLE",)
     var clientRole: String? = null
 
-    @Column(name = "CLIENT_SECRET", nullable = false)
+    @Column(name = "CLIENT_SECRET", nullable = false, length =4000)
     var clientSecret: String? = null
 
-    @Column(name = "CALLBACK_URL", nullable = false)
+    @Column(name = "CALLBACK_URL", nullable = true)
     var callbackURL: String? = null
 
-    @Column(name = "EVENTS_URL", nullable = false)
+    @Column(name = "EVENTS_URL", nullable = true)
     var eventsURL: String? = null // System events
 
-    @Column(name = "CLIENT_DESCRIPTIONS", nullable = false)
+    @Column(name = "CLIENT_DESCRIPTIONS", nullable = true)
     var descriptions: String? = null
 
     @Column(name = "CLIENT_BLOCK", nullable = false)

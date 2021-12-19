@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.handlers
 
+import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.payload.*
 import org.kebs.app.kotlin.apollo.api.service.ApiClientService
 import org.springframework.stereotype.Service
@@ -35,6 +36,7 @@ class ApiClientHandler(
         var response = ApiResponseModel()
         try {
             val form = request.body(ApiClientForm::class.java)
+            KotlinLogging.logger {  }.info("RequestData: ${form.toString()}")
             val r = this.apiClient.createApiClient(form)
             response = r
         } catch (ex: Exception) {

@@ -2,7 +2,6 @@ package org.kebs.app.kotlin.apollo.store.model.invoice
 
 import java.io.Serializable
 import java.math.BigDecimal
-import java.sql.Time
 import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*
@@ -11,16 +10,16 @@ import javax.persistence.*
 @Table(name = "DAT_KEBS_BILL_TRANSACTIONS")
 class BillTransactionsEntity : Serializable {
     @Column(name = "ID")
-    @SequenceGenerator(name = "DAT_KEBS_INVOICE_TRANSACTIONS_SEQ_GEN", sequenceName = "DAT_KEBS_INVOICE_TRANSACTIONS_SEQ", allocationSize = 1)
-    @GeneratedValue(generator = "DAT_KEBS_INVOICE_TRANSACTIONS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "DAT_KEBS_BILL_TRANSACTIONS_SEQ_GEN", sequenceName = "DAT_KEBS_BILL_TRANSACTIONS_SEQ", allocationSize = 1)
+    @GeneratedValue(generator = "DAT_KEBS_BILL_TRANSACTIONS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Id
     var id: Long = 0
 
     @Column(name = "CORPORATE_ID")
-    var corporateId: Long = 0
+    var corporateId: Long? = 0
 
     @Column(name = "BILL_ID")
-    var billId: Long = 0
+    var billId: Long? = 0
 
     @Column(name = "INVOICE_NUMBER")
     @Basic

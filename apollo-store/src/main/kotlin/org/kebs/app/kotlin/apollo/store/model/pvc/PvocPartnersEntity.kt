@@ -17,7 +17,7 @@ class PvocPartnersEntity : Serializable {
 
     @Column(name = "API_CLIENT_ID", nullable = false)
     @Basic
-    var apiClientId: Long = 0
+    var apiClientId: Long?= 0
 
     @Column(name = "PARTNER_REF_NO",unique = true, nullable = false, length = 250)
     @Basic

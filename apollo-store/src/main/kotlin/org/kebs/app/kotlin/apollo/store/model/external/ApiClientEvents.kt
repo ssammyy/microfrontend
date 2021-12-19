@@ -8,6 +8,8 @@ import javax.persistence.*
 @Table(name = "API_APPLICATION_CLIENT_EVENTS")
 class ApiClientEvents: Serializable {
     @Column(name = "ID")
+    @SequenceGenerator(name = "API_APPLICATION_CLIENT_EVENTS_SEQ_GEN", sequenceName = "API_APPLICATION_CLIENT_EVENTS_SEQ", allocationSize = 1)
+    @GeneratedValue(generator = "API_APPLICATION_CLIENT_EVENTS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Id
     var id: Long = 0
 

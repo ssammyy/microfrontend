@@ -1,4 +1,4 @@
-package org.kebs.app.kotlin.apollo.api.service;
+package org.kebs.app.kotlin.apollo.api.service
 
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
@@ -7,7 +7,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDa
 import org.kebs.app.kotlin.apollo.store.model.ism.IsmApplications
 import org.kebs.app.kotlin.apollo.store.repo.ism.IsmApplicationsRepository
 import org.springframework.data.domain.PageRequest
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Service
 import java.sql.Timestamp
 import java.time.Instant
 
