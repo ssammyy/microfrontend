@@ -335,7 +335,7 @@ class RegisterController(
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/user/user-profile?userName=${loggedInUser.userName}"
-        sm.message = "You have successful add details"
+        sm.message = "You have successful added details"
         return returnValues(result, map, sm)
 
 
