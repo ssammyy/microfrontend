@@ -1,5 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao.std
 
+import com.google.gson.Gson
+import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.*
@@ -451,7 +453,7 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
     }
 
     // Upload NWA Gazette notice on Website
-    fun uploadGazetteNotice(iSGazetteNotice: ISGazetteNotice) : ProcessInstanceResponseValues
+    fun uploadGazetteNotice(iSGazetteNotice: ISGazetteNotice) : ProcessInstanceResponseGazzette
     {
         val variable:MutableMap<String, Any> = HashMap()
         iSGazetteNotice.iSNumber?.let{variable.put("iSNumber", it)}
@@ -464,10 +466,12 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
         val isuDetails = iSGazetteNoticeRepository.save(iSGazetteNotice)
         println("IS Gazette Notice has been uploaded")
         variable["ID"] = isuDetails.id
+        val gson = Gson()
+        KotlinLogging.logger { }.info { "Gazette ID " + gson.toJson(isuDetails) }
+        KotlinLogging.logger { }.info { "Gazette Notice" + gson.toJson(isuDetails) }
         taskService.complete(iSGazetteNotice.taskId, variable)
         val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variable)
-        return ProcessInstanceResponseValues(isuDetails.id, processInstance.id, processInstance.isEnded,
-            iSGazetteNotice.iSNumber!!
+        return ProcessInstanceResponseGazzette(isuDetails.id, processInstance.id, processInstance.isEnded
         )
     }
     fun uploadISGFile(

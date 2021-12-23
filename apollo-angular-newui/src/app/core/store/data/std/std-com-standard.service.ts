@@ -232,10 +232,10 @@ export class StdComStandardService {
     const params = new HttpParams();
     return this.http.get<ComJcJustificationDec[]>(url, {params}).pipe();
   }
-  public viewCompanyDraft(comDraftDocumentId: any): Observable<any> {
+  public viewCompanyDraft(comStdDraftID: any): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_UPLOAD_DATA_VIEW_PD);
     const params = new HttpParams()
-        .set('comDraftDocumentId', comDraftDocumentId);
+        .set('comStdDraftID', comStdDraftID);
     // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
     return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
         map(function (response: any) {

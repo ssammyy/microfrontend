@@ -29,3 +29,5 @@ class ProcessInstanceEditStandard (val savedRowID: Long?,val processId: String, 
 }
 class ProcessInstanceResponseValues (val savedRowID: Long?,val processId: String, val isEnded: Boolean, val isNumber: String) {
 }
+class ProcessInstanceResponseGazzette (val savedRowID: Long?,val processId: String, val isEnded: Boolean) {
+}

@@ -52,6 +52,22 @@ export class StdIntStandardService {
     const params = new HttpParams();
     return this.http.get<ProposalComments[]>(url, {params}).pipe();
   }
+  //view Proposal Doc
+    public viewProposalPDF(isDocumentId: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_IS_PROPOSALS_DOC);
+        const params = new HttpParams()
+            .set('isDocumentId', isDocumentId);
+        // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
+        return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
 
   public submitAPComments(iSAdoptionComments: ISAdoptionComments): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_SUBMIT_AP_COMMENTS);
@@ -118,6 +134,22 @@ export class StdIntStandardService {
     const params = new HttpParams();
     return this.http.get<ListJustification[]>(url, {params}).pipe();
   }
+  //view Justification File
+    public viewJustificationPDF(isJSDocumentId: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_IS_JUSTIFICATION_DOC);
+        const params = new HttpParams()
+            .set('isJSDocumentId', isJSDocumentId);
+        // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
+        return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
 
   public decisionOnJustification(isJustificationDecision: ISJustificationDecision): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_DECISION_ON_JUSTIFICATION);
@@ -188,6 +220,23 @@ export class StdIntStandardService {
         const params = new HttpParams();
         return this.http.get<ISHosSicTASKS[]>(url, {params}).pipe();
     }
+
+    //view Standard File
+    public viewStandardPDF(isStdDocumentId: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_IS_STANDARD_DOC);
+        const params = new HttpParams()
+            .set('isStdDocumentId', isStdDocumentId);
+        // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
+        return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
     public uploadGazetteNotice(gazetteNotice: GazetteNotice): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IS_UPLOAD_GAZETTE_NOTICE);
         const params = new HttpParams();
@@ -196,6 +245,41 @@ export class StdIntStandardService {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    //view Standard File
+    public viewStandardDPDF(isStandardID: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_IS_STANDARD_GZT_DOC);
+        const params = new HttpParams()
+            .set('isStandardID', isStandardID);
+        // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
+        return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public uploadSDGZFile(isStandardID: string, data: FormData): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IS_UPLOAD_STD_GZT);
+
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data'
+            }, params: {'isStandardID': isStandardID}
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
             })
         );

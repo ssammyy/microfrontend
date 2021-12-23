@@ -49,7 +49,7 @@ interface ComStdDraftRepository : JpaRepository<ComStdDraft, Long> {
 }
 
 interface ComStandardDraftUploadsRepository : JpaRepository<ComStandardDraftUploads, Long> {
-    fun findByComDraftDocumentId(id: Long): MutableList<ComStandardDraftUploads>
+    fun findByComDraftDocumentId(id: Long): ComStandardDraftUploads
 }
 
 interface ComStandardUploadsRepository : JpaRepository<ComStandardUploads, Long> {

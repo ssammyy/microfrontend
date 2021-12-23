@@ -47,13 +47,18 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
 <tr  *ngFor="let task of tasks let i=index">
 <td>{{i+1}}</td>
 <td>{{task.taskData.meetingDate}}</td>
-<td>{{task.taskData.tc_id}}</td>
+<td>{{task.taskData.tcCommittee}}</td>
 <td>{{task.taskData.slNumber}}</td>
 <td>{{task.taskData.requestNumber}}</td>
 <td>{{task.taskData.requestedBy}}</td>
 <td>{{task.taskData.issuesAddressed}}</td>
 <td>{{task.taskData.tcAcceptanceDate}}</td>
-<td>{{task.taskData.referenceMaterial}}</td>
+    <td ><button mat-raised-button type="button" data-toggle="modal"
+                 (click)="viewPdfFile( task.taskData.ID,'Justification'+task.taskData.ID, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
+        <i class="material-icons">visibility</i>
+
+    </button>
+    </td>
 <td ><a  (click)="onOpenModal(task,'upload')" class="btn btn-success btn-sm tooltips" data-placement="top">Upload Standard</a></td>
 </tr>
 </tbody>

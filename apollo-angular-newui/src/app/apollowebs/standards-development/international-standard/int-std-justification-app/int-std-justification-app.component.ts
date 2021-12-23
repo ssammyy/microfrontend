@@ -19,6 +19,7 @@ export class IntStdJustificationAppComponent implements OnInit,OnDestroy {
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
   tasks: ISSacSecTASKS[] = [];
+  blob: Blob;
   public actionRequest: ISSacSecTASKS | undefined;
   constructor(
       private stdIntStandardService : StdIntStandardService,
@@ -54,6 +55,28 @@ export class IntStdJustificationAppComponent implements OnInit,OnDestroy {
         }
     );
   }
+    viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
+        this.SpinnerService.show();
+        this.stdIntStandardService.viewJustificationPDF(pdfId).subscribe(
+            (dataPdf: any) => {
+                this.SpinnerService.hide();
+                this.blob = new Blob([dataPdf], {type: applicationType});
+
+                // tslint:disable-next-line:prefer-const
+                let downloadURL = window.URL.createObjectURL(this.blob);
+                const link = document.createElement('a');
+                link.href = downloadURL;
+                link.download = fileName;
+                link.click();
+                // this.pdfUploadsView = dataPdf;
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error opening document`);
+                alert(error.message);
+            }
+        );
+    }
   public onOpenModal(task: ISSacSecTASKS,mode:string): void{
     const container = document.getElementById('main-container');
     const button = document.createElement('button');
@@ -80,7 +103,7 @@ export class IntStdJustificationAppComponent implements OnInit,OnDestroy {
     this.stdIntStandardService.approveStandard(isJustificationDecision).subscribe(
         (response: ISAdoptionProposal) => {
           this.SpinnerService.hide();
-          this.showToasterSuccess('Success', `Standard Approved`);
+          this.showToasterSuccess('Success', `Justification For Standard Approved`);
           console.log(response);
           this.getSACSECTasks();
         },

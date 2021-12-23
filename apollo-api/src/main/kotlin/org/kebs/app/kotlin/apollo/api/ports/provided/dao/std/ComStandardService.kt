@@ -1,7 +1,5 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao.std
 
-import com.google.gson.Gson
-import mu.KotlinLogging
 import org.flowable.engine.ProcessEngine
 import org.flowable.engine.RepositoryService
 import org.flowable.engine.RuntimeService
@@ -428,12 +426,12 @@ class ComStandardService(
     }
 
     //View Company Draft
-    fun findUploadedCDRFileBYId(comDraftDocumentId: Long): MutableList<ComStandardDraftUploads> {
-        return comStandardDraftUploadsRepository.findByComDraftDocumentId(comDraftDocumentId)
-            ?: throw ExpectedDataNotFound("No File found with the following [ id=$comDraftDocumentId]")
+    fun findUploadedCDRFileBYId(comStdDraftID: Long): ComStandardDraftUploads {
+        return comStandardDraftUploadsRepository.findByComDraftDocumentId(comStdDraftID)
+            ?: throw ExpectedDataNotFound("No File found with the following [ id=$comStdDraftID]")
     }
 
-    fun findUploadedFileBYId(comDraftDocumentId: Long): MutableList<ComStandardDraftUploads> {
+    fun findUploadedFileBYId(comDraftDocumentId: Long): ComStandardDraftUploads {
         comStandardDraftUploadsRepository.findByComDraftDocumentId(comDraftDocumentId)?.let {
             return it
         } ?: throw ExpectedDataNotFound("No File found with the following [ id=$comDraftDocumentId]")
@@ -605,9 +603,9 @@ class ComStandardService(
 
 
     // View STD Document upload
-    fun findUploadedSTDFileBYId(comStdDocumentId: Long): ComStandardUploads {
-        return comStandardUploadsRepository.findByComStdDocumentId(comStdDocumentId)
-            ?: throw ExpectedDataNotFound("No File found with the following [ id=$comStdDocumentId]")
+    fun findUploadedSTDFileBYId(comStandardID: Long): ComStandardUploads {
+        return comStandardUploadsRepository.findByComStdDocumentId(comStandardID)
+            ?: throw ExpectedDataNotFound("No File found with the following [ id=$comStandardID]")
     }
 
 

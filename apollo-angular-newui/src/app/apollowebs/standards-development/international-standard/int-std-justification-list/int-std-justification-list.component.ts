@@ -21,6 +21,7 @@ export class IntStdJustificationListComponent implements OnInit, OnDestroy{
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
   tasks: ListJustification[] = [];
+  blob: Blob;
   public actionRequest: ListJustification | undefined;
   constructor(
       private stdIntStandardService : StdIntStandardService,
@@ -57,6 +58,28 @@ export class IntStdJustificationListComponent implements OnInit, OnDestroy{
         }
     );
   }
+    viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
+        this.SpinnerService.show();
+        this.stdIntStandardService.viewJustificationPDF(pdfId).subscribe(
+            (dataPdf: any) => {
+                this.SpinnerService.hide();
+                this.blob = new Blob([dataPdf], {type: applicationType});
+
+                // tslint:disable-next-line:prefer-const
+                let downloadURL = window.URL.createObjectURL(this.blob);
+                const link = document.createElement('a');
+                link.href = downloadURL;
+                link.download = fileName;
+                link.click();
+                // this.pdfUploadsView = dataPdf;
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error opening document`);
+                alert(error.message);
+            }
+        );
+    }
   public onOpenModal(task: ListJustification,mode:string): void{
     const container = document.getElementById('main-container');
     const button = document.createElement('button');

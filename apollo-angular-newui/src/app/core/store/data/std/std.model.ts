@@ -478,6 +478,8 @@ export interface JSListTaskData {
     comment_time: string;
     proposal_doc_name: string;
     ID: number;
+    tcCommittee: string;
+    departmentName: string;
 }
 export interface ISJustificationDecision {
     taskId: string;
@@ -510,6 +512,8 @@ export interface ISSacSecTaskData {
     comment_time: string;
     proposal_doc_name: string;
     ID: number;
+    tcCommittee: string;
+    departmentName: string;
 }
 export interface ISHopTASKS {
     taskId: string;
@@ -536,6 +540,8 @@ export interface ISHopTaskData {
     comment_time: string;
     proposal_doc_name: string;
     ID: number;
+    tcCommittee: string;
+    departmentName: string;
 }
 export interface ISStandard {
     id: number;

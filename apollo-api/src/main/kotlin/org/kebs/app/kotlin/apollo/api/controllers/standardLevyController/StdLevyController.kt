@@ -468,10 +468,10 @@ class StdLevyController(
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun submitRegistrationDetails(
        // @RequestParam( "companyProfileID") companyProfileID: Long,
-        @ModelAttribute stdLevyNotificationFormEntity: StdLevyNotificationFormEntity,
+        @RequestBody stdLevyNotificationFormEntity: StdLevyNotificationFormEntity,
         @ModelAttribute("companyProfileEntity") companyProfileEntity: CompanyProfileEntity,
-        @RequestParam  manufacturer: ManufacturersEntity,
-        @RequestParam companySl1DTO: CompanySl1DTO,
+        @RequestBody  manufacturer: ManufacturersEntity,
+        @RequestBody companySl1DTO: CompanySl1DTO,
         s: ServiceMapsEntity,
         sr: ServiceRequestsEntity,
         model: Model
@@ -496,15 +496,15 @@ class StdLevyController(
 
 
         daoServices.manufacturersInit(manufacturer, sr, loggedInUser, s)
-//        result = daoServices.closeManufactureRegistrationDetails(map, loggedInUser, myDetails)
-//        //Generation of Entry Number
-//        daoServices.generateEntryNumberDetails(map, loggedInUser)
-//        daoServices.manufacturerStdLevyInit(stdLevyNotificationFormEntity, manufacturer, companySl1DTO, s, sr)
-////        val sm = CommonDaoServices.MessageSuccessFailDTO()
-//        sm.closeLink = "${applicationMapProperties.baseUrlValue}/user/user-profile?userName=${loggedInUser.userName}"
-//        sm.message = "You have Successful Register, Email Has been sent with Entry Number "
+        result = daoServices.closeManufactureRegistrationDetails(map, loggedInUser, myDetails)
+        //Generation of Entry Number
+        daoServices.generateEntryNumberDetails(map, loggedInUser)
+       daoServices.manufacturerStdLevyInit(stdLevyNotificationFormEntity, manufacturer, companySl1DTO, s, sr)
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/user/user-profile?userName=${loggedInUser.userName}"
+       sm.message = "You have Successful Register, Email Has been sent with Entry Number "
 
-//        return commonDaoServices.returnValues(result, map, sm)
-        return "Executed"
+       return commonDaoServices.returnValues(result, map, sm)
+       // return "Executed"
     }
 }

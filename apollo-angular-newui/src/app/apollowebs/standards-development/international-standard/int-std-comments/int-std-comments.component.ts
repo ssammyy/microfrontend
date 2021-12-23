@@ -15,6 +15,7 @@ import {selectUserInfo} from "../../../../core/store";
 })
 export class IntStdCommentsComponent implements OnInit,OnDestroy {
   fullname = '';
+  blob: Blob;
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
   tasks: ProposalComments[] = [];
@@ -55,7 +56,30 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
           this.SpinnerService.hide();
         },
         (error: HttpErrorResponse)=>{
+            this.SpinnerService.hide();
           alert(error.message);
+        }
+    );
+  }
+  viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
+    this.SpinnerService.show();
+    this.stdIntStandardService.viewProposalPDF(pdfId).subscribe(
+        (dataPdf: any) => {
+          this.SpinnerService.hide();
+          this.blob = new Blob([dataPdf], {type: applicationType});
+
+          // tslint:disable-next-line:prefer-const
+          let downloadURL = window.URL.createObjectURL(this.blob);
+          const link = document.createElement('a');
+          link.href = downloadURL;
+          link.download = fileName;
+          link.click();
+          // this.pdfUploadsView = dataPdf;
+        },
+        (error: HttpErrorResponse) => {
+            this.SpinnerService.hide();
+            this.showToasterError('Error', `Error opening document`);
+            alert(error.message);
         }
     );
   }

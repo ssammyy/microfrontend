@@ -175,8 +175,8 @@ class ComStandardController (val comStandardService: ComStandardService,
     @ResponseBody
     fun uploadDraft(@RequestBody comStdDraft: ComStdDraft): ServerResponse{
 
-        val gson = Gson()
-        KotlinLogging.logger { }.info { "WORKSHOP DRAFT" + gson.toJson(comStdDraft) }
+//        val gson = Gson()
+//        KotlinLogging.logger { }.info { "WORKSHOP DRAFT" + gson.toJson(comStdDraft) }
         return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",comStandardService.uploadDraft(comStdDraft))
     }
 
@@ -238,9 +238,9 @@ class ComStandardController (val comStandardService: ComStandardService,
     @GetMapping("/view/comDraft")
     fun viewCompanyDraftFile(
         response: HttpServletResponse,
-        @RequestParam("comDraftDocumentId") comDraftDocumentId: Long
+        @RequestParam("comStdDraftID") comStdDraftID: Long
     ) {
-        val fileUploaded = comStandardService.findUploadedCDRFileBYId(comDraftDocumentId)
+        val fileUploaded = comStandardService.findUploadedCDRFileBYId(comStdDraftID)
         val fileDoc = commonDaoServices.mapClass(fileUploaded)
         response.contentType = "application/pdf"
 //                    response.setHeader("Content-Length", pdfReportStream.size().toString())
@@ -374,9 +374,9 @@ class ComStandardController (val comStandardService: ComStandardService,
     @GetMapping("/view/comStandard")
     fun viewStandardFile(
         response: HttpServletResponse,
-        @RequestParam("comStdDocumentId") comStdDocumentId: Long
+        @RequestParam("comStandardID") comStandardID: Long
     ) {
-        val fileUploaded = comStandardService.findUploadedSTDFileBYId(comStdDocumentId)
+        val fileUploaded = comStandardService.findUploadedSTDFileBYId(comStandardID)
         val fileDoc = commonDaoServices.mapClass(fileUploaded)
         response.contentType = "application/pdf"
 //                    response.setHeader("Content-Length", pdfReportStream.size().toString())
