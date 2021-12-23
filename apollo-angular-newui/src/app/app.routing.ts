@@ -679,7 +679,7 @@ export const routes: Routes = [
         children: [{path: '', component: RoleSwitcherComponent}]
     },
     {
-        path: 'levyRegistration', component: AdminLayoutComponent,
+        path: 'standardsLevy/levyRegistration', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [{path: '', component: CustomerRegistrationComponent}]
     },

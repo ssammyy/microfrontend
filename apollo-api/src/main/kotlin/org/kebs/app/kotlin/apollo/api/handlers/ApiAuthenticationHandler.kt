@@ -44,9 +44,9 @@ class ApiAuthenticationHandler(
 
     fun generateOtp(req: ServerRequest): ServerResponse {
         val reqBody = req.body<OtpRequestValuesDto>()
-        KotlinLogging.logger {  }.info { "Username received: ${reqBody.username}" }
+        KotlinLogging.logger {  }.info { "Email received: ${reqBody.username}" }
         return reqBody.username?.let {
-            usersRepo.findByUserName(it)
+            usersRepo.findByEmail(it.toLowerCase())
                 ?.let { user ->
 //                    val otp = generateTransactionReference(8).toUpperCase()
                     val otp = commonDaoServices.randomNumber(6)
@@ -63,6 +63,7 @@ class ApiAuthenticationHandler(
                     val otpResponseDto = OtpResponseDto()
                     otpResponseDto.message = response
                     otpResponseDto.otp = token.token
+
 
                     ServerResponse.ok().body(otpResponseDto)
                 }
@@ -118,7 +119,7 @@ class ApiAuthenticationHandler(
 
             SecurityContextHolder.getContext().authentication = auth
 
-            usersRepo.findByUserName(auth.name)
+            usersRepo.findByEmail(auth.name)
                 ?.let { user ->
                     val request = ServletServerHttpRequest(req.servletRequest())
                     val token =
@@ -131,7 +132,7 @@ class ApiAuthenticationHandler(
                         user.userName,
                         user.email,
                         commonDaoServices.concatenateName(user),
-                        roles
+                        roles,
                     ).apply {
                         /**
                          * TODO: Set expiry padding configuration  check this time stamp is false
@@ -141,6 +142,9 @@ class ApiAuthenticationHandler(
 //                        expiry = timestamp
                         expiry =
                             LocalDateTime.now().plusMinutes(authenticationProperties.jwtExpirationMs).minusSeconds(20L)
+                        companyID = user.companyId
+                        branchID = user.plantId
+
                     }
 
                     /**

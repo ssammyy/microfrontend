@@ -20,114 +20,163 @@ type="ball-scale-multiple"
 </div>
 </div>
 <div class="card-body">
-<div class="toolbar">
+    <div class="toolbar">
 
-</div>
-    <div *ngFor="let companyDetail of companyDetails"  class="row col-12">
-        <div *ngIf="companyDetail.manufactureStatus==1"  class="row col-12">
-    <form (ngSubmit)="onClickSaveSL1()" [formGroup]="manufacturerInfoForm" class="form col-12"
-          enctype="multipart/form-data" >
-        <h3 style="color: #0d0505; font-weight: bold">SL1 Form</h3>
-        <h5>Kindly Fill the details below</h5>
-        <div class="form-body">
-        <div class="row">
-            <div class="form-group col-6">
-                <label for="businessCompanyName1">Business/Company Name <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                <input type="text"  class="form-control" ngModel="{{companyDetail.name}}" id="businessCompanyName1" formControlName="businessCompanyName"  name="businessCompanyName"
-                       placeholder="Business/Company Name" disabled >
+    </div>
+    <div class="form-wizard">
 
-            </div>
+        <div *ngFor="let companyDetail of companyDetails" class="row col-12">
+            <div *ngIf="companyDetail.manufactureStatus==1" class="row col-12">
 
-            <div class="form-group col-6">
-                <label for="plotNumber1">Plot Number<span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                <input type="text" ngModel="{{companyDetail.plotNumber}}"  class="form-control" id="plotNumber1" formControlName="plotNumber"  name="plotNumber"
-                       placeholder="Plot Number" disabled>
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-6">
-                <label for="roadStreet1">Road / Street  <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                <input type="text" ngModel="{{companyDetail.streetName}}" class="form-control" id="roadStreet1"  formControlName="roadStreet"  name="roadStreet"
-                       placeholder="Road / Street " disabled>
-            </div>
-            <div class="form-group col-6">
-                <label for="postalAddress1">Postal Address <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                <input type="text" ngModel="{{companyDetail.postalAddress}}" class="form-control" id="postalAddress1" formControlName="postalAddress"  name="postalAddress"
-                       placeholder="Postal Address" disabled>
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-6">
-                <label for="telephone1">Telephone<span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                <input type="text" ngModel="{{companyDetail.companyTelephone}}" class="form-control" id="telephone1" formControlName="telephone" name="telephone"
-                       placeholder="Telephone" disabled>
-            </div>
-        </div>
-            <div class="row">
-                <div class="form-group col-12">
-                    <label for="mainPhysicalLocation1">Main Physical Location <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                    <textarea type="text" ngModel="{{companyDetail.physicalAddress}}" class="form-control" id="mainPhysicalLocation1"  name="mainPhysicalLocation"
-                              formControlName="mainPhysicalLocation" placeholder="Main Physical Location" disabled></textarea>
+                <form (ngSubmit)="onClickSaveSL1(manufacturerInfoForm.valid)" [formGroup]="manufacturerInfoForm"
+                      class="form col-12"
+                      enctype="multipart/form-data">
 
-                </div>
-            </div>
-        <div class="row">
-            <div class="form-group col-12">
-                <label for="NameAndBusinessOfProprietors1">Name and Business of Proprietors and Partners; and In the case of Companies, the Chief Executive and Directors<span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                <textarea  type="text"  id="NameAndBusinessOfProprietors1" ngModel="{{companyDetail.directorIdNumber}}"  name="NameAndBusinessOfProprietors" formControlName="NameAndBusinessOfProprietors" class="form-control" placeholder="" disabled></textarea>
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-12">
-                <label for="AllCommoditiesManufuctured1">All Commodities Manufactured or to be Manufactured<span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                <textarea [class.is-invalid]="manufacturerInfo.AllCommoditiesManufuctured.invalid && manufacturerInfo.AllCommoditiesManufuctured.touched" type="text"  id="AllCommoditiesManufuctured1" formControlName="AllCommoditiesManufuctured" name="AllCommoditiesManufuctured" class="form-control" placeholder=""></textarea>
-            </div>
+                    <div class="row">
+                        <div class="col-md-6 ml-auto mr-auto">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <h3 style="color: #0d0505; font-weight: bold">SL1 Form</h3>
 
-        </div>
-        <div class="row">
-            <div class="form-group col-6">
-                <label for="DateOfManufacture1">Date upon which Manufacture Commenced or will Commence <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                <input type="date"
-                       [class.is-invalid]="manufacturerInfo.DateOfManufacture.invalid && manufacturerInfo.DateOfManufacture.touched"
-                       class="form-control" id="DateOfManufacture1"
-                       formControlName="DateOfManufacture"
-                       name="DateOfManufacture" class="form-control" placeholder="" >
-            </div>
-            <div class="form-group col-6">
-                <label for="totalValueOfManufacture1">Total value of Manufacture in last Calender Year KSH</label>
-                <input type="number"
-                       [class.is-invalid]="manufacturerInfo.totalValueOfManufacture.invalid && manufacturerInfo.totalValueOfManufacture.touched"
-                       class="form-control" id="totalValueOfManufacture1" formControlName="totalValueOfManufacture"
-                       name="totalValueOfManufacture" class="form-control" placeholder="Total value of Manufacture in last Calender Year KSH" min="0" step="0"
-                       oninput="validity.valid||(value='');">
-            </div>
-            <input type="hidden" ngModel="{{companyDetail.id}}" class="form-control" id="companyProfileID1" formControlName="companyProfileID" name="companyProfileID"
-            >
-            <input type="hidden" ngModel="{{companyDetail.registrationNumber}}" class="form-control" id="registrationNumber1" formControlName="registrationNumber" name="registrationNumber"
-            >
-        </div>
+                                    <h5>Kindly Fill The Details With An Asterisk Below.</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <h4 style=" color: red;">If you have branches kindly add them here</h4>
-        <div class="row">
-            <div class="form-group col-6">
-                <label for="nameOfBranch1">Name of Branch <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                <input type="text" ngModel="" class="form-control" id="nameOfBranch1" formControlName="nameOfBranch" name="nameOfBranch"
-                       placeholder="Name of Branch" >
-            </div>
-                <div class="form-group col-6">
-                    <label for="location1">Location <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                    <input type="text" ngModel="" class="form-control" id="location1" formControlName="location" name="location"
-                           placeholder="Location" >
+                    <div class="form-body">
+                        <div class="row">
+                            <div class="form-group col-6">
+                                <label for="businessCompanyName1">Business/Company Name </label>
+                                <input type="text" class="form-control" ngModel="{{companyDetail.name}}"
+                                       id="businessCompanyName1" formControlName="businessCompanyName"
+                                       name="businessCompanyName"
+                                       placeholder="Business/Company Name" disabled>
 
-                </div>
-            <!--<div class="col-4">-->
-            <!--<label for="location">Location<span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
-            <!--<input type="text"  class="form-control" id="location"  name="location"-->
-            <!--placeholder="Location" >-->
-            <!--</div>-->
-            <!--<div class="col-4">-->
-            <!--<label for="plotNumber">Plot Number <span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
-            <!--<input type="text" class="form-control" id="plotNumber"  name="plotNumber"-->
+                            </div>
+
+                            <div class="form-group col-6">
+                                <label for="plotNumber1">Plot Number</label>
+                                <input type="text" ngModel="{{companyDetail.plotNumber}}" class="form-control"
+                                       id="plotNumber1" formControlName="plotNumber" name="plotNumber"
+                                       placeholder="Plot Number" disabled>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-4">
+                                <label for="roadStreet1">Road / Street </label>
+                                <input type="text" ngModel="{{companyDetail.streetName}}" class="form-control"
+                                       id="roadStreet1" formControlName="roadStreet" name="roadStreet"
+                                       placeholder="Road / Street " disabled>
+                            </div>
+                            <div class="form-group col-4">
+                                <label for="postalAddress1">Postal Address </label>
+                                <input type="text" ngModel="{{companyDetail.postalAddress}}" class="form-control"
+                                       id="postalAddress1" formControlName="postalAddress" name="postalAddress"
+                                       placeholder="Postal Address" disabled>
+                            </div>
+                            <div class="form-group col-4">
+                                <label for="telephone1">Telephone</label>
+                                <input type="text" ngModel="{{companyDetail.companyTelephone}}" class="form-control"
+                                       id="telephone1" formControlName="telephone" name="telephone"
+                                       placeholder="Telephone" disabled>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-12">
+                                <label for="mainPhysicalLocation1">Main Physical Location </label>
+                                <textarea type="text" ngModel="{{companyDetail.physicalAddress}}" class="form-control"
+                                          id="mainPhysicalLocation1" name="mainPhysicalLocation"
+                                          formControlName="mainPhysicalLocation" placeholder="Main Physical Location"
+                                          disabled></textarea>
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-12">
+                                <label for="NameAndBusinessOfProprietors1">Name and Business of Proprietors and
+                                    Partners; and In the
+                                    case of Companies, the Chief Executive and Directors</label>
+                                <textarea type="text" id="NameAndBusinessOfProprietors1"
+                                          ngModel="{{companyDetail.directorIdNumber}}"
+                                          name="NameAndBusinessOfProprietors"
+                                          formControlName="NameAndBusinessOfProprietors" class="form-control"
+                                          placeholder="" disabled></textarea>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-12">
+                                <label for="AllCommoditiesManufuctured1">All Commodities Manufactured or to be
+                                    Manufactured<span
+                                            style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <textarea
+                                        [class.is-invalid]="manufacturerInfo.AllCommoditiesManufuctured.invalid && manufacturerInfo.AllCommoditiesManufuctured.touched"
+                                        type="text" id="AllCommoditiesManufuctured1"
+                                        formControlName="AllCommoditiesManufuctured" name="AllCommoditiesManufuctured"
+                                        class="form-control" placeholder=""></textarea>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-6">
+                                <label for="DateOfManufacture1">Date upon which Manufacture Commenced or will Commence
+                                    <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <input type="date"
+                                       [class.is-invalid]="manufacturerInfo.DateOfManufacture.invalid && manufacturerInfo.DateOfManufacture.touched"
+                                       class="form-control" id="DateOfManufacture1"
+                                       formControlName="DateOfManufacture"
+                                       name="DateOfManufacture" placeholder="">
+                            </div>
+                            <div class="form-group col-6">
+                                <label for="totalValueOfManufacture1">Total value of Manufacture in last Calender Year
+                                    KSH <span
+                                            style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <input type="number"
+                                       [class.is-invalid]="manufacturerInfo.totalValueOfManufacture.invalid && manufacturerInfo.totalValueOfManufacture.touched"
+                                       class="form-control" id="totalValueOfManufacture1"
+                                       formControlName="totalValueOfManufacture"
+                                       name="totalValueOfManufacture"
+                                       placeholder="Total value of Manufacture in last Calender Year KSH"
+                                       min="0" step="0" required
+                                       oninput="validity.valid||(value='');">
+                            </div>
+                            <input type="hidden" ngModel="{{companyDetail.id}}" class="form-control"
+                                   id="companyProfileID1" formControlName="companyProfileID" name="companyProfileID"
+                            >
+                            <input type="hidden" ngModel="{{companyDetail.registrationNumber}}" class="form-control"
+                                   id="companyRegID1" formControlName="registrationNumber" name="registrationNumber">
+                            <input type="hidden" ngModel="{{companyDetail.kraPin}}" class="form-control"
+                                   id="companyKRAID1" formControlName="kraPin" name="kraPin">
+                        </div>
+
+                        <h4 style=" color: red;">If you have branches kindly add them here</h4>
+                        <div class="row">
+                            <div class="form-group col-6">
+                                <label for="nameOfBranch1">Name of Branch <span
+                                        style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <input type="text" ngModel="" class="form-control" id="nameOfBranch1"
+                                       formControlName="nameOfBranch"
+                                       name="nameOfBranch"
+                                       placeholder="Name of Branch" required>
+                            </div>
+                            <div class="form-group col-6">
+                                <label for="location1">Location <span
+                                        style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <input type="text" ngModel="" class="form-control" id="location1"
+                                       formControlName="location"
+                                       name="location"
+                                       placeholder="Location" required>
+
+                            </div>
+                            <!--<div class="col-4">-->
+                            <!--<label for="location">Location<span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
+                            <!--<input type="text"  class="form-control" id="location"  name="location"-->
+                            <!--placeholder="Location" >-->
+                            <!--</div>-->
+                            <!--<div class="col-4">-->
+                            <!--<label for="plotNumber">Plot Number <span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
+                            <!--<input type="text" class="form-control" id="plotNumber"  name="plotNumber"-->
             <!--placeholder="Plot Number" required="">-->
             <!--</div>-->
             <!--<div class="col-2">-->
@@ -142,90 +191,112 @@ type="ball-scale-multiple"
             <!--<br><br>-->
             <!--</div>-->
         </div>
-        <!--<div class="material-datatables" >-->
-        <!--<div class="table-responsive">-->
-        <!--<table id="datatables" class="table table-striped table-bordered table-hover"-->
-        <!--&gt;-->
-        <!--<thead>-->
-        <!--<tr>-->
-        <!--<th>Location</th>-->
-        <!--<th>Plot Number</th>-->
-        <!--<th>Action</th>-->
-        <!--</tr>-->
-        <!--</thead>-->
-        <!--<tbody>-->
-        <!--<tr *ngFor="let r of manufacturerBranchDetails; let i=index">-->
-        <!--<td>{{r.location}}</td>-->
-        <!--<td>{{r.plotNumber}}</td>-->
-        <!--<td><button (click)="removeBranches(i)"-->
-        <!--type="button" class="btn btn-warning btn-sm">-->
-        <!--<span class="" aria-hidden="true">Remove</span>-->
-        <!--</button></td>-->
-        <!--</tr>-->
-        <!--</tbody>-->
-        <!--</table>-->
-        <!--</div>-->
-        <!--</div>-->
+                        <!--<div class="material-datatables" >-->
+                        <!--<div class="table-responsive">-->
+                        <!--<table id="datatables" class="table table-striped table-bordered table-hover"-->
+                        <!--&gt;-->
+                        <!--<thead>-->
+                        <!--<tr>-->
+                        <!--<th>Location</th>-->
+                        <!--<th>Plot Number</th>-->
+                        <!--<th>Action</th>-->
+                        <!--</tr>-->
+                        <!--</thead>-->
+                        <!--<tbody>-->
+                        <!--<tr *ngFor="let r of manufacturerBranchDetails; let i=index">-->
+                        <!--<td>{{r.location}}</td>-->
+                        <!--<td>{{r.plotNumber}}</td>-->
+                        <!--<td><button (click)="removeBranches(i)"-->
+                        <!--type="button" class="btn btn-warning btn-sm">-->
+                        <!--<span class="" aria-hidden="true">Remove</span>-->
+                        <!--</button></td>-->
+                        <!--</tr>-->
+                        <!--</tbody>-->
+                        <!--</table>-->
+                        <!--</div>-->
+                        <!--</div>-->
 
-            <div class="row col-12 float-right " style="margin: 3em 0 2em 0">
-                <button  class="btn btn-sm btn-primary float-right" type="submit">Apply</button>
+                        <div class="col-md-3 ml-auto " style="margin: 3em 0 2em 0">
+                            <button class="btn  btn-success float-left" type="submit">Apply</button>
 
+                        </div>
+                    </div>
+                </form>
             </div>
-        </div>
-    </form>
+            <div *ngIf="companyDetail.manufactureStatus!=1" class="row col-12">
+                <form (ngSubmit)="onClickSaveManufacturing(manufacturingInfoForm.valid)"
+                      [formGroup]="manufacturingInfoForm"
+                      class="form col-12"
+                      enctype="multipart/form-data">
 
-    </div>
-    <div *ngIf="companyDetail.manufactureStatus!=1"  class="row col-12">
-        <form (ngSubmit)="onClickSaveManufacturing(manufacturingInfoForm.valid)" [formGroup]="manufacturingInfoForm" class="form col-12"
-              enctype="multipart/form-data" >
-            <h3 style="color: #0d0505; font-weight: bold">SL1C</h3>
-            <h5>Kindly Fill the details below</h5>
-            <div class="form-body">
-                <div class="row">
-                    <div class="form-group col-6">
-                        <label for="businessCompanyName2">Business/Company Name <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                        <input type="text"  class="form-control" ngModel="{{companyDetail.name}}" id="businessCompanyName2"  name="businessCompanyName"
-                               formControlName="businessCompanyName"   placeholder="Business/Company Name" disabled>
+                    <div class="col-md-6 ml-auto mr-auto">
+                        <h3 style="color: #0d0505; font-weight: bold">SL1C</h3>
 
+                        <h5>Kindly Fill the details below</h5>
                     </div>
+                    <div class="form-body">
+                        <div class="row">
+                            <div class="form-group col-6">
+                                <label for="businessCompanyName2">Business/Company Name <span
+                                        style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <input type="text" class="form-control" ngModel="{{companyDetail.name}}"
+                                       id="businessCompanyName2" name="businessCompanyName"
+                                       formControlName="businessCompanyName" placeholder="Business/Company Name"
+                                       disabled>
 
-                    <div class="form-group col-6">
-                        <label for="plotNumber2">Plot Number<span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                        <input type="text" ngModel="{{companyDetail.plotNumber}}"  class="form-control" id="plotNumber2"  name="plotNumber"
-                               formControlName="plotNumber"   placeholder="Plot Number" disabled>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group col-6">
-                        <label for="roadStreet2">Road / Street  <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                        <input type="text" ngModel="{{companyDetail.streetName}}" class="form-control" id="roadStreet2"  name="roadStreet"
-                               formControlName="roadStreet"  placeholder="Road / Street " disabled >
-                    </div>
-                    <div class="form-group col-6">
-                        <label for="postalAddress2">Postal Address <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                        <input type="text" ngModel="14{{companyDetail.postalAddress}}" class="form-control" id="postalAddress2"  name="postalAddress"
-                               formControlName="postalAddress" placeholder="Postal Address" disabled>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group col-6">
-                        <label for="telephone2">Telephone<span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                        <input type="text" ngModel="{{companyDetail.companyTelephone}}" class="form-control" id="telephone2"  name="telephone"
-                               formControlName="telephone" placeholder="Telephone" disabled>
-                    </div>
+                            </div>
 
-                </div>
-                <div class="row">
-                    <div class="form-group col-12">
-                        <label for="NameAndBusinessOfProprietors2">Name and Business of Proprietors and Partners; and In the case of Companies, the Chief Executive and Directors<span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                        <textarea  type="text"  id="NameAndBusinessOfProprietors2"  name="NameAndBusinessOfProprietors" formControlName="NameAndBusinessOfProprietors" ngModel="{{companyDetail.directorIdNumber}}" class="form-control" placeholder="" disabled></textarea>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group col-12">
-                        <label for="mainPhysicalLocation2">Main Physical Location <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                        <textarea type="text" ngModel="{{companyDetail.physicalAddress}}" class="form-control" id="mainPhysicalLocation2"  name="mainPhysicalLocation"
-                                  formControlName="mainPhysicalLocation" placeholder="Main Physical Location"></textarea>
+                            <div class="form-group col-6">
+                                <label for="plotNumber2">Plot Number<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <input type="text" ngModel="{{companyDetail.plotNumber}}" class="form-control"
+                                       id="plotNumber2" name="plotNumber"
+                                       formControlName="plotNumber" placeholder="Plot Number" disabled>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-6">
+                                <label for="roadStreet2">Road / Street <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <input type="text" ngModel="{{companyDetail.streetName}}" class="form-control"
+                                       id="roadStreet2" name="roadStreet"
+                                       formControlName="roadStreet" placeholder="Road / Street " disabled>
+                            </div>
+                            <div class="form-group col-6">
+                                <label for="postalAddress2">Postal Address <span
+                                        style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <input type="text" ngModel="14{{companyDetail.postalAddress}}" class="form-control"
+                                       id="postalAddress2" name="postalAddress"
+                                       formControlName="postalAddress" placeholder="Postal Address" disabled>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-6">
+                                <label for="telephone2">Telephone<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <input type="text" ngModel="{{companyDetail.companyTelephone}}" class="form-control"
+                                       id="telephone2" name="telephone"
+                                       formControlName="telephone" placeholder="Telephone" disabled>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-12">
+                                <label for="NameAndBusinessOfProprietors2">Name and Business of Proprietors and
+                                    Partners; and In the case of Companies, the Chief Executive and Directors<span
+                                            style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <textarea type="text" id="NameAndBusinessOfProprietors2"
+                                          name="NameAndBusinessOfProprietors"
+                                          formControlName="NameAndBusinessOfProprietors"
+                                          ngModel="{{companyDetail.directorIdNumber}}" class="form-control"
+                                          placeholder="" disabled></textarea>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-12">
+                                <label for="mainPhysicalLocation2">Main Physical Location <span
+                                        style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <textarea type="text" ngModel="{{companyDetail.physicalAddress}}" class="form-control"
+                                          id="mainPhysicalLocation2" name="mainPhysicalLocation"
+                                          formControlName="mainPhysicalLocation"
+                                          placeholder="Main Physical Location"></textarea>
 
                     </div>
                 </div>
@@ -245,15 +316,23 @@ type="ball-scale-multiple"
                                name="DateOfManufacture" class="form-control" formControlName="DateOfManufacture" placeholder="" >
                     </div>
                     <div class="form-group col-6">
-                        <label for="totalValueOfManufacture2">Total value of Manufacture in last Calender Year KSH</label>
+                        <label for="totalValueOfManufacture2">Total value of Manufacture in last Calender Year
+                            KSH</label>
                         <input type="number"
                                [class.is-invalid]="manufacturingInfo.totalValueOfManufacture.invalid && manufacturingInfo.totalValueOfManufacture.touched"
-                               class="form-control" id="totalValueOfManufacture2" formControlName="totalValueOfManufacture"
-                               name="totalValueOfManufacture" class="form-control" placeholder="Total value of Manufacture in last Calender Year KSH" min="0" step="0"
+                               class="form-control" id="totalValueOfManufacture2"
+                               formControlName="totalValueOfManufacture"
+                               name="totalValueOfManufacture" class="form-control"
+                               placeholder="Total value of Manufacture in last Calender Year KSH" min="0" step="0"
                                oninput="validity.valid||(value='');">
                     </div>
-                    <input type="hidden" ngModel="{{companyDetail.id}}" class="form-control" id="companyProfileID2" formControlName="companyProfileID" name="companyProfileID"
+                    <input type="hidden" ngModel="{{companyDetail.id}}" class="form-control" id="companyProfileID2"
+                           formControlName="companyProfileID" name="companyProfileID"
                     >
+                    <input type="hidden" ngModel="{{companyDetail.registrationNumber}}" class="form-control"
+                           id="companyRegID" formControlName="companyProfileID" name="companyRegID">
+                    <input type="hidden" ngModel="{{companyDetail.kraPin}}" class="form-control"
+                           id="companyKRAID" formControlName="companyProfileID" name="companyKRAID">
 
                 </div>
 
@@ -293,39 +372,40 @@ type="ball-scale-multiple"
                     <!--<br><br>-->
                     <!--</div>-->
                 </div>
-                <!--<div class="material-datatables" >-->
-                <!--<div class="table-responsive">-->
-                <!--<table id="datatables" class="table table-striped table-bordered table-hover"-->
-                <!--&gt;-->
-                <!--<thead>-->
-                <!--<tr>-->
-                <!--<th>Location</th>-->
-                <!--<th>Plot Number</th>-->
-                <!--<th>Action</th>-->
-                <!--</tr>-->
-                <!--</thead>-->
-                <!--<tbody>-->
-                <!--<tr *ngFor="let r of manufacturerBranchDetails; let i=index">-->
-                <!--<td>{{r.location}}</td>-->
-                <!--<td>{{r.plotNumber}}</td>-->
-                <!--<td><button (click)="removeBranches(i)"-->
-                <!--type="button" class="btn btn-warning btn-sm">-->
-                <!--<span class="" aria-hidden="true">Remove</span>-->
-                <!--</button></td>-->
-                <!--</tr>-->
-                <!--</tbody>-->
-                <!--</table>-->
-                <!--</div>-->
-                <!--</div>-->
+                        <!--<div class="material-datatables" >-->
+                        <!--<div class="table-responsive">-->
+                        <!--<table id="datatables" class="table table-striped table-bordered table-hover"-->
+                        <!--&gt;-->
+                        <!--<thead>-->
+                        <!--<tr>-->
+                        <!--<th>Location</th>-->
+                        <!--<th>Plot Number</th>-->
+                        <!--<th>Action</th>-->
+                        <!--</tr>-->
+                        <!--</thead>-->
+                        <!--<tbody>-->
+                        <!--<tr *ngFor="let r of manufacturerBranchDetails; let i=index">-->
+                        <!--<td>{{r.location}}</td>-->
+                        <!--<td>{{r.plotNumber}}</td>-->
+                        <!--<td><button (click)="removeBranches(i)"-->
+                        <!--type="button" class="btn btn-warning btn-sm">-->
+                        <!--<span class="" aria-hidden="true">Remove</span>-->
+                        <!--</button></td>-->
+                        <!--</tr>-->
+                        <!--</tbody>-->
+                        <!--</table>-->
+                        <!--</div>-->
+                        <!--</div>-->
 
-                <div class="row col-12 float-right " style="margin: 3em 0 2em 0">
-                    <button  class="btn btn-sm btn-primary float-right" type="submit">Apply</button>
+                        <div class="row col-12 float-right " style="margin: 3em 0 2em 0">
+                            <button class="btn btn-sm btn-primary float-right" type="submit">Apply</button>
 
-                </div>
+                        </div>
+                    </div>
+
+                </form>
             </div>
-
-        </form>
-    </div>
+        </div>
     </div>
 </div>
 </div>

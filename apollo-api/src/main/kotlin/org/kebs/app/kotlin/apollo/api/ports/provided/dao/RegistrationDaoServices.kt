@@ -1054,13 +1054,11 @@ class RegistrationDaoServices(
     }
 
 
-    private fun manufacturersInit(
+    public fun manufacturersInit(
         manufacturersEntity: ManufacturersEntity,
         sr: ServiceRequestsEntity,
         user: UsersEntity,
-        s: ServiceMapsEntity,
-        brs: BrsLookUpRecords
-    ): ManufacturersEntity {
+        s: ServiceMapsEntity): ManufacturersEntity {
         var manufacturer = manufacturersEntity
         with(manufacturer) {
 //            businessLineId = manufacturersEntity.confirmLineBusinessId?.let { commonDaoServices.findBusinessLineEntityByID(it, s.activeStatus) }
@@ -1070,13 +1068,13 @@ class RegistrationDaoServices(
             userId = user
             version = s.initStatus
             createdOn = Date(Date().time)
-            createdBy = user?.id
+            createdBy = user.id
             name= commonDaoServices.concatenateName(user)
-            kraPin= brs.kraPin
-            registrationNumber= brs.registrationNumber
-            postalAddress= brs.postalAddress
-            companyEmail = brs.email
-            companyTelephone = brs.phoneNumber
+            kraPin= manufacturersEntity.kraPin
+            registrationNumber= manufacturersEntity.registrationNumber
+            postalAddress= manufacturersEntity.postalAddress
+            companyEmail = manufacturersEntity.companyEmail
+            companyTelephone = manufacturersEntity.companyTelephone
         }
 
         manufacturer = manufacturersRepo.save(manufacturer)
