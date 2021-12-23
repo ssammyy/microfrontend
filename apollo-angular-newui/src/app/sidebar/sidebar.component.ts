@@ -110,7 +110,21 @@ export const ROUTES: RouteInfo[] = [
         type: 'link',
         icontype: 'task',
         privilege: 'PERMIT_APPLICATION',
-    }
+    },
+    {
+        path: '/standardsLevy',
+        title: 'Standards Levy',
+        type: 'sub',
+        icontype: 'receipt',
+        privilege: 'PERMIT_APPLICATION',
+        collapse: 'standardsLevy',
+        children: [
+            {path: 'levyRegistration', title: 'View SL Form', ab: 'SL'},
+            {path: 'stdLevyPaidHistory', title: 'Payment History', ab: 'PH'},
+            {path: 'stdLevyPenalties', title: 'Penalties', ab: 'PE'},
+
+        ]
+    },
 ];
 
 @Component({

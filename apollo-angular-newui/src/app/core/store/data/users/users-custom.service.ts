@@ -100,11 +100,12 @@ export class UsersCustomService extends DefaultDataService<User> {
       (d) => {
         if (d) { return branch = d; } else { return throwError('Invalid request, Company id is required inside'); }
       });
+      myUrl = `${this.baseUrl}${company}/branches/${branch}/users`;
+      console.log(`Revised url = ${myUrl} `)
 
 
     if (company) {
       myUrl = `${this.baseUrl}${company}/branches/${branch}/users`;
-      // console.log(`Revised url = ${baseUrl}${data}/branches/ `)
       return this.http.get<User[]>(myUrl).pipe(
         map((response: User[]) => response),
         catchError((fault: HttpErrorResponse) => throwError(fault))

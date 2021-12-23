@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {
   CompanyModel,
   ManufactureBranchDto,
-  ManufactureInfo, ManufacturePenalty,
+  ManufactureInfo,
   ManufacturingBranchDto,
   ManufacturingInfo
 } from "../../../../core/store/data/levy/levy.model";
@@ -65,7 +65,10 @@ export class CustomerRegistrationComponent implements OnInit {
       location: ['', Validators.required],
       registrationNo: [],
       nameOfBranch: ['', Validators.required],
-      companyProfileID: []
+      companyProfileID: [],
+      registrationNumber: [],
+      kraPin: []
+
 
 
     });
@@ -126,61 +129,23 @@ export class CustomerRegistrationComponent implements OnInit {
   get manufacturingInfo(): any {
     return this.manufacturingInfoForm.controls;
   }
+
   get formBranchFormA(): any {
     return this.branchFormA.controls;
   }
+
   get formBranchFormB(): any {
     return this.branchFormB.controls;
   }
-  onClickPrevious() {
-    if (this.step > 1) {
-      this.step = this.step - 1;
-    } else {
-      this.step = 1;
-    }
-  }
 
-  onClickNext(valid: boolean) {
+
+  onClickSaveSL1(valid: boolean): void {
     if (valid) {
-      switch (this.step) {
-        case 1:
-          this.stepSoFar = {...this.manufacturerInfoForm?.value};
-          break;
-        case 2:
-          this.stepSoFar = {...this.manufacturingInfoForm?.value};
-          break;
 
-      }
-      this.step += 1;
-      console.log(`Clicked and step = ${this.step}`);
-    }
-  }
-
-  selectStepOneClass(step: number): string {
-    if (step === 1) {
-      return 'active';
-    } else {
-      return '';
-    }
-  }
-
-  selectStepTwoClass(step: number): string {
-    console.log(`${step}`);
-    if (step === 1) {
-      return 'active';
-    }
-    if (step === 2) {
-      return 'activated';
-    } else {
-      return '';
-    }
-  }
-
-  onClickSaveSL1(): void {
 
       this.SpinnerService.show();
       this.levyService.addSL1Details(this.manufacturerInfoForm.value).subscribe(
-          (response ) => {
+          (response) => {
             console.log(response);
             this.SpinnerService.hide();
             this.showToasterSuccess(response.httpStatus, `SL1 Details Saved`);
@@ -191,6 +156,11 @@ export class CustomerRegistrationComponent implements OnInit {
             console.log(error.message);
           }
       );
+    } else {
+
+      this.notifyService.showError("Please Fill In All The Fields", "Error");
+
+    }
 
 
   }

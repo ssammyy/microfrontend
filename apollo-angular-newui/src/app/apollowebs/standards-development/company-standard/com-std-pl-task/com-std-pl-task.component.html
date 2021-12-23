@@ -51,7 +51,7 @@
                                         <td>{{task.taskData.productName}}</td>
                                         <td>{{task.taskData.productSubCategoryName}}</td>
                                         <td>{{task.taskData.submissionDate | date: 'dd/MM/yyyy hh:mm:ss'}}</td>
-                                        <td>{{task.taskData.companyPhone}}</td>
+                                        <td>{{task.name}}</td>
                                         <td *ngIf="task.name ==='Form Joint Committee'">{{task.taskData.plAssigned}}</td>
                                         <td *ngIf="task.name ==='Upload Draft Company standard'">{{task.taskData.nameOfJc}}</td>
                                         <td *ngIf="task.name ==='Form Joint Committee'"><a  (click)="onOpenModal(task,'formJc')" class="btn btn-info btn-sm tooltips" data-placement="top"  data-original-title="Approve"> Form Joint Committee</a></td>
