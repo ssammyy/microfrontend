@@ -457,6 +457,8 @@ class StdLevyController(
 
     }
 
+
+
     @PreAuthorize("hasAuthority('USER')")
     @PostMapping("/submit-registration-manufacture")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -479,6 +481,7 @@ class StdLevyController(
         val myDetails = ManufactureSubmitEntityDto()
         with(myDetails){
             submittedStatus = 1
+
         }
 
 

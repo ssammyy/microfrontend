@@ -76,10 +76,15 @@ interface ISUploadStandardRepository : JpaRepository<ISUploadStandard, Long> {
 }
 
 interface ISJustificationUploadsRepository : JpaRepository<ISJustificationUploads, Long> {
+    fun findByIsJSDocumentId(id: Long): ISJustificationUploads
 }
 
 interface ISStandardUploadsRepository : JpaRepository<ISStandardUploads, Long> {
+    fun findByIsStdDocumentId(id: Long): ISStandardUploads
 
+}
+interface SDISGazetteNoticeUploadsRepository : JpaRepository<SDISGazetteNoticeUploads, Long> {
+    fun findByIsGnDocumentId(id: Long): SDISGazetteNoticeUploads
 }
 
 interface NWADISDTJustificationRepository : HazelcastRepository<NWADiSdtJustification, Long> {
@@ -154,6 +159,7 @@ interface SDDIJustificationUploadsRepository : JpaRepository<SDDIJustificationUp
 }
 
 interface SdIsDocumentUploadsRepository : JpaRepository<SdIsDocumentUploads, Long> {
+    fun findByIsDocumentId(id: Long): SdIsDocumentUploads
 }
 
 interface NWAPreliminaryDraftUploadsRepository : JpaRepository<NWAPreliminaryDraftUploads, Long> {
