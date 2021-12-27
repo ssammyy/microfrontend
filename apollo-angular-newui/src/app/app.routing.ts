@@ -116,6 +116,10 @@ import {LabResultsComponent} from "./apollowebs/di/view-single-consignment-docum
 import {CurrencyExchangeRatesComponent} from "./apollowebs/di/currency-exchange-rates/currency-exchange-rates.component";
 import {MessageDashboardComponent} from "./apollowebs/di/message-dashboard/message-dashboard.component";
 import {TransactionViewComponent} from "./apollowebs/di/transaction-view/transaction-view.component";
+import {ViewClientsComponent} from "./apollowebs/system/clients/view-clients/view-clients.component";
+import {ViewPartnersComponent} from "./apollowebs/pvoc/partners/view-partners/view-partners.component";
+import {ViewPartnerDetailsComponent} from "./apollowebs/pvoc/partners/view-partner-details/view-partner-details.component";
+import {IsmApplicationsComponent} from "./apollowebs/di/ism/ism-applications/ism-applications.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -451,7 +455,14 @@ export const routes: Routes = [
             {
                 path: 'exceptions',
                 component: ExceptionsApplicationComponent
-
+            },
+            {
+                path: 'partners',
+                component: ViewPartnersComponent
+            },
+            {
+                path: 'partners/view/:id',
+                component: ViewPartnerDetailsComponent
             }
         ]
     },
@@ -561,6 +572,18 @@ export const routes: Routes = [
         ]
     },
     {
+        path: 'ism',
+        component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [
+            {
+                path: 'requests',
+                canActivate: [RouteGuard],
+                component: IsmApplicationsComponent
+            }
+        ]
+    },
+    {
         path: 'currency',
         component: AdminLayoutComponent,
         canActivate: [RouteGuard],
@@ -568,6 +591,17 @@ export const routes: Routes = [
             {
                 path: 'rates',
                 component: CurrencyExchangeRatesComponent
+            }
+        ]
+    },
+    {
+        path: 'system',
+        component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [
+            {
+                path: 'api/clients',
+                component: ViewClientsComponent
             }
         ]
     },

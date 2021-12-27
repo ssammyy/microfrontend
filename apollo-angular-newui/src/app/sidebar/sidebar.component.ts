@@ -31,7 +31,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'Dashboard',
         type: 'link',
         icontype: 'dashboard',
-        privilege: ['USER','DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
+        privilege: ['USER', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
     },
 
     {
@@ -113,7 +113,11 @@ export const ROUTES: RouteInfo[] = [
     {
         path: '/pvoc',
         title: 'PVOC',
-        type: 'link',
+        type: 'sub',
+        children: [
+            {path: '', title: 'PVOC applications', ab: 'PP'},
+            {path: 'partners', title: 'Partners', ab: 'PP'},
+        ],
         collapse: 'pvoc',
         privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
         icontype: 'receipt'
@@ -123,7 +127,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'Motor Vehicle Inspection',
         type: 'link',
         collapse: 'ministry-inspection',
-        privilege: ['MINISTRY_OF_TRANSPORT_READ','MINISTRY_OF_TRANSPORT_MODIFY'],
+        privilege: ['MINISTRY_OF_TRANSPORT_READ', 'MINISTRY_OF_TRANSPORT_MODIFY'],
         icontype: 'receipt'
     },
     {
@@ -148,17 +152,17 @@ export const ROUTES: RouteInfo[] = [
         title: 'KENTRADE Monitoring',
         type: 'link',
         collapse: 'exchange-messages',
-        privilege: ['SYSADMIN_VIEW','DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
+        privilege: ['SYSADMIN_VIEW', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
         children: [],
         icontype: 'message'
     },
     {
-        path: '/tasks',
-        title: 'Import Inspection Tasks',
-        privilege: ['DI_INSPECTION_OFFICER_READ2', 'DI_OFFICER_CHARGE_READ2'],
+        path: '/ism/requests',
+        title: 'ISM Requests',
+        privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
         type: 'link',
         collapse: 'tasks',
-        icontype: 'receipt'
+        icontype: 'standard'
     },
     {
         path: '/currency/rates',
@@ -167,6 +171,17 @@ export const ROUTES: RouteInfo[] = [
         collapse: 'currency-exchange-rates',
         icontype: 'money',
         privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
+    },
+    {
+        path: '/system',
+        title: 'Configurations',
+        type: 'sub',
+        collapse: 'api-clients',
+        privilege: ['SYSADMIN_VIEW', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
+        children: [
+            {path: 'api/clients', title: 'Api Clients', ab: 'AC'},
+        ],
+        icontype: 'settings'
     }
 ];
 
@@ -206,7 +221,7 @@ export class SidebarComponent implements OnInit {
 
     // Check if role is in required privileges
     canViewRole(privileges: string[]): Boolean {
-        for(let role of this.roles) {
+        for (let role of this.roles) {
             for (let p of privileges) {
                 if (role == p) {
                     return true

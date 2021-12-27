@@ -32,9 +32,9 @@ class PvocRouter {
         "/api/v1/partners".nest {
             GET("/list", handler::listPartners)
             POST("/add", handler::createPartner)
-
-            PUT("/update/{corporateId}", handler::updatePartnerDetails)
-            POST("/create/api-client/{corporateId}", handler::createPartnerApiClient)
+            GET("/details/{partnerId}", handler::getPartnerDetails)
+            PUT("/update/{partnerId}", handler::updatePartnerDetails)
+            POST("/create/api-client/{partnerId}", handler::createPartnerApiClient)
         }
     }
 

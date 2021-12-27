@@ -1,9 +1,11 @@
 package org.kebs.app.kotlin.apollo.api.service
 
+import com.nhaarman.mockitokotlin2.any
 import org.kebs.app.kotlin.apollo.api.payload.ApiClientForm
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.request.PvocPartnersForms
+import org.kebs.app.kotlin.apollo.api.payload.response.ApiClientDao
 import org.kebs.app.kotlin.apollo.api.payload.response.PvocPartnerDto
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersEntity
@@ -50,10 +52,33 @@ class PvocPartnerService(
             partner.modifiedBy = this.commonDaoServices.getLoggedInUser()?.userName
             val saved = this.partnersRepository.save(partner)
             response.data = saved.id
-            response.responseCode = ResponseCodes.NOT_FOUND
+            response.responseCode = ResponseCodes.SUCCESS_CODE
             response.message = "Partner updated successfully"
         } else {
-            response.responseCode = ResponseCodes.DUPLICATE_ENTRY_STATUS
+            response.responseCode = ResponseCodes.NOT_FOUND
+            response.message = "Partner does not exist"
+        }
+        return response
+    }
+
+    fun getPartnerDetails(partnerId: Long): ApiResponseModel {
+        val response = ApiResponseModel()
+        val partnerOptional = partnersRepository.findById(partnerId)
+        if (partnerOptional.isPresent) {
+            val partner = partnerOptional.get()
+            // Fill with data
+            val map = mutableMapOf<String, Any>()
+            map.put("partner_details", PvocPartnerDto.fromEntity(partner))
+            partner.apiClientId?.let { clientId ->
+                this.apiClientService.getClientDetails(clientId)?.let { clientDao ->
+                    map["api_client"] = clientDao
+                }
+            }
+            response.data = map
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+            response.message = "Partner updated successfully"
+        } else {
+            response.responseCode = ResponseCodes.NOT_FOUND
             response.message = "Partner does not exist"
         }
         return response

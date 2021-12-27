@@ -448,6 +448,16 @@ export class DestinationInspectionService {
         return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/item-ssf-result/" + itemUuid), data);
     }
 
+    getIsmApplications(applicationStatus, page: number, pageSize: number): Observable<any> {
+        let params = {}
+        if (pageSize) {
+            params['page'] = page
+            params['size'] = pageSize
+        }
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/ism/list/"+applicationStatus), {
+            params: params
+        })
+    }
 
     showSuccess(message: string, fn?: Function) {
         swal.fire({

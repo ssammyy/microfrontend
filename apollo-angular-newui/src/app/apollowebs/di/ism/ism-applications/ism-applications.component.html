@@ -1,0 +1,95 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">handshake</i>
+                        </div>
+                        <h4 class="card-title">PVOC Partners
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar">
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Applications Status">
+                                <button type="button" (click)="toggleStatus('new-requests')"
+                                        [className]="activeStatus == 'new-requests' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                    NEW REQUESTS
+                                </button>
+                                <button type="button" (click)="toggleStatus('approved-requests')"
+                                        [className]="activeStatus == 'approved-requests' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                    APPROVED
+                                </button>
+                                <button type="button" (click)="toggleStatus('rejected-requests')"
+                                        [className]="activeStatus == 'rejected-requests' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                    REJECTED
+                                </button>
+                            </div>
+                        </div>
+                        <div class="material-datatables">
+                            <div class="table-responsive">
+                                <mat-table class="table-striped table-responsive table-condensed"
+                                           [dataSource]="ismApplications">
+                                    <ng-container matColumnDef="ucrNumber">
+                                        <mat-header-cell *matHeaderCellDef>UCR No.</mat-header-cell>
+                                        <mat-cell *matCellDef="let element"> {{element.ucrNumber}} </mat-cell>
+                                    </ng-container>
+                                    <ng-container matColumnDef="companyName">
+                                        <mat-header-cell *matHeaderCellDef>Company Name</mat-header-cell>
+                                        <mat-cell
+                                                *matCellDef="let element"> {{element.companyName}} </mat-cell>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="firstName">
+                                        <mat-header-cell *matHeaderCellDef>First Name</mat-header-cell>
+                                        <mat-cell *matCellDef="let element"> {{element.firstName}} </mat-cell>
+                                    </ng-container>
+                                    <ng-container matColumnDef="middleName">
+                                        <mat-header-cell *matHeaderCellDef>Middle name</mat-header-cell>
+                                        <mat-cell
+                                                *matCellDef="let element"> {{element.middleName}} </mat-cell>
+                                    </ng-container>
+                                    <ng-container matColumnDef="lastName">
+                                        <mat-header-cell *matHeaderCellDef>Last Name</mat-header-cell>
+                                        <mat-cell *matCellDef="let element"> {{element.lastName}} </mat-cell>
+                                    </ng-container>
+                                    <ng-container matColumnDef="emailAddress">
+                                        <mat-header-cell *matHeaderCellDef>Email Address</mat-header-cell>
+                                        <mat-cell *matCellDef="let element"> {{element.emailAddress}} </mat-cell>
+                                    </ng-container>
+                                    <ng-container matColumnDef="requestApproved">
+                                        <mat-header-cell *matHeaderCellDef>Approval Status</mat-header-cell>
+                                        <mat-cell *matCellDef="let element"> {{element.requestApproved}} </mat-cell>
+                                    </ng-container>
+                                    <ng-container matColumnDef="completed">
+                                        <mat-header-cell *matHeaderCellDef>Completed</mat-header-cell>
+                                        <mat-cell *matCellDef="let element"> {{element.completed}} </mat-cell>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="actions">
+                                        <mat-header-cell *matHeaderCellDef>ACTIONS</mat-header-cell>
+                                        <mat-cell *matCellDef="let element">
+                                            <button mat-raised-button (click)="viewRequest(element)"><i
+                                                    class="fa fa-pencil-alt">View</i>
+                                            </button>
+                                            <button mat-raised-button (click)="viewConsignment(element.partnerId)"><i
+                                                    class="fa fa-eye">CD</i>
+                                            </button>
+                                        </mat-cell>
+                                    </ng-container>
+                                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                                    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                                </mat-table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end content-->
+                </div>
+                <!--  end card  -->
+            </div>
+            <!-- end col-md-12 -->
+        </div>
+        <!-- end row -->
+    </div>
+</div>

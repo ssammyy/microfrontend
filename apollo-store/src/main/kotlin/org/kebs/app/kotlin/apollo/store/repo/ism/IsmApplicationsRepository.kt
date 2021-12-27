@@ -9,4 +9,5 @@ import java.util.*
 interface IsmApplicationsRepository: HazelcastRepository<IsmApplications, Long> {
     fun findByUcrNumber(ucrNumber: String?): Optional<IsmApplications>
     fun findByRequestApproved(requestApproved: Int?, page: Pageable): Page<IsmApplications>
+    fun findByEmailAddress(ismEmail: String?, page: Pageable): Page<IsmApplications>
 }

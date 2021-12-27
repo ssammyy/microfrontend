@@ -2,12 +2,13 @@ package org.kebs.app.kotlin.apollo.store.model.invoice
 
 import java.io.Serializable
 import java.math.BigDecimal
+import java.sql.Timestamp
 import javax.persistence.*
 
 
 @Entity
 @Table(name = "DAT_KEBS_BILLS")
-class BillPayments : Serializable{
+class BillPayments : Serializable {
     @Column(name = "ID")
     @SequenceGenerator(name = "DAT_KEBS_BILLS_SEQ_GEN", sequenceName = "DAT_KEBS_BILLS_SEQ", allocationSize = 1)
     @GeneratedValue(generator = "DAT_KEBS_BILLS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
@@ -19,7 +20,19 @@ class BillPayments : Serializable{
 
     @Column(name = "BILL_NUMBER")
     @Basic
+    var billNumber: String? = null
+
+    @Column(name = "INVOICE_NUMBER")
+    @Basic
     var invoiceNumber: String? = null
+
+    @Column(name = "BILL_AMOUNT")
+    @Basic
+    var billAmount: BigDecimal? = null
+
+    @Column(name = "PENALTY_AMOUNT")
+    @Basic
+    var penaltyAmount: BigDecimal? = null
 
     @Column(name = "TOTAL_AMOUNT")
     @Basic
@@ -29,9 +42,18 @@ class BillPayments : Serializable{
     @Basic
     var paymentStatus: Int? = null
 
+    @Column(name = "PAYMENT_DATE")
+    @Basic
+    var paymentDate: Timestamp? = null
+
+    @Column(name = "PAYMENT_RECEIPT")
+    @Basic
+    var paymentReceipts: String? = null
+
     @Column(name = "STATUS")
     @Basic
     var status: Long? = null
+
 
     @Column(name = "VAR_FIELD_1")
     @Basic
@@ -52,5 +74,9 @@ class BillPayments : Serializable{
     @Column(name = "VAR_FIELD_5")
     @Basic
     var varField5: String? = null
+
+    @Column(name = "CREATE ON")
+    @Basic
+    var createOn: Timestamp? = null
 
 }

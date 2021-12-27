@@ -105,6 +105,8 @@ class ApiClientService(
                 val apiClient = client.get()
                 val map = mutableMapOf<String, Any?>()
                 apiClient.callbackURL = form.callbackURL
+                apiClient.eventsURL = form.eventsURL
+                apiClient.descriptions = form.descriptions
                 apiClient.clientName = form.clientName
                 apiClient.clientType = form.clientType
                 apiClient.clientRole = form.clientRole
@@ -180,5 +182,13 @@ class ApiClientService(
         } else {
             throw UsernameNotFoundException("client id or secret are invalid")
         }
+    }
+
+    fun getClientDetails(clientId: Long): ApiClientDao? {
+        val client = this.apiClientRepo.findById(clientId)
+        if (client.isPresent) {
+            return ApiClientDao.fromEntity(client.get())
+        }
+        return null
     }
 }

@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.api.routes
 
 import org.kebs.app.kotlin.apollo.api.handlers.*
 import org.kebs.app.kotlin.apollo.api.handlers.invoice.InvoiceHandlers
+import org.kebs.app.kotlin.apollo.api.handlers.ism.ISMHandler
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.bind.annotation.CrossOrigin
@@ -11,7 +12,7 @@ import org.springframework.web.servlet.function.router
 class DestinationInspectionRoutes {
     @Bean
     @CrossOrigin
-    fun dashboard(handler: InspectionDashboard)= router {
+    fun dashboard(handler: InspectionDashboard) = router {
         "/api/v1/dashboard".nest {
             GET("/all", handler::inspectionStatistics)
             GET("/personal", handler::myInspectionStatistics)
@@ -20,7 +21,16 @@ class DestinationInspectionRoutes {
 
     @Bean
     @CrossOrigin
-    fun fileService(handler: FtpFileHandler)= router {
+    fun standardMark(handler: ISMHandler) = router {
+        "/api/v1/ism".nest {
+            GET("/list/{requestStatus}", handler::listIsmRequests)
+            GET("/get/{requestId}", handler::getIsmRequests)
+        }
+    }
+
+    @Bean
+    @CrossOrigin
+    fun fileService(handler: FtpFileHandler) = router {
         "/api/v1/files".nest {
             GET("/stats", handler::loadStats)
             GET("/get/{messageId}", handler::loadFileContent)
@@ -28,30 +38,31 @@ class DestinationInspectionRoutes {
             GET("/list", handler::listFilesByStatus)
         }
     }
+
     @Bean
     @CrossOrigin
-    fun invoicing(handlers: InvoiceHandlers)= router{
+    fun invoicing(handlers: InvoiceHandlers) = router {
         "/api/v1/di".nest {
-            GET("/update/demand/note/payment-status/{invoiceId}",handlers::checkPaymentDemandNotePayment)
-            GET("/demand/note/details/{invoiceId}",handlers::cdInvoiceDetails)
-            POST("/demand/note/submit/{invoiceId}",handlers::submitDemandNoteForApproval)
-            DELETE("/demand/note/delete/{invoiceId}",handlers::deleteDemandNote)
-            GET("/demand/note/list/{cdId}",handlers::listDemandNotes)
-            GET("/demand-note/fees",handlers::applicationFee)
+            GET("/update/demand/note/payment-status/{invoiceId}", handlers::checkPaymentDemandNotePayment)
+            GET("/demand/note/details/{invoiceId}", handlers::cdInvoiceDetails)
+            POST("/demand/note/submit/{invoiceId}", handlers::submitDemandNoteForApproval)
+            DELETE("/demand/note/delete/{invoiceId}", handlers::deleteDemandNote)
+            GET("/demand/note/list/{cdId}", handlers::listDemandNotes)
+            GET("/demand-note/fees", handlers::applicationFee)
             GET("/demand-notes/list", handlers::listAllDemandNotes)
             GET("/demand-notes/stats", handlers::getDemandNoteStats)
-            POST("/demand/note/upload/exchange-rate",handlers::applicationUploadExchangeRates)
-            GET("/demand/note/exchange-rates",handlers::applicationExchangeRates)
-            POST("/demand/note/generate/{cdUuid}",handlers::generateDemandNote)
+            POST("/demand/note/upload/exchange-rate", handlers::applicationUploadExchangeRates)
+            GET("/demand/note/exchange-rates", handlers::applicationExchangeRates)
+            POST("/demand/note/generate/{cdUuid}", handlers::generateDemandNote)
         }
     }
 
     @Bean
     @CrossOrigin
-    fun checkLists(handler: ChecklistHandler)= router{
+    fun checkLists(handler: ChecklistHandler) = router {
         "/api/v1/di".nest {
-            GET("/checklists/{itemUuid}",handler::listAllChecklists)
-            POST("/save-checklist/{cdUuid}",handler::saveChecklist)
+            GET("/checklists/{itemUuid}", handler::listAllChecklists)
+            POST("/save-checklist/{cdUuid}", handler::saveChecklist)
             POST("/consignment/document/checklist-scf/{category}/{cdItemID}", handler::addChecklistScfDetails) // Per inspection item
             POST("/consignment/document/item-scf/{cdItemID}", handler::addScfDetails) // Per item
             POST("/consignment/document/checklist-ssf/{category}/{cdItemID}", handler::addChecklistSsfDetails) // Per inspection item
@@ -59,7 +70,7 @@ class DestinationInspectionRoutes {
             POST("/consignment/document/item-ssf-result/{cdItemID}", handler::updateSsfResults) // Per inspection item
             GET("/lab-result/ssf-files/{ssfId}", handler::ssfPdfFilesResults) // Per inspection item
             GET("/consignment/document/lab-results/{cdItemID}", handler::loadLabResult) // Lab Reult Per item
-            GET("/check-list/configurations",handler::checklistConfigurations)
+            GET("/check-list/configurations", handler::checklistConfigurations)
             GET("/consignment/document/checklist/{cdUuid}", handler::consignmentDocumentChecklist)
             GET("/consignment/document/sampled-items/{cdUuid}", handler::consignmentDocumentChecklistSampled)
             POST("/item/compliance/approve-reject/{cdItemId}/{cdUuid}", handler::approveRejectSampledItem)

@@ -231,6 +231,13 @@ import {ViewMessageComponent} from './apollowebs/di/message-dashboard/view-messa
 import {ChartsModule, MDBBootstrapModule, WavesModule} from 'angular-bootstrap-md';
 import {StdTcWorkplanComponent} from "./apollowebs/standards-development/standard-request/std-tc-workplan/std-tc-workplan.component";
 import { TransactionViewComponent } from './apollowebs/di/transaction-view/transaction-view.component';
+import { ViewClientsComponent } from './apollowebs/system/clients/view-clients/view-clients.component';
+import { ViewPartnersComponent } from './apollowebs/pvoc/partners/view-partners/view-partners.component';
+import { AddUpdatePartnerComponent } from './apollowebs/pvoc/partners/add-update-partner/add-update-partner.component';
+import { ViewPartnerDetailsComponent } from './apollowebs/pvoc/partners/view-partner-details/view-partner-details.component';
+import { AddApiClientComponent } from './apollowebs/system/clients/add-api-client/add-api-client.component';
+import { IsmApplicationsComponent } from './apollowebs/di/ism/ism-applications/ism-applications.component';
+import { ViewIsmApplicationComponent } from './apollowebs/di/ism/view-ism-application/view-ism-application.component';
 
 @NgModule({
     imports: [
@@ -486,6 +493,13 @@ import { TransactionViewComponent } from './apollowebs/di/transaction-view/trans
         StandardLevyDefaulterHistoryComponent,
         StdTcWorkplanComponent,
         TransactionViewComponent,
+        ViewClientsComponent,
+        ViewPartnersComponent,
+        AddUpdatePartnerComponent,
+        ViewPartnerDetailsComponent,
+        AddApiClientComponent,
+        IsmApplicationsComponent,
+        ViewIsmApplicationComponent,
     ],
     providers: [
         MatNativeDateModule,

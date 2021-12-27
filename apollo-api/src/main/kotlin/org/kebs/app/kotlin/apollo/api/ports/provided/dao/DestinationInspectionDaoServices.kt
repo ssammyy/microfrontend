@@ -732,14 +732,23 @@ class DestinationInspectionDaoServices(
         coc.version = (cocsEntity.version ?: 1).toString()
         val cocFinalDto = COCXmlDTO()
         cocFinalDto.coc = coc
-
-
-        val fileName = cocsEntity.consignmentDocId?.let {
-            commonDaoServices.createKesWsFileName(
-                    applicationMapProperties.mapKeswsCocDoctype,
-                    it.ucrNumber ?: ""
-            )
-        } ?: throw ExpectedDataNotFound("Invalid Local UCR NUmber")
+        // Create file name from UCR number
+        val fileName = when (cocsEntity.cocNumber) {
+            null -> {
+                cocsEntity.consignmentDocId?.let {
+                    commonDaoServices.createKesWsFileName(
+                            applicationMapProperties.mapKeswsCocDoctype,
+                            it.ucrNumber ?: ""
+                    )
+                } ?: throw ExpectedDataNotFound("Invalid Local UCR NUmber")
+            }
+            else -> {
+                commonDaoServices.createKesWsFileName(
+                        applicationMapProperties.mapKeswsCocDoctype,
+                        cocsEntity.ucrNumber ?: ""
+                )
+            }
+        }
         val xmlFile = commonDaoServices.serializeToXml(fileName, cocFinalDto)
         sftpService.uploadFile(xmlFile, "COC")
     }
@@ -752,7 +761,7 @@ class DestinationInspectionDaoServices(
         iCocItemRepository.findByCocId(coiEntity.id)?.forEach { coiItem ->
             itemList.add(coiItem.toCoiItemDetailsXmlRecordRefl(coiEntity.coiNumber ?: ""))
         }
-        coi.coiItems=itemList
+        coi.coiItems = itemList
         coi.version = (coiEntity.version ?: 1).toString()
         coiFinalDto.coi = coi
         val fileName = coiEntity.ucrNumber?.let {

@@ -3,6 +3,8 @@ package org.kebs.app.kotlin.apollo.api.service
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.request.InternationalStandardMarkForm
+import org.kebs.app.kotlin.apollo.api.payload.response.ISMApplicationsDto
+import org.kebs.app.kotlin.apollo.api.payload.response.ISMExternalApplicationsDto
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.store.model.ism.IsmApplications
 import org.kebs.app.kotlin.apollo.store.repo.ism.IsmApplicationsRepository
@@ -19,7 +21,17 @@ class InternationalStandardMarkService(
     fun listApplications(status: Int, page: PageRequest): ApiResponseModel {
         val response = ApiResponseModel()
         val pg = ismApplicationsRepository.findByRequestApproved(status, page)
-        response.data = pg.toList()
+        response.data = ISMApplicationsDto.fromList(pg.toList())
+        response.totalPages = pg.totalPages
+        response.totalCount = pg.totalElements
+        response.responseCode = ResponseCodes.SUCCESS_CODE
+        return response
+    }
+
+    fun listApplicantApplications(emailAddress: String, page: PageRequest): ApiResponseModel {
+        val response = ApiResponseModel()
+        val pg = ismApplicationsRepository.findByEmailAddress(emailAddress, page)
+        response.data = ISMExternalApplicationsDto.fromList(pg.toList())
         response.totalPages = pg.totalPages
         response.totalCount = pg.totalElements
         response.responseCode = ResponseCodes.SUCCESS_CODE
@@ -107,6 +119,35 @@ class InternationalStandardMarkService(
             request.completedOn = Timestamp.from(Instant.now())
             this.ismApplicationsRepository.save(request)
         }
+    }
+
+    fun getIsmApplication(requestId: Long): ApiResponseModel {
+        val response = ApiResponseModel()
+        val ismRequest = this.ismApplicationsRepository.findById(requestId)
+        if (ismRequest.isPresent) {
+            val request = ismRequest.get()
+            request.completed = true
+            request.completedOn = Timestamp.from(Instant.now())
+            response.data = this.ismApplicationsRepository.save(request)
+            response.message = "Success"
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+        } else {
+            response.message = "ISM record not found"
+            response.responseCode = ResponseCodes.NOT_FOUND
+        }
+        return response
+    }
+
+    fun getCustomerIsmApplications(emailAddress: String?, page: PageRequest): ApiResponseModel {
+        val response = ApiResponseModel()
+        val ismRequest = this.ismApplicationsRepository.findByEmailAddress(emailAddress, page)
+        response.data = ISMExternalApplicationsDto.fromList(ismRequest.toList())
+        response.pageNo = ismRequest.number
+        response.totalCount = ismRequest.totalElements
+        response.totalPages = ismRequest.totalPages
+        response.message = "Success"
+        response.responseCode = ResponseCodes.SUCCESS_CODE
+        return response
     }
 
 }

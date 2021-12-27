@@ -6,6 +6,7 @@ import javax.persistence.Basic
 import javax.persistence.Column
 
 class ApiClientDao {
+    var recordId: Long? = null
     var clientType: String? = null
     var clientName: String? = null
     var clientId: String? = null
@@ -13,6 +14,8 @@ class ApiClientDao {
     var callbackURL: String? = null
     var eventsURL: String? = null // System events
     var descriptions: String? = null
+    var clientStatus: Int? = null
+    var blockedStatus: Int? = null
 
     companion object {
         fun fromList(clients: List<SystemApiClient>): List<ApiClientDao> {
@@ -23,12 +26,15 @@ class ApiClientDao {
 
         fun fromEntity(client: SystemApiClient): ApiClientDao {
             return ApiClientDao().apply {
+                recordId = client.id
                 clientType = client.clientType
                 clientName = client.clientName
                 clientId = client.clientId
                 clientRole = client.clientRole
                 callbackURL = client.callbackURL
                 eventsURL = client.eventsURL
+                clientStatus = client.status
+                blockedStatus = client.clientBlocked
                 descriptions = client.descriptions
             }
         }
@@ -50,6 +56,7 @@ class PvocPartnerDto {
     var partnerTelephoneNumber: String? = null
     var partnerFaxNumber: String? = null
     var partnerEmail: String? = null
+    var remarks: String?=null
 
     companion object {
         fun fromEntity(partner: PvocPartnersEntity): PvocPartnerDto {
@@ -57,6 +64,9 @@ class PvocPartnerDto {
             dto.apply {
                 partnerId = partner.id
                 clientId = partner.apiClientId
+                partnerName = partner.partnerName
+                partnerRefNo = partner.partnerRefNo
+                partnerEmail = partner.partnerEmail
                 partnerAddress1 = partner.partnerAddress1
                 partnerAddress2 = partner.partnerAddress2
                 partnerCity = partner.partnerCity
@@ -65,7 +75,7 @@ class PvocPartnerDto {
                 partnerPin = partner.partnerPin
                 partnerTelephoneNumber = partner.partnerTelephoneNumber
                 partnerZipcode = partner.partnerZipcode
-
+                remarks=partner.varField10
             }
             return dto
         }

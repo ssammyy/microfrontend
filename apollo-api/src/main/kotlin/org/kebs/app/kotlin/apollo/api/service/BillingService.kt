@@ -6,13 +6,18 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.store.model.CdDemandNoteEntity
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
+import org.kebs.app.kotlin.apollo.store.model.invoice.BillPayments
 import org.kebs.app.kotlin.apollo.store.model.invoice.BillTransactionsEntity
+import org.kebs.app.kotlin.apollo.store.model.invoice.CorporateCustomerAccounts
 import org.kebs.app.kotlin.apollo.store.repo.IBillPaymentsRepository
 import org.kebs.app.kotlin.apollo.store.repo.IBillTransactionsEntityRepository
 import org.kebs.app.kotlin.apollo.store.repo.ICorporateCustomerRepository
 import org.springframework.stereotype.Component
+import java.math.BigDecimal
 import java.sql.Timestamp
 import java.time.Instant
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @Component
 class BillingService(
@@ -21,8 +26,35 @@ class BillingService(
         private val billTransactionRepo: IBillTransactionsEntityRepository,
         private val commonDaoServices: CommonDaoServices
 ) {
+    final val DATE_FORMATER = DateTimeFormatter.ofPattern("yyyy-MM")
+    fun addBillTransaction(transaction: BillTransactionsEntity, corporate: CorporateCustomerAccounts): BillPayments {
+        val billNumber = DATE_FORMATER.format(LocalDate.now())
+        val billOptional = this.billPaymentRepository.findAllByCorporateIdAndBillNumber(corporate.id, billNumber)
+        if (billOptional.isPresent) {
+            val bill = billOptional.get()
+            transaction.billId = bill.id
+            this.billTransactionRepo.save(transaction)
+            bill.billAmount = this.billPaymentRepository.sumTotalAmountByCorporateIdAndBillId(corporate.id, bill.id)
+            return this.billPaymentRepository.save(bill)
+        } else {
+            val bill = BillPayments()
+            bill.corporateId = corporate.id
+            bill.billNumber = billNumber
+            bill.paymentStatus = 0
+            bill.totalAmount = transaction.amount
+            bill.penaltyAmount = BigDecimal.ZERO
+            bill.totalAmount = BigDecimal.ZERO
+            bill.status = 1
+            bill.createOn = Timestamp.from(Instant.now())
+            val saved = this.billPaymentRepository.save(bill)
+            transaction.billId = saved.id
+            this.billTransactionRepo.save(transaction)
+            return saved
+        }
+    }
+
     /**
-     * Registers transacton for billing and send assigns a temporaly transaction reference/receipt
+     * Registers transaction for billing and send assigns a temporally transaction reference/receipt
      *
      * @param demandNote demand node to add for billing
      * @param map application properties
@@ -42,7 +74,9 @@ class BillingService(
             transactionEntity.transactionId = demandNote.id.toString()
             transactionEntity.createdBy = commonDaoServices.loggedInUserAuthentication().name
             transactionEntity.createdOn = Timestamp.from(Instant.now())
-            return billTransactionRepo.save(transactionEntity)
+            val saved = billTransactionRepo.save(transactionEntity)
+            this.addBillTransaction(transactionEntity, corporate.get())
+            return saved
         }
         return null
 
