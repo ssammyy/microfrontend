@@ -542,6 +542,7 @@ class AngularRoutes {
                     GET("/details", handler::getFuelInspectionDetails)
                     "/update".nest {
                         PUT("/assign", handler::updateFuelScheduleAssignOfficer)
+                        PUT("/rapid-test", handler::updateFuelScheduleAssignOfficer)
                     }
 
                 }

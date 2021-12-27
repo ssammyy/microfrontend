@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import java.sql.Timestamp
 import java.time.Instant
-import java.util.*
 
 
 @Service
@@ -120,13 +119,14 @@ class NewMarketSurveillanceDaoServices(
         val map = commonDaoServices.serviceMapDetails(appId)
         val fileInspectionDetail = findFuelInspectionDetailByReferenceNumber(referenceNo)
         val batchDetails = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
-        val fuelInspectionOfficer = findFuelInspectionOfficerAssigned(fileInspectionDetail)
+        val fuelInspectionOfficer = findFuelInspectionOfficerAssigned(fileInspectionDetail, map.activeStatus)
         val officerList = commonDaoServices.findOfficersListBasedOnRegionCountyAndRole(
             applicationMapProperties.mapMSMappedOfficerROLEID,
             batchDetails.countyId ?: throw ExpectedDataNotFound("MISSING BATCH COUNTY ID"),
             batchDetails.regionId ?: throw ExpectedDataNotFound("MISSING BATCH REGION ID")
         )
-        return mapFuelInspectionDto(fileInspectionDetail, officerList,fuelInspectionOfficer?.assignedIo)
+        val rapidTestStatus = mapRapidTestDto(fileInspectionDetail, map)
+        return mapFuelInspectionDto(fileInspectionDetail, officerList, fuelInspectionOfficer?.assignedIo,rapidTestStatus)
     }
 
     @PreAuthorize("hasAuthority('MS_MP_MODIFY')")
@@ -156,7 +156,8 @@ class NewMarketSurveillanceDaoServices(
                          *
                          */
                         val officerList = commonDaoServices.findOfficersListBasedOnRegionCountyAndRole(applicationMapProperties.mapMSMappedOfficerROLEID, batchDetails.countyId ?: throw ExpectedDataNotFound("MISSING BATCH COUNTY ID"), batchDetails.regionId ?: throw ExpectedDataNotFound("MISSING BATCH REGION ID"))
-                        return mapFuelInspectionDto(fileInspectionDetail, officerList, fileOfficerSaved.second.assignedIo)
+                        val rapidTestStatus = mapRapidTestDto(fileInspectionDetail, map)
+                        return mapFuelInspectionDto(fileInspectionDetail, officerList,fileOfficerSaved.second.assignedIo,rapidTestStatus)
                     }
                     else -> {
                         throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved2.first))
@@ -167,6 +168,56 @@ class NewMarketSurveillanceDaoServices(
                 throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileOfficerSaved.first))
             }
         }
+    }
+
+    @PreAuthorize("hasAuthority('MS_MP_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun getFuelInspectionDetailsRapidTest(
+        referenceNo: String,
+        batchReferenceNo: String,
+        body: FuelEntityRapidTestDto
+    ): FuelInspectionDto {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val fileInspectionDetail = findFuelInspectionDetailByReferenceNumber(referenceNo)
+        val batchDetails = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
+
+        when {
+            body.rapidTestStatus -> {
+                //Rapid Test Passed
+                with(fileInspectionDetail){
+                    rapidTestPassed = map.activeStatus
+                    rapidTestPassedOn = commonDaoServices.getCurrentDate()
+                    rapidTestPassedBy = commonDaoServices.concatenateName(loggedInUser)
+                    rapidTestPassedRemarks = body.rapidTestRemarks
+                }
+
+            }
+            else -> {
+                //Rapid Test Failed
+                with(fileInspectionDetail){
+                    rapidTestFailed = map.activeStatus
+                    rapidTestFailedOn = commonDaoServices.getCurrentDate()
+                    rapidTestFailedBy = commonDaoServices.concatenateName(loggedInUser)
+                    rapidTestFailedRemarks = body.rapidTestRemarks
+                }
+            }
+        }
+        val fileSaved = updateFuelInspectionDetails(fileInspectionDetail, map, loggedInUser)
+
+        val fuelInspectionOfficer = findFuelInspectionOfficerAssigned(fileInspectionDetail, map.activeStatus)
+        when (fileSaved.first.status) {
+                    map.successStatus -> {
+                        val officerList = commonDaoServices.findOfficersListBasedOnRegionCountyAndRole(applicationMapProperties.mapMSMappedOfficerROLEID, batchDetails.countyId ?: throw ExpectedDataNotFound("MISSING BATCH COUNTY ID"), batchDetails.regionId ?: throw ExpectedDataNotFound("MISSING BATCH REGION ID"))
+                        val rapidTestStatus = mapRapidTestDto(fileInspectionDetail, map)
+                        return mapFuelInspectionDto(fileInspectionDetail, officerList, fuelInspectionOfficer?.assignedIo,rapidTestStatus)
+                    }
+                    else -> {
+                        throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved.first))
+                    }
+                }
+
+
     }
 
 
@@ -446,7 +497,8 @@ class NewMarketSurveillanceDaoServices(
     fun mapFuelInspectionDto(
         fuelInspectionList: MsFuelInspectionEntity,
         officerList: List<UsersEntity>?,
-        officersAssigned : UsersEntity?
+        officersAssigned : UsersEntity?,
+        rapidTestResults: FuelEntityRapidTestDto?
     ): FuelInspectionDto {
         return FuelInspectionDto(
             fuelInspectionList.id,
@@ -457,7 +509,9 @@ class NewMarketSurveillanceDaoServices(
             fuelInspectionList.inspectionDateFrom,
             fuelInspectionList.inspectionDateTo,
             officerList?.let { mapOfficerListDto(it) },
-            officersAssigned?.let { mapOfficerDto (it) }
+            officersAssigned?.let { mapOfficerDto (it) },
+            rapidTestResults?.rapidTestStatus,
+            rapidTestResults?.rapidTestRemarks
         )
     }
 
@@ -477,8 +531,8 @@ class NewMarketSurveillanceDaoServices(
             ?: throw ExpectedDataNotFound("No Files found")
     }
 
-    fun findFuelInspectionOfficerAssigned(fuelInspection: MsFuelInspectionEntity): MsFuelInspectionOfficersEntity? {
-        return fuelInspectionOfficerRepo.findByMsFuelInspectionId(fuelInspection)
+    fun findFuelInspectionOfficerAssigned(fuelInspection: MsFuelInspectionEntity, status: Int): MsFuelInspectionOfficersEntity? {
+        return fuelInspectionOfficerRepo.findByMsFuelInspectionIdAndStatus(fuelInspection,status)
     }
 
     fun mapFuelBatchListDto(
@@ -526,6 +580,26 @@ class NewMarketSurveillanceDaoServices(
                 officer.email,
                 officer.status == 1,
             )
+
+    }
+
+    fun mapRapidTestDto(rapidTest: MsFuelInspectionEntity, map: ServiceMapsEntity): FuelEntityRapidTestDto? {
+
+        return when {
+            rapidTest.rapidTestPassed==map.activeStatus -> {
+                 FuelEntityRapidTestDto(
+                    rapidTest.rapidTestPassedRemarks,
+                    rapidTest.rapidTestPassed==1
+                )
+            }
+            rapidTest.rapidTestFailed==map.activeStatus -> {
+                 FuelEntityRapidTestDto(
+                    rapidTest.rapidTestPassedRemarks,
+                    rapidTest.rapidTestPassed==1
+                )
+            }
+            else -> null
+        }
 
     }
 }

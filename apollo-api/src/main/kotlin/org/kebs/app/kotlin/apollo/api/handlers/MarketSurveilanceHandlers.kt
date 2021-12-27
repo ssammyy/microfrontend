@@ -53,10 +53,7 @@ import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
-import org.kebs.app.kotlin.apollo.store.model.ms.ComplaintCustomersEntity
-import org.kebs.app.kotlin.apollo.store.model.ms.ComplaintEntity
-import org.kebs.app.kotlin.apollo.store.model.ms.ComplaintLocationEntity
-import org.kebs.app.kotlin.apollo.store.model.ms.MsFuelInspectionEntity
+import org.kebs.app.kotlin.apollo.store.model.ms.*
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
 import org.kebs.app.kotlin.apollo.store.repo.ms.*

@@ -36,6 +36,8 @@ data class FuelInspectionDto(
         var inspectionDateTo: Date? = null,
         var officersList: List<MsUsersDto>? = null,
         var officersAssigned: MsUsersDto? = null,
+        var rapidTestStatus: Boolean? = null,
+        var rapidTestRemarks: String? = null,
 )
 
 data class FuelEntityDto(
@@ -58,6 +60,13 @@ data class FuelEntityAssignOfficerDto(
         @NotNull(message = "Required field")
         var assignedUserID: Long,
         var remarks: String? = null,
+)
+
+data class FuelEntityRapidTestDto(
+        @NotNull(message = "Required field")
+        var rapidTestRemarks: String? = null,
+        @NotNull(message = "Required field")
+        var rapidTestStatus: Boolean,
 )
 
 

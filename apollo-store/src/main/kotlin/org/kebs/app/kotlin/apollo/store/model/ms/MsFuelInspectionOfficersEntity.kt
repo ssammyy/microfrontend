@@ -1,10 +1,9 @@
-package org.kebs.app.kotlin.apollo.store.model
+package org.kebs.app.kotlin.apollo.store.model.ms
 
-import org.kebs.app.kotlin.apollo.store.model.ms.MsFuelInspectionEntity
+import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import java.io.Serializable
 import java.sql.Date
 import java.sql.Timestamp
-import java.util.*
 import javax.persistence.*
 
 @Entity
