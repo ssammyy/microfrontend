@@ -346,7 +346,7 @@ class AngularRoutes {
     }
 
     @Bean
-    fun migrationUserAdminNgrxRoutes(handler: SystemsAdministrationHandler)= router{
+    fun migrationUserAdminNgrxRoutes(handler: SystemsAdministrationHandler) = router {
         "/api/v1/migration/anonymous".nest {
             "/titles".nest {
                 GET("", handler::titlesListing)
@@ -523,5 +523,33 @@ class AngularRoutes {
         }
     }
 
+    @Bean
+    fun migrationMarketSurveillanceRoutes(handler: NewMarketSurveillanceHandler) = router {
+        "/api/v1/migration/ms".nest {
+            "/complaint".nest {
+
+            }
+            "/workPlan".nest {
+
+            }
+            "/fuel".nest {
+                GET("/all-batch-list", handler::getAllFuelBatchList)
+                POST("/add", handler::saveNewFuelScheduleBatch)
+                POST("/close", handler::closeFuelBatchEntry)
+                "/inspection".nest {
+                    GET("/list", handler::getAllFuelInspectionList)
+                    POST("/add", handler::saveNewFuelSchedule)
+                    GET("/details", handler::getFuelInspectionDetails)
+                    "/update".nest {
+                        PUT("/assign", handler::updateFuelScheduleAssignOfficer)
+                    }
+
+                }
+
+
+            }
+//            GET("/background/smark/image", handler::smarkBackGroundImage)
+        }
+    }
 
 }

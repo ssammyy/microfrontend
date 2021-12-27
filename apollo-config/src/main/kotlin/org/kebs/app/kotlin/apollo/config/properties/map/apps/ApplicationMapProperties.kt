@@ -87,6 +87,21 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.HOD}")
     val mapUserTaskNameHOD: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.ms.users.epra}")
+    val mapMSUserTaskNameEPRA: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.ms.users.manager.petroleum}")
+    val mapMSUserTaskNameMANAGERPETROLEUM: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.ms.users.officer}")
+    val mapMSUserTaskNameOFFICER: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.ms.users.lab}")
+    val mapMSUserTaskNameLAB: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.ms.users.station.owner}")
+    val mapMSUserTaskNameSTATIONOWNER: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.HOF}")
     val mapUserTaskNameHOF: Long = 0L
 
@@ -125,6 +140,9 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.designation.id.for.QAO}")
     val mapQADesignationIDForQAOId: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.market.surveillance.mapped.officer.roleID}")
+    val mapMSMappedOfficerROLEID: Long = 0L
 
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.designation.id.for.Assessor}")
     val mapQADesignationIDForAssessorId: Long = 0L

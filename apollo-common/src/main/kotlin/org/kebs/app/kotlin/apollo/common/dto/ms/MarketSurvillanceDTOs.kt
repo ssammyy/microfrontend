@@ -1,6 +1,66 @@
 package org.kebs.app.kotlin.apollo.common.dto.ms
 
 import java.sql.Date
+import javax.validation.constraints.NotNull
+
+data class BatchFileFuelSaveDto(
+        @NotNull(message = "Required field")
+        var county: Long,
+        @NotNull(message = "Required field")
+        var town: Long,
+        @NotNull(message = "Required field")
+        var batchFileYear: String,
+
+        var remarks: String? = null,
+)
+
+data class FuelBatchDetailsDto(
+        var id: Long? = null,
+        var region: String? = null,
+        var county: String? = null,
+        var town: String? = null,
+        var referenceNumber: String? = null,
+        var batchFileYear: String? = null,
+        var remarks: String? = null,
+        var batchClosed: Int? = null,
+)
+
+
+data class FuelInspectionDto(
+        var id: Long? = null,
+        var referenceNumber: String? = null,
+        var company: String? = null,
+        var petroleumProduct: String? = null,
+        var physicalLocation: String? = null,
+        var inspectionDateFrom: Date? = null,
+        var inspectionDateTo: Date? = null,
+        var officersList: List<MsUsersDto>? = null,
+        var officersAssigned: MsUsersDto? = null,
+)
+
+data class FuelEntityDto(
+        @NotNull(message = "Required field")
+        var company: String,
+        @NotNull(message = "Required field")
+        var petroleumProduct: String,
+        @NotNull(message = "Required field")
+        var physicalLocation: String,
+        @NotNull(message = "Required field")
+        var inspectionDateFrom: Date,
+        @NotNull(message = "Required field")
+        var inspectionDateTo: Date,
+        @NotNull(message = "Required field")
+        var stationOwnerEmail: String,
+        var remarks: String? = null,
+)
+
+data class FuelEntityAssignOfficerDto(
+        @NotNull(message = "Required field")
+        var assignedUserID: Long,
+        var remarks: String? = null,
+)
+
+
 
 data class ComplaintApproveRejectAssignDto(
         var division: Long? = null,

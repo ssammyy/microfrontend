@@ -23,6 +23,7 @@ package org.kebs.app.kotlin.apollo.store.repo.ms
 
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.ms.ComplaintEntity
+import org.kebs.app.kotlin.apollo.store.model.ms.MsFuelInspectionEntity
 import org.kebs.app.kotlin.apollo.store.model.ms.MsTypesEntity
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -96,16 +97,16 @@ interface IWorkPlanGenerateRepository : HazelcastRepository<MsWorkPlanGeneratedE
 //    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?
 }
 
-@Repository
-interface IFuelInspectionRepository : HazelcastRepository<MsFuelInspectionEntity, Long> {
-    override fun findAll( pageable: Pageable): Page<MsFuelInspectionEntity>
-    fun findAllByOrderByIdDesc( pageable: Pageable): Page<MsFuelInspectionEntity>
-    fun findAllByOrderByIdAsc(): List<MsFuelInspectionEntity>
-
-//    fun findByIdAndMsProcessStatus(id: Long, msProcessStatus: Int):  MsFuelInspectionEntity?
-//    fun findByUserId(userId: UsersEntity): List<WorkplanEntity>?
-//    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?
-}
+//@Repository
+//interface IFuelInspectionRepository : HazelcastRepository<MsFuelInspectionEntity, Long> {
+//    override fun findAll( pageable: Pageable): Page<MsFuelInspectionEntity>
+//    fun findAllByOrderByIdDesc( pageable: Pageable): Page<MsFuelInspectionEntity>
+//    fun findAllByOrderByIdAsc(): List<MsFuelInspectionEntity>
+//
+////    fun findByIdAndMsProcessStatus(id: Long, msProcessStatus: Int):  MsFuelInspectionEntity?
+////    fun findByUserId(userId: UsersEntity): List<WorkplanEntity>?
+////    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?
+//}
 
 @Repository
 interface IFuelRemediationRepository : HazelcastRepository<MsFuelRemediationEntity, Long> {
@@ -149,14 +150,6 @@ interface IComplaintScheduleRepository : HazelcastRepository<MsComplaintSchedule
 //    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?
 }
 
-@Repository
-interface IFuelInspectionOfficerRepository : HazelcastRepository<MsFuelInspectionOfficersEntity, Long> {
-    override fun findAll( pageable: Pageable): Page<MsFuelInspectionOfficersEntity>
-    fun findAllByOrderByIdDesc( pageable: Pageable): Page<MsFuelInspectionOfficersEntity>
-    fun findByMsFuelInspectionId(msFuelInspectionId: MsFuelInspectionEntity): MsFuelInspectionOfficersEntity?
-//    fun findByUserId(userId: UsersEntity): List<WorkplanEntity>?
-//    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?
-}
 
 @Repository
 interface IMSSampleSubmissionRepository : HazelcastRepository<MsSampleSubmissionEntity, Long> {

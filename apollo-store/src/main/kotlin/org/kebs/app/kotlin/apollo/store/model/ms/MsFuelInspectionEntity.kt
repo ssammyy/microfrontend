@@ -1,4 +1,4 @@
-package org.kebs.app.kotlin.apollo.store.model
+package org.kebs.app.kotlin.apollo.store.model.ms
 
 import java.io.Serializable
 import java.sql.Date
@@ -22,6 +22,14 @@ class MsFuelInspectionEntity : Serializable{
     @Column(name = "REFERENCE_NUMBER")
     @Basic
     var referenceNumber: String? = null
+
+    @Column(name = "BATCH_ID")
+    @Basic
+    var batchId: Long? = null
+
+    @Column(name = "USER_TASK_ID")
+    @Basic
+    var userTaskId: Long? = null
 
     @Column(name = "RAPID_TEST_FAILED_REMARKS")
     @Basic

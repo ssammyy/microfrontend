@@ -493,7 +493,7 @@ class ControllerRoutes {
 
             GET("/fuel-inspection/new", handler::fuelInspectionNew)
             GET("/all-fuels", handler::allFuels)
-            GET("/fuel-detail", handler::viewFuelDetails)
+//            GET("/fuel-detail", handler::viewFuelDetails)
 //            GET("/fuel/sample-collection", handler::viewSampleCollection)
 //            GET("/fuel/sample-submission", handler::viewSampleSubmittion)
 //            GET("/sample-collect", handler::viewSampleCollect)

@@ -1,32 +1,48 @@
-package org.kebs.app.kotlin.apollo.store.model
+package org.kebs.app.kotlin.apollo.store.model.ms
 
-import org.kebs.app.kotlin.apollo.store.model.ms.MsFuelInspectionEntity
 import java.io.Serializable
 import java.sql.Date
+import java.sql.Time
 import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*
 
 @Entity
-@Table(name = "DAT_KEBS_MS_FUEL_INSPECTION_OFFICERS")
-class MsFuelInspectionOfficersEntity : Serializable{
+@Table(name = "STG_KEBS_MASTER_MS_BATCH_FUEL_INSPECTION")
+class MsFuelBatchInspectionEntity : Serializable{
     @Column(name = "ID")
-    @SequenceGenerator(name = "DAT_KEBS_MS_FUEL_INSPECTION_OFFICERS_SEQ_GEN", allocationSize = 1, sequenceName = "DAT_KEBS_MS_FUEL_INSPECTION_OFFICERS_SEQ")
-    @GeneratedValue(generator = "DAT_KEBS_MS_FUEL_INSPECTION_OFFICERS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "STG_KEBS_MASTER_MS_BATCH_FUEL_INSPECTION_SEQ_GEN", allocationSize = 1, sequenceName = "STG_KEBS_MASTER_MS_BATCH_FUEL_INSPECTION_SEQ")
+    @GeneratedValue(generator = "STG_KEBS_MASTER_MS_BATCH_FUEL_INSPECTION_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Id
     var id: Long = 0
 
-    @Column(name = "OFFICER")
+    @Column(name = "REGION_ID")
     @Basic
-    var officer: String? = null
+    var regionId: Long?= null
 
-    @Column(name = "DESIGNATION")
+    @Column(name = "BATCH_CLOSED")
     @Basic
-    var designation: String? = null
+    var batchClosed: Int?= null
 
-    @Column(name = "PARTY")
+    @Column(name = "USER_TASK_ID")
     @Basic
-    var party: String? = null
+    var userTaskId: Long? = null
+
+    @Column(name = "COUNTY_ID")
+    @Basic
+    var countyId: Long?= null
+
+    @Column(name = "TOWN_ID")
+    @Basic
+    var townId: Long?= null
+
+    @Column(name = "REFERENCE_NUMBER")
+    @Basic
+    var referenceNumber: String?= null
+
+    @Column(name = "BATCH_FILE_YEAR")
+    @Basic
+    var batchFileYear: String?= null
 
     @Column(name = "TRANSACTION_DATE")
     @Basic
@@ -115,16 +131,4 @@ class MsFuelInspectionOfficersEntity : Serializable{
     @Column(name = "VERSION")
     @Basic
     var version: Long? = null
-
-    @Transient
-    var assignedUser: Long? = 0
-
-    @JoinColumn(name = "INSPECTION_ID", referencedColumnName = "ID")
-    @ManyToOne
-    var msFuelInspectionId: MsFuelInspectionEntity? = null
-
-    @JoinColumn(name = "ASSIGNED_IO", referencedColumnName = "ID")
-    @ManyToOne
-    var assignedIo: UsersEntity? = null
-
 }

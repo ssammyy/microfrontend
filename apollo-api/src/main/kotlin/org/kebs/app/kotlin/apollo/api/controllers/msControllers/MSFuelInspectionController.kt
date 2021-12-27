@@ -9,6 +9,7 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.ms.MsFuelInspectionEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.ms.*
 import org.springframework.data.repository.findByIdOrNull
@@ -76,156 +77,156 @@ final var redirectSiteWorkPlan = "redirect:/api/ms/all-workPlans?createdWorkPlan
         appId = applicationMapProperties.mapMarketSurveillance
     }
 
-    @PreAuthorize("hasAuthority('EPRA')")
-    @PostMapping("/fuel/new/save")
-    fun saveFuel(
-            model: Model,
-            @ModelAttribute("fuelEntity") fuelEntity: MsFuelInspectionEntity,
-
-//            @SessionAttribute("user") usersEntity: UsersEntity,
-            results: BindingResult,
-            redirectAttributes: RedirectAttributes
-    ): String {
-        SecurityContextHolder.getContext().authentication?.name
-                ?.let { username ->
-                    userRepository.findByUserName(username)
-                            ?.let { loggedInUser ->
-                                serviceMapsRepo.findByIdAndStatus(appId, activeStatus)
-                                        ?.let { map ->
-
-                                            var fuel = fuelEntity
-
-                                            with(fuel) {
-                                                referenceNumber = "FL-${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
-                                                countyId = registrationDaoServices.assignCounty(confirmCountyId)
-                                                regionId = registrationDaoServices.assignRegion(countyId?.regionId)
-                                                townsId = registrationDaoServices.assignTown(confirmTownsId)
-                                                transactionDate = Date(Date().time)
-                                                status = map.initStatus
-                                                createdBy = loggedInUser.firstName + " " + loggedInUser.lastName
-                                                createdOn = Timestamp.from(Instant.now())
-                                            }
-                                            fuel = iFuelInspectionRepo.save(fuel)
-                                            KotlinLogging.logger { }.trace("MS FUEL saved with id =[${fuel.id}] ")
-
-
-                                            /**
-                                             * TODO: Lets discuss to understand better what how to assign HOD to a complaint is it based on Region or Randomly
-                                             */
-
-                                            KotlinLogging.logger { }.info { "Start MS PROCESS BY Finding Region" }
-                                            fuel.regionId
-                                                    ?.let { region ->
-                                                        KotlinLogging.logger { }.info { "Start MS PROCESS region ID = $region " }
-                                                        val userDETAILS = findRegionUserId(designationID, map.activeStatus, region)
-//                                                            val recipient = userDETAILS?.email
-//                                                            val subject = "Fuel Monitoring Schedule"
-//                                                            val messageBody = "Check The System For Fuel Monitoring Schedule and Appoint an officer to be part of the joint operation"
-
-                                                        userDETAILS?.id?.let {
-                                                            userDETAILS.email?.let { userEmail ->
-                                                                fuel.stationOwnerEmail?.let { stationOwnerEmail ->
-                                                                    marketSurveillanceBpmn.startMSFuelMonitoringProcess(fuel.id, it, stationOwnerEmail, userEmail, directorDermyValueID)?.let {
-                                                                        //                                                                        if (recipient != null) {
-                                                                        //                                                                            notifications.sendEmail(recipient,subject,messageBody)
-                                                                        //                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-
-
-                                        }
-                            }
-                }
-
-
-
-
-        return redirectSiteFuelList
-    }
+//    @PreAuthorize("hasAuthority('EPRA')")
+//    @PostMapping("/fuel/new/save")
+//    fun saveFuel(
+//        model: Model,
+//        @ModelAttribute("fuelEntity") fuelEntity: MsFuelInspectionEntity,
+//
+////            @SessionAttribute("user") usersEntity: UsersEntity,
+//        results: BindingResult,
+//        redirectAttributes: RedirectAttributes
+//    ): String {
+//        SecurityContextHolder.getContext().authentication?.name
+//                ?.let { username ->
+//                    userRepository.findByUserName(username)
+//                            ?.let { loggedInUser ->
+//                                serviceMapsRepo.findByIdAndStatus(appId, activeStatus)
+//                                        ?.let { map ->
+//
+//                                            var fuel = fuelEntity
+//
+//                                            with(fuel) {
+//                                                referenceNumber = "FL-${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+////                                                countyId = registrationDaoServices.assignCounty(confirmCountyId)
+////                                                regionId = registrationDaoServices.assignRegion(countyId?.regionId)
+////                                                townsId = registrationDaoServices.assignTown(confirmTownsId)
+//                                                transactionDate = Date(Date().time)
+//                                                status = map.initStatus
+//                                                createdBy = loggedInUser.firstName + " " + loggedInUser.lastName
+//                                                createdOn = Timestamp.from(Instant.now())
+//                                            }
+//                                            fuel = iFuelInspectionRepo.save(fuel)
+//                                            KotlinLogging.logger { }.trace("MS FUEL saved with id =[${fuel.id}] ")
+//
+//
+//                                            /**
+//                                             * TODO: Lets discuss to understand better what how to assign HOD to a complaint is it based on Region or Randomly
+//                                             */
+//
+//                                            KotlinLogging.logger { }.info { "Start MS PROCESS BY Finding Region" }
+//                                            fuel.regionId
+//                                                    ?.let { region ->
+//                                                        KotlinLogging.logger { }.info { "Start MS PROCESS region ID = $region " }
+//                                                        val userDETAILS = findRegionUserId(designationID, map.activeStatus, region)
+////                                                            val recipient = userDETAILS?.email
+////                                                            val subject = "Fuel Monitoring Schedule"
+////                                                            val messageBody = "Check The System For Fuel Monitoring Schedule and Appoint an officer to be part of the joint operation"
+//
+//                                                        userDETAILS?.id?.let {
+//                                                            userDETAILS.email?.let { userEmail ->
+//                                                                fuel.stationOwnerEmail?.let { stationOwnerEmail ->
+//                                                                    marketSurveillanceBpmn.startMSFuelMonitoringProcess(fuel.id, it, stationOwnerEmail, userEmail, directorDermyValueID)?.let {
+//                                                                        //                                                                        if (recipient != null) {
+//                                                                        //                                                                            notifications.sendEmail(recipient,subject,messageBody)
+//                                                                        //                                                                        }
+//                                                                    }
+//                                                                }
+//                                                            }
+//                                                        }
+//                                                    }
+//
+//
+//                                        }
+//                            }
+//                }
+//
+//
+//
+//
+//        return redirectSiteFuelList
+//    }
 
     //     Submit assign officer
-    @PreAuthorize("hasAuthority('MS_MP_MODIFY')")
-    @PostMapping("fuel/assign/officer")
-    fun saveAssignedOfficer(
-            @ModelAttribute("fuelOfficerInspectEntity") fuelOfficerInspectEntity: MsFuelInspectionOfficersEntity,
-            @RequestParam("fuelInspectionID") fuelInspectionID: Long,
-            results: BindingResult,
-            redirectAttributes: RedirectAttributes
-    ): String {
-        return try {
-            SecurityContextHolder.getContext().authentication?.name
-                    ?.let { username ->
-                        userRepository.findByUserName(username)
-                                ?.let { loggedInUser ->
-                                    serviceMapsRepo.findByIdAndStatus(appId, 1)
-                                            ?.let { map ->
-                                                iFuelInspectionRepo.findByIdOrNull(fuelInspectionID)
-                                                        ?.let { fuelInspectionEntity ->
-
-                                                            with(fuelOfficerInspectEntity) {
-                                                                assignedUser
-                                                                        ?.let { msioAssigneeId ->
-                                                                            userRepository.findFirstByIdAndStatus(msioAssigneeId, 1)
-                                                                                    .let { usersEntity ->
-                                                                                        assignedIo = usersEntity
-                                                                                        transactionDate = Date(Date().time)
-                                                                                        status = map.activeStatus
-                                                                                        createdBy = loggedInUser.firstName + " " + loggedInUser.lastName
-                                                                                        createdOn = Timestamp.from(Instant.now())
-                                                                                        msFuelInspectionId = fuelInspectionEntity
-                                                                                    }
-
-
-                                                                        }
-                                                                val fuelOfficerInspect = iFuelInspectionOfficerRepo.save(fuelOfficerInspectEntity)
-
-                                                                with(fuelInspectionEntity) {
-                                                                    assignedOfficerStatus = map.activeStatus
-                                                                    lastModifiedOn = Timestamp.from(Instant.now())
-                                                                    lastModifiedBy = loggedInUser.firstName + " " + loggedInUser.lastName
-                                                                }
-                                                                iFuelInspectionRepo.save(fuelInspectionEntity)
-
-                                                                KotlinLogging.logger { }.trace("saved with id =[${fuelOfficerInspect.id}] ")
-
-                                                                fuelOfficerInspect.assignedIo?.id?.let {
-                                                                    marketSurveillanceBpmn.msFmHodAssignOfficerComplete(fuelInspectionEntity.id, it).let {
-                                                                        redirectSiteFuelList
-                                                                    }
-
-                                                                }
-                                                            }
-
-
-                                                        }
-
-
-                                            }
-                                }
-                    }
-        } catch (e: Exception) {
-            KotlinLogging.logger { }.info { e }
-            "redirect:/"
-        } as String
-
-    }
+//    @PreAuthorize("hasAuthority('MS_MP_MODIFY')")
+//    @PostMapping("fuel/assign/officer")
+//    fun saveAssignedOfficer(
+//            @ModelAttribute("fuelOfficerInspectEntity") fuelOfficerInspectEntity: MsFuelInspectionOfficersEntity,
+//            @RequestParam("fuelInspectionID") fuelInspectionID: Long,
+//            results: BindingResult,
+//            redirectAttributes: RedirectAttributes
+//    ): String {
+//        return try {
+//            SecurityContextHolder.getContext().authentication?.name
+//                    ?.let { username ->
+//                        userRepository.findByUserName(username)
+//                                ?.let { loggedInUser ->
+//                                    serviceMapsRepo.findByIdAndStatus(appId, 1)
+//                                            ?.let { map ->
+//                                                iFuelInspectionRepo.findByIdOrNull(fuelInspectionID)
+//                                                        ?.let { fuelInspectionEntity ->
+//
+//                                                            with(fuelOfficerInspectEntity) {
+//                                                                assignedUser
+//                                                                        ?.let { msioAssigneeId ->
+//                                                                            userRepository.findFirstByIdAndStatus(msioAssigneeId, 1)
+//                                                                                    .let { usersEntity ->
+//                                                                                        assignedIo = usersEntity
+//                                                                                        transactionDate = Date(Date().time)
+//                                                                                        status = map.activeStatus
+//                                                                                        createdBy = loggedInUser.firstName + " " + loggedInUser.lastName
+//                                                                                        createdOn = Timestamp.from(Instant.now())
+//                                                                                        msFuelInspectionId = fuelInspectionEntity
+//                                                                                    }
+//
+//
+//                                                                        }
+//                                                                val fuelOfficerInspect = iFuelInspectionOfficerRepo.save(fuelOfficerInspectEntity)
+//
+//                                                                with(fuelInspectionEntity) {
+//                                                                    assignedOfficerStatus = map.activeStatus
+//                                                                    lastModifiedOn = Timestamp.from(Instant.now())
+//                                                                    lastModifiedBy = loggedInUser.firstName + " " + loggedInUser.lastName
+//                                                                }
+//                                                                iFuelInspectionRepo.save(fuelInspectionEntity)
+//
+//                                                                KotlinLogging.logger { }.trace("saved with id =[${fuelOfficerInspect.id}] ")
+//
+//                                                                fuelOfficerInspect.assignedIo?.id?.let {
+//                                                                    marketSurveillanceBpmn.msFmHodAssignOfficerComplete(fuelInspectionEntity.id, it).let {
+//                                                                        redirectSiteFuelList
+//                                                                    }
+//
+//                                                                }
+//                                                            }
+//
+//
+//                                                        }
+//
+//
+//                                            }
+//                                }
+//                    }
+//        } catch (e: Exception) {
+//            KotlinLogging.logger { }.info { e }
+//            "redirect:/"
+//        } as String
+//
+//    }
 
     @PreAuthorize("hasAuthority('MS_IOP_MODIFY')")
     @PostMapping("/fuel/add-remarks")
     fun saveComplaintsRemarks(
-            model: Model,
+        model: Model,
 //            @ModelAttribute("complaintRemarksEntity") complaintRemarksEntity: ComplaintRemarksEntity,
-            @ModelAttribute("fuelEntity") fuelEntity: MsFuelInspectionEntity,
-            @ModelAttribute("fuelRemediationEntity") fuelRemediationEntity: MsFuelRemediationEntity?,
-            @ModelAttribute("fuelRemediationInvoiceEntity") fuelRemediationInvoiceEntity: MsFuelRemedyInvoicesEntity?,
-            @RequestParam("fuelInspectID") fuelInspectID: Long,
-            @RequestParam("doc_file") docFile: MultipartFile?,
-            @RequestParam("ViewType") ViewType: String,
-            results: BindingResult,
-            redirectAttributes: RedirectAttributes
+        @ModelAttribute("fuelEntity") fuelEntity: MsFuelInspectionEntity,
+        @ModelAttribute("fuelRemediationEntity") fuelRemediationEntity: MsFuelRemediationEntity?,
+        @ModelAttribute("fuelRemediationInvoiceEntity") fuelRemediationInvoiceEntity: MsFuelRemedyInvoicesEntity?,
+        @RequestParam("fuelInspectID") fuelInspectID: Long,
+        @RequestParam("doc_file") docFile: MultipartFile?,
+        @RequestParam("ViewType") ViewType: String,
+        results: BindingResult,
+        redirectAttributes: RedirectAttributes
     ): String {
         SecurityContextHolder.getContext().authentication?.name
                 ?.let { username ->

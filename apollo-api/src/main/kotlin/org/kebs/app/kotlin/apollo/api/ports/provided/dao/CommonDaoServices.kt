@@ -71,6 +71,7 @@ import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapPrope
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.di.CdLaboratoryEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.ManufacturePlantDetailsEntity
+import org.kebs.app.kotlin.apollo.store.model.qa.PermitApplicationsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileCommoditiesManufactureEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileContractsUndertakenEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileDirectorsEntity
@@ -411,6 +412,20 @@ class CommonDaoServices(
         return String.format("%0${digitSize}d", num)
     }
 
+    fun failedStatusDetails(sr: ServiceRequestsEntity): String {
+        return "ERROR STATUS CODE= ${sr.responseStatus} AND MESSAGE = ${sr.responseMessage}"
+    }
+
+    fun findOfficersListBasedOnRegionCountyAndRole(
+        roleId: Long,
+        countyId: Long,
+        regionId: Long
+    ): List<UsersEntity>? {
+
+        return usersRepo.findOfficerUsersByRegionAndCountyAndRoleFromUserDetails(roleId, countyId, regionId, 1)
+    }
+
+
     fun serviceMapDetails(appId: Int): ServiceMapsEntity {
         serviceMapsRepository.findByIdAndStatus(appId, activeStatus.toInt())
             ?.let { s ->
@@ -490,6 +505,11 @@ class CommonDaoServices(
 
     fun concatenateName(user: UsersEntity): String {
         return "${user.firstName} ${user.lastName}"
+    }
+
+    fun createJsonBodyFromEntity(entitySaved: Any): String? {
+        val gson = Gson()
+        return gson.toJson(entitySaved)
     }
 
     fun concatenateName(firstName: String, lastName: String): String {

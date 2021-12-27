@@ -2001,8 +2001,7 @@ class QualityAssuranceHandler(
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val map = commonDaoServices.serviceMapDetails(appId)
-            val permitID =
-                req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
             var permit = qaDaoServices.findPermitBYUserIDAndId(
                 permitID,
                 loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")

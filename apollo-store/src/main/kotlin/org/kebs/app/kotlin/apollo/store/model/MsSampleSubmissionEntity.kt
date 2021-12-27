@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.store.model
 
+import org.kebs.app.kotlin.apollo.store.model.ms.MsFuelInspectionEntity
 import java.io.Serializable
 import java.sql.Date
 import java.sql.Timestamp

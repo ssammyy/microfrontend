@@ -52,6 +52,7 @@ import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.ms.ComplaintCustomersEntity
 import org.kebs.app.kotlin.apollo.store.model.ms.ComplaintEntity
 import org.kebs.app.kotlin.apollo.store.model.ms.ComplaintLocationEntity
+import org.kebs.app.kotlin.apollo.store.model.ms.MsFuelInspectionEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.ms.*
 import org.springframework.data.repository.findByIdOrNull

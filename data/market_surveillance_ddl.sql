@@ -77,6 +77,21 @@
  *
  */
 ***************************Table USED IN DI*****************************************
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 select *
 from DAT_KEBS_MS_COMPLAINT
 -- where  UUID = '0c06289c-d7cc-4cd0-a74e-9f9f4528222b'
