@@ -23,8 +23,9 @@ class DestinationInspectionRoutes {
     @CrossOrigin
     fun standardMark(handler: ISMHandler) = router {
         "/api/v1/ism".nest {
+            POST("/approve-reject", handler::approveRejectISMApplication)
             GET("/list/{requestStatus}", handler::listIsmRequests)
-            GET("/get/{requestId}", handler::getIsmRequests)
+            GET("/details/{requestId}", handler::getIsmRequests)
         }
     }
 

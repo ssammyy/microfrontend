@@ -179,7 +179,7 @@ export const ROUTES: RouteInfo[] = [
         collapse: 'api-clients',
         privilege: ['SYSADMIN_VIEW', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
         children: [
-            {path: 'api/clients', title: 'Api Clients', ab: 'AC'},
+            {path: 'api-clients', title: 'Api Clients', ab: 'AC'},
         ],
         icontype: 'settings'
     }

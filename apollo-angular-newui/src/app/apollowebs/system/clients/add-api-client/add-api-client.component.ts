@@ -33,7 +33,7 @@ export class AddApiClientComponent implements OnInit {
         }
     ]
 
-    constructor(private fb: FormBuilder, private dialog: MatDialogRef<any>, @Inject(MAT_DIALOG_DATA) public data: any,
+    constructor(private fb: FormBuilder, private dialogRef: MatDialogRef<any>, @Inject(MAT_DIALOG_DATA) public data: any,
                 private systemService: SystemService, private pvocService: PVOCService) {
     }
 
@@ -70,7 +70,7 @@ export class AddApiClientComponent implements OnInit {
                 res => {
                     if (res.responseCode === "00") {
                         this.pvocService.showSuccess(res.message, () => {
-                            this.dialog.close(true)
+                            this.dialogRef.close(res.data)
                         })
                     } else {
                         this.pvocService.showError(res.message)
@@ -88,7 +88,7 @@ export class AddApiClientComponent implements OnInit {
                 res => {
                     if (res.responseCode === "00") {
                         this.pvocService.showSuccess(res.message, () => {
-                            this.dialog.close(true)
+                            this.dialogRef.close(res.data)
                         })
                     } else {
                         this.pvocService.showError(res.message)

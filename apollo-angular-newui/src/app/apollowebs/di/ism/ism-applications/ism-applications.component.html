@@ -5,9 +5,9 @@
                 <div class="card">
                     <div class="card-header card-header-primary card-header-icon">
                         <div class="card-icon">
-                            <i class="material-icons">handshake</i>
+                            <i class="material-icons">diamond-stone</i>
                         </div>
-                        <h4 class="card-title">PVOC Partners
+                        <h4 class="card-title">ISM requests
                         </h4>
                     </div>
                     <div class="card-body">
@@ -70,11 +70,8 @@
                                     <ng-container matColumnDef="actions">
                                         <mat-header-cell *matHeaderCellDef>ACTIONS</mat-header-cell>
                                         <mat-cell *matCellDef="let element">
-                                            <button mat-raised-button (click)="viewRequest(element)"><i
-                                                    class="fa fa-pencil-alt">View</i>
-                                            </button>
-                                            <button mat-raised-button (click)="viewConsignment(element.partnerId)"><i
-                                                    class="fa fa-eye">CD</i>
+                                            <button mat-raised-button (click)="viewRequest(element.applicationId)"><i
+                                                    class="fa fa-eye">View</i>
                                             </button>
                                         </mat-cell>
                                     </ng-container>

@@ -454,9 +454,17 @@ export class DestinationInspectionService {
             params['page'] = page
             params['size'] = pageSize
         }
-        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/ism/list/"+applicationStatus), {
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/ism/list/"+applicationStatus), {
             params: params
         })
+    }
+
+    getIsmApplicationDetails(applicationId: any): Observable<any> {
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/ism/details/"+applicationId))
+    }
+
+    approveRejectIsm(data: any): Observable<any> {
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/ism/approve-reject"),data)
     }
 
     showSuccess(message: string, fn?: Function) {

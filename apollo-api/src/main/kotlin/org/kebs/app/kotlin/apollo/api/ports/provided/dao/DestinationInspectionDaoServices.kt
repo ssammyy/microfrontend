@@ -2129,7 +2129,7 @@ class DestinationInspectionDaoServices(
     }
 
     fun findCocByUcrNumber(ucrNumber: String): CocsEntity? {
-        return cocRepo.findByUcrNumberAndCocType(ucrNumber, "coc")
+        return cocRepo.findByUcrNumberAndCocType(ucrNumber, "COC")
     }
 
     fun findCdTypeDetails(cdTypeID: Long): ConsignmentDocumentTypesEntity {

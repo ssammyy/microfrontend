@@ -120,6 +120,7 @@ import {ViewClientsComponent} from "./apollowebs/system/clients/view-clients/vie
 import {ViewPartnersComponent} from "./apollowebs/pvoc/partners/view-partners/view-partners.component";
 import {ViewPartnerDetailsComponent} from "./apollowebs/pvoc/partners/view-partner-details/view-partner-details.component";
 import {IsmApplicationsComponent} from "./apollowebs/di/ism/ism-applications/ism-applications.component";
+import {ViewIsmApplicationComponent} from "./apollowebs/di/ism/view-ism-application/view-ism-application.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -580,6 +581,11 @@ export const routes: Routes = [
                 path: 'requests',
                 canActivate: [RouteGuard],
                 component: IsmApplicationsComponent
+            },
+            {
+                path: 'request/:id',
+                canActivate: [RouteGuard],
+                component: ViewIsmApplicationComponent
             }
         ]
     },
@@ -600,7 +606,7 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
         children: [
             {
-                path: 'api/clients',
+                path: 'api-clients',
                 component: ViewClientsComponent
             }
         ]

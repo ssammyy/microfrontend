@@ -13,7 +13,7 @@ class ExternalRouter {
     @CrossOrigin
     fun externalStandardMark(handler: ISMHandler) = router {
         "/api/v1/external/ism".nest {
-            POST("/create", handler::createIsmRequests)
+            POST("/apply", handler::createIsmRequests)
             POST("/requests", handler::listExternalUserApplications)
         }
     }

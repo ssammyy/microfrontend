@@ -17,6 +17,7 @@ class ISMApplicationsDto {
     var requestApproved: String? = null
     var approvedRejectedBy: String? = null
     var completed: String? = null
+    var ismNumber: String? = null
     var completedOn: Timestamp? = null
     var status: Long? = null
 
@@ -30,6 +31,7 @@ class ISMApplicationsDto {
                 firstName = application.firstName
                 middleName = application.middleName
                 lastName = application.lastName
+                ismNumber = application.ismNumber
                 emailAddress = application.emailAddress
                 remarks = application.remarks
                 approvalRemarks = application.approvalRemarks
@@ -50,6 +52,7 @@ class ISMApplicationsDto {
             }
             return app
         }
+
         fun fromList(applications: List<IsmApplications>): List<ISMApplicationsDto> {
             val dtos = mutableListOf<ISMApplicationsDto>()
             applications.forEach { d ->
@@ -73,6 +76,7 @@ class ISMExternalApplicationsDto {
     var approvalRemarks: String? = null
     var approvedRejectedOn: Timestamp? = null
     var requestApproved: String? = null
+    var ismNumber: String? = null
     var completed: String? = null
     var completedOn: Timestamp? = null
 
@@ -81,6 +85,7 @@ class ISMExternalApplicationsDto {
             val app = ISMExternalApplicationsDto()
             app.apply {
                 applicationId = application.id
+                ismNumber = application.ismNumber
                 ucrNumber = application.ucrNumber
                 companyName = application.companyName
                 firstName = application.firstName

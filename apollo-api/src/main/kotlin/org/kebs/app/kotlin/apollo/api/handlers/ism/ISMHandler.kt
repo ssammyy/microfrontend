@@ -4,6 +4,7 @@ import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.extractPage
+import org.kebs.app.kotlin.apollo.api.payload.request.ISMApprovalRequestForm
 import org.kebs.app.kotlin.apollo.api.payload.request.InternationalStandardMarkForm
 import org.kebs.app.kotlin.apollo.api.payload.request.InternationalStandardMarkRequestsForm
 import org.kebs.app.kotlin.apollo.api.service.DaoValidatorService
@@ -17,6 +18,26 @@ class ISMHandler(
         private val ismService: InternationalStandardMarkService,
         private val validationService: DaoValidatorService
 ) {
+
+    fun approveRejectISMApplication(req: ServerRequest): ServerResponse {
+        val response = ApiResponseModel()
+        try {
+            val form = req.body(ISMApprovalRequestForm::class.java)
+            validationService.validateInputWithInjectedValidator(form)?.let {
+                response.errors = it
+                response.message = "Validation failed, please fix highlighted errors"
+                response.responseCode = ResponseCodes.FAILED_CODE
+                response
+            } ?: run {
+                return ServerResponse.ok().body(ismService.approveRejectIsm(form.requestId!!, form.remarks!!, form.approved))
+            }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to  process ISM approval requests", ex)
+            response.responseCode = ResponseCodes.INVALID_CODE
+            response.message = "Failed to process request"
+        }
+        return ServerResponse.ok().body(response)
+    }
 
     fun listIsmRequests(req: ServerRequest): ServerResponse {
         val response = ApiResponseModel()

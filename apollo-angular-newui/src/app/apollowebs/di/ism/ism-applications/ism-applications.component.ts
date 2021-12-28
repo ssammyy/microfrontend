@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {DestinationInspectionService} from "../../../../core/store/data/di/destination-inspection.service";
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'app-ism-applications',
@@ -7,14 +8,14 @@ import {DestinationInspectionService} from "../../../../core/store/data/di/desti
     styleUrls: ['./ism-applications.component.css']
 })
 export class IsmApplicationsComponent implements OnInit {
-    displayedColumns = ["ucrNumber", "companyName", "firstName", "middleName", "lastName", "emailAddress", "requestApproved", "completed"]
+    displayedColumns = ["ucrNumber", "companyName", "firstName", "middleName", "lastName", "emailAddress", "requestApproved", "completed","actions"]
     ismApplications: any[]
     activeStatus = 'new-requests'
     applicationStatus = 0;
     page: number = 0
     pageSize: number = 20
 
-    constructor(private diService: DestinationInspectionService) {
+    constructor(private diService: DestinationInspectionService, private router: Router) {
     }
 
     ngOnInit(): void {
@@ -22,6 +23,10 @@ export class IsmApplicationsComponent implements OnInit {
     }
 
     toggleStatus(status) {
+        if (status === this.activeStatus) {
+            return
+        }
+        this.activeStatus = status
         switch (status) {
             case "rejected-requests":
                 this.applicationStatus = 2
@@ -32,6 +37,7 @@ export class IsmApplicationsComponent implements OnInit {
             default:
                 this.applicationStatus = 0
         }
+        this.loadData()
     }
 
     loadData() {
@@ -50,12 +56,9 @@ export class IsmApplicationsComponent implements OnInit {
             )
     }
 
-    viewConsignment(cdId) {
-
-    }
 
     viewRequest(requestId) {
-
+        this.router.navigate(["/ism/request",requestId])
     }
 
 }

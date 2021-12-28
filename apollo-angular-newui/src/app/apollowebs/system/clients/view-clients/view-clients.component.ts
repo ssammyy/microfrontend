@@ -3,6 +3,7 @@ import {SystemService} from "../../../../core/store/data/system/system.service";
 import {DestinationInspectionService} from "../../../../core/store/data/di/destination-inspection.service";
 import {MatDialog} from "@angular/material/dialog";
 import {AddApiClientComponent} from "../add-api-client/add-api-client.component";
+import {ViewClientCredentialsComponent} from "../view-client-credentials/view-client-credentials.component";
 
 @Component({
     selector: 'app-view-clients',
@@ -43,9 +44,11 @@ export class ViewClientsComponent implements OnInit {
                 }
             )
     }
+
     viewApiClient(clientId) {
 
     }
+
     addApiClient(clientDetails: any) {
         this.dialog.open(AddApiClientComponent, {
             data: clientDetails
@@ -53,7 +56,17 @@ export class ViewClientsComponent implements OnInit {
             .subscribe(
                 res => {
                     if (res) {
-                        this.loadData()
+                        // Show Client Credentials for display and transmission
+                        this.dialog.open(ViewClientCredentialsComponent, {
+                            data: res
+                        })
+                            .afterClosed()
+                            .subscribe(
+                                res => {
+                                    // reload data
+                                    this.loadData()
+                                }
+                            )
                     }
                 }
             )
