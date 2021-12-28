@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.routes
 
 import org.kebs.app.kotlin.apollo.api.handlers.ism.ISMHandler
+import org.kebs.app.kotlin.apollo.api.handlers.pvoc.PvocClientHandler
 import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Component
 import org.springframework.web.bind.annotation.CrossOrigin
@@ -15,6 +16,16 @@ class ExternalRouter {
         "/api/v1/external/ism".nest {
             POST("/apply", handler::createIsmRequests)
             POST("/requests", handler::listExternalUserApplications)
+        }
+    }
+
+    @Bean
+    @CrossOrigin
+    fun pvocClientRequests(handler: PvocClientHandler) = router {
+        "/api/v1/pvoc/clients".nest {
+            POST("/coc", handler::foreignCoc)
+            POST("/cor", handler::foreignCor)
+            POST("/ncr", handler::foreignNcr)
         }
     }
 }

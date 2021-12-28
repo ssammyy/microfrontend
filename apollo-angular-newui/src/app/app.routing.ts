@@ -575,7 +575,7 @@ export const routes: Routes = [
     {
         path: 'ism',
         component: AdminLayoutComponent,
-        canActivate: [RouteGuard],
+        // canActivate: [RouteGuard],
         children: [
             {
                 path: 'requests',
@@ -584,8 +584,23 @@ export const routes: Routes = [
             },
             {
                 path: 'request/:id',
-                canActivate: [RouteGuard],
+                // canActivate: [RouteGuard],
                 component: ViewIsmApplicationComponent
+            }
+        ]
+    },
+    {
+        path: 'transaction',
+        component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [
+            {
+                path: 'demand-notes',
+                component: TransactionViewComponent
+            },
+            {
+                path: 'exchange-rates',
+                component: CurrencyExchangeRatesComponent
             }
         ]
     },

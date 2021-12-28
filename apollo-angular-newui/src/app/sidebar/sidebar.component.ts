@@ -115,12 +115,12 @@ export const ROUTES: RouteInfo[] = [
         title: 'PVOC',
         type: 'sub',
         children: [
-            {path: '', title: 'PVOC applications', ab: 'PP'},
+            {path: '', title: 'PVOC applications', ab: 'PA'},
             {path: 'partners', title: 'Partners', ab: 'PP'},
         ],
         collapse: 'pvoc',
         privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
-        icontype: 'receipt'
+        icontype: 'diamond'
     },
     {
         path: '/ministry/inspection',
@@ -140,14 +140,6 @@ export const ROUTES: RouteInfo[] = [
         icontype: 'receipt'
     },
     {
-        path: '/demand/notes',
-        title: 'Transaction Monitoring',
-        type: 'link',
-        collapse: 'transactions',
-        privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
-        icontype: 'money'
-    },
-    {
         path: '/kentrade/exchange/messages',
         title: 'KENTRADE Monitoring',
         type: 'link',
@@ -165,12 +157,16 @@ export const ROUTES: RouteInfo[] = [
         icontype: 'standard'
     },
     {
-        path: '/currency/rates',
-        title: 'Exchange Rates',
-        type: 'link',
-        collapse: 'currency-exchange-rates',
-        icontype: 'money',
-        privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
+        path: '/transaction',
+        title: 'Finance',
+        type: 'sub',
+        collapse: 'transactions',
+        privilege: ['SYSADMIN_VIEW', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
+        children: [
+            {path: 'demand-notes', title: 'Demand Notes', ab: 'DN'},
+            {path: 'exchange-rates', title: 'Exchange Rates', ab: 'DN'},
+        ],
+        icontype: 'money'
     },
     {
         path: '/system',
