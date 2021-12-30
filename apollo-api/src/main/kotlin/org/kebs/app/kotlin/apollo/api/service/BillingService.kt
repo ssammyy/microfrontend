@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.service
 
+import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
@@ -12,6 +13,7 @@ import org.kebs.app.kotlin.apollo.store.model.invoice.CorporateCustomerAccounts
 import org.kebs.app.kotlin.apollo.store.repo.IBillPaymentsRepository
 import org.kebs.app.kotlin.apollo.store.repo.IBillTransactionsEntityRepository
 import org.kebs.app.kotlin.apollo.store.repo.ICorporateCustomerRepository
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
 import java.sql.Timestamp
@@ -29,7 +31,7 @@ class BillingService(
     final val DATE_FORMATER = DateTimeFormatter.ofPattern("yyyy-MM")
     fun addBillTransaction(transaction: BillTransactionsEntity, corporate: CorporateCustomerAccounts): BillPayments {
         val billNumber = DATE_FORMATER.format(LocalDate.now())
-        val billOptional = this.billPaymentRepository.findAllByCorporateIdAndBillNumber(corporate.id, billNumber)
+        val billOptional = this.billPaymentRepository.findFirstByCorporateIdAndBillNumber(corporate.id, billNumber)
         if (billOptional.isPresent) {
             val bill = billOptional.get()
             transaction.billId = bill.id
@@ -96,19 +98,25 @@ class BillingService(
         return response
     }
 
-    fun corporateBills(corporateId: Long): ApiResponseModel {
+    fun corporateBills(corporateId: Long, page: PageRequest): ApiResponseModel {
         val response = ApiResponseModel()
-        val corporate = corporateCustomerRepository.findById(corporateId)
-        if (corporate.isPresent) {
-            val map = mutableMapOf<String, Any>()
-            map["corporate"] = corporate
-            map["bills"] = billPaymentRepository.findAllByCorporateId(corporateId)
-            response.data = map
-            response.responseCode = ResponseCodes.SUCCESS_CODE
-            response.message = "Success"
-        } else {
-            response.responseCode = ResponseCodes.NOT_FOUND
-            response.message = "Corporate not found"
+        try {
+            val corporate = corporateCustomerRepository.findById(corporateId)
+            if (corporate.isPresent) {
+                val pg = billPaymentRepository.findByCorporateId(corporateId, page)
+                response.data = pg.toList()
+                response.totalPages = pg.totalPages
+                response.totalCount = pg.totalElements
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+                response.message = "Success"
+            } else {
+                response.responseCode = ResponseCodes.NOT_FOUND
+                response.message = "Corporate not found"
+            }
+        }catch (ex: Exception) {
+            KotlinLogging.logger {  }.error("Failed to load bills", ex)
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.message = "Corporate bills not found"
         }
         return response
     }

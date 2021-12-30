@@ -240,6 +240,9 @@ import { IsmApplicationsComponent } from './apollowebs/di/ism/ism-applications/i
 import { ViewIsmApplicationComponent } from './apollowebs/di/ism/view-ism-application/view-ism-application.component';
 import { ApproveRejectApplicationComponent } from './apollowebs/di/ism/approve-reject-application/approve-reject-application.component';
 import {ViewClientCredentialsComponent} from "./apollowebs/system/clients/view-client-credentials/view-client-credentials.component";
+import { ViewCorporateCustomersComponent } from './apollowebs/invoice/corporate/view-corporate-customers/view-corporate-customers.component';
+import { AddUpdateCorporateCustomerComponent } from './apollowebs/invoice/corporate/add-update-corporate-customer/add-update-corporate-customer.component';
+import { ViewCorporateComponent } from './apollowebs/invoice/corporate/view-corporate/view-corporate.component';
 
 @NgModule({
     imports: [
@@ -504,6 +507,9 @@ import {ViewClientCredentialsComponent} from "./apollowebs/system/clients/view-c
         ViewIsmApplicationComponent,
         ApproveRejectApplicationComponent,
         ViewClientCredentialsComponent,
+        ViewCorporateCustomersComponent,
+        AddUpdateCorporateCustomerComponent,
+        ViewCorporateComponent,
     ],
     providers: [
         MatNativeDateModule,

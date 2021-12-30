@@ -10,9 +10,9 @@ import javax.persistence.*
 @Table(name = "DAT_KEBS_BILLS")
 class BillPayments : Serializable {
     @Column(name = "ID")
+    @Id
     @SequenceGenerator(name = "DAT_KEBS_BILLS_SEQ_GEN", sequenceName = "DAT_KEBS_BILLS_SEQ", allocationSize = 1)
     @GeneratedValue(generator = "DAT_KEBS_BILLS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
-    @Id
     var id: Long = 0
 
     @Column(name = "CORPORATE_ID")
@@ -75,7 +75,7 @@ class BillPayments : Serializable {
     @Basic
     var varField5: String? = null
 
-    @Column(name = "CREATE ON")
+    @Column(name = "CREATE_ON")
     @Basic
     var createOn: Timestamp? = null
 

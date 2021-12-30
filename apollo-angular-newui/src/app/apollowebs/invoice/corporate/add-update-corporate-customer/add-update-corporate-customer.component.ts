@@ -1,0 +1,86 @@
+import {Component, Inject, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
+import {PVOCService} from "../../../../core/store/data/pvoc/pvoc.service";
+import {FinanceInvoiceService} from "../../../../core/store/data/invoice/finance-invoice.service";
+
+@Component({
+    selector: 'app-add-update-corporate-customer',
+    templateUrl: './add-update-corporate-customer.component.html',
+    styleUrls: ['./add-update-corporate-customer.component.css']
+})
+export class AddUpdateCorporateCustomerComponent implements OnInit {
+    form: FormGroup
+    errors: any
+    loading: boolean = false
+    message: string
+    mouDaysList = [
+        {
+            name: "MONTHLY",
+            code: "1"
+        },
+        {
+            name: "BIMONTHLY",
+            code: "2"
+        }
+    ]
+    coporateType = [
+        {
+            name: "Courier Goods",
+            code: "COURIER"
+        },
+        {
+            name: "Other",
+            code: "OTHER"
+        },
+    ]
+
+    constructor(private fb: FormBuilder, private dialog: MatDialogRef<any>, @Inject(MAT_DIALOG_DATA) public data: any, private fiService: FinanceInvoiceService) {
+    }
+
+    ngOnInit(): void {
+        this.form = this.fb.group({
+            corporateIdentifier: [this.data ? this.data.corporateIdentifier : null, [Validators.required, Validators.minLength(2)]],
+            corporateName: [this.data ? this.data.corporateName : null, [Validators.required, Validators.minLength(2)]],
+            corporateType: [this.data ? this.data.corporateType : null, [Validators.required]],
+            corporateEmail: [this.data ? this.data.corporateEmail : null, [Validators.required, Validators.email]],
+            corporatePhone: [this.data? this.data.corporatePhone: null,Validators.required],
+            contactName: [this.data ? this.data.contactName : "", [Validators.required]],
+            contactPhone: [this.data ? this.data.contactPhone : "", [Validators.required]],
+            contactEmail: [this.data ? this.data.contactEmail : null, [Validators.required, Validators.email]],
+            isCiakMember: [this.data ? this.data.isCiakMember : null, [Validators.required]],
+            mouDays: [this.data ? this.data.mouDays : null, Validators.required]
+        })
+    }
+
+    addCorporate() {
+        var result = null;
+        this.message = null
+        this.loading = true
+        if (this.data) {
+            result = this.fiService.updateCorporateCustomer(this.form.value, this.data.partnerId)
+        } else {
+            result = this.fiService.addCorporateCustomer(this.form.value)
+        }
+        result.subscribe(
+            res => {
+                if (res.responseCode === "00") {
+                    this.fiService.showSuccess(res.message, () => {
+                        this.dialog.close(true)
+                    })
+
+                } else {
+                    this.message = res.message
+                    this.fiService.showError(res.message)
+                    this.errors = res.errors
+                }
+                this.loading = false
+            },
+            error => {
+                this.loading = false
+                this.fiService.showError(error.message)
+            }
+        )
+
+    }
+}

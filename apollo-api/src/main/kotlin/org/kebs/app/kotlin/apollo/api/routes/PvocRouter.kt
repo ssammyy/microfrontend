@@ -14,20 +14,6 @@ class PvocRouter {
 
     @Bean
     @CrossOrigin
-    fun pvocCorporatesManagement(handler: CorporateCustomerHandler) = router {
-        "/api/v1/corporate".nest {
-            GET("/list", handler::listCorporateCustomers)
-            POST("/add", handler::addCorporateCustomer)
-            GET("/bills/{corporateId}", handler::currentCorporateBills)
-            GET("/bills/{corporateId}/status/{billStatus}", handler::corporateBillStatus)
-            GET("/bill/{corporateId}/details/{billId}", handler::corporateBillDetails)
-            PUT("/update/{corporateId}", handler::updateCorporateCustomer)
-            PATCH("/status/{corporateId}", handler::updateCorporateCustomerStatus)
-        }
-    }
-
-    @Bean
-    @CrossOrigin
     fun pvocPartners(handler: PvocPartnersHandler) = router {
         "/api/v1/partners".nest {
             GET("/list", handler::listPartners)

@@ -14,6 +14,7 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 import java.math.BigDecimal
+import java.sql.Timestamp
 import java.util.*
 
 
@@ -47,6 +48,7 @@ interface IInvoiceRepository : HazelcastRepository<InvoiceEntity, Long> {
 interface ICorporateCustomerRepository : HazelcastRepository<CorporateCustomerAccounts, Long> {
     fun findAllByCorporateIdentifier(corporateId: String?): Optional<CorporateCustomerAccounts>
     fun findAllByCorporateNameContains(corporateName: String, page: Pageable): Page<CorporateCustomerAccounts>
+    fun countByCreatedOnBetween(startDate: Timestamp, endDate: Timestamp): Long
 }
 
 @Repository
@@ -57,8 +59,8 @@ interface IBillTransactionsEntityRepository : HazelcastRepository<BillTransactio
 
 @Repository
 interface IBillPaymentsRepository : HazelcastRepository<BillPayments, Long> {
-    fun findAllByCorporateId(corporateId: Long?): List<BillPayments>
-    fun findAllByCorporateIdAndBillNumber(corporateId: Long?,billNumber: String): Optional<BillPayments>
+    fun findByCorporateId(corporateId: Long,page: Pageable): Page<BillPayments>
+    fun findFirstByCorporateIdAndBillNumber(corporateId: Long?,billNumber: String): Optional<BillPayments>
     @Query(value = "select sum(CASE WHEN bt.AMOUNT>0 then bt.AMOUNT else 0.0 END) TOTAL_AMOUNT from DAT_KEBS_BILL_TRANSACTIONS bt  where CORPORATE_ID=:corporateId and BILL_ID=:billId", nativeQuery = true)
     fun sumTotalAmountByCorporateIdAndBillId(@Param("corporateId")corporateId: Long?,@Param("billId")billId: Long): BigDecimal?
     fun findAllByCorporateIdAndPaymentStatusIn(corporateId: Long?, status: List<Int>): List<BillPayments>

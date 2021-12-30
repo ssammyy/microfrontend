@@ -11,6 +11,8 @@ import javax.persistence.*
 class CorporateCustomerAccounts : Serializable {
     @Column(name = "ID")
     @Id
+    @SequenceGenerator(name = "DAT_INV_CORPORATE_CUSTOMERS_SEQ_GEN", sequenceName = "DAT_INV_CORPORATE_CUSTOMERS_SEQ", allocationSize = 1)
+    @GeneratedValue(generator = "DAT_INV_CORPORATE_CUSTOMERS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     var id: Long = 0
 
     @Column(name = "CORPORATE_IDENTIFIER", unique = true)
@@ -24,6 +26,9 @@ class CorporateCustomerAccounts : Serializable {
 
     @Column(name = "CORPORATE_EMAIL", nullable = false)
     var corporateEmail: String? = null
+
+    @Column(name = "CORPORATE_PHONE", nullable = false)
+    var corporatePhone: String? = null
 
     @Column(name = "CORPORATE_BILL_NUMBER", nullable = false)
     var corporateBillNumber: String? = null

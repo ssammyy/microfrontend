@@ -1,16 +1,31 @@
 package org.kebs.app.kotlin.apollo.api.payload.request
 
-import java.sql.Timestamp
-import javax.persistence.Column
+import javax.validation.constraints.*
 
 class CorporateForm {
+    @NotNull(message = "Enter corporate PIN")
+    @Size(min = 5, max = 80, message = "Please enter a valid PIN")
     var corporateIdentifier: String? = null
+
+    @NotNull(message = "Enter corporate Name")
     var corporateName: String? = null
+
+    @NotNull(message = "Please select corporate Type")
     var corporateType: String? = null // COURIER
+
+    @Email(message = "Please add a valid email")
     var corporateEmail: String? = null
-    var corporateBillNumber: String? = null
+
+    @NotEmpty(message = "Please enter contact names")
     var contactName: String? = null
+
+    @NotEmpty(message = "Please enter contact phone number")
     var contactPhone: String? = null
+
+    @NotEmpty(message = "Please enter corporate phone number")
+    var corporatePhone: String? = null
+
+    @Email(message = "Please add a valid email")
     var contactEmail: String? = null
     var isCiakMember: Boolean? = false
     var mouDays: Int? = 0

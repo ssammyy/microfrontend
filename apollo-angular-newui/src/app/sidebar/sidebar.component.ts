@@ -115,7 +115,11 @@ export const ROUTES: RouteInfo[] = [
         title: 'PVOC',
         type: 'sub',
         children: [
-            {path: '', title: 'PVOC applications', ab: 'PA'},
+            {path: 'applications', title: 'Company application', ab: 'PA'},
+            {path: 'waiver-applications', title: 'Waiver application', ab: 'WA'},
+            {path: 'exemption-applications', title: 'Exemption applications', ab: 'EA'},
+            {path: 'company-applications', title: 'Company Waiver application', ab: 'CW'},
+            {path: 'complaints', title: 'Complaints', ab: 'CC'},
             {path: 'partners', title: 'Partners', ab: 'PP'},
         ],
         collapse: 'pvoc',
@@ -164,7 +168,8 @@ export const ROUTES: RouteInfo[] = [
         privilege: ['SYSADMIN_VIEW', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
         children: [
             {path: 'demand-notes', title: 'Demand Notes', ab: 'DN'},
-            {path: 'exchange-rates', title: 'Exchange Rates', ab: 'DN'},
+            {path: 'corporates-customers', title: 'Corporate Customers', ab: 'CC'},
+            {path: 'exchange-rates', title: 'Exchange Rates', ab: 'ER'},
         ],
         icontype: 'money'
     },

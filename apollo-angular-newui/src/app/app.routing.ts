@@ -121,6 +121,8 @@ import {ViewPartnersComponent} from "./apollowebs/pvoc/partners/view-partners/vi
 import {ViewPartnerDetailsComponent} from "./apollowebs/pvoc/partners/view-partner-details/view-partner-details.component";
 import {IsmApplicationsComponent} from "./apollowebs/di/ism/ism-applications/ism-applications.component";
 import {ViewIsmApplicationComponent} from "./apollowebs/di/ism/view-ism-application/view-ism-application.component";
+import {ViewCorporateCustomersComponent} from "./apollowebs/invoice/corporate/view-corporate-customers/view-corporate-customers.component";
+import {ViewCorporateComponent} from "./apollowebs/invoice/corporate/view-corporate/view-corporate.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -446,8 +448,9 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
         children: [
             {
-                path: '',
-                component: ImportInspectionComponent
+                path: 'applications',
+                component: ImportInspectionComponent,
+                pathMatch: 'full'
             },
             {
                 path: 'waivers',
@@ -597,6 +600,14 @@ export const routes: Routes = [
             {
                 path: 'demand-notes',
                 component: TransactionViewComponent
+            },
+            {
+                path: 'corporates-customers',
+                component: ViewCorporateCustomersComponent
+            },
+            {
+                path: 'corporate/:id',
+                component: ViewCorporateComponent
             },
             {
                 path: 'exchange-rates',
