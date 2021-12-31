@@ -98,6 +98,17 @@ class AuctionForm {
 
 }
 
-class AuctionApprovalForm {
+class AuctionAssignForm {
+    @NotNull(message = "Please select inspection officer")
+    val officerId: Long? = null
+    @NotNull(message = "Please enter assignment remarks")
+    val remarks: String? = null
+}
+
+class AuctionDemandNoteForm {
+    @NotNull(message = "Please select inspection fee")
+    val feeId: Long? = null
+    @NotNull(message = "Please enter inspection remarks")
+    val remarks: String? = null
 
 }

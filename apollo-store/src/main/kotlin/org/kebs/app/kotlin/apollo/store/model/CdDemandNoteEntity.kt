@@ -175,6 +175,10 @@ class CdDemandNoteEntity : Serializable {
     @Basic
     var paymentStatus: Int? = 0
 
+    @Column(name = "PAYMENT_PURPOSE")
+    @Basic
+    var paymentPurpose: String? = null
+
     @Column(name = "CD_ID")
     @Basic
     var cdId: Long? = 0

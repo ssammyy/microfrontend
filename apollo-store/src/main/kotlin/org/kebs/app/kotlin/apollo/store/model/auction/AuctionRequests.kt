@@ -83,6 +83,10 @@ class AuctionRequests : Serializable {
     @Basic
     var reportId: Long? = null
 
+    @Column(name = "DEMAND_NOTE_ID")
+    @Basic
+    var demandNoteId: Long? = null
+
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null

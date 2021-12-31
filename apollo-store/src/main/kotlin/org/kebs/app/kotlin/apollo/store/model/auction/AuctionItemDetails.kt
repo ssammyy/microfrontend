@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.store.model.auction
 
 import org.kebs.app.kotlin.apollo.store.model.CorsBakEntity
 import org.kebs.app.kotlin.apollo.store.model.CorsEntity
+import org.kebs.app.kotlin.apollo.store.model.di.DestinationInspectionFeeEntity
 import java.io.Serializable
 import java.math.BigDecimal
 import java.sql.Date
@@ -47,9 +48,17 @@ class AuctionItemDetails : Serializable {
     @Basic
     var totalPrice: BigDecimal? = null
 
+    @Column(name = "CURRENCY")
+    @Basic
+    var currency: String? = "KES"
+
     @JoinColumn(name = "COR_ID", referencedColumnName = "ID")
     @ManyToOne(fetch = FetchType.LAZY)
     var corId: CorsBakEntity? = null
+
+    @JoinColumn(name = "PAYMENT_FEE_ID", referencedColumnName = "ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    var paymentFeeIdSelected: DestinationInspectionFeeEntity? = null
 
     @Column(name = "ITEM_TYPE")
     @Basic
