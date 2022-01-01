@@ -49,10 +49,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.RegistrationDaoServices
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
-import org.kebs.app.kotlin.apollo.store.model.ms.ComplaintCustomersEntity
-import org.kebs.app.kotlin.apollo.store.model.ms.ComplaintEntity
-import org.kebs.app.kotlin.apollo.store.model.ms.ComplaintLocationEntity
-import org.kebs.app.kotlin.apollo.store.model.ms.MsFuelInspectionEntity
+import org.kebs.app.kotlin.apollo.store.model.ms.*
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.ms.*
 import org.springframework.data.repository.findByIdOrNull
@@ -1201,29 +1198,29 @@ class MSController(
     @PreAuthorize("hasAuthority('MS_IO_MODIFY') or  hasAuthority('MS_IOP_MODIFY') or hasAuthority('MS_HOD_MODIFY') or hasAuthority('MS_RM_MODIFY')")
     @PostMapping("onsite/forms/save")
     fun saveMSONSITE(
-            @ModelAttribute("chargeSheet") chargeSheet: MsChargeSheetEntity?,
-            @ModelAttribute("preliminaryReport") preliminaryReport: MsPreliminaryReportEntity?,
-            @ModelAttribute("finalReport") finalReport: MsFinalReportEntity?,
-            @ModelAttribute("dataReport") dataReport: MsDataReportEntity?,
-            @ModelAttribute("dataReportParamEntity") dataReportParamEntity: MsDataReportParametersEntity?,
-            @ModelAttribute("sampleCollectParamsEntity") sampleCollectParamsEntity: MsCollectionParametersEntity?,
-            @ModelAttribute("sampleSubmitParamsEntity") sampleSubmitParamsEntity: MsLaboratoryParametersEntity?,
-            @ModelAttribute("preliminaryOutletEntity") preliminaryOutletEntity: MsPreliminaryReportOutletsVisitedEntity?,
-            @ModelAttribute("sampleCollect") sampleCollect: MsSampleCollectionEntity?,
-            @ModelAttribute("sampleSubmit") sampleSubmit: MsSampleSubmissionEntity?,
-            @ModelAttribute("labParametersEntity") labParametersEntity: MsLaboratoryParametersEntity?,
-            @ModelAttribute("recommendedWorkPlan") recommendedWorkPlan: MsWorkPlanGeneratedEntity?,
-            @ModelAttribute("investInspectReport") investInspectReport: MsInspectionInvestigationReportEntity?,
-            @ModelAttribute("seizureDeclaration") seizureDeclaration: MsSeizureDeclarationEntity?,
-            @RequestParam("reportDate") reportDate: String?,
-            @RequestParam("ViewType") ViewType: String?,
+        @ModelAttribute("chargeSheet") chargeSheet: MsChargeSheetEntity?,
+        @ModelAttribute("preliminaryReport") preliminaryReport: MsPreliminaryReportEntity?,
+        @ModelAttribute("finalReport") finalReport: MsFinalReportEntity?,
+        @ModelAttribute("dataReport") dataReport: MsDataReportEntity?,
+        @ModelAttribute("dataReportParamEntity") dataReportParamEntity: MsDataReportParametersEntity?,
+        @ModelAttribute("sampleCollectParamsEntity") sampleCollectParamsEntity: MsCollectionParametersEntity?,
+        @ModelAttribute("sampleSubmitParamsEntity") sampleSubmitParamsEntity: MsLaboratoryParametersEntity?,
+        @ModelAttribute("preliminaryOutletEntity") preliminaryOutletEntity: MsPreliminaryReportOutletsVisitedEntity?,
+        @ModelAttribute("sampleCollect") sampleCollect: MsSampleCollectionEntity?,
+        @ModelAttribute("sampleSubmit") sampleSubmit: MsSampleSubmissionEntity?,
+        @ModelAttribute("labParametersEntity") labParametersEntity: MsLaboratoryParametersEntity?,
+        @ModelAttribute("recommendedWorkPlan") recommendedWorkPlan: MsWorkPlanGeneratedEntity?,
+        @ModelAttribute("investInspectReport") investInspectReport: MsInspectionInvestigationReportEntity?,
+        @ModelAttribute("seizureDeclaration") seizureDeclaration: MsSeizureDeclarationEntity?,
+        @RequestParam("reportDate") reportDate: String?,
+        @RequestParam("ViewType") ViewType: String?,
 //            @ModelAttribute("complaintRemarksEntity") complaintRemarksEntity: ComplaintRemarksEntity,
-            @RequestParam("workPlanID") workPlanID: Long,
-            @RequestParam("labParamID") labParamID: Long?,
+        @RequestParam("workPlanID") workPlanID: Long,
+        @RequestParam("labParamID") labParamID: Long?,
 //            @RequestParam("dataReportId") dataReportId: Long?,
-            @RequestParam("docType") docType: String,
-            results: BindingResult,
-            redirectAttributes: RedirectAttributes
+        @RequestParam("docType") docType: String,
+        results: BindingResult,
+        redirectAttributes: RedirectAttributes
     ): String {
         return try {
             var resultRedirect = ""

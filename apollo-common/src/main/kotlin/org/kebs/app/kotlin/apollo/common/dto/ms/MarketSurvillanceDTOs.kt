@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.common.dto.ms
 
+import java.math.BigDecimal
 import java.sql.Date
 import javax.validation.constraints.NotNull
 
@@ -38,6 +39,8 @@ data class FuelInspectionDto(
         var officersAssigned: MsUsersDto? = null,
         var rapidTestStatus: Boolean? = null,
         var rapidTestRemarks: String? = null,
+        var sampleCollected: SampleCollectionDto? = null,
+        var sampleSubmitted: SampleSubmissionDto? = null,
 )
 
 data class FuelEntityDto(
@@ -69,6 +72,58 @@ data class FuelEntityRapidTestDto(
         var rapidTestStatus: Boolean,
 )
 
+data class SampleCollectionDto(
+        var nameManufacturerTrader: String?= null,
+        var addressManufacturerTrader: String?= null,
+        var samplingMethod: String?= null,
+        var reasonsCollectingSamples: String?= null,
+        var anyRemarks: String?= null,
+        var designationOfficerCollectingSample: String?= null,
+        var nameOfficerCollectingSample: String?= null,
+        var dateOfficerCollectingSample: Date?= null,
+        var nameWitness: String?= null,
+        var designationWitness: String?= null,
+        var dateWitness: Date?= null,
+        var productsList: List<SampleCollectionItemsDto>? = null,
+)
+
+data class SampleCollectionItemsDto(
+        var id: Long? = null,
+        var productBrandName: String? = null,
+        var batchNo: String? = null,
+        var batchSize: String? = null,
+        var sampleSize: String? = null,
+)
+
+data class SampleSubmissionDto(
+        var nameProduct : String? = null,
+        var packaging : String? = null,
+        var labellingIdentification : String? = null,
+        var fileRefNumber : String? = null,
+        var referencesStandards : String? = null,
+        var sizeTestSample : Long? = null,
+        var sizeRefSample : Long? = null,
+        var condition : String? = null,
+        var sampleReferences : String? = null,
+        var sendersName : String? = null,
+        var designation : String? = null,
+        var address : String? = null,
+        var sendersDate : String? = null,
+        var receiversName : String? = null,
+        var testChargesKsh : BigDecimal? = null,
+        var receiptLpoNumber : String? = null,
+        var invoiceNumber : String? = null,
+        var disposal : String? = null,
+        var remarks : String? = null,
+        var sampleCollectionNumber : Long? = null,
+        var bsNumber : String? = null,
+        var parametersList: List<SampleSubmissionItemsDto>? = null,
+)
+
+data class SampleSubmissionItemsDto(
+        var parameters : String? = null,
+        var laboratoryName : String? = null,
+)
 
 
 data class ComplaintApproveRejectAssignDto(

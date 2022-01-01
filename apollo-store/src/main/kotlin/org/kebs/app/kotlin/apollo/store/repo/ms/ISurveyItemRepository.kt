@@ -22,9 +22,7 @@
 package org.kebs.app.kotlin.apollo.store.repo.ms
 
 import org.kebs.app.kotlin.apollo.store.model.*
-import org.kebs.app.kotlin.apollo.store.model.ms.ComplaintEntity
-import org.kebs.app.kotlin.apollo.store.model.ms.MsFuelInspectionEntity
-import org.kebs.app.kotlin.apollo.store.model.ms.MsTypesEntity
+import org.kebs.app.kotlin.apollo.store.model.ms.*
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
@@ -151,16 +149,6 @@ interface IComplaintScheduleRepository : HazelcastRepository<MsComplaintSchedule
 }
 
 
-@Repository
-interface IMSSampleSubmissionRepository : HazelcastRepository<MsSampleSubmissionEntity, Long> {
-    override fun findAll( pageable: Pageable): Page<MsSampleSubmissionEntity>
-
-    fun findByWorkPlanGeneratedID(workPlanGeneratedID: MsWorkPlanGeneratedEntity): MsSampleSubmissionEntity?
-
-    fun findByMsFuelInspectionId(msFuelInspectionId: MsFuelInspectionEntity): MsSampleSubmissionEntity?
-//    fun findByUserId(userId: UsersEntity): List<WorkplanEntity>?
-//    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?
-}
 
 @Repository
 interface IPreliminaryOutletsRepository : HazelcastRepository<MsPreliminaryReportOutletsVisitedEntity, Long> {
@@ -204,18 +192,7 @@ interface ISampleCollectionViewRepository : HazelcastRepository<MsSampleCollecti
     fun findBySampleCollectionId(sampleCollectionId: Long): List<MsSampleCollectionEntityView>
 }
 
-@Repository
-interface ISampleCollectionRepository : HazelcastRepository<MsSampleCollectionEntity, Long> {
-    override fun findAll( pageable: Pageable): Page<MsSampleCollectionEntity>
 
-//    @Query("SELECT * FROM DAT_KEBS_MS_SAMPLE_COLLECTION a INNER JOIN DAT_KEBS_MS_COLLECTION_PARAMETERS b ON a.ID = b.SAMPLE_COLLECTION_ID where a.ID = $P{ITEM_ID}")
-//    fun filterDateRange(@Param("fromDate") fromDate: Time, @Param("toDate") toDate: Time): List<ConsignmentDocumentEntity>?
-
-    fun findByWorkPlanGeneratedID(workPlanGeneratedID: MsWorkPlanGeneratedEntity): MsSampleCollectionEntity?
-    fun findByMsFuelInspectionId(msFuelInspectionId: MsFuelInspectionEntity): MsSampleCollectionEntity?
-//    fun findByUserId(userId: UsersEntity): List<WorkplanEntity>?
-//    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?
-}
 
 @Repository
 interface IDataReportParameterRepository : HazelcastRepository<MsDataReportParametersEntity, Long> {
@@ -227,24 +204,8 @@ interface IDataReportParameterRepository : HazelcastRepository<MsDataReportParam
 //    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?
 }
 
-@Repository
-interface ISampleCollectParameterRepository : HazelcastRepository<MsCollectionParametersEntity, Long> {
-    override fun findAll( pageable: Pageable): Page<MsCollectionParametersEntity>
 
-    fun findBySampleCollectionId(sampleCollectionId: MsSampleCollectionEntity, pageable: Pageable): Page<MsCollectionParametersEntity>
-    fun findBySampleCollectionId(sampleCollectionId: MsSampleCollectionEntity): List<MsCollectionParametersEntity>?
-//    fun findByUserId(userId: UsersEntity): List<WorkplanEntity>?
-//    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?
-}
-@Repository
-interface ISampleSubmitParameterRepository : HazelcastRepository<MsLaboratoryParametersEntity, Long> {
-//    override fun findAll( pageable: Pageable): Page<MsLaboratoryParametersEntity>?
 
-    fun findBySampleSubmissionId(sampleSubmissionId: MsSampleSubmissionEntity, pageable: Pageable): Page<MsLaboratoryParametersEntity>?
-    fun findBySampleSubmissionId(sampleSubmissionId: MsSampleSubmissionEntity): List<MsLaboratoryParametersEntity>?
-//    fun findByUserId(userId: UsersEntity): List<WorkplanEntity>?
-//    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?
-}
 
 @Repository
 interface IWorkPlanApprovalsRepository : HazelcastRepository<WorkPlanApprovalsEntity, Long>

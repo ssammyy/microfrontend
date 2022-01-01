@@ -55,3 +55,4 @@ create index stg_kebs_master_ms_batch_fuel_inspection_seq_idx on stg_kebs_master
 
 alter table DAT_KEBS_MS_FUEL_INSPECTION add BATCH_ID NUMBER REFERENCES STG_KEBS_MASTER_MS_BATCH_FUEL_INSPECTION(ID) /
 alter table DAT_KEBS_MS_FUEL_INSPECTION add USER_TASK_ID NUMBER /
+alter table DAT_KEBS_MS_SAMPLE_SUBMISSION add LAB_RESULTS_STATUS NUMBER /

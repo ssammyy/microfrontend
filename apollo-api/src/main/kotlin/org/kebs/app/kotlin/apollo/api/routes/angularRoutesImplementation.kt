@@ -542,7 +542,17 @@ class AngularRoutes {
                     GET("/details", handler::getFuelInspectionDetails)
                     "/update".nest {
                         PUT("/assign", handler::updateFuelScheduleAssignOfficer)
-                        PUT("/rapid-test", handler::updateFuelScheduleAssignOfficer)
+                        POST("/rapid-test", handler::setFuelScheduleRapidTest)
+                        POST("/sample-collect", handler::setFuelScheduleSampleCollection)
+                        POST("/sample-submission", handler::setFuelScheduleSampleSubmission)
+                        POST("/sample-submission-bs-number", handler::setFuelScheduleSampleSubmissionBsNumber)
+                    }
+                    "/fetch".nest {
+                        GET("/assign", handler::updateFuelScheduleAssignOfficer)
+//                        POST("/rapid-test", handler::setFuelScheduleRapidTest)
+//                        POST("/sample-collect", handler::setFuelScheduleSampleCollection)
+//                        POST("/sample-submission", handler::setFuelScheduleSampleSubmission)
+//                        POST("/sample-submission-bs-number", handler::setFuelScheduleSampleSubmissionBsNumber)
                     }
 
                 }

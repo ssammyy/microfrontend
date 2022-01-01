@@ -3169,8 +3169,7 @@ class QADaoServices(
             rawMaterialsSTA10Repo.findByIdOrNull(rawMaterialsDetails.id ?: -1L)
                 ?.let { foundRawMaterial ->
 
-                    rawMaterialsDetails =
-                        commonDaoServices.updateDetails(rawMaterialsDetails, foundRawMaterial) as QaRawMaterialEntity
+                    rawMaterialsDetails = commonDaoServices.updateDetails(rawMaterialsDetails, foundRawMaterial) as QaRawMaterialEntity
 
                     with(rawMaterialsDetails) {
                         modifiedBy = commonDaoServices.concatenateName(user)
