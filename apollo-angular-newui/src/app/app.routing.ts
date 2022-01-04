@@ -79,6 +79,8 @@ import {StdTcWorkplanComponent} from "./apollowebs/standards-development/standar
 import {AllpermitsComponent} from "./apollowebs/quality-assurance/allpermits/allpermits.component";
 import {NepNotificationComponent} from "./apollowebs/standards-development/nep-notification/nep-notification.component";
 import {ManagernotificationsComponent} from "./apollowebs/standards-development/managernotifications/managernotifications.component";
+import {EpraBatchListComponent} from "./apollowebs/market-surveillance/fuel/epra-batch-list/epra-batch-list.component";
+import {EpraListComponent} from "./apollowebs/market-surveillance/fuel/epra-list/epra-list.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -568,6 +570,25 @@ export const routes: Routes = [
         path: 'std-tc-task', component: AdminLayoutComponent,
         children: [{path: '', component: StdTcTasksComponent}]
     },
+
+    /****************MS COMPONENTS START FROM HERE**********************************/
+    {
+        path: 'epra',
+        component: AdminLayoutComponent,
+        // canActivate: [RouteGuard],
+        children: [
+            {
+                path: '',
+                component: EpraBatchListComponent
+            },
+            {
+                path: ':referenceNumber',
+                component: EpraListComponent
+            },
+        ]
+    },
+
+    /****************MS COMPONENTS ENDS HERE**********************************/
 
 ];
 

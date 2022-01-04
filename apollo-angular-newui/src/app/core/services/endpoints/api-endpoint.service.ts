@@ -48,6 +48,13 @@ export class ApiEndpointService {
         DI_DEPARTMENT_ID: 2,
     };
 
+
+    public static MS_APPLICATION_MAP_PROPERTIES = {
+        epraRoles: ['EPRA'],
+        msManagerRoles: ['MS_MP_MODIFY','MS_MP_READ'],
+        msOfficerRoles: ['MS_IO_MODIFY','MS_IO_READ']
+    };
+
     /**
      * Map of contexts for API endpoints.
      */
@@ -74,6 +81,8 @@ export class ApiEndpointService {
     public static SD_PB_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/publishing`;
     public static SD_NEP_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/Domestic_notification`;
     public static REQUEST_STANDARD = `${ApiEndpointService.ANONYMOUS_CONTEXT}/standard/dropdown`;
+    public static MS_CONTEXT = '/api/v1/migration/qa';
+    public static MS_FUEL_CONTEXT = `${ApiEndpointService.MS_CONTEXT}/fuel`;
 
     /**
      * Map of API endpoints.
@@ -399,6 +408,21 @@ export class ApiEndpointService {
 
     };
 
+    public static MARKET_SURVEILLANCE_FUEL_ENDPOINT = {
+        ALL_BATCH_LIST: `${ApiEndpointService.MS_FUEL_CONTEXT}/all-batch-list`,
+        ADD_BATCH: `${ApiEndpointService.MS_FUEL_CONTEXT}/add`,
+        CLOSE_BATCH: `${ApiEndpointService.MS_FUEL_CONTEXT}/close`,
+        INSPECTION_SCHEDULED_LIST: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/list`,
+        INSPECTION_SCHEDULED_ADD_NEW: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/add`,
+        INSPECTION_SCHEDULED_DETAILS: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/details`,
+        INSPECTION_SCHEDULED_DETAILS_ASSIGN_OFFICER: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/assign`,
+        INSPECTION_SCHEDULED_DETAILS_RAPID_TEST: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/rapid-test`,
+        INSPECTION_SCHEDULED_DETAILS_SAMPLE_COLLECT: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/sample-collect`,
+        INSPECTION_SCHEDULED_DETAILS_SAMPLE_SUBMISSION: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/sample-submission`,
+        INSPECTION_SCHEDULED_DETAILS_SAMPLE_SUBMISSION_BS_NUMBER: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/sample-submission-bs-number`,
+        // COUNTRY_DASHBOARD_DETAILS: `${ApiEndpointService.VERSION_THREE_CONTEXT}/country-dashboard-details`,
+        // CLIENT_LIST: `${ApiEndpointService.VERSION_THREE_CONTEXT}/client-list`,
+    }
     /**
      * Constructor.
      */

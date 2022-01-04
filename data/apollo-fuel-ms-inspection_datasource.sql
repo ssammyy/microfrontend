@@ -1,6 +1,6 @@
 create table STG_KEBS_MASTER_MS_BATCH_FUEL_INSPECTION
 (
-    ID                        NUMBER ,
+    ID                        NUMBER PRIMARY KEY ,
     region_id             NUMBER references CFG_KEBS_REGIONS (ID),
     county_id             NUMBER references CFG_KEBS_COUNTIES (ID),
     town_id               NUMBER references CFG_KEBS_TOWNS (ID),
@@ -33,15 +33,15 @@ create table STG_KEBS_MASTER_MS_BATCH_FUEL_INSPECTION
 ) TABLESPACE qaimssdb_data;
 create sequence STG_KEBS_MASTER_MS_BATCH_FUEL_INSPECTION_SEQ minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
 
-create trigger stg_kebs_master_ms_batch_fuel_inspection_seq_trg
+create trigger STG_KEBS_MASTER_MS_BATCH_FUEL_INSPECTION_SEQ_trg
     before
         insert
-    on stg_kebs_master_ms_batch_fuel_inspection_seq
+    on STG_KEBS_MASTER_MS_BATCH_FUEL_INSPECTION
     for each row
 begin
     if inserting then
         if :new.id is null then
-    select stg_kebs_master_ms_batch_fuel_inspection_seq_seq.nextval
+    select STG_KEBS_MASTER_MS_BATCH_FUEL_INSPECTION_SEQ.nextval
     into :new.id
     from dual;
 
@@ -50,11 +50,34 @@ end if;
 end if;
 end;
 
-create index stg_kebs_master_ms_batch_fuel_inspection_seq_idx on stg_kebs_master_ms_batch_fuel_inspection_seq (status, region_id,county_id,town_id,batch_file_name) TABLESPACE qaimssdb_idx;
+create trigger stg_kebs_master_ms_batch_fuel_inspection_seq_trg
+    before
+        insert
+    on stg_kebs_master_ms_batch_fuel_inspection_seq
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+    select stg_kebs_master_ms_batch_fuel_inspection_seq.nextval
+    into :new.id
+    from dual;
+
+end if;
+
+end if;
+end;
+
+create index stg_kebs_master_ms_batch_fuel_inspection_seq_idx on stg_kebs_master_ms_batch_fuel_inspection (status, region_id,county_id,town_id,batch_file_name) TABLESPACE qaimssdb_idx;
 /
 
 alter table DAT_KEBS_MS_FUEL_INSPECTION add BATCH_ID NUMBER REFERENCES STG_KEBS_MASTER_MS_BATCH_FUEL_INSPECTION(ID) /
 alter table DAT_KEBS_QA_SAMPLE_SUBMISSION add FUEL_INSPECTION_ID NUMBER REFERENCES DAT_KEBS_MS_FUEL_INSPECTION(ID) /
+alter table STG_KEBS_MASTER_MS_BATCH_FUEL_INSPECTION add YEAR_NAME_ID NUMBER REFERENCES CFG_WORKPLAN_YEARS_CODES(ID) /
 alter table DAT_KEBS_MS_FUEL_INSPECTION add USER_TASK_ID NUMBER /
 alter table DAT_KEBS_MS_SAMPLE_SUBMISSION add LAB_RESULTS_STATUS NUMBER /
 alter table DAT_KEBS_MS_SAMPLE_SUBMISSION ALTER SENDERS_DATE DATE /
+
+alter table STG_KEBS_MASTER_MS_BATCH_FUEL_INSPECTION add YEAR_NAME_ID NUMBER REFERENCES CFG_WORKPLAN_YEARS_CODES(ID);
+
+diofficerincharge@gmail.com
+password

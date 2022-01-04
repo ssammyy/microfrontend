@@ -12,7 +12,7 @@ export interface RouteInfo {
     title: string;
     type: string;
     icontype: string;
-    privilege: string;
+    privilege: string[];
     collapse?: string;
     children?: ChildrenItems[];
 }
@@ -31,7 +31,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'Dashboard',
         type: 'link',
         icontype: 'dashboard',
-        privilege: 'USER'
+        privilege: ['USER']
     },
 
     {
@@ -39,7 +39,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'Admin',
         type: 'link',
         icontype: 'dashboard',
-        privilege: 'SYSADMIN_VIEW'
+        privilege: ['SYSADMIN_VIEW']
     },
 
     {
@@ -47,7 +47,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'My Companies',
         type: 'sub',
         icontype: 'business',
-        privilege: 'MODIFY_COMPANY',
+        privilege: ['MODIFY_COMPANY'],
         collapse: 'company',
         children: [
             {path: 'companies', title: 'View Companies', ab: 'VC'},
@@ -61,7 +61,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'Diamond Mark',
         type: 'sub',
         icontype: 'verified',
-        privilege: 'PERMIT_APPLICATION',
+        privilege: ['PERMIT_APPLICATION'],
         collapse: 'forms',
         children: [
             {path: 'newDmarkPermit', title: 'Make Application', ab: 'MA'},
@@ -73,7 +73,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'Standardization Mark',
         type: 'sub',
         icontype: 'class',
-        privilege: 'PERMIT_APPLICATION',
+        privilege: ['PERMIT_APPLICATION'],
         collapse: 'tables',
         children: [
             {path: 'newSmarkPermit', title: 'Make Application', ab: 'MA'},
@@ -85,7 +85,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'Fortification Mark',
         type: 'sub',
         icontype: 'recommended',
-        privilege: 'PERMIT_APPLICATION',
+        privilege: ['PERMIT_APPLICATION'],
         collapse: 'fmark',
         children: [
             {path: 'application', title: 'Make Application', ab: 'MA'},
@@ -97,7 +97,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'Invoices',
         type: 'sub',
         icontype: 'receipt',
-        privilege: 'PERMIT_APPLICATION',
+        privilege: ['PERMIT_APPLICATION'],
         collapse: 'invoice',
         children: [
             {path: 'consolidate_invoice', title: 'Consolidate Invoices', ab: 'CI'},
@@ -109,8 +109,16 @@ export const ROUTES: RouteInfo[] = [
         title: 'My Tasks',
         type: 'link',
         icontype: 'task',
-        privilege: 'PERMIT_APPLICATION',
-    }
+        privilege: ['PERMIT_APPLICATION'],
+    },
+    {
+        path: '/epra',
+        title: 'EPRA',
+        type: 'link',
+        collapse: 'epra',
+        privilege: ['EPRA'],
+        icontype: 'receipt'
+    },
 ];
 
 @Component({
@@ -167,5 +175,16 @@ export class SidebarComponent implements OnInit {
 
     onClickGoToProfilePage() {
         this.router.navigate(['/profile']);
+    }
+
+    canViewRole(privileges: string[]): Boolean {
+        for(let role of this.roles) {
+            for (let p of privileges) {
+                if (role == p) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

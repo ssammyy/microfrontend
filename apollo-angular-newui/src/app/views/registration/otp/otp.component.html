@@ -790,12 +790,12 @@
 
     </div>
     <p></p>
-<!--    <button (click)="onClickLogin()" class="login-button" type="submit" value="">CONFIRM OTP</button>-->
-        <button (throttledClick)="onClickValidateOtp()" [hidden]="loginForm.get('otp')?.invalid"
-                [throttleTime]="700" appPreventDoubleClick class="btn btn-primary mt-2"
-                type="button"
-        >CONFIRM OTP
-        </button>
+    <button (click)="onClickLogin()" class="login-button" type="submit" value="">CONFIRM OTP</button>
+<!--        <button (throttledClick)="onClickValidateOtp()" [hidden]="loginForm.get('otp')?.invalid"-->
+<!--                [throttleTime]="700" appPreventDoubleClick class="btn btn-primary mt-2"-->
+<!--                type="button"-->
+<!--        >CONFIRM OTP-->
+<!--        </button>-->
 
 
 </form>

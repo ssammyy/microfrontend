@@ -39,6 +39,7 @@ package org.kebs.app.kotlin.apollo.api.handlers
 
 
 import mu.KotlinLogging
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.NewMarketSurveillanceDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.validation.AbstractValidationHandler
 import org.kebs.app.kotlin.apollo.common.dto.ms.*
@@ -58,6 +59,7 @@ import org.springframework.web.servlet.function.paramOrNull
 class NewMarketSurveillanceHandler(
     private val applicationMapProperties: ApplicationMapProperties,
     private val marketSurveillanceDaoServices: NewMarketSurveillanceDaoServices,
+    private val commonDaoServices: CommonDaoServices,
     private val validator: Validator,
 ) : AbstractValidationHandler() {
 
@@ -67,7 +69,8 @@ class NewMarketSurveillanceHandler(
 
     fun getAllFuelBatchList(req: ServerRequest): ServerResponse {
         return try {
-            marketSurveillanceDaoServices.getAllFuelBatchList()
+            val page = commonDaoServices.extractPageRequest(req)
+            marketSurveillanceDaoServices.getAllFuelBatchList(page)
                 .let {
                     ServerResponse.ok().body(it)
                 }
@@ -81,7 +84,8 @@ class NewMarketSurveillanceHandler(
     fun getAllFuelInspectionList(req: ServerRequest): ServerResponse {
         return try {
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
-            marketSurveillanceDaoServices.getAllFuelInspectionListBasedOnBatchRefNo(batchReferenceNo)
+            val page = commonDaoServices.extractPageRequest(req)
+            marketSurveillanceDaoServices.getAllFuelInspectionListBasedOnBatchRefNo(batchReferenceNo,page)
                 .let {
                     ServerResponse.ok().body(it)
                 }
@@ -114,7 +118,8 @@ class NewMarketSurveillanceHandler(
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
-                    marketSurveillanceDaoServices.createNewFuelBatch(body)
+                    val page = commonDaoServices.extractPageRequest(req)
+                    marketSurveillanceDaoServices.createNewFuelBatch(body,page)
                         .let {
                             ServerResponse.ok().body(it)
                         }
@@ -133,7 +138,8 @@ class NewMarketSurveillanceHandler(
     fun closeFuelBatchEntry(req: ServerRequest): ServerResponse {
         return try {
             val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
-            marketSurveillanceDaoServices.closeFuelBatchCreated(referenceNo)
+            val page = commonDaoServices.extractPageRequest(req)
+            marketSurveillanceDaoServices.closeFuelBatchCreated(referenceNo,page)
                 .let {
                     ServerResponse.ok().body(it)
                 }
@@ -152,7 +158,8 @@ class NewMarketSurveillanceHandler(
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
-                    marketSurveillanceDaoServices.createNewFuelSchedule(body, batchReferenceNo)
+                    val page = commonDaoServices.extractPageRequest(req)
+                    marketSurveillanceDaoServices.createNewFuelSchedule(body, batchReferenceNo, page)
                         .let {
                             ServerResponse.ok().body(it)
                         }

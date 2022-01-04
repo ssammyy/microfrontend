@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.store.model.ms
 
+import org.kebs.app.kotlin.apollo.store.model.WorkplanYearsCodesEntity
 import java.io.Serializable
 import java.sql.Date
 import java.sql.Time
@@ -40,9 +41,13 @@ class MsFuelBatchInspectionEntity : Serializable{
     @Basic
     var referenceNumber: String?= null
 
-    @Column(name = "BATCH_FILE_YEAR")
+//    @Column(name = "BATCH_FILE_YEAR")
+//    @Basic
+//    var batchFileYear: String?= null
+
+    @Column(name = "YEAR_NAME_ID")
     @Basic
-    var batchFileYear: String?= null
+    var yearNameId: Long?= null
 
     @Column(name = "TRANSACTION_DATE")
     @Basic

@@ -45,6 +45,7 @@ import {AdminLayoutComponent} from './layouts/admin/admin-layout.component';
 import {AuthLayoutComponent} from './layouts/auth/auth-layout.component';
 
 // import {routes} from './app.routing';
+import {Ng2SmartTableModule} from 'ng2-smart-table';
 import {DashboardComponent} from './apollowebs/dashboard/dashboard.component';
 import {InvoiceComponent} from './apollowebs/quality-assurance/invoice/invoice.component';
 import {AppRoutingModule} from './app.routing';
@@ -145,6 +146,9 @@ import {ComStdConfirmComponent} from './apollowebs/standards-development/company
 import {NepSuccessComponent} from './apollowebs/standards-development/nep-success/nep-success.component';
 import {ManagernotificationsComponent} from './apollowebs/standards-development/managernotifications/managernotifications.component';
 import {AllpermitsComponent} from "./apollowebs/quality-assurance/allpermits/allpermits.component";
+import { EpraListComponent } from './apollowebs/market-surveillance/fuel/epra-list/epra-list.component';
+import { EpraBatchListComponent } from './apollowebs/market-surveillance/fuel/epra-batch-list/epra-batch-list.component';
+import { EpraBatchNewComponent } from './apollowebs/market-surveillance/fuel/epra-batch-list/epra-batch-new/epra-batch-new.component';
 
 
 // import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -195,6 +199,7 @@ import {AllpermitsComponent} from "./apollowebs/quality-assurance/allpermits/all
         // EntityDataModule.forRoot(entityConfig),
         ReactiveFormsModule,
         RouterModule,
+        Ng2SmartTableModule,
         CoreModule,
         FormsModule,
         PdfViewerModule,
@@ -294,7 +299,10 @@ import {AllpermitsComponent} from "./apollowebs/quality-assurance/allpermits/all
         ComStdConfirmComponent,
         StdTcTasksComponent,
         NepSuccessComponent,
-        ManagernotificationsComponent
+        ManagernotificationsComponent,
+        EpraListComponent,
+        EpraBatchListComponent,
+        EpraBatchNewComponent
 
     ]
 

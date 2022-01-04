@@ -24,6 +24,7 @@ package org.kebs.app.kotlin.apollo.store.repo.ms
 import org.kebs.app.kotlin.apollo.store.model.MsLaboratoryParametersEntity
 import org.kebs.app.kotlin.apollo.store.model.MsSampleSubmissionEntity
 import org.kebs.app.kotlin.apollo.store.model.MsWorkPlanGeneratedEntity
+import org.kebs.app.kotlin.apollo.store.model.WorkplanYearsCodesEntity
 import org.kebs.app.kotlin.apollo.store.model.ms.*
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -34,9 +35,17 @@ import org.springframework.stereotype.Repository
 @Repository
 interface IFuelBatchRepository : HazelcastRepository<MsFuelBatchInspectionEntity, Long>, JpaSpecificationExecutor<MsFuelBatchInspectionEntity> {
     override fun findAll(): List<MsFuelBatchInspectionEntity>
-    fun findAllByOrderByIdDesc(pageable: Pageable): Page<MsFuelBatchInspectionEntity>
+    fun findAllByOrderByIdDesc(pageable: Pageable): Page<MsFuelBatchInspectionEntity>?
     fun findAllOrderByIdAsc(): List<MsFuelBatchInspectionEntity>?
     fun findByReferenceNumber(referenceNumber: String): MsFuelBatchInspectionEntity?
+    fun findByYearNameIdAndCountyIdAndRegionId(yearNameId: Long, countyId: Long, regionId: Long): MsFuelBatchInspectionEntity?
+}
+
+@Repository
+interface IWorkplanYearsCodesRepository: HazelcastRepository<WorkplanYearsCodesEntity, Long> {
+
+    fun findByYearNameAndStatus(yearName: String, status: Int) : WorkplanYearsCodesEntity?
+    fun findByStatusOrderByYearName(status: Int) : List<WorkplanYearsCodesEntity>?
 }
 
 @Repository
@@ -44,6 +53,7 @@ interface IFuelInspectionRepository : HazelcastRepository<MsFuelInspectionEntity
     override fun findAll( pageable: Pageable): Page<MsFuelInspectionEntity>
     fun findAllByOrderByIdDesc( pageable: Pageable): Page<MsFuelInspectionEntity>
     fun findAllByOrderByIdAsc(): List<MsFuelInspectionEntity>
+    fun findAllByBatchId(batchId: Long, pageable: Pageable): Page<MsFuelInspectionEntity>?
     fun findAllByBatchId(batchId: Long): List<MsFuelInspectionEntity>?
 
     fun findByReferenceNumber(referenceNumber: String): MsFuelInspectionEntity?

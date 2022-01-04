@@ -1,0 +1,107 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">assignment</i>
+                        </div>
+                        <h4 class="card-title">Consignment Documents List</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar">
+                            <div class="search-bar" *ngIf="documentTypes">
+                                <div class="input-group form-inline">
+                                    <div class="input-group-btn">
+                                        <select id="filter" class="search-form-input"
+                                                (change)="onFilterChange($event)"
+                                                *ngIf="!supervisorCharge || supervisorCharge && activeStatus!=='my-tasks'">
+                                            <option value="" selected>Filter CD Types</option>
+                                            <option *ngFor="let d of documentTypes" [ngValue]="d"
+                                                    [value]="d">{{d.typeName}}
+                                                -{{d.category}}</option>
+                                        </select>
+                                        <select *ngIf="supervisorCharge && activeStatus=='my-tasks'" id="filter-tasks"
+                                                (change)="onSupervisorChange($event)" class="search-form-input">
+                                            <option value="" selected>Task Owner</option>
+                                            <option value="true">Personal Tasks</option>
+                                            <option value="false">All Tasks</option>
+                                        </select>
+                                    </div>
+                                    <input id="searchDocument" class="search-form-input" (keyup)="searchPhraseChanged()"
+                                           [(ngModel)]="keywords" placeholder="Search Document">
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-primary btn-background"
+                                                (click)="searchPhraseChanged()">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Applications Status">
+                                <button type="button" (click)="toggleStatus('my-tasks')"
+                                        [className]="activeStatus == 'my-tasks' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                    My Tasks
+                                </button>
+                                <button type="button" (click)="toggleStatus('ongoing')"
+                                        [className]="activeStatus == 'ongoing' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                    ONGOING
+                                </button>
+                                <button type="button" (click)="toggleStatus('not-assigned')"
+                                        [className]="activeStatus == 'not-assigned' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                    NOT ASSIGNED
+                                </button>
+                                <button type="button" (click)="toggleStatus('completed')"
+                                        [className]="activeStatus == 'completed' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                    COMPLETED
+                                </button>
+                                <button *ngIf="searchStatus" type="button" (click)="toggleStatus('completed')"
+                                        [className]="activeStatus == 'search-result' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                    SEARCH_RESULT
+                                </button>
+                            </div>
+                            <div class="btn-group btn-group-sm float-right" role="group"
+                                 aria-label="Applications Status">
+                                <button type="button" (click)="uploadForeignCoROrCor($event,'coc')"
+                                        class="btn btn-sm btn-primary mr-2">Upload Foreign CoC
+                                </button>
+                                <button type="button" (click)="uploadForeignCoROrCor($event,'cor')"
+                                        class="btn btn-sm btn-primary mr-2">Upload Foreign CoR
+                                </button>
+                            </div>
+                        </div>
+
+                        <div widget class="card border-0 box-shadow">
+                            <div class="card-body pt-0 widget-body">
+                                <div class="table-responsive table-striped">
+                                    <ng2-smart-table class="table table-hover" [settings]="settings"
+                                                     [source]="dataSet"
+                                                     (userRowSelect)="viewRecord($event.data)"
+                                                     (custom)="onCustomAction($event)">
+                                    </ng2-smart-table>
+                                    <br/>
+                                    <ngb-pagination [(page)]="currentPage" [pageSize]="defaultPageSize"
+                                                    [collectionSize]="totalCount"
+                                                    (pageChange)=pageChange($event)>
+                                        <ng-template ngbPaginationFirst>First</ng-template>
+                                        <ng-template ngbPaginationLast>Last</ng-template>
+                                        <ng-template ngbPaginationPrevious>Prev</ng-template>
+                                        <ng-template ngbPaginationNext>Next</ng-template>
+                                        <ng-template ngbPaginationEllipsis>...</ng-template>
+                                        <ng-template ngbPaginationNumber let-page>{{ page }}</ng-template>
+                                    </ngb-pagination>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- end content-->
+                </div>
+                <!--  end card  -->
+            </div>
+            <!-- end col-md-12 -->
+        </div>
+        <!-- end row -->
+    </div>
+</div>

@@ -5,11 +5,7 @@ import org.kebs.app.kotlin.apollo.store.model.WorkPlanCreatedEntity
 import org.kebs.app.kotlin.apollo.store.model.WorkplanYearsCodesEntity
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 
-interface IWorkplanYearsCodesRepository: HazelcastRepository<WorkplanYearsCodesEntity, Long> {
 
-    fun findByYearNameAndStatus(yearName: String, status: Int) : WorkplanYearsCodesEntity?
-    fun findByStatusOrderByYearName(status: Int) : List<WorkplanYearsCodesEntity>?
-}
 
 interface IWorkPlanCreatedRepository: HazelcastRepository<WorkPlanCreatedEntity, Long> {
     override fun findAll(): List<WorkPlanCreatedEntity>

@@ -535,14 +535,14 @@ class AngularRoutes {
             "/fuel".nest {
                 GET("/all-batch-list", handler::getAllFuelBatchList)
                 POST("/add", handler::saveNewFuelScheduleBatch)
-                POST("/close", handler::closeFuelBatchEntry)
+                PUT("/close", handler::closeFuelBatchEntry)
                 "/inspection".nest {
                     GET("/list", handler::getAllFuelInspectionList)
                     POST("/add", handler::saveNewFuelSchedule)
                     GET("/details", handler::getFuelInspectionDetails)
                     "/update".nest {
                         PUT("/assign", handler::updateFuelScheduleAssignOfficer)
-                        POST("/rapid-test", handler::setFuelScheduleRapidTest)
+                        PUT("/rapid-test", handler::setFuelScheduleRapidTest)
                         POST("/sample-collect", handler::setFuelScheduleSampleCollection)
                         POST("/sample-submission", handler::setFuelScheduleSampleSubmission)
                         POST("/sample-submission-bs-number", handler::setFuelScheduleSampleSubmissionBsNumber)

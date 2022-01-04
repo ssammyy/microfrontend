@@ -9,8 +9,6 @@ data class BatchFileFuelSaveDto(
         var county: Long,
         @NotNull(message = "Required field")
         var town: Long,
-        @NotNull(message = "Required field")
-        var batchFileYear: String,
 
         var remarks: String? = null,
 )
@@ -23,7 +21,7 @@ data class FuelBatchDetailsDto(
         var referenceNumber: String? = null,
         var batchFileYear: String? = null,
         var remarks: String? = null,
-        var batchClosed: Int? = null,
+        var batchClosed: Boolean? = null,
 )
 
 

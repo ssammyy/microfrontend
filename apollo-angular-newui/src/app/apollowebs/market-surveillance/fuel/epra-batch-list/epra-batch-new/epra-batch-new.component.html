@@ -1,0 +1,62 @@
+<h2 mat-dialog-title>ADD NEW BATCH FILE</h2>
+<mat-dialog-content>
+    <div class="form-group row" [formGroup]="addNewBatchForm">
+        <label for="county" class="waiver-form-label">Select County</label>
+        <ng-container *ngIf="county$ | async as apps">
+            <select (ngModelChange)="updateSelectedCounty()"
+                    [ngClass]="{ 'is-invalid': submitted && formNewBatchForm.county.errors }"
+                    formControlName="county" id="county"
+                    name="county" required="required" class="waiver-form-input-master">
+                <option ngValue="null" selected>Please select one</option>
+                <option
+                        *ngFor="let app of apps| filterPipe: {status: true}"
+                        [ngValue]="app.id"
+                        class="dropdown-item">{{app.county}}</option>
+            </select>
+            <div *ngIf="submitted && formNewBatchForm.county.errors" class="invalid-feedback">
+                <div *ngIf="formNewBatchForm.county.errors.required">The County is required</div>
+            </div>
+        </ng-container>
+        <label for="town" class="waiver-form-label">Select Town</label>
+        <ng-container *ngIf="town$ | async as apps">
+            <select (ngModelChange)="updateSelectedTown()"
+                    [ngClass]="{ 'is-invalid': submitted && formNewBatchForm.town.errors }"
+                    formControlName="town" id="town"
+                    name="town" required="required" class="waiver-form-input-master">
+                <option ngValue="null" selected>Please select</option>
+                <option *ngFor="let app of apps| filterPipe: {status: true, countyId: selectedCounty}"
+                        [ngValue]="app.id"
+                        class="dropdown-item">{{app.town}}</option>
+            </select>
+            <div *ngIf="submitted && formNewBatchForm.town.errors" class="invalid-feedback">
+                <div *ngIf="formNewBatchForm.town.errors.required">The town is required</div>
+            </div>
+        </ng-container>
+        <label for="remarks" class="waiver-form-label">Please write, in detail, your feedback for this
+            batch:</label>
+        <textarea id="remarks" class="waiver-form-input-master"
+                  formControlName="remarks"></textarea>
+<!--        <label for="select-file" class="col-5 col-form-label">SELECT UPLOAD DOCUMENT</label>-->
+<!--        <div class="col-7">-->
+<!--            <input id="select-file" type="file" accept=".csv,.txt" (change)="uploadForeignCoROrCor($event)"-->
+<!--                   class="display-nothing" #cocFiles>-->
+<!--            <button type="button" (click)="cocFiles.click()"-->
+<!--                    class="btn btn-sm btn-primary mr-2">Select File-->
+<!--            </button>-->
+<!--        </div>-->
+<!--        <label class="col-6 col-form-label font-weight-bold" *ngIf="selectedFile">SELECTED: {{selectedFile.name}}</label>-->
+<!--        <label class="col-6 col-form-label font-weight-bold" *ngIf="selectedFile">SIZE:{{selectedFile.size/1000| number}}KB</label>-->
+<!--        <mat-error *ngIf="message">-->
+<!--            {{message}}-->
+<!--        </mat-error>-->
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <div class="btn-group btn-group pull-right" role="group" aria-label="Foreign COC/COR Buttons">
+        <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
+        <button [disabled]="!addNewBatchForm.valid" name="submit" type="button" class="btn btn-primary"
+                (click)="onClickSaveNewBatch(addNewBatchForm.valid)">SAVE
+<!--            <mat-spinner [diameter]="20" color="warn" *ngIf="loading"></mat-spinner>-->
+        </button>
+    </div>
+</mat-dialog-actions>

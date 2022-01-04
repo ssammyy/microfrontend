@@ -78,8 +78,11 @@ import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileDirecto
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
+import org.kebs.app.kotlin.apollo.store.repo.ms.IWorkplanYearsCodesRepository
 import org.modelmapper.ModelMapper
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.mock.web.MockMultipartFile
 import org.springframework.security.core.Authentication
@@ -87,6 +90,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.util.StringUtils
 import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.servlet.function.ServerRequest
 import java.io.*
 import java.math.BigDecimal
 import java.net.URLConnection
@@ -439,6 +443,37 @@ class CommonDaoServices(
         return anyValue
     }
 
+    fun extractPageRequest(req: ServerRequest, field: String = "id"): PageRequest {
+        var page = 0
+        var records = 20
+        // get page
+        req.param("page").ifPresent { p ->
+            p.toIntOrNull()?.let {
+                page = it
+            }
+        }
+        // Get page size
+        req.param("records").ifPresent { p ->
+            p.toIntOrNull()?.let {
+                records = if (it in 1..100) {
+                    it
+                } else {
+                    20
+                }
+            }
+        }
+        var sortOrder = "desc"
+        req.param("sortOrder").ifPresent {
+            if ("asc".equals(it)) {
+                sortOrder = it
+            }
+        }
+        if ("asc".equals(sortOrder)) {
+            return PageRequest.of(page, records, Sort.by(Sort.Order.asc(field)))
+        }
+        return PageRequest.of(page, records, Sort.by(Sort.Order.desc(field)))
+    }
+
 
     class MessageSuccessFailDTO {
 
@@ -619,6 +654,11 @@ class CommonDaoServices(
     fun getFileTypeByMimetypesFileTypeMap(fileName: String?): String? {
         val fileTypeMap = MimetypesFileTypeMap()
         return fileTypeMap.getContentType(fileName)
+    }
+
+    fun getCurrentYear(): String {
+        val year = Calendar.getInstance()[Calendar.YEAR]
+        return year.toString()
     }
 
     fun loggedInUserDetails(): UsersEntity {
