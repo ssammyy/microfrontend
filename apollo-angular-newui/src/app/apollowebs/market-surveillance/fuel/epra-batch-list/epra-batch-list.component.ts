@@ -49,7 +49,7 @@ export class EpraBatchListComponent implements OnInit {
       delete: false,
       custom: [
         //  { name: 'editRecord', title: '<i class="btn btn-sm btn-primary">View More</i>' },
-        {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View More</i>'}
+        {name: 'viewRecord', title: '<a class="btn btn-sm btn-primary">View More</a>'}
       ],
       position: 'right' // left|right
     },
@@ -123,7 +123,7 @@ export class EpraBatchListComponent implements OnInit {
 
 
   constructor(private store$: Store<any>,
-              private dialog: MatDialog,
+              // private dialog: MatDialog,
               private router: Router,
               private formBuilder: FormBuilder,
               private SpinnerService: NgxSpinnerService,
@@ -217,9 +217,9 @@ export class EpraBatchListComponent implements OnInit {
     }
   }
 
-  viewRecord(data: any) {
-    // console.log(data)
-    this.router.navigate([`/epra`, data.referenceNumber]);
+  viewRecord(data: FuelBatchDetailsDto) {
+    console.log("TEST 101"+data.id)
+    this.router.navigate([`/epra`,data.referenceNumber]);
   }
 
   get formNewBatchForm(): any {
@@ -280,21 +280,21 @@ export class EpraBatchListComponent implements OnInit {
     this.currDiv = divVal;
   }
 
-  addNewBatch(event: any, type: string) {
-    let ref = this.dialog.open(EpraBatchNewComponent, {
-      data: {
-        documentType: type
-      }
-    })
-    ref.afterClosed()
-        .subscribe(
-            res => {
-              if (res) {
-                this.loadData(this.defaultPage, this.defaultPageSize)
-              }
-            }
-        )
-  }
+  // addNewBatch(event: any, type: string) {
+  //   let ref = this.dialog.open(EpraBatchNewComponent, {
+  //     data: {
+  //       documentType: type
+  //     }
+  //   })
+  //   ref.afterClosed()
+  //       .subscribe(
+  //           res => {
+  //             if (res) {
+  //               this.loadData(this.defaultPage, this.defaultPageSize)
+  //             }
+  //           }
+  //       )
+  // }
 
   pageChange(pageIndex?: any) {
     if (pageIndex) {

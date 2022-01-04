@@ -1,7 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 import mu.KotlinLogging
-import org.kebs.app.kotlin.apollo.common.dto.UserRequestListEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.ms.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
@@ -25,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional
 import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
-import java.util.*
 
 
 @Service
@@ -48,7 +46,7 @@ class NewMarketSurveillanceDaoServices(
 
     @PreAuthorize("hasAuthority('EPRA')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun createNewFuelBatch(body: BatchFileFuelSaveDto,page: PageRequest): Page<FuelInspectionDto> {
+    fun createNewFuelBatch(body: BatchFileFuelSaveDto,page: PageRequest): FuelInspectionScheduleListDetailsDto {
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val currentYear = commonDaoServices.getCurrentYear()
@@ -57,7 +55,7 @@ class NewMarketSurveillanceDaoServices(
 
         if (fileSaved.first.status == map.successStatus) {
             val fileInspectionList = findAllFuelInspectionListBasedOnBatchIDPageRequest(fileSaved.second.id,page)
-            return mapFuelInspectionListDto(fileInspectionList)
+            return mapFuelInspectionListDto(fileInspectionList,mapFuelBatchDetailsDto(fileSaved.second, map))
         } else {
             throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved.first))
         }
@@ -100,7 +98,7 @@ class NewMarketSurveillanceDaoServices(
 
     @PreAuthorize("hasAuthority('EPRA')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun createNewFuelSchedule(body: FuelEntityDto, referenceNumber: String, page: PageRequest): Page<FuelInspectionDto> {
+    fun createNewFuelSchedule(body: FuelEntityDto, referenceNumber: String, page: PageRequest): FuelInspectionScheduleListDetailsDto {
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val batchDetail = findFuelBatchDetailByReferenceNumber(referenceNumber)
@@ -108,7 +106,7 @@ class NewMarketSurveillanceDaoServices(
 
         if (fileSaved.first.status == map.successStatus) {
             val fileInspectionList = findAllFuelInspectionListBasedOnBatchIDPageRequest(fileSaved.second.id,page)
-            return mapFuelInspectionListDto(fileInspectionList)
+            return mapFuelInspectionListDto(fileInspectionList,mapFuelBatchDetailsDto(batchDetail, map))
         } else {
             throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved.first))
         }
@@ -119,22 +117,18 @@ class NewMarketSurveillanceDaoServices(
     fun getAllFuelBatchList(page: PageRequest): Page<FuelBatchDetailsDto> {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
-        val userRequestList = mutableListOf<UserRequestListEntityDto>()
-
         val fuelBatchList = findAllFuelBatchListBasedOnPageable(page)
         return mapFuelBatchListDto(fuelBatchList, map)
-
-
     }
 
     @PreAuthorize("hasAuthority('EPRA')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun getAllFuelInspectionListBasedOnBatchRefNo(batchReferenceNo: String,page: PageRequest): Page<FuelInspectionDto> {
+    fun getAllFuelInspectionListBasedOnBatchRefNo(batchReferenceNo: String,page: PageRequest): FuelInspectionScheduleListDetailsDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
         val findBatchDetail = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
         val fileInspectionList = findAllFuelInspectionListBasedOnBatchIDPageRequest(findBatchDetail.id,page)
-        return mapFuelInspectionListDto(fileInspectionList)
+        return mapFuelInspectionListDto(fileInspectionList,mapFuelBatchDetailsDto(findBatchDetail, map))
     }
 
     //    @PreAuthorize("hasAuthority('EPRA')")
@@ -392,6 +386,7 @@ class NewMarketSurveillanceDaoServices(
         map: ServiceMapsEntity,
         batchDetails: MsFuelBatchInspectionEntity
     ): FuelInspectionDto {
+        val batchDetailsDto = mapFuelBatchDetailsDto(batchDetails, map)
         val fuelInspectionOfficer = findFuelInspectionOfficerAssigned(fileInspectionDetail, map.activeStatus)
         val officerList = commonDaoServices.findOfficersListBasedOnRegionCountyAndRole(
             applicationMapProperties.mapMSMappedOfficerROLEID,
@@ -409,6 +404,7 @@ class NewMarketSurveillanceDaoServices(
         val labResultsDto = labResultsParameters?.let { mapLabResultsParamListDto(it) }?.let { mapLabResultsDto(it) }
         return mapFuelInspectionDto(
             fileInspectionDetail,
+            batchDetailsDto,
             officerList,
             fuelInspectionOfficer?.assignedIo,
             rapidTestStatus,
@@ -1007,23 +1003,19 @@ class NewMarketSurveillanceDaoServices(
         return  sampleSubmitRepo.findBySampleCollectionNumber(sampleCollectedID)
     }
 
-    fun mapFuelInspectionListDto(fuelInspectionList: Page<MsFuelInspectionEntity>): Page<FuelInspectionDto> {
-        return fuelInspectionList.map {
-            FuelInspectionDto(
-                it.id,
-                it.referenceNumber,
-                it.company,
-                it.petroleumProduct,
-                it.physicalLocation,
-                it.inspectionDateFrom,
-                it.inspectionDateTo,
+    fun mapFuelInspectionListDto(fuelInspectionList: Page<MsFuelInspectionEntity>, batchDetails: FuelBatchDetailsDto): FuelInspectionScheduleListDetailsDto {
+        val fuelInspectionScheduledList = mutableListOf<FuelInspectionDto>()
+        fuelInspectionList.map {fuelInspectionScheduledList.add(FuelInspectionDto(it.id, it.referenceNumber, it.company, it.petroleumProduct, it.physicalLocation, it.inspectionDateFrom, it.inspectionDateTo))}
 
-                )
-        }
+        return FuelInspectionScheduleListDetailsDto(
+            fuelInspectionScheduledList,
+            batchDetails
+        )
     }
 
     fun mapFuelInspectionDto(
         fuelInspectionList: MsFuelInspectionEntity,
+        batchDetails: FuelBatchDetailsDto,
         officerList: List<UsersEntity>?,
         officersAssigned : UsersEntity?,
         rapidTestResults: FuelEntityRapidTestDto?,
@@ -1039,6 +1031,7 @@ class NewMarketSurveillanceDaoServices(
             fuelInspectionList.physicalLocation,
             fuelInspectionList.inspectionDateFrom,
             fuelInspectionList.inspectionDateTo,
+            batchDetails,
             officerList?.let { mapOfficerListDto(it) },
             officersAssigned?.let { mapOfficerDto (it) },
             rapidTestResults?.rapidTestStatus,
@@ -1119,6 +1112,27 @@ class NewMarketSurveillanceDaoServices(
                 it.batchClosed == 1
             )
         }
+    }
+
+    fun mapFuelBatchDetailsDto(
+        fuelBatchList: MsFuelBatchInspectionEntity,
+        map: ServiceMapsEntity
+    ): FuelBatchDetailsDto{
+        return FuelBatchDetailsDto(
+                fuelBatchList.id,
+                fuelBatchList.regionId?.let { it1 -> commonDaoServices.findRegionEntityByRegionID(it1, map.activeStatus).region },
+                fuelBatchList.countyId?.let { it1 ->
+                    commonDaoServices.findCountiesEntityByCountyId(
+                        it1,
+                        map.activeStatus
+                    ).county
+                },
+                fuelBatchList.townId?.let { it1 -> commonDaoServices.findTownEntityByTownId(it1).town },
+                fuelBatchList.referenceNumber,
+                fuelBatchList.yearNameId?.let { it1 -> findPlanYear(it1).yearName },
+                fuelBatchList.remarks,
+                fuelBatchList.batchClosed == 1
+            )
     }
 
     fun mapOfficerListDto(officerList: List<UsersEntity>): List<MsUsersDto> {

@@ -576,17 +576,20 @@ export const routes: Routes = [
         path: 'epra',
         component: AdminLayoutComponent,
         // canActivate: [RouteGuard],
-        children: [
-            {
+        children: [{
                 path: '',
-                component: EpraBatchListComponent
-            },
+                component: EpraBatchListComponent},
             {
                 path: ':referenceNumber',
                 component: EpraListComponent
             },
         ]
     },
+    // {
+    //     path: 'batchDetails:referenceNumber', component: AdminLayoutComponent,
+    //     // canActivate: [RouteGuard],
+    //     children: [{path: '', component: EpraListComponent}]
+    // },
 
     /****************MS COMPONENTS ENDS HERE**********************************/
 

@@ -37,19 +37,25 @@ export class FuelEntityRapidTestDto {
     rapidTestStatus: boolean;
 }
 
+export class FuelInspectionScheduleListDetailsDto {
+    fuelInspectionDto: FuelInspectionDto[];
+    fuelBatchDetailsDto: FuelBatchDetailsDto;
+}
+
 export class FuelInspectionDto {
-    id : bigint;
+    id : number;
     referenceNumber : string;
     company : string;
     petroleumProduct : string;
     physicalLocation : string;
     inspectionDateFrom : Date;
     inspectionDateTo : Date;
+    batchDetails: FuelBatchDetailsDto;
     officersList : MsUsersDto[];
     officersAssigned : MsUsersDto;
     rapidTestStatus : Boolean;
     rapidTestRemarks : string;
-    sampleCollected : SampleCollectionDto[];
+    sampleCollected : SampleCollectionDto;
     sampleSubmitted : SampleSubmissionDto;
     sampleLabResults : LabResultsDto;
 }
@@ -72,8 +78,8 @@ export class SampleSubmissionDto {
     labellingIdentification : string;
     fileRefNumber : string;
     referencesStandards : string;
-    sizeTestSample : bigint;
-    sizeRefSample : bigint;
+    sizeTestSample : number;
+    sizeRefSample : number;
     condition : string;
     sampleReferences : string;
     sendersName : string;
@@ -86,7 +92,7 @@ export class SampleSubmissionDto {
     invoiceNumber : string;
     disposal : string;
     remarks : string;
-    sampleCollectionNumber : bigint;
+    sampleCollectionNumber : number;
     bsNumber : string;
     parametersList: SampleSubmissionItemsDto[];
 }
@@ -112,7 +118,7 @@ export class SampleCollectionDto {
 }
 
 export class SampleCollectionItemsDto {
-    id: bigint;
+    id: number;
     productBrandName: string;
     batchNo: string;
     batchSize: string;
@@ -120,7 +126,7 @@ export class SampleCollectionItemsDto {
 }
 
 export class MsUsersDto {
-    id: bigint;
+    id: number;
     firstName: string;
     lastName: string;
     userName: string;

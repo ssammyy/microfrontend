@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.common.dto.ms
 
+import sun.jvm.hotspot.debugger.Page
 import java.math.BigDecimal
 import java.sql.Date
 import javax.validation.constraints.NotNull
@@ -24,6 +25,11 @@ data class FuelBatchDetailsDto(
         var batchClosed: Boolean? = null,
 )
 
+data class FuelInspectionScheduleListDetailsDto(
+        var fuelInspectionDto: List<FuelInspectionDto>? = null,
+        var fuelBatchDetailsDto: FuelBatchDetailsDto? = null
+)
+
 
 data class FuelInspectionDto(
         var id: Long? = null,
@@ -33,6 +39,7 @@ data class FuelInspectionDto(
         var physicalLocation: String? = null,
         var inspectionDateFrom: Date? = null,
         var inspectionDateTo: Date? = null,
+        var batchDetails: FuelBatchDetailsDto?= null,
         var officersList: List<MsUsersDto>? = null,
         var officersAssigned: MsUsersDto? = null,
         var rapidTestStatus: Boolean? = null,
@@ -135,6 +142,8 @@ data class LabResultsParamDto(
         var result : String? = null,
         var method : String? = null,
 )
+
+
 
 
 data class ComplaintApproveRejectAssignDto(

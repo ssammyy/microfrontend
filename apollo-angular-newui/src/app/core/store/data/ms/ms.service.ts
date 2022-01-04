@@ -9,11 +9,12 @@ import {
     FuelEntityAssignOfficerDto,
     FuelEntityDto,
     FuelEntityRapidTestDto,
-    FuelInspectionDto,
-    SampleCollectionDto,
-    SampleSubmissionDto
+    FuelInspectionDto, FuelInspectionScheduleListDetailsDto, LabResultsDto, LabResultsParamDto, MsUsersDto,
+    SampleCollectionDto, SampleCollectionItemsDto,
+    SampleSubmissionDto, SampleSubmissionItemsDto
 } from "./ms.model";
 import swal from "sweetalert2";
+import {AbstractControl, ValidatorFn} from "@angular/forms";
 
 @Injectable({
     providedIn: 'root'
@@ -23,7 +24,7 @@ export class MsService {
     constructor(private http: HttpClient) {
     }
 
-    fuelBatchDetailsListExamples(): FuelBatchDetailsDto[]{
+   public fuelBatchDetailsListExamples(): FuelBatchDetailsDto[]{
         let test101 = new FuelBatchDetailsDto();
         test101.id = 123;
         test101.region = 'test';
@@ -38,6 +39,153 @@ export class MsService {
         test.push(test101)
 
         return test
+    }
+
+   public fuelInspectionDetailsListExamples(): FuelInspectionDto{
+       let currentDate = new Date();
+       let test101BatchDetails = new FuelBatchDetailsDto();
+       test101BatchDetails.id = 123;
+       test101BatchDetails.region = 'test';
+       test101BatchDetails.county = 'test';
+       test101BatchDetails.town = 'test';
+       test101BatchDetails.referenceNumber = 'test';
+       test101BatchDetails.batchFileYear = 'test';
+       test101BatchDetails.remarks = 'test';
+       test101BatchDetails.batchClosed = true
+
+       let test101MSUserDetails = new MsUsersDto();
+       test101MSUserDetails.id = 123;
+       test101MSUserDetails.firstName = 'TESTUSER';
+       test101MSUserDetails.lastName = 'TESTUSER';
+       test101MSUserDetails.userName = 'TESTUSER';
+       test101MSUserDetails.email = 'TESTUSER';
+       test101MSUserDetails.status = true;
+
+       let testUserList : MsUsersDto[] = [];
+       testUserList.push(test101MSUserDetails)
+
+       let test101SampleCollectionItemsDto = new SampleCollectionItemsDto();
+       test101SampleCollectionItemsDto.id = 125;
+       test101SampleCollectionItemsDto.productBrandName = 'test101SampleCollectionItemsDto';
+       test101SampleCollectionItemsDto.batchNo = '123';
+       test101SampleCollectionItemsDto.batchSize = '6776';
+       test101SampleCollectionItemsDto.sampleSize = '756';
+
+       let testSampleCollectionItemsDto : SampleCollectionItemsDto[] = [];
+       testSampleCollectionItemsDto.push(test101SampleCollectionItemsDto)
+
+       let test101MSSampleCollectDetails = new SampleCollectionDto();
+       test101MSSampleCollectDetails.nameManufacturerTrader = 'testSampleCollect';
+       test101MSSampleCollectDetails.addressManufacturerTrader = 'testSampleCollect';
+       test101MSSampleCollectDetails.samplingMethod = 'testSampleCollect';
+       test101MSSampleCollectDetails.reasonsCollectingSamples = 'testSampleCollect';
+       test101MSSampleCollectDetails.anyRemarks = 'testSampleCollect';
+       test101MSSampleCollectDetails.designationOfficerCollectingSample = 'testSampleCollect';
+       test101MSSampleCollectDetails.nameOfficerCollectingSample = 'testSampleCollect';
+       test101MSSampleCollectDetails.dateOfficerCollectingSample = currentDate;
+       test101MSSampleCollectDetails.nameWitness = 'testSampleCollect';
+       test101MSSampleCollectDetails.designationWitness = 'testSampleCollect';
+       test101MSSampleCollectDetails.dateWitness = currentDate;
+       test101MSSampleCollectDetails.productsList = testSampleCollectionItemsDto;
+
+       let test101SampleSubmissionItemsDto = new SampleSubmissionItemsDto();
+       test101SampleSubmissionItemsDto.parameters = 'test198';
+       test101SampleSubmissionItemsDto.laboratoryName = 'test198';
+
+       let testSampleSubmissionItemsDto : SampleSubmissionItemsDto[] = [];
+       testSampleSubmissionItemsDto.push(test101SampleSubmissionItemsDto)
+
+       let test101SampleSubmissionDto = new SampleSubmissionDto();
+       test101SampleSubmissionDto.nameProduct = 'stringTest';
+       test101SampleSubmissionDto.packaging = 'stringTest';
+       test101SampleSubmissionDto.labellingIdentification = 'stringTest';
+       test101SampleSubmissionDto.fileRefNumber = 'stringTest';
+       test101SampleSubmissionDto.referencesStandards = 'stringTest';
+       test101SampleSubmissionDto.sizeTestSample = 455;
+       test101SampleSubmissionDto.sizeRefSample = 3465;
+       test101SampleSubmissionDto.condition = 'stringTest';
+       test101SampleSubmissionDto.sampleReferences = 'stringTest';
+       test101SampleSubmissionDto.sendersName = 'stringTest';
+       test101SampleSubmissionDto.designation = 'stringTest';
+       test101SampleSubmissionDto.address = 'stringTest';
+       test101SampleSubmissionDto.sendersDate = currentDate;
+       test101SampleSubmissionDto.receiversName = 'stringTest';
+       test101SampleSubmissionDto.testChargesKsh = 4567;
+       test101SampleSubmissionDto.receiptLpoNumber = 'stringTest';
+       test101SampleSubmissionDto.invoiceNumber = 'stringTest';
+       test101SampleSubmissionDto.disposal = 'stringTest';
+       test101SampleSubmissionDto.remarks = 'stringTest';
+       test101SampleSubmissionDto.sampleCollectionNumber = 75877;
+       test101SampleSubmissionDto.bsNumber = 'stringTest';
+       test101SampleSubmissionDto.parametersList = testSampleSubmissionItemsDto;
+
+       let test101LabResultsParamDto = new LabResultsParamDto();
+       test101LabResultsParamDto.param = 'labParam';
+       test101LabResultsParamDto.result = 'labParam';
+       test101LabResultsParamDto.method = 'labParam';
+
+       let testLabResultsParamDto : LabResultsParamDto[] = [];
+       testLabResultsParamDto.push(test101LabResultsParamDto)
+
+       let test101LabResultsDto = new LabResultsDto();
+       test101LabResultsDto.parametersListTested = testLabResultsParamDto;
+       test101LabResultsDto.result = 'testLab';
+       test101LabResultsDto.method = 'testLab';
+
+
+
+
+        let test101 = new FuelInspectionDto();
+       test101.id = 123;
+       test101.referenceNumber = 'test101';
+       test101.company = 'testDetails';
+       test101.petroleumProduct = 'testDetails';
+       test101.physicalLocation = 'testDetails';
+       test101.inspectionDateFrom = currentDate;
+       test101.inspectionDateTo = currentDate;
+       test101.batchDetails = test101BatchDetails;
+       test101.officersList = testUserList;
+       test101.officersAssigned = test101MSUserDetails;
+       test101.rapidTestStatus = true;
+       test101.rapidTestRemarks = 'testDetails';
+       test101.sampleCollected = test101MSSampleCollectDetails;
+       test101.sampleSubmitted = test101SampleSubmissionDto;
+       test101.sampleLabResults = test101LabResultsDto;
+
+
+        return test101
+    }
+   public fuelInspectionListExamples(): FuelInspectionScheduleListDetailsDto{
+       let currentDate = new Date();
+       let test101BatchDetails = new FuelBatchDetailsDto();
+       test101BatchDetails.id = 123;
+       test101BatchDetails.region = 'test';
+       test101BatchDetails.county = 'test';
+       test101BatchDetails.town = 'test';
+       test101BatchDetails.referenceNumber = 'test';
+       test101BatchDetails.batchFileYear = 'test';
+       test101BatchDetails.remarks = 'test';
+       test101BatchDetails.batchClosed = true
+
+        let test101 = new FuelInspectionDto();
+       test101.id = 123;
+       test101.referenceNumber = 'test101';
+       test101.company = 'testDetails';
+       test101.petroleumProduct = 'testDetails';
+       test101.physicalLocation = 'testDetails';
+       test101.inspectionDateFrom = currentDate;
+       test101.inspectionDateTo = currentDate;
+       test101.batchDetails = test101BatchDetails;
+
+        let test : FuelInspectionDto[] = [];
+        test.push(test101)
+
+       let test102 = new FuelInspectionScheduleListDetailsDto();
+       test102.fuelInspectionDto =test;
+       test102.fuelBatchDetailsDto = test101BatchDetails;
+
+
+        return test102
     }
 
     // Check if role is in required privileges
@@ -98,10 +246,10 @@ export class MsService {
         );
     }
 
-    public addNewMSFuelBatch(data: BatchFileFuelSaveDto): Observable<FuelInspectionDto[]> {
+    public addNewMSFuelBatch(data: BatchFileFuelSaveDto): Observable<FuelInspectionScheduleListDetailsDto> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.ADD_BATCH);
-        return this.http.post<FuelInspectionDto[]>(url, data).pipe(
-            map(function (response: FuelInspectionDto[]) {
+        return this.http.post<FuelInspectionScheduleListDetailsDto>(url, data).pipe(
+            map(function (response: FuelInspectionScheduleListDetailsDto) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
@@ -126,12 +274,14 @@ export class MsService {
         );
     }
 
-    public msFuelInspectionList(batchReferenceNo: string): Observable<FuelInspectionDto[]> {
+    public msFuelInspectionList(batchReferenceNo: string,page: string,records: string): Observable<FuelInspectionScheduleListDetailsDto> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_SCHEDULED_LIST);
         const params = new HttpParams()
-            .set('batchReferenceNo', batchReferenceNo);
-        return this.http.get<FuelInspectionDto[]>(url, {params}).pipe(
-            map(function (response: FuelInspectionDto[]) {
+            .set('batchReferenceNo', batchReferenceNo)
+            .set('page', page)
+            .set('records', records);
+        return this.http.get<FuelInspectionScheduleListDetailsDto>(url, {params}).pipe(
+            map(function (response: FuelInspectionScheduleListDetailsDto) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
@@ -141,12 +291,12 @@ export class MsService {
         );
     }
 
-    public msFuelInspectionAddSchedule(batchReferenceNo: string, data: FuelEntityDto): Observable<FuelInspectionDto[]> {
+    public msFuelInspectionAddSchedule(batchReferenceNo: string, data: FuelEntityDto): Observable<FuelInspectionScheduleListDetailsDto> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_SCHEDULED_LIST);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo);
-        return this.http.post<FuelInspectionDto[]>(url, data, {params}).pipe(
-            map(function (response: FuelInspectionDto[]) {
+        return this.http.post<FuelInspectionScheduleListDetailsDto>(url, data, {params}).pipe(
+            map(function (response: FuelInspectionScheduleListDetailsDto) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
@@ -253,4 +403,18 @@ export class MsService {
         );
     }
 
+}
+
+export class CustomeDateValidators {
+    static fromToDate(fromDateField: string, toDateField: string, errorName: string = 'fromToDate'): ValidatorFn {
+        return (formGroup: AbstractControl): { [key: string]: boolean } | null => {
+            const fromDate = formGroup.get(fromDateField).value;
+            const toDate = formGroup.get(toDateField).value;
+            // Ausing the fromDate and toDate are numbers. In not convert them first after null check
+            if ((fromDate !== null && toDate !== null) && fromDate > toDate) {
+                return {[errorName]: true};
+            }
+            return null;
+        };
+    }
 }
