@@ -597,7 +597,9 @@ interface IPvocPartnersCountriesRepository : HazelcastRepository<PvocPartnersCou
 }
 
 @Repository
-interface IPvocPartnersRegion : HazelcastRepository<PvocPartnersRegionEntity, Long>
+interface IPvocPartnersRegion : HazelcastRepository<PvocPartnersRegionEntity, Long>{
+    fun findAllByStatus(status: Int): List<PvocPartnersRegionEntity>
+}
 
 @Repository
 interface IIDFDetailsEntityRepository : HazelcastRepository<IDFDetailsEntity, Long> {

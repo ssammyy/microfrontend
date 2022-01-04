@@ -1,15 +1,15 @@
 package org.kebs.app.kotlin.apollo.api.service
 
-import com.nhaarman.mockitokotlin2.any
 import org.kebs.app.kotlin.apollo.api.payload.ApiClientForm
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.request.PvocPartnersForms
-import org.kebs.app.kotlin.apollo.api.payload.response.ApiClientDao
 import org.kebs.app.kotlin.apollo.api.payload.response.PvocPartnerDto
+import org.kebs.app.kotlin.apollo.api.payload.response.PvocPartnerRegionDto
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersEntity
 import org.kebs.app.kotlin.apollo.store.repo.IPvocPartnersRepository
+import org.kebs.app.kotlin.apollo.store.repo.di.IPvocPartnersRegion
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Component
 import java.sql.Timestamp
@@ -19,8 +19,16 @@ import java.time.Instant
 class PvocPartnerService(
         private val partnersRepository: IPvocPartnersRepository,
         private val commonDaoServices: CommonDaoServices,
+        private val partnerRegionsRepository: IPvocPartnersRegion,
         private val apiClientService: ApiClientService
 ) {
+    fun listPartnerRegions(): ApiResponseModel {
+        val response = ApiResponseModel()
+        response.data = PvocPartnerRegionDto.fromList(partnerRegionsRepository.findAllByStatus(1))
+        response.responseCode = ResponseCodes.SUCCESS_CODE
+        response.message = "Success"
+        return response
+    }
 
     fun addPartnerDetails(form: PvocPartnersForms): ApiResponseModel {
         val response = ApiResponseModel()
@@ -28,10 +36,13 @@ class PvocPartnerService(
             val partner = PvocPartnersEntity()
             // Fill with data
             form.addDetails(partner, false)
+            form.partnerId?.let {
+                partner.partnerRegion = partnerRegionsRepository.findById(it).orElse(null)
+            }
             partner.createdOn = Timestamp.from(Instant.now())
             partner.createdBy = this.commonDaoServices.getLoggedInUser()?.userName
             val saved = this.partnersRepository.save(partner)
-            response.data = saved.id
+            response.data = PvocPartnerDto.fromEntity(saved)
             response.responseCode = ResponseCodes.SUCCESS_CODE
             response.message = "Partner added"
         } else {

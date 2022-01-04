@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.api.payload.response
 
 import org.kebs.app.kotlin.apollo.store.model.external.SystemApiClient
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersRegionEntity
 import javax.persistence.Basic
 import javax.persistence.Column
 
@@ -41,6 +42,28 @@ class ApiClientDao {
     }
 }
 
+class PvocPartnerRegionDto {
+    var regionId: Long? = null
+    var regionName: String? = null
+    var description: String? = null
+    companion object {
+        fun fromEntity(region: PvocPartnersRegionEntity): PvocPartnerRegionDto {
+            val dto = PvocPartnerRegionDto()
+            dto.apply {
+                regionId = region.id
+                regionName = region.regionName
+                description = region.description
+            }
+            return dto
+        }
+
+        fun fromList(regions: List<PvocPartnersRegionEntity>): List<PvocPartnerRegionDto> {
+            val dtos = mutableListOf<PvocPartnerRegionDto>()
+            regions.forEach { dtos.add(fromEntity(it)) }
+            return dtos
+        }
+    }
+}
 
 class PvocPartnerDto {
     var partnerId: Long? = null
@@ -56,7 +79,7 @@ class PvocPartnerDto {
     var partnerTelephoneNumber: String? = null
     var partnerFaxNumber: String? = null
     var partnerEmail: String? = null
-    var remarks: String?=null
+    var remarks: String? = null
 
     companion object {
         fun fromEntity(partner: PvocPartnersEntity): PvocPartnerDto {
@@ -75,7 +98,7 @@ class PvocPartnerDto {
                 partnerPin = partner.partnerPin
                 partnerTelephoneNumber = partner.partnerTelephoneNumber
                 partnerZipcode = partner.partnerZipcode
-                remarks=partner.varField10
+                remarks = partner.varField10
             }
             return dto
         }

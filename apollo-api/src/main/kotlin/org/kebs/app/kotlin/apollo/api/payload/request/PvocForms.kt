@@ -4,10 +4,14 @@ import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
+import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersEntity
+import org.springframework.web.multipart.MultipartFile
 import java.sql.Timestamp
 import javax.persistence.Basic
 import javax.persistence.Column
+import javax.persistence.JoinColumn
+import javax.persistence.ManyToOne
 import javax.validation.constraints.Email
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
@@ -28,6 +32,7 @@ class PvocPartnersForms {
     var partnerZipcode: String? = null
     var partnerTelephoneNumber: String? = null
     var partnerFaxNumber: String? = null
+    var partnerId: Long? = null
 
     @NotNull(message = "Partner email is required")
     @Email(message = "Please enter a valid email address")
@@ -283,4 +288,36 @@ class CocEntityForm {
     @NotEmpty(message = "Required field")
     @JsonProperty("PRODUCT")
     var products: List<CocItem>? = null
+}
+
+class PvocComplaintForm {
+    @NotEmpty(message = "Please enter your name")
+    var complaintName: String? = null
+
+    @NotEmpty(message = "Please enter your phone number")
+    var phoneNo: String? = null
+
+    @NotEmpty(message = "Please enter you city")
+    var address: String? = null
+
+    var cocNo: String? = null
+
+    var rfcNo: String? = null
+
+    @NotEmpty(message = "Please enter email address")
+    @Email(message = "Please enter valid email address")
+    var email: String? = null
+
+    @NotEmpty(message = "Please enter complaint")
+    var complaintDescription: String? = null
+
+    @NotNull(message = "Please select agent")
+    var pvocAgent: Long? = null
+
+    @NotNull(message = "Please select nature of complaint")
+    var categoryId: Long? = null
+
+    @NotNull(message = "Please select nature type of complaint")
+    var subCategoryId: Long? = null
+
 }

@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile
 import java.math.BigDecimal
 import java.sql.Timestamp
 import java.time.Instant
+import java.time.LocalDateTime
 import java.util.*
 
 @Service
@@ -28,6 +29,7 @@ class PvocService(
         private val iPvocExceptionIndustrialSparesCategoryEntityRepo: IPvocExceptionIndustrialSparesCategoryEntityRepo,
         private val iPvocWaiversApplicationDocumentRepo: IPvocWaiversApplicationDocumentRepo,
         private val pvocBpmn: PvocBpmn,
+        private val ipvocExemptionCertificateRepository: IPvocExceptionCertificateRepository,
         private val iPvocWaiversCategoriesRepo: IPvocWaiversCategoriesRepo,
         private val iPvocMasterListRepo: IPvocMasterListRepo,
         private val iwaiversApplicationRepo: IwaiversApplicationRepo,
@@ -39,19 +41,20 @@ class PvocService(
         val response = ApiResponseModel()
         commonDaoServices.getLoggedInUser().let { userDetails ->
             userDetails?.companyId?.let {
-                this.standardLevyRepo.findFirstByManufacturerEntityOrderByCreatedOnDesc(it)
-                        .let { levy ->
-                            if (levy?.levyPayable == null || levy.levyPayable!! <= BigDecimal.ZERO) {
-                                response.responseCode = ResponseCodes.SUCCESS_CODE
-                                response.message = "Success"
-                            } else {
-                                response.data = levy.levyPayable
-                                response.responseCode = ResponseCodes.FAILED_CODE
-                                response.message = "not eligible for exemption application"
-                            }
-                        } ?: run {
+                this.standardLevyRepo.findFirstByManufacturerEntityOrderByCreatedOnDesc(it)?.let { levy ->
+                    if (levy.levyPayable!! <= BigDecimal.ZERO) {
+                        response.responseCode = ResponseCodes.SUCCESS_CODE
+                        response.message = "Success"
+                    } else {
+                        response.data = levy.levyPayable
+                        response.responseCode = ResponseCodes.FAILED_CODE
+                        response.message = "not eligible for exemption application"
+                    }
+                    response
+                } ?: run {
                     response.responseCode = ResponseCodes.NOT_FOUND
                     response.message = "Record not available"
+                    response
                 }
 
             }
@@ -70,6 +73,95 @@ class PvocService(
             response.totalPages = requests?.totalPages
         }
         return response
+    }
+
+
+    fun kimsWaiverApplications(waiverStatus: String, page: PageRequest): ApiResponseModel {
+        val response = ApiResponseModel()
+        val requests = when (waiverStatus) {
+            "NEW" -> this.iwaiversApplicationRepo.findAllByReviewStatusOrderByCreatedOnDesc("NEW", page)
+            "DEFERED" -> this.iwaiversApplicationRepo.findAllByReviewStatusOrderByCreatedOnDesc("DEFERED", page)
+            "REVIEW_REJECTED" -> this.iwaiversApplicationRepo.findAllByReviewStatusOrderByCreatedOnDesc("REVIEW_REJECTED", page)
+            "REVIEW_APPROVED" -> this.iwaiversApplicationRepo.findAllByReviewStatusOrderByCreatedOnDesc("REVIEW_APPROVED", page)
+            "NSC_APPROVED" -> this.iwaiversApplicationRepo.findAllByNscApprovalStatusOrderByCreatedOnDesc("APPROVED", page)
+            "NSC_REJECTED" -> this.iwaiversApplicationRepo.findAllByNscApprovalStatusOrderByCreatedOnDesc("REJECTED", page)
+            "CS_APPROVED" -> this.iwaiversApplicationRepo.findAllByCsApprovalStatusOrderByCreatedOnDesc("APPROVED", page)
+            "CS_REJECTED" -> this.iwaiversApplicationRepo.findAllByCsApprovalStatusOrderByCreatedOnDesc("REJECTED", page)
+            else -> null
+        }
+        if (requests != null) {
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+            response.message = "Success"
+            response.data = requests.toList()
+            response.totalPages = requests.totalPages
+            response.totalCount = requests.totalElements
+        } else {
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+            response.message = "Invalid waiver application status"
+        }
+        return response
+    }
+
+    fun updateWaiverReviewStatus(requestId: Long, remarks: String, reviewOfficer: String, reviewStatus: String) {
+        val optional = this.iwaiversApplicationRepo.findById(requestId)
+        if (optional.isPresent) {
+            val request = optional.get()
+            request.reviewStatus = reviewStatus
+            request.varField2 = remarks
+            request.modifiedBy = reviewOfficer
+            request.modifiedOn = Timestamp.from(Instant.now())
+            this.iwaiversApplicationRepo.save(request)
+        }
+    }
+
+    fun updateWaiverNscStatus(requestId: Long, remarks: String, reviewOfficer: String, approvalStatus: String) {
+        val optional = this.iwaiversApplicationRepo.findById(requestId)
+        if (optional.isPresent) {
+            val request = optional.get()
+            when (approvalStatus) {
+                "APPROVED" -> {
+                    request.nscApprovalStatus = "APPROVED"
+                    request.rejectionStatus = 0
+                }
+                "REJECTED" -> {
+                    request.rejectionStatus = 1
+                    request.nscApprovalStatus = "REJECTED"
+                }
+            }
+            request.varField2 = remarks
+            request.modifiedBy = reviewOfficer
+            request.modifiedOn = Timestamp.from(Instant.now())
+            this.iwaiversApplicationRepo.save(request)
+        }
+    }
+
+    fun updateWaiverCsStatus(requestId: Long, remarks: String, reviewOfficer: String, approvalStatus: String) {
+        val optional = this.iwaiversApplicationRepo.findById(requestId)
+        if (optional.isPresent) {
+            val request = optional.get()
+            request.csResponceMessage = remarks
+            when (approvalStatus) {
+                "APPROVED" -> {
+                    request.csApprovalStatus = approvalStatus
+                }
+                "REJECTED" -> {
+                    request.rejectionStatus = 1
+                    request.nscApprovalStatus = approvalStatus
+                }
+            }
+            request.varField2 = remarks
+            request.modifiedBy = reviewOfficer
+            request.modifiedOn = Timestamp.from(Instant.now())
+            this.iwaiversApplicationRepo.save(request)
+        }
+    }
+
+    fun sendWaiverRequestToCs(requestId: Long, reviewOfficer: String) {
+
+    }
+
+    fun sendWaiverApprovalLetter(requestId: Long, approvalStatus: String) {
+
     }
 
     fun exemptionApplicationHistory(page: Int, size: Int): ApiResponseModel {
@@ -95,7 +187,7 @@ class PvocService(
     fun applyOrRenewWaiver(waiver: WaiverApplication, documents: List<MultipartFile>?): ApiResponseModel {
         val response = ApiResponseModel()
         val r = Random()
-        val randomNumber = String.format("%04d", Integer.valueOf(r.nextInt(9001)))
+        val randomNumber = String.format("%s%04d", commonDaoServices.convertDateToString(LocalDateTime.now(), "yyyyMMdd"), Integer.valueOf(r.nextInt(9001)))
         val waiverApp = PvocWaiversApplicationEntity()
         waiverApp.category = waiver.category
         waiverApp.address = waiver.postalAddress
@@ -150,6 +242,113 @@ class PvocService(
         return response
     }
 
+
+    fun updateReviewRequest(requestId: Long, remarks: String, reviewOfficer: String, reviewStatus: String) {
+        val optional = this.iPvocApplicationRepo.findById(requestId)
+        if (optional.isPresent) {
+            val request = optional.get()
+            request.reviewStatus = reviewStatus
+            request.varField2 = remarks
+            request.modifiedBy = reviewOfficer
+            request.modifiedOn = Timestamp.from(Instant.now())
+            this.iPvocApplicationRepo.save(request)
+        }
+    }
+
+    fun updateCommitteeStatus(requestId: Long, remarks: String, reviewOfficer: String, approvalStatus: String) {
+        val optional = this.iPvocApplicationRepo.findById(requestId)
+        if (optional.isPresent) {
+            val request = optional.get()
+            when (approvalStatus) {
+                "APPROVED" -> {
+                    request.finalApproval = approvalStatus
+                    request.finished = 1
+                }
+                "REJECTED" -> {
+                    request.finalApproval = approvalStatus
+                    request.finished = 1
+                }
+            }
+            request.varField2 = remarks
+            request.modifiedBy = reviewOfficer
+            request.modifiedOn = Timestamp.from(Instant.now())
+            this.iPvocApplicationRepo.save(request)
+        }
+    }
+
+    fun generateExemptionCertificate(requestId: Long, reviewOfficer: String) {
+        val optional = this.iPvocApplicationRepo.findById(requestId)
+        if (optional.isPresent) {
+            val request = optional.get()
+            val exemption = PvocExceptionCertificate()
+            exemption.applicationId = requestId
+            exemption.createdBy = reviewOfficer
+            exemption.modifiedBy = reviewOfficer
+            exemption.certificateRevoked = false
+            exemption.certificateVersion = 1
+            exemption.certificateNumber = "COE".format("%0x05%0x03", requestId, exemption.certificateVersion)
+            val issueDate = LocalDateTime.now()
+            exemption.createdOn = Timestamp.valueOf(issueDate)
+            exemption.expiresOn = Timestamp.valueOf(issueDate.plusYears(1))
+            request.modifiedOn = Timestamp.from(Instant.now())
+            val g = this.ipvocExemptionCertificateRepository.save(exemption)
+            request.varField2 = g.certificateNumber
+            this.iPvocApplicationRepo.save(request)
+        }
+    }
+
+    fun completeExemptionApplication(requestId: Long) {
+        val optional = this.iPvocApplicationRepo.findById(requestId)
+        if (optional.isPresent) {
+            val request = optional.get()
+            request.finished = 1
+            when (request.finalApproval) {
+                "APPROVED" -> {
+                    // Send excemption certificate email
+                }
+                "REJECTED" -> {
+                    // Send rejection email
+                }
+                else -> {
+
+                }
+            }
+            iPvocApplicationRepo.save(request)
+        }
+    }
+
+
+    fun listOrSearchApplicationExceptions(status: String, page: PageRequest): ApiResponseModel {
+        val response = ApiResponseModel()
+        try {
+            val pg = when (status) {
+                "NEW" -> this.iPvocApplicationRepo.findAllByReviewStatus(0, page)
+                "APPROVED" -> this.iPvocApplicationRepo.findAllByReviewStatus(1, page)
+                "REJECTED" -> this.iPvocApplicationRepo.findAllByReviewStatus(2, page)
+                "DEFERED" -> this.iPvocApplicationRepo.findAllByReviewStatus(3, page)
+                "CERT_REJECTED" -> this.iPvocApplicationRepo.findAllByFinalApproval(2, page)
+                "CERT_APPROVED" -> this.iPvocApplicationRepo.findAllByFinalApproval(1, page)
+                else -> {
+                    response.responseCode = ResponseCodes.FAILED_CODE
+                    response.message = "Invalid request status: $status"
+                    null
+                }
+            }
+            if (pg != null) {
+                response.data = pg.toList()
+                response.message = "Exemption application"
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+                response.totalPages = pg.totalPages
+                response.totalCount = pg.totalElements
+            }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to get exemption requests", ex)
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.message = "Request not found"
+        }
+        return response
+    }
+
     /**
      * Save application exemption.
      */
@@ -176,13 +375,14 @@ class PvocService(
             with(pvocExceptionApp) {
                 createdBy = userDetails?.email
                 createdOn = Timestamp.from(Instant.now())
+                finalApproval = "NEW"
                 applicationDate = Date.from(Instant.now())
-                finished = 1
-                pvocExceptionApp = iPvocApplicationRepo.save(pvocExceptionApp)
-                response.data = exemptionPayload
-                response.message = "Success"
-                response.responseCode = ResponseCodes.SUCCESS_CODE
+                finished = 0
             }
+            pvocExceptionApp = iPvocApplicationRepo.save(pvocExceptionApp)
+            response.data = exemptionPayload
+            response.message = "Success"
+            response.responseCode = ResponseCodes.SUCCESS_CODE
 
             products?.forEach { product ->
                 val pvocApplicationProductsEntity = PvocApplicationProductsEntity()
@@ -266,7 +466,69 @@ class PvocService(
             }
             return response
         }
+    }
 
+    fun removeExemptionItem(requestId: Long, itemId: Long, itemType: String): ApiResponseModel {
+        val response = ApiResponseModel()
+        when (itemType) {
+            "SPARE" -> {
+                val optional = iPvocExceptionIndustrialSparesCategoryEntityRepo.findAllByIdAndExceptionId(itemId, requestId)
+                if (optional.isPresent) {
+                    val spare = optional.get()
+                    iPvocExceptionIndustrialSparesCategoryEntityRepo.delete(spare)
+                    response.data = spare
+                    response.message = "Deleted"
+                    response.responseCode = ResponseCodes.SUCCESS_CODE
+                } else {
+                    response.message = "Record not found"
+                    response.responseCode = ResponseCodes.NOT_FOUND
+                }
+            }
+            "MACHINERY" -> {
+                val optional = iPvocExceptionMainMachineryCategoryEntityRepo.findAllByIdAndExceptionId(itemId, requestId)
+                if (optional.isPresent) {
+                    val machine = optional.get()
+                    iPvocExceptionMainMachineryCategoryEntityRepo.delete(machine)
+                    response.data = machine
+                    response.message = "Deleted"
+                    response.responseCode = ResponseCodes.SUCCESS_CODE
+                } else {
+                    response.message = "Record not found"
+                    response.responseCode = ResponseCodes.NOT_FOUND
+                }
+            }
+            "RAW_MATERIAL" -> {
+                val optional = iPvocExceptionRawMaterialCategoryEntityRepo.findAllByIdAndExceptionId(itemId, requestId)
+                if (optional.isPresent) {
+                    val rawMaterial = optional.get()
+                    iPvocExceptionRawMaterialCategoryEntityRepo.delete(rawMaterial)
+                    response.data = rawMaterial
+                    response.message = "Deleted"
+                    response.responseCode = ResponseCodes.SUCCESS_CODE
+                } else {
+                    response.message = "Record not found"
+                    response.responseCode = ResponseCodes.NOT_FOUND
+                }
+            }
+            "PRODUCT" -> {
+                val optional = iPvocApplicationProductsRepo.findAllByIdAndExceptionId(itemId, requestId)
+                if (optional.isPresent) {
+                    val product = optional.get()
+                    iPvocApplicationProductsRepo.delete(product)
+                    response.data = product
+                    response.message = "Deleted"
+                    response.responseCode = ResponseCodes.SUCCESS_CODE
+                } else {
+                    response.message = "Record not found"
+                    response.responseCode = ResponseCodes.NOT_FOUND
+                }
+            }
+            else -> {
+                response.message = "Invalid product type"
+                response.responseCode = ResponseCodes.NOT_FOUND
+            }
+        }
+        return response
     }
 
     fun retrieveWaiverById(id: Long): ApiResponseModel {

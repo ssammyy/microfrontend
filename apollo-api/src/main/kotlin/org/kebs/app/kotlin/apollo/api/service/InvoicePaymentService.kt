@@ -32,13 +32,12 @@ class InvoicePaymentService(
         private val daoServices: DestinationInspectionDaoServices,
         private val invoiceDaoService: InvoiceDaoService,
         private val commonDaoServices: CommonDaoServices,
-        private val applicationMapProperties: ApplicationMapProperties
+        private val applicationMapProperties: ApplicationMapProperties,
+        private val billingService: BillingService
 ) {
     var dateTimeFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy")
     fun invoiceDetails(demandNoteId: Long): HashMap<String, Any> {
         var map = hashMapOf<String, Any>()
-
-
         daoServices.findDemandNoteWithID(demandNoteId)?.let { demandNote ->
             map["preparedBy"] = demandNote.generatedBy.toString()
             map["datePrepared"] = demandNote.dateGenerated.toString()
@@ -49,7 +48,6 @@ class InvoicePaymentService(
             map["ablNo"] = demandNote.entryAblNumber.toString()
             map["totalAmount"] = demandNote.totalAmount.toString()
             map["receiptNo"] = demandNote.receiptNo.toString()
-
             map = reportsDaoService.addBankAndMPESADetails(map, demandNote.demandNoteNumber ?: "")
         }
         return map
@@ -141,37 +139,46 @@ class InvoicePaymentService(
         try {
             val consignmentDocument = daoServices.findCDWithUuid(cdUuid)
             //Send Demand Note
-            val demandNote = daoServices.findDemandNoteWithID(demandNoteId)
-            demandNote?.demandNoteNumber?.let {
-                val loggedInUser = commonDaoServices.findUserByUserName(demandNote.createdBy ?: "NA")
-                // Create payment batch
-                val batchInvoiceDetail = invoiceDaoService.createBatchInvoiceDetails(loggedInUser.userName!!, it)
-                // Add demand note details to batch
-                val updateBatchInvoiceDetail = invoiceDaoService.addInvoiceDetailsToBatchInvoice(
-                        demandNote,
-                        applicationMapProperties.mapInvoiceTransactionsForDemandNote,
-                        loggedInUser,
-                        batchInvoiceDetail
-                )
-                // Find recipient of the invoice from importer details
-                val importerDetails = consignmentDocument.cdImporter?.let {
-                    daoServices.findCDImporterDetails(it)
-                }
-                val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
-                with(myAccountDetails) {
-                    accountName = importerDetails?.name
-                    accountNumber = importerDetails?.pin
-                    currency = applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
-                }
-                KotlinLogging.logger { }.info("ADD STAGING TO TABLE: $demandNoteId")
-                // Create payment on staging table
-                invoiceDaoService.createPaymentDetailsOnStgReconciliationTable(
-                        loggedInUser.userName!!,
-                        updateBatchInvoiceDetail,
-                        myAccountDetails
-                )
+            val demandNote = daoServices.findDemandNoteWithID(demandNoteId)!!
+            val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+            // Try to add transaction to current bill or generate batch payment
+            this.billingService.registerBillTransaction(demandNote, map)?.let { billTrx ->
+                demandNote.paymentStatus = 1
+                demandNote.receiptNo = billTrx.tempReceiptNumber
+                demandNote.billId = billTrx.id
+                this.iDemandNoteRepo.save(demandNote)
+            } ?: run {
+                demandNote?.demandNoteNumber?.let {
+                    val loggedInUser = commonDaoServices.findUserByUserName(demandNote.createdBy ?: "NA")
+                    // Create payment batch
+                    val batchInvoiceDetail = invoiceDaoService.createBatchInvoiceDetails(loggedInUser.userName!!, it)
+                    // Add demand note details to batch
+                    val updateBatchInvoiceDetail = invoiceDaoService.addInvoiceDetailsToBatchInvoice(
+                            demandNote,
+                            applicationMapProperties.mapInvoiceTransactionsForDemandNote,
+                            loggedInUser,
+                            batchInvoiceDetail
+                    )
+                    // Find recipient of the invoice from importer details
+                    val importerDetails = consignmentDocument.cdImporter?.let {
+                        daoServices.findCDImporterDetails(it)
+                    }
+                    val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
+                    with(myAccountDetails) {
+                        accountName = importerDetails?.name
+                        accountNumber = importerDetails?.pin
+                        currency = applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
+                    }
+                    KotlinLogging.logger { }.info("ADD STAGING TO TABLE: $demandNoteId")
+                    // Create payment on staging table
+                    invoiceDaoService.createPaymentDetailsOnStgReconciliationTable(
+                            loggedInUser.userName!!,
+                            updateBatchInvoiceDetail,
+                            myAccountDetails
+                    )
 
-            } ?: ExpectedDataNotFound("Demand note number not set")
+                } ?: ExpectedDataNotFound("Demand note number not set")
+            }
             return true
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Failed to generate batch number", ex)
@@ -265,12 +272,12 @@ class InvoicePaymentService(
 
     fun toSqlDate(date: LocalDateTime): java.sql.Date {
         val defaultZoneId = ZoneOffset.systemDefault()
-        val sDate=Date.from(date.atZone(ZoneId.systemDefault()).toInstant());
+        val sDate = Date.from(date.atZone(ZoneId.systemDefault()).toInstant());
         return java.sql.Date(sDate.time)
     }
 
     fun toSqlTimestamp(date: LocalDateTime): java.sql.Timestamp {
-        val sDate=Date.from(date.atZone(ZoneId.systemDefault()).toInstant());
+        val sDate = Date.from(date.atZone(ZoneId.systemDefault()).toInstant());
         return java.sql.Timestamp(sDate.time)
     }
 
@@ -282,25 +289,25 @@ class InvoicePaymentService(
         val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
         when {
             transactionNo.isPresent -> {
-                KotlinLogging.logger {  }.info("Search by transaction NO")
+                KotlinLogging.logger { }.info("Search by transaction NO")
                 demandNotes = iDemandNoteRepo.findByDemandNoteNumberContainingAndStatusOrderByIdAsc(transactionNo.get(), map.activeStatus, page)
             }
             date.isPresent -> {
                 val searchDate = LocalDate.parse(date.get(), dateTimeFormat)
                 val startDate = searchDate.atStartOfDay()
                 val endDate = searchDate.plusDays(1).atStartOfDay()
-                KotlinLogging.logger {  }.info("Start Date: ${startDate}, End Date: ${endDate}")
+                KotlinLogging.logger { }.info("Start Date: ${startDate}, End Date: ${endDate}")
                 demandNotes = when (status) {
                     null -> iDemandNoteRepo.findByModifiedOnAndModifiedOnLessThanAndStatusOrderByIdAsc(dateTimeFormat.format(startDate), listOf(map.activeStatus, map.initStatus, map.workingStatus), page)
                     else -> iDemandNoteRepo.findByModifiedOnAndModifiedOnLessThanAndPaymentStatusAndStatusOrderByIdAsc(dateTimeFormat.format(startDate), status, listOf(map.activeStatus, map.initStatus, map.workingStatus), page)
                 }
             }
-            status!=null -> {
-                KotlinLogging.logger {  }.info("Search by transaction status")
+            status != null -> {
+                KotlinLogging.logger { }.info("Search by transaction status")
                 demandNotes = iDemandNoteRepo.findByPaymentStatusAndStatusOrderByIdAsc(status, map.activeStatus, page)
             }
             else -> {
-                KotlinLogging.logger {  }.info("Search by all transactions")
+                KotlinLogging.logger { }.info("Search by all transactions")
                 demandNotes = iDemandNoteRepo.findByStatusOrderByIdAsc(map.activeStatus, page)
             }
         }
@@ -308,11 +315,11 @@ class InvoicePaymentService(
     }
 
     fun getTransactionStatsOnDate(date: Optional<String>): Any? {
-        val currentDate=date.orElse(dateTimeFormat.format(LocalDate.now()))
+        val currentDate = date.orElse(dateTimeFormat.format(LocalDate.now()))
         return iDemandNoteRepo.transactionStats(currentDate)
     }
 
-    fun paymentReceived(responseStatus: PaymentStatusResult) : Boolean {
+    fun paymentReceived(responseStatus: PaymentStatusResult): Boolean {
         return true
     }
 

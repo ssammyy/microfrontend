@@ -9,6 +9,8 @@ import javax.persistence.*
 @Entity
 @Table(name = "DAT_KEBS_PVOC_COMPLAINT")
 class PvocComplaintEntity : Serializable {
+
+
     @Column(name = "ID", nullable = false, precision = 0)
     @Id
     @SequenceGenerator(name = "DAT_KEBS_PVOC_COMPLAINT_SEQ_GEN", sequenceName = "DAT_KEBS_PVOC_COMPLAINT_SEQ", allocationSize = 1)
@@ -18,6 +20,14 @@ class PvocComplaintEntity : Serializable {
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null
+
+    @Column(name = "REF_PREFIX")
+    @Basic
+    var refPrefix: String? = null
+
+    @Column(name = "REF_NO")
+    @Basic
+    var refNo: String? = null
 
     @Column(name = "COMPLAINT_NAME")
     @Basic
@@ -33,7 +43,7 @@ class PvocComplaintEntity : Serializable {
 
     @JoinColumn(name = "PVOC_AGENT", referencedColumnName = "ID")
     @ManyToOne
-    var pvocAgent: UsersEntity? = null
+    var pvocAgent: PvocPartnersEntity? = null
 
     @Column(name = "VAR_FIELD_1")
     @Basic
@@ -103,6 +113,15 @@ class PvocComplaintEntity : Serializable {
     @Basic
     var reviewStatus: String? = null
 
+
+    @Column(name = "REVIEWED_ON")
+    @Basic
+    var reviewedOn: Timestamp? = null
+
+    @Column(name = "AGENT_REVIEW_REMARKS")
+    @Basic
+    var agentReviewRemarks: String? = null
+
     @Column(name = "GENERAL_DESCRIPTION")
     @Basic
     var generalDescription: String? = null
@@ -115,9 +134,17 @@ class PvocComplaintEntity : Serializable {
     @Basic
     var rfcNo: String? = null
 
-    @Column(name = "RECOMENDATION")
+    @JoinColumn(name = "RECOMENDATION", referencedColumnName = "ID")
+    @ManyToOne
+    var recomendation: PvocComplaintRecommendationEntity? = null
+
+    @Column(name = "MPVOC_RECOMENDATION_DATE")
     @Basic
-    var recomendation: String? = null
+    var mpvocRecomendationDate: Timestamp? = null
+
+    @Column(name = "MPVOC_RECOMENDATION_DATE")
+    @Basic
+    var hodRecomendationDate: Timestamp? = null
 
     @Column(name = "EMAIL")
     @Basic
@@ -134,6 +161,10 @@ class PvocComplaintEntity : Serializable {
     @JoinColumn(name = "MPVOC", referencedColumnName = "ID")
     @ManyToOne
     var mpvoc: UsersEntity? = null
+
+    @JoinColumn(name = "PVOC_USER", referencedColumnName = "ID")
+    @ManyToOne
+    var pvocUser: UsersEntity? = null
 
     @JoinColumn(name = "HOD", referencedColumnName = "ID")
     @ManyToOne

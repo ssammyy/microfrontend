@@ -63,6 +63,10 @@ class PvocPartnersEntity : Serializable {
     @Basic
     var partnerEmail: String? = null
 
+    @JoinColumn(name = "PARTNER_REGION", referencedColumnName = "ID")
+    @Basic
+    var partnerRegion: PvocPartnersRegionEntity? = null
+
     @Column(name = "STATUS", nullable = true, precision = 0)
     @Basic
     var status: Int? = null
