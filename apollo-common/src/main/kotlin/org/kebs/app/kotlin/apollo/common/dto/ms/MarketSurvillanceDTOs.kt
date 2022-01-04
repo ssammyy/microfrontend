@@ -41,6 +41,7 @@ data class FuelInspectionDto(
         var rapidTestRemarks: String? = null,
         var sampleCollected: SampleCollectionDto? = null,
         var sampleSubmitted: SampleSubmissionDto? = null,
+        var sampleLabResults: LabResultsDto? = null,
 )
 
 data class FuelEntityDto(
@@ -108,7 +109,7 @@ data class SampleSubmissionDto(
         var sendersName : String? = null,
         var designation : String? = null,
         var address : String? = null,
-        var sendersDate : String? = null,
+        var sendersDate : Date? = null,
         var receiversName : String? = null,
         var testChargesKsh : BigDecimal? = null,
         var receiptLpoNumber : String? = null,
@@ -123,6 +124,18 @@ data class SampleSubmissionDto(
 data class SampleSubmissionItemsDto(
         var parameters : String? = null,
         var laboratoryName : String? = null,
+)
+
+data class LabResultsDto(
+        var parametersListTested: List<LabResultsParamDto>? = null,
+        var result : String? = null,
+        var method : String? = null,
+)
+
+data class LabResultsParamDto(
+        var param : String? = null,
+        var result : String? = null,
+        var method : String? = null,
 )
 
 

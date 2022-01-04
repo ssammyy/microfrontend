@@ -92,7 +92,7 @@ class MsSampleSubmissionEntity : Serializable{
 
     @Column(name = "SENDERS_DATE")
     @Basic
-    var sendersDate: String? = null
+    var sendersDate: Date? = null
 
     @Column(name = "RECEIVERS_NAME")
     @Basic
