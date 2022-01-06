@@ -105,37 +105,37 @@ class PublishingController(val publishingService: PublishingService,
     fun approveDraughtChange(@RequestBody standardDraft: StandardDraft): ServerResponse {
         return ServerResponse(HttpStatus.OK,"Check draught standard and approve change",publishingService.approveDraughtChange(standardDraft))
     }
-    @PostMapping("/file-upload")
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun uploadFiles(
-        @RequestParam("nwaJustificationID") nwaJustificationID: Long,
-        @RequestParam("docFile") docFile: List<MultipartFile>,
-        model: Model
-    ): CommonDaoServices.MessageSuccessFailDTO {
-
-        val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val nwaJustification = nwaJustificationRepository.findByIdOrNull(nwaJustificationID)?: throw Exception("NWA DOCUMENT ID DOES NOT EXIST")
-
-        docFile.forEach { u ->
-            val upload = DatKebsSdNwaUploadsEntity()
-            with(upload) {
-                nwaDocumentId = nwaJustification.id
-
-            }
-            nwaService.uploadSDFile(
-                upload,
-                u,
-                "UPLOADS",
-                loggedInUser,
-                "NWA Justification"
-            )
-        }
-
-        val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.message = "Document Uploaded successfully"
-
-        return sm
-    }
+//    @PostMapping("/file-upload")
+//    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+//    fun uploadFiles(
+//        @RequestParam("nwaJustificationID") nwaJustificationID: Long,
+//        @RequestParam("docFile") docFile: List<MultipartFile>,
+//        model: Model
+//    ): CommonDaoServices.MessageSuccessFailDTO {
+//
+//        val loggedInUser = commonDaoServices.loggedInUserDetails()
+//        val nwaJustification = nwaJustificationRepository.findByIdOrNull(nwaJustificationID)?: throw Exception("NWA DOCUMENT ID DOES NOT EXIST")
+//
+//        docFile.forEach { u ->
+//            val upload = DatKebsSdNwaUploadsEntity()
+//            with(upload) {
+//                nwaDocumentId = nwaJustification.id
+//
+//            }
+//            nwaService.uploadSDFile(
+//                upload,
+//                u,
+//                "UPLOADS",
+//                loggedInUser,
+//                "NWA Justification"
+//            )
+//        }
+//
+//        val sm = CommonDaoServices.MessageSuccessFailDTO()
+//        sm.message = "Document Uploaded successfully"
+//
+//        return sm
+//    }
     @PostMapping("/uploadFiles")
     fun uploadFiles(@RequestParam("file") file: MultipartFile,
                     @RequestParam("itemId") itemId: String,
