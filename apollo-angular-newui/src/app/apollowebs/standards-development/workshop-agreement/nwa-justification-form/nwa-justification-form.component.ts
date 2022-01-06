@@ -203,7 +203,7 @@ export class NwaJustificationFormComponent implements OnInit {
 
         $.notify({
             icon: 'notifications',
-            message: 'Welcome to <b>Material Dashboard</b> - a beautiful dashboard for every web developer.'
+            message: 'KEBS QAIMSS'
         }, {
             type: type[color],
             timer: 3000,

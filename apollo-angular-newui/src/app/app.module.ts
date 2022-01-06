@@ -179,6 +179,15 @@ import { StandardLevySiteVisitApproveTwoComponent } from './apollowebs/standards
 import { StandardLevySiteVisitFeedbackComponent } from './apollowebs/standards-levy/standard-levy-site-visit-feedback/standard-levy-site-visit-feedback.component';
 import { StandardLevyUploadSiteVisitFeedbackComponent } from './apollowebs/standards-levy/standard-levy-upload-site-visit-feedback/standard-levy-upload-site-visit-feedback.component';
 import { StandardLevyManufactureDetailsComponent } from './apollowebs/standards-levy/standard-levy-manufacture-details/standard-levy-manufacture-details.component';
+import {ReviewJustificationOfTCComponent} from './apollowebs/standards-development/formationOfTc/review-justification-of-tc/review-justification-of-tc.component';
+import {ReviewFeedbackSPCComponent} from './apollowebs/standards-development/formationOfTc/review-feedback-spc/review-feedback-spc.component';
+import {RequestForFormationOfTCComponent} from "./apollowebs/standards-development/formationOfTc/request-for-formation-of-tc/request-for-formation-of-tc.component";
+import { StdPublishingComponent } from './apollowebs/standards-development/publishing/std-publishing/std-publishing.component';
+import { StdHopTasksComponent } from './apollowebs/standards-development/publishing/std-hop-tasks/std-hop-tasks.component';
+import { EditorTasksComponent } from './apollowebs/standards-development/publishing/editor-tasks/editor-tasks.component';
+import { StdProofreadComponent } from './apollowebs/standards-development/publishing/std-proofread/std-proofread.component';
+import { StdDraughtsmanComponent } from './apollowebs/standards-development/publishing/std-draughtsman/std-draughtsman.component';
+import { ApproveDraftStdComponent } from './apollowebs/standards-development/publishing/approve-draft-std/approve-draft-std.component';
 
 
 // import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -365,7 +374,16 @@ import { StandardLevyManufactureDetailsComponent } from './apollowebs/standards-
         StandardLevySiteVisitApproveTwoComponent,
         StandardLevySiteVisitFeedbackComponent,
         StandardLevyUploadSiteVisitFeedbackComponent,
-        StandardLevyManufactureDetailsComponent
+        StandardLevyManufactureDetailsComponent,
+        RequestForFormationOfTCComponent,
+        ReviewJustificationOfTCComponent,
+        ReviewFeedbackSPCComponent,
+        StdPublishingComponent,
+        StdHopTasksComponent,
+        EditorTasksComponent,
+        StdProofreadComponent,
+        StdDraughtsmanComponent,
+        ApproveDraftStdComponent
 
     ]
 

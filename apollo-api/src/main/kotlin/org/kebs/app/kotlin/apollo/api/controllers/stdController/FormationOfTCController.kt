@@ -13,7 +13,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import java.util.stream.Collectors
 
 @RestController
-@RequestMapping("/formationOfTC")
+@RequestMapping("api/v1/migration/formationOfTC")
 class FormationOfTCController(
     val formationOfTCService: FormationOfTCService,
     val tCRelevantDocumentService: TCRelevantDocumentService

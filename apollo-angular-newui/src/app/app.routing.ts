@@ -109,6 +109,15 @@ import {StandardLevySiteVisitApproveOneComponent} from "./apollowebs/standards-l
 import {StandardLevySiteVisitFeedbackComponent} from "./apollowebs/standards-levy/standard-levy-site-visit-feedback/standard-levy-site-visit-feedback.component";
 import {StandardLevyUploadSiteVisitFeedbackComponent} from "./apollowebs/standards-levy/standard-levy-upload-site-visit-feedback/standard-levy-upload-site-visit-feedback.component";
 import {StandardLevyManufactureDetailsComponent} from "./apollowebs/standards-levy/standard-levy-manufacture-details/standard-levy-manufacture-details.component";
+import {RequestForFormationOfTCComponent} from "./apollowebs/standards-development/formationOfTc/request-for-formation-of-tc/request-for-formation-of-tc.component";
+import {ReviewJustificationOfTCComponent} from "./apollowebs/standards-development/formationOfTc/review-justification-of-tc/review-justification-of-tc.component";
+import {ReviewFeedbackSPCComponent} from "./apollowebs/standards-development/formationOfTc/review-feedback-spc/review-feedback-spc.component";
+import {ApproveDraftStdComponent} from "./apollowebs/standards-development/publishing/approve-draft-std/approve-draft-std.component";
+import {StdDraughtsmanComponent} from "./apollowebs/standards-development/publishing/std-draughtsman/std-draughtsman.component";
+import {StdProofreadComponent} from "./apollowebs/standards-development/publishing/std-proofread/std-proofread.component";
+import {EditorTasksComponent} from "./apollowebs/standards-development/publishing/editor-tasks/editor-tasks.component";
+import {StdHopTasksComponent} from "./apollowebs/standards-development/publishing/std-hop-tasks/std-hop-tasks.component";
+import {StdPublishingComponent} from "./apollowebs/standards-development/publishing/std-publishing/std-publishing.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -674,7 +683,73 @@ export const routes: Routes = [
 
     /****************************************************************
      * END OF STANDARD DEVELOPMENT - COMMITTEE MODULE ROUTES
-     ***************************************************************/    {
+     ***************************************************************/
+    /****************************************************************
+     * PUBLISHING ROUTES
+     ***************************************************************/
+    {
+        path: 'draftStandard',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: StdPublishingComponent}]
+    },
+    {
+        path: 'hopTasks',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: StdHopTasksComponent}]
+    },
+    {
+        path: 'editorTasks',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: EditorTasksComponent}]
+    },
+    {
+        path: 'proofReaderTasks',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: StdProofreadComponent}]
+    },
+    {
+        path: 'draughtsmanTasks',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: StdDraughtsmanComponent}]
+    },
+    {
+        path: 'hopApproval',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: ApproveDraftStdComponent}]
+    },
+    /****************************************************************
+     * FORMATION OF TECHNICAL COMMITTEE
+     ***************************************************************/
+    {
+        path: 'requestForFormationOfTC',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: RequestForFormationOfTCComponent}]
+    },
+    {
+        path: 'reviewJustificationOfTC',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: ReviewJustificationOfTCComponent}]
+    },
+    {
+        path: 'reviewFeedbackSPC',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: ReviewFeedbackSPCComponent}]
+    },
+    /****************************************************************
+     * END OF STANDARD DEVELOPMENT - FORMATION OF TECHNICAL COMMITTEE ROUTES
+     ***************************************************************/
+
+
+    {
         path: 'productSubCategory', component: AdminLayoutComponent,
         children: [{path: '', component: CreateproductSubCategoryComponent}]
     },

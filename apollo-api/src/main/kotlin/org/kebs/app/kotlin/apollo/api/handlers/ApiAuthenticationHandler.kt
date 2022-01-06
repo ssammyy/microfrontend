@@ -53,8 +53,8 @@ class ApiAuthenticationHandler(
                     val token = generateVerificationToken(otp, user)
                     KotlinLogging.logger { }.info { "Token: ${token.token}" }
 
-//                    val response = sendOtpViaSMS(token)
-                    val response = "Success"
+                    val response = sendOtpViaSMS(token)
+//                    val response = "Success"
 
                     req.attributes()["username"] = reqBody.username
                     req.attributes()["password"] = reqBody.password

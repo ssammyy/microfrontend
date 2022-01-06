@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.controllers.stdController
 
 
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.*
 import org.kebs.app.kotlin.apollo.common.dto.std.*
@@ -8,16 +9,20 @@ import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.store.model.std.DecisionDraft
 import org.kebs.app.kotlin.apollo.store.model.std.DecisionFeedback
 import org.kebs.app.kotlin.apollo.store.model.std.StandardDraft
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
+import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import java.util.stream.Collectors
 
 @RestController
-@RequestMapping("/publishing")
+@RequestMapping("api/v1/migration/publishing")
 class PublishingController(val publishingService: PublishingService,
                            val draftDocumentService: DraftDocumentService,
                            val editorDocumentService: EditorDocumentService,
@@ -100,7 +105,37 @@ class PublishingController(val publishingService: PublishingService,
     fun approveDraughtChange(@RequestBody standardDraft: StandardDraft): ServerResponse {
         return ServerResponse(HttpStatus.OK,"Check draught standard and approve change",publishingService.approveDraughtChange(standardDraft))
     }
-
+//    @PostMapping("/file-upload")
+//    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+//    fun uploadFiles(
+//        @RequestParam("nwaJustificationID") nwaJustificationID: Long,
+//        @RequestParam("docFile") docFile: List<MultipartFile>,
+//        model: Model
+//    ): CommonDaoServices.MessageSuccessFailDTO {
+//
+//        val loggedInUser = commonDaoServices.loggedInUserDetails()
+//        val nwaJustification = nwaJustificationRepository.findByIdOrNull(nwaJustificationID)?: throw Exception("NWA DOCUMENT ID DOES NOT EXIST")
+//
+//        docFile.forEach { u ->
+//            val upload = DatKebsSdNwaUploadsEntity()
+//            with(upload) {
+//                nwaDocumentId = nwaJustification.id
+//
+//            }
+//            nwaService.uploadSDFile(
+//                upload,
+//                u,
+//                "UPLOADS",
+//                loggedInUser,
+//                "NWA Justification"
+//            )
+//        }
+//
+//        val sm = CommonDaoServices.MessageSuccessFailDTO()
+//        sm.message = "Document Uploaded successfully"
+//
+//        return sm
+//    }
     @PostMapping("/uploadFiles")
     fun uploadFiles(@RequestParam("file") file: MultipartFile,
                     @RequestParam("itemId") itemId: String,
