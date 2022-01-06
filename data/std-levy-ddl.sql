@@ -1507,4 +1507,54 @@ where request_header_entry_No = 13091
 select *
 from log_sl2_payments_details
 where header_ID = 6;
+/
+
+create table DAT_KEBS_STD_LEVY_NOTIFICATION_FORM_TBL
+(
+    id               NUMBER PRIMARY KEY,
+    NAME_BUSINESS_PROPRIETOR         VARCHAR2(200),
+    COMMODITIES_MANUFACTURED             VARCHAR2(50),
+    CHIEF_EXECUTIVE_DIRECTORS        VARCHAR2(200),
+    CHIEF_EXECUTIVE_DIRECTORS_STATUS    VARCHAR2(200),
+    DATE_MANUFACTURE_COMMENCED         DATE,
+    TOTAL_VALUE_OF_MANUFACTURE DECIMAL,
+    DESCRIPTION      VARCHAR2(200),
+
+    STATUS      NUMBER(2),
+    var_field_1      VARCHAR2(350 CHAR),
+    var_field_2      VARCHAR2(350 CHAR),
+    var_field_3      VARCHAR2(350 CHAR),
+    var_field_4      VARCHAR2(350 CHAR),
+    var_field_5      VARCHAR2(350 CHAR),
+    var_field_6      VARCHAR2(350 CHAR),
+    var_field_7      VARCHAR2(350 CHAR),
+    var_field_8      VARCHAR2(350 CHAR),
+    ENTRY_NUMBER      VARCHAR2(350 CHAR),
+    MANUFACTURER_ID     NUMBER,
+    created_by       VARCHAR2(100 CHAR)          DEFAULT 'admin' NOT NULL ENABLE,
+    created_on       TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate NOT NULL ENABLE,
+    modified_by      VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    modified_on      TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate,
+    delete_by        VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    deleted_on       TIMESTAMP(6) WITH TIME ZONE
+) TABLESPACE qaimssdb_data;
+create sequence DAT_KEBS_STD_LEVY_NOTIFICATION_FORM_TBL_SEQ minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+create or replace trigger DAT_KEBS_STD_LEVY_NOTIFICATION_FORM_TBL_SEQ_trg
+    before
+        insert
+    on DAT_KEBS_STD_LEVY_NOTIFICATION_FORM_TBL
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select DAT_KEBS_STD_LEVY_NOTIFICATION_FORM_TBL_SEQ.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+
+/
 

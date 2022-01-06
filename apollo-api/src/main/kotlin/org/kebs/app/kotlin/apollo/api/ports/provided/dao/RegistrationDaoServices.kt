@@ -50,6 +50,9 @@ import org.kebs.app.kotlin.apollo.common.dto.*
 import org.kebs.app.kotlin.apollo.common.dto.brs.response.BrsLookUpRecords
 import org.kebs.app.kotlin.apollo.common.dto.brs.response.BrsLookUpResponse
 import org.kebs.app.kotlin.apollo.common.dto.brs.response.BrsLookupBusinessPartners
+import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponseValue
+import org.kebs.app.kotlin.apollo.common.dto.stdLevy.NotificationForm
+import org.kebs.app.kotlin.apollo.common.dto.stdLevy.StdLevyNotificationFormDTO
 import org.kebs.app.kotlin.apollo.common.exceptions.*
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -58,15 +61,21 @@ import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileCommodi
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileContractsUndertakenEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileDirectorsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
+import org.kebs.app.kotlin.apollo.store.model.std.NWAJustification
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Lazy
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.servlet.function.ServerRequest
+import org.springframework.web.servlet.function.ServerResponse
+import org.springframework.web.servlet.function.paramOrNull
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
@@ -130,6 +139,7 @@ class RegistrationDaoServices(
     private val configurationRepository: IIntegrationConfigurationRepository,
     private val daoService: DaoService,
     private val logsRepo: IWorkflowTransactionsRepository,
+    private val stdLevyNotificationFormRepository: StdLevyNotificationFormRepository
 ) {
 
 
@@ -769,6 +779,36 @@ class RegistrationDaoServices(
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
         return sr
     }
+    fun generateEntryNumber(
+        s: ServiceMapsEntity,
+        u: UsersEntity
+    ) : String? {
+
+
+            var cp = commonDaoServices.findCompanyProfile(u.id ?: throw ExpectedDataNotFound("MISSING USER ID"))
+
+            with(cp) {
+                entryNumber = generateRandomText(5, s.secureRandom, s.messageDigestAlgorithm, true).toUpperCase()
+                modifiedBy = commonDaoServices.concatenateName(u)
+                modifiedOn = commonDaoServices.getTimestamp()
+            }
+
+            cp = companyProfileRepo.save(cp)
+
+            val payload = "${cp.name} ${cp.registrationNumber}"
+            val emailEntity = commonDaoServices.userRegisteredEntryNumberSuccessfullEmailCompose(cp, s, null)
+            commonDaoServices.sendEmailAfterCompose(
+                u,
+                applicationMapProperties.mapUserEntryNumberNotification,
+                emailEntity,
+                appId,
+                payload
+            )
+
+            return cp.entryNumber
+
+
+    }
 
     fun generateEntryNumberDetails(
         s: ServiceMapsEntity,
@@ -1003,6 +1043,45 @@ class RegistrationDaoServices(
         return add
     }
 
+
+    fun saveNotificationFormSL(
+        stdLevyNotificationFormDTO: StdLevyNotificationFormDTO,
+        stdLevyNotificationForm: StdLevyNotificationForm,
+        s: ServiceMapsEntity,
+        sr: ServiceRequestsEntity
+       ) : NotificationForm
+    {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        var add = stdLevyNotificationForm
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        var eNumber = generateEntryNumber(map, loggedInUser)
+
+        with(add) {
+            nameBusinessProprietor= stdLevyNotificationFormDTO.NameAndBusinessOfProprietors
+            commoditiesManufactured= stdLevyNotificationFormDTO.AllCommoditiesManufuctured
+            chiefExecutiveDirectors= stdLevyNotificationFormDTO.chiefExecutiveDirectors
+            chiefExecutiveDirectorsStatus= stdLevyNotificationFormDTO.chiefExecutiveDirectorsStatus
+            dateManufactureCommenced= stdLevyNotificationFormDTO.DateOfManufacture
+            totalValueOfManufacture= stdLevyNotificationFormDTO.totalValueOfManufacture
+            description= stdLevyNotificationFormDTO.description
+            status=1
+            entryNumber= eNumber
+            manufacturerId= stdLevyNotificationFormDTO.companyProfileID
+            createdOn = Timestamp.from(Instant.now())
+            createdBy = loggedInUser.firstName + " " + loggedInUser.lastName
+
+        }
+        add = stdLevyNotificationFormRepository.save(add)
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/user/user-profile?userName=${loggedInUser.userName}"
+        sm.message = "You have Successful Register, Email Has been sent with Entry Number "
+
+        return NotificationForm(add.id,add.entryNumber?: throw NullValueNotAllowedException("Request Number is required"))
+
+
+
+    }
+
      fun manufacturerStdLevyInit(
         stdLevyNotificationFormEntity: StdLevyNotificationFormEntity,
         manufacturer: ManufacturersEntity,
@@ -1011,7 +1090,7 @@ class RegistrationDaoServices(
         sr: ServiceRequestsEntity
     ): StdLevyNotificationFormEntity {
         var add = stdLevyNotificationFormEntity
-
+         val loggedInUser = commonDaoServices.loggedInUserDetails()
         with(add) {
             nameBusinessProprietor = companySl1DTO.NameAndBusinessOfProprietors
             commoditiesManufactured = companySl1DTO.AllCommoditiesManufuctured
@@ -1055,7 +1134,7 @@ class RegistrationDaoServices(
 
 
     public fun manufacturersInit(
-        manufacturersEntity: ManufacturersEntity,
+        @RequestBody manufacturersEntity: ManufacturersEntity,
         sr: ServiceRequestsEntity,
         user: UsersEntity,
         s: ServiceMapsEntity): ManufacturersEntity {
@@ -1958,6 +2037,9 @@ class RegistrationDaoServices(
 
 
     }
+
+
+
 
 
 }

@@ -432,7 +432,21 @@ export class ApiEndpointService {
         STD_LEVY_PENALTY_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getManufacturerPenalty`,
         STD_LEVY_PAID_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getPaidLevies`,
         STD_LEVY_COMPANY_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getCompanyProfile`,
-        STD_LEVY_SL10_FORM: `${ApiEndpointService.STL_CONTEXT}/submit-registration-manufacture`,
+        STD_LEVY_SL10_FORM: `${ApiEndpointService.STL_CONTEXT}/save-sl-notification-form`,
+        STD_LEVY_SCHEDULE_SITE_VISIT: `${ApiEndpointService.STL_CONTEXT}/scheduleSiteVisit`,
+        STD_LEVY_SCHEDULED_SITE_VISITS: `${ApiEndpointService.STL_CONTEXT}/getScheduledVisits`,
+        STD_LEVY_SAVE_VISIT_REPORT: `${ApiEndpointService.STL_CONTEXT}/reportOnSiteVisit`,
+        STD_LEVY_SAVE_VISIT_REPORT_DOCUMENT: `${ApiEndpointService.STL_CONTEXT}/site-report-upload`,
+        STD_LEVY_SCHEDULED_SITE_VISITS_REPORT: `${ApiEndpointService.STL_CONTEXT}/getSiteReport`,
+        STD_LEVY_SITE_VISITS_REPORT_APPROVAL_ONE: `${ApiEndpointService.STL_CONTEXT}/decisionOnSiteReport`,
+        STD_LEVY_SITE_VISITS_REPORT_LEVEL_TWO: `${ApiEndpointService.STL_CONTEXT}/getSiteReportLevelTwo`,
+        STD_LEVY_SITE_VISITS_REPORT_APPROVAL_TWO: `${ApiEndpointService.STL_CONTEXT}/decisionOnSiteReportLevelTwo`,
+        STD_LEVY_SAVE_VISIT_REPORT_FEEDBACK: `${ApiEndpointService.STL_CONTEXT}/siteVisitReportFeedback`,
+        STD_LEVY_SAVE_VISIT_REPORT_VIEW_FEEDBACK: `${ApiEndpointService.STL_CONTEXT}/getSiteFeedback`,
+
+
+
+
 
     };
 

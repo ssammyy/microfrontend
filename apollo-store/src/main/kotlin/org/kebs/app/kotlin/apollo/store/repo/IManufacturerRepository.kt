@@ -107,6 +107,10 @@ interface IStdLevyNotificationFormRepository : HazelcastRepository<StdLevyNotifi
 //    fun findFirstByManufacturerIdAndStatus(manufacturerId: ManufacturersEntity, status: Long): StdLevyNotificationFormEntity?
 //    fun findByManufacturerIdAndStatus(manufacturerId: ManufacturersEntity, status: Long): Collection<StdLevyNotificationFormEntity>?
 }
+@Repository
+interface StdLevyNotificationFormRepository : HazelcastRepository<StdLevyNotificationForm, Long> {
+
+}
 
 @Repository
 interface IManufacturerContactsRepository : HazelcastRepository<ManufacturerContactsEntity, Long> {

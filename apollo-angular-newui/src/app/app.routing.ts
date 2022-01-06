@@ -103,6 +103,12 @@ import {NwaPreliminaryDraftComponent} from "./apollowebs/standards-development/w
 import {ComStdPlTaskComponent} from "./apollowebs/standards-development/company-standard/com-std-pl-task/com-std-pl-task.component";
 import {ComStdDraftViewComponent} from "./apollowebs/standards-development/company-standard/com-std-draft-view/com-std-draft-view.component";
 import {ComStdListComponent} from "./apollowebs/standards-development/company-standard/com-std-list/com-std-list.component";
+import {StandardLevySiteVisitComponent} from "./apollowebs/standards-levy/standard-levy-site-visit/standard-levy-site-visit.component";
+import {StandardLevySiteVisitApproveTwoComponent} from "./apollowebs/standards-levy/standard-levy-site-visit-approve-two/standard-levy-site-visit-approve-two.component";
+import {StandardLevySiteVisitApproveOneComponent} from "./apollowebs/standards-levy/standard-levy-site-visit-approve-one/standard-levy-site-visit-approve-one.component";
+import {StandardLevySiteVisitFeedbackComponent} from "./apollowebs/standards-levy/standard-levy-site-visit-feedback/standard-levy-site-visit-feedback.component";
+import {StandardLevyUploadSiteVisitFeedbackComponent} from "./apollowebs/standards-levy/standard-levy-upload-site-visit-feedback/standard-levy-upload-site-visit-feedback.component";
+import {StandardLevyManufactureDetailsComponent} from "./apollowebs/standards-levy/standard-levy-manufacture-details/standard-levy-manufacture-details.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -722,6 +728,30 @@ export const routes: Routes = [
     {
         path: 'stdLevyDefaultersHistory', component: AdminLayoutComponent,
         children: [{path: '', component: StandardLevyDefaulterHistoryComponent}]
+    },
+    {
+        path: 'viewSiteVisits', component: AdminLayoutComponent,
+        children: [{path: '', component: StandardLevySiteVisitComponent}]
+    },
+    {
+        path: 'viewSiteVisitsReports', component: AdminLayoutComponent,
+        children: [{path: '', component: StandardLevySiteVisitApproveOneComponent}]
+    },
+    {
+        path: 'viewSiteVisitsReportTwo', component: AdminLayoutComponent,
+        children: [{path: '', component: StandardLevySiteVisitApproveTwoComponent}]
+    },
+    {
+        path: 'uploadVisitFeedBack', component: AdminLayoutComponent,
+        children: [{path: '', component: StandardLevyUploadSiteVisitFeedbackComponent}]
+    },
+    {
+        path: 'viewSiteVisitsFeedBack', component: AdminLayoutComponent,
+        children: [{path: '', component: StandardLevySiteVisitFeedbackComponent}]
+    },
+    {
+        path: 'slManufacturers', component: AdminLayoutComponent,
+        children: [{path: '', component: StandardLevyManufactureDetailsComponent}]
     },
 
 

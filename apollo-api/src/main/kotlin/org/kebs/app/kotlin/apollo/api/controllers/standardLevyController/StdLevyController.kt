@@ -6,19 +6,32 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.RegistrationDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.StandardLevyService
+import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
 import org.kebs.app.kotlin.apollo.common.dto.CompanySl1DTO
 import org.kebs.app.kotlin.apollo.common.dto.ManufactureSubmitEntityDto
+import org.kebs.app.kotlin.apollo.common.dto.std.NWAPreliminaryDraftDecision
+import org.kebs.app.kotlin.apollo.common.dto.std.ServerResponse
+import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
+import org.kebs.app.kotlin.apollo.common.dto.stdLevy.ReportOnSiteVisitDTO
+import org.kebs.app.kotlin.apollo.common.dto.stdLevy.SiteVisitReportDecision
+import org.kebs.app.kotlin.apollo.common.dto.stdLevy.StdLevyNotificationFormDTO
+import org.kebs.app.kotlin.apollo.common.dto.stdLevy.StdLevyScheduleSiteVisitDTO
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidInputException
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
+import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
+import org.kebs.app.kotlin.apollo.store.model.std.DatKebsSdNwaUploadsEntity
+import org.kebs.app.kotlin.apollo.store.model.std.NWAJustification
+import org.kebs.app.kotlin.apollo.store.model.std.TechnicalCommittee
 import org.kebs.app.kotlin.apollo.store.repo.ICompanyProfileRepository
 import org.kebs.app.kotlin.apollo.store.repo.ISlVisitUploadsRepository
 import org.kebs.app.kotlin.apollo.store.repo.IStandardLevyFactoryVisitReportRepository
 import org.kebs.app.kotlin.apollo.store.repo.IUserRoleAssignmentsRepository
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -26,7 +39,10 @@ import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.servlet.function.ServerRequest
+import org.springframework.web.servlet.function.paramOrNull
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
+import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
 import java.time.LocalDate
@@ -49,8 +65,25 @@ class StdLevyController(
     private val entityManager: EntityManager,
     private val standardLevyService: StandardLevyService,
     private val daoServices: RegistrationDaoServices,
+    private val standardLevyFactoryVisitReportRepo: IStandardLevyFactoryVisitReportRepository,
 
 ) {
+
+    @PostMapping("/deploy")
+    fun deployWorkflow(): ServerResponse {
+        standardLevyService.deployProcessDefinition()
+        return ServerResponse(HttpStatus.OK,"Successfully deployed server", HttpStatus.OK)
+    }
+
+    @GetMapping("/getManufactureList")
+    @ResponseBody
+    fun getManufactureList(): MutableIterable<CompanyProfileEntity>
+    {
+        return standardLevyService.getManufactureList()
+    }
+
+
+
     final val appId = applicationMapProperties.mapPermitApplication
 
     //@PreAuthorize("hasAuthority('USER')")
@@ -461,17 +494,36 @@ class StdLevyController(
 
     }
 
+    class RegistrationDetails {
+        var stdLevyNotificationFormEntity: StdLevyNotificationFormEntity? = null
+        var manufacturer: ManufacturersEntity? = null
+        var companySl1DTO: CompanySl1DTO? = null
+    }
 
+    @PreAuthorize("hasAuthority('USER')")
+    @PostMapping("/save-sl-notification-form")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun saveNotificationFormSL(
+        @RequestBody stdLevyNotificationFormDTO: StdLevyNotificationFormDTO,
+        stdLevyNotificationForm: StdLevyNotificationForm,
+        s: ServiceMapsEntity,
+        sr: ServiceRequestsEntity,
+    ): ServerResponse
+    {
+        return ServerResponse(HttpStatus.OK,"Successfully uploaded Form",daoServices.saveNotificationFormSL(stdLevyNotificationFormDTO,stdLevyNotificationForm,s,sr))
+        //return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",response)
+    }
 
     @PreAuthorize("hasAuthority('USER')")
     @PostMapping("/submit-registration-manufacture")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun submitRegistrationDetails(
        // @RequestParam( "companyProfileID") companyProfileID: Long,
-        @RequestBody stdLevyNotificationFormEntity: StdLevyNotificationFormEntity,
+         stdLevyNotificationFormEntity: StdLevyNotificationFormEntity,
         @ModelAttribute("companyProfileEntity") companyProfileEntity: CompanyProfileEntity,
-        @RequestBody  manufacturer: ManufacturersEntity,
-        @RequestBody companySl1DTO: CompanySl1DTO,
+         companySl1DTO: CompanySl1DTO,
+         manufacturer: ManufacturersEntity,
         s: ServiceMapsEntity,
         sr: ServiceRequestsEntity,
         model: Model
@@ -487,19 +539,19 @@ class StdLevyController(
             submittedStatus = 1
 
         }
-        println(manufacturer)
+        //println(manufacturer)
         val gson = Gson()
-        KotlinLogging.logger { }.info { "Manufacturer" + gson.toJson(manufacturer) }
+       // KotlinLogging.logger { }.info { "Manufacturer" + gson.toJson(manufacturer) }
         KotlinLogging.logger { }.info { "stdLevyNotificationFormEntity" + gson.toJson(stdLevyNotificationFormEntity) }
         KotlinLogging.logger { }.info { "companyProfileEntity" + gson.toJson(companyProfileEntity) }
         KotlinLogging.logger { }.info { "companySl1DTO" + gson.toJson(companySl1DTO) }
 
 
-        daoServices.manufacturersInit(manufacturer, sr, loggedInUser, s)
+        //daoServices.manufacturersInit(manufacturer, sr, loggedInUser, s)
         result = daoServices.closeManufactureRegistrationDetails(map, loggedInUser, myDetails)
         //Generation of Entry Number
         daoServices.generateEntryNumberDetails(map, loggedInUser)
-       daoServices.manufacturerStdLevyInit(stdLevyNotificationFormEntity, manufacturer, companySl1DTO, s, sr)
+       daoServices.manufacturerStdLevyInit(stdLevyNotificationFormEntity,manufacturer, companySl1DTO, s, sr)
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/user/user-profile?userName=${loggedInUser.userName}"
        sm.message = "You have Successful Register, Email Has been sent with Entry Number "
@@ -507,4 +559,133 @@ class StdLevyController(
        return commonDaoServices.returnValues(result, map, sm)
        // return "Executed"
     }
+
+  //  @PreAuthorize("hasAuthority('SL_SCHEDULE_FACTORY_VISIT_MANUFACTURER') and hasAuthority('SL_MANUFACTURERS_VIEW')")
+  @PostMapping("/scheduleSiteVisit")
+  @ResponseBody
+  @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+  fun scheduleSiteVisit( standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity,
+                         @RequestBody stdLevyScheduleSiteVisitDTO: StdLevyScheduleSiteVisitDTO,
+  ): ServerResponse
+  {
+             val gson = Gson()
+        KotlinLogging.logger { }.info { "INVOICE CALCULATED" + gson.toJson(standardLevyFactoryVisitReportEntity) }
+      return ServerResponse(HttpStatus.OK,"Site Visit Scheduled",standardLevyService.scheduleSiteVisit(standardLevyFactoryVisitReportEntity,stdLevyScheduleSiteVisitDTO))
+
+  }
+
+
+    @GetMapping("/getScheduledVisits")
+    fun getScheduledVisits():List<TaskDetails>
+    {
+        return standardLevyService.getScheduledVisits()
+    }
+
+    @PostMapping("/reportOnSiteVisit")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun reportOnSiteVisit( standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity,
+                           @RequestBody reportOnSiteVisitDTO: ReportOnSiteVisitDTO,
+    ): ServerResponse
+    {
+        val gson = Gson()
+        KotlinLogging.logger { }.info { "INVOICE CALCULATED" + gson.toJson(reportOnSiteVisitDTO) }
+        return ServerResponse(HttpStatus.OK,"Uploaded Report",standardLevyService.reportOnSiteVisit(standardLevyFactoryVisitReportEntity,reportOnSiteVisitDTO))
+        //return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",response)
+    }
+
+    @PostMapping("/site-report-upload")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadFiles(
+        @RequestParam("reportFileID") reportFileID: Long,
+        @RequestParam("docFile") docFile: List<MultipartFile>,
+        model: Model
+    ): CommonDaoServices.MessageSuccessFailDTO {
+
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val siteVisit = standardLevyFactoryVisitReportRepo.findByIdOrNull(reportFileID)?: throw Exception("VISIT ID DOES NOT EXIST")
+
+        docFile.forEach { u ->
+            val upload = SlVisitUploadsEntity()
+            with(upload) {
+                visitId = siteVisit.id
+
+            }
+            standardLevyService.uploadSiteReport(
+                upload,
+                u,
+                "UPLOADS",
+                loggedInUser,
+                "Report"
+            )
+        }
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.message = "Document Uploaded successfully"
+
+        return sm
+    }
+
+    @GetMapping("/getSiteReport")
+    fun getSiteReport():List<TaskDetails>
+    {
+        return standardLevyService.getSiteReport()
+    }
+
+    //View Site Visit Report
+    @GetMapping("/view/siteVisitReport")
+    fun viewPDFile(
+        response: HttpServletResponse,
+        @RequestParam("visitID") visitID: Long
+    ) {
+        val fileUploaded = standardLevyService.findUploadedReportFileBYId(visitID)
+        val fileDoc = commonDaoServices.mapClass(fileUploaded)
+        response.contentType = "application/pdf"
+//                    response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
+        response.outputStream
+            .let { responseOutputStream ->
+                responseOutputStream.write(fileDoc.document?.let { makeAnyNotBeNull(it) } as ByteArray)
+                responseOutputStream.close()
+            }
+
+        KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
+
+    }
+
+    @PostMapping("/decisionOnSiteReport")
+    fun decisionOnSiteReport(@RequestBody siteVisitReportDecision: SiteVisitReportDecision) : List<TaskDetails>
+    {
+        return standardLevyService.decisionOnSiteReport(siteVisitReportDecision)
+    }
+
+    @GetMapping("/getSiteReportLevelTwo")
+    fun getSiteReportLevelTwo():List<TaskDetails>
+    {
+        return standardLevyService.getSiteReportLevelTwo()
+    }
+
+    @PostMapping("/decisionOnSiteReportLevelTwo")
+    fun decisionOnSiteReportLevelTwo(@RequestBody siteVisitReportDecision: SiteVisitReportDecision) : List<TaskDetails>
+    {
+        return standardLevyService.decisionOnSiteReport(siteVisitReportDecision)
+    }
+
+    @PostMapping("/siteVisitReportFeedback")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun siteVisitReportFeedback(@RequestBody standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity,
+                          reportOnSiteVisitDTO: ReportOnSiteVisitDTO,
+    ): ServerResponse
+    {
+        return ServerResponse(HttpStatus.OK,"Uploaded Feedback",standardLevyService.reportOnSiteVisit(standardLevyFactoryVisitReportEntity,reportOnSiteVisitDTO))
+
+    }
+
+    @GetMapping("/getSiteFeedback")
+    fun getSiteFeedback():List<TaskDetails>
+    {
+        return standardLevyService.getSiteFeedback()
+    }
+
 }

@@ -173,6 +173,12 @@ import { NwaPreliminaryDraftComponent } from './apollowebs/standards-development
 import { ComStdPlTaskComponent } from './apollowebs/standards-development/company-standard/com-std-pl-task/com-std-pl-task.component';
 import { ComStdDraftViewComponent } from './apollowebs/standards-development/company-standard/com-std-draft-view/com-std-draft-view.component';
 import { ComStdListComponent } from './apollowebs/standards-development/company-standard/com-std-list/com-std-list.component';
+import { StandardLevySiteVisitComponent } from './apollowebs/standards-levy/standard-levy-site-visit/standard-levy-site-visit.component';
+import { StandardLevySiteVisitApproveOneComponent } from './apollowebs/standards-levy/standard-levy-site-visit-approve-one/standard-levy-site-visit-approve-one.component';
+import { StandardLevySiteVisitApproveTwoComponent } from './apollowebs/standards-levy/standard-levy-site-visit-approve-two/standard-levy-site-visit-approve-two.component';
+import { StandardLevySiteVisitFeedbackComponent } from './apollowebs/standards-levy/standard-levy-site-visit-feedback/standard-levy-site-visit-feedback.component';
+import { StandardLevyUploadSiteVisitFeedbackComponent } from './apollowebs/standards-levy/standard-levy-upload-site-visit-feedback/standard-levy-upload-site-visit-feedback.component';
+import { StandardLevyManufactureDetailsComponent } from './apollowebs/standards-levy/standard-levy-manufacture-details/standard-levy-manufacture-details.component';
 
 
 // import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -353,7 +359,13 @@ import { ComStdListComponent } from './apollowebs/standards-development/company-
         NwaPreliminaryDraftComponent,
         ComStdPlTaskComponent,
         ComStdDraftViewComponent,
-        ComStdListComponent
+        ComStdListComponent,
+        StandardLevySiteVisitComponent,
+        StandardLevySiteVisitApproveOneComponent,
+        StandardLevySiteVisitApproveTwoComponent,
+        StandardLevySiteVisitFeedbackComponent,
+        StandardLevyUploadSiteVisitFeedbackComponent,
+        StandardLevyManufactureDetailsComponent
 
     ]
 

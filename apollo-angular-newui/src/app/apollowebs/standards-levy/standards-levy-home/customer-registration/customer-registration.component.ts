@@ -14,6 +14,8 @@ import {NotificationService} from "../../../../core/store/data/std/notification.
 import {LevyService} from "../../../../core/store/data/levy/levy.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Store} from "@ngrx/store";
+import {selectUserInfo} from "../../../../core/store";
+import swal from "sweetalert2";
 
 declare const $: any;
 @Component({
@@ -22,6 +24,7 @@ declare const $: any;
   styleUrls: ['./customer-registration.component.css']
 })
 export class CustomerRegistrationComponent implements OnInit {
+  roles: string[];
   companySoFar: Partial<CompanyModel> | undefined;
   //company: CompanyModel;
   companyDetails !: CompanyModel[];
@@ -101,6 +104,11 @@ export class CustomerRegistrationComponent implements OnInit {
       addressOfBranch: []
 
     });
+
+    this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+      this.roles = u.roles;
+      return this.roles = u.roles;
+    });
   }
     public getCompanyProfile(): void{
         this.SpinnerService.show();
@@ -148,7 +156,15 @@ export class CustomerRegistrationComponent implements OnInit {
           (response) => {
             console.log(response);
             this.SpinnerService.hide();
-            this.showToasterSuccess(response.httpStatus, `SL1 Details Saved`);
+            this.showToasterSuccess(response.httpStatus, `SL1 Details Saved..Entry number is ${response.body.entryNumber}`);
+            swal.fire({
+              title: 'SL1 Saved..Entry number is'+ response.body.entryNumber,
+              buttonsStyling: false,
+              customClass: {
+                confirmButton: 'btn btn-success form-wizard-next-btn ',
+              },
+              icon: 'success'
+            });
             this.manufacturerInfoForm.reset();
           },
           (error: HttpErrorResponse) => {

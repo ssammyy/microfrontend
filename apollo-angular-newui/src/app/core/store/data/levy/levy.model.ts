@@ -1,3 +1,5 @@
+import {Timestamp} from "rxjs";
+import {KnwSecTaskData} from "../std/std.model";
 
 
 export class Levy {
@@ -28,6 +30,7 @@ export class SLevySL1{
     companyProfileID :number;
     nameOfBranch :String;
     location: String;
+    entryNumber: string;
 }
 export class ManufacturingInfo{
     NameAndBusinessOfProprietors: string;
@@ -102,3 +105,95 @@ export interface CompanyModel {
     manufactureStatus: number;
     entryNumber: number;
 }
+export interface StdLevyScheduleSiteVisitDTO {
+    status: number;
+    assistantManagerApproval: number;
+    managersApproval: number;
+    assistantManager: bigint;
+    principalLevyOfficer:bigint;
+    slManager:bigint;
+    purpose:string;
+    personMet:string;
+    actionTaken:string;
+    remarks:string;
+    officersFeedback:string;
+    manufacturerEntity:bigint;
+    scheduledVisitDate: Timestamp<number>;
+    visitDate: Timestamp<number>;
+    reportDate: Timestamp<number>;
+    slStatus:number;
+    slStartedOn: Timestamp<number>;
+    slCompletedOn: Timestamp<number>;
+    slProcessInstanceId: string;
+    cheifManagerRemarks: string;
+    assistantManagerRemarks: string;
+    createdBy: string;
+
+}
+export interface VisitTask {
+    taskId: string;
+    name: string;
+    taskData: VisitTaskData;
+}
+export interface VisitTaskData {
+    ID: number;
+    manufacturerEntity: number;
+    scheduledVisitDate: string;
+    meetingDate: string;
+    visitDate: string;
+    purpose: string;
+    personMet: string;
+    actionTaken: string;
+    taskId: string;
+    visitID: number;
+
+}
+export interface SiteVisitReport {
+    meetingDate: string;
+    visitDate: Timestamp<number>;
+    purpose: string;
+    personMet: string;
+    actionTaken: string;
+    taskId: string;
+    visitID: number;
+
+}
+export interface ApproveVisitTask {
+    taskId: string;
+    name: string;
+    taskData: ApproveVisitTaskData;
+}
+export interface ApproveVisitTaskData {
+    ID: number;
+    manufacturerEntity: number;
+    scheduledVisitDate: string;
+    meetingDate: string;
+    visitDate: Timestamp<number>;
+    purpose: string;
+    personMet: string;
+    actionTaken: string;
+    taskId: string;
+    visitID: number;
+
+}
+export interface ReportDecisionLevelOne{
+    taskId: string;
+    accentTo: boolean;
+    visitID: bigint;
+    comments: string;
+}
+
+export interface ReportDecisionLevelTwo{
+    taskId: string;
+    accentTo: boolean;
+    visitID: bigint;
+    comments: string;
+}
+
+export interface SiteVisitFeedBack {
+    officersFeedback: string;
+    taskId: string;
+    visitID: number;
+
+}
+

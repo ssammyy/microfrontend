@@ -570,6 +570,24 @@ class CommonDaoServices(
         return dataValue
     }
 
+    fun userRegisteredEntryNumberSuccessfullEmailCompose(
+        companyProfile: CompanyProfileEntity,
+        map: ServiceMapsEntity,
+        token: String?
+    ): RegistrationForEntryNumberEmailDTO {
+        val dataValue = RegistrationForEntryNumberEmailDTO()
+        with(dataValue) {
+            baseUrl = applicationMapProperties.baseUrlValue
+            fullName =
+                concatenateName(findUserByID(companyProfile.userId ?: throw ExpectedDataNotFound("USER ID NOT FOUND")))
+            entryNumber = companyProfile.entryNumber
+            dateSubmitted = getCurrentDate()
+
+        }
+
+        return dataValue
+    }
+
 
     fun sendEmailAfterCompose(
         user: UsersEntity,

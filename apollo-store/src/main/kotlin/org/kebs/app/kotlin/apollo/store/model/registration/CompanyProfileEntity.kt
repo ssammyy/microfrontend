@@ -158,13 +158,13 @@ class CompanyProfileEntity : Serializable {
     @Basic
     var varField8: String? = null
 
-    @Column(name = "VAR_FIELD_9")
+    @Column(name = "ASSIGN_STATUS")
     @Basic
-    var varField9: String? = null
+    var assignStatus: Long? = null
 
-    @Column(name = "VAR_FIELD_10")
+    @Column(name = "ASSIGNED_TO")
     @Basic
-    var varField10: String? = null
+    var assignedTo: Long? = null
 
     @Column(name = "CREATED_BY")
     @Basic
@@ -247,8 +247,8 @@ class CompanyProfileEntity : Serializable {
                 varField6 == that.varField6 &&
                 varField7 == that.varField7 &&
                 varField8 == that.varField8 &&
-                varField9 == that.varField9 &&
-                varField10 == that.varField10 &&
+                assignStatus == that.assignStatus &&
+                assignedTo == that.assignedTo &&
                 createdBy == that.createdBy &&
                 createdOn == that.createdOn &&
                 modifiedBy == that.modifiedBy &&
@@ -296,8 +296,8 @@ class CompanyProfileEntity : Serializable {
             varField6,
             varField7,
             varField8,
-            varField9,
-            varField10,
+            assignStatus,
+            assignedTo,
             createdBy,
             createdOn,
             modifiedBy,

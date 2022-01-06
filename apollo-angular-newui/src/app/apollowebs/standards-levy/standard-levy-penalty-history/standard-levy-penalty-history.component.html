@@ -69,7 +69,7 @@
                                                     <button class="btn btn-sm btn-primary" style="width: 126px">Assign</button>
                                                 </div>
                                                 <div class="col-md-12">
-                                                    <button class="btn btn-sm btn-primary" style="width: 126px">Schedule</button>
+                                                    <button (click)="onOpenModal(task,'schedule')" style="width: 126px;" class="btn btn-primary btn-sm">Schedule</button>
                                                 </div>
                                                 <div class="col-md-12">
                                                     <button class="btn btn-sm btn-primary" style="width: 126px">Add Remarks</button>
@@ -83,6 +83,38 @@
 
                                             </div>
 
+                                        </div>
+                                    </div>
+
+                                    <div class="modal fade" id="schedule" tabindex="-1" role="dialog" aria-labelledby="approveRJExampleModalLabel" aria-hidden="true">a
+                                        <div class="modal-dialog modal-lg" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="approveRJExampleModalLabel">Schedule Visit</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <form (ngSubmit)="scheduleVisit()" [formGroup]="scheduleVisitFormGroup" class="form">
+                                                    <div class="modal-body">
+                                                        <div class="row col-12">
+                                                            <div class="form-group col-12">
+                                                                <label>Date of Visit <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                <input [class.is-invalid]="scheduleVisitForm.scheduledVisitDate.invalid && scheduleVisitForm.scheduledVisitDate.touched"
+                                                                       class="form-control"  formControlName="scheduledVisitDate" name="scheduledVisitDate" type="date">
+                                                            </div>
+                                                        </div>
+                                                        <input type="hidden" ngModel="961" formControlName="manufacturerEntity" name="manufacturerEntity" value="961" >
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+                                                        <button *ngIf="scheduleVisitFormGroup.valid" [disabled]="!scheduleVisitFormGroup.valid" class="btn btn-sm btn-primary float-right" type="submit">Save</button>
+                                                        <button *ngIf="!scheduleVisitFormGroup.valid" class="btn btn-sm btn-primary float-right"
+                                                                (click)="showNotification('top','right')">Save
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
