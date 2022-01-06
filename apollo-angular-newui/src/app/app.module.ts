@@ -149,6 +149,8 @@ import {AllpermitsComponent} from "./apollowebs/quality-assurance/allpermits/all
 import { EpraListComponent } from './apollowebs/market-surveillance/fuel/epra-list/epra-list.component';
 import { EpraBatchListComponent } from './apollowebs/market-surveillance/fuel/epra-batch-list/epra-batch-list.component';
 import { EpraBatchNewComponent } from './apollowebs/market-surveillance/fuel/epra-batch-list/epra-batch-new/epra-batch-new.component';
+import { ViewFuelSheduledDetailsComponent } from './apollowebs/market-surveillance/fuel/view-fuel-sheduled-details/view-fuel-sheduled-details.component';
+import { MatMultilineTabMsDirective } from './apollowebs/market-surveillance/mat-multiline-tab-ms.directive';
 
 
 // import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -302,7 +304,9 @@ import { EpraBatchNewComponent } from './apollowebs/market-surveillance/fuel/epr
         ManagernotificationsComponent,
         EpraListComponent,
         EpraBatchListComponent,
-        EpraBatchNewComponent
+        EpraBatchNewComponent,
+        ViewFuelSheduledDetailsComponent,
+        MatMultilineTabMsDirective
 
     ]
 

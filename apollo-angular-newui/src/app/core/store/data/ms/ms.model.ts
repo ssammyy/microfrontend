@@ -50,20 +50,51 @@ export class FuelInspectionDto {
     physicalLocation : string;
     inspectionDateFrom : Date;
     inspectionDateTo : Date;
+    processStage: string;
+    closedStatus: boolean;
     batchDetails: FuelBatchDetailsDto;
     officersList : MsUsersDto[];
     officersAssigned : MsUsersDto;
-    rapidTestStatus : Boolean;
+    rapidTestStatus : boolean;
     rapidTestRemarks : string;
     sampleCollected : SampleCollectionDto;
     sampleSubmitted : SampleSubmissionDto;
-    sampleLabResults : LabResultsDto;
+    sampleLabResults : MSSSFLabResultsDto;
 }
 
-export class LabResultsDto {
-    parametersListTested : LabResultsParamDto[];
-    result : string;
-    method : string;
+export class MSSSFLabResultsDto {
+    ssfResultsList: MSSSFComplianceStatusDetailsDto;
+    savedPDFFiles:  MSSSFPDFListDetailsDto[];
+    limsPDFFiles: LIMSFilesFoundDto[];
+    parametersListTested: LabResultsParamDto[];
+}
+
+export class MSSSFComplianceStatusDetailsDto {
+    sffId: number;
+    bsNumber: string;
+    complianceRemarks: string;
+    complianceStatus: boolean;
+}
+
+export class MSSSFPDFListDetailsDto {
+    pdfSavedId: number;
+    pdfName: string;
+    sffId: number;
+    complianceRemarks: string;
+    complianceStatus: boolean;
+}
+
+export class LIMSFilesFoundDto {
+    fileSavedStatus: boolean;
+    fileName: string;
+}
+
+export class PDFSaveComplianceStatusDto {
+    ssfID: number;
+    bsNumber: string;
+    PDFFileName: string;
+    complianceStatus: boolean;
+    complianceRemarks: string;
 }
 
 export class LabResultsParamDto {
@@ -100,6 +131,12 @@ export class SampleSubmissionDto {
 export class SampleSubmissionItemsDto {
     parameters : string;
     laboratoryName : string;
+}
+
+export class BSNumberSaveDto {
+    bsNumber: string;
+    submittedDate: Date;
+    remarks: string;
 }
 
 export class SampleCollectionDto {

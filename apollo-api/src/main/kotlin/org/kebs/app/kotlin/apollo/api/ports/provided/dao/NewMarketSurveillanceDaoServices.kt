@@ -1,7 +1,9 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 import mu.KotlinLogging
+import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.common.dto.ms.*
+import org.kebs.app.kotlin.apollo.common.dto.qa.LimsFilesFoundDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -9,10 +11,13 @@ import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.ms.*
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleLabTestResultsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmissionEntity
+import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmittedPdfListDetailsEntity
+import org.kebs.app.kotlin.apollo.store.model.qa.QaUploadsEntity
 import org.kebs.app.kotlin.apollo.store.repo.IServiceRequestsRepository
 import org.kebs.app.kotlin.apollo.store.repo.ms.*
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleLabTestResultsRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleSubmissionRepository
+import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleSubmittedPdfListRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
@@ -21,6 +26,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
+import java.io.File
 import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
@@ -30,6 +36,8 @@ import java.time.Instant
 class NewMarketSurveillanceDaoServices(
     private val applicationMapProperties: ApplicationMapProperties,
     private val fuelBatchRepo: IFuelBatchRepository,
+    private val limsServices: LimsServices,
+    private val sampleSubmissionSavedPdfListRepo: IQaSampleSubmittedPdfListRepository,
     private val workPlanYearsCodesRepo: IWorkplanYearsCodesRepository,
     private val sampleCollectRepo: ISampleCollectionRepository,
     private val sampleLabTestResultsRepo: IQaSampleLabTestResultsRepository,
@@ -310,7 +318,7 @@ class NewMarketSurveillanceDaoServices(
     fun postFuelInspectionDetailsSampleSubmissionBSNumber(
         referenceNo: String,
         batchReferenceNo: String,
-        bsNumberProvided: String
+        body: BSNumberSaveDto
     ): FuelInspectionDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
@@ -319,7 +327,9 @@ class NewMarketSurveillanceDaoServices(
         val sampleCollected = findSampleCollectedDetailByFuelInspectionID(fileInspectionDetail.id)
         val sampleSubmission = findSampleSubmissionDetailBySampleCollectedID(sampleCollected?.id?: throw ExpectedDataNotFound("MISSING SAMPLE COLLECTED FOR FUEL INSPECTION REF NO $referenceNo"))?: throw ExpectedDataNotFound("MISSING SAMPLE SUBMITTED FOR FUEL INSPECTION WITH REF NO $referenceNo")
         with(sampleSubmission){
-            bsNumber = bsNumberProvided
+            bsNumber = body.bsNumber
+            sampleBsNumberDate = body.submittedDate
+            sampleBsNumberRemarks = body.remarks
             labResultsStatus = map.inactiveStatus
         }
         val updatedSampleSubmission = fuelSampleSubmissionUpDate(sampleSubmission,map, loggedInUser)
@@ -344,6 +354,32 @@ class NewMarketSurveillanceDaoServices(
             else -> {
                 throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(updatedSampleSubmission.first))
             }
+        }
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun postFuelInspectionDetailsLabPDFSelected(
+        referenceNo: String,
+        batchReferenceNo: String,
+        body: PDFSaveComplianceStatusDto
+    ): FuelInspectionDto {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val fileInspectionDetail = findFuelInspectionDetailByReferenceNumber(referenceNo)
+        val batchDetails = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
+        val fileContent = limsServices.mainFunctionLimsGetPDF(body.bsNumber, body.PDFFileName)
+        val savedPDFLabResultFile = fuelInspectionSaveLIMSPDFSelected(fileContent,body.ssfID,map,loggedInUser)
+
+        if (savedPDFLabResultFile.first.status == map.successStatus) {
+//            with(fileInspectionDetail){
+//                userTaskId = applicationMapProperties.mapMSUserTaskNameLAB
+//            }
+//            val fileSaved = updateFuelInspectionDetails(fileInspectionDetail, map, loggedInUser)
+            return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
+        }
+        else {
+            throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(savedPDFLabResultFile.first))
         }
     }
 
@@ -401,7 +437,11 @@ class NewMarketSurveillanceDaoServices(
         val sampleSubmittedParamList = sampleSubmitted?.id?.let { findAllSampleSubmissionParametersBasedOnSampleSubmissionID(it) }
         val sampleSubmittedDtoValues = sampleSubmittedParamList?.let { mapSampleSubmissionParamListDto(it) }?.let { mapSampleSubmissionDto(sampleSubmitted, it) }
         val labResultsParameters = sampleSubmitted?.bsNumber?.let { findSampleLabTestResultsRepoBYBSNumber(it) }
-        val labResultsDto = labResultsParameters?.let { mapLabResultsParamListDto(it) }?.let { mapLabResultsDto(it) }
+        val ssfDetailsLab = findSampleSubmittedBYFuelInspectionId(fileInspectionDetail.id)
+        val savedPDFFilesLims = ssfDetailsLab?.id?.let { findSampleSubmittedListPdfBYSSFid(it)?.let { mapLabPDFFilesListDto(it) } }
+        val ssfResultsListCompliance = ssfDetailsLab?.let { mapSSFComplianceStatusDetailsDto(it) }
+        val limsPDFFiles = ssfDetailsLab?.bsNumber?.let { mapLIMSSavedFilesDto(it,savedPDFFilesLims)}
+        val labResultsDto = mapLabResultsDetailsDto(ssfResultsListCompliance,savedPDFFilesLims,limsPDFFiles,labResultsParameters?.let { mapLabResultsParamListDto(it) })
         return mapFuelInspectionDto(
             fileInspectionDetail,
             batchDetailsDto,
@@ -801,7 +841,6 @@ class NewMarketSurveillanceDaoServices(
                 createdOn = commonDaoServices.getTimestamp()
             }
 
-
             saveSSFBSNumber = sampleSubmissionLabRepo.save(saveSSFBSNumber)
 
             sr.payload = "${commonDaoServices.createJsonBodyFromEntity(saveSSFBSNumber)} "
@@ -866,6 +905,67 @@ class NewMarketSurveillanceDaoServices(
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
         return Pair(sr, fuelSampleSubmission)
     }
+
+    fun fuelInspectionSaveLIMSPDFSelected(
+        fileContent: File,
+        ssfID: Long,
+        map: ServiceMapsEntity,
+        user: UsersEntity
+    ): Pair<ServiceRequestsEntity, QaSampleSubmissionEntity> {
+
+        var sr = commonDaoServices.createServiceRequest(map)
+        val ssfDetails = findSampleSubmittedBYID(ssfID)
+        try {
+
+            var upload = QaUploadsEntity()
+            with(upload) {
+                permitId = ssfDetails.permitId
+                ssfUploads = 1
+                ordinaryStatus = 0
+                versionNumber = 1
+            }
+//            upload = uploadQaFile(
+//                upload,
+//                commonDaoServices.convertFileToMultipartFile(fileContent),
+//                "LAB RESULTS PDF",
+//                ssfDetails.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER"),
+//                user
+//            )
+
+            val ssfPdfDetails = QaSampleSubmittedPdfListDetailsEntity()
+            with(ssfPdfDetails) {
+                sffId = ssfDetails.id
+                pdfName = fileContent.name
+                pdfSavedId = upload.id
+                createdBy = commonDaoServices.concatenateName(user)
+                createdOn = commonDaoServices.getTimestamp()
+            }
+            sampleSubmissionSavedPdfListRepo.save(ssfPdfDetails)
+
+            sr.payload = "SSF Updated [updatePermit= ${ssfDetails.id}]"
+            sr.names = "LIMS LAB RESULTS PDF FILE SAVED"
+            sr.varField1 = "${ssfDetails.id}"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = map.successStatus
+            sr = serviceRequestsRepo.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepo.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return Pair(sr, ssfDetails)
+    }
+
 
     fun fuelCreateSchedule(
         body: FuelEntityDto,
@@ -1005,7 +1105,7 @@ class NewMarketSurveillanceDaoServices(
 
     fun mapFuelInspectionListDto(fuelInspectionList: Page<MsFuelInspectionEntity>, batchDetails: FuelBatchDetailsDto): FuelInspectionScheduleListDetailsDto {
         val fuelInspectionScheduledList = mutableListOf<FuelInspectionDto>()
-        fuelInspectionList.map {fuelInspectionScheduledList.add(FuelInspectionDto(it.id, it.referenceNumber, it.company, it.petroleumProduct, it.physicalLocation, it.inspectionDateFrom, it.inspectionDateTo))}
+        fuelInspectionList.map {fuelInspectionScheduledList.add(FuelInspectionDto(it.id, it.referenceNumber, it.company, it.petroleumProduct, it.physicalLocation, it.inspectionDateFrom, it.inspectionDateTo, it.processStage, it.status==1))}
 
         return FuelInspectionScheduleListDetailsDto(
             fuelInspectionScheduledList,
@@ -1021,7 +1121,7 @@ class NewMarketSurveillanceDaoServices(
         rapidTestResults: FuelEntityRapidTestDto?,
         sampleCollected: SampleCollectionDto?,
         sampleSubmitted: SampleSubmissionDto?,
-        sampleLabResults: LabResultsDto?
+        sampleLabResults: MSSSFLabResultsDto?
     ): FuelInspectionDto {
         return FuelInspectionDto(
             fuelInspectionList.id,
@@ -1031,6 +1131,8 @@ class NewMarketSurveillanceDaoServices(
             fuelInspectionList.physicalLocation,
             fuelInspectionList.inspectionDateFrom,
             fuelInspectionList.inspectionDateTo,
+            fuelInspectionList.processStage,
+            fuelInspectionList.status==1,
             batchDetails,
             officerList?.let { mapOfficerListDto(it) },
             officersAssigned?.let { mapOfficerDto (it) },
@@ -1064,6 +1166,19 @@ class NewMarketSurveillanceDaoServices(
                 return it
             }
             ?: throw ExpectedDataNotFound("No Files found")
+    }
+
+    fun findSampleSubmittedListPdfBYSSFid(ssfID: Long): List<QaSampleSubmittedPdfListDetailsEntity>? {
+        return sampleSubmissionSavedPdfListRepo.findBySffId(ssfID)
+    }
+
+    fun findSampleSubmittedBYFuelInspectionId(fuelInspectionId: Long): QaSampleSubmissionEntity? {
+        return sampleSubmissionLabRepo.findByFuelInspectionId(fuelInspectionId)
+    }
+    fun findSampleSubmittedBYID(ssfID: Long): QaSampleSubmissionEntity {
+        sampleSubmissionLabRepo.findByIdOrNull(ssfID)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No sample submission found with the following ID number=$ssfID")
     }
 
     fun findFuelBatchDetailByYearNameIDCountyRegion(yearNameId: Long, countyId: Long, regionId: Long): MsFuelBatchInspectionEntity? {
@@ -1160,6 +1275,16 @@ class NewMarketSurveillanceDaoServices(
 
     }
 
+    fun mapSSFComplianceStatusDetailsDto(ssf: QaSampleSubmissionEntity): MSSSFComplianceStatusDetailsDto {
+        return MSSSFComplianceStatusDetailsDto(
+            ssf.id,
+            ssf.bsNumber,
+            ssf.complianceRemarks,
+            ssf.resultsAnalysis == 1
+        )
+
+    }
+
     fun mapSampleCollectedParamListDto(data: List<MsCollectionParametersEntity>): List<SampleCollectionItemsDto> {
         return data.map {
             SampleCollectionItemsDto(
@@ -1191,9 +1316,68 @@ class NewMarketSurveillanceDaoServices(
         }
     }
 
+    fun mapLIMSSavedFilesDto(bsNumber: String, savedPDFFiles:List<MSSSFPDFListDetailsDto>? ): List<LIMSFilesFoundDto>? {
+        val result = mutableListOf<LIMSFilesFoundDto>()
+        limsServices.checkPDFFiles(bsNumber)
+            ?.forEach { fpdf ->
+                if (savedPDFFiles?.isNotEmpty() == true) {
+                    savedPDFFiles.firstOrNull { it.pdfName == fpdf }
+                        ?.let {
+                            val limsDto = LIMSFilesFoundDto(
+                                true,
+                                fpdf
+                            )
+                            result.add(limsDto)
+                        }
+                        ?: run {
+                            val limsDto = LIMSFilesFoundDto(
+                                false,
+                                fpdf
+                            )
+                            result.add(limsDto)
+                        }
+                } else {
+                    val limsDto = LIMSFilesFoundDto(
+                        false,
+                        fpdf
+                    )
+                    result.add(limsDto)
+                }
+            }
+        return  result.distinct()
+    }
+
+    fun mapLabPDFFilesListDto(data: List<QaSampleSubmittedPdfListDetailsEntity>): List<MSSSFPDFListDetailsDto> {
+        return data.map { ssfPdfRemarks ->
+            MSSSFPDFListDetailsDto(
+                ssfPdfRemarks.pdfSavedId,
+                ssfPdfRemarks.pdfName,
+                ssfPdfRemarks.sffId,
+                ssfPdfRemarks.complianceRemarks,
+                ssfPdfRemarks.complianceStatus == 1,
+            )
+
+        }
+    }
+
     fun mapLabResultsDto(data: List<LabResultsParamDto>): LabResultsDto {
         return LabResultsDto(
             data,
+            )
+
+    }
+
+    fun mapLabResultsDetailsDto(
+        ssfResultsList: MSSSFComplianceStatusDetailsDto?,
+        savedPDFFiles:  List<MSSSFPDFListDetailsDto>?,
+        limsPDFFiles: List<LIMSFilesFoundDto>?,
+        parametersListTested: List<LabResultsParamDto>?
+    ): MSSSFLabResultsDto {
+        return MSSSFLabResultsDto(
+            ssfResultsList,
+            savedPDFFiles,
+            limsPDFFiles,
+            parametersListTested,
             )
 
     }

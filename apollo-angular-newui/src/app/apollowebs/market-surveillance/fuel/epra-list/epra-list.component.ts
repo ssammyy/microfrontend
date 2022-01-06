@@ -93,28 +93,52 @@ export class EpraListComponent implements OnInit {
         type: 'string',
         filter: false
       },
-      region: {
-        title: 'REGION',
+      company: {
+        title: 'COMPANY',
         type: 'string',
         filter: false
       },
-      county: {
-        title: 'COUNTY',
+      petroleumProduct: {
+        title: 'PETROLEUM PRODUCT',
         type: 'string',
         filter: false
       },
-      town: {
-        title: 'TOWN',
+      physicalLocation: {
+        title: 'PHYSICAL LOCATION',
         type: 'string',
         filter: false
       },
-      batchFileYear: {
-        title: 'BATCH FILE YEAR',
+      inspectionDateFrom: {
+        title: 'INSPECTION DATE FROM',
+        type: 'data',
+        valuePrepareFunction: (date) => {
+          if (date) {
+            // return new DatePipe('en-GB').transform(date, 'dd/MM/yyyy hh:mm');
+            return date;
+          }
+          return "";
+        },
+        filter: false
+      },
+      inspectionDateTo: {
+        title: 'INSPECTION DATE TO',
+        type: 'data',
+        valuePrepareFunction: (date) => {
+          if (date) {
+            // return new DatePipe('en-GB').transform(date, 'dd/MM/yyyy hh:mm');
+            return date;
+          }
+          return "";
+        },
+        filter: false
+      },
+      processStage: {
+        title: 'PROCESS STAGE',
         type: 'string',
         filter: false
       },
-      batchClosed: {
-        title: 'BATCH CLOSED',
+      closedStatus: {
+        title: 'CLOSED STATUS',
         type: 'boolean',
         filter: false
       },
@@ -171,7 +195,6 @@ export class EpraListComponent implements OnInit {
     },{ validator: [
       //Default error with this validator:  {fromToDate: true}
       CustomeDateValidators.fromToDate('inspectionDateFrom', 'inspectionDateTo')
-
       // For custome error name like: {customeErrorName: true}, pass third optional parameter with custome name
       // CustomeDateValidators.fromToDate('fromDate', 'toDate', 'customeErrorName')
     ]});
@@ -253,9 +276,9 @@ export class EpraListComponent implements OnInit {
     }
   }
 
-  viewRecord(data: FuelBatchDetailsDto) {
-    console.log("TEST 101"+data.id)
-    this.router.navigate([`/epra`,data.referenceNumber]);
+  viewRecord(data: FuelInspectionDto) {
+    console.log("TEST 101 REF NO: "+data.referenceNumber)
+    this.router.navigate([`/epra/fuelInspection/details/`,data.referenceNumber]);
   }
 
   get formNewScheduleForm(): any {

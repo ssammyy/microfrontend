@@ -20,7 +20,6 @@ import org.kebs.app.kotlin.apollo.store.model.ms.ComplaintLocationEntity
 import org.kebs.app.kotlin.apollo.store.model.ms.MsTypesEntity
 import org.kebs.app.kotlin.apollo.store.repo.IDivisionsRepository
 import org.kebs.app.kotlin.apollo.store.repo.IWorkPlanCreatedRepository
-import org.kebs.app.kotlin.apollo.store.repo.IWorkplanYearsCodesRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IConsignmentItemsRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IDestinationInspectionFeeRepository

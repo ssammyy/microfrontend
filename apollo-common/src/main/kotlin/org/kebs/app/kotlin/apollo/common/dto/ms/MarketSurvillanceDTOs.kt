@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.common.dto.ms
 
-import sun.jvm.hotspot.debugger.Page
+import org.kebs.app.kotlin.apollo.common.dto.qa.SSFComplianceStatusDetailsDto
+import org.kebs.app.kotlin.apollo.common.dto.qa.SSFPDFListDetailsDto
 import java.math.BigDecimal
 import java.sql.Date
 import javax.validation.constraints.NotNull
@@ -39,6 +40,8 @@ data class FuelInspectionDto(
         var physicalLocation: String? = null,
         var inspectionDateFrom: Date? = null,
         var inspectionDateTo: Date? = null,
+        var processStage: String? = null,
+        var closedStatus: Boolean? = null,
         var batchDetails: FuelBatchDetailsDto?= null,
         var officersList: List<MsUsersDto>? = null,
         var officersAssigned: MsUsersDto? = null,
@@ -46,7 +49,7 @@ data class FuelInspectionDto(
         var rapidTestRemarks: String? = null,
         var sampleCollected: SampleCollectionDto? = null,
         var sampleSubmitted: SampleSubmissionDto? = null,
-        var sampleLabResults: LabResultsDto? = null,
+        var sampleLabResults: MSSSFLabResultsDto? = null,
 )
 
 data class FuelEntityDto(
@@ -131,8 +134,18 @@ data class SampleSubmissionItemsDto(
         var laboratoryName : String? = null,
 )
 
+data class BSNumberSaveDto(
+        @NotNull(message = "Required field")
+        var bsNumber: String,
+        @NotNull(message = "Required field")
+        var submittedDate: Date,
+
+        var remarks: String? = null,
+)
+
 data class LabResultsDto(
         var parametersListTested: List<LabResultsParamDto>? = null,
+        var savedPDFFiles: List<LabResultsParamDto>? = null,
         var result : String? = null,
         var method : String? = null,
 )
@@ -143,6 +156,45 @@ data class LabResultsParamDto(
         var method : String? = null,
 )
 
+data class MSSSFLabResultsDto(
+        var ssfResultsList: MSSSFComplianceStatusDetailsDto? = null,
+        var savedPDFFiles:  List<MSSSFPDFListDetailsDto>? = null,
+        var limsPDFFiles:  List<LIMSFilesFoundDto>? = null,
+        var parametersListTested: List<LabResultsParamDto>? = null,
+)
+
+data class MSSSFComplianceStatusDetailsDto(
+        var sffId: Long? = null,
+        var bsNumber: String? = null,
+        var complianceRemarks: String? = null,
+        var complianceStatus: Boolean? = null,
+)
+
+data class LIMSFilesFoundDto(
+        var fileSavedStatus: Boolean? = null,
+        var fileName: String? = null,
+)
+
+data class PDFSaveComplianceStatusDto(
+        @NotNull(message = "Required field")
+        var ssfID: Long,
+        @NotNull(message = "Required field")
+        var bsNumber: String,
+        @NotNull(message = "Required field")
+        var PDFFileName: String,
+        @NotNull(message = "Required field")
+        var complianceStatus: Boolean,
+        @NotNull(message = "Required field")
+        var complianceRemarks: String,
+)
+
+data class MSSSFPDFListDetailsDto(
+        var pdfSavedId: Long? = null,
+        var pdfName: String? = null,
+        var sffId: Long? = null,
+        var complianceRemarks: String? = null,
+        var complianceStatus: Boolean? = null,
+)
 
 
 

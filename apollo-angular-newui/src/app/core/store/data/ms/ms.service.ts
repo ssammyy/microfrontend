@@ -5,13 +5,21 @@ import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.servi
 import {catchError, map} from "rxjs/operators";
 import {
     BatchFileFuelSaveDto,
+    BSNumberSaveDto,
     FuelBatchDetailsDto,
     FuelEntityAssignOfficerDto,
     FuelEntityDto,
     FuelEntityRapidTestDto,
-    FuelInspectionDto, FuelInspectionScheduleListDetailsDto, LabResultsDto, LabResultsParamDto, MsUsersDto,
-    SampleCollectionDto, SampleCollectionItemsDto,
-    SampleSubmissionDto, SampleSubmissionItemsDto
+    FuelInspectionDto,
+    FuelInspectionScheduleListDetailsDto,
+    LabResultsParamDto,
+    LIMSFilesFoundDto, MSSSFComplianceStatusDetailsDto, MSSSFLabResultsDto,
+    MSSSFPDFListDetailsDto,
+    MsUsersDto, PDFSaveComplianceStatusDto,
+    SampleCollectionDto,
+    SampleCollectionItemsDto,
+    SampleSubmissionDto,
+    SampleSubmissionItemsDto
 } from "./ms.model";
 import swal from "sweetalert2";
 import {AbstractControl, ValidatorFn} from "@angular/forms";
@@ -41,7 +49,7 @@ export class MsService {
         return test
     }
 
-   public fuelInspectionDetailsListExamples(): FuelInspectionDto{
+   public fuelInspectionDetailsExamples(): FuelInspectionDto{
        let currentDate = new Date();
        let test101BatchDetails = new FuelBatchDetailsDto();
        test101BatchDetails.id = 123;
@@ -127,10 +135,34 @@ export class MsService {
        let testLabResultsParamDto : LabResultsParamDto[] = [];
        testLabResultsParamDto.push(test101LabResultsParamDto)
 
-       let test101LabResultsDto = new LabResultsDto();
+       let limsFilesFoundDto = new LIMSFilesFoundDto();
+       limsFilesFoundDto.fileSavedStatus = true;
+       limsFilesFoundDto.fileName = 'labParam';
+
+       let limsFilesFoundDtoList : LIMSFilesFoundDto[] = [];
+       limsFilesFoundDtoList.push(limsFilesFoundDto)
+
+       let msSSFPDFListDetailsDto = new MSSSFPDFListDetailsDto();
+       msSSFPDFListDetailsDto.pdfSavedId = 5265;
+       msSSFPDFListDetailsDto.pdfName = 'steat';
+       msSSFPDFListDetailsDto.sffId = 3434;
+       msSSFPDFListDetailsDto.complianceRemarks = 'steat';
+       msSSFPDFListDetailsDto.complianceStatus = true;
+
+       let msSSFPDFListDetailsDtoList : MSSSFPDFListDetailsDto[] = [];
+       msSSFPDFListDetailsDtoList.push(msSSFPDFListDetailsDto)
+
+       let msssfComplianceStatusDetailsDto = new MSSSFComplianceStatusDetailsDto();
+        msssfComplianceStatusDetailsDto.sffId = 5265;
+       msssfComplianceStatusDetailsDto.bsNumber = 'steat';
+       msssfComplianceStatusDetailsDto.complianceRemarks = '3434';
+       msssfComplianceStatusDetailsDto.complianceStatus = true;
+
+       let test101LabResultsDto = new MSSSFLabResultsDto();
+       test101LabResultsDto.ssfResultsList = msssfComplianceStatusDetailsDto;
+       test101LabResultsDto.savedPDFFiles = msSSFPDFListDetailsDtoList;
+       test101LabResultsDto.limsPDFFiles = limsFilesFoundDtoList;
        test101LabResultsDto.parametersListTested = testLabResultsParamDto;
-       test101LabResultsDto.result = 'testLab';
-       test101LabResultsDto.method = 'testLab';
 
 
 
@@ -143,6 +175,8 @@ export class MsService {
        test101.physicalLocation = 'testDetails';
        test101.inspectionDateFrom = currentDate;
        test101.inspectionDateTo = currentDate;
+       test101.processStage = 'test Stage';
+       test101.closedStatus = false;
        test101.batchDetails = test101BatchDetails;
        test101.officersList = testUserList;
        test101.officersAssigned = test101MSUserDetails;
@@ -176,6 +210,8 @@ export class MsService {
        test101.inspectionDateFrom = currentDate;
        test101.inspectionDateTo = currentDate;
        test101.batchDetails = test101BatchDetails;
+       test101.processStage = 'test Stage';
+       test101.closedStatus = false;
 
         let test : FuelInspectionDto[] = [];
         test.push(test101)
@@ -215,7 +251,7 @@ export class MsService {
         })
     }
 
-    showError(message: string, fn?: Function) {
+   public showError(message: string, fn?: Function) {
         swal.fire({
             title: message,
             buttonsStyling: false,
@@ -231,6 +267,7 @@ export class MsService {
     }
 
     public loadMSFuelBatchList(page: string,records: string): Observable<FuelBatchDetailsDto[]> {
+        // console.log(data);
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.ALL_BATCH_LIST);
         const params = new HttpParams()
             .set('page', page)
@@ -247,6 +284,7 @@ export class MsService {
     }
 
     public addNewMSFuelBatch(data: BatchFileFuelSaveDto): Observable<FuelInspectionScheduleListDetailsDto> {
+        console.log(data);
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.ADD_BATCH);
         return this.http.post<FuelInspectionScheduleListDetailsDto>(url, data).pipe(
             map(function (response: FuelInspectionScheduleListDetailsDto) {
@@ -260,6 +298,7 @@ export class MsService {
     }
 
     public closeMSFuelBatch(referenceNo: string): Observable<FuelBatchDetailsDto[]> {
+        // console.log(data);
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.CLOSE_BATCH);
         const params = new HttpParams()
             .set('referenceNo', referenceNo);
@@ -275,6 +314,7 @@ export class MsService {
     }
 
     public msFuelInspectionList(batchReferenceNo: string,page: string,records: string): Observable<FuelInspectionScheduleListDetailsDto> {
+        // console.log(data);
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_SCHEDULED_LIST);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
@@ -292,6 +332,7 @@ export class MsService {
     }
 
     public msFuelInspectionAddSchedule(batchReferenceNo: string, data: FuelEntityDto): Observable<FuelInspectionScheduleListDetailsDto> {
+        console.log(data);
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_SCHEDULED_LIST);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo);
@@ -307,6 +348,7 @@ export class MsService {
     }
 
     public msFuelInspectionScheduledDetails(batchReferenceNo: string, referenceNo: string): Observable<FuelInspectionDto> {
+        // console.log(data);
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_SCHEDULED_LIST);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
@@ -323,6 +365,7 @@ export class MsService {
     }
 
     public msFuelInspectionScheduledAssignOfficer(batchReferenceNo: string, referenceNo: string, data: FuelEntityAssignOfficerDto): Observable<FuelInspectionDto> {
+        console.log(data);
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_SCHEDULED_DETAILS_ASSIGN_OFFICER);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
@@ -339,6 +382,7 @@ export class MsService {
     }
 
     public msFuelInspectionScheduledRapidTest(batchReferenceNo: string, referenceNo: string, data: FuelEntityRapidTestDto): Observable<FuelInspectionDto> {
+        console.log(data);
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_SCHEDULED_DETAILS_RAPID_TEST);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
@@ -355,6 +399,7 @@ export class MsService {
     }
 
     public msFuelInspectionScheduledAddSampleCollection(batchReferenceNo: string, referenceNo: string, data: SampleCollectionDto): Observable<FuelInspectionDto> {
+        console.log(data);
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_SCHEDULED_DETAILS_SAMPLE_COLLECT);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
@@ -371,6 +416,7 @@ export class MsService {
     }
 
     public msFuelInspectionScheduledAddSampleSubmission(batchReferenceNo: string, referenceNo: string, data: SampleSubmissionDto): Observable<FuelInspectionDto> {
+        console.log(data);
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_SCHEDULED_DETAILS_SAMPLE_SUBMISSION);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
@@ -386,13 +432,30 @@ export class MsService {
         );
     }
 
-    public msFuelInspectionScheduledAddSampleSubmissionBSNumber(batchReferenceNo: string, referenceNo: string, bsNumber: string): Observable<FuelInspectionDto> {
+    public msFuelInspectionScheduledAddSampleSubmissionBSNumber(batchReferenceNo: string, referenceNo: string, data: BSNumberSaveDto): Observable<FuelInspectionDto> {
+        console.log(data);
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_SCHEDULED_DETAILS_SAMPLE_SUBMISSION_BS_NUMBER);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
-            .set('referenceNo', referenceNo)
-            .set('bsNumber', bsNumber);
-        return this.http.post<FuelInspectionDto>(url, null, {params}).pipe(
+            .set('referenceNo', referenceNo);
+        return this.http.put<FuelInspectionDto>(url, data, {params}).pipe(
+            map(function (response: FuelInspectionDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public msFuelInspectionScheduledSavePDFLIMS(batchReferenceNo: string, referenceNo: string, data: PDFSaveComplianceStatusDto): Observable<FuelInspectionDto> {
+        console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_SCHEDULED_DETAILS_LAB_RESULTS_SAVE_PDF);
+        const params = new HttpParams()
+            .set('batchReferenceNo', batchReferenceNo)
+            .set('referenceNo', referenceNo);
+        return this.http.put<FuelInspectionDto>(url, data, {params}).pipe(
             map(function (response: FuelInspectionDto) {
                 return response;
             }),

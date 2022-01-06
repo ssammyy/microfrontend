@@ -21,11 +21,69 @@
                                     (click)="goBack()"><i class="fa fa-arrow-left"></i> Back
                             </button>
                         </h4>
-                        <h4 class="card-title">#REGION NAME : {{this.loadedData.fuelBatchDetailsDto.region}}</h4>
-                        <h4 class="card-title">#COUNTY NAME : {{this.loadedData.fuelBatchDetailsDto.county}}</h4>
-                        <h4 class="card-title">#TOWN NAME : {{this.loadedData.fuelBatchDetailsDto.town}}</h4>
-                        <h4 class="card-title">#YEAR NAME : {{this.loadedData.fuelBatchDetailsDto.batchFileYear}}</h4>
-                        <h4 class="card-title">#STATUS : {{this.loadedData.fuelBatchDetailsDto.batchClosed}}</h4>
+
+<!--                        <h4 class="card-title">#REGION NAME : {{this.loadedData.fuelBatchDetailsDto.region}}</h4>-->
+<!--                        <h4 class="card-title">#COUNTY NAME : {{this.loadedData.fuelBatchDetailsDto.county}}</h4>-->
+<!--                        <h4 class="card-title">#TOWN NAME : {{this.loadedData.fuelBatchDetailsDto.town}}</h4>-->
+<!--                        <h4 class="card-title">#YEAR NAME : {{this.loadedData.fuelBatchDetailsDto.batchFileYear}}</h4>-->
+<!--                        <h4 class="card-title">#STATUS : {{this.loadedData.fuelBatchDetailsDto.batchClosed}}</h4>-->
+                    </div>
+                    <div class="card-body">
+<!--                        <div class="row">-->
+                            <div class="col-md-2 m-0 p-0">
+                                <div widget class=" border-0 box-shadow">
+                        <div class="text-center pt-2" style="color: green;">
+                            FUEL BATCH INFORMATION
+                        </div>
+                        <div class="card-body p-0 m-0 widget-body">
+                            <table class="table-responsive">
+                                <th>
+                                    Batch Reference No #
+                                </th>
+                                <tr>
+                                    <td>{{ this.loadedData.fuelBatchDetailsDto.referenceNumber ? this.loadedData.fuelBatchDetailsDto.referenceNumber : 'NA' }}
+                                    </td>
+                                </tr>
+                                <th>
+                                    Region Name
+                                </th>
+                                <tr>
+                                    <td>{{ this.loadedData.fuelBatchDetailsDto.region ? this.loadedData.fuelBatchDetailsDto.region : 'NA' }}
+                                    </td>
+                                </tr>
+                                <th>
+                                    County Name
+                                </th>
+                                <tr>
+                                    <td>{{ this.loadedData.fuelBatchDetailsDto.county ? this.loadedData.fuelBatchDetailsDto.county : 'NA' }}
+                                    </td>
+                                </tr>
+                                <th>
+                                    Town Name
+                                </th>
+                                <tr>
+                                    <td>{{ this.loadedData.fuelBatchDetailsDto.town ? this.loadedData.fuelBatchDetailsDto.town : 'NA' }}
+                                    </td>
+                                </tr>
+                                <th>
+                                    Year Name
+                                </th>
+                                <tr>
+                                    <td>{{ this.loadedData.fuelBatchDetailsDto.batchFileYear ? this.loadedData.fuelBatchDetailsDto.batchFileYear : 'NA' }}
+                                    </td>
+                                </tr>
+                                <th>
+                                    Status
+                                </th>
+                                <tr>
+                                    <td>{{ this.loadedData.fuelBatchDetailsDto.batchClosed ? this.loadedData.fuelBatchDetailsDto.batchClosed : false }}
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                            </div>
+<!--                        </div>-->
                     </div>
                     <div class="card-body">
                         <div class="toolbar">
@@ -73,13 +131,13 @@
                             </div>
                             <div class="btn-group btn-group-sm float-right" role="group"
                                  aria-label="Applications Status">
-                                <button (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"
-                                        data-target="#myModal1"
-                                        class="btn btn-sm btn-primary mr-2"><span
-                                        class="mat-button-wrapper">VEW BATCH FILE DETAILS</span>
-                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                    <div class="mat-button-focus-overlay"></div>
-                                </button>
+<!--                                <button (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"-->
+<!--                                        data-target="#myModal1"-->
+<!--                                        class="btn btn-sm btn-primary mr-2"><span-->
+<!--                                        class="mat-button-wrapper">VEW BATCH FILE DETAILS</span>-->
+<!--                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
+<!--                                    <div class="mat-button-focus-overlay"></div>-->
+<!--                                </button>-->
 
                                 <button (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"
                                         data-target="#myModal1"
@@ -104,7 +162,7 @@
                                                      [source]="dataSet"
                                                      (userRowSelect)="viewRecord($event.data)"
                                                      (custom)="onCustomAction($event)">
-                                    </ng2-smart-table>
+                                    </ng2-smart-table>8
                                     <br/>
                                     <ngb-pagination [(page)]="currentPage" [pageSize]="defaultPageSize"
                                                     [collectionSize]="totalCount"
@@ -131,6 +189,7 @@
     </div>
 
     <!-- Classic Modal -->
+    <!-- Classic Modal For Saving Details -->
     <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">

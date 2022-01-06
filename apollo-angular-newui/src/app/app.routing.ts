@@ -81,6 +81,7 @@ import {NepNotificationComponent} from "./apollowebs/standards-development/nep-n
 import {ManagernotificationsComponent} from "./apollowebs/standards-development/managernotifications/managernotifications.component";
 import {EpraBatchListComponent} from "./apollowebs/market-surveillance/fuel/epra-batch-list/epra-batch-list.component";
 import {EpraListComponent} from "./apollowebs/market-surveillance/fuel/epra-list/epra-list.component";
+import {ViewFuelSheduledDetailsComponent} from "./apollowebs/market-surveillance/fuel/view-fuel-sheduled-details/view-fuel-sheduled-details.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -576,13 +577,18 @@ export const routes: Routes = [
         path: 'epra',
         component: AdminLayoutComponent,
         // canActivate: [RouteGuard],
-        children: [{
+        children: [
+            {
                 path: '',
                 component: EpraBatchListComponent},
             {
                 path: ':referenceNumber',
                 component: EpraListComponent
             },
+            {
+                path: 'fuelInspection/details/:referenceNumber',
+                component: ViewFuelSheduledDetailsComponent
+            }
         ]
     },
     // {

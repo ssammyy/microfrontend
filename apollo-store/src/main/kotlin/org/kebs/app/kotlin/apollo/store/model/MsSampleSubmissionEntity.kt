@@ -201,4 +201,12 @@ class MsSampleSubmissionEntity : Serializable{
     @Column(name = "SAMPLE_COLLECTION_NUMBER")
     @Basic
     var sampleCollectionNumber: Long? = null
+
+    @Column(name = "SAMPLE_BS_NUMBER_DATE")
+    @Basic
+    var sampleBsNumberDate: Date? = null
+
+    @Column(name = "SAMPLE_BS_NUMBER_REMARKS")
+    @Basic
+    var sampleBsNumberRemarks: String? = null
 }
