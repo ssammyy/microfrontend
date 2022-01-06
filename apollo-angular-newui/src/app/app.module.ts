@@ -4,7 +4,6 @@ import {RouterModule} from '@angular/router';
 import {HttpClientModule} from '@angular/common/http';
 import {CommonModule} from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatButtonModule} from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
@@ -168,11 +167,20 @@ import {StandardLevyDefaulterHistoryComponent} from './apollowebs/standards-levy
 import {SpcSecTaskComponent} from "./apollowebs/standards-development/standard-request/spc-sec-task/spc-sec-task.component";
 import {StdJustificationComponent} from "./apollowebs/standards-development/standard-request/std-justification/std-justification.component";
 import {StdTcWorkplanComponent} from "./apollowebs/standards-development/standard-request/std-tc-workplan/std-tc-workplan.component";
-import { PreparePreliminaryDraftComponent } from './apollowebs/standards-development/committee-module/prepare-preliminary-draft/prepare-preliminary-draft.component';
-import { NwaPreliminaryDraftComponent } from './apollowebs/standards-development/workshop-agreement/nwa-preliminary-draft/nwa-preliminary-draft.component';
-import { ComStdPlTaskComponent } from './apollowebs/standards-development/company-standard/com-std-pl-task/com-std-pl-task.component';
-import { ComStdDraftViewComponent } from './apollowebs/standards-development/company-standard/com-std-draft-view/com-std-draft-view.component';
-import { ComStdListComponent } from './apollowebs/standards-development/company-standard/com-std-list/com-std-list.component';
+import {PreparePreliminaryDraftComponent} from './apollowebs/standards-development/committee-module/prepare-preliminary-draft/prepare-preliminary-draft.component';
+import {NwaPreliminaryDraftComponent} from './apollowebs/standards-development/workshop-agreement/nwa-preliminary-draft/nwa-preliminary-draft.component';
+import {ComStdPlTaskComponent} from './apollowebs/standards-development/company-standard/com-std-pl-task/com-std-pl-task.component';
+import {ComStdDraftViewComponent} from './apollowebs/standards-development/company-standard/com-std-draft-view/com-std-draft-view.component';
+import {ComStdListComponent} from './apollowebs/standards-development/company-standard/com-std-list/com-std-list.component';
+import {ReviewJustificationOfTCComponent} from './apollowebs/standards-development/formationOfTc/review-justification-of-tc/review-justification-of-tc.component';
+import {ReviewFeedbackSPCComponent} from './apollowebs/standards-development/formationOfTc/review-feedback-spc/review-feedback-spc.component';
+import {RequestForFormationOfTCComponent} from "./apollowebs/standards-development/formationOfTc/request-for-formation-of-tc/request-for-formation-of-tc.component";
+import { StdPublishingComponent } from './apollowebs/standards-development/publishing/std-publishing/std-publishing.component';
+import { StdHopTasksComponent } from './apollowebs/standards-development/publishing/std-hop-tasks/std-hop-tasks.component';
+import { EditorTasksComponent } from './apollowebs/standards-development/publishing/editor-tasks/editor-tasks.component';
+import { StdProofreadComponent } from './apollowebs/standards-development/publishing/std-proofread/std-proofread.component';
+import { StdDraughtsmanComponent } from './apollowebs/standards-development/publishing/std-draughtsman/std-draughtsman.component';
+import { ApproveDraftStdComponent } from './apollowebs/standards-development/publishing/approve-draft-std/approve-draft-std.component';
 
 
 // import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -353,7 +361,16 @@ import { ComStdListComponent } from './apollowebs/standards-development/company-
         NwaPreliminaryDraftComponent,
         ComStdPlTaskComponent,
         ComStdDraftViewComponent,
-        ComStdListComponent
+        ComStdListComponent,
+        RequestForFormationOfTCComponent,
+        ReviewJustificationOfTCComponent,
+        ReviewFeedbackSPCComponent,
+        StdPublishingComponent,
+        StdHopTasksComponent,
+        EditorTasksComponent,
+        StdProofreadComponent,
+        StdDraughtsmanComponent,
+        ApproveDraftStdComponent
 
     ]
 

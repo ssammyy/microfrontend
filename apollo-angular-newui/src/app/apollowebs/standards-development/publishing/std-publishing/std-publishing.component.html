@@ -1,0 +1,92 @@
+<div class="container-fluid" style="margin-top: 5%">
+    <div class="loading-spinner ">
+        <ngx-spinner bdColor="rgba(51,51,51,0.8)"
+                     size="medium"
+                     color="#fff"
+                     type="ball-scale-multiple">
+            <p style="font-size: 20px; color: white">Saving Please Wait...</p>
+        </ngx-spinner>
+    </div>
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-primary card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">assignment</i>
+                            </div>
+                            <h4 class="card-title"> Submit A Draft Standard
+                            </h4>
+
+                        </div>
+                        <div class="card-body">
+                            <form (ngSubmit)="onUpload()" [formGroup]="prepareDraftStandardFormGroup" class="form">
+                                <div class="row">
+
+                                    <div class="form-group col-6">
+                                        <label><b>Title</b></label>
+                                        <input
+                                                [class.is-invalid]="formPrepareJustification.title.invalid && formPrepareJustification.title.touched"
+                                                formControlName="title"
+                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                class="form-control one-column-input" ngModel name="title"
+                                                placeholder="Title" type="text">
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <label><b>Officer</b></label>
+                                        <input
+                                                [class.is-invalid]="formPrepareJustification.officer.invalid && formPrepareJustification.officer.touched"
+                                                formControlName="officer"
+                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                class="form-control one-column-input" value="" name="standardOfficerId"
+                                                placeholder="Standard Officer" ngModel type="text">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-6">
+                                        <label><b>Version</b></label>
+                                        <input
+                                                [class.is-invalid]="formPrepareJustification.version.invalid && formPrepareJustification.version.touched"
+                                                formControlName="version"
+                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                class="form-control one-column-input" ngModel name="versionNumber"
+                                                placeholder="Version" type="text">
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <label><b>Requestor</b></label>
+                                        <input
+                                                [class.is-invalid]="formPrepareJustification.requestedBy.invalid && formPrepareJustification.requestedBy.touched"
+                                                formControlName="requestedBy"
+                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                class="form-control one-column-input" ngModel name="requestorId"
+                                                placeholder="Requestor Name" type="text">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-12">
+                                        <label><b>Upload Draft Document</b></label>
+                                        <form #demoForm="ngForm">
+                                            <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles" fileslimit="2"
+                                                         accept=".pdf"></file-upload>
+                                            <input class="form-control one-column-input" ngModel="DraftStandard"
+                                                   name="DocDescription" type="hidden">
+                                        </form>
+                                    </div>
+                                </div>
+                                <!--                                <button class="btn btn-info" (click)="onUpload(editForm.value)">Submit</button>-->
+                                <button *ngIf="prepareDraftStandardFormGroup.valid"
+                                        [disabled]="!prepareDraftStandardFormGroup.valid" class="btn btn-info"
+                                        type="submit">Submit
+                                </button>
+
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
