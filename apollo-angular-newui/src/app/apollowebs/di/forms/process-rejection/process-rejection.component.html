@@ -1,0 +1,28 @@
+<h2 mat-dialog-title>{{title?title:"Process Rejection"}}</h2>
+<mat-dialog-content>
+    <div class="row no_margin" [formGroup]="form">
+        <div class="col-sm-12 col-md-8">
+            <label class="waiver-form-label">Approval Status</label>
+            <select id="processRejectionStatus" name="processRejectionStatus" class="waiver-form-input-master"
+                    formControlName="approvalStatus">
+                <option value="" disabled selected>Select Approval Status</option>
+                <option value="1">Approve</option>
+                <option value="0">Reject</option>
+            </select>
+            <label for="processRejectionRemarks" class="waiver-form-label">Please write, in detail, your feedback for
+                this {{this.form.value.approvalStatus==='1'?'Approval':'Rejection'}}:</label>
+            <textarea id="processRejectionRemarks" class="waiver-form-input-master" placeholder=""
+                      formControlName="remarks"></textarea>
+            <mat-error *ngIf="message">{{message}}</mat-error>
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <div class="row no_margin master-list-new-btn">
+        <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
+        <button [disabled]="form.invalid||loading" class="next-btn btn-gen new-btn" (click)="saveRecord()">
+            {{this.form.value.approvalStatus==='1'?'Approve':'Reject'}}
+            <mat-spinner [diameter]="20" color="warn" *ngIf="loading"></mat-spinner>
+        </button>
+    </div>
+</mat-dialog-actions>

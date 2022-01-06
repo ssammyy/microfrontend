@@ -244,7 +244,7 @@ class PvocServiceFlux(
     }
 
     fun submitCocToKeSWS(cocData: CocsEntity) {
-        val coc = CustomCocXmlDto().apply {
+        val coc = CustomCocXmlDto(this.cocNumber, this.idfNumber, this.rfiNumber, this.ucrNumber, this.rfcDate, this.cocIssueDate, this.clean, this.cocRemarks, this.issuingOffice, this.importerName, this.importerPin, this.importerAddress1, this.importerAddress2, this.importerCity, this, importerCountry, this.importerZipCode, this.importerTelephoneNumber, this.importerFaxNumber, this.importerEmail, this.exporterName, this.exporterPin, this.exporterAddress1, this.exporterAddress2, this.exporterCity, this.exporterCountry, this.exporterZipCode, this.exporterTelephoneNumber, this.exporterFaxNumber, this.exporterEmail, this.placeOfInspection, this.dateOfInspection, this.portOfDestination, this.shipmentMode, this.countryOfSupply, this.finalInvoiceFobValue, ).apply {
             cocNumber = cocData.cocNumber
             idfNumber = cocData.idfNumber
             rfiNumber = cocData.rfiNumber
@@ -299,7 +299,7 @@ class PvocServiceFlux(
             cocDetals = null
         }
         val cocItem = iCocItemRepository.findByCocId(cocData.id)?.get(0)
-        cocItem?.toCocItemDetailsXmlRecordRefl().let {
+        cocItem?.toCocItemDetailsXmlRecordRefl(cocData.cocNumber?:"").let {
             coc.cocDetals = it
             val cocFinalDto = COCXmlDTO()
             cocFinalDto.coc = coc

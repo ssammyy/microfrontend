@@ -15,17 +15,55 @@ class DestinationInspectionFeeEntity : Serializable {
     @Id
     var id: Long = 0
 
+    @Column(name = "MINIMUM_USD")
+    @Basic
+    var minimumUsd: String? = null
+
+    @Column(name = "MAXIMUM_USD")
+    @Basic
+    var higher: String? = null
+
+    @Column(name = "MINIMUM_KSH")
+    @Basic
+    var minimumKsh: String? = null
+    @Column(name = "MAXIMUM_KSH")
+    @Basic
+    var maximumKsh: String? = null
+
+    @Column(name = "AMOUNT_KSH")
+    @Basic
+    var amountKsh: String? = null
+
+    @Column(name = "RATE")
+    @Basic
+    var rate: BigDecimal? = null
+
+    // PERCENTAGE,FIXED,RANGE,MANUAL
+    @Column(name = "RATE_TYPE")
+    @Basic
+    var rateType: String? = null
+
+    @Column(name = "NAME")
+    @Basic
+    var name: String? = null
+
+    // Type->Category->FUEL
+    @Column(name = "GOOD_CODE")
+    @Basic
+    var goodCode: String?=null
+
     @Column(name = "DESCRIPTION")
     @Basic
     var description: String? = null
 
-    @Column(name = "RATE")
-    @Basic
-    var rate: String? = null
-
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null
+
+    // Check if not null, its historical payment
+    @Column(name = "CHARGE_ENDS_ON")
+    @Basic
+    var chargeEndsOn: Timestamp? = null
 
     @Column(name = "VAR_FIELD_1")
     @Basic
@@ -90,26 +128,6 @@ class DestinationInspectionFeeEntity : Serializable {
     @Column(name = "DELETED_ON")
     @Basic
     var deletedOn: Timestamp? = null
-
-    @Column(name = "MINIMUM_USD")
-    @Basic
-    var minimumUsd: String? = null
-
-    @Column(name = "HIGHER")
-    @Basic
-    var higher: String? = null
-
-    @Column(name = "MINIMUM_KSH")
-    @Basic
-    var minimumKsh: String? = null
-
-    @Column(name = "AMOUNT_KSH")
-    @Basic
-    var amountKsh: String? = null
-
-    @Column(name = "NAME")
-    @Basic
-    var name: String? = null
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

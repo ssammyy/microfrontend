@@ -1,9 +1,8 @@
 package org.kebs.app.kotlin.apollo.api.controllers.stdController
 
 import com.google.gson.Gson
-import com.nhaarman.mockitokotlin2.any
 import mu.KotlinLogging
-import org.apache.commons.io.input.ObservableInputStream
+import org.kebs.app.kotlin.apollo.api.payload.request.JustificationTaskDataDto
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.*
 import org.kebs.app.kotlin.apollo.common.dto.std.*
@@ -21,6 +20,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
+import javax.servlet.http.HttpServletResponse
 
 
 @RestController
@@ -73,9 +73,13 @@ class NWAController(val nwaService: NWAService,
     @ResponseBody
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun prepareJustification(
-        @RequestBody nwaJustification: NWAJustification
+        @ModelAttribute nwaJustification: NWAJustification,
+        //@RequestParam("nwaJustificationID") nwaJustificationID: Long,
+        @ModelAttribute("docFile") docFile: List<MultipartFile>,
+        model: Model
     ): ServerResponse{
-        return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",nwaService.prepareJustification(nwaJustification))
+        val response = nwaService.prepareJustification(nwaJustification, docFile)
+        return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",response)
     }
 
 //    @PreAuthorize("hasAuthority('KNW_SEC_MODIFY')")
@@ -114,16 +118,45 @@ class NWAController(val nwaService: NWAService,
     //********************************************************** get spc_sec Tasks **********************************************************
     @PreAuthorize("hasAuthority('SPC_SEC_SD_READ')")
     @GetMapping("/getSpcSecTasks")
-    fun getSPCSECTasks():List<TaskDetails>
+    fun getSPCSECTasks():List<JustificationTaskDataDto>
     {
         return nwaService.getSPCSECTasks()
     }
+   // ********************************************************** get Justification document **********************************************************
+//    @GetMapping("/view/justification")
+//    fun downloadJustification(
+//        response: HttpServletResponse,
+//        @RequestParam("nwaDocumentId") nwaDocumentId: Long
+//    ) {
+//        val fileUploaded = nwaService.findUploadedFileBYId(nwaDocumentId)
+//        val mappedFileClass = commonDaoServices.mapClass(fileUploaded)
+//        commonDaoServices.downloadFile(response, mappedFileClass)
+//    }
 
+    // ********************************************************** get Justification document **********************************************************
+    @GetMapping("/view/justification")
+    fun downloadJustification(
+        response: HttpServletResponse,
+        @RequestParam("nwaDocumentId") nwaDocumentId: Long
+    ) {
+        val fileUploaded = nwaService.findUploadedFileBYId(nwaDocumentId)
+        val fileDoc = commonDaoServices.mapClass(fileUploaded)
+        response.contentType = "application/pdf"
+//                    response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
+        response.outputStream
+            .let { responseOutputStream ->
+                responseOutputStream.write(fileDoc.document?.let { it } as ByteArray)
+                responseOutputStream.close()
+            }
 
+        KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
+
+    }
     //decision
     @PreAuthorize("hasAuthority('SPC_SEC_SD_MODIFY')")
     @PostMapping("/decisionOnJustification")
-    fun decisionOnJustification(@RequestBody nwaJustificationDecision: NWAJustificationDecision) : List<TaskDetails>
+    fun decisionOnJustification(@RequestBody nwaJustificationDecision: NWAJustificationDecision) : List<JustificationTaskDataDto>
     {
         return nwaService.decisionOnJustification(nwaJustificationDecision)
     }

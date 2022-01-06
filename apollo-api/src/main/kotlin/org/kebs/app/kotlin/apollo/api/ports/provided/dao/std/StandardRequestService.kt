@@ -8,6 +8,7 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao.std
 
 import com.beust.klaxon.JsonReader
 import com.beust.klaxon.Klaxon
+import mu.KotlinLogging
 import org.flowable.engine.ProcessEngine
 import org.flowable.engine.RepositoryService
 import org.flowable.engine.RuntimeService
@@ -15,10 +16,12 @@ import org.flowable.engine.TaskService
 import org.flowable.engine.history.HistoricActivityInstance
 import org.flowable.engine.repository.Deployment
 import org.flowable.task.api.Task
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.web.config.EmailConfig
 import org.kebs.app.kotlin.apollo.common.dto.std.ID
 import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponse
 import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.beans.factory.annotation.Qualifier
@@ -51,14 +54,18 @@ class StandardRequestService(
     private val liaisonOrganizationRepository: LiaisonOrganizationRepository,
     private val emailConfig: EmailConfig,
     private val voteOnNWIRepository: VoteOnNWIRepository,
-    private val decisionJustificationRepository: DecisionJustificationRepository
-) {
+    private val decisionJustificationRepository: DecisionJustificationRepository,
+    private val commonDaoServices: CommonDaoServices,
+
+
+    ) {
 
     val PROCESS_DEFINITION_KEY = "requestModule"
     val TASK_CANDIDATE_GROUP_HOF = "HOF"
     val TASK_CANDIDATE_GROUP_TC_SEC = "TC-sec"
     val TASK_CANDIDATE_GROUP_TC = "TC"
     val TASK_CANDIDATE_GROUP_SPC_SEC = "SPC-sec"
+    val variable: MutableMap<String, Any> = HashMap()
 
     fun deployProcessDefinition(): Deployment = repositoryService
         .createDeployment()
@@ -113,9 +120,11 @@ class StandardRequestService(
 
         variables["requestNumber"] = standardRequest.requestNumber!!
 
-        standardRequest.rank = evaluateStandardRequest(standardRequest.tcId!!, standardRequest.departmentId!!)
+        // standardRequest.rank = evaluateStandardRequest(standardRequest.tcId!!, standardRequest.departmentId!!)
 
-        variables["rank"] = standardRequest.rank!!
+        variables["rank"] = '3'
+        standardRequest.rank = '3'.toString()
+        variable["rank"] = standardRequest.rank!!
 
         standardRequestRepository.save(standardRequest)
 
@@ -470,6 +479,243 @@ class StandardRequestService(
         runtimeService.deleteProcessInstance(taskId, "cleaning")
     }
 
+    //create department
+    fun createStandardsDepartment(department: Department) {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+
+        department.name?.let { variable.put("name", it) }
+        department.abbreviations?.let { variable.put("abbreviations", it) }
+        department.codes?.let { variable.put("codes", it) }
+        department.createdBy?.let { variable.put((loggedInUser.id ?: throw ExpectedDataNotFound("No USER ID Found")).toString(), it) }
+
+        department.createdOn = Timestamp(System.currentTimeMillis())
+        variable["createdOn"] = department.createdOn!!
+        department.status = 1
+        variable["status"] = department.status!!
+        department.createdBy =loggedInUser.id.toString();
+        variable["createdBy"] = department.createdBy!!
+
+        departmentRepository.save(department)
+    }
+
+    //create technicalCommittee
+    fun createTechnicalCommittee(technicalCommittee: TechnicalCommittee) {
+//        val  department_id = departmentRepository.findByName(variable.put("name").toString())
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        technicalCommittee.departmentId.let { variable.put("departmentId", it) }
+        technicalCommittee.parentCommitte?.let { variable.put("parentCommittee", it) }
+        technicalCommittee.technical_committee_no?.let { variable.put("technical_committee_no", it) }
+        technicalCommittee.title?.let { variable.put("title", it) }
+
+        technicalCommittee.createdOn = Timestamp(System.currentTimeMillis())
+        variable["createdOn"] = technicalCommittee.createdOn!!
+        technicalCommittee.status = 1.toString()
+        variable["status"] = technicalCommittee.status!!
+        technicalCommittee.createdBy =loggedInUser.id.toString();
+        variable["createdBy"] = technicalCommittee.createdBy!!
+
+        technicalCommitteeRepository.save(technicalCommittee)
+
+
+    }
+
+    //create productCategory
+    fun createProductCategory(product: Product) {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        product.technicalCommitteeId.let { variable.put("technicalCommitteeId", it) }
+        product.name?.let { variable.put("name", it) }
+        product.description?.let { variable.put("description", it) }
+
+        product.createdOn = Timestamp(System.currentTimeMillis())
+        variable["createdOn"] = product.createdOn!!
+        product.status = 1
+        variable["status"] = product.status
+        product.createdBy =loggedInUser.id.toString();
+        variable["createdBy"] = product.createdBy!!
+
+        productRepository.save(product)
+
+
+    }
+
+    //create productSubCategory
+    fun createProductSubCategory(productSubCategory: ProductSubCategory) {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        productSubCategory.productId.let { variable.put("productId", it) }
+        productSubCategory.name?.let { variable.put("name", it) }
+        productSubCategory.description?.let { variable.put("description", it) }
+
+
+        productSubCategory.createdOn = Timestamp(System.currentTimeMillis())
+        variable["createdOn"] = productSubCategory.createdOn!!
+        productSubCategory.status = 1
+        variable["status"] = productSubCategory.status!!
+        productSubCategory.createdBy = loggedInUser.id.toString();
+        variable["createdBy"] = productSubCategory.createdBy!!
+
+        productSubCategoryRepository.save(productSubCategory)
+
+
+    }
+
+    //get all Departments
+    fun getAllDepartments(): MutableList<Department> {
+        return departmentRepository.findAll()
+    }
+
+    //get all TCs
+    fun getAllTcs(): List<DataHolder> {
+        return technicalCommitteeRepository.findAllWithDescriptionQuery()
+    }
+
+    //get all ProductCategory
+    fun getAllProductCategories(): List<DataHolder> {
+        return productRepository.findAllWithDescriptionQuery()
+    }
+
+    //get all productSubCategories
+    fun getAllProductSubCategories(): List<DataHolder> {
+        return productSubCategoryRepository.findAllWithDescriptionQuery()
+
+    }
+
+    //update Department
+    fun updateDepartment(department: Department) {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        department.id.let { variable.put("id", it) }
+        department.name?.let { variable.put("name", it) }
+        department.abbreviations?.let { variable.put("abbreviations", it) }
+        department.codes?.let { variable.put("codes", it) }
+        department.modifiedBy?.let {
+            variable.put(
+                (loggedInUser.id ?: throw ExpectedDataNotFound("No USER ID Found")).toString(), it
+            )
+        }
+        department.modifiedOn = Timestamp(System.currentTimeMillis())
+        variable["createdOn"] = department.createdOn!!
+        departmentRepository.save(department)
+
+
+    }
+
+    //delete department
+    fun findPermitBYPermitNumber(permitNumber: Long) {
+
+        val exist: Boolean = technicalCommitteeRepository.existsTechnicalCommitteeByDepartmentId(permitNumber)
+
+
+        if (!exist) {
+            try {
+                departmentRepository.deleteById(permitNumber)
+
+            } catch (e: Exception) {
+                KotlinLogging.logger { }.error(e.message)
+                KotlinLogging.logger { }.debug(e.message, e)
+                throw ExpectedDataNotFound("The Department ID Does not Exist")
+            }
+        } else {
+            println("Exists")
+        }
+    }
+
+    //delete Department
+    fun deleteDepartment(department: Long) {
+
+        findPermitBYPermitNumber(department)
+
+    }
+
+    //update technicalCommittee
+    fun updateTechnicalCommittee(technicalCommittee: TechnicalCommittee) {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        technicalCommittee.id.let { variable.put("id", it) }
+        technicalCommittee.departmentId.let { variable.put("departmentId", it) }
+        technicalCommittee.parentCommitte?.let { variable.put("parentCommittee", it) }
+        technicalCommittee.technical_committee_no?.let { variable.put("technical_committee_no", it) }
+        technicalCommittee.title?.let { variable.put("title", it) }
+        technicalCommittee.createdOn = Timestamp(System.currentTimeMillis())
+        variable["createdOn"] = technicalCommittee.createdOn!!
+        technicalCommittee.status = 1.toString()
+        variable["status"] = technicalCommittee.status!!
+        technicalCommittee.createdBy = loggedInUser.id.toString();
+        variable["createdBy"] = technicalCommittee.createdBy!!
+        technicalCommitteeRepository.save(technicalCommittee)
+
+    }
+    //delete technicalCommittee
+    fun deleteTechnicalCommitee(technicalCommitteeId: Long)
+    {
+        findTechnicalCommitteeById(technicalCommitteeId)
+    }
+    fun findTechnicalCommitteeById(technicalCommitteeId: Long) {
+
+        val exist: Boolean = productRepository.existsProductByTechnicalCommitteeId(technicalCommitteeId)
+
+
+        if (!exist) {
+            try {
+                technicalCommitteeRepository.deleteById(technicalCommitteeId)
+
+            } catch (e: Exception) {
+                KotlinLogging.logger { }.error(e.message)
+                KotlinLogging.logger { }.debug(e.message, e)
+                throw ExpectedDataNotFound("The Technical Committee ID Does not Exist")
+            }
+        } else {
+            println("Exists")
+        }
+    }
+
+
+
+
+    //update productCategory
+    fun updateProductCategory(product: Product) {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        product.id.let { variable.put("id",it) }
+        product.technicalCommitteeId.let { variable.put("technicalCommitteeId", it) }
+        product.name?.let { variable.put("name", it) }
+        product.description?.let { variable.put("description", it) }
+
+        product.createdOn = Timestamp(System.currentTimeMillis())
+        variable["createdOn"] = product.createdOn!!
+        product.status = 1
+        variable["status"] = product.status
+        product.createdBy =loggedInUser.id.toString();
+        variable["createdBy"] = product.createdBy!!
+
+        productRepository.save(product)
+
+
+    }
+
+
+
+    //update productSubCategory
+    fun updateProductSubCategory(productSubCategory: ProductSubCategory) {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        productSubCategory.id.let { variable.put("id", it) }
+        productSubCategory.productId.let { variable.put("productId", it) }
+        productSubCategory.name?.let { variable.put("name", it) }
+        productSubCategory.description?.let { variable.put("description", it) }
+
+        productSubCategory.createdOn = Timestamp(System.currentTimeMillis())
+        variable["createdOn"] = productSubCategory.createdOn!!
+        productSubCategory.status = 1
+        variable["status"] = productSubCategory.status!!
+        productSubCategory.createdBy = loggedInUser.id.toString();
+        variable["createdBy"] = productSubCategory.createdBy!!
+
+        productSubCategoryRepository.save(productSubCategory)
+
+
+    }
 }
 
 

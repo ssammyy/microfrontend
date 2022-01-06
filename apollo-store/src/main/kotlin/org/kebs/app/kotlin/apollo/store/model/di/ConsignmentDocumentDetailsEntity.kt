@@ -1,5 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.model.di
 
+import org.hibernate.search.annotations.*
+import org.hibernate.search.annotations.Index
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import java.io.Serializable
 import java.sql.Date
@@ -9,12 +11,13 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "DAT_KEBS_CONSIGNMENT_DOCUMENT_DETAILS")
+@Indexed(index = "DAT_KEBS_CONSIGNMENT_DOCUMENT_DETAILS_IDX")
 class ConsignmentDocumentDetailsEntity : Serializable {
     @Column(name = "ID")
     @SequenceGenerator(
-        name = "DAT_KEBS_CONSIGNMENT_DOCUMENT_DETAILS_SEQ_GEN",
-        sequenceName = "DAT_KEBS_CONSIGNMENT_DOCUMENT_DETAILS_SEQ",
-        allocationSize = 1
+            name = "DAT_KEBS_CONSIGNMENT_DOCUMENT_DETAILS_SEQ_GEN",
+            sequenceName = "DAT_KEBS_CONSIGNMENT_DOCUMENT_DETAILS_SEQ",
+            allocationSize = 1
     )
     @GeneratedValue(generator = "DAT_KEBS_CONSIGNMENT_DOCUMENT_DETAILS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Id
@@ -26,19 +29,13 @@ class ConsignmentDocumentDetailsEntity : Serializable {
     @Transient
     var confirmCdStatusTypeId: Long? = null
 
-//    @Transient
-//    var confirmPortId: Long? = null
-//
-//    @Transient
-//    var confirmCfsId: Long? = null
-
-
     @Basic
     @Column(name = "UUID")
     var uuid: String? = null
 
     @Basic
     @Column(name = "ISSUED_DATE_TIME")
+    @Field(termVector = TermVector.YES)
     var issuedDateTime: String? = null
 
     @Basic
@@ -55,6 +52,7 @@ class ConsignmentDocumentDetailsEntity : Serializable {
 
     @Column(name = "UCR_NUMBER")
     @Basic
+    @Field(index = Index.YES, analyze = Analyze.NO, store = Store.YES)
     var ucrNumber: String? = null
 
     @Column(name = "VERSION")
@@ -63,11 +61,18 @@ class ConsignmentDocumentDetailsEntity : Serializable {
 
     @Column(name = "IDF_NUMBER")
     @Basic
+    @Field(index = Index.YES, analyze = Analyze.NO, store = Store.YES)
     var idfNumber: String? = null
 
     @Column(name = "COC_NUMBER")
     @Basic
+    @Field(index = Index.YES, analyze = Analyze.NO, store = Store.YES)
     var cocNumber: String? = null
+
+    @Column(name = "NCR_NUMBER")
+    @Basic
+    @Field(index = Index.YES, analyze = Analyze.NO, store = Store.YES)
+    var ncrNumber: String? = null
 
     @Column(name = "SEND_DEMAND_NOTE_REMARKS")
     @Basic
@@ -83,6 +88,7 @@ class ConsignmentDocumentDetailsEntity : Serializable {
 
     @Column(name = "OLD_CD_STATUS")
     @Basic
+    @Field(indexNullAs = "-1", store = Store.YES, index = Index.YES)
     var oldCdStatus: Int? = null
 
     @Column(name = "SEND_COI_STATUS")
@@ -190,7 +196,8 @@ class ConsignmentDocumentDetailsEntity : Serializable {
     var clusterId: Long? = null
 
     @JoinColumn(name = "ASSIGNED_INSPECTION_OFFICER", referencedColumnName = "ID")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @IndexedEmbedded()
     var assignedInspectionOfficer: UsersEntity? = null
 
     @JoinColumn(name = "CD_STANDARD", referencedColumnName = "ID")
@@ -203,15 +210,16 @@ class ConsignmentDocumentDetailsEntity : Serializable {
 
     @JoinColumn(name = "CD_TYPE", referencedColumnName = "ID")
     @ManyToOne
+    @IndexedEmbedded
     var cdType: ConsignmentDocumentTypesEntity? = null
 
     @Column(name = "PORT_OF_ARRIVAL")
     @Basic
     var portOfArrival: Long? = null
 
-    @Column(name = "FREIGHT_STATION")
-    @Basic
-    var freightStation: Long? = null
+    @JoinColumn(name = "FREIGHT_STATION", referencedColumnName = "ID")
+    @ManyToOne
+    var freightStation: CfsTypeCodesEntity? = null
 
     @Column(name = "CD_IMPORTER")
     @Basic
@@ -251,6 +259,7 @@ class ConsignmentDocumentDetailsEntity : Serializable {
 
     @JoinColumn(name = "ASSIGNER", referencedColumnName = "ID")
     @ManyToOne
+    @IndexedEmbedded()
     var assigner: UsersEntity? = null
 
     @Column(name = "CS_APPROVAL_STATUS")
@@ -287,10 +296,12 @@ class ConsignmentDocumentDetailsEntity : Serializable {
 
     @JoinColumn(name = "APPROVE_REJECT_CD_STATUS_TYPE", referencedColumnName = "ID")
     @ManyToOne
+    @IndexedEmbedded(indexNullAs = "NULL")
     var approveRejectCdStatusType: CdStatusTypesEntity? = null
 
     @Column(name = "CDREFNUMBER")
     @Basic
+    @Field(index = Index.YES, analyze = Analyze.NO, store = Store.YES)
     var cdRefNumber: String? = null
 
     @Column(name = "INSPECTION_DATE_SET_STATUS")
@@ -307,6 +318,7 @@ class ConsignmentDocumentDetailsEntity : Serializable {
 
     @Column(name = "INSPECTION_DATE")
     @Basic
+    @Field(index = Index.YES, analyze = Analyze.NO, store = Store.YES)
     var inspectionDate: Date? = null
 
     @Column(name = "INSPECTION_NOTIFICATION_DATE")
@@ -320,6 +332,10 @@ class ConsignmentDocumentDetailsEntity : Serializable {
     @Column(name = "TARGET_STATUS")
     @Basic
     var targetStatus: Int? = null
+
+    @Column(name = "INSPECTION_CHECKLIST")
+    @Basic
+    var inspectionChecklist: Int? = 0
 
     @Column(name = "TARGET_APPROVED_REMARKS")
     @Basic
@@ -339,6 +355,7 @@ class ConsignmentDocumentDetailsEntity : Serializable {
 
     @Column(name = "DESCRIPTION")
     @Basic
+    @Field(index = Index.YES, analyze = Analyze.NO, store = Store.YES)
     var description: String? = null
 
     @Column(name = "STATUS")
@@ -383,6 +400,7 @@ class ConsignmentDocumentDetailsEntity : Serializable {
 
     @Column(name = "VAR_FIELD_10")
     @Basic
+    @Field(index = Index.YES, analyze = Analyze.NO, store = Store.YES)
     var varField10: String? = null
 
     @Column(name = "CREATED_BY")
@@ -391,6 +409,7 @@ class ConsignmentDocumentDetailsEntity : Serializable {
 
     @Column(name = "CREATED_ON")
     @Basic
+    @Field(index = Index.YES, analyze = Analyze.NO, store = Store.YES)
     var createdOn: Timestamp? = null
 
     @Column(name = "MODIFIED_BY")
@@ -510,99 +529,99 @@ class ConsignmentDocumentDetailsEntity : Serializable {
 
     override fun hashCode(): Int {
         return Objects.hash(
-            id,
-            uuid,
-            localCoi,
-            sendCoiStatus,
-            localCoiRemarks,
-            sendCoiRemarks,
-            version,
-            sendDemandNote,
-            sendDemandNoteRemarks,
-            cdPgaHeader,
-            clusterId,
-            cdHeaderTwo,
-            cdCocLocalTypeId,
-            cdType,
-            cdStandardsTwo,
-            portOfArrival,
-            freightStation,
-            cdImporter,
-            cdConsignee,
-            cdExporter,
-            cdConsignor,
-            cdTransport,
-            cdHeaderOne,
-            ucrNumber,
-            docTypeId,
-            idfNumber,
-            cocNumber,
-            oldCdStatus,
-            compliantStatus,
-            compliantDate,
-            compliantRemarks,
-            localCocOrCorDate,
-            localCocOrCorRemarks,
-            localCocOrCorStatus,
-            blacklistRemarks,
-            blacklistDate,
-            blacklistStatus,
-            blacklistApprovedRemarks,
-            blacklistApprovedDate,
-            blacklistApprovedStatus,
-            processRejectionRemarks,
-            processRejectionDate,
-            processRejectionStatus,
-            confirmAssignedUserId,
-            assignedStatus,
-            assignedDate,
-            assignedRemarks,
-            reassignedStatus,
-            reassignedDate,
-            reassignedRemarks,
-            issuedDateTime,
-            summaryPageURL,
-            csApprovalStatus,
-            diProcessInstanceId,
-            blacklistId,
-            diProcessStatus,
-            diProcessStartedOn,
-            diProcessCompletedOn,
-            assignPortRemarks,
-            approveRejectCdStatus,
-            approveRejectCdDate,
-            approveRejectCdRemarks,
-            approveRejectCdStatusType,
-            cdRefNumber,
-            inspectionNotificationStatus,
-            inspectionNotificationDate,
-            inspectionDate,
-            inspectionDateSetStatus,
-            inspectionRemarks,
-            targetApproveStatus,
-            targetStatus,
-            targetApproveRemarks,
-            targetApproveDate,
-            targetDate,
-            targetReason,
-            description,
-            status,
-            varField1,
-            varField2,
-            varField3,
-            varField4,
-            varField5,
-            varField6,
-            varField7,
-            varField8,
-            varField9,
-            varField10,
-            createdBy,
-            createdOn,
-            modifiedBy,
-            modifiedOn,
-            deleteBy,
-            deletedOn
+                id,
+                uuid,
+                localCoi,
+                sendCoiStatus,
+                localCoiRemarks,
+                sendCoiRemarks,
+                version,
+                sendDemandNote,
+                sendDemandNoteRemarks,
+                cdPgaHeader,
+                clusterId,
+                cdHeaderTwo,
+                cdCocLocalTypeId,
+                cdType,
+                cdStandardsTwo,
+                portOfArrival,
+                freightStation,
+                cdImporter,
+                cdConsignee,
+                cdExporter,
+                cdConsignor,
+                cdTransport,
+                cdHeaderOne,
+                ucrNumber,
+                docTypeId,
+                idfNumber,
+                cocNumber,
+                oldCdStatus,
+                compliantStatus,
+                compliantDate,
+                compliantRemarks,
+                localCocOrCorDate,
+                localCocOrCorRemarks,
+                localCocOrCorStatus,
+                blacklistRemarks,
+                blacklistDate,
+                blacklistStatus,
+                blacklistApprovedRemarks,
+                blacklistApprovedDate,
+                blacklistApprovedStatus,
+                processRejectionRemarks,
+                processRejectionDate,
+                processRejectionStatus,
+                confirmAssignedUserId,
+                assignedStatus,
+                assignedDate,
+                assignedRemarks,
+                reassignedStatus,
+                reassignedDate,
+                reassignedRemarks,
+                issuedDateTime,
+                summaryPageURL,
+                csApprovalStatus,
+                diProcessInstanceId,
+                blacklistId,
+                diProcessStatus,
+                diProcessStartedOn,
+                diProcessCompletedOn,
+                assignPortRemarks,
+                approveRejectCdStatus,
+                approveRejectCdDate,
+                approveRejectCdRemarks,
+                approveRejectCdStatusType,
+                cdRefNumber,
+                inspectionNotificationStatus,
+                inspectionNotificationDate,
+                inspectionDate,
+                inspectionDateSetStatus,
+                inspectionRemarks,
+                targetApproveStatus,
+                targetStatus,
+                targetApproveRemarks,
+                targetApproveDate,
+                targetDate,
+                targetReason,
+                description,
+                status,
+                varField1,
+                varField2,
+                varField3,
+                varField4,
+                varField5,
+                varField6,
+                varField7,
+                varField8,
+                varField9,
+                varField10,
+                createdBy,
+                createdOn,
+                modifiedBy,
+                modifiedOn,
+                deleteBy,
+                deletedOn
         )
 
     }

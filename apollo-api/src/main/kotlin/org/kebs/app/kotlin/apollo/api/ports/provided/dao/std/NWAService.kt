@@ -7,9 +7,13 @@ import org.flowable.engine.TaskService
 import org.flowable.engine.repository.Deployment
 import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
+import org.kebs.app.kotlin.apollo.api.payload.request.JustificationTaskDataDto
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.*
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
+import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
+import org.kebs.app.kotlin.apollo.store.model.qa.QaUploadsEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.beans.factory.annotation.Qualifier
@@ -91,13 +95,17 @@ class NWAService(private val runtimeService: RuntimeService,
 //    }
 
     //prepare justification
-    fun prepareJustification(nwaJustification: NWAJustification): ProcessInstanceResponseValue
+    fun prepareJustification(
+        nwaJustification: NWAJustification,
+        docFiles: List<MultipartFile>
+
+    ): ProcessInstanceResponseValue
     {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
         val variables: MutableMap<String, Any> = HashMap()
-        nwaJustification.meetingDate?.let{ variables.put("meetingDate", it)}
         nwaJustification.knw?.let{ variables.put("knw", it)}
+        nwaJustification.meetingDate?.let{ variables.put("meetingDate", it)}
         nwaJustification.knwSecretary?.let{ variables.put("knwSecretary", it)}
         nwaJustification.sl?.let{ variables.put("sl", it)}
         //nwaJustification.requestNumber?.let{ variables.put("requestNumber", it)}
@@ -121,13 +129,42 @@ class NWAService(private val runtimeService: RuntimeService,
 
         variables["departmentName"] = departmentListRepository.findNameById(nwaJustification.department?.toLong())
         nwaJustification.departmentName = departmentListRepository.findNameById(nwaJustification.department?.toLong())
-
-
+        //var justificationUploadId =sdNwaUploadsEntityRepository.getMaxUploadedID()
         val nwaDetails = nwaJustificationRepository.save(nwaJustification)
         variables["ID"] = nwaDetails.id
+        //variables["jsUploadDocId"] = justificationUploadId.plus(1)
         val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
+        docFiles.forEach { docFile ->
+            var uploads = DatKebsSdNwaUploadsEntity()
+                .apply {
+//            filepath = docFile.path
+                    nwaDocumentId = nwaDetails.id
+                    name = commonDaoServices.saveDocuments(docFile)
+//            fileType = docFile.contentType
+                    fileType = docFile.contentType
+                    document = docFile.bytes
+                    transactionDate = commonDaoServices.getCurrentDate()
+                    status = 1
+ //                   createdBy = commonDaoServices.concatenateName(user)
+                    createdOn = commonDaoServices.getTimestamp()
+                }
+
+            uploads = sdNwaUploadsEntityRepository.save(uploads)
+            val docVariables: MutableMap<String, Any> = HashMap()
+            docVariables["jsNwaJustification"] = "${ uploads.nwaDocumentId }"
+            docVariables["jsUploadDocId"] = "${ uploads.id }"
+            docVariables["jsUploadDocName"] = "${ uploads.name }"
+            docVariables["jsUploadDocType"] = "${ uploads.fileType }"
+//
+//            processInstance.processVariables.putAll(docVariables)
+
+        }
+
+
+
+
         return ProcessInstanceResponseValue(nwaDetails.id, processInstance.id, processInstance.isEnded,
-            nwaJustification.requestNumber!!
+            nwaJustification.requestNumber?: throw NullValueNotAllowedException("Request Number is required")
         )
 
     }
@@ -145,7 +182,7 @@ class NWAService(private val runtimeService: RuntimeService,
 //            filepath = docFile.path
             name = commonDaoServices.saveDocuments(docFile)
 //            fileType = docFile.contentType
-            fileType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(docFile.name)
+            fileType = docFile.contentType
             documentType = doc
             description=DocDescription
             document = docFile.bytes
@@ -177,17 +214,39 @@ class NWAService(private val runtimeService: RuntimeService,
         return getTaskDetails(tasks)
     }
 
+
+
     //Return task details for SPC_SEC
-    fun getSPCSECTasks():List<TaskDetails>
+    fun getSPCSECTasks():List<JustificationTaskDataDto>
     {
         val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_SPC_SEC).processDefinitionKey(PROCESS_DEFINITION_KEY).list()
-        return getTaskDetails(tasks)
+        val justificationTasks = mutableListOf<JustificationTaskDataDto>()
+        tasks.forEach { task->
+            val processVariables = taskService.getVariables(task.id)
+            val justificationID = processVariables["ID"] as Long?
+            nwaJustificationRepository.findByIdOrNull(justificationID?:0L)
+            //throw NullValueNotAllowedException("Justification ID cannot be empty"))
+            ?.let { justification  ->
+
+                val uploads =sdNwaUploadsEntityRepository.findByNwaDocumentId(justification.id)
+
+                val justificationTask = JustificationTaskDataDto(TaskDetails(task.id, task.name,processVariables) ,justification, uploads )
+                justificationTasks.add(justificationTask)
+            }
+        }
+        return justificationTasks
     }
 
+    //Get justification Document
+    fun findUploadedFileBYId(nwaDocumentId: Long): DatKebsSdNwaUploadsEntity {
+        return   sdNwaUploadsEntityRepository.findByIdOrNull(nwaDocumentId)?.let {
+             it
+        } ?: throw ExpectedDataNotFound("No File found with the following [ id=$nwaDocumentId]")
+    }
 
     // Decision
 
-    fun decisionOnJustification(nwaJustificationDecision: NWAJustificationDecision) : List<TaskDetails> {
+    fun decisionOnJustification(nwaJustificationDecision: NWAJustificationDecision) : List<JustificationTaskDataDto> {
         val variables: MutableMap<String, Any> = java.util.HashMap()
         variables["Yes"] = nwaJustificationDecision.accentTo
         variables["No"] = nwaJustificationDecision.accentTo
@@ -256,7 +315,7 @@ class NWAService(private val runtimeService: RuntimeService,
 //            filepath = docFile.path
             name = commonDaoServices.saveDocuments(docFile)
 //            fileType = docFile.contentType
-            fileType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(docFile.name)
+            fileType = docFile.contentType
             documentType = doc
             description=DocDescription
             document = docFile.bytes
@@ -346,7 +405,7 @@ class NWAService(private val runtimeService: RuntimeService,
 //            filepath = docFile.path
             name = commonDaoServices.saveDocuments(docFile)
 //            fileType = docFile.contentType
-            fileType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(docFile.name)
+            fileType = docFile.contentType
             documentType = doc
             description=DocDescription
             document = docFile.bytes
@@ -433,7 +492,7 @@ class NWAService(private val runtimeService: RuntimeService,
 //            filepath = docFile.path
             name = commonDaoServices.saveDocuments(docFile)
 //            fileType = docFile.contentType
-            fileType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(docFile.name)
+            fileType = docFile.contentType
             documentType = doc
             description=DocDescription
             document = docFile.bytes
@@ -522,7 +581,7 @@ class NWAService(private val runtimeService: RuntimeService,
 //            filepath = docFile.path
             name = commonDaoServices.saveDocuments(docFile)
 //            fileType = docFile.contentType
-            fileType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(docFile.name)
+            fileType = docFile.contentType
             documentType = doc
             description=DocDescription
             document = docFile.bytes

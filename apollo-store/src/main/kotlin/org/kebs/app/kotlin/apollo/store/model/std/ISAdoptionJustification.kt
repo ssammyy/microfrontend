@@ -1,5 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.model.std
 
+import com.fasterxml.jackson.annotation.JsonProperty
+import java.sql.Timestamp
 import javax.persistence.*
 import kotlin.jvm.Transient
 
@@ -10,61 +12,72 @@ class ISAdoptionJustification {
     @Id
     @Column(name="ID")
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    val id:Long=0
+    var id:Long=0
 
     @Column(name="MEETING_DATE")
     @Basic
-    val meetingDate : String?=null
+    var meetingDate : String?=null
 
     @Column(name="TC")
     @Basic
-    val tc_id : String?=null
+    var tc_id : String?=null
 
     @Column(name="TC_SEC")
     @Basic
-    val tcSec_id : String?=null
+    var tcSec_id : String?=null
 
     @Column(name="SL_NUMBER")
     @Basic
-    val slNumber : String?=null
+    var slNumber : String?=null
 
     @Column(name="REQUEST_NUMBER")
     @Basic
-    val requestNumber : String?=null
+    var requestNumber : String?=null
 
     @Column(name="REQUESTED_BY")
     @Basic
-    val requestedBy : String?=null
+    var requestedBy : String?=null
 
     @Column(name="ISSUES_ADDRESSED")
     @Basic
-    val issuesAddressed : String?=null
+    var issuesAddressed : String?=null
 
     @Column(name="TC_ACCEPTANCE_DATE")
     @Basic
-    val tcAcceptanceDate : String?=null
+    var tcAcceptanceDate : String?=null
 
     @Column(name="REFERENCE_MATERIAL")
     @Basic
-    val referenceMaterial : String?=null
+    var referenceMaterial : String?=null
 
     @Column(name="DEPARTMENT")
     @Basic
-    val department : String?=null
+    var department : String?=null
 
     @Column(name="STATUS")
     @Basic
-    val status : String?=null
+    var status : String?=null
 
     @Column(name="REMARKS")
     @Basic
-    val remarks : String?=null
+    var remarks : String?=null
 
+    @Column(name="SUBMISSION_DATE")
+    @Basic
+    var submissionDate: Timestamp?=null
+
+    @Column(name="TC_COMMITTEE")
+    @Basic
+    var tcCommittee : String?=null
+
+    @Column(name="DEPARTMENT_NAME")
+    @Basic
+    var departmentName : String?=null
 
     @Transient
     @Column(name = "ACCENT_TO")
     @Basic
-    val accentTo: Boolean = false
+    var accentTo: Boolean = false
     @Column(name = "TASKID")
     @Basic
     var taskId: String? = null

@@ -4,7 +4,7 @@ import java.io.File
 
 interface ISftpService {
 
-    fun uploadFile(file: File): Boolean
+    fun uploadFile(file: File, fileType:String?=null): Boolean
 
     fun downloadFilesByDocType(docType: String): List<File>
 }

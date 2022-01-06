@@ -17,11 +17,13 @@ export class ApiEndpointService {
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-       //  LOCAL_DEV: 'localhost:8006'
-        // LOCAL_DEV: '12:8006'
+         // LOCAL_DEV: 'localhost:8006'
+        LOCAL_DEV: 'kimsfluxint.kebs.org:8005'
         // LOCAL_DEV: '41.72.209.58:8006'
-        LOCAL_DEV: `kimsint.kebs.org:8006`
+        // LOCAL_DEV: `kimsint.kebs.org:8005`,
         // LOCAL_DEV: `kims.kebs.org:8006`
+        // LOCAL_DEV: '10.10.0.149:8007'
+
     };
 
     /**
@@ -62,11 +64,14 @@ export class ApiEndpointService {
     public static ANONYMOUS_CONTEXT = '/api/v1/migration/anonymous';
     public static ANONYMOUS_CONTEXT_NEP = '/api/v1/migration/anonymous/National_enquiry_point';
 
+
     public static USER_CONTEXT = 'user';
     public static MASTERS_CONTEXT = '/api/v1/migration';
     public static SYSTEMS_ADMIN_SECURITY = `${ApiEndpointService.MASTERS_CONTEXT}/security`;
     public static SYSTEMS_ADMIN_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/system/admin/masters`;
     public static QA_CONTEXT = '/api/v1/migration/qa';
+    public static STL_CONTEXT = '/api/v1/migration/stdLevy';
+    public static SL_CONTEXT = '/api/auth';
     public static QA_CONTEXT_APPLY = `${ApiEndpointService.QA_CONTEXT}/permit/apply`;
     public static QA_CONTEXT_VIEW = `${ApiEndpointService.QA_CONTEXT}/permit/view`;
     public static ADMIN_CONTEXT = 'api/admin/v1';
@@ -325,6 +330,7 @@ export class ApiEndpointService {
         NWA_UPLOAD_GAZETTE_NOTICE: `${ApiEndpointService.SD_NWA_CONTEXT}/uploadGazetteNotice`,
         NWA_UPDATE_GAZETTEMENT_DATE: `${ApiEndpointService.SD_NWA_CONTEXT}/updateGazettementDate`,
         NWA_UPLOAD_DATA: `${ApiEndpointService.SD_NWA_CONTEXT}/file-upload`,
+        NWA_UPLOAD_DATA_VIEW: `${ApiEndpointService.SD_NWA_CONTEXT}/view/justification`,
         NWA_UPLOAD_DATA_DI: `${ApiEndpointService.SD_NWA_CONTEXT}/di-file-upload`,
         NWA_UPLOAD_DATA_PD: `${ApiEndpointService.SD_NWA_CONTEXT}/pd-file-upload`,
         NWA_UPLOAD_DATA_WD: `${ApiEndpointService.SD_NWA_CONTEXT}/wd-file-upload`,
@@ -338,10 +344,18 @@ export class ApiEndpointService {
         IST_TC_SEC_TASKS: `${ApiEndpointService.SD_IST_CONTEXT}/getTCSECTasks`,
         IST_DECISION_ON_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/decisionOnProposal`,
         IST_PREPARE_JUSTIFICATION: `${ApiEndpointService.SD_IST_CONTEXT}/prepareJustification`,
+        IST_UPLOAD_JS_DOCUMENT: `${ApiEndpointService.SD_IST_CONTEXT}/js-file-upload`,
         IST_SPC_SEC_TASKS: `${ApiEndpointService.SD_IST_CONTEXT}/getSPCSECTasks`,
         IST_DECISION_ON_JUSTIFICATION: `${ApiEndpointService.SD_IST_CONTEXT}/decisionOnJustification`,
         IST_SAC_SEC_TASKS: `${ApiEndpointService.SD_IST_CONTEXT}/getSACSECTasks`,
         IST_APPROVE_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/approveStandard`,
+        IST_HOP_TASKS: `${ApiEndpointService.SD_IST_CONTEXT}/getHOPTasks`,
+        IS_UPLOAD_STD: `${ApiEndpointService.SD_IST_CONTEXT}/std-file-upload`,
+        IS_UPLOAD_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/uploadISStandard`,
+        IST_HOS_SIC_TASKS: `${ApiEndpointService.SD_IST_CONTEXT}/getHoSiCTasks`,
+        IS_UPLOAD_GAZETTE_NOTICE: `${ApiEndpointService.SD_IST_CONTEXT}/uploadGazetteNotice`,
+        IS_UPDATE_GAZETTE_DATE: `${ApiEndpointService.SD_IST_CONTEXT}/updateGazettementDate`,
+
 
         // SD COMPANY STANDARDS
         ICT_GET_PRODUCTS: `${ApiEndpointService.SD_ICT_CONTEXT}/getProducts`,
@@ -404,7 +418,13 @@ export class ApiEndpointService {
         // REQUEST STANDARDS
         REQ_STANDARD: `${ApiEndpointService.REQUEST_STANDARD}/request`,
         REQ_PRODUCTS: `${ApiEndpointService.REQUEST_STANDARD}/getProducts`,
-        REQ_PRODUCTS_SUBCATEGORY: `${ApiEndpointService.REQUEST_STANDARD}/getProductCategories`
+        REQ_PRODUCTS_SUBCATEGORY: `${ApiEndpointService.REQUEST_STANDARD}/getProductCategories`,
+
+        // STANDARDS LEVY
+        REG_MANUFACTURE_DETAILS: `${ApiEndpointService.SL_CONTEXT}/kebs/add/manufacture-details/save`,
+        STD_LEVY_PENALTY_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getManufacturerPenalty`,
+        STD_LEVY_PAID_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getPaidLevies`,
+        STD_LEVY_COMPANY_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getCompanyProfile`,
 
     };
 
@@ -432,40 +452,40 @@ export class ApiEndpointService {
     ) {
     }
 
-    /**
-     * Constructs an API endpoint.
-     *
-     * NOTE: In the future this could construct API endpoints using environmental configs provided
-     * at build time or at runtime via (for example) query string params...but for now we'll
-     * keep this dumb simple.
-     */
-    public static getEndpoint(endpoint: string): string {
-        const protocol: string = ApiEndpointService.PROTOCOL.HTTPS;
-        const domain: string = ApiEndpointService.DOMAIN.LOCAL_DEV;
-        const context: string = ApiEndpointService.CONTEXT;
-        return `${protocol}${domain}${context}${endpoint}`;
+  /**
+   * Constructs an API endpoint.
+   *
+   * NOTE: In the future this could construct API endpoints using environmental configs provided
+   * at build time or at runtime via (for example) query string params...but for now we'll
+   * keep this dumb simple.
+   */
+  public static getEndpoint(endpoint: string): string {
+    const protocol: string = ApiEndpointService.PROTOCOL.HTTPS;
+    const domain: string = ApiEndpointService.DOMAIN.LOCAL_DEV;
+    const context: string = ApiEndpointService.CONTEXT
+    return `${protocol}${domain}${context}${endpoint}`;
+  }
+
+  /**
+   * Determines if the requested URL is an authentication API endpoint.
+   * @param  url the url
+   * @returns it requires authentication
+   * @returns it requires authentication
+   */
+  public static isAuthEndpoint(url: string = ''): boolean {
+    return (
+      url.toLowerCase().indexOf(ApiEndpointService.ANONYMOUS_CONTEXT) > -1
+      || url.toLowerCase().indexOf(ApiEndpointService.AUTH_CONTEXT) > -1
+    );
+
     }
 
-    /**
-     * Determines if the requested URL is an authentication API endpoint.
-     * @param  url the url
-     * @returns it requires authentication
-     * @returns it requires authentication
-     */
-    public static isAuthEndpoint(url: string = ''): boolean {
-        return (
-            url.toLowerCase().indexOf(ApiEndpointService.ANONYMOUS_CONTEXT) > -1
-            || url.toLowerCase().indexOf(ApiEndpointService.AUTH_CONTEXT) > -1
-        );
-
-    }
-
-    /**
-     * Determines if the requested URL is an API endpoint.
-     * @param url the url
-     * @returns this is an apiEndPoint
-     */
-    public static isApiEndpoint(url: string = ''): boolean {
-        return url.toLowerCase().indexOf(ApiEndpointService.CONTEXT) > -1;
-    }
+  /**
+   * Determines if the requested URL is an API endpoint.
+   * @param url the url
+   * @returns this is an apiEndPoint
+   */
+  public static isApiEndpoint(url: string = ''): boolean {
+    return url.toLowerCase().indexOf(ApiEndpointService.CONTEXT) > -1;
+  }
 }

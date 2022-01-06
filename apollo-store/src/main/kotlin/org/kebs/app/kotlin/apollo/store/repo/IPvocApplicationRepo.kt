@@ -13,25 +13,29 @@ import java.sql.Timestamp
 
 interface IPvocApplicationRepo : HazelcastRepository<PvocApplicationEntity, Long> {
     fun findByIdAndPvocWaStatus(id: Long, pvocWaStatus: Int): PvocApplicationEntity?
+
     fun findAllByStatus(status: Int, pageable: Pageable): Page<PvocApplicationEntity>?
-    fun findFirstByConpanyNameAndCompanyPinNo(conpanyName: String, companyPinNo : String) : PvocApplicationEntity?
-    fun findFirstByConpanyNameAndCompanyPinNoAndFinished(conpanyName: String, companyPinNo: String, finished: Int) : PvocApplicationEntity?
+    fun findAllByCreatedByOrderByCreatedOnDesc(username: String, pageable: Pageable): Page<PvocApplicationEntity>?
+    fun findFirstByConpanyNameAndCompanyPinNo(conpanyName: String, companyPinNo: String): PvocApplicationEntity?
+    fun findFirstByConpanyNameAndCompanyPinNoAndFinished(conpanyName: String, companyPinNo: String, finished: Int): PvocApplicationEntity?
     fun findAllByCreatedOnBetween(createdOn: Date, createdOn2: Date, pageable: Pageable): Page<PvocApplicationEntity>?
     fun findAllByConpanyNameAndStatus(conpanyName: String, status: Int, pageable: Pageable): Page<PvocApplicationEntity>?
     fun findAllByApplicationDateBetweenAndConpanyNameAndStatus(applicationDate: java.util.Date, applicationDate2: java.util.Date, conpanyName: String, status: Int, pageable: Pageable): Page<PvocApplicationEntity>?
     fun findAllByCreatedOnBetweenAndConpanyNameAndStatus(createdOn: Date, createdOn2: Date, conpanyName: String, status: Int, pageable: Pageable): Page<PvocApplicationEntity>?
-    fun findByIdIsIn(ids: List<Long>) : List<PvocApplicationEntity>?
+    fun findByIdIsIn(ids: List<Long>): List<PvocApplicationEntity>?
 
-    fun findAllByConpanyNameAndFinished(conpanyName: String, finished: Int) : List<PvocApplicationEntity>?
-
+    fun findAllByConpanyNameAndFinished(conpanyName: String, finished: Int): List<PvocApplicationEntity>?
+    fun findFirstByCreatedByAndId(username: String?, id: Long): PvocApplicationEntity?
 }
 
 interface IPvocExceptionApplicationStatusEntityRepo : HazelcastRepository<PvocExceptionApplicationStatusEntity, Long> {
     fun findFirstByMapId(mapId: Int): PvocExceptionApplicationStatusEntity?
+    fun findFirstByCreatedByAndId(username: String?, id: Long): PvocExceptionApplicationStatusEntity?
 }
 
 interface IPvocApplicationProductsRepo : HazelcastRepository<PvocApplicationProductsEntity, Long> {
     fun findAllByPvocApplicationId(pvocApplicationId: PvocApplicationEntity): List<PvocApplicationProductsEntity>?
+    fun findAllByPvocApplicationId_Id(pvocApplicationId: Long?): List<PvocApplicationProductsEntity>?
 }
 
 interface IPvocAgentMonitoringStatusEntityRepo : HazelcastRepository<PvocAgentMonitoringStatusEntity, Long> {
@@ -95,8 +99,9 @@ interface PvocRevenueReportEntityRepo : HazelcastRepository<PvocRevenueReportEnt
 interface PvocReconciliationReportEntityRepo : HazelcastRepository<PvocReconciliationReportEntity, Long> {
     fun findAllByStatusAndReviewedOrReviewedIsNull(status: Int, reviewed: Int, pageable: Pageable): Page<PvocReconciliationReportEntity>
     fun findAllByStatusAndReviewedAndCreatedOnBetween(status: Int, reviewed: Int, createdOn: Date, createdOn2: Date, pageable: Pageable): Page<PvocReconciliationReportEntity>?
-//    fun findAllByStatusAndCreatedOnBetween(status: Int, createdOn: Timestamp, createdOn2: Timestamp) : List<PvocReconciliationReportEntity, Long>
-    fun findByCertificateNo(certificationNo: String) : PvocReconciliationReportEntity?
+
+    //    fun findAllByStatusAndCreatedOnBetween(status: Int, createdOn: Timestamp, createdOn2: Timestamp) : List<PvocReconciliationReportEntity, Long>
+    fun findByCertificateNo(certificationNo: String): PvocReconciliationReportEntity?
 
     @Query("SELECT SUM(coalesce(INSPECTION_FEE ,0)) AS inspectionfeesum, SUM(coalesce(VERIFICATION_FEE ,0)) AS verificationfeesum,\n" +
             "       SUM(coalesce(ROYALTIES_TO_KEBS ,0)) AS royaltiestokebssum " +
@@ -110,28 +115,28 @@ interface PvocReconciliationReportEntityRepo : HazelcastRepository<PvocReconcili
             "sum(PENALTY_INVOICED) AS penaltySum\n" +
             "from DAT_KEBS_PVOC_RECONCILIATION_REPORT\n" +
             "group by to_char(CREATED_ON, 'YYYY/MM')", nativeQuery = true)
-    fun getSummaryByMonth() : List<PvocReconciliationReportDto>
+    fun getSummaryByMonth(): List<PvocReconciliationReportDto>
 }
 
 interface IPvocExceptionIndustrialSparesCategoryEntityRepo : HazelcastRepository<PvocExceptionIndustrialSparesCategoryEntity, Long> {
-    fun findAllByExceptionId(exceptionId: Long): List<PvocExceptionIndustrialSparesCategoryEntity>
-    fun findAllByExceptionIdAndReviewStatus(exceptionId: Long, reviewStatus: String) : List<PvocExceptionIndustrialSparesCategoryEntity>
+    fun findAllByExceptionId(exceptionId: Long?): List<PvocExceptionIndustrialSparesCategoryEntity>
+    fun findAllByExceptionIdAndReviewStatus(exceptionId: Long, reviewStatus: String): List<PvocExceptionIndustrialSparesCategoryEntity>
 }
 
 interface IPvocExceptionMainMachineryCategoryEntityRepo : HazelcastRepository<PvocExceptionMainMachineryCategoryEntity, Long> {
-    fun findAllByExceptionId(exceptionId: Long): List<PvocExceptionMainMachineryCategoryEntity>
-    fun findAllByExceptionIdAndReviewStatus(exceptionId: Long, reviewStatus: String) : List<PvocExceptionMainMachineryCategoryEntity>
+    fun findAllByExceptionId(exceptionId: Long?): List<PvocExceptionMainMachineryCategoryEntity>
+    fun findAllByExceptionIdAndReviewStatus(exceptionId: Long, reviewStatus: String): List<PvocExceptionMainMachineryCategoryEntity>
 }
 
 interface IPvocExceptionRawMaterialCategoryEntityRepo : HazelcastRepository<PvocExceptionRawMaterialCategoryEntity, Long> {
-    fun findAllByExceptionId(exceptionId: Long): List<PvocExceptionRawMaterialCategoryEntity>
-    fun findAllByExceptionIdAndReviewStatus(exceptionId: Long, reviewStatus: String) : List<PvocExceptionRawMaterialCategoryEntity>
+    fun findAllByExceptionId(exceptionId: Long?): List<PvocExceptionRawMaterialCategoryEntity>
+    fun findAllByExceptionIdAndReviewStatus(exceptionId: Long, reviewStatus: String): List<PvocExceptionRawMaterialCategoryEntity>
 }
 
-interface IPvocComplaintsEmailVerificationEntityRepo : HazelcastRepository<PvocComplaintsEmailVerificationEntity, Long>{
+interface IPvocComplaintsEmailVerificationEntityRepo : HazelcastRepository<PvocComplaintsEmailVerificationEntity, Long> {
 
 }
 
-interface IPvocComplaintsTokenVerification : HazelcastRepository<PvocComplaintsTokenVerificationEntity, Long>{
+interface IPvocComplaintsTokenVerification : HazelcastRepository<PvocComplaintsTokenVerificationEntity, Long> {
 
 }

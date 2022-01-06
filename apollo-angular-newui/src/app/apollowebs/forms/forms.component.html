@@ -16,7 +16,6 @@
                                         type="email"
                                         matInput
                                         placeholder="Email Address *"
-                                        [errorStateMatcher]="matcher"
                                         formControlName="email"
                                         (ngModelChange)="emailValidationRegister($event)">
                                 <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
@@ -77,7 +76,7 @@
                                         type="email"
                                         matInput
                                         placeholder="Email Address *"
-                                        [errorStateMatcher]="matcher"
+                                        [errorStateMatcher]="" ]="matcher"
                                         (ngModelChange)="emailValidationLogin($event)"
                                         formControlName="email">
                                 <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">

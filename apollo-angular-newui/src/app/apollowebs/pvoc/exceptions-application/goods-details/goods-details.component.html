@@ -1,0 +1,107 @@
+<div class="row">
+    <div class="col-md-12">
+        <h3> GOODS MANUFACTURED</h3>
+        <table class="table table-condensed">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>PRODUCT NAME</th>
+                <th>BRAND</th>
+                <th>KEBS SMARK PERMIT NO.</th>
+                <th>EXPIRY DATE</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody *ngIf="goodDetails && goodDetails.products">
+            <tr  *ngFor="let o of goodDetails.products; index as i">
+                <td>{{i+1}}</td>
+                <td>{{o.productName}}</td>
+                <td>{{o.brandName}}</td>
+                <td>{{o.permitNumber}}</td>
+                <td>{{o.expriryDate}}</td>
+                <td><span class="pointer text-danger"><i class="fas fa-trash-alt"></i></span></td>
+            </tr>
+            </tbody>
+        </table>
+        <br/>
+        <button class="btn btn-primary btn-sm form-wizard-next-btn" (click)="addGoodsManufactured()">+Add</button>
+    </div>
+    <div class="col-md-12">
+        <h3> RAW MATERIALS</h3>
+        <table class="table table-condensed">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>HS CODE</th>
+                <th>RAW MATERIAL DESCRIPTION</th>
+                <th>END PRODUCT</th>
+                <th>COUNTRY OF ORIGIN</th>
+            </tr>
+            </thead>
+            <tbody *ngIf="goodDetails && goodDetails.rawMaterials">
+            <tr  *ngFor="let o of goodDetails.rawMaterials; index as i">
+                <td>{{i+1}}</td>
+                <td>{{o.hsCode}}</td>
+                <td>{{o.rawMaterialDescription}}</td>
+                <td>{{o.endProduct}}</td>
+                <td>{{o.countryOfOrigin}}</td>
+                <td><span class="pointer text-danger"><i class="fas fa-trash-alt"></i></span></td>
+            </tr>
+            </tbody>
+        </table>
+        <br/>
+        <button (click)="addRawMaterials()" class="btn btn-primary btn-sm form-wizard-next-btn">+Add</button>
+    </div>
+    <div class="col-md-12">
+        <h3>MAIN PRODUCTION MACHINERY</h3>
+        <table class="table table-condensed">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>HS CODE</th>
+                <th>MACHINE DESCRIPTION</th>
+                <th>MAKE AND MODEL</th>
+                <th>COUNTRY OF ORIGIN</th>
+            </tr>
+            </thead>
+            <tbody *ngIf="goodDetails && goodDetails.mainMachinary">
+            <tr  *ngFor="let o of goodDetails.mainMachinary; index as i">
+                <td>{{i+1}}</td>
+                <td>{{o.hsCode}}</td>
+                <td>{{o.machineDescription}}</td>
+                <td>{{o.makeModel}}</td>
+                <td>{{o.countryOfOrigin}}</td>
+                <td><span class="pointer text-danger"><i class="fas fa-trash-alt"></i></span></td>
+            </tr>
+            </tbody>
+        </table>
+        <br/>
+        <button (click)="addMachinery()" class="btn btn-primary btn-sm form-wizard-next-btn">+Add</button>
+    </div>
+    <div class="col-md-12">
+        <h3>INDUSTRIAL SPARES</h3>
+        <table class="table table-condensed">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>HS CODE</th>
+                <th>DESCRIPTION</th>
+                <th>TO BE FITTED</th>
+                <th>COUNTRY OF ORIGIN</th>
+            </tr>
+            </thead>
+            <tbody *ngIf="goodDetails && goodDetails.spares">
+            <tr  *ngFor="let o of goodDetails.spares; index as i">
+                <td>{{i+1}}</td>
+                <td>{{o.hsCode}}</td>
+                <td>{{o.industrialSpares}}</td>
+                <td>{{o.machineToFit}}</td>
+                <td>{{o.countryOfOrigin}}</td>
+                <td><span class="pointer text-danger"><i class="fas fa-trash-alt"></i></span></td>
+            </tr>
+            </tbody>
+        </table>
+        <br/>
+        <button (click)="addSpareParts()" class="btn btn-primary btn-sm form-wizard-next-btn">+Add</button>
+    </div>
+</div>

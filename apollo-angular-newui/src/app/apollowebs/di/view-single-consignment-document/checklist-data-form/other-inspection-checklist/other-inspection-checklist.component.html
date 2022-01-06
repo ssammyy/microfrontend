@@ -1,0 +1,21 @@
+<div id='other-item-details' [formGroup]="otherItemChecklist">
+    <div class="form-row">
+        <div class="col-md-12 mb-3">
+            <label style="color: #0082f3">OTHERS (Used clothing/shoes, personal effects etc)
+                Markings Details</label>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-md-6 mb-3">
+            <label for="remarks" class="waiver-form-label">Remarks</label>
+            <textarea class="waiver-form-input-master" maxlength="256" name="remarks" data-name="remarks"
+                      id="remarks" formControlName="remarks"></textarea>
+        </div>
+    </div>
+    <label style="color: #0082f3">Select Other Items</label>
+    <app-item-selection checklistType="other" id="other" [categories]="categories"
+                        [items]="itemList"
+                        [selectedItems]="selectedItems"
+                        (selectedItemsChange)="itemsSelected($event)"
+    ></app-item-selection>
+</div>

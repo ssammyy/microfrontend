@@ -121,8 +121,7 @@ class ApiAuthenticationHandler(
             usersRepo.findByUserName(auth.name)
                 ?.let { user ->
                     val request = ServletServerHttpRequest(req.servletRequest())
-                    val token =
-                        tokenService.tokenFromAuthentication(auth, commonDaoServices.concatenateName(user), request)
+                    val token = tokenService.tokenFromAuthentication(auth, commonDaoServices.concatenateName(user), request)
 
                     val roles = tokenService.extractRolesFromToken(token)?.map { it.authority }
                     val response = JwtResponse(
@@ -146,19 +145,19 @@ class ApiAuthenticationHandler(
                     /**
                      *SEND OTP TO USER LOGIN throw phone number
                      */
-                    val otp = commonDaoServices.randomNumber(6)
-                    val tokenValidation = commonDaoServices.generateVerificationToken(
-                        otp,
-                        user.cellphone ?: throw NullValueNotAllowedException("Valid Cellphone is required")
-                    )
-                    commonDaoServices.sendOtpViaSMS(tokenValidation)
-
+                    user.cellphone?.let {
+                        val otp = commonDaoServices.randomNumber(6)
+                        val tokenValidation = commonDaoServices.generateVerificationToken(
+                                otp,
+                                it
+                        )
+                        commonDaoServices.sendOtpViaSMS(tokenValidation)
+                    }
                     ServerResponse.ok().body(response)
                 }
                 ?: throw NullValueNotAllowedException("Empty authentication after authentication attempt")
 
         } catch (e: Exception) {
-            e.printStackTrace()
             KotlinLogging.logger { }.error(e.message, e)
             ServerResponse.badRequest().body(e.message ?: "Unknown Error")
         }

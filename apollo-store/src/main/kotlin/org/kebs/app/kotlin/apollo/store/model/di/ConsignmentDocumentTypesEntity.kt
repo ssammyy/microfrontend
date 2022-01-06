@@ -9,7 +9,7 @@ import javax.persistence.*
 @Table(name = "CFG_KEBS_CONSIGNMENT_DOCUMENT_TYPES")
 class ConsignmentDocumentTypesEntity : Serializable {
     @Column(name = "ID")
-    @SequenceGenerator(name = "CFG_KEBS_CONSIGNMENT_DOCUMENT_TYPES_SEQ_GEN", sequenceName = "CFG_KEBS_CONSIGNMENT_DOCUMENT_TYPES", allocationSize = 1)
+    @SequenceGenerator(name = "CFG_KEBS_CONSIGNMENT_DOCUMENT_TYPES_SEQ_GEN", sequenceName = "CFG_KEBS_CONSIGNMENT_DOCUMENT_TYPES_SEQ", allocationSize = 1)
     @GeneratedValue(generator = "CFG_KEBS_CONSIGNMENT_DOCUMENT_TYPES_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Id
     var id: Long = 0
@@ -37,6 +37,22 @@ class ConsignmentDocumentTypesEntity : Serializable {
     @Column(name = "INSPECTION_STATUS")
     @Basic
     var inspectionStatus: Int? = null
+
+    @Column(name = "AUTO_TARGET_STATUS")
+    @Basic
+    var autoTargetStatus: Int? = null
+
+    @Column(name = "AUTO_TARGET_CONDITION")
+    @Basic
+    var autoTargetCondition: String? = null
+
+    @Column(name = "AUTO_REJECTED_STATUS")
+    @Basic
+    var autoRejectStatus: Int? = null
+
+    @Column(name = "AUTO_REJECT_CONDITION")
+    @Basic
+    var autoRejectCondition: String? = null
 
     @Column(name = "LOCAL_COC_STATUS")
     @Basic
@@ -147,6 +163,6 @@ class ConsignmentDocumentTypesEntity : Serializable {
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(id, uuid, typeName, demandNotePrefix, localCocStatus, localCorStatus, inspectionStatus,  category, description, status, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn)
+        return Objects.hash(id, uuid, typeName, demandNotePrefix, localCocStatus, localCorStatus, inspectionStatus, category, description, status, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn)
     }
 }

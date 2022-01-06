@@ -10,7 +10,7 @@ import javax.persistence.*
 @Table(name = "DAT_KEBS_INVOICE_TRANSACTIONS")
 class InvoiceTransactionsEntity : Serializable {
     @Column(name = "ID")
-    @SequenceGenerator(name = "DAT_KEBS_INVOICE_TRANSACTIONS_SEQ_GEN", sequenceName = "DAT_KEBS_INVOICE_TRANSACTIONS", allocationSize = 1)
+    @SequenceGenerator(name = "DAT_KEBS_INVOICE_TRANSACTIONS_SEQ_GEN", sequenceName = "DAT_KEBS_INVOICE_TRANSACTIONS_SEQ", allocationSize = 1)
     @GeneratedValue(generator = "DAT_KEBS_INVOICE_TRANSACTIONS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Id
     var id: Long = 0

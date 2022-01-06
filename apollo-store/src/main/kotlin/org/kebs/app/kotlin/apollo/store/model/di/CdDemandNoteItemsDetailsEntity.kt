@@ -11,9 +11,9 @@ import javax.persistence.*
 class CdDemandNoteItemsDetailsEntity : Serializable {
     @Column(name = "ID")
     @SequenceGenerator(
-        name = "DAT_KEBS_CD_DEMAND_NOTE_ITEMS_DETAILS_SEQ_GEN",
-        sequenceName = "DAT_KEBS_CD_DEMAND_NOTE_ITEMS_DETAILS_SEQ",
-        allocationSize = 1
+            name = "DAT_KEBS_CD_DEMAND_NOTE_ITEMS_DETAILS_SEQ_GEN",
+            sequenceName = "DAT_KEBS_CD_DEMAND_NOTE_ITEMS_DETAILS_SEQ",
+            allocationSize = 1
     )
     @GeneratedValue(generator = "DAT_KEBS_CD_DEMAND_NOTE_ITEMS_DETAILS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Id
@@ -23,6 +23,11 @@ class CdDemandNoteItemsDetailsEntity : Serializable {
     @Basic
     var itemId: Long? = null
 
+    @Column(name = "EXCHANGE_RATE_ID")
+    @Basic
+    var exchangeRateId: Long? = null
+
+
     @Column(name = "DEMAND_NOTE_ID")
     @Basic
     var demandNoteId: Long? = null
@@ -31,6 +36,14 @@ class CdDemandNoteItemsDetailsEntity : Serializable {
     @Basic
     var product: String? = null
 
+    @Column(name = "RATE_TYPE")
+    @Basic
+    var rateType: String? = null
+
+    @Column(name = "FEE_NAME")
+    @Basic
+    var feeName: String? = null
+
     @Column(name = "RATE")
     @Basic
     var rate: String? = null
@@ -38,6 +51,10 @@ class CdDemandNoteItemsDetailsEntity : Serializable {
     @Column(name = "AMOUNT_PAYABLE")
     @Basic
     var amountPayable: BigDecimal? = null
+
+    @Column(name = "ADJUSTED_AMOUNT")
+    @Basic
+    var adjustedAmount: BigDecimal? = null
 
     @Column(name = "DESCRIPTION")
     @Basic
@@ -149,31 +166,31 @@ class CdDemandNoteItemsDetailsEntity : Serializable {
 
     override fun hashCode(): Int {
         return Objects.hash(
-            id,
-            itemId,
-            demandNoteId,
-            product,
-            cfvalue,
-            rate,
-            amountPayable,
-            description,
-            status,
-            varField1,
-            varField2,
-            varField3,
-            varField4,
-            varField5,
-            varField6,
-            varField7,
-            varField8,
-            varField9,
-            varField10,
-            createdBy,
-            createdOn,
-            modifiedBy,
-            modifiedOn,
-            deleteBy,
-            deletedOn
+                id,
+                itemId,
+                demandNoteId,
+                product,
+                cfvalue,
+                rate,
+                amountPayable,
+                description,
+                status,
+                varField1,
+                varField2,
+                varField3,
+                varField4,
+                varField5,
+                varField6,
+                varField7,
+                varField8,
+                varField9,
+                varField10,
+                createdBy,
+                createdOn,
+                modifiedBy,
+                modifiedOn,
+                deleteBy,
+                deletedOn
         )
     }
 }

@@ -123,8 +123,12 @@ class BpmnNotifications(
         when (candidateGroup) {
             pcmCandidateGroup -> {
                 val pcmUserList = qaDaoServices.findAllPcmOfficers()
-                for (user in pcmUserList) {
-                    user.email?.let { this.sendEmail(it) }
+                if (pcmUserList != null) {
+                    for (user in pcmUserList) {
+                        if (user != null) {
+                            user.email?.let { this.sendEmail(it) }
+                        }
+                    }
                 }
             }
         }

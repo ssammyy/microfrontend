@@ -7,7 +7,7 @@ import {
     loadUserId,
     selectBranchData,
     selectBranchIdData,
-    selectCompanyIdData, selectUserInfo,
+    selectCompanyIdData,
     User,
     UsersService
 } from '../../../../core/store';
@@ -30,7 +30,6 @@ export class UserList implements OnInit {
     selectedCompany = -1;
     selectedBranch = -1;
     selectedBranches$: Branches | undefined;
-    roles: string[];
 
 
     constructor(
@@ -49,9 +48,6 @@ export class UserList implements OnInit {
         });
         this.store$.select(selectBranchIdData).subscribe((d) => {
             return this.selectedBranch = d;
-        });
-        this.store$.select(selectUserInfo).pipe().subscribe((u) => {
-            return this.roles = u.roles;
         });
         this.store$.select(selectBranchData).subscribe((d) => {
             return this.selectedBranches$ = d;

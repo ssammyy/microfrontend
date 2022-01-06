@@ -1,0 +1,85 @@
+<h2 mat-dialog-title>Message Exchange Details</h2>
+<mat-dialog-content>
+    <div class="row no_margin" *ngIf="messageDetails">
+        <div class="col-sm-3 col-md-4">
+            <label class="waiver-form-label">Remote Reference</label>
+            <p>{{messageDetails.remoteReference}}</p>
+        </div>
+        <div class="col-sm-3 col-md-4">
+            <label class="waiver-form-label">File Type</label>
+            <p>{{messageDetails.fileType}}</p>
+        </div>
+        <div class="col-sm-3 col-md-4">
+            <label class="waiver-form-label">File name</label>
+            <p>{{messageDetails.filename}}</p>
+        </div>
+        <div class="col-sm-3 col-md-4">
+            <label class="waiver-form-label">Date Generated</label>
+            <p>{{messageDetails.transactionDate | date}}</p>
+        </div>
+        <div class="col-sm-3 col-md-4">
+            <label class="waiver-form-label">Date Started</label>
+            <p>{{messageDetails.transactionCompletedDate}}</p>
+        </div>
+        <div class="col-sm-3 col-md-4">
+            <label class="waiver-form-label">Date Completed Name</label>
+            <p>{{messageDetails.transactionCompletedDate}}</p>
+        </div>
+        <div class="col-sm-3 col-md-4">
+            <label class="waiver-form-label">Message Direction</label>
+            <p>{{messageDetails.flowDirection==='IN'?"IN-COMING": "OUT-GOING"}}</p>
+        </div>
+        <div class="col-sm-3 col-md-4">
+            <label class="waiver-form-label">Message Size</label>
+            <p>{{messageDetails.varField2}}</p>
+        </div>
+        <div class="col-sm-3 col-md-4">
+            <label class="waiver-form-label">Transaction Status</label>
+            <p>{{messageDetails.responseStatus==='00'?'SUCCESS':'FAILED'}}</p>
+        </div>
+        <div class="col-sm-3 col-md-4">
+            <label class="waiver-form-label">Error Code</label>
+            <p>{{messageDetails.responseStatus}}</p>
+        </div>
+        <div class="col-sm-3 col-md-4">
+            <label class="waiver-form-label">Error Description</label>
+            <p>{{messageDetails.responseMessage}}</p>
+        </div>
+
+        <div class="col-sm-3 col-md-4">
+            <label class="waiver-form-label">LOCAL REFERENCE</label>
+            <p>{{messageDetails.transactionReference}}</p>
+        </div>
+
+        <div class="col-sm-3 col-md-4">
+            <label class="waiver-form-label">EXCEPTION DETAILS</label>
+            <p>{{messageDetails.varField10}}</p>
+        </div>
+        <div class="col-sm-3 col-md-4">
+            <label class="waiver-form-label">RETRANSMISSION ATTEMPTS</label>
+            <p>{{messageDetails.retryCount}}</p>
+        </div>
+        <div class="col-sm-3 col-md-4">
+            <label class="waiver-form-label">KESW ERROR CODE</label>
+            <p>{{messageDetails.keswErrorCode}}</p>
+        </div>
+        <div class="col-sm-3 col-md-4">
+            <label class="waiver-form-label">KESW ERROR DESCRIPTION</label>
+            <p>{{messageDetails.keswErrorMessage}}</p>
+        </div>
+        <div class="col-sm-12 col-md-12" *ngIf="messageContent">
+            <label class="waiver-form-label">XML DATA</label>
+            <pre >{{messageContent}}</pre>
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <div class="row no_margin master-list-new-btn" *ngIf="messageDetails">
+        <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
+        <div *ngIf="messageDetails.flowDirection!=='IN'">
+            <button  class="btn btn-warning" mat-button (click)="resendFile()">Resend Message
+                <mat-spinner [diameter]="20" color="warn" *ngIf="reSubmittingMessage"></mat-spinner>
+            </button>
+        </div>
+    </div>
+</mat-dialog-actions>

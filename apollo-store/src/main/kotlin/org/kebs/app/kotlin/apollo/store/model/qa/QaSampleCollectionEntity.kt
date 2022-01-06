@@ -16,9 +16,17 @@ class QaSampleCollectionEntity : Serializable {
     @GeneratedValue(generator = "DAT_KEBS_MANUFACTURE_PLANT_DETAILS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     var id: Long = 0
 
+    @Column(name = "SCF_NO")
+    @Basic
+    var scfNo: String? = null
+
     @Column(name = "PERMIT_ID")
     @Basic
-    var permitId: Long? = null
+    var permitId: String? = null
+
+    @Column(name = "ITEM_ID")
+    @Basic
+    var itemId: Long? = null
 
     @Column(name = "NAME_OF_MANUFACTURE")
     @Basic
@@ -40,9 +48,28 @@ class QaSampleCollectionEntity : Serializable {
     @Basic
     var batchNo: String? = null
 
+    @Column(name = "TRANSMISSION_RESULT")
+    @Basic
+    var transmissionResult: String? = null
+
+    @Column(name = "REFERENCE_STANDARD")
+    @Basic
+    var referenceStandard: String? = null
+
     @Column(name = "BATCH_SIZE")
     @Basic
     var batchSize: String? = null
+
+    @Column(name = "MODE_OF_RELEASE")
+    @Basic
+    var modeOfRelease: String? = null
+    @Column(name = "LABEL_DETAILS")
+    @Basic
+    var labelDetails: String? = null
+
+    @Column(name = "EXPIRY_DATE")
+    @Basic
+    var expiryDate: String? = null
 
     @Column(name = "SAMPLE_SIZE")
     @Basic

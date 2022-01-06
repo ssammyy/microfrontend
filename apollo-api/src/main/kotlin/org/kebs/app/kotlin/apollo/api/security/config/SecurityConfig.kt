@@ -38,6 +38,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
+import org.springframework.web.servlet.config.annotation.CorsRegistry
 import java.util.*
 
 
@@ -63,10 +64,6 @@ class WebSecurityConfig {
         private var exclusionsCros: Array<String> =
             authenticationProperties.requiresNoAuthenticationCros?.split(",")?.toTypedArray() ?: arrayOf("")
 
-//        fun addCorsMappings(registry: CorsRegistry) {
-//            registry.addMapping("/**").allowedOrigins("*").allowedMethods("GET", "POST", "PUT", "DELETE")
-//        }
-
         @Bean
         fun authenticationTokenFilterBean(): JWTAuthorizationFilter {
             return JWTAuthorizationFilter()
@@ -82,10 +79,25 @@ class WebSecurityConfig {
         @Bean
         fun corsConfigurationSource(): CorsConfigurationSource? {
             val configuration = CorsConfiguration()
-            //TODO: MOVE TO CONFIGURATION FILE
+            // MOVE TO CONFIGURATION FILE
             configuration.allowedOrigins = listOf(*exclusionsCros)
-            configuration.allowedMethods = listOf("*")
-            configuration.allowedHeaders = listOf("*")
+            configuration.allowedHeaders =
+                    Arrays.asList(
+                            "Origin",
+                            "Access-Control-Allow-Origin",
+                            "Content-Type",
+                            "Accept",
+                            "Authorization",
+                            "Origin,Accept",
+                            "X-Requested-With",
+                            "Access-Control-Request-Method",
+                            "Access-Control-Request-Headers"
+                    )
+            configuration.exposedHeaders = Arrays.asList(
+                    "Origin", "Content-Type", "Accept", "Authorization",
+                    "Access-Control-Allow-Origin", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials"
+            )
+            configuration.allowedMethods = Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")
             configuration.allowCredentials = true
             val source = UrlBasedCorsConfigurationSource()
             source.registerCorsConfiguration("/**", configuration)
@@ -110,8 +122,8 @@ class WebSecurityConfig {
                 .exceptionHandling()
                 .authenticationEntryPoint(HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                 .accessDeniedHandler { _, response, accessDeniedException ->
-                    response?.status = HttpStatus.UNAUTHORIZED.value()
-                    response?.outputStream?.println("message: ${accessDeniedException.message}, timestamp: ${Calendar.getInstance().time}")
+                    response?.status = HttpStatus.FORBIDDEN.value()
+                    response?.outputStream?.println("message: access denied to perform this actions, please consult your administrator")
                 }
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -177,6 +189,7 @@ class WebSecurityConfig {
                 .loginProcessingUrl("/auth/login-service")
                 .successHandler(loginSuccessHandler(authenticationProperties.homePage))
                 .failureUrl("/auth/login?error")
+                //.permitAll()
 //            .failureHandler(authenticationFailureHandler())
 //            .and()
 //            .logout()

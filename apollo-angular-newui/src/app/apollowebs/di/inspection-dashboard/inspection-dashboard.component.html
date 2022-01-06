@@ -1,0 +1,178 @@
+<div *ngIf="inspectionOfficer || supervisorCharge">
+    <h2 *ngIf="supervisorCharge && personalStats">Tasks</h2>
+    <div class="row" *ngIf="supervisorCharge && personalStats">
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card card-stats">
+                <div class="card-header card-header-success card-header-icon">
+                    <div class="card-icon">
+                        <i class="material-icons">format_list_numbered_rtl</i>
+                    </div>
+                    <p class="card-category">Completed Tasks</p>
+                    <h3 class="card-title">{{personalStats.tasks.COMPLETED_TASKS}}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card card-stats">
+                <div class="card-header card-header-success card-header-icon">
+                    <div class="card-icon">
+                        <i class="material-icons">format_list_numbered_rtl</i>
+                    </div>
+                    <p class="card-category">Pending Tasks</p>
+                    <h3 class="card-title">{{personalStats.tasks.PENDING_TASKS}}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h2 *ngIf="inspectionOfficer && personalStats"> Laboratory</h2>
+    <div class="row" *ngIf="inspectionOfficer && personalStats">
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card card-stats">
+                <div class="card-header card-header-success card-header-icon">
+                    <div class="card-icon">
+                        <i class="material-icons">science</i>
+                    </div>
+                    <p class="card-category">Samples Collection</p>
+                    <h3 class="card-title">Collected: {{personalStats.samples.SAMPLE_COLLECTED}}</h3>
+                    <h3 class="card-title">Not Collected: {{personalStats.samples.SAMPLE_NOT_COLLECTED}}</h3>
+                    <h3 class="card-title">Total: {{personalStats.samples.SAMPLE_NOT_COLLECTED+personalStats.samples.SAMPLE_COLLECTED}}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card card-stats">
+                <div class="card-header card-header-success card-header-icon">
+                    <div class="card-icon">
+                        <i class="material-icons">science</i>
+                    </div>
+                    <p class="card-category">Sample submission</p>
+                    <h3 class="card-title">Submitted: {{personalStats.samples.SAMPLE_SUBMITTED}}</h3>
+                    <h3 class="card-title">Not Submitted: {{personalStats.samples.SAMPLE_NOT_SUBMITTED}}</h3>
+                    <h3 class="card-title">Total: {{personalStats.samples.SAMPLE_NOT_SUBMITTED+personalStats.samples.SAMPLE_SUBMITTED}}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card card-stats">
+                <div class="card-header card-header-success card-header-icon">
+                    <div class="card-icon">
+                        <i class="material-icons">science</i>
+                    </div>
+                    <p class="card-category">BS Number Update</p>
+                    <h3 class="card-title">Updated: {{personalStats.samples.BS_NO_UPDATED}}</h3>
+                    <h3 class="card-title">Not Updated: {{personalStats.samples.BS_NO_NOT_UPDATED}}</h3>
+                    <h3 class="card-title">Total: {{personalStats.samples.BS_NO_NOT_UPDATED+personalStats.samples.BS_NO_UPDATED}}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h2 *ngIf="personalStats">Assigned Documents</h2>
+    <div class="row" *ngIf="personalStats">
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card card-stats">
+                <div class="card-header card-header-success card-header-icon">
+                    <div class="card-icon">
+                        <i class="material-icons">assignment</i>
+                    </div>
+                    <p class="card-category">COR</p>
+                    <h3 class="card-title">Generated: {{personalStats.COR.COR_ISSUED}}</h3>
+                    <h3 class="card-title">Pending: {{personalStats.COR.COR_PENDING}}</h3>
+                    <h3 class="card-title">Total: {{personalStats.COR.TOTAL_DOCUMENT}}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card card-stats">
+                <div class="card-header card-header-success card-header-icon">
+                    <div class="card-icon">
+                        <i class="material-icons">assignment</i>
+                    </div>
+                    <p class="card-category">Local COC</p>
+                    <h3 class="card-title">Generated: {{personalStats.LOCAL_COC_COI.COC_ISSUED}}</h3>
+                    <h3 class="card-title">Pending: {{personalStats.LOCAL_COC_COI.COC_PENDING}}</h3>
+                    <h3 class="card-title">Total: {{personalStats.LOCAL_COC_COI.TOTAL_DOCUMENT}}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6" *ngIf="personalStats.NCR">
+            <div class="card card-stats">
+                <div class="card-header card-header-success card-header-icon">
+                    <div class="card-icon">
+                        <i class="material-icons">assignment</i>
+                    </div>
+                    <p class="card-category">NCR</p>
+                    <h3 class="card-title">CoC Generated: {{personalStats.NCR.COC_ISSUED}}</h3>
+                    <h3 class="card-title">CoR Generated: {{personalStats.NCR.COR_ISSUED}}</h3>
+                    <h3 class="card-title">Total: {{personalStats.NCR.TOTAL_DOCUMENT}}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6" *ngIf="personalStats.WITH_COC_COI">
+            <div class="card card-stats">
+                <div class="card-header card-header-success card-header-icon">
+                    <div class="card-icon">
+                        <i class="material-icons">assignment</i>
+                    </div>
+                    <p class="card-category">With COC</p>
+                    <h3 class="card-title">Inspection In Progress: {{personalStats.WITH_COC_COI.INSPECTION_INPROGRESS}}</h3>
+                    <h3 class="card-title">Inspection Completed: {{personalStats.WITH_COC_COI.INSPECTION_COMPLETED}}</h3>
+                    <h3 class="card-title">Total: {{personalStats.WITH_COC_COI.TOTAL_DOCUMENT}}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6" *ngIf="personalStats.NO_COR">
+            <div class="card card-stats">
+                <div class="card-header card-header-success card-header-icon">
+                    <div class="card-icon">
+                        <i class="material-icons">assignment</i>
+                    </div>
+                    <p class="card-category">No COR</p>
+                    <h3 class="card-title">In Progress: {{personalStats.NO_COR.INSPECTION_INPROGRESS}}</h3>
+                    <h3 class="card-title">Inspection Completed: {{personalStats.NO_COR.INSPECTION_COMPLETED}}</h3>
+                    <h3 class="card-title">Total: {{personalStats.NO_COR.TOTAL_DOCUMENT}}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6" *ngIf="personalStats.COURIER_GOODS">
+            <div class="card card-stats">
+                <div class="card-header card-header-success card-header-icon">
+                    <div class="card-icon">
+                        <i class="material-icons">assignment</i>
+                    </div>
+                    <p class="card-category">Courier Goods</p>
+                    <h3 class="card-title"> COC Issued: {{personalStats.COURIER_GOODS.COC_ISSUED}}</h3>
+                    <h3 class="card-title">COC Pending: {{personalStats.COURIER_GOODS.COC_PENDING}}</h3>
+                    <h3 class="card-title">Total: {{personalStats.COURIER_GOODS.TOTAL_DOCUMENT}}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6" *ngIf="personalStats.TEMPORARY_IMPORTS">
+            <div class="card card-stats">
+                <div class="card-header card-header-success card-header-icon">
+                    <div class="card-icon">
+                        <i class="material-icons">assignment</i>
+                    </div>
+                    <p class="card-category">Temporary Imports</p>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">Issued: {{personalStats.TEMPORARY_IMPORTS.COC_ISSUED}}</h3>
+                    <h3 class="card-title">Pending: {{personalStats.TEMPORARY_IMPORTS.COC_PENDING}}</h3>
+                    <h3 class="card-title">Total: {{personalStats.TEMPORARY_IMPORTS.TOTAL_DOCUMENT}}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6" *ngIf="personalStats.NO_COC_PVOC">
+            <div class="card card-stats">
+                <div class="card-header card-header-success card-header-icon">
+                    <div class="card-icon">
+                        <i class="material-icons">format_list_numbered_rtl</i>
+                    </div>
+                    <p class="card-category">No COC from PvoC</p>
+                    <h3 class="card-title">In Progress: {{personalStats.NO_COC_PVOC.INSPECTION_INPROGRESS}}</h3>
+                    <h3 class="card-title">Inspection Completed: {{personalStats.NO_COC_PVOC.INSPECTION_COMPLETED}}</h3>
+                    <h3 class="card-title">Total: {{personalStats.NO_COC_PVOC.TOTAL_DOCUMENT}}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

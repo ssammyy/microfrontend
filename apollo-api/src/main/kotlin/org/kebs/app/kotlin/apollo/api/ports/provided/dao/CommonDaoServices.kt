@@ -83,11 +83,13 @@ import org.modelmapper.ModelMapper
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
+import org.springframework.core.io.ResourceLoader
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.mock.web.MockMultipartFile
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
+import org.springframework.util.ResourceUtils
 import org.springframework.util.StringUtils
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.function.ServerRequest
@@ -113,57 +115,57 @@ import javax.xml.stream.XMLOutputFactory
 
 @Service
 class CommonDaoServices(
-    private val jasyptStringEncryptor: StringEncryptor,
-    private val usersRepo: IUserRepository,
-    private val companyProfileRepo: ICompanyProfileRepository,
-    private val workPlanYearsCodesRepo: IWorkplanYearsCodesRepository,
-    private val manufacturePlantRepository: IManufacturePlantDetailsRepository,
-    private val batchJobRepository: IBatchJobDetailsRepository,
-    private val iSubSectionsLevel2Repo: ISubSectionsLevel2Repository,
-    private val iSubSectionsLevel1Repo: ISubSectionsLevel1Repository,
-    private val configurationRepository: IIntegrationConfigurationRepository,
-    private val workflowTransactionsRepository: IWorkflowTransactionsRepository,
-    private val iUserProfilesRepo: IUserProfilesRepository,
-    private val iImporterRepo: IImporterContactRepository,
-    private val serviceRequestsRepository: IServiceRequestsRepository,
-    private val verificationTokensRepo: IUserVerificationTokensRepository,
-    private val iUserRepository: IUserRepository,
-    private val emailVerificationTokenEntityRepo: EmailVerificationTokenEntityRepo,
-    private val serviceMapsRepository: IServiceMapsRepository,
-    private val countriesRepository: ICountriesRepository,
-    private val notifications: Notifications,
-    private val directorateRepo: IDirectoratesRepository,
-    private val businessLinesRepo: IBusinessLinesRepository,
-    private val businessNatureRepo: IBusinessNatureRepository,
-    private val notificationsRepo: INotificationsRepository,
-    private val notificationsBufferRepo: INotificationsBufferRepository,
-    private val manufacturerContactDetailsRepository: IManufacturerContactsRepository,
-    private val manufacturersRepo: IManufacturerRepository,
-    private val iDivisionsRepo: IDivisionsRepository,
-    private val designationRepo: IDesignationsRepository,
-    private val iSectionsRepo: ISectionsRepository,
-    private val departmentRepo: IDepartmentsRepository,
-    private val regionsRepo: IRegionsRepository,
-    private val countiesRepo: ICountiesRepository,
-    private val townsRepo: ITownsRepository,
-    private val userTypesRepo: IUserTypesEntityRepository,
-    private val companyProfileDirectorsRepo: ICompanyProfileDirectorsRepository,
-    private val companyProfileCommoditiesManufactureRepo: ICompanyProfileCommoditiesManufactureRepository,
-    private val companyProfileContractsUndertakenRepo: ICompanyProfileContractsUndertakenRepository,
+        private val jasyptStringEncryptor: StringEncryptor,
+        private val usersRepo: IUserRepository,
+        private val companyProfileRepo: ICompanyProfileRepository,
+        private val workPlanYearsCodesRepo: IWorkplanYearsCodesRepository,
+        private val manufacturePlantRepository: IManufacturePlantDetailsRepository,
+        private val batchJobRepository: IBatchJobDetailsRepository,
+        private val iSubSectionsLevel2Repo: ISubSectionsLevel2Repository,
+        private val iSubSectionsLevel1Repo: ISubSectionsLevel1Repository,
+        private val configurationRepository: IIntegrationConfigurationRepository,
+        private val workflowTransactionsRepository: IWorkflowTransactionsRepository,
+        private val iUserProfilesRepo: IUserProfilesRepository,
+        private val iImporterRepo: IImporterContactRepository,
+        private val serviceRequestsRepository: IServiceRequestsRepository,
+        private val verificationTokensRepo: IUserVerificationTokensRepository,
+        private val iUserRepository: IUserRepository,
+        private val emailVerificationTokenEntityRepo: EmailVerificationTokenEntityRepo,
+        private val serviceMapsRepository: IServiceMapsRepository,
+        private val countriesRepository: ICountriesRepository,
+        private val notifications: Notifications,
+        private val directorateRepo: IDirectoratesRepository,
+        private val businessLinesRepo: IBusinessLinesRepository,
+        private val businessNatureRepo: IBusinessNatureRepository,
+        private val notificationsRepo: INotificationsRepository,
+        private val notificationsBufferRepo: INotificationsBufferRepository,
+        private val manufacturerContactDetailsRepository: IManufacturerContactsRepository,
+        private val manufacturersRepo: IManufacturerRepository,
+        private val iDivisionsRepo: IDivisionsRepository,
+        private val designationRepo: IDesignationsRepository,
+        private val iSectionsRepo: ISectionsRepository,
+        private val departmentRepo: IDepartmentsRepository,
+        private val regionsRepo: IRegionsRepository,
+        private val countiesRepo: ICountiesRepository,
+        private val townsRepo: ITownsRepository,
+        private val userTypesRepo: IUserTypesEntityRepository,
+        private val companyProfileDirectorsRepo: ICompanyProfileDirectorsRepository,
+        private val companyProfileCommoditiesManufactureRepo: ICompanyProfileCommoditiesManufactureRepository,
+        private val companyProfileContractsUndertakenRepo: ICompanyProfileContractsUndertakenRepository,
+        private val verificationTokensRepoB: IUserVerificationTokensRepositoryB,
+        private val countyRepo: ICountiesRepository,
+        private val standardCategoryRepo: IStandardCategoryRepository,
+        private val productCategoriesRepository: IKebsProductCategoriesRepository,
+        private val broadProductCategoryRepository: IBroadProductCategoryRepository,
+        private val productsRepo: IProductsRepository,
+        private val productSubCategoryRepo: IProductSubcategoryRepository,
 
-    private val countyRepo: ICountiesRepository,
-    private val standardCategoryRepo: IStandardCategoryRepository,
-    private val productCategoriesRepository: IKebsProductCategoriesRepository,
-    private val broadProductCategoryRepository: IBroadProductCategoryRepository,
-    private val productsRepo: IProductsRepository,
-    private val productSubCategoryRepo: IProductSubcategoryRepository,
-
-    private val iProcessesStagesRepo: IProcessesStagesRepository,
-    private val iLaboratoryRepo: ILaboratoryRepository,
-
-    private val bufferRepo: INotificationsBufferRepository,
-    private val applicationMapProperties: ApplicationMapProperties,
-    private val smsService: SmsServiceImpl,
+        private val iProcessesStagesRepo: IProcessesStagesRepository,
+        private val iLaboratoryRepo: ILaboratoryRepository,
+        private val resourceLoader: ResourceLoader,
+        private val bufferRepo: INotificationsBufferRepository,
+        private val applicationMapProperties: ApplicationMapProperties,
+        private val smsService: SmsServiceImpl,
 ) {
 
     @Value("\${common.page.view.name}")
@@ -179,6 +181,18 @@ class CommonDaoServices(
     lateinit var pointOfEntries: String
 
     val successLink = "redirect:/api/auth/signup/notification/success/message"
+    fun resolveAbsoluteFilePath(fileName: String): String {
+        try {
+            if (fileName.startsWith("classpath:")) {
+                return resourceLoader.getResource(fileName).toString()
+            } else {
+                return ResourceUtils.getFile(fileName).toString()
+            }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("READ FAILED", ex)
+        }
+        return ""
+    }
 
     //Deserialize XML to POJO
     final inline fun <reified T> deserializeFromXML(xmlString: String, toExclude: String = ""): T {
@@ -225,16 +239,23 @@ class CommonDaoServices(
         return sdf.format(dateChange)
     }
 
-    fun convertDateToString(date: Date, format: String): String {
-        val format = SimpleDateFormat(format)
+    fun convertDateToString(date: LocalDateTime, format: String): String {
+        val format = DateTimeFormatter.ofPattern(format)
         return format.format(date)
+    }
+
+    fun convertDateToString(date: Date?, format: String): String {
+        return date?.let {
+            val format = SimpleDateFormat(format)
+            return format.format(date)
+        } ?: ""
     }
 
     fun convertISO8601DateToTimestamp(dateString: String): Timestamp? {
         try {
             val formatter = DateTimeFormatterBuilder()
-                .append(DateTimeFormatter.ISO_DATE_TIME)
-                .toFormatter()
+                    .append(DateTimeFormatter.ISO_DATE_TIME)
+                    .toFormatter()
             val instant = LocalDateTime.parse(dateString, formatter)
             return Timestamp.valueOf(instant)
         } catch (e: Exception) {
@@ -245,10 +266,10 @@ class CommonDaoServices(
 
     fun findWorkPlanYearsCodesEntity(currentYear: String, map: ServiceMapsEntity): WorkplanYearsCodesEntity {
         workPlanYearsCodesRepo.findByYearNameAndStatus(currentYear, map.activeStatus)
-            ?.let {
-                return it
-            }
-            ?: throw ExpectedDataNotFound("Workplan Years Codes with [status=$map.activeStatus], do Not Exists")
+                ?.let {
+                    return it
+                }
+                ?: throw ExpectedDataNotFound("Workplan Years Codes with [status=$map.activeStatus], do Not Exists")
     }
 
     fun convertStringAmountToBigDecimal(amount: String): BigDecimal? {
@@ -263,17 +284,17 @@ class CommonDaoServices(
     fun createKesWsFileName(filePrefix: String, documentIdentifier: String): String {
         val current = LocalDateTime.now()
 
-        val formatter = DateTimeFormatter.ofPattern("yyyymmddhhmmss")
+        val formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
         val formatted = current.format(formatter)
         KotlinLogging.logger { }.info(":::::: Formatted datetime: $formatted :::::::")
 
         //TODO: Add static fields to config file
         var finalFileName = filePrefix
-            .plus("-")
-            .plus(documentIdentifier)
-            .plus("-1-B-")
-            .plus(formatted)
-            .plus(".xml")
+                .plus("-")
+                .plus(documentIdentifier)
+                .plus("-1-B-")
+                .plus(formatted)
+                .plus(".xml")
         finalFileName = finalFileName.replace("\\s".toRegex(), "")
 
         KotlinLogging.logger { }.info(":::::: Final filename: $finalFileName :::::::")
@@ -287,17 +308,17 @@ class CommonDaoServices(
 
     fun findBatchJobDetails(batchJobID: Long): BatchJobDetails {
         batchJobRepository.findByIdOrNull(batchJobID)
-            ?.let {
-                return it
-            }
-            ?: throw ExpectedDataNotFound("Batch Job Details With the following ID $batchJobID, does not exist")
+                ?.let {
+                    return it
+                }
+                ?: throw ExpectedDataNotFound("Batch Job Details With the following ID $batchJobID, does not exist")
     }
 
     fun companyDirectorList(companyID: Long): List<CompanyProfileDirectorsEntity> {
         companyProfileDirectorsRepo.findByCompanyProfileId(companyID)?.let {
             return it
         }
-            ?: throw ExpectedDataNotFound("Directors details for company with  ID $companyID, does not exist")
+                ?: throw ExpectedDataNotFound("Directors details for company with  ID $companyID, does not exist")
     }
 
     companion object {
@@ -308,7 +329,7 @@ class CommonDaoServices(
             oFactory.setProperty(WstxOutputProperties.P_OUTPUT_CDATA_AS_TEXT, true)
             val xf = XmlFactory(iFactory, oFactory)
             val xmlMapper: ObjectMapper = XmlMapper(xf)
-                .registerModule(KotlinModule())
+                    .registerModule(KotlinModule())
 //        xmlMapper.registerModule(JodaModule())
             xmlMapper.configure(SerializationFeature.WRITE_SELF_REFERENCES_AS_NULL, false)
             xmlMapper.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false)
@@ -349,18 +370,18 @@ class CommonDaoServices(
 
     fun getUserTypeDetails(usertypeID: Long): UserTypesEntity {
         userTypesRepo.findByIdOrNull(usertypeID)
-            ?.let {
-                return it
-            }
-            ?: throw ExpectedDataNotFound("User Type Details with [ID=${usertypeID}] , does not exist")
+                ?.let {
+                    return it
+                }
+                ?: throw ExpectedDataNotFound("User Type Details with [ID=${usertypeID}] , does not exist")
     }
 
     fun findProcesses(map: Int): ProcessesStagesEntity {
         iProcessesStagesRepo.findByServiceMapId(map)
-            ?.let {
-                return it
-            }
-            ?: throw ExpectedDataNotFound("Processes with [Service Map=${map}] , does not exist")
+                ?.let {
+                    return it
+                }
+                ?: throw ExpectedDataNotFound("Processes with [Service Map=${map}] , does not exist")
     }
 
     fun findAllContractsUnderTakenDetails(companyProfileID: Long): List<CompanyProfileContractsUndertakenEntity> {
@@ -376,31 +397,31 @@ class CommonDaoServices(
     }
 
     fun findAllFreightStationOnPortOfArrival(
-        sectionsEntity: SectionsEntity,
-        status: Int
+            sectionsEntity: SectionsEntity,
+            status: Int
     ): List<SubSectionsLevel2Entity> {
         iSubSectionsLevel2Repo.findBySectionIdAndStatus(sectionsEntity, status)
-            ?.let {
-                return it
-            }
-            ?: throw Exception("CFS Stations With section ID  = ${sectionsEntity.id} and status = ${status}, does not Exist")
+                ?.let {
+                    return it
+                }
+                ?: throw Exception("CFS Stations With section ID  = ${sectionsEntity.id} and status = ${status}, does not Exist")
 
     }
 
     fun findIntegrationConfigurationEntity(configID: Long): IntegrationConfigurationEntity {
         configurationRepository.findByIdOrNull(configID)
-            ?.let {
-                return it
-            }
-            ?: throw ExpectedDataNotFound("Configuration With the following ID $configID, does not exist")
+                ?.let {
+                    return it
+                }
+                ?: throw ExpectedDataNotFound("Configuration With the following ID $configID, does not exist")
     }
 
     fun findManufactureWithID(manufactureID: Long): ManufacturersEntity {
         manufacturersRepo.findByIdOrNull(manufactureID)
-            ?.let {
-                return it
-            }
-            ?: throw ExpectedDataNotFound("Manufacture With the following ID $manufactureID, does not exist")
+                ?.let {
+                    return it
+                }
+                ?: throw ExpectedDataNotFound("Manufacture With the following ID $manufactureID, does not exist")
     }
 
     fun getExpirationTime(expirationTime: Int): Timestamp {
@@ -432,10 +453,10 @@ class CommonDaoServices(
 
     fun serviceMapDetails(appId: Int): ServiceMapsEntity {
         serviceMapsRepository.findByIdAndStatus(appId, activeStatus.toInt())
-            ?.let { s ->
-                return s
-            }
-            ?: throw ServiceMapNotFoundException("No service map found for appId=$appId, aborting")
+                ?.let { s ->
+                    return s
+                }
+                ?: throw ServiceMapNotFoundException("No service map found for appId=$appId, aborting")
 
     }
 
@@ -486,9 +507,9 @@ class CommonDaoServices(
     fun loadCommonUIComponents(s: ServiceMapsEntity): MutableMap<String, Any> {
 
         return mutableMapOf(
-            Pair("activeStatus", s.activeStatus),
-            Pair("inActiveStatus", s.inactiveStatus),
-            Pair("currentDate", getCurrentDate())
+                Pair("activeStatus", s.activeStatus),
+                Pair("inActiveStatus", s.inactiveStatus),
+                Pair("currentDate", getCurrentDate())
 //                Pair("CDStatusTypes", daoServices.findCdStatusValueList(s.activeStatus))
         )
     }
@@ -496,7 +517,7 @@ class CommonDaoServices(
     fun loadNotificationsUIComponents(s: ServiceMapsEntity, loggedInUserEMail: String): MutableMap<String, Any> {
 
         return mutableMapOf(
-            Pair("notifications", findAllUserNotification(loggedInUserEMail))
+                Pair("notifications", findAllUserNotification(loggedInUserEMail))
 
 //                Pair("CDStatusTypes", daoServices.findCdStatusValueList(s.activeStatus))
         )
@@ -515,9 +536,9 @@ class CommonDaoServices(
     fun assignDesignation(designationId: Long?): DesignationsEntity? = designationRepo.findByIdOrNull(designationId)
 
     fun returnValues(
-        result: ServiceRequestsEntity,
-        map: ServiceMapsEntity,
-        sm: MessageSuccessFailDTO
+            result: ServiceRequestsEntity,
+            map: ServiceMapsEntity,
+            sm: MessageSuccessFailDTO
     ): String? {
         return when (result.status) {
             map.successStatus -> "${successLink}?message=${sm.message}&closeLink=${sm.closeLink}"
@@ -586,10 +607,10 @@ class CommonDaoServices(
     }
 
     fun userRegisteredSuccessfulEmailCompose(
-        user: UsersEntity,
-        sr: ServiceRequestsEntity,
-        map: ServiceMapsEntity,
-        token: String?
+            user: UsersEntity,
+            sr: ServiceRequestsEntity,
+            map: ServiceMapsEntity,
+            token: String?
     ): RegistrationEmailDTO {
         val dataValue = RegistrationEmailDTO()
         with(dataValue) {
@@ -606,16 +627,17 @@ class CommonDaoServices(
     }
 
     fun userRegisteredEntryNumberSuccessfulEmailCompose(
-        companyProfile: CompanyProfileEntity,
-        sr: ServiceRequestsEntity,
-        map: ServiceMapsEntity,
-        token: String?
+            companyProfile: CompanyProfileEntity,
+            sr: ServiceRequestsEntity,
+            map: ServiceMapsEntity,
+            token: String?
     ): RegistrationForEntryNumberEmailDTO {
         val dataValue = RegistrationForEntryNumberEmailDTO()
         with(dataValue) {
             baseUrl = applicationMapProperties.baseUrlValue
             fullName =
-                concatenateName(findUserByID(companyProfile.userId ?: throw ExpectedDataNotFound("USER ID NOT FOUND")))
+                    concatenateName(findUserByID(companyProfile.userId
+                            ?: throw ExpectedDataNotFound("USER ID NOT FOUND")))
             entryNumber = companyProfile.entryNumber
             dateSubmitted = getCurrentDate()
 
@@ -936,6 +958,45 @@ class CommonDaoServices(
             }
             ?: throw ExpectedDataNotFound("Username  = ${userName}, does not Exist")
     }
+
+    fun findOTPByToken(userName: String): UserVerificationTokensEntity {
+        verificationTokensRepoB.findByToken(userName)
+            ?.let { UserVerificationTokensEntity ->
+                return UserVerificationTokensEntity
+            }
+            ?: throw ExpectedDataNotFound("OTP  = ${userName}, does not Exist")
+    }
+
+    fun findTokenStringByUserid(userId: Long): UserVerificationTokensEntity {
+
+        verificationTokensRepoB.findAllByTokenByUserId(userId)
+            ?.let { UserVerificationTokensEntity ->
+                return UserVerificationTokensEntity
+            }
+            ?: throw ExpectedDataNotFound("Token, does not Exist")
+    }
+
+    fun findByToken(token: Long?): UserVerificationTokensEntity {
+
+        token?.let {
+            verificationTokensRepoB.findByVersion(it)
+                ?.let { UserVerificationTokensEntity ->
+                    return UserVerificationTokensEntity
+                }
+        }
+            ?: throw ExpectedDataNotFound("Token, does not Exist")
+    }
+
+//    fun findUserIdByToken(token: String?): UserVerificationTokensEntity {
+//
+//        token?.let {
+//            verificationTokensRepoB.findAllByVarField1(it)
+//                ?.let { UserVerificationTokensEntity ->
+//                    return UserVerificationTokensEntity
+//                }
+//        }
+//            ?: throw ExpectedDataNotFound("Token, does not Exist")
+//    }
 
 
     fun findCompanyProfile(userID: Long): CompanyProfileEntity {
@@ -1800,6 +1861,8 @@ class CommonDaoServices(
             createdOn = Timestamp.from(Instant.now())
             tokenExpiryDate = Timestamp.from(Instant.now().plus(10, ChronoUnit.MINUTES))
             transactionDate = Date(java.util.Date().time)
+            varField1 = UUID.randomUUID().toString()
+
         }
 
 

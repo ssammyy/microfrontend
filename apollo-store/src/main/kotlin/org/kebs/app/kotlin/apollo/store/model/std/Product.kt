@@ -8,11 +8,10 @@ import javax.persistence.*
 @Entity
 @Table(name = "SD_PRODUCTS")
 class Product: Serializable {
-    @Column(name = "ID")
     @Id
-    @SequenceGenerator(name = "CFG_PRODUCTS_SEQ_GEN", allocationSize = 1, sequenceName = "CFG_PRODUCTS_SEQ")
-    @GeneratedValue(generator = "CFG_PRODUCTS_SEQ_GET", strategy = GenerationType.SEQUENCE)
-    var id: Long = 0
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    var id: Long =0
 
     @Column(name = "NAME")
     @Basic

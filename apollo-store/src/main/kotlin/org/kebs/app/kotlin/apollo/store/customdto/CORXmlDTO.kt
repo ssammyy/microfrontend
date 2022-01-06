@@ -27,105 +27,114 @@ class CORXmlDTO {
     var cor: CustomCorXmlDto? = null
 }
 
-class CustomCorXmlDto {
+class CustomCorXmlDto(id: Long?,corNumber: String?,corIssueDate: Timestamp?,countryOfSupply: String?,inspectionCenter: String?,exporterName: String?,
+                      exporterAddress1: String?,exporterEmail: String?, applicationBookingDate: Timestamp?,inspectionDate: Timestamp? ,make: String?,model: String?,
+                      chasisNumber: String?,engineNumber: String?,engineCapacity: String?,yearOfManufacture: String?, yearOfFirstRegistration: String?,inspectionMileage: String?,
+                      unitsOfMileage: String?,inspectionRemarks: String?,previousRegistrationNumber: String?,previousCountryOfRegistration: String?,tareWeight:  Long?,
+                      loadCapacity:  Long?,grossWeight:  Long? ,numberOfAxles:  Long?,typeOfVehicle: String?,numberOfPassangers:  Long?,typeOfBody: String?,
+                      bodyColor: String?,fuelType: String?
+) {
 
     @JacksonXmlProperty(localName = "ID")
-    var id: String? = null
+    var id: String? = id.toString()
 
     @JacksonXmlProperty(localName = "COR_NUMBER")
-    var corNumber: String? = null
+    var corNumber: String? = corNumber.orEmpty()
 
     @JacksonXmlProperty(localName = "COR_ISSUE_DATE")
-    var corIssueDate: String? = null
+    var corIssueDate: String? = this.convertTimestampToKeswsValidDate(corIssueDate)
 
     @JacksonXmlProperty(localName = "COUNTRY_OF_SUPPLY")
-    var countryOfSupply: String? = null
+    var countryOfSupply: String? = countryOfSupply.orEmpty()
 
     @JacksonXmlProperty(localName = "INSPECTION_CENTER")
-    var inspectionCenter: String? = null
+    var inspectionCenter: String? = inspectionCenter.orEmpty()
 
     @JacksonXmlProperty(localName = "EXPORTER_NAME")
-    var exporterName: String? = null
+    var exporterName: String? = exporterName.orEmpty()
 
     @JacksonXmlProperty(localName = "EXPORTER_ADDRESS_1")
-    var exporterAddress1: String? = null
+    var exporterAddress1: String? = exporterAddress1.orEmpty()
 
     @JacksonXmlProperty(localName = "EXPORTER_EMAIL")
-    var exporterEmail: String? = null
+    var exporterEmail: String? = exporterEmail.orEmpty()
 
     @JacksonXmlProperty(localName = "APPLICATION_BOOKING_DATE")
-    var applicationBookingDate: String? = null
+    var applicationBookingDate: String? = this.convertTimestampToKeswsValidDate(applicationBookingDate)
 
     @JacksonXmlProperty(localName = "INSPECTION_DATE")
-    var inspectionDate: String? = null
+    var inspectionDate: String? = this.convertTimestampToKeswsValidDate(inspectionDate)
 
     @JacksonXmlProperty(localName = "MAKE")
-    var make: String? = null
+    var make: String? = make
 
     @JacksonXmlProperty(localName = "MODEL")
-    var model: String? = null
+    var model: String? = model
 
     @JacksonXmlProperty(localName = "CHASIS_NUMBER")
-    var chasisNumber: String? = null
+    var chasisNumber: String? = chasisNumber
 
     @JacksonXmlProperty(localName = "ENGINE_NUMBER")
-    var engineNumber: String? = null
+    var engineNumber: String? = engineNumber
 
     @JacksonXmlProperty(localName = "ENGINE_CAPACITY")
-    var engineCapacity: String? = null
+    var engineCapacity: String? = engineCapacity
 
     @JacksonXmlProperty(localName = "YEAR_OF_MANUFACTURE")
-    var yearOfManufacture: String? = null
+    var yearOfManufacture: String? = yearOfManufacture
 
     @JacksonXmlProperty(localName = "YEAR_OF_FIRST_REGISTRATION")
-    var yearOfFirstRegistration: String? = null
+    var yearOfFirstRegistration: String? = yearOfFirstRegistration
 
     @JacksonXmlProperty(localName = "INSPECTION_MILEAGE")
-    var inspectionMileage: String? = null
+    var inspectionMileage: String? = inspectionMileage
 
     @JacksonXmlProperty(localName = "UNITS_OF_MILEAGE")
-    var unitsOfMileage: String? = null
+    var unitsOfMileage: String? = unitsOfMileage.orEmpty()
 
     @JacksonXmlProperty(localName = "INSPECTION_REMARKS")
-    var inspectionRemarks: String? = null
+    var inspectionRemarks: String? = inspectionRemarks.orEmpty()
 
     @JacksonXmlProperty(localName = "PREVIOUS_REGISTRATION_NUMBER")
-    var previousRegistrationNumber: String? = null
+    var previousRegistrationNumber: String? = previousRegistrationNumber.orEmpty()
 
     @JacksonXmlProperty(localName = "PREVIOUS_COUNTRY_OF_REGISTRATION")
-    var previousCountryOfRegistration: String? = null
+    var previousCountryOfRegistration: String? = previousCountryOfRegistration.orEmpty()
 
     @JacksonXmlProperty(localName = "TARE_WEIGHT")
-    var tareWeight: String? = null
+    var tareWeight: String? = tareWeight?.toString()
 
     @JacksonXmlProperty(localName = "LOAD_CAPACITY")
-    var loadCapacity: String? = null
+    var loadCapacity: String? = loadCapacity?.toString()
 
     @JacksonXmlProperty(localName = "GROSS_WEIGHT")
-    var grossWeight: String? = null
+    var grossWeight: String? = grossWeight?.toString()
 
     @JacksonXmlProperty(localName = "NUMBER_OF_AXLES")
-    var numberOfAxles: String? = null
+    var numberOfAxles: String? = numberOfAxles?.toString()
 
     @JacksonXmlProperty(localName = "TYPE_OF_VEHICLE")
-    var typeOfVehicle: String? = null
+    var typeOfVehicle: String? = typeOfVehicle.orEmpty()
 
     @JacksonXmlProperty(localName = "NUMBER_OF_PASSANGERS")
-    var numberOfPassangers: String? = null
+    var numberOfPassangers: String? = numberOfPassangers?.toString()
 
     @JacksonXmlProperty(localName = "TYPE_OF_BODY")
-    var typeOfBody: String? = null
+    var typeOfBody: String? = typeOfBody.orEmpty()
 
     @JacksonXmlProperty(localName = "BODY_COLOR")
-    var bodyColor: String? = null
+    var bodyColor: String? = bodyColor.orEmpty()
 
     @JacksonXmlProperty(localName = "FUEL_TYPE")
-    var fuelType: String? = null
+    var fuelType: String? = fuelType
 
     @JacksonXmlProperty(localName = "VERSION")
     var version: String? = null
 
-    fun convertTimestampToKeswsValidDate(timestamp: Timestamp): String {
+    fun convertTimestampToKeswsValidDate(timestamp: Timestamp?): String? {
+        if(timestamp==null){
+            return null
+        }
         val sdf = SimpleDateFormat("yyyy-MM-dd")
         val date =sdf.format(timestamp)
         return date
@@ -135,6 +144,7 @@ class CustomCorXmlDto {
 fun CorsBakEntity.toCorXmlRecordRefl() = with(CustomCorXmlDto::class.primaryConstructor!!) {
     val propertiesByName = CorsBakEntity::class.memberProperties.associateBy { it.name }
     callBy(args = parameters.associate { parameter ->
+        KotlinLogging.logger {  }.info("P: ${parameter.name}")
         parameter to when (parameter.name) {
             else -> propertiesByName[parameter.name]?.get(this@toCorXmlRecordRefl)
         }

@@ -40,59 +40,59 @@ import java.util.stream.Collectors
 
 @Service
 class QADaoServices(
-    private val applicationMapProperties: ApplicationMapProperties,
-    private val commonDaoServices: CommonDaoServices,
-    private val usersRepo: IUserRepository,
-    private val qaInvoiceCalculation: QaInvoiceCalculationDaoServices,
-    private val limsServices: LimsServices,
-    private val productsRepo: IProductsRepository,
+        private val applicationMapProperties: ApplicationMapProperties,
+        private val commonDaoServices: CommonDaoServices,
+        private val usersRepo: IUserRepository,
+        private val qaInvoiceCalculation: QaInvoiceCalculationDaoServices,
+        private val limsServices: LimsServices,
+        private val productsRepo: IProductsRepository,
 //    private val qualityAssuranceBpmn: QualityAssuranceBpmn,
-    private val workPlanCreatedRepo: IQaWorkplanRepository,
-    private val iPermitRatingRepo: IPermitRatingRepository,
-    private val iManufacturePaymentDetailsRepository: IManufacturerPaymentDetailsRepository,
-    private val sampleStandardsRepo: ISampleStandardsRepository,
-    private val remarksEntityRepo: IQaRemarksEntityRepository,
-    private val invoiceDaoService: InvoiceDaoService,
-    private val paymentUnitsRepository: ICfgKebsPermitPaymentUnitsRepository,
-    private val serviceRequestsRepository: IServiceRequestsRepository,
-    private val qaInspectionOPCRepo: IQaInspectionOpcEntityRepository,
-    private val qaPersonnelInchargeRepo: IQaPersonnelInchargeEntityRepository,
-    private val qaInspectionTechnicalRepo: IQaInspectionTechnicalRepository,
-    private val qaInspectionReportRecommendationRepo: IQaInspectionReportRecommendationRepository,
-    private val qaInspectionHaccpImplementationRepo: IQaInspectionHaccpImplementationRepository,
-    private val permitRepo: IPermitApplicationsRepository,
-    private val permitUpdateDetailsRequestsRepo: IPermitUpdateDetailsRequestsRepository,
-    private val userRequestsRepo: IUserRequestTypesRepository,
-    private val SampleCollectionRepo: IQaSampleCollectionRepository,
-    private val SampleSubmissionRepo: IQaSampleSubmissionRepository,
-    private val SampleSubmissionSavedPdfListRepo: IQaSampleSubmittedPdfListRepository,
-    private val sampleLabTestResultsRepo: IQaSampleLabTestResultsRepository,
-    private val sampleLabTestParametersRepo: IQaSampleLabTestParametersRepository,
-    private val schemeForSupervisionRepo: IQaSchemeForSupervisionRepository,
-    private val sta3Repo: IQaSta3EntityRepository,
-    private val smarkFmarkRepo: IQaSmarkFmarkRepository,
-    private val invoiceRepository: IInvoiceRepository,
-    private val invoiceDetailsRepo: IQaInvoiceDetailsRepository,
-    private val invoiceMasterDetailsRepo: IQaInvoiceMasterDetailsRepository,
-    private val invoiceQaBatchRepo: IQaBatchInvoiceRepository,
-    private val invoiceStagingReconciliationRepo: IStagingPaymentReconciliationRepo,
-    private val invoiceBatchDetailsRepo: InvoiceBatchDetailsRepo,
-    private val sta10Repo: IQaSta10EntityRepository,
-    private val productsManufactureSTA10Repo: IQaProductBrandEntityRepository,
-    private val rawMaterialsSTA10Repo: IQaRawMaterialRepository,
-    private val machinePlantsSTA10Repo: IQaMachineryRepository,
-    private val qaUploadsRepo: IQaUploadsRepository,
-    private val manufacturingProcessSTA10Repo: IQaManufactureProcessRepository,
-    private val manufacturePlantRepository: IManufacturePlantDetailsRepository,
-    private val companyProfileRepo: ICompanyProfileRepository,
-    private val permitTypesRepo: IPermitTypesEntityRepository,
-    private val processStatusRepo: IQaProcessStatusRepository,
-    private val iMoneyTypeCodesRepo: ICfgMoneyTypeCodesRepository,
-    private val mpesaServices: MPesaService,
-    private val msReportsControllers: MSReportsControllers,
-    private val reportsDaoService: ReportsDaoService,
+        private val workPlanCreatedRepo: IQaWorkplanRepository,
+        private val iPermitRatingRepo: IPermitRatingRepository,
+        private val iManufacturePaymentDetailsRepository: IManufacturerPaymentDetailsRepository,
+        private val sampleStandardsRepo: ISampleStandardsRepository,
+        private val remarksEntityRepo: IQaRemarksEntityRepository,
+        private val invoiceDaoService: InvoiceDaoService,
+        private val paymentUnitsRepository: ICfgKebsPermitPaymentUnitsRepository,
+        private val serviceRequestsRepository: IServiceRequestsRepository,
+        private val qaInspectionOPCRepo: IQaInspectionOpcEntityRepository,
+        private val qaPersonnelInchargeRepo: IQaPersonnelInchargeEntityRepository,
+        private val qaInspectionTechnicalRepo: IQaInspectionTechnicalRepository,
+        private val qaInspectionReportRecommendationRepo: IQaInspectionReportRecommendationRepository,
+        private val qaInspectionHaccpImplementationRepo: IQaInspectionHaccpImplementationRepository,
+        private val permitRepo: IPermitApplicationsRepository,
+        private val permitUpdateDetailsRequestsRepo: IPermitUpdateDetailsRequestsRepository,
+        private val userRequestsRepo: IUserRequestTypesRepository,
+        private val SampleCollectionRepo: IQaSampleCollectionRepository,
+        private val SampleSubmissionRepo: IQaSampleSubmissionRepository,
+        private val SampleSubmissionSavedPdfListRepo: IQaSampleSubmittedPdfListRepository,
+        private val sampleLabTestResultsRepo: IQaSampleLabTestResultsRepository,
+        private val sampleLabTestParametersRepo: IQaSampleLabTestParametersRepository,
+        private val schemeForSupervisionRepo: IQaSchemeForSupervisionRepository,
+        private val sta3Repo: IQaSta3EntityRepository,
+        private val smarkFmarkRepo: IQaSmarkFmarkRepository,
+        private val invoiceRepository: IInvoiceRepository,
+        private val invoiceDetailsRepo: IQaInvoiceDetailsRepository,
+        private val invoiceMasterDetailsRepo: IQaInvoiceMasterDetailsRepository,
+        private val invoiceQaBatchRepo: IQaBatchInvoiceRepository,
+        private val invoiceStagingReconciliationRepo: IStagingPaymentReconciliationRepo,
+        private val invoiceBatchDetailsRepo: InvoiceBatchDetailsRepo,
+        private val sta10Repo: IQaSta10EntityRepository,
+        private val productsManufactureSTA10Repo: IQaProductBrandEntityRepository,
+        private val rawMaterialsSTA10Repo: IQaRawMaterialRepository,
+        private val machinePlantsSTA10Repo: IQaMachineryRepository,
+        private val qaUploadsRepo: IQaUploadsRepository,
+        private val manufacturingProcessSTA10Repo: IQaManufactureProcessRepository,
+        private val manufacturePlantRepository: IManufacturePlantDetailsRepository,
+        private val companyProfileRepo: ICompanyProfileRepository,
+        private val permitTypesRepo: IPermitTypesEntityRepository,
+        private val processStatusRepo: IQaProcessStatusRepository,
+        private val iMoneyTypeCodesRepo: ICfgMoneyTypeCodesRepository,
+        private val mpesaServices: MPesaService,
+        private val msReportsControllers: MSReportsControllers,
+        private val reportsDaoService: ReportsDaoService,
 //    private val reportsControllers: ReportsController,
-    private val notifications: Notifications,
+        private val notifications: Notifications,
 ) {
 
 
@@ -132,10 +132,10 @@ class QADaoServices(
 
     fun findALlCreatedWorkPlanWIthOfficerID(officerID: Long): List<QaWorkplanEntity> {
         workPlanCreatedRepo.findByOfficerId(officerID)
-            ?.let { createdWorkPlan ->
-                return createdWorkPlan
-            }
-            ?: throw ExpectedDataNotFound("Created Work Plan with the following [USER ID = ${officerID}], does not Exist")
+                ?.let { createdWorkPlan ->
+                    return createdWorkPlan
+                }
+                ?: throw ExpectedDataNotFound("Created Work Plan with the following [USER ID = ${officerID}], does not Exist")
     }
 
 //    fun findALlPermitInvoicesCreatedByUserWithNoPaymentStatus(userID: Long, status: Int): List<InvoiceEntity> {
@@ -1062,6 +1062,14 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Inspection Report Recommendation found with the following PERMIT REF NO =$permitRefNumber")
     }
 
+    fun saveSampleSubmittedPdf(qaFile: QaSampleSubmittedPdfListDetailsEntity, user: UsersEntity): QaSampleSubmittedPdfListDetailsEntity {
+        qaFile.createdOn = Timestamp.from(Instant.now())
+        qaFile.modifiedOn = Timestamp.from(Instant.now())
+        qaFile.modifiedBy = user.userName
+        qaFile.createdBy = user.userName
+        return SampleSubmissionSavedPdfListRepo.save(qaFile)
+    }
+
     fun findSampleSubmittedListPdfBYSSFid(
         ssfID: Long
     ): List<QaSampleSubmittedPdfListDetailsEntity> {
@@ -1374,6 +1382,14 @@ class QADaoServices(
                     permit.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER"),
                     permit.userId ?: throw ExpectedDataNotFound("MISSING USER ID"),
                     permit.id ?: throw ExpectedDataNotFound("MISSING USER ID")
+                )
+                sendEmailWithProformaPaid(
+                        userDetails.email ?: throw ExpectedDataNotFound("MISSING USER ID"),
+                        invoiceCreationPDF(
+                                batchInvoice.id,
+                                userDetails
+                        ).path,
+                        permit.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
                 )
 //                sendEmailWithProformaPaid(
 //                    userDetails.email ?: throw ExpectedDataNotFound("MISSING USER ID"),
@@ -2127,7 +2143,6 @@ class QADaoServices(
             createdOn = permit.createdOn
             dateOfIssue = permit.dateOfIssue
             dateOfExpiry = permit.dateOfExpiry
-            effectiveDate = permit.effectiveDate
             commodityDescription = permit.commodityDescription
             brandName = permit.tradeMark
 
@@ -2289,7 +2304,7 @@ class QADaoServices(
     ): List<UsersEntity> {
 
         val plantAttached = findPlantDetails(plantID)
-        usersRepo.findOfficerPermitUsersBySectionAndRegionFromSectionUserDetails(
+        usersRepo.findOfficerPermitUsersBySectionAndRegion(
             roleID,
             permit.sectionId ?: throw ExpectedDataNotFound("MISSING SECTION ID ON PERMIT"),
             plantAttached.region ?: throw ExpectedDataNotFound("MISSING REGION ID ON BRANCH ATTACHED ON PERMIT"),
@@ -3169,7 +3184,8 @@ class QADaoServices(
             rawMaterialsSTA10Repo.findByIdOrNull(rawMaterialsDetails.id ?: -1L)
                 ?.let { foundRawMaterial ->
 
-                    rawMaterialsDetails = commonDaoServices.updateDetails(rawMaterialsDetails, foundRawMaterial) as QaRawMaterialEntity
+                    rawMaterialsDetails =
+                        commonDaoServices.updateDetails(rawMaterialsDetails, foundRawMaterial) as QaRawMaterialEntity
 
                     with(rawMaterialsDetails) {
                         modifiedBy = commonDaoServices.concatenateName(user)

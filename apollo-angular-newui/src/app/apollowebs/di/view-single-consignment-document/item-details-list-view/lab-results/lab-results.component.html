@@ -1,0 +1,330 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">LR</i>
+                        </div>
+                        <h4 class="card-title">Consignment Documents Item Lab Results
+                            <button class="btn btn-sm btn-default float-right mr-7"
+                                    (click)="goBack()"><i class="fa fa-arrow-left"></i> Back
+
+                            </button>
+                        </h4>
+                    </div>
+                    <div class="card-body p-0" *ngIf="labResults; else loadingView">
+                        <div class="row no_margin">
+                            <div class="col-md-2">
+                                <table class="table-responsive">
+                                    <th>
+                                        Item Description
+                                    </th>
+                                    <tr>
+                                        <td>{{labResults.item_details.itemDescription}}</td>
+                                    </tr>
+                                    <th>
+                                        HS CODE
+                                    </th>
+                                    <tr>
+                                        <td>{{labResults.item_details.itemHsCode}}</td>
+                                    </tr>
+                                    <th>
+                                        HS CODE Description
+                                    </th>
+                                    <tr>
+                                        <td>{{labResults.item_details.itemHsCodeDescription}}</td>
+                                    </tr>
+
+                                    <th>
+                                        PRODUCT CLASS
+                                    </th>
+                                    <tr>
+                                        <td>{{labResults.item_details.productClass}}</td>
+                                    </tr>
+                                    <th>
+                                        Country Of Origin
+                                    </th>
+                                    <tr>
+                                        <td>{{labResults.item_details.countryOfOrgin}}</td>
+                                    </tr>
+                                    <th>
+                                        Quantity
+                                    </th>
+                                    <tr>
+                                        <td>{{labResults.item_details.quantity}}
+                                            -{{labResults.item_details.unitOfQuantityDesc}}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-md-8 p-0">
+                                <mat-tab-group [(selectedIndex)]="activeTab" [disablePagination]="true"
+                                               appMatMultilineTab
+                                               class="tab-wraps">
+                                    <mat-tab *ngIf="labResults.scf_details" label="1">
+                                        <ng-template mat-tab-label>
+                                            Sample Collection Details
+                                        </ng-template>
+                                        <b class="text-primary">Sample Collection Details</b>
+                                        <div class="row no_margin">
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">SCF NO</label>
+                                                <p>{{labResults.scf_details.scfNo}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Mode of Release</label>
+                                                <p>{{labResults.scf_details.modeOfRelease}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Batch Number</label>
+                                                <p>{{labResults.scf_details.batchNo}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">CREATED ON</label>
+                                                <p>{{labResults.scf_details.createdOn}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Batch Size</label>
+                                                <p>{{labResults.scf_details.batchSize}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Sample Size</label>
+                                                <p>{{labResults.scf_details.sampleSize}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Brand Name</label>
+                                                <p>{{labResults.scf_details.brandName}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Manufacturer Name</label>
+                                                <p>{{labResults.scf_details.nameOfManufacture}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Witness Name</label>
+                                                <p>{{labResults.scf_details.nameOfWitness}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Date Submitted</label>
+                                                <p>{{labResults.scf_details.officerDate}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Sampling Method</label>
+                                                <p>{{labResults.scf_details.samplingMethod}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Sample Label</label>
+                                                <p>{{labResults.scf_details.labelDetails}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Batch No</label>
+                                                <p>{{labResults.scf_details.batchNo}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Batch Size</label>
+                                                <p>{{labResults.scf_details.batchSize}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Sampling Methods</label>
+                                                <p>{{labResults.scf_details.samplingMethod}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Reason for Sampling</label>
+                                                <p>{{labResults.scf_details.reasonForCollectingSample}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">OFFICER NAME</label>
+                                                <p>{{labResults.scf_details.nameOfOfficer}}</p>
+                                            </div>
+
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">OFFICER DESIGNATION</label>
+                                                <p>{{labResults.scf_details.officerDesignation}}</p>
+                                            </div>
+                                        </div>
+                                    </mat-tab>
+                                    <mat-tab *ngIf="labResults.ssf_details" label="2">
+                                        <ng-template mat-tab-label>
+                                            Sample Submission Details
+                                        </ng-template>
+                                        <b class="text-primary">Sample Submission Details</b>
+                                        <div class="row no_margin">
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">SSF Number</label>
+                                                <p>{{labResults.ssf_details.ssfNo}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Date Submitted</label>
+                                                <p>{{labResults.ssf_details.ssfSubmissionDate}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Return/Dispose</label>
+                                                <p>{{labResults.ssf_details.returnOrDispose}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Condition of Sample</label>
+                                                <p>{{labResults.ssf_details.conditionOfSample}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">BS Number</label>
+                                                <p>{{labResults.ssf_details.bsNumber}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Permit Reference Number</label>
+                                                <p>{{labResults.ssf_details.permitRefNumber}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Test Parameter</label>
+                                                <p>{{labResults.ssf_details.testParameters}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Laboratory Name</label>
+                                                <p>{{labResults.ssf_details.laboratoryName}}</p>
+                                            </div>
+
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Remarks</label>
+                                                <p>{{labResults.ssf_details.description}}</p>
+                                            </div>
+                                        </div>
+                                    </mat-tab>
+                                    <mat-tab *ngIf="labResults.lab_parameters" label="3">
+                                        <ng-template mat-tab-label>
+                                            Tests Carried Out
+                                        </ng-template>
+                                        <b class="text-primary">Tests Carried Out</b>
+                                        <mat-table class="table-striped table-responsive table-condensed"
+                                                   [dataSource]="labResults.lab_parameters">
+                                            <ng-container matColumnDef="orderId">
+                                                <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.orderId}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="sampleNumber">
+                                                <mat-header-cell *matHeaderCellDef>Sample Number</mat-header-cell>
+                                                <mat-cell
+                                                        *matCellDef="let element"> {{element.sampleNumber}} </mat-cell>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="matrix">
+                                                <mat-header-cell *matHeaderCellDef>MATRIX</mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.matrix}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="test">
+                                                <mat-header-cell *matHeaderCellDef>TEST</mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.test}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="testPrice">
+                                                <mat-header-cell *matHeaderCellDef>TEST PRICE</mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.testPrice}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="storageLocation">
+                                                <mat-header-cell *matHeaderCellDef>STORAGE LOCATION</mat-header-cell>
+                                                <mat-cell
+                                                        *matCellDef="let element"> {{element.storageLocation}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="method">
+                                                <mat-header-cell *matHeaderCellDef>METHOD</mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.method}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="testGroup">
+                                                <mat-header-cell *matHeaderCellDef>TEST GROUP</mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.testGroup}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="priority">
+                                                <mat-header-cell *matHeaderCellDef>Priority</mat-header-cell>
+                                                <mat-cell *matCellDef="let element">{{element.priority}}</mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="ts">
+                                                <mat-header-cell *matHeaderCellDef>TS</mat-header-cell>
+                                                <mat-cell *matCellDef="let element">{{element.ts}}</mat-cell>
+                                            </ng-container>
+                                            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                                            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                                        </mat-table>
+                                    </mat-tab>
+                                    <mat-tab *ngIf="labResults.lab_results" label="4">
+                                        <ng-template mat-tab-label>
+                                            Tests Results
+                                        </ng-template>
+                                        <b class="text-primary">Tests Results</b>
+                                        <mat-table class="table-striped table-responsive table-condensed"
+                                                   [dataSource]="labResults.lab_results">
+                                            <ng-container matColumnDef="orderId">
+                                                <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.orderId}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="sampleNumber">
+                                                <mat-header-cell *matHeaderCellDef>Sample Number</mat-header-cell>
+                                                <mat-cell
+                                                        *matCellDef="let element"> {{element.sampleNumber}} </mat-cell>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="result_param">
+                                                <mat-header-cell *matHeaderCellDef>PARAM</mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.param}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="percentMoisture">
+                                                <mat-header-cell *matHeaderCellDef>MOISTURE</mat-header-cell>
+                                                <mat-cell
+                                                        *matCellDef="let element">{{element.percentMoisture}}%
+                                                </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="lab_test">
+                                                <mat-header-cell *matHeaderCellDef>LAB TEST</mat-header-cell>
+                                                <mat-cell *matCellDef="let element">{{element.test + ""}}</mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="numeric_result">
+                                                <mat-header-cell *matHeaderCellDef>LAB RESULT(NUM)</mat-header-cell>
+                                                <mat-cell
+                                                        *matCellDef="let element"> {{element.numericResult}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="lab_result">
+                                                <mat-header-cell *matHeaderCellDef>LAB RESULT</mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.result}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="tic">
+                                                <mat-header-cell *matHeaderCellDef> TIC</mat-header-cell>
+                                                <mat-cell *matCellDef="let element">{{element.tic}}</mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="ts">
+                                                <mat-header-cell *matHeaderCellDef> TS</mat-header-cell>
+                                                <mat-cell *matCellDef="let element">{{element.ts}}</mat-cell>
+                                            </ng-container>
+                                            <mat-header-row *matHeaderRowDef="displayedColumnResults"></mat-header-row>
+                                            <mat-row *matRowDef="let row; columns: displayedColumnResults;"></mat-row>
+                                        </mat-table>
+                                    </mat-tab>
+                                </mat-tab-group>
+                            </div>
+                            <div class="col-md-2">
+                                <b>Action:</b>
+                                <br/>
+                                <button class="btn btn-sm btn-primary"
+                                        (click)="rejectItem()">UPDATE COMPLIANCE
+                                </button>
+                                <br/>
+                                <b>Document:</b>
+                                <br/>
+                                <div *ngIf="labDocuments">
+                                    <button *ngFor="let doc of labDocuments;let index=index"
+                                            class="btn btn-sm btn-primary"
+                                            (click)="downloadLabResult(doc.fileName)">
+                                        {{doc.description ? doc.description : "File " + (index + 1)}}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <ng-template #loadingView>
+                        <div class="card-body text-center">
+                            <div class="loader-view text-center spinner-border" style="width: 7rem; height: 7rem;"
+                                 role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </div>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -30,14 +30,21 @@ import java.math.BigDecimal
 @EncryptablePropertySource("file:\${CONFIG_PATH}/application-map.properties")
 class ApplicationMapProperties {
 
+    val mapKeswsErrorDocument: String? = "ERR_MSG"
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.manufacturer.role.id}")
     val manufacturerRoleId: Long? = null
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.test.email.address}")
+    val defaultTestEmailAddres: String? = null
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.manufacturer.admin.role.id}")
     val manufacturerAdminRoleId: Long? = null
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.base.url.value}")
     val baseUrlValue: String = "https://127.0.0.1:8005/api"
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.base.url.value}")
+    val baseUrlValueb: String = "https://127.0.0.1:8005"
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.base.url.value.angular}")
     val baseUrlQRValue: String = "https://127.0.0.1/qr-code-qa-permit-scan"

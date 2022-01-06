@@ -31,7 +31,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'Dashboard',
         type: 'link',
         icontype: 'dashboard',
-        privilege: ['USER']
+        privilege: ['USER','DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
     },
 
     {
@@ -55,7 +55,6 @@ export const ROUTES: RouteInfo[] = [
             {path: 'users', title: 'View Users ', ab: 'VU'}
         ]
     },
-
     {
         path: '/dmark',
         title: 'Diamond Mark',
@@ -119,6 +118,64 @@ export const ROUTES: RouteInfo[] = [
         privilege: ['EPRA'],
         icontype: 'receipt'
     },
+    {
+        path: '/pvoc',
+        title: 'PVOC',
+        type: 'link',
+        collapse: 'pvoc',
+        privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
+        icontype: 'receipt'
+    },
+    {
+        path: '/ministry/inspection',
+        title: 'Motor Vehicle Inspection',
+        type: 'link',
+        collapse: 'ministry-inspection',
+        privilege: ['MINISTRY_OF_TRANSPORT_READ','MINISTRY_OF_TRANSPORT_MODIFY'],
+        icontype: 'receipt'
+    },
+    {
+        path: '/di',
+        title: 'Import Inspection',
+        type: 'link',
+        children: [],
+        collapse: 'import-inspection',
+        privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
+        icontype: 'receipt'
+    },
+    {
+        path: '/demand/notes',
+        title: 'Transaction Monitoring',
+        type: 'link',
+        collapse: 'transactions',
+        privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
+        icontype: 'money'
+    },
+    {
+        path: '/kentrade/exchange/messages',
+        title: 'KENTRADE Monitoring',
+        type: 'link',
+        collapse: 'exchange-messages',
+        privilege: ['SYSADMIN_VIEW','DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
+        children: [],
+        icontype: 'message'
+    },
+    {
+        path: '/tasks',
+        title: 'Import Inspection Tasks',
+        privilege: ['DI_INSPECTION_OFFICER_READ2', 'DI_OFFICER_CHARGE_READ2'],
+        type: 'link',
+        collapse: 'tasks',
+        icontype: 'receipt'
+    },
+    {
+        path: '/currency/rates',
+        title: 'Exchange Rates',
+        type: 'link',
+        collapse: 'currency-exchange-rates',
+        icontype: 'money',
+        privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
+    }
 ];
 
 @Component({

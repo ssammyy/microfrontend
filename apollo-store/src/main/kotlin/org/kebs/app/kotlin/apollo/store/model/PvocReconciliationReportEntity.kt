@@ -49,7 +49,7 @@ class PvocReconciliationReportEntity : Serializable {
 
     @Column(name = "FOB_VALUE")
     @Basic
-    var fobValue: Long? = null
+    var fobValue: Double? = null
 
     @Column(name = "CHARGE_FOR_VERICATION")
     @Basic

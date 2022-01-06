@@ -1,7 +1,7 @@
-import {Timestamp} from "rxjs";
+import {Timestamp} from 'rxjs';
 
 export interface StandardRequest {
-    id : number;
+    id: number;
     name: string;
     phone: string;
     email: string;
@@ -12,25 +12,25 @@ export interface StandardRequest {
 
 }
 
-export interface Product{
+export interface Product {
     id: number;
     name: string;
 
 }
 
-export interface ProductSubCategory{
+export interface ProductSubCategory {
     id: number;
     name: string;
 
 }
 
-export interface Department{
+export interface Department {
     id: number;
     name: string;
 
 }
 
-export interface UsersEntity{
+export interface UsersEntity {
     id: number;
     lastName: string;
     firstName: string;
@@ -38,19 +38,19 @@ export interface UsersEntity{
 
 }
 
-export interface TechnicalCommittee{
+export interface TechnicalCommittee {
     id: number;
     technical_committee_no: string;
     title: string;
 
 }
-export interface StandardTasks{
+export interface StandardTasks {
     taskId: string;
     name: string;
     taskData: any;
     id: string;
 }
-export interface Stdtsectask{
+export interface Stdtsectask {
     taskId: string;
     name: string;
     name_of_proposer: string;
@@ -67,7 +67,7 @@ export interface Stdtsectask{
     tc_signature: string;
 }
 
-export interface StdTCTask{
+export interface StdTCTask {
     taskId: string;
     name: string;
     taskData: string;
@@ -75,7 +75,7 @@ export interface StdTCTask{
 }
 
 
-export interface NWAJustification{
+export interface NWAJustification {
     id: number;
     meetingDate: string;
     knw: string;
@@ -98,19 +98,19 @@ export interface NWAJustification{
 
 }
 
-export interface KNWDepartment{
+export interface KNWDepartment {
     id: number;
     name: string;
 
 }
 
-export interface KNWCommittee{
+export interface KNWCommittee {
     id: number;
     technical_committee_no: string;
 
 }
 
-export interface KnwSecTasks{
+export interface KnwSecTasks {
     taskId: string;
     name: string;
     taskData: KnwSecTaskData;
@@ -142,7 +142,7 @@ export interface KnwSecTaskData {
 }
 
 
-export interface SPCSECTasks{
+export interface SPCSECTasks {
     taskId: string;
     name: string;
     taskData: SPCTaskData;
@@ -164,10 +164,16 @@ export interface SPCTaskData {
     departmentName: string;
     knwSecretary: string;
     ID: number;
+    jsUploadDocId: number;
     comments: string;
 }
+export class FileData {
+    filename?: string;
+    contentType?: string;
+    size?: number;
+}
 
-export interface NWADiSdtJustification{
+export interface NWADiSdtJustification {
     id: number;
     cost: string;
     numberOfMeetings: number;
@@ -176,7 +182,7 @@ export interface NWADiSdtJustification{
     taskId: string;
     jstNumber: number;
 }
-export interface NWADiJustification{
+export interface NWADiJustification {
     id: number;
     cost: string;
     numberOfMeetings: number;
@@ -186,7 +192,7 @@ export interface NWADiJustification{
     jstNumber: number;
 }
 
-export interface DISDTTasks{
+export interface DISDTTasks {
     taskId: string;
     name: string;
     taskData: DisDTTaskData;
@@ -215,7 +221,7 @@ export interface DisDTTaskData {
 
 }
 
-export interface NWAPreliminaryDraft{
+export interface NWAPreliminaryDraft {
     id: number;
     title: number;
     scope: number;
@@ -227,7 +233,7 @@ export interface NWAPreliminaryDraft{
     diJNumber: number;
 }
 
-export interface NWAWorkShopDraft{
+export interface NWAWorkShopDraft {
     id: number;
     title: number;
     scope: number;
@@ -236,7 +242,7 @@ export interface NWAWorkShopDraft{
     special: string;
     taskId: string;
 }
-export interface SacSecTasks{
+export interface SacSecTasks {
     taskId: string;
     name: string;
     taskData: SacSeCTaskData;
@@ -256,22 +262,22 @@ export interface SacSeCTaskData {
 
 }
 
-export interface HOPTasks{
+export interface HOPTasks {
     taskId: string;
     name: string;
     taskData: HOPTaskData;
 }
-export interface HOPTaskData{
+export interface HOPTaskData {
     title: number;
     referenceMaterial: string;
     scope: string;
-    normativeReference:string;
+    normativeReference: string;
     issuesAddressed: string;
     clause: string;
-    special:string;
+    special: string;
     comments: string;
 }
-export interface NWAStandard{
+export interface NWAStandard {
     id: number;
     title: number;
     scope: number;
@@ -282,25 +288,25 @@ export interface NWAStandard{
     ksNumber: string;
 }
 
-export interface HoSicTasks{
+export interface HoSicTasks {
     taskId: string;
     name: string;
     taskData: HoSicTaskData;
 }
-export interface HoSicTaskData{
+export interface HoSicTaskData {
     title: number;
     referenceMaterial: string;
     scope: string;
-    normativeReference:string;
+    normativeReference: string;
     issuesAddressed: string;
     clause: string;
-    special:string;
+    special: string;
     ksNumber: number;
     description: string;
     dateUploaded: string;
     comments: string;
 }
-export interface UploadNwaGazette{
+export interface UploadNwaGazette {
     id: number;
     ksNumber: number;
     description: string;
@@ -308,7 +314,7 @@ export interface UploadNwaGazette{
     taskId: string;
 }
 
-export interface UpdateNwaGazette{
+export interface UpdateNwaGazette {
     id: number;
     ksNumber: number;
     description: string;
@@ -325,10 +331,10 @@ export interface TaskData {
     requesterComment: string;
     requesterPhone: string;
     feedbackProvided: string;
-    requestDate : string;
+    requestDate: string;
 }
 
-export interface Notifications{
+export interface Notifications {
     taskId: string;
     name: string;
     taskData: TaskData;
@@ -343,47 +349,58 @@ export interface RootObject {
     requesterSubject: string;
 }
 
-export interface InfoAvailableNo{
+export interface InfoAvailableNo {
     taskId: string;
     isAvailable: string;
 }
 
-export interface finalSubmit{
+export interface finalSubmit {
     taskId: string;
 }
-//********************************************************** International Standards Adoption -START **********************************************************
-export interface ISAdoptionProposal{
-    taskId : string;
+// **********************************************************International Standards Adoption**********************************************************
+
+export interface ISAdoptionProposal {
+    taskId: string;
     proposal_doc_name: string;
-    title : string;
+    title: string;
 }
-export interface ProposalComments{
-    taskId : string;
+export interface ProposalComments {
+    taskId: string;
     name: string;
     taskData: PropComments;
 }
-export interface PropComments{
+export interface PropComments {
     proposal_doc_name: string;
+    ID: number;
+    comments: string;
 
 }
-export interface ISAdoptionComments{
+export interface ISAdoptionComments {
     taskId: string;
     adoption_proposal_comment: string;
     user_id: string;
     comment_time: string;
+    ID: number;
 }
-export interface ISTcSecTASKS{
-    taskId : string;
+export interface ISTcSecTASKS {
+    taskId: string;
     name: string;
     taskData: IsTcSecTaskData;
 }
-export interface IsTcSecTaskData{
+export interface IsTcSecTaskData {
     adoption_proposal_comment: string;
     user_id: string;
     comment_time: string;
     proposal_doc_name: string;
+    ID: number;
 }
-export interface ISAdoptionJustification{
+export interface ISDecision {
+    taskId: string;
+    accentTo: boolean;
+    approvalID: bigint;
+    comments: string;
+}
+export interface ISAdoptionJustification {
     id: number;
     meetingDate: string;
     tc_id: string;
@@ -400,12 +417,12 @@ export interface ISAdoptionJustification{
     remarks: string;
 
 }
-export interface ListJustification{
-    taskId : string;
+export interface ListJustification {
+    taskId: string;
     name: string;
     taskData: JSListTaskData;
 }
-export interface JSListTaskData{
+export interface JSListTaskData {
     id: number;
     meetingDate: string;
     tc_id: string;
@@ -424,13 +441,20 @@ export interface JSListTaskData{
     user_id: string;
     comment_time: string;
     proposal_doc_name: string;
+    ID: number;
 }
-export interface ISSacSecTASKS{
-    taskId : string;
+export interface ISJustificationDecision {
+    taskId: string;
+    accentTo: boolean;
+    approvalID: bigint;
+    comments: string;
+}
+export interface ISSacSecTASKS {
+    taskId: string;
     name: string;
     taskData: ISSacSecTaskData;
 }
-export interface ISSacSecTaskData{
+export interface ISSacSecTaskData {
     id: number;
     meetingDate: string;
     tc_id: string;
@@ -449,12 +473,86 @@ export interface ISSacSecTaskData{
     user_id: string;
     comment_time: string;
     proposal_doc_name: string;
+    ID: number;
+}
+export interface ISHopTASKS {
+    taskId: string;
+    name: string;
+    taskData: ISHopTaskData;
+}
+export interface ISHopTaskData {
+    id: number;
+    meetingDate: string;
+    tc_id: string;
+    tcSec_id: string;
+    slNumber: string;
+    requestNumber: string;
+    requestedBy: string;
+    issuesAddressed: string;
+    tcAcceptanceDate: string;
+    referenceMaterial: string;
+    department: string;
+    taskId: string;
+    status: string;
+    remarks: string;
+    adoption_proposal_comment: string;
+    user_id: string;
+    comment_time: string;
+    proposal_doc_name: string;
+    ID: number;
+}
+export interface ISStandard {
+    id: number;
+    title: number;
+    scope: number;
+    normativeReference: string;
+    symbolsAbbreviatedTerms: string;
+    special: string;
+    taskId: string;
+}
+export interface ISHosSicTASKS {
+    taskId: string;
+    name: string;
+    taskData: ISHosSicTaskData;
+}
+export interface ISHosSicTaskData {
+    id: number;
+    meetingDate: string;
+    tc_id: string;
+    tcSec_id: string;
+    slNumber: string;
+    requestNumber: string;
+    requestedBy: string;
+    issuesAddressed: string;
+    tcAcceptanceDate: string;
+    referenceMaterial: string;
+    department: string;
+    taskId: string;
+    status: string;
+    remarks: string;
+    adoption_proposal_comment: string;
+    user_id: string;
+    comment_time: string;
+    proposal_doc_name: string;
+    ID: number;
+    title: number;
+    scope: number;
+    normativeReference: string;
+    symbolsAbbreviatedTerms: string;
+    special: string;
+    iSNumber: string;
+}
+export interface GazetteNotice {
+    id: number;
+    description: string;
+    iSNumber: string;
+
 }
 
 //********************************************************** International Standards Adoption -END **********************************************************
 //********************************************************** Company Standards Adoption -START **********************************************************
-export interface CompanyStandardRequest{
-    id : number;
+export interface CompanyStandardRequest {
+    id: number;
     companyName: string;
     departmentId: string;
     productId: string;
@@ -466,13 +564,13 @@ export interface CompanyStandardRequest{
 
 }
 
-export interface ComHodTasks{
-    taskId : string;
+export interface ComHodTasks {
+    taskId: string;
     name: string;
     taskData: ComHodTaskData;
 }
-export interface ComHodTaskData{
-    id : number;
+export interface ComHodTaskData {
+    id: number;
     requestNumber: string;
     companyName: string;
     departmentId: number;
@@ -490,7 +588,7 @@ export interface ComHodTaskData{
 
 }
 
-export interface ComStdAction{
+export interface ComStdAction {
     id: string;
     requestNumber: string;
     dateAssigned: string;
@@ -498,12 +596,12 @@ export interface ComStdAction{
     taskId: string;
 }
 
-export interface ComJcJustification{
+export interface ComJcJustification {
     taskId: string;
     name: string;
     taskData: ComJcJustificationData;
 }
-export interface ComJcJustificationData{
+export interface ComJcJustificationData {
     requestNumber: string;
     companyEmail: string;
     productSubCategory: string;
@@ -524,7 +622,7 @@ export interface ComJcJustificationData{
     ID: number;
 }
 
-export interface ComSecTasks{
+export interface ComSecTasks {
     taskId: string;
     name: string;
     taskData: ComSecTaskData;
@@ -553,7 +651,7 @@ export interface ComSecTaskData {
 
 
 
-export interface ComJcJustificationAction{
+export interface ComJcJustificationAction {
     taskId: string;
     id: string;
     meetingDate: string;
@@ -569,45 +667,45 @@ export interface ComJcJustificationAction{
     department: string;
     projectLeader: string;
 }
-export interface ComJcJustificationList{
+export interface ComJcJustificationList {
     taskId: string;
     name: string;
     taskData: ComJcJustificationListData;
 }
-export interface ComJcJustificationListData{
+export interface ComJcJustificationListData {
     reason: string;
     companyName: string;
-    slNumber : string;
-    tcAcceptanceDate : string;
-    submissionDate : string;
-    issuesAddressed : string;
-    assignedTo : string;
-    productCategory : string;
-    requestedBy : string;
-    requestNumber : string;
-    companyEmail : string;
-    referenceMaterial : string;
-    productSubCategory : string;
-    companyPhone : string;
-    projectLeader : string;
-    meetingDate : string;
-    department : string;
-    dateAssigned : string;
-    remarks : string;
-    status : string;
-    tcName : string;
-    departmentName : string;
-    productName : string;
-    productSubCategoryName : string;
+    slNumber: string;
+    tcAcceptanceDate: string;
+    submissionDate: string;
+    issuesAddressed: string;
+    assignedTo: string;
+    productCategory: string;
+    requestedBy: string;
+    requestNumber: string;
+    companyEmail: string;
+    referenceMaterial: string;
+    productSubCategory: string;
+    companyPhone: string;
+    projectLeader: string;
+    meetingDate: string;
+    department: string;
+    dateAssigned: string;
+    remarks: string;
+    status: string;
+    tcName: string;
+    departmentName: string;
+    productName: string;
+    productSubCategoryName: string;
     ID: number;
 }
 
-export interface ComJcJustificationDec{
+export interface ComJcJustificationDec {
     taskId: string;
     name: string;
     taskData: ComJcJustificationDecData;
 }
-export interface ComJcJustificationDecData{
+export interface ComJcJustificationDecData {
     reason: string;
     companyName: string;
     slNumber : string;

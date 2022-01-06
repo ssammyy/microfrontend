@@ -45,7 +45,7 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
 </thead>
 <tbody>
 <tr  *ngFor="let task of tasks  let i=index">
-<td>{{i+1}}({{task.taskData.ID}})</td>
+<td>{{i+1}}</td>
 <td>{{task.taskData.knwCommittee}}</td>
 <td>{{task.taskData.sl}}</td>
 <td>{{task.taskData.requestNumber}}</td>
@@ -198,7 +198,7 @@ class="form-control"  formControlName="special" name="special" type="text">
 </div>
 </div>
 <input type="hidden" ngModel="{{actionRequest?.taskId}}" formControlName="taskId" name="taskId"  >
-<input type="text" ngModel="{{actionRequest?.taskData?.ID}}" formControlName="diJNumber" name="diJNumber" value="{{actionRequest?.taskData?.ID}}"  >
+<input type="hidden" ngModel="{{actionRequest?.taskData?.ID}}" formControlName="diJNumber" name="diJNumber" value="{{actionRequest?.taskData?.ID}}"  >
 
 <div class="modal-footer">
 <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>

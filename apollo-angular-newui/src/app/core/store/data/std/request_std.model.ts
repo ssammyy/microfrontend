@@ -37,11 +37,18 @@ export interface ProductSubCategory {
     id: number;
     name: string;
 
+
 }
 
 export interface Department {
     id: number;
     name: string;
+    abbreviations:string;
+    codes:string;
+    createdBy:string;
+    createdOn:string;
+    status:string;
+
 }
 
 export class LiaisonOrganization {
@@ -51,6 +58,37 @@ export class LiaisonOrganization {
 
 }
 
+export interface TechnicalCommitteeb {
+    id: number;
+    departmentId: number;
+    title: string;
+    technical_committee_no: string;
+    parentCommitte: string;
+    createdBy:string;
+    createdOn:string;
+    status:string;
+
+}
+export interface ProductCategory {
+    id: number;
+    technicalCommitteeId: number;
+    name: string;
+    description: string;
+    createdBy:string;
+    createdOn:string;
+    status:string;
+
+}
+export interface ProductSubCategoryB {
+    id: number;
+    productId: number;
+    name: string;
+    description: string;
+    createdBy:string;
+    createdOn:string;
+    status:string;
+
+}
 export interface TechnicalCommittee {
     id: number;
     technical_committee_no: string;
@@ -442,4 +480,18 @@ export interface DraughtsmanTask {
     taskId: string;
     name: string;
     taskData: DraughtsManData;
+}
+
+export interface DataHolder {
+    id: number;
+    name: string;
+    tc_Title: string;
+    v1: string;
+    v2: string;
+    v3: string;
+    v4: string;
+    v5: string;
+    v6: string;
+
+
 }

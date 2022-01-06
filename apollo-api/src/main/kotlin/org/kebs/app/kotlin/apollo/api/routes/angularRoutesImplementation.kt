@@ -237,6 +237,17 @@ class AngularRoutes {
                 "/logout".nest {
                     POST("", handler::handleLogout)
                 }
+                "/sidebar".nest {
+                    GET("", handler::handleGetSideBarMenusBasedOnLoggedInUser)
+                    POST("") {
+                        ServerResponse.badRequest().body("Invalid Request: Feature currently not supported")
+                    }
+                    "/{id}".nest {
+                        PUT("") { ServerResponse.badRequest().body("Invalid Request: Feature currently not supported") }
+                        GET("") { ServerResponse.badRequest().body("Invalid Request: Feature currently not supported") }
+                    }
+
+                }
                 "/companyDetails".nest {
                     POST("", handler::handleProvideCompanyDetailsForUser)
                 }

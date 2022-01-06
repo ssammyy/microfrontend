@@ -35,11 +35,11 @@ export const doValidateTokenForUserFailure = createAction(
 
 export const loadLogoutSuccess = createAction(
   '[Auth] Load loadLogoutSuccess',
-  props<{ data: ApiResponse, profile: LoggedInUser, loggedIn: boolean }>()
+  props<{ data: ApiResponse,loggedIn: Boolean,profile: any }>()
 );
 export const loadLogoutFailure = createAction(
   '[Auth] Load loadLogoutFailure',
-  props<{ error: ApiResponse,  profile: LoggedInUser, loggedIn: boolean }>()
+  props<{ error: ApiResponse,loggedIn: Boolean, profile: any }>()
 );
 
 export const loadResetAuths = createAction(

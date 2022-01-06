@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import {NgxSpinnerService} from "ngx-spinner";
 import {Subject} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -9,7 +9,8 @@ import {NotificationService} from "../../../../core/store/data/std/notification.
 @Component({
   selector: 'app-com-std-request-list',
   templateUrl: './com-std-request-list.component.html',
-  styleUrls: ['./com-std-request-list.component.css']
+  styleUrls: ['./com-std-request-list.component.css','../../../../../../node_modules/@ng-select/ng-select/themes/default.theme.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class ComStdRequestListComponent implements OnInit,OnDestroy {
   dtOptions: DataTables.Settings = {};
@@ -18,6 +19,7 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
     selectedUser: number;
   tasks: ComHodTasks[] = [];
   public actionRequest: ComHodTasks | undefined;
+
   constructor(
       private stdComStandardService:StdComStandardService,
       private SpinnerService: NgxSpinnerService,
@@ -27,6 +29,8 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
   ngOnInit(): void {
     this.getHODTasks();
     this.getUserList();
+
+
   }
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
@@ -76,18 +80,20 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
         }
     );
   }
-  public getUserList(): void{
+  public getUserList(): void {
     this.SpinnerService.show();
     this.stdComStandardService.getUserList().subscribe(
-        (response: UsersEntity[])=> {
+        (response: UsersEntity[]) => {
           this.SpinnerService.hide();
           this.users = response;
         },
-        (error: HttpErrorResponse)=>{
+        (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
           alert(error.message);
         }
     );
   }
+
+
 
 }

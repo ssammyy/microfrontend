@@ -42,10 +42,12 @@ import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.registration.*
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
+import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
+import java.util.*
 
 
 @Repository
@@ -57,6 +59,8 @@ interface IUserRepository : HazelcastRepository<UsersEntity, Long>, JpaSpecifica
 
     fun findAllByUserTypes(userType: Long): List<UsersEntity>?
 
+    @Query("select DKU.*  from DAT_KEBS_USERS DKU where DKU.ID in(select USER_ID from CFG_USER_ROLES_ASSIGNMENTS where ROLE_ID in (:profileIds)) and DKU.ID in (:cfsUserIds)", nativeQuery = true)
+    fun findUsersInCfsAndProfiles(@Param("profileIds")profileIds:List<Long>, @Param("cfsUserIds") cfsUserIds: List<Long>): List<UsersEntity>
     //    @Query("SELECT u.Id, u.firstName, u.lastName, u.notifs, u.role, u.status from datKebsUsers u where u.notifs=?1")
     fun findByEmail(email: String): UsersEntity?
 
@@ -164,7 +168,8 @@ interface IUserPrivilegesRepository : HazelcastRepository<UserPrivilegesEntity, 
 
     fun findByName(name: String): UserPrivilegesEntity
 
-
+    @Query(value = "SELECT DISTINCT ROLE_ID FROM CFG_ROLES_PRIVILEGES rp left join CFG_USER_ROLES cur on(rp.ROLES_ID=cur.ID)  left join CFG_USER_PRIVILEGES cup  on(rp.PRIVILEGE_ID=cup.ID) WHERE rp.STATUS = 1 and NAME=:name", nativeQuery = true)
+    fun findRoleIdsByRoleName(@Param("name") name: String): List<Long>
 }
 
 @Repository
@@ -216,7 +221,8 @@ interface IUserRoleAssignmentsRepository : HazelcastRepository<UserRoleAssignmen
     fun findByRoleIdAndStatus(roleId: Long, status: Int): List<UserRoleAssignmentsEntity>?
     fun findByRoleId(roleId: Long): List<UserRoleAssignmentsEntity>
     fun findByUserId(userId: Long): UserRoleAssignmentsEntity?
-
+    @Query("select  count(*)  from DAT_KEBS_USER_PROFILES DKUP left join CFG_USER_ROLES_ASSIGNMENTS CURA on(DKUP.USER_ID=CURA.USER_ID) left join CFG_USER_ROLES CUR on (CURA.ROLE_ID = CUR.ID) where upper(ROLE_NAME)=upper(:roleName) and CURA.STATUS=:assignmentStatus and DKUP.USER_ID=:userId", nativeQuery =true)
+    fun checkUserHasRole(@Param("roleName")roleName: String,@Param("assignmentStatus") status: Int,@Param("userId") userId: Long): Int
 
     @Query(
         "SELECT * FROM CFG_USER_ROLES_ASSIGNMENTS cura WHERE CURA.USER_ID = :userId AND STATUS = :status",
@@ -331,6 +337,12 @@ interface IUserProfilesRepository : HazelcastRepository<UserProfilesEntity, Long
         sectionId: SectionsEntity,
         status: Int
     ): UserProfilesEntity?
+
+    fun findByIdAndDesignationId_IdAndStatus(
+            id: Long,
+            designationId: Long,
+            status: Int
+    ): Optional<UserProfilesEntity>
 
     fun findByRegionIdAndDesignationId(
         regionId: RegionsEntity,
@@ -450,4 +462,30 @@ interface IStatusValuesRepository : HazelcastRepository<StatusValuesEntity, Long
 interface IUserVerificationTokensRepository : HazelcastRepository<UserVerificationTokensEntity, Long> {
     fun findByUserIdAndStatus(userId: UsersEntity, status: Int): UserVerificationTokensEntity?
     fun findByTokenAndStatus(token: String?, status: Int): UserVerificationTokensEntity?
+
+
 }
+
+@Repository
+interface IUserVerificationTokensRepositoryB : JpaRepository<UserVerificationTokensEntity, Long> {
+    @Query(
+        "SELECT p.TOKEN as getTc_Title FROM DAT_KEBS_USER_VERIFICATION_TOKEN p WHERE p.USER_ID=:id  AND TRANSACTION_DATE=(SELECT MAX(p.TRANSACTION_DATE)  FROM DAT_KEBS_USER_VERIFICATION_TOKEN p   WHERE p.USER_ID=:id) ORDER BY p.id DESC",
+        nativeQuery = true
+    )
+    fun findTokenByUserId(@Param("id") id: Long?): String
+
+    @Query(
+        "SELECT p.*  FROM DAT_KEBS_USER_VERIFICATION_TOKEN p WHERE p.USER_ID=:id  AND TRANSACTION_DATE=(SELECT MAX(p.TRANSACTION_DATE)  FROM DAT_KEBS_USER_VERIFICATION_TOKEN p   WHERE p.USER_ID=:id) ORDER BY p.id DESC",
+        nativeQuery = true
+    )
+    fun findAllByTokenByUserId(@Param("id") id: Long?): UserVerificationTokensEntity?
+    fun findByVersion(version: Long): UserVerificationTokensEntity?
+    fun findByToken(token: String): UserVerificationTokensEntity?
+
+    @Query(
+        "SELECT p.USER_ID as getTc_Title FROM DAT_KEBS_USER_VERIFICATION_TOKEN p WHERE p.VAR_FIELD_1=:id ",
+        nativeQuery = true
+    )
+    fun findAllByVarField1(@Param("id") id: String?): String?
+}
+

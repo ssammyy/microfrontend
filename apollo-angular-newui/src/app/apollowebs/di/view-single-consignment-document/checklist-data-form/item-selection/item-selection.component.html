@@ -1,0 +1,45 @@
+<mat-table [dataSource]="selectionDataSource">
+    <ng-container matColumnDef="select">
+        <mat-header-cell *matHeaderCellDef>
+            <mat-checkbox (change)="masterToggle($event)"
+                          [checked]="selection.hasValue() && isAllSelected()"
+                          [indeterminate]="selection.hasValue() && !isAllSelected()">
+            </mat-checkbox>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+            <mat-checkbox (click)="$event.stopPropagation()"
+                          [disabled]="row.selected && row.selected!==checklistType"
+                          (change)="selectionChanged($event,row)"
+                          [checked]="selection.isSelected(row)">
+            </mat-checkbox>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="hsCode">
+        <mat-header-cell *matHeaderCellDef>HS Code</mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.itemHsCode}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="checklist">
+        <mat-header-cell *matHeaderCellDef>Checklist Type</mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.selected?row.selected:'not-selected'}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="price">
+        <mat-header-cell *matHeaderCellDef>Total Amount</mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.totalPriceNcy?row.totalPriceNcy:'NA'}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="details">
+        <mat-header-cell *matHeaderCellDef>HS Cde Description</mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.itemHsCodeDescription}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="description">
+        <mat-header-cell *matHeaderCellDef>Description</mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.itemDescription}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell [attr.colspan]="2" *matCellDef="let row">
+            <button *ngIf="selection.isSelected(row)" class="btn-sm" (click)="openChekclistForm(row)">Fill Checklist</button>
+        </mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+</mat-table>

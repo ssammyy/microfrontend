@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.store.model.std
 
+import java.sql.Timestamp
 import javax.persistence.*
 
 @Entity
@@ -17,7 +18,7 @@ class ISGazettement {
 
     @Column(name="DATE_OF_GAZETTEMENT")
     @Basic
-    var dateOfGazettement:String? =null
+    var dateOfGazettement: Timestamp?=null
 
     @Column(name="DESCRIPTION")
     @Basic

@@ -1,16 +1,17 @@
-import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from "@angular/common/http";
-import {select, Store} from "@ngrx/store";
-import {HandleErrorService} from "../services/errors/handle-error.service";
-import {ApiEndpointService} from "../services/endpoints/api-endpoint.service";
-import {Observable, of, throwError} from "rxjs";
-import {catchError, first, mergeMap, switchMap} from "rxjs/operators";
+import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {select, Store} from '@ngrx/store';
+import {HandleErrorService} from '../services/errors/handle-error.service';
+import {ApiEndpointService} from '../services/endpoints/api-endpoint.service';
+import {Observable, of, throwError} from 'rxjs';
+import {catchError, first, mergeMap, switchMap} from 'rxjs/operators';
 
-import {Injectable} from "@angular/core";
-import {LoggedInUser, selectUserInfo} from "../store";
+import {Injectable} from '@angular/core';
+import {LoggedInUser, selectUserInfo} from '../store';
+import {Router} from "@angular/router";
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private store$: Store<any>, private error: HandleErrorService) {
+  constructor(private router:Router,private store$: Store<any>, private error: HandleErrorService) {
   }
 
   /**
@@ -28,9 +29,14 @@ export class AuthInterceptor implements HttpInterceptor {
         mergeMap((requestWithToken: HttpRequest<any>) => next.handle(requestWithToken)
           .pipe(
             catchError((err: HttpErrorResponse) => {
-              const errorMsg = (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.message}`;
-              this.error.handleError(err);
-              return throwError(errorMsg);
+                if(err.status==401) {
+                    this.router.navigate(["/login"])
+                    return
+                } else {
+                    const errorMsg = (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.message}`;
+                    this.error.handleError(err);
+                    return throwError(errorMsg);
+                }
             })
           )
         )
@@ -38,10 +44,15 @@ export class AuthInterceptor implements HttpInterceptor {
     } else {
       return next.handle(request).pipe(
         catchError((err: HttpErrorResponse) => {
-          const errorMsg = (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.message}`;
-          // console.log(errorMsg);
-          this.error.handleError(err);
-          return throwError(errorMsg);
+            if(err.status==401) {
+                this.router.navigate(["/login"])
+                return
+            } else {
+                const errorMsg = (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.message}`;
+                // console.log(errorMsg);
+                this.error.handleError(err);
+                return throwError(errorMsg);
+            }
         })
       );
     }
@@ -58,7 +69,7 @@ export class AuthInterceptor implements HttpInterceptor {
       .pipe(
         select(selectUserInfo),
         switchMap((profile: LoggedInUser) => {
-          const token = profile.accessToken
+          const token = profile.accessToken;
           if (!token) {
             console.warn(`addToken( Invalid token!!! Cannot use token "${token}" for endpoint: ${request.url} ).`);
           } else {
