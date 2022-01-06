@@ -142,7 +142,7 @@ class PvocComplaintEntity : Serializable {
     @Basic
     var mpvocRecomendationDate: Timestamp? = null
 
-    @Column(name = "MPVOC_RECOMENDATION_DATE")
+    @Column(name = "HOD_RECOMENDATION_DATE")
     @Basic
     var hodRecomendationDate: Timestamp? = null
 

@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.store.model.invoice
 
 import java.io.Serializable
 import java.math.BigDecimal
+import java.sql.Date
 import java.sql.Timestamp
 import javax.persistence.*
 
@@ -44,7 +45,7 @@ class BillPayments : Serializable {
 
     @Column(name = "PAYMENT_DATE")
     @Basic
-    var paymentDate: Timestamp? = null
+    var paymentDate: Date? = null
 
     @Column(name = "PAYMENT_RECEIPT")
     @Basic

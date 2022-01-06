@@ -1,17 +1,16 @@
-package org.kebs.app.kotlin.apollo.api.routes;
+package org.kebs.app.kotlin.apollo.api.routes
 
-import org.kebs.app.kotlin.apollo.api.handlers.invoice.CorporateCustomerHandler;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.kebs.app.kotlin.apollo.api.handlers.invoice.CorporateCustomerHandler
+import org.springframework.context.annotation.Bean
+import org.springframework.stereotype.Component
+import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.servlet.function.router
 
 @Component
 class InvoiceRouter {
     @Bean
     @CrossOrigin
-    fun pvocCorporatesManagement(handler:CorporateCustomerHandler) = router {
+    fun pvocCorporatesManagement(handler: CorporateCustomerHandler) = router {
         "/api/v1/corporate".nest {
             GET("/list", handler::listCorporateCustomers)
             POST("/add", handler::addCorporateCustomer)
@@ -21,6 +20,9 @@ class InvoiceRouter {
             GET("/bill/{corporateId}/details/{billId}", handler::corporateBillDetails)
             PUT("/update/{corporateId}", handler::updateCorporateCustomer)
             PATCH("/status/{corporateId}", handler::updateCorporateCustomerStatus)
+        }
+        "/api/v1/bill".nest {
+            GET("/limits", handler::listCorporateBillingLimits)
         }
     }
 }

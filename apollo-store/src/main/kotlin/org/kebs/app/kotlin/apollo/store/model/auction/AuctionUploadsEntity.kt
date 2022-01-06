@@ -17,7 +17,7 @@ class AuctionUploadsEntity : Serializable {
 
     @JoinColumn(name = "AUCTION_ID", referencedColumnName = "ID")
     @ManyToOne
-    var auctionId:Long? = null
+    var auctionId: AuctionRequests? = null
 
     @Column(name = "FILEPATH")
     @Basic

@@ -34,6 +34,7 @@ export class AddUpdateCorporateCustomerComponent implements OnInit {
             code: "OTHER"
         },
     ]
+    billingTypes: any
 
     constructor(private fb: FormBuilder, private dialog: MatDialogRef<any>, @Inject(MAT_DIALOG_DATA) public data: any, private fiService: FinanceInvoiceService) {
     }
@@ -44,13 +45,26 @@ export class AddUpdateCorporateCustomerComponent implements OnInit {
             corporateName: [this.data ? this.data.corporateName : null, [Validators.required, Validators.minLength(2)]],
             corporateType: [this.data ? this.data.corporateType : null, [Validators.required]],
             corporateEmail: [this.data ? this.data.corporateEmail : null, [Validators.required, Validators.email]],
-            corporatePhone: [this.data? this.data.corporatePhone: null,Validators.required],
+            corporatePhone: [this.data ? this.data.corporatePhone : null, Validators.required],
             contactName: [this.data ? this.data.contactName : "", [Validators.required]],
             contactPhone: [this.data ? this.data.contactPhone : "", [Validators.required]],
             contactEmail: [this.data ? this.data.contactEmail : null, [Validators.required, Validators.email]],
             isCiakMember: [this.data ? this.data.isCiakMember : null, [Validators.required]],
+            billId: [this.data ? this.data.billId : null, [Validators.required]],
             mouDays: [this.data ? this.data.mouDays : null, Validators.required]
         })
+        this.loadBillingTypes()
+    }
+
+    loadBillingTypes() {
+        this.fiService.loadBillTypes()
+            .subscribe(
+                res => {
+                    if (res.responseCode === "00") {
+                        this.billingTypes = res.data
+                    }
+                }
+            )
     }
 
     addCorporate() {

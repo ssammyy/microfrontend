@@ -3,11 +3,9 @@ package org.kebs.app.kotlin.apollo.api.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.hazelcast.internal.util.QuickMath.bytesToHex
-import jdk.internal.org.jline.keymap.KeyMap.key
 import mu.KotlinLogging
 import org.apache.commons.codec.binary.Base32
 import org.apache.commons.net.util.Base64
-import org.bouncycastle.asn1.bsi.BSIObjectIdentifiers.algorithm
 import org.kebs.app.kotlin.apollo.api.payload.ApiClientForm
 import org.kebs.app.kotlin.apollo.api.payload.ApiClientUpdateForm
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel

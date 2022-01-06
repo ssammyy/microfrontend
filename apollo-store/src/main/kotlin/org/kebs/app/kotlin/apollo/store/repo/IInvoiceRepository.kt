@@ -6,6 +6,7 @@ import org.kebs.app.kotlin.apollo.store.model.PermitApplicationEntity
 import org.kebs.app.kotlin.apollo.store.model.PetroleumInstallationInspectionEntity
 import org.kebs.app.kotlin.apollo.store.model.invoice.BillPayments
 import org.kebs.app.kotlin.apollo.store.model.invoice.BillTransactionsEntity
+import org.kebs.app.kotlin.apollo.store.model.invoice.BillingLimits
 import org.kebs.app.kotlin.apollo.store.model.invoice.CorporateCustomerAccounts
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -45,6 +46,11 @@ interface IInvoiceRepository : HazelcastRepository<InvoiceEntity, Long> {
 }
 
 @Repository
+interface IBillingLimitsRepository : HazelcastRepository<BillingLimits, Long> {
+    fun findAllByStatus(status: Int): List<BillingLimits>
+}
+
+@Repository
 interface ICorporateCustomerRepository : HazelcastRepository<CorporateCustomerAccounts, Long> {
     fun findAllByCorporateIdentifier(corporateId: String?): Optional<CorporateCustomerAccounts>
     fun findAllByCorporateNameContains(corporateName: String, page: Pageable): Page<CorporateCustomerAccounts>
@@ -55,6 +61,7 @@ interface ICorporateCustomerRepository : HazelcastRepository<CorporateCustomerAc
 interface IBillTransactionsEntityRepository : HazelcastRepository<BillTransactionsEntity, Long> {
     fun findAllByCorporateIdAndBillId(corporateId: Long, billId: Long): List<BillTransactionsEntity>
 }
+
 
 
 @Repository

@@ -20,10 +20,11 @@ class CorporateCustomerHandler(
         private val billService: BillingService,
         private val daoValidatorService: DaoValidatorService
 ) {
-    fun corporateDetails(req: ServerRequest): ServerResponse{
+    fun corporateDetails(req: ServerRequest): ServerResponse {
         val corporateId = req.pathVariable("corporateId").toLong()
         return ServerResponse.ok().body(corporateService.corporateCustomerDetails(corporateId))
     }
+
     fun currentCorporateBills(req: ServerRequest): ServerResponse {
         val corporateId = req.pathVariable("corporateId").toLong()
         return ServerResponse.ok().body(billService.corporateBills(corporateId, extractPage(req)))
@@ -58,6 +59,10 @@ class CorporateCustomerHandler(
         return ServerResponse.ok().body(billService.corporateBillByPaymentStatus(corporateId, statues))
     }
 
+    fun listCorporateBillingLimits(req: ServerRequest): ServerResponse {
+        return ServerResponse.ok().body(corporateService.listTransactionLimits())
+    }
+
     fun listCorporateCustomers(req: ServerRequest): ServerResponse {
         val page = extractPage(req)
         val keywords = req.param("keywords")
@@ -80,7 +85,7 @@ class CorporateCustomerHandler(
                 response
             }
         } catch (ex: Exception) {
-            KotlinLogging.logger {  }.error("Failed to add account",ex)
+            KotlinLogging.logger { }.error("Failed to add account", ex)
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
             response.message = "Failed to create corporate account"
             response.errors = ex.toString()
@@ -104,7 +109,7 @@ class CorporateCustomerHandler(
                 response
             }
         } catch (ex: Exception) {
-            KotlinLogging.logger {  }.error("Failed to update account", ex)
+            KotlinLogging.logger { }.error("Failed to update account", ex)
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
             response.message = "Failed to update corporate account"
             response.errors = ex.toString()

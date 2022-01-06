@@ -11,10 +11,10 @@ class AuctionRouter {
 
     @CrossOrigin
     @Bean
-    fun auctionService(handler: AuctionHandler) = router {
+    fun auctionServiceRouter(handler: AuctionHandler) = router {
         "/api/v1/auction".let {
             GET("/categories", handler::listAuctionCategory)
-            GET("/auction/{auctionType}", handler::listAuctions)
+            GET("/auctions/{auctionType}", handler::listAuctions)
             POST("/auction/add", handler::addAuctionRequest)
             GET("/auction/{auctionId}", handler::findAuctionGoodById)
             POST("/auction/assign/{auctionId}", handler::assignAuctionRequest)

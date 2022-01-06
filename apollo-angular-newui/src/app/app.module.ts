@@ -243,6 +243,9 @@ import {ViewClientCredentialsComponent} from "./apollowebs/system/clients/view-c
 import { ViewCorporateCustomersComponent } from './apollowebs/invoice/corporate/view-corporate-customers/view-corporate-customers.component';
 import { AddUpdateCorporateCustomerComponent } from './apollowebs/invoice/corporate/add-update-corporate-customer/add-update-corporate-customer.component';
 import { ViewCorporateComponent } from './apollowebs/invoice/corporate/view-corporate/view-corporate.component';
+import { ViewBillLimitsComponent } from './apollowebs/invoice/limits/view-bill-limits/view-bill-limits.component';
+import { ViewTransactionsComponent } from './apollowebs/invoice/corporate/view-transactions/view-transactions.component';
+import { ViewAuctionItemsComponent } from './apollowebs/di/auction/view-auction-items/view-auction-items.component';
 
 @NgModule({
     imports: [
@@ -510,6 +513,9 @@ import { ViewCorporateComponent } from './apollowebs/invoice/corporate/view-corp
         ViewCorporateCustomersComponent,
         AddUpdateCorporateCustomerComponent,
         ViewCorporateComponent,
+        ViewBillLimitsComponent,
+        ViewTransactionsComponent,
+        ViewAuctionItemsComponent,
     ],
     providers: [
         MatNativeDateModule,

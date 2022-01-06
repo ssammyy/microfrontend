@@ -34,6 +34,14 @@
             <span class="error" *ngIf="(form.get('corporateType').touched && !form.get('corporateType').value) ||  form.get('corporateType').invalid">Please select corporate  type</span>
         </div>
         <div class="col-sm-12 col-md-6">
+            <label for="billId" class="waiver-form-label">Billing Type</label>
+            <select id="billId" class="waiver-form-input-master" formControlName="billId">
+                <option value="" disabled selected>Select bill type</option>
+                <option *ngFor="let d of billingTypes" [value]="d.id">{{d.billType}}- {{d.corporateType}} - {{d.maxBillAmount}}</option>
+            </select>
+            <span class="error" *ngIf="(form.get('corporateType').touched && !form.get('corporateType').value) ||  form.get('corporateType').invalid">Please select corporate  type</span>
+        </div>
+        <div class="col-sm-12 col-md-6">
             <label for="contactPhone" class="waiver-form-label">Contact Phone</label>
             <input type="text" class="waiver-form-input-master" name="partnerCity"
                    data-name="contactPhone" id="contactPhone" formControlName="contactPhone">

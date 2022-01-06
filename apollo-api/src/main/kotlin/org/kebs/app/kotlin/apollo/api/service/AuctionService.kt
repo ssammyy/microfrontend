@@ -45,10 +45,10 @@ class AuctionService(
         return response
     }
 
-    fun addReport(multipartFile: MultipartFile?, auctionId: Long, description: String, fileRequired: Boolean): Long? {
+    fun addReport(multipartFile: MultipartFile?, auction: AuctionRequests, description: String, fileRequired: Boolean): Long? {
         multipartFile?.let {
             val upload = AuctionUploadsEntity()
-            upload.auctionId = auctionId
+            upload.auctionId = auction
             upload.document = multipartFile.bytes
             upload.fileType = multipartFile.contentType
             upload.fileSize = multipartFile.size
@@ -134,12 +134,12 @@ class AuctionService(
             val auction = opttional.get()
             val reportRequired = "VEHICLE".equals(auction.category?.categoryCode)
             if (approved) {
-                auction.reportId = this.addReport(multipartFile, auctionId, "Approval Report", reportRequired)
+                auction.reportId = this.addReport(multipartFile, auction, "Approval Report", reportRequired)
                 auction.approvalStatus = 1
                 addAuctionHistory(auctionId, "APPROVE-REQUEST", remarks, commonDaoServices.loggedInUserAuthentication().name)
                 this.processCallback(auction.createdBy, ResponseCodes.SUCCESS_CODE, "Auction Request approved", auction.auctionLotNo, "APPROVED")
             } else {
-                auction.reportId = this.addReport(multipartFile, auctionId, "Rejection Report", reportRequired)
+                auction.reportId = this.addReport(multipartFile, auction, "Rejection Report", reportRequired)
                 auction.approvalStatus = 2
                 addAuctionHistory(auctionId, "REJECT-REQUEST", remarks, commonDaoServices.loggedInUserAuthentication().name)
                 this.processCallback(auction.createdBy, ResponseCodes.SUCCESS_CODE, "Auction Request approved", auction.auctionLotNo, "REJECTED")

@@ -511,7 +511,7 @@ class PvocService(
                 }
             }
             "PRODUCT" -> {
-                val optional = iPvocApplicationProductsRepo.findAllByIdAndExceptionId(itemId, requestId)
+                val optional = iPvocApplicationProductsRepo.findAllByIdAndPvocApplicationId_Id(itemId, requestId)
                 if (optional.isPresent) {
                     val product = optional.get()
                     iPvocApplicationProductsRepo.delete(product)

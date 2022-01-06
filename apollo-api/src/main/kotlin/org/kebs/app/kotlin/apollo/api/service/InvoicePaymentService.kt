@@ -147,8 +147,10 @@ class InvoicePaymentService(
                 demandNote.receiptNo = billTrx.tempReceiptNumber
                 demandNote.billId = billTrx.id
                 this.iDemandNoteRepo.save(demandNote)
+                KotlinLogging.logger { }.info("Added demand note to bill transaction:${demandNote.demandNoteNumber} <=> ${billTrx.tempReceiptNumber}")
             } ?: run {
-                demandNote?.demandNoteNumber?.let {
+                demandNote.demandNoteNumber?.let {
+                    KotlinLogging.logger { }.info("Generate demand note Sage:${demandNote.demandNoteNumber}")
                     val loggedInUser = commonDaoServices.findUserByUserName(demandNote.createdBy ?: "NA")
                     // Create payment batch
                     val batchInvoiceDetail = invoiceDaoService.createBatchInvoiceDetails(loggedInUser.userName!!, it)

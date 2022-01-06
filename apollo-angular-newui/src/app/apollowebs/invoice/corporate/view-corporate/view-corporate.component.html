@@ -12,7 +12,7 @@
                     </div>
                     <div class="card-body" *ngIf="corporateDetails">
                         <div class="row">
-                            <div class="col-md-9">
+                            <div class="col-md-10">
                                 <mat-tab-group [(selectedIndex)]="active" [disablePagination]="true"
                                                appMatMultilineTab
                                                class="tab-wraps">
@@ -61,7 +61,7 @@
                                             </div>
                                         </div>
                                     </mat-tab>
-                                    <mat-tab label="BILLS DETAILS" tabIndex="2">
+                                    <mat-tab label="PENDING BILLS" tabIndex="2">
                                         <mat-table class="table-striped table-responsive table-condensed"
                                                    [dataSource]="billList">
                                             <ng-container matColumnDef="billNumber">
@@ -76,7 +76,59 @@
                                             <ng-container matColumnDef="billAmount">
                                                 <mat-header-cell *matHeaderCellDef>Amount</mat-header-cell>
                                                 <mat-cell
-                                                        *matCellDef="let element"> {{element.billAmount| money}
+                                                        *matCellDef="let element"> {{element.billAmount| money}}
+                                                </mat-cell>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="penaltyAmount">
+                                                <mat-header-cell *matHeaderCellDef>Penalty Amount</mat-header-cell>
+                                                <mat-cell
+                                                        *matCellDef="let element"> {{element.penaltyAmount | money}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="totalAmount">
+                                                <mat-header-cell *matHeaderCellDef>Total amount</mat-header-cell>
+                                                <mat-cell
+                                                        *matCellDef="let element"> {{element.totalAmount| money}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="paymentDate">
+                                                <mat-header-cell *matHeaderCellDef>Payment Date</mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.paymentDate}} </mat-cell>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="paymentReceipts">
+                                                <mat-header-cell *matHeaderCellDef>Payment Receipt</mat-header-cell>
+                                                <mat-cell
+                                                        *matCellDef="let element"> {{element.paymentReceipts}} </mat-cell>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="actions">
+                                                <mat-header-cell *matHeaderCellDef>ACTIONS</mat-header-cell>
+                                                <mat-cell *matCellDef="let element">
+                                                    <button mat-raised-button (click)="viewTransactions(element.id)"><i
+                                                            class="fa fa-eye">View</i>
+                                                    </button>
+                                                </mat-cell>
+                                            </ng-container>
+                                            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                                            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                                        </mat-table>
+                                    </mat-tab>
+                                    <mat-tab label="PAID BILLS" tabIndex="3">
+                                        <mat-table class="table-striped table-responsive table-condensed"
+                                                   [dataSource]="paidBills">
+                                            <ng-container matColumnDef="billNumber">
+                                                <mat-header-cell *matHeaderCellDef>Bill No.</mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.billNumber}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="invoiceNumber">
+                                                <mat-header-cell *matHeaderCellDef>Invoice Number</mat-header-cell>
+                                                <mat-cell
+                                                        *matCellDef="let element"> {{element.invoiceNumber}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="billAmount">
+                                                <mat-header-cell *matHeaderCellDef>Amount</mat-header-cell>
+                                                <mat-cell
+                                                        *matCellDef="let element"> {{element.billAmount| money}}
                                                 </mat-cell>
                                             </ng-container>
 

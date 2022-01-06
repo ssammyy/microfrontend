@@ -8,14 +8,15 @@ import {FinanceInvoiceService} from "../../../../core/store/data/invoice/finance
     styleUrls: ['./view-corporate.component.css']
 })
 export class ViewCorporateComponent implements OnInit {
-    displayedColumns=["billNumber","invoiceNumber","billAmount","penaltyAmount","totalAmount","paymentDate","paymentReceipts","actions"]
+    displayedColumns = ["billNumber", "invoiceNumber", "billAmount", "penaltyAmount", "totalAmount", "paymentDate", "paymentReceipts", "actions"]
 
-    active: number=0
-    page=0
-    pageSize=20
+    active: number = 0
+    page = 0
+    pageSize = 20
     corporateId: any
     corporateDetails: any
     billList: any
+    paidBills: any
 
     constructor(private activatedRoute: ActivatedRoute, private router: Router, private  fiService: FinanceInvoiceService) {
     }
@@ -25,7 +26,8 @@ export class ViewCorporateComponent implements OnInit {
             res => {
                 this.corporateId = res.get("id")
                 this.loadData()
-                this.loadBills()
+                this.loadBills("paid")
+                this.loadBills("pending")
             }
         )
     }
@@ -45,23 +47,29 @@ export class ViewCorporateComponent implements OnInit {
             )
     }
 
-    loadBills() {
-        this.fiService.loadBills(this.corporateId,this.page, this.pageSize)
+    loadBills(status: any) {
+        this.fiService.loadBillStatus(this.corporateId,status, this.page, this.pageSize)
             .subscribe(
-                res =>{
-                    if(res.responseCode==="00"){
-                        this.billList=res.data
+                res => {
+                    if (res.responseCode === "00") {
+                        switch (status) {
+                            case "paid":
+                                this.paidBills = res.data.bills
+                                break
+                            default:
+                                this.billList = res.data.bills
+                        }
                     }
                 }
             )
     }
 
-    manageAccount(){
+    manageAccount() {
 
     }
 
-    viewTransactions(billId: any){
-
+    viewTransactions(billId: any) {
+        this.router.navigate(["/transaction/bill/",this.corporateId, billId])
     }
 
 }

@@ -170,6 +170,7 @@ export const ROUTES: RouteInfo[] = [
             {path: 'demand-notes', title: 'Demand Notes', ab: 'DN'},
             {path: 'corporates-customers', title: 'Corporate Customers', ab: 'CC'},
             {path: 'exchange-rates', title: 'Exchange Rates', ab: 'ER'},
+            {path: 'limits', title: 'Billing Types', ab: 'BT'},
         ],
         icontype: 'money'
     },

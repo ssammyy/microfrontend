@@ -3,7 +3,6 @@ package org.kebs.app.kotlin.apollo.api.service
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.store.model.CdDemandNoteEntity
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
@@ -16,6 +15,7 @@ import org.kebs.app.kotlin.apollo.store.repo.ICorporateCustomerRepository
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
+import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
 import java.time.LocalDate
@@ -25,10 +25,10 @@ import java.time.format.DateTimeFormatter
 class BillingService(
         private val corporateCustomerRepository: ICorporateCustomerRepository,
         private val billPaymentRepository: IBillPaymentsRepository,
-        private val billTransactionRepo: IBillTransactionsEntityRepository,
-        private val commonDaoServices: CommonDaoServices
+        private val billTransactionRepo: IBillTransactionsEntityRepository
 ) {
     final val DATE_FORMATER = DateTimeFormatter.ofPattern("yyyy-MM")
+
     fun addBillTransaction(transaction: BillTransactionsEntity, corporate: CorporateCustomerAccounts): BillPayments {
         val billNumber = DATE_FORMATER.format(LocalDate.now())
         val billOptional = this.billPaymentRepository.findFirstByCorporateIdAndBillNumber(corporate.id, billNumber)
@@ -43,16 +43,25 @@ class BillingService(
             bill.corporateId = corporate.id
             bill.billNumber = billNumber
             bill.paymentStatus = 0
-            bill.totalAmount = transaction.amount
             bill.penaltyAmount = BigDecimal.ZERO
-            bill.totalAmount = BigDecimal.ZERO
+            bill.totalAmount = transaction.amount
             bill.status = 1
+            val paymentDate = when {
+                corporate.paymentDays?.compareTo(0) ?: 0 > 0 -> LocalDate.now().withDayOfMonth(corporate.paymentDays
+                        ?: 15)
+                else -> corporate.accountLimits?.let { LocalDate.now().withDayOfMonth(it.billPaymentDay ?: 15) }
+                        ?: LocalDate.now().withDayOfMonth(15)
+            }
+            bill.paymentDate = Date.valueOf(paymentDate)
             bill.createOn = Timestamp.from(Instant.now())
             val saved = this.billPaymentRepository.save(bill)
             transaction.billId = saved.id
             this.billTransactionRepo.save(transaction)
+            bill.billAmount = this.billPaymentRepository.sumTotalAmountByCorporateIdAndBillId(corporate.id, saved.id)
+            this.billPaymentRepository.save(bill)
             return saved
         }
+
     }
 
     /**
@@ -69,12 +78,14 @@ class BillingService(
             transactionEntity.corporateId = corporate.get().id
             transactionEntity.description = demandNote.descriptionGoods
             transactionEntity.invoiceNumber = demandNote.demandNoteNumber
+            transactionEntity.transactionType="DEMAND_NOTE"
             transactionEntity.paidStatus = 0
-            transactionEntity.tempReceiptNumber = "TMP-INV${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+            val prefix = corporate.get().accountLimits?.billReceiptPrefix ?: "TMP-INV"
+            transactionEntity.tempReceiptNumber = "${prefix}${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
             transactionEntity.status = 1
             transactionEntity.transactionDate = Timestamp.from(Instant.now())
             transactionEntity.transactionId = demandNote.id.toString()
-            transactionEntity.createdBy = commonDaoServices.loggedInUserAuthentication().name
+            transactionEntity.createdBy = demandNote.createdBy
             transactionEntity.createdOn = Timestamp.from(Instant.now())
             val saved = billTransactionRepo.save(transactionEntity)
             this.addBillTransaction(transactionEntity, corporate.get())
@@ -113,8 +124,8 @@ class BillingService(
                 response.responseCode = ResponseCodes.NOT_FOUND
                 response.message = "Corporate not found"
             }
-        }catch (ex: Exception) {
-            KotlinLogging.logger {  }.error("Failed to load bills", ex)
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to load bills", ex)
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
             response.message = "Corporate bills not found"
         }

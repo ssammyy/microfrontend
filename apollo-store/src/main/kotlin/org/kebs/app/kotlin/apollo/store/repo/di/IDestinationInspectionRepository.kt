@@ -315,6 +315,7 @@ interface IDemandNoteRepository : HazelcastRepository<CdDemandNoteEntity, Long> 
     fun findAllByPaymentStatus(paymentStatus: Int): List<CdDemandNoteEntity>?
     fun findFirstByPaymentStatusAndCdRefNoIsNotNull(paymentStatus: Int): CdDemandNoteEntity?
     fun findFirstByPaymentStatusAndCdRefNoIsNotNullOrderByCreatedOnDesc(paymentStatus: Int): CdDemandNoteEntity?
+    fun findFirstByPaymentStatusAndCdRefNoIsNotNullAndImporterPinOrderByCreatedOnDesc(paymentStatus: Int,importerPin: String): CdDemandNoteEntity?
 
     @Query("select count(*) as totalCount, sum(AMOUNT_PAYABLE) totalAmount,paymentStatus from DAT_KEBS_CD_DEMAND_NOTE where  to_char(DATE_GENERATED,'DD-MM-YYYY')=:date group by PAYMENT_STATUS", nativeQuery = true)
     fun transactionStats(date: String): List<TransactionStats>

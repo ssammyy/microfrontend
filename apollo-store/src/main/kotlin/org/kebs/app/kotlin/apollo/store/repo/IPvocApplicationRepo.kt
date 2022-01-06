@@ -37,7 +37,7 @@ interface IPvocExceptionApplicationStatusEntityRepo : HazelcastRepository<PvocEx
 interface IPvocApplicationProductsRepo : HazelcastRepository<PvocApplicationProductsEntity, Long> {
     fun findAllByPvocApplicationId(pvocApplicationId: PvocApplicationEntity): List<PvocApplicationProductsEntity>?
     fun findAllByPvocApplicationId_Id(pvocApplicationId: Long?): List<PvocApplicationProductsEntity>?
-    fun findAllByIdAndExceptionId(itemId: Long, requestId: Long): Optional<PvocApplicationProductsEntity>
+    fun findAllByIdAndPvocApplicationId_Id(itemId: Long, requestId: Long): Optional<PvocApplicationProductsEntity>
 }
 
 interface IPvocAgentMonitoringStatusEntityRepo : HazelcastRepository<PvocAgentMonitoringStatusEntity, Long> {

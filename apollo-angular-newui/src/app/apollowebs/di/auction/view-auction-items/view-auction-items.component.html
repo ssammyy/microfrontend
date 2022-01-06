@@ -1,0 +1,37 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">auction</i>
+                        </div>
+                        <h4 class="card-title">Auction Items
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Lot Number">
+                            <label for="filter-lot-no">Status</label>
+                            <input class="search-form-input" id="filter-lot-no"  type="text" (change)="searchAuction($event)"
+                                   placeholder="Lot Number">
+                        </div>
+                        <div class="btn-group btn-group-sm pull-right" role="group"
+                             aria-label="Applications Status">
+                            <input type="file" accept="text/csv"  [hidden]="true"
+                                   (change)="uploadAuction($event)" #uploadFile>
+                            <button class="btn btn-sm btn-primary mr-7"
+                                    (click)="uploadFile.click()"><i class="fa fa-upload"></i>Auction Items
+                            </button>
+                        </div>
+                        <div class="table-responsive table-striped">
+                            <ng2-smart-table class="table table-hover" [settings]="settings"
+                                             [source]="dataSet">
+                            </ng2-smart-table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

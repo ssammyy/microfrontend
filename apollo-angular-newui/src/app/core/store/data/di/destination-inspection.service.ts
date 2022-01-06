@@ -454,17 +454,34 @@ export class DestinationInspectionService {
             params['page'] = page
             params['size'] = pageSize
         }
-        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/ism/list/"+applicationStatus), {
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/ism/list/" + applicationStatus), {
             params: params
         })
     }
 
     getIsmApplicationDetails(applicationId: any): Observable<any> {
-        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/ism/details/"+applicationId))
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/ism/details/" + applicationId))
     }
 
     approveRejectIsm(data: any): Observable<any> {
-        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/ism/approve-reject"),data)
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/ism/approve-reject"), data)
+    }
+
+    listAuctionItems(keyword: any, action: any, page: number, pageSize: number): Observable<any> {
+        let params = {}
+        if (pageSize) {
+            params['page'] = page
+            params['size'] = pageSize
+        }
+        if (keyword && keyword.length > 0) {
+            params['keyword'] = keyword
+            return this.client.get(ApiEndpointService.getEndpoint("/api/v1/auction/auctions/search"), {
+                params: params
+            })
+        }
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/auction/auctions/" + action), {
+            params: params
+        })
     }
 
     showSuccess(message: string, fn?: Function) {

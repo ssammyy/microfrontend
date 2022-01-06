@@ -17,11 +17,11 @@ export class FinanceInvoiceService {
     }
 
     updateCorporateCustomer(data: any, corporateId: any): Observable<any> {
-        return this.http.put(ApiEndpointService.getEndpoint("/api/v1/corporate/update/"+corporateId), data)
+        return this.http.put(ApiEndpointService.getEndpoint("/api/v1/corporate/update/" + corporateId), data)
     }
 
-    getCorporateDetails(corporateId: any): Observable<any>{
-        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/corporate/details/"+corporateId))
+    getCorporateDetails(corporateId: any): Observable<any> {
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/corporate/details/" + corporateId))
     }
 
     listCorporateCustomers(page: number, pageSize: number): Observable<any> {
@@ -35,13 +35,39 @@ export class FinanceInvoiceService {
         })
     }
 
-    loadBills(corporateId: any, page: number, pageSize: number): Observable<any>{
+    loadBillTypes(): Observable<any> {
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/bill/limits"))
+    }
+
+    loadBills(corporateId: any, page: number, pageSize: number): Observable<any> {
         let params = {}
         if (pageSize) {
             params['page'] = page
             params['size'] = pageSize
         }
-        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/corporate/bills/"+corporateId), {
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/corporate/bills/" + corporateId), {
+            params: params
+        })
+    }
+
+    loadBillStatus(corporateId: any, status: any,page: number, pageSize: number): Observable<any> {
+        let params = {}
+        if (pageSize) {
+            params['page'] = page
+            params['size'] = pageSize
+        }
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/corporate/bills/" + corporateId+"/status/"+status), {
+            params: params
+        })
+    }
+
+    loadBillTransactions(billId: any, corporateId: number, page: number, pageSize: number): Observable<any> {
+        let params = {}
+        if (pageSize) {
+            params['page'] = page
+            params['size'] = pageSize
+        }
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/corporate/bill/" + corporateId + "/details/" + billId), {
             params: params
         })
     }

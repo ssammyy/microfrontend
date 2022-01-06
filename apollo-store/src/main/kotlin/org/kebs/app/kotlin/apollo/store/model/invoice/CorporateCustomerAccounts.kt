@@ -60,6 +60,10 @@ class CorporateCustomerAccounts : Serializable {
     @Column(name = "ACCOUNT_BLOCKED", nullable = false)
     var accountBlocked: Int? = null
 
+    @JoinColumn(name = "ACCOUNT_LIMITS", nullable = true, referencedColumnName = "ID")
+    @ManyToOne
+    var accountLimits: BillingLimits? = null
+
 
     @Column(name = "STATUS")
     @Basic

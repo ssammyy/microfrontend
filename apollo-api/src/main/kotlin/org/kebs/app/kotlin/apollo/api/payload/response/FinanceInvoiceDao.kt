@@ -10,6 +10,18 @@ import javax.persistence.Id
 class FinanceInvoiceDao {
 }
 
+class BillingLimitsDao {
+    var limitId: Long = 0
+    var corporateType: String? = null // COURIER
+    var billType: String? = null
+    var billReceiptPrefix: String? = null
+    var billPaymentDay: Int? = null
+    var penaltyAmount: BigDecimal? = null
+    var penaltyType: String? = null
+    var maxBillAmount: BigDecimal? = null
+
+}
+
 class CorporateCustomerAccountDao {
     var corporatId: Long = 0
     var corporateIdentifier: String? = null

@@ -123,6 +123,9 @@ import {IsmApplicationsComponent} from "./apollowebs/di/ism/ism-applications/ism
 import {ViewIsmApplicationComponent} from "./apollowebs/di/ism/view-ism-application/view-ism-application.component";
 import {ViewCorporateCustomersComponent} from "./apollowebs/invoice/corporate/view-corporate-customers/view-corporate-customers.component";
 import {ViewCorporateComponent} from "./apollowebs/invoice/corporate/view-corporate/view-corporate.component";
+import {ViewBillLimitsComponent} from "./apollowebs/invoice/limits/view-bill-limits/view-bill-limits.component";
+import {ViewTransactionsComponent} from "./apollowebs/invoice/corporate/view-transactions/view-transactions.component";
+import {ViewAuctionItemsComponent} from "./apollowebs/di/auction/view-auction-items/view-auction-items.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -561,6 +564,11 @@ export const routes: Routes = [
                 canActivate: [RouteGuard],
                 component: ViewInspectionDetailsComponent
             },
+            {
+                path: 'auctions',
+                canActivate: [RouteGuard],
+                component: ViewAuctionItemsComponent
+            },
         ]
     },
     {
@@ -612,6 +620,14 @@ export const routes: Routes = [
             {
                 path: 'exchange-rates',
                 component: CurrencyExchangeRatesComponent
+            },
+            {
+                path: 'bill/:id/:cid',
+                component: ViewTransactionsComponent
+            },
+            {
+                path: 'limits',
+                component: ViewBillLimitsComponent
             }
         ]
     },

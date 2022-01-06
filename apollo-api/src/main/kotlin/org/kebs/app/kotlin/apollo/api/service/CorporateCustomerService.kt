@@ -8,6 +8,7 @@ import org.kebs.app.kotlin.apollo.api.payload.request.CorporateStatusUpdateForm
 import org.kebs.app.kotlin.apollo.api.payload.response.CorporateCustomerAccountDao
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.store.model.invoice.CorporateCustomerAccounts
+import org.kebs.app.kotlin.apollo.store.repo.IBillingLimitsRepository
 import org.kebs.app.kotlin.apollo.store.repo.ICorporateCustomerRepository
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Component
@@ -20,8 +21,17 @@ import java.time.LocalTime
 @Component
 class CorporateCustomerService(
         private val corporateCustomersRepository: ICorporateCustomerRepository,
+        private val billingLimitsRepository: IBillingLimitsRepository,
         private val commonDaoServices: CommonDaoServices,
 ) {
+
+    fun listTransactionLimits(): ApiResponseModel {
+        val response = ApiResponseModel()
+        response.data = this.billingLimitsRepository.findAllByStatus(1)
+        response.responseCode = ResponseCodes.SUCCESS_CODE
+        response.message = "Success"
+        return response
+    }
 
     fun countAccountsToday(): String {
         val localDateTime: LocalDateTime = LocalDateTime.now()
@@ -42,6 +52,10 @@ class CorporateCustomerService(
                 customer.lastPayment = Timestamp.from(Instant.now())
                 customer.contactName = form.contactName
                 customer.contactPhone = form.contactPhone
+                val limits = billingLimitsRepository.findById(form.billingId)
+                if (limits.isPresent) {
+                    customer.accountLimits = limits.get()
+                }
                 customer.corporateBillNumber = "KBN${commonDaoServices.convertDateToString(LocalDateTime.now(), "yyyyMMdd")}${countAccountsToday()}".toUpperCase()
                 customer.corporateEmail = form.corporateEmail
                 customer.corporateName = form.corporateName
@@ -81,6 +95,11 @@ class CorporateCustomerService(
             val customer = corporateIdentifier.get()
             customer.contactEmail = form.contactEmail
             customer.contactName = form.contactName
+            customer.paymentDays = form.mouDays
+            val limits = billingLimitsRepository.findById(form.billingId)
+            if (limits.isPresent) {
+                customer.accountLimits = limits.get()
+            }
             customer.contactPhone = form.contactPhone
             customer.corporateEmail = form.corporateEmail
             customer.corporateName = form.corporateName
