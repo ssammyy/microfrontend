@@ -184,60 +184,8 @@ class MsFuelRemedyInvoicesEntity : Serializable {
     @Basic
     var transportGrandTotal: Long? = null
 
-    @JoinColumn(name = "INSPECTION_ID", referencedColumnName = "ID")
-    @ManyToOne
-    var fuelInspectionId: MsFuelInspectionEntity? = null
+    @Column(name = "INSPECTION_ID")
+    @Basic
+    var fuelInspectionId: Long? = null
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || javaClass != other.javaClass) return false
-        val that = other as MsFuelRemedyInvoicesEntity
-        return id == that.id &&
-                amount == that.amount &&
-                invoiceDate == that.invoiceDate &&
-                paymentDate == that.paymentDate &&
-                transactionDate == that.transactionDate &&
-                status == that.status &&
-                remarks == that.remarks &&
-                varField1 == that.varField1 &&
-                varField2 == that.varField2 &&
-                varField3 == that.varField3 &&
-                varField4 == that.varField4 &&
-                varField5 == that.varField5 &&
-                varField6 == that.varField6 &&
-                varField7 == that.varField7 &&
-                varField8 == that.varField8 &&
-                varField9 == that.varField9 &&
-                varField10 == that.varField10 &&
-                createdBy == that.createdBy &&
-                createdOn == that.createdOn &&
-                lastModifiedBy == that.lastModifiedBy &&
-                lastModifiedOn == that.lastModifiedOn &&
-                updateBy == that.updateBy &&
-                updatedOn == that.updatedOn &&
-                deleteBy == that.deleteBy &&
-                deletedOn == that.deletedOn &&
-                version == that.version &&
-                remunerationRateLiter == that.remunerationRateLiter &&
-                remunerationSubTotal == that.remunerationSubTotal &&
-                remunerationVat == that.remunerationVat &&
-                remunerationTotal == that.remunerationTotal &&
-                volumeFuelRemediated == that.volumeFuelRemediated &&
-                subsistenceTotalNights == that.subsistenceTotalNights &&
-                subsistenceRate == that.subsistenceRate &&
-                subsistenceRateNightTotal == that.subsistenceRateNightTotal &&
-                subsistenceVat == that.subsistenceVat &&
-                subsistenceTotal == that.subsistenceTotal &&
-                transportAirTicket == that.transportAirTicket &&
-                transportInkm == that.transportInkm &&
-                transportRate == that.transportRate &&
-                transportTotalKmrate == that.transportTotalKmrate &&
-                transportVat == that.transportVat &&
-                transportTotal == that.transportTotal &&
-                transportGrandTotal == that.transportGrandTotal
-    }
-
-    override fun hashCode(): Int {
-        return Objects.hash(id, amount, invoiceDate, paymentDate, transactionDate, status, remarks, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, lastModifiedBy, lastModifiedOn, updateBy, updatedOn, deleteBy, deletedOn, version, remunerationRateLiter, remunerationSubTotal, remunerationVat, remunerationTotal, volumeFuelRemediated, subsistenceTotalNights, subsistenceRate, subsistenceRateNightTotal, subsistenceVat, subsistenceTotal, transportAirTicket, transportInkm, transportRate, transportTotalKmrate, transportVat, transportTotal, transportGrandTotal)
-    }
 }

@@ -188,6 +188,41 @@ data class PDFSaveComplianceStatusDto(
         var complianceRemarks: String,
 )
 
+data class SSFSaveComplianceStatusDto(
+        @NotNull(message = "Required field")
+        var ssfID: Long,
+        @NotNull(message = "Required field")
+        var bsNumber: String,
+        @NotNull(message = "Required field")
+        var complianceStatus: Boolean,
+        @NotNull(message = "Required field")
+        var complianceRemarks: String,
+)
+
+data class CompliantRemediationDto(
+        @NotNull(message = "Required field")
+        var proFormaInvoiceStatus: Boolean,
+        @NotNull(message = "Required field")
+        var remarks: String,
+        var dateOfRemediation: Date? = null,
+        var volumeFuelRemediated: Long?= null,
+        var subsistenceTotalNights: Long?= null,
+        var transportAirTicket: Long?= null,
+        var transportInkm: Long?= null,
+)
+
+data class RemediationDto(
+        var productType: String? = null,
+        var quantityOfFuel: String? = null,
+        var contaminatedFuelType: String? = null,
+        var applicableKenyaStandard: String? = null,
+        var remediationProcedure: String? = null,
+        var volumeOfProductContaminated: String? = null,
+        var volumeAdded: String? = null,
+        var totalVolume: String? = null,
+)
+
+
 data class MSSSFPDFListDetailsDto(
         var pdfSavedId: Long? = null,
         var pdfName: String? = null,

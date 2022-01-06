@@ -19,7 +19,7 @@ import {
     SampleCollectionDto,
     SampleCollectionItemsDto,
     SampleSubmissionDto,
-    SampleSubmissionItemsDto
+    SampleSubmissionItemsDto, SSFSaveComplianceStatusDto
 } from "./ms.model";
 import swal from "sweetalert2";
 import {AbstractControl, ValidatorFn} from "@angular/forms";
@@ -452,6 +452,23 @@ export class MsService {
     public msFuelInspectionScheduledSavePDFLIMS(batchReferenceNo: string, referenceNo: string, data: PDFSaveComplianceStatusDto): Observable<FuelInspectionDto> {
         console.log(data);
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_SCHEDULED_DETAILS_LAB_RESULTS_SAVE_PDF);
+        const params = new HttpParams()
+            .set('batchReferenceNo', batchReferenceNo)
+            .set('referenceNo', referenceNo);
+        return this.http.put<FuelInspectionDto>(url, data, {params}).pipe(
+            map(function (response: FuelInspectionDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public msFuelInspectionScheduledSaveSSFComplianceStatus(batchReferenceNo: string, referenceNo: string, data: SSFSaveComplianceStatusDto): Observable<FuelInspectionDto> {
+        console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_SCHEDULED_DETAILS_SSF_COMPLIANCE_STATUS);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
             .set('referenceNo', referenceNo);

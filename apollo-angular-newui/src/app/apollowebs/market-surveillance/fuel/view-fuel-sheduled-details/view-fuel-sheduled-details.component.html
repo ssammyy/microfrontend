@@ -346,6 +346,14 @@
 <!--                                        <b class="text-primary">Lab Results Details</b>-->
                                         <label style="color: #0082f3">Lab Results Details</label>
                                         <div class="panel" style="max-height: 388px;">
+                                            <button (click)="openModalAddDetails('ssfAddComplianceStatus')" mat-raised-button="" data-toggle="modal"
+                                                    data-target="#myModal1"
+                                                    class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">ADD COMPLIANCE STATUS</span>
+                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+                                            <br>
                                             <ul class="w-list-unstyled">
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">BS Number</div>
@@ -363,7 +371,7 @@
                                                         {{fuelInspection.sampleLabResults?.ssfResultsList?.complianceStatus}}</div>
                                                 </li>
                                             </ul>
-<!--                                            <button class="btn-sm btn-primary" >Download</button>-->
+
                                             <div class="form-row">
                                                 <div class="col-md-12 mb-3">
                                                     <label style="color: #0082f3">Lab Results Param</label>
@@ -581,6 +589,33 @@
                             </div>
                         </form>
                     </div>
+                    <div *ngIf="(currDiv == 'ssfAddComplianceStatus')">
+                        <form [formGroup]="ssfSaveComplianceStatusForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="complianceStatusSSF"><b>Select Compliance Status</b></label>
+                                        <mat-form-field id="complianceStatusSSF">
+                                            <mat-select placeholder="Please Select an option"
+                                                        formControlName="complianceStatus"
+                                                        [class.is-invalid]="formSSFSaveComplianceStatusForm.complianceStatus.invalid && formSSFSaveComplianceStatusForm.complianceStatus.touched"
+                                                        name="complianceStatus">
+                                                <mat-option [value]="true">Compliant</mat-option>
+                                                <mat-option [value]="false">Non-Compliant</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <label for="complianceRemarksSSF"><b>Please write, in detail, your feedback for the whole Lab results:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea id="complianceRemarksSSF" matInput type="text"
+                                                      formControlName="complianceRemarks"
+                                                      name="complianceRemarks">
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                     <div *ngIf="(currDiv == 'addBsNumber')">
                         <form [formGroup]="sampleSubmitBSNumberForm" class="form">
                             <div class="form-body">
@@ -634,6 +669,12 @@
                     <button *ngIf="(currDiv == 'pdfSaveCompliance')" mat-raised-button type="button" class="btn btn-success"
                             (click)="onClickSavePDFSelected(pdfSaveComplianceStatusForm.valid);"
                             [disabled]="!pdfSaveComplianceStatusForm.valid"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'ssfAddComplianceStatus')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveSSFLabResultsComplianceStatus(ssfSaveComplianceStatusForm.valid);"
+                            [disabled]="!ssfSaveComplianceStatusForm.valid"
                             data-dismiss="modal"
                     >SUBMIT
                     </button>

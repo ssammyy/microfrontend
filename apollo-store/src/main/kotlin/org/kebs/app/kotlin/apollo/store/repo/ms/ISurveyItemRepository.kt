@@ -111,7 +111,7 @@ interface IFuelRemediationRepository : HazelcastRepository<MsFuelRemediationEnti
     override fun findAll( pageable: Pageable): Page<MsFuelRemediationEntity>
     fun findAllByOrderByIdDesc( pageable: Pageable): Page<MsFuelRemediationEntity>
 
-    fun findByFuelInspectionId(fuelInspectionId: MsFuelInspectionEntity):  MsFuelRemediationEntity?
+    fun findByFuelInspectionId(fuelInspectionId: Long):  MsFuelRemediationEntity?
 //    fun findByUserId(userId: UsersEntity): List<WorkplanEntity>?
 //    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?
 }
@@ -121,7 +121,7 @@ interface IFuelRemediationInvoiceRepository : HazelcastRepository<MsFuelRemedyIn
     override fun findAll( pageable: Pageable): Page<MsFuelRemedyInvoicesEntity>
     fun findAllByOrderByIdDesc( pageable: Pageable): Page<MsFuelRemedyInvoicesEntity>
 
-    fun findByFuelInspectionId(fuelInspectionId: MsFuelInspectionEntity):  MsFuelRemedyInvoicesEntity?
+    fun findByFuelInspectionId(fuelInspectionId: Long):  MsFuelRemedyInvoicesEntity?
 
 
     fun findFirstByFuelInspectionId(fuelInspectionId: MsFuelInspectionEntity): List<MsFuelRemedyInvoicesEntity>

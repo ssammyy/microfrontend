@@ -32,6 +32,28 @@ export class FuelEntityAssignOfficerDto {
     remarks: string;
 }
 
+export class CompliantRemediationDto {
+    proFormaInvoiceStatus: boolean;
+    dateOfRemediation: Date;
+    remarks: string;
+    volumeFuelRemediated: number;
+    subsistenceTotalNights: number;
+    transportAirTicket: number;
+    transportInkm: number;
+}
+
+export class RemediationDto {
+    productType: string;
+    quantityOfFuel: string;
+    contaminatedFuelType: string;
+    applicableKenyaStandard: string;
+    remediationProcedure: string;
+    volumeOfProductContaminated: string;
+    volumeAdded: string;
+    totalVolume: string;
+}
+
+
 export class FuelEntityRapidTestDto {
     rapidTestRemarks: string;
     rapidTestStatus: boolean;
@@ -93,6 +115,13 @@ export class PDFSaveComplianceStatusDto {
     ssfID: number;
     bsNumber: string;
     PDFFileName: string;
+    complianceStatus: boolean;
+    complianceRemarks: string;
+}
+
+export class SSFSaveComplianceStatusDto {
+    ssfID: number;
+    bsNumber: string;
     complianceStatus: boolean;
     complianceRemarks: string;
 }

@@ -10,7 +10,7 @@ import {
   SampleCollectionDto,
   SampleCollectionItemsDto,
   SampleSubmissionDto,
-  SampleSubmissionItemsDto
+  SampleSubmissionItemsDto, SSFSaveComplianceStatusDto
 } from "../../../../core/store/data/ms/ms.model";
 import {MsService} from "../../../../core/store/data/ms/ms.service";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -42,6 +42,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
   sampleSubmitParamsForm!: FormGroup;
   sampleSubmitBSNumberForm!: FormGroup;
   pdfSaveComplianceStatusForm!: FormGroup;
+  ssfSaveComplianceStatusForm!: FormGroup;
   dataSaveAssignOfficer: FuelEntityAssignOfficerDto;
   dataSaveRapidTest: FuelEntityRapidTestDto;
   dataSaveSampleCollect: SampleCollectionDto;
@@ -50,6 +51,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
   dataSaveSampleSubmitParam: SampleSubmissionItemsDto;
   dataSaveSampleSubmitBSNumber: BSNumberSaveDto;
   dataPDFSaveComplianceStatus: PDFSaveComplianceStatusDto;
+  dataSSFSaveComplianceStatus: SSFSaveComplianceStatusDto;
 
   attachments: any[];
   comments: any[];
@@ -457,6 +459,11 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       complianceRemarks: ['', Validators.required],
     });
 
+    this.ssfSaveComplianceStatusForm = this.formBuilder.group({
+      complianceStatus: ['', Validators.required],
+      complianceRemarks: ['', Validators.required],
+    });
+
   }
 
   get formAssignOfficerForm(): any {
@@ -469,6 +476,10 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
 
   get formPdfSaveComplianceStatusForm(): any {
     return this.pdfSaveComplianceStatusForm.controls;
+  }
+
+ get formSSFSaveComplianceStatusForm(): any {
+    return this.ssfSaveComplianceStatusForm.controls;
   }
 
   get formSampleCollectForm(): any {
@@ -538,8 +549,8 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
   }
 
   openModalAddDetails(divVal: string): void {
-    const arrHead = ['assignOfficer', 'rapidTest', 'addBsNumber'];
-    const arrHeadSave = ['SELECT OFFICER TO ASSIGN', 'RAPID TEST RESULTS', 'ADD BS NUMBER'];
+    const arrHead = ['assignOfficer', 'rapidTest', 'addBsNumber', 'ssfAddComplianceStatus'];
+    const arrHeadSave = ['SELECT OFFICER TO ASSIGN', 'RAPID TEST RESULTS', 'ADD BS NUMBER', 'ADD SSF LAB RESULTS COMPLIANCE STATUS'];
 
     for (let h = 0; h < arrHead.length; h++) {
       if (divVal === arrHead[h]) {
@@ -674,6 +685,29 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
             console.log(data);
             this.SpinnerService.hide();
             this.msService.showSuccess("PDF LIMS SAVED SUCCESSFULLY")
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error)
+            this.msService.showError("AN ERROR OCCURRED")
+          }
+      );
+    }
+  }
+
+  onClickSaveSSFLabResultsComplianceStatus(valid: boolean) {
+    if (valid) {
+      this.SpinnerService.show();
+      this.dataSSFSaveComplianceStatus = {...this.dataSSFSaveComplianceStatus, ...this.ssfSaveComplianceStatusForm.value};
+      this.dataSSFSaveComplianceStatus.ssfID = this.fuelInspection.sampleLabResults.ssfResultsList.sffId;
+      this.dataSSFSaveComplianceStatus.bsNumber = this.fuelInspection.sampleLabResults.ssfResultsList.bsNumber;
+      // this.dataPDFSaveComplianceStatus.PDFFileName = this.selectedPDFFileName;
+      this.msService.msFuelInspectionScheduledSaveSSFComplianceStatus(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber,this.dataSSFSaveComplianceStatus).subscribe(
+          (data: any) => {
+            this.fuelInspection = data
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess("LAB RESULTS COMPLIANCE STATUS SAVED SUCCESSFULLY")
           },
           error => {
             this.SpinnerService.hide();
