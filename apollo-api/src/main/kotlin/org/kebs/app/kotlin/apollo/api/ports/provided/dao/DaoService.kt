@@ -380,9 +380,9 @@ class DaoService(
     fun readCocFileFromController(separator: Char, reader: Reader) =
             readCsvFile<CocsItemsEntityDto>(separator, reader)
 
-    fun readCorFileFromController(separator: Char, reader: FileReader) = readCsvFile<CorsBakEntity>(separator, reader)
+    fun readCorFileFromController(separator: Char, reader: Reader) = readCsvFile<CorItemsEntityDto>(separator, reader)
 
-    private inline fun <reified T> readCsvFile(separator: Char, reader: FileReader): List<T> {
+    private inline fun <reified T> readCsvFile(separator: Char, reader: Reader): List<T> {
 //        FileReader(fileName).use { reader ->
         return csvMapper
                 .readerFor(T::class.java)

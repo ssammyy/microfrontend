@@ -26,7 +26,10 @@
                     <div class="card-body" *ngIf="fuelInspection">
                         <div class="row">
                             <div class="col-md-10">
-                                <mat-tab-group [(selectedIndex)]="active" [disablePagination]="true" appMatMultilineTabMs class="tab-wraps">
+                                <mat-tab-group [(selectedIndex)]="active"
+                                               [disablePagination]="true"
+                                               appMatMultilineTabMs
+                                               class="tab-wraps">
                                     <mat-tab *ngIf="fuelInspection" label="1">
                                         <ng-template mat-tab-label>
                                             Main Details
