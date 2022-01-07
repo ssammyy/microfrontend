@@ -5,7 +5,7 @@ import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.servi
 import {catchError, map} from "rxjs/operators";
 import {
     BatchFileFuelSaveDto,
-    BSNumberSaveDto,
+    BSNumberSaveDto, CompliantRemediationDto,
     FuelBatchDetailsDto,
     FuelEntityAssignOfficerDto,
     FuelEntityDto,
@@ -15,7 +15,7 @@ import {
     LabResultsParamDto,
     LIMSFilesFoundDto, MSSSFComplianceStatusDetailsDto, MSSSFLabResultsDto,
     MSSSFPDFListDetailsDto,
-    MsUsersDto, PDFSaveComplianceStatusDto,
+    MsUsersDto, PDFSaveComplianceStatusDto, RemediationDto,
     SampleCollectionDto,
     SampleCollectionItemsDto,
     SampleSubmissionDto,
@@ -469,6 +469,57 @@ export class MsService {
     public msFuelInspectionScheduledSaveSSFComplianceStatus(batchReferenceNo: string, referenceNo: string, data: SSFSaveComplianceStatusDto): Observable<FuelInspectionDto> {
         console.log(data);
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_SCHEDULED_DETAILS_SSF_COMPLIANCE_STATUS);
+        const params = new HttpParams()
+            .set('batchReferenceNo', batchReferenceNo)
+            .set('referenceNo', referenceNo);
+        return this.http.put<FuelInspectionDto>(url, data, {params}).pipe(
+            map(function (response: FuelInspectionDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public msFuelInspectionScheduledRemediation(batchReferenceNo: string, referenceNo: string, data: CompliantRemediationDto): Observable<FuelInspectionDto> {
+        console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_SCHEDULED_REMEDIATION_DATE);
+        const params = new HttpParams()
+            .set('batchReferenceNo', batchReferenceNo)
+            .set('referenceNo', referenceNo);
+        return this.http.put<FuelInspectionDto>(url, data, {params}).pipe(
+            map(function (response: FuelInspectionDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public msFuelInspectionNotCompliantRemediationInvoice(batchReferenceNo: string, referenceNo: string, data: CompliantRemediationDto): Observable<FuelInspectionDto> {
+        console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_SCHEDULED_REMEDIATION_INVOICE);
+        const params = new HttpParams()
+            .set('batchReferenceNo', batchReferenceNo)
+            .set('referenceNo', referenceNo);
+        return this.http.put<FuelInspectionDto>(url, data, {params}).pipe(
+            map(function (response: FuelInspectionDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public msFuelInspectionRemediation(batchReferenceNo: string, referenceNo: string, data: RemediationDto): Observable<FuelInspectionDto> {
+        console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_SCHEDULED_ADD_REMEDIATION);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
             .set('referenceNo', referenceNo);

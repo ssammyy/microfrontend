@@ -415,6 +415,7 @@ class NewMarketSurveillanceDaoServices(
             with(fileInspectionDetail){
                 if (body.complianceStatus) {
                     compliantStatus = 1
+                    notCompliantStatus =  0
                     remediationStatus =1
                     remediationPaymentStatus = 1
                     compliantStatusDate = commonDaoServices.getCurrentDate()
@@ -422,7 +423,8 @@ class NewMarketSurveillanceDaoServices(
                     compliantStatusRemarks = body.complianceRemarks
                 }
                 else {
-                    notCompliantStatus =  0
+                    notCompliantStatus =  1
+                    compliantStatus = 0
                     notCompliantStatusDate = commonDaoServices.getCurrentDate()
                     notCompliantStatusBy = commonDaoServices.concatenateName(loggedInUser)
                     notCompliantStatusRemarks = body.complianceRemarks
@@ -440,7 +442,7 @@ class NewMarketSurveillanceDaoServices(
 
     @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun postFuelInspectionDetailsCompliantRemediation(
+    fun postFuelInspectionDetailsRemediationInvoice(
         referenceNo: String,
         batchReferenceNo: String,
         body: CompliantRemediationDto
@@ -450,53 +452,57 @@ class NewMarketSurveillanceDaoServices(
         val fileInspectionDetail = findFuelInspectionDetailByReferenceNumber(referenceNo)
         val batchDetails = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
 //        val savedSSfComplianceStatus = ssfLabUpdateDetails(body,loggedInUser,map)
-
-        when {
-            fileInspectionDetail.compliantStatus == 1 -> {
-                val fuelRemediation = MsFuelRemediationEntity().apply {
-                    proFormaInvoiceStatus = 0
-                    dateOfRemediation = body.dateOfRemediation
-                }
-                val savedRemediation = saveFuelRemediationDetails(fuelRemediation,fileInspectionDetail.id, loggedInUser,map)
-                when (savedRemediation.first.status) {
-                    map.successStatus -> {
-                        /*
-                                    * Todo add function for sending Email with remediation scheduled date
-                                    * */
-                        //                    val fileSaved = updateFuelInspectionDetails(fileInspectionDetail, map, loggedInUser)
-                        return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
-                    }
-                    else -> {
-                        throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(savedRemediation.first))
-                    }
-                }
-            }
-            fileInspectionDetail.notCompliantStatus == 1 -> {
-                val fuelRemediationInvoice = MsFuelRemedyInvoicesEntity().apply {
-                    volumeFuelRemediated = body.volumeFuelRemediated
-                    subsistenceTotalNights = body.subsistenceTotalNights
-                    transportAirTicket = body.transportAirTicket
-                    transportInkm = body.transportInkm
-                }
-                val savedRemediationInvoice = saveFuelRemediationInvoiceDetails(fuelRemediationInvoice,fileInspectionDetail.id, loggedInUser,map)
-                when (savedRemediationInvoice.first.status) {
-                    map.successStatus -> {
-                        /*
-                                    * Todo add function for sending Email with remediation invoice
-                                    * */
-                        //                    val fileSaved = updateFuelInspectionDetails(fileInspectionDetail, map, loggedInUser)
-                        return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
-                    }
-                    else -> {
-                        throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(savedRemediationInvoice.first))
-                    }
-                }
+        val fuelRemediationInvoice = MsFuelRemedyInvoicesEntity().apply {
+            volumeFuelRemediated = body.volumeFuelRemediated
+            subsistenceTotalNights = body.subsistenceTotalNights
+            transportAirTicket = body.transportAirTicket
+            transportInkm = body.transportInkm
+        }
+        val savedRemediationInvoice = saveFuelRemediationInvoiceDetails(fuelRemediationInvoice,fileInspectionDetail.id, loggedInUser,map)
+        when (savedRemediationInvoice.first.status) {
+            map.successStatus -> {
+                /*
+                            * Todo add function for sending Email with remediation invoice
+                            * */
+                //                    val fileSaved = updateFuelInspectionDetails(fileInspectionDetail, map, loggedInUser)
+                return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
             }
             else -> {
-                throw ExpectedDataNotFound("MISSING FUEL COMPLIANCE STATUS")
+                throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(savedRemediationInvoice.first))
             }
         }
+    }
 
+
+    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun postFuelInspectionDetailsScheduleRemediationAfterPayment(
+        referenceNo: String,
+        batchReferenceNo: String,
+        body: CompliantRemediationDto
+    ): FuelInspectionDto {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val fileInspectionDetail = findFuelInspectionDetailByReferenceNumber(referenceNo)
+        val batchDetails = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
+//        val savedSSfComplianceStatus = ssfLabUpdateDetails(body,loggedInUser,map)
+        val fuelRemediation = MsFuelRemediationEntity().apply {
+            proFormaInvoiceStatus = 1
+            dateOfRemediation = body.dateOfRemediation
+        }
+        val savedRemediation = saveFuelRemediationDetails(fuelRemediation,fileInspectionDetail.id, loggedInUser,map)
+        when (savedRemediation.first.status) {
+            map.successStatus -> {
+                    /*
+                    * Todo add function for sending Email with remediation scheduled date
+                    * */
+                //                    val fileSaved = updateFuelInspectionDetails(fileInspectionDetail, map, loggedInUser)
+                return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
+            }
+            else -> {
+                throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(savedRemediation.first))
+            }
+        }
 
     }
 

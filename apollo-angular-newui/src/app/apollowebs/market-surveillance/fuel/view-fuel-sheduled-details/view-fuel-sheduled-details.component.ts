@@ -2,7 +2,7 @@ import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import swal from "sweetalert2";
 import {
   BatchFileFuelSaveDto,
-  BSNumberSaveDto,
+  BSNumberSaveDto, CompliantRemediationDto,
   FuelEntityAssignOfficerDto,
   FuelEntityRapidTestDto,
   FuelInspectionDto,
@@ -43,6 +43,8 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
   sampleSubmitBSNumberForm!: FormGroup;
   pdfSaveComplianceStatusForm!: FormGroup;
   ssfSaveComplianceStatusForm!: FormGroup;
+  scheduleRemediationForm!: FormGroup;
+  notCompliantInvoiceForm!: FormGroup;
   dataSaveAssignOfficer: FuelEntityAssignOfficerDto;
   dataSaveRapidTest: FuelEntityRapidTestDto;
   dataSaveSampleCollect: SampleCollectionDto;
@@ -52,6 +54,8 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
   dataSaveSampleSubmitBSNumber: BSNumberSaveDto;
   dataPDFSaveComplianceStatus: PDFSaveComplianceStatusDto;
   dataSSFSaveComplianceStatus: SSFSaveComplianceStatusDto;
+  dataSaveScheduleRemediation: CompliantRemediationDto;
+  dataSaveNotCompliantInvoice: CompliantRemediationDto;
 
   attachments: any[];
   comments: any[];
@@ -464,6 +468,19 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       complianceRemarks: ['', Validators.required],
     });
 
+    this.scheduleRemediationForm = this.formBuilder.group({
+      dateOfRemediation: ['', Validators.required],
+      remarks: ['', Validators.required],
+    });
+
+    this.notCompliantInvoiceForm = this.formBuilder.group({
+      remarks: ['', Validators.required],
+      volumeFuelRemediated: ['', Validators.required],
+      subsistenceTotalNights: ['', Validators.required],
+      transportAirTicket: ['', Validators.required],
+      transportInkm: ['', Validators.required],
+    });
+
   }
 
   get formAssignOfficerForm(): any {
@@ -499,6 +516,14 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
 
   get formSampleSubmitBSNumberForm(): any {
     return this.sampleSubmitBSNumberForm.controls;
+  }
+
+  get formScheduleRemediationForm(): any {
+    return this.scheduleRemediationForm.controls;
+  }
+
+  get formNotCompliantInvoiceForm(): any {
+    return this.notCompliantInvoiceForm.controls;
   }
 
   private loadData(referenceNumber: string): any {
@@ -549,8 +574,8 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
   }
 
   openModalAddDetails(divVal: string): void {
-    const arrHead = ['assignOfficer', 'rapidTest', 'addBsNumber', 'ssfAddComplianceStatus'];
-    const arrHeadSave = ['SELECT OFFICER TO ASSIGN', 'RAPID TEST RESULTS', 'ADD BS NUMBER', 'ADD SSF LAB RESULTS COMPLIANCE STATUS'];
+    const arrHead = ['scheduleRemediationInvoicePaid', 'assignOfficer', 'rapidTest', 'addBsNumber', 'ssfAddComplianceStatus', 'scheduleRemediation', 'notCompliantInvoice'];
+    const arrHeadSave = ['SCHEDULE REMEDIATION DATE INVOICE PAID','SELECT OFFICER TO ASSIGN', 'RAPID TEST RESULTS', 'ADD BS NUMBER', 'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'SCHEDULE REMEDIATION DATE', 'ADD REMEDIATION INVOICE DETAILS'];
 
     for (let h = 0; h < arrHead.length; h++) {
       if (divVal === arrHead[h]) {
@@ -708,6 +733,46 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
             console.log(data);
             this.SpinnerService.hide();
             this.msService.showSuccess("LAB RESULTS COMPLIANCE STATUS SAVED SUCCESSFULLY")
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error)
+            this.msService.showError("AN ERROR OCCURRED")
+          }
+      );
+    }
+  }
+
+  onClickSaveScheduleRemediation(valid: boolean) {
+    if (valid) {
+      this.SpinnerService.show();
+      this.dataSaveScheduleRemediation = {...this.dataSaveScheduleRemediation, ...this.scheduleRemediationForm.value};
+      this.msService.msFuelInspectionScheduledRemediation(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber,this.dataSaveScheduleRemediation).subscribe(
+          (data: any) => {
+            this.fuelInspection = data
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess("REMEDIATION SCHEDULE SAVED SUCCESSFULLY")
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error)
+            this.msService.showError("AN ERROR OCCURRED")
+          }
+      );
+    }
+  }
+
+  onClickSaveNotCompliantInvoice(valid: boolean) {
+    if (valid) {
+      this.SpinnerService.show();
+      this.dataSaveNotCompliantInvoice = {...this.dataSaveNotCompliantInvoice, ...this.notCompliantInvoiceForm.value};
+      this.msService.msFuelInspectionNotCompliantRemediationInvoice(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber,this.dataSaveNotCompliantInvoice).subscribe(
+          (data: any) => {
+            this.fuelInspection = data
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess("REMEDIATION INVOICE GENERATED SUCCESSFULLY")
           },
           error => {
             this.SpinnerService.hide();

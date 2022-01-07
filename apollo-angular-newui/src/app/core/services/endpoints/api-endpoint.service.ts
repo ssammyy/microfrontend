@@ -422,6 +422,9 @@ export class ApiEndpointService {
         INSPECTION_SCHEDULED_DETAILS_SAMPLE_SUBMISSION_BS_NUMBER: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/sample-submission-bs-number`,
         INSPECTION_SCHEDULED_DETAILS_LAB_RESULTS_SAVE_PDF: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/lab-results-pdf-save`,
         INSPECTION_SCHEDULED_DETAILS_SSF_COMPLIANCE_STATUS: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/ssf-compliance-status-save`,
+        INSPECTION_SCHEDULED_REMEDIATION_DATE: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/fuel-remediation-schedule`,
+        INSPECTION_SCHEDULED_REMEDIATION_INVOICE: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/fuel-remediation-invoice`,
+        INSPECTION_SCHEDULED_ADD_REMEDIATION: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/fuel-remediation`,
         // COUNTRY_DASHBOARD_DETAILS: `${ApiEndpointService.VERSION_THREE_CONTEXT}/country-dashboard-details`,
         // CLIENT_LIST: `${ApiEndpointService.VERSION_THREE_CONTEXT}/client-list`,
     }

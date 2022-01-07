@@ -200,10 +200,8 @@ data class SSFSaveComplianceStatusDto(
 )
 
 data class CompliantRemediationDto(
-        @NotNull(message = "Required field")
-        var proFormaInvoiceStatus: Boolean,
-        @NotNull(message = "Required field")
-        var remarks: String,
+        var remarks: String? = null,
+        var proFormaInvoiceStatus: Boolean? = null,
         var dateOfRemediation: Date? = null,
         var volumeFuelRemediated: Long?= null,
         var subsistenceTotalNights: Long?= null,
