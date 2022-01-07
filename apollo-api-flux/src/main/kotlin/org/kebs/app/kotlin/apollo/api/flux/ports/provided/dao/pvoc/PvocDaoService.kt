@@ -13,6 +13,9 @@ import org.kebs.app.kotlin.apollo.config.properties.integ.PvocIntegrationPropert
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.customdto.*
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocQueriesDataEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocStdMonitoringDataEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocTimelinesDataEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service

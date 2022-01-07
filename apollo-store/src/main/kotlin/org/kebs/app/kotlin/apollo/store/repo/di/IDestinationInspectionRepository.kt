@@ -2,17 +2,15 @@ package org.kebs.app.kotlin.apollo.store.repo.di
 
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.di.*
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersCountriesEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersRegionEntity
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 import java.math.BigDecimal
-import java.sql.Date
-import java.sql.Timestamp
-import java.time.LocalDateTime
 
 
 /***********

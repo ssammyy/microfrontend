@@ -1,15 +1,14 @@
 package org.kebs.app.kotlin.apollo.store.repo
 
 import org.kebs.app.kotlin.apollo.store.customdto.PvocReconciliationReportDto
-import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.*
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import java.sql.Date
-import java.sql.Timestamp
 
 interface IPvocApplicationRepo : HazelcastRepository<PvocApplicationEntity, Long> {
     fun findByIdAndPvocWaStatus(id: Long, pvocWaStatus: Int): PvocApplicationEntity?
@@ -84,6 +83,12 @@ interface PvocTimelineDataPenaltyInvoiceEntityRepo : HazelcastRepository<PvocTim
 interface PvocPenaltyInvoicingEntityRepo : HazelcastRepository<PvocPenaltyInvoicingEntity, Long> {
     fun findAllByStatus(status: Int, pageable: Pageable): Page<PvocTimelineDataPenaltyInvoiceEntity>?
     fun findByCocId(cocId: Long): PvocTimelineDataPenaltyInvoiceEntity?
+}
+
+interface PvocApiClientRepo : HazelcastRepository<PvocAgentContractEntity, Long> {
+    fun findByServiceRenderedIdAndName(serviceRenderedId: Long, name: String): PvocAgentContractEntity?
+    fun findFirstByServiceRenderedIdAndName(serviceRenderedId: Long, name: String): PvocAgentContractEntity
+    fun findByServiceRenderedIdAndPvocPartner(serviceRenderedId: Long, pvocPartner: Long): PvocAgentContractEntity?
 }
 
 interface PvocAgentContractEntityRepo : HazelcastRepository<PvocAgentContractEntity, Long> {

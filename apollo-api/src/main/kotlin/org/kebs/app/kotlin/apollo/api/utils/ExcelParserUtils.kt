@@ -5,10 +5,10 @@ import org.apache.poi.ss.usermodel.DataFormatter
 import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.ss.usermodel.Workbook
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
-import org.kebs.app.kotlin.apollo.store.model.PvocApplicationProductsEntity
-import org.kebs.app.kotlin.apollo.store.model.PvocExceptionIndustrialSparesCategoryEntity
-import org.kebs.app.kotlin.apollo.store.model.PvocExceptionMainMachineryCategoryEntity
-import org.kebs.app.kotlin.apollo.store.model.PvocExceptionRawMaterialCategoryEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocApplicationProductsEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocExceptionIndustrialSparesCategoryEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocExceptionMainMachineryCategoryEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocExceptionRawMaterialCategoryEntity
 import java.io.IOException
 import java.io.InputStream
 import java.util.*

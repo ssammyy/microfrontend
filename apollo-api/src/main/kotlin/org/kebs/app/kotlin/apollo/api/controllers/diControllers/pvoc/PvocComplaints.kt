@@ -6,6 +6,10 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.exceptions.SupervisorNotFoundException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocComplaintEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocComplaintRemarksEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocComplaintsEmailVerificationEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocQueriesEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
@@ -19,7 +23,6 @@ import java.sql.Timestamp
 import java.time.Instant
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import kotlin.jvm.internal.Intrinsics
 
 @Controller
 @RequestMapping("/api/di/pvoc/")

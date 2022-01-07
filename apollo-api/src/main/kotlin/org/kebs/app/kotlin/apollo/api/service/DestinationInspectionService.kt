@@ -1569,4 +1569,23 @@ class DestinationInspectionService(
         }
         return response
     }
+
+
+    /**
+     * generate auction goood inspection report (AGIR)
+     */
+    fun generateAuctionGoodsInspectionReport(cdUuid: String) {
+        // TODO: generate auction goood inspection report: AGIR
+    }
+
+    /**
+     * Send AGIR report
+     */
+    fun sendAuctionGoodReport(cdUuid: String) {
+
+    }
+
+    fun sendAuctionGoodWitnessReport(cdUuid: String) {
+
+    }
 }

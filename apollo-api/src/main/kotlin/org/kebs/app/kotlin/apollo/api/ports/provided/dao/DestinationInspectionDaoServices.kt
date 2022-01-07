@@ -748,14 +748,13 @@ class DestinationInspectionDaoServices(
         val coi: CustomCoiXmlDto = coiEntity.toCoiXmlRecordRefl()
         //COC ITEM
         val coiFinalDto = COIXmlDTO()
-        val itemList = mutableListOf<CustomCoiXmlDto>()
-//        val cocItem = iCocItemRepository.findByCocId(coiEntity.id)?.forEach { coiItem ->
-//            val coi = coiItem.toCocItemDetailsXmlRecordRefl(coiEntity.coiNumber?:"")
-        itemList.add(coi)
+        val itemList = mutableListOf<CoiDetails>()
+        iCocItemRepository.findByCocId(coiEntity.id)?.forEach { coiItem ->
+            itemList.add(coiItem.toCoiItemDetailsXmlRecordRefl(coiEntity.coiNumber ?: ""))
+        }
+        coi.coiItems=itemList
         coi.version = (coiEntity.version ?: 1).toString()
-//        }
-        coiFinalDto.coi = itemList
-
+        coiFinalDto.coi = coi
         val fileName = coiEntity.ucrNumber?.let {
             commonDaoServices.createKesWsFileName(
                     applicationMapProperties.mapKeswsCoiDoctype,

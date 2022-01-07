@@ -3,19 +3,18 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.bpmn
 import mu.KotlinLogging
 import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
-import org.flowable.task.api.Task
-import org.joda.time.DateTime
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.di.BpmnTaskDetails
 import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SchedulerImpl
-import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocApplicationEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocTimelinesDataEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocWaiversApplicationEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.sql.Timestamp
 import java.time.Instant
-import java.util.*
 import kotlin.collections.HashMap
 
 @Service

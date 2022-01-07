@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
+import org.kebs.app.kotlin.apollo.store.model.CocItemsEntity
 import org.kebs.app.kotlin.apollo.store.model.CocsEntity
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
@@ -25,9 +26,9 @@ class COIXmlDTO {
     @JacksonXmlProperty(isAttribute = true, localName = "xmlns:xsi")
     private val xmlnsXsi = "http://www.w3.org/2001/XMLSchema-instance"
 
-    @JacksonXmlProperty(localName = "APOLLO.DAT_KEBS_COIS")
+    @JacksonXmlProperty(localName = "DAT_KEBS_COIS")
     @JacksonXmlElementWrapper(useWrapping = false)
-    var coi: List<CustomCoiXmlDto>? = null
+    var coi: CustomCoiXmlDto? = null
 }
 
 
@@ -204,7 +205,9 @@ route: String? ) {
 
     @JacksonXmlProperty(localName = "ROUTE")
     var route: String? = route?:"D"
-
+    @JacksonXmlProperty(localName = "COI_ITEM")
+    @JacksonXmlElementWrapper(useWrapping = false)
+    var coiItems: List<CoiDetails>?=null
     @JacksonXmlProperty(localName = "VERSION")
     var version: String? = "1"
 
@@ -217,6 +220,51 @@ route: String? ) {
     }
 }
 
+class CoiDetails(shipmentLineNumber: Long, shipmentLineHscode: String, shipmentLineQuantity: Long, shipmentLineUnitofMeasure: String,
+                 shipmentLineDescription: String, shipmentLineVin: String, shipmentLineStickerNumber: String, shipmentLineIcs: String,
+                 shipmentLineStandardsReference: String, shipmentLineLicenceReference: String, shipmentLineRegistration: String,
+                 coiNumber: String, shipmentLineBrandName: String) {
+
+    @JacksonXmlProperty(localName = "SHIPMENT_LINE_NUMBER")
+    var shipmentLineNumber: Long? = shipmentLineNumber
+
+    @JacksonXmlProperty(localName = "SHIPMENT_LINE_HSCODE")
+    var shipmentLineHscode: String? = shipmentLineHscode
+
+    @JacksonXmlProperty(localName = "SHIPMENT_LINE_QUANTITY")
+    var shipmentLineQuantity: Long? = shipmentLineQuantity
+
+    @JacksonXmlProperty(localName = "SHIPMENT_LINE_UNITOF_MEASURE")
+    var shipmentLineUnitofMeasure: String? = shipmentLineUnitofMeasure
+
+    @JacksonXmlProperty(localName = "SHIPMENT_LINE_DESCRIPTION")
+    var shipmentLineDescription: String? = shipmentLineDescription
+
+    @JacksonXmlProperty(localName = "SHIPMENT_LINE_VIN")
+    var shipmentLineVin: String? = shipmentLineVin
+
+    @JacksonXmlProperty(localName = "SHIPMENT_LINE_STICKER_NUMBER")
+    var shipmentLineStickerNumber: String? = shipmentLineStickerNumber
+
+    @JacksonXmlProperty(localName = "SHIPMENT_LINE_ICS")
+    var shipmentLineIcs: String? = shipmentLineIcs
+
+    @JacksonXmlProperty(localName = "SHIPMENT_LINE_STANDARDS_REFERENCE")
+    var shipmentLineStandardsReference: String? = shipmentLineStandardsReference
+
+    @JacksonXmlProperty(localName = "SHIPMENT_LINE_LICENCE_REFERENCE")
+    var shipmentLineLicenceReference: String? = shipmentLineLicenceReference
+
+    @JacksonXmlProperty(localName = "SHIPMENT_LINE_REGISTRATION")
+    var shipmentLineRegistration: String? = shipmentLineRegistration
+
+    @JacksonXmlProperty(localName = "COI_NUMBER")
+    var coiNumber: String? = coiNumber
+
+    @JacksonXmlProperty(localName = "SHIPMENT_LINE_BRANDNAME")
+    var shipmentLineBrandName: String? = shipmentLineBrandName
+}
+
 fun CocsEntity.toCoiXmlRecordRefl() = with(CustomCoiXmlDto::class.primaryConstructor!!) {
     val propertiesByName = CocsEntity::class.memberProperties.associateBy { it.name }
     callBy(args = parameters.associate { parameter ->
@@ -225,3 +273,13 @@ fun CocsEntity.toCoiXmlRecordRefl() = with(CustomCoiXmlDto::class.primaryConstru
         }
     })
 }
+
+
+fun CocItemsEntity.toCoiItemDetailsXmlRecordRefl(coiNumber: String) = CoiDetails(
+        this.shipmentLineNumber, this.shipmentLineHscode?:"NA", this.shipmentLineQuantity.toLong(),
+        this.shipmentLineUnitofMeasure?:"NA",
+        this.shipmentLineDescription?:"NA", this.shipmentLineVin?:"NA",
+        this.shipmentLineStickerNumber?:"NA", this.shipmentLineIcs?:"NA",
+        this.shipmentLineStandardsReference?:"NA", this.shipmentLineLicenceReference?:"NA",
+        this.shipmentLineRegistration?:"NA",coiNumber ,this.shipmentLineBrandName?:"NA"
+)
