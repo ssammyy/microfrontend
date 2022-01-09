@@ -54,7 +54,7 @@ class MsFuelRemediationEntity : Serializable{
 
     @Column(name = "PRO_FORMA_INVOICE_STATUS")
     @Basic
-    var proFormaInvoiceStatus: Long? = null
+    var proFormaInvoiceStatus: Int? = null
 
     @Column(name = "PRO_FORMA_INVOICE_NO")
     @Basic

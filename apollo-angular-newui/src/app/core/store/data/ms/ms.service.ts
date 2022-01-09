@@ -176,12 +176,9 @@ export class MsService {
        test101.inspectionDateFrom = currentDate;
        test101.inspectionDateTo = currentDate;
        test101.processStage = 'test Stage';
-       test101.closedStatus = false;
        test101.batchDetails = test101BatchDetails;
        test101.officersList = testUserList;
        test101.officersAssigned = test101MSUserDetails;
-       test101.rapidTestStatus = true;
-       test101.rapidTestRemarks = 'testDetails';
        test101.sampleCollected = test101MSSampleCollectDetails;
        test101.sampleSubmitted = test101SampleSubmissionDto;
        test101.sampleLabResults = test101LabResultsDto;
@@ -211,7 +208,6 @@ export class MsService {
        test101.inspectionDateTo = currentDate;
        test101.batchDetails = test101BatchDetails;
        test101.processStage = 'test Stage';
-       test101.closedStatus = false;
 
         let test : FuelInspectionDto[] = [];
         test.push(test101)

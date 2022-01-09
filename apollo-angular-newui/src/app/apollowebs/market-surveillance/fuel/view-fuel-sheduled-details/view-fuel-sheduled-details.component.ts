@@ -6,7 +6,7 @@ import {
   FuelEntityAssignOfficerDto,
   FuelEntityRapidTestDto,
   FuelInspectionDto,
-  LIMSFilesFoundDto, PDFSaveComplianceStatusDto,
+  LIMSFilesFoundDto, PDFSaveComplianceStatusDto, RemediationDto,
   SampleCollectionDto,
   SampleCollectionItemsDto,
   SampleSubmissionDto,
@@ -16,6 +16,8 @@ import {MsService} from "../../../../core/store/data/ms/ms.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NgxSpinnerService} from "ngx-spinner";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {Store} from "@ngrx/store";
+import {selectUserInfo} from "../../../../core/store";
 declare global {
   interface Window {
     $:any;
@@ -45,6 +47,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
   ssfSaveComplianceStatusForm!: FormGroup;
   scheduleRemediationForm!: FormGroup;
   notCompliantInvoiceForm!: FormGroup;
+  remediationForm!: FormGroup;
   dataSaveAssignOfficer: FuelEntityAssignOfficerDto;
   dataSaveRapidTest: FuelEntityRapidTestDto;
   dataSaveSampleCollect: SampleCollectionDto;
@@ -56,6 +59,10 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
   dataSSFSaveComplianceStatus: SSFSaveComplianceStatusDto;
   dataSaveScheduleRemediation: CompliantRemediationDto;
   dataSaveNotCompliantInvoice: CompliantRemediationDto;
+  dataSaveRemediation: RemediationDto;
+
+  roles: string[];
+  userLoggedInID: number;
 
   attachments: any[];
   comments: any[];
@@ -378,12 +385,18 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       private msService: MsService,
               // private dialog: MatDialog,
       private formBuilder: FormBuilder,
+      private store$: Store<any>,
       private SpinnerService: NgxSpinnerService,
               private activatedRoute: ActivatedRoute,
               private router: Router) {
   }
 
   ngOnInit(): void {
+
+    this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+      this.userLoggedInID = u.id;
+      return this.roles = u.roles;
+    });
 
     this.activatedRoute.paramMap.subscribe(
         rs => {
@@ -481,6 +494,17 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       transportInkm: ['', Validators.required],
     });
 
+    this.remediationForm = this.formBuilder.group({
+      productType: ['', Validators.required],
+      quantityOfFuel: ['', Validators.required],
+      contaminatedFuelType: ['', Validators.required],
+      applicableKenyaStandard: ['', Validators.required],
+      remediationProcedure: ['', Validators.required],
+      volumeOfProductContaminated: ['', Validators.required],
+      volumeAdded: ['', Validators.required],
+      totalVolume: ['', Validators.required],
+    });
+
   }
 
   get formAssignOfficerForm(): any {
@@ -524,6 +548,10 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
 
   get formNotCompliantInvoiceForm(): any {
     return this.notCompliantInvoiceForm.controls;
+  }
+
+  get formRemediationForm(): any {
+    return this.remediationForm.controls;
   }
 
   private loadData(referenceNumber: string): any {
@@ -773,6 +801,26 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
             console.log(data);
             this.SpinnerService.hide();
             this.msService.showSuccess("REMEDIATION INVOICE GENERATED SUCCESSFULLY")
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error)
+            this.msService.showError("AN ERROR OCCURRED")
+          }
+      );
+    }
+  }
+
+  onClickSaveRemediationForm(valid: boolean) {
+    if (valid) {
+      this.SpinnerService.show();
+      this.dataSaveRemediation = {...this.dataSaveRemediation, ...this.remediationForm.value};
+      this.msService.msFuelInspectionRemediation(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber,this.dataSaveRemediation).subscribe(
+          (data: any) => {
+            this.fuelInspection = data
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess("REMEDIATION DETAILS SAVED SUCCESSFULLY")
           },
           error => {
             this.SpinnerService.hide();

@@ -73,15 +73,23 @@ export class FuelInspectionDto {
     inspectionDateFrom : Date;
     inspectionDateTo : Date;
     processStage: string;
-    closedStatus: boolean;
+    assignedOfficerStatus: boolean;
+    rapidTestDone: boolean;
+    sampleCollectionStatus: boolean;
+    sampleSubmittedStatus: boolean;
+    bsNumberStatus: boolean;
+    compliantStatusAdded: boolean;
+    remediationScheduledStatus: boolean;
+    proFormaInvoiceStatus: boolean;
+    endInspectionStatus: boolean;
     batchDetails: FuelBatchDetailsDto;
     officersList : MsUsersDto[];
     officersAssigned : MsUsersDto;
-    rapidTestStatus : boolean;
-    rapidTestRemarks : string;
+    rapidTest: FuelEntityRapidTestDto;
     sampleCollected : SampleCollectionDto;
     sampleSubmitted : SampleSubmissionDto;
     sampleLabResults : MSSSFLabResultsDto;
+    fuelRemediation: FuelRemediationDto;
 }
 
 export class MSSSFLabResultsDto {
@@ -96,6 +104,23 @@ export class MSSSFComplianceStatusDetailsDto {
     bsNumber: string;
     complianceRemarks: string;
     complianceStatus: boolean;
+}
+
+export class FuelRemediationDto {
+    productType: string;
+    applicableKenyaStandard: string;
+    remediationProcedure: string;
+    volumeOfProductContaminated: string;
+    contaminatedFuelType: string;
+    quantityOfFuel: string;
+    volumeAdded: string;
+    totalVolume: string;
+    proFormaInvoiceStatus: boolean;
+    proFormaInvoiceNo: string;
+    invoiceAmount: string;
+    feePaidReceiptNo: string;
+    dateOfRemediation: Date;
+    dateOfPayment: Date;
 }
 
 export class MSSSFPDFListDetailsDto {
