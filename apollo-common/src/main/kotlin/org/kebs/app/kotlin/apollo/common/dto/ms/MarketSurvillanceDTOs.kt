@@ -42,14 +42,23 @@ data class FuelInspectionDto(
         var inspectionDateTo: Date? = null,
         var processStage: String? = null,
         var closedStatus: Boolean? = null,
+        var assignedOfficerStatus: Boolean? = null,
+        var rapidTestDone: Boolean? = null,
+        var sampleCollectionStatus: Boolean? = null,
+        var sampleSubmittedStatus: Boolean? = null,
+        var bsNumberStatus: Boolean? = null,
+        var compliantStatusAdded: Boolean? = null,
+        var remediationScheduledStatus: Boolean? = null,
+        var proFormaInvoiceStatus: Boolean? = null,
+        var endInspectionStatus: Boolean? = null,
         var batchDetails: FuelBatchDetailsDto?= null,
         var officersList: List<MsUsersDto>? = null,
         var officersAssigned: MsUsersDto? = null,
-        var rapidTestStatus: Boolean? = null,
-        var rapidTestRemarks: String? = null,
+        var rapidTest: FuelEntityRapidTestDto? = null,
         var sampleCollected: SampleCollectionDto? = null,
         var sampleSubmitted: SampleSubmissionDto? = null,
         var sampleLabResults: MSSSFLabResultsDto? = null,
+        var fuelRemediation: FuelRemediationDto? = null,
 )
 
 data class FuelEntityDto(
@@ -79,6 +88,13 @@ data class FuelEntityRapidTestDto(
         var rapidTestRemarks: String? = null,
         @NotNull(message = "Required field")
         var rapidTestStatus: Boolean,
+)
+
+data class FuelEntityCompliantStatusDto(
+        @NotNull(message = "Required field")
+        var compliantRemarks: String? = null,
+        @NotNull(message = "Required field")
+        var compliantStatus: Boolean,
 )
 
 data class SampleCollectionDto(
@@ -154,6 +170,23 @@ data class LabResultsParamDto(
         var param : String? = null,
         var result : String? = null,
         var method : String? = null,
+)
+
+data class FuelRemediationDto(
+        var productType: String? = null,
+        var applicableKenyaStandard: String? = null,
+        var remediationProcedure: String? = null,
+        var volumeOfProductContaminated: String? = null,
+        var contaminatedFuelType: String? = null,
+        var quantityOfFuel: String? = null,
+        var volumeAdded: String? = null,
+        var totalVolume: String? = null,
+        var proFormaInvoiceStatus: Long? = null,
+        var proFormaInvoiceNo: String? = null,
+        var invoiceAmount: BigDecimal? = null,
+        var feePaidReceiptNo: String? = null,
+        var dateOfRemediation: Date? = null,
+        var dateOfPayment: Date? = null,
 )
 
 data class MSSSFLabResultsDto(

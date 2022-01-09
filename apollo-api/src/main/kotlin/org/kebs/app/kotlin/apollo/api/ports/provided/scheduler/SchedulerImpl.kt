@@ -7,6 +7,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.BpmnCommonFunctions
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.QualityAssuranceBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.NewMarketSurveillanceDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
@@ -16,6 +17,7 @@ import org.kebs.app.kotlin.apollo.store.model.SchedulerEntity
 import org.kebs.app.kotlin.apollo.store.repo.ICompanyProfileRepository
 import org.kebs.app.kotlin.apollo.store.repo.ISchedulerRepository
 import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
+import org.kebs.app.kotlin.apollo.store.repo.ms.IFuelInspectionRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IPermitApplicationsRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleSubmissionRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -53,7 +55,13 @@ class SchedulerImpl(
     lateinit var qaDaoServices: QADaoServices
 
     @Autowired
+    lateinit var marketSurveillanceDaoServices: NewMarketSurveillanceDaoServices
+
+    @Autowired
     lateinit var permitRepo: IPermitApplicationsRepository
+
+    @Autowired
+    lateinit var fuelInspectionRepo: IFuelInspectionRepository
 
     final val diAppId = applicationMapProperties.mapImportInspection
 
@@ -293,8 +301,7 @@ class SchedulerImpl(
                                         .let { pm ->
                                             with(pm) {
                                                 userTaskId = applicationMapProperties.mapUserTaskNameQAO
-                                                permitStatus =
-                                                    applicationMapProperties.mapQaStatusPLABResultsCompletness
+                                                permitStatus = applicationMapProperties.mapQaStatusPLABResultsCompletness
                                                 modifiedBy = "SYSTEM SCHEDULER"
                                                 modifiedOn = commonDaoServices.getTimestamp()
                                             }
@@ -325,6 +332,17 @@ class SchedulerImpl(
                                                     }
                                                 }
 
+                                        }
+                                }
+                                ssfFound.fuelInspectionId != null -> {
+                                    marketSurveillanceDaoServices.findFuelInspectionDetailByID(ssfFound.fuelInspectionId?: throw Exception("FUEL INSPECTION ID NOT FOUND"))
+                                        .let {  fuelInspection->
+                                            with(fuelInspection){
+                                                userTaskId = applicationMapProperties.mapMSUserTaskNameOFFICER
+                                                lastModifiedBy = "SYSTEM SCHEDULER"
+                                                lastModifiedOn = commonDaoServices.getTimestamp()
+                                            }
+                                            fuelInspectionRepo.save(fuelInspection)
                                         }
                                 }
                             }

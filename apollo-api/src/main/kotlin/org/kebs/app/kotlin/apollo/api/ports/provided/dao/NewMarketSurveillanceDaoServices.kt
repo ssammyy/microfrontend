@@ -26,7 +26,9 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.multipart.MultipartFile
 import java.io.File
+import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
@@ -47,10 +49,12 @@ class NewMarketSurveillanceDaoServices(
     private val sampleCollectParameterRepo: ISampleCollectParameterRepository,
     private val sampleSubmitParameterRepo: ISampleSubmitParameterRepository,
     private val sampleSubmissionLabRepo: IQaSampleSubmissionRepository,
+    private val msUploadRepo: IOnsiteUploadRepository,
     private val fuelRemediationRepo: IFuelRemediationRepository,
     private val sampleSubmitRepo: IMSSampleSubmissionRepository,
     private val fuelInspectionRepo: IFuelInspectionRepository,
     private val fuelRemediationInvoiceRepo: IFuelRemediationInvoiceRepository,
+    private val invoiceDaoService: InvoiceDaoService,
     private val serviceRequestsRepo: IServiceRequestsRepository,
     private val commonDaoServices: CommonDaoServices
 ) {
@@ -165,7 +169,21 @@ class NewMarketSurveillanceDaoServices(
             batchDetails.countyId ?: throw ExpectedDataNotFound("MISSING BATCH COUNTY ID"),
             batchDetails.regionId ?: throw ExpectedDataNotFound("MISSING BATCH REGION ID")
         )
-        val rapidTestStatus = mapRapidTestDto(fileInspectionDetail, map)
+//        val rapidTestStatus = mapRapidTestDto(fileInspectionDetail, map)
+        return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
+    }
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun endFuelInspectionDetailsBasedOnRefNo(referenceNo: String, batchReferenceNo: String): FuelInspectionDto {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        var fileInspectionDetail = findFuelInspectionDetailByReferenceNumber(referenceNo)
+        val batchDetails = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
+        with(fileInspectionDetail){
+            inspectionCompleteStatus = map.activeStatus
+            userTaskId = null
+        }
+        fileInspectionDetail = updateFuelInspectionDetails(fileInspectionDetail, map, loggedInUser).second
         return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
     }
 
@@ -356,6 +374,7 @@ class NewMarketSurveillanceDaoServices(
                     map.successStatus -> {
                         with(fileInspectionDetail){
                             userTaskId = applicationMapProperties.mapMSUserTaskNameLAB
+                            bsNumberStatus = 1
                         }
                         fileInspectionDetail = updateFuelInspectionDetails(fileInspectionDetail, map, loggedInUser).second
                         return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
@@ -433,6 +452,9 @@ class NewMarketSurveillanceDaoServices(
                 }
             }
             fileInspectionDetail = updateFuelInspectionDetails(fileInspectionDetail, map, loggedInUser).second
+            /*
+            * Todo: ADD function for sending Lab results
+            * */
             return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
         }
         else {
@@ -449,7 +471,7 @@ class NewMarketSurveillanceDaoServices(
     ): FuelInspectionDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
-        val fileInspectionDetail = findFuelInspectionDetailByReferenceNumber(referenceNo)
+        var fileInspectionDetail = findFuelInspectionDetailByReferenceNumber(referenceNo)
         val batchDetails = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
 //        val savedSSfComplianceStatus = ssfLabUpdateDetails(body,loggedInUser,map)
         val fuelRemediationInvoice = MsFuelRemedyInvoicesEntity().apply {
@@ -458,13 +480,25 @@ class NewMarketSurveillanceDaoServices(
             transportAirTicket = body.transportAirTicket
             transportInkm = body.transportInkm
         }
-        val savedRemediationInvoice = saveFuelRemediationInvoiceDetails(fuelRemediationInvoice,fileInspectionDetail.id, loggedInUser,map)
+        val savedRemediationInvoice = saveFuelRemediationInvoiceDetails(fuelRemediationInvoice,fileInspectionDetail, loggedInUser,map)
+        val fuelRemediation = MsFuelRemediationEntity().apply {
+            proFormaInvoiceStatus = 0
+            createdBy = commonDaoServices.concatenateName(loggedInUser)
+            createdOn = commonDaoServices.getTimestamp()
+//            dateOfRemediation = body.dateOfRemediation
+        }
+        val savedRemediation = saveFuelRemediationDetails(fuelRemediation,fileInspectionDetail.id, loggedInUser,map)
+
         when (savedRemediationInvoice.first.status) {
             map.successStatus -> {
                 /*
                             * Todo add function for sending Email with remediation invoice
                             * */
-                //                    val fileSaved = updateFuelInspectionDetails(fileInspectionDetail, map, loggedInUser)
+                with(fileInspectionDetail){
+                    remediationPaymentStatus = map.inactiveStatus
+                    userTaskId = applicationMapProperties.mapMSUserTaskNameSTATIONOWNER
+                }
+                fileInspectionDetail= updateFuelInspectionDetails(fileInspectionDetail, map, loggedInUser).second
                 return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
             }
             else -> {
@@ -483,20 +517,38 @@ class NewMarketSurveillanceDaoServices(
     ): FuelInspectionDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
-        val fileInspectionDetail = findFuelInspectionDetailByReferenceNumber(referenceNo)
+        var fileInspectionDetail = findFuelInspectionDetailByReferenceNumber(referenceNo)
         val batchDetails = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
 //        val savedSSfComplianceStatus = ssfLabUpdateDetails(body,loggedInUser,map)
-        val fuelRemediation = MsFuelRemediationEntity().apply {
-            proFormaInvoiceStatus = 1
-            dateOfRemediation = body.dateOfRemediation
-        }
+        var fuelRemediation = MsFuelRemediationEntity()
+        findFuelScheduledRemediationDetails(fileInspectionDetail.id)
+            ?.let { remediation ->
+                with(remediation){
+                    dateOfRemediation = body.dateOfRemediation
+                    modifiedBy = commonDaoServices.concatenateName(loggedInUser)
+                    modifiedOn = commonDaoServices.getTimestamp()
+                }
+                fuelRemediation = remediation
+            }
+            ?: kotlin.run {
+                with(fuelRemediation){
+                    proFormaInvoiceStatus = 1
+                    dateOfRemediation = body.dateOfRemediation
+                    createdBy = commonDaoServices.concatenateName(loggedInUser)
+                    createdOn = commonDaoServices.getTimestamp()
+                }
+            }
+
         val savedRemediation = saveFuelRemediationDetails(fuelRemediation,fileInspectionDetail.id, loggedInUser,map)
         when (savedRemediation.first.status) {
             map.successStatus -> {
                     /*
                     * Todo add function for sending Email with remediation scheduled date
                     * */
-                //                    val fileSaved = updateFuelInspectionDetails(fileInspectionDetail, map, loggedInUser)
+                with(fileInspectionDetail){
+                    remediationStatus = map.activeStatus
+                }
+                fileInspectionDetail= updateFuelInspectionDetails(fileInspectionDetail, map, loggedInUser).second
                 return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
             }
             else -> {
@@ -590,6 +642,16 @@ class NewMarketSurveillanceDaoServices(
             batchDetails.regionId ?: throw ExpectedDataNotFound("MISSING BATCH REGION ID")
         )
         val rapidTestStatus = mapRapidTestDto(fileInspectionDetail, map)
+        var rapidTestDone = false
+        if (rapidTestStatus!=null){
+            rapidTestDone = true
+        }
+
+        val compliantDetailsStatus = mapCompliantStatusDto(fileInspectionDetail, map)
+        var compliantStatusDone = false
+        if (compliantDetailsStatus!=null){
+            compliantStatusDone = true
+        }
         val sampleCollected = findSampleCollectedDetailByFuelInspectionID(fileInspectionDetail.id)
         val sampleCollectedParamList = sampleCollected?.id?.let { findAllSampleCollectedParametersBasedOnSampleCollectedID(it) }
         val sampleCollectedDtoValues = sampleCollectedParamList?.let { mapSampleCollectedParamListDto(it) }?.let { mapSampleCollectedDto(sampleCollected, it) }
@@ -602,15 +664,19 @@ class NewMarketSurveillanceDaoServices(
         val ssfResultsListCompliance = ssfDetailsLab?.let { mapSSFComplianceStatusDetailsDto(it) }
         val limsPDFFiles = ssfDetailsLab?.bsNumber?.let { mapLIMSSavedFilesDto(it,savedPDFFilesLims)}
         val labResultsDto = mapLabResultsDetailsDto(ssfResultsListCompliance,savedPDFFilesLims,limsPDFFiles,labResultsParameters?.let { mapLabResultsParamListDto(it) })
+        val fuelRemediationDto = findFuelScheduledRemediationDetails(fileInspectionDetail.id)?.let { mapFuelRemediationDto(it) }
         return mapFuelInspectionDto(
             fileInspectionDetail,
             batchDetailsDto,
+            rapidTestDone,
+            compliantStatusDone,
             officerList,
             fuelInspectionOfficer?.assignedIo,
             rapidTestStatus,
             sampleCollectedDtoValues,
             sampleSubmittedDtoValues,
-            labResultsDto
+            labResultsDto,
+            fuelRemediationDto
         )
     }
 
@@ -988,29 +1054,34 @@ class NewMarketSurveillanceDaoServices(
         var sr = commonDaoServices.createServiceRequest(map)
         var saveSSFBSNumber = QaSampleSubmissionEntity()
         try {
+            sampleSubmissionLabRepo.findByBsNumber(sampleSubmission.bsNumber?.toUpperCase()?: throw ExpectedDataNotFound("MISSING BS NUMBER"))
+                ?.let {
+                     throw ExpectedDataNotFound("BS NUMBER ALREADY EXIST")
+                }
+                ?: kotlin.run {
+                    with(saveSSFBSNumber) {
+                        ssfNo = sampleSubmission.sampleReferences
+                        brandName = sampleSubmission.nameProduct
+                        ssfSubmissionDate = sampleSubmission.sendersDate
+                        bsNumber = sampleSubmission.bsNumber?.toUpperCase()
+                        fuelInspectionId = fileInspectionDetail.id
+                        status = map.activeStatus
+                        labResultsStatus = map.inactiveStatus
+                        createdBy = commonDaoServices.concatenateName(user)
+                        createdOn = commonDaoServices.getTimestamp()
+                    }
 
-            with(saveSSFBSNumber) {
-                ssfNo = sampleSubmission.sampleReferences
-                brandName = sampleSubmission.nameProduct
-                ssfSubmissionDate = sampleSubmission.sendersDate
-                bsNumber = sampleSubmission.bsNumber?.toUpperCase()
-                fuelInspectionId = fileInspectionDetail.id
-                status = map.activeStatus
-                labResultsStatus = map.inactiveStatus
-                createdBy = commonDaoServices.concatenateName(user)
-                createdOn = commonDaoServices.getTimestamp()
-            }
+                    saveSSFBSNumber = sampleSubmissionLabRepo.save(saveSSFBSNumber)
 
-            saveSSFBSNumber = sampleSubmissionLabRepo.save(saveSSFBSNumber)
+                    sr.payload = "${commonDaoServices.createJsonBodyFromEntity(saveSSFBSNumber)} "
+                    sr.names = "Fuel Inspection Sample Submission Bs Number Submitted Save file"
 
-            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(saveSSFBSNumber)} "
-            sr.names = "Fuel Inspection Sample Submission Bs Number Submitted Save file"
-
-            sr.responseStatus = sr.serviceMapsId?.successStatusCode
-            sr.responseMessage = "Success ${sr.payload}"
-            sr.status = map.successStatus
-            sr = serviceRequestsRepo.save(sr)
-            sr.processingEndDate = Timestamp.from(Instant.now())
+                    sr.responseStatus = sr.serviceMapsId?.successStatusCode
+                    sr.responseMessage = "Success ${sr.payload}"
+                    sr.status = map.successStatus
+                    sr = serviceRequestsRepo.save(sr)
+                    sr.processingEndDate = Timestamp.from(Instant.now())
+                }
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)
@@ -1077,20 +1148,14 @@ class NewMarketSurveillanceDaoServices(
         val ssfDetails = findSampleSubmittedBYID(ssfID)
         try {
 
-            var upload = QaUploadsEntity()
+            var upload = MsOnSiteUploadsEntity()
             with(upload) {
-                permitId = ssfDetails.permitId
+                msFuelInspectionId = ssfDetails.fuelInspectionId
                 ssfUploads = 1
                 ordinaryStatus = 0
                 versionNumber = 1
             }
-//            upload = uploadQaFile(
-//                upload,
-//                commonDaoServices.convertFileToMultipartFile(fileContent),
-//                "LAB RESULTS PDF",
-//                ssfDetails.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER"),
-//                user
-//            )
+            upload = uploadMSFile(upload, commonDaoServices.convertFileToMultipartFile(fileContent), "LAB RESULTS PDF", user, map).second
 
             val ssfPdfDetails = QaSampleSubmittedPdfListDetailsEntity()
             with(ssfPdfDetails) {
@@ -1176,6 +1241,52 @@ class NewMarketSurveillanceDaoServices(
         return Pair(sr, saveSSF)
     }
 
+    fun uploadMSFile(
+        body: MsOnSiteUploadsEntity,
+        docFile: MultipartFile,
+        doc: String,
+        user: UsersEntity,
+        map: ServiceMapsEntity
+    ): Pair<ServiceRequestsEntity, MsOnSiteUploadsEntity> {
+
+        var sr = commonDaoServices.createServiceRequest(map)
+        var onsiteUploads = body
+        try {
+
+            with(onsiteUploads) {
+                name = commonDaoServices.saveDocuments(docFile)
+                fileType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(docFile.name)
+                documentType = doc
+                document = docFile.bytes
+                transactionDate = commonDaoServices.getCurrentDate()
+                status = map.activeStatus
+                createdBy = commonDaoServices.concatenateName(user)
+                createdOn = commonDaoServices.getTimestamp()
+            }
+            onsiteUploads = msUploadRepo.save(onsiteUploads)
+
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(onsiteUploads)} "
+            sr.names = "File Upload"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = map.successStatus
+            sr = serviceRequestsRepo.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(onsiteUploads)} and ${commonDaoServices.createJsonBodyFromEntity(onsiteUploads)}"
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepo.save(sr)
+        }
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return Pair(sr, onsiteUploads)
+    }
+
 
  fun saveFuelRemediationDetails(
         body: MsFuelRemediationEntity,
@@ -1191,8 +1302,6 @@ class NewMarketSurveillanceDaoServices(
             with(fuelRemediation) {
                 fuelInspectionId = fuelInspectionID
                 status = map.activeStatus
-                createdBy = commonDaoServices.concatenateName(user)
-                createdOn = commonDaoServices.getTimestamp()
             }
             fuelRemediation = fuelRemediationRepo.save(fuelRemediation)
 
@@ -1262,7 +1371,7 @@ class NewMarketSurveillanceDaoServices(
 
     fun saveFuelRemediationInvoiceDetails(
         fuelRemediationInvoiceEntity: MsFuelRemedyInvoicesEntity,
-        fuelInspectionID: Long,
+        fuelInspection: MsFuelInspectionEntity,
         user: UsersEntity,
         map: ServiceMapsEntity
     ): Pair<ServiceRequestsEntity, MsFuelRemedyInvoicesEntity> {
@@ -1281,19 +1390,20 @@ class NewMarketSurveillanceDaoServices(
 
 //            var fuelRemediationInvoice = fuelRemediationInvoiceEntity
             with(fuelRemediationInvoice) {
+                invoiceNumber = applicationMapProperties.mapInvoicesPrefix + generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()
                 //Part of Remuneration calculation
                 volumeFuelRemediated = fuelRemediationInvoiceEntity.volumeFuelRemediated
                 remunerationRateLiter = remuneration?.get(rateValue)
                 remunerationSubTotal = remuneration?.get(subTotal)
                 remunerationVat = remuneration?.get(vatTotal)
-                remunerationTotal = remuneration?.get(totalValue)
+                remunerationTotal = remuneration?.get(totalValue)?.toBigDecimal()
 
                 //Part of Subsistence calculation
                 subsistenceTotalNights = fuelRemediationInvoiceEntity.subsistenceTotalNights
                 subsistenceRate = subsistence?.get(rateValue)
                 subsistenceRateNightTotal = subsistence?.get(subTotal)
                 subsistenceVat = subsistence?.get(vatTotal)
-                subsistenceTotal = subsistence?.get(totalValue)
+                subsistenceTotal = subsistence?.get(totalValue)?.toBigDecimal()
 
                 //Part of Subsistence calculation
                 transportAirTicket = fuelRemediationInvoiceEntity.transportAirTicket
@@ -1301,12 +1411,12 @@ class NewMarketSurveillanceDaoServices(
                 transportRate = transportAirTickets[rateValue]
                 transportTotalKmrate = transportAirTickets[subTotal]
                 transportVat = transportAirTickets[vatTotal]
-                transportTotal = transportAirTickets[totalValue]
+                transportTotal = transportAirTickets[totalValue]?.toBigDecimal()
 
                 //All calculated Grand total Value
                 transportGrandTotal = remunerationTotal?.let { subsistenceTotal?.let { it1 -> transportTotal?.let { it2 -> fuelGrandTotal(it, it1, it2) } } }
 
-                fuelInspectionId = fuelInspectionID
+                fuelInspectionId = fuelInspection.id
                 transactionDate =commonDaoServices.getCurrentDate()
                 invoiceDate = commonDaoServices.getCurrentDate()
                 status = activeStatus
@@ -1315,8 +1425,34 @@ class NewMarketSurveillanceDaoServices(
             }
             fuelRemediationInvoice = fuelRemediationInvoiceRepo.save(fuelRemediationInvoice)
 
+            val batchInvoiceDetail = invoiceDaoService.createBatchInvoiceDetails(
+                user,
+                fuelRemediationInvoice.invoiceNumber ?: throw Exception("MISSING INVOICE NUMBER")
+            )
+
+            val updateBatchInvoiceDetail = invoiceDaoService.addInvoiceDetailsToBatchInvoice(
+                fuelRemediationInvoice,
+                applicationMapProperties.mapInvoiceTransactionsForMSFuelReconciliation,
+                user,
+                batchInvoiceDetail
+            )
+
+            //Todo: Payment selection
+            val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
+            with(myAccountDetails) {
+                accountName = fuelInspection.company
+                accountNumber = fuelInspection.stationOwnerEmail
+                currency = applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
+            }
+
+            invoiceDaoService.createPaymentDetailsOnStgReconciliationTable(
+                user,
+                updateBatchInvoiceDetail,
+                myAccountDetails
+            )
+
             sr.payload = "${commonDaoServices.createJsonBodyFromEntity(fuelRemediationInvoice)}"
-            sr.names = "Fuel Remediation create"
+            sr.names = "Fuel Remediation create and saved to Payment Reconciliation table"
 
             sr.responseStatus = sr.serviceMapsId?.successStatusCode
             sr.responseMessage = "Success ${sr.payload}"
@@ -1430,6 +1566,44 @@ class NewMarketSurveillanceDaoServices(
         return Pair(sr, fuelBatch)
     }
 
+    fun updateFuelInspectionRemediationInvoiceDetails(
+        body: MsFuelRemedyInvoicesEntity,
+        map: ServiceMapsEntity,
+        user: UsersEntity
+    ): Pair<ServiceRequestsEntity, MsFuelRemedyInvoicesEntity> {
+
+        var sr = commonDaoServices.createServiceRequest(map)
+        var fuelRemediationInvoice = body
+        try {
+            with(fuelRemediationInvoice) {
+                lastModifiedBy = commonDaoServices.concatenateName(user)
+                lastModifiedOn = commonDaoServices.getTimestamp()
+            }
+            fuelRemediationInvoice = fuelRemediationInvoiceRepo.save(fuelRemediationInvoice)
+
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(fuelRemediationInvoice)}"
+            sr.names = "Fuel Inspection Remediation Invoice Updated file"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = map.successStatus
+            sr = serviceRequestsRepo.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(body)}"
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepo.save(sr)
+
+        }
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return Pair(sr, fuelRemediationInvoice)
+    }
+
     fun findAllFuelInspectionListBasedOnBatchID(batchId: Long): List<MsFuelInspectionEntity> {
         fuelInspectionRepo.findAllByBatchId(batchId)
             ?.let {
@@ -1462,6 +1636,14 @@ class NewMarketSurveillanceDaoServices(
             ?: throw ExpectedDataNotFound("No Fuel Scheduled found with the following Ref No $referenceNumber")
     }
 
+    fun findFuelInspectionDetailByID(id: Long): MsFuelInspectionEntity {
+        fuelInspectionRepo.findByIdOrNull(id)
+            ?.let {
+                return it
+            }
+            ?: throw ExpectedDataNotFound("No Fuel Scheduled found with the following ID $id")
+    }
+
     fun findSampleCollectedDetailByFuelInspectionID(fuelInspectionID: Long): MsSampleCollectionEntity? {
         return  sampleCollectRepo.findByMsFuelInspectionId(fuelInspectionID)
     }
@@ -1477,6 +1659,47 @@ class NewMarketSurveillanceDaoServices(
         return  sampleSubmitRepo.findBySampleCollectionNumber(sampleCollectedID)
     }
 
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updateRemediationDetailsAfterPaymentDone() {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        //Find all permits with Paid status
+        val invoices = fuelRemediationInvoiceRepo.findAllByPaymentStatus(map.activeStatus)
+        if  (invoices != null){
+            for (inv in invoices) {
+
+                try {
+                   var remediationDetails = findFuelScheduledRemediationDetails(inv.fuelInspectionId?: throw ExpectedDataNotFound("MISSING FUEL INSPECTION ID"))?: throw ExpectedDataNotFound("NO REMEDIATION DETAILS FOUND")
+                    with(remediationDetails){
+                        proFormaInvoiceNo = inv.invoiceNumber
+                        invoiceAmount = inv.transportGrandTotal
+                        feePaidReceiptNo = inv.receiptNo
+                        dateOfPayment = inv.paymentDate
+                        modifiedBy = "SCHEDULER"
+                        modifiedOn = commonDaoServices.getTimestamp()
+                    }
+                    remediationDetails = fuelRemediationRepo.save(remediationDetails)
+
+                    var fuelInspection = findFuelInspectionDetailByID(remediationDetails.fuelInspectionId?: throw ExpectedDataNotFound("MISSING FUEL INSPECTION ID"))
+                    with(fuelInspection){
+                        remediationPaymentStatus = map.activeStatus
+                        userTaskId = applicationMapProperties.mapMSUserTaskNameOFFICER
+                        lastModifiedBy = "SCHEDULER"
+                        lastModifiedOn = commonDaoServices.getTimestamp()
+                    }
+                    fuelInspection = fuelInspectionRepo.save(fuelInspection)
+
+                } catch (e: Exception) {
+                    KotlinLogging.logger { }.error(e.message)
+                    KotlinLogging.logger { }.debug(e.message, e)
+
+                    continue
+                }
+//            permitRepo.save(permit)
+            }
+        }
+
+    }
+
     fun mapFuelInspectionListDto(fuelInspectionList: Page<MsFuelInspectionEntity>, batchDetails: FuelBatchDetailsDto): FuelInspectionScheduleListDetailsDto {
         val fuelInspectionScheduledList = mutableListOf<FuelInspectionDto>()
         fuelInspectionList.map {fuelInspectionScheduledList.add(FuelInspectionDto(it.id, it.referenceNumber, it.company, it.petroleumProduct, it.physicalLocation, it.inspectionDateFrom, it.inspectionDateTo, it.processStage, it.status==1))}
@@ -1490,12 +1713,15 @@ class NewMarketSurveillanceDaoServices(
     fun mapFuelInspectionDto(
         fuelInspectionList: MsFuelInspectionEntity,
         batchDetails: FuelBatchDetailsDto,
+        rapidTestDone: Boolean,
+        compliantStatusDone: Boolean,
         officerList: List<UsersEntity>?,
         officersAssigned : UsersEntity?,
         rapidTestResults: FuelEntityRapidTestDto?,
         sampleCollected: SampleCollectionDto?,
         sampleSubmitted: SampleSubmissionDto?,
-        sampleLabResults: MSSSFLabResultsDto?
+        sampleLabResults: MSSSFLabResultsDto?,
+        fuelRemediationDto: FuelRemediationDto?
     ): FuelInspectionDto {
         return FuelInspectionDto(
             fuelInspectionList.id,
@@ -1507,14 +1733,23 @@ class NewMarketSurveillanceDaoServices(
             fuelInspectionList.inspectionDateTo,
             fuelInspectionList.processStage,
             fuelInspectionList.status==1,
+            fuelInspectionList.assignedOfficerStatus==1,
+            rapidTestDone,
+            fuelInspectionList.sampleCollectionStatus==1,
+            fuelInspectionList.sampleSubmittedStatus==1,
+            fuelInspectionList.bsNumberStatus==1,
+            compliantStatusDone,
+            fuelInspectionList.remediationStatus==1,
+            fuelInspectionList.remediationPaymentStatus==1,
+            fuelInspectionList.inspectionCompleteStatus==1,
             batchDetails,
             officerList?.let { mapOfficerListDto(it) },
             officersAssigned?.let { mapOfficerDto (it) },
-            rapidTestResults?.rapidTestStatus,
-            rapidTestResults?.rapidTestRemarks,
+            rapidTestResults,
             sampleCollected,
             sampleSubmitted,
-            sampleLabResults
+            sampleLabResults,
+            fuelRemediationDto
         )
     }
 
@@ -1544,6 +1779,10 @@ class NewMarketSurveillanceDaoServices(
 
     fun findSampleSubmittedListPdfBYSSFid(ssfID: Long): List<QaSampleSubmittedPdfListDetailsEntity>? {
         return sampleSubmissionSavedPdfListRepo.findBySffId(ssfID)
+    }
+
+    fun findFuelRemediationInvoice(fuelInspectionID: Long): MsFuelRemedyInvoicesEntity? {
+        return fuelRemediationInvoiceRepo.findByFuelInspectionId(fuelInspectionID)
     }
 
     fun findSampleSubmittedBYFuelInspectionId(fuelInspectionId: Long): QaSampleSubmissionEntity? {
@@ -1694,7 +1933,7 @@ class NewMarketSurveillanceDaoServices(
         }
     }
 
-    fun fuelGrandTotal(totalValue1: Long, totalValue2: Long, totalValue3: Long): Long {
+    fun fuelGrandTotal(totalValue1: BigDecimal, totalValue2: BigDecimal, totalValue3: BigDecimal): BigDecimal {
         return (totalValue1.plus(totalValue2).plus(totalValue3))
     }
 
@@ -1824,6 +2063,25 @@ class NewMarketSurveillanceDaoServices(
         )
     }
 
+    fun mapFuelRemediationDto(data: MsFuelRemediationEntity): FuelRemediationDto {
+        return FuelRemediationDto(
+            data.productType,
+            data.applicableKenyaStandard,
+            data.remediationProcedure,
+            data.volumeOfProductContaminated,
+            data.contaminatedFuelType,
+            data.quantityOfFuel,
+            data.volumeAdded,
+            data.totalVolume,
+            data.proFormaInvoiceStatus,
+            data.proFormaInvoiceNo,
+            data.invoiceAmount,
+            data.feePaidReceiptNo,
+            data.dateOfRemediation,
+            data.dateOfPayment,
+        )
+    }
+
      fun mapSampleSubmissionDto(data: MsSampleSubmissionEntity, data2:List<SampleSubmissionItemsDto>): SampleSubmissionDto {
         return SampleSubmissionDto(
             data.nameProduct,
@@ -1864,6 +2122,26 @@ class NewMarketSurveillanceDaoServices(
                  FuelEntityRapidTestDto(
                     rapidTest.rapidTestPassedRemarks,
                     rapidTest.rapidTestPassed==1
+                )
+            }
+            else -> null
+        }
+
+    }
+
+    fun mapCompliantStatusDto(compliantDetails: MsFuelInspectionEntity, map: ServiceMapsEntity): FuelEntityCompliantStatusDto? {
+
+        return when {
+            compliantDetails.compliantStatus==map.activeStatus -> {
+                FuelEntityCompliantStatusDto(
+                    compliantDetails.compliantStatusRemarks,
+                    compliantDetails.compliantStatus==1
+                )
+            }
+            compliantDetails.notCompliantStatus==map.activeStatus -> {
+                FuelEntityCompliantStatusDto(
+                    compliantDetails.notCompliantStatusRemarks,
+                    compliantDetails.notCompliantStatus==1
                 )
             }
             else -> null

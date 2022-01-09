@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.scheduler
 
 import org.joda.time.DateTime
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.NewMarketSurveillanceDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SchedulerImpl
 import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SftpSchedulerImpl
@@ -16,7 +17,8 @@ import org.springframework.stereotype.Component
 class Scheduler(
     private val schedulerImpl: SchedulerImpl,
     private val sftpSchedulerImpl: SftpSchedulerImpl,
-    private val qaDaoServices: QADaoServices
+    private val qaDaoServices: QADaoServices,
+    private val msDaoServices: NewMarketSurveillanceDaoServices
 ) {
     @Value("\${scheduler.run.send.notifications}")
     lateinit var runSendNotifications: String
@@ -44,6 +46,7 @@ class Scheduler(
     @Scheduled(fixedDelay = 100000)//1.6666667 Minutes for now
     fun runSchedulerAfterEveryFiveMin() {
         schedulerImpl.updatePaidDemandNotesStatus()
+        msDaoServices.updateRemediationDetailsAfterPaymentDone()
         qaDaoServices.assignPermitApplicationAfterPayment()
         qaDaoServices.updatePermitWithDiscountWithPaymentDetails()
         schedulerImpl.updateLabResultsWithDetails()

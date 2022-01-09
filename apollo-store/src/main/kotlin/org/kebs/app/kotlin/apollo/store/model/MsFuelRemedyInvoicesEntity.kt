@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.store.model
 
 import org.kebs.app.kotlin.apollo.store.model.ms.MsFuelInspectionEntity
 import java.io.Serializable
+import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
 import java.util.*
@@ -16,9 +17,25 @@ class MsFuelRemedyInvoicesEntity : Serializable {
     @Id
     var id: Long = 0
 
+    @Column(name = "INVOICE_NUMBER")
+    @Basic
+    var invoiceNumber: String? = null
+
+    @Column(name = "RECEIPT_NO")
+    @Basic
+    var receiptNo: String? = null
+
+    @Column(name = "INVOICE_BATCH_NUMBER_ID")
+    @Basic
+    var invoiceBatchNumberId: Long? = null
+
+    @Column(name = "PAYMENT_STATUS")
+    @Basic
+    var paymentStatus: Int? = 0
+
     @Column(name = "AMOUNT")
     @Basic
-    var amount: Long? = null
+    var amount: BigDecimal? = null
 
     @Column(name = "INVOICE_DATE")
     @Basic
@@ -130,7 +147,7 @@ class MsFuelRemedyInvoicesEntity : Serializable {
 
     @Column(name = "REMUNERATION_TOTAL")
     @Basic
-    var remunerationTotal: Long? = null
+    var remunerationTotal: BigDecimal? = null
 
     @Column(name = "VOLUME_FUEL_REMEDIATED")
     @Basic
@@ -154,7 +171,7 @@ class MsFuelRemedyInvoicesEntity : Serializable {
 
     @Column(name = "SUBSISTENCE_TOTAL")
     @Basic
-    var subsistenceTotal: Long? = null
+    var subsistenceTotal: BigDecimal? = null
 
     @Column(name = "TRANSPORT_AIR_TICKET")
     @Basic
@@ -178,11 +195,11 @@ class MsFuelRemedyInvoicesEntity : Serializable {
 
     @Column(name = "TRANSPORT_TOTAL")
     @Basic
-    var transportTotal: Long? = null
+    var transportTotal: BigDecimal? = null
 
     @Column(name = "TRANSPORT_GRAND_TOTAL")
     @Basic
-    var transportGrandTotal: Long? = null
+    var transportGrandTotal: BigDecimal? = null
 
     @Column(name = "INSPECTION_ID")
     @Basic

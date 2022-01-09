@@ -39,6 +39,10 @@ class InvoiceDaoService(
 
     @Lazy
     @Autowired
+    lateinit var msDaoServices: NewMarketSurveillanceDaoServices
+
+    @Lazy
+    @Autowired
     lateinit var postInvoiceToSageServices: PostInvoiceToSageServices
 
     final val appId = applicationMapProperties.mapInvoiceTransactions
@@ -120,7 +124,16 @@ class InvoiceDaoService(
                 detailsDescription = "Demand Note Number:${dNote.demandNoteNumber}"
             }
             applicationMapProperties.mapInvoiceTransactionsForMSFuelReconciliation -> {
-                //Todo: Adding Function for Ms Fuel
+                var fuelProFormInvoice = addDetails as MsFuelRemedyInvoicesEntity
+                with(fuelProFormInvoice) {
+                    invoiceBatchNumberId = invoiceBatchDetails.id
+//                    invoiceNumber = invoiceBatchDetails.batchNumber
+                    paymentStatus = map.inactiveStatus
+                }
+                fuelProFormInvoice = msDaoServices.updateFuelInspectionRemediationInvoiceDetails(fuelProFormInvoice,map, user).second
+
+                totalAmount = fuelProFormInvoice.transportGrandTotal?.let { totalAmount.plus(it) }!!
+                detailsDescription = "Fuel Inspection Proforma Invoice Number:${fuelProFormInvoice.invoiceNumber}"
             }
             applicationMapProperties.mapInvoiceTransactionsForPermit -> {
                 var invoiceNote = addDetails as QaBatchInvoiceEntity

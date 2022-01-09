@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.store.model
 
 import org.kebs.app.kotlin.apollo.store.model.ms.MsFuelInspectionEntity
 import java.io.Serializable
+import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
 import java.util.*
@@ -61,7 +62,7 @@ class MsFuelRemediationEntity : Serializable{
 
     @Column(name = "INVOICE_AMOUNT")
     @Basic
-    var invoiceAmount: String? = null
+    var invoiceAmount: BigDecimal? = null
 
     @Column(name = "FEE_PAID_RECEIPT_NO")
     @Basic

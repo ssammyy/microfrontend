@@ -548,9 +548,10 @@ class AngularRoutes {
                         PUT("/sample-submission-bs-number", handler::setFuelScheduleSampleSubmissionBsNumber)
                         PUT("/lab-results-pdf-save", handler::saveFuelScheduleLabResultsPDFSelected)
                         PUT("/ssf-compliance-status-save", handler::saveFuelScheduleSSFComplianceStatusAdd)
-                        POST("/fuel-remediation-invoice", handler::saveFuelScheduledRemediationInvoice)
                         POST("/fuel-remediation-schedule", handler::saveFuelScheduleRemediationAfterPayment)
+                        POST("/fuel-remediation-invoice", handler::saveFuelScheduledRemediationInvoice)
                         PUT("/fuel-remediation", handler::saveFuelScheduleUpdateRemediation)
+                        PUT("/end-inspection", handler::endFuelInspection)
                     }
                     "/fetch".nest {
                         GET("/assign", handler::updateFuelScheduleAssignOfficer)

@@ -26,7 +26,7 @@
                     <div class="card-body" *ngIf="fuelInspection">
                         <div class="row">
                             <div class="col-md-10">
-                                <mat-tab-group [(selectedIndex)]="active" [disablePagination]="true" appMatMultilineTabMs class="tab-wraps">
+                                <mat-tab-group [(selectedIndex)]="active" [disablePagination]="true" appMatMultilineTab class="tab-wraps">
                                     <mat-tab *ngIf="fuelInspection" label="1">
                                         <ng-template mat-tab-label>
                                             Main Details
@@ -336,6 +336,7 @@
                                                     <ng2-smart-table [settings]="settingsSampleSubmittedItems" [source]="fuelInspection.sampleSubmitted.parametersList"></ng2-smart-table>
                                                 </div>
                                             </div>
+                                            <br>
                                         </div>
                                     </mat-tab>
                                     <mat-tab *ngIf="fuelInspection.sampleLabResults" label="6">
