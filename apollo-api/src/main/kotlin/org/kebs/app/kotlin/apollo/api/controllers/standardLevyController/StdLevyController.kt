@@ -24,6 +24,7 @@ import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapPrope
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.model.std.DatKebsSdNwaUploadsEntity
+import org.kebs.app.kotlin.apollo.store.model.std.Department
 import org.kebs.app.kotlin.apollo.store.model.std.NWAJustification
 import org.kebs.app.kotlin.apollo.store.model.std.TechnicalCommittee
 import org.kebs.app.kotlin.apollo.store.repo.ICompanyProfileRepository
@@ -33,6 +34,8 @@ import org.kebs.app.kotlin.apollo.store.repo.IUserRoleAssignmentsRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.core.context.SecurityContext
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
@@ -686,6 +689,42 @@ class StdLevyController(
     fun getSiteFeedback():List<TaskDetails>
     {
         return standardLevyService.getSiteFeedback()
+    }
+
+    //Get List of Manufactures
+    @GetMapping("/getManufacturerList")
+    @ResponseBody
+    fun getManufacturerList(): MutableList<CompanyProfileEntity>
+    {
+        return standardLevyService.getManufacturerList()
+    }
+
+    //Get List of Manufactures Complete Tasks
+    @GetMapping("/getMnCompleteTask")
+    @ResponseBody
+    fun getMnCompleteTask(): MutableList<CompanyProfileEntity>
+    {
+
+        commonDaoServices.loggedInUserDetails().id?.let { id ->
+            return standardLevyService.getMnCompleteTask(id)
+
+        }
+            ?:return mutableListOf()
+
+
+    }
+
+    //Get List of Manufactures
+    @GetMapping("/getMnPendingTask")
+    @ResponseBody
+    fun getMnPendingTask(): MutableList<CompanyProfileEntity>
+    {
+        commonDaoServices.loggedInUserDetails().id?.let { id ->
+            return standardLevyService.getMnPendingTask(id)
+
+        }
+            ?:return mutableListOf()
+
     }
 
 }

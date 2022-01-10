@@ -13,6 +13,7 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
+import org.kebs.app.kotlin.apollo.store.model.std.DatKebsSdNwaUploadsEntity
 import org.kebs.app.kotlin.apollo.store.model.std.NWAJustification
 import org.kebs.app.kotlin.apollo.store.model.std.NWAPreliminaryDraftUploads
 import org.kebs.app.kotlin.apollo.store.model.std.TechnicalCommittee
@@ -283,6 +284,18 @@ class StandardLevyService(
 
         val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_Manufacturer).processDefinitionKey(PROCESS_DEFINITION_KEY).list()
         return getTaskDetails(tasks)
+    }
+
+    fun getManufacturerList(): MutableList<CompanyProfileEntity> {
+        return companyProfileRepo.getManufacturerList()
+    }
+
+    fun getMnCompleteTask(assignedTo: Long): MutableList<CompanyProfileEntity> {
+        return companyProfileRepo.getMnCompleteTask(assignedTo)
+    }
+
+    fun getMnPendingTask(assignedTo: Long): MutableList<CompanyProfileEntity> {
+        return companyProfileRepo.getMnPendingTask(assignedTo)
     }
 
 

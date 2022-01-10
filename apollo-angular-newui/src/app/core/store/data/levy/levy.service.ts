@@ -5,9 +5,9 @@ import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
 import {catchError, map} from "rxjs/operators";
 import {
     ApproveVisitTask,
-    CompanyModel,
+    CompanyModel, ManufactureCompleteTask, ManufactureDetailList,
     ManufactureInfo,
-    ManufacturePenalty,
+    ManufacturePenalty, ManufacturePendingTask,
     PaidLevy, ReportDecisionLevelOne, ReportDecisionLevelTwo, SiteVisitFeedBack, SiteVisitReport,
     SLevySL1,
     StdLevyScheduleSiteVisitDTO, VisitTask
@@ -163,6 +163,24 @@ export class LevyService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_SCHEDULED_SITE_VISITS_REPORT);
         const params = new HttpParams();
         return this.http.get<VisitTask[]>(url, {params}).pipe();
+    }
+
+    public getMnCompleteTask(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_MANUFACTURE_COMPLETE_TASKS);
+        const params = new HttpParams();
+        return this.http.get<ManufactureCompleteTask>(url, {params}).pipe();
+    }
+
+    public getManufacturerList(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_MANUFACTURE_LIST);
+        const params = new HttpParams();
+        return this.http.get<ManufactureDetailList>(url, {params}).pipe();
+    }
+
+    public getMnPendingTask(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_MANUFACTURE_TASKS);
+        const params = new HttpParams();
+        return this.http.get<ManufacturePendingTask>(url, {params}).pipe();
     }
 
 

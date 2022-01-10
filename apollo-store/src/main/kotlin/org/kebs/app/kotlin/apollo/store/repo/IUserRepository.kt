@@ -40,6 +40,7 @@ package org.kebs.app.kotlin.apollo.store.repo
 
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.registration.*
+import org.kebs.app.kotlin.apollo.store.model.std.StandardReviewForm
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.JpaRepository
@@ -273,6 +274,14 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     fun findAllByUserId(userId: Long): List<CompanyProfileEntity>
     fun findCompanyByUserId(userId: Long): MutableList<CompanyProfileEntity>
     fun findAllByFirmCategoryAndStatus(firmCategory: Long, status: Int): List<CompanyProfileEntity>?
+    @Query(value = "SELECT *  FROM DAT_KEBS_COMPANY_PROFILE WHERE ASSIGN_STATUS='0'", nativeQuery = true)
+    fun getManufacturerList(): MutableList<CompanyProfileEntity>
+
+    @Query(value = "SELECT *  FROM DAT_KEBS_COMPANY_PROFILE WHERE ASSIGN_STATUS='2' AND ASSIGNED_TO = :assignedTo", nativeQuery = true)
+    fun getMnCompleteTask(@Param("assignedTo") assignedTo: Long?): MutableList<CompanyProfileEntity>
+
+    @Query(value = "SELECT *  FROM DAT_KEBS_COMPANY_PROFILE WHERE ASSIGN_STATUS='1' AND ASSIGNED_TO = :assignedTo", nativeQuery = true)
+    fun getMnPendingTask(@Param("assignedTo") assignedTo: Long?): MutableList<CompanyProfileEntity>
 
 
 }

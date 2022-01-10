@@ -104,6 +104,8 @@ export interface CompanyModel {
     town: number;
     manufactureStatus: number;
     entryNumber: number;
+    assignStatus: number;
+    assignedTo: number;
 }
 export interface StdLevyScheduleSiteVisitDTO {
     status: number;
@@ -194,6 +196,87 @@ export interface SiteVisitFeedBack {
     officersFeedback: string;
     taskId: string;
     visitID: number;
+
+}
+export interface ManufactureDetailList {
+    id: number;
+    name: string;
+    kraPin: string;
+    status: boolean;
+    registrationNumber: string;
+    postalAddress: string;
+    physicalAddress: string;
+    plotNumber: string;
+    companyEmail: string;
+    companyTelephone: string;
+    yearlyTurnover: number;
+    businessLines: number;
+    businessNatures: number;
+    buildingName: string;
+    branchName: string;
+    streetName: string;
+    directorIdNumber: string;
+    region: number;
+    county: number;
+    town: number;
+    manufactureStatus: number;
+    entryNumber: number;
+    assignStatus: number;
+    assignedTo: number;
+
+}
+export interface ManufacturePendingTask {
+    id: number;
+    name: string;
+    kraPin: string;
+    status: boolean;
+    registrationNumber: string;
+    postalAddress: string;
+    physicalAddress: string;
+    plotNumber: string;
+    companyEmail: string;
+    companyTelephone: string;
+    yearlyTurnover: number;
+    businessLines: number;
+    businessNatures: number;
+    buildingName: string;
+    branchName: string;
+    streetName: string;
+    directorIdNumber: string;
+    region: number;
+    county: number;
+    town: number;
+    manufactureStatus: number;
+    entryNumber: number;
+    assignStatus: number;
+    assignedTo: number;
+
+}
+export interface ManufactureCompleteTask {
+    id: number;
+    name: string;
+    kraPin: string;
+    status: boolean;
+    registrationNumber: string;
+    postalAddress: string;
+    physicalAddress: string;
+    plotNumber: string;
+    companyEmail: string;
+    companyTelephone: string;
+    yearlyTurnover: number;
+    businessLines: number;
+    businessNatures: number;
+    buildingName: string;
+    branchName: string;
+    streetName: string;
+    directorIdNumber: string;
+    region: number;
+    county: number;
+    town: number;
+    manufactureStatus: number;
+    entryNumber: number;
+    assignStatus: number;
+    assignedTo: number;
 
 }
 
