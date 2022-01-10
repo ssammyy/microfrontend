@@ -20,7 +20,15 @@ import {DISDTTasks} from "../../../core/store/data/std/std.model";
 export class StandardLevyManufactureDetailsComponent implements OnInit {
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
-  manufactureLists: ManufactureDetailList[] = [];
+
+  dtOptions1:DataTables.Settings = {};
+    dtTrigger1: Subject<any> = new Subject<any>();
+
+    dtOptions2:DataTables.Settings = {};
+    dtTrigger2: Subject<any> = new Subject<any>();
+
+
+    manufactureLists: ManufactureDetailList[] = [];
     manufacturePendingTasks: ManufacturePendingTask[] = [];
     manufactureCompleteTasks: ManufactureCompleteTask[] = [];
   public actionRequestList: ManufactureDetailList | undefined;
@@ -56,7 +64,7 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
     this.levyService.getMnPendingTask().subscribe(
         (response: ManufacturePendingTask[])=> {
           this.SpinnerService.hide();
-          this.dtTrigger.next();
+          this.dtTrigger1.next();
           this.manufacturePendingTasks = response;
         },
         (error: HttpErrorResponse)=>{
@@ -70,7 +78,7 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
     this.levyService.getMnCompleteTask().subscribe(
         (response: ManufactureCompleteTask[])=> {
           this.SpinnerService.hide();
-          this.dtTrigger.next();
+          this.dtTrigger2.next();
           this.manufactureCompleteTasks = response;
         },
         (error: HttpErrorResponse)=>{
