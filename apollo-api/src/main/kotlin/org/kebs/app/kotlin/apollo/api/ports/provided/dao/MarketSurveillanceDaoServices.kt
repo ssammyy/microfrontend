@@ -579,7 +579,7 @@ class MarketSurveillanceDaoServices(
             status = map.activeStatus
             createdBy = commonDaoServices.concatenateName(loggedInUser)
             createdOn = commonDaoServices.getTimestamp()
-            workPlanGeneratedID = fetchActivity
+//            workPlanGeneratedID = fetchActivity
         }
         onsiteUploads = onsiteUploadRepo.save(onsiteUploads)
 

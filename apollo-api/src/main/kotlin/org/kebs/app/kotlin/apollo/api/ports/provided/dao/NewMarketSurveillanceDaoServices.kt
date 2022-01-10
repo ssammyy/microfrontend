@@ -1752,13 +1752,13 @@ class NewMarketSurveillanceDaoServices(
         )
     }
 
-    fun findAllFuelBatchList(): List<MsFuelBatchInspectionEntity> {
-        fuelBatchRepo.findAllOrderByIdAsc()
-            ?.let {
-                return it
-            }
-            ?: throw ExpectedDataNotFound("No Files found")
-    }
+//    fun findAllFuelBatchList(): List<MsFuelBatchInspectionEntity> {
+//        fuelBatchRepo.findAllOrderByIdAsc()
+//            ?.let {
+//                return it
+//            }
+//            ?: throw ExpectedDataNotFound("No Files found")
+//    }
 
     fun findAllFuelBatchListBasedOnPageable(pageable: Pageable): Page<MsFuelBatchInspectionEntity> {
         fuelBatchRepo.findAll(pageable)
