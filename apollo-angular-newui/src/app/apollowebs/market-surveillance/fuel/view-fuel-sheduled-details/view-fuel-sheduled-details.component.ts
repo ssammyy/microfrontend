@@ -32,6 +32,7 @@ declare global {
 export class ViewFuelSheduledDetailsComponent implements OnInit {
   active: Number = 0;
   selectedRefNo: string;
+  selectedBatchRefNo: string;
   selectedPDFFileName: string;
   fuelInspection: FuelInspectionDto;
   currDiv!: string;
@@ -401,7 +402,8 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     this.activatedRoute.paramMap.subscribe(
         rs => {
           this.selectedRefNo = rs.get('referenceNumber');
-          this.loadData(this.selectedRefNo)
+          this.selectedBatchRefNo = rs.get('batchReferenceNumber');
+          this.loadData(this.selectedRefNo, this.selectedBatchRefNo)
         }
     );
 
@@ -554,27 +556,27 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     return this.remediationForm.controls;
   }
 
-  private loadData(referenceNumber: string): any {
+  private loadData(referenceNumber: string,batchReferenceNumber: string ): any {
     this.SpinnerService.show()
     // let params = {'personal': this.personalTasks}
-    this.fuelInspection = this.msService.fuelInspectionDetailsExamples()
+    // this.fuelInspection = this.msService.fuelInspectionDetailsExamples()
     // this.totalCount = this.loadedData.fuelInspectionDto.length;
     // this.dataSet.load(this.loadedData.fuelInspectionDto);
-    this.SpinnerService.hide();
-    // this.msService.msFuelInspectionList(referenceNumber,String(page),String(records)).subscribe(
-    //     (data) => {
-    //       this.loadedData = data;
-    //       this.totalCount = this.loadedData.length;
-    //       this.dataSet.load(this.loadedData);
-    //       this.SpinnerService.hide();
-    //       console.log(data);
-    //     },
-    //     error => {
-    //       this.SpinnerService.hide();
-    //       console.log(error)
-    //       this.msService.showError("AN ERROR OCCURRED")
-    //     }
-    // );
+    // this.SpinnerService.hide();
+    this.msService.msFuelInspectionScheduledDetails(batchReferenceNumber,referenceNumber).subscribe(
+        (data) => {
+          this.fuelInspection = data;
+          // this.totalCount = this.loadedData.length;
+          // this.dataSet.load(this.loadedData);
+          this.SpinnerService.hide();
+          console.log(data);
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error)
+          this.msService.showError("AN ERROR OCCURRED")
+        }
+    );
 
     // let data = this.diService.listAssignedCd(documentTypeUuid, page, size, params);
     // console.log(this.activeStatus)

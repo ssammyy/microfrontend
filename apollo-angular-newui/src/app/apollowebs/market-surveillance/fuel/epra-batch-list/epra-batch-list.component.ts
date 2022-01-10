@@ -148,23 +148,23 @@ export class EpraBatchListComponent implements OnInit {
   private loadData(page: number, records: number): any {
     this.SpinnerService.show()
     let params = {'personal': this.personalTasks}
-    this.totalCount = this.loadedData.length;
-    this.dataSet.load(this.loadedData);
-    this.SpinnerService.hide();
-    // this.msService.loadMSFuelBatchList(String(page),String(records)).subscribe(
-    //     (data) => {
-    //       this.loadedData = data;
-    //       this.totalCount = this.loadedData.length;
-    //       this.dataSet.load(this.loadedData);
-    //       this.SpinnerService.hide();
-    //       console.log(data);
-    //     },
-    //     error => {
-    //       this.SpinnerService.hide();
-    //       console.log(error)
-    //       this.msService.showError("AN ERROR OCCURRED")
-    //     }
-    // );
+    // this.totalCount = this.loadedData.length;
+    // this.dataSet.load(this.loadedData);
+    // this.SpinnerService.hide();
+    this.msService.loadMSFuelBatchList(String(page),String(records)).subscribe(
+        (data) => {
+          this.loadedData = data;
+          this.totalCount = this.loadedData.length;
+          this.dataSet.load(this.loadedData);
+          this.SpinnerService.hide();
+          console.log(data);
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error)
+          this.msService.showError("AN ERROR OCCURRED")
+        }
+    );
 
     // let data = this.diService.listAssignedCd(documentTypeUuid, page, size, params);
     // console.log(this.activeStatus)
