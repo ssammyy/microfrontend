@@ -435,6 +435,7 @@ export class ApiEndpointService {
         STD_LEVY_SL10_FORM: `${ApiEndpointService.STL_CONTEXT}/save-sl-notification-form`,
         STD_LEVY_SCHEDULE_SITE_VISIT: `${ApiEndpointService.STL_CONTEXT}/scheduleSiteVisit`,
         STD_LEVY_SCHEDULED_SITE_VISITS: `${ApiEndpointService.STL_CONTEXT}/getScheduledVisits`,
+        STD_LEVY_ASSIGN_COMPANY_TASK: `${ApiEndpointService.STL_CONTEXT}/assignCompany`,
         STD_LEVY_SAVE_VISIT_REPORT: `${ApiEndpointService.STL_CONTEXT}/reportOnSiteVisit`,
         STD_LEVY_SAVE_VISIT_REPORT_DOCUMENT: `${ApiEndpointService.STL_CONTEXT}/site-report-upload`,
         STD_LEVY_SCHEDULED_SITE_VISITS_REPORT: `${ApiEndpointService.STL_CONTEXT}/getSiteReport`,
@@ -444,7 +445,7 @@ export class ApiEndpointService {
         STD_LEVY_SAVE_VISIT_REPORT_FEEDBACK: `${ApiEndpointService.STL_CONTEXT}/siteVisitReportFeedback`,
         STD_LEVY_SAVE_VISIT_REPORT_VIEW_FEEDBACK: `${ApiEndpointService.STL_CONTEXT}/getSiteFeedback`,
         STD_LEVY_MANUFACTURE_LIST: `${ApiEndpointService.STL_CONTEXT}/getManufacturerList`,
-        STD_LEVY_MANUFACTURE_TASKS: `${ApiEndpointService.STL_CONTEXT}/getMnPendingTask`,
+        STD_LEVY_MANUFACTURE_TASKS: `${ApiEndpointService.STL_CONTEXT}/getUserTasks`,
         STD_LEVY_MANUFACTURE_COMPLETE_TASKS: `${ApiEndpointService.STL_CONTEXT}/getMnCompleteTask`,
 
 

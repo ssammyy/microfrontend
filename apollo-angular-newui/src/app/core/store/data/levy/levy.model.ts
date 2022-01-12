@@ -130,6 +130,33 @@ export interface StdLevyScheduleSiteVisitDTO {
     cheifManagerRemarks: string;
     assistantManagerRemarks: string;
     createdBy: string;
+    taskId: string;
+
+}
+export interface AssignCompanyTaskDTO {
+    manufacturerEntity:number;
+    assignedTo: number;
+    companyName: string;
+    kraPin: string;
+    status: boolean;
+    registrationNumber: string;
+    postalAddress: string;
+    physicalAddress: string;
+    plotNumber: string;
+    companyEmail: string;
+    companyTelephone: string;
+    yearlyTurnover: number;
+    businessLines: number;
+    businessNatures: number;
+    buildingName: string;
+    branchName: string;
+    streetName: string;
+    directorIdNumber: string;
+    region: number;
+    county: number;
+    town: number;
+    manufactureStatus: number;
+    entryNumber: number;
 
 }
 export interface VisitTask {
@@ -158,6 +185,7 @@ export interface SiteVisitReport {
     actionTaken: string;
     taskId: string;
     visitID: number;
+    assigneeId: number;
 
 }
 export interface ApproveVisitTask {
@@ -183,6 +211,7 @@ export interface ReportDecisionLevelOne{
     accentTo: boolean;
     visitID: bigint;
     comments: string;
+    assigneeId: number;
 }
 
 export interface ReportDecisionLevelTwo{
@@ -223,11 +252,17 @@ export interface ManufactureDetailList {
     entryNumber: number;
     assignStatus: number;
     assignedTo: number;
+    userId: number;
 
 }
 export interface ManufacturePendingTask {
-    id: number;
+    taskId: string;
     name: string;
+    taskData: ManufacturePendingTaskData;
+}
+export interface ManufacturePendingTaskData{
+    id: number;
+    companyName: string;
     kraPin: string;
     status: boolean;
     registrationNumber: string;
@@ -250,6 +285,16 @@ export interface ManufacturePendingTask {
     entryNumber: number;
     assignStatus: number;
     assignedTo: number;
+    visitID: number;
+    manufacturerEntity: number;
+    scheduledVisitDate: string;
+    meetingDate: string;
+    visitDate: Timestamp<number>;
+    purpose: string;
+    personMet: string;
+    actionTaken: string;
+    originator: number;
+    contactId: number;
 
 }
 export interface ManufactureCompleteTask {

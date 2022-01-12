@@ -4,7 +4,7 @@ import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.servi
 import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
 import {catchError, map} from "rxjs/operators";
 import {
-    ApproveVisitTask,
+    ApproveVisitTask, AssignCompanyTaskDTO,
     CompanyModel, ManufactureCompleteTask, ManufactureDetailList,
     ManufactureInfo,
     ManufacturePenalty, ManufacturePendingTask,
@@ -12,7 +12,7 @@ import {
     SLevySL1,
     StdLevyScheduleSiteVisitDTO, VisitTask
 } from "./levy.model";
-import {DiSdtDECISION, KnwSecTasks, NWADiSdtJustification, NWAJustification} from "../std/std.model";
+import {DiSdtDECISION, KnwSecTasks, NWADiSdtJustification, NWAJustification, UsersEntity} from "../std/std.model";
 
 @Injectable({
   providedIn: 'root'
@@ -52,6 +52,18 @@ export class LevyService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_SCHEDULE_SITE_VISIT);
         const params = new HttpParams();
         return this.http.post<StdLevyScheduleSiteVisitDTO>(url, stdLevyScheduleSiteVisitDTO, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+    public assignCompanyTasks(assignCompanyTaskDTO: AssignCompanyTaskDTO): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_ASSIGN_COMPANY_TASK);
+        const params = new HttpParams();
+        return this.http.post<AssignCompanyTaskDTO>(url, assignCompanyTaskDTO, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),
@@ -181,6 +193,11 @@ export class LevyService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_MANUFACTURE_TASKS);
         const params = new HttpParams();
         return this.http.get<ManufacturePendingTask>(url, {params}).pipe();
+    }
+    public getUserList(): Observable<UsersEntity[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_GET_USERS);
+        const params = new HttpParams();
+        return this.http.get<UsersEntity[]>(url, {params}).pipe();
     }
 
 

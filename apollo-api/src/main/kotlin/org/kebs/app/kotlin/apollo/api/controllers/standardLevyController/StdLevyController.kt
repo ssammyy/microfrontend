@@ -10,12 +10,10 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
 import org.kebs.app.kotlin.apollo.common.dto.CompanySl1DTO
 import org.kebs.app.kotlin.apollo.common.dto.ManufactureSubmitEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.std.NWAPreliminaryDraftDecision
+import org.kebs.app.kotlin.apollo.common.dto.std.ResponseMessage
 import org.kebs.app.kotlin.apollo.common.dto.std.ServerResponse
 import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
-import org.kebs.app.kotlin.apollo.common.dto.stdLevy.ReportOnSiteVisitDTO
-import org.kebs.app.kotlin.apollo.common.dto.stdLevy.SiteVisitReportDecision
-import org.kebs.app.kotlin.apollo.common.dto.stdLevy.StdLevyNotificationFormDTO
-import org.kebs.app.kotlin.apollo.common.dto.stdLevy.StdLevyScheduleSiteVisitDTO
+import org.kebs.app.kotlin.apollo.common.dto.stdLevy.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidInputException
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
@@ -567,35 +565,86 @@ class StdLevyController(
   @PostMapping("/scheduleSiteVisit")
   @ResponseBody
   @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-  fun scheduleSiteVisit( standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity,
+  fun scheduleSiteVisit(
                          @RequestBody stdLevyScheduleSiteVisitDTO: StdLevyScheduleSiteVisitDTO,
   ): ServerResponse
   {
+      val standardLevyFactoryVisitReportEntity= StandardLevyFactoryVisitReportEntity().apply {
+          manufacturerEntity= stdLevyScheduleSiteVisitDTO.manufacturerEntity
+          scheduledVisitDate= stdLevyScheduleSiteVisitDTO.scheduledVisitDate
+          status= 0
+          createdBy= commonDaoServices.loggedInUserDetails().userName
+          createdOn= Timestamp(System.currentTimeMillis())
+          taskId= stdLevyScheduleSiteVisitDTO.taskId
+          assigneeId= commonDaoServices.loggedInUserDetails().id
+      }
              val gson = Gson()
         KotlinLogging.logger { }.info { "INVOICE CALCULATED" + gson.toJson(standardLevyFactoryVisitReportEntity) }
-      return ServerResponse(HttpStatus.OK,"Site Visit Scheduled",standardLevyService.scheduleSiteVisit(standardLevyFactoryVisitReportEntity,stdLevyScheduleSiteVisitDTO))
+      return ServerResponse(HttpStatus.OK,"Site Visit Scheduled",standardLevyService.scheduleSiteVisit(standardLevyFactoryVisitReportEntity))
 
   }
 
-
-    @GetMapping("/getScheduledVisits")
-    fun getScheduledVisits():List<TaskDetails>
+    @PostMapping("/assignCompany")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun assignCompany(
+                           @RequestBody assignToDTO: AssignCompanyTaskToDTO
+    ): ServerResponse
     {
-        return standardLevyService.getScheduledVisits()
+        val companyProfileEntity= CompanyProfileEntity().apply {
+            id = assignToDTO.manufacturerEntity
+            assignedTo = assignToDTO.assignedTo
+            name = assignToDTO.companyName
+            kraPin = assignToDTO.kraPin
+            status = assignToDTO.status
+            registrationNumber = assignToDTO.registrationNumber
+            postalAddress = assignToDTO.postalAddress
+            physicalAddress = assignToDTO.physicalAddress
+            plotNumber = assignToDTO.plotNumber
+            companyEmail = assignToDTO.companyEmail
+            companyTelephone = assignToDTO.companyTelephone
+            yearlyTurnover = assignToDTO.yearlyTurnover
+            businessLines = assignToDTO.businessLines
+            businessNatures = assignToDTO.businessNatures
+            buildingName = assignToDTO.buildingName
+            directorIdNumber = assignToDTO.directorIdNumber
+            region = assignToDTO.region
+            county = assignToDTO.county
+            town = assignToDTO.town
+            manufactureStatus = assignToDTO.manufactureStatus
+            entryNumber = assignToDTO.entryNumber
+            userId= assignToDTO.contactId
+        }
+
+        return ServerResponse(HttpStatus.OK,"Company Task Assigned",standardLevyService.assignCompany(companyProfileEntity))
+
+    }
+
+
+    @GetMapping("/getUserTasks")
+    fun getUserTasks():List<TaskDetails>
+    {
+        return standardLevyService.getUserTasks()
     }
 
     @PostMapping("/reportOnSiteVisit")
     @ResponseBody
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun reportOnSiteVisit( standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity,
-                           @RequestBody reportOnSiteVisitDTO: ReportOnSiteVisitDTO,
-    ): ServerResponse
+    fun reportOnSiteVisit(@RequestBody reportOnSiteVisitDTO: ReportOnSiteVisitDTO): ServerResponse
     {
-        val gson = Gson()
-        KotlinLogging.logger { }.info { "INVOICE CALCULATED" + gson.toJson(reportOnSiteVisitDTO) }
-        return ServerResponse(HttpStatus.OK,"Uploaded Report",standardLevyService.reportOnSiteVisit(standardLevyFactoryVisitReportEntity,reportOnSiteVisitDTO))
+        val standardLevyFactoryVisitReportEntity= StandardLevyFactoryVisitReportEntity().apply {
+            visitDate=reportOnSiteVisitDTO.visitDate
+            purpose = reportOnSiteVisitDTO.purpose
+            personMet = reportOnSiteVisitDTO.personMet
+            actionTaken = reportOnSiteVisitDTO.actionTaken
+            id= reportOnSiteVisitDTO.visitID
+            assigneeId=reportOnSiteVisitDTO.assigneeId
+        }
+        return ServerResponse(HttpStatus.OK,"Uploaded Report",standardLevyService.reportOnSiteVisit(standardLevyFactoryVisitReportEntity))
         //return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",response)
     }
+
+
 
     @PostMapping("/site-report-upload")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -656,6 +705,23 @@ class StdLevyController(
 
     }
 
+    @PostMapping("/siteVisitReportFeedback")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun siteVisitReportFeedback(@RequestBody  reportOnSiteVisitDTO: ReportOnSiteVisitDTO
+
+
+    ): ServerResponse
+    {
+        val standardLevyFactoryVisitReportEntity= StandardLevyFactoryVisitReportEntity().apply {
+            officersFeedback = reportOnSiteVisitDTO.officersFeedback
+            id = reportOnSiteVisitDTO.visitID
+
+        }
+        return ServerResponse(HttpStatus.OK,"Uploaded Feedback",standardLevyService.reportOnSiteVisit(standardLevyFactoryVisitReportEntity))
+
+    }
+
     @PostMapping("/decisionOnSiteReport")
     fun decisionOnSiteReport(@RequestBody siteVisitReportDecision: SiteVisitReportDecision) : List<TaskDetails>
     {
@@ -671,19 +737,10 @@ class StdLevyController(
     @PostMapping("/decisionOnSiteReportLevelTwo")
     fun decisionOnSiteReportLevelTwo(@RequestBody siteVisitReportDecision: SiteVisitReportDecision) : List<TaskDetails>
     {
-        return standardLevyService.decisionOnSiteReport(siteVisitReportDecision)
+        return standardLevyService.decisionOnSiteReportLevelTwo(siteVisitReportDecision)
     }
 
-    @PostMapping("/siteVisitReportFeedback")
-    @ResponseBody
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun siteVisitReportFeedback(@RequestBody standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity,
-                          reportOnSiteVisitDTO: ReportOnSiteVisitDTO,
-    ): ServerResponse
-    {
-        return ServerResponse(HttpStatus.OK,"Uploaded Feedback",standardLevyService.reportOnSiteVisit(standardLevyFactoryVisitReportEntity,reportOnSiteVisitDTO))
 
-    }
 
     @GetMapping("/getSiteFeedback")
     fun getSiteFeedback():List<TaskDetails>
@@ -725,6 +782,17 @@ class StdLevyController(
         }
             ?:return mutableListOf()
 
+    }
+
+    @PostMapping("/anonymous/standard/close")
+    fun clos(@RequestBody responseMessage: ResponseMessage) {
+        return standardLevyService.closeProcess(responseMessage.message)
+    }
+
+    //Delete A Task
+    @PostMapping("/anonymous/standard/closetask")
+    fun closeTask(@RequestBody responseMessage: ResponseMessage) {
+        return standardLevyService.closeTask(responseMessage.message)
     }
 
 }

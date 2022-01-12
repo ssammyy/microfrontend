@@ -397,7 +397,7 @@ class NWAService(private val runtimeService: RuntimeService,
         nwaDiSdtJustification.dateOfApproval?.let{variable.put("dateOfApproval", it)}
         nwaDiSdtJustification.jstNumber?.let{variable.put("jstNumber", it)}
         nwaDiSdtJustification.datePrepared = commonDaoServices.getTimestamp()
-        variable["datePrepared"] = nwaDiSdtJustification.datePrepared!!
+        nwaDiSdtJustification.datePrepared?.let{variable.put("datePrepared", it)}
 
         //print(nwaDiSdtJustification.toString())
 
