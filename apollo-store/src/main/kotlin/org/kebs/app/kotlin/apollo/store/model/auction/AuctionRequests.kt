@@ -23,7 +23,7 @@ class AuctionRequests : Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     var category: AuctionCategory? = null // If it was inspected, this will be filled
 
-    @Column(name = "AUCTION_LOG_NO")
+    @Column(name = "AUCTION_LOT_NO", unique = true)
     @Basic
     var auctionLotNo: String? = null
 
@@ -37,11 +37,11 @@ class AuctionRequests : Serializable {
 
     @Column(name = "SHIPMENT_DATE")
     @Basic
-    var shipmentDate: Date? = null
+    var shipmentDate: Timestamp? = null
 
     @Column(name = "ARRIVAL_DATE")
     @Basic
-    var arrivalDate: Date? = null
+    var arrivalDate: Timestamp? = null
 
     @Column(name = "IMPORTER_NAME")
     @Basic
@@ -55,12 +55,12 @@ class AuctionRequests : Serializable {
     @Basic
     var importerPhone: String? = null
 
-    @Column(name = "ASSIGNER")
-    @Basic
+    @JoinColumn(name = "ASSIGNER",referencedColumnName = "ID")
+    @ManyToOne(fetch = FetchType.LAZY)
     var assigner: UsersEntity? = null
 
-    @Column(name = "ASSIGNED_OFFICER")
-    @Basic
+    @JoinColumn(name = "ASSIGNED_OFFICER", referencedColumnName = "ID")
+    @ManyToOne(fetch = FetchType.LAZY)
     var assignedOfficer: UsersEntity? = null
 
     @Column(name = "ASSIGNED_ON")
@@ -70,6 +70,10 @@ class AuctionRequests : Serializable {
     @Column(name = "APPROVAL_STATUS")
     @Basic
     var approvalStatus: Int? = null
+
+    @Column(name = "SERIAL_NUMBER")
+    @Basic
+    var serialNumber: String? = null
 
     @Column(name = "APPROVED_REJECTED_OM")
     @Basic
@@ -86,6 +90,10 @@ class AuctionRequests : Serializable {
     @Column(name = "DEMAND_NOTE_ID")
     @Basic
     var demandNoteId: Long? = null
+
+    @Column(name = "CONTAINER_SIZE")
+    @Basic
+    var containerSize: String? = null
 
     @Column(name = "STATUS")
     @Basic

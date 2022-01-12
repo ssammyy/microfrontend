@@ -23,6 +23,14 @@ class BillPayments : Serializable {
     @Basic
     var billNumber: String? = null
 
+    @Column(name = "BILL_NUMBER_PREFIX")
+    @Basic
+    var billNumberPrefix: String? = null
+
+    @Column(name = "BILL_NUMBER_SEQUENCE")
+    @Basic
+    var billNumberSequence: Long? = null
+
     @Column(name = "INVOICE_NUMBER")
     @Basic
     var invoiceNumber: String? = null
@@ -43,9 +51,33 @@ class BillPayments : Serializable {
     @Basic
     var paymentStatus: Int? = null
 
+    @Column(name = "PAYMENT_REQUEST_DATE")
+    @Basic
+    var paymentRequestDate: Timestamp? = null
+
+    @Column(name = "PAYMENT_REQUEST_REFERENCE")
+    @Basic
+    var paymentRequestReference: String? = null
+
+    @Column(name = "BILL_STATUS")
+    @Basic
+    var billStatus: Int? = null
+
+    @Column(name = "BILL_STATUS_DESC")
+    @Basic
+    var billStatusDesc: String? = null
+
     @Column(name = "PAYMENT_DATE")
     @Basic
     var paymentDate: Date? = null
+
+    @Column(name = "NOTICE_COUNT")
+    @Basic
+    var noticeCount:Long? = null
+
+    @Column(name = "NEXT_NOTICE_DATE")
+    @Basic
+    var nextNoticeDate: Date? = null
 
     @Column(name = "PAYMENT_RECEIPT")
     @Basic

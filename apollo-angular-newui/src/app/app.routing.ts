@@ -126,6 +126,7 @@ import {ViewCorporateComponent} from "./apollowebs/invoice/corporate/view-corpor
 import {ViewBillLimitsComponent} from "./apollowebs/invoice/limits/view-bill-limits/view-bill-limits.component";
 import {ViewTransactionsComponent} from "./apollowebs/invoice/corporate/view-transactions/view-transactions.component";
 import {ViewAuctionItemsComponent} from "./apollowebs/di/auction/view-auction-items/view-auction-items.component";
+import {AuctionItemDetailsComponent} from "./apollowebs/di/auction/auction-item-details/auction-item-details.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -565,9 +566,14 @@ export const routes: Routes = [
                 component: ViewInspectionDetailsComponent
             },
             {
-                path: 'auctions',
+                path: 'auction/view',
                 canActivate: [RouteGuard],
                 component: ViewAuctionItemsComponent
+            },
+            {
+                path: 'auction/details/:id',
+                canActivate: [RouteGuard],
+                component: AuctionItemDetailsComponent
             },
         ]
     },

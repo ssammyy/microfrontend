@@ -6,10 +6,9 @@ import java.sql.Timestamp
 import javax.persistence.*
 
 
-
 @Table(name = "DAT_KEBS_BILL_LIMITS")
 @Entity
-class BillingLimits: Serializable {
+class BillingLimits : Serializable {
     @Column(name = "ID")
     @Id
     @SequenceGenerator(name = "DAT_KEBS_BILL_LIMITS_SEQ_GEN", sequenceName = "DAT_KEBS_BILL_LIMITS_SEQ", allocationSize = 1)
@@ -27,6 +26,18 @@ class BillingLimits: Serializable {
     @Column(name = "BILL_RECEIPT_PREFIX")
     @Basic
     var billReceiptPrefix: String? = null
+
+    @Column(name = "BILL_DATE_TYPE") // DATE_RANGE, LAST_MONTH
+    @Basic
+    var billDateType: String? = null
+
+    @Column(name = "BILL_START_DAY")
+    @Basic
+    var billStartDate: Int? = null
+
+    @Column(name = "BILL_END_DAY")
+    @Basic
+    var billEndDay: Int? = null
 
     @Column(name = "BILL_PAYMENT_DAY")
     @Basic

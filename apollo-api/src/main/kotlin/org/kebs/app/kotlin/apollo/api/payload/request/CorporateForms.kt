@@ -28,7 +28,7 @@ class CorporateForm {
     @Email(message = "Please add a valid email")
     var contactEmail: String? = null
     var isCiakMember: Boolean? = false
-    var billingId: Long = 0
+    var billingLimitId: Long = 0
     var mouDays: Int? = 0
 }
 

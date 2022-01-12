@@ -5,6 +5,7 @@ import org.kebs.app.kotlin.apollo.store.model.auction.AuctionItemDetails
 import org.kebs.app.kotlin.apollo.store.model.auction.AuctionRequests
 import java.math.BigDecimal
 import java.sql.Date
+import java.sql.Timestamp
 import javax.persistence.Basic
 import javax.persistence.Column
 import javax.validation.constraints.NotEmpty
@@ -70,10 +71,10 @@ class AuctionForm {
     var shipmentPort: String? = null
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
-    var shipmentDate: Date? = null
+    var shipmentDate: Timestamp? = null
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
-    var arrivalDate: Date? = null
+    var arrivalDate: Timestamp? = null
 
     @NotEmpty(message = "Importer name is required")
     var importerName: String? = null
@@ -81,6 +82,8 @@ class AuctionForm {
     @NotEmpty(message = "Auction item location is required")
     var itemLocation: String? = null
     var importerPhone: String? = null
+
+    var containerSize: String? = null
 
     @Size(min = 1, max = 200, message = "At least one item is required")
     var items: List<AuctionItem>? = null
@@ -94,6 +97,7 @@ class AuctionForm {
         request.arrivalDate = this.arrivalDate
         request.importerName = this.importerName
         request.importerPhone = this.importerPhone
+        request.containerSize=this.containerSize
     }
 
 }
@@ -101,6 +105,7 @@ class AuctionForm {
 class AuctionAssignForm {
     @NotNull(message = "Please select inspection officer")
     val officerId: Long? = null
+
     @NotNull(message = "Please enter assignment remarks")
     val remarks: String? = null
 }
@@ -108,6 +113,7 @@ class AuctionAssignForm {
 class AuctionDemandNoteForm {
     @NotNull(message = "Please select inspection fee")
     val feeId: Long? = null
+
     @NotNull(message = "Please enter inspection remarks")
     val remarks: String? = null
 

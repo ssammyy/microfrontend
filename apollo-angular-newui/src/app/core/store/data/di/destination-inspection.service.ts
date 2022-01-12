@@ -484,6 +484,23 @@ export class DestinationInspectionService {
         })
     }
 
+    listAuctionCategories(): Observable<any> {
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/auction/categories"))
+    }
+
+    uploadAuctionGoodsAndVehicles(selectedFile: File, fileType: any, categoryCode: any, auctionReportDate: string): Observable<any> {
+        let fd = new FormData()
+        fd.append("file", selectedFile)
+        fd.append("categoryCode", categoryCode)
+        fd.append("listingDate", auctionReportDate)
+        fd.append("file_type", fileType)
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/auction/auction/upload"), fd)
+    }
+
+    getAuctionItemDetails(requestId: any): Observable<any> {
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/auction/auction/details/" + requestId))
+    }
+
     showSuccess(message: string, fn?: Function) {
         swal.fire({
             title: message,

@@ -22,7 +22,9 @@ class ExternalRouter {
     @Bean
     @CrossOrigin
     fun pvocClientRequests(handler: PvocClientHandler) = router {
-        "/api/v1/pvoc/clients".nest {
+        "/api/v1/pvoc/".nest {
+            POST("/send/coiWithItems", handler::foreignCoi)
+            POST("/send/rfcCoiWithItems", handler::foreignCoiRfc)
             POST("/coc", handler::foreignCoc)
             POST("/cor", handler::foreignCor)
             POST("/ncr", handler::foreignNcr)

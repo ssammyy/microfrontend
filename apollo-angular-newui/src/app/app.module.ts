@@ -246,6 +246,8 @@ import { ViewCorporateComponent } from './apollowebs/invoice/corporate/view-corp
 import { ViewBillLimitsComponent } from './apollowebs/invoice/limits/view-bill-limits/view-bill-limits.component';
 import { ViewTransactionsComponent } from './apollowebs/invoice/corporate/view-transactions/view-transactions.component';
 import { ViewAuctionItemsComponent } from './apollowebs/di/auction/view-auction-items/view-auction-items.component';
+import { UploadFileComponent } from './apollowebs/di/auction/upload-file/upload-file.component';
+import { AuctionItemDetailsComponent } from './apollowebs/di/auction/auction-item-details/auction-item-details.component';
 
 @NgModule({
     imports: [
@@ -516,6 +518,8 @@ import { ViewAuctionItemsComponent } from './apollowebs/di/auction/view-auction-
         ViewBillLimitsComponent,
         ViewTransactionsComponent,
         ViewAuctionItemsComponent,
+        UploadFileComponent,
+        AuctionItemDetailsComponent,
     ],
     providers: [
         MatNativeDateModule,

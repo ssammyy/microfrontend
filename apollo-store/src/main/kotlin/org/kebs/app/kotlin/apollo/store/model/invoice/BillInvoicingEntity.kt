@@ -1,4 +1,4 @@
-package org.kebs.app.kotlin.apollo.store.model.pvc
+package org.kebs.app.kotlin.apollo.store.model.invoice
 
 import java.io.Serializable
 import java.sql.Date

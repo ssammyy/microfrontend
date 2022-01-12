@@ -16,8 +16,10 @@ interface IAuctionCategoryRepository : HazelcastRepository<AuctionCategory, Long
 interface IAuctionRequestsRepository : HazelcastRepository<AuctionRequests, Long> {
     fun findByApprovalStatus(status: Int, page: Pageable): Page<AuctionRequests>
     fun findByApprovalStatusInAndAssignedOfficerIsNull(status: List<Int>, page: Pageable): Page<AuctionRequests>
+    fun findByApprovalStatusInAndAssignedOfficer(status: List<Int>, officer: UsersEntity?, page: Pageable): Page<AuctionRequests>
     fun findByAssignedOfficer(officer: UsersEntity?, page: Pageable): Page<AuctionRequests>
     fun findByAuctionLotNoContains(keyword: String, page: Pageable): Page<AuctionRequests>
+    fun findByAuctionLotNo(auctionNo: String?): AuctionRequests?
 }
 
 
@@ -30,5 +32,5 @@ interface IAuctionRequestHistoryRepository : HazelcastRepository<AuctionRequestH
 }
 
 interface IAuctionUploadsEntityRepository : HazelcastRepository<AuctionUploadsEntity, Long> {
-    fun findByAuctionId(auctionId: Long): List<AuctionUploadsEntity>
+    fun findByAuctionId(auctionId: AuctionRequests): List<AuctionUploadsEntity>
 }

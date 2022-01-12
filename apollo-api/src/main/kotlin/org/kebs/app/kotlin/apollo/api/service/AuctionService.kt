@@ -4,25 +4,38 @@ import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.request.AuctionForm
+import org.kebs.app.kotlin.apollo.api.payload.request.AuctionItem
+import org.kebs.app.kotlin.apollo.api.payload.response.AuctionRequestDto
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
+import org.kebs.app.kotlin.apollo.common.dto.AuditItemEntityDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
+import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.auction.AuctionItemDetails
 import org.kebs.app.kotlin.apollo.store.model.auction.AuctionRequestHistory
 import org.kebs.app.kotlin.apollo.store.model.auction.AuctionRequests
 import org.kebs.app.kotlin.apollo.store.model.auction.AuctionUploadsEntity
+import org.kebs.app.kotlin.apollo.store.repo.IUserRoleAssignmentsRepository
 import org.kebs.app.kotlin.apollo.store.repo.auction.*
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.StringUtils
 import org.springframework.web.multipart.MultipartFile
+import java.io.ByteArrayInputStream
+import java.io.InputStreamReader
+import java.io.Reader
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
 import java.time.LocalDate
+
+enum class AuctionGoodStatus(val status: Int) {
+    NEW(0), APPROVED(1), REJECTED(2), OTHER(3);
+}
 
 @Service
 class AuctionService(
@@ -33,8 +46,11 @@ class AuctionService(
         private val auctionRequestHistoryRepo: IAuctionRequestHistoryRepository,
         private val commonDaoServices: CommonDaoServices,
         private val destinationInspectionDaoServices: DestinationInspectionDaoServices,
+        private val daoService: DaoService,
+        private val validatorService: DaoValidatorService,
         private val applicationMapProperties: ApplicationMapProperties,
-        private val apiClientService: ApiClientService
+        private val apiClientService: ApiClientService,
+        private val roleAssignmentsRepository: IUserRoleAssignmentsRepository,
 ) {
 
     fun listAuctionCategories(): ApiResponseModel {
@@ -71,6 +87,7 @@ class AuctionService(
         upload.description = description
         upload.username = username
         upload.createdBy = username
+        upload.status = 1
         upload.createdOn = Timestamp.from(Instant.now())
         upload.description = description
         val saved = this.auctionRequestHistoryRepo.save(upload)
@@ -92,11 +109,11 @@ class AuctionService(
                 response.message = "Success"
                 response.responseCode = ResponseCodes.SUCCESS_CODE
                 // Publish event to KRA
-                val map = mutableMapOf<String, Any?>()
-                map["invoice_ref"] = demandNote.demandNoteNumber
-                map["amount"] = demandNote.totalAmount
-                map["date"] = commonDaoServices.convertDateToString(demandNote.dateGenerated, "dd-MM-yyyy")
-                this.processCallback(auctionRequest.createdBy, ResponseCodes.SUCCESS_CODE, "Demand Note generated", auctionRequest.auctionLotNo, "PAYMENT_REQUEST", map)
+                val mapKra = mutableMapOf<String, Any?>()
+                mapKra["invoice_ref"] = demandNote.demandNoteNumber
+                mapKra["amount"] = demandNote.totalAmount
+                mapKra["date"] = commonDaoServices.convertDateToString(demandNote.dateGenerated, "dd-MM-yyyy")
+                this.processCallback(auctionRequest.createdBy, ResponseCodes.SUCCESS_CODE, "Demand Note generated", auctionRequest.auctionLotNo, "PAYMENT_REQUEST", mapKra)
                 // Add history
                 addAuctionHistory(auctionId, "GENERATE-DEMAND-NOTE", remarks, commonDaoServices.loggedInUserAuthentication().name)
             } ?: throw ExpectedDataNotFound("Invalid user authenticated")
@@ -163,9 +180,10 @@ class AuctionService(
                 StringUtils.hasLength(keywords) -> this.auctionRequestsRepository.findByAuctionLotNoContains(keywords!!, page)
                 else -> {
                     when (status) {
-                        "ASSIGNED" -> this.auctionRequestsRepository.findByAssignedOfficer(this.commonDaoServices.getLoggedInUser(), page)
-                        "COMPLETED" -> this.auctionRequestsRepository.findByApprovalStatus(1, page)
-                        "NEW" -> this.auctionRequestsRepository.findByApprovalStatusInAndAssignedOfficerIsNull(listOf(0, 1), page)
+                        "rejected" -> this.auctionRequestsRepository.findByApprovalStatus(AuctionGoodStatus.REJECTED.status, page)
+                        "approved" -> this.auctionRequestsRepository.findByApprovalStatus(AuctionGoodStatus.APPROVED.status, page)
+                        "new" -> this.auctionRequestsRepository.findByApprovalStatusInAndAssignedOfficerIsNull(listOf(AuctionGoodStatus.NEW.status), page)
+                        "assigned" -> this.auctionRequestsRepository.findByApprovalStatusInAndAssignedOfficer(listOf(AuctionGoodStatus.NEW.status), this.commonDaoServices.loggedInUserDetails(), page)
                         else -> null
                     }
                 }
@@ -178,9 +196,10 @@ class AuctionService(
                 response.totalPages = pg.totalPages
             } else {
                 response.responseCode = ResponseCodes.FAILED_CODE
-                response.message = "Invalid auction status"
+                response.message = "Invalid auction status: $status"
             }
         } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to list items: ", ex)
             response.responseCode = ResponseCodes.FAILED_CODE
             response.message = "Failed to fetch auction goods"
         }
@@ -220,18 +239,31 @@ class AuctionService(
         if (opttional.isPresent) {
             val auction = opttional.get()
             // Assigned
+            val userEntity = this.commonDaoServices.getLoggedInUser()
             if (auction.assignedOfficer == null) {
-                auction.assignedOfficer = this.commonDaoServices.getLoggedInUser()
-                auction.assignedOn = Date.valueOf(LocalDate.now())
-                this.auctionRequestsRepository.save(auction)
-                addAuctionHistory(auctionId, "AUTO-ASSIGN", "Assign IO", auction.assignedOfficer?.userName)
+                val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+                val inspectorCount = this.roleAssignmentsRepository.checkUserHasRole("DI_Inspection_Officers", map.activeStatus, userEntity?.id
+                        ?: 0)
+                if (inspectorCount > 0) {
+                    auction.assignedOfficer = userEntity
+                    auction.assignedOn = Date.valueOf(LocalDate.now())
+                    this.auctionRequestsRepository.save(auction)
+                    addAuctionHistory(auctionId, "AUTO-ASSIGN", "Assign IO", auction.assignedOfficer?.userName)
+                }
             }
-            val map = mutableMapOf<String, Any>()
-            map["auction_details"] = auction
-            map["attachments"] = auctionUploadRepo.findByAuctionId(auctionId)
-            map["items"] = auctionItemsRepo.findByAuctionId(auctionId)
-            map["history"] = auctionRequestHistoryRepo.findByAuctionIdAndStatus(auctionId, 1)
-            response.data = map
+            val dataMap = mutableMapOf<String, Any>()
+            val auctionDto = AuctionRequestDto.fromEntity(auction)
+            auctionDto.myTask = userEntity?.userName.equals(auction.assignedOfficer?.userName, true)
+            dataMap["auction_details"] = auctionDto
+            dataMap["attachments"] = auctionUploadRepo.findByAuctionId(auction)
+            dataMap["items"] = auctionItemsRepo.findByAuctionId(auctionId)
+            dataMap["history"] = auctionRequestHistoryRepo.findByAuctionIdAndStatus(auctionId, 1)
+            auction.demandNoteId?.let { demandNoteId ->
+                this.destinationInspectionDaoServices.findDemandNoteWithID(demandNoteId)?.let { demandNote ->
+                    dataMap["payment"] = demandNote
+                }
+            }
+            response.data = dataMap
             response.responseCode = ResponseCodes.SUCCESS_CODE
             response.message = "Auction goods"
         } else {
@@ -244,9 +276,16 @@ class AuctionService(
     @Transactional
     fun addAuctionRequest(form: AuctionForm): ApiResponseModel {
         val response = ApiResponseModel()
-
+        this.auctionRequestsRepository.findByAuctionLotNo(form.auctionLotNo)?.let {
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Auction with lot no exists: " + form.auctionLotNo
+            return response
+        }
         val auctionRequest = AuctionRequests()
         form.fillDetails(auctionRequest)
+        auctionRequest.approvalStatus = AuctionGoodStatus.NEW.status
+        auctionRequest.status = 1
+        auctionRequest.serialNumber = "NA"
         auctionRequest.createdBy = commonDaoServices.loggedInUserAuthentication().name
         auctionRequest.createdOn = Timestamp.from(Instant.now())
         auctionRequest.category = this.categoryRepo.findByCategoryCode(form.categoryCode?.toUpperCase()
@@ -280,6 +319,63 @@ class AuctionService(
         }
         response.responseCode = ResponseCodes.SUCCESS_CODE
         response.message = "Request received"
+        return response
+    }
+
+    // Fill Form for upload
+    fun addAuctionItem(item: AuditItemEntityDto, categoryCode: String?, auctionDate: Date) {
+        val request = AuctionForm()
+        request.itemLocation = item.location
+        request.auctionLotNo = item.lotNumber
+        request.auctionDate = auctionDate
+        request.shipmentPort = item.shipName
+        request.arrivalDate = item.dateOfArrival
+        request.categoryCode = categoryCode
+        request.importerName = item.consignee
+        request.importerPhone = item.consignee
+        request.containerSize = item.containerSize
+        val tmpItem = AuctionItem()
+        tmpItem.chassisNo = item.containerChassisNumber
+        tmpItem.itemName = item.description
+        tmpItem.itemType = item.manifestNo
+        tmpItem.serialNo = item.blNo
+        tmpItem.unitPrice = BigDecimal.ZERO
+        tmpItem.quantity = BigDecimal.valueOf(1)
+        request.items = arrayListOf(tmpItem)
+        this.addAuctionRequest(request)
+    }
+
+    fun uploadAuctionGoods(multipartFile: MultipartFile, fileType: String?, categoryCode: String?, listingDate: Date): ApiResponseModel {
+        val response = ApiResponseModel()
+        val endsWith = multipartFile.originalFilename?.endsWith(".txt")
+        if (!(multipartFile.contentType == "text/csv" || endsWith == true)) {
+            throw InvalidValueException("Incorrect file type received, try again later")
+        }
+        var separator = ','
+        if ("TSV".equals(fileType)) {
+            KotlinLogging.logger { }.info("TAB SEPARATED DATA")
+            separator = '\t'
+        } else {
+            KotlinLogging.logger { }.info("COMMA SEPARATED DATA")
+        }
+        val targetReader: Reader = InputStreamReader(ByteArrayInputStream(multipartFile.bytes))
+        val audits = this.daoService.readAuditCsvFile(separator, targetReader)
+        val errors = mutableListOf<Any>()
+        for (a in audits) {
+            validatorService.validateInputWithInjectedValidator(a)?.let {
+                errors.add(it)
+            } ?: run {
+                this.addAuctionItem(a, categoryCode, listingDate)
+            }
+        }
+        if (errors.isEmpty()) {
+            response.message = "Success"
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+        } else {
+            response.errors = errors
+            response.message = "Detected some invalid data in request file"
+            response.responseCode = ResponseCodes.INVALID_CODE
+        }
         return response
     }
 

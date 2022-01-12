@@ -18,6 +18,13 @@ class PvocPartnersHandler(
         private val validatorService: DaoValidatorService
 ) {
 
+    fun listPartnerCountries(req: ServerRequest): ServerResponse {
+        return ServerResponse.ok().body(partnerService.listPartnerCountries())
+    }
+    fun listPartnerTypes(req: ServerRequest): ServerResponse {
+        return ServerResponse.ok().body(partnerService.listPartnerCategories())
+    }
+
     fun createPartner(req: ServerRequest): ServerResponse {
         var response = ApiResponseModel()
         try {

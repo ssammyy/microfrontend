@@ -16,6 +16,8 @@ class PvocRouter {
     @CrossOrigin
     fun pvocPartners(handler: PvocPartnersHandler) = router {
         "/api/v1/partners".nest {
+            GET("/countries", handler::listPartnerCountries)
+            GET("/types", handler::listPartnerTypes)
             GET("/list", handler::listPartners)
             POST("/add", handler::createPartner)
             GET("/details/{partnerId}", handler::getPartnerDetails)

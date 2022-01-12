@@ -2289,6 +2289,14 @@ class DestinationInspectionDaoServices(
                 ?: throw Exception("CD Type Details with the following uuid = ${uuid}, does not Exist")
     }
 
+    fun findCdTypeDetailsWithName(name: String): ConsignmentDocumentTypesEntity {
+        cdTypesRepo.findFirstByVarField1(name)
+                ?.let { cdTypeDetails ->
+                    return cdTypeDetails
+                }
+                ?: throw Exception("CD Type Details with the following name = ${name}, does not Exist")
+    }
+
     fun findAllAvailableCdWithPortOfEntry(
             cfs: List<UsersCfsAssignmentsEntity>,
             cdType: ConsignmentDocumentTypesEntity?,

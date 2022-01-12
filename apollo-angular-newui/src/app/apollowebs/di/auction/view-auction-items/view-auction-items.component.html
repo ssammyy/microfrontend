@@ -5,29 +5,77 @@
                 <div class="card">
                     <div class="card-header card-header-primary card-header-icon">
                         <div class="card-icon">
-                            <i class="material-icons">auction</i>
+                            <i class="material-icons">market</i>
                         </div>
                         <h4 class="card-title">Auction Items
                         </h4>
                     </div>
                     <div class="card-body">
-                        <div class="btn-group btn-group-sm" role="group" aria-label="Lot Number">
-                            <label for="filter-lot-no">Status</label>
-                            <input class="search-form-input" id="filter-lot-no"  type="text" (change)="searchAuction($event)"
-                                   placeholder="Lot Number">
+
+                        <div class="toolbar">
+                            <div class="search-bar">
+                                <div class="input-group form-inline" role="group" aria-label="Lot Number">
+                                    <input class="search-form-input" id="filter-lot-no" type="text"
+                                           (change)="searchAuction($event)"
+                                           placeholder="Lot Number">
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-primary btn-background"
+                                                (click)="searchPhraseChanged()">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="btn-group btn-group-sm" role="group" aria-label="Auction Approval Status">
+                                    <button type="button" (click)="toggleStatus('assigned')"
+                                            [className]="auctionType == 'assigned' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                        MY TASKS
+                                    </button>
+                                    <button type="button" (click)="toggleStatus('new')"
+                                            [className]="auctionType == 'new' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                        NEW ITEMS
+                                    </button>
+                                    <button type="button" (click)="toggleStatus('approved')"
+                                            [className]="auctionType == 'approved' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                        APPROVED
+                                    </button>
+                                    <button type="button" (click)="toggleStatus('rejected')"
+                                            [className]="auctionType == 'rejected' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                        REJECTED
+                                    </button>
+                                    <button *ngIf="searchStatus" type="button" (click)="toggleStatus('search')"
+                                            [className]="auctionType == 'search' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                        SEARCH_RESULT
+                                    </button>
+                                </div>
+                                <div class="btn-group btn-group-sm float-right" role="group"
+                                     aria-label="Applications Status">
+                                    <button class="btn btn-sm btn-primary mr-7"
+                                            (click)="uploadAuction($event)"><i class="fa fa-upload"></i>Auction Items
+                                    </button>
+                                    <button class="btn btn-sm btn-primary ml-5"
+                                            (click)="aadAuctionItem($event)"><i class="fa fa-upload"></i>Add
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                        <div class="btn-group btn-group-sm pull-right" role="group"
-                             aria-label="Applications Status">
-                            <input type="file" accept="text/csv"  [hidden]="true"
-                                   (change)="uploadAuction($event)" #uploadFile>
-                            <button class="btn btn-sm btn-primary mr-7"
-                                    (click)="uploadFile.click()"><i class="fa fa-upload"></i>Auction Items
-                            </button>
-                        </div>
+
                         <div class="table-responsive table-striped">
                             <ng2-smart-table class="table table-hover" [settings]="settings"
-                                             [source]="dataSet">
+                                             [source]="dataSet"
+                                             (custom)="auctionEvent($event)"
+
+                            >
                             </ng2-smart-table>
+                            <ngb-pagination [(page)]="page" [pageSize]="pageSize"
+                                            [collectionSize]="totalCount"
+                                            (pageChange)=pageChange($event)>
+                                <ng-template ngbPaginationFirst>First</ng-template>
+                                <ng-template ngbPaginationLast>Last</ng-template>
+                                <ng-template ngbPaginationPrevious>Prev</ng-template>
+                                <ng-template ngbPaginationNext>Next</ng-template>
+                                <ng-template ngbPaginationEllipsis>...</ng-template>
+                                <ng-template ngbPaginationNumber let-page>{{ page }}</ng-template>
+                            </ngb-pagination>
                         </div>
                     </div>
                 </div>

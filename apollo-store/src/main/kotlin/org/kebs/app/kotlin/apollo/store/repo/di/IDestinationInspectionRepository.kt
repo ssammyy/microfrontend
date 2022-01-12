@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.store.repo.di
 
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.di.*
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnerTypeEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersCountriesEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersRegionEntity
 import org.springframework.data.domain.Page
@@ -94,7 +95,7 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
 
 @Repository
 interface IConsignmentDocumentTypesEntityRepository : HazelcastRepository<ConsignmentDocumentTypesEntity, Long> {
-    fun findByTypeNameAndStatus(typeName: String, status: Long): ConsignmentDocumentTypesEntity?
+    fun findFirstByVarField1(typeName: String): ConsignmentDocumentTypesEntity?
     fun findByUuid(uuid: String): ConsignmentDocumentTypesEntity?
 
     fun findByStatus(status: Int): List<ConsignmentDocumentTypesEntity>?
@@ -595,11 +596,17 @@ interface IPvocPartnersCountriesRepository : HazelcastRepository<PvocPartnersCou
     fun findByCountryName(countryName: String): PvocPartnersCountriesEntity?
     fun findByCountryNameContainingIgnoreCase(countryName: String): PvocPartnersCountriesEntity?
     fun findByAbbreviationIgnoreCase(abbreviation: String): PvocPartnersCountriesEntity?
+    fun findAllByStatus(status: Int): List<PvocPartnersCountriesEntity>
 }
 
 @Repository
 interface IPvocPartnersRegion : HazelcastRepository<PvocPartnersRegionEntity, Long>{
     fun findAllByStatus(status: Int): List<PvocPartnersRegionEntity>
+}
+
+@Repository
+interface IPvocPartnerTypeRepository : HazelcastRepository<PvocPartnerTypeEntity, Long>{
+    fun findAllByStatus(status: Int): List<PvocPartnerTypeEntity>
 }
 
 @Repository

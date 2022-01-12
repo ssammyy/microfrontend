@@ -18,15 +18,55 @@ import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.function.paramOrNull
+import java.sql.Date
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @Component
 class AuctionHandler(
         private val validationService: DaoValidatorService,
         private val auctionService: AuctionService
 ) {
+    val dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
     fun listAuctionCategory(req: ServerRequest): ServerResponse {
         return ServerResponse.ok()
                 .body(auctionService.listAuctionCategories())
+    }
+
+    fun uploadAuctionCsv(req: ServerRequest): ServerResponse {
+        var response = ApiResponseModel()
+        try {
+            val multipartRequest = (req.servletRequest() as? MultipartHttpServletRequest)
+                    ?: throw ResponseStatusException(
+                            HttpStatus.NOT_ACCEPTABLE,
+                            "Request is not a multipart request"
+                    )
+            val multipartFile = multipartRequest.getFile("file")
+            val fileType = multipartRequest.getParameter("file_type")
+            val categoryCode = multipartRequest.getParameter("categoryCode")
+            val listingDate = dateFormatter.parse(multipartRequest.getParameter("listingDate"))
+            if (multipartFile != null) {
+                listingDate?.let {
+                    response = auctionService.uploadAuctionGoods(multipartFile, fileType, categoryCode, java.sql.Date.valueOf(LocalDate.from(listingDate)))
+                    response
+                } ?: run {
+                    response.errors = mapOf(Pair("listingDate", "Please select auction listing date"))
+                    response.responseCode = ResponseCodes.INVALID_CODE
+                    response.message = "Invalid request received"
+                    response
+                }
+            } else {
+                response.errors = mapOf(Pair("file", "Please select auction listing date"))
+                response.responseCode = ResponseCodes.INVALID_CODE
+                response.message = "Please select upload file"
+            }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to add audit", ex)
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.message = "Failed to add auction"
+        }
+        return ServerResponse.ok()
+                .body(response)
     }
 
     fun addAuctionRequest(req: ServerRequest): ServerResponse {
@@ -56,7 +96,7 @@ class AuctionHandler(
         try {
             val auctionType = req.pathVariable("auctionType")
             when (auctionType) {
-                "SEARCH" -> {
+                "search" -> {
                     val keyword = req.paramOrNull("keyword")
                     if (StringUtils.hasLength(keyword)) {
                         response = auctionService.listAuctionGood(keyword, auctionType, extractPage(req))
@@ -84,6 +124,7 @@ class AuctionHandler(
             val auctionId = req.pathVariable("auctionId").toLong()
             response = auctionService.auctionGoodDetails(auctionId)
         } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to process request", ex)
             response.message = "Invalid identifier"
             response.responseCode = ResponseCodes.INVALID_CODE
         }

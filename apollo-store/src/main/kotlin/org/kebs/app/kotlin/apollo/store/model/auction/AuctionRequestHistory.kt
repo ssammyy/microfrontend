@@ -17,11 +17,11 @@ class AuctionRequestHistory : Serializable {
     @Basic
     var auctionId: Long? = null
 
-    @Column(name = "USERNAME", unique = true)
+    @Column(name = "USERNAME")
     @Basic
     var username: String? = null
 
-    @Column(name = "ACTION_NAME", unique = true)
+    @Column(name = "ACTION_NAME")
     @Basic
     var actionName: String? = null
 

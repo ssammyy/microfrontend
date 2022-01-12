@@ -52,7 +52,7 @@ class CorporateCustomerService(
                 customer.lastPayment = Timestamp.from(Instant.now())
                 customer.contactName = form.contactName
                 customer.contactPhone = form.contactPhone
-                val limits = billingLimitsRepository.findById(form.billingId)
+                val limits = billingLimitsRepository.findById(form.billingLimitId)
                 if (limits.isPresent) {
                     customer.accountLimits = limits.get()
                 }
@@ -96,7 +96,7 @@ class CorporateCustomerService(
             customer.contactEmail = form.contactEmail
             customer.contactName = form.contactName
             customer.paymentDays = form.mouDays
-            val limits = billingLimitsRepository.findById(form.billingId)
+            val limits = billingLimitsRepository.findById(form.billingLimitId)
             if (limits.isPresent) {
                 customer.accountLimits = limits.get()
             }

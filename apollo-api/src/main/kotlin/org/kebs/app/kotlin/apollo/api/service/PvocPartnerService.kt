@@ -3,45 +3,67 @@ package org.kebs.app.kotlin.apollo.api.service
 import org.kebs.app.kotlin.apollo.api.payload.ApiClientForm
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
+import org.kebs.app.kotlin.apollo.api.payload.request.CorporateForm
 import org.kebs.app.kotlin.apollo.api.payload.request.PvocPartnersForms
+import org.kebs.app.kotlin.apollo.api.payload.response.PvocPartnerCountryDto
 import org.kebs.app.kotlin.apollo.api.payload.response.PvocPartnerDto
-import org.kebs.app.kotlin.apollo.api.payload.response.PvocPartnerRegionDto
+import org.kebs.app.kotlin.apollo.api.payload.response.PvocPartnerTypeDto
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersEntity
 import org.kebs.app.kotlin.apollo.store.repo.IPvocPartnersRepository
+import org.kebs.app.kotlin.apollo.store.repo.di.IPvocPartnerTypeRepository
+import org.kebs.app.kotlin.apollo.store.repo.di.IPvocPartnersCountriesRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IPvocPartnersRegion
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import java.sql.Timestamp
 import java.time.Instant
 
 @Component
 class PvocPartnerService(
+        private val corporateCustomerService: CorporateCustomerService,
         private val partnersRepository: IPvocPartnersRepository,
         private val commonDaoServices: CommonDaoServices,
         private val partnerRegionsRepository: IPvocPartnersRegion,
+        private val partnerCountryRepo: IPvocPartnersCountriesRepository,
+        private val partnerCategoryRepo: IPvocPartnerTypeRepository,
         private val apiClientService: ApiClientService
 ) {
-    fun listPartnerRegions(): ApiResponseModel {
+    fun listPartnerCategories(): ApiResponseModel {
         val response = ApiResponseModel()
-        response.data = PvocPartnerRegionDto.fromList(partnerRegionsRepository.findAllByStatus(1))
+        response.data = PvocPartnerTypeDto.fromList(partnerCategoryRepo.findAllByStatus(1))
         response.responseCode = ResponseCodes.SUCCESS_CODE
         response.message = "Success"
         return response
     }
 
+    fun listPartnerCountries(): ApiResponseModel {
+        val response = ApiResponseModel()
+        response.data = PvocPartnerCountryDto.fromList(partnerCountryRepo.findAllByStatus(1))
+        response.responseCode = ResponseCodes.SUCCESS_CODE
+        response.message = "Success"
+        return response
+    }
+
+    @Transactional
     fun addPartnerDetails(form: PvocPartnersForms): ApiResponseModel {
         val response = ApiResponseModel()
         if (partnersRepository.findByPartnerRefNo(form.partnerRefNo).isEmpty) {
             val partner = PvocPartnersEntity()
             // Fill with data
             form.addDetails(partner, false)
-            form.partnerId?.let {
+            form.partnerRegion?.let {
                 partner.partnerRegion = partnerRegionsRepository.findById(it).orElse(null)
+            }
+            form.partnerCountry?.let {
+                partner.partnerCountry = partnerCountryRepo.findById(it).orElse(null)
             }
             partner.createdOn = Timestamp.from(Instant.now())
             partner.createdBy = this.commonDaoServices.getLoggedInUser()?.userName
             val saved = this.partnersRepository.save(partner)
+            addUpdateBilling(form, partner)
             response.data = PvocPartnerDto.fromEntity(saved)
             response.responseCode = ResponseCodes.SUCCESS_CODE
             response.message = "Partner added"
@@ -52,6 +74,41 @@ class PvocPartnerService(
         return response
     }
 
+    fun addUpdateBilling(form: PvocPartnersForms, partner: PvocPartnersEntity) {
+        val billingForm = CorporateForm()
+        billingForm.apply {
+            contactEmail = form.billingContactEmail
+            contactName = form.billingContactName
+            corporateIdentifier = form.partnerPin
+            corporateName = form.partnerName
+            corporateType = "PVOC"
+            billingLimitId = form.billingLimitId
+            corporatePhone = form.partnerTelephoneNumber
+            corporateEmail = form.partnerEmail
+            contactPhone = form.billingContactPhone
+            isCiakMember = false
+            mouDays = 2
+        }
+        // Add billing information on partner
+        partner.billingId?.let {
+            val responseModel = this.corporateCustomerService.updateCorporateCustomer(billingForm, it)
+            if (!"00".equals(responseModel.responseCode)) {
+                throw ExpectedDataNotFound(responseModel.message)
+            }
+            responseModel
+        } ?: run {
+            val responseModel = this.corporateCustomerService.addCorporateCustomer(billingForm)
+            if ("00".equals(responseModel.responseCode)) {
+                partner.billingId = responseModel.data as Long
+            } else {
+                throw ExpectedDataNotFound(responseModel.message)
+            }
+            responseModel
+        }
+
+    }
+
+    @Transactional
     fun updatePartnerDetails(form: PvocPartnersForms, partnerId: Long): ApiResponseModel {
         val response = ApiResponseModel()
         val partnerOptional = partnersRepository.findById(partnerId)
@@ -59,6 +116,14 @@ class PvocPartnerService(
             val partner = partnerOptional.get()
             // Fill with data
             form.addDetails(partner, true)
+            // Add country and region
+            form.partnerRegion?.let {
+                partner.partnerRegion = partnerRegionsRepository.findById(it).orElse(null)
+            }
+            form.partnerCountry?.let {
+                partner.partnerCountry = partnerCountryRepo.findById(it).orElse(null)
+            }
+            addUpdateBilling(form, partner)
             partner.modifiedOn = Timestamp.from(Instant.now())
             partner.modifiedBy = this.commonDaoServices.getLoggedInUser()?.userName
             val saved = this.partnersRepository.save(partner)
@@ -85,6 +150,7 @@ class PvocPartnerService(
                     map["api_client"] = clientDao
                 }
             }
+
             response.data = map
             response.responseCode = ResponseCodes.SUCCESS_CODE
             response.message = "Partner updated successfully"

@@ -22,6 +22,7 @@ export interface ChildrenItems {
     title: string;
     ab: string;
     type?: string;
+    privilege?: string[]
 }
 
 // Menu Items
@@ -115,12 +116,42 @@ export const ROUTES: RouteInfo[] = [
         title: 'PVOC',
         type: 'sub',
         children: [
-            {path: 'applications', title: 'Company application', ab: 'PA'},
-            {path: 'waiver-applications', title: 'Waiver application', ab: 'WA'},
-            {path: 'exemption-applications', title: 'Exemption applications', ab: 'EA'},
-            {path: 'company-applications', title: 'Company Waiver application', ab: 'CW'},
-            {path: 'complaints', title: 'Complaints', ab: 'CC'},
-            {path: 'partners', title: 'Partners', ab: 'PP'},
+            {
+                path: 'applications',
+                title: 'Company application',
+                ab: 'PA',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
+            },
+            {
+                path: 'waiver-applications',
+                title: 'Waiver application',
+                ab: 'WA',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
+            },
+            {
+                path: 'exemption-applications',
+                title: 'Exemption applications',
+                ab: 'EA',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
+            },
+            {
+                path: 'company-applications',
+                title: 'Company Waiver application',
+                ab: 'CW',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
+            },
+            {
+                path: 'complaints',
+                title: 'Complaints',
+                ab: 'CC',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
+            },
+            {
+                path: 'partners',
+                title: 'Partners',
+                ab: 'PP',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
+            },
         ],
         collapse: 'pvoc',
         privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
@@ -136,12 +167,34 @@ export const ROUTES: RouteInfo[] = [
     },
     {
         path: '/di',
-        title: 'Import Inspection',
+        title: 'Destination Inspection',
         type: 'link',
-        children: [],
+        children: [
+            {
+                path: '',
+                title: 'Import Inspection',
+                ab: 'II',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
+            },
+            {
+                path: 'auctions',
+                title: 'Auction Goods',
+                ab: 'AG',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
+            },
+        ],
         collapse: 'import-inspection',
         privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
         icontype: 'receipt'
+    },
+    {
+        path: '/di/auction/view',
+        title: 'Auction',
+        type: 'link',
+        collapse: 'auction-good',
+        privilege: ['SYSADMIN_VIEW', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
+        children: [],
+        icontype: 'market'
     },
     {
         path: '/kentrade/exchange/messages',
@@ -167,10 +220,30 @@ export const ROUTES: RouteInfo[] = [
         collapse: 'transactions',
         privilege: ['SYSADMIN_VIEW', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
         children: [
-            {path: 'demand-notes', title: 'Demand Notes', ab: 'DN'},
-            {path: 'corporates-customers', title: 'Corporate Customers', ab: 'CC'},
-            {path: 'exchange-rates', title: 'Exchange Rates', ab: 'ER'},
-            {path: 'limits', title: 'Billing Types', ab: 'BT'},
+            {
+                path: 'demand-notes',
+                title: 'Demand Notes',
+                ab: 'DN',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
+            },
+            {
+                path: 'corporates-customers',
+                title: 'Corporate Customers',
+                ab: 'CC',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
+            },
+            {
+                path: 'exchange-rates',
+                title: 'Exchange Rates',
+                ab: 'ER',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
+            },
+            {
+                path: 'limits',
+                title: 'Billing Types',
+                ab: 'BT',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
+            },
         ],
         icontype: 'money'
     },
@@ -222,7 +295,10 @@ export class SidebarComponent implements OnInit {
     }
 
     // Check if role is in required privileges
-    canViewRole(privileges: string[]): Boolean {
+    canViewRole(privileges?: string[]): Boolean {
+        if (!privileges) {
+            return true
+        }
         for (let role of this.roles) {
             for (let p of privileges) {
                 if (role == p) {

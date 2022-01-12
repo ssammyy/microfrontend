@@ -2,7 +2,7 @@ package org.kebs.app.kotlin.apollo.api.service
 
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
-import org.kebs.app.kotlin.apollo.api.payload.request.PvocComplaintForm
+import org.kebs.app.kotlin.apollo.api.payload.request.*
 import org.kebs.app.kotlin.apollo.api.payload.response.PvocComplaintCategoryDao
 import org.kebs.app.kotlin.apollo.api.payload.response.PvocComplaintDao
 import org.kebs.app.kotlin.apollo.api.payload.response.PvocComplaintRecommendationDao
@@ -192,6 +192,34 @@ class PvocAgentService(
             val complaint = optional.get()
             // Send email
         }
+    }
+
+    fun pvocQueryPartner(){
+
+    }
+
+    fun receiveCoc(coc: CocEntityForm): ApiResponseModel {
+        val response=ApiResponseModel()
+
+        return response
+    }
+
+    fun receiveCor(coc: CorEntityForm): ApiResponseModel {
+        val response=ApiResponseModel()
+
+        return response
+    }
+
+    fun receiveCoi(form: CoiEntityForm): Any {
+        TODO("Not yet implemented")
+    }
+
+    fun receiveRfcCoi(form: RfcCoiEntityForm): Any {
+        TODO("Not yet implemented")
+    }
+
+    fun pvocPartnerRiskProfile(form: RiskProfileForm){
+
     }
 
 
