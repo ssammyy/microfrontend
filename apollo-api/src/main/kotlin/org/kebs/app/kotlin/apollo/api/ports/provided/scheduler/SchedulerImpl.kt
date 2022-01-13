@@ -314,6 +314,7 @@ class SchedulerImpl(
                                                 )
                                             }
                                 }
+                                }
                                 ssfFound.cdItemId != null -> {
                                     diDaoServices.findItemWithItemID(
                                             ssfFound.cdItemId ?: throw Exception("CD ITEM ID NOT FOUND")
@@ -343,13 +344,12 @@ class SchedulerImpl(
                                             }
                                             fuelInspectionRepo.save(fuelInspection)
                                         }
-                                            }
+                                }
                                 }
                             }
 
 
                         }
-                    }
 
                 } catch (e: Exception) {
                     KotlinLogging.logger { }.error(e.message)

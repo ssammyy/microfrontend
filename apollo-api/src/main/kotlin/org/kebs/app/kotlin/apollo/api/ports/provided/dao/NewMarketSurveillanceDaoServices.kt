@@ -1429,7 +1429,7 @@ class NewMarketSurveillanceDaoServices(
             fuelRemediationInvoice = fuelRemediationInvoiceRepo.save(fuelRemediationInvoice)
 
             val batchInvoiceDetail = invoiceDaoService.createBatchInvoiceDetails(
-                user,
+                commonDaoServices.concatenateName(user),
                 fuelRemediationInvoice.invoiceNumber ?: throw Exception("MISSING INVOICE NUMBER")
             )
 
@@ -1449,7 +1449,7 @@ class NewMarketSurveillanceDaoServices(
             }
 
             invoiceDaoService.createPaymentDetailsOnStgReconciliationTable(
-                user,
+                commonDaoServices.concatenateName(user),
                 updateBatchInvoiceDetail,
                 myAccountDetails
             )
