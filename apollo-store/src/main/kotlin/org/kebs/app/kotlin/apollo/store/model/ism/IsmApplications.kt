@@ -23,6 +23,10 @@ class IsmApplications: Serializable {
     @Basic
     var ucrNumber: String? = null
 
+    @Column(name = "ISM_NUMBER")
+    @Basic
+    var ismNumber: String? = null
+
     @Column(name = "COMPANY_NAME")
     @Basic
     var companyName: String?=null

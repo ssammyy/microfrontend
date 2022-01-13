@@ -6,8 +6,8 @@ import java.util.*
 import javax.persistence.*
 
 @Entity
-@Table(name = "DAT_KEBS_PVOC_COMPLAIN_STATUS")
-class PvocComplainStatusEntity : Serializable {
+@Table(name = "DAT_KEBS_PVOC_COMPLAIN_RECOMENDATION")
+class PvocComplaintRecommendationEntity : Serializable {
     @Column(name = "ID")
     @Id
     var id: Long = 0
@@ -16,13 +16,13 @@ class PvocComplainStatusEntity : Serializable {
     @Basic
     var status: Int? = null
 
-    @Column(name = "APPROVE")
+    @Column(name = "ACTION")
     @Basic
-    var approve: String? = null
+    var action: String? = null
 
-    @Column(name = "REJECT")
+    @Column(name = "DESCRIPTION")
     @Basic
-    var reject: String? = null
+    var description: String? = null
 
     @Column(name = "VAR_FIELD_1")
     @Basic
@@ -91,11 +91,9 @@ class PvocComplainStatusEntity : Serializable {
     override fun equals(o: Any?): Boolean {
         if (this === o) return true
         if (o == null || javaClass != o.javaClass) return false
-        val that = o as PvocComplainStatusEntity
+        val that = o as PvocComplaintRecommendationEntity
         return id == that.id &&
                 status == that.status &&
-                approve == that.approve &&
-                reject == that.reject &&
                 varField1 == that.varField1 &&
                 varField2 == that.varField2 &&
                 varField3 == that.varField3 &&
@@ -115,6 +113,6 @@ class PvocComplainStatusEntity : Serializable {
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(id, status, approve, reject, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn)
+        return Objects.hash(id, status, action, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn)
     }
 }

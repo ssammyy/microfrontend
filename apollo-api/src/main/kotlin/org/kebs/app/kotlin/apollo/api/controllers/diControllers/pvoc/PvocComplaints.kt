@@ -39,13 +39,12 @@ class PvocComplaints(
     private val iPvocComplaintCategoryRepo: IPvocComplaintCategoryRepo,
     private val iUserRoleAssignmentsRepository: IUserRoleAssignmentsRepository,
     private val iRfcCocEntityRepo: IRfcCocEntityRepo,
-    private val pvocComplaintRemarksEntityRepo: PvocComplaintRemarksEntityRepo,
-    pvocComplainStatusEntityRepo: PvocComplainStatusEntityRepo
+    private val pvocComplaintRemarksEntityRepo: PvocComplaintRemarksEntityRepo
 ) {
 
     final val appId = applicationMapProperties.mapImportInspection
 
-    final val statuses = pvocComplainStatusEntityRepo.findByStatus(1)
+//    final val statuses = pvocComplainStatusEntityRepo.findByStatus(1)
 
     @GetMapping("email_entry")
     fun emailEntry(model: Model): String {
@@ -148,7 +147,7 @@ class PvocComplaints(
                 iPvocComplaintCertificationsSubCategoryRepo.findByIdOrNull(subCategoryId.toLong()).let { subCategory ->
                     complaint.compliantSubCategory = subCategory
                     complaint.compliantNature = category
-                    complaint.pvocAgent = agent
+//                    complaint.pvocAgent = agent
                     complaint.createdBy = complaint.email
                     complaint.status = 1
                     complaint.createdOn = Timestamp.from(Instant.now())
@@ -243,7 +242,7 @@ class PvocComplaints(
             remarksObj.createdBy = complaint.mpvoc?.firstName +' '+ complaint.mpvoc?.lastName
             remarksObj.createdOn = Timestamp.from(Instant.now())
             pvocComplaintRemarksEntityRepo.save(remarksObj)
-            complaint.reviewStatus = statuses.approve
+//            complaint.reviewStatus = statuses.approve
             iPvocComplaintRepo.save(complaint)
             return "redirect:/api/di/pvoc/complaint-details/${id}"
         }?: throw Exception("Complaint with ${id} id does not exist")
@@ -257,7 +256,7 @@ class PvocComplaints(
             remarksObj.createdBy = complaint.mpvoc?.firstName +' '+ complaint.mpvoc?.lastName
             remarksObj.createdOn = Timestamp.from(Instant.now())
             pvocComplaintRemarksEntityRepo.save(remarksObj)
-            complaint.reviewStatus = statuses.reject
+//            complaint.reviewStatus = statuses.reject
             iPvocComplaintRepo.save(complaint)
             return "redirect:/api/di/pvoc/complaint-details/${id}"
         }?: throw Exception("Complaint with ${id} id does not exist")

@@ -1,0 +1,28 @@
+<h2 mat-dialog-title> Reject/Approve ISM application</h2>
+<mat-dialog-content>
+    <div class="row no_margin" [formGroup]="form">
+        <div class="col-sm-12 col-md-8">
+            <label for="approved" class="waiver-form-label">Approval Status</label>
+            <select id="approved" name="approved" class="waiver-form-input-master"
+                    formControlName="approved">
+                <option value="" disabled selected>Select</option>
+                <option value="true">Approve Request</option>
+                <option value="false">Reject Request</option>
+            </select>
+        </div>
+        <div class="col-sm-12 col-md-8">
+            <label for="ismApprovedRemarks" class="waiver-form-label">Please write, in detail, your feedback for
+                this ISM application:</label>
+            <textarea id="ismApprovedRemarks" class="waiver-form-input-master"
+                      formControlName="remarks"></textarea>
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <div class="row no_margin master-list-new-btn">
+        <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
+        <button [disabled]="form.invalid||loading" class="next-btn btn-gen new-btn" (click)="saveRecord()">SUBMIT
+            <mat-spinner [diameter]="20" color="warn" *ngIf="loading"></mat-spinner>
+        </button>
+    </div>
+</mat-dialog-actions>

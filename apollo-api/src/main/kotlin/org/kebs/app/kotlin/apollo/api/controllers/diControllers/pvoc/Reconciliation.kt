@@ -2,7 +2,7 @@ package org.kebs.app.kotlin.apollo.api.controllers.diControllers.pvoc
 
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.PvocDaoServices
-import org.kebs.app.kotlin.apollo.store.model.pvc.PvocInvoicingEntity
+import org.kebs.app.kotlin.apollo.store.model.invoice.PvocInvoicingEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocReconciliationReportEntity
 import org.kebs.app.kotlin.apollo.store.model.StagingPaymentReconciliation
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity

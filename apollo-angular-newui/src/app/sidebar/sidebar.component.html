@@ -97,7 +97,7 @@
         <!--        </ul>-->
     </div>
     <ul class="nav">
-        <li routerLinkActive="active" *ngFor="let menuitem of menuItems" class="nav-item" >
+        <li routerLinkActive="active" *ngFor="let menuitem of menuItems" class="nav-item">
             <!--If is a single link-->
             <a [routerLink]="[menuitem.path]" *ngIf="menuitem.type === 'link' && canViewRole(menuitem.privilege)"
                class="nav-link">
@@ -117,7 +117,8 @@
                  *ngIf="menuitem.type === 'sub' && canViewRole(menuitem.privilege)">
                 <ul class="nav">
                     <li routerLinkActive="active" *ngFor="let childitem of menuitem.children" class="nav-item">
-                        <a [routerLink]="[menuitem.path, childitem.path]" class="nav-link">
+                        <a [routerLink]="[menuitem.path, childitem.path]" class="nav-link"
+                           *ngIf="canViewRole(childitem.privilege)">
                             <span class="sidebar-mini">{{childitem.ab}}</span>
                             <span class="sidebar-normal">{{childitem.title}}
                                 <span *ngIf="childitem.title ==='My Tasks '" _ngcontent-tbj-c272=""

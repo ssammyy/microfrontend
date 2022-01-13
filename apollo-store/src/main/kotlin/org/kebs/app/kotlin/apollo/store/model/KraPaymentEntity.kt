@@ -104,7 +104,7 @@ class KraPaymentEntity : Serializable {
     @Column(name = "VERSION")
     var version: Int? = null
 
-    @Column(name = "REQUEST_REFERENCE", nullable = false)
+    @Column(name = "REQUEST_REFERENCE", nullable = true)
     var requestReference: String? = null
 
 

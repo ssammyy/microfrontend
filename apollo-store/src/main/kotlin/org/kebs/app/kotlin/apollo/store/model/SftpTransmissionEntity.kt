@@ -11,19 +11,16 @@ import javax.persistence.*
     Index(name = "log_sftp_transmission_filename_indx",columnList = "filename",unique = false)
 ))
 class SftpTransmissionEntity : Serializable {
-
-
     @Id
     @SequenceGenerator(name = "LOG_SFTP_TRANSMISSION_SEQ_GEN", sequenceName = "LOG_SFTP_TRANSMISSION_SEQ", allocationSize = 1)
     @GeneratedValue(generator = "LOG_SFTP_TRANSMISSION_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Column(name = "ID", nullable = false)
     var id: Long? = null
 
-
     @Column(name = "FILENAME")
     var filename: String? = null
 
-    @Column(name = "FLOW_DIRECTION")
+    @Column(name = "FLOW_DIRECTION", length = 50)
     var flowDirection: String? = null
 
     @Column(name = "FILE_TYPE")
@@ -42,10 +39,10 @@ class SftpTransmissionEntity : Serializable {
     var transactionReference: String? = null
 
     @Column(name = "RETRIES")
-    var retries: Int? = null
+    var retries: Long? = null
 
     @Column(name = "RETRIED")
-    var retried: Int? = null
+    var retried: Long? = null
 
     @Column(name = "LAST_UPDATED")
     var lastUpdated: Date? = null
@@ -56,7 +53,7 @@ class SftpTransmissionEntity : Serializable {
     @Column(name = "RESPONSE_STATUS")
     var responseStatus: String? = null
 
-    @Column(name = "RESPONSE_MESSAGE")
+    @Column(name = "RESPONSE_MESSAGE",length = 4000)
     var responseMessage: String? = null
 
     @Column(name = "MESSAGE_RETRY_COUNT")
@@ -65,8 +62,11 @@ class SftpTransmissionEntity : Serializable {
     @Column(name = "KESW_ERROR_CODE")
     var keswErrorCode: String? = null
 
-    @Column(name = "KESW_ERROR_MESSAGE")
+    @Column(name = "KESW_ERROR_MESSAGE",length = 2046)
     var keswErrorMessage: String? = null
+
+    @Column(name = "KES_RESULT_DATE")
+    var kesResultDate: Timestamp? = null
 
     @Column(name = "TRANSACTION_START_DATE")
     var transactionStartDate: Timestamp? = null

@@ -17,9 +17,13 @@ class PvocPartnersEntity : Serializable {
 
     @Column(name = "API_CLIENT_ID", nullable = false)
     @Basic
-    var apiClientId: Long?= 0
+    var apiClientId: Long? = 0
 
-    @Column(name = "PARTNER_REF_NO",unique = true, nullable = false, length = 250)
+    @Column(name = "BILLING_ID", nullable = true)
+    @Basic
+    var billingId: Long? = 0
+
+    @Column(name = "PARTNER_REF_NO", unique = true, nullable = false, length = 250)
     @Basic
     var partnerRefNo: String? = null
 
@@ -43,10 +47,6 @@ class PvocPartnersEntity : Serializable {
     @Basic
     var partnerCity: String? = null
 
-    @Column(name = "PARTNER_COUNTRY", nullable = false, length = 100)
-    @Basic
-    var partnerCountry: String? = null
-
     @Column(name = "PARTNER_ZIPCODE", nullable = false, length = 100)
     @Basic
     var partnerZipcode: String? = null
@@ -62,6 +62,14 @@ class PvocPartnersEntity : Serializable {
     @Column(name = "PARTNER_EMAIL", nullable = false, length = 150)
     @Basic
     var partnerEmail: String? = null
+
+    @JoinColumn(name = "PARTNER_COUNTRY", nullable = true, referencedColumnName = "ID")
+    @ManyToOne
+    var partnerCountry: PvocPartnersCountriesEntity? = null
+
+    @JoinColumn(name = "PARTNER_REGION", referencedColumnName = "ID")
+    @ManyToOne
+    var partnerRegion: PvocPartnersRegionEntity? = null
 
     @Column(name = "STATUS", nullable = true, precision = 0)
     @Basic
@@ -168,35 +176,35 @@ class PvocPartnersEntity : Serializable {
 
     override fun hashCode(): Int {
         return Objects.hash(
-            id,
-            partnerRefNo,
-            partnerName,
-            partnerPin,
-            partnerAddress1,
-            partnerAddress2,
-            partnerCity,
-            partnerCountry,
-            partnerZipcode,
-            partnerTelephoneNumber,
-            partnerFaxNumber,
-            partnerEmail,
-            status,
-            varField1,
-            varField2,
-            varField3,
-            varField4,
-            varField5,
-            varField6,
-            varField7,
-            varField8,
-            varField9,
-            varField10,
-            createdBy,
-            createdOn,
-            modifiedBy,
-            modifiedOn,
-            deleteBy,
-            deletedOn
+                id,
+                partnerRefNo,
+                partnerName,
+                partnerPin,
+                partnerAddress1,
+                partnerAddress2,
+                partnerCity,
+                partnerCountry,
+                partnerZipcode,
+                partnerTelephoneNumber,
+                partnerFaxNumber,
+                partnerEmail,
+                status,
+                varField1,
+                varField2,
+                varField3,
+                varField4,
+                varField5,
+                varField6,
+                varField7,
+                varField8,
+                varField9,
+                varField10,
+                createdBy,
+                createdOn,
+                modifiedBy,
+                modifiedOn,
+                deleteBy,
+                deletedOn
         )
     }
 }
