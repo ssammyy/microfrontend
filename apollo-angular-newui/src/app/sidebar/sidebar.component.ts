@@ -22,6 +22,7 @@ export interface ChildrenItems {
     title: string;
     ab: string;
     type?: string;
+    privilege?: string[]
 }
 
 // Menu Items
@@ -31,7 +32,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'Dashboard',
         type: 'link',
         icontype: 'dashboard',
-        privilege: ['USER','DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
+        privilege: ['USER', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
     },
 
     {
@@ -113,60 +114,149 @@ export const ROUTES: RouteInfo[] = [
     {
         path: '/pvoc',
         title: 'PVOC',
-        type: 'link',
+        type: 'sub',
+        children: [
+            {
+                path: 'applications',
+                title: 'Company application',
+                ab: 'PA',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
+            },
+            {
+                path: 'waiver-applications',
+                title: 'Waiver application',
+                ab: 'WA',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
+            },
+            {
+                path: 'exemption-applications',
+                title: 'Exemption applications',
+                ab: 'EA',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
+            },
+            {
+                path: 'company-applications',
+                title: 'Company Waiver application',
+                ab: 'CW',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
+            },
+            {
+                path: 'complaints',
+                title: 'Complaints',
+                ab: 'CC',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
+            },
+            {
+                path: 'partners',
+                title: 'Partners',
+                ab: 'PP',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
+            },
+        ],
         collapse: 'pvoc',
         privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
-        icontype: 'receipt'
+        icontype: 'diamond'
     },
     {
         path: '/ministry/inspection',
         title: 'Motor Vehicle Inspection',
         type: 'link',
         collapse: 'ministry-inspection',
-        privilege: ['MINISTRY_OF_TRANSPORT_READ','MINISTRY_OF_TRANSPORT_MODIFY'],
+        privilege: ['MINISTRY_OF_TRANSPORT_READ', 'MINISTRY_OF_TRANSPORT_MODIFY'],
         icontype: 'receipt'
     },
     {
         path: '/di',
-        title: 'Import Inspection',
+        title: 'Destination Inspection',
         type: 'link',
-        children: [],
+        children: [
+            {
+                path: '',
+                title: 'Import Inspection',
+                ab: 'II',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
+            },
+            {
+                path: 'auctions',
+                title: 'Auction Goods',
+                ab: 'AG',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
+            },
+        ],
         collapse: 'import-inspection',
         privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
         icontype: 'receipt'
     },
     {
-        path: '/demand/notes',
-        title: 'Transaction Monitoring',
+        path: '/di/auction/view',
+        title: 'Auction',
         type: 'link',
-        collapse: 'transactions',
-        privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
-        icontype: 'money'
+        collapse: 'auction-good',
+        privilege: ['SYSADMIN_VIEW', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
+        children: [],
+        icontype: 'market'
     },
     {
         path: '/kentrade/exchange/messages',
         title: 'KENTRADE Monitoring',
         type: 'link',
         collapse: 'exchange-messages',
-        privilege: ['SYSADMIN_VIEW','DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
+        privilege: ['SYSADMIN_VIEW', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
         children: [],
         icontype: 'message'
     },
     {
-        path: '/tasks',
-        title: 'Import Inspection Tasks',
-        privilege: ['DI_INSPECTION_OFFICER_READ2', 'DI_OFFICER_CHARGE_READ2'],
+        path: '/ism/requests',
+        title: 'ISM Requests',
+        privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
         type: 'link',
         collapse: 'tasks',
-        icontype: 'receipt'
+        icontype: 'standard'
     },
     {
-        path: '/currency/rates',
-        title: 'Exchange Rates',
-        type: 'link',
-        collapse: 'currency-exchange-rates',
-        icontype: 'money',
-        privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
+        path: '/transaction',
+        title: 'Finance',
+        type: 'sub',
+        collapse: 'transactions',
+        privilege: ['SYSADMIN_VIEW', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
+        children: [
+            {
+                path: 'demand-notes',
+                title: 'Demand Notes',
+                ab: 'DN',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
+            },
+            {
+                path: 'corporates-customers',
+                title: 'Corporate Customers',
+                ab: 'CC',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
+            },
+            {
+                path: 'exchange-rates',
+                title: 'Exchange Rates',
+                ab: 'ER',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
+            },
+            {
+                path: 'limits',
+                title: 'Billing Types',
+                ab: 'BT',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
+            },
+        ],
+        icontype: 'money'
+    },
+    {
+        path: '/system',
+        title: 'Configurations',
+        type: 'sub',
+        collapse: 'api-clients',
+        privilege: ['SYSADMIN_VIEW', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
+        children: [
+            {path: 'api-clients', title: 'Api Clients', ab: 'AC'},
+        ],
+        icontype: 'settings'
     }
 ];
 
@@ -205,8 +295,11 @@ export class SidebarComponent implements OnInit {
     }
 
     // Check if role is in required privileges
-    canViewRole(privileges: string[]): Boolean {
-        for(let role of this.roles) {
+    canViewRole(privileges?: string[]): Boolean {
+        if (!privileges) {
+            return true
+        }
+        for (let role of this.roles) {
             for (let p of privileges) {
                 if (role == p) {
                     return true

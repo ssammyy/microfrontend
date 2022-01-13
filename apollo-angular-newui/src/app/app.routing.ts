@@ -116,6 +116,17 @@ import {LabResultsComponent} from "./apollowebs/di/view-single-consignment-docum
 import {CurrencyExchangeRatesComponent} from "./apollowebs/di/currency-exchange-rates/currency-exchange-rates.component";
 import {MessageDashboardComponent} from "./apollowebs/di/message-dashboard/message-dashboard.component";
 import {TransactionViewComponent} from "./apollowebs/di/transaction-view/transaction-view.component";
+import {ViewClientsComponent} from "./apollowebs/system/clients/view-clients/view-clients.component";
+import {ViewPartnersComponent} from "./apollowebs/pvoc/partners/view-partners/view-partners.component";
+import {ViewPartnerDetailsComponent} from "./apollowebs/pvoc/partners/view-partner-details/view-partner-details.component";
+import {IsmApplicationsComponent} from "./apollowebs/di/ism/ism-applications/ism-applications.component";
+import {ViewIsmApplicationComponent} from "./apollowebs/di/ism/view-ism-application/view-ism-application.component";
+import {ViewCorporateCustomersComponent} from "./apollowebs/invoice/corporate/view-corporate-customers/view-corporate-customers.component";
+import {ViewCorporateComponent} from "./apollowebs/invoice/corporate/view-corporate/view-corporate.component";
+import {ViewBillLimitsComponent} from "./apollowebs/invoice/limits/view-bill-limits/view-bill-limits.component";
+import {ViewTransactionsComponent} from "./apollowebs/invoice/corporate/view-transactions/view-transactions.component";
+import {ViewAuctionItemsComponent} from "./apollowebs/di/auction/view-auction-items/view-auction-items.component";
+import {AuctionItemDetailsComponent} from "./apollowebs/di/auction/auction-item-details/auction-item-details.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -441,8 +452,9 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
         children: [
             {
-                path: '',
-                component: ImportInspectionComponent
+                path: 'applications',
+                component: ImportInspectionComponent,
+                pathMatch: 'full'
             },
             {
                 path: 'waivers',
@@ -451,7 +463,14 @@ export const routes: Routes = [
             {
                 path: 'exceptions',
                 component: ExceptionsApplicationComponent
-
+            },
+            {
+                path: 'partners',
+                component: ViewPartnersComponent
+            },
+            {
+                path: 'partners/view/:id',
+                component: ViewPartnerDetailsComponent
             }
         ]
     },
@@ -546,6 +565,16 @@ export const routes: Routes = [
                 canActivate: [RouteGuard],
                 component: ViewInspectionDetailsComponent
             },
+            {
+                path: 'auction/view',
+                canActivate: [RouteGuard],
+                component: ViewAuctionItemsComponent
+            },
+            {
+                path: 'auction/details/:id',
+                canActivate: [RouteGuard],
+                component: AuctionItemDetailsComponent
+            },
         ]
     },
     {
@@ -561,6 +590,54 @@ export const routes: Routes = [
         ]
     },
     {
+        path: 'ism',
+        component: AdminLayoutComponent,
+        // canActivate: [RouteGuard],
+        children: [
+            {
+                path: 'requests',
+                canActivate: [RouteGuard],
+                component: IsmApplicationsComponent
+            },
+            {
+                path: 'request/:id',
+                // canActivate: [RouteGuard],
+                component: ViewIsmApplicationComponent
+            }
+        ]
+    },
+    {
+        path: 'transaction',
+        component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [
+            {
+                path: 'demand-notes',
+                component: TransactionViewComponent
+            },
+            {
+                path: 'corporates-customers',
+                component: ViewCorporateCustomersComponent
+            },
+            {
+                path: 'corporate/:id',
+                component: ViewCorporateComponent
+            },
+            {
+                path: 'exchange-rates',
+                component: CurrencyExchangeRatesComponent
+            },
+            {
+                path: 'bill/:id/:cid',
+                component: ViewTransactionsComponent
+            },
+            {
+                path: 'limits',
+                component: ViewBillLimitsComponent
+            }
+        ]
+    },
+    {
         path: 'currency',
         component: AdminLayoutComponent,
         canActivate: [RouteGuard],
@@ -568,6 +645,17 @@ export const routes: Routes = [
             {
                 path: 'rates',
                 component: CurrencyExchangeRatesComponent
+            }
+        ]
+    },
+    {
+        path: 'system',
+        component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [
+            {
+                path: 'api-clients',
+                component: ViewClientsComponent
             }
         ]
     },

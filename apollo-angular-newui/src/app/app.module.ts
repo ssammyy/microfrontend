@@ -231,6 +231,23 @@ import {ViewMessageComponent} from './apollowebs/di/message-dashboard/view-messa
 import {ChartsModule, MDBBootstrapModule, WavesModule} from 'angular-bootstrap-md';
 import {StdTcWorkplanComponent} from "./apollowebs/standards-development/standard-request/std-tc-workplan/std-tc-workplan.component";
 import { TransactionViewComponent } from './apollowebs/di/transaction-view/transaction-view.component';
+import { ViewClientsComponent } from './apollowebs/system/clients/view-clients/view-clients.component';
+import { ViewPartnersComponent } from './apollowebs/pvoc/partners/view-partners/view-partners.component';
+import { AddUpdatePartnerComponent } from './apollowebs/pvoc/partners/add-update-partner/add-update-partner.component';
+import { ViewPartnerDetailsComponent } from './apollowebs/pvoc/partners/view-partner-details/view-partner-details.component';
+import { AddApiClientComponent } from './apollowebs/system/clients/add-api-client/add-api-client.component';
+import { IsmApplicationsComponent } from './apollowebs/di/ism/ism-applications/ism-applications.component';
+import { ViewIsmApplicationComponent } from './apollowebs/di/ism/view-ism-application/view-ism-application.component';
+import { ApproveRejectApplicationComponent } from './apollowebs/di/ism/approve-reject-application/approve-reject-application.component';
+import {ViewClientCredentialsComponent} from "./apollowebs/system/clients/view-client-credentials/view-client-credentials.component";
+import { ViewCorporateCustomersComponent } from './apollowebs/invoice/corporate/view-corporate-customers/view-corporate-customers.component';
+import { AddUpdateCorporateCustomerComponent } from './apollowebs/invoice/corporate/add-update-corporate-customer/add-update-corporate-customer.component';
+import { ViewCorporateComponent } from './apollowebs/invoice/corporate/view-corporate/view-corporate.component';
+import { ViewBillLimitsComponent } from './apollowebs/invoice/limits/view-bill-limits/view-bill-limits.component';
+import { ViewTransactionsComponent } from './apollowebs/invoice/corporate/view-transactions/view-transactions.component';
+import { ViewAuctionItemsComponent } from './apollowebs/di/auction/view-auction-items/view-auction-items.component';
+import { UploadFileComponent } from './apollowebs/di/auction/upload-file/upload-file.component';
+import { AuctionItemDetailsComponent } from './apollowebs/di/auction/auction-item-details/auction-item-details.component';
 
 @NgModule({
     imports: [
@@ -486,6 +503,23 @@ import { TransactionViewComponent } from './apollowebs/di/transaction-view/trans
         StandardLevyDefaulterHistoryComponent,
         StdTcWorkplanComponent,
         TransactionViewComponent,
+        ViewClientsComponent,
+        ViewPartnersComponent,
+        AddUpdatePartnerComponent,
+        ViewPartnerDetailsComponent,
+        AddApiClientComponent,
+        IsmApplicationsComponent,
+        ViewIsmApplicationComponent,
+        ApproveRejectApplicationComponent,
+        ViewClientCredentialsComponent,
+        ViewCorporateCustomersComponent,
+        AddUpdateCorporateCustomerComponent,
+        ViewCorporateComponent,
+        ViewBillLimitsComponent,
+        ViewTransactionsComponent,
+        ViewAuctionItemsComponent,
+        UploadFileComponent,
+        AuctionItemDetailsComponent,
     ],
     providers: [
         MatNativeDateModule,

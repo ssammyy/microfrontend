@@ -448,6 +448,58 @@ export class DestinationInspectionService {
         return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/item-ssf-result/" + itemUuid), data);
     }
 
+    getIsmApplications(applicationStatus, page: number, pageSize: number): Observable<any> {
+        let params = {}
+        if (pageSize) {
+            params['page'] = page
+            params['size'] = pageSize
+        }
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/ism/list/" + applicationStatus), {
+            params: params
+        })
+    }
+
+    getIsmApplicationDetails(applicationId: any): Observable<any> {
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/ism/details/" + applicationId))
+    }
+
+    approveRejectIsm(data: any): Observable<any> {
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/ism/approve-reject"), data)
+    }
+
+    listAuctionItems(keyword: any, action: any, page: number, pageSize: number): Observable<any> {
+        let params = {}
+        if (pageSize) {
+            params['page'] = page
+            params['size'] = pageSize
+        }
+        if (keyword && keyword.length > 0) {
+            params['keyword'] = keyword
+            return this.client.get(ApiEndpointService.getEndpoint("/api/v1/auction/auctions/search"), {
+                params: params
+            })
+        }
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/auction/auctions/" + action), {
+            params: params
+        })
+    }
+
+    listAuctionCategories(): Observable<any> {
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/auction/categories"))
+    }
+
+    uploadAuctionGoodsAndVehicles(selectedFile: File, fileType: any, categoryCode: any, auctionReportDate: string): Observable<any> {
+        let fd = new FormData()
+        fd.append("file", selectedFile)
+        fd.append("categoryCode", categoryCode)
+        fd.append("listingDate", auctionReportDate)
+        fd.append("file_type", fileType)
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/auction/auction/upload"), fd)
+    }
+
+    getAuctionItemDetails(requestId: any): Observable<any> {
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/auction/auction/details/" + requestId))
+    }
 
     showSuccess(message: string, fn?: Function) {
         swal.fire({

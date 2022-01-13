@@ -17,6 +17,8 @@ import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.customdto.*
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.auction.AuctionItemDetails
+import org.kebs.app.kotlin.apollo.store.model.auction.AuctionRequests
 import org.kebs.app.kotlin.apollo.store.model.di.*
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmissionEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
@@ -732,14 +734,23 @@ class DestinationInspectionDaoServices(
         coc.version = (cocsEntity.version ?: 1).toString()
         val cocFinalDto = COCXmlDTO()
         cocFinalDto.coc = coc
-
-
-        val fileName = cocsEntity.consignmentDocId?.let {
-            commonDaoServices.createKesWsFileName(
-                    applicationMapProperties.mapKeswsCocDoctype,
-                    it.ucrNumber ?: ""
-            )
-        } ?: throw ExpectedDataNotFound("Invalid Local UCR NUmber")
+        // Create file name from UCR number
+        val fileName = when (cocsEntity.cocNumber) {
+            null -> {
+                cocsEntity.consignmentDocId?.let {
+                    commonDaoServices.createKesWsFileName(
+                            applicationMapProperties.mapKeswsCocDoctype,
+                            it.ucrNumber ?: ""
+                    )
+                } ?: throw ExpectedDataNotFound("Invalid Local UCR NUmber")
+            }
+            else -> {
+                commonDaoServices.createKesWsFileName(
+                        applicationMapProperties.mapKeswsCocDoctype,
+                        cocsEntity.ucrNumber ?: ""
+                )
+            }
+        }
         val xmlFile = commonDaoServices.serializeToXml(fileName, cocFinalDto)
         sftpService.uploadFile(xmlFile, "COC")
     }
@@ -752,7 +763,7 @@ class DestinationInspectionDaoServices(
         iCocItemRepository.findByCocId(coiEntity.id)?.forEach { coiItem ->
             itemList.add(coiItem.toCoiItemDetailsXmlRecordRefl(coiEntity.coiNumber ?: ""))
         }
-        coi.coiItems=itemList
+        coi.coiItems = itemList
         coi.version = (coiEntity.version ?: 1).toString()
         coiFinalDto.coi = coi
         val fileName = coiEntity.ucrNumber?.let {
@@ -1026,8 +1037,9 @@ class DestinationInspectionDaoServices(
     fun demandNoteCalculation(
             demandNoteItem: CdDemandNoteItemsDetailsEntity,
             diInspectionFeeId: DestinationInspectionFeeEntity,
-            itemDetails: CdItemDetailsEntity,
-            currencyCode: String
+            currencyCode: String,
+            documentType: String,
+            itemId: Long?
     ) {
         val cfiValue = demandNoteItem.cfvalue ?: BigDecimal.ZERO
         var minimumUsd: BigDecimal? = null
@@ -1041,20 +1053,21 @@ class DestinationInspectionDaoServices(
         var feeType = diInspectionFeeId.rateType
         if ("RANGE".equals(diInspectionFeeId.rateType)) {
             var documentType = "LOCAL"
-            itemDetails.cdDocId?.let {
-                when (it.cdStandardsTwo?.cocType) {
-                    "L" -> {
-                        documentType = "LOCAL"
-                    }
-                    "F" -> {
-                        documentType = "PVOC"
-                    }
+            when (documentType) {
+                "L" -> {
+                    documentType = "LOCAL"
+                }
+                "F" -> {
+                    documentType = "PVOC"
+                }
+                "A" -> {
+                    documentType="AUCTION"
                 }
             }
             KotlinLogging.logger { }.info("${documentType} CFI DOCUMENT TYPE = $currencyCode-$cfiValue")
             val feeRange = this.feeRangesRepository.findByInspectionFeeAndMinimumKshGreaterThanEqualAndMaximumKshLessThanEqual(diInspectionFeeId.id, cfiValue, documentType)
             if (feeRange.isEmpty()) {
-                throw Exception("Item details with Id = ${itemDetails.id}, does not Have any range For payment Fee Id Selected ${cfiValue}")
+                throw Exception("Item details with Id = ${itemId}, does not Have any range For payment Fee Id Selected ${cfiValue}")
             } else {
                 fee = feeRange.get(0)
             }
@@ -1149,6 +1162,53 @@ class DestinationInspectionDaoServices(
         }
     }
 
+    fun addAuctionItemDetailsToDemandNote(
+            itemDetails: AuctionItemDetails, demandNote: CdDemandNoteEntity, map: ServiceMapsEntity,
+            presentment: Boolean,
+            user: UsersEntity
+    ) {
+        val fee = itemDetails.paymentFeeIdSelected
+                ?: throw Exception("Item details with Id = ${itemDetails.id}, does not Have any Details For payment Fee Id Selected ")
+        var demandNoteItem = iDemandNoteItemRepo.findByItemIdAndDemandNoteId(itemDetails.id, demandNote.id)
+        if (demandNoteItem == null) {
+            demandNoteItem = CdDemandNoteItemsDetailsEntity()
+        }
+        // Apply currency conversion rates for today
+        when (itemDetails.currency?.toUpperCase()) {
+            "KES" -> {
+                demandNoteItem.cfvalue = itemDetails.totalPrice
+            }
+            else -> {
+                convertAmount(itemDetails.totalPrice, "${itemDetails.currency}", demandNoteItem)
+                KotlinLogging.logger { }.warn("Exchange Rate for ${itemDetails.currency}:${itemDetails.totalPrice} => ${demandNoteItem.cfvalue}")
+            }
+        }
+        // Add extra data
+        with(demandNoteItem) {
+            itemId = itemDetails.id
+            varField1 = itemDetails.quantity.toString()
+            demandNoteId = demandNote.id
+            product = itemDetails.itemName
+            rate = fee.rate?.toString()
+            rateType = fee.rateType
+            feeName = fee.name ?: fee.description
+            // Demand note Calculation Details
+            status = map.activeStatus
+            createdOn = commonDaoServices.getTimestamp()
+            createdBy = commonDaoServices.getUserName(user)
+        }
+        // Apply fee type and adjustments
+        demandNoteCalculation(demandNoteItem, fee, "KES", "A", itemDetails.id)
+        // Skip saving for presentment
+        if (!presentment) {
+            iDemandNoteItemRepo.save(demandNoteItem)
+            return
+        }
+        // Add this for presentment purposes
+        demandNote.totalAmount = demandNote.totalAmount?.plus(demandNoteItem.adjustedAmount ?: BigDecimal.ZERO)
+        demandNote.amountPayable = demandNote.amountPayable?.plus(demandNoteItem.amountPayable ?: BigDecimal.ZERO)
+    }
+
     fun addItemDetailsToDemandNote(
             itemDetails: CdItemDetailsEntity, demandNote: CdDemandNoteEntity, map: ServiceMapsEntity,
             presentment: Boolean,
@@ -1185,7 +1245,8 @@ class DestinationInspectionDaoServices(
             createdBy = commonDaoServices.getUserName(user)
         }
         // Apply fee type and adjustments
-        demandNoteCalculation(demandNoteItem, fee, itemDetails, "KES")
+        demandNoteCalculation(demandNoteItem, fee, "KES", itemDetails.cdDocId?.cdStandardsTwo?.cocType
+                ?: "L", itemDetails.id)
         // Skip saving for presentment
         if (!presentment) {
             iDemandNoteItemRepo.save(demandNoteItem)
@@ -1347,6 +1408,95 @@ class DestinationInspectionDaoServices(
                 }
     }
 
+    @Transactional
+    fun generateAuctionDemandNoteWithItemList(
+            itemList: List<AuctionItemDetails>,
+            map: ServiceMapsEntity,
+            auctionRequest: AuctionRequests,
+            presentment: Boolean,
+            amount: Double,
+            user: UsersEntity
+    ): CdDemandNoteEntity {
+        return iDemandNoteRepo.findFirstByUcrNumberAndPaymentStatusIn(auctionRequest.auctionLotNo!!, listOf(map.workingStatus))
+                ?.let { demandNote ->
+                    var demandNoteDetails = demandNote
+                    // Remove all items for update
+                    val demandNoteItems = iDemandNoteItemRepo.findByDemandNoteId(demandNote.id!!)
+                    for (itm in demandNoteItems) {
+                        iDemandNoteItemRepo.delete(itm)
+                    }
+                    //Call Function to add Item Details To be attached To The Demand note
+                    demandNote.totalAmount = BigDecimal.ZERO
+                    demandNote.amountPayable = BigDecimal.ZERO
+                    itemList.forEach {
+                        addAuctionItemDetailsToDemandNote(it, demandNoteDetails, map, presentment, user)
+                    }
+                    // Foreign CoR without Items
+                    if (itemList.isEmpty()) {
+                        demandNoteDetails.totalAmount = amount.toBigDecimal()
+                        demandNoteDetails.amountPayable = amount.toBigDecimal()
+                    }
+                    //Calculate the total Amount for Items In one Cd To be paid For
+                    if (!presentment) {
+                        demandNoteDetails = calculateTotalAmountDemandNote(demandNoteDetails, map, user, presentment)
+                    }
+                    demandNoteDetails
+                }
+                ?: kotlin.run {
+                    var demandNote = CdDemandNoteEntity()
+                    with(demandNote) {
+                        cdId = auctionRequest.id
+                        paymentPurpose = ""
+
+                        nameImporter = auctionRequest.importerName
+                        address = auctionRequest.location
+                        telephone = auctionRequest.importerPhone
+                        cdRefNo = auctionRequest.auctionLotNo
+                        //todo: Entry Number
+                        entryAblNumber = "UNKNOWN"
+                        totalAmount = BigDecimal.ZERO
+                        amountPayable = BigDecimal.ZERO
+                        receiptNo = "NOT PAID"
+                        product = "UNKNOWN"
+                        rate = "UNKNOWN"
+                        ucrNumber = auctionRequest.auctionLotNo
+                        cfvalue = BigDecimal.ZERO
+                        //Generate Demand note number
+                        demandNoteNumber = "KIMSAR${
+                            generateRandomText(
+                                    5,
+                                    map.secureRandom,
+                                    map.messageDigestAlgorithm,
+                                    true
+                            )
+                        }".toUpperCase()
+                        paymentStatus = map.inactiveStatus
+                        dateGenerated = commonDaoServices.getCurrentDate()
+                        generatedBy = commonDaoServices.concatenateName(user)
+                        status = map.workingStatus
+                        createdOn = commonDaoServices.getTimestamp()
+                        createdBy = commonDaoServices.getUserName(user)
+                    }
+                    if (!presentment) {
+                        demandNote = iDemandNoteRepo.save(demandNote)
+                    }
+                    //Call Function to add Item Details To be attached To The Demand note
+                    itemList.forEach {
+                        addAuctionItemDetailsToDemandNote(it, demandNote, map, presentment, user)
+                        //Calculate the total Amount for Items In one Cd Tobe paid For
+                    }
+                    if (!presentment) {
+                        demandNote = calculateTotalAmountDemandNote(demandNote, map, user, presentment)
+                    }
+                    // Foreign CoR/CoC without Items
+                    if (itemList.isEmpty()) {
+                        demandNote.totalAmount = amount.toBigDecimal()
+                        demandNote.amountPayable = amount.toBigDecimal()
+                    }
+                    return demandNote
+
+                }
+    }
 
     fun demandNoteUpDatingCDAndItem(
             itemDetails: CdItemDetailsEntity,
@@ -2120,7 +2270,7 @@ class DestinationInspectionDaoServices(
     }
 
     fun findCocByUcrNumber(ucrNumber: String): CocsEntity? {
-        return cocRepo.findByUcrNumberAndCocType(ucrNumber, "coc")
+        return cocRepo.findByUcrNumberAndCocType(ucrNumber, "COC")
     }
 
     fun findCdTypeDetails(cdTypeID: Long): ConsignmentDocumentTypesEntity {
@@ -2137,6 +2287,14 @@ class DestinationInspectionDaoServices(
                     return cdTypeDetails
                 }
                 ?: throw Exception("CD Type Details with the following uuid = ${uuid}, does not Exist")
+    }
+
+    fun findCdTypeDetailsWithName(name: String): ConsignmentDocumentTypesEntity {
+        cdTypesRepo.findFirstByVarField1(name)
+                ?.let { cdTypeDetails ->
+                    return cdTypeDetails
+                }
+                ?: throw Exception("CD Type Details with the following name = ${name}, does not Exist")
     }
 
     fun findAllAvailableCdWithPortOfEntry(

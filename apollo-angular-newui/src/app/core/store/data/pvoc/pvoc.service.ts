@@ -3,6 +3,7 @@ import {Observable, throwError} from "rxjs";
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {catchError, map} from "rxjs/operators";
+import swal from "sweetalert2";
 
 @Injectable({
     providedIn: 'root'
@@ -10,6 +11,66 @@ import {catchError, map} from "rxjs/operators";
 export class PVOCService {
 
     constructor(private http: HttpClient) {
+    }
+
+    showSuccess(message: string, fn?: Function) {
+        swal.fire({
+            title: message,
+            buttonsStyling: false,
+            customClass: {
+                confirmButton: 'btn btn-success form-wizard-next-btn ',
+            },
+            icon: 'success'
+        }).then(() => {
+            if (fn) {
+                fn()
+            }
+        })
+    }
+
+    showError(message: string, fn?: Function) {
+        swal.fire({
+            title: message,
+            buttonsStyling: false,
+            customClass: {
+                confirmButton: 'btn btn-success form-wizard-next-btn ',
+            },
+            icon: 'error'
+        }).then(() => {
+            if (fn) {
+                fn()
+            }
+        })
+    }
+
+    loadPartners(keyword: string, page: number, size: number): Observable<any> {
+        let params = {}
+        if (keyword) {
+            params['keywords'] = keyword
+        }
+        if (size) {
+            params['page'] = page
+            params['size'] = size
+        }
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/partners/list"), {
+            params: params
+        })
+    }
+
+    addPartner(data: any): Observable<any> {
+        return this.http.post(ApiEndpointService.getEndpoint("/api/v1/partners/add"), data)
+    }
+
+    updatePartner(data: any, partnerId: number): Observable<any> {
+        return this.http.put(ApiEndpointService.getEndpoint("/api/v1/partners/update/" + partnerId), data)
+    }
+
+    addPartnerApiClient(data: any, partnerId: number): Observable<any>{
+        return this.http.post(ApiEndpointService.getEndpoint("/api/v1/partners/create/api-client/" + partnerId), data)
+    }
+
+    loadPartnerDetails(partnerId: number): Observable<any> {
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/partners/details/" + partnerId))
     }
 
     public checkExemptionApplicable(): Observable<any> {

@@ -48,10 +48,18 @@ import java.util.*
 @EnableWebSecurity
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-class WebSecurityConfig{
+class WebSecurityConfig(private val customUserDetailsService: CustomUserDetailsService){
     @Bean
     fun passwordEncoder(): PasswordEncoder? {
         return BCryptPasswordEncoder()
+    }
+
+    @Bean
+    fun usersAuthProvider(): DaoAuthenticationProvider {
+        val authenticationProvider = DaoAuthenticationProvider()
+        authenticationProvider.setPasswordEncoder(passwordEncoder())
+        authenticationProvider.setUserDetailsService(customUserDetailsService)
+        return authenticationProvider;
     }
 
     @Configuration
@@ -60,7 +68,7 @@ class WebSecurityConfig{
             private val clientFilter: ApiClientAuthorizationFilter,
             private val customUserDetailsService: CustomUserDetailsService,
             private val authenticationProperties: AuthenticationProperties,
-            private val passwordEncoder: PasswordEncoder,
+            private val daoAuthenticationProvider: DaoAuthenticationProvider,
             private val apiClientProvider: ApiClientAuthenticationProvider
     ) : WebSecurityConfigurerAdapter() {
 
@@ -71,14 +79,6 @@ class WebSecurityConfig{
                 authenticationProperties.requiresNoAuthenticationCros?.split(",")?.toTypedArray() ?: arrayOf("")
 
         @Bean
-        fun usersAuthProvider(): DaoAuthenticationProvider {
-            val authenticationProvider = DaoAuthenticationProvider()
-            authenticationProvider.setPasswordEncoder(passwordEncoder)
-            authenticationProvider.setUserDetailsService(customUserDetailsService)
-            return authenticationProvider;
-        }
-
-        @Bean
         fun authenticationTokenFilterBean(): JWTAuthorizationFilter {
             return JWTAuthorizationFilter()
         }
@@ -86,9 +86,7 @@ class WebSecurityConfig{
         @Throws(Exception::class)
         override fun configure(authenticationManagerBuilder: AuthenticationManagerBuilder) {
             // Used for user account authentication
-            authenticationManagerBuilder.authenticationProvider(usersAuthProvider())
-            // Used for client authentication
-            authenticationManagerBuilder.authenticationProvider(apiClientProvider)
+            authenticationManagerBuilder.authenticationProvider(daoAuthenticationProvider)
         }
 
         @Bean
@@ -158,7 +156,8 @@ class WebSecurityConfig{
             private val statusValuesRepo: IStatusValuesRepository,
             private val taskService: TaskService,
             private val applicationMapProperties: ApplicationMapProperties,
-            private val passwordEncoder: PasswordEncoder
+            private val passwordEncoder: PasswordEncoder,
+            private val apiClientProvider: ApiClientAuthenticationProvider
     ) : WebSecurityConfigurerAdapter(
 
     ) {
@@ -175,6 +174,8 @@ class WebSecurityConfig{
             authenticationManagerBuilder
                     .userDetailsService(customUserDetailsService)
                     .passwordEncoder(passwordEncoder)
+            // Used for client authentication
+            authenticationManagerBuilder.authenticationProvider(apiClientProvider)
         }
 
         @Bean

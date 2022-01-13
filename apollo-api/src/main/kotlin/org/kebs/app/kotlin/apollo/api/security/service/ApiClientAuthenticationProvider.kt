@@ -1,5 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.security.service
 
+import mu.KotlinLogging
+import org.kebs.app.kotlin.apollo.api.security.bearer.OauthClientAuthenticationToken
 import org.kebs.app.kotlin.apollo.api.service.ApiClientService
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.springframework.security.authentication.AuthenticationProvider
@@ -17,15 +19,17 @@ class ApiClientAuthenticationProvider(
 
     @Throws(AuthenticationException::class)
     override fun authenticate(authentication: Authentication): Authentication {
+        KotlinLogging.logger {  }.debug("Client authentication provider: ${authentication.principal}")
         val username = authentication.name
         val password = authentication.credentials as String
         this.clientService.authenticateClient(username, password)?.let {
             val user=this.customDetailsService.loadUserByUsername(username)
-            return UsernamePasswordAuthenticationToken(user.username, password, user.authorities)
+            return UsernamePasswordAuthenticationToken(user, password, user.authorities)
         }?:throw NullValueNotAllowedException("Invalid client id and/or secret")
     }
 
     override fun supports(arg0: Class<*>?): Boolean {
-        return arg0?.equals(UsernamePasswordAuthenticationToken::class.java)?:false
+        KotlinLogging.logger {  }.info("Client authentication provider: ${arg0?.name}")
+        return arg0?.equals(OauthClientAuthenticationToken::class.java)?:false
     }
 }

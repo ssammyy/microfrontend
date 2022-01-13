@@ -13,114 +13,159 @@ class PvocWaiversApplicationEntity : Serializable {
     @SequenceGenerator(name = "DAT_KEBS_PVOC_WAIVERS_APPLICATION_SEQ_GEN", sequenceName = "DAT_KEBS_PVOC_WAIVERS_APPLICATION_SEQ", allocationSize = 1)
     @GeneratedValue(generator = "DAT_KEBS_PVOC_WAIVERS_APPLICATION_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     var id: Long = 0
+
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null
+
     @Column(name = "APPLICANT_NAME")
     @Basic
     var applicantName: String? = null
+
     @Column(name = "PHONE_NUMBER")
     @Basic
     var phoneNumber: String? = null
+
     @Column(name = "EMAIL_ADDRESS")
     @Basic
     var emailAddress: String? = null
+
     @Column(name = "KRA_PIN")
     @Basic
     var kraPin: String? = null
+
     @Column(name = "ADDRESS")
     @Basic
     var address: String? = null
+
     @Column(name = "CATEGORY")
     @Basic
     var category: String? = null
+
     @Column(name = "JUSTIFICATION")
     @Basic
     var justification: String? = null
+
     @Column(name = "PRODUCT_DESCRIPTION")
     @Basic
     var productDescription: String? = null
+
     @Column(name = "DOCUMENTATION")
     @Basic
     var documentation: String? = null
+
     @Column(name = "REVIEW_STATUS")
     @Basic
     var reviewStatus: String? = null
+
+    @Column(name = "NSC_APPROVAL_STATUS")
+    @Basic
+    var nscApprovalStatus: String? = null
+
+    @Column(name = "CS_APPROVAL_STATUS")
+    @Basic
+    var csApprovalStatus: String? = null
+
     @Column(name = "SERIAL_NO")
     @Basic
     var serialNo: String? = null
+
     @Column(name = "CS_RESPONCE_CODE")
     @Basic
     var csResponceCode: String? = null
+
     @Column(name = "CS_RESPONCE_MESSAGE")
     @Basic
     var csResponceMessage: String? = null
+
     @Column(name = "VAR_FIELD_1")
     @Basic
     var varField1: String? = null
+
     @Column(name = "VAR_FIELD_2")
     @Basic
     var varField2: String? = null
+
     @Column(name = "VAR_FIELD_3")
     @Basic
     var varField3: String? = null
+
     @Column(name = "VAR_FIELD_4")
     @Basic
     var varField4: String? = null
+
     @Column(name = "VAR_FIELD_5")
     @Basic
     var varField5: String? = null
+
     @Column(name = "VAR_FIELD_6")
     @Basic
     var varField6: String? = null
+
     @Column(name = "VAR_FIELD_7")
     @Basic
     var varField7: String? = null
+
     @Column(name = "VAR_FIELD_8")
     @Basic
     var varField8: String? = null
+
     @Column(name = "VAR_FIELD_9")
     @Basic
     var varField9: String? = null
+
     @Column(name = "VAR_FIELD_10")
     @Basic
     var varField10: String? = null
+
     @Column(name = "CREATED_BY")
     @Basic
     var createdBy: String? = null
+
     @Column(name = "CREATED_ON")
     @Basic
     var createdOn: Timestamp? = null
+
     @Column(name = "MODIFIED_BY")
     @Basic
     var modifiedBy: String? = null
+
     @Column(name = "MODIFIED_ON")
     @Basic
     var modifiedOn: Timestamp? = null
+
     @Column(name = "DELETE_BY")
     @Basic
     var deleteBy: String? = null
+
     @Column(name = "DELETED_ON")
     @Basic
     var deletedOn: Timestamp? = null
+
     @Column(name = "APPROVAL_STATUS")
     @Basic
     var approvalStatus: Int? = null
+
     @Column(name = "REJECTION_STATUS")
     @Basic
     var rejectionStatus: Int? = null
+
     @Column(name = "DEFFERAL_STATUS")
     @Basic
     var defferalStatus: Int? = null
+
     @Column(name = "WETC_SECRETARY")
     @Basic
     var wetcSecretary: Long? = null
+
     @Column(name = "WETC_CHAIRMAN")
     @Basic
     var wetcChairman: Long? = null
+
     @Column(name = "NCS_SECRETARY")
     @Basic
     var ncsSecretary: Long? = null
+
     @Column(name = "CS")
     @Basic
     var cs: Long? = null
@@ -198,6 +243,6 @@ class PvocWaiversApplicationEntity : Serializable {
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(id, status, applicantName, phoneNumber, emailAddress, kraPin, address, category, justification, productDescription, documentation, reviewStatus, serialNo, csResponceCode, csResponceMessage, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn, approvalStatus, rejectionStatus, defferalStatus, wetcSecretary, wetcChairman, ncsSecretary,pvocWaStatus,pvocWaStartedOn ,pvocWaCompletedOn ,pvocWaProcessInstanceId ,pvocWaCompletedOn, wetcMember, cs)
+        return Objects.hash(id, status, applicantName, phoneNumber, emailAddress, kraPin, address, category, justification, productDescription, documentation, reviewStatus, serialNo, csResponceCode, csResponceMessage, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn, approvalStatus, rejectionStatus, defferalStatus, wetcSecretary, wetcChairman, ncsSecretary, pvocWaStatus, pvocWaStartedOn, pvocWaCompletedOn, pvocWaProcessInstanceId, pvocWaCompletedOn, wetcMember, cs)
     }
 }

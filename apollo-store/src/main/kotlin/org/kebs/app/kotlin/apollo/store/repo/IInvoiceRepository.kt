@@ -6,11 +6,16 @@ import org.kebs.app.kotlin.apollo.store.model.PermitApplicationEntity
 import org.kebs.app.kotlin.apollo.store.model.PetroleumInstallationInspectionEntity
 import org.kebs.app.kotlin.apollo.store.model.invoice.BillPayments
 import org.kebs.app.kotlin.apollo.store.model.invoice.BillTransactionsEntity
+import org.kebs.app.kotlin.apollo.store.model.invoice.BillingLimits
 import org.kebs.app.kotlin.apollo.store.model.invoice.CorporateCustomerAccounts
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
+import java.math.BigDecimal
+import java.sql.Timestamp
 import java.util.*
 
 
@@ -41,9 +46,15 @@ interface IInvoiceRepository : HazelcastRepository<InvoiceEntity, Long> {
 }
 
 @Repository
+interface IBillingLimitsRepository : HazelcastRepository<BillingLimits, Long> {
+    fun findAllByStatus(status: Int): List<BillingLimits>
+}
+
+@Repository
 interface ICorporateCustomerRepository : HazelcastRepository<CorporateCustomerAccounts, Long> {
     fun findAllByCorporateIdentifier(corporateId: String?): Optional<CorporateCustomerAccounts>
     fun findAllByCorporateNameContains(corporateName: String, page: Pageable): Page<CorporateCustomerAccounts>
+    fun countByCreatedOnBetween(startDate: Timestamp, endDate: Timestamp): Long
 }
 
 @Repository
@@ -54,6 +65,14 @@ interface IBillTransactionsEntityRepository : HazelcastRepository<BillTransactio
 
 @Repository
 interface IBillPaymentsRepository : HazelcastRepository<BillPayments, Long> {
-    fun findAllByCorporateId(corporateId: Long?): List<BillPayments>
+    fun findByCorporateId(corporateId: Long, page: Pageable): Page<BillPayments>
+    fun findAllByPaymentStatus(status: Int): List<BillPayments>
+    fun findAllByPaymentStatusAndNextNoticeDateGreaterThan(status: Int, date: Date): List<BillPayments>
+    fun findAllByBillNumberPrefixAndPaymentStatus(billNumberPrefix: String, status: Int): List<BillPayments>
+    fun countByCorporateIdAndBillNumber(corporateId: Long?, billNumber: String): Long
+    fun findFirstByCorporateIdAndBillNumberAndPaymentStatus(corporateId: Long?, billNumber: String, status: Int): Optional<BillPayments>
+
+    @Query(value = "select sum(CASE WHEN bt.AMOUNT>0 then bt.AMOUNT else 0.0 END) TOTAL_AMOUNT from DAT_KEBS_BILL_TRANSACTIONS bt  where CORPORATE_ID=:corporateId and BILL_ID=:billId", nativeQuery = true)
+    fun sumTotalAmountByCorporateIdAndBillId(@Param("corporateId") corporateId: Long?, @Param("billId") billId: Long): BigDecimal?
     fun findAllByCorporateIdAndPaymentStatusIn(corporateId: Long?, status: List<Int>): List<BillPayments>
 }

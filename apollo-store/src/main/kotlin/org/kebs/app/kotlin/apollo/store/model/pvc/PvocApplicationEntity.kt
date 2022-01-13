@@ -239,7 +239,7 @@ class PvocApplicationEntity : Serializable {
 
     @Column(name = "FINAL_APPROVAL")
     @Basic
-    var finalApproval: Int? = null
+    var finalApproval: String? = null
 
     override fun equals(o: Any?): Boolean {
         if (this === o) return true

@@ -1,10 +1,11 @@
 package org.kebs.app.kotlin.apollo.api.service;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.hazelcast.internal.util.QuickMath.bytesToHex
 import mu.KotlinLogging
 import org.apache.commons.codec.binary.Base32
 import org.apache.commons.net.util.Base64
-
 import org.kebs.app.kotlin.apollo.api.payload.ApiClientForm
 import org.kebs.app.kotlin.apollo.api.payload.ApiClientUpdateForm
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
@@ -20,12 +21,20 @@ import org.springframework.stereotype.Service
 import java.security.SecureRandom
 import java.sql.Timestamp
 import java.time.Instant
+import javax.crypto.Mac
+import javax.crypto.spec.SecretKeySpec
+
+
+data class CallbackResult(
+        var data: Any, var type: String, var checksum: String
+)
 
 @Service
 class ApiClientService(
         val apiClientRepo: ApiClientRepo,
         val passwordEncoder: PasswordEncoder,
-        val commonDaoServices: CommonDaoServices
+        val commonDaoServices: CommonDaoServices,
+        val objectMapper: ObjectMapper
 ) {
 
     fun generateRandom(size: Int, userFriendly: Boolean = false): String {
@@ -105,6 +114,8 @@ class ApiClientService(
                 val apiClient = client.get()
                 val map = mutableMapOf<String, Any?>()
                 apiClient.callbackURL = form.callbackURL
+                apiClient.eventsURL = form.eventsURL
+                apiClient.descriptions = form.descriptions
                 apiClient.clientName = form.clientName
                 apiClient.clientType = form.clientType
                 apiClient.clientRole = form.clientRole
@@ -179,6 +190,48 @@ class ApiClientService(
             }
         } else {
             throw UsernameNotFoundException("client id or secret are invalid")
+        }
+    }
+
+    fun getClientDetails(clientId: Long): ApiClientDao? {
+        val client = this.apiClientRepo.findById(clientId)
+        if (client.isPresent) {
+            return ApiClientDao.fromEntity(client.get())
+        }
+        return null
+    }
+
+    fun postToUrl(data: Any, url: String) {
+
+    }
+
+    fun publishCallback(data: Any, clientId: String) {
+        val client = this.apiClientRepo.findByClientId(clientId)
+        if (client.isPresent) {
+            val clientDetails = client.get()
+            clientDetails.callbackURL?.let {
+                val checksum = calculateChecksum(data, clientId)
+                this.postToUrl(CallbackResult(data, "CALLBACK", checksum), it)
+                this.postToUrl(data, it)
+            }
+        }
+    }
+
+    fun calculateChecksum(data: Any, clientId: String): String {
+        val secretKeySpec = SecretKeySpec(clientId.toByteArray(), "HmacSHA256")
+        val mac: Mac = Mac.getInstance("HmacSHA256")
+        mac.init(secretKeySpec)
+        return bytesToHex(mac.doFinal(objectMapper.writeValueAsBytes(data)))
+    }
+
+    fun publishCallbackEvent(data: Any, clientId: String, eventName: String) {
+        val client = this.apiClientRepo.findByClientId(clientId)
+        if (client.isPresent) {
+            val clientDetails = client.get()
+            clientDetails.eventsURL?.let {
+                val checksum = calculateChecksum(data, clientId)
+                this.postToUrl(CallbackResult(data, eventName, checksum), it)
+            }
         }
     }
 }
