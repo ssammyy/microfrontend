@@ -300,7 +300,7 @@ class PvocServiceFlux(
         }
         val cocItem = iCocItemRepository.findByCocId(cocData.id)?.get(0)
         cocItem?.toCocItemDetailsXmlRecordRefl().let {
-            coc.cocDetals = it
+//            coc.cocDetals = it
             val cocFinalDto = COCXmlDTO()
             cocFinalDto.coc = coc
             val fileName = cocFinalDto.coc?.ucrNumber?.let {
@@ -451,9 +451,9 @@ class PvocServiceFlux(
                             cocItemsData.cocId = coc.id
                             cocItemsRepository.save(cocItemsData)
                         }
-                        ?: throw InvalidValueException("No COC Items found for UCR#:  $it")
+                        ?: throw InvalidValueException("No COC Items found for UCR#:  ")
                 }
-                ?: throw InvalidValueException("Invalid COC#:  ${cocItemsData.cocNumber}")
+                ?: throw InvalidValueException("Invalid COC#:  ${cocItemsData}")
 
             generalResponse.responseCode = pvocIntegrationProperties.pvocIntegSuccessResponseCode
             generalResponse.responseMessage = pvocIntegrationProperties.pvocIntegSuccessResponseMessage

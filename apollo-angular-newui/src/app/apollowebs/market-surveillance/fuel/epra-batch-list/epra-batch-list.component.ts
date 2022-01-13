@@ -9,7 +9,15 @@ import {NgxSpinnerService} from "ngx-spinner";
 import {BatchFileFuelSaveDto, FuelBatchDetailsDto} from "../../../../core/store/data/ms/ms.model";
 import {EpraBatchNewComponent} from "./epra-batch-new/epra-batch-new.component";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {County, CountyService, loadCountyId, selectCountyIdData, Town, TownService} from "../../../../core/store";
+import {
+  County,
+  CountyService,
+  loadCountyId,
+  selectCountyIdData,
+  selectUserInfo,
+  Town,
+  TownService
+} from "../../../../core/store";
 
 @Component({
   selector: 'app-epra-batch-list',
@@ -28,6 +36,8 @@ export class EpraBatchListComponent implements OnInit {
   county$: Observable<County[]>;
   town$: Observable<Town[]>;
   loading = false;
+
+  roles: string[];
 
   activeStatus: string = 'my-tasks';
   previousStatus: string = 'my-tasks';
@@ -137,6 +147,11 @@ export class EpraBatchListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+      return this.roles = u.roles;
+    });
+
     this.loadData(this.defaultPage, this.defaultPageSize);
     this.addNewBatchForm = this.formBuilder.group({
       county: ['', Validators.required],
@@ -153,11 +168,12 @@ export class EpraBatchListComponent implements OnInit {
     // this.SpinnerService.hide();
     this.msService.loadMSFuelBatchList(String(page),String(records)).subscribe(
         (data) => {
+          console.log(`TEST DATA===${data}`);
           this.loadedData = data;
           this.totalCount = this.loadedData.length;
           this.dataSet.load(this.loadedData);
           this.SpinnerService.hide();
-          console.log(data);
+
         },
         error => {
           this.SpinnerService.hide();
@@ -295,6 +311,7 @@ export class EpraBatchListComponent implements OnInit {
   //           }
   //       )
   // }
+
 
   pageChange(pageIndex?: any) {
     if (pageIndex) {

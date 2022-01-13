@@ -138,14 +138,17 @@
 <!--                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
 <!--                                    <div class="mat-button-focus-overlay"></div>-->
 <!--                                </button>-->
-
-                                <button (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"
-                                        data-target="#myModal1"
-                                        class="btn btn-sm btn-primary mr-2"><span
-                                        class="mat-button-wrapper">ADD NEW SCHEDULE FILE</span>
-                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                    <div class="mat-button-focus-overlay"></div>
-                                </button>
+                                <div *ngFor="let role of roles">
+                                    <div *ngIf="role == 'EPRA'">
+                                        <button (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"
+                                                data-target="#myModal1"
+                                                class="btn btn-sm btn-primary mr-2"><span
+                                                class="mat-button-wrapper">ADD NEW SCHEDULE FILE</span>
+                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                            <div class="mat-button-focus-overlay"></div>
+                                        </button>
+                                    </div>
+                                </div>
                                 <!--                                <button type="button" (click)="openModalAddDetails('addNewBatchDetails')"-->
                                 <!--                                        class="btn btn-sm btn-primary mr-2">ADD NEW BATCH FILE-->
                                 <!--                                </button>-->

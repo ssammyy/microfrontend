@@ -526,12 +526,12 @@ class AngularRoutes {
     @Bean
     fun migrationMarketSurveillanceRoutes(handler: NewMarketSurveillanceHandler) = router {
         "/api/v1/migration/ms".nest {
-            "/complaint".nest {
-
-            }
-            "/workPlan".nest {
-
-            }
+//            "/complaint".nest {
+//
+//            }
+//            "/workPlan".nest {
+//
+//            }
             "/fuel".nest {
                 GET("/all-batch-list", handler::getAllFuelBatchList)
                 POST("/add", handler::saveNewFuelScheduleBatch)

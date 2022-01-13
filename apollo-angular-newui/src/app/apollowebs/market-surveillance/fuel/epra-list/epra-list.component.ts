@@ -44,6 +44,8 @@ export class EpraListComponent implements OnInit {
   town$: Observable<Town[]>;
   loading = false;
 
+  roles: string[];
+
   activeStatus: string = 'my-tasks';
   previousStatus: string = 'my-tasks';
   searchStatus: any;
@@ -161,6 +163,7 @@ export class EpraListComponent implements OnInit {
   loadedData: FuelInspectionScheduleListDetailsDto = this.msService.fuelInspectionListExamples();
 
 
+
   constructor(
       private store$: Store<any>,
       // private dialog: MatDialog,
@@ -178,6 +181,11 @@ export class EpraListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+      return this.roles = u.roles;
+    });
+
     this.activatedRoute.paramMap.subscribe(
         rs => {
           this.selectedBatchRefNo = rs.get('referenceNumber');

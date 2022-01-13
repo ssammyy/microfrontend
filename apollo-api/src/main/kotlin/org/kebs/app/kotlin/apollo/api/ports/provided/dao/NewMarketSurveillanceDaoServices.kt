@@ -79,7 +79,7 @@ class NewMarketSurveillanceDaoServices(
         val fileSaved = fuelCreateBatch(body,fuelPlanYearCode, map, loggedInUser)
 
         if (fileSaved.first.status == map.successStatus) {
-            val fileInspectionList = findAllFuelInspectionListBasedOnBatchIDPageRequest(fileSaved.second.id,page)
+            val fileInspectionList = findAllFuelInspectionListBasedOnBatchIDPageRequest(fileSaved.second.id,page).toList()
             return mapFuelInspectionListDto(fileInspectionList,mapFuelBatchDetailsDto(fileSaved.second, map))
         } else {
             throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved.first))
@@ -88,7 +88,7 @@ class NewMarketSurveillanceDaoServices(
 
     @PreAuthorize("hasAuthority('EPRA')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun closeFuelBatchCreated(referenceNumber: String,page: PageRequest): Page<FuelBatchDetailsDto> {
+    fun closeFuelBatchCreated(referenceNumber: String,page: PageRequest): List<FuelBatchDetailsDto> {
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val batchDetail = findFuelBatchDetailByReferenceNumber(referenceNumber)
@@ -114,7 +114,7 @@ class NewMarketSurveillanceDaoServices(
              * TODO: Lets discuss to understand better what how to assign HOD to a complaint is it based on Region or Randomly
              */
 
-            val fuelBatchList = findAllFuelBatchListBasedOnPageable(page)
+            val fuelBatchList = findAllFuelBatchListBasedOnPageable(page).toList()
             return mapFuelBatchListDto(fuelBatchList, map)
         } else {
             throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved.first))
@@ -130,33 +130,33 @@ class NewMarketSurveillanceDaoServices(
         val fileSaved = fuelCreateSchedule(body, batchDetail.id, map, loggedInUser)
 
         if (fileSaved.first.status == map.successStatus) {
-            val fileInspectionList = findAllFuelInspectionListBasedOnBatchIDPageRequest(fileSaved.second.id,page)
+            val fileInspectionList = findAllFuelInspectionListBasedOnBatchIDPageRequest(fileSaved.second.id,page).toList()
             return mapFuelInspectionListDto(fileInspectionList,mapFuelBatchDetailsDto(batchDetail, map))
         } else {
             throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved.first))
         }
     }
 
-    @PreAuthorize("hasAuthority('EPRA')")
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun getAllFuelBatchList(page: PageRequest): Page<FuelBatchDetailsDto> {
+    @PreAuthorize("hasAuthority('EPRA') or  hasAuthority('MS_MP_MODIFY') or  hasAuthority('MS_IOP_MODIFY')")
+   @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun getAllFuelBatchList(page: PageRequest): List<FuelBatchDetailsDto> {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
-        val fuelBatchList = findAllFuelBatchListBasedOnPageable(page)
+        val fuelBatchList = findAllFuelBatchListBasedOnPageable(page).toList()
         return mapFuelBatchListDto(fuelBatchList, map)
     }
 
-    @PreAuthorize("hasAuthority('EPRA')")
+    @PreAuthorize("hasAuthority('EPRA') or  hasAuthority('MS_MP_MODIFY') or  hasAuthority('MS_IOP_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun getAllFuelInspectionListBasedOnBatchRefNo(batchReferenceNo: String,page: PageRequest): FuelInspectionScheduleListDetailsDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
         val findBatchDetail = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
-        val fileInspectionList = findAllFuelInspectionListBasedOnBatchIDPageRequest(findBatchDetail.id,page)
+        val fileInspectionList = findAllFuelInspectionListBasedOnBatchIDPageRequest(findBatchDetail.id,page).toList()
         return mapFuelInspectionListDto(fileInspectionList,mapFuelBatchDetailsDto(findBatchDetail, map))
     }
 
-    //    @PreAuthorize("hasAuthority('EPRA')")
+    @PreAuthorize("hasAuthority('EPRA') or  hasAuthority('MS_MP_MODIFY') or  hasAuthority('MS_IOP_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun getFuelInspectionDetailsBasedOnRefNo(referenceNo: String, batchReferenceNo: String): FuelInspectionDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
@@ -173,6 +173,7 @@ class NewMarketSurveillanceDaoServices(
         return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
     }
 
+    @PreAuthorize("hasAuthority('EPRA') or  hasAuthority('MS_MP_MODIFY') or  hasAuthority('MS_IOP_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun endFuelInspectionDetailsBasedOnRefNo(referenceNo: String, batchReferenceNo: String): FuelInspectionDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
@@ -229,7 +230,7 @@ class NewMarketSurveillanceDaoServices(
         }
     }
 
-    @PreAuthorize("hasAuthority('MS_MP_MODIFY')")
+    @PreAuthorize("hasAuthority('MS_IOP_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun postFuelInspectionDetailsRapidTest(
         referenceNo: String,
@@ -281,7 +282,7 @@ class NewMarketSurveillanceDaoServices(
 
     }
 
-    @PreAuthorize("hasAuthority('MS_MP_MODIFY')")
+    @PreAuthorize("hasAuthority('MS_IOP_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun postFuelInspectionDetailsSampleCollection(
         referenceNo: String,
@@ -313,7 +314,7 @@ class NewMarketSurveillanceDaoServices(
 
     }
 
-    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @PreAuthorize("hasAuthority('MS_IOP_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun postFuelInspectionDetailsSampleSubmission(
         referenceNo: String,
@@ -346,7 +347,7 @@ class NewMarketSurveillanceDaoServices(
 
     }
 
-    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @PreAuthorize("hasAuthority('MS_IOP_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun postFuelInspectionDetailsSampleSubmissionBSNumber(
         referenceNo: String,
@@ -391,7 +392,7 @@ class NewMarketSurveillanceDaoServices(
         }
     }
 
-    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @PreAuthorize("hasAuthority('MS_IOP_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun postFuelInspectionDetailsLabPDFSelected(
         referenceNo: String,
@@ -417,7 +418,7 @@ class NewMarketSurveillanceDaoServices(
         }
     }
 
-    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @PreAuthorize("hasAuthority('MS_IOP_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun postFuelInspectionDetailsSSFSaveComplianceStatus(
         referenceNo: String,
@@ -462,7 +463,7 @@ class NewMarketSurveillanceDaoServices(
         }
     }
 
-    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @PreAuthorize("hasAuthority('MS_IOP_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun postFuelInspectionDetailsRemediationInvoice(
         referenceNo: String,
@@ -508,7 +509,7 @@ class NewMarketSurveillanceDaoServices(
     }
 
 
-    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @PreAuthorize("hasAuthority('MS_IOP_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun postFuelInspectionDetailsScheduleRemediationAfterPayment(
         referenceNo: String,
@@ -558,6 +559,8 @@ class NewMarketSurveillanceDaoServices(
 
     }
 
+    @PreAuthorize("hasAuthority('MS_IOP_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun postFuelInspectionDetailsUpdateRemediation(
         referenceNo: String,
         batchReferenceNo: String,
@@ -1700,7 +1703,7 @@ class NewMarketSurveillanceDaoServices(
 
     }
 
-    fun mapFuelInspectionListDto(fuelInspectionList: Page<MsFuelInspectionEntity>, batchDetails: FuelBatchDetailsDto): FuelInspectionScheduleListDetailsDto {
+    fun mapFuelInspectionListDto(fuelInspectionList: List<MsFuelInspectionEntity>, batchDetails: FuelBatchDetailsDto): FuelInspectionScheduleListDetailsDto {
         val fuelInspectionScheduledList = mutableListOf<FuelInspectionDto>()
         fuelInspectionList.map {fuelInspectionScheduledList.add(FuelInspectionDto(it.id, it.referenceNumber, it.company, it.petroleumProduct, it.physicalLocation, it.inspectionDateFrom, it.inspectionDateTo, it.processStage, it.status==1))}
 
@@ -1822,9 +1825,9 @@ class NewMarketSurveillanceDaoServices(
     }
 
     fun mapFuelBatchListDto(
-        fuelBatchList: Page<MsFuelBatchInspectionEntity>,
+        fuelBatchList: List<MsFuelBatchInspectionEntity>,
         map: ServiceMapsEntity
-    ): Page<FuelBatchDetailsDto> {
+    ): List<FuelBatchDetailsDto> {
         val fuelBatchListDto = mutableListOf<FuelBatchDetailsDto>()
         return fuelBatchList.map {
             FuelBatchDetailsDto(
