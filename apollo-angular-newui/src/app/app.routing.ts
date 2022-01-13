@@ -131,7 +131,7 @@ import {AuctionItemDetailsComponent} from "./apollowebs/di/auction/auction-item-
 import {EpraBatchListComponent} from "./apollowebs/market-surveillance/fuel/epra-batch-list/epra-batch-list.component";
 import {EpraListComponent} from "./apollowebs/market-surveillance/fuel/epra-list/epra-list.component";
 import {ViewFuelSheduledDetailsComponent} from "./apollowebs/market-surveillance/fuel/view-fuel-sheduled-details/view-fuel-sheduled-details.component";
-import {HoSicTasksComponent} from "./apollowebs/standards-development/ho-sic-tasks/ho-sic-tasks.component";
+// import {HoSicTasksComponent} from "./apollowebs/standards-development/ho-sic-tasks/ho-sic-tasks.component";
 // export const AppRoutes: Routes = [
 //     {
 //         path: '',
@@ -925,12 +925,13 @@ export const routes: Routes = [
                 component: ViewFuelSheduledDetailsComponent
             }
         ]
-        path: 'stdLevyPaid', component: AdminLayoutComponent,
-        children: [{path: '', component: StandardLevyPaidComponent}]
     },
     {
         path: 'stdLevyPenalties', component: AdminLayoutComponent,
         children: [{path: '', component: StandardLevyPenaltiesComponent}]
+    },
+    {path: 'stdLevyPaid', component: AdminLayoutComponent,
+        children: [{path: '', component: StandardLevyPaidComponent}]
     },
     {
         path: 'stdLevyDefaulters', component: AdminLayoutComponent,
