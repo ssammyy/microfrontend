@@ -36,7 +36,7 @@ import org.springframework.stereotype.Repository
 interface IFuelBatchRepository : HazelcastRepository<MsFuelBatchInspectionEntity, Long>, JpaSpecificationExecutor<MsFuelBatchInspectionEntity> {
     override fun findAll(): List<MsFuelBatchInspectionEntity>
     fun findAllByOrderByIdDesc(pageable: Pageable): Page<MsFuelBatchInspectionEntity>?
-    fun findAllOrderByIdAsc(): List<MsFuelBatchInspectionEntity>?
+//    fun findAllOrderByIdAsc(): List<MsFuelBatchInspectionEntity>?
     fun findByReferenceNumber(referenceNumber: String): MsFuelBatchInspectionEntity?
     fun findByYearNameIdAndCountyIdAndRegionId(yearNameId: Long, countyId: Long, regionId: Long): MsFuelBatchInspectionEntity?
 }

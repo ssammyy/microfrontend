@@ -41,15 +41,23 @@ data class FuelInspectionDto(
         var inspectionDateFrom: Date? = null,
         var inspectionDateTo: Date? = null,
         var processStage: String? = null,
-        var closedStatus: Boolean? = null,
+        var assignedOfficerStatus: Boolean? = null,
+        var rapidTestDone: Boolean? = null,
+        var sampleCollectionStatus: Boolean? = null,
+        var sampleSubmittedStatus: Boolean? = null,
+        var bsNumberStatus: Boolean? = null,
+        var compliantStatusAdded: Boolean? = null,
+        var remediationScheduledStatus: Boolean? = null,
+        var proFormaInvoiceStatus: Boolean? = null,
+        var endInspectionStatus: Boolean? = null,
         var batchDetails: FuelBatchDetailsDto?= null,
         var officersList: List<MsUsersDto>? = null,
         var officersAssigned: MsUsersDto? = null,
-        var rapidTestStatus: Boolean? = null,
-        var rapidTestRemarks: String? = null,
+        var rapidTest: FuelEntityRapidTestDto? = null,
         var sampleCollected: SampleCollectionDto? = null,
         var sampleSubmitted: SampleSubmissionDto? = null,
         var sampleLabResults: MSSSFLabResultsDto? = null,
+        var fuelRemediation: FuelRemediationDto? = null,
 )
 
 data class FuelEntityDto(
@@ -79,6 +87,13 @@ data class FuelEntityRapidTestDto(
         var rapidTestRemarks: String? = null,
         @NotNull(message = "Required field")
         var rapidTestStatus: Boolean,
+)
+
+data class FuelEntityCompliantStatusDto(
+        @NotNull(message = "Required field")
+        var compliantRemarks: String? = null,
+        @NotNull(message = "Required field")
+        var compliantStatus: Boolean,
 )
 
 data class SampleCollectionDto(
@@ -156,6 +171,23 @@ data class LabResultsParamDto(
         var method : String? = null,
 )
 
+data class FuelRemediationDto(
+        var productType: String? = null,
+        var applicableKenyaStandard: String? = null,
+        var remediationProcedure: String? = null,
+        var volumeOfProductContaminated: String? = null,
+        var contaminatedFuelType: String? = null,
+        var quantityOfFuel: String? = null,
+        var volumeAdded: String? = null,
+        var totalVolume: String? = null,
+        var proFormaInvoiceStatus: Boolean? = null,
+        var proFormaInvoiceNo: String? = null,
+        var invoiceAmount: BigDecimal? = null,
+        var feePaidReceiptNo: String? = null,
+        var dateOfRemediation: Date? = null,
+        var dateOfPayment: Date? = null,
+)
+
 data class MSSSFLabResultsDto(
         var ssfResultsList: MSSSFComplianceStatusDetailsDto? = null,
         var savedPDFFiles:  List<MSSSFPDFListDetailsDto>? = null,
@@ -187,6 +219,39 @@ data class PDFSaveComplianceStatusDto(
         @NotNull(message = "Required field")
         var complianceRemarks: String,
 )
+
+data class SSFSaveComplianceStatusDto(
+        @NotNull(message = "Required field")
+        var ssfID: Long,
+        @NotNull(message = "Required field")
+        var bsNumber: String,
+        @NotNull(message = "Required field")
+        var complianceStatus: Boolean,
+        @NotNull(message = "Required field")
+        var complianceRemarks: String,
+)
+
+data class CompliantRemediationDto(
+        var remarks: String? = null,
+        var proFormaInvoiceStatus: Boolean? = null,
+        var dateOfRemediation: Date? = null,
+        var volumeFuelRemediated: Long?= null,
+        var subsistenceTotalNights: Long?= null,
+        var transportAirTicket: Long?= null,
+        var transportInkm: Long?= null,
+)
+
+data class RemediationDto(
+        var productType: String? = null,
+        var quantityOfFuel: String? = null,
+        var contaminatedFuelType: String? = null,
+        var applicableKenyaStandard: String? = null,
+        var remediationProcedure: String? = null,
+        var volumeOfProductContaminated: String? = null,
+        var volumeAdded: String? = null,
+        var totalVolume: String? = null,
+)
+
 
 data class MSSSFPDFListDetailsDto(
         var pdfSavedId: Long? = null,

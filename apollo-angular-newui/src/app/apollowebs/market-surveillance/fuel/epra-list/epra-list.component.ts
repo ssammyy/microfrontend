@@ -44,6 +44,8 @@ export class EpraListComponent implements OnInit {
   town$: Observable<Town[]>;
   loading = false;
 
+  roles: string[];
+
   activeStatus: string = 'my-tasks';
   previousStatus: string = 'my-tasks';
   searchStatus: any;
@@ -161,6 +163,7 @@ export class EpraListComponent implements OnInit {
   loadedData: FuelInspectionScheduleListDetailsDto = this.msService.fuelInspectionListExamples();
 
 
+
   constructor(
       private store$: Store<any>,
       // private dialog: MatDialog,
@@ -178,6 +181,11 @@ export class EpraListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+      return this.roles = u.roles;
+    });
+
     this.activatedRoute.paramMap.subscribe(
         rs => {
           this.selectedBatchRefNo = rs.get('referenceNumber');
@@ -207,23 +215,23 @@ export class EpraListComponent implements OnInit {
   private loadData(referenceNumber: string, page: number, records: number): any {
     this.SpinnerService.show()
     let params = {'personal': this.personalTasks}
-    this.totalCount = this.loadedData.fuelInspectionDto.length;
-    this.dataSet.load(this.loadedData.fuelInspectionDto);
-    this.SpinnerService.hide();
-    // this.msService.msFuelInspectionList(referenceNumber,String(page),String(records)).subscribe(
-    //     (data) => {
-    //       this.loadedData = data;
-    //       this.totalCount = this.loadedData.length;
-    //       this.dataSet.load(this.loadedData);
-    //       this.SpinnerService.hide();
-    //       console.log(data);
-    //     },
-    //     error => {
-    //       this.SpinnerService.hide();
-    //       console.log(error)
-    //       this.msService.showError("AN ERROR OCCURRED")
-    //     }
-    // );
+    // this.totalCount = this.loadedData.fuelInspectionDto.length;
+    // this.dataSet.load(this.loadedData.fuelInspectionDto);
+    // this.SpinnerService.hide();
+    this.msService.msFuelInspectionList(referenceNumber,String(page),String(records)).subscribe(
+        (data) => {
+          this.loadedData = data;
+          this.totalCount = this.loadedData.fuelInspectionDto.length;
+          this.dataSet.load(this.loadedData.fuelInspectionDto);
+          this.SpinnerService.hide();
+          console.log(data);
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error)
+          this.msService.showError("AN ERROR OCCURRED")
+        }
+    );
 
     // let data = this.diService.listAssignedCd(documentTypeUuid, page, size, params);
     // console.log(this.activeStatus)
@@ -278,7 +286,7 @@ export class EpraListComponent implements OnInit {
 
   viewRecord(data: FuelInspectionDto) {
     console.log("TEST 101 REF NO: "+data.referenceNumber)
-    this.router.navigate([`/epra/fuelInspection/details/`,data.referenceNumber]);
+    this.router.navigate([`/epra/fuelInspection/details/`,data.referenceNumber,this.selectedBatchRefNo]);
   }
 
   get formNewScheduleForm(): any {

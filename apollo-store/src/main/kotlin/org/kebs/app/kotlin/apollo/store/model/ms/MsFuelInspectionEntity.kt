@@ -111,6 +111,10 @@ class MsFuelInspectionEntity : Serializable{
     @Basic
     var remendiationCompleteStatus: Int? = null
 
+    @Column(name = "INSPECTION_COMPLETE_STATUS")
+    @Basic
+    var inspectionCompleteStatus: Int? = null
+
     @Column(name = "ASSIGNED_OFFICER_STATUS")
     @Basic
     var assignedOfficerStatus: Int? = null

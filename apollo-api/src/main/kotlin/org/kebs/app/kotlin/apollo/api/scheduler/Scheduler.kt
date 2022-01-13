@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.api.scheduler
 
 import mu.KotlinLogging
 import org.joda.time.DateTime
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.NewMarketSurveillanceDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SchedulerImpl
 import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SftpSchedulerImpl
@@ -16,8 +17,12 @@ import org.springframework.scheduling.annotation.Scheduled
 @EnableScheduling
 @Profile("prod")
 class Scheduler(
-        private val schedulerImpl: SchedulerImpl,
-        private val qaDaoServices: QADaoServices
+//        private val schedulerImpl: SchedulerImpl,
+//        private val qaDaoServices: QADaoServices
+    private val schedulerImpl: SchedulerImpl,
+    private val sftpSchedulerImpl: SftpSchedulerImpl,
+    private val qaDaoServices: QADaoServices,
+    private val msDaoServices: NewMarketSurveillanceDaoServices
 ) {
     @Value("\${scheduler.run.send.notifications}")
     lateinit var runSendNotifications: String
@@ -48,6 +53,7 @@ class Scheduler(
     fun updateDemandNotes() {
         KotlinLogging.logger { }.debug("UPDATING DEMAND NOTES on SW")
         schedulerImpl.updatePaidDemandNotesStatus()
+        msDaoServices.updateRemediationDetailsAfterPaymentDone()
         KotlinLogging.logger { }.debug("UPDATED DEMAND NOTES on SW")
     }
 

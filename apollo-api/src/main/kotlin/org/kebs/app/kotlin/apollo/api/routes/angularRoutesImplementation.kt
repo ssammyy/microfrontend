@@ -537,12 +537,12 @@ class AngularRoutes {
     @Bean
     fun migrationMarketSurveillanceRoutes(handler: NewMarketSurveillanceHandler) = router {
         "/api/v1/migration/ms".nest {
-            "/complaint".nest {
-
-            }
-            "/workPlan".nest {
-
-            }
+//            "/complaint".nest {
+//
+//            }
+//            "/workPlan".nest {
+//
+//            }
             "/fuel".nest {
                 GET("/all-batch-list", handler::getAllFuelBatchList)
                 POST("/add", handler::saveNewFuelScheduleBatch)
@@ -557,7 +557,12 @@ class AngularRoutes {
                         POST("/sample-collect", handler::setFuelScheduleSampleCollection)
                         POST("/sample-submission", handler::setFuelScheduleSampleSubmission)
                         PUT("/sample-submission-bs-number", handler::setFuelScheduleSampleSubmissionBsNumber)
-                        POST("/lab-results-pdf-save", handler::setFuelScheduleSampleSubmissionBsNumber)
+                        PUT("/lab-results-pdf-save", handler::saveFuelScheduleLabResultsPDFSelected)
+                        PUT("/ssf-compliance-status-save", handler::saveFuelScheduleSSFComplianceStatusAdd)
+                        POST("/fuel-remediation-schedule", handler::saveFuelScheduleRemediationAfterPayment)
+                        POST("/fuel-remediation-invoice", handler::saveFuelScheduledRemediationInvoice)
+                        PUT("/fuel-remediation", handler::saveFuelScheduleUpdateRemediation)
+                        PUT("/end-inspection", handler::endFuelInspection)
                     }
                     "/fetch".nest {
                         GET("/assign", handler::updateFuelScheduleAssignOfficer)

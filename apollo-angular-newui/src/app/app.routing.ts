@@ -128,6 +128,10 @@ import {ViewTransactionsComponent} from "./apollowebs/invoice/corporate/view-tra
 import {ViewAuctionItemsComponent} from "./apollowebs/di/auction/view-auction-items/view-auction-items.component";
 import {AuctionItemDetailsComponent} from "./apollowebs/di/auction/auction-item-details/auction-item-details.component";
 
+import {EpraBatchListComponent} from "./apollowebs/market-surveillance/fuel/epra-batch-list/epra-batch-list.component";
+import {EpraListComponent} from "./apollowebs/market-surveillance/fuel/epra-list/epra-list.component";
+import {ViewFuelSheduledDetailsComponent} from "./apollowebs/market-surveillance/fuel/view-fuel-sheduled-details/view-fuel-sheduled-details.component";
+import {HoSicTasksComponent} from "./apollowebs/standards-development/ho-sic-tasks/ho-sic-tasks.component";
 // export const AppRoutes: Routes = [
 //     {
 //         path: '',
@@ -905,6 +909,22 @@ export const routes: Routes = [
         children: [{path: '', component: StandardLevyDashboardComponent}]
     },
     {
+        path: 'epra',
+        component: AdminLayoutComponent,
+        // canActivate: [RouteGuard],
+        children: [
+            {
+                path: '',
+                component: EpraBatchListComponent},
+            {
+                path: ':referenceNumber',
+                component: EpraListComponent
+            },
+            {
+                path: 'fuelInspection/details/:referenceNumber/:batchReferenceNumber',
+                component: ViewFuelSheduledDetailsComponent
+            }
+        ]
         path: 'stdLevyPaid', component: AdminLayoutComponent,
         children: [{path: '', component: StandardLevyPaidComponent}]
     },
@@ -929,6 +949,7 @@ export const routes: Routes = [
         children: [{path: '', component: StandardLevyDefaulterHistoryComponent}]
     },
 
+    /****************MS COMPONENTS ENDS HERE**********************************/
 
 ];
 

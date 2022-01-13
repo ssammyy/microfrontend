@@ -17,9 +17,11 @@ export class ApiEndpointService {
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-         LOCAL_DEV: 'localhost:8006'
+         // LOCAL_DEV: 'localhost:8006'
         // LOCAL_DEV: 'kimsfluxint.kebs.org:8005'
         // LOCAL_DEV: '41.72.209.58:8006'
+        LOCAL_DEV: 'kimsint.kebs.org:8007'
+        // LOCAL_DEV: `kimsint.skebs.org:8006`
         // LOCAL_DEV: `kimsint.kebs.org:8005`,
         // LOCAL_DEV: `kims.kebs.org:8006`
         // LOCAL_DEV: '10.10.0.149:8007'
@@ -86,7 +88,7 @@ export class ApiEndpointService {
     public static SD_PB_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/publishing`;
     public static SD_NEP_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/Domestic_notification`;
     public static REQUEST_STANDARD = `${ApiEndpointService.ANONYMOUS_CONTEXT}/standard/dropdown`;
-    public static MS_CONTEXT = '/api/v1/migration/qa';
+    public static MS_CONTEXT = '/api/v1/migration/ms';
     public static MS_FUEL_CONTEXT = `${ApiEndpointService.MS_CONTEXT}/fuel`;
 
     /**
@@ -441,6 +443,10 @@ export class ApiEndpointService {
         INSPECTION_SCHEDULED_DETAILS_SAMPLE_SUBMISSION: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/sample-submission`,
         INSPECTION_SCHEDULED_DETAILS_SAMPLE_SUBMISSION_BS_NUMBER: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/sample-submission-bs-number`,
         INSPECTION_SCHEDULED_DETAILS_LAB_RESULTS_SAVE_PDF: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/lab-results-pdf-save`,
+        INSPECTION_SCHEDULED_DETAILS_SSF_COMPLIANCE_STATUS: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/ssf-compliance-status-save`,
+        INSPECTION_SCHEDULED_REMEDIATION_DATE: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/fuel-remediation-schedule`,
+        INSPECTION_SCHEDULED_REMEDIATION_INVOICE: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/fuel-remediation-invoice`,
+        INSPECTION_SCHEDULED_ADD_REMEDIATION: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/fuel-remediation`,
         // COUNTRY_DASHBOARD_DETAILS: `${ApiEndpointService.VERSION_THREE_CONTEXT}/country-dashboard-details`,
         // CLIENT_LIST: `${ApiEndpointService.VERSION_THREE_CONTEXT}/client-list`,
     }
