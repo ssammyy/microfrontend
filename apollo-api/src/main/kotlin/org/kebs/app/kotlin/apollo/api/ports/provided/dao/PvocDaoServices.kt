@@ -1,6 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
-import org.kebs.app.kotlin.apollo.api.controllers.msControllers.MSReportsControllers
+//import org.kebs.app.kotlin.apollo.api.controllers.msControllers.MSReportsControllers
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.store.repo.IPvocInvoicingRepository
 import org.kebs.app.kotlin.apollo.store.repo.IPvocPartnersRepository
@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat
 class PvocDaoServices(
         private val iPvocPartnersRepository: IPvocPartnersRepository,
         private val iPvocInvoicingRepository: IPvocInvoicingRepository,
-        private val msReportsControllers: MSReportsControllers,
+//        private val msReportsControllers: MSReportsControllers,
         private val notifications: Notifications
 ) {
     val map = hashMapOf<String, Any>()
@@ -68,7 +68,7 @@ class PvocDaoServices(
         //Todo Gabriel check also this
         iPvocInvoicingRepository.findByReconcialitionId(id).let { invoice ->
             invoice?.reconcialitionId?.let {
-                msReportsControllers.extractAndSaveReport(map, "classpath:reports/reconciliationReport.jrxml", "Remediation-Invoice", listOf<Any>())
+//                msReportsControllers.extractAndSaveReport(map, "classpath:reports/reconciliationReport.jrxml", "Remediation-Invoice", listOf<Any>())
             }
             iPvocPartnersRepository.findByIdOrNull(invoice?.partner)?.let { partiner ->
                 partiner.partnerEmail?.let { sendEmailWithReconciliationInvoice(it, ResourceUtils.getFile("classpath:templates/TestPdf/Remediation-Invoice.pdf").toString()) }

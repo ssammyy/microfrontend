@@ -39,7 +39,6 @@
 //
 //
 //import mu.KotlinLogging
-////import org.kebs.app.kotlin.apollo.api.controllers.msControllers.MSController
 //import org.kebs.app.kotlin.apollo.api.controllers.msControllers.MSListWrapper
 //import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 //import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.MarketSurveillanceBpmn
@@ -47,13 +46,16 @@
 //import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 //import org.kebs.app.kotlin.apollo.api.ports.provided.dao.MarketSurveillanceDaoServices
 //import org.kebs.app.kotlin.apollo.api.ports.provided.dao.MasterDataDaoService
+//import org.kebs.app.kotlin.apollo.common.dto.UserSearchValues
 //import org.kebs.app.kotlin.apollo.common.dto.ms.*
 //import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 //import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 //import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 //import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 //import org.kebs.app.kotlin.apollo.store.model.*
-//import org.kebs.app.kotlin.apollo.store.model.ms.*
+//import org.kebs.app.kotlin.apollo.store.model.ms.ComplaintCustomersEntity
+//import org.kebs.app.kotlin.apollo.store.model.ms.ComplaintEntity
+//import org.kebs.app.kotlin.apollo.store.model.ms.ComplaintLocationEntity
 //import org.kebs.app.kotlin.apollo.store.repo.*
 //import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
 //import org.kebs.app.kotlin.apollo.store.repo.ms.*
@@ -129,8 +131,7 @@
 //        private val marketSurveillanceBpmn: MarketSurveillanceBpmn,
 //        private val userTypeRepo: IUserTypesEntityRepository,
 //        val townsRepo: ITownsRepository,
-//        val productBrandRepository: IManufacturerProductBrandRepository,
-//        private val msController: MSController
+//        val productBrandRepository: IManufacturerProductBrandRepository
 //) {
 //
 //    final val appId: Int = applicationMapProperties.mapMarketSurveillance
@@ -907,8 +908,8 @@
 ////                                    userProfilesRepository.findByDesignationIdAndStatus(designationsEntity, map.activeStatus)
 ////                                            ?.let { msInspectionOfficer ->
 //                        req.attributes()["counties"] = countyRepo.findByStatusOrderByCounty(map.activeStatus)
-//                        req.attributes()["fuelEntity"] = MsFuelInspectionEntity()
-//                        req.attributes()["fuelOfficerInspectEntity"] = MsFuelInspectionOfficersEntity()
+////                        req.attributes()["fuelEntity"] = MsFuelInspectionEntity()
+////                        req.attributes()["fuelOfficerInspectEntity"] = MsFuelInspectionOfficersEntity()
 ////                                                req.attributes()["officers"] = msInspectionOfficer
 //
 //                        req.attributes()["regions"] = regionsRepository.findByStatusOrderByRegion(map.activeStatus)
@@ -1044,69 +1045,69 @@
 //                    ?: throw ServiceMapNotFoundException("Missing application mapping for [id=$appId], recheck configuration")
 //
 //
-////    fun viewFuelDetails(req: ServerRequest): ServerResponse =
-////            serviceMapsRepo.findByIdAndStatus(appId, activeStatus)
-////                    ?.let { map ->
-////                        req.paramOrNull("fuelInspectId")
-////                                ?.let { fuelInspectId ->
-////                                    req.paramOrNull("ViewType")
-////                                            ?.let { ViewType ->
-////                                                SecurityContextHolder.getContext().authentication?.name
-////                                                        ?.let { username ->
-////                                                            usersRepo.findByUserName(username)
-////                                                                    ?.let {
-//////                                                            userProfilesRepository.findByUserIdAndStatus(loggedInUser, map.activeStatus)
-//////                                                                    ?.let { userProfilesEntity ->
-////                                                                        iFuelInspectionRepo.findByIdOrNull(fuelInspectId.toLong())
-////                                                                                ?.let { fuelInspectDetails ->
-//////                                                                        iFuelInspectionOfficerRepo.findByMsFuelInspectionId(fuelInspectDetails)
-//////                                                                                ?.let { msFuelInspectionOfficersEntity ->
-////                                                                                    designationRepository.findByIdOrNull(designationIDIOP)
-////                                                                                            ?.let { designationsEntity ->
-////                                                                                                fuelInspectDetails.regionId?.let {
-////                                                                                                    userProfilesRepository.findByRegionIdAndDesignationIdAndStatus(it, designationsEntity, map.activeStatus)
-////                                                                                                            ?.let { msInspectionOfficer ->
-////                                                                                                                sampleCollectRepo.findByMsFuelInspectionId(fuelInspectDetails)
-////                                                                                                                        ?.let { fetchedSampleCollect ->
-////                                                                                                                            req.attributes()["sampCollect"] = fetchedSampleCollect
-////                                                                                                                        }
-////
-////                                                                                                                //                                                                                    preliminaryRepo.findByWorkPlanGeneratedID(workPlanDetails)
-////                                                                                                                //                                                                                            ?.let { preliminaryReportDetails ->
-////                                                                                                                //                                                                                                req.attributes()["preliminaryReport"] = preliminaryReportDetails
-////                                                                                                                //                                                                                            }
-////                                                                                                                //                                                                                    req.attributes()["msWorkPlanGeneratedEntity"] = MsWorkplanGeneratedEntity()
-////                                                                                                                req.attributes()["fuelEntity"] = MsFuelInspectionEntity()
-////                                                                                                                req.attributes()["fuelRemediationEntity"] = MsFuelRemediationEntity()
-////                                                                                                                req.attributes()["fuelRemediationInvoiceEntity"] = MsFuelRemedyInvoicesEntity()
-////                                                                                                                req.attributes()["fuelOfficerInspectEntity"] = MsFuelInspectionOfficersEntity()
-////                                                                                                                req.attributes()["fuel"] = fuelInspectDetails
-////                                                                                                                req.attributes()["ViewType"] = ViewType
-////                                                                                                                req.attributes()["officers"] = msInspectionOfficer
-////                                                                                                                req.attributes()["maps"] = map
-////                                                                                                                return ok().render(msViewFuelDetailPage, req.attributes())
-////                                                                                                            }
-////                                                                                                }
-////                                                                                            }
-//////                                                                                }
-//////                                                                                ?: throw ExpectedDataNotFound("Fuel To inspect officer Details with the following [id=${req.paramOrNull("fuelInspectId")}] does not exist")
-////
-////
+//    fun viewFuelDetails(req: ServerRequest): ServerResponse =
+//            serviceMapsRepo.findByIdAndStatus(appId, activeStatus)
+//                    ?.let { map ->
+//                        req.paramOrNull("fuelInspectId")
+//                                ?.let { fuelInspectId ->
+//                                    req.paramOrNull("ViewType")
+//                                            ?.let { ViewType ->
+//                                                SecurityContextHolder.getContext().authentication?.name
+//                                                        ?.let { username ->
+//                                                            usersRepo.findByUserName(username)
+//                                                                    ?.let {
+////                                                            userProfilesRepository.findByUserIdAndStatus(loggedInUser, map.activeStatus)
+////                                                                    ?.let { userProfilesEntity ->
+//                                                                        iFuelInspectionRepo.findByIdOrNull(fuelInspectId.toLong())
+//                                                                                ?.let { fuelInspectDetails ->
+////                                                                        iFuelInspectionOfficerRepo.findByMsFuelInspectionId(fuelInspectDetails)
+////                                                                                ?.let { msFuelInspectionOfficersEntity ->
+//                                                                                    designationRepository.findByIdOrNull(designationIDIOP)
+//                                                                                            ?.let { designationsEntity ->
+//                                                                                                fuelInspectDetails.regionId?.let {
+//                                                                                                    userProfilesRepository.findByRegionIdAndDesignationIdAndStatus(it, designationsEntity, map.activeStatus)
+//                                                                                                            ?.let { msInspectionOfficer ->
+//                                                                                                                sampleCollectRepo.findByMsFuelInspectionId(fuelInspectDetails)
+//                                                                                                                        ?.let { fetchedSampleCollect ->
+//                                                                                                                            req.attributes()["sampCollect"] = fetchedSampleCollect
+//                                                                                                                        }
+//
+//                                                                                                                //                                                                                    preliminaryRepo.findByWorkPlanGeneratedID(workPlanDetails)
+//                                                                                                                //                                                                                            ?.let { preliminaryReportDetails ->
+//                                                                                                                //                                                                                                req.attributes()["preliminaryReport"] = preliminaryReportDetails
+//                                                                                                                //                                                                                            }
+//                                                                                                                //                                                                                    req.attributes()["msWorkPlanGeneratedEntity"] = MsWorkplanGeneratedEntity()
+//                                                                                                                req.attributes()["fuelEntity"] = MsFuelInspectionEntity()
+//                                                                                                                req.attributes()["fuelRemediationEntity"] = MsFuelRemediationEntity()
+//                                                                                                                req.attributes()["fuelRemediationInvoiceEntity"] = MsFuelRemedyInvoicesEntity()
+//                                                                                                                req.attributes()["fuelOfficerInspectEntity"] = MsFuelInspectionOfficersEntity()
+//                                                                                                                req.attributes()["fuel"] = fuelInspectDetails
+//                                                                                                                req.attributes()["ViewType"] = ViewType
+//                                                                                                                req.attributes()["officers"] = msInspectionOfficer
+//                                                                                                                req.attributes()["maps"] = map
+//                                                                                                                return ok().render(msViewFuelDetailPage, req.attributes())
+//                                                                                                            }
+//                                                                                                }
+//                                                                                            }
 ////                                                                                }
-////                                                                                ?: throw ExpectedDataNotFound("Fuel To inspect with the following [id=${req.paramOrNull("fuelInspectId")}] does not exist")
-////
-//////                                                                    }
+////                                                                                ?: throw ExpectedDataNotFound("Fuel To inspect officer Details with the following [id=${req.paramOrNull("fuelInspectId")}] does not exist")
+//
+//
+//                                                                                }
+//                                                                                ?: throw ExpectedDataNotFound("Fuel To inspect with the following [id=${req.paramOrNull("fuelInspectId")}] does not exist")
+//
 ////                                                                    }
-////                                                                    ?: throw ExpectedDataNotFound("User Logged in does not exist in the system")
-////                                                        }
-////                                                        ?: throw ExpectedDataNotFound("NO user has Logged In")
-////                                            }
-////                                            ?: throw ExpectedDataNotFound("ViewType  Was not passed e.g allComplaint, my tasks")
-////
-////                                }
-////                                ?: throw ExpectedDataNotFound("fuel Inspect Id [id=${req.paramOrNull("fuelInspectId")}] does not exist")
-////                    }
-////                    ?: throw ServiceMapNotFoundException("Missing application mapping for [id=$appId], recheck configuration")
+//                                                                    }
+//                                                                    ?: throw ExpectedDataNotFound("User Logged in does not exist in the system")
+//                                                        }
+//                                                        ?: throw ExpectedDataNotFound("NO user has Logged In")
+//                                            }
+//                                            ?: throw ExpectedDataNotFound("ViewType  Was not passed e.g allComplaint, my tasks")
+//
+//                                }
+//                                ?: throw ExpectedDataNotFound("fuel Inspect Id [id=${req.paramOrNull("fuelInspectId")}] does not exist")
+//                    }
+//                    ?: throw ServiceMapNotFoundException("Missing application mapping for [id=$appId], recheck configuration")
 //
 //
 //    fun viewOnsiteButtons(req: ServerRequest): ServerResponse =

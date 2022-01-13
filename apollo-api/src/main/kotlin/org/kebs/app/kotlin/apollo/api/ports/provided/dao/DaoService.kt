@@ -33,6 +33,7 @@ import mu.KotlinLogging
 import org.apache.http.conn.ssl.NoopHostnameVerifier
 import org.jasypt.encryption.StringEncryptor
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.SftpServiceImpl
+import org.kebs.app.kotlin.apollo.common.dto.AuditItemEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.CocsItemsEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.CorItemsEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.CurrencyExchangeRatesEntityDto
@@ -376,6 +377,10 @@ class DaoService(
 
     fun readExchangeRatesFromController(separator: Char, reader: Reader) =
             readCsvFile<CurrencyExchangeRatesEntityDto>(separator, reader)
+
+    fun readAuditCsvFile(separator: Char, reader: Reader): List<AuditItemEntityDto> {
+        return readCsvFile<AuditItemEntityDto>(separator, reader)
+    }
 
     fun readCocFileFromController(separator: Char, reader: Reader) =
             readCsvFile<CocsItemsEntityDto>(separator, reader)

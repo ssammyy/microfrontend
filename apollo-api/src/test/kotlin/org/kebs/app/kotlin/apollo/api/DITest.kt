@@ -12,6 +12,9 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SchedulerImpl
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.UpAndDownLoad
+import org.kebs.app.kotlin.apollo.api.service.BillingService
+import org.kebs.app.kotlin.apollo.api.service.DestinationInspectionService
+import org.kebs.app.kotlin.apollo.api.service.InvoicePaymentService
 import org.kebs.app.kotlin.apollo.api.utils.Delimiters
 import org.kebs.app.kotlin.apollo.api.utils.XMLDocument
 import org.kebs.app.kotlin.apollo.common.dto.UserEntityDto
@@ -53,6 +56,12 @@ import java.util.concurrent.TimeUnit
 class DITest {
     @Autowired
     lateinit var destinationInspectionDaoServices: DestinationInspectionDaoServices
+
+    @Autowired
+    lateinit var destinationInspectionServices: DestinationInspectionService
+
+    @Autowired
+    lateinit var billingService: BillingService
 
     @Autowired
     lateinit var consignmentDocumentDaoService: ConsignmentDocumentDaoService
@@ -110,6 +119,7 @@ class DITest {
 
     @Autowired
     lateinit var limsService: LimsServices
+
     @Autowired
     lateinit var motorVehicleInspectionEntityRepo: ICdInspectionMotorVehicleItemChecklistRepository
 
@@ -557,20 +567,20 @@ class DITest {
         val inputFile = File(classLoader.getResource(inputFilePath).file)
         val fileContent: ByteArray = FileUtils.readFileToByteArray(inputFile)
         val encodedString = Base64
-            .getEncoder()
-            .encodeToString(fileContent)
+                .getEncoder()
+                .encodeToString(fileContent)
 
         // create output file
         val outputFile = File(
-            inputFile
-                .parentFile
-                .absolutePath + File.pathSeparator.toString() + outputFilePath
+                inputFile
+                        .parentFile
+                        .absolutePath + File.pathSeparator.toString() + outputFilePath
         )
 
         // decode the string and write to file
         val decodedBytes = Base64
-            .getDecoder()
-            .decode(encodedString)
+                .getDecoder()
+                .decode(encodedString)
         FileUtils.writeByteArrayToFile(outputFile, decodedBytes)
         assertTrue(FileUtils.contentEquals(inputFile, outputFile))
     }
@@ -583,10 +593,10 @@ class DITest {
             confirmAssignedUserId = 1083
         }
         destinationInspectionDaoServices.updateCDDetails(
-            cdDetails,
-            24,
-            commonDaoServices.loggedInUserDetails(),
-            commonDaoServices.serviceMapDetails(122)
+                cdDetails,
+                24,
+                commonDaoServices.loggedInUserDetails(),
+                commonDaoServices.serviceMapDetails(122)
         )
 
     }
@@ -650,7 +660,7 @@ class DITest {
             personalContactNumber = "254724175178"
             typeOfUser = null
             userRegNo =
-                "KEBS#EMP${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
+                    "KEBS#EMP${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
             enabled = false
             accountExpired = false
             accountLocked = false
@@ -687,9 +697,9 @@ class DITest {
     @Test
     fun loadListOfMinistry() {
         val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-        val page=PageRequest.of(1,10)
-        val items=this.motorVehicleInspectionEntityRepo.findByMinistryReportSubmitStatusInAndSampled(listOf(map.workingStatus,map.initStatus, map.testStatus),"YES",page)
-        Assertions.assertFalse(items.isEmpty,"Expected some list for ministry inspection")
+        val page = PageRequest.of(1, 10)
+        val items = this.motorVehicleInspectionEntityRepo.findByMinistryReportSubmitStatusInAndSampled(listOf(map.workingStatus, map.initStatus, map.testStatus), "YES", page)
+        Assertions.assertFalse(items.isEmpty, "Expected some list for ministry inspection")
     }
 
     @Test
@@ -704,62 +714,75 @@ class DITest {
         }
 //        schedulerImpl.updateLabResultsWithDetails()
     }
+
     @Test
-    fun testBsNumberLookup(){
-        var result=this.limsService.checkBsNumberExistOnLims("90LP0000000000001")
-        Assertions.assertFalse(result,"BS number was not expected to succeed")
-        result=this.limsService.checkBsNumberExistOnLims("BS202117903")
-        Assertions.assertTrue(result,"BS number is expected to exist")
+    fun testBsNumberLookup() {
+        var result = this.limsService.checkBsNumberExistOnLims("90LP0000000000001")
+        Assertions.assertFalse(result, "BS number was not expected to succeed")
+        result = this.limsService.checkBsNumberExistOnLims("BS202117903")
+        Assertions.assertTrue(result, "BS number is expected to exist")
+    }
+
+    @Test
+    fun demandNoteApprovedAddtoBilling() {
+        this.demandNoteRepository.findFirstByPaymentStatusAndCdRefNoIsNotNullAndImporterPinOrderByCreatedOnDesc(0, "PN890230023")?.let { demandNote ->
+            KotlinLogging.logger { }.info("CdRef No: ${demandNote.cdRefNo}")
+            val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+            billingService.registerBillTransaction(demandNote, map)?.let {
+                KotlinLogging.logger { }.info("Billing temp ref: ${it.tempReceiptNumber}")
+            } ?: throw ExpectedDataNotFound("Expected demand note to be added to billing")
+            Thread.sleep(TimeUnit.SECONDS.toMillis(5))
+        } ?: throw ExpectedDataNotFound("Could not find a single payment")
     }
 
     @Test
     fun demandNoteSubmission() {
-        this.demandNoteRepository.findFirstByPaymentStatusAndCdRefNoIsNotNullOrderByCreatedOnDesc(0)?.let { demandNote->
-            KotlinLogging.logger {  }.info("CdRef No: ${demandNote.cdRefNo}")
+        this.demandNoteRepository.findFirstByPaymentStatusAndCdRefNoIsNotNullOrderByCreatedOnDesc(0)?.let { demandNote ->
+            KotlinLogging.logger { }.info("CdRef No: ${demandNote.cdRefNo}")
             destinationInspectionDaoServices.sendDemandNotGeneratedToKWIS(demandNote)
             Thread.sleep(TimeUnit.SECONDS.toMillis(20))
-        }?:throw ExpectedDataNotFound("Could not find a single payment")
+        } ?: throw ExpectedDataNotFound("Could not find a single payment")
     }
 
     @Test
     fun demandNotePaymentSubmissionByRef() {
-        this.demandNoteRepository.findByDemandNoteNumber("KIMSDN202111174A794")?.let { demandNote->
-            KotlinLogging.logger {  }.info("CdRef No: ${demandNote.cdRefNo}")
+        this.demandNoteRepository.findByDemandNoteNumber("KIMSDN202111174A794")?.let { demandNote ->
+            KotlinLogging.logger { }.info("CdRef No: ${demandNote.cdRefNo}")
             destinationInspectionDaoServices.sendDemandNotePayedStatusToKWIS(demandNote)
             Thread.sleep(TimeUnit.SECONDS.toMillis(20))
-        }?:throw ExpectedDataNotFound("Could not find a single payment")
+        } ?: throw ExpectedDataNotFound("Could not find a single payment")
     }
 
     @Test
     fun demandNotePaymentSubmission() {
-        this.demandNoteRepository.findFirstByPaymentStatusAndCdRefNoIsNotNull(1)?.let { demandNote->
-            KotlinLogging.logger {  }.info("CdRef No: ${demandNote.cdRefNo}")
+        this.demandNoteRepository.findFirstByPaymentStatusAndCdRefNoIsNotNull(1)?.let { demandNote ->
+            KotlinLogging.logger { }.info("CdRef No: ${demandNote.cdRefNo}")
             destinationInspectionDaoServices.sendDemandNotePayedStatusToKWIS(demandNote)
             Thread.sleep(TimeUnit.SECONDS.toMillis(20))
-        }?:throw ExpectedDataNotFound("Could not find a single payment")
+        } ?: throw ExpectedDataNotFound("Could not find a single payment")
     }
 
     @Test
     fun cocSubmission() {
-        this.cocRepository.findFirstByCocNumberIsNotNullAndCocTypeAndConsignmentDocIdIsNotNull("COC")?.let { coc->
-            KotlinLogging.logger {  }.info("Ref No: ${coc.consignmentDocId?.cdStandard?.applicationRefNo}")
+        this.cocRepository.findFirstByCocNumberIsNotNullAndCocTypeAndConsignmentDocIdIsNotNull("COC")?.let { coc ->
+            KotlinLogging.logger { }.info("Ref No: ${coc.consignmentDocId?.cdStandard?.applicationRefNo}")
             destinationInspectionDaoServices.sendLocalCoc(coc)
-        }?:throw ExpectedDataNotFound("Could not find a COC document")
+        } ?: throw ExpectedDataNotFound("Could not find a COC document")
     }
 
     @Test
     fun coiSubmission() {
-        this.cocRepository.findFirstByCoiNumberIsNotNullAndCocTypeAndConsignmentDocIdIsNotNullOrderByCreatedOnDesc("COI")?.let { coi->
+        this.cocRepository.findFirstByCoiNumberIsNotNullAndCocTypeAndConsignmentDocIdIsNotNullOrderByCreatedOnDesc("COI")?.let { coi ->
             destinationInspectionDaoServices.sendLocalCoi(coi)
-        }?:throw ExpectedDataNotFound("Could not find a COI document")
+        } ?: throw ExpectedDataNotFound("Could not find a COI document")
     }
 
     @Test
     fun corSubmission() {
-        this.corsEntityRepository.findFirstByChasisNumberIsNotNullAndConsignmentDocIdIsNotNull()?.let { cor->
-            KotlinLogging.logger {  }.info("Ref No: ${cor.consignmentDocId?.cdStandard?.applicationRefNo}")
+        this.corsEntityRepository.findFirstByChasisNumberIsNotNullAndConsignmentDocIdIsNotNull()?.let { cor ->
+            KotlinLogging.logger { }.info("Ref No: ${cor.consignmentDocId?.cdStandard?.applicationRefNo}")
             destinationInspectionDaoServices.submitCoRToKesWS(cor)
-        }?:throw ExpectedDataNotFound("Could not find a COR document")
+        } ?: throw ExpectedDataNotFound("Could not find a COR document")
     }
 
 
@@ -770,7 +793,7 @@ class DITest {
 
 
         usersRepo.findByUserName("kpaul7747@gmail.com")
-            ?.let { loggedInUser ->
+                ?.let { loggedInUser ->
 //                for (i in 101 downTo 123) {
                     //                    val payload = "Assigned Inspection Officer [assignedStatus= 1, assignedRemarks= test]"
                     val map = commonDaoServices.serviceMapDetails(appId)
@@ -782,9 +805,9 @@ class DITest {
                     }
                     itemDetails = destinationInspectionDaoServices.updateCdItemDetailsInDB(itemDetails, loggedInUser)
                     val importerDetails =
-                        itemDetails.cdDocId?.cdImporter?.let { destinationInspectionDaoServices.findCDImporterDetails(it) }
+                            itemDetails.cdDocId?.cdImporter?.let { destinationInspectionDaoServices.findCDImporterDetails(it) }
                     val demandNote =
-                            itemDetails.cdDocId?.let { destinationInspectionDaoServices.generateDemandNoteWithItemList(listOf(itemDetails), map, it,false,0.0, loggedInUser) }
+                            itemDetails.cdDocId?.let { destinationInspectionDaoServices.generateDemandNoteWithItemList(listOf(itemDetails), map, it, false, 0.0, loggedInUser) }
 //                    val demandNoteNumber = destinationInspectionDaoServices.demandNotePayment(demandNote, map, loggedInUser, itemDetails)
                     KotlinLogging.logger { }.info { "DEMAND NOTE GENERATED WITH ID = ${demandNote?.id} " }
 //                    demandNotes.add(demandNote1)
@@ -794,10 +817,10 @@ class DITest {
                         itemDetails.cdDocId?.cdType?.let { it1 ->
                             destinationInspectionDaoServices.findCdTypeDetails(it1.id).demandNotePrefix?.let { myPrefix ->
                                 val updateBatchInvoiceDetail = invoiceDaoService.addInvoiceDetailsToBatchInvoice(
-                                    demandNote,
-                                    applicationMapProperties.mapInvoiceTransactionsForDemandNote,
-                                    loggedInUser,
-                                    batchInvoiceDetail
+                                        demandNote,
+                                        applicationMapProperties.mapInvoiceTransactionsForDemandNote,
+                                        loggedInUser,
+                                        batchInvoiceDetail
                                 )
 
                                 val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
@@ -807,9 +830,9 @@ class DITest {
                                     currency = applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
                                 }
                                 val invoiceDetail = invoiceDaoService.createPaymentDetailsOnStgReconciliationTable(
-                                    loggedInUser.userName!!,
-                                    updateBatchInvoiceDetail,
-                                    myAccountDetails
+                                        loggedInUser.userName!!,
+                                        updateBatchInvoiceDetail,
+                                        myAccountDetails
                                 )
 //                                invoiceDetail.invoiceId?.let {
 //                                    val batchInvoiceDetail = invoiceDaoService.findInvoiceBatchDetails(it)
@@ -822,7 +845,7 @@ class DITest {
                         }
                     }
 //                }
-            }
+                }
 //        assertTrue { demandNoteNumber.isNotEmpty() }
     }
 
@@ -832,9 +855,9 @@ class DITest {
         val dateTostr = "2021-01-15"
 
         val returnedValues: PvocReconciliationReportDto? =
-            pvocReconciliationReportEntityRepo.getPvocReconciliationReportDto(
-                dateFromstr, dateTostr
-            )
+                pvocReconciliationReportEntityRepo.getPvocReconciliationReportDto(
+                        dateFromstr, dateTostr
+                )
         KotlinLogging.logger { }.info {
             "inspectionfeesum = ${returnedValues?.inspectionfeesum}, " +
                     "verificationfeesum = ${returnedValues?.verificationfeesum}, royaltiestokebssum = ${returnedValues?.royaltiestokebssum} "
@@ -849,11 +872,11 @@ class DITest {
     fun canDecodeConsignmentDocument() {
         val stringToExclude = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
         val consignmentDoc: ConsignmentDocument =
-            commonDaoServices.deserializeFromXML(consignmentDocument, stringToExclude)
-        KotlinLogging.logger {  }.info("DDD: "+consignmentDoc.documentDetails?.consignmentDocDetails?.cdStandardTwo?.attachments?.get(0)?.fileName)
+                commonDaoServices.deserializeFromXML(consignmentDocument, stringToExclude)
+        KotlinLogging.logger { }.info("DDD: " + consignmentDoc.documentDetails?.consignmentDocDetails?.cdStandardTwo?.attachments?.get(0)?.fileName)
         val details = CdTransportDetailsEntity()
         details.cargoTypeIndicator =
-            consignmentDoc.documentDetails?.consignmentDocDetails?.cdTransport?.cargoTypeIndicator
+                consignmentDoc.documentDetails?.consignmentDocDetails?.cdTransport?.cargoTypeIndicator
 
         assertNotNull(consignmentDoc.documentDetails?.consignmentDocDetails?.cdStandard?.applicationTypeCode)
         assertNotNull(consignmentDoc.documentDetails?.consignmentDocDetails?.cdImporter?.pin)
@@ -877,9 +900,9 @@ class DITest {
 
     @Test
     fun testBRSDetails() {
-       val cmp = CompanyProfileEntity()
-        var arrayList = arrayListOf<String>("4","7","12")
-        for(element in arrayList){
+        val cmp = CompanyProfileEntity()
+        var arrayList = arrayListOf<String>("4", "7", "12")
+        for (element in arrayList) {
             cmp.registrationNumber = element
             registrationDaoServices.checkBrs(cmp)
         }
@@ -902,14 +925,14 @@ class DITest {
             //Receive Inspection Schedule Complete
             destinationInspectionBpmn.diReceiveInspectionScheduleComplete(cdId, inspectionOfficerId).let {
                 destinationInspectionBpmn.fetchTaskByObjectId(cdId, diMvWithCorProcessDefinitionKey)
-                    ?.let { taskDetails ->
-                        println("Task details after triggerInspectionScheduleRequest task complete")
-                        for (taskDetail in taskDetails) {
-                            taskDetail.task.let { task ->
-                                println("${taskDetail.objectId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} ")
+                        ?.let { taskDetails ->
+                            println("Task details after triggerInspectionScheduleRequest task complete")
+                            for (taskDetail in taskDetails) {
+                                taskDetail.task.let { task ->
+                                    println("${taskDetail.objectId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} ")
+                                }
                             }
                         }
-                    }
             } ?: return
         }
     }
@@ -939,24 +962,24 @@ class DITest {
         val appId = applicationMapProperties.mapImportInspection
 
         usersRepo.findByUserName("kpaul7747@gmail.com")
-            ?.let { loggedInUser ->
+                ?.let { loggedInUser ->
 //                    val payload = "Assigned Inspection Officer [assignedStatus= 1, assignedRemarks= test]"
-                val map = commonDaoServices.serviceMapDetails(appId)
-                destinationInspectionDaoServices.findCdWithUcrNumber("UCR2100006322")
-                    ?.let { cdDetails ->
-                        KotlinLogging.logger { }.debug("Starting background task")
-                        destinationInspectionDaoServices.createLocalCoc(loggedInUser, cdDetails, map, "","A")
+                    val map = commonDaoServices.serviceMapDetails(appId)
+                    destinationInspectionDaoServices.findCdWithUcrNumber("UCR2100006322")
+                            ?.let { cdDetails ->
+                                KotlinLogging.logger { }.debug("Starting background task")
+                                destinationInspectionDaoServices.createLocalCoc(loggedInUser, cdDetails, map, "", "A")
 
-                    }
-            }
+                            }
+                }
     }
 
     private fun updateCDDetails() {
         val consignmentDocument =
-            consignmentDocument.replace("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>", "")
+                consignmentDocument.replace("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>", "")
 
         val xmlDoc: Document = XMLDocument.documentBuilder.parse(
-            InputSource(StringReader(consignmentDocument))
+                InputSource(StringReader(consignmentDocument))
         )
         xmlDoc.documentElement.normalize()
         val doc = XMLDocument(xmlDoc.documentElement)
@@ -970,21 +993,21 @@ class DITest {
 
         val newStatus = doc.document.ownerDocument.createTextNode(status)
         val statusPath: String = listOf(
-            "ConsignmentDocument",
-            "DocumentDetails",
-            "ConsignmentDocDetails",
-            "CDStandard",
-            "ApprovalStatus"
+                "ConsignmentDocument",
+                "DocumentDetails",
+                "ConsignmentDocDetails",
+                "CDStandard",
+                "ApprovalStatus"
         ).toPath()
         doc.setNested(statusPath, XMLDocument(newStatus))
 
         val newDate = doc.document.ownerDocument.createTextNode(status)
         val datePath: String = listOf(
-            "ConsignmentDocument",
-            "DocumentDetails",
-            "ConsignmentDocDetails",
-            "CDStandard",
-            "ApprovalDate"
+                "ConsignmentDocument",
+                "DocumentDetails",
+                "ConsignmentDocDetails",
+                "CDStandard",
+                "ApprovalDate"
         ).toPath()
         doc.setNested(datePath, XMLDocument(newDate))
 
@@ -992,7 +1015,7 @@ class DITest {
     }
 
     val consignmentDocument =
-        """    
+            """    
    <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <ConsignmentDocument>
     <DocumentHeader>
@@ -1276,22 +1299,22 @@ class DITest {
     fun testCocEmailAttachment() {
         val appId = applicationMapProperties.mapImportInspection
         usersRepo.findByUserName("kpaul7747@gmail.com")
-            ?.let { loggedInUser ->
-                val map = commonDaoServices.serviceMapDetails(appId)
-                val consignmentDocumentEntity: ConsignmentDocumentDetailsEntity = destinationInspectionDaoServices.findCD(941)
-                val localCoc = destinationInspectionDaoServices.createLocalCoc(loggedInUser, consignmentDocumentEntity, map, "","A")
-                consignmentDocumentEntity.cdStandard?.let { cdStd ->
-                    destinationInspectionDaoServices.updateCDStatus(
-                        cdStd,
-                        applicationMapProperties.mapDICdStatusTypeCOCGeneratedAndSendID
-                    )
-                }
-                KotlinLogging.logger { }.info { "localCoc = ${localCoc.id}" }
+                ?.let { loggedInUser ->
+                    val map = commonDaoServices.serviceMapDetails(appId)
+                    val consignmentDocumentEntity: ConsignmentDocumentDetailsEntity = destinationInspectionDaoServices.findCD(941)
+                    val localCoc = destinationInspectionDaoServices.createLocalCoc(loggedInUser, consignmentDocumentEntity, map, "", "A")
+                    consignmentDocumentEntity.cdStandard?.let { cdStd ->
+                        destinationInspectionDaoServices.updateCDStatus(
+                                cdStd,
+                                applicationMapProperties.mapDICdStatusTypeCOCGeneratedAndSendID
+                        )
+                    }
+                    KotlinLogging.logger { }.info { "localCoc = ${localCoc.id}" }
 //                reportsDaoService.generateLocalCoCReportWithDataSource(consignmentDocumentEntity, applicationMapProperties.mapReportLocalCocPath)?.let { file ->
 //            notifications.processEmail("anthonykihagi@gmail.com","Test subject","Test Message",file.path)
                     KotlinLogging.logger { }.info { " ::::::::::::: Success :::::::::::::::" }
                 }
-            }
+    }
 
 //    @Test
 //    @Ignore

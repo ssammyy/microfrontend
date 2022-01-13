@@ -7,8 +7,8 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "CFG_KEBS_PVOC_PARTNERS_COUNTRIES")
-class PvocPartnersCountriesEntity : Serializable{
-    
+class PvocPartnersCountriesEntity : Serializable {
+
     @Column(name = "ID")
     @SequenceGenerator(name = "CFG_KEBS_PVOC_PARTNERS_COUNTRIES_SEQ_GEN", sequenceName = "CFG_KEBS_PVOC_PARTNERS_COUNTRIES_SEQ", allocationSize = 1)
     @GeneratedValue(generator = "CFG_KEBS_PVOC_PARTNERS_COUNTRIES_SEQ_GEN", strategy = GenerationType.SEQUENCE)
@@ -23,9 +23,8 @@ class PvocPartnersCountriesEntity : Serializable{
     @Basic
     var abbreviation: String? = null
 
-    @JoinColumn(name = "REGION_ID", referencedColumnName = "ID")
-    @ManyToOne
-    var region: PvocPartnersRegionEntity? = null
+    @OneToMany(mappedBy = "countryId", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    var regions: Set<PvocPartnersRegionEntity>? = null
 
     @Column(name = "DESCRIPTION")
     @Basic
@@ -106,7 +105,6 @@ class PvocPartnersCountriesEntity : Serializable{
         return id == that.id &&
                 countryName == that.countryName &&
                 abbreviation == that.abbreviation &&
-                region == that.region &&
                 description == that.description &&
                 status == that.status &&
                 varField1 == that.varField1 &&
@@ -128,6 +126,6 @@ class PvocPartnersCountriesEntity : Serializable{
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(id, countryName, description, status, abbreviation, region, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn)
+        return Objects.hash(id, countryName, description, status, abbreviation, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn)
     }
 }

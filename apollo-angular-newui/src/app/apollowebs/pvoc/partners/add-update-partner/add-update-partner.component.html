@@ -1,0 +1,78 @@
+<h2 mat-dialog-title>{{this.data?"UPDATE":"Add"}} PVOC Partner</h2>
+<mat-dialog-content>
+    <div class="row no_margin" [formGroup]="form">
+        <div class="col-sm-12 col-md-6">
+            <label for="partnerRefNo" class="waiver-form-label">Partner Ref No</label>
+            <input type="text" class="waiver-form-input-master" name="partnerRefNo"
+                   data-name="partnerRefNo" id="partnerRefNo" formControlName="partnerRefNo">
+            <span class="error" *ngIf="(form.get('partnerRefNo').touched && !form.get('partnerRefNo').value) ||  form.get('partnerRefNo').invalid">Partner Ref Number should be at least 2 characters</span>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="partnerName" class="waiver-form-label">Partner Name</label>
+            <input type="text" class="waiver-form-input-master" name="partnerName"
+                   data-name="partnerName" id="partnerName" formControlName="partnerName">
+            <span class="error" *ngIf="(form.get('partnerName').touched && !form.get('partnerName').value) ||  form.get('partnerName').invalid">Partner name should be at least 2 characters</span>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="partnerPin" class="waiver-form-label">Partner KRA PIN</label>
+            <input type="text" class="waiver-form-input-master" name="partnerPin"
+                   data-name="partnerPin" id="partnerPin" formControlName="partnerPin">
+            <span class="error" *ngIf="(form.get('partnerPin').touched && !form.get('partnerPin').value) ||  form.get('partnerPin').invalid">Partner KRA PIN should be at least 2 characters</span>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="partnerTelephoneNumber" class="waiver-form-label">Phone number</label>
+            <input type="text" class="waiver-form-input-master" name="partnerTelephoneNumber"
+                   data-name="partnerTelephoneNumber" id="partnerTelephoneNumber" formControlName="partnerTelephoneNumber">
+            <span class="error" *ngIf="(form.get('partnerTelephoneNumber').touched && !form.get('partnerTelephoneNumber').value) ||  form.get('partnerTelephoneNumber').invalid">Partner phone number is required</span>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="partnerEmail" class="waiver-form-label">Partner Email</label>
+            <input type="text" class="waiver-form-input-master" name="partnerEmail"
+                   data-name="partnerEmail" id="partnerEmail" formControlName="partnerEmail">
+            <span class="error" *ngIf="(form.get('partnerEmail').touched && !form.get('partnerEmail').value) ||  form.get('partnerEmail').invalid">A Valid partner email is required</span>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="category" class="waiver-form-label">Partner Country</label>
+            <select id="category" class="waiver-form-input-master" formControlName="partnerCountry">
+                <option value="" disabled selected>Select Country</option>
+                <option *ngFor="let d of countries" [value]="d.name">{{d.name}}</option>
+            </select>
+            <span class="error" *ngIf="(form.get('partnerCountry').touched && !form.get('partnerCountry').value) ||  form.get('partnerCountry').invalid">Please select country</span>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="partnerCity" class="waiver-form-label">Partner City</label>
+            <input type="text" class="waiver-form-input-master" name="partnerCity"
+                   data-name="partnerCity" id="partnerCity" formControlName="partnerCity">
+            <span class="error" *ngIf="(form.get('partnerCity').touched && !form.get('partnerCity').value) ||  form.get('partnerCity').invalid">Partner City is required</span>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="partnerAddress1" class="waiver-form-label">Main Address</label>
+            <input type="text" class="waiver-form-input-master" name="partnerAddress1"
+                   data-name="partnerAddress1" id="partnerAddress1" formControlName="partnerAddress1">
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="partnerAddress2" class="waiver-form-label">Other Address</label>
+            <input type="text" class="waiver-form-input-master" name="partnerAddress2"
+                   data-name="partnerAddress2" id="partnerAddress2" formControlName="partnerAddress2">
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="partnerZipcode" class="waiver-form-label">ZIP code</label>
+            <input type="text" class="waiver-form-input-master" name="partnerZipcode"
+                   data-name="partnerZipcode" id="partnerZipcode" formControlName="partnerZipcode">
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="partnerFaxNumber" class="waiver-form-label">Fax Number</label>
+            <input type="text" class="waiver-form-input-master" name="partnerFaxNumber"
+                   data-name="partnerFaxNumber" id="partnerFaxNumber" formControlName="partnerFaxNumber">
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <div class="row no_margin master-list-new-btn">
+        <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
+        <button [disabled]="form.invalid||loading" class="next-btn btn-gen new-btn" (click)="addPartner()">
+            {{this.data ? "UPDATE" : "SAVE"}}
+            <mat-spinner [diameter]="20" color="warn" *ngIf="loading"></mat-spinner>
+        </button>
+    </div>
+</mat-dialog-actions>

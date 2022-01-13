@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.sftp
 import com.fasterxml.jackson.databind.DeserializationFeature
 import mu.KotlinLogging
 import org.apache.camel.Exchange
+import org.apache.camel.Predicate
 import org.apache.camel.ProducerTemplate
 import org.apache.camel.builder.RouteBuilder
 import org.apache.camel.component.file.GenericFile
@@ -15,6 +16,8 @@ import org.kebs.app.kotlin.apollo.config.properties.camel.CamelFtpProperties
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.SftpTransmissionEntity
 import org.kebs.app.kotlin.apollo.store.repo.ISftpTransmissionEntityRepository
+import org.springframework.context.ApplicationEvent
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.core.io.Resource
 import org.springframework.core.io.ResourceLoader
 import org.springframework.stereotype.Component
@@ -31,7 +34,42 @@ import java.util.concurrent.TimeUnit
 
 val directUploadEndpoint = "direct:save-ftp-file"
 val documentTypeHeader = "documentDirection"
-val unprocesable="UNPROCESSABLE"
+val unprocesable = "UNPROCESSABLE"
+val maxRetries: Long = 30
+
+class FileDetails {
+    var fileType: String? = null
+    var fileName: String? = null
+    var remoteReference: String? = null
+    var fileVersion: String? = null
+    var fileDate: String? = null
+    var fileCode: String? = null
+    var errorResponse: Boolean = false
+
+    // Response have file version as different
+    // 2 for responses
+    fun isResponse(): Boolean {
+        return !"1".equals(fileVersion)
+    }
+
+    companion object {
+        fun parseFileDetails(fileName: String): FileDetails {
+            val fileProps = fileName.split("-")
+            val fileDetails = FileDetails()
+            fileDetails.fileType = fileProps[0]
+            fileDetails.remoteReference = fileProps[1]
+            fileDetails.fileName = fileName
+            fileDetails.fileVersion = fileProps[2]
+            fileDetails.fileDate = fileProps[3]
+            fileDetails.fileCode = fileProps[4]
+            return fileDetails
+        }
+    }
+}
+
+class KeswFileEvents(data: FileDetails) : ApplicationEvent(data) {
+
+}
 
 @Service
 class SFTPService(
@@ -41,6 +79,7 @@ class SFTPService(
         private val destinationInspectionDaoServices: DestinationInspectionDaoServices,
         private val consignmentDocumentDaoService: ConsignmentDocumentDaoService,
         private val producerTemplate: ProducerTemplate,
+        private val eventPublisher: ApplicationEventPublisher,
         private val properties: CamelFtpProperties,
         private val resourceLoader: ResourceLoader,
         private val applicationMapProperties: ApplicationMapProperties,
@@ -186,11 +225,18 @@ class SFTPService(
             fileLog.keswErrorCode = keswsErrorResponse.errorInformation?.errorCode
             fileLog.keswErrorMessage = keswsErrorResponse.errorInformation?.errorDescription
             sftpRepository.save(fileLog)
-        }?:run{
-            KotlinLogging.logger {  }.warn("Could not attach error message to any document")
+            // Publish error message from KESW
+            keswsErrorResponse.documentDetails?.fileName?.let {
+                val data = FileDetails.parseFileDetails(it)
+                data.errorResponse = true
+                this.eventPublisher.publishEvent(KeswFileEvents(data))
+            }
+        } ?: run {
+            KotlinLogging.logger { }.warn("Could not attach error message to any document")
             log
         }
     }
+
     /**
      * Update retries if file exists
      */
@@ -198,7 +244,7 @@ class SFTPService(
         val fileName = exchange.`in`.getHeader("CamelFileName") as String
         this.sftpRepository.findFirstByFilenameOrderByCreatedOn(fileName)?.let { log ->
             log.retryCount = (log.retryCount ?: 0) + 1
-            log.retries = (log.retries ?: 0) + 1
+            log.retries = maxRetries
             log.lastUpdated = Date()
             log.flowDirection = exchange.message.getHeader(documentTypeHeader) as String
             this.sftpRepository.save(log)
@@ -264,26 +310,56 @@ class SFTPService(
 
     }
 
+    fun fileReceivedResponse(exchange: Exchange) {
+        val fileName = exchange.`in`.getHeader("CamelFileName") as String
+        sftpRepository.findFirstByFilenameOrderByCreatedOn(fileName)?.let { log ->
+            val logData = log
+            // Save response as success
+            log.flowDirection = exchange.message.getHeader(documentTypeHeader) as String
+            logData.keswErrorCode = "00"
+            logData.keswErrorMessage = fileName
+            logData.kesResultDate = Timestamp.from(Instant.now())
+            sftpRepository.save(logData)
+            // Publish event on response received
+            this.eventPublisher.publishEvent(KeswFileEvents(FileDetails.parseFileDetails(fileName)))
+        }
+    }
+
     fun errorProcessingRequest(exchange: Exchange) {
         val caused = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Throwable::class.java)
         KotlinLogging.logger { }.error("ERROR: ", caused)
         sftpRepository.findFirstByTransactionReference(exchange.exchangeId)?.let { log ->
-            val logData = log
-            log.flowDirection = exchange.message.getHeader(documentTypeHeader) as String
-            logData.transactionStatus = 20
-            val errorMessage=exchange.message.getHeader("error") as String
-            if(StringUtils.hasLength(errorMessage)){
-                logData.responseMessage=errorMessage
-            }else {
-                logData.responseMessage = caused.message
+            try {
+                val logData = log
+                log.flowDirection = exchange.message.getHeader(documentTypeHeader) as String
+                logData.transactionStatus = 20
+                var errorMessage: String? = exchange.message.getHeader("error") as String
+                if (!StringUtils.hasLength(errorMessage)) {
+                    errorMessage = caused.message
+                }
+                // Trim extra characters
+                if (StringUtils.hasLength(errorMessage) && (errorMessage?.length ?: 0) > 4001) {
+                    errorMessage = errorMessage?.substring(0, 4000)
+                }
+                logData.responseMessage = errorMessage
+                logData.responseStatus = "99"
+                logData.transactionCompletedDate = Timestamp.from(Instant.now())
+                sftpRepository.save(logData)
+            } catch (ex: Exception) {
+                KotlinLogging.logger { }.error("Failed to update file details", ex)
             }
-            logData.responseStatus = "99"
-            logData.transactionCompletedDate = Timestamp.from(Instant.now())
-            sftpRepository.save(logData)
-        }?:run{
-            KotlinLogging.logger {  }.warn("Could not attach error message to any document")
+        } ?: run {
+            KotlinLogging.logger { }.warn("Could not attach error message to any document", caused)
             caused
         }
+    }
+
+    fun checkIsResponse(exchange: Exchange): Boolean {
+        exchange.message.getHeader("CamelFileName")?.let {
+            val details = FileDetails.parseFileDetails(it as String)
+            return details.isResponse()
+        }
+        return false
     }
 
     fun successfulProcessingRequest(exchange: Exchange) {
@@ -380,12 +456,17 @@ class CamelSftpDownload(
         KotlinLogging.logger { }.debug("DEBUG: $fromFtpUrl")
 
         from(fromFtpUrl.toString())
-                .log("Processing file.... \${in.headers.CamelFileName}")
+                .log(simple("Processing file.... \${in.headers.CamelFileName}").text)
                 .onException(Exception::class.java)
                 .bean(SFTPService::class.java, "errorProcessingRequest")
                 .end()
                 .setHeader(documentTypeHeader, constant("IN"))
                 .bean(SFTPService::class.java, "addDownloadProcessing")
+//                .choice()
+//                .log(simple("Processing file response message.... \${in.headers.CamelFileName}").text)
+//                .`when`().method(SFTPService::class.java, "checkIsResponse") // Check if it is a response file, and process response accordingly
+//                .bean(SFTPService::class.java, "fileReceivedResponse")
+//                .otherwise()
                 .choice()
                 .`when`(header("CamelFileName").startsWith(applicationMapProperties.mapKeswsCdDoctype)) // Process consignment documents
                 .unmarshal(createXmlMapper(ConsignmentDocument::class.java))
@@ -427,6 +508,7 @@ class CamelSftpDownload(
                 .throwException(java.lang.Exception(header("error").toString()))
                 .end()
                 .bean(SFTPService::class.java, "successfulProcessingRequest") // Save Download status
+//                .end()
                 .end()
 //        // Link to save file to database
 //        from(wireTapResult)

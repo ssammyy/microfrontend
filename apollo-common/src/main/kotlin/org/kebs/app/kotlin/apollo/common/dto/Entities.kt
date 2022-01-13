@@ -630,7 +630,7 @@ Ministry Inspection table view details
  */
 data class MinistryInspectionListResponseDto(
         var cdId: Long = 0,
-        var ministryInspectionComplete: Boolean=false,
+        var ministryInspectionComplete: Boolean = false,
         var inspectionId: Long? = 0,
         var remarks: String? = null,
         var cdUcr: String? = null,
@@ -1107,3 +1107,40 @@ data class CurrencyExchangeRatesEntityDto(
         @JsonProperty("DESCRIPTION")
         var description: String?,
 )
+
+
+class AuditItemEntityDto {
+    @JsonProperty("SERIAL")
+    var serialNumber: String? = null
+
+    @JsonProperty("LOT NUMBER")
+    var lotNumber: String? = null
+
+    @JsonProperty("SHIP'S NAME AND DATE")
+    var shipName: String? = null
+
+    @JsonProperty("DATE OF ARRIVAL")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var dateOfArrival: Timestamp? = null
+
+    @JsonProperty("CONTAINER/CHASSIS MARKS AND NUMBERS")
+    var containerChassisNumber: String? = null
+
+    @JsonProperty("CONTAINER SIZE")
+    var containerSize: String? = null
+
+    @JsonProperty("CONSIGNEE")
+    var consignee: String? = null
+
+    @JsonProperty("LOCATION")
+    var location: String? = null
+
+    @JsonProperty("DESCRIPTION OF GOODS")
+    var description: String? = null
+
+    @JsonProperty("MANIFEST NO.")
+    var manifestNo: String? = null
+
+    @JsonProperty("B/L NO")
+    var blNo: String? = null
+}

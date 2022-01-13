@@ -33,7 +33,9 @@ import org.springframework.http.server.ServerHttpRequest
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Component
+import org.springframework.web.servlet.function.ServerRequest
 import java.sql.Timestamp
 import java.time.Instant
 import java.time.ZoneId
@@ -209,6 +211,17 @@ class JwtTokenService(
         return result
 
 
+    }
+
+    fun generateClientToken(auth: Authentication, request: ServerRequest): String {
+        val tokenStarted = Instant.now().atZone(ZoneId.systemDefault())
+        val tokenExpired = tokenStarted.plusDays(1)
+        val ip = request.remoteAddress().get().address.hostAddress
+        val forwardedIp = request.headers().firstHeader("X-FORWARDED-FOR")
+        val agent = request.headers().firstHeader("User-Agent")
+        KotlinLogging.logger { }.debug("Token issued at $tokenStarted will expire at $tokenExpired")
+        val user=auth.principal as User
+        return generateAsTokenIsInvalid(user.username as String, tokenStarted, tokenExpired, ip, agent?:"Unknown", "TOKEN", listOf(forwardedIp?:"0.0.0.0"), user.authorities)
     }
 
     private fun generateAsTokenIsInvalid(

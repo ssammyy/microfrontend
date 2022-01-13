@@ -9,10 +9,12 @@ import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import java.sql.Date
+import java.util.*
 
 interface IPvocApplicationRepo : HazelcastRepository<PvocApplicationEntity, Long> {
     fun findByIdAndPvocWaStatus(id: Long, pvocWaStatus: Int): PvocApplicationEntity?
-
+    fun findAllByFinalApproval(status: Int, pageable: Pageable): Page<PvocApplicationEntity>
+    fun findAllByReviewStatus(status: Int, pageable: Pageable): Page<PvocApplicationEntity>
     fun findAllByStatus(status: Int, pageable: Pageable): Page<PvocApplicationEntity>?
     fun findAllByCreatedByOrderByCreatedOnDesc(username: String, pageable: Pageable): Page<PvocApplicationEntity>?
     fun findFirstByConpanyNameAndCompanyPinNo(conpanyName: String, companyPinNo: String): PvocApplicationEntity?
@@ -35,10 +37,14 @@ interface IPvocExceptionApplicationStatusEntityRepo : HazelcastRepository<PvocEx
 interface IPvocApplicationProductsRepo : HazelcastRepository<PvocApplicationProductsEntity, Long> {
     fun findAllByPvocApplicationId(pvocApplicationId: PvocApplicationEntity): List<PvocApplicationProductsEntity>?
     fun findAllByPvocApplicationId_Id(pvocApplicationId: Long?): List<PvocApplicationProductsEntity>?
+    fun findAllByIdAndPvocApplicationId_Id(itemId: Long, requestId: Long): Optional<PvocApplicationProductsEntity>
 }
 
 interface IPvocAgentMonitoringStatusEntityRepo : HazelcastRepository<PvocAgentMonitoringStatusEntity, Long> {
     fun findAllByStatus(status: Int): List<PvocAgentMonitoringStatusEntity>?
+}
+
+interface IPvocExceptionCertificateRepository : HazelcastRepository<PvocExceptionCertificate, Long> {
 }
 
 interface IPvocApplicationTypesRepo : HazelcastRepository<PvocApplicationTypeEntity, Long>
@@ -125,17 +131,20 @@ interface PvocReconciliationReportEntityRepo : HazelcastRepository<PvocReconcili
 
 interface IPvocExceptionIndustrialSparesCategoryEntityRepo : HazelcastRepository<PvocExceptionIndustrialSparesCategoryEntity, Long> {
     fun findAllByExceptionId(exceptionId: Long?): List<PvocExceptionIndustrialSparesCategoryEntity>
+    fun findAllByIdAndExceptionId(id: Long,exceptionId: Long?): Optional<PvocExceptionIndustrialSparesCategoryEntity>
     fun findAllByExceptionIdAndReviewStatus(exceptionId: Long, reviewStatus: String): List<PvocExceptionIndustrialSparesCategoryEntity>
 }
 
 interface IPvocExceptionMainMachineryCategoryEntityRepo : HazelcastRepository<PvocExceptionMainMachineryCategoryEntity, Long> {
     fun findAllByExceptionId(exceptionId: Long?): List<PvocExceptionMainMachineryCategoryEntity>
     fun findAllByExceptionIdAndReviewStatus(exceptionId: Long, reviewStatus: String): List<PvocExceptionMainMachineryCategoryEntity>
+    fun findAllByIdAndExceptionId( itemId: Long,requestId: Long): Optional<PvocExceptionMainMachineryCategoryEntity>
 }
 
 interface IPvocExceptionRawMaterialCategoryEntityRepo : HazelcastRepository<PvocExceptionRawMaterialCategoryEntity, Long> {
     fun findAllByExceptionId(exceptionId: Long?): List<PvocExceptionRawMaterialCategoryEntity>
     fun findAllByExceptionIdAndReviewStatus(exceptionId: Long, reviewStatus: String): List<PvocExceptionRawMaterialCategoryEntity>
+    fun findAllByIdAndExceptionId(itemId: Long, requestId: Long): Optional<PvocExceptionRawMaterialCategoryEntity>
 }
 
 interface IPvocComplaintsEmailVerificationEntityRepo : HazelcastRepository<PvocComplaintsEmailVerificationEntity, Long> {

@@ -18,5 +18,8 @@ class SystemClient {
             PATCH("/update/{clientId}", handler::updateApiClient)
             POST("/status", handler::updateApiClientStatus)
         }
+        "/api/v1/oauth".nest {
+            POST("/token",handler::authenticateApiClient)
+        }
     }
 }

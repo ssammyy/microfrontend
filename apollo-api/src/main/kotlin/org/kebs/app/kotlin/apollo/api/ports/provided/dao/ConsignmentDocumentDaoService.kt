@@ -552,8 +552,7 @@ class ConsignmentDocumentDaoService(
 //                        portOfArrival = sectionsLevel2?.sectionId?.id
                         }
 
-                        val updatedConsignmentDocumentDetails =
-                                updateConsignmentDocumentDetails(fetchedCdDetails, user, map)
+                        val updatedConsignmentDocumentDetails = updateConsignmentDocumentDetails(fetchedCdDetails, user, map)
                         commonDaoServices.convertClassToJson(updatedConsignmentDocumentDetails)?.let {
                             updatedConsignmentDocumentDetails.id?.let { it1 ->
                                 processesStages.process11?.let { it2 ->
@@ -787,23 +786,21 @@ class ConsignmentDocumentDaoService(
         with(consignmentDocumentDetailsEntity) {
             cdStandardsTwo = standardsTwoDetails
             val cocTypeDetails = standardsTwoDetails.cocType?.let { daoServices.findCocTypeWithTypeName(it) }
-            when {
-                applicationMapProperties.mapDICocTypeForeignID == cocTypeDetails?.id -> {
-                    consignmentDocumentDetailsEntity.cdStandard?.ucrNumber?.let {
-                        daoServices.findCocByUcrNumber(it)?.let { cocsBakEntity ->
-                            daoServices.updateCDDetailsWithCOCData(cocsBakEntity, consignmentDocumentDetailsEntity)
-                        }
+            if (applicationMapProperties.mapDICocTypeForeignID == cocTypeDetails?.id) {
+                consignmentDocumentDetailsEntity.cdStandard?.ucrNumber?.let {
+                    daoServices.findCocByUcrNumber(it)?.let { cocsBakEntity ->
+                        daoServices.updateCDDetailsWithCOCData(cocsBakEntity, consignmentDocumentDetailsEntity)
                     }
                 }
-                applicationMapProperties.mapDICocTypeLocalID == cocTypeDetails?.id -> {
-                    val cocLocalDetails =
-                            standardsTwoDetails.localCocType?.let { daoServices.findLocalCocTypeWithCocTypeCode(it) }
-                    cdCocLocalTypeId = cocLocalDetails?.id
-                    cdType = cocLocalDetails?.cdType?.let { daoServices.findCdTypeDetails(it) }
-                }
-                else -> {
-                    //Todo: If there is no value for for either local or Foregin (L/F)
-                }
+            }
+            else if (applicationMapProperties.mapDICocTypeLocalID == cocTypeDetails?.id) {
+                val cocLocalDetails =
+                    standardsTwoDetails.localCocType?.let { daoServices.findLocalCocTypeWithCocTypeCode(it) }
+                cdCocLocalTypeId = cocLocalDetails?.id
+                cdType = cocLocalDetails?.cdType?.let { daoServices.findCdTypeDetails(it) }
+            }
+            else {
+                //Todo: If there is no value for for either local or Foregin (L/F)
             }
         }
 

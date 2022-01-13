@@ -885,7 +885,6 @@ class DestinationInspectionService(
                                         shipmentSealNumbers = coc.shipmentSealNumbers ?: "UNDEFINED"
                                         route = coc.route ?: "UNDEFINED"
                                         productCategory = coc.productCategory ?: "UNDEFINED"
-                                        productCategory = coc.productCategory ?: "UNDEFINED"
                                         status = 1L
                                         createdBy = loggedInUser.userName
                                         createdOn = Timestamp.from(Instant.now())

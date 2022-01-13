@@ -13,108 +13,143 @@ class PvocWaiversWetcMinutesEntity : Serializable {
     @SequenceGenerator(name = "DAT_KEBS_PVOC_WAIVERS_WETC_MINUTES_SEQ_GEN", sequenceName = "DAT_KEBS_PVOC_WAIVERS_WETC_MINUTES_SEQ", allocationSize = 1)
     @GeneratedValue(generator = "DAT_KEBS_PVOC_WAIVERS_WETC_MINUTES_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     var id: Long = 0
+
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null
+
     @Column(name = "NAME")
     @Basic
     var name: String? = null
+
     @Column(name = "DATE_HELD")
     @Basic
     var dateHeld: String? = null
+
     @Column(name = "START_TIME")
     @Basic
     var startTime: String? = null
+
     @Column(name = "LOCATION")
     @Basic
     var location: String? = null
+
     @Column(name = "CALLED_BY")
     @Basic
     var calledBy: String? = null
+
     @Column(name = "MEETING_TYPE")
     @Basic
     var meetingType: String? = null
+
     @Column(name = "CHAIR_PERSON")
     @Basic
     var chairPerson: String? = null
+
     @Column(name = "SECRETARY")
     @Basic
     var secretary: String? = null
+
     @Column(name = "ATTENDANCE")
     @Basic
     var attendance: String? = null
+
     @Column(name = "AGENDA")
     @Basic
     var agenda: String? = null
+
     @Column(name = "PREVIOUS_MINUTES")
     @Basic
     var previousMinutes: String? = null
+
     @Column(name = "PREVIOUS_MEETING_DISCUSSION")
     @Basic
     var previousMeetingDiscussion: String? = null
+
     @Column(name = "CURRENT_MINUTE")
     @Basic
     var currentMinute: String? = null
+
     @Column(name = "CURRENT_MEETING_DISCUSSION")
     @Basic
     var currentMeetingDiscussion: String? = null
+
     @Column(name = "REVIEW_STATUS")
     @Basic
     var reviewStatus: String? = null
+
     @Column(name = "PREPARED_BY")
     @Basic
     var preparedBy: String? = null
+
     @Column(name = "CONFIRMED_BY")
     @Basic
     var confirmedBy: String? = null
+
     @Column(name = "WAIVER_ID")
     @Basic
     var waiverId: Long? = null
+
     @Column(name = "VAR_FIELD_1")
     @Basic
     var varField1: String? = null
+
     @Column(name = "VAR_FIELD_2")
     @Basic
     var varField2: String? = null
+
     @Column(name = "VAR_FIELD_3")
     @Basic
     var varField3: String? = null
+
     @Column(name = "VAR_FIELD_4")
     @Basic
     var varField4: String? = null
+
     @Column(name = "VAR_FIELD_5")
     @Basic
     var varField5: String? = null
+
     @Column(name = "VAR_FIELD_6")
     @Basic
     var varField6: String? = null
+
     @Column(name = "VAR_FIELD_7")
     @Basic
     var varField7: String? = null
+
     @Column(name = "VAR_FIELD_8")
     @Basic
     var varField8: String? = null
+
     @Column(name = "VAR_FIELD_9")
     @Basic
     var varField9: String? = null
+
     @Column(name = "VAR_FIELD_10")
     @Basic
     var varField10: String? = null
+
     @Column(name = "CREATED_BY")
     @Basic
     var createdBy: String? = null
+
     @Column(name = "CREATED_ON")
     @Basic
     var createdOn: Timestamp? = null
+
     @Column(name = "MODIFIED_BY")
     @Basic
     var modifiedBy: String? = null
+
     @Column(name = "MODIFIED_ON")
     @Basic
     var modifiedOn: Timestamp? = null
+
     @Column(name = "DELETE_BY")
     @Basic
     var deleteBy: String? = null
+
     @Column(name = "DELETED_ON")
     @Basic
     var deletedOn: Timestamp? = null

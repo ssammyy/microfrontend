@@ -15,13 +15,13 @@ class PvocAgentContractEntity : Serializable {
     @Column(name = "CLIENT_ID")
     var agentId: Long = 0
 
-    @Column(name = "CONTACT_NAME", nullable = false)
+    @Column(name = "CONTACT_NAME", nullable = true)
     var contactName: String? = null
 
-    @Column(name = "CONTACT_PHONE", nullable = false)
+    @Column(name = "CONTACT_PHONE", nullable = true)
     var contactPhone: String? = null
 
-    @Column(name = "CONTACT_EMAIL", nullable = false)
+    @Column(name = "CONTACT_EMAIL", nullable = true)
     var contactEmail: String? = null
 
     @Column(name = "STATUS")

@@ -419,7 +419,7 @@ class DIPvocController(
                     "deffered" -> {
                         doc?.reviewStatus = pvocReviewStatus?.differedStatus
                         remarkData.remarksProcess = pvocReviewStatus?.differedStatus
-                        doc?.finalApproval = 1
+                        doc?.finalApproval = remarksType.toUpperCase()
                         doc?.sn = pvocDaoServices.generateRandomNumbers("PVOC-EXEMPTION")
                         doc?.id?.let {
                             pvocBpmn.pvocAeDeferApplicationComplete(it)
@@ -444,13 +444,13 @@ class DIPvocController(
                             }
 //                            pvocBpmn.pvocEaCheckApplicationComplete(it, 100, true)
                         }
-                        doc?.finalApproval = 1
+                        doc?.finalApproval = remarksType.toUpperCase()
                         doc?.sn = pvocDaoServices.generateRandomNumbers("PVOC-EXEMPTION")
                     }
                     "rejected" -> {
                         doc?.reviewStatus = pvocReviewStatus?.rejectedStatus
                         remarkData.remarksProcess = pvocReviewStatus?.rejectedStatus
-                        doc?.finalApproval = 1
+                        doc?.finalApproval = remarksType.toUpperCase()
                         doc?.sn = pvocDaoServices.generateRandomNumbers("PVOC-EXEMPTION")
                         doc?.id?.let {
                             pvocBpmn.pvocAeRejectApplicationComplete(it)

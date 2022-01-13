@@ -1,0 +1,87 @@
+<h2 mat-dialog-title>{{this.data?"UPDATE":"Add"}} Corporate Customer</h2>
+<mat-dialog-content>
+    <div class="row no_margin" [formGroup]="form">
+        <div class="col-sm-12 col-md-6">
+            <label for="corporateIdentifier" class="waiver-form-label">Company PIN</label>
+            <input type="text" class="waiver-form-input-master" name="corporateIdentifier"
+                   data-name="corporateIdentifier" id="corporateIdentifier" formControlName="corporateIdentifier">
+            <span class="error" *ngIf="(form.get('corporateIdentifier').touched && !form.get('corporateIdentifier').value) ||  form.get('corporateIdentifier').invalid">Company should be at least 2 characters</span>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="corporateName" class="waiver-form-label">Corporate Name</label>
+            <input type="text" class="waiver-form-input-master" name="corporateName"
+                   data-name="corporateName" id="corporateName" formControlName="corporateName">
+            <span class="error" *ngIf="(form.get('corporateName').touched && !form.get('corporateName').value) ||  form.get('corporateName').invalid">Corporate name should be at least 2 characters</span>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="corporatePhone" class="waiver-form-label">Corporate Phone number</label>
+            <input type="text" class="waiver-form-input-master" name="corporatePhone"
+                   data-name="corporatePhone" id="corporatePhone" formControlName="corporatePhone">
+            <span class="error" *ngIf="(form.get('corporatePhone').touched && !form.get('corporatePhone').value) ||  form.get('corporatePhone').invalid">Phone number is required</span>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="corporateEmail" class="waiver-form-label">Corporate Email</label>
+            <input type="text" class="waiver-form-input-master" name="corporateEmail"
+                   data-name="corporateEmail" id="corporateEmail" formControlName="corporateEmail">
+            <span class="error" *ngIf="(form.get('corporateEmail').touched && !form.get('corporateEmail').value) ||  form.get('corporateEmail').invalid">A Valid email is required</span>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="corporateType" class="waiver-form-label">Corporate Type</label>
+            <select id="corporateType" class="waiver-form-input-master" formControlName="corporateType">
+                <option value="" disabled selected>Select Type</option>
+                <option *ngFor="let d of coporateType" [value]="d.code">{{d.name}}</option>
+            </select>
+            <span class="error" *ngIf="(form.get('corporateType').touched && !form.get('corporateType').value) ||  form.get('corporateType').invalid">Please select corporate  type</span>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="billId" class="waiver-form-label">Billing Type</label>
+            <select id="billId" class="waiver-form-input-master" formControlName="billId">
+                <option value="" disabled selected>Select bill type</option>
+                <option *ngFor="let d of billingTypes" [value]="d.id">{{d.billType}}- {{d.corporateType}} - {{d.maxBillAmount}}</option>
+            </select>
+            <span class="error" *ngIf="(form.get('corporateType').touched && !form.get('corporateType').value) ||  form.get('corporateType').invalid">Please select corporate  type</span>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="contactPhone" class="waiver-form-label">Contact Phone</label>
+            <input type="text" class="waiver-form-input-master" name="partnerCity"
+                   data-name="contactPhone" id="contactPhone" formControlName="contactPhone">
+            <span class="error" *ngIf="(form.get('contactPhone').touched && !form.get('contactPhone').value) ||  form.get('contactPhone').invalid">Contact phone is required</span>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="contactEmail" class="waiver-form-label">Contact Email</label>
+            <input type="text" class="waiver-form-input-master" name="contactEmail"
+                   data-name="contactEmail" id="contactEmail" formControlName="contactEmail">
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="contactName" class="waiver-form-label">Contact Nae</label>
+            <input type="text" class="waiver-form-input-master" name="contactName"
+                   data-name="contactName" id="contactName" formControlName="contactName">
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="isCiakMember" class="waiver-form-label">IS CIAK Member</label>
+            <select id="isCiakMember" class="waiver-form-input-master" formControlName="isCiakMember">
+                <option value="" disabled selected>Select</option>
+                <option value="true">YES</option>
+                <option value="false">NO</option>
+            </select>
+            <span class="error" *ngIf="(form.get('isCiakMember').touched && !form.get('isCiakMember').value) ||  form.get('isCiakMember').invalid">Please select CIAK membership</span>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="mouDays" class="waiver-form-label">Billing Interval</label>
+            <select id="mouDays" class="waiver-form-input-master" formControlName="mouDays">
+                <option value="" disabled selected>Select</option>
+                <option *ngFor="let d of mouDaysList" [value]="d.code">{{d.name}}</option>
+            </select>
+            <span class="error" *ngIf="(form.get('mouDays').touched && !form.get('mouDays').value) ||  form.get('mouDays').invalid">Please select billing period</span>
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <div class="row no_margin master-list-new-btn">
+        <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
+        <button [disabled]="form.invalid||loading" class="next-btn btn-gen new-btn" (click)="addCorporate()">
+            {{this.data ? "UPDATE" : "SAVE"}}
+            <mat-spinner [diameter]="20" color="warn" *ngIf="loading"></mat-spinner>
+        </button>
+    </div>
+</mat-dialog-actions>

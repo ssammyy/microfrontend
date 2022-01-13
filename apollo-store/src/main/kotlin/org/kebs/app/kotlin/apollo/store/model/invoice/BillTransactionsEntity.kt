@@ -29,6 +29,10 @@ class BillTransactionsEntity : Serializable {
     @Basic
     var tempReceiptNumber: String? = null
 
+    @Column(name = "TRANSACTION_TYPE")
+    @Basic
+    var transactionType: String? = null
+
     @Column(name = "PAYMENT_METHOD")
     @Basic
     var paymentMethod: String? = null
