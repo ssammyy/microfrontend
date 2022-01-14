@@ -257,6 +257,14 @@ export const ROUTES: RouteInfo[] = [
             {path: 'api-clients', title: 'Api Clients', ab: 'AC'},
         ],
         icontype: 'settings'
+    },
+    {
+        path: '/epra',
+        title: 'EPRA',
+        type: 'link',
+        collapse: 'epra',
+        privilege: ['EPRA'],
+        icontype: 'receipt'
     }
 ];
 

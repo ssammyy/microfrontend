@@ -18,6 +18,7 @@ export class FuelEntityDto {
     physicalLocation: string;
     inspectionDateFrom: Date;
     inspectionDateTo: Date;
+    stationOwnerEmail: string;
     remarks: string;
 }
 
@@ -65,7 +66,7 @@ export class FuelInspectionScheduleListDetailsDto {
 }
 
 export class FuelInspectionDto {
-    id : number;
+    id: number;
     referenceNumber : string;
     company : string;
     petroleumProduct : string;

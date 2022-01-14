@@ -4,6 +4,7 @@ import org.kebs.app.kotlin.apollo.common.dto.qa.SSFComplianceStatusDetailsDto
 import org.kebs.app.kotlin.apollo.common.dto.qa.SSFPDFListDetailsDto
 import java.math.BigDecimal
 import java.sql.Date
+import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
 
 data class BatchFileFuelSaveDto(
@@ -62,16 +63,22 @@ data class FuelInspectionDto(
 
 data class FuelEntityDto(
         @NotNull(message = "Required field")
+        @NotEmpty(message = "Required field")
         var company: String,
         @NotNull(message = "Required field")
+        @NotEmpty(message = "Required field")
         var petroleumProduct: String,
         @NotNull(message = "Required field")
+        @NotEmpty(message = "Required field")
         var physicalLocation: String,
         @NotNull(message = "Required field")
+        @NotEmpty(message = "Required field")
         var inspectionDateFrom: Date,
         @NotNull(message = "Required field")
+        @NotEmpty(message = "Required field")
         var inspectionDateTo: Date,
         @NotNull(message = "Required field")
+        @NotEmpty(message = "Required field")
         var stationOwnerEmail: String,
         var remarks: String? = null,
 )

@@ -199,6 +199,7 @@ export class EpraListComponent implements OnInit {
       physicalLocation: ['', Validators.required],
       inspectionDateFrom: ['', Validators.required],
       inspectionDateTo: ['', Validators.required],
+      stationOwnerEmail: ['', Validators.required],
       remarks: ['', Validators.required],
     },{ validator: [
       //Default error with this validator:  {fromToDate: true}
@@ -320,14 +321,14 @@ export class EpraListComponent implements OnInit {
     if (valid) {
       this.SpinnerService.show();
       this.dataSave = {...this.dataSave, ...this.addNewScheduleForm.value};
-      this.msService.msFuelInspectionAddSchedule(this.loadedData.fuelBatchDetailsDto.referenceNumber,this.dataSave).subscribe(
+      this.msService.msFuelInspectionAddSchedule(this.loadedData.fuelBatchDetailsDto.referenceNumber, this.dataSave).subscribe(
           (data: any) => {
             console.log(data);
             this.loadedData = data;
             this.totalCount = this.loadedData.fuelInspectionDto.length;
             this.dataSet.load(this.loadedData.fuelInspectionDto);
             this.SpinnerService.hide();
-            this.msService.showSuccess("NEW FUEL SCHEDULE CREATED SUCCESSFUL")
+            this.msService.showSuccess('NEW FUEL SCHEDULE CREATED SUCCESSFUL')
           },
           error => {
             this.SpinnerService.hide();

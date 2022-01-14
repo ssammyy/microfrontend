@@ -16,7 +16,7 @@
                         <div class="card-icon">
                             <i class="material-icons" *ngIf="fuelInspection">Fuel Inspection Scheduled</i>
                         </div>
-                        <h4 class="card-title" *ngIf="fuelInspection">Ref No #{{fuelInspection.referenceNumber}}
+                        <h4 class="card-title" *ngIf="fuelInspection">Ref No #{{fuelInspection?.referenceNumber}}
                             <button class="btn btn-sm btn-default float-right mr-7"
                                     (click)="goBack()"><i class="fa fa-arrow-left"></i> Back
                             </button>
@@ -35,40 +35,40 @@
                                         <ul class="w-list-unstyled">
                                             <li class="list-item-accordion ">
                                                 <div class="list-title-accordion">Reference Number</div>
-                                                <div class="list-text-accordion">{{fuelInspection.referenceNumber}}
+                                                <div class="list-text-accordion">{{fuelInspection?.referenceNumber}}
                                                 </div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Company</div>
-                                                <div class="list-text-accordion">{{fuelInspection.company}}
+                                                <div class="list-text-accordion">{{fuelInspection?.company}}
                                                 </div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Petroleum Product</div>
                                                 <div class="list-text-accordion">
-                                                    {{fuelInspection.petroleumProduct}}
+                                                    {{fuelInspection?.petroleumProduct}}
                                                 </div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Physical Location</div>
                                                 <div class="list-text-accordion">
-                                                    {{fuelInspection.physicalLocation}}
+                                                    {{fuelInspection?.physicalLocation}}
                                                 </div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Inspection Date From</div>
                                                 <div class="list-text-accordion">
-                                                    {{fuelInspection.inspectionDateFrom |date}}</div>
+                                                    {{fuelInspection?.inspectionDateFrom |date}}</div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Inspection Date To</div>
-                                                <div class="list-text-accordion">{{fuelInspection.inspectionDateTo |date}}
+                                                <div class="list-text-accordion">{{fuelInspection?.inspectionDateTo |date}}
                                                 </div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Process Stage</div>
                                                 <div class="list-text-accordion">
-                                                    {{fuelInspection.processStage}}</div>
+                                                    {{fuelInspection?.processStage}}</div>
                                             </li>
 <!--                                            <li class="list-item-accordion">-->
 <!--                                                <div class="list-title-accordion">Closed Status</div>-->
@@ -78,26 +78,26 @@
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Region</div>
                                                 <div class="list-text-accordion">
-                                                    {{fuelInspection.batchDetails.region}}</div>
+                                                    {{fuelInspection?.batchDetails?.region}}</div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">County</div>
                                                 <div class="list-text-accordion">
-                                                    {{fuelInspection.batchDetails.county}}</div>
+                                                    {{fuelInspection?.batchDetails?.county}}</div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Town</div>
                                                 <div class="list-text-accordion">
-                                                    {{fuelInspection.batchDetails.town}}</div>
+                                                    {{fuelInspection?.batchDetails?.town}}</div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Year</div>
                                                 <div class="list-text-accordion">
-                                                    {{fuelInspection.batchDetails.batchFileYear}}</div>
+                                                    {{fuelInspection?.batchDetails?.batchFileYear}}</div>
                                             </li>
                                         </ul>
                                     </mat-tab>
-                                    <mat-tab *ngIf="fuelInspection.officersAssigned" label="2">
+                                    <mat-tab *ngIf="fuelInspection?.officersAssigned" label="2">
                                         <ng-template mat-tab-label>
                                             Assigned Officer Details
                                         </ng-template>
@@ -105,22 +105,22 @@
                                         <ul class="w-list-unstyled">
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">First Name</div>
-                                                <div class="list-text-accordion">{{fuelInspection.officersAssigned.firstName}}
+                                                <div class="list-text-accordion">{{fuelInspection?.officersAssigned?.firstName}}
                                                 </div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Last Name</div>
-                                                <div class="list-text-accordion">{{fuelInspection.officersAssigned.lastName}}
+                                                <div class="list-text-accordion">{{fuelInspection?.officersAssigned?.lastName}}
                                                 </div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Email</div>
                                                 <div class="list-text-accordion">
-                                                    {{fuelInspection.officersAssigned.email}}</div>
+                                                    {{fuelInspection?.officersAssigned?.email}}</div>
                                             </li>
                                         </ul>
                                     </mat-tab>
-                                    <mat-tab *ngIf="fuelInspection.rapidTestDone" label="3">
+                                    <mat-tab *ngIf="fuelInspection?.rapidTestDone" label="3">
                                         <ng-template mat-tab-label>
                                             Rapid Test Details
                                         </ng-template>
@@ -128,17 +128,17 @@
                                         <ul class="w-list-unstyled">
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Test Status</div>
-                                                <div class="list-text-accordion">{{fuelInspection.rapidTest.rapidTestStatus}}
+                                                <div class="list-text-accordion">{{fuelInspection?.rapidTest?.rapidTestStatus}}
                                                 </div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Test Remarks</div>
-                                                <div class="list-text-accordion">{{fuelInspection.rapidTest.rapidTestRemarks}}
+                                                <div class="list-text-accordion">{{fuelInspection?.rapidTest?.rapidTestRemarks}}
                                                 </div>
                                             </li>
                                         </ul>
                                     </mat-tab>
-                                    <mat-tab *ngIf="fuelInspection.sampleCollected" label="4">
+                                    <mat-tab *ngIf="fuelInspection?.sampleCollected" label="4">
                                         <ng-template mat-tab-label>
                                             Sample Collected Details
                                         </ng-template>
@@ -148,58 +148,58 @@
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Name Manufacturer Trader</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.sampleCollected.nameManufacturerTrader}}</div>
+                                                        {{fuelInspection?.sampleCollected?.nameManufacturerTrader}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Address Manufacturer Trader</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.sampleCollected.addressManufacturerTrader}}</div>
+                                                        {{fuelInspection?.sampleCollected?.addressManufacturerTrader}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Sampling Method</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.sampleCollected.samplingMethod}}</div>
+                                                        {{fuelInspection?.sampleCollected?.samplingMethod}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Reasons Collecting Samples</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.sampleCollected.reasonsCollectingSamples}}</div>
+                                                        {{fuelInspection?.sampleCollected?.reasonsCollectingSamples}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Any Remarks
                                                     </div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.sampleCollected.anyRemarks}}</div>
+                                                        {{fuelInspection?.sampleCollected?.anyRemarks}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Designation Officer Collecting Sample</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.sampleCollected.designationOfficerCollectingSample}}</div>
+                                                        {{fuelInspection?.sampleCollected?.designationOfficerCollectingSample}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Name Officer Collecting Sample</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.sampleCollected.nameOfficerCollectingSample}}</div>
+                                                        {{fuelInspection?.sampleCollected?.nameOfficerCollectingSample}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Date Officer Collecting Sample</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.sampleCollected.dateOfficerCollectingSample|date}}</div>
+                                                        {{fuelInspection?.sampleCollected?.dateOfficerCollectingSample|date}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Name Witness</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.sampleCollected.nameWitness}}</div>
+                                                        {{fuelInspection?.sampleCollected?.nameWitness}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Designation Witness</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.sampleCollected.designationWitness}}</div>
+                                                        {{fuelInspection?.sampleCollected?.designationWitness}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Date Witness</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.sampleCollected.dateWitness|date}}</div>
+                                                        {{fuelInspection?.sampleCollected?.dateWitness|date}}</div>
                                                 </li>
                                             </ul>
                                             <button class="btn-sm btn-primary" >Download</button>
@@ -208,12 +208,12 @@
                                                     <label style="color: #0082f3">Items</label>
                                                 </div>
                                                 <div class="table-striped table-condensed table-responsive">
-                                                    <ng2-smart-table [settings]="settingsSampleCollectItems" [source]="fuelInspection.sampleCollected.productsList"></ng2-smart-table>
+                                                    <ng2-smart-table [settings]="settingsSampleCollectItems" [source]="fuelInspection?.sampleCollected?.productsList"></ng2-smart-table>
                                                 </div>
                                             </div>
                                         </div>
                                     </mat-tab>
-                                    <mat-tab *ngIf="fuelInspection.sampleSubmitted" label="5">
+                                    <mat-tab *ngIf="fuelInspection?.sampleSubmitted" label="5">
                                         <ng-template mat-tab-label>
                                             Sample Submitted Details
                                         </ng-template>
@@ -223,108 +223,108 @@
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Name Product</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.sampleSubmitted.nameProduct}}</div>
+                                                        {{fuelInspection?.sampleSubmitted?.nameProduct}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Packaging</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.sampleSubmitted.packaging}}</div>
+                                                        {{fuelInspection?.sampleSubmitted?.packaging}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Labelling Identification</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.sampleSubmitted.labellingIdentification}}</div>
+                                                        {{fuelInspection?.sampleSubmitted?.labellingIdentification}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">File Ref Number</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.sampleSubmitted.fileRefNumber}}</div>
+                                                        {{fuelInspection?.sampleSubmitted?.fileRefNumber}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">References Standards
                                                     </div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.sampleSubmitted.referencesStandards}}</div>
+                                                        {{fuelInspection?.sampleSubmitted?.referencesStandards}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Size Test Sample</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.sampleSubmitted.sizeTestSample}}</div>
+                                                        {{fuelInspection?.sampleSubmitted?.sizeTestSample}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Size Ref Sample</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.sampleSubmitted.sizeRefSample}}</div>
+                                                        {{fuelInspection?.sampleSubmitted?.sizeRefSample}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Condition</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.sampleSubmitted.condition}}</div>
+                                                        {{fuelInspection?.sampleSubmitted?.condition}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Sample References</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.sampleSubmitted.sampleReferences}}</div>
+                                                        {{fuelInspection?.sampleSubmitted?.sampleReferences}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Senders Name</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.sampleSubmitted.sendersName}}</div>
+                                                        {{fuelInspection?.sampleSubmitted?.sendersName}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Designation</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.sampleSubmitted.designation}}</div>
+                                                        {{fuelInspection?.sampleSubmitted?.designation}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Address</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.sampleSubmitted.address}}</div>
+                                                        {{fuelInspection?.sampleSubmitted?.address}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Senders Date</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.sampleSubmitted.sendersDate| date}}</div>
+                                                        {{fuelInspection?.sampleSubmitted?.sendersDate| date}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Receivers Name</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.sampleSubmitted.receiversName}}</div>
+                                                        {{fuelInspection?.sampleSubmitted?.receiversName}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Test Charges Ksh</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.sampleSubmitted.testChargesKsh}}</div>
+                                                        {{fuelInspection?.sampleSubmitted?.testChargesKsh}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Receipt Number</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.sampleSubmitted.receiptLpoNumber}}</div>
+                                                        {{fuelInspection?.sampleSubmitted?.receiptLpoNumber}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Invoice Number</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.sampleSubmitted.invoiceNumber}}</div>
+                                                        {{fuelInspection?.sampleSubmitted?.invoiceNumber}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Disposal</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.sampleSubmitted.disposal}}</div>
+                                                        {{fuelInspection?.sampleSubmitted?.disposal}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Remarks</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.sampleSubmitted.remarks}}</div>
+                                                        {{fuelInspection?.sampleSubmitted?.remarks}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Sample Collection Number</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.sampleSubmitted.sampleCollectionNumber}}</div>
+                                                        {{fuelInspection?.sampleSubmitted?.sampleCollectionNumber}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Bs Number</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.sampleSubmitted.bsNumber}}</div>
+                                                        {{fuelInspection?.sampleSubmitted?.bsNumber}}</div>
                                                 </li>
                                             </ul>
                                             <button class="btn-sm btn-primary" >Download</button>
@@ -333,13 +333,13 @@
                                                     <label style="color: #0082f3">Items</label>
                                                 </div>
                                                 <div class="table-striped table-condensed table-responsive">
-                                                    <ng2-smart-table [settings]="settingsSampleSubmittedItems" [source]="fuelInspection.sampleSubmitted.parametersList"></ng2-smart-table>
+                                                    <ng2-smart-table [settings]="settingsSampleSubmittedItems" [source]="fuelInspection?.sampleSubmitted?.parametersList"></ng2-smart-table>
                                                 </div>
                                             </div>
                                             <br>
                                         </div>
                                     </mat-tab>
-                                    <mat-tab *ngIf="fuelInspection.sampleLabResults" label="6">
+                                    <mat-tab *ngIf="fuelInspection?.sampleLabResults?.parametersListTested" label="6">
 <!--                                    <mat-tab  label="6">-->
                                         <ng-template mat-tab-label>
                                            Lab Results Details
@@ -348,7 +348,7 @@
                                         <label style="color: #0082f3">Lab Results Details</label>
                                         <div class="panel" style="max-height: 388px;">
                                             <div *ngFor="let role of roles">
-                                                <button  *ngIf="role == 'MS_IO_MODIFY' && fuelInspection.bsNumberStatus && fuelInspection.compliantStatusAdded==false"(click)="openModalAddDetails('ssfAddComplianceStatus')" mat-raised-button="" data-toggle="modal"
+                                                <button  *ngIf="role == 'MS_IO_MODIFY' && fuelInspection?.bsNumberStatus && fuelInspection?.compliantStatusAdded==false" (click)="openModalAddDetails('ssfAddComplianceStatus')" mat-raised-button="" data-toggle="modal"
                                                         data-target="#myModal1"
                                                         class="btn btn-sm btn-primary mr-2"><span
                                                         class="mat-button-wrapper">ADD COMPLIANCE STATUS</span>
@@ -361,17 +361,17 @@
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">BS Number</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.sampleLabResults?.ssfResultsList?.bsNumber}}</div>
+                                                        {{fuelInspection?.sampleLabResults?.ssfResultsList?.bsNumber}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Compliance Remarks</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.sampleLabResults?.ssfResultsList?.complianceRemarks}}</div>
+                                                        {{fuelInspection?.sampleLabResults?.ssfResultsList?.complianceRemarks}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Compliance Status</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.sampleLabResults?.ssfResultsList?.complianceStatus}}</div>
+                                                        {{fuelInspection?.sampleLabResults?.ssfResultsList?.complianceStatus}}</div>
                                                 </li>
                                             </ul>
 
@@ -408,7 +408,7 @@
                                             <br>
                                         </div>
                                     </mat-tab>
-                                    <mat-tab *ngIf="fuelInspection.fuelRemediation" label="7">
+                                    <mat-tab *ngIf="fuelInspection?.fuelRemediation" label="7">
 <!--                                    <mat-tab label="7">-->
 <!--                                    <mat-tab  label="6">-->
                                         <ng-template mat-tab-label>
@@ -421,67 +421,67 @@
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Remediation Date</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.fuelRemediation?.dateOfRemediation| date}}</div>
+                                                        {{fuelInspection?.fuelRemediation?.dateOfRemediation| date}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Pro Forma Invoice No</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.fuelRemediation?.proFormaInvoiceNo}}</div>
+                                                        {{fuelInspection?.fuelRemediation?.proFormaInvoiceNo}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Receipt No</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.fuelRemediation?.feePaidReceiptNo}}</div>
+                                                        {{fuelInspection?.fuelRemediation?.feePaidReceiptNo}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Invoice Amount</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.fuelRemediation?.invoiceAmount}}</div>
+                                                        {{fuelInspection?.fuelRemediation?.invoiceAmount}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Date Of Payment</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.fuelRemediation?.dateOfPayment| date}}</div>
+                                                        {{fuelInspection?.fuelRemediation?.dateOfPayment| date}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Product Type</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.fuelRemediation?.productType}}</div>
+                                                        {{fuelInspection?.fuelRemediation?.productType}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Applicable Kenya Standard</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.fuelRemediation?.applicableKenyaStandard}}</div>
+                                                        {{fuelInspection?.fuelRemediation?.applicableKenyaStandard}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Remediation Procedure</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.fuelRemediation?.remediationProcedure}}</div>
+                                                        {{fuelInspection?.fuelRemediation?.remediationProcedure}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">volume Of Product Contaminated</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.fuelRemediation?.volumeOfProductContaminated}}</div>
+                                                        {{fuelInspection?.fuelRemediation?.volumeOfProductContaminated}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Contaminated Fuel Type</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.fuelRemediation?.contaminatedFuelType}}</div>
+                                                        {{fuelInspection?.fuelRemediation?.contaminatedFuelType}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Quantity Of Fuel</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.fuelRemediation?.quantityOfFuel}}</div>
+                                                        {{fuelInspection?.fuelRemediation?.quantityOfFuel}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Volume Added</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.fuelRemediation?.volumeAdded}}</div>
+                                                        {{fuelInspection?.fuelRemediation?.volumeAdded}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Total Volume</div>
                                                     <div class="list-text-accordion">
-                                                        {{fuelInspection.fuelRemediation?.totalVolume}}</div>
+                                                        {{fuelInspection?.fuelRemediation?.totalVolume}}</div>
                                                 </li>
                                             </ul>
                                             <br>
@@ -494,7 +494,7 @@
                                 <b>Action:</b>
                                 <div *ngFor="let role of roles">
                                     <div *ngIf="role == 'MS_MP_MODIFY'">
-                                        <button  *ngIf="fuelInspection.batchDetails.batchClosed && fuelInspection.assignedOfficerStatus ==false" (click)="openModalAddDetails('assignOfficer')" mat-raised-button="" data-toggle="modal"
+                                        <button  *ngIf="fuelInspection?.batchDetails?.batchClosed && fuelInspection.assignedOfficerStatus ==false" (click)="openModalAddDetails('assignOfficer')" mat-raised-button="" data-toggle="modal"
                                                  data-target="#myModal1"
                                                  class="btn btn-sm btn-primary mr-2"><span
                                                 class="mat-button-wrapper">ASSIGN OFFICER</span>
