@@ -6,6 +6,7 @@ import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.request.AuctionForm
 import org.kebs.app.kotlin.apollo.api.payload.request.AuctionItem
 import org.kebs.app.kotlin.apollo.api.payload.response.AuctionRequestDto
+import org.kebs.app.kotlin.apollo.api.payload.response.AuctionUploadDao
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
@@ -32,9 +33,12 @@ import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 enum class AuctionGoodStatus(val status: Int) {
-    NEW(0), APPROVED(1), REJECTED(2), OTHER(3);
+    NEW(0), APPROVED(1), REJECTED(2), OTHER(3),PAYMENT_PENDING(7);
 }
 
 @Service
@@ -52,13 +56,36 @@ class AuctionService(
         private val apiClientService: ApiClientService,
         private val roleAssignmentsRepository: IUserRoleAssignmentsRepository,
 ) {
-
+    val REPORT_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd")
     fun listAuctionCategories(): ApiResponseModel {
         val response = ApiResponseModel()
         response.data = this.categoryRepo.findByStatus(1)
         response.message = "Auction Categories"
         response.responseCode = ResponseCodes.SUCCESS_CODE
         return response
+    }
+
+    fun downloadAuctionAttachment(auctionId: Long, attachmentId: Long): AuctionUploadsEntity? {
+        return this.auctionUploadRepo.findByIdAndAuctionId_Id(attachmentId, auctionId).orElse(null)
+    }
+
+    fun getReportTimestamp(date: String, first: Boolean): Timestamp {
+        val date = REPORT_DATE_FORMAT.parse(date)
+        val dateTime = when (first) {
+            true -> LocalDateTime.of(LocalDate.from(date), LocalTime.MIDNIGHT)
+            else -> LocalDateTime.of(LocalDate.from(date), LocalTime.MAX)
+        }
+        return Timestamp.valueOf(dateTime)
+    }
+
+    fun downloadAuctionReport(stardDate: String, endDate: String): List<AuctionRequestDto> {
+        val startTimestamp = getReportTimestamp(stardDate,true)
+        val endTimestamp = getReportTimestamp(endDate,false)
+
+        val auctionReportDetails = this.auctionRequestsRepository.findByApprovalStatusInAndApprovedRejectedOnBetween(
+                arrayListOf(AuctionGoodStatus.APPROVED.status,AuctionGoodStatus.REJECTED.status,AuctionGoodStatus.OTHER.status),
+                startTimestamp,endTimestamp)
+        return AuctionRequestDto.fromList(auctionReportDetails)
     }
 
     fun addReport(multipartFile: MultipartFile?, auction: AuctionRequests, description: String, fileRequired: Boolean): Long? {
@@ -68,8 +95,10 @@ class AuctionService(
             upload.document = multipartFile.bytes
             upload.fileType = multipartFile.contentType
             upload.fileSize = multipartFile.size
-            upload.name = multipartFile.name
+            upload.name = multipartFile.originalFilename
             upload.description = description
+            upload.createdBy = commonDaoServices.loggedInUserDetails().userName
+            upload.createdOn = Timestamp.from(Instant.now())
             val saved = this.auctionUploadRepo.save(upload)
             return saved.id
         } ?: run {
@@ -103,6 +132,7 @@ class AuctionService(
             commonDaoServices.getLoggedInUser()?.let {
                 val demandNote = destinationInspectionDaoServices.generateAuctionDemandNoteWithItemList(this.auctionItemsRepo.findByAuctionId(auctionId), map, auctionRequest, false, 0.0, it)
                 auctionRequest.demandNoteId = demandNote.id
+                auctionRequest.approvalStatus=AuctionGoodStatus.PAYMENT_PENDING.status
                 auctionRequest.varField1 = "PENDING PAYMENT"
                 auctionRequestsRepository.save(auctionRequest)
                 response.data = demandNote.id
@@ -191,7 +221,7 @@ class AuctionService(
             if (pg != null) {
                 response.responseCode = ResponseCodes.SUCCESS_CODE
                 response.message = "Auction goods"
-                response.data = pg.toList()
+                response.data = AuctionRequestDto.fromList(pg.toList())
                 response.totalCount = pg.totalElements
                 response.totalPages = pg.totalPages
             } else {
@@ -206,26 +236,29 @@ class AuctionService(
         return response
     }
 
-    fun assignAuctionRequest(auctionId: Long, remarks: String, officerId: Long): ApiResponseModel {
+    fun assignAuctionRequest(auctionId: Long, remarks: String, officerId: Long, reassign: Boolean?): ApiResponseModel {
         val response = ApiResponseModel()
         val opttional = this.auctionRequestsRepository.findById(auctionId)
         if (opttional.isPresent) {
             val auction = opttional.get()
             // Assigned
+            response.responseCode = ResponseCodes.SUCCESS_CODE
             if (auction.assignedOfficer == null) {
                 auction.assigner = this.commonDaoServices.getLoggedInUser()
                 auction.assignedOfficer = commonDaoServices.findUserByID(officerId)
                 auction.assignedOn = Date.valueOf(LocalDate.now())
                 addAuctionHistory(auctionId, "IO-ASSIGN", remarks, auction.assignedOfficer?.userName)
                 response.message = "Assigned officer"
-            } else {
+            } else if (reassign == true) {
                 auction.assigner = this.commonDaoServices.getLoggedInUser()
                 auction.assignedOfficer = commonDaoServices.findUserByID(officerId)
                 addAuctionHistory(auctionId, "IO-REASSIGN", remarks, auction.assignedOfficer?.userName)
                 response.message = "Reassigned officer"
+            } else {
+                response.responseCode = ResponseCodes.FAILED_CODE
+                response.message = "Already assigned"
             }
             this.auctionRequestsRepository.save(auction)
-            response.responseCode = ResponseCodes.SUCCESS_CODE
         } else {
             response.responseCode = ResponseCodes.NOT_FOUND
             response.message = "Request not found"
@@ -254,8 +287,10 @@ class AuctionService(
             val dataMap = mutableMapOf<String, Any>()
             val auctionDto = AuctionRequestDto.fromEntity(auction)
             auctionDto.myTask = userEntity?.userName.equals(auction.assignedOfficer?.userName, true)
+            auctionDto.isSupervisor = this.commonDaoServices.currentUserDiSupervisor()
+            auctionDto.isInspector = this.commonDaoServices.currentUserDiOfficer()
             dataMap["auction_details"] = auctionDto
-            dataMap["attachments"] = auctionUploadRepo.findByAuctionId(auction)
+            dataMap["attachments"] = AuctionUploadDao.fromList(auctionUploadRepo.findByAuctionId(auction))
             dataMap["items"] = auctionItemsRepo.findByAuctionId(auctionId)
             dataMap["history"] = auctionRequestHistoryRepo.findByAuctionIdAndStatus(auctionId, 1)
             auction.demandNoteId?.let { demandNoteId ->
@@ -343,6 +378,25 @@ class AuctionService(
         tmpItem.quantity = BigDecimal.valueOf(1)
         request.items = arrayListOf(tmpItem)
         this.addAuctionRequest(request)
+    }
+
+    fun uploadAttachment(multipartFile: MultipartFile?, remarks: String, auctionId: Long): ApiResponseModel {
+        val response = ApiResponseModel()
+        try {
+            val opttional = this.auctionRequestsRepository.findById(auctionId)
+            if (opttional.isPresent) {
+                this.addReport(multipartFile, opttional.get(), remarks, true)
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+                response.message = "Attachment received"
+            } else {
+                response.responseCode = ResponseCodes.NOT_FOUND
+                response.message = "Record not found"
+            }
+        } catch (ex: Exception) {
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Failed, file was not saved"
+        }
+        return response
     }
 
     fun uploadAuctionGoods(multipartFile: MultipartFile, fileType: String?, categoryCode: String?, listingDate: Date): ApiResponseModel {

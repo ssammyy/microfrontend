@@ -9,11 +9,13 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
+import org.kebs.app.kotlin.apollo.api.service.AuctionService
 import org.kebs.app.kotlin.apollo.api.service.ChecklistService
 import org.kebs.app.kotlin.apollo.api.service.DestinationInspectionService
 import org.kebs.app.kotlin.apollo.api.service.InvoicePaymentService
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.kebs.app.kotlin.apollo.store.model.auction.AuctionUploadsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.DiUploadsEntity
 import org.springframework.core.io.ResourceLoader
 import org.springframework.http.HttpHeaders
@@ -33,7 +35,8 @@ class GeneralController(
         private val checklistService: ChecklistService,
         private val invoicePaymentService: InvoicePaymentService,
         private val commonDaoServices: CommonDaoServices,
-        private val limsServices: LimsServices
+        private val limsServices: LimsServices,
+        private val auctionService: AuctionService
 ) {
     val checkMark = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapCheckmarkImagePath)
     val smarkImage = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapSmarkImagePath)
@@ -45,7 +48,7 @@ class GeneralController(
             val file = limsServices.mainFunctionLimsGetPDF(bsNumber, fileName)
             httResponse.contentType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(file.name)
             httResponse.setHeader(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"${file.name}\";")
-            httResponse.setHeader(HttpHeaders.CONTENT_TYPE,MediaType.APPLICATION_PDF_VALUE)
+            httResponse.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
             httResponse.setContentLengthLong(file.length())
             httResponse.outputStream
                     .let { responseOutputStream ->
@@ -167,14 +170,14 @@ class GeneralController(
             val pdfStream: ByteArrayOutputStream
             val cocType = data["CoCType"] as String
             val fileName = "LOCAL-${cocType.toUpperCase()}-".plus(data["CocNo"] as String).plus(".pdf")
-            when(cocType){
-                "COI" ->{
+            when (cocType) {
+                "COI" -> {
                     pdfStream = reportsDaoService.extractReportMapDataSource(data, "classpath:reports/LocalCoiReport.jrxml", items)
                 }
                 "NCR" -> {
                     pdfStream = reportsDaoService.extractReportMapDataSource(data, "classpath:reports/NcrReport.jrxml", items)
                 }
-                else ->{
+                else -> {
                     pdfStream = reportsDaoService.extractReportMapDataSource(data, applicationMapProperties.mapReportLocalCocPath, items)
                 }
             }
@@ -307,6 +310,22 @@ class GeneralController(
             // Response with file
             downloadBytes(it, "ATTACHMENT-${diUpload.id}-${diUpload.name}", httResponse)
         } ?: throw ExpectedDataNotFound("Attachment file not found")
+    }
+
+    @GetMapping("/auction/attachment/{uploadId}/{auctionId}")
+    fun downloadAuctionAttachment(@PathVariable("uploadId") recordId: Long, @PathVariable("auctionId") auctionId: Long, httResponse: HttpServletResponse) {
+        auctionService.downloadAuctionAttachment(auctionId, recordId)?.let {
+            // Response with file
+            it.document?.let { doc ->
+                downloadBytes(doc, "AUCTION-ATTACHMENT-${it.id}-${it.name?.toUpperCase()}", httResponse)
+            } ?: throw ExpectedDataNotFound("Attachment file not found")
+        } ?: throw ExpectedDataNotFound("Attachment file not found")
+    }
+
+    @GetMapping("/auction/report/{startDate}/{endDate}")
+    fun downloadAuctionReport(@PathVariable("startDate") startDate: String, @PathVariable("endDate") endDate: String, httResponse: HttpServletResponse) {
+        val records=auctionService.downloadAuctionReport(startDate, endDate)
+        // TODO: Create Report
     }
 
     @CrossOrigin

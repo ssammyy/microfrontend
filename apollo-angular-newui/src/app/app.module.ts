@@ -248,6 +248,11 @@ import { ViewTransactionsComponent } from './apollowebs/invoice/corporate/view-t
 import { ViewAuctionItemsComponent } from './apollowebs/di/auction/view-auction-items/view-auction-items.component';
 import { UploadFileComponent } from './apollowebs/di/auction/upload-file/upload-file.component';
 import { AuctionItemDetailsComponent } from './apollowebs/di/auction/auction-item-details/auction-item-details.component';
+import { AssignAuctionItemComponent } from './apollowebs/di/auction/assign-auction-item/assign-auction-item.component';
+import { AproveRejectAuctionItemComponent } from './apollowebs/di/auction/aprove-reject-auction-item/aprove-reject-auction-item.component';
+import { GenerateDemandNoteComponent } from './apollowebs/di/auction/generate-demand-note/generate-demand-note.component';
+import { AddAuctionRecordComponent } from './apollowebs/di/auction/add-auction-record/add-auction-record.component';
+import { AddEditAuctionItemComponent } from './apollowebs/di/auction/add-edit-auction-item/add-edit-auction-item.component';
 
 @NgModule({
     imports: [
@@ -520,6 +525,11 @@ import { AuctionItemDetailsComponent } from './apollowebs/di/auction/auction-ite
         ViewAuctionItemsComponent,
         UploadFileComponent,
         AuctionItemDetailsComponent,
+        AssignAuctionItemComponent,
+        AproveRejectAuctionItemComponent,
+        GenerateDemandNoteComponent,
+        AddAuctionRecordComponent,
+        AddEditAuctionItemComponent,
     ],
     providers: [
         MatNativeDateModule,

@@ -15,9 +15,10 @@
                         <div class="toolbar">
                             <div class="search-bar">
                                 <div class="input-group form-inline" role="group" aria-label="Lot Number">
+                                    <label for="filter-lot-no"></label>
                                     <input class="search-form-input" id="filter-lot-no" type="text"
-                                           (change)="searchAuction($event)"
-                                           placeholder="Lot Number">
+                                                                              (change)="searchAuction($event)"
+                                                                              placeholder="Lot Number">
                                     <div class="input-group-btn">
                                         <button type="button" class="btn btn-primary btn-background"
                                                 (click)="searchPhraseChanged()">
@@ -49,11 +50,14 @@
                                 </div>
                                 <div class="btn-group btn-group-sm float-right" role="group"
                                      aria-label="Applications Status">
-                                    <button class="btn btn-sm btn-primary mr-7"
+                                    <button class="btn btn-sm ml-2"
+                                            (click)="downloadReport($event)"><i class="fa fa-download"></i>Download Report
+                                    </button>
+                                    <button class="btn btn-sm ml-2"
                                             (click)="uploadAuction($event)"><i class="fa fa-upload"></i>Auction Items
                                     </button>
-                                    <button class="btn btn-sm btn-primary ml-5"
-                                            (click)="aadAuctionItem($event)"><i class="fa fa-upload"></i>Add
+                                    <button class="btn btn-sm ml-2"
+                                            (click)="aadAuctionItem($event)"><i class="fa fa-plus"></i>Add
                                     </button>
                                 </div>
                             </div>

@@ -6,6 +6,7 @@ import {LocalDataSource} from "ng2-smart-table";
 import {MatDialog} from "@angular/material/dialog";
 import {UploadFileComponent} from "../upload-file/upload-file.component";
 import {Router} from "@angular/router";
+import {AddAuctionRecordComponent} from "../add-auction-record/add-auction-record.component";
 
 @Component({
     selector: 'app-view-auction-items',
@@ -15,6 +16,7 @@ import {Router} from "@angular/router";
 export class ViewAuctionItemsComponent implements OnInit {
     auctionType = 'assigned'
     searchStatus = null
+    categories: any
     keywords: any
     page = 0
     pageSize = 20
@@ -112,6 +114,18 @@ export class ViewAuctionItemsComponent implements OnInit {
 
     ngOnInit(): void {
         this.loadData()
+        this.loadCategories()
+    }
+
+    loadCategories() {
+        this.diService.loadAuctionCategories()
+            .subscribe(
+                res => {
+                    if (res.responseCode == "00") {
+                        this.categories = res.data
+                    }
+                }
+            )
     }
 
     toggleStatus(status: string): void {
@@ -135,6 +149,22 @@ export class ViewAuctionItemsComponent implements OnInit {
     }
 
     aadAuctionItem(event: any) {
+        console.log("Add: Auction item")
+        this.dialog.open(AddAuctionRecordComponent, {
+            data: {
+                categories: this.categories
+            }
+        }).afterClosed()
+            .subscribe(
+                res => {
+                    if (res) {
+                        this.loadData()
+                    }
+                }
+            )
+    }
+
+    downloadReport(event: any) {
 
     }
 
@@ -174,7 +204,7 @@ export class ViewAuctionItemsComponent implements OnInit {
     auctionEvent(action: any) {
         switch (action.action) {
             case "viewRecord": {
-                this.router.navigate(["/di/auction/details/", action.data.id])
+                this.router.navigate(["/di/auction/details/", action.data.requestId])
                 break
             }
             case "editRecord": {

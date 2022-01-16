@@ -118,8 +118,9 @@
                                     </mat-tab>
                                     <mat-tab tabindex="3" label="Attachments">
                                         <div class="table-striped table-condensed table-responsive">
-                                            <ng2-smart-table class="table table-hover" [settings]="historySettings"
-                                                             [source]="auctionDetails.attachments">
+                                            <ng2-smart-table class="table table-hover" [settings]="attachmentSettings"
+                                                             [source]="auctionDetails.attachments"
+                                                             (custom)="tableActions($event)">
                                             </ng2-smart-table>
                                         </div>
                                     </mat-tab>
@@ -133,26 +134,42 @@
                                 </mat-tab-group>
                             </div>
                             <div class="col-md-2 col-sm-12">
-                                <h5>Action:</h5>
-                                <br/>
-                                <input type="file" (change)="uploadAuctionReport($event)" [hidden]="true" #auctionReport>
-                                <button *ngIf="auctionDetails.auction_details.approvalStatus!=='0'" class="btn btn-sm btn-primary" (click)="auctionReport.click()">
-                                    <i class="fa fa-upload"></i>Upload Report
-                                </button>
-                                <button *ngIf="auctionDetails.auction_details.consignmentId" class="btn btn-sm btn-primary" (click)="viewConsignmentDocument()">View
-                                    Consignment
-                                </button>
-                                <button *ngIf="!auctionDetails.payment" class="btn btn-sm btn-primary" (click)="generateInvoice()">View
-                                    Generate Demand Note
-                                </button>
-                                <button *ngIf="auctionDetails.auction_details.approvalStatus==='0'"
-                                        class="btn btn-sm btn-primary" (click)="approveRejectConsignment()">
-                                    Approve/Reject Application
-                                </button>
-                                <h5>Documents:</h5>
-                                <button *ngIf="auctionDetails.auction_details.approvalStatus==='0'"
-                                        class="btn btn-sm btn-primary" (click)="downloadISMReport()">Download Report
-                                </button>
+                                <h5>Actions:</h5>
+                                <div *ngIf="auctionDetails.auction_details.isSupervisor">
+                                    <button *ngIf="auctionDetails.auction_details.assignedOfficer"
+                                            class="btn btn-sm btn-primary" (click)="assignAuctionItem(false)">
+                                        <i class="fa fa-upload"></i>Re-Assign IO
+                                    </button>
+                                    <button *ngIf="!auctionDetails.auction_details.assignedOfficer"
+                                            class="btn btn-sm btn-primary" (click)="assignAuctionItem(false)">
+                                        <i class="fa fa-upload"></i>Assign IO
+                                    </button>
+                                </div>
+                                <div *ngIf="auctionDetails.auction_details.isInspector && auctionDetails.auction_details.myTask">
+                                    <input type="file" (change)="uploadAuctionAttachment($event)" [hidden]="true"
+                                           #auctionReport>
+                                    <button *ngIf="auctionDetails.auction_details.approvalStatus===0"
+                                            class="btn btn-sm btn-primary" (click)="auctionReport.click()">
+                                        <i class="fa fa-attachment"></i>Upload Attachment
+                                    </button>
+                                    <button *ngIf="auctionDetails.auction_details.consignmentId"
+                                            class="btn btn-sm btn-primary" (click)="viewConsignmentDocument()">View
+                                        Consignment
+                                    </button>
+                                    <button *ngIf="!auctionDetails.payment && auctionDetails.auction_details.approvalStatus===0"
+                                            class="btn btn-sm btn-primary"
+                                            (click)="generateInvoice()">
+                                        Generate Demand Note
+                                    </button>
+                                    <button *ngIf="auctionDetails.auction_details.approvalStatus===0"
+                                            class="btn btn-sm btn-primary" (click)="approveRejectConsignment()">
+                                        Approve/Reject Application
+                                    </button>
+                                    <h5>Documents:</h5>
+                                    <button *ngIf="auctionDetails.auction_details.reportId"
+                                            class="btn btn-sm btn-primary" (click)="downloadISMReport()">Download Report
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         <!-- end content-->

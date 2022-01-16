@@ -97,12 +97,15 @@ class AuctionForm {
         request.arrivalDate = this.arrivalDate
         request.importerName = this.importerName
         request.importerPhone = this.importerPhone
-        request.containerSize=this.containerSize
+        request.containerSize = this.containerSize
     }
 
 }
 
 class AuctionAssignForm {
+
+    val reassign: Boolean? = null
+
     @NotNull(message = "Please select inspection officer")
     val officerId: Long? = null
 

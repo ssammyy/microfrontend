@@ -33,6 +33,41 @@ class AuctionHandler(
                 .body(auctionService.listAuctionCategories())
     }
 
+    fun uploadAuctionAttachments(req: ServerRequest): ServerResponse {
+        var response = ApiResponseModel()
+        try {
+            val multipartRequest = (req.servletRequest() as? MultipartHttpServletRequest)
+                    ?: throw ResponseStatusException(
+                            HttpStatus.NOT_ACCEPTABLE,
+                            "Request is not a multipart request"
+                    )
+            val auctionId = req.pathVariable("auctionId").toLong()
+            val multipartFile = multipartRequest.getFile("file")
+            val remarks = multipartRequest.getParameter("remarks")
+            if (multipartFile != null) {
+                remarks?.let {
+                    response = auctionService.uploadAttachment(multipartFile, remarks, auctionId)
+                    response
+                } ?: run {
+                    response.errors = mapOf(Pair("remarks", "Please add file remarks"))
+                    response.responseCode = ResponseCodes.INVALID_CODE
+                    response.message = "Invalid request received"
+                    response
+                }
+            } else {
+                response.errors = mapOf(Pair("file", "Please select at least one file"))
+                response.responseCode = ResponseCodes.INVALID_CODE
+                response.message = "Please select upload file"
+            }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to add audit", ex)
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.message = "Failed to add auction"
+        }
+        return ServerResponse.ok()
+                .body(response)
+    }
+
     fun uploadAuctionCsv(req: ServerRequest): ServerResponse {
         var response = ApiResponseModel()
         try {
@@ -143,7 +178,7 @@ class AuctionHandler(
                 response.data = form
                 response
             } ?: run {
-                response = auctionService.assignAuctionRequest(auctionId, form.remarks!!, form.officerId!!)
+                response = auctionService.assignAuctionRequest(auctionId, form.remarks!!, form.officerId!!, form.reassign)
                 response
             }
         } catch (ex: Exception) {
@@ -186,7 +221,10 @@ class AuctionHandler(
                     )
             val multipartFile = multipartRequest.getFile("file")
             val remarks = multipartRequest.getParameter("remarks")
-            val approval = multipartRequest.getParameter("approved").toBoolean()
+            val witnessName = multipartRequest.getParameter("witnessName")
+            val witnessEmail = multipartRequest.getParameter("witnessEmail")
+            val witnessDesignation = multipartRequest.getParameter("witnessDesignation")
+            val approval = multipartRequest.getParameter("approve").toBoolean()
             response = auctionService.approveRejectAuctionGood(auctionId, multipartFile, approval, remarks)
         } catch (ex: ResponseStatusException) {
             response.responseCode = ResponseCodes.FAILED_CODE

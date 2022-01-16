@@ -155,7 +155,7 @@ class CommonDaoServices(
         private val broadProductCategoryRepository: IBroadProductCategoryRepository,
         private val productsRepo: IProductsRepository,
         private val productSubCategoryRepo: IProductSubcategoryRepository,
-
+        private val roleAssignmentsRepository: IUserRoleAssignmentsRepository,
         private val iProcessesStagesRepo: IProcessesStagesRepository,
         private val iLaboratoryRepo: ILaboratoryRepository,
         private val resourceLoader: ResourceLoader,
@@ -891,7 +891,16 @@ class CommonDaoServices(
                 ?: throw ExpectedDataNotFound("No Business Nature with Business Line of ID  = ${businessLineEntity.id} and status = $status, Existing")
     }
 
-
+    fun currentUserDiSupervisor():Boolean {
+        val usersEntity=this.loggedInUserDetails()
+        val supervisorCount = this.roleAssignmentsRepository.checkUserHasRole("DI_Officer_Charge", 1, usersEntity.id!!)
+        return supervisorCount > 0
+    }
+    fun currentUserDiOfficer():Boolean {
+        val usersEntity=this.loggedInUserDetails()
+        val inspectorCount = this.roleAssignmentsRepository.checkUserHasRole("DI_Inspection_Officers", 1, usersEntity.id!!)
+        return inspectorCount>0
+    }
     fun findUserByUserName(userName: String): UsersEntity {
         usersRepo.findByUserName(userName)
                 ?.let { userEntity ->

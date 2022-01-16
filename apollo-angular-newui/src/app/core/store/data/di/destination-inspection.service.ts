@@ -501,6 +501,37 @@ export class DestinationInspectionService {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/auction/auction/details/" + requestId))
     }
 
+    loadAuctionCategories(): Observable<any>{
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/auction/categories"))
+    }
+
+    assignAuctionInspectionOfficer(data: any, auctionId: number): Observable<any> {
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/auction/auction/assign/" + auctionId), data)
+    }
+
+    uploadAuctionReport(file: File, auctionId: number, remarks: any): Observable<any> {
+        let fd = new FormData()
+        fd.append("file", file)
+        fd.append("remarks", remarks)
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/auction/auction/attachment/upload/" + auctionId), fd)
+    }
+
+    requestAuctionPayment(data: any, auctionId: number): Observable<any> {
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/auction/auction/generate/demand-note/" + auctionId), data)
+    }
+
+    approveRejectAuctionItem(selectedFile: File, remarks: any, approve: any, auctionId: number): Observable<any> {
+        let fd = new FormData()
+        fd.append("file", selectedFile)
+        fd.append("remarks", remarks)
+        fd.append("approve", approve)
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/auction/auction/approve-reject/" + auctionId), fd)
+    }
+
+    addAuctionItem(data: any): Observable<any>{
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/auction/auction/add"), data)
+    }
+
     showSuccess(message: string, fn?: Function) {
         swal.fire({
             title: message,

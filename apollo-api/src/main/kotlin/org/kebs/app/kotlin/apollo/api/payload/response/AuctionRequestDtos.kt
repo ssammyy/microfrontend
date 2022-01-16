@@ -1,8 +1,11 @@
 package org.kebs.app.kotlin.apollo.api.payload.response
 
+import org.kebs.app.kotlin.apollo.api.payload.ConsignmentDocumentTypesEntityDao
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.auction.AuctionCategory
 import org.kebs.app.kotlin.apollo.store.model.auction.AuctionRequests
+import org.kebs.app.kotlin.apollo.store.model.auction.AuctionUploadsEntity
+import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentTypesEntity
 import java.sql.Date
 import java.sql.Timestamp
 import javax.persistence.*
@@ -27,6 +30,8 @@ class AuctionRequestDto {
     var completed: String? = null
     var assigned: Boolean? = null
     var myTask: Boolean? = null
+    var isSupervisor: Boolean? = null
+    var isInspector: Boolean? = null
     var serialNumber: String? = null
     var approvedRejectedOn: Timestamp? = null
     var remarks: String? = null
@@ -71,6 +76,52 @@ class AuctionRequestDto {
                 dto.assigned = true
             }
             return dto
+        }
+
+        fun fromList(auctions: List<AuctionRequests>): List<AuctionRequestDto> {
+            val dtos = mutableListOf<AuctionRequestDto>()
+            auctions.forEach { dtos.add(fromEntity(it)) }
+            return dtos
+        }
+    }
+}
+
+class AuctionUploadDao {
+    var uploadId: Long = 0
+    var auctionId: Long? = null
+    var filepath: String? = null
+    var description: String? = null
+    var name: String? = null
+    var fileType: String? = null
+    var documentType: String? = null
+    var transactionDate: Date? = null
+    var fileSize: Long? = null
+    var status: Int? = null
+    var createdBy: String? = null
+    var createdOn: Timestamp? = null
+
+    companion object {
+        fun fromEntity(upload: AuctionUploadsEntity) = AuctionUploadDao()
+                .apply {
+                    uploadId = upload.id
+                    auctionId = upload.auctionId?.id
+                    filepath = upload.filepath
+                    name = upload.name
+                    fileType = upload.fileType
+                    transactionDate = upload.transactionDate
+                    fileSize = upload.fileSize
+                    description = upload.description
+                    status = upload.status
+                    createdBy = upload.createdBy
+                    createdOn = upload.createdOn
+                }
+
+        fun fromList(uploads: List<AuctionUploadsEntity>): List<AuctionUploadDao> {
+            val data = mutableListOf<AuctionUploadDao>()
+            uploads.forEach {
+                data.add(fromEntity(it))
+            }
+            return data
         }
     }
 }

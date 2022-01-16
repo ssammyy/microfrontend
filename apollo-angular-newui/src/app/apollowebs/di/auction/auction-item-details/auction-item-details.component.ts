@@ -5,6 +5,10 @@ import {MatDialog} from "@angular/material/dialog";
 import {ApproveRejectApplicationComponent} from "../../ism/approve-reject-application/approve-reject-application.component";
 import {ViewDemandNoteComponent} from "../../demand-note-list/view-demand-note/view-demand-note.component";
 import {DatePipe} from "@angular/common";
+import {AssignOfficerComponent} from "../../forms/assign-officer/assign-officer.component";
+import {AssignAuctionItemComponent} from "../assign-auction-item/assign-auction-item.component";
+import {AproveRejectAuctionItemComponent} from "../aprove-reject-auction-item/aprove-reject-auction-item.component";
+import {GenerateDemandNoteComponent} from "../generate-demand-note/generate-demand-note.component";
 
 @Component({
     selector: 'app-auction-item-details',
@@ -120,6 +124,50 @@ export class AuctionItemDetailsComponent implements OnInit {
         }
     };
 
+    public attachmentSettings = {
+        selectMode: 'single',  // single|multi
+        hideHeader: false,
+        hideSubHeader: false,
+        actions: {
+            columnTitle: 'Actions',
+            add: false,
+            edit: false,
+            delete: false,
+            custom: [
+                // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
+                {name: 'downloadReport', title: '<i class="fa fa-download">Download</i>'}
+            ],
+            position: 'right' // left|right
+        },
+        delete: {
+            deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+            confirmDelete: true
+        },
+        noDataMessage: 'No data found',
+        columns: {
+            name: {
+                title: 'Name',
+                type: 'string'
+            },
+            fileType: {
+                title: 'File Type',
+                type: 'string'
+            },
+            description: {
+                title: 'Description',
+                type: 'string'
+            },
+            fileSize: {
+                title: 'Size',
+                type: 'string'
+            },
+        },
+        pager: {
+            display: true,
+            perPage: 20
+        }
+    };
+
     constructor(private activeRoute: ActivatedRoute, private router: Router, private diService: DestinationInspectionService, private dialog: MatDialog) {
     }
 
@@ -137,12 +185,57 @@ export class AuctionItemDetailsComponent implements OnInit {
         this.router.navigate(["/di/auction/view"])
     }
 
-    uploadAuctionReport(event: any){
+    assignAuctionItem(reassign: Boolean) {
+        const ref = this.dialog.open(AssignAuctionItemComponent, {
+            data: {
+                auctionId: this.requestId,
+                reassign: reassign
+            }
+        });
+        ref.afterClosed()
+            .subscribe(
+                res => {
+                    if (res) {
+                        this.loadData();
+                    }
+                }
+            );
+    }
 
+    uploadAuctionAttachment(event: any) {
+        if (event.target.files && event.target.files.length > 0) {
+            this.diService.uploadAuctionReport(event.target.files[0], this.requestId, "Attachment")
+                .subscribe(
+                    res => {
+                        if (res.responseCode === "00") {
+                            this.diService.showSuccess(res.message)
+                            this.loadData()
+                        } else {
+                            this.diService.showError(res.message)
+                        }
+                    }
+                )
+        }
     }
 
     generateInvoice() {
+        this.dialog.open(GenerateDemandNoteComponent, {
+            data: {
+                auctionId: this.requestId
+            }
+        })
+            .afterClosed()
+            .subscribe(
+                res => {
+                    if (res) {
+                        this.loadData()
+                    }
+                }
+            )
+    }
 
+    downloadAttachment(attachmentId: number) {
+        this.diService.downloadDocument("/api/v1/download/auction/attachment/" + attachmentId + "/" + this.requestId)
     }
 
     viewConsignmentDocument() {
@@ -158,9 +251,9 @@ export class AuctionItemDetailsComponent implements OnInit {
     }
 
     approveRejectConsignment() {
-        this.dialog.open(ApproveRejectApplicationComponent, {
+        this.dialog.open(AproveRejectAuctionItemComponent, {
             data: {
-                requestId: this.requestId
+                auctionId: this.requestId
             }
         })
             .afterClosed()
@@ -173,8 +266,16 @@ export class AuctionItemDetailsComponent implements OnInit {
             )
     }
 
-    downloadISMReport() {
+    tableActions(action) {
+        switch (action.action) {
+            case 'downloadReport':
+                this.downloadAttachment(action.data.uploadId)
+                break
+        }
+    }
 
+    downloadISMReport() {
+        this.downloadAttachment(this.auctionDetails.auction_details.reportId)
     }
 
     loadData() {
