@@ -1,12 +1,12 @@
-<h2 mat-dialog-title>Assign Port</h2>
+<h2 mat-dialog-title>Generate Demand Note for Auction Goods</h2>
 <mat-dialog-content>
     <div class="row no_margin" [formGroup]="form">
         <div class="col-sm-12 col-md-8">
-            <label for="portOfArrival" class="waiver-form-label">Select Port</label>
-            <select id="portOfArrival" name="portOfArrival" class="waiver-form-input-master"
-                    formControlName="portOfArrival">
+            <label for="feeId" class="waiver-form-label">Select Fee</label>
+            <select id="feeId" name="portOfArrival" class="waiver-form-input-master"
+                    formControlName="feeId">
                 <option value="" disabled selected>Select Port</option>
-                <option *ngFor="let fee of fees" [value]="fee.id">{{fee.name}}</option>
+                <option *ngFor="let fee of fees" [value]="fee.id">{{fee.description}}({{fee.rate}} {{fee.rateType}})</option>
             </select>
 
             <label for="remarks" class="waiver-form-label">Please write, in detail, your feedback for this

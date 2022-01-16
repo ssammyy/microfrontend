@@ -221,7 +221,7 @@ export class AuctionItemDetailsComponent implements OnInit {
     generateInvoice() {
         this.dialog.open(GenerateDemandNoteComponent, {
             data: {
-                auctionId: this.requestId
+                requestId: this.requestId
             }
         })
             .afterClosed()

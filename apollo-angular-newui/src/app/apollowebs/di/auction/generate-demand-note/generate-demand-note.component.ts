@@ -46,6 +46,8 @@ export class GenerateDemandNoteComponent implements OnInit {
 
   saveRecord() {
     this.loading = true
+      let data=this.form.value
+      data['feeId']=parseInt(this.form.value.feeId)
     this.diService.requestAuctionPayment(this.form.value, this.data.requestId)
         .subscribe(res => {
               this.loading = false

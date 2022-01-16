@@ -20,6 +20,7 @@ import org.kebs.app.kotlin.apollo.store.model.auction.AuctionRequests
 import org.kebs.app.kotlin.apollo.store.model.auction.AuctionUploadsEntity
 import org.kebs.app.kotlin.apollo.store.repo.IUserRoleAssignmentsRepository
 import org.kebs.app.kotlin.apollo.store.repo.auction.*
+import org.kebs.app.kotlin.apollo.store.repo.di.IDestinationInspectionFeeRepository
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -38,7 +39,7 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 enum class AuctionGoodStatus(val status: Int) {
-    NEW(0), APPROVED(1), REJECTED(2), OTHER(3),PAYMENT_PENDING(7);
+    NEW(0), APPROVED(1), REJECTED(2), OTHER(3), PAYMENT_PENDING(7);
 }
 
 @Service
@@ -55,6 +56,7 @@ class AuctionService(
         private val applicationMapProperties: ApplicationMapProperties,
         private val apiClientService: ApiClientService,
         private val roleAssignmentsRepository: IUserRoleAssignmentsRepository,
+        private val feeRepository: IDestinationInspectionFeeRepository
 ) {
     val REPORT_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd")
     fun listAuctionCategories(): ApiResponseModel {
@@ -69,8 +71,8 @@ class AuctionService(
         return this.auctionUploadRepo.findByIdAndAuctionId_Id(attachmentId, auctionId).orElse(null)
     }
 
-    fun getReportTimestamp(date: String, first: Boolean): Timestamp {
-        val date = REPORT_DATE_FORMAT.parse(date)
+    fun getReportTimestamp(dateStr: String, first: Boolean): Timestamp {
+        val date = REPORT_DATE_FORMAT.parse(dateStr)
         val dateTime = when (first) {
             true -> LocalDateTime.of(LocalDate.from(date), LocalTime.MIDNIGHT)
             else -> LocalDateTime.of(LocalDate.from(date), LocalTime.MAX)
@@ -79,12 +81,12 @@ class AuctionService(
     }
 
     fun downloadAuctionReport(stardDate: String, endDate: String): List<AuctionRequestDto> {
-        val startTimestamp = getReportTimestamp(stardDate,true)
-        val endTimestamp = getReportTimestamp(endDate,false)
+        val startTimestamp = getReportTimestamp(stardDate, true)
+        val endTimestamp = getReportTimestamp(endDate, false)
 
         val auctionReportDetails = this.auctionRequestsRepository.findByApprovalStatusInAndApprovedRejectedOnBetween(
-                arrayListOf(AuctionGoodStatus.APPROVED.status,AuctionGoodStatus.REJECTED.status,AuctionGoodStatus.OTHER.status),
-                startTimestamp,endTimestamp)
+                arrayListOf(AuctionGoodStatus.APPROVED.status, AuctionGoodStatus.REJECTED.status, AuctionGoodStatus.OTHER.status),
+                startTimestamp, endTimestamp)
         return AuctionRequestDto.fromList(auctionReportDetails)
     }
 
@@ -130,9 +132,13 @@ class AuctionService(
         if (optional.isPresent) {
             val auctionRequest = optional.get()
             commonDaoServices.getLoggedInUser()?.let {
-                val demandNote = destinationInspectionDaoServices.generateAuctionDemandNoteWithItemList(this.auctionItemsRepo.findByAuctionId(auctionId), map, auctionRequest, false, 0.0, it)
+                val items = this.auctionItemsRepo.findByAuctionId(auctionId)
+                for (i in 0..items.size) {
+                    items[i].paymentFeeIdSelected = this.feeRepository.findById(feeId).orElse(null)
+                }
+                val demandNote = destinationInspectionDaoServices.generateAuctionDemandNoteWithItemList(items, map, auctionRequest, false, 0.0, it)
                 auctionRequest.demandNoteId = demandNote.id
-                auctionRequest.approvalStatus=AuctionGoodStatus.PAYMENT_PENDING.status
+                auctionRequest.approvalStatus = AuctionGoodStatus.PAYMENT_PENDING.status
                 auctionRequest.varField1 = "PENDING PAYMENT"
                 auctionRequestsRepository.save(auctionRequest)
                 response.data = demandNote.id
