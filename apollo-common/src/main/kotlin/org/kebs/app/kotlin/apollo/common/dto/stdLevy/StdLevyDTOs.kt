@@ -98,17 +98,33 @@ data class ReportOnSiteVisitDTO(
     var taskId: String? = null,
     var visitID: Long? = null,
     var assigneeId: Long? = null,
+    var manufacturerEntity: Long? = null
 )
 
 class ProcessInstanceResponseValueSite(val savedRowID: Long?,val processId: String, val isEnded: Boolean) {
 }
+
+data class SiteVisitReportDecisionDTO(
+    var taskId: String? = null,
+    var accentTo: Boolean? = null,
+    var visitID: Long? = null,
+    var assigneeId: Long? = null,
+    var manufacturerEntity: Long? = null,
+    var contactId: Long? = null,
+    var comments: String? = null
+){
+
+}
 class SiteVisitReportDecision(
+
     @JsonProperty("taskId") val taskId: String,
     @JsonProperty("accentTo") val accentTo: Boolean,
     @JsonProperty("visitID")  val visitID: Long,
     @JsonProperty("comments") val comments: String,
     @JsonProperty("assigneeId")  val assigneeId: Long,
-    @JsonProperty("contactId")  val contactId: Long
+    @JsonProperty("contactId")  val contactId: Long,
+    @JsonProperty("manufacturerEntity")  val manufacturerEntity: Long
+
 
 
 ) {

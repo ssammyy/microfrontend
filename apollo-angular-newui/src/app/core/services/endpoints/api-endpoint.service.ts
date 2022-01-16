@@ -446,7 +446,9 @@ export class ApiEndpointService {
         STD_LEVY_SAVE_VISIT_REPORT_VIEW_FEEDBACK: `${ApiEndpointService.STL_CONTEXT}/getSiteFeedback`,
         STD_LEVY_MANUFACTURE_LIST: `${ApiEndpointService.STL_CONTEXT}/getManufacturerList`,
         STD_LEVY_MANUFACTURE_TASKS: `${ApiEndpointService.STL_CONTEXT}/getUserTasks`,
+        STD_LEVY_VIEW_VISIT_REPORT_FEEDBACK: `${ApiEndpointService.STL_CONTEXT}/viewFeedBack`,
         STD_LEVY_MANUFACTURE_COMPLETE_TASKS: `${ApiEndpointService.STL_CONTEXT}/getMnCompleteTask`,
+        STD_LEVY_LIST_OF_USERS: `${ApiEndpointService.STL_CONTEXT}/getSlUsers`,
 
 
 

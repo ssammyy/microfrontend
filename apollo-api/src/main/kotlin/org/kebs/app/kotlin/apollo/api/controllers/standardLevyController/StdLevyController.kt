@@ -627,6 +627,12 @@ class StdLevyController(
         return standardLevyService.getUserTasks()
     }
 
+    @GetMapping("/viewFeedBack")
+    fun viewFeedBack():List<TaskDetails>
+    {
+        return standardLevyService.viewFeedBack()
+    }
+
     @PostMapping("/reportOnSiteVisit")
     @ResponseBody
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -639,6 +645,8 @@ class StdLevyController(
             actionTaken = reportOnSiteVisitDTO.actionTaken
             id= reportOnSiteVisitDTO.visitID
             assigneeId=reportOnSiteVisitDTO.assigneeId
+            taskId= reportOnSiteVisitDTO.taskId
+            manufacturerEntity= reportOnSiteVisitDTO.manufacturerEntity
         }
         return ServerResponse(HttpStatus.OK,"Uploaded Report",standardLevyService.reportOnSiteVisit(standardLevyFactoryVisitReportEntity))
         //return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",response)
@@ -716,16 +724,49 @@ class StdLevyController(
         val standardLevyFactoryVisitReportEntity= StandardLevyFactoryVisitReportEntity().apply {
             officersFeedback = reportOnSiteVisitDTO.officersFeedback
             id = reportOnSiteVisitDTO.visitID
+            taskId= reportOnSiteVisitDTO.taskId
+            assigneeId = reportOnSiteVisitDTO.assigneeId
+            manufacturerEntity= reportOnSiteVisitDTO.manufacturerEntity
 
         }
         return ServerResponse(HttpStatus.OK,"Uploaded Feedback",standardLevyService.reportOnSiteVisit(standardLevyFactoryVisitReportEntity))
 
     }
 
-    @PostMapping("/decisionOnSiteReport")
-    fun decisionOnSiteReport(@RequestBody siteVisitReportDecision: SiteVisitReportDecision) : List<TaskDetails>
+    @PostMapping("/decisionOnSiteReportx")
+    fun decisionOnSiteReportx(@RequestBody siteVisitReportDecision: SiteVisitReportDecision) : List<TaskDetails>
     {
-        return standardLevyService.decisionOnSiteReport(siteVisitReportDecision)
+        val standardLevyFactoryVisitReportEntity= StandardLevyFactoryVisitReportEntity().apply {
+            assistantManagerRemarks = siteVisitReportDecision.comments
+            assigneeId = siteVisitReportDecision.assigneeId
+            taskId= siteVisitReportDecision.taskId
+            id= siteVisitReportDecision.visitID
+            manufacturerEntity=siteVisitReportDecision.manufacturerEntity
+
+
+        }
+
+        return standardLevyService.decisionOnSiteReport(standardLevyFactoryVisitReportEntity)
+    }
+
+    @PostMapping("/decisionOnSiteReport")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun decisionOnSiteReport(@RequestBody siteVisitReportDecisionDTO: SiteVisitReportDecisionDTO): ServerResponse
+    {
+        val standardLevyFactoryVisitReportEntity= StandardLevyFactoryVisitReportEntity().apply {
+            taskId=siteVisitReportDecisionDTO.taskId
+            accentTo = siteVisitReportDecisionDTO.accentTo
+            id= siteVisitReportDecisionDTO.visitID
+            assigneeId=siteVisitReportDecisionDTO.assigneeId
+            manufacturerEntity= siteVisitReportDecisionDTO.manufacturerEntity
+            assistantManagerRemarks =siteVisitReportDecisionDTO.comments
+
+        }
+//        val gson = Gson()
+//        KotlinLogging.logger { }.info { "Report Decision" + gson.toJson(siteVisitReportDecisionDTO) }
+        return ServerResponse(HttpStatus.OK,"Decision Saved",standardLevyService.decisionOnSiteReport(standardLevyFactoryVisitReportEntity))
+
     }
 
     @GetMapping("/getSiteReportLevelTwo")
@@ -734,10 +775,28 @@ class StdLevyController(
         return standardLevyService.getSiteReportLevelTwo()
     }
 
+//    @PostMapping("/decisionOnSiteReportLevelTwox")
+//    fun decisionOnSiteReportLevelTwox(@RequestBody siteVisitReportDecision: SiteVisitReportDecision) : List<TaskDetails>
+//    {
+//        return standardLevyService.decisionOnSiteReportLevelTwo(siteVisitReportDecision)
+//    }
+
     @PostMapping("/decisionOnSiteReportLevelTwo")
-    fun decisionOnSiteReportLevelTwo(@RequestBody siteVisitReportDecision: SiteVisitReportDecision) : List<TaskDetails>
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun decisionOnSiteReportLevelTwo(@RequestBody siteVisitReportDecisionDTO: SiteVisitReportDecisionDTO): ServerResponse
     {
-        return standardLevyService.decisionOnSiteReportLevelTwo(siteVisitReportDecision)
+        val standardLevyFactoryVisitReportEntity= StandardLevyFactoryVisitReportEntity().apply {
+            taskId=siteVisitReportDecisionDTO.taskId
+            accentTo = siteVisitReportDecisionDTO.accentTo
+            id= siteVisitReportDecisionDTO.visitID
+            manufacturerEntity= siteVisitReportDecisionDTO.manufacturerEntity
+            cheifManagerRemarks= siteVisitReportDecisionDTO.comments
+            assigneeId = siteVisitReportDecisionDTO.assigneeId
+
+        }
+        return ServerResponse(HttpStatus.OK,"Decision Saved",standardLevyService.decisionOnSiteReportLevelTwo(standardLevyFactoryVisitReportEntity))
+
     }
 
 
@@ -782,6 +841,12 @@ class StdLevyController(
         }
             ?:return mutableListOf()
 
+    }
+
+    @GetMapping("/getSlUsers")
+    @ResponseBody
+    fun getSlUsers(): MutableList<UsersEntity> {
+        return standardLevyService.getSlUsers()
     }
 
     @PostMapping("/anonymous/standard/close")

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {Subject} from "rxjs";
 
 import {
@@ -22,7 +22,8 @@ declare const $: any;
 @Component({
   selector: 'app-standard-levy-manufacture-details',
   templateUrl: './standard-levy-manufacture-details.component.html',
-  styleUrls: ['./standard-levy-manufacture-details.component.css']
+  styleUrls: ['./standard-levy-manufacture-details.component.css','../../../../../node_modules/@ng-select/ng-select/themes/default.theme.css'],
+    encapsulation: ViewEncapsulation.None
 })
 export class StandardLevyManufactureDetailsComponent implements OnInit {
     userId: number ;
@@ -48,6 +49,10 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
     public assignCompanyTaskFormGroup!: FormGroup;
     public prepareReportFormGroup!: FormGroup;
     public prepareFeedBackFormGroup!: FormGroup;
+    public approvalFormGroup!: FormGroup;
+    public rejectFormGroup!: FormGroup;
+    public approvalTwoFormGroup!: FormGroup;
+    public rejectTwoFormGroup!: FormGroup;
     blob: Blob;
     public uploadedFiles:  FileList;
     isShowScheduleForm = true;
@@ -57,6 +62,7 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
     isShowRejectForm1= true;
     isShowApprovalForm2 = true;
     isShowRejectForm2= true;
+    isShowSaveFeedBackForm= true;
 
     toggleDisplayScheduleForm() {
         this.isShowScheduleForm = !this.isShowScheduleForm;
@@ -89,6 +95,9 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
         this.isShowRejectForm2 = !this.isShowRejectForm2;
         this.isShowApprovalForm1= true;
     }
+    toggleDisplaySaveFeedBackForm() {
+        this.isShowSaveFeedBackForm = !this.isShowSaveFeedBackForm;
+    }
   constructor(
       private store$: Store<any>,
       private formBuilder: FormBuilder,
@@ -98,9 +107,9 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.getMnCompleteTask();
+    //this.getMnCompleteTask();
     this.getManufacturerList();
-    this.getMnPendingTask();
+    //this.getMnPendingTask();
       this.getUserList();
       this.store$.select(selectUserInfo).pipe().subscribe((u) => {
           return this.userId = u.id;
@@ -135,7 +144,8 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
           county: [],
           town: [],
           manufactureStatus: [],
-          entryNumber: []
+          entryNumber: [],
+          contactId: []
 
       });
       this.prepareReportFormGroup = this.formBuilder.group({
@@ -145,17 +155,54 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
           actionTaken: ['', Validators.required],
           taskId: [],
           visitID: [],
-          assigneeId: []
+          assigneeId: [],
+          manufacturerEntity: []
 
       });
       this.prepareFeedBackFormGroup = this.formBuilder.group({
-          visitDate: ['', Validators.required],
-          purpose: ['', Validators.required],
-          personMet: ['', Validators.required],
-          actionTaken: ['', Validators.required],
+          officersFeedback: ['', Validators.required],
           taskId: [],
           visitID: [],
-          contactId: []
+          assigneeId: [],
+          manufacturerEntity: []
+
+      });
+
+      this.approvalFormGroup = this.formBuilder.group({
+          comments: ['', Validators.required],
+          assigneeId: [],
+          visitID: [],
+          accentTo: ['', Validators.required],
+          taskId: [],
+          manufacturerEntity: []
+
+      });
+      this.rejectFormGroup = this.formBuilder.group({
+          comments: ['', Validators.required],
+          assigneeId: [],
+          visitID: [],
+          accentTo: ['', Validators.required],
+          taskId: [],
+          manufacturerEntity: []
+
+      });
+
+      this.approvalTwoFormGroup = this.formBuilder.group({
+          comments: ['', Validators.required],
+          assigneeId: [],
+          visitID: [],
+          accentTo: [],
+          taskId: [],
+          manufacturerEntity: []
+
+      });
+      this.rejectTwoFormGroup = this.formBuilder.group({
+          comments: ['', Validators.required],
+          assigneeId: [],
+          visitID: [],
+          accentTo: [],
+          taskId: [],
+          manufacturerEntity: []
 
       });
   }
@@ -172,6 +219,18 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
     }
     get formPrepareFeedBack(): any {
         return this.prepareFeedBackFormGroup.controls;
+    }
+    get formApproval(): any {
+        return this.approvalFormGroup.controls;
+    }
+    get formReject(): any {
+        return this.rejectFormGroup.controls;
+    }
+    get formApprovalTwo(): any {
+        return this.approvalTwoFormGroup.controls;
+    }
+    get formRejectTwo(): any {
+        return this.rejectTwoFormGroup.controls;
     }
     showToasterSuccess(title:string,message:string){
         this.notifyService.showSuccess(message, title)
@@ -200,9 +259,9 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
     this.SpinnerService.show();
     this.levyService.getManufacturerList().subscribe(
         (response: ManufactureDetailList[])=> {
-          this.SpinnerService.hide();
           this.dtTrigger.next();
           this.manufactureLists = response;
+            this.SpinnerService.hide();
         },
         (error: HttpErrorResponse)=>{
           this.SpinnerService.hide();
@@ -215,10 +274,10 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
     this.SpinnerService.show();
     this.levyService.getMnPendingTask().subscribe(
         (response: ManufacturePendingTask[])=> {
-          this.SpinnerService.hide();
           this.dtTrigger1.next();
-          console.log(this.manufacturePendingTasks);
+          //console.log(this.manufacturePendingTasks);
           this.manufacturePendingTasks = response;
+            this.SpinnerService.hide();
         },
         (error: HttpErrorResponse)=>{
           this.SpinnerService.hide();
@@ -230,9 +289,9 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
     this.SpinnerService.show();
     this.levyService.getMnCompleteTask().subscribe(
         (response: ManufactureCompleteTask[])=> {
-          this.SpinnerService.hide();
           this.dtTrigger2.next();
           this.manufactureCompleteTasks = response;
+            this.SpinnerService.hide();
         },
         (error: HttpErrorResponse)=>{
           this.SpinnerService.hide();
@@ -273,6 +332,18 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
         if (mode==='prepareSiteVisitReport'){
             this.actionRequestPending=manufacturePendingTask;
             button.setAttribute('data-target','#prepareSiteVisitReport');
+        }
+        if (mode==='reportNotification1'){
+            this.actionRequestPending=manufacturePendingTask;
+            button.setAttribute('data-target','#reportNotification1');
+        }
+        if (mode==='reportNotification2'){
+            this.actionRequestPending=manufacturePendingTask;
+            button.setAttribute('data-target','#reportNotification2');
+        }
+        if (mode==='draftFeedback'){
+            this.actionRequestPending=manufacturePendingTask;
+            button.setAttribute('data-target','#draftFeedback');
         }
         // @ts-ignore
         container.appendChild(button);
@@ -321,18 +392,7 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
         this.levyService.assignCompanyTasks(this.assignCompanyTaskFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
-
-                this.levyService.getMnPendingTask().subscribe(
-                    (response: ManufacturePendingTask[])=> {
-                        this.SpinnerService.hide();
-                        this.dtTrigger1.next();
-                        this.manufacturePendingTasks = response;
-                    },
-                    (error: HttpErrorResponse)=>{
-                        this.SpinnerService.hide();
-                        console.log(error.message);
-                    }
-                );
+                this.getManufacturerList();
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Task Assigned`);
 
@@ -386,42 +446,46 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
         }
 
     }
-    public onDecision(reportDecisionLevelOne: ReportDecisionLevelOne): void{
+    onDecision(): void {
+
         this.SpinnerService.show();
-        this.levyService.levelOneDecisionOnReport(reportDecisionLevelOne).subscribe(
-            (response: ApproveVisitTask) => {
-                this.SpinnerService.hide();
-                this.showToasterSuccess('Success', `Report Approved`);
+        this.levyService.levelOneDecisionOnReport(this.approvalFormGroup.value).subscribe(
+            (response ) => {
                 console.log(response);
-                this.getMnPendingTask();
+
+                this.SpinnerService.hide();
+                this.showToasterSuccess(response.httpStatus, `Report Approved`);
+                this.approvalFormGroup.reset();
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();
-                this.showToasterError('Error', `Report Was Not Approved; Try Again`);
+                this.showToasterError('Error', `Error Approving Report; Try Again`);
                 console.log(error.message);
-                this.getMnPendingTask();
-                //alert(error.message);
             }
         );
     }
-    public onDecisionReject(reportDecisionLevelOne: ReportDecisionLevelOne): void{
+
+    onDecisionReject(): void {
+
         this.SpinnerService.show();
-        this.levyService.levelOneDecisionOnReport(reportDecisionLevelOne).subscribe(
-            (response: ApproveVisitTask) => {
-                this.SpinnerService.hide();
-                this.showToasterSuccess('Success', `Report Rejected`);
+        this.levyService.levelOneDecisionOnReport(this.rejectFormGroup.value).subscribe(
+            (response ) => {
                 console.log(response);
-                this.getMnPendingTask();
+
+                this.SpinnerService.hide();
+                this.showToasterSuccess(response.httpStatus, `Report Rejected`);
+                this.rejectFormGroup.reset();
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();
-                this.showToasterError('Error', `Report Was Not Approved; Try Again`);
+                this.showToasterError('Error', `Error Rejecting Report; Try Again`);
                 console.log(error.message);
-                this.getMnPendingTask();
-                //alert(error.message);
             }
         );
     }
+
+
+
     viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
         this.SpinnerService.show();
         this.levyService.viewReportDoc(pdfId).subscribe(
@@ -439,52 +503,58 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
             },
         );
     }
-    public onDecisionLevelTwo(reportDecisionLevelTwo: ReportDecisionLevelTwo): void{
+    onDecisionLevelTwo(): void {
+
         this.SpinnerService.show();
-        this.levyService.decisionOnSiteReportLevelTwo(reportDecisionLevelTwo).subscribe(
-            (response: ApproveVisitTask) => {
-                this.SpinnerService.hide();
-                this.showToasterSuccess('Success', `Report Approved`);
+        this.levyService.decisionOnSiteReportLevelTwo(this.approvalTwoFormGroup.value).subscribe(
+            (response ) => {
                 console.log(response);
-                this.getMnPendingTask();
+
+                this.SpinnerService.hide();
+                this.showToasterSuccess(response.httpStatus, `Report Approved`);
+                this.approvalTwoFormGroup.reset();
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();
-                this.showToasterError('Error', `Report Was Not Approved; Try Again`);
+                this.showToasterError('Error', `Error Approving Report; Try Again`);
                 console.log(error.message);
-                this.getMnPendingTask();
-                //alert(error.message);
             }
         );
     }
-    public onDecisionRejectLevelTwo(reportDecisionLevelTwo: ReportDecisionLevelTwo): void{
+
+    onDecisionRejectLevelTwo(): void {
+
         this.SpinnerService.show();
-        this.levyService.decisionOnSiteReportLevelTwo(reportDecisionLevelTwo).subscribe(
-            (response: ApproveVisitTask) => {
-                this.SpinnerService.hide();
-                this.showToasterSuccess('Success', `Report Rejected`);
+        this.levyService.decisionOnSiteReportLevelTwo(this.rejectTwoFormGroup.value).subscribe(
+            (response ) => {
                 console.log(response);
-                this.getMnPendingTask();
+
+                this.SpinnerService.hide();
+                this.showToasterSuccess(response.httpStatus, `Report Rejected`);
+                this.rejectTwoFormGroup.reset();
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();
-                this.showToasterError('Error', `Report Was Not Approved; Try Again`);
+                this.showToasterError('Error', `Error Rejecting Report; Try Again`);
                 console.log(error.message);
-                this.getMnPendingTask();
-                //alert(error.message);
             }
         );
     }
+
+
+
     saveFeedBack(): void {
         this.SpinnerService.show();
         this.levyService.saveSiteVisitFeedback(this.prepareFeedBackFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
                 this.SpinnerService.hide();
+                this.showToasterSuccess(response.httpStatus, `Feedback Saved and Sent`);
                 this.prepareFeedBackFormGroup.reset();
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Saving FeedBack; Try Again`);
                 console.log(error.message);
             }
         );

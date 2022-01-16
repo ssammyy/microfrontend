@@ -157,6 +157,7 @@ export interface AssignCompanyTaskDTO {
     town: number;
     manufactureStatus: number;
     entryNumber: number;
+    contactId: number;
 
 }
 export interface VisitTask {
@@ -186,6 +187,7 @@ export interface SiteVisitReport {
     taskId: string;
     visitID: number;
     assigneeId: number;
+    manufacturerEntity: number;
 
 }
 export interface ApproveVisitTask {
@@ -212,6 +214,7 @@ export interface ReportDecisionLevelOne{
     visitID: bigint;
     comments: string;
     assigneeId: number;
+    manufacturerEntity: number;
 }
 
 export interface ReportDecisionLevelTwo{
@@ -219,12 +222,15 @@ export interface ReportDecisionLevelTwo{
     accentTo: boolean;
     visitID: bigint;
     comments: string;
+    manufacturerEntity: number;
 }
 
 export interface SiteVisitFeedBack {
     officersFeedback: string;
     taskId: string;
     visitID: number;
+    assigneeId: number;
+    manufacturerEntity: number;
 
 }
 export interface ManufactureDetailList {
@@ -295,6 +301,9 @@ export interface ManufacturePendingTaskData{
     actionTaken: string;
     originator: number;
     contactId: number;
+    levyProcessInstance: string;
+    levelOneId: number;
+    officersFeedback: string;
 
 }
 export interface ManufactureCompleteTask {

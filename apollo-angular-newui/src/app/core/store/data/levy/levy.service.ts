@@ -117,7 +117,7 @@ export class LevyService {
     public levelOneDecisionOnReport(reportDecisionLevelOne: ReportDecisionLevelOne): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_SITE_VISITS_REPORT_APPROVAL_ONE);
         const params = new HttpParams();
-        return this.http.post<ApproveVisitTask>(url, reportDecisionLevelOne, {params}).pipe(
+        return this.http.post<ReportDecisionLevelOne>(url, reportDecisionLevelOne, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),
@@ -150,7 +150,7 @@ export class LevyService {
     public decisionOnSiteReportLevelTwo(reportDecisionLevelTwo: ReportDecisionLevelTwo): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_SITE_VISITS_REPORT_APPROVAL_TWO);
         const params = new HttpParams();
-        return this.http.post<ApproveVisitTask>(url, reportDecisionLevelTwo, {params}).pipe(
+        return this.http.post<ReportDecisionLevelTwo>(url, reportDecisionLevelTwo, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),
@@ -194,8 +194,16 @@ export class LevyService {
         const params = new HttpParams();
         return this.http.get<ManufacturePendingTask>(url, {params}).pipe();
     }
+
+    public viewFeedBackReport(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_VIEW_VISIT_REPORT_FEEDBACK);
+        const params = new HttpParams();
+        return this.http.get<ManufacturePendingTask>(url, {params}).pipe();
+    }
+
+
     public getUserList(): Observable<UsersEntity[]> {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_GET_USERS);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_LIST_OF_USERS);
         const params = new HttpParams();
         return this.http.get<UsersEntity[]>(url, {params}).pipe();
     }
