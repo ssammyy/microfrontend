@@ -35,6 +35,7 @@ export class EpraListComponent implements OnInit {
   currDiv!: string;
   currDivLabel!: string;
   addNewScheduleForm!: FormGroup;
+  closeBatchForm!: FormGroup;
   dataSave: FuelEntityDto;
   submitted = false;
   selectedBatchRefNo: string;
@@ -207,6 +208,10 @@ export class EpraListComponent implements OnInit {
       // For custome error name like: {customeErrorName: true}, pass third optional parameter with custome name
       // CustomeDateValidators.fromToDate('fromDate', 'toDate', 'customeErrorName')
     ]});
+
+    this.closeBatchForm = this.formBuilder.group({
+      remarks: ['', Validators.required]
+    });
   }
 
   goBack() {
@@ -294,6 +299,10 @@ export class EpraListComponent implements OnInit {
     return this.addNewScheduleForm.controls;
   }
 
+  get formCloseBatchForm(): any {
+    return this.closeBatchForm.controls;
+  }
+
 
   updateSelectedCounty() {
     this.selectedCounty = this.addNewScheduleForm?.get('county')?.value;
@@ -339,9 +348,63 @@ export class EpraListComponent implements OnInit {
     }
   }
 
+  reloadCurrentRoute() {
+    location.reload();
+  }
+
+  closeBatch(){
+    this.SpinnerService.show();
+    let resultStatus = false
+    console.log(this.loadedData.fuelBatchDetailsDto.referenceNumber)
+    this.msService.closeMSFuelBatch(this.selectedBatchRefNo).subscribe(
+        (data: any) => {
+          console.log(data);
+          // this.loadedData = data;
+          // this.totalCount = this.loadedData.fuelInspectionDto.length;
+          // this.dataSet.load(this.loadedData.fuelInspectionDto);
+          this.SpinnerService.hide();
+
+          resultStatus  = true
+          // this.msService.showSuccess('BATCH SENT TO KEBS SUCCESSFUL')
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error)
+          resultStatus = false
+          // this.msService.showError("AN ERROR OCCURRED")
+        }
+    );
+    return resultStatus
+  }
+
+  onClickCloseBatch() {
+    this.msService.showSuccessWith2Message('Are you sure your want to close this Batch?','You won\'t be able to add new schedule after submission!',
+        'You can click the \'ADD NEW SCHEDULE FILE\' button to add another schedule','BATCH SENT TO KEBS SUCCESSFUL', ()=>{
+          this.closeBatch()
+        })
+
+    // // this.SpinnerService.show();
+    //   this.dataSave = {...this.dataSave, ...this.closeBatchForm.value};
+    //   this.msService.closeMSFuelBatch(this.loadedData.fuelBatchDetailsDto.referenceNumber).subscribe(
+    //       (data: any) => {
+    //         console.log(data);
+    //         this.loadedData = data;
+    //         this.totalCount = this.loadedData.fuelInspectionDto.length;
+    //         this.dataSet.load(this.loadedData.fuelInspectionDto);
+    //         // this.SpinnerService.hide();
+    //         // this.msService.showSuccess('BATCH SENT TO KEBS SUCCESSFUL')
+    //       },
+    //       error => {
+    //         // this.SpinnerService.hide();
+    //         console.log(error)
+    //         // this.msService.showError("AN ERROR OCCURRED")
+    //       }
+    //   );
+  }
+
   openModalAddDetails(divVal: string): void {
-    const arrHead = ['addNewScheduleDetails'];
-    const arrHeadSave = ['ADD NEW SCHEDULE DETAILS'];
+    const arrHead = ['addNewScheduleDetails', 'closeBatchDetails'];
+    const arrHeadSave = ['ADD NEW SCHEDULE DETAILS', 'CLOSE BATCH AND SEND TO KEBS'];
 
     for (let h = 0; h < arrHead.length; h++) {
       if (divVal === arrHead[h]) {

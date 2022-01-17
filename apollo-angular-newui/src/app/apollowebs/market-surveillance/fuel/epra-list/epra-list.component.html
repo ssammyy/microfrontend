@@ -28,63 +28,63 @@
 <!--                        <h4 class="card-title">#YEAR NAME : {{this.loadedData.fuelBatchDetailsDto.batchFileYear}}</h4>-->
 <!--                        <h4 class="card-title">#STATUS : {{this.loadedData.fuelBatchDetailsDto.batchClosed}}</h4>-->
                     </div>
-                    <div class="card-body">
-<!--                        <div class="row">-->
-                            <div class="col-md-2 m-0 p-0">
-                                <div widget class=" border-0 box-shadow">
-                        <div class="text-center pt-2" style="color: green;">
-                            FUEL BATCH INFORMATION
-                        </div>
-                        <div class="card-body p-0 m-0 widget-body">
-                            <table class="table-responsive">
-                                <th>
-                                    Batch Reference No #
-                                </th>
-                                <tr>
-                                    <td>{{ this.loadedData.fuelBatchDetailsDto.referenceNumber ? this.loadedData.fuelBatchDetailsDto.referenceNumber : 'NA' }}
-                                    </td>
-                                </tr>
-                                <th>
-                                    Region Name
-                                </th>
-                                <tr>
-                                    <td>{{ this.loadedData.fuelBatchDetailsDto.region ? this.loadedData.fuelBatchDetailsDto.region : 'NA' }}
-                                    </td>
-                                </tr>
-                                <th>
-                                    County Name
-                                </th>
-                                <tr>
-                                    <td>{{ this.loadedData.fuelBatchDetailsDto.county ? this.loadedData.fuelBatchDetailsDto.county : 'NA' }}
-                                    </td>
-                                </tr>
-                                <th>
-                                    Town Name
-                                </th>
-                                <tr>
-                                    <td>{{ this.loadedData.fuelBatchDetailsDto.town ? this.loadedData.fuelBatchDetailsDto.town : 'NA' }}
-                                    </td>
-                                </tr>
-                                <th>
-                                    Year Name
-                                </th>
-                                <tr>
-                                    <td>{{ this.loadedData.fuelBatchDetailsDto.batchFileYear ? this.loadedData.fuelBatchDetailsDto.batchFileYear : 'NA' }}
-                                    </td>
-                                </tr>
-                                <th>
-                                    Status
-                                </th>
-                                <tr>
-                                    <td>{{ this.loadedData.fuelBatchDetailsDto.batchClosed ? this.loadedData.fuelBatchDetailsDto.batchClosed : false }}
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                            </div>
+<!--                    <div class="card-body">-->
+<!--&lt;!&ndash;                        <div class="row">&ndash;&gt;-->
+<!--                            <div class="col-md-2 m-0 p-0">-->
+<!--                                <div widget class=" border-0 box-shadow">-->
+<!--                        <div class="text-center pt-2" style="color: green;">-->
+<!--                            FUEL BATCH INFORMATION-->
 <!--                        </div>-->
-                    </div>
+<!--                        <div class="card-body p-0 m-0 widget-body">-->
+<!--                            <table class="table-responsive">-->
+<!--                                <th>-->
+<!--                                    Batch Reference No #-->
+<!--                                </th>-->
+<!--                                <tr>-->
+<!--                                    <td>{{ this.loadedData.fuelBatchDetailsDto.referenceNumber ? this.loadedData.fuelBatchDetailsDto.referenceNumber : 'NA' }}-->
+<!--                                    </td>-->
+<!--                                </tr>-->
+<!--                                <th>-->
+<!--                                    Region Name-->
+<!--                                </th>-->
+<!--                                <tr>-->
+<!--                                    <td>{{ this.loadedData.fuelBatchDetailsDto.region ? this.loadedData.fuelBatchDetailsDto.region : 'NA' }}-->
+<!--                                    </td>-->
+<!--                                </tr>-->
+<!--                                <th>-->
+<!--                                    County Name-->
+<!--                                </th>-->
+<!--                                <tr>-->
+<!--                                    <td>{{ this.loadedData.fuelBatchDetailsDto.county ? this.loadedData.fuelBatchDetailsDto.county : 'NA' }}-->
+<!--                                    </td>-->
+<!--                                </tr>-->
+<!--                                <th>-->
+<!--                                    Town Name-->
+<!--                                </th>-->
+<!--                                <tr>-->
+<!--                                    <td>{{ this.loadedData.fuelBatchDetailsDto.town ? this.loadedData.fuelBatchDetailsDto.town : 'NA' }}-->
+<!--                                    </td>-->
+<!--                                </tr>-->
+<!--                                <th>-->
+<!--                                    Year Name-->
+<!--                                </th>-->
+<!--                                <tr>-->
+<!--                                    <td>{{ this.loadedData.fuelBatchDetailsDto.batchFileYear ? this.loadedData.fuelBatchDetailsDto.batchFileYear : 'NA' }}-->
+<!--                                    </td>-->
+<!--                                </tr>-->
+<!--                                <th>-->
+<!--                                    Status-->
+<!--                                </th>-->
+<!--                                <tr>-->
+<!--                                    <td>{{ this.loadedData.fuelBatchDetailsDto.batchClosed ? this.loadedData.fuelBatchDetailsDto.batchClosed : false }}-->
+<!--                                    </td>-->
+<!--                                </tr>-->
+<!--                            </table>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                            </div>-->
+<!--&lt;!&ndash;                        </div>&ndash;&gt;-->
+<!--                    </div>-->
                     <div class="card-body">
                         <div class="toolbar">
                             <div class="search-bar" *ngIf="documentTypes">
@@ -140,7 +140,16 @@
 <!--                                </button>-->
                                 <div *ngFor="let role of roles">
                                     <div *ngIf="role == 'EPRA'">
-                                        <button (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"
+                                        <button *ngIf="loadedData.fuelBatchDetailsDto.batchClosed!=true" (click)="onClickCloseBatch()" mat-raised-button=""
+                                                class="btn btn-sm btn-warning mr-2"><span
+                                                class="mat-button-wrapper">CLOSE BATCH</span>
+                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                            <div class="mat-button-focus-overlay"></div>
+                                        </button>
+                                    </div>
+                                    <br>
+                                    <div *ngIf="role == 'EPRA'">
+                                        <button *ngIf="loadedData.fuelBatchDetailsDto.batchClosed!=true" (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"
                                                 data-target="#myModal1"
                                                 class="btn btn-sm btn-primary mr-2"><span
                                                 class="mat-button-wrapper">ADD NEW SCHEDULE FILE</span>
@@ -258,6 +267,25 @@
                             </div>
                         </form>
                     </div>
+                    <div *ngIf="(currDiv == 'closeBatchDetails')">
+                        <form [formGroup]="closeBatchForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="remarks">Please write, in detail, your feedback for this fuel inspection Batch:</label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea id="remarks" matInput type="text"
+                                                      formControlName="remarks"
+                                                      placeholder="Please Enter your feedback for this fuel inspection schedule"
+                                                      name="remarks"
+                                                      [class.is-invalid]="formCloseBatchForm.remarks.invalid && formCloseBatchForm.remarks.touched">
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
                 <div class="modal-footer">
 
@@ -266,6 +294,12 @@
                     <button *ngIf="(currDiv == 'addNewScheduleDetails')" mat-raised-button type="button" class="btn btn-success"
                             (click)="onClickSaveNewSchedule(addNewScheduleForm.valid);"
                             [disabled]="!addNewScheduleForm.valid"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'closeBatchDetails')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickCloseBatch(closeBatchForm.valid);"
+                            [disabled]="!closeBatchForm.valid"
                             data-dismiss="modal"
                     >SUBMIT
                     </button>

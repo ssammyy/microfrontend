@@ -23,6 +23,8 @@ import {
 } from "./ms.model";
 import swal from "sweetalert2";
 import {AbstractControl, ValidatorFn} from "@angular/forms";
+import Swal from "sweetalert2";
+import {AllPermitDetailsDto} from "../qa/qa.model";
 
 @Injectable({
     providedIn: 'root'
@@ -230,6 +232,47 @@ export class MsService {
             }
         }
         return false;
+    }
+
+
+    showSuccessWith2Message(title:string, text:string, cancelMessage: string, successMessage: string, fn?: Function) {
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+        });
+
+        swalWithBootstrapButtons.fire({
+            title: title,
+            text: text,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes!',
+            cancelButtonText: 'No!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                if (fn) {
+                    fn()
+                }
+                swalWithBootstrapButtons.fire(
+                    'Submitted!',
+                    successMessage,
+                    'success'
+                );
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire(
+                    'Cancelled',
+                    cancelMessage,
+                    'error'
+                );
+            }
+        });
     }
 
     showSuccess(message: string, fn?: Function) {
