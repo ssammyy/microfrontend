@@ -97,7 +97,7 @@ class PvocPartnerCountryDto {
     var countryName: String? = null
     var countryCode: String? = null
     var description: String? = null
-    var regions: List<PvocPartnerRegionDto>? = null
+    var region: PvocPartnerRegionDto? = null
 
     companion object {
         fun fromEntity(country: PvocPartnersCountriesEntity): PvocPartnerCountryDto {
@@ -108,8 +108,8 @@ class PvocPartnerCountryDto {
                 countryCode = country.abbreviation
                 description = country.description
             }
-            country.regions?.let {
-                dto.regions = PvocPartnerRegionDto.fromList(it)
+            country.regionId?.let {
+                dto.region = PvocPartnerRegionDto.fromEntity(it)
             }
 
             return dto

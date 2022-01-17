@@ -2193,6 +2193,26 @@ class DestinationInspectionDaoServices(
         return Pair(sr, saveSSF)
     }
 
+    fun updateCDDetailsWithCdType(
+            documentCode: String,
+            cdDetailsEntity: ConsignmentDocumentDetailsEntity
+    ): ConsignmentDocumentDetailsEntity {
+        val chasisNumber=cdDetailsEntity.cdStandardsTwo
+        when(documentCode){
+            "F"->{
+
+            }
+            "L" ->{
+
+            }
+            else->{
+
+            }
+        }
+        return iConsignmentDocumentDetailsRepo.save(cdDetailsEntity)
+
+    }
+
     fun updateCDDetailsWithCOCData(
             cocEntity: CocsEntity,
             cdDetailsEntity: ConsignmentDocumentDetailsEntity

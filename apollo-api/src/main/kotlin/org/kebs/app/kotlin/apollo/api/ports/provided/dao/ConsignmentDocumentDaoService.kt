@@ -19,8 +19,18 @@ import org.springframework.transaction.annotation.Transactional
 import org.w3c.dom.Document
 import org.xml.sax.InputSource
 import java.io.StringReader
-import java.nio.file.Files
 
+enum class CdTypeCodes(code: String) {
+    COC("NO_COC"),
+    COR("NO_COR"),
+    FOREIGN_COC("WITH_COC_COI"),
+    FOREIGN_COR("WITH_COR"),
+    TEMPORARY_IMPORTS("TEMPORARY_IMPORTS"),
+    COURIER_GOODS("COURIER_GOODS"),
+    AUCTION_GOODS("AUCTION_GOODS"),
+    NCR("NCR"),
+    OTHER("OTHER")
+}
 
 @Service
 class ConsignmentDocumentDaoService(
@@ -797,7 +807,8 @@ class ConsignmentDocumentDaoService(
                 }
                 applicationMapProperties.mapDICocTypeLocalID == cocTypeDetails?.id -> {
                     val cocLocalDetails =
-                            standardsTwoDetails.localCocType?.let { daoServices.findLocalCocTypeWithCocTypeCode(it) }
+                            standardsTwoDetails.localCocType
+                                    ?.let { daoServices.findLocalCocTypeWithCocTypeCode(it) }
                     cdCocLocalTypeId = cocLocalDetails?.id
                     cdType = cocLocalDetails?.cdType?.let { daoServices.findCdTypeDetails(it) }
                 }

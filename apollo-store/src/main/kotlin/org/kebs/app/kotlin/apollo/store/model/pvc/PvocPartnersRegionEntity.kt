@@ -15,10 +15,6 @@ class PvocPartnersRegionEntity : Serializable {
     @Id
     var id: Long? = null
 
-    @JoinColumn(name = "COUNTRY_ID",referencedColumnName = "ID")
-    @ManyToOne
-    var countryId: PvocPartnersCountriesEntity? = null
-
     @Column(name = "REGION_NAME")
     @Basic
     var regionName: String? = null

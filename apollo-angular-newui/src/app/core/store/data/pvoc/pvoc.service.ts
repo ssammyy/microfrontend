@@ -73,6 +73,10 @@ export class PVOCService {
         return this.http.get(ApiEndpointService.getEndpoint("/api/v1/partners/details/" + partnerId))
     }
 
+    loadPartnerCountries(): Observable<any>{
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/partners/countries"))
+    }
+
     public checkExemptionApplicable(): Observable<any> {
         const url = ApiEndpointService.getEndpoint("/api/v1/pvoc/exemption/check/eligible");
         return this.http.get<any>(url).pipe(

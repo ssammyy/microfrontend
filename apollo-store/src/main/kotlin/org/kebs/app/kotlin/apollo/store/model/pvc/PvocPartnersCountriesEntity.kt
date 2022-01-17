@@ -23,8 +23,9 @@ class PvocPartnersCountriesEntity : Serializable {
     @Basic
     var abbreviation: String? = null
 
-    @OneToMany(mappedBy = "countryId", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-    var regions: Set<PvocPartnersRegionEntity>? = null
+    @JoinColumn(name = "REGION_ID", referencedColumnName = "ID")
+    @ManyToOne
+    var regionId: PvocPartnersRegionEntity? = null
 
     @Column(name = "DESCRIPTION")
     @Basic
@@ -32,7 +33,7 @@ class PvocPartnersCountriesEntity : Serializable {
 
     @Column(name = "STATUS")
     @Basic
-    var status: String? = null
+    var status: Int? = null
 
     @Column(name = "VAR_FIELD_1")
     @Basic

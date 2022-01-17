@@ -26,9 +26,6 @@ class PvocPartnersForms {
 
     @NotNull(message = "Partner country is required")
     var partnerCountry: Long? = null
-
-    @NotNull(message = "Partner region is required")
-    var partnerRegion: Long? = null
     var partnerZipcode: String? = null
     var partnerTelephoneNumber: String? = null
     var partnerFaxNumber: String? = null
@@ -37,7 +34,7 @@ class PvocPartnersForms {
     @Email(message = "Please enter a valid email address")
     var partnerEmail: String? = null
 
-    // Billing informatyion
+    // Billing information
     @NotNull(message = "Partner billing contact name is required")
     var billingContactName: String? = null
 
@@ -712,7 +709,7 @@ class RfcCoiEntityForm {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     var rfcDate: Timestamp? = null
 
-    @NotEmpty(message="Required field")
+    @NotEmpty(message = "Required field")
     var countryOfDestination: String? = null
 
     @NotEmpty(message = "Required field")

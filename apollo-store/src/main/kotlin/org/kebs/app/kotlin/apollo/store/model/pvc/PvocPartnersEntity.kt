@@ -15,7 +15,7 @@ class PvocPartnersEntity : Serializable {
 
     var id: Long = 0
 
-    @Column(name = "API_CLIENT_ID", nullable = false)
+    @Column(name = "API_CLIENT_ID", nullable = true)
     @Basic
     var apiClientId: Long? = 0
 
@@ -67,7 +67,7 @@ class PvocPartnersEntity : Serializable {
     @ManyToOne
     var partnerCountry: PvocPartnersCountriesEntity? = null
 
-    @JoinColumn(name = "PARTNER_REGION", referencedColumnName = "ID")
+    @JoinColumn(name = "PARTNER_REGION", referencedColumnName = "ID", nullable = true)
     @ManyToOne
     var partnerRegion: PvocPartnersRegionEntity? = null
 
