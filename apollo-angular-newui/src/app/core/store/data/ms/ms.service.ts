@@ -234,6 +234,10 @@ export class MsService {
         return false;
     }
 
+    public reloadCurrentRoute() {
+        location.reload();
+    }
+
 
     showSuccessWith2Message(title:string, text:string, cancelMessage: string, successMessage: string, fn?: Function) {
         const swalWithBootstrapButtons = Swal.mixin({
@@ -255,13 +259,22 @@ export class MsService {
         }).then((result) => {
             if (result.isConfirmed) {
                 if (fn) {
-                    fn()
+                    let results = fn()
+                    if (results==true){
+                        swalWithBootstrapButtons.fire(
+                            'Submitted!',
+                            successMessage,
+                            'success'
+                        );
+                    }else if (results==false) {
+                        swalWithBootstrapButtons.fire(
+                            'Submitted!',
+                            'AN ERROR OCCURRED',
+                            'error'
+                        );
+                    }
                 }
-                swalWithBootstrapButtons.fire(
-                    'Submitted!',
-                    successMessage,
-                    'success'
-                );
+
             } else if (
                 /* Read more about handling dismissals below */
                 result.dismiss === swal.DismissReason.cancel

@@ -337,7 +337,9 @@ export class EpraListComponent implements OnInit {
             this.totalCount = this.loadedData.fuelInspectionDto.length;
             this.dataSet.load(this.loadedData.fuelInspectionDto);
             this.SpinnerService.hide();
-            this.msService.showSuccess('NEW FUEL SCHEDULE CREATED SUCCESSFUL')
+            this.msService.showSuccess('NEW FUEL SCHEDULE CREATED SUCCESSFUL',()=>{
+              this.msService.reloadCurrentRoute()
+            })
           },
           error => {
             this.SpinnerService.hide();
@@ -353,7 +355,7 @@ export class EpraListComponent implements OnInit {
   }
 
   closeBatch(){
-    this.SpinnerService.show();
+    // this.SpinnerService.show();
     let resultStatus = false
     console.log(this.loadedData.fuelBatchDetailsDto.referenceNumber)
     this.msService.closeMSFuelBatch(this.selectedBatchRefNo).subscribe(
@@ -362,7 +364,8 @@ export class EpraListComponent implements OnInit {
           // this.loadedData = data;
           // this.totalCount = this.loadedData.fuelInspectionDto.length;
           // this.dataSet.load(this.loadedData.fuelInspectionDto);
-          this.SpinnerService.hide();
+          // this.SpinnerService.hide();
+          this.msService.reloadCurrentRoute()
 
           resultStatus  = true
           // this.msService.showSuccess('BATCH SENT TO KEBS SUCCESSFUL')

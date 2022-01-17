@@ -163,9 +163,6 @@ export class EpraBatchListComponent implements OnInit {
   private loadData(page: number, records: number): any {
     this.SpinnerService.show()
     let params = {'personal': this.personalTasks}
-    // this.totalCount = this.loadedData.length;
-    // this.dataSet.load(this.loadedData);
-    // this.SpinnerService.hide();
     this.msService.loadMSFuelBatchList(String(page),String(records)).subscribe(
         (data) => {
           console.log(`TEST DATA===${data}`);
@@ -273,7 +270,9 @@ export class EpraBatchListComponent implements OnInit {
           (data: any) => {
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess("NEW FUEL BATCH CREATED SUCCESSFUL")
+            this.msService.showSuccess("NEW FUEL BATCH CREATED SUCCESSFUL", ()=>{
+              this.msService.reloadCurrentRoute()
+            })
           },
           error => {
             this.SpinnerService.hide();

@@ -151,6 +151,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.market.surveillance.mapped.officer.roleID}")
     val mapMSMappedOfficerROLEID: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.market.surveillance.mapped.manager.petroleum.roleID}")
+    val mapMSMappedManagerPetroliumROLEID: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.designation.id.for.Assessor}")
     val mapQADesignationIDForAssessorId: Long = 0L
 
@@ -586,6 +589,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.qa.fmark.permit.report.path}")
     val mapReportFmarkPermitReportPath: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.ms.fuel.remediation.invoice.path}")
+    val mapMSFuelInvoiceRemediationPath: String = ""
+
     @Value("\${destination.inspection.cd.status.type.coc.generated.and.send}")
     val mapDICdStatusTypeCOCGeneratedAndSendID: Long = 0L
 
@@ -688,6 +694,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.oga.mandate.notification.compliant}")
     val mapMsComplaintAcknowledgementRejectionWIthOGANotification: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.scheduled.notification}")
+    val mapMsFuelScheduleMPNotification: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.approved.notification.hof}")
     val mapMsComplaintApprovedHofNotification: String = ""
 
@@ -696,6 +705,12 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.assigned.notification.io}")
     val mapMsComplaintAssignedIONotification: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.assigned.notification.io}")
+    val mapMsFuelAssignedIONotification: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.lab.results.notification.io}")
+    val mapMsLabResultsIONotification: String = ""
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.market.surveillance.complaint.type.uuid}")
     val mapMsComplaintTypeUuid: String = ""

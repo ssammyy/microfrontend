@@ -26,6 +26,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.util.ResourceUtils
 import org.springframework.web.multipart.MultipartFile
 import java.io.File
 import java.math.BigDecimal
@@ -73,6 +74,7 @@ class NewMarketSurveillanceDaoServices(
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun createNewFuelBatch(body: BatchFileFuelSaveDto,page: PageRequest): FuelInspectionScheduleListDetailsDto {
         val map = commonDaoServices.serviceMapDetails(appId)
+//        var sr = commonDaoServices.createServiceRequest(map)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val currentYear = commonDaoServices.getCurrentYear()
         val fuelPlanYearCode = findWorkPlanYearsCode(currentYear, map)?: throw ExpectedDataNotFound("Fuel Schedule Current Year Code Not Found")
@@ -110,9 +112,16 @@ class NewMarketSurveillanceDaoServices(
                 }
                 updateFuelInspectionDetails(it, map, loggedInUser)
             }
-            /**
-             * TODO: Lets discuss to understand better what how to assign HOD to a complaint is it based on Region or Randomly
-             */
+
+            val managerPetroleumList = commonDaoServices.findOfficersListBasedOnRegionCountyAndRole(applicationMapProperties.mapMSMappedManagerPetroliumROLEID,
+                fileSaved.second.countyId ?: throw ExpectedDataNotFound("MISSING BATCH COUNTY ID"),
+                fileSaved.second.regionId ?: throw ExpectedDataNotFound("MISSING BATCH REGION ID")
+            )
+
+            managerPetroleumList
+                ?.forEach { mp->
+                    commonDaoServices.sendEmailWithUserEntity(mp, applicationMapProperties.mapMsFuelScheduleMPNotification, fileSaved.second, map, fileSaved.first)
+                }
 
             val fuelBatchList = findAllFuelBatchListBasedOnPageable(page).toList()
             return mapFuelBatchListDto(fuelBatchList, map)
@@ -164,12 +173,7 @@ class NewMarketSurveillanceDaoServices(
         val fileInspectionDetail = findFuelInspectionDetailByReferenceNumber(referenceNo)
         val batchDetails = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
         val fuelInspectionOfficer = findFuelInspectionOfficerAssigned(fileInspectionDetail, map.activeStatus)
-        val officerList = commonDaoServices.findOfficersListBasedOnRegionCountyAndRole(
-            applicationMapProperties.mapMSMappedOfficerROLEID,
-            batchDetails.countyId ?: throw ExpectedDataNotFound("MISSING BATCH COUNTY ID"),
-            batchDetails.regionId ?: throw ExpectedDataNotFound("MISSING BATCH REGION ID")
-        )
-//        val rapidTestStatus = mapRapidTestDto(fileInspectionDetail, map)
+
         return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
     }
 
@@ -215,8 +219,7 @@ class NewMarketSurveillanceDaoServices(
                          * Todo add notification for sending details to user
                          *
                          */
-                        val officerList = commonDaoServices.findOfficersListBasedOnRegionCountyAndRole(applicationMapProperties.mapMSMappedOfficerROLEID, batchDetails.countyId ?: throw ExpectedDataNotFound("MISSING BATCH COUNTY ID"), batchDetails.regionId ?: throw ExpectedDataNotFound("MISSING BATCH REGION ID"))
-                        val rapidTestStatus = mapRapidTestDto(fileInspectionDetail, map)
+                        commonDaoServices.sendEmailWithUserEntity(fileOfficerSaved.second.assignedIo?:throw ExpectedDataNotFound("MISSING OFFICER ASSIGNED DETAILS"), applicationMapProperties.mapMsFuelAssignedIONotification, fileSaved2.second, map, fileSaved2.first)
                         return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
                     }
                     else -> {
@@ -456,6 +459,28 @@ class NewMarketSurveillanceDaoServices(
             /*
             * Todo: ADD function for sending Lab results
             * */
+//            val fileUploaded = findUploadedFileBYId(
+//                saveSSFPdf.pdfSavedId ?: throw ExpectedDataNotFound("MISSING LAB REPORT FILE ID STATUS")
+//            )
+//            val fileContent = limsServices.mainFunctionLimsGetPDF(
+//                savedSSF.bsNumber ?: throw ExpectedDataNotFound("MISSING LBS NUMBER"),
+//                saveSSFPdf.pdfName ?: throw ExpectedDataNotFound("MISSING FILE NAME")
+//            )
+//            val mappedFileClass = commonDaoServices.mapClass(fileUploaded)
+//            sendComplianceStatusAndLabReport(
+//                permitDetails,
+//                complianceValue ?: throw ExpectedDataNotFound("MISSING COMPLIANCE STATUS"),
+//                saveSSFPdf.complianceRemarks ?: throw ExpectedDataNotFound("MISSING COMPLIANCE REMARKS"),
+//                mappedFileClass.document.toString()
+//            )
+//
+//            sendEmailWithLabResults(
+//                commonDaoServices.findUserByID(
+//                    permitDetails.userId ?: throw ExpectedDataNotFound("MISSING USER ID")
+//                ).email ?: throw ExpectedDataNotFound("MISSING USER ID"),
+//                mappedFileClass.document.toString(),
+//                permitDetails.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
+//            )
             return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
         }
         else {
@@ -500,6 +525,15 @@ class NewMarketSurveillanceDaoServices(
                     userTaskId = applicationMapProperties.mapMSUserTaskNameSTATIONOWNER
                 }
                 fileInspectionDetail= updateFuelInspectionDetails(fileInspectionDetail, map, loggedInUser).second
+//                val fuelInvoiceID = savedRemediationInvoice.second
+//
+//                val imagePath = ResourceUtils.getFile("classpath:static/images/KEBS_SMARK.png").toString()
+//                val map = hashMapOf<String, Any>()
+//                map["imagePath"] = imagePath
+//                savedRemediationInvoice.second.fuelInspectionId?.let {
+//                    msReportsControllers.extractAndSaveReport(map, "classpath:reports/remediationInvoice.jrxml", "Remediation-Invoice", iFuelRemediationInvoiceRepo.findFirstByFuelInspectionId(it) )
+//                }
+//                fuelInspectEntity.stationOwnerEmail?.let { sendEmailWithProforma(it, ResourceUtils.getFile("classpath:templates/TestPdf/Remediation-Invoice.pdf").toString()) }
                 return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
             }
             else -> {

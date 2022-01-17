@@ -337,12 +337,20 @@ class SchedulerImpl(
                                 ssfFound.fuelInspectionId != null -> {
                                     marketSurveillanceDaoServices.findFuelInspectionDetailByID(ssfFound.fuelInspectionId?: throw Exception("FUEL INSPECTION ID NOT FOUND"))
                                         .let {  fuelInspection->
+                                            var sr = commonDaoServices.createServiceRequest(map)
                                             with(fuelInspection){
                                                 userTaskId = applicationMapProperties.mapMSUserTaskNameOFFICER
                                                 lastModifiedBy = "SYSTEM SCHEDULER"
                                                 lastModifiedOn = commonDaoServices.getTimestamp()
                                             }
-                                            fuelInspectionRepo.save(fuelInspection)
+                                            fuelInspectionRepo.save(fuelInspection).let {fileInspectionDetail->
+                                                sr = commonDaoServices.mapServiceRequestForSuccessUserNotRegistered(map, "${commonDaoServices.createJsonBodyFromEntity(fileInspectionDetail)}", "LAB RESULTS")
+                                                val fuelInspectionOfficer = marketSurveillanceDaoServices.findFuelInspectionOfficerAssigned(fileInspectionDetail, map.activeStatus)
+                                                fuelInspectionOfficer?.assignedIo?.let {
+                                                    commonDaoServices.sendEmailWithUserEntity(
+                                                        it, applicationMapProperties.mapMsLabResultsIONotification, fileInspectionDetail, map, sr)
+                                                }
+                                            }
                                         }
                                 }
                                 }
