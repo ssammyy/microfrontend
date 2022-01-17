@@ -1,4 +1,5 @@
 import {Timestamp} from "rxjs";
+import {KnwSecTaskData} from "../std/std.model";
 
 
 export class Levy {
@@ -129,6 +130,34 @@ export interface StdLevyScheduleSiteVisitDTO {
     cheifManagerRemarks: string;
     assistantManagerRemarks: string;
     createdBy: string;
+    taskId: string;
+
+}
+export interface AssignCompanyTaskDTO {
+    manufacturerEntity:number;
+    assignedTo: number;
+    companyName: string;
+    kraPin: string;
+    status: boolean;
+    registrationNumber: string;
+    postalAddress: string;
+    physicalAddress: string;
+    plotNumber: string;
+    companyEmail: string;
+    companyTelephone: string;
+    yearlyTurnover: number;
+    businessLines: number;
+    businessNatures: number;
+    buildingName: string;
+    branchName: string;
+    streetName: string;
+    directorIdNumber: string;
+    region: number;
+    county: number;
+    town: number;
+    manufactureStatus: number;
+    entryNumber: number;
+    contactId: number;
 
 }
 export interface VisitTask {
@@ -157,6 +186,8 @@ export interface SiteVisitReport {
     actionTaken: string;
     taskId: string;
     visitID: number;
+    assigneeId: number;
+    manufacturerEntity: number;
 
 }
 export interface ApproveVisitTask {
@@ -182,6 +213,8 @@ export interface ReportDecisionLevelOne{
     accentTo: boolean;
     visitID: bigint;
     comments: string;
+    assigneeId: number;
+    manufacturerEntity: number;
 }
 
 export interface ReportDecisionLevelTwo{
@@ -189,12 +222,15 @@ export interface ReportDecisionLevelTwo{
     accentTo: boolean;
     visitID: bigint;
     comments: string;
+    manufacturerEntity: number;
 }
 
 export interface SiteVisitFeedBack {
     officersFeedback: string;
     taskId: string;
     visitID: number;
+    assigneeId: number;
+    manufacturerEntity: number;
 
 }
 export interface ManufactureDetailList {
@@ -222,34 +258,17 @@ export interface ManufactureDetailList {
     entryNumber: number;
     assignStatus: number;
     assignedTo: number;
-    userClassification: string;
-    firmCategory: string;
-    userId: string;
-    description: string;
-    closedCommodityManufactured: string;
-    closedContractsUndertaken: string;
-    varField1: string;
-    varField2: string;
-    varField3: string;
-    varField4: string;
-    varField5: string;
-    varField6: string;
-    varField7: string;
-    varField8: string;
-    createdBy: string;
-    createdOn: string;
-    modifiedBy: string;
-    modifiedOn: string;
-    deleteBy: string;
-    deletedOn: string;
-    factoryVisitDate: string;
-    factoryVisitStatus: string;
-    ownership: string;
-    closureOfOperations: string;
+    userId: number;
+
 }
 export interface ManufacturePendingTask {
-    id: number;
+    taskId: string;
     name: string;
+    taskData: ManufacturePendingTaskData;
+}
+export interface ManufacturePendingTaskData{
+    id: number;
+    companyName: string;
     kraPin: string;
     status: boolean;
     registrationNumber: string;
@@ -272,30 +291,19 @@ export interface ManufacturePendingTask {
     entryNumber: number;
     assignStatus: number;
     assignedTo: number;
-    userClassification: string;
-    firmCategory: string;
-    userId: string;
-    description: string;
-    closedCommodityManufactured: string;
-    closedContractsUndertaken: string;
-    varField1: string;
-    varField2: string;
-    varField3: string;
-    varField4: string;
-    varField5: string;
-    varField6: string;
-    varField7: string;
-    varField8: string;
-    createdBy: string;
-    createdOn: string;
-    modifiedBy: string;
-    modifiedOn: string;
-    deleteBy: string;
-    deletedOn: string;
-    factoryVisitDate: string;
-    factoryVisitStatus: string;
-    ownership: string;
-    closureOfOperations: string;
+    visitID: number;
+    manufacturerEntity: number;
+    scheduledVisitDate: string;
+    meetingDate: string;
+    visitDate: Timestamp<number>;
+    purpose: string;
+    personMet: string;
+    actionTaken: string;
+    originator: number;
+    contactId: number;
+    levyProcessInstance: string;
+    levelOneId: number;
+    officersFeedback: string;
 
 }
 export interface ManufactureCompleteTask {
@@ -323,30 +331,6 @@ export interface ManufactureCompleteTask {
     entryNumber: number;
     assignStatus: number;
     assignedTo: number;
-    userClassification: string;
-    firmCategory: string;
-    userId: string;
-    description: string;
-    closedCommodityManufactured: string;
-    closedContractsUndertaken: string;
-    varField1: string;
-    varField2: string;
-    varField3: string;
-    varField4: string;
-    varField5: string;
-    varField6: string;
-    varField7: string;
-    varField8: string;
-    createdBy: string;
-    createdOn: string;
-    modifiedBy: string;
-    modifiedOn: string;
-    deleteBy: string;
-    deletedOn: string;
-    factoryVisitDate: string;
-    factoryVisitStatus: string;
-    ownership: string;
-    closureOfOperations: string;
 
 }
 

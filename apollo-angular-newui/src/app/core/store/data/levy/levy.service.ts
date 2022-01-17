@@ -4,7 +4,7 @@ import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.servi
 import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
 import {catchError, map} from "rxjs/operators";
 import {
-    ApproveVisitTask,
+    ApproveVisitTask, AssignCompanyTaskDTO,
     CompanyModel, ManufactureCompleteTask, ManufactureDetailList,
     ManufactureInfo,
     ManufacturePenalty, ManufacturePendingTask,
@@ -12,7 +12,7 @@ import {
     SLevySL1,
     StdLevyScheduleSiteVisitDTO, VisitTask
 } from "./levy.model";
-import {DiSdtDECISION, KnwSecTasks, NWADiSdtJustification, NWAJustification} from "../std/std.model";
+import {DiSdtDECISION, KnwSecTasks, NWADiSdtJustification, NWAJustification, UsersEntity} from "../std/std.model";
 
 @Injectable({
   providedIn: 'root'
@@ -52,6 +52,18 @@ export class LevyService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_SCHEDULE_SITE_VISIT);
         const params = new HttpParams();
         return this.http.post<StdLevyScheduleSiteVisitDTO>(url, stdLevyScheduleSiteVisitDTO, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+    public assignCompanyTasks(assignCompanyTaskDTO: AssignCompanyTaskDTO): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_ASSIGN_COMPANY_TASK);
+        const params = new HttpParams();
+        return this.http.post<AssignCompanyTaskDTO>(url, assignCompanyTaskDTO, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),
@@ -105,7 +117,7 @@ export class LevyService {
     public levelOneDecisionOnReport(reportDecisionLevelOne: ReportDecisionLevelOne): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_SITE_VISITS_REPORT_APPROVAL_ONE);
         const params = new HttpParams();
-        return this.http.post<ApproveVisitTask>(url, reportDecisionLevelOne, {params}).pipe(
+        return this.http.post<ReportDecisionLevelOne>(url, reportDecisionLevelOne, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),
@@ -114,10 +126,10 @@ export class LevyService {
             })
         );
     }
-    public viewReportDoc(reportFileID: any): Observable<any> {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_SAVE_VISIT_REPORT_DOCUMENT);
+    public viewReportDoc(visitID: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_VIEW_VISIT_REPORT_DOCUMENT);
         const params = new HttpParams()
-            .set('reportFileID', reportFileID);
+            .set('visitID', visitID);
         // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
         return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
             map(function (response: any) {
@@ -138,7 +150,7 @@ export class LevyService {
     public decisionOnSiteReportLevelTwo(reportDecisionLevelTwo: ReportDecisionLevelTwo): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_SITE_VISITS_REPORT_APPROVAL_TWO);
         const params = new HttpParams();
-        return this.http.post<ApproveVisitTask>(url, reportDecisionLevelTwo, {params}).pipe(
+        return this.http.post<ReportDecisionLevelTwo>(url, reportDecisionLevelTwo, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),
@@ -181,6 +193,19 @@ export class LevyService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_MANUFACTURE_TASKS);
         const params = new HttpParams();
         return this.http.get<ManufacturePendingTask>(url, {params}).pipe();
+    }
+
+    public viewFeedBackReport(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_VIEW_VISIT_REPORT_FEEDBACK);
+        const params = new HttpParams();
+        return this.http.get<ManufacturePendingTask>(url, {params}).pipe();
+    }
+
+
+    public getUserList(): Observable<UsersEntity[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_LIST_OF_USERS);
+        const params = new HttpParams();
+        return this.http.get<UsersEntity[]>(url, {params}).pipe();
     }
 
 

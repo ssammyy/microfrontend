@@ -1,11 +1,15 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
+import com.google.gson.Gson
+import mu.KotlinLogging
 import org.flowable.engine.ProcessEngine
 import org.flowable.engine.RepositoryService
 import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
 import org.flowable.engine.repository.Deployment
 import org.flowable.task.api.Task
+import org.joda.time.DateTime
+import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
 import org.kebs.app.kotlin.apollo.common.dto.std.NWAPreliminaryDraftDecision
 import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
 import org.kebs.app.kotlin.apollo.common.dto.stdLevy.*
@@ -18,6 +22,7 @@ import org.kebs.app.kotlin.apollo.store.model.std.NWAJustification
 import org.kebs.app.kotlin.apollo.store.model.std.NWAPreliminaryDraftUploads
 import org.kebs.app.kotlin.apollo.store.model.std.TechnicalCommittee
 import org.kebs.app.kotlin.apollo.store.repo.*
+import org.kebs.app.kotlin.apollo.store.repo.std.UserListRepository
 import org.kebs.app.kotlin.apollo.store.repo.stdLevy.ManufacturePenaltyDetailsDTO
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.repository.findByIdOrNull
@@ -26,8 +31,7 @@ import org.springframework.web.multipart.MultipartFile
 import java.sql.Timestamp
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.ArrayList
-import java.util.HashMap
+import java.util.*
 
 @Service
 class StandardLevyService(
@@ -41,6 +45,8 @@ class StandardLevyService(
     private val commonDaoServices: CommonDaoServices,
     private val standardLevyFactoryVisitReportRepo: IStandardLevyFactoryVisitReportRepository,
     private val slUploadsRepo: ISlVisitUploadsRepository,
+    private val bpmnService: StandardsLevyBpmn,
+    private val userListRepository: UserListRepository
 ) {
     val PROCESS_DEFINITION_KEY = "sl_SiteVisitProcessFlow"
     val TASK_CANDIDATE_SL_PRINCIPAL_LEVY_OFFICER ="SL_PRINCIPAL_LEVY_OFFICER"
@@ -83,31 +89,110 @@ class StandardLevyService(
         return iStandardLevyPaymentsRepository.findAll()
     }
 
+    fun assignCompany(
+        companyProfileEntity : CompanyProfileEntity
+    ) : ProcessInstanceSiteResponse
+    {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val variables: MutableMap<String, Any> = java.util.HashMap()
+        companyProfileEntity.assignedTo?.let { variables["assignedTo"] =it }
+        companyProfileEntity.name?.let { variables["companyName"] =it }
+        companyProfileEntity.kraPin?.let { variables["kraPin"] =it }
+        companyProfileEntity.status?.let { variables["status"] =it }
+        companyProfileEntity.registrationNumber?.let { variables["registrationNumber"] =it }
+        companyProfileEntity.postalAddress?.let { variables["postalAddress"] =it }
+        companyProfileEntity.physicalAddress?.let { variables["physicalAddress"] =it }
+        companyProfileEntity.plotNumber?.let { variables["plotNumber"] =it }
+        companyProfileEntity.companyEmail?.let { variables["companyEmail"] =it }
+        companyProfileEntity.companyTelephone?.let { variables["companyTelephone"] =it }
+        companyProfileEntity.yearlyTurnover?.let { variables["yearlyTurnover"] =it }
+        companyProfileEntity.businessLines?.let { variables["businessLines"] =it }
+        companyProfileEntity.businessNatures?.let { variables["businessNatures"] =it }
+        companyProfileEntity.buildingName?.let { variables["buildingName"] =it }
+        companyProfileEntity.directorIdNumber?.let { variables["directorIdNumber"] =it }
+        companyProfileEntity.region?.let { variables["region"] =it }
+        companyProfileEntity.county?.let { variables["county"] =it }
+        companyProfileEntity.town?.let { variables["town"] =it }
+        companyProfileEntity.manufactureStatus?.let { variables["manufactureStatus"] =it }
+        companyProfileEntity.entryNumber?.let { variables["entryNumber"] =it }
+        companyProfileEntity.id?.let { variables["manufacturerEntity"] =it }?:  throw Exception("COMPANY NOT FOUND")
+        companyProfileEntity.userId?.let { variables["contactId"] =it }
+
+        companyProfileEntity.assignedTo=companyProfileEntity.assignedTo
+        companyProfileEntity.assignStatus= 1
+        companyProfileEntity.createdBy= loggedInUser.userName
+        companyProfileEntity.createdOn= commonDaoServices.getTimestamp()
+        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
+        companyProfileEntity.slBpmnProcessInstance = processInstance?.processInstanceId
+
+        companyProfileRepo.save(companyProfileEntity)
+
+
+
+        taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
+            ?.let { t->
+                t.list()[0]
+                    ?.let {task ->
+                        task.assignee = "${companyProfileEntity.assignedTo?:throw NullValueNotAllowedException(" invalid user id provided")}"  //set the assignee}"
+
+                        taskService.saveTask(task)
+                    }
+                    ?: KotlinLogging.logger {  }.error("Task list empty for $PROCESS_DEFINITION_KEY ")
+
+
+            }
+            ?: KotlinLogging.logger {  }.error("No task found for $PROCESS_DEFINITION_KEY ")
+        bpmnService.slAssignTask(processInstance.processInstanceId, "Schedule Site Visit", companyProfileEntity?.assignedTo?:throw NullValueNotAllowedException("invalid user id provided"))
+
+        return ProcessInstanceSiteResponse(processInstance.id, processInstance.isEnded)
+
+    }
+
     fun scheduleSiteVisit(
-        standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity,
-        stdLevyScheduleSiteVisitDTO: StdLevyScheduleSiteVisitDTO,
+        standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity
     ) : ProcessInstanceResponseSite
     {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val variables: MutableMap<String, Any> = java.util.HashMap()
-        variables["manufacturerEntity"] = stdLevyScheduleSiteVisitDTO.manufacturerEntity!!
-        variables["scheduledVisitDate"] = stdLevyScheduleSiteVisitDTO.scheduledVisitDate!!
-        variables["status"] = 0
-        variables["createdBy"] = loggedInUser.id!!
-        var visit = standardLevyFactoryVisitReportEntity
-        with(visit){
-            manufacturerEntity=stdLevyScheduleSiteVisitDTO.manufacturerEntity
-            scheduledVisitDate=stdLevyScheduleSiteVisitDTO.scheduledVisitDate
-            status=0
-            createdBy= loggedInUser.id.toString()
-            createdOn= Timestamp(System.currentTimeMillis())
+        standardLevyFactoryVisitReportEntity.manufacturerEntity?.let { variables["manufacturerEntity"] =it }
+        standardLevyFactoryVisitReportEntity.scheduledVisitDate?.let { variables["scheduledVisitDate"] =it  }
+        standardLevyFactoryVisitReportEntity.createdBy?.let { variables["createdBy"] =it  }
+        standardLevyFactoryVisitReportEntity.status?.let { variables["status"] =it  }
+        standardLevyFactoryVisitReportEntity.assigneeId?.let{variables["originator"] =it}
 
-        }
         val visitDetails = standardLevyFactoryVisitReportRepo.save(standardLevyFactoryVisitReportEntity)
-        variables["ID"] = visitDetails.id!!
+        visitDetails.id?.let { variables["visitID"] =it }
 
-        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
-        return ProcessInstanceResponseSite(visitDetails.id.toString(),processInstance.id, processInstance.isEnded)
+        companyProfileRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.manufacturerEntity)
+            ?.let { companyProfileEntity ->
+                runtimeService.createProcessInstanceQuery().processInstanceId(companyProfileEntity.slBpmnProcessInstance).list()
+                    ?.let { l->
+                      val processInstance =  l[0]
+
+                        taskService.complete(standardLevyFactoryVisitReportEntity.taskId, variables)
+
+                        taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
+                            ?.let { t->
+                                t.list()[0]
+                                    ?.let {task ->
+                                        task.assignee = "${loggedInUser.id?:throw NullValueNotAllowedException(" invalid user id provided")}"  //set the assignee}"
+                                        task.dueDate = standardLevyFactoryVisitReportEntity.scheduledVisitDate  //set the due date
+                                        taskService.saveTask(task)
+                                    }
+                                    ?: KotlinLogging.logger {  }.error("Task list empty for $PROCESS_DEFINITION_KEY ")
+
+
+                            }
+                            ?: KotlinLogging.logger {  }.error("No task found for $PROCESS_DEFINITION_KEY ")
+                        bpmnService.slAssignTask(processInstance.processInstanceId, "Prepare Report on Visit", loggedInUser.id?:throw NullValueNotAllowedException("invalid user id provided"))
+                        return ProcessInstanceResponseSite(visitDetails.id.toString(),processInstance.id, processInstance.isEnded)
+                    }
+                    ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${companyProfileEntity.slBpmnProcessInstance} ")
+
+            }
+            ?: throw NullValueNotAllowedException ("COMPANY NOT FOUND")
+
+
 
 
     }
@@ -122,44 +207,81 @@ class StandardLevyService(
     }
 
     //Return task details for PL OFFICER
-    fun getScheduledVisits():List<TaskDetails>
+    fun getUserTasks():List<TaskDetails>
     {
 
-        val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_SL_PRINCIPAL_LEVY_OFFICER).processDefinitionKey(PROCESS_DEFINITION_KEY).list()
+//        val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_SL_PRINCIPAL_LEVY_OFFICER).processDefinitionKey(PROCESS_DEFINITION_KEY).list()
+        val tasks = taskService.createTaskQuery().taskAssignee("${commonDaoServices.loggedInUserDetails().id?:throw NullValueNotAllowedException(" invalid user id provided")}").list()
         return getTaskDetails(tasks)
     }
 
-    fun reportOnSiteVisit(
-        standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity,
-        reportOnSiteVisitDTO: ReportOnSiteVisitDTO,
-    ) : ProcessInstanceResponseValueSite
+    //Return task details for PL OFFICER
+    fun viewFeedBack():List<TaskDetails>
+    {
+
+//        val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_SL_PRINCIPAL_LEVY_OFFICER).processDefinitionKey(PROCESS_DEFINITION_KEY).list()
+        val tasks = taskService.createTaskQuery().taskAssignee("${commonDaoServices.loggedInUserDetails().id?:throw NullValueNotAllowedException(" invalid user id provided")}").list()
+        return getTaskDetails(tasks)
+    }
+
+    fun reportOnSiteVisit(standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity) : ProcessInstanceResponseValueSite
     {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val variables: MutableMap<String, Any> = java.util.HashMap()
-        variables["visitDate"] = reportOnSiteVisitDTO.visitDate!!
-        variables["purpose"] = reportOnSiteVisitDTO.purpose!!
-        variables["personMet"] = reportOnSiteVisitDTO.personMet!!
-        variables["actionTaken"] = reportOnSiteVisitDTO.actionTaken!!
-        variables["visitID"] = reportOnSiteVisitDTO.visitID!!
-        variables["status"] = 1
+        standardLevyFactoryVisitReportEntity.visitDate?.let { variables["visitDate"] =it }
+        standardLevyFactoryVisitReportEntity.purpose?.let { variables["purpose"] =it }
+        standardLevyFactoryVisitReportEntity.personMet?.let { variables["personMet"] =it }
+        standardLevyFactoryVisitReportEntity.actionTaken?.let { variables["actionTaken"] =it }
+        standardLevyFactoryVisitReportEntity.id?.let { variables["visitID"] =it }
+        standardLevyFactoryVisitReportEntity.status?.let { variables["status"] =it }
+        standardLevyFactoryVisitReportEntity.assigneeId?.let { variables["assigneeId"] =it }
 
-        standardLevyFactoryVisitReportRepo.findByIdOrNull(reportOnSiteVisitDTO.visitID)?.let { standardLevyFactoryVisitReportEntity->
+        standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)?.let { standardLevyFactoryVisitReportEntity->
 
             with(standardLevyFactoryVisitReportEntity){
-                visitDate=reportOnSiteVisitDTO.visitDate!!
-                purpose=reportOnSiteVisitDTO.purpose!!
-                personMet=reportOnSiteVisitDTO.personMet!!
-                actionTaken=reportOnSiteVisitDTO.actionTaken!!
+                visitDate=standardLevyFactoryVisitReportEntity.visitDate
+                purpose=standardLevyFactoryVisitReportEntity.purpose
+                personMet=standardLevyFactoryVisitReportEntity.personMet
+                actionTaken=standardLevyFactoryVisitReportEntity.actionTaken
                 status=1
+                assigneeId=standardLevyFactoryVisitReportEntity.assigneeId
 
             }
             standardLevyFactoryVisitReportRepo.save(standardLevyFactoryVisitReportEntity)
         }?: throw Exception("SCHEDULED VISIT NOT FOUND")
 
-        taskService.complete(reportOnSiteVisitDTO.taskId, variables)
-        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
-        return ProcessInstanceResponseValueSite(reportOnSiteVisitDTO.visitID,processInstance.id, processInstance.isEnded
-        )
+        companyProfileRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.manufacturerEntity)
+            ?.let { companyProfileEntity ->
+                runtimeService.createProcessInstanceQuery().processInstanceId(companyProfileEntity.slBpmnProcessInstance).list()
+                    ?.let { l->
+                        val processInstance =  l[0]
+
+
+                        taskService.complete(standardLevyFactoryVisitReportEntity.taskId, variables)
+
+                        taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
+                            ?.let { t->
+                                t.list()[0]
+                                    ?.let {task ->
+                                        task.assignee = "${standardLevyFactoryVisitReportEntity.assigneeId?:throw NullValueNotAllowedException(" invalid user id provided")}"  //set the assignee}"
+                                       // task.dueDate = standardLevyFactoryVisitReportEntity.scheduledVisitDate  //set the due date
+                                        taskService.saveTask(task)
+                                    }
+                                    ?: KotlinLogging.logger {  }.error("Task list empty for $PROCESS_DEFINITION_KEY ")
+
+
+                            }
+                            ?: KotlinLogging.logger {  }.error("No task found for $PROCESS_DEFINITION_KEY ")
+                        bpmnService.slAssignTask(processInstance.processInstanceId, "Notification of Report", standardLevyFactoryVisitReportEntity.assigneeId?:throw NullValueNotAllowedException("invalid user id provided"))
+                        return ProcessInstanceResponseValueSite(standardLevyFactoryVisitReportEntity.id,processInstance.id, processInstance.isEnded)
+                    }
+                    ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${companyProfileEntity.slBpmnProcessInstance} ")
+
+            }
+            ?: throw NullValueNotAllowedException ("COMPANY NOT FOUND")
+
+
+
 
     }
 
@@ -202,24 +324,99 @@ class StandardLevyService(
         return slUploadsRepo.findByVisitId(visitId) ?: throw ExpectedDataNotFound("No File found with the following [ id=$visitId]")
     }
 
-    fun decisionOnSiteReport(siteVisitReportDecision: SiteVisitReportDecision) : List<TaskDetails> {
+    fun decisionOnSiteReport(standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity) : List<TaskDetails> {
         val variables: MutableMap<String, Any> = java.util.HashMap()
-        variables["Yes"] = siteVisitReportDecision.accentTo
+        val loggedInUser=commonDaoServices.loggedInUserDetails()
+        standardLevyFactoryVisitReportEntity.assistantManagerRemarks?.let { variables["assistantManagerRemarks"] =it }
+        standardLevyFactoryVisitReportEntity.accentTo?.let { variables["No"] =it }
+        standardLevyFactoryVisitReportEntity.accentTo?.let { variables["Yes"] =it }
+        standardLevyFactoryVisitReportEntity.assigneeId?.let { variables["assigneeId"] =it }
         variables["status"] = 1
-        siteVisitReportDecision.comments.let { variables.put("comments", it) }
-
-        standardLevyFactoryVisitReportRepo.findByIdOrNull(siteVisitReportDecision.visitID)?.let { standardLevyFactoryVisitReportEntity->
+        loggedInUser.id?.let{variables["levelOneId"] =it }
+        if(variables["Yes"]==true){
+            standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)?.let { standardLevyFactoryVisitReportEntity->
 
                 with(standardLevyFactoryVisitReportEntity){
-                    assistantManagerRemarks=siteVisitReportDecision.comments
+                    assistantManagerRemarks=standardLevyFactoryVisitReportEntity.assistantManagerRemarks
                     status = 1
+                    assigneeId= standardLevyFactoryVisitReportEntity.assigneeId
+                    accentTo = true
                 }
-            standardLevyFactoryVisitReportRepo.save(standardLevyFactoryVisitReportEntity)
+                standardLevyFactoryVisitReportRepo.save(standardLevyFactoryVisitReportEntity)
             }?: throw Exception("TASK NOT FOUND")
 
+            companyProfileRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.manufacturerEntity)
+                ?.let { companyProfileEntity ->
+                    runtimeService.createProcessInstanceQuery().processInstanceId(companyProfileEntity.slBpmnProcessInstance).list()
+                        ?.let { l->
+                            val processInstance =  l[0]
 
-        taskService.complete(siteVisitReportDecision.taskId, variables)
-        return  getSiteReport()
+                            taskService.complete(standardLevyFactoryVisitReportEntity.taskId, variables)
+
+                            taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
+                                ?.let { t->
+                                    t.list()[0]
+                                        ?.let {task ->
+                                            task.assignee = "${standardLevyFactoryVisitReportEntity.assigneeId?:throw NullValueNotAllowedException(" invalid user id provided")}"  //set the assignee}"
+                                            //task.dueDate = standardLevyFactoryVisitReportEntity.scheduledVisitDate  //set the due date
+                                            taskService.saveTask(task)
+                                        }
+                                        ?: KotlinLogging.logger {  }.error("Task list empty for $PROCESS_DEFINITION_KEY ")
+
+
+                                }
+                                ?: KotlinLogging.logger {  }.error("No task found for $PROCESS_DEFINITION_KEY ")
+                            bpmnService.slAssignTask(processInstance.processInstanceId, "View Report", standardLevyFactoryVisitReportEntity?.assigneeId?:throw NullValueNotAllowedException("invalid user id provided"))
+
+                        }
+                        ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${companyProfileEntity.slBpmnProcessInstance} ")
+
+                }
+                ?: throw NullValueNotAllowedException ("COMPANY NOT FOUND")
+        }else if(variables["No"]==false) {
+            standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)?.let { standardLevyFactoryVisitReportEntity->
+
+                with(standardLevyFactoryVisitReportEntity){
+                    assistantManagerRemarks=standardLevyFactoryVisitReportEntity.assistantManagerRemarks
+                    status = 1
+                    assigneeId= standardLevyFactoryVisitReportEntity.assigneeId
+                    accentTo = false
+                }
+                standardLevyFactoryVisitReportRepo.save(standardLevyFactoryVisitReportEntity)
+            }?: throw Exception("TASK NOT FOUND")
+
+            companyProfileRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.manufacturerEntity)
+                ?.let { companyProfileEntity ->
+                    runtimeService.createProcessInstanceQuery().processInstanceId(companyProfileEntity.slBpmnProcessInstance).list()
+                        ?.let { l->
+                            val processInstance =  l[0]
+
+                            taskService.complete(standardLevyFactoryVisitReportEntity.taskId, variables)
+
+                            taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
+                                ?.let { t->
+                                    t.list()[0]
+                                        ?.let {task ->
+                                            task.assignee = "${standardLevyFactoryVisitReportEntity.assigneeId?:throw NullValueNotAllowedException(" invalid user id provided")}"  //set the assignee}"
+                                            //task.dueDate = standardLevyFactoryVisitReportEntity.scheduledVisitDate  //set the due date
+                                            taskService.saveTask(task)
+                                        }
+                                        ?: KotlinLogging.logger {  }.error("Task list empty for $PROCESS_DEFINITION_KEY ")
+
+
+                                }
+                                ?: KotlinLogging.logger {  }.error("No task found for $PROCESS_DEFINITION_KEY ")
+                            bpmnService.slAssignTask(processInstance.processInstanceId, "Prepare Report on Visit", standardLevyFactoryVisitReportEntity?.assigneeId?:throw NullValueNotAllowedException("invalid user id provided"))
+
+                        }
+                        ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${companyProfileEntity.slBpmnProcessInstance} ")
+
+                }
+                ?: throw NullValueNotAllowedException ("COMPANY NOT FOUND")
+        }
+        return  getUserTasks()
+
+
     }
 
     //Return task details for  Manager
@@ -230,51 +427,146 @@ class StandardLevyService(
         return getTaskDetails(tasks)
     }
 
-    fun decisionOnSiteReportLevelTwo(siteVisitReportDecision: SiteVisitReportDecision) : List<TaskDetails> {
+    fun decisionOnSiteReportLevelTwo(standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity) : List<TaskDetails> {
         val variables: MutableMap<String, Any> = mutableMapOf()
-        variables["Yes"] = siteVisitReportDecision.accentTo
-        variables["status"] = 1
-        siteVisitReportDecision.comments.let { variables.put("comments", it) }
+        standardLevyFactoryVisitReportEntity.accentTo?.let { variables["Yes"] =it }
+        standardLevyFactoryVisitReportEntity.accentTo?.let { variables["No"] =it }
+        standardLevyFactoryVisitReportEntity.cheifManagerRemarks?.let { variables["cheifManagerRemarks"] =it }
+        variables["status"] = 2
+        standardLevyFactoryVisitReportEntity.assigneeId?.let { variables["assigneeId"] =it }
+        if(variables["Yes"]==true){
+            standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)?.let { standardLevyFactoryVisitReportEntity->
 
-        standardLevyFactoryVisitReportRepo.findByIdOrNull(siteVisitReportDecision.visitID)?.let { standardLevyFactoryVisitReportEntity->
+                with(standardLevyFactoryVisitReportEntity){
+                    cheifManagerRemarks=standardLevyFactoryVisitReportEntity.cheifManagerRemarks
+                    status = 2
+                    accentTo = true
+                }
+                standardLevyFactoryVisitReportRepo.save(standardLevyFactoryVisitReportEntity)
+            }?: throw Exception("TASK NOT FOUND")
+            companyProfileRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.manufacturerEntity)
+                ?.let { companyProfileEntity ->
+                    runtimeService.createProcessInstanceQuery().processInstanceId(companyProfileEntity.slBpmnProcessInstance).list()
+                        ?.let { l->
+                            val processInstance =  l[0]
 
-            with(standardLevyFactoryVisitReportEntity){
-                cheifManagerRemarks=siteVisitReportDecision.comments
-                status = 2
-            }
-            standardLevyFactoryVisitReportRepo.save(standardLevyFactoryVisitReportEntity)
-        }?: throw Exception("TASK NOT FOUND")
+                            taskService.complete(standardLevyFactoryVisitReportEntity.taskId, variables)
+
+                            taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
+                                ?.let { t->
+                                    t.list()[0]
+                                        ?.let {task ->
+                                            task.assignee = "${standardLevyFactoryVisitReportEntity.assigneeId?:throw NullValueNotAllowedException(" invalid user id provided")}"  //set the assignee}"
+                                            //task.dueDate = standardLevyFactoryVisitReportEntity.scheduledVisitDate  //set the due date
+                                            taskService.saveTask(task)
+                                        }
+                                        ?: KotlinLogging.logger {  }.error("Task list empty for $PROCESS_DEFINITION_KEY ")
 
 
-        taskService.complete(siteVisitReportDecision.taskId, variables)
-        return  getSiteReport()
+                                }
+                                ?: KotlinLogging.logger {  }.error("No task found for $PROCESS_DEFINITION_KEY ")
+                            bpmnService.slAssignTask(processInstance.processInstanceId, "Draft Feedback and share with manufacturer", standardLevyFactoryVisitReportEntity?.assigneeId?:throw NullValueNotAllowedException("invalid user id provided"))
+
+
+                        }
+                        ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${companyProfileEntity.slBpmnProcessInstance} ")
+
+                }
+                ?: throw NullValueNotAllowedException ("COMPANY NOT FOUND")
+        }else if(variables["No"]==false) {
+            standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)?.let { standardLevyFactoryVisitReportEntity->
+
+                with(standardLevyFactoryVisitReportEntity){
+                    cheifManagerRemarks=standardLevyFactoryVisitReportEntity.cheifManagerRemarks
+                    status = 2
+                    accentTo = false
+                }
+                standardLevyFactoryVisitReportRepo.save(standardLevyFactoryVisitReportEntity)
+            }?: throw Exception("TASK NOT FOUND")
+            companyProfileRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.manufacturerEntity)
+                ?.let { companyProfileEntity ->
+                    runtimeService.createProcessInstanceQuery().processInstanceId(companyProfileEntity.slBpmnProcessInstance).list()
+                        ?.let { l->
+                            val processInstance =  l[0]
+
+                            taskService.complete(standardLevyFactoryVisitReportEntity.taskId, variables)
+
+                            taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
+                                ?.let { t->
+                                    t.list()[0]
+                                        ?.let {task ->
+                                            task.assignee = "${standardLevyFactoryVisitReportEntity.assigneeId?:throw NullValueNotAllowedException(" invalid user id provided")}"  //set the assignee}"
+                                            //task.dueDate = standardLevyFactoryVisitReportEntity.scheduledVisitDate  //set the due date
+                                            taskService.saveTask(task)
+                                        }
+                                        ?: KotlinLogging.logger {  }.error("Task list empty for $PROCESS_DEFINITION_KEY ")
+
+
+                                }
+                                ?: KotlinLogging.logger {  }.error("No task found for $PROCESS_DEFINITION_KEY ")
+                            bpmnService.slAssignTask(processInstance.processInstanceId, "View Report", standardLevyFactoryVisitReportEntity?.assigneeId?:throw NullValueNotAllowedException("invalid user id provided"))
+
+
+                        }
+                        ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${companyProfileEntity.slBpmnProcessInstance} ")
+
+                }
+                ?: throw NullValueNotAllowedException ("COMPANY NOT FOUND")
+        }
+
+        return  getUserTasks()
     }
 
     fun siteVisitReportFeedback(
-        standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity,
-        reportOnSiteVisitDTO: ReportOnSiteVisitDTO,
+        standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity
     ) : ProcessInstanceResponseValueSite
     {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val variables: MutableMap<String, Any> = java.util.HashMap()
-        variables["officersFeedback"] = reportOnSiteVisitDTO.officersFeedback!!
-        variables["visitID"] = reportOnSiteVisitDTO.visitID!!
-        variables["status"] = 3
+        standardLevyFactoryVisitReportEntity.officersFeedback?.let { variables["officersFeedback"] =it }
+        standardLevyFactoryVisitReportEntity.id?.let { variables["visitID"] =it }
+        standardLevyFactoryVisitReportEntity.status?.let { variables["status"] =it }
+        standardLevyFactoryVisitReportEntity.assigneeId?.let { variables["assigneeId"] =it }
 
-        standardLevyFactoryVisitReportRepo.findByIdOrNull(reportOnSiteVisitDTO.visitID)?.let { standardLevyFactoryVisitReportEntity->
+        standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)?.let { standardLevyFactoryVisitReportEntity->
 
             with(standardLevyFactoryVisitReportEntity){
-                officersFeedback=reportOnSiteVisitDTO.officersFeedback!!
+                officersFeedback=standardLevyFactoryVisitReportEntity.officersFeedback
+                assigneeId=standardLevyFactoryVisitReportEntity.assigneeId
                 status=3
 
             }
             standardLevyFactoryVisitReportRepo.save(standardLevyFactoryVisitReportEntity)
         }?: throw Exception("SCHEDULED VISIT NOT FOUND")
 
-        taskService.complete(reportOnSiteVisitDTO.taskId, variables)
-        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
-        return ProcessInstanceResponseValueSite(reportOnSiteVisitDTO.visitID,processInstance.id, processInstance.isEnded
-        )
+        companyProfileRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.manufacturerEntity)
+            ?.let { companyProfileEntity ->
+                runtimeService.createProcessInstanceQuery().processInstanceId(companyProfileEntity.slBpmnProcessInstance).list()
+                    ?.let { l->
+                        val processInstance =  l[0]
+        taskService.complete(standardLevyFactoryVisitReportEntity.taskId, variables)
+
+        taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
+            ?.let { t->
+                t.list()[0]
+                    ?.let {task ->
+                        task.assignee = "${standardLevyFactoryVisitReportEntity.assigneeId?:throw NullValueNotAllowedException(" invalid user id provided")}"  //set the assignee}"
+                        //task.dueDate = standardLevyFactoryVisitReportEntity.scheduledVisitDate  //set the due date
+                        taskService.saveTask(task)
+                    }
+                    ?: KotlinLogging.logger {  }.error("Task list empty for $PROCESS_DEFINITION_KEY ")
+
+
+            }
+            ?: KotlinLogging.logger {  }.error("No task found for $PROCESS_DEFINITION_KEY ")
+        bpmnService.slAssignTask(processInstance.processInstanceId, "Receive Feedback", standardLevyFactoryVisitReportEntity?.assigneeId?:throw NullValueNotAllowedException("invalid user id provided"))
+        return ProcessInstanceResponseValueSite(standardLevyFactoryVisitReportEntity.id,processInstance.id, processInstance.isEnded)
+                    }
+                    ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${companyProfileEntity.slBpmnProcessInstance} ")
+
+            }
+            ?: throw NullValueNotAllowedException ("COMPANY NOT FOUND")
+
 
     }
 
@@ -296,6 +588,20 @@ class StandardLevyService(
 
     fun getMnPendingTask(assignedTo: Long): MutableList<CompanyProfileEntity> {
         return companyProfileRepo.getMnPendingTask(assignedTo)
+    }
+
+    fun getSlUsers(): MutableList<UsersEntity> {
+        return userListRepository.findFirst10ByIdOrderByIdDesc()
+    }
+
+    fun closeTask(taskId: String) {
+        taskService.complete(taskId)
+        taskService.deleteTask(taskId, true)
+
+    }
+
+    fun closeProcess(taskId: String) {
+        runtimeService.deleteProcessInstance(taskId, "cleaning")
     }
 
 

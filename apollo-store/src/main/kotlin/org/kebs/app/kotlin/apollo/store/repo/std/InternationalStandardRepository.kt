@@ -143,6 +143,9 @@ interface StandardReviewRepository : JpaRepository<StandardReview, Long> {
 interface UserListRepository : JpaRepository<UsersEntity, Long> {
     @Query("SELECT u.firstName,u.lastName FROM UsersEntity u WHERE u.id =:id")
     fun findNameById(@Param("id") id: Long?): String
+
+    @Query(value = "SELECT * FROM DAT_KEBS_USERS ", nativeQuery = true)
+    fun findFirst10ByIdOrderByIdDesc(): MutableList<UsersEntity>
 }
 
 interface DatKebsSdNwaUploadsEntityRepository : JpaRepository<DatKebsSdNwaUploadsEntity, Long> {

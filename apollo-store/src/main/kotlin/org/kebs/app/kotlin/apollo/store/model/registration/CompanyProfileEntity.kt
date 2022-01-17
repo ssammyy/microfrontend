@@ -202,6 +202,10 @@ class CompanyProfileEntity : Serializable {
     @Basic
     var ownership: String? = null
 
+    @Column(name = "SL_BPMN_PROCESS_INSTANCE")
+    @Basic
+    var slBpmnProcessInstance: String? = null
+
     @Column(name = "CLOSURE_OF_OPERATIONS")
     @Basic
     var closureOfOperations: Int? = null
