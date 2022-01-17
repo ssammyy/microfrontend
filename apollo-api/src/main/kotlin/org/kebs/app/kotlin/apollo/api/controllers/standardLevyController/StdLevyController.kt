@@ -692,7 +692,7 @@ class StdLevyController(
         return standardLevyService.getSiteReport()
     }
 
-    //View Site Visit Report
+    //View Site Visit Report Document
     @GetMapping("/view/siteVisitReport")
     fun viewPDFile(
         response: HttpServletResponse,

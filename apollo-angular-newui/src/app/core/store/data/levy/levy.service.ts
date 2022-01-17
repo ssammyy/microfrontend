@@ -126,10 +126,10 @@ export class LevyService {
             })
         );
     }
-    public viewReportDoc(reportFileID: any): Observable<any> {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_SAVE_VISIT_REPORT_DOCUMENT);
+    public viewReportDoc(visitID: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_VIEW_VISIT_REPORT_DOCUMENT);
         const params = new HttpParams()
-            .set('reportFileID', reportFileID);
+            .set('visitID', visitID);
         // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
         return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
             map(function (response: any) {

@@ -438,6 +438,7 @@ export class ApiEndpointService {
         STD_LEVY_ASSIGN_COMPANY_TASK: `${ApiEndpointService.STL_CONTEXT}/assignCompany`,
         STD_LEVY_SAVE_VISIT_REPORT: `${ApiEndpointService.STL_CONTEXT}/reportOnSiteVisit`,
         STD_LEVY_SAVE_VISIT_REPORT_DOCUMENT: `${ApiEndpointService.STL_CONTEXT}/site-report-upload`,
+        STD_LEVY_VIEW_VISIT_REPORT_DOCUMENT: `${ApiEndpointService.STL_CONTEXT}/view/siteVisitReport`,
         STD_LEVY_SCHEDULED_SITE_VISITS_REPORT: `${ApiEndpointService.STL_CONTEXT}/getSiteReport`,
         STD_LEVY_SITE_VISITS_REPORT_APPROVAL_ONE: `${ApiEndpointService.STL_CONTEXT}/decisionOnSiteReport`,
         STD_LEVY_SITE_VISITS_REPORT_LEVEL_TWO: `${ApiEndpointService.STL_CONTEXT}/getSiteReportLevelTwo`,

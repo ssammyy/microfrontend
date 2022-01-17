@@ -107,7 +107,7 @@
                                                                                             <input type="hidden" ngModel="{{actionRequestList?.manufactureStatus}}" formControlName="manufactureStatus" name="manufactureStatus" value="{{actionRequestList?.manufactureStatus}}" >
                                                                                             <input type="hidden" ngModel="{{actionRequestList?.entryNumber}}" formControlName="entryNumber" name="entryNumber" value="{{actionRequestList?.entryNumber}}" >
                                                                                             <input type="hidden" ngModel="{{actionRequestList?.id}}" formControlName="manufacturerEntity" name="manufacturerEntity" value="{{actionRequestList?.id}}" >
-                                                                                            <input type="hidden" ngModel="{{actionRequestList?.userId}}" formControlName="contactId" name="contactId" value="{{actionRequestList?.userId}}" >
+                                                                                            <input type="text" ngModel="{{actionRequestList?.userId}}" formControlName="contactId" name="contactId" value="{{actionRequestList?.userId}}" >
                                                                                             <button  class="btn btn-sm btn-primary float-right" type="submit">Assign</button>
                                                                                         </form>
                                                                                     </div>
@@ -2310,9 +2310,9 @@
                                                                                                                       placeholder="Name" type="text"></textarea>
 
                                                                                                             <input type="hidden" class="form-control" formControlName="visitID" name="visitID" ngModel="{{actionRequestPending?.taskData?.visitID}}" value="{{actionRequestPending?.taskData?.visitID}}" >
-<!--                                                                                                            <input type="hidden" class="form-control" formControlName="assigneeId" name="assigneeId" ngModel="3066" value="3066" >-->
+                                                                                                           <input type="hidden" class="form-control" formControlName="assigneeId" name="assigneeId" ngModel="3066" value="3066" >
                                                                                                             <input type="hidden" formControlName="manufacturerEntity" ngModel="{{actionRequestPending?.taskData?.manufacturerEntity}}" name="manufacturerEntity" value="{{actionRequestPending?.taskData?.manufacturerEntity}}" >
-                                                                                                            <input type="hidden" class="form-control" formControlName="assigneeId" name="assigneeId" ngModel="{{actionRequestPending?.taskData?.contactId}}" value="{{actionRequestPending?.taskData?.contactId}}" >
+<!--                                                                                                            <input type="hidden" class="form-control" formControlName="assigneeId" name="assigneeId" ngModel="{{actionRequestPending?.taskData?.contactId}}" value="{{actionRequestPending?.taskData?.contactId}}" >-->
 
                                                                                                             <input type="hidden" formControlName="taskId" ngModel="{{actionRequestPending?.taskId}}" name="taskId" value="{{actionRequestPending?.taskId}}" >
 

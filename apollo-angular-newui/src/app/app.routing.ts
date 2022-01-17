@@ -771,6 +771,7 @@ export const routes: Routes = [
     {
         path: 'comPaymentHistory', component: AdminLayoutComponent,
         children: [{path: '', component: ComPaymentHistoryComponent}]
+        //No data
     },
     {
         path: 'comStdLevyForm', component: AdminLayoutComponent,
@@ -791,10 +792,12 @@ export const routes: Routes = [
     {
         path: 'stdLevyDefaulters', component: AdminLayoutComponent,
         children: [{path: '', component: StandardLevyDefaulterComponent}]
+        //no data
     },
     {
         path: 'stdLevyPaidHistory', component: AdminLayoutComponent,
         children: [{path: '', component: StandardLevyPaidHistoryComponent}]
+        //no data
     },
     {
         path: 'stdLevyPenaltiesHistory', component: AdminLayoutComponent,
