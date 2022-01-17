@@ -9,7 +9,7 @@ import {StandardDevelopmentService} from "../../../../core/store/data/std/standa
 import {HttpErrorResponse} from "@angular/common/http";
 import {Subject} from "rxjs";
 import {DataTableDirective} from "angular-datatables";
-import {Department, Stdtsectask} from "../../../../core/store/data/std/request_std.model";
+import {Department} from "../../../../core/store/data/std/request_std.model";
 
 declare const $: any;
 
@@ -122,7 +122,7 @@ export class CreateDepartmentComponent implements OnInit {
     this.standardDevelopmentService.getAllDepartments().subscribe(
         (response: Department[]) => {
           this.departments = response;
-
+          console.log(response)
           if (this.isDtInitialized) {
             this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
               dtInstance.destroy();

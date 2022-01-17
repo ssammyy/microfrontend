@@ -217,7 +217,7 @@ class RegistrationManagementDaoService(
      * @return CustomResponse
      */
     fun validateTokenFromThePhone(request: ValidateTokenRequestDto): CustomResponse? =
-        usersRepo.findByUserName(request.username)
+        usersRepo.findByEmail(request.username)
             ?.let { u ->
                 commonDaoServices.validateOTPToken(
                     request.token ?: throw NullValueNotAllowedException("Invalid Token provided"),
@@ -235,7 +235,7 @@ class RegistrationManagementDaoService(
     fun sendTokenToThePhone(request: SendTokenRequestDto): CustomResponse? {
         val result = CustomResponse()
         try {
-            usersRepo.findByUserName(request.username)
+            usersRepo.findByEmail(request.username)
                 ?.let { user ->
 //                    val otp = commonDaoServices.generateTransactionReference(8).toUpperCase()
                     val otp = commonDaoServices.randomNumber(6)

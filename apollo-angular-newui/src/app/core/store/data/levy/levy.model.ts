@@ -1,5 +1,4 @@
 import {Timestamp} from "rxjs";
-import {KnwSecTaskData} from "../std/std.model";
 
 
 export class Levy {
@@ -223,7 +222,30 @@ export interface ManufactureDetailList {
     entryNumber: number;
     assignStatus: number;
     assignedTo: number;
-
+    userClassification: string;
+    firmCategory: string;
+    userId: string;
+    description: string;
+    closedCommodityManufactured: string;
+    closedContractsUndertaken: string;
+    varField1: string;
+    varField2: string;
+    varField3: string;
+    varField4: string;
+    varField5: string;
+    varField6: string;
+    varField7: string;
+    varField8: string;
+    createdBy: string;
+    createdOn: string;
+    modifiedBy: string;
+    modifiedOn: string;
+    deleteBy: string;
+    deletedOn: string;
+    factoryVisitDate: string;
+    factoryVisitStatus: string;
+    ownership: string;
+    closureOfOperations: string;
 }
 export interface ManufacturePendingTask {
     id: number;
@@ -250,6 +272,30 @@ export interface ManufacturePendingTask {
     entryNumber: number;
     assignStatus: number;
     assignedTo: number;
+    userClassification: string;
+    firmCategory: string;
+    userId: string;
+    description: string;
+    closedCommodityManufactured: string;
+    closedContractsUndertaken: string;
+    varField1: string;
+    varField2: string;
+    varField3: string;
+    varField4: string;
+    varField5: string;
+    varField6: string;
+    varField7: string;
+    varField8: string;
+    createdBy: string;
+    createdOn: string;
+    modifiedBy: string;
+    modifiedOn: string;
+    deleteBy: string;
+    deletedOn: string;
+    factoryVisitDate: string;
+    factoryVisitStatus: string;
+    ownership: string;
+    closureOfOperations: string;
 
 }
 export interface ManufactureCompleteTask {
@@ -277,6 +323,30 @@ export interface ManufactureCompleteTask {
     entryNumber: number;
     assignStatus: number;
     assignedTo: number;
+    userClassification: string;
+    firmCategory: string;
+    userId: string;
+    description: string;
+    closedCommodityManufactured: string;
+    closedContractsUndertaken: string;
+    varField1: string;
+    varField2: string;
+    varField3: string;
+    varField4: string;
+    varField5: string;
+    varField6: string;
+    varField7: string;
+    varField8: string;
+    createdBy: string;
+    createdOn: string;
+    modifiedBy: string;
+    modifiedOn: string;
+    deleteBy: string;
+    deletedOn: string;
+    factoryVisitDate: string;
+    factoryVisitStatus: string;
+    ownership: string;
+    closureOfOperations: string;
 
 }
 

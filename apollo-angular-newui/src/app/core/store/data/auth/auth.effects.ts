@@ -187,6 +187,7 @@ export class AuthEffects {
                                         accessToken: '',
                                         fullName: '',
                                         companyID: 0,
+                                        redirectUrl:''
                                     }
                                 }),
                                 loadUserCompanyInfoSuccess({data: null}),
@@ -220,6 +221,7 @@ export class AuthEffects {
                 switchMap((action) => this.service.login(action.payload)
                     .pipe(
                         mergeMap((data) => {
+                            data.redirectUrl = action.redirectUrl
                             if (data.companyID != null) {
 
                                 return [
@@ -227,8 +229,8 @@ export class AuthEffects {
                                     loadUserCompanyInfo(),
                                     Go({
                                         payload: action.redirectUrl,
-                                        link: action.redirectUrl,
-                                        redirectUrl: action.redirectUrl
+                                        link: 'login/otp',
+                                        redirectUrl: null
                                     })
                                 ];
                             } else {
@@ -236,8 +238,8 @@ export class AuthEffects {
                                     loadAuthsSuccess({profile: data, loggedIn: true}),
                                     Go({
                                         payload: action.redirectUrl,
-                                        link: action.redirectUrl,
-                                        redirectUrl: action.redirectUrl
+                                        link: 'login/otp',
+                                        redirectUrl: null
                                     })
                                 ];
                             }

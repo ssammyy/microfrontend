@@ -1692,6 +1692,41 @@ class QualityAssuranceController(
 
         return commonDaoServices.returnValues(result, map, sm)
     }
+    @PostMapping("/kebs/add/new-opc-details/update")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun permitUpdateInspectionReportOPCDetails(
+        @ModelAttribute("QaInspectionOpcEntity") QaInspectionOpcEntity: QaInspectionOpcEntity,
+        @RequestParam("permitID") permitID: Long,
+        @RequestParam("inspectionReportID") inspectionReportID: Long,
+        @RequestParam("ID") id: String,
+
+        model: Model,
+    ): String? {
+
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        val result: ServiceRequestsEntity?
+        val qaInspectionReportRecommendation =
+            qaDaoServices.findQaInspectionReportRecommendationBYID(inspectionReportID)
+
+        result = qaDaoServices.permitUpdateNewInspectionReportDetailsOPC(
+            map,
+            loggedInUser,
+            permitID,
+            QaInspectionOpcEntity,
+            id,
+            qaInspectionReportRecommendation,
+
+        )
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink =
+            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details?inspectionReportID=${inspectionReportID}"
+        sm.message = "Inspection Report Details Have Been Updated Successfully"
+
+        return commonDaoServices.returnValues(result, map, sm)
+    }
 
     @PostMapping("/kebs/invoice/remove-invoice-detail/save")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)

@@ -4620,6 +4620,60 @@ class QADaoServices(
         return sr
     }
 
+    fun permitUpdateNewInspectionReportDetailsOPC(
+        s: ServiceMapsEntity,
+        user: UsersEntity,
+        permitID: Long,
+        opc: QaInspectionOpcEntity,
+        inspectionReportID: String,
+        qaInspectionReportRecommendation: QaInspectionReportRecommendationEntity,
+    ): ServiceRequestsEntity {
+
+        var sr = commonDaoServices.createServiceRequest(s)
+        try {
+
+            val permitFound = findPermitBYID(permitID)
+            var opcAddedDetails = opc
+
+            println("$%#$$$$$$$4$inspectionReportID")
+
+            qaInspectionOPCRepo.findByIdOrNull(inspectionReportID.toLong())
+                ?.let { opcDetails ->
+
+                    opcAddedDetails = commonDaoServices.updateDetails(opc, opcDetails) as QaInspectionOpcEntity
+
+                    with(opcAddedDetails) {
+                        modifiedBy = commonDaoServices.concatenateName(user)
+                        modifiedOn = commonDaoServices.getTimestamp()
+                    }
+                    opcAddedDetails = qaInspectionOPCRepo.save(opcAddedDetails)
+                }
+
+
+
+            sr.payload = "UPDATED INSPECTION REPORT OCP [id= ${opcAddedDetails.id}]"
+            sr.varField1 = opcAddedDetails.permitId.toString()
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = s.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return sr
+    }
+
 
     fun sta10PersonnelDetailsDetails(
         s: ServiceMapsEntity,

@@ -9,32 +9,40 @@ import javax.persistence.*
 class StandardDraft {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="ID")
-    var id: Long =0
+    @Column(name = "ID")
+    var id: Long = 0
 
-    @Column(name="TITLE")
+    @Column(name = "TITLE")
     @Basic
-    var title:String?=null
+    var title: String? = null
 
-    @Column(name="REQUESTOR_ID")
+    @Column(name = "REQUESTOR_ID")
     @Basic
-    var requestorId:String?= null
+    var requestorId: String? = null
 
-    @Column(name="STANDARD_OFFICER_ID")
+    @Column(name = "REQUESTOR_NAME")
     @Basic
-    var standardOfficerId:String?= null
+    var requestorName: String? = null
 
-    @Column(name="VERSION_NUMBER")
+    @Column(name = "STANDARD_OFFICER_ID")
     @Basic
-    var versionNumber:Long?=0
+    var standardOfficerId: String? = null
+
+    @Column(name = "STANDARD_OFFICER_NAME")
+    @Basic
+    var standardOfficerName: String? = null
+
+    @Column(name = "VERSION_NUMBER")
+    @Basic
+    var versionNumber: Long? = 0
 
     @Transient
     @JsonProperty("taskId")
-    var taskId:String?=null
+    var taskId: String? = null
 
-    @Column(name="SUBMISSION_DATE")
+    @Column(name = "SUBMISSION_DATE")
     @Basic
-    var submission_date: Timestamp?=null
+    var submission_date: Timestamp? = null
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -44,7 +52,11 @@ class StandardDraft {
         if (id != other.id) return false
         if (title != other.title) return false
         if (requestorId != other.requestorId) return false
+        if (requestorName != other.requestorName) return false
+
         if (standardOfficerId != other.standardOfficerId) return false
+        if (standardOfficerName != other.standardOfficerName) return false
+
         if (versionNumber != other.versionNumber) return false
         if (taskId != other.taskId) return false
         if (submission_date != other.submission_date) return false
@@ -56,7 +68,9 @@ class StandardDraft {
         var result = id.hashCode()
         result = 31 * result + (title?.hashCode() ?: 0)
         result = 31 * result + (requestorId?.hashCode() ?: 0)
+        result = 31 * result + (requestorName?.hashCode() ?: 0)
         result = 31 * result + (standardOfficerId?.hashCode() ?: 0)
+        result = 31 * result + (standardOfficerName?.hashCode() ?: 0)
         result = 31 * result + (versionNumber?.hashCode() ?: 0)
         result = 31 * result + (taskId?.hashCode() ?: 0)
         result = 31 * result + (submission_date?.hashCode() ?: 0)
@@ -64,7 +78,7 @@ class StandardDraft {
     }
 
     override fun toString(): String {
-        return "StandardDraft(id=$id, title=$title, requestorId=$requestorId, standardOfficerId=$standardOfficerId, versionNumber=$versionNumber, taskId=$taskId, submission_date=$submission_date)"
+        return "StandardDraft(id=$id, title=$title, requestorId=$requestorId,requestorName=$requestorName, standardOfficerId=$standardOfficerId,standardOfficerName=$standardOfficerName, versionNumber=$versionNumber, taskId=$taskId, submission_date=$submission_date)"
     }
 
 
