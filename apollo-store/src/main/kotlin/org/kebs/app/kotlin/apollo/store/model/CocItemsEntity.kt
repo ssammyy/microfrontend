@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.model
 
 import java.io.Serializable
+import java.math.BigDecimal
 import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*
@@ -21,6 +22,10 @@ class CocItemsEntity : Serializable {
     @Basic
     var cocId: Long = 0
 
+    @Column(name = "ITEM_ID", nullable = false, length = 50)
+    @Basic
+    var itemId: Long? = 0
+
     @NotNull(message = "Required field")
     @Column(name = "SHIPMENT_LINE_NUMBER", nullable = false, precision = 2)
     @Basic
@@ -34,7 +39,7 @@ class CocItemsEntity : Serializable {
     @NotNull(message = "Required field")
     @Column(name = "SHIPMENT_LINE_QUANTITY", nullable = false, precision = 2)
     @Basic
-    var shipmentLineQuantity: Long = 0
+    var shipmentLineQuantity: BigDecimal = BigDecimal.ZERO
 
     @NotEmpty(message = "Required field")
     @Column(name = "SHIPMENT_LINE_UNITOF_MEASURE", nullable = false, length = 400)
@@ -148,16 +153,6 @@ class CocItemsEntity : Serializable {
     @Basic
     var deletedOn: Timestamp? = null
 
-    //@NotEmpty(message = "Required field")
-    @Column(name = "COC_NUMBER", nullable = false, length = 100)
-    @Basic
-    var cocNumber: String? = null
-
-    //@NotEmpty(message = "Required field")
-    @Column(name = "COI_NUMBER", nullable = false, length = 100)
-    @Basic
-    var coiNumber: String? = null
-
     @NotEmpty(message = "Required field")
     @Column(name = "SHIPMENT_LINE_BRANDNAME", nullable = false, length = 100)
     @Basic
@@ -197,8 +192,6 @@ class CocItemsEntity : Serializable {
                 modifiedOn == that.modifiedOn &&
                 deleteBy == that.deleteBy &&
                 deletedOn == that.deletedOn &&
-                cocNumber == that.cocNumber &&
-                coiNumber == that.coiNumber &&
                 shipmentLineBrandName == that.shipmentLineBrandName
     }
 
@@ -236,8 +229,6 @@ class CocItemsEntity : Serializable {
             modifiedOn,
             deleteBy,
             deletedOn,
-            cocNumber,
-            coiNumber,
             shipmentLineBrandName
         )
     }

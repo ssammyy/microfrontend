@@ -49,12 +49,6 @@ class SftpTest {
     lateinit var iCocsRepository: ICocsRepository
 
     @Autowired
-    lateinit var iCoisBakRepository: ICoisRepository
-
-    @Autowired
-    lateinit var iDemandNoteRepo: IDemandNoteRepository
-
-    @Autowired
     lateinit var iCocItemRepository: ICocItemRepository
 
     private val baseUrl = "https://127.0.0.1:8006"
@@ -97,7 +91,7 @@ class SftpTest {
 
             val fileName = corDto.cor?.chasisNumber?.let {
                 commonDaoServices.createKesWsFileName(applicationMapProperties.mapKeswsCorDoctype,
-                    it
+                        it
                 )
             }
 
@@ -115,23 +109,27 @@ class SftpTest {
         cocsEntity.let {
             val coc: CustomCocXmlDto = it.toCocXmlRecordRefl()
             //COC ITEM
-            val cocItem = iCocItemRepository.findByCocId(cocsEntity.id)?.get(0)
-            cocItem?.toCocItemDetailsXmlRecordRefl().let {
-                coc.cocDetals = it
-                val cocFinalDto = COCXmlDTO()
-                cocFinalDto.coc = coc
-
-                val fileName = cocFinalDto.coc?.ucrNumber?.let {
-                    commonDaoServices.createKesWsFileName(applicationMapProperties.mapKeswsCocDoctype,
-                        it
-                    )
+            val listItems = mutableListOf<CocDetails>()
+            iCocItemRepository.findByCocId(cocsEntity.id)?.forEach { cocItem ->
+                cocItem.toCocItemDetailsXmlRecordRefl(cocsEntity.cocNumber ?: cocsEntity.coiNumber ?: "NA").let {
+                    listItems.add(it)
                 }
-
-                val xmlFile = fileName?.let { commonDaoServices.serializeToXml(it, cocFinalDto) }
-
-                xmlFile?.let { it1 -> sftpService.uploadFile(it1) }
-
             }
+            val cocFinalDto = COCXmlDTO()
+            if (listItems.isNotEmpty()) {
+                coc.cocDetals = listItems
+            }
+            cocFinalDto.coc = coc
+
+            val fileName = cocFinalDto.coc?.ucrNumber?.let {
+                commonDaoServices.createKesWsFileName(applicationMapProperties.mapKeswsCocDoctype,
+                        it
+                )
+            }
+
+            val xmlFile = fileName?.let { commonDaoServices.serializeToXml(it, cocFinalDto) }
+
+            xmlFile?.let { it1 -> sftpService.uploadFile(it1) }
 
         }
     }
@@ -157,19 +155,13 @@ class SftpTest {
 //        }
 //    }
 
-    @Test
-    fun whenDemandNotepojoSerializedToXmlFile_thenCorrect() {
-        val coiId: Long = 641
-
-        destinationInspectionDaoServices.sendDemandNotGeneratedToKWIS(coiId)
-    }
-
 
     @Test
     fun whenDemandNotePaypojoSerializedToXmlFile_thenCorrect() {
         val coiId: Long = 641
-        destinationInspectionDaoServices.sendDemandNotePayedStatusToKWIS(coiId)
-
+        destinationInspectionDaoServices.findDemandNoteWithID(coiId)?.let {
+            destinationInspectionDaoServices.sendDemandNotePayedStatusToKWIS(it)
+        }
     }
 
 

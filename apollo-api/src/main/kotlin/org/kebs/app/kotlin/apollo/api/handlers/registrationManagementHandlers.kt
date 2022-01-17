@@ -31,6 +31,27 @@ class RegistrationManagementHandler(
     final val appId: Int = applicationMapProperties.mapUserRegistration
 
     /**
+     * Endpoint to fetch the details of the users sidebar menu dynamically
+     * @param req ServerRequest
+     * @return ServerResponse
+     */
+    @PreAuthorize("isAuthenticated")
+    fun handleGetSideBarMenusBasedOnLoggedInUser(req: ServerRequest): ServerResponse {
+        return try {
+            service.getSideBarMenusBasedOnLoggedInUser()
+                ?.let { ServerResponse.ok().body(it) }
+                ?: onErrors("We could not complete your request try again later")
+
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.debug(e.message, e)
+            KotlinLogging.logger { }.error(e.message)
+            onErrors(e.message)
+
+        }
+    }
+
+    /**
      * Validate the received payload of ValidateTokenRequestDto and send it to backend service for validation
      * @param req ServerRequest
      * @return ServerResponse
@@ -50,6 +71,7 @@ class RegistrationManagementHandler(
 
         }
     }
+
     /**
      * Validate the received payload of ValidateTokenRequestDto and send it to backend service for validation
      * @param req ServerRequest
@@ -145,6 +167,7 @@ class RegistrationManagementHandler(
 
         }
     }
+
     /**
      * Fetch  the details of the user that has logged in, so as to provide for the user profile updates
      *
@@ -157,7 +180,9 @@ class RegistrationManagementHandler(
             val header = req.headers().header(authenticationProperties.authorizationHeader ?: "Authorization")[0]
             val userId = req.pathVariable("userId").toLongOrNull()
             KotlinLogging.logger { }.trace(header)
-            service.getLoggedInUserUserEntityDtoDetails(userId?: throw NullValueNotAllowedException("Required id is missing"))
+            service.getLoggedInUserUserEntityDtoDetails(
+                userId ?: throw NullValueNotAllowedException("Required id is missing")
+            )
                 ?.let { ServerResponse.ok().body(it) }
                 ?: onErrors("We could not complete your request try again later")
 
@@ -168,6 +193,7 @@ class RegistrationManagementHandler(
 
         }
     }
+
     /**
      * Fetch  the details of the user that has logged in, so as to provide for the user profile updates
      *
@@ -180,7 +206,7 @@ class RegistrationManagementHandler(
             val body = req.body<UserEntityDto>()
             val header = req.headers().header(authenticationProperties.authorizationHeader ?: "Authorization")[0]
             val userId = req.pathVariable("userId").toLongOrNull()
-            if (userId!= body.id) throw InvalidValueException("Attempt to perform an operation that is not authorized")
+            if (userId != body.id) throw InvalidValueException("Attempt to perform an operation that is not authorized")
             KotlinLogging.logger { }.trace(header)
             val errors: Errors = BeanPropertyBindingResult(body, UserEntityDto::class.java.name)
             validator.validate(body, errors)

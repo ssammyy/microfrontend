@@ -10,7 +10,7 @@ import javax.persistence.*
 @Table(name = "CFG_KEBS_CURRENCY_MASTER")
 class CurrencyMasterEntity : Serializable {
     @Column(name = "ID")
-    @SequenceGenerator(name = "CFG_KEBS_CURRENCY_MASTER_SEQ_GEN", sequenceName = "CFG_KEBS_CURRENCY_MASTER", allocationSize = 1)
+    @SequenceGenerator(name = "CFG_KEBS_CURRENCY_MASTER_SEQ_GEN", sequenceName = "CFG_KEBS_CURRENCY_MASTER_SEQ", allocationSize = 1)
     @GeneratedValue(generator = "CFG_KEBS_CURRENCY_MASTER_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Id
     var id: Long = 0

@@ -8,6 +8,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.service.FileExcelProcessService
 import org.kebs.app.kotlin.apollo.api.service.UserRolesService
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.pvc.*
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
@@ -93,13 +94,13 @@ class ExemptionRestController(
         commonDaoServices.getLoggedInUser().let { userDetails ->
             var pvocExceptionApp = PvocApplicationEntity()
             pvocExceptionApp.companyPinNo = manufacturer?.companyPinNo
-            pvocExceptionApp.contactPersorn = manufacturer?.contactPersorn
+            pvocExceptionApp.contactPersorn = manufacturer?.contactPerson
             pvocExceptionApp.email = manufacturer?.email
             pvocExceptionApp.status = 1
             pvocExceptionApp.reviewStatus = statuses?.initialStatus
             pvocExceptionApp.telephoneNo = manufacturer?.telephoneNo
             pvocExceptionApp.conpanyName = manufacturer?.companyName
-            pvocExceptionApp.postalAadress = manufacturer?.postalAadress
+            pvocExceptionApp.postalAadress = manufacturer?.postalAddress
             pvocExceptionApp.physicalLocation = manufacturer?.physicalLocation
             with(pvocExceptionApp) {
                 createdBy = userDetails?.firstName + " " + userDetails?.lastName
@@ -310,13 +311,13 @@ class ExemptionRestController(
         commonDaoServices.getLoggedInUser().let { userDetails ->
             var pvocExceptionApp = PvocApplicationEntity()
             pvocExceptionApp.companyPinNo = manufacturer?.companyPinNo
-            pvocExceptionApp.contactPersorn = manufacturer?.contactPersorn
+            pvocExceptionApp.contactPersorn = manufacturer?.contactPerson
             pvocExceptionApp.email = manufacturer?.email
             pvocExceptionApp.status = 1
             pvocExceptionApp.reviewStatus = statuses?.initialStatus
             pvocExceptionApp.telephoneNo = manufacturer?.telephoneNo
             pvocExceptionApp.conpanyName = manufacturer?.companyName
-            pvocExceptionApp.postalAadress = manufacturer?.postalAadress
+            pvocExceptionApp.postalAadress = manufacturer?.postalAddress
             pvocExceptionApp.physicalLocation = manufacturer?.physicalLocation
             with(pvocExceptionApp) {
                 createdBy = userDetails?.firstName + " " + userDetails?.lastName

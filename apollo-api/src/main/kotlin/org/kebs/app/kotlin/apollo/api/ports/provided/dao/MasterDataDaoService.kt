@@ -36,9 +36,7 @@ class MasterDataDaoService(
     private val productsRepo: IProductsRepository,
     private val businessLinesRepo: IBusinessLinesRepository,
     private val businessNatureRepo: IBusinessNatureRepository,
-    @PersistenceContext
     private val entityManager: EntityManager,
-//    private val sessionFactory: SessionFactory
 
 ) {
     fun getAllDepartments(): List<DepartmentsEntityDto>? = departmentsRepo.findAll()

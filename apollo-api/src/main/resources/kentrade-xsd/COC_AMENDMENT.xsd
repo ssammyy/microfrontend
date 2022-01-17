@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="root">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="COCNo"/>
+                <xs:element ref="ReferenceNo"/>
+                <xs:element ref="UCRNo" />
+                <xs:element ref="AmendmentRequestDate" />
+                <xs:element ref="ReasonForAmendment"/>
+                <xs:element ref="Status"/> <!-- RJ/AP ,will be used only for approval -->
+                <xs:element ref="StatusRemark"/> <!-- will be used only for approval -->
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="AmendmentRequestDate" nillable="false">
+        <xs:simpleType>
+            <xs:restriction base="xs:token">
+                <xs:pattern value="(0[1-9]|[12][0-9]|3[01])(0[1-9]|1[012])(18|19|20|21)\d\d([0-1][0-9]|[2][0-3])([0-5][0-9])([0-5][0-9])" />
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:element>
+    <xs:element name="COCNo" nillable="false">
+        <xs:simpleType>
+            <xs:restriction base="xs:string">
+                <xs:minLength value="1"/>
+                <xs:maxLength value="150"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:element>
+    <xs:element name="ReferenceNo" nillable="false">
+        <xs:simpleType>
+            <xs:restriction base="xs:string">
+                <xs:minLength value="1"/>
+                <xs:maxLength value="30"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:element>
+    <xs:element name="UCRNo" nillable="false">
+        <xs:simpleType>
+            <xs:restriction base="xs:string">
+                <xs:minLength value="1"/>
+                <xs:maxLength value="35"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:element>
+    <xs:element name="ReasonForAmendment" nillable="false">
+        <xs:simpleType>
+            <xs:restriction base="xs:string">
+                <xs:minLength value="1"/>
+                <xs:maxLength value="4500"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:element>
+    <xs:element name="Status" nillable="true">
+        <xs:simpleType>
+            <xs:restriction base="xs:string">
+                <xs:minLength value="1"/>
+                <xs:maxLength value="2"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:element>
+    <xs:element name="StatusRemark" nillable="true">
+        <xs:simpleType>
+            <xs:restriction base="xs:string">
+                <xs:minLength value="1"/>
+                <xs:maxLength value="250"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:element>
+</xs:schema>

@@ -1,0 +1,29 @@
+<h2 mat-dialog-title>Send CoI</h2>
+<mat-dialog-content>
+    <div class="row no_margin" [formGroup]="form">
+        <div class="col-sm-12 col-md-8">
+            <label for="sendCoiStatus" class="waiver-form-label">CoI Status</label>
+            <select id="sendCoiStatus" name="sendCoiStatus" class="waiver-form-input-master"
+                    formControlName="sendCoiStatus">
+                <option value="" disabled selected>Select Status</option>
+                <option value="1">Active</option>
+                <option value="0">InActive</option>
+            </select>
+        </div>
+        <div class="col-sm-12 col-md-8">
+            <label for="sendCoiRemarks" class="waiver-form-label">Please write, in detail, your feedback for this
+                consignment:</label>
+            <textarea id="sendCoiRemarks" class="waiver-form-input-master"
+                      formControlName="remarks"></textarea>
+        </div>
+        <mat-error *ngIf="message">{{message}}</mat-error>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <div class="row no_margin master-list-new-btn">
+        <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
+        <button [disabled]="form.invalid||loading" class="next-btn btn-gen new-btn" (click)="saveRecord()">SAVE
+            <mat-spinner [diameter]="20" color="warn" *ngIf="loading"></mat-spinner>
+        </button>
+    </div>
+</mat-dialog-actions>

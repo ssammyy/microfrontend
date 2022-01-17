@@ -52,25 +52,9 @@ class CdInspectionGeneralEntity : Serializable {
     @Basic
     var customsEntryNumber: String? = null
 
-    @Column(name = "IDF_NUMBER")
-    @Basic
-    var idfNumber: String? = null
-
     @Column(name = "UCR_NUMBER")
     @Basic
     var ucrNumber: String? = null
-
-    @Column(name = "COC_NUMBER")
-    @Basic
-    var cocNumber: String? = null
-
-    @Column(name = "FEE_PAID")
-    @Basic
-    var feePaid: String? = null
-
-    @Column(name = "RECEIPT_NUMBER")
-    @Basic
-    var receiptNumber: String? = null
 
     @Column(name = "OVERALL_REMARKS")
     @Basic
@@ -184,13 +168,9 @@ class CdInspectionGeneralEntity : Serializable {
     @Basic
     var deletedOn: Timestamp? = null
 
-    @JoinColumn(name = "CD_ITEM_DETAILS_ID", referencedColumnName = "ID")
+    @JoinColumn(name = "CD_DETAILS_ID", referencedColumnName = "ID")
     @ManyToOne
-    var cdItemDetails: CdItemDetailsEntity? = null
-
-    @JoinColumn(name = "CHECKLIST_TYPE", referencedColumnName = "ID")
-    @ManyToOne
-    var checkListType: CdChecklistTypesEntity? = null
+    var cdDetails: ConsignmentDocumentDetailsEntity? = null
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -207,11 +187,7 @@ class CdInspectionGeneralEntity : Serializable {
                 importersName == that.importersName &&
                 clearingAgent == that.clearingAgent &&
                 customsEntryNumber == that.customsEntryNumber &&
-                idfNumber == that.idfNumber &&
                 ucrNumber == that.ucrNumber &&
-                cocNumber == that.cocNumber &&
-                feePaid == that.feePaid &&
-                receiptNumber == that.receiptNumber &&
                 complianceStatus == that.complianceStatus &&
                 complianceRecommendations == that.complianceRecommendations &&
                 inspectionReportFile.contentEquals(that.inspectionReportFile) &&
@@ -241,6 +217,6 @@ class CdInspectionGeneralEntity : Serializable {
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(id,inspectionReportRefNumber, confirmItemType, inspection, category, entryPoint, cfs, inspectionDate, importersName, clearingAgent, customsEntryNumber, idfNumber, ucrNumber, cocNumber, feePaid, receiptNumber, complianceStatus, complianceRecommendations, inspectionReportFile, inspectionReportApprovalStatus, inspectionReportDisapprovalComments, inspectionReportDisapprovalDate, inspectionReportApprovalComments, inspectionReportApprovalDate, description, status, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn)
+        return Objects.hash(id,inspectionReportRefNumber, confirmItemType, inspection, category, entryPoint, cfs, inspectionDate, importersName, clearingAgent, customsEntryNumber, ucrNumber, complianceStatus, complianceRecommendations, inspectionReportFile, inspectionReportApprovalStatus, inspectionReportDisapprovalComments, inspectionReportDisapprovalDate, inspectionReportApprovalComments, inspectionReportApprovalDate, description, status, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn)
     }
 }

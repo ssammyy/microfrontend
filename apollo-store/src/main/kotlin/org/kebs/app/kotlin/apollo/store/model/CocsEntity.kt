@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.model
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntity
 import java.io.Serializable
 import java.sql.Timestamp
 import java.util.*
@@ -11,11 +12,10 @@ import javax.validation.constraints.NotNull
 @Entity
 @Table(name = "DAT_KEBS_COCS")
 class CocsEntity : Serializable {
-    @Column(name = "ID", nullable = false, precision = 0)
     @Id
     @SequenceGenerator(name = "DAT_KEBS_COCS_SEQ_GEN", sequenceName = "DAT_KEBS_COCS_SEQ", allocationSize = 1)
     @GeneratedValue(generator = "DAT_KEBS_COCS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
-
+    @Column(name = "ID", nullable = false, precision = 0)
     var id: Long = 0
 
     //@NotEmpty(message = "Required field")
@@ -28,7 +28,7 @@ class CocsEntity : Serializable {
     @Basic
     var coiNumber: String? = null
 
-//    @NotEmpty(message = "Required field")
+    //    @NotEmpty(message = "Required field")
     @Column(name = "IDF_NUMBER", nullable = false, length = 50)
     @Basic
     var idfNumber: String? = null
@@ -44,19 +44,19 @@ class CocsEntity : Serializable {
 
     @Column(name = "RFC_DATE", nullable = true)
     @Basic
-    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     var rfcDate: Timestamp? = null
 
     //@NotNull(message = "Required field")
-    @Column(name = "COC_ISSUE_DATE", nullable = false)
+    @Column(name = "COC_ISSUE_DATE", nullable = true)
     @Basic
-    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     var cocIssueDate: Timestamp? = null
 
     //@NotNull(message = "Required field")
-    @Column(name = "COI_ISSUE_DATE", nullable = false)
+    @Column(name = "COI_ISSUE_DATE", nullable = true)
     @Basic
-    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     var coiIssueDate: Timestamp? = null
 
     @NotEmpty(message = "Required field")
@@ -187,7 +187,7 @@ class CocsEntity : Serializable {
     @NotNull(message = "Required field")
     @Column(name = "DATE_OF_INSPECTION", nullable = false)
     @Basic
-    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     var dateOfInspection: Timestamp? = null
 
     @NotEmpty(message = "Required field")
@@ -208,7 +208,7 @@ class CocsEntity : Serializable {
     @NotNull(message = "Required field")
     @Column(name = "FINAL_INVOICE_FOB_VALUE", nullable = false, precision = 2)
     @Basic
-    var finalInvoiceFobValue: Long = 0
+    var finalInvoiceFobValue: Double = 0.0
 
     //    @NotNull(message = "Required field")
     @Column(name = "FINAL_INVOICE_NUMBER", nullable = false, precision = 2)
@@ -218,7 +218,7 @@ class CocsEntity : Serializable {
     @NotNull(message = "Required field")
     @Column(name = "FINAL_INVOICE_EXCHANGE_RATE", nullable = false, precision = 2)
     @Basic
-    var finalInvoiceExchangeRate: Long = 0
+    var finalInvoiceExchangeRate: Double = 0.0
 
     @NotEmpty(message = "Required field")
     @Column(name = "FINAL_INVOICE_CURRENCY", nullable = false, length = 10)
@@ -228,7 +228,7 @@ class CocsEntity : Serializable {
     @NotNull(message = "Required field")
     @Column(name = "FINAL_INVOICE_DATE", nullable = false)
     @Basic
-    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     var finalInvoiceDate: Timestamp? = null
 
     @NotNull(message = "Required field")
@@ -275,13 +275,13 @@ class CocsEntity : Serializable {
     @Basic
     var cocType: String? = null
 
-    @Column(name = "LOCAL_COC_FILE")
-    @Lob
-    var localCocFile: ByteArray? = null
-
-    @Column(name = "LOCAL_COC_FILE_NAME", length = 200)
-    @Basic
-    var localCocFileName: String? = null
+//    @Column(name = "LOCAL_COC_FILE")
+//    @Lob
+//    var localCocFile: ByteArray? = null
+//
+//    @Column(name = "LOCAL_COC_FILE_NAME", length = 200)
+//    @Basic
+//    var localCocFileName: String? = null
 
     @Column(name = "STATUS", nullable = true, precision = 0)
     @Basic
@@ -351,6 +351,10 @@ class CocsEntity : Serializable {
     @Basic
     var deletedOn: Timestamp? = null
 
+    @Column(name = "VERSION", nullable = true)
+    @Basic
+    var version: Long? = null
+
     @Column(name = "PARTNER", nullable = true, length = 50)
     @Basic
     var partner: String? = null
@@ -359,11 +363,9 @@ class CocsEntity : Serializable {
     @Basic
     var pvocPartner: Long? = null
 
-//    alter table DAT_KEBS_COCS_BAK
-//    add PVOC_PARTNER NUMBER REFERENCES DAT_KEBS_PVOC_PARTNERS(ID) ON DELETE CASCADE
-//    /
-
-
+    @JoinColumn(name = "CD_ID", referencedColumnName = "ID")
+    @ManyToOne
+    var consignmentDocId: ConsignmentDocumentDetailsEntity? = null
 
     @Column(name = "REPORT_GENERATION_STATUS", nullable = true, length = 50)
     @Basic
@@ -422,8 +424,6 @@ class CocsEntity : Serializable {
                 route == that.route &&
                 productCategory == that.productCategory &&
                 cocType == that.cocType &&
-                Arrays.equals(localCocFile, that.localCocFile) &&
-                localCocFileName == that.localCocFileName &&
                 status == that.status &&
                 varField1 == that.varField1 &&
                 varField2 == that.varField2 &&
@@ -448,82 +448,80 @@ class CocsEntity : Serializable {
     }
 
     override fun hashCode(): Int {
-        var result =  Objects.hash(
-            id,
-            cocNumber,
-            coiNumber,
-            finalInvoiceNumber,
-            idfNumber,
-            rfiNumber,
-            ucrNumber,
-            rfcDate,
-            cocIssueDate,
-            coiIssueDate,
-            shipmentQuantityDelivered,
-            clean,
-            cocRemarks,
-            coiRemarks,
-            issuingOffice,
-            importerName,
-            importerPin,
-            importerAddress1,
-            importerAddress2,
-            importerCity,
-            importerCountry,
-            importerZipCode,
-            importerTelephoneNumber,
-            importerFaxNumber,
-            importerEmail,
-            exporterName,
-            exporterPin,
-            exporterAddress1,
-            exporterAddress2,
-            exporterCity,
-            exporterCountry,
-            exporterZipCode,
-            exporterTelephoneNumber,
-            exporterFaxNumber,
-            exporterEmail,
-            placeOfInspection,
-            dateOfInspection,
-            portOfDestination,
-            shipmentMode,
-            countryOfSupply,
-            finalInvoiceFobValue,
-            finalInvoiceExchangeRate,
-            finalInvoiceCurrency,
-            finalInvoiceDate,
-            shipmentPartialNumber,
-            shipmentSealNumbers,
-            shipmentContainerNumber,
-            shipmentGrossWeight,
+        var result = Objects.hash(
+                id,
+                cocNumber,
+                coiNumber,
+                finalInvoiceNumber,
+                idfNumber,
+                rfiNumber,
+                ucrNumber,
+                rfcDate,
+                cocIssueDate,
+                coiIssueDate,
+                shipmentQuantityDelivered,
+                clean,
+                cocRemarks,
+                coiRemarks,
+                issuingOffice,
+                importerName,
+                importerPin,
+                importerAddress1,
+                importerAddress2,
+                importerCity,
+                importerCountry,
+                importerZipCode,
+                importerTelephoneNumber,
+                importerFaxNumber,
+                importerEmail,
+                exporterName,
+                exporterPin,
+                exporterAddress1,
+                exporterAddress2,
+                exporterCity,
+                exporterCountry,
+                exporterZipCode,
+                exporterTelephoneNumber,
+                exporterFaxNumber,
+                exporterEmail,
+                placeOfInspection,
+                dateOfInspection,
+                portOfDestination,
+                shipmentMode,
+                countryOfSupply,
+                finalInvoiceFobValue,
+                finalInvoiceExchangeRate,
+                finalInvoiceCurrency,
+                finalInvoiceDate,
+                shipmentPartialNumber,
+                shipmentSealNumbers,
+                shipmentContainerNumber,
+                shipmentGrossWeight,
 //            shipmentGrossWeightUnit,
-            route,
-            cocType,
-            productCategory,
-            localCocFileName,
-            status,
-            varField1,
-            varField2,
-            varField3,
-            varField4,
-            varField5,
-            varField6,
-            varField7,
-            varField8,
-            varField9,
-            varField10,
-            createdBy,
-            createdOn,
-            modifiedBy,
-            modifiedOn,
-            deleteBy,
-            deletedOn,
-            reportGenerationStatus,
-            pvocPartner,
-            partner
+                route,
+                cocType,
+                productCategory,
+                status,
+                varField1,
+                varField2,
+                varField3,
+                varField4,
+                varField5,
+                varField6,
+                varField7,
+                varField8,
+                varField9,
+                varField10,
+                createdBy,
+                createdOn,
+                modifiedBy,
+                modifiedOn,
+                deleteBy,
+                deletedOn,
+                reportGenerationStatus,
+                pvocPartner,
+                partner
         )
-        result = 31 * result + Arrays.hashCode(localCocFile)
         return result
     }
 }

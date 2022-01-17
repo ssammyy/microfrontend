@@ -1,0 +1,18 @@
+<h2 mat-dialog-title>Target Approve Item</h2>
+<mat-dialog-content>
+    <div class="row no_margin" [formGroup]="form">
+        <div class="col-sm-12 col-md-8">
+            <label for="targetApproveRemarks" class="waiver-form-label">Target Approve Remarks</label>
+            <textarea id="targetApproveRemarks" class="waiver-form-input-master" placeholder=""
+                formControlName="targetApproveRemarks"></textarea>
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <div class="row no_margin master-list-new-btn">
+        <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
+        <button [disabled]="form.invalid||loading" class="next-btn btn-gen new-btn" (click)="saveRecord()">SAVE
+            <mat-spinner [diameter]="20" color="warn" *ngIf="loading"></mat-spinner>
+        </button>
+    </div>
+</mat-dialog-actions>

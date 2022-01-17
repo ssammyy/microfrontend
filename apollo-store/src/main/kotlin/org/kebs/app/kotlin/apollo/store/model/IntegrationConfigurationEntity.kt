@@ -184,6 +184,10 @@ class IntegrationConfigurationEntity : Serializable {
     @Basic
     var url: String? = null
 
+    @Column(name = "CALLBACK_URL")
+    @Basic
+    var callbackUrl: String? = null
+
     @Column(name = "GSON_DATE_FORMT")
     @Basic
     var gsonDateFormt: String? = null

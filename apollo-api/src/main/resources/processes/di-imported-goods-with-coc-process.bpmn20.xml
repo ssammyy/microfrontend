@@ -1,196 +1,196 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
-    <process id="diImportedGoodsWithCocProcess" name="DI Imported Goods With COC Process" isExecutable="true">
-        <startEvent id="diigCocStart" name="Start"></startEvent>
-        <userTask id="diigCocReceiveKebsCd" name="Receive KEBS CD"></userTask>
-        <sequenceFlow id="flow1" sourceRef="diigCocStart" targetRef="diigCocReceiveKebsCd"></sequenceFlow>
-        <userTask id="diigCocAssignIo" name="Assign IO">
-            <extensionElements>
-                <flowable:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></flowable:taskListener>
-            </extensionElements>
-        </userTask>
-        <sequenceFlow id="flow2" sourceRef="diigCocReceiveKebsCd" targetRef="diigCocAssignIo"></sequenceFlow>
-        <userTask id="diigCocCheckCdComplete" name="Check CD Complete">
-            <extensionElements>
-                <flowable:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></flowable:taskListener>
-            </extensionElements>
-        </userTask>
-        <sequenceFlow id="flow3" sourceRef="diigCocAssignIo" targetRef="diigCocCheckCdComplete"></sequenceFlow>
-        <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
-        <sequenceFlow id="flow4" sourceRef="diigCocCheckCdComplete" targetRef="exclusivegateway1"></sequenceFlow>
-        <userTask id="diigCocCdInspectionRequired" name="CD Inspection Required?">
-            <extensionElements>
-                <flowable:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></flowable:taskListener>
-            </extensionElements>
-        </userTask>
-        <sequenceFlow id="flow5" sourceRef="exclusivegateway1" targetRef="diigCocCdInspectionRequired">
-            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${cdComplete==1}]]></conditionExpression>
-        </sequenceFlow>
-        <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"></exclusiveGateway>
-        <sequenceFlow id="flow6" sourceRef="diigCocCdInspectionRequired" targetRef="exclusivegateway2"></sequenceFlow>
-        <userTask id="diigCocCdBlacklist" name="CD Blacklist">
-            <extensionElements>
-                <flowable:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></flowable:taskListener>
-            </extensionElements>
-        </userTask>
-        <sequenceFlow id="flow7" sourceRef="exclusivegateway2" targetRef="diigCocCdBlacklist">
-            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${cdInspectionRequired==1}]]></conditionExpression>
-        </sequenceFlow>
-        <sequenceFlow id="flow8" sourceRef="exclusivegateway1" targetRef="diigCocSendCdRejectToSw">
-            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${cdComplete==0}]]></conditionExpression>
-        </sequenceFlow>
-        <userTask id="diigCocUpdateCdStatus" name="Update CD Status">
-            <extensionElements>
-                <flowable:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></flowable:taskListener>
-            </extensionElements>
-        </userTask>
-        <sequenceFlow id="flow9" sourceRef="exclusivegateway2" targetRef="diigCocUpdateCdStatus">
-            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${cdInspectionRequired==0}]]></conditionExpression>
-        </sequenceFlow>
-        <exclusiveGateway id="exclusivegateway3" name="Exclusive Gateway"></exclusiveGateway>
-        <sequenceFlow id="flow10" sourceRef="diigCocCdBlacklist" targetRef="exclusivegateway3"></sequenceFlow>
-        <userTask id="diigCocApproveBlacklist" name="Approve Blacklist">
-            <extensionElements>
-                <flowable:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></flowable:taskListener>
-            </extensionElements>
-        </userTask>
-        <sequenceFlow id="flow11" sourceRef="exclusivegateway3" targetRef="diigCocApproveBlacklist">
-            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${cdBlacklist==1}]]></conditionExpression>
-        </sequenceFlow>
-        <userTask id="diigCocCdInspection" name="CD Inspection">
-            <extensionElements>
-                <flowable:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></flowable:taskListener>
-            </extensionElements>
-        </userTask>
-        <sequenceFlow id="flow12" sourceRef="diigCocApproveBlacklist" targetRef="diigCocCdInspectionRequired"></sequenceFlow>
-        <sequenceFlow id="flow13" sourceRef="exclusivegateway3" targetRef="diigCocCdInspectionRequired">
-            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${cdBlacklist==0}]]></conditionExpression>
-        </sequenceFlow>
-        <sequenceFlow id="flow14" sourceRef="diigCocCdInspectionRequired" targetRef="diigCocUpdateCdStatus"></sequenceFlow>
-        <sequenceFlow id="flow15" sourceRef="diigCocUpdateCdStatus" targetRef="diigCocUpdateCdStatusOnSW"></sequenceFlow>
-        <endEvent id="diigCocEnd" name="End"></endEvent>
-        <sequenceFlow id="flow16" sourceRef="diigCocUpdateCdStatusOnSW" targetRef="diigCocEnd"></sequenceFlow>
-        <sequenceFlow id="flow17" sourceRef="diigCocSendCdRejectToSw" targetRef="diigCocEnd"></sequenceFlow>
-        <serviceTask id="diigCocSendCdRejectToSw" name="Send CD Reject to SW" flowable:expression="${bpmnCommonFunctions.updateCdStatusOnSw(cdId)}"></serviceTask>
-        <serviceTask id="diigCocUpdateCdStatusOnSW" name="Update CD Status on SW" flowable:expression="${bpmnCommonFunctions.updateCdStatusOnSw(cdId)}"></serviceTask>
-    </process>
-    <bpmndi:BPMNDiagram id="BPMNDiagram_diImportedGoodsWithCocProcess">
-        <bpmndi:BPMNPlane bpmnElement="diImportedGoodsWithCocProcess" id="BPMNPlane_diImportedGoodsWithCocProcess">
-            <bpmndi:BPMNShape bpmnElement="diigCocStart" id="BPMNShape_diigCocStart">
-                <omgdc:Bounds height="35.0" width="35.0" x="200.0" y="140.0"></omgdc:Bounds>
-            </bpmndi:BPMNShape>
-            <bpmndi:BPMNShape bpmnElement="diigCocReceiveKebsCd" id="BPMNShape_diigCocReceiveKebsCd">
-                <omgdc:Bounds height="55.0" width="105.0" x="280.0" y="130.0"></omgdc:Bounds>
-            </bpmndi:BPMNShape>
-            <bpmndi:BPMNShape bpmnElement="diigCocAssignIo" id="BPMNShape_diigCocAssignIo">
-                <omgdc:Bounds height="55.0" width="105.0" x="460.0" y="130.0"></omgdc:Bounds>
-            </bpmndi:BPMNShape>
-            <bpmndi:BPMNShape bpmnElement="diigCocCheckCdComplete" id="BPMNShape_diigCocCheckCdComplete">
-                <omgdc:Bounds height="71.0" width="105.0" x="620.0" y="122.0"></omgdc:Bounds>
-            </bpmndi:BPMNShape>
-            <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
-                <omgdc:Bounds height="40.0" width="40.0" x="780.0" y="138.0"></omgdc:Bounds>
-            </bpmndi:BPMNShape>
-            <bpmndi:BPMNShape bpmnElement="diigCocCdInspectionRequired" id="BPMNShape_diigCocCdInspectionRequired">
-                <omgdc:Bounds height="70.0" width="105.0" x="867.0" y="123.0"></omgdc:Bounds>
-            </bpmndi:BPMNShape>
-            <bpmndi:BPMNShape bpmnElement="exclusivegateway2" id="BPMNShape_exclusivegateway2">
-                <omgdc:Bounds height="40.0" width="40.0" x="1015.0" y="139.0"></omgdc:Bounds>
-            </bpmndi:BPMNShape>
-            <bpmndi:BPMNShape bpmnElement="diigCocCdBlacklist" id="BPMNShape_diigCocCdBlacklist">
-                <omgdc:Bounds height="55.0" width="105.0" x="1100.0" y="132.0"></omgdc:Bounds>
-            </bpmndi:BPMNShape>
-            <bpmndi:BPMNShape bpmnElement="diigCocUpdateCdStatus" id="BPMNShape_diigCocUpdateCdStatus">
-                <omgdc:Bounds height="55.0" width="105.0" x="983.0" y="360.0"></omgdc:Bounds>
-            </bpmndi:BPMNShape>
-            <bpmndi:BPMNShape bpmnElement="exclusivegateway3" id="BPMNShape_exclusivegateway3">
-                <omgdc:Bounds height="40.0" width="40.0" x="1250.0" y="140.0"></omgdc:Bounds>
-            </bpmndi:BPMNShape>
-            <bpmndi:BPMNShape bpmnElement="diigCocApproveBlacklist" id="BPMNShape_diigCocApproveBlacklist">
-                <omgdc:Bounds height="55.0" width="105.0" x="1335.0" y="133.0"></omgdc:Bounds>
-            </bpmndi:BPMNShape>
-            <bpmndi:BPMNShape bpmnElement="diigCocCdInspection" id="BPMNShape_diigCocCdInspection">
-                <omgdc:Bounds height="55.0" width="105.0" x="1335.0" y="250.0"></omgdc:Bounds>
-            </bpmndi:BPMNShape>
-            <bpmndi:BPMNShape bpmnElement="diigCocEnd" id="BPMNShape_diigCocEnd">
-                <omgdc:Bounds height="35.0" width="35.0" x="783.0" y="508.0"></omgdc:Bounds>
-            </bpmndi:BPMNShape>
-            <bpmndi:BPMNShape bpmnElement="diigCocSendCdRejectToSw" id="BPMNShape_diigCocSendCdRejectToSw">
-                <omgdc:Bounds height="67.0" width="105.0" x="748.0" y="240.0"></omgdc:Bounds>
-            </bpmndi:BPMNShape>
-            <bpmndi:BPMNShape bpmnElement="diigCocUpdateCdStatusOnSW" id="BPMNShape_diigCocUpdateCdStatusOnSW">
-                <omgdc:Bounds height="71.0" width="105.0" x="980.0" y="490.0"></omgdc:Bounds>
-            </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge bpmnElement="flow17" id="BPMNEdge_flow17">
-                <omgdi:waypoint x="800.5" y="306.95000000000005"></omgdi:waypoint>
-                <omgdi:waypoint x="800.5" y="508.0"></omgdi:waypoint>
-            </bpmndi:BPMNEdge>
-            <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
-                <omgdi:waypoint x="1270.0" y="179.9414816396243"></omgdi:waypoint>
-                <omgdi:waypoint x="1270.0" y="277.0"></omgdi:waypoint>
-                <omgdi:waypoint x="971.9499999999998" y="175.80756062767475"></omgdi:waypoint>
-            </bpmndi:BPMNEdge>
-            <bpmndi:BPMNEdge bpmnElement="flow14" id="BPMNEdge_flow14">
-                <omgdi:waypoint x="971.9499999999998" y="183.69208556149727"></omgdi:waypoint>
-                <omgdi:waypoint x="1387.0" y="387.0"></omgdi:waypoint>
-                <omgdi:waypoint x="1087.949999999989" y="387.425320056899"></omgdi:waypoint>
-            </bpmndi:BPMNEdge>
-            <bpmndi:BPMNEdge bpmnElement="flow15" id="BPMNEdge_flow15">
-                <omgdi:waypoint x="1034.9021739130435" y="414.95"></omgdi:waypoint>
-                <omgdi:waypoint x="1033.270652173913" y="490.0"></omgdi:waypoint>
-            </bpmndi:BPMNEdge>
-            <bpmndi:BPMNEdge bpmnElement="flow16" id="BPMNEdge_flow16">
-                <omgdi:waypoint x="979.9999999999768" y="525.5"></omgdi:waypoint>
-                <omgdi:waypoint x="817.9499394093413" y="525.5"></omgdi:waypoint>
-            </bpmndi:BPMNEdge>
-            <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
-                <omgdi:waypoint x="234.94999838720145" y="157.5"></omgdi:waypoint>
-                <omgdi:waypoint x="279.9999999999719" y="157.5"></omgdi:waypoint>
-            </bpmndi:BPMNEdge>
-            <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
-                <omgdi:waypoint x="384.95000000000005" y="157.5"></omgdi:waypoint>
-                <omgdi:waypoint x="459.99999999990393" y="157.5"></omgdi:waypoint>
-            </bpmndi:BPMNEdge>
-            <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
-                <omgdi:waypoint x="564.9499999999938" y="157.5"></omgdi:waypoint>
-                <omgdi:waypoint x="619.9999999999818" y="157.5"></omgdi:waypoint>
-            </bpmndi:BPMNEdge>
-            <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
-                <omgdi:waypoint x="724.9499999999994" y="157.70568627450982"></omgdi:waypoint>
-                <omgdi:waypoint x="780.0362997658079" y="157.921875"></omgdi:waypoint>
-            </bpmndi:BPMNEdge>
-            <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
-                <omgdi:waypoint x="819.9416596989965" y="158.0"></omgdi:waypoint>
-                <omgdi:waypoint x="867.0" y="158.0"></omgdi:waypoint>
-            </bpmndi:BPMNEdge>
-            <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
-                <omgdi:waypoint x="971.9499999999994" y="158.45411255411256"></omgdi:waypoint>
-                <omgdi:waypoint x="1015.1310034305317" y="158.8283261802575"></omgdi:waypoint>
-            </bpmndi:BPMNEdge>
-            <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
-                <omgdi:waypoint x="1054.8570914479233" y="159.0845338983051"></omgdi:waypoint>
-                <omgdi:waypoint x="1099.9999999999936" y="159.2765957446809"></omgdi:waypoint>
-            </bpmndi:BPMNEdge>
-            <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
-                <omgdi:waypoint x="1204.95" y="159.7231914893617"></omgdi:waypoint>
-                <omgdi:waypoint x="1250.0436071126142" y="159.91525423728817"></omgdi:waypoint>
-            </bpmndi:BPMNEdge>
-            <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
-                <omgdi:waypoint x="800.0859913793104" y="177.8554909560724"></omgdi:waypoint>
-                <omgdi:waypoint x="800.3549783549784" y="240.0"></omgdi:waypoint>
-            </bpmndi:BPMNEdge>
-            <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
-                <omgdi:waypoint x="1289.8570914479233" y="160.0845338983051"></omgdi:waypoint>
-                <omgdi:waypoint x="1334.9999999999998" y="160.27659574468086"></omgdi:waypoint>
-            </bpmndi:BPMNEdge>
-            <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
-                <omgdi:waypoint x="1035.043558951965" y="178.9021060672196"></omgdi:waypoint>
-                <omgdi:waypoint x="1035.4398249452954" y="360.0"></omgdi:waypoint>
-            </bpmndi:BPMNEdge>
-            <bpmndi:BPMNEdge bpmnElement="flow12" id="BPMNEdge_flow12">
-                <omgdi:waypoint x="1334.9999999999977" y="160.21955128205127"></omgdi:waypoint>
-                <omgdi:waypoint x="971.9499999999999" y="158.28018162393164"></omgdi:waypoint>
-            </bpmndi:BPMNEdge>
-        </bpmndi:BPMNPlane>
-    </bpmndi:BPMNDiagram>
+  <process id="diImportedGoodsWithCocProcess" name="DI Imported Goods With COC Process" isExecutable="true">
+    <startEvent id="diigCocStart" name="Start"/>
+    <userTask id="diigCocReceiveKebsCd" name="Receive KEBS CD"/>
+    <sequenceFlow id="flow1" sourceRef="diigCocStart" targetRef="diigCocReceiveKebsCd"/>
+    <userTask id="diigCocAssignIo" name="Assign IO">
+      <extensionElements>
+        <flowable:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"/>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow2" sourceRef="diigCocReceiveKebsCd" targetRef="diigCocAssignIo"/>
+    <userTask id="diigCocCheckCdComplete" name="Check CD Complete">
+      <extensionElements>
+        <flowable:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"/>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow3" sourceRef="diigCocAssignIo" targetRef="diigCocCheckCdComplete"/>
+    <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"/>
+    <sequenceFlow id="flow4" sourceRef="diigCocCheckCdComplete" targetRef="exclusivegateway1"/>
+    <userTask id="diigCocCdInspectionRequired" name="CD Inspection Required?">
+      <extensionElements>
+        <flowable:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"/>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow5" sourceRef="exclusivegateway1" targetRef="diigCocCdInspectionRequired">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${cdComplete==1}]]></conditionExpression>
+    </sequenceFlow>
+    <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"/>
+    <sequenceFlow id="flow6" sourceRef="diigCocCdInspectionRequired" targetRef="exclusivegateway2"/>
+    <userTask id="diigCocCdBlacklist" name="CD Blacklist">
+      <extensionElements>
+        <flowable:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"/>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow7" sourceRef="exclusivegateway2" targetRef="diigCocCdBlacklist">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${cdInspectionRequired==1}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow8" sourceRef="exclusivegateway1" targetRef="diigCocSendCdRejectToSw">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${cdComplete==0}]]></conditionExpression>
+    </sequenceFlow>
+    <userTask id="diigCocUpdateCdStatus" name="Update CD Status">
+      <extensionElements>
+        <flowable:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"/>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow9" sourceRef="exclusivegateway2" targetRef="diigCocUpdateCdStatus">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${cdInspectionRequired==0}]]></conditionExpression>
+    </sequenceFlow>
+    <exclusiveGateway id="exclusivegateway3" name="Exclusive Gateway"/>
+    <sequenceFlow id="flow10" sourceRef="diigCocCdBlacklist" targetRef="exclusivegateway3"/>
+    <userTask id="diigCocApproveBlacklist" name="Approve Blacklist">
+      <extensionElements>
+        <flowable:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"/>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow11" sourceRef="exclusivegateway3" targetRef="diigCocApproveBlacklist">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${cdBlacklist==1}]]></conditionExpression>
+    </sequenceFlow>
+    <userTask id="diigCocCdInspection" name="CD Inspection">
+      <extensionElements>
+        <flowable:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"/>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow12" sourceRef="diigCocApproveBlacklist" targetRef="diigCocCdInspectionRequired"/>
+    <sequenceFlow id="flow13" sourceRef="exclusivegateway3" targetRef="diigCocCdInspectionRequired">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${cdBlacklist==0}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow14" sourceRef="diigCocCdInspectionRequired" targetRef="diigCocUpdateCdStatus"/>
+    <sequenceFlow id="flow15" sourceRef="diigCocUpdateCdStatus" targetRef="diigCocUpdateCdStatusOnSW"/>
+    <endEvent id="diigCocEnd" name="End"/>
+    <sequenceFlow id="flow16" sourceRef="diigCocUpdateCdStatusOnSW" targetRef="diigCocEnd"/>
+    <sequenceFlow id="flow17" sourceRef="diigCocSendCdRejectToSw" targetRef="diigCocEnd"/>
+    <serviceTask id="diigCocSendCdRejectToSw" name="Send CD Reject to SW" flowable:expression="${bpmnCommonFunctions.updateCdStatusOnSw(cdId)}"/>
+    <serviceTask id="diigCocUpdateCdStatusOnSW" name="Update CD Status on SW" flowable:expression="${bpmnCommonFunctions.updateCdStatusOnSw(cdId)}"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_diImportedGoodsWithCocProcess">
+    <bpmndi:BPMNPlane bpmnElement="diImportedGoodsWithCocProcess" id="BPMNPlane_diImportedGoodsWithCocProcess">
+      <bpmndi:BPMNShape bpmnElement="diigCocStart" id="BPMNShape_diigCocStart">
+        <omgdc:Bounds height="35.0" width="35.0" x="200.0" y="140.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="diigCocReceiveKebsCd" id="BPMNShape_diigCocReceiveKebsCd">
+        <omgdc:Bounds height="55.0" width="105.0" x="280.0" y="130.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="diigCocAssignIo" id="BPMNShape_diigCocAssignIo">
+        <omgdc:Bounds height="55.0" width="105.0" x="460.0" y="130.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="diigCocCheckCdComplete" id="BPMNShape_diigCocCheckCdComplete">
+        <omgdc:Bounds height="71.0" width="105.0" x="620.0" y="122.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="780.0" y="138.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="diigCocCdInspectionRequired" id="BPMNShape_diigCocCdInspectionRequired">
+        <omgdc:Bounds height="70.0" width="105.0" x="867.0" y="123.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway2" id="BPMNShape_exclusivegateway2">
+        <omgdc:Bounds height="40.0" width="40.0" x="1015.0" y="139.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="diigCocCdBlacklist" id="BPMNShape_diigCocCdBlacklist">
+        <omgdc:Bounds height="55.0" width="105.0" x="1093.4271" y="81.20962"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="diigCocUpdateCdStatus" id="BPMNShape_diigCocUpdateCdStatus">
+        <omgdc:Bounds height="55.0" width="105.0" x="983.0" y="360.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway3" id="BPMNShape_exclusivegateway3">
+        <omgdc:Bounds height="40.0" width="40.0" x="1250.0" y="140.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="diigCocApproveBlacklist" id="BPMNShape_diigCocApproveBlacklist">
+        <omgdc:Bounds height="55.0" width="105.0" x="1335.0" y="133.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="diigCocCdInspection" id="BPMNShape_diigCocCdInspection">
+        <omgdc:Bounds height="55.0" width="105.0" x="1335.0" y="250.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="diigCocEnd" id="BPMNShape_diigCocEnd">
+        <omgdc:Bounds height="35.0" width="35.0" x="783.0" y="508.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="diigCocSendCdRejectToSw" id="BPMNShape_diigCocSendCdRejectToSw">
+        <omgdc:Bounds height="67.0" width="105.0" x="748.0" y="240.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="diigCocUpdateCdStatusOnSW" id="BPMNShape_diigCocUpdateCdStatusOnSW">
+        <omgdc:Bounds height="71.0" width="105.0" x="980.0" y="490.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow17" id="BPMNEdge_flow17">
+        <omgdi:waypoint x="800.5" y="306.95000000000005"/>
+        <omgdi:waypoint x="800.5" y="508.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
+        <omgdi:waypoint x="1270.0" y="179.9414816396243"/>
+        <omgdi:waypoint x="1270.0" y="277.0"/>
+        <omgdi:waypoint x="971.9499999999998" y="175.80756062767475"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow14" id="BPMNEdge_flow14">
+        <omgdi:waypoint x="971.9499999999998" y="183.69208556149727"/>
+        <omgdi:waypoint x="1387.0" y="387.0"/>
+        <omgdi:waypoint x="1087.949999999989" y="387.425320056899"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow15" id="BPMNEdge_flow15">
+        <omgdi:waypoint x="1034.9021739130435" y="414.95"/>
+        <omgdi:waypoint x="1033.270652173913" y="490.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow16" id="BPMNEdge_flow16">
+        <omgdi:waypoint x="979.9999999999768" y="525.5"/>
+        <omgdi:waypoint x="817.9499394093413" y="525.5"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="234.94999838720145" y="157.5"/>
+        <omgdi:waypoint x="279.9999999999719" y="157.5"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="384.95000000000005" y="157.5"/>
+        <omgdi:waypoint x="459.99999999990393" y="157.5"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="564.9499999999938" y="157.5"/>
+        <omgdi:waypoint x="619.9999999999818" y="157.5"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="724.9499999999994" y="157.70568627450982"/>
+        <omgdi:waypoint x="780.0362997658079" y="157.921875"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="819.9416596989965" y="158.0"/>
+        <omgdi:waypoint x="867.0" y="158.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="971.9499999999994" y="158.45411255411256"/>
+        <omgdi:waypoint x="1015.1310034305317" y="158.8283261802575"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
+        <omgdi:waypoint x="1054.8570914479233" y="159.0845338983051"/>
+        <omgdi:waypoint x="1093.4271" y="108.48621"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
+        <omgdi:waypoint x="1198.3771" y="108.93281"/>
+        <omgdi:waypoint x="1250.0436071126142" y="159.91525423728817"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+        <omgdi:waypoint x="800.0859913793104" y="177.8554909560724"/>
+        <omgdi:waypoint x="800.3549783549784" y="240.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
+        <omgdi:waypoint x="1289.8570914479233" y="160.0845338983051"/>
+        <omgdi:waypoint x="1334.9999999999998" y="160.27659574468086"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
+        <omgdi:waypoint x="1035.043558951965" y="178.9021060672196"/>
+        <omgdi:waypoint x="1035.4398249452954" y="360.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow12" id="BPMNEdge_flow12">
+        <omgdi:waypoint x="1334.9999999999977" y="160.21955128205127"/>
+        <omgdi:waypoint x="971.9499999999999" y="158.28018162393164"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
 </definitions>

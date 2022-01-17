@@ -36,16 +36,16 @@ import javax.net.ssl.HttpsURLConnection
 
 @Service
 class LimsServices(
-    private val commonDaoServices: CommonDaoServices,
-    private val jasyptStringEncryptor: StringEncryptor,
-    private val daoService: DaoService,
-    private val downloaderFile: DownloaderFile,
-    private val applicationMapProperties: ApplicationMapProperties,
-    private val sampleLabTestResults: IQaSampleLabTestResultsRepository,
-    private val sampleLabTestParameters: IQaSampleLabTestParametersRepository,
-    private val sampleSubmissionRepo: IQaSampleSubmissionRepository,
-    private val permitRepo: IPermitApplicationsRepository,
-    private val configurationRepository: IIntegrationConfigurationRepository
+        private val commonDaoServices: CommonDaoServices,
+        private val jasyptStringEncryptor: StringEncryptor,
+        private val daoService: DaoService,
+        private val downloaderFile: DownloaderFile,
+        private val applicationMapProperties: ApplicationMapProperties,
+        private val sampleLabTestResults: IQaSampleLabTestResultsRepository,
+        private val sampleLabTestParameters: IQaSampleLabTestParametersRepository,
+        private val sampleSubmissionRepo: IQaSampleSubmissionRepository,
+        private val permitRepo: IPermitApplicationsRepository,
+        private val configurationRepository: IIntegrationConfigurationRepository
 ) {
 
     @Lazy
@@ -63,8 +63,8 @@ class LimsServices(
     val appIdPDF = applicationMapProperties.mapLimsTransactions
 
     fun performPostCall(
-        postDataParams: HashMap<String, String>,
-        applicationMapID: Long
+            postDataParams: HashMap<String, String>,
+            applicationMapID: Long
     ): String? {
         val url: URL
         var response: String? = ""
@@ -86,7 +86,7 @@ class LimsServices(
             conn.setRequestProperty("Authorization", "Basic $encoding")
             val os: OutputStream = conn.outputStream
             val writer = BufferedWriter(
-                OutputStreamWriter(os, "UTF-8")
+                    OutputStreamWriter(os, "UTF-8")
             )
             writer.write(getPostDataString(postDataParams))
             writer.flush()
@@ -111,8 +111,8 @@ class LimsServices(
     }
 
     fun performPostCallReceiveFile(
-        postDataParams: HashMap<String, String>,
-        applicationMapID: Long
+            postDataParams: HashMap<String, String>,
+            applicationMapID: Long
     ): File? {
         val url: URL
         var response: File? = null
@@ -124,9 +124,9 @@ class LimsServices(
             url = URL(config.url)
             val b = Base64()
             val encoding: String = b.encodeAsString(
-                ("${jasyptStringEncryptor.decrypt(config.username)}:${
-                    jasyptStringEncryptor.decrypt(config.password)
-                }").toByteArray()
+                    ("${jasyptStringEncryptor.decrypt(config.username)}:${
+                        jasyptStringEncryptor.decrypt(config.password)
+                    }").toByteArray()
             )
 
             val conn: HttpURLConnection = url.openConnection() as HttpURLConnection
@@ -138,7 +138,7 @@ class LimsServices(
             conn.setRequestProperty("Authorization", "Basic $encoding")
             val os: OutputStream = conn.outputStream
             val writer = BufferedWriter(
-                OutputStreamWriter(os, "UTF-8")
+                    OutputStreamWriter(os, "UTF-8")
             )
             writer.write(getPostDataString(postDataParams))
             writer.flush()
@@ -175,7 +175,7 @@ class LimsServices(
 
     fun labResponseResults(response: String): Boolean {
         val resultsParam: RootTestResultsAndParameters = ObjectMapper().readValue(response, RootTestResultsAndParameters::class.java)
-        var myStatus : Boolean = false
+        var myStatus: Boolean = false
         //Loop
         if (resultsParam.test_parameter?.isNullOrEmpty() == true) {
             println("List is null or empty")
@@ -184,14 +184,15 @@ class LimsServices(
         } else {
             myStatus = true
             resultsParam.test_result
-                ?.forEach { testResults ->
-                    limsTestResultsDetails(testResults)
-                }
+                    ?.forEach { testResults ->
+                        limsTestResultsDetails(testResults)
+                    }
             //Loop
             resultsParam.test_parameter
-                ?.forEach { testParam ->
-                    limsTestParamsDetails(testParam)
-                }
+                    ?.forEach { testParam ->
+                        limsTestParamsDetails(testParam)
+                    }
+
             return myStatus
         }
 
@@ -210,8 +211,22 @@ class LimsServices(
 
     }
 
-    fun labPdfResponseResults(response: String): String {
-        return response
+    fun checkBsNumberExistOnLims(bsNumber: String): Boolean {
+        var results = false
+        val hmap = HashMap<String, String>()
+        hmap["bsnumber"] = bsNumber
+        val myResults = performPostCall(hmap, applicationMapProperties.mapLimsConfigIntegration)
+        if (myResults != null) {
+            try {
+                val resultsParam: RootTestResultsAndParameters = ObjectMapper().readValue(myResults, RootTestResultsAndParameters::class.java)
+                if ("OK".equals(resultsParam.status, true)) {
+                    results = true
+                }
+            }catch (ex: Exception){
+                KotlinLogging.logger {  }.error("Failed to decode reponse", ex)
+            }
+        }
+        return results
     }
 
     fun mainFunctionLims(bsNumber: String): Boolean {
@@ -251,51 +266,51 @@ class LimsServices(
 
 
     fun limsTestResultsDetails(
-        testResults: TestResult
+            testResults: TestResult
     ): QaSampleLabTestResultsEntity {
         val testResultsDetails = QaSampleLabTestResultsEntity()
         with(testResultsDetails) {
             orderId = testResults.orderID
             sampleNumber = testResults.sampleNumber
             test = testResults.test
-            param =testResults.param
-            sortOrder =testResults.sortOrder
-            method =testResults.method
-            result =testResults.result
-            numericResult =testResults.numericResult
-            units =testResults.units
-            dilution =testResults.dilution
-            analysisVolume =testResults.analysisVolume
-            sampleType =testResults.sampleType
-            qualifier =testResults.qualifier
-            repLimit =testResults.repLimit
-            retentionTime =testResults.retentionTime
-            tic =testResults.tIC
-            resultStatus =testResults.resultStatus
-            enteredDate =testResults.enteredDate
-            enteredBy =testResults.enteredBy
-            validatedDate =testResults.validatedDate
-            validatedBy =testResults.validatedBy
-            approvedDate =testResults.approvedDate
-            approvedBy =testResults.approvedBy
-            approvedReason =testResults.approvedReason
-            commnt =testResults.commnt
-            measuredResult =testResults.measuredResult
-            percentMoisture =testResults.percentMoisture
-            methodVolume =testResults.methodVolume
-            extractVolume =testResults.extractVolume
-            methodExtractVolume =testResults.methodExtractVolume
-            instrument =testResults.instrument
-            resultsUser1 =testResults.results_User1
-            resultsUser2 =testResults.results_User2
-            resultsUser3 =testResults.results_User3
-            resultsUser4 =testResults.results_User4
-            report =testResults.report
-            paramAnalyst =testResults.ts
-            paramAnalysisDateTime =testResults.paramAnalyst
-            printed =testResults.paramAnalysisDateTime
-            printedAt =testResults.printed
-            ts =testResults.printedAt
+            param = testResults.param
+            sortOrder = testResults.sortOrder
+            method = testResults.method
+            result = testResults.result
+            numericResult = testResults.numericResult
+            units = testResults.units
+            dilution = testResults.dilution
+            analysisVolume = testResults.analysisVolume
+            sampleType = testResults.sampleType
+            qualifier = testResults.qualifier
+            repLimit = testResults.repLimit
+            retentionTime = testResults.retentionTime
+            tic = testResults.tIC
+            resultStatus = testResults.resultStatus
+            enteredDate = testResults.enteredDate
+            enteredBy = testResults.enteredBy
+            validatedDate = testResults.validatedDate
+            validatedBy = testResults.validatedBy
+            approvedDate = testResults.approvedDate
+            approvedBy = testResults.approvedBy
+            approvedReason = testResults.approvedReason
+            commnt = testResults.commnt
+            measuredResult = testResults.measuredResult
+            percentMoisture = testResults.percentMoisture
+            methodVolume = testResults.methodVolume
+            extractVolume = testResults.extractVolume
+            methodExtractVolume = testResults.methodExtractVolume
+            instrument = testResults.instrument
+            resultsUser1 = testResults.results_User1
+            resultsUser2 = testResults.results_User2
+            resultsUser3 = testResults.results_User3
+            resultsUser4 = testResults.results_User4
+            report = testResults.report
+            paramAnalyst = testResults.ts
+            paramAnalysisDateTime = testResults.paramAnalyst
+            printed = testResults.paramAnalysisDateTime
+            printedAt = testResults.printed
+            ts = testResults.printedAt
             status = 1
             createdBy = "ADMIN"
             createdOn = commonDaoServices.getTimestamp()
@@ -304,38 +319,38 @@ class LimsServices(
     }
 
     fun limsTestParamsDetails(
-        testParams: TestParameter
+            testParams: TestParameter
     ): QaSampleLabTestParametersEntity {
         val testParamsDetails = QaSampleLabTestParametersEntity()
         with(testParamsDetails) {
-            orderId =testParams.orderID
-            sampleNumber =testParams.sampleNumber
-            test =testParams.test
-            matrix =testParams.matrix
-            method =testParams.method
-            testGroup =testParams.testGroup
-            priority =testParams.priority
-            currentDepartment =testParams.currentDepartment
-            lastDepartment =testParams.lastDepartment
-            reDepartment =testParams.rEDepartment
-            testPrice =testParams.testPrice
-            customerTestPrice =testParams.customerTestPrice
-            dueDate =testParams.dueDate
-            dueDateFlag =testParams.dueDateFlag
-            prepDueDate =testParams.prepDueDate
-            prepMethod =testParams.prepMethod
-            analysisDueDate =testParams.analysisDueDate
-            analysisTime =testParams.analysisTime
-            analysisEmployee =testParams.analysisEmployee
-            keepTest =testParams.keepTest
-            cancelled =testParams.cancelled
-            hasResults =testParams.hasResults
-            supplyReconciled =testParams.supplyReconciled
-            customParams =testParams.customParams
-            preservative =testParams.preservative
-            bottleType =testParams.bottleType
-            storageLocation =testParams.storageLocation
-            sampleDetailsUser1 =testParams.sampleDetails_User1
+            orderId = testParams.orderID
+            sampleNumber = testParams.sampleNumber
+            test = testParams.test
+            matrix = testParams.matrix
+            method = testParams.method
+            testGroup = testParams.testGroup
+            priority = testParams.priority
+            currentDepartment = testParams.currentDepartment
+            lastDepartment = testParams.lastDepartment
+            reDepartment = testParams.rEDepartment
+            testPrice = testParams.testPrice
+            customerTestPrice = testParams.customerTestPrice
+            dueDate = testParams.dueDate
+            dueDateFlag = testParams.dueDateFlag
+            prepDueDate = testParams.prepDueDate
+            prepMethod = testParams.prepMethod
+            analysisDueDate = testParams.analysisDueDate
+            analysisTime = testParams.analysisTime
+            analysisEmployee = testParams.analysisEmployee
+            keepTest = testParams.keepTest
+            cancelled = testParams.cancelled
+            hasResults = testParams.hasResults
+            supplyReconciled = testParams.supplyReconciled
+            customParams = testParams.customParams
+            preservative = testParams.preservative
+            bottleType = testParams.bottleType
+            storageLocation = testParams.storageLocation
+            sampleDetailsUser1 = testParams.sampleDetails_User1
             sampleDetailsUser2 = testParams.sampleDetails_User2
             sampleDetailsUser3 = testParams.sampleDetails_User3
             sampleDetailsUser4 = testParams.sampleDetails_User4
@@ -354,58 +369,59 @@ class LimsServices(
         KotlinLogging.logger { }.info { "::::::::::::::::::::::::STARTED LAB RESULTS SCHEDULER::::::::::::::::::" }
         var samples = 1
         sampleSubmissionRepo.findByLabResultsStatusAndBsNumber(status, bsNumber)
-            ?.let { ssfFound ->
-                KotlinLogging.logger { }
-                    .info { "::::::::::::::::::::::::SAMPLES WITH RESULTS FOUND = ${samples++}::::::::::::::::::" }
-                when {
-                    mainFunctionLims(bsNumber) -> {
-                        with(ssfFound) {
-                            modifiedBy = "SYSTEM SCHEDULER"
-                            modifiedOn = commonDaoServices.getTimestamp()
-                            labResultsStatus = map.activeStatus
-                            resultsDate = commonDaoServices.getCurrentDate()
-                        }
-                        sampleSubmissionRepo.save(ssfFound)
-                        when {
-                            ssfFound.permitId != null -> {
-                                qaDaoServices.findPermitBYID(
-                                    ssfFound.permitId ?: throw Exception("PERMIT ID NOT FOUND")
-                                )
-                                    .let { pm ->
-                                        with(pm) {
-                                            permitStatus = applicationMapProperties.mapQaStatusPLABResultsCompletness
-                                            modifiedBy = "SYSTEM SCHEDULER"
-                                            modifiedOn = commonDaoServices.getTimestamp()
-                                        }
-                                        permitRepo.save(pm)
-                                    }
+                ?.let { ssfFound ->
+                    KotlinLogging.logger { }
+                            .info { "::::::::::::::::::::::::SAMPLES WITH RESULTS FOUND = ${samples++}::::::::::::::::::" }
+                    when {
+                        mainFunctionLims(bsNumber) -> {
+                            with(ssfFound) {
+                                modifiedBy = "SYSTEM SCHEDULER"
+                                modifiedOn = commonDaoServices.getTimestamp()
+                                labResultsStatus = map.activeStatus
+                                resultsDate = commonDaoServices.getCurrentDate()
                             }
-                            ssfFound.cdItemId != null -> {
-                                diDaoServices.findItemWithItemID(
-                                    ssfFound.cdItemId ?: throw Exception("CD ITEM ID NOT FOUND")
-                                )
-                                    .let { cdItem ->
-                                        diDaoServices.findCD(cdItem.cdDocId?.id ?: throw Exception("CD ID NOT FOUND"))
-                                            .let { updatedCDDetails ->
-                                                updatedCDDetails.cdStandard?.let { cdStd ->
-                                                    diDaoServices.updateCDStatus(
-                                                        cdStd,
-                                                        applicationMapProperties.mapDIStatusTypeInspectionSampleResultsReceivedId
-                                                    )
+                            sampleSubmissionRepo.save(ssfFound)
+                            when {
+                                ssfFound.permitId != null -> {
+                                    qaDaoServices.findPermitBYID(
+                                            ssfFound.permitId ?: throw Exception("PERMIT ID NOT FOUND")
+                                    )
+                                            .let { pm ->
+                                                with(pm) {
+                                                    permitStatus = applicationMapProperties.mapQaStatusPLABResultsCompletness
+                                                    modifiedBy = "SYSTEM SCHEDULER"
+                                                    modifiedOn = commonDaoServices.getTimestamp()
                                                 }
+                                                permitRepo.save(pm)
                                             }
+                                }
+                                ssfFound.cdItemId != null -> {
+                                    diDaoServices.findItemWithItemID(
+                                            ssfFound.cdItemId ?: throw Exception("CD ITEM ID NOT FOUND")
+                                    )
+                                            .let { cdItem ->
+                                                diDaoServices.findCD(cdItem.cdDocId?.id
+                                                        ?: throw Exception("CD ID NOT FOUND"))
+                                                        .let { updatedCDDetails ->
+                                                            updatedCDDetails.cdStandard?.let { cdStd ->
+                                                                diDaoServices.updateCDStatus(
+                                                                        cdStd,
+                                                                        applicationMapProperties.mapDIStatusTypeInspectionSampleResultsReceivedId
+                                                                )
+                                                            }
+                                                        }
 
-                                    }
+                                            }
+                                }
+                                else -> throw ExpectedDataNotFound("INVALID SSF DETAILS WITH MISSING PERMIT/CD ITEM DETAILS")
                             }
-                            else -> throw ExpectedDataNotFound("INVALID SSF DETAILS WITH MISSING PERMIT/CD ITEM DETAILS")
+
+
                         }
-
-
+                        else -> throw ExpectedDataNotFound("NO RESULTS FOUND")
                     }
-                    else -> throw ExpectedDataNotFound("NO RESULTS FOUND")
-                }
 
-            }
+                }
     }
 
     fun checkPDFFiles(bsNumber: String): List<String>? {

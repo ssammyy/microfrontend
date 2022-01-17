@@ -1,6 +1,6 @@
 package org.kebs.app.kotlin.apollo.store.repo
 
-import org.kebs.app.kotlin.apollo.store.model.PvocCorTimelinesDataEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocCorTimelinesDataEntity
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.hazelcast.repository.HazelcastRepository

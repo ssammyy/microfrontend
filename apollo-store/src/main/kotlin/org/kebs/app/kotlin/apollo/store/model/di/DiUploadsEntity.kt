@@ -43,6 +43,10 @@ class DiUploadsEntity : Serializable {
     @Basic
     var transactionDate: Date? = null
 
+    @Column(name = "FILE_SIZE")
+    @Basic
+    var fileSize: Long? = null
+
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null

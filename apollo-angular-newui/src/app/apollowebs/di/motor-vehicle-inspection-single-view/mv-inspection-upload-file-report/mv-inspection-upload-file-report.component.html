@@ -1,0 +1,28 @@
+<h2 mat-dialog-title>Upload Report</h2>
+<mat-dialog-content>
+    <div class="row no_margin" [formGroup]="form">
+        <div class="col-sm-12 col-md-12">
+            <label class="waiver-form-label">Upload your report</label>
+            <input #ministryReport type="file" name="file" class="waiver-form-input-master"
+                   (change)="onFileSelected($event)"  accept="application/pdf">
+        </div>
+        <div class="col-sm-12 col-md-12">
+            <label class="waiver-form-label">Remarks</label>
+            <input type="text" name="file" class="waiver-form-input-master"
+                   placeholder=""
+                   formControlName="comment">
+        </div>
+        <label *ngIf="selectedFile" class="col-6 waiver-form-label">NAME: {{selectedFile.name}}</label>
+        <label *ngIf="selectedFile" class="col-6 waiver-form-label">NAME: {{selectedFile.size/1000}}KB</label>
+        <mat-error *ngIf="message">{{message}}</mat-error>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <div class="row no_margin master-list-new-btn">
+        <button class="next-btn btn-warning new-btn" (click)="closeDialog()">CLOSE
+        </button>
+        <button [disabled]="(form.invalid || !selectedFile || selectedFile.size==0) ||loading"  class="next-btn btn-gen new-btn" (click)="saveRecord()">SAVE
+            <mat-spinner [diameter]="20" color="warn" *ngIf="loading"></mat-spinner>
+        </button>
+    </div>
+</mat-dialog-actions>

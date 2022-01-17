@@ -6,7 +6,7 @@
 	<parameter name="ImporterName" class="java.lang.String"/>
 	<parameter name="ImporterAddress" class="java.lang.String"/>
 	<parameter name="ImporterPhone" class="java.lang.String"/>
-	<parameter name="CorSerialNo" class="java.lang.String"/>
+	<parameter name="corNumber" class="java.lang.String"/>
 	<parameter name="CorIssueDate" class="java.lang.String"/>
 	<parameter name="CorExpiryDate" class="java.lang.String"/>
 	<parameter name="ChassisNumber" class="java.lang.String"/>
@@ -148,7 +148,7 @@ Email:info@kebs.org
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{CorSerialNo}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{corNumber}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="428" y="97" width="100" height="18" uuid="860bf5a3-81a1-4f86-85b6-9fd9b340e75a"/>

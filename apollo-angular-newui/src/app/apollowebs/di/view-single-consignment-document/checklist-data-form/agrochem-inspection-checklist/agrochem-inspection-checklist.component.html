@@ -1,0 +1,20 @@
+<div id='agrochem-item-details' [formGroup]="agrochemChecklist">
+    <div class="form-row">
+        <div class="col-md-12 mb-3">
+            <label style="color: #0082f3">AGROCHEM Markings Details</label>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-md-12">
+            <label for="remarks" class="waiver-form-label">General Remarks</label>
+            <textarea class="waiver-form-input-master" name="remarks" data-name="remarks"
+                      id="remarks" formControlName="remarks"></textarea>
+        </div>
+    </div>
+    <label style="color: #0082f3">Select Agrochemical Items</label>
+    <app-item-selection id="agrochem" checklistType="agrochem"
+                        [categories]="categories"
+                        [items]="itemList"
+                        (selectedItemsChange)="itemsSelected($event)"
+                        [selectedItems]="selectedItems"></app-item-selection>
+</div>

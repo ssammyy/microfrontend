@@ -212,8 +212,16 @@ export class AuthEffects {
             ),
         {dispatch: true}
     );
-
-
+    hasRole(privileges: string[], roles: any[]): boolean {
+        for (let role of roles) {
+            for (let p of privileges) {
+                if (role == p) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
     doLogin: Observable<Action> = createEffect(
         () =>
             this.actions$.pipe(
@@ -222,8 +230,7 @@ export class AuthEffects {
                     .pipe(
                         mergeMap((data) => {
                             data.redirectUrl = action.redirectUrl
-                            if (data.companyID != null) {
-
+                            if(this.hasRole(["PERMIT_APPLICATION"], data.roles)){
                                 return [
                                     loadAuthsSuccess({profile: data, loggedIn: true}),
                                     loadUserCompanyInfo(),
@@ -233,17 +240,17 @@ export class AuthEffects {
                                         redirectUrl: null
                                     })
                                 ];
-                            } else {
-                                return [
-                                    loadAuthsSuccess({profile: data, loggedIn: true}),
-                                    Go({
-                                        payload: action.redirectUrl,
-                                        link: 'login/otp',
-                                        redirectUrl: null
-                                    })
-                                ];
                             }
+                            return [
+                                loadAuthsSuccess({profile: data, loggedIn: true}),
+                                Go({
+                                    payload: action.redirectUrl,
+                                    link: 'login/otp',
+                                    redirectUrl: null
+                                })
+                            ];
                         }),
+
                         catchError(
                             (err: HttpErrorResponse) => of(loadResponsesFailure({
                                 error: {

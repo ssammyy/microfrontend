@@ -48,6 +48,11 @@ class QaSampleSubmissionEntity : Serializable {
     @Basic
     var brandName: String? = null
 
+    @Column(name = "CATEGORY")
+    @Basic
+    var category: String? = null
+
+
     @Column(name = "PRODUCT_DESCRIPTION")
     @Basic
     var productDescription: String? = null
@@ -75,6 +80,22 @@ class QaSampleSubmissionEntity : Serializable {
     @Column(name = "LAB_REPORT_FILE_ID")
     @Basic
     var labReportFileId: Long? = null
+
+    @Column(name = "RETURN_OR_DISPOSE")
+    @Basic
+    var returnOrDispose: String? = null
+
+    @Column(name = "TEST_PARAMETERS")
+    @Basic
+    var testParameters: String? = null
+
+    @Column(name = "LABORATORY_NAME")
+    @Basic
+    var laboratoryName: String? = null
+
+    @Column(name = "CONDITION_OF_SAMPLE")
+    @Basic
+    var conditionOfSample: String? = null
 
     @Column(name = "STATUS")
     @Basic

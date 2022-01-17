@@ -1,7 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.controllers.diControllers.pvoc
 
 import org.kebs.app.kotlin.apollo.api.service.SparesReportService
-import org.kebs.app.kotlin.apollo.store.model.PvocExceptionIndustrialSparesCategoryEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocExceptionIndustrialSparesCategoryEntity
 import org.kebs.app.kotlin.apollo.store.repo.IPvocExceptionIndustrialSparesCategoryEntityRepo
 import org.kebs.app.kotlin.apollo.store.repo.IPvocExceptionRawMaterialCategoryEntityRepo
 import org.springframework.web.bind.annotation.GetMapping

@@ -38,8 +38,10 @@
 package org.kebs.app.kotlin.apollo.api.routes
 
 import org.kebs.app.kotlin.apollo.api.handlers.*
+import org.kebs.app.kotlin.apollo.api.handlers.pvoc.PvocComplaintHandler
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.servlet.function.router
 
 @Configuration
@@ -212,6 +214,7 @@ class ControllerRoutes {
 //        }
 //    }
 
+
     @Bean
     fun utilitiesRoute(handler: UtilitiesHandler) = router {
         "/api/utilities".nest {
@@ -236,26 +239,28 @@ class ControllerRoutes {
 
     @Bean
     fun tasksRoute(handler: BpmnTasksHandler) =
-        router {
-            "/api/user/tasks".nest {
-                GET(pattern = "/list", f = handler::tasksListView)
-                GET(pattern = "/task/{taskId}", f = handler::reviewTask)
-                POST(pattern = "/task/{taskId}/claim", f = handler::claimTask)
-                POST(pattern = "/task/{taskId}/complete/{taskStatus}", f = handler::completeTask)
+            router {
+                "/api/user/tasks".nest {
+                    GET(pattern = "/list", f = handler::tasksListView)
+                    GET(pattern = "/task/{taskId}", f = handler::reviewTask)
+                    POST(pattern = "/task/{taskId}/claim", f = handler::claimTask)
+                    POST(pattern = "/task/{taskId}/complete/{taskStatus}", f = handler::completeTask)
+                }
             }
-        }
 
     @Bean
-    fun userRoute(handler: UserHandler) =
-        router {
-            "/api/user".nest {
-                GET("/user-notifications", handler::notificationList)
-                GET("/user-profile", handler::userProfile)
-                GET("/add/plant-details/save", handler::userProfile)
-            }
+    fun userRoute(handler: UserHandler) = router {
+        "/api/v1/user".nest {
+            GET("/notifications", handler::notificationList)
+            GET("/profile", handler::userProfile)
+            GET("/blacklist/types",handler::loadBlacklistTypes)
+            GET("/officers/{cdUuid}", handler::listInspectionOfficers)
+            GET("/add/plant-details/save", handler::userProfile)
         }
+    }
 
     @Bean
+    @CrossOrigin
     fun registrationRoutes(handler: RegistrationHandler) = router {
         "/api/v1/auth/signup".nest {
             POST("/user", handler::signUpAllUsers)
@@ -263,8 +268,6 @@ class ControllerRoutes {
             PUT("/authorize", handler::signUpAllUsersVerification)
             PUT("/forgot-password", handler::signUpUserRestPassword)
 
-
-//            GET(pattern = "/manufacturer", f = handler::signupManufacturerView)
             GET(pattern = "/employee", f = handler::signUpEmployeeView)
             GET(pattern = "/update-user-details", f = handler::updateUserView)
             GET("/new", handler::userNewFormView)
@@ -344,7 +347,7 @@ class ControllerRoutes {
 
     @Bean
     fun qualityAssuranceRoutes(handler: QualityAssuranceHandler) = router {
-        "/api/qa".nest {
+        "/api/v1/qa".nest {
             println("**************************")
             GET("/home", handler::home)
             GET("/permits-list", handler::permitList)
@@ -389,41 +392,41 @@ class ControllerRoutes {
     }
 
 
-    @Bean
-    fun destinationInspectionRoutes(handler: DestinationInspectionHandler) = router {
-        "/api/di".nest {
-            GET("/home", handler::home)
-            GET("/cd-list", handler::cdList)
-            GET("/cd-details", handler::cDDetails)
-            GET("/cd-item-details", handler::cDItemDetails)
-            GET("/cd-coc", handler::cdCocDetails)
-            GET("/cd-cor", handler::cdCorDetails)
-//            GET("/cd-coi", handler::cdCoiDetails)
-            GET("/cd-idf", handler::cdIdfDetails)
-            GET("/cd-manifest", handler::cdManifestDetails)
-            GET("/cd-customDeclartion", handler::cdCustomDeclarationDetails)
-            GET("/cd-all-invoices", handler::cdInvoiceDetails)
-
-
-            "/inspection".nest {
-                GET("/check-list", handler::inspectionDetails)
-                GET("/ssf-details", handler::getSSfDetails)
-                GET("/sample-collection", handler::inspectionDetails)
-                GET("/sample-submission", handler::inspectionDetails)
-                GET("/item-report", handler::inspectionChecklistReportDetails)
-                GET("/item/sample-Submit-param/bs-number", handler::inspectionDetails)
-            }
-
-//            GET("/ministry-submission", handler::submitMVInspectionRequestToMinistry)
-            GET("/ministry-inspection-home", handler::ministryInspectionHome)
-            GET("/motor-vehicle-inspection-details", handler::mvInspectionDetails)
-
-//            GET("/ministry-inspection-report", handler::ministryInspectionReport)
-//            GET("/mv-inspection-checklist-detail", handler::mvInspectionChecklistDetails)
-
-//            GET("/cd-inspection-module", handler::cDInspectionModuleDetails)
-        }
-    }
+//    @Bean
+//    fun diestinationInspectionRoutes(handler: DestinationInspectionHandler) = router {
+//        "/api/di".nest {
+//            GET("/home", handler::home)
+//            GET("/cd-list", handler::cdList)
+//            GET("/cd-details", handler::cDDetails)
+//            GET("/cd-item-details", handler::cDItemDetails)
+//            GET("/cd-coc", handler::cdCocDetails)
+//            GET("/cd-cor", handler::cdCorDetails)
+////            GET("/cd-coi", handler::cdCoiDetails)
+//            GET("/cd-idf", handler::cdIdfDetails)
+//            GET("/cd-manifest", handler::cdManifestDetails)
+//            GET("/cd-customDeclartion", handler::cdCustomDeclarationDetails)
+//            GET("/cd-all-invoices", handler::cdInvoiceDetails)
+//
+//
+//            "/inspection".nest {
+////                GET("/check-list", handler::inspectionDetails)
+//                GET("/ssf-details", handler::getSSfDetails)
+//                GET("/sample-collection", handler::inspectionDetails)
+//                GET("/sample-submission", handler::inspectionDetails)
+////                GET("/item-report", handler::inspectionChecklistReportDetails)
+//                GET("/item/sample-Submit-param/bs-number", handler::inspectionDetails)
+//            }
+//
+////            GET("/ministry-submission", handler::submitMVInspectionRequestToMinistry)
+//            GET("/ministry-inspection-home", handler::ministryInspectionHome)
+//            GET("/motor-vehicle-inspection-details", handler::mvInspectionDetails)
+//
+////            GET("/ministry-inspection-report", handler::ministryInspectionReport)
+////            GET("/mv-inspection-checklist-detail", handler::mvInspectionChecklistDetails)
+//
+////            GET("/cd-inspection-module", handler::cDInspectionModuleDetails)
+//        }
+//    }
 
 
     @Bean
@@ -544,8 +547,8 @@ class ControllerRoutes {
                     POST("/cfs/revoke/{userProfileId}/{cfsId}/{status}", handler::revokeCfsFromUser)
                     POST("/cfs/assign/{userProfileId}/{cfsId}/{status}", handler::assignCfsToUser)
                     POST(
-                        "/user/request/role/assign/{userId}/{roleId}/{status}/{requestID}",
-                        handler::assignRoleToUserThroughRequest
+                            "/user/request/role/assign/{userId}/{roleId}/{status}/{requestID}",
+                            handler::assignRoleToUserThroughRequest
                     )
 //                    POST("/user/request/{userId}/{cfsId}/{status}", handler::assignCfsToUser)
 

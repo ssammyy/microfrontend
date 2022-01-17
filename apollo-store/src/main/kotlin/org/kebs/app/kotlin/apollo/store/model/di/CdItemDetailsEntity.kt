@@ -27,6 +27,14 @@ class CdItemDetailsEntity : Serializable {
     @Column(name = "UUID")
     var uuid: String? = null
 
+    @Basic
+    @Column(name = "SSF_ID")
+    var ssfId: Long? = null
+
+    @Basic
+    @Column(name = "SCF_ID")
+    var scfId: Long? = null
+
     @Column(name = "ITEM_DESCRIPTION")
     @Basic
     var itemDescription: String? = null
@@ -508,7 +516,6 @@ class CdItemDetailsEntity : Serializable {
                 paymentNeededStatus == that.paymentNeededStatus &&
                 status == that.status &&
                 inspectionProcessStatus == that.inspectionProcessStatus &&
-                ministrySubmissionStatus == that.ministrySubmissionStatus &&
                 inspectionProcessInstanceId == that.inspectionProcessInstanceId &&
                 inspectionProcessStartedOn == that.inspectionProcessStartedOn &&
                 inspectionProcessCompletedOn == that.inspectionProcessCompletedOn
@@ -608,7 +615,6 @@ class CdItemDetailsEntity : Serializable {
             sampledStatus,
             status,
             inspectionProcessStatus,
-            ministrySubmissionStatus,
             inspectionProcessInstanceId,
             inspectionProcessStartedOn,
             inspectionProcessCompletedOn

@@ -1,0 +1,139 @@
+.importation-waiver-main{
+    width: 80%;
+    margin-left: 25px;
+    /* margin-top: 160px;
+    float: right; */
+}
+
+.main-title-font{
+    font-size: 20px;
+    color: #1878b3;
+    font-family: "Roboto";
+}
+
+.importation-waiver-title{
+    margin-top: 20px;
+}
+
+.w-100{
+    width: 100%;
+}
+
+.display-nothing{
+    display: none !important;
+}
+
+.file-input ul{
+    padding-left: 20px;
+}
+
+.file-input p{
+    margin-bottom: 3px;
+}
+
+.importation-waiver-subtitle{
+    margin-bottom: 0px;
+}
+
+.close-btn{
+    cursor: pointer;
+    font-size: 13px;
+    color: red;
+}
+
+.waiver-form-label{
+    color: #1878b3;
+    font-family: "Roboto";
+    width: 100%;
+    font-size: 17px;
+    font-weight: 400;
+    margin-top: 20px;
+}
+
+.waiver-form-input{
+    border: #1878b3 solid 1px;
+    border-radius: 5px;
+    padding-bottom: 15px;
+    padding-top: 15px;
+    width: 500px;
+    font-size: 18px;
+    padding-left: 10px;
+}
+
+.waiver-form-input-master{
+    border: #1878b3 solid 1px;
+    border-radius: 5px;
+    padding-bottom: 15px;
+    padding-top: 15px;
+    width: 100%;
+    font-size: 18px;
+    padding-left: 10px;
+}
+
+.master-list-new-btn button{
+    float: left;
+}
+
+.err-msg{
+    margin-top: 8px;
+    color: red;
+}
+
+.nxt-and-back-container-holder{
+    width: 80%;
+    margin-top: 40px;
+    margin-bottom: 80px;
+    display: inline-block;
+}
+
+.btn-gen{
+    font-size: 15px;
+    padding: 15px 50px;
+    font-weight: 500;
+}
+
+.back-btn{
+    background-color: #fbbc48;
+    color: black;
+    border: none;
+    float: left;
+}
+
+.back-btn:hover{
+    background-color: #F29F05;
+}
+
+
+.next-btn{
+    background-color: #1878b3;
+    color: white;
+    border: none;
+    float: right;
+}
+
+.next-btn:hover{
+    background-color: #0f4b70;
+}
+
+.next-btn:disabled{
+    background-color: grey;
+    cursor: not-allowed;
+}
+
+.btn-attach{
+    font-size: 15px;
+    padding: 15px 40px;
+    font-weight: 500;
+    float: left;
+}
+
+.master-list-new-btn{
+    margin-top: 15px;
+    margin-left: 0px;
+}
+
+@media (max-width: 768px){
+    .waiver-form-input{
+        width: 90%;
+    }
+}

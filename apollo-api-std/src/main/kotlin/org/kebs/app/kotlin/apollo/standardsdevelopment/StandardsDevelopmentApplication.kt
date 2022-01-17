@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.standardsdevelopment
 
+import org.kebs.app.kotlin.apollo.config.properties.auth.AuthenticationProperties
 import org.kebs.app.kotlin.apollo.standardsdevelopment.repositories.CustomerRespository
 import org.kebs.app.kotlin.apollo.standardsdevelopment.services.FilesStorageService
 import org.springframework.boot.CommandLineRunner
@@ -13,7 +14,9 @@ import java.util.*
 import javax.annotation.Resource
 
 @SpringBootApplication(scanBasePackages = ["org.kebs.app.kotlin.apollo"])
-class StandardsDevelopmentApplication(val customerRespository: CustomerRespository) : CommandLineRunner {
+class StandardsDevelopmentApplication(
+        private val authenticationProperties: AuthenticationProperties,
+        val customerRespository: CustomerRespository) : CommandLineRunner {
     @Resource
     var storageService: FilesStorageService? = null
     override fun run(vararg args: String?) {
@@ -29,7 +32,8 @@ class StandardsDevelopmentApplication(val customerRespository: CustomerResposito
     fun corsFilter(): CorsFilter? {
         val corsConfiguration = CorsConfiguration()
         corsConfiguration.allowCredentials = true
-        corsConfiguration.allowedOrigins = Arrays.asList("http://localhost:4200")
+        corsConfiguration.allowedOrigins = Arrays.asList(*authenticationProperties.requiresNoAuthenticationCros?.split(",")?.toTypedArray()
+                ?: arrayOf(""))
         corsConfiguration.allowedHeaders =
             Arrays.asList(
                 "Origin",

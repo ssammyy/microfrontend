@@ -1,0 +1,104 @@
+<h2 mat-dialog-title>Agrochem Checklist Items</h2>
+<mat-dialog-content>
+    <div class="row no_margin" [formGroup]="form">
+        <div class="col-sm-4 col-md-3">
+            <label for="category" class="waiver-form-label">Item Category</label>
+            <select id="category" class="waiver-form-input-master" formControlName="category">
+                <option value="" disabled selected>Select Category</option>
+                <option *ngFor="let d of categories" [value]="d.typeName">{{d.typeName}}</option>
+            </select>
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <label for="compliant" class="waiver-form-label">Select Compliance</label>
+            <select id="compliant" class="waiver-form-input-master" formControlName="compliant">
+                <option value="" disabled selected>Assign Compliance</option>
+                <option *ngFor="let d of complianceStatus" [value]="d.name">{{d.description}}</option>
+            </select>
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <label for="sampled" class="waiver-form-label">Sampled?</label>
+            <select id="sampled" class="waiver-form-input-master" formControlName="sampled">
+                <option [value]="">None</option>
+                <option value="YES">Yes</option>
+                <option value="NO">No</option>
+            </select>
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <label for="brand" class="waiver-form-label">Brand</label>
+            <input type="text" class="waiver-form-input-master" name="brand"
+                   data-name="brand" id="brand" formControlName="brand">
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <label for="ksEasApplicable" class="waiver-form-label">KS/EAS Applicable</label>
+            <select id="ksEasApplicable" class="waiver-form-input-master" formControlName="ksEasApplicable">
+                <option [value]="">None</option>
+                <option value="YES">Yes</option>
+                <option value="NO">No</option>
+            </select>
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <label for="quantityVerified" class="waiver-form-label">Quantity Verified (No. Of items/packages)</label>
+            <input type="text" class="waiver-form-input-master" name="quantityVerified"
+                   data-name="quantity Verified" id="quantityVerified"
+                   formControlName="quantityVerified">
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <label for="mfgName" class="waiver-form-label">Mfg Name</label>
+            <input type="text" class="waiver-form-input-master"  name="mfgName"
+                   data-name="mfg Name" id="mfgName" formControlName="mfgName">
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <label for="mfgAddress" class="waiver-form-label">Mfg Address</label>
+            <input type="text" class="waiver-form-input-master" name="mfgAddress"
+                   data-name="mfg Address" id="mfgAddress" formControlName="mfgAddress">
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <label for="compositionIngredients" class="waiver-form-label">Composition/Ingredients</label>
+            <input type="text" class="waiver-form-input-master"
+                   name="compositionIngredients" data-name="composition Ingredients"
+                   id="compositionIngredients" formControlName="compositionIngredients">
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <label for="dateMfgPackaging" class="waiver-form-label">Date of mfg/packaging</label>
+            <input type="date" class="waiver-form-input-master" name="dateMfgPackaging"
+                   data-name="dateMfg Packaging" id="dateMfgPackaging" required=""
+                   formControlName="dateMfgPackaging">
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <label for="dateExpiry" class="waiver-form-label">Date of Expiry</label>
+            <input type="date" class="waiver-form-input-master"  name="dateExpiry"
+                   data-name="date Expiry" id="dateExpiry" required="" formControlName="dateExpiry">
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <label for="storageCondition" class="waiver-form-label">Storage Condition</label>
+            <input type="text" class="waiver-form-input-master"  name="storageCondition"
+                   data-name="storage Condition" id="storageCondition"
+                   formControlName="storageCondition">
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <label for="appearance" class="waiver-form-label">Appearance (mouldy,infested,foreign matter e.t.c.)</label>
+            <input type="text" class="waiver-form-input-master"  name="appearance"
+                   data-name="appearance" id="appearance" formControlName="appearance">
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <label for="certMarksPvocDoc" class="waiver-form-label">Certification marks/pvoc documents</label>
+            <input id="certMarksPvocDoc" type="text" class="waiver-form-input-master"  name="certMarksPvocDoc"
+                   data-name="ksEas Applicable"
+                   formControlName="certMarksPvocDoc">
+        </div>
+        <div class="col-sm-12 col-md-8">
+            <label for="remarks" class="waiver-form-label">Please write, in detail, your feedback for this
+                item:</label>
+            <textarea id="remarks" class="waiver-form-input-master"
+                      formControlName="remarks"></textarea>
+        </div>
+    </div>
+    <mat-error *ngIf="message">{{message}}</mat-error>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <div class="row no_margin master-list-new-btn">
+        <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
+        <button [disabled]="form.invalid" class="next-btn btn-gen new-btn" (click)="addCompliance()">SAVE
+        </button>
+    </div>
+</mat-dialog-actions>

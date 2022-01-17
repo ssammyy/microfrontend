@@ -1,9 +1,8 @@
 package org.kebs.app.kotlin.apollo.store.repo
 
-import org.kebs.app.kotlin.apollo.store.model.PvocQueriesDataEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocQueriesDataEntity
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.stereotype.Repository
-import java.util.*
 
 @Repository
 interface IPvocQueriesDataRepository : HazelcastRepository<PvocQueriesDataEntity, Long> {

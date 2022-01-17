@@ -21,8 +21,11 @@
 
 package org.kebs.app.kotlin.apollo.api.security.bearer
 
+import com.lowagie.text.pdf.codec.Base64
+import mu.KotlinLogging
 import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Component
+import org.springframework.util.StringUtils
 import org.springframework.web.server.ServerWebExchange
 import javax.servlet.http.HttpServletRequest
 
@@ -37,6 +40,26 @@ class AuthorizationPayloadExtractorService {
 
     fun extract(r: HttpServletRequest): String? {
         return r.getHeader(HttpHeaders.AUTHORIZATION)
+    }
 
+    fun extractBasic(r: HttpServletRequest): Pair<String,String>? {
+        val basicAuth = r.getHeader(HttpHeaders.AUTHORIZATION)
+        if(StringUtils.hasLength(basicAuth)){
+            try {
+                if (basicAuth.startsWith("Basic")) {
+                    val data = basicAuth.replace("Basic", "").trim()
+                    val decoded = String(Base64.decode(data)).split(":")
+                    if(decoded.size==2){
+                        return Pair(decoded[0],decoded[1])
+                    } else{
+                        KotlinLogging.logger {  }.info("Error decoding basic header, expected 2 parts")
+                    }
+
+                }
+            }catch (ex: Exception){
+                KotlinLogging.logger {  }.info("Error decoding basic header")
+            }
+        }
+        return null
     }
 }
