@@ -11,7 +11,6 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.SftpServiceImpl
 import org.kebs.app.kotlin.apollo.common.dto.MinistryInspectionListResponseDto
 import org.kebs.app.kotlin.apollo.common.dto.kesws.receive.DeclarationVerificationMessage
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
-import org.kebs.app.kotlin.apollo.common.exceptions.InvalidInputException
 import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -41,8 +40,20 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
-import javax.persistence.EntityManager
-import kotlin.collections.HashMap
+
+
+enum class CdTypeCodes(val code: String) {
+    COC("NO_COC"),
+    COR("NO_COR"),
+    FOREIGN_COC("WITH_COC_COI"),
+    FOREIGN_COR("WITH_COR"),
+    TEMPORARY_IMPORTS("TEMPORARY_IMPORTS"),
+    COURIER_GOODS("COURIER_GOODS"),
+    AUCTION_GOODS("AUCTION_GOODS"),
+    EXEMPTED_GOODS("NO_COC_PVOC"),
+    NCR("NCR"),
+    OTHER("OTHER")
+}
 
 
 @Service
@@ -56,7 +67,6 @@ class DestinationInspectionDaoServices(
         private val notifications: Notifications,
         private val iCocItemRepository: ICocItemRepository,
         private val iUserProfilesRepo: IUserProfilesRepository,
-        private val iSubSectionsLevel2Repo: ISubSectionsLevel2Repository,
         private val idfsRepo: IIDFDetailsEntityRepository,
         private val manifestRepo: IManifestDetailsEntityRepository,
         private val declarationRepo: IDeclarationDetailsEntityRepository,
@@ -71,7 +81,6 @@ class DestinationInspectionDaoServices(
         private val iCdTransportRepo: ICdTransportEntityRepository,
         private val iCdConsignorRepo: ICdConsignorEntityRepository,
         private val iConsignmentDocumentDetailsRepo: IConsignmentDocumentDetailsRepository,
-        private val iCocTypesRepo: ICocTypesEntityRepository,
         private val iBlackListUserTargetRep: IBlackListUserTargetRepository,
         private val iCdStatusTypesDetailsRepo: ICdStatusTypesEntityRepository,
         private val iDIFeeDetailsRepo: IDestinationInspectionFeeRepository,
@@ -84,8 +93,6 @@ class DestinationInspectionDaoServices(
         private val iChecklistInspectionTypesRepo: IChecklistInspectionTypesRepository,
         private val iUserRepository: IUserRepository,
         private val iCdItemsRepo: IConsignmentItemsRepository,
-
-        private val iLocalCorRepo: ILocalCorEntityRepository,
         private val iCdItemNonStandardEntityRepository: ICdItemNonStandardEntityRepository,
         private val iCdValuesHeaderLevelRepo: ICdValuesHeaderLevelEntityRepository,
         private val iCdConsigneeRepo: ICdConsigneeEntityRepository,
@@ -232,41 +239,19 @@ class DestinationInspectionDaoServices(
     fun viewCdPageDetails(cdUuid: String) = "$cdViewPageDetails=$cdUuid"
 
 
-    fun updateCdDetailsWIthCor(cdDetails: ConsignmentDocumentDetailsEntity, chasisNumber: String?) {
-        chasisNumber?.let {
-            corsBakRepository.findByChasisNumber(it).let { corsBakEntity ->
-                if (corsBakEntity != null) {
-                    updateCDDetailsWithCORData(corsBakEntity, cdDetails)
-                } else {
-                    this.handleNoCorFromCosWithPvoc(cdDetails)
-                    //Check if No CoR from CoS with PVoC
-                    with(cdDetails) {
-                        cdType = findCdTypeDetailsWithUuid(noCorCdType)
-                    }
-                    iConsignmentDocumentDetailsRepo.save(cdDetails)
-                }
-            }
-        }
-    }
-
-    fun handleNoCorFromCosWithPvoc(cdDetailsEntity: ConsignmentDocumentDetailsEntity) {
-        //Check if Cos is available
+    fun handleNoCorFromCosWithPvoc(cdDetailsEntity: ConsignmentDocumentDetailsEntity): Boolean {
+        //Check if Cos (Country Of Supply) is available
         cdDetailsEntity.cdHeaderOne?.let {
             findCdHeaderOneDetails(it).countryOfSupply?.let { cos ->
                 iPvocPartnersCountriesRepository.findByAbbreviationIgnoreCase(cos)
             }?.let {
                 cdDetailsEntity.csApprovalStatus = commonDaoServices.inActiveStatus.toInt()
+                return true
             }
         }
+        return false
     }
 
-    fun findCocType(cocTypeID: Long): CocTypesEntity {
-        iCocTypesRepo.findByIdOrNull(cocTypeID)
-                ?.let {
-                    return it
-                }
-                ?: throw Exception("COC TYPE WIth id = ${cocTypeID}, does not Exist")
-    }
 
     fun findAllBlackListUsers(status: Int): List<CdBlackListUserTargetTypesEntity> {
         iBlackListUserTargetRep.findAllByStatusOrderByTypeName(status)
@@ -287,53 +272,12 @@ class DestinationInspectionDaoServices(
 //            ?: throw Exception("List Of ALl , does not Exist")
     }
 
-    fun findCocTypeWithTypeName(cocType: String): CocTypesEntity {
-        iCocTypesRepo.findByTypeName(cocType)
-                ?.let {
-                    return it
-                }
-                ?: throw Exception("COC TYPE with type name = ${cocType}, does not Exist")
-    }
-
     fun findLocalCocTypeWithCocTypeCode(cocTypeCode: String): LocalCocTypesEntity {
         iLocalCocTypeRepo.findByCocTypeCode(cocTypeCode)
                 ?.let {
                     return it
                 }
                 ?: throw Exception("Local COC TYPE with type code = ${cocTypeCode}, does not Exist")
-    }
-
-    fun findALlLocalCocTypeDetails(status: Int): List<LocalCocTypesEntity> {
-        iLocalCocTypeRepo.findByStatus(status)
-                ?.let {
-                    return it
-                }
-                ?: throw Exception("All Local COC TYPE with status = ${status}, does not Exist")
-    }
-
-
-    fun extractCDTablesDetailsFromJson(dataFetched: JSONObject?, objectTitle: String): JSONObject? {
-        return dataFetched?.let {
-            try {
-                dataFetched.getJSONObject(objectTitle)
-            } catch (_: Exception) {
-                null
-            }
-        }
-    }
-
-    fun convertStringToBigDecimal(priceValue: String): BigDecimal {
-        val result = BigDecimal(priceValue.replace(",", ""))
-        println(result)
-        return result
-    }
-
-    fun findInspectionGeneralWithItemDetailsOrNull(cdItemDetails: CdItemDetailsEntity): CdInspectionGeneralEntity? {
-        return null
-    }
-
-    fun findCdItemsConsignmentDetailsOrNull(consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity): List<CdItemDetailsEntity>? {
-        return iCdItemsRepo.findByCdDocId(consignmentDocumentDetailsEntity)
     }
 
     fun createLocalCoc(
@@ -1061,7 +1005,7 @@ class DestinationInspectionDaoServices(
                     documentType = "PVOC"
                 }
                 "A" -> {
-                    documentType="AUCTION"
+                    documentType = "AUCTION"
                 }
             }
             KotlinLogging.logger { }.info("${documentType} CFI DOCUMENT TYPE = $currencyCode-$cfiValue")
@@ -2193,44 +2137,111 @@ class DestinationInspectionDaoServices(
         return Pair(sr, saveSSF)
     }
 
+    fun checkHasVehicle(cd: ConsignmentDocumentDetailsEntity): String? {
+        try {
+            findCDItemsListWithCDID(cd).forEach { item ->
+                return item.chasisNumber?.let { chassisNo ->
+                    return chassisNo
+                }
+            }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Not Vehicle with", ex)
+        }
+        return null
+    }
+
+    fun updateConsignmentCorDetails(cdDetailsEntity: ConsignmentDocumentDetailsEntity, localCocType: String?, documentCode: String, corsBakEntity: CorsBakEntity?) {
+        var documentType = CdTypeCodes.COR.code
+        var isCosGood = false
+        corsBakEntity?.let {
+            cdDetailsEntity.docTypeId = it.id
+            it.id
+        } ?: run {
+            isCosGood = this.handleNoCorFromCosWithPvoc(cdDetailsEntity)
+            null
+        }
+        // Document Type
+        when (documentCode) {
+            "F" -> {
+                documentType = CdTypeCodes.FOREIGN_COR.code
+            }
+            "L" -> {
+                if (isCosGood) {
+                    documentType = CdTypeCodes.EXEMPTED_GOODS.code
+                } else {
+                    documentType = CdTypeCodes.COR.code
+                }
+            }
+        }
+        // Set CD type
+        cdDetailsEntity.cdType = findCdTypeDetailsWithName(documentType)
+    }
+
+    fun updateConsignmentCocDetails(cdDetailsEntity: ConsignmentDocumentDetailsEntity, localCocType: String?, documentCode: String, cocEntity: CocsEntity?) {
+        var documentType = CdTypeCodes.COC.code
+        cocEntity?.let {
+            cdDetailsEntity.docTypeId = it.id
+        }
+        // Document types
+        when (documentCode) {
+            "F" -> {
+                documentType = CdTypeCodes.FOREIGN_COC.code
+            }
+            "L" -> {
+                when (cocEntity?.clean ?: "") {
+                    "N" -> {
+                        documentType = CdTypeCodes.NCR.code
+                    }
+                    else -> {
+                        documentType = CdTypeCodes.COC.code
+                    }
+                }
+            }
+        }
+        // Set CD type
+        cdDetailsEntity.cdType = findCdTypeDetailsWithName(documentType)
+    }
+
     fun updateCDDetailsWithCdType(
             documentCode: String,
             cdDetailsEntity: ConsignmentDocumentDetailsEntity
     ): ConsignmentDocumentDetailsEntity {
-        val chasisNumber=cdDetailsEntity.cdStandardsTwo
-        when(documentCode){
-            "F"->{
-
+        val ucrNumber = cdDetailsEntity.ucrNumber ?: ""
+        val chassisNumber = checkHasVehicle(cdDetailsEntity)
+        // Add Local COC Type
+        cdDetailsEntity.cdStandardsTwo?.localCocType
+                ?.let {
+                    cdDetailsEntity.cdCocLocalTypeId = findLocalCocTypeWithCocTypeCode(it).id
+                }
+        //  Add CD Type to Document
+        when (documentCode) {
+            "TIMP" -> {
+                // Temporary imports
+                cdDetailsEntity.cdType = findCdTypeDetailsWithName(CdTypeCodes.TEMPORARY_IMPORTS.code)
             }
-            "L" ->{
-
+            "AG" -> {
+                // Auction Goods
+                cdDetailsEntity.cdType = findCdTypeDetailsWithName(CdTypeCodes.AUCTION_GOODS.code)
             }
-            else->{
-
+            "DG", "DMSG", "UPERR", "EXE", "MWG", "EAC", "RIMP" -> {
+                // goods Exempted from COC
+                cdDetailsEntity.cdType = findCdTypeDetailsWithName(CdTypeCodes.EXEMPTED_GOODS.code)
             }
-        }
-        return iConsignmentDocumentDetailsRepo.save(cdDetailsEntity)
-
-    }
-
-    fun updateCDDetailsWithCOCData(
-            cocEntity: CocsEntity,
-            cdDetailsEntity: ConsignmentDocumentDetailsEntity
-    ): ConsignmentDocumentDetailsEntity {
-        if (cocEntity.clean.equals("Y")) {
-            with(cdDetailsEntity) {
-                cdType = findCdTypeDetailsWithUuid(cocCdType)
-                docTypeId = cocEntity.id
-                cocNumber = cocEntity.cocNumber
-
+            "ISGCDG" -> {
+                // Courier Goods
+                cdDetailsEntity.cdType = findCdTypeDetailsWithName(CdTypeCodes.COURIER_GOODS.code)
             }
-        } else if (cocEntity.clean.equals("N")) {
-            with(cdDetailsEntity) {
-                cdType = findCdTypeDetailsWithUuid(ncrCdType)
-                docTypeId = cocEntity.id
-                cocNumber = cocEntity.cocNumber
-            }
-            cdDetailsEntity.id?.let { automaticRejectCDNcr(it) }
+            else ->
+                when (chassisNumber) {
+                    null -> {
+                        // COC, NCR or NO_COC Goods
+                        this.updateConsignmentCocDetails(cdDetailsEntity, cdDetailsEntity.cdStandardsTwo?.localCocType, documentCode, findCocByUcrNumber(ucrNumber))
+                    }
+                    else -> {
+                        // COR, NO_COR_PVOC or NO_COR Goods
+                        this.updateConsignmentCorDetails(cdDetailsEntity, cdDetailsEntity.cdStandardsTwo?.localCocType, documentCode, corsBakRepository.findByChasisNumber(chassisNumber))
+                    }
+                }
         }
         return iConsignmentDocumentDetailsRepo.save(cdDetailsEntity)
 
@@ -2246,35 +2257,6 @@ class DestinationInspectionDaoServices(
             docTypeId = corsBakEntity.id
         }
         return iConsignmentDocumentDetailsRepo.save(cdDetailsEntity)
-    }
-
-    fun automaticRejectCDNcr(cdId: Long): Boolean {
-        findCDItemsListWithCDID(findCD(cdId))
-                .forEach { cdItemDetails ->
-                    with(cdItemDetails) {
-                        rejectDate = commonDaoServices.getCurrentDate()
-                        rejectStatus = commonDaoServices.activeStatus.toInt()
-                        rejectReason = "Goods with NCR to be flagged and automatically rejected on the system"
-//                        val myStatus = findCdStatusValue(rejectedStatus.toLong()).typeName
-//                        if (myStatus == null) {
-//                        } else {
-//                            rejectedStatus = myStatus
-//                        }
-                        lastModifiedBy = "SYSTEM"
-                        lastModifiedOn = commonDaoServices.getTimestamp()
-                    }
-                    cdItemDetails.cdDocId?.let {
-                        it.cdStandard?.let { it1 ->
-                            updateCDStatus(
-                                    it1,
-                                    rejectedStatus.toLong()
-                            )
-                        }
-                    }
-                    iCdItemsRepo.save(cdItemDetails)
-                    KotlinLogging.logger { }.info { "MY SYSTEM REJECTION  ${cdItemDetails.id}" }
-                }
-        return true
     }
 
     fun findCOC(ucrNumber: String, docType: String): CocsEntity {
