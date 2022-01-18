@@ -825,10 +825,12 @@ export const routes: Routes = [
     },
     {
         path: 'viewSiteVisitsFeedBack', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
         children: [{path: '', component: StandardLevySiteVisitFeedbackComponent}]
     },
     {
         path: 'slManufacturers', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
         children: [{path: '', component: StandardLevyManufactureDetailsComponent}]
     },
 

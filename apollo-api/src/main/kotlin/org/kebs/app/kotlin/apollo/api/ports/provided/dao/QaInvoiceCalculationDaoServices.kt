@@ -659,7 +659,7 @@ class QaInvoiceCalculationDaoServices(
                                     }
                                 }
                             } catch (e: Exception) {
-                                KotlinLogging.logger { }.error(e.message)
+                                KotlinLogging.logger { }.trace(e.message)
                                 KotlinLogging.logger { }.debug(e.message, e)
 
                                 continue
@@ -667,7 +667,7 @@ class QaInvoiceCalculationDaoServices(
                         }
                     }
                 } catch (e: Exception) {
-                    KotlinLogging.logger { }.error(e.message)
+                    KotlinLogging.logger { }.trace(e.message)
                     KotlinLogging.logger { }.debug(e.message, e)
 
                     continue

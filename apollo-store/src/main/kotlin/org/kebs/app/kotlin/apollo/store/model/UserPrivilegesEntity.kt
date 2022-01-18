@@ -52,7 +52,7 @@ class UserPrivilegesEntity : Serializable {
     @Basic
     var retries: Long = 0
 
-    @Size(max = 25, min = 10, message = "Invalid description")
+    @Size(max = 100, min = 10, message = "Invalid description")
     @NotEmpty(message = "Description is required")
     @Column(name = "DESCRIPTIONS")
     @Basic
@@ -122,7 +122,7 @@ class UserPrivilegesEntity : Serializable {
     @Basic
     var deletedOn: Timestamp? = null
 
-    @Size(max = 20, min = 5, message = "Invalid Name")
+    @Size(max = 50, min = 5, message = "Invalid Name")
     @NotEmpty(message = "Name is required")
     @Column(name = "NAME")
     @Basic

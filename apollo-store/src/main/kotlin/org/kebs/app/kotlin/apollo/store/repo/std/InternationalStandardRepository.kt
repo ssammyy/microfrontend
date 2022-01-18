@@ -144,7 +144,7 @@ interface UserListRepository : JpaRepository<UsersEntity, Long> {
     @Query("SELECT u.firstName,u.lastName FROM UsersEntity u WHERE u.id =:id")
     fun findNameById(@Param("id") id: Long?): String
 
-    @Query(value = "SELECT * FROM DAT_KEBS_USERS ", nativeQuery = true)
+    @Query(value = "SELECT * FROM DAT_KEBS_USERS WHERE USER_TYPE IN ('63','62','61') ", nativeQuery = true)
     fun findFirst10ByIdOrderByIdDesc(): MutableList<UsersEntity>
 }
 

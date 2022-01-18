@@ -386,6 +386,7 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
         );
     }
 
+
     assignCompanyTask(): void {
 
         this.SpinnerService.show();

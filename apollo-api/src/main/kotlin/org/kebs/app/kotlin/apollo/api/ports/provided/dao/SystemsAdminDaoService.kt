@@ -574,14 +574,15 @@ class SystemsAdminDaoService(
     fun updateRole(role: RolesEntityDto): RolesEntityDto? {
         when {
             (role.id ?: 0L) < 1L -> {
-                val r = UserRolesEntity()
+                var r = UserRolesEntity()
                 r.roleName = role.roleName
                 r.descriptions = role.descriptions
                 if (role.status == true) r.status = 1 else r.status = 0
                 r.createdBy = loggedInUserDetails().userName
                 r.createdOn = Timestamp.from(Instant.now())
-                rolesRepo.save(r)
-                return role
+                r= rolesRepo.save(r)
+                return RolesEntityDto(r.id,r.roleName,r.descriptions,r.status==1)
+
 
             }
             else -> {
@@ -592,8 +593,8 @@ class SystemsAdminDaoService(
                         r.descriptions = role.descriptions
                         r.modifiedBy = loggedInUserDetails().userName
                         r.modifiedOn = Timestamp.from(Instant.now())
-                        rolesRepo.save(r)
-                        return role
+                        val rr= rolesRepo.save(r)
+                        return RolesEntityDto(rr.id,rr.roleName,rr.descriptions,rr.status==1)
 
                     }
                     ?: throw NullValueNotAllowedException("Record not found, check and try again")
@@ -613,8 +614,9 @@ class SystemsAdminDaoService(
                 if (privilege.status == true) r.status = 1 else r.status = 0
                 r.createdBy = loggedInUserDetails().userName
                 r.createdOn = Timestamp.from(Instant.now())
-                privilegesRepo.save(r)
-                return privilege
+                val p = privilegesRepo.save(r)
+
+                 return AuthoritiesEntityDto(p.id, p.name, p.descriptions, p.status == 1)
 
             }
             else -> {
@@ -625,8 +627,8 @@ class SystemsAdminDaoService(
                         if (privilege.status == true) r.status = 1 else r.status = 0
                         r.modifiedBy = loggedInUserDetails().userName
                         r.modifiedOn = Timestamp.from(Instant.now())
-                        privilegesRepo.save(r)
-                        return privilege
+                        val p = privilegesRepo.save(r)
+                        return AuthoritiesEntityDto(p.id, p.name, p.descriptions, p.status == 1)
                     }
                     ?: throw NullValueNotAllowedException("Record not found, check and try again")
 

@@ -561,7 +561,7 @@ class StdLevyController(
        // return "Executed"
     }
 
-  //  @PreAuthorize("hasAuthority('SL_SCHEDULE_FACTORY_VISIT_MANUFACTURER') and hasAuthority('SL_MANUFACTURERS_VIEW')")
+    @PreAuthorize("hasAuthority('SL_SCHEDULE_VISIT')")
   @PostMapping("/scheduleSiteVisit")
   @ResponseBody
   @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -584,6 +584,7 @@ class StdLevyController(
 
   }
 
+    @PreAuthorize("hasAuthority('SL_ASSIGN_COMPANY')")
     @PostMapping("/assignCompany")
     @ResponseBody
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -620,19 +621,21 @@ class StdLevyController(
 
     }
 
-
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
     @GetMapping("/getUserTasks")
     fun getUserTasks():List<TaskDetails>
     {
         return standardLevyService.getUserTasks()
     }
 
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
     @GetMapping("/viewFeedBack")
     fun viewFeedBack():List<TaskDetails>
     {
         return standardLevyService.viewFeedBack()
     }
 
+    @PreAuthorize("hasAuthority('SL_SITE_VISIT_REPORT_CREATE')")
     @PostMapping("/reportOnSiteVisit")
     @ResponseBody
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -713,6 +716,7 @@ class StdLevyController(
 
     }
 
+    @PreAuthorize("hasAuthority('SL_SITE_VISIT_REPORT_FEEDBACK_CREATE')")
     @PostMapping("/siteVisitReportFeedback")
     @ResponseBody
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -749,6 +753,7 @@ class StdLevyController(
         return standardLevyService.decisionOnSiteReport(standardLevyFactoryVisitReportEntity)
     }
 
+    @PreAuthorize("hasAuthority('SL_SITE_VISIT_REPORT_APPROVAL_LEVEL_ONE')")
     @PostMapping("/decisionOnSiteReport")
     @ResponseBody
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -781,6 +786,7 @@ class StdLevyController(
 //        return standardLevyService.decisionOnSiteReportLevelTwo(siteVisitReportDecision)
 //    }
 
+    @PreAuthorize("hasAuthority('SL_SITE_VISIT_REPORT_APPROVAL_LEVEL_TWO')")
     @PostMapping("/decisionOnSiteReportLevelTwo")
     @ResponseBody
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -808,6 +814,7 @@ class StdLevyController(
     }
 
     //Get List of Manufactures
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
     @GetMapping("/getManufacturerList")
     @ResponseBody
     fun getManufacturerList(): MutableList<CompanyProfileEntity>
@@ -816,6 +823,7 @@ class StdLevyController(
     }
 
     //Get List of Manufactures Complete Tasks
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
     @GetMapping("/getMnCompleteTask")
     @ResponseBody
     fun getMnCompleteTask(): MutableList<CompanyProfileEntity>
@@ -831,6 +839,7 @@ class StdLevyController(
     }
 
     //Get List of Manufactures
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
     @GetMapping("/getMnPendingTask")
     @ResponseBody
     fun getMnPendingTask(): MutableList<CompanyProfileEntity>
