@@ -589,7 +589,7 @@ export class MaterialModule {}
         //     useHash: true
         // }),
         HttpClientModule,
-        MaterialModule,
+        //MaterialModule,
         SidebarModule,
         NavbarModule,
         FooterModule,
