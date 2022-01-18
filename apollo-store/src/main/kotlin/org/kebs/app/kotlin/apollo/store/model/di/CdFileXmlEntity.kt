@@ -8,6 +8,7 @@ import javax.persistence.*
 @Entity
 @Table(name = "DAT_KEBS_CD_FILE_XML")
 class CdFileXmlEntity : Serializable {
+
     @Column(name = "ID")
     @SequenceGenerator(name = "DAT_KEBS_CD_FILE_XML_SEQ_GEN", sequenceName = "DAT_KEBS_CD_FILE_XML_SEQ", allocationSize = 1)
     @GeneratedValue(generator = "DAT_KEBS_CD_FILE_XML_SEQ_GEN", strategy = GenerationType.SEQUENCE)
@@ -21,6 +22,10 @@ class CdFileXmlEntity : Serializable {
     @Column(name = "FILE_PATH")
     @Basic
     var filePath: String? = null
+
+    @Column(name = "FILE_ERROR", columnDefinition = "text")
+    @Basic
+    var fileErrors: String? = null
 
     @Column(name = "NAME")
     @Basic
@@ -109,7 +114,7 @@ class CdFileXmlEntity : Serializable {
     @Column(name = "DELETED_ON")
     @Basic
     var deletedOn: Timestamp? = null
-    
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
@@ -142,7 +147,7 @@ class CdFileXmlEntity : Serializable {
     }
 
     override fun hashCode(): Int {
-        var result = Objects.hash(id,cdId, filePath, name, fileType, documentType, description, status, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn)
+        var result = Objects.hash(id, cdId, filePath, name, fileType, documentType, description, status, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn)
         result = 31 * result + Arrays.hashCode(document)
         return result
     }

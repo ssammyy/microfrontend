@@ -1,6 +1,6 @@
 package org.kebs.app.kotlin.apollo.store.repo
 
-import org.kebs.app.kotlin.apollo.store.model.PvocComplaintRemarksEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocComplaintRemarksEntity
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 
 interface PvocComplaintRemarksEntityRepo : HazelcastRepository<PvocComplaintRemarksEntity, Long> {

@@ -12,6 +12,7 @@ export class LoggedInUser {
     roles: string[] = [];
     expiry: Date = new Date();
     companyID = 0;
+    redirectUrl='';
     // branchID = 0;
     // turnover = 0;
 }

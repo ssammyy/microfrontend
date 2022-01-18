@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="blacklistUser" name="Blacklist a user in consignment document" isExecutable="true">
+    <startEvent id="startevent1" name="Start"></startEvent>
+    <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow3" name="Rejected" sourceRef="exclusivegateway1" targetRef="rejectBlacklist">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!taskApproved}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow4" sourceRef="exclusivegateway1" targetRef="processLocalBlacklist">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${taskApproved}]]></conditionExpression>
+    </sequenceFlow>
+    <serviceTask id="processLocalBlacklist" name="Blacklist User" activiti:expression="#{diService.approveUserBlacklisting(cdUuid,blacklistId,supervisor,remarks)}"></serviceTask>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <sequenceFlow id="flow8" sourceRef="sendBlacklistToSingleWindow" targetRef="servicetask3"></sequenceFlow>
+    <sequenceFlow id="flow9" sourceRef="servicetask3" targetRef="endevent1"></sequenceFlow>
+    <serviceTask id="sendBlacklistToSingleWindow" name="Update On Single Window" activiti:expression="#{diService.swUpdateBlacklistStatus(cdUuid,blacklistId,supervisor,remarks)}"></serviceTask>
+    <serviceTask id="rejectBlacklist" name="Rejected blacklist" activiti:expression="#{diService.rejectUserBlacklisting(cdUuid,blacklistId,supervisor,remarks)}"></serviceTask>
+    <userTask id="requestApproval" name="Approve Balcklist" activiti:assignee="${supervisor}" activiti:category="${cfs_code}"></userTask>
+    <sequenceFlow id="flow12" sourceRef="startevent1" targetRef="requestApproval"></sequenceFlow>
+    <sequenceFlow id="flow13" sourceRef="requestApproval" targetRef="exclusivegateway1"></sequenceFlow>
+    <sequenceFlow id="flow14" sourceRef="processLocalBlacklist" targetRef="sendBlacklistToSingleWindow"></sequenceFlow>
+    <sequenceFlow id="flow15" sourceRef="rejectBlacklist" targetRef="servicetask3"></sequenceFlow>
+    <serviceTask id="servicetask3" name="Clear CD Process" activiti:expression="#{diService.clearCurrentProcess(cdUuid)}"></serviceTask>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_blacklistUser">
+    <bpmndi:BPMNPlane bpmnElement="blacklistUser" id="BPMNPlane_blacklistUser">
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="130.0" y="230.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="360.0" y="228.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="processLocalBlacklist" id="BPMNShape_processLocalBlacklist">
+        <omgdc:Bounds height="55.0" width="105.0" x="450.0" y="221.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="930.0" y="340.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sendBlacklistToSingleWindow" id="BPMNShape_sendBlacklistToSingleWindow">
+        <omgdc:Bounds height="55.0" width="105.0" x="615.0" y="220.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="rejectBlacklist" id="BPMNShape_rejectBlacklist">
+        <omgdc:Bounds height="55.0" width="105.0" x="328.0" y="330.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="requestApproval" id="BPMNShape_requestApproval">
+        <omgdc:Bounds height="55.0" width="105.0" x="210.0" y="220.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask3" id="BPMNShape_servicetask3">
+        <omgdc:Bounds height="55.0" width="105.0" x="615.0" y="330.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="380.0" y="268.0"></omgdi:waypoint>
+        <omgdi:waypoint x="380.0" y="330.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="13.0" width="42.0" x="380.0" y="268.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="400.0" y="248.0"></omgdi:waypoint>
+        <omgdi:waypoint x="450.0" y="248.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+        <omgdi:waypoint x="667.0" y="275.0"></omgdi:waypoint>
+        <omgdi:waypoint x="667.0" y="330.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
+        <omgdi:waypoint x="720.0" y="357.0"></omgdi:waypoint>
+        <omgdi:waypoint x="930.0" y="357.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow12" id="BPMNEdge_flow12">
+        <omgdi:waypoint x="165.0" y="247.0"></omgdi:waypoint>
+        <omgdi:waypoint x="210.0" y="247.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
+        <omgdi:waypoint x="315.0" y="247.0"></omgdi:waypoint>
+        <omgdi:waypoint x="360.0" y="248.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow14" id="BPMNEdge_flow14">
+        <omgdi:waypoint x="555.0" y="248.0"></omgdi:waypoint>
+        <omgdi:waypoint x="615.0" y="247.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow15" id="BPMNEdge_flow15">
+        <omgdi:waypoint x="433.0" y="357.0"></omgdi:waypoint>
+        <omgdi:waypoint x="615.0" y="357.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

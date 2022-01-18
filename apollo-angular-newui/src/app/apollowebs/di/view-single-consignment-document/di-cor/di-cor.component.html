@@ -1,0 +1,291 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">CoR</i>
+                        </div>
+                        <h4 class="card-title">Certificate of Roadworthiness
+                            <button class="btn btn-sm btn-default float-right mr-7"
+                                    (click)="goBack()"> <i class="fa fa-arrow-left"></i> Back
+
+                            </button>
+                        </h4>
+
+                    </div>
+                    <div class="card-body" *ngIf="corDetails">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div widget class=" border-0 box-shadow">
+                                    <div class="text-center pt-2" style="color: green;">
+                                        CD Standard Details
+                                    </div>
+                                    <div class="card-body pt-0 widget-body">
+                                        <table class="table-responsive">
+                                            <th>
+                                                Application Ref Number
+                                            </th>
+                                            <tr>
+                                                <td>{{corDetails.cd_details.applicationRefNo}}</td>
+                                            </tr>
+                                            <th>
+                                                Application Date
+                                            </th>
+                                            <tr>
+                                                <td>{{corDetails.cd_details.applicationDate}}</td>
+                                            </tr>
+                                            <th>
+                                                Declaration Number
+                                            </th>
+                                            <tr>
+                                                <td>{{corDetails.cd_details.declaraionNumber}}</td>
+                                            </tr>
+                                            <th>
+                                                UCR Number
+                                            </th>
+                                            <tr>
+                                                <td>{{corDetails.cd_details.ucrNumber}}</td>
+                                            </tr>
+                                            <th>
+                                                Application Type
+                                            </th>
+                                            <tr>
+                                                <td>{{corDetails.cd_details.cdTypeName}}</td>
+                                            </tr>
+                                            <th>
+                                                Document Type
+                                            </th>
+                                            <tr>
+                                                <td>{{corDetails.cd_details.cdTypeName}}</td>
+                                            </tr>
+                                            <th>
+                                                Assigned Officer
+                                            </th>
+                                            <tr>
+                                                <td>{{corDetails.cd_details.assignedTo}}</td>
+                                            </tr>
+                                            <th>
+                                                Approval Status
+                                            </th>
+                                            <tr>
+                                                <td>{{corDetails.cd_details.approvalStatus}}</td>
+                                            </tr>
+
+                                            <th>
+                                                Approval Date
+                                            </th>
+                                            <tr>
+                                                <td>{{corDetails.cd_details.approvalStatus}}</td>
+                                            </tr>
+                                            <th>
+                                                Final Approval Date
+                                            </th>
+                                            <tr>
+                                                <td>{{corDetails.cd_details.approveRejectCdDate}}</td>
+                                            </tr>
+                                            <th>
+                                                Version No
+                                            </th>
+                                            <tr>
+                                                <td>{{corDetails.cd_details.version}}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <!-- <div class="d-flex"> -->
+                                <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
+                                    <li ngbNavItem="cor-details">
+                                        <a ngbNavLink>CoR Details</a>
+                                        <ng-template ngbNavContent>
+                                            <b class="text-primary">Certificate Of Roadworthiness Details</b>
+                                            <ul class="w-list-unstyled">
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">COR NUMBER</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.corSerialNo}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">UCR NUMBER</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.ucrNumber}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">RFC DATE</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.rfcDate}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">COR ISSUE DATE</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.corIssueDate}}</div>
+                                                </li>
+
+                                            </ul>
+                                        </ng-template>
+                                    </li>
+
+                                    <li ngbNavItem="exporter">
+                                        <a ngbNavLink>Exporter Details</a>
+                                        <ng-template ngbNavContent>
+                                            <b class="text-primary">Exporter Details</b>
+                                            <ul class="w-list-unstyled">
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Name</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.exporterName}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Address 1</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.exporterAddress}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Address 2</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.exporterAddress2}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Email</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.exporterEmail}}</div>
+                                                </li>
+                                            </ul>
+                                        </ng-template>
+                                    </li>
+
+                                    <li ngbNavItem="inspection-details">
+                                        <a ngbNavLink>Importer Details</a>
+                                        <ng-template ngbNavContent>
+                                            <b class="text-primary">Importer Details</b>
+                                            <ul class="w-list-unstyled">
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">NAME</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.importerName}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Address 1</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.importerAddress}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Phone Number</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.importerPhone}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Email</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.importerEmail}}</div>
+                                                </li>
+                                            </ul>
+                                        </ng-template>
+                                    </li>
+
+                                    <li ngbNavItem="motor-vehicle-details">
+                                        <a ngbNavLink>Motor Vehicle Details</a>
+                                        <ng-template ngbNavContent>
+                                            <b class="text-primary">Motor Vehicle Details</b>
+                                            <ul class="w-list-unstyled">
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Make</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.make}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Model</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.model}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Chassis Number</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.chassisNo}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Chassis/VIN Number</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.caxleNo}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Engine Number/Model</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.engineModel}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Engine Capacity</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.engineCapacity}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Year of Manufacture</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.yearOfManufacture}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Year of First Registration</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.yearOfFirstRegistration}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Inspection Mileage</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.inspectionMileage}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Units Of Mileage</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.unitsOfMileage}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Previous Registration Number</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.prevRegNo}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Previous Country Of Registration
+                                                    </div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.prevCountryOfReg}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Tare Weight</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.tareWeight}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Load Capacity</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.loadCapacity}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Gross Weight</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.tareWeight}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Number Of Axles</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.axleNo}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Type Of Vehicle</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.typeOfVehicle}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Number Of Passengers</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.noOfPassengers}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Body Color</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.color}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Fuel Type</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.fuel}}</div>
+                                                </li>
+                                            </ul>
+                                        </ng-template>
+                                    </li>
+
+                                </ul>
+
+                                <div [ngbNavOutlet]="nav" class="ml-4"></div>
+                                <!-- </div>  -->
+                            </div>
+                            <div class="col-md-2">
+                                <h5>Action:</h5>
+                                <h5>Documents:</h5>
+                                <button class="btn btn-sm btn-primary" (click)="downloadCorFile()">CoR Certificate
+                                    File
+                                </button>
+
+                            </div>
+                        </div>
+                        <!-- end content-->
+                    </div>
+                    <!--  end card  -->
+                </div>
+                <!-- end col-md-12 -->
+            </div>
+            <!-- end row -->
+        </div>
+    </div>
+</div>

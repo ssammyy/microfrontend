@@ -1,0 +1,46 @@
+<h2 mat-dialog-title>Assign Port</h2>
+<mat-dialog-content>
+    <div class="row no_margin" [formGroup]="form">
+        <div class="col-sm-12 col-md-8">
+            <label for="portOfArrival" class="waiver-form-label">Select Port</label>
+            <select id="portOfArrival" name="portOfArrival" class="waiver-form-input-master"
+                    (change)="loadSubSections($event)"
+                formControlName="portOfArrival">
+                <option value="" disabled selected>Select Port</option>
+                <option *ngFor="let port of ports" [value]="port.id">{{port.section}}</option>
+            </select>
+
+            <label for="clusterId" class="waiver-form-label">Select Cluster</label>
+            <select id="clusterId" name="clusterId" class="waiver-form-input-master"
+                formControlName="clusterId">
+                <option value="" disabled selected>Select Port</option>
+                <option *ngFor="let cluster of clusters" [value]="cluster.id">{{cluster.name}}</option>
+            </select>
+
+            <label for="freightStation" class="waiver-form-label">Select Freight Station</label>
+            <select id="freightStation" name="freightStation" class="waiver-form-input-master"
+                formControlName="freightStation">
+                <option value="" disabled selected>Select Freight Station</option>
+                <option *ngFor="let station of freightStations" [value]="station.id">{{station.subSection}}</option>
+            </select>
+
+
+            
+
+            <label for="assignPortRemarks" class="waiver-form-label">Please write, in detail, your feedback for this
+                consignment:</label>
+            <textarea id="assignPortRemarks" class="waiver-form-input-master"
+                formControlName="assignPortRemarks"></textarea>
+            <mat-error *ngIf="message">{{message}}</mat-error>
+        </div>
+
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <div class="row no_margin master-list-new-btn">
+        <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
+        <button [disabled]="form.invalid||loading" class="next-btn btn-gen new-btn" (click)="saveRecord()">SAVE
+            <mat-spinner [diameter]="20" color="warn" *ngIf="loading"></mat-spinner>
+        </button>
+    </div>
+</mat-dialog-actions>

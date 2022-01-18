@@ -21,9 +21,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.11.0")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-
+    implementation("org.hibernate:hibernate-search-orm:5.11.9.Final")
+//    implementation("org.hibernate.search:hibernate-search-backend-lucene:6.0.6.Final")
     implementation("com.oracle.database.jdbc:ojdbc10:19.8.0.0")
-//    implementation("org.hibernate.validator:hibernate-validator:6.1.5.Final")
     api("com.hazelcast:spring-data-hazelcast:2.4.0")
 //    implementation("com.hazelcast:hazelcast:4.1")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {

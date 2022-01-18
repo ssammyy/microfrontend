@@ -1,0 +1,91 @@
+<div id='vehicle-details' *ngIf="inspectionDetails">
+    <div class="row">
+        <ul class="col-md-12 w-list-unstyled">
+            <li class="list-item-accordion">
+                <div class="list-title-accordion">REMARKS</div>
+                <div class="list-text-accordion">{{inspectionDetails.remarks}}</div>
+            </li>
+            <li class="list-item-accordion">
+                <div class="list-title-accordion">DATE</div>
+                <div class="list-text-accordion">{{inspectionDetails.inspectionDate}}</div>
+            </li>
+        </ul>
+        <button class="btn-sm btn-primary" (click)="downloadVehicleChecklist()">Download</button>
+    </div>
+    <div class="row">
+        <div class="col-md-12 mb-3">
+            <label style="color: #0082f3">Items</label>
+        </div>
+        <div class="col-sm-12 col-md-12 table">
+            <mat-table class="table-striped table-condensed table-responsive" [dataSource]="inspectionDetails.items">
+                <ng-container matColumnDef="id">
+                    <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="registrationDate">
+                    <mat-header-cell *matHeaderCellDef>Registration Date</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.registrationDate}} </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="manufactureDate">
+                    <mat-header-cell *matHeaderCellDef>Manufacture Date</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.manufactureDate}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="category">
+                    <mat-header-cell *matHeaderCellDef>Category</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.category}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="compliant">
+                    <mat-header-cell *matHeaderCellDef>Compliant</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.compliant}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="ministryStation">
+                    <mat-header-cell *matHeaderCellDef>Ministry Station</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.ministryStation}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="ministryInspection">
+                    <mat-header-cell *matHeaderCellDef>Ministry Inspection</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.ministryInspection}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="makeVehicle">
+                    <mat-header-cell *matHeaderCellDef>Make</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.makeVehicle}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="odemetreReading">
+                    <mat-header-cell *matHeaderCellDef>Odometre Reading</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.odemetreReading}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="transmissionAutoManual">
+                    <mat-header-cell *matHeaderCellDef>Transmission</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.transmissionAutoManual}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="engineNoCapacity">
+                    <mat-header-cell *matHeaderCellDef>CC</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.engineNoCapacity}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="actions">
+                    <mat-header-cell *matHeaderCellDef>Action/Download</mat-header-cell>
+                    <mat-cell mat-cell *matCellDef="let element">
+                        <div class="button-row">
+                            <button class="btn-sm btn-primary" (click)="customAction(element,'downloadReport')"><i class="fa fa-download"></i>
+                                KEBS Checklist
+                            </button>
+                            <button class="btn-sm btn-primary" (click)="customAction(element,'downloadUnMvir')">
+                                <i class="fa fa-download"></i> MVIR
+                            </button>
+                            <button class="btn-sm btn-primary" *ngIf="element.hasMinistryInspection"
+                                    (click)="customAction(element,'downloadChecklist')"><i class="fa fa-download"></i>Ministry Report
+                            </button>
+                            <button class="btn-sm btn-primary" *ngIf="!element.ministryInspectionActive"
+                                    (click)="customAction(element,'requestMinistryChecklist')">Request Ministry
+                                Inspection
+                            </button>
+                        </div>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table>
+        </div>
+    </div>
+</div>

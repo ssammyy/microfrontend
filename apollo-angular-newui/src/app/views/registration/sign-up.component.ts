@@ -115,7 +115,6 @@ export class SignUpComponent implements OnInit {
                 if (this.time === 0) {
                     // tslint:disable-next-line:no-unused-expression
                     this.ispause.next;
-                    this.otpSent = false;
                 }
                 this.time -= 1;
             }

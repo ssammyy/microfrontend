@@ -5,11 +5,13 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.sage.PostInvoiceToSageServi
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.di.CdDemandNoteItemsDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.invoice.InvoiceBatchDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaBatchInvoiceEntity
 import org.kebs.app.kotlin.apollo.store.repo.IPaymentMethodsRepository
 import org.kebs.app.kotlin.apollo.store.repo.IStagingPaymentReconciliationRepo
 import org.kebs.app.kotlin.apollo.store.repo.InvoiceBatchDetailsRepo
+import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.data.repository.findByIdOrNull
@@ -26,6 +28,7 @@ class InvoiceDaoService(
     private val invoicePaymentRepo: IStagingPaymentReconciliationRepo,
     private val iPaymentMethodsRepo: IPaymentMethodsRepository,
     private val applicationMapProperties: ApplicationMapProperties,
+    private val iDemandNoteRepository: IDemandNoteRepository,
     private val commonDaoServices: CommonDaoServices
 ) {
 
@@ -44,14 +47,14 @@ class InvoiceDaoService(
     final val appId = applicationMapProperties.mapInvoiceTransactions
     val map = commonDaoServices.serviceMapDetails(appId)
 
-    fun createBatchInvoiceDetails(user: UsersEntity, invoiceNumber: String): InvoiceBatchDetailsEntity {
+    fun createBatchInvoiceDetails(user: String, invoiceNumber: String): InvoiceBatchDetailsEntity {
         val map = commonDaoServices.serviceMapDetails(appId)
         var batchInvoice = InvoiceBatchDetailsEntity()
         with(batchInvoice) {
 //            batchNumber = "KEBS/INVOICE-${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
             batchNumber = invoiceNumber
             status = map.inactiveStatus
-            createdBy = commonDaoServices.concatenateName(user)
+            createdBy = user
             createdOn = commonDaoServices.getTimestamp()
         }
         batchInvoice = invoiceBatchDetailsRepo.save(batchInvoice)
@@ -111,7 +114,6 @@ class InvoiceDaoService(
                 var dNote = addDetails as CdDemandNoteEntity
                 with(dNote) {
                     invoiceBatchNumberId = invoiceBatchDetails.id
-//                    invoiceNumber = invoiceBatchDetails.batchNumber
                     paymentStatus = map.inactiveStatus
                 }
                 dNote = diDaoServices.upDateDemandNoteWithUser(dNote, user)
@@ -147,11 +149,11 @@ class InvoiceDaoService(
     }
 
 
-    fun createPaymentDetailsOnStgReconciliationTable(user: UsersEntity, invoiceBatchDetails: InvoiceBatchDetailsEntity, invoiceAccountDetails: InvoiceAccountDetails): StagingPaymentReconciliation {
+    fun createPaymentDetailsOnStgReconciliationTable(user: String, invoiceBatchDetails: InvoiceBatchDetailsEntity, invoiceAccountDetails: InvoiceAccountDetails): StagingPaymentReconciliation {
         val map = commonDaoServices.serviceMapDetails(appId)
         var invoiceDetails = StagingPaymentReconciliation()
         with(invoiceDetails) {
-            customerName = user.firstName + " " + user.lastName
+            customerName = user
             statusCode = map.initStage
             statusDescription = "Initial Stage"
             additionalInformation = invoiceBatchDetails.description
@@ -173,7 +175,7 @@ class InvoiceDaoService(
             extras = " "
             status = map.inactiveStatus
             createdOn = commonDaoServices.getTimestamp()
-            createdBy = commonDaoServices.concatenateName(user)
+            createdBy = user
         }
         invoiceDetails = invoicePaymentRepo.save(invoiceDetails)
 
@@ -237,6 +239,10 @@ class InvoiceDaoService(
     fun findAllInvoicesPaid(): List<StagingPaymentReconciliation>? {
         val map = commonDaoServices.serviceMapDetails(appId)
         return invoicePaymentRepo.findByPaymentTablesUpdatedStatus(map.activeStatus)
+    }
+
+    fun findDemandNoteCdId(cdId: Long): CdDemandNoteEntity? {
+        return iDemandNoteRepository.findFirstByCdIdAndStatusIn(cdId, listOf(10,1))
     }
 
     fun updateOfInvoiceTables() {

@@ -59,11 +59,11 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-test:2.2.4.RELEASE")
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+//    implementation("org.hibernate:hibernate-search-orm:5.8.2.Final")
     implementation("org.hibernate.validator:hibernate-validator:6.1.5.Final")
     /**
      * BPMN BOM
      */
-//    implementation("org.activiti:activiti-spring-boot-starter:7.1.0.M6")
     implementation("org.flowable:flowable-spring-boot-starter-basic:6.6.0")
 
     /**
@@ -75,17 +75,25 @@ dependencies {
      * MPESA
      */
     implementation("org.json:json:20200518")
-//    implementation ("org.apache.httpcomponents:httpclient:4.5.13")
     implementation("com.squareup.okhttp3:okhttp:4.8.0")
     implementation("com.squareup.okhttp3:logging-interceptor:3.10.0")
     implementation("org.apache.poi:poi-ooxml:3.17")
-
+    /**
+     * Camel
+     * Ref: https://access.redhat.com/documentation/en-us/red_hat_jboss_fuse/6.2/html/apache_camel_component_reference/idu-ftp2
+     */
+    implementation("org.apache.camel:camel-ftp:3.12.0")
+    implementation("org.apache.camel:camel-bean:3.12.0")
+    implementation("org.apache.camel:camel-direct:3.12.0")
+    implementation("org.apache.httpcomponents:httpclient:4.5.13")
+    implementation("org.apache.camel.springboot:camel-spring-boot:3.12.0")
+    implementation("org.apache.camel:camel-jacksonxml:3.12.0")
+    testImplementation("org.apache.camel:camel-test-junit5:3.12.0")
     /**
      * Jasper reports
      */
     implementation("net.sf.jasperreports:jasperreports:6.13.0")
     implementation("com.lowagie:itext:2.1.7")
-//    implementation("com.lowagie:itext:2.1.7.js4")
     /**
      * QR Code
      */
@@ -103,7 +111,7 @@ dependencies {
      */
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
-    implementation ("org.springframework.integration:spring-integration-sftp:5.2.5.RELEASE")
+    implementation("org.springframework.integration:spring-integration-sftp:5.2.5.RELEASE")
 
     /**
      * Thymeleaf
@@ -152,7 +160,7 @@ dependencies {
     /**
      * KRA Integrations
      */
-    implementation("org.springframework.boot:spring-boot-devtools")
+//    implementation("org.springframework.boot:spring-boot-devtools")
     implementation("org.springframework.boot:spring-boot-starter-web-services")
     implementation("javax.xml.bind:jaxb-api:2.3.0")
     implementation("javax.activation:activation:1.1")
@@ -164,7 +172,6 @@ dependencies {
     implementation("org.glassfish.metro:webservices-rt:2.4.4")
     implementation("org.glassfish.metro:webservices-api:2.4.4")
     implementation("com.sun.xml.messaging.saaj:saaj-impl")
-
 
 
     /**

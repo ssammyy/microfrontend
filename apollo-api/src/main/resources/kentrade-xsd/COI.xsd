@@ -1,0 +1,372 @@
+<xsd:schema
+		xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+		xmlns:xdb="http://xmlns.oracle.com/xdb" targetNamespace="http://DAT_KEBS_COIS/xsd"
+		xmlns:tns="http://DAT_KEBS_COIS/xsd" elementFormDefault="qualified">
+	<xsd:complexType name="APOLLO.Base_T"/>
+	<xsd:element name="APOLLO.DAT_KEBS_COISS" type="tns:APOLLO.DAT_KEBS_COISS_T"/>
+	<xsd:complexType name="APOLLO.DAT_KEBS_COISS_T">
+		<xsd:sequence>
+			<xsd:element name="DAT_KEBS_COIS" type="tns:APOLLO.DAT_KEBS_COIS_T" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType  name="APOLLO.DAT_KEBS_COIS_T">
+		<xsd:complexContent>
+			<xsd:extension base="tns:APOLLO.Base_T">
+				<xsd:sequence>
+					<xsd:element name="COI_NUMBER" minOccurs="1" xdb:SQLName="COI_NUMBER" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="200"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="IDF_NUMBER" minOccurs="1" xdb:SQLName="IDF_NUMBER" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="200"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="RFI_NUMBER" minOccurs="0" xdb:SQLName="RFI_NUMBER" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="200"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="UCR_NUMBER" minOccurs="1" xdb:SQLName="UCR_NUMBER" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="200"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="RFC_DATE" type="xsd:anySimpleType" minOccurs="0" xdb:SQLName="RFC_DATE" xdb:SQLTYPE="TIMESTAMP(6) WITH TIME ZONE"/>
+					<xsd:element name="COI_ISSUE_DATE" type="xsd:anySimpleType" minOccurs="1" xdb:SQLName="COI_ISSUE_DATE" xdb:SQLTYPE="TIMESTAMP(6) WITH TIME ZONE"/>
+					<xsd:element name="CLEAN" minOccurs="1" xdb:SQLName="CLEAN" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="4"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="COI_REMARKS" minOccurs="1" xdb:SQLName="COI_REMARKS" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="4000"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="ISSUING_OFFICE" minOccurs="1" xdb:SQLName="ISSUING_OFFICE" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="4000"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="IMPORTER_NAME" minOccurs="1" xdb:SQLName="IMPORTER_NAME" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="4000"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="IMPORTER_PIN" minOccurs="1" xdb:SQLName="IMPORTER_PIN" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="600"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="IMPORTER_ADDRESS_1" minOccurs="1" xdb:SQLName="IMPORTER_ADDRESS_1" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="4000"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="IMPORTER_ADDRESS_2" minOccurs="0" xdb:SQLName="IMPORTER_ADDRESS_2" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="4000"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="IMPORTER_CITY" minOccurs="1" xdb:SQLName="IMPORTER_CITY" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="400"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="IMPORTER_COUNTRY" minOccurs="1" xdb:SQLName="IMPORTER_COUNTRY" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="400"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="IMPORTER_ZIPCODE" minOccurs="1" xdb:SQLName="IMPORTER_ZIPCODE" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="400"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="IMPORTER_TELEPHONE_NUMBER" minOccurs="1" xdb:SQLName="IMPORTER_TELEPHONE_NUMBER" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="400"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="IMPORTER_FAX_NUMBER" minOccurs="0" xdb:SQLName="IMPORTER_FAX_NUMBER" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="400"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="IMPORTER_EMAIL" minOccurs="1" xdb:SQLName="IMPORTER_EMAIL" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="600"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="EXPORTER_NAME" minOccurs="1" xdb:SQLName="EXPORTER_NAME" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="4000"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="EXPORTER_PIN" minOccurs="1" xdb:SQLName="EXPORTER_PIN" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="600"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="EXPORTER_ADDRESS_1" minOccurs="1" xdb:SQLName="EXPORTER_ADDRESS_1" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="4000"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="EXPORTER_CITY" minOccurs="1" xdb:SQLName="EXPORTER_CITY" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="400"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="EXPORTER_COUNTRY" minOccurs="1" xdb:SQLName="EXPORTER_COUNTRY" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="400"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="EXPORTER_ZIPCODE" minOccurs="1" xdb:SQLName="EXPORTER_ZIPCODE" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="400"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="EXPORTER_TELEPHONE_NUMBER" minOccurs="1" xdb:SQLName="EXPORTER_TELEPHONE_NUMBER" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="400"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="EXPORTER_FAX_NUMBER" minOccurs="0" xdb:SQLName="EXPORTER_FAX_NUMBER" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="400"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="EXPORTER_EMAIL" minOccurs="1" xdb:SQLName="EXPORTER_EMAIL" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="600"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="PLACE_OF_INSPECTION" minOccurs="1" xdb:SQLName="PLACE_OF_INSPECTION" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="4000"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="DATE_OF_INSPECTION" type="xsd:anySimpleType" minOccurs="1" xdb:SQLName="DATE_OF_INSPECTION" xdb:SQLTYPE="TIMESTAMP(6) WITH TIME ZONE"/>
+					<xsd:element name="PORT_OF_DESTINATION" minOccurs="1" xdb:SQLName="PORT_OF_DESTINATION" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="4000"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="SHIPMENT_MODE" minOccurs="1" xdb:SQLName="SHIPMENT_MODE" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="800"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="COUNTRY_OF_SUPPLY" minOccurs="1" xdb:SQLName="COUNTRY_OF_SUPPLY" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="4000"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="FINAL_INVOICE_FOB_VALUE" type="xsd:double" minOccurs="1" xdb:SQLName="FINAL_INVOICE_FOB_VALUE" xdb:SQLTYPE="NUMBER"/>
+					<xsd:element name="FINAL_INVOICE_EXCHANGE_RATE" type="xsd:double" minOccurs="1" xdb:SQLName="FINAL_INVOICE_EXCHANGE_RATE" xdb:SQLTYPE="NUMBER"/>
+					<xsd:element name="FINAL_INVOICE_CURRENCY" minOccurs="1" xdb:SQLName="FINAL_INVOICE_CURRENCY" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="40"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="FINAL_INVOICE_NUMBER" minOccurs="1" xdb:SQLName="FINAL_INVOICE_NUMBER" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="4000"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="FINAL_INVOICE_DATE" type="xsd:anySimpleType" minOccurs="1" xdb:SQLName="FINAL_INVOICE_DATE" xdb:SQLTYPE="TIMESTAMP(6) WITH TIME ZONE"/>
+					<xsd:element name="SHIPMENT_PARTIAL_NUMBER" type="xsd:double" minOccurs="1" xdb:SQLName="SHIPMENT_PARTIAL_NUMBER" xdb:SQLTYPE="NUMBER"/>
+					<xsd:element name="SHIPMENT_SEAL_NUMBERS" minOccurs="1" xdb:SQLName="SHIPMENT_SEAL_NUMBERS" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="4000"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+
+					<xsd:element name="SHIPMENT_GROSS_WEIGHT" minOccurs="1" xdb:SQLName="SHIPMENT_GROSS_WEIGHT" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="40"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="PRODUCT_CATEGORY" minOccurs="1" xdb:SQLName="PRODUCT_CATEGORY" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="4000"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="ROUTE" minOccurs="1" xdb:SQLName="ROUTE" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="4000"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element maxOccurs="unbounded" name="COI_ITEM">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="SHIPMENT_LINE_NUMBER" type="xsd:double" minOccurs="1" xdb:SQLName="SHIPMENT_LINE_NUMBER" xdb:SQLTYPE="NUMBER"></xsd:element>
+								<xsd:element name="SHIPMENT_LINE_HSCODE" minOccurs="1" xdb:SQLName="SHIPMENT_LINE_HSCODE" xdb:SQLTYPE="VARCHAR2">
+									<xsd:simpleType>
+										<xsd:restriction base="xsd:string">
+											<xsd:maxLength value="200"></xsd:maxLength>
+										</xsd:restriction>
+									</xsd:simpleType>
+								</xsd:element>
+								<xsd:element name="SHIPMENT_LINE_QUANTITY" type="xsd:double" minOccurs="1" xdb:SQLName="SHIPMENT_LINE_QUANTITY" xdb:SQLTYPE="NUMBER"></xsd:element>
+								<xsd:element name="SHIPMENT_LINE_UNITOF_MEASURE" minOccurs="1" xdb:SQLName="SHIPMENT_LINE_UNITOF_MEASURE" xdb:SQLTYPE="VARCHAR2">
+									<xsd:simpleType>
+										<xsd:restriction base="xsd:string">
+											<xsd:maxLength value="1600"></xsd:maxLength>
+										</xsd:restriction>
+									</xsd:simpleType>
+								</xsd:element>
+								<xsd:element name="SHIPMENT_LINE_DESCRIPTION" minOccurs="1" xdb:SQLName="SHIPMENT_LINE_DESCRIPTION" xdb:SQLTYPE="VARCHAR2">
+									<xsd:simpleType>
+										<xsd:restriction base="xsd:string">
+											<xsd:maxLength value="4000"></xsd:maxLength>
+										</xsd:restriction>
+									</xsd:simpleType>
+								</xsd:element>
+								<xsd:element name="SHIPMENT_LINE_VIN" minOccurs="0" xdb:SQLName="SHIPMENT_LINE_VIN" xdb:SQLTYPE="VARCHAR2">
+									<xsd:simpleType>
+										<xsd:restriction base="xsd:string">
+											<xsd:maxLength value="120"></xsd:maxLength>
+										</xsd:restriction>
+									</xsd:simpleType>
+								</xsd:element>
+								<xsd:element name="SHIPMENT_LINE_STICKER_NUMBER" minOccurs="0" xdb:SQLName="SHIPMENT_LINE_STICKER_NUMBER" xdb:SQLTYPE="VARCHAR2">
+									<xsd:simpleType>
+										<xsd:restriction base="xsd:string">
+											<xsd:maxLength value="120"></xsd:maxLength>
+										</xsd:restriction>
+									</xsd:simpleType>
+								</xsd:element>
+								<xsd:element name="SHIPMENT_LINE_ICS" minOccurs="0" xdb:SQLName="SHIPMENT_LINE_ICS" xdb:SQLTYPE="VARCHAR2">
+									<xsd:simpleType>
+										<xsd:restriction base="xsd:string">
+											<xsd:maxLength value="4000"></xsd:maxLength>
+										</xsd:restriction>
+									</xsd:simpleType>
+								</xsd:element>
+								<xsd:element name="SHIPMENT_LINE_STANDARDS_REFERENCE" minOccurs="1" xdb:SQLName="SHIPMENT_LINE_STANDARDS_REFERENCE" xdb:SQLTYPE="VARCHAR2">
+									<xsd:simpleType>
+										<xsd:restriction base="xsd:string">
+											<xsd:maxLength value="4000"></xsd:maxLength>
+										</xsd:restriction>
+									</xsd:simpleType>
+								</xsd:element>
+								<xsd:element name="SHIPMENT_LINE_LICENCE_REFERENCE" minOccurs="0" xdb:SQLName="SHIPMENT_LINE_LICENCE_REFERENCE" xdb:SQLTYPE="VARCHAR2">
+									<xsd:simpleType>
+										<xsd:restriction base="xsd:string">
+											<xsd:maxLength value="4000"></xsd:maxLength>
+										</xsd:restriction>
+									</xsd:simpleType>
+								</xsd:element>
+								<xsd:element name="SHIPMENT_LINE_REGISTRATION" minOccurs="0" xdb:SQLName="SHIPMENT_LINE_REGISTRATION" xdb:SQLTYPE="VARCHAR2">
+									<xsd:simpleType>
+										<xsd:restriction base="xsd:string">
+											<xsd:maxLength value="400"></xsd:maxLength>
+										</xsd:restriction>
+									</xsd:simpleType>
+								</xsd:element>
+								<xsd:element name="COI_NUMBER" minOccurs="1" xdb:SQLName="COI_NUMBER" xdb:SQLTYPE="VARCHAR2">
+									<xsd:simpleType>
+										<xsd:restriction base="xsd:string">
+											<xsd:maxLength value="256"></xsd:maxLength>
+										</xsd:restriction>
+									</xsd:simpleType>
+								</xsd:element>
+								<xsd:element name="SHIPMENT_LINE_BRANDNAME" minOccurs="0" xdb:SQLName="SHIPMENT_LINE_BRANDNAME" xdb:SQLTYPE="VARCHAR2">
+									<xsd:simpleType>
+										<xsd:restriction base="xsd:string">
+											<xsd:maxLength value="1000"></xsd:maxLength>
+										</xsd:restriction>
+									</xsd:simpleType>
+								</xsd:element>
+							</xsd:sequence>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="VERSION" minOccurs="1" xdb:SQLName="VERSION" xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="200"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+</xsd:schema>

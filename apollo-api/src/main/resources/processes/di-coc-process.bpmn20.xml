@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="cocApprovalProcess" name="Generate COC for Consignment Documet" isExecutable="true" activiti:candidateStarterUsers="supervisor">
+    <startEvent id="startTargetConsignmentDocument" name="Start Targeting"></startEvent>
+    <userTask id="usertask1" name="ApproveCoCGeneration" activiti:assignee="${supervisor}" activiti:candidateUsers="supervisor" activiti:category="${cfs_code}"></userTask>
+    <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow2" sourceRef="usertask1" targetRef="exclusivegateway1"></sequenceFlow>
+    <sequenceFlow id="flow3" name="Approved" sourceRef="exclusivegateway1" targetRef="cocApprovedStatus">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${taskApproved}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow4" name="Rejected" sourceRef="exclusivegateway1" targetRef="updateCocRejectionStatus">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!taskApproved}]]></conditionExpression>
+    </sequenceFlow>
+    <serviceTask id="cocApprovedStatus" name="Generate CoC" activiti:expression="#{diService.swGenerateCoC(cdUuid,remarks,supervisor)}"></serviceTask>
+    <serviceTask id="updateCocRejectionStatus" name="Update  Rejection Status" activiti:expression="#{diService.rejectCocGeneration(cdUuid,remarks,supervisor)}"></serviceTask>
+    <sequenceFlow id="flow6" sourceRef="updateCocRejectionStatus" targetRef="updateConsignmentDocumentProcessFields"></sequenceFlow>
+    <serviceTask id="updateConsignmentDocumentProcessFields" name="Update Consignment Document" activiti:expression="${diService.clearCurrentProcess(cdUuid)}"></serviceTask>
+    <endEvent id="endTargetConsignmentDocument" name="End"></endEvent>
+    <sequenceFlow id="flow8" sourceRef="updateConsignmentDocumentProcessFields" targetRef="endTargetConsignmentDocument"></sequenceFlow>
+    <sequenceFlow id="flow9" sourceRef="startTargetConsignmentDocument" targetRef="usertask1"></sequenceFlow>
+    <sequenceFlow id="flow10" sourceRef="cocApprovedStatus" targetRef="updateConsignmentDocumentProcessFields"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_cocApprovalProcess">
+    <bpmndi:BPMNPlane bpmnElement="cocApprovalProcess" id="BPMNPlane_cocApprovalProcess">
+      <bpmndi:BPMNShape bpmnElement="startTargetConsignmentDocument" id="BPMNShape_startTargetConsignmentDocument">
+        <omgdc:Bounds height="35.0" width="35.0" x="41.0" y="255.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask1" id="BPMNShape_usertask1">
+        <omgdc:Bounds height="55.0" width="105.0" x="220.0" y="245.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="446.0" y="252.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="cocApprovedStatus" id="BPMNShape_cocApprovedStatus">
+        <omgdc:Bounds height="55.0" width="105.0" x="570.0" y="245.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="updateCocRejectionStatus" id="BPMNShape_updateCocRejectionStatus">
+        <omgdc:Bounds height="55.0" width="105.0" x="414.0" y="360.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="updateConsignmentDocumentProcessFields" id="BPMNShape_updateConsignmentDocumentProcessFields">
+        <omgdc:Bounds height="61.0" width="105.0" x="751.0" y="360.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endTargetConsignmentDocument" id="BPMNShape_endTargetConsignmentDocument">
+        <omgdc:Bounds height="35.0" width="35.0" x="970.0" y="370.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="325.0" y="272.0"></omgdi:waypoint>
+        <omgdi:waypoint x="446.0" y="272.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="486.0" y="272.0"></omgdi:waypoint>
+        <omgdi:waypoint x="570.0" y="272.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="13.0" width="46.0" x="486.0" y="272.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="466.0" y="292.0"></omgdi:waypoint>
+        <omgdi:waypoint x="466.0" y="360.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="13.0" width="42.0" x="466.0" y="292.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="519.0" y="387.0"></omgdi:waypoint>
+        <omgdi:waypoint x="751.0" y="390.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+        <omgdi:waypoint x="856.0" y="390.0"></omgdi:waypoint>
+        <omgdi:waypoint x="970.0" y="387.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
+        <omgdi:waypoint x="76.0" y="272.0"></omgdi:waypoint>
+        <omgdi:waypoint x="220.0" y="272.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
+        <omgdi:waypoint x="675.0" y="272.0"></omgdi:waypoint>
+        <omgdi:waypoint x="803.0" y="272.0"></omgdi:waypoint>
+        <omgdi:waypoint x="803.0" y="360.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

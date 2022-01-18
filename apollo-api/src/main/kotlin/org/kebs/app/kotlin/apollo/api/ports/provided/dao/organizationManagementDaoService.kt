@@ -45,7 +45,50 @@ class RegistrationManagementDaoService(
     private val registrationDaoServices: RegistrationDaoServices,
     private val commonDaoServices: CommonDaoServices,
     private val qaDaoServices: QADaoServices,
+    private val sidebarMainRepo: ISidebarMainRepository,
+    private val sidebarChildRepo: ISidebarChildrenRepository,
+    private val assignmentsRepository: IUserRoleAssignmentsRepository,
+    private val authoritiesRepo: IUserPrivilegesRepository,
 ) {
+
+    /**
+     * Based on the user that is logged in, determine which menus to load
+     * @return List<SideBarMainMenusEntityDto>
+     */
+    fun getSideBarMenusBasedOnLoggedInUser(): List<SideBarMainMenusEntityDto>? {
+
+        val ids = assignmentsRepository.findUserRoleAssignments(
+            commonDaoServices.loggedInUserDetails().id
+                ?: throw NullValueNotAllowedException("Invalid session detected"), 1
+        )
+            ?.map { it.roleId ?: -1L }
+        val authorizationIds =
+            (authoritiesRepo.findAuthoritiesList(ids ?: throw NullValueNotAllowedException("User is not authorized"), 1)
+                ?.map { it.id ?: 0L } ?: listOf(0L)).toMutableList()
+        /**
+         * Add roleIds to be availed for all
+         */
+        authorizationIds.add(0L)
+        return sidebarMainRepo.findUsersSideBarMenus(authorizationIds, 1)?.map { mainEntity ->
+            val children = sidebarChildRepo.findAllByMainId(mainEntity.id ?: 0L)?.map { childrenEntity ->
+                SideBarChildMenusEntityDto(
+                    childrenEntity.id,
+                    childrenEntity.path,
+                    childrenEntity.title,
+                    childrenEntity.aB
+                )
+            }
+            SideBarMainMenusEntityDto(
+                mainEntity.id,
+                mainEntity.path,
+                mainEntity.title,
+                mainEntity.type,
+                mainEntity.iconType,
+                mainEntity.collapse,
+                children
+            )
+        }
+    }
 
     /**
      * Provide users company and branch
@@ -217,7 +260,7 @@ class RegistrationManagementDaoService(
      * @return CustomResponse
      */
     fun validateTokenFromThePhone(request: ValidateTokenRequestDto): CustomResponse? =
-        usersRepo.findByUserName(request.username)
+        usersRepo.findByEmail(request.username)
             ?.let { u ->
                 commonDaoServices.validateOTPToken(
                     request.token ?: throw NullValueNotAllowedException("Invalid Token provided"),
@@ -235,7 +278,7 @@ class RegistrationManagementDaoService(
     fun sendTokenToThePhone(request: SendTokenRequestDto): CustomResponse? {
         val result = CustomResponse()
         try {
-            usersRepo.findByUserName(request.username)
+            usersRepo.findByEmail(request.username)
                 ?.let { user ->
 //                    val otp = commonDaoServices.generateTransactionReference(8).toUpperCase()
                     val otp = commonDaoServices.randomNumber(6)

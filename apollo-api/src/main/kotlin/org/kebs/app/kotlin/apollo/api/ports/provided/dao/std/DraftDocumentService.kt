@@ -1,20 +1,23 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao.std
 
-import java.io.IOException;
-import java.util.stream.Stream;
 
-
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
-
-
-import org.kebs.app.kotlin.apollo.store.model.std.*
-import org.kebs.app.kotlin.apollo.store.repo.std.*
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
+import org.kebs.app.kotlin.apollo.store.model.std.DatKebsSdStandardsEntity
+import org.kebs.app.kotlin.apollo.store.model.std.DraftDocument
+import org.kebs.app.kotlin.apollo.store.repo.std.DraftDocumentRepository
+import org.kebs.app.kotlin.apollo.store.repo.std.StandardsDocumentsRepository
+import org.springframework.stereotype.Service
+import org.springframework.util.StringUtils
+import org.springframework.web.multipart.MultipartFile
+import java.io.IOException
+import java.util.stream.Stream
 
 
 @Service
-class DraftDocumentService(private val draftDocumentRepository: DraftDocumentRepository) {
+class DraftDocumentService(
+    private val draftDocumentRepository: DraftDocumentRepository,
+    private val standardsDocumentsRepository: StandardsDocumentsRepository
+) {
 
     @Throws(IOException::class)
     fun store(file: MultipartFile, itemId: String): DraftDocument? {
@@ -22,8 +25,8 @@ class DraftDocumentService(private val draftDocumentRepository: DraftDocumentRep
         val fileDB = DraftDocument()
         fileDB.name = fileName
         fileDB.type = file.contentType.toString()
-        fileDB.data= file.bytes
-        fileDB.itemId=itemId
+        fileDB.data = file.bytes
+        fileDB.itemId = itemId
 
 
         return draftDocumentRepository.save(fileDB)
@@ -35,6 +38,11 @@ class DraftDocumentService(private val draftDocumentRepository: DraftDocumentRep
 
     fun getAllFiles(itemId: String): Stream<DraftDocument> {
         return draftDocumentRepository.findByItemId(itemId).stream()
+    }
+
+    fun findUploadedDIFileBYId(diDocumentId: Long): DatKebsSdStandardsEntity {
+        return standardsDocumentsRepository.findBySdDocumentId(diDocumentId)
+            ?: throw ExpectedDataNotFound("No File found with the following [ id=$diDocumentId]")
     }
 
 }

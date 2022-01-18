@@ -10,6 +10,7 @@ import org.kebs.app.kotlin.apollo.api.service.UserRolesService
 import org.kebs.app.kotlin.apollo.common.exceptions.SupervisorNotFoundException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.pvc.*
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.beans.support.MutableSortDefinition
 import org.springframework.beans.support.PagedListHolder
@@ -53,13 +54,13 @@ class Waivers(
     private val commonDaoServices: CommonDaoServices,
     private val iUserRolesRepository: IUserRolesRepository,
     private val pvocDaoServices: PvocDaoServices,
-    pvocComplainStatusEntityRepo: PvocComplainStatusEntityRepo,
+//    pvocComplainStatusEntityRepo: PvocComplainStatusEntityRepo,
     applicationMapProperties: ApplicationMapProperties,
     private val userRolesService: UserRolesService
 ) {
 
     final val appId = applicationMapProperties.mapImportInspection
-    final val statuses = pvocComplainStatusEntityRepo.findByStatus(1)
+//    final val statuses = pvocComplainStatusEntityRepo.findByStatus(1)
 
     private val waiversStatus = iPvocWaiversStatusRepo.findByIdOrNull(2)
 
@@ -126,8 +127,8 @@ class Waivers(
 
     @PostMapping("save-waiver-application")
     fun saveWaiverApplication(
-        waiverApp: PvocWaiversApplicationEntity,
-        @RequestParam("document1") document1: ArrayList<MultipartFile>?
+            waiverApp: PvocWaiversApplicationEntity,
+            @RequestParam("document1") document1: ArrayList<MultipartFile>?
     ): String {
         //save app
         getContext().authentication.name.let { username ->
@@ -431,10 +432,10 @@ class Waivers(
 
     @GetMapping("generate-waivers-report")
     fun waiversReportGenerate(
-        @RequestParam("id") id: Long,
-        model: Model,
-        reportData: PvocWaiversReportsEntity,
-        pvocWaiverDocument: PvocWaiversApplicationDocumentsEntity
+            @RequestParam("id") id: Long,
+            model: Model,
+            reportData: PvocWaiversReportsEntity,
+            pvocWaiverDocument: PvocWaiversApplicationDocumentsEntity
     ): String {
         getLoggedInUser()?.let { user ->
             reportData.createdBy = user.firstName + " " + user.lastName
@@ -681,27 +682,27 @@ class Waivers(
         @PathVariable("id") id: Long
     ): String {
         iPvocWaiversRequestLetterRepo.findByIdOrNull(id)?.let { requestLetter ->
-            waiversStatus?.approval?.let {
-                iwaiversApplicationRepo.findAllByReviewStatusOrderByCreatedOnDesc(it)
-                    .let { recomendended ->
-                        model.addAttribute("recomendended", recomendended)
-                        model.addAttribute("count", recomendended?.count())
-                    }
-            }
-            waiversStatus?.rejection?.let {
-                iwaiversApplicationRepo.findAllByReviewStatusOrderByCreatedOnDesc(it)
-                    .let { rejected ->
-                        model.addAttribute("rejected", rejected)
-                        model.addAttribute("count", rejected?.count())
-                    }
-            }
-            waiversStatus?.defferal?.let {
-                iwaiversApplicationRepo.findAllByReviewStatusOrderByCreatedOnDesc(it)
-                    .let { differed ->
-                        model.addAttribute("differed", differed)
-                        model.addAttribute("count", differed?.count())
-                    }
-            }
+//            waiversStatus?.approval?.let {
+//                iwaiversApplicationRepo.findAllByReviewStatusOrderByCreatedOnDesc(it.toString())
+//                    .let { recomendended ->
+//                        model.addAttribute("recomendended", recomendended)
+//                        model.addAttribute("count", recomendended?.count())
+//                    }
+//            }
+//            waiversStatus?.rejection?.let {
+//                iwaiversApplicationRepo.findAllByReviewStatusOrderByCreatedOnDesc(it)
+//                    .let { rejected ->
+//                        model.addAttribute("rejected", rejected)
+//                        model.addAttribute("count", rejected?.count())
+//                    }
+//            }
+//            waiversStatus?.defferal?.let {
+//                iwaiversApplicationRepo.findAllByReviewStatusOrderByCreatedOnDesc(it.toString())
+//                    .let { differed ->
+//                        model.addAttribute("differed", differed)
+//                        model.addAttribute("count", differed?.count())
+//                    }
+//            }
             model.addAttribute("requestLetter", requestLetter)
             return "destination-inspection/pvoc/WaiverRequestLetterDetailView"
         } ?: throw Exception("Request letter with $id id does not exist")

@@ -51,6 +51,7 @@ export const initialState: AuthState = {
         username: '',
         expiry: new Date(),
         companyID: 0,
+        redirectUrl:''
         // branchID: 0,
         // turnover: 0
     },
@@ -89,7 +90,6 @@ export const initialTokenSentState: TokenSentState = {
 
 };
 
-
 const authStateInternalReducer = createReducer(
     initialState,
     on(loadAuthsSuccess, (state, {profile, loggedIn}) => {
@@ -118,19 +118,26 @@ const authStateInternalReducer = createReducer(
             error
         };
     }),
-    on(loadLogoutSuccess, (state, {data, profile, loggedIn}) => {
+    on(loadLogoutSuccess, (state, {data,  profile,loggedIn}) => {
         return {
             ...state,
             data, profile, loggedIn
         };
     }),
-    on(loadLogoutFailure, (state, {error, profile, loggedIn}) => {
+    on(loadLogoutFailure, (state, {error,  profile,loggedIn}) => {
         return {
             ...state,
             error, profile, loggedIn
         };
     }),
 );
+
+function LogoutSuccess(state, {data, loggedIn, profile}) {
+    return {
+        ...state,
+        data, profile, loggedIn
+    };
+}
 
 const tokenValidatedStateInternalReducer = createReducer(
     initialTokenValidatedState,

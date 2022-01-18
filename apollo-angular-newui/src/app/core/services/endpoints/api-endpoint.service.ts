@@ -465,40 +465,40 @@ export class ApiEndpointService {
     ) {
     }
 
-    /**
-     * Constructs an API endpoint.
-     *
-     * NOTE: In the future this could construct API endpoints using environmental configs provided
-     * at build time or at runtime via (for example) query string params...but for now we'll
-     * keep this dumb simple.
-     */
-    public static getEndpoint(endpoint: string): string {
-        const protocol: string = ApiEndpointService.PROTOCOL.HTTPS;
-        const domain: string = ApiEndpointService.DOMAIN.LOCAL_DEV;
-        const context: string = ApiEndpointService.CONTEXT;
-        return `${protocol}${domain}${context}${endpoint}`;
+  /**
+   * Constructs an API endpoint.
+   *
+   * NOTE: In the future this could construct API endpoints using environmental configs provided
+   * at build time or at runtime via (for example) query string params...but for now we'll
+   * keep this dumb simple.
+   */
+  public static getEndpoint(endpoint: string): string {
+    const protocol: string = ApiEndpointService.PROTOCOL.HTTPS;
+    const domain: string = ApiEndpointService.DOMAIN.LOCAL_DEV;
+    const context: string = ApiEndpointService.CONTEXT
+    return `${protocol}${domain}${context}${endpoint}`;
+  }
+
+  /**
+   * Determines if the requested URL is an authentication API endpoint.
+   * @param  url the url
+   * @returns it requires authentication
+   * @returns it requires authentication
+   */
+  public static isAuthEndpoint(url: string = ''): boolean {
+    return (
+      url.toLowerCase().indexOf(ApiEndpointService.ANONYMOUS_CONTEXT) > -1
+      || url.toLowerCase().indexOf(ApiEndpointService.AUTH_CONTEXT) > -1
+    );
+
     }
 
-    /**
-     * Determines if the requested URL is an authentication API endpoint.
-     * @param  url the url
-     * @returns it requires authentication
-     * @returns it requires authentication
-     */
-    public static isAuthEndpoint(url: string = ''): boolean {
-        return (
-            url.toLowerCase().indexOf(ApiEndpointService.ANONYMOUS_CONTEXT) > -1
-            || url.toLowerCase().indexOf(ApiEndpointService.AUTH_CONTEXT) > -1
-        );
-
-    }
-
-    /**
-     * Determines if the requested URL is an API endpoint.
-     * @param url the url
-     * @returns this is an apiEndPoint
-     */
-    public static isApiEndpoint(url: string = ''): boolean {
-        return url.toLowerCase().indexOf(ApiEndpointService.CONTEXT) > -1;
-    }
+  /**
+   * Determines if the requested URL is an API endpoint.
+   * @param url the url
+   * @returns this is an apiEndPoint
+   */
+  public static isApiEndpoint(url: string = ''): boolean {
+    return url.toLowerCase().indexOf(ApiEndpointService.CONTEXT) > -1;
+  }
 }

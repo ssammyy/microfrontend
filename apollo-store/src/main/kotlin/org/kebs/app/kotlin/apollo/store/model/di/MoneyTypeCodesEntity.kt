@@ -22,6 +22,10 @@ class MoneyTypeCodesEntity : Serializable {
     @Basic
     var typeCodeValue: String? = null
 
+    @Column(name = "APPLICABLE_DATE")
+    @Basic
+    var applicableDate: Timestamp? = null
+
     @Column(name = "DESCRIPTION")
     @Basic
     var description: String? = null

@@ -6,11 +6,23 @@ import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
 import org.flowable.engine.repository.Deployment
 import org.flowable.task.api.Task
-import org.kebs.app.kotlin.apollo.common.dto.std.*
-import org.kebs.app.kotlin.apollo.store.model.std.*
-import org.kebs.app.kotlin.apollo.store.repo.std.*
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
+import org.kebs.app.kotlin.apollo.common.dto.std.Decision
+import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponseValue
+import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
+import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
+import org.kebs.app.kotlin.apollo.store.model.UsersEntity
+import org.kebs.app.kotlin.apollo.store.model.std.DatKebsSdStandardsEntity
+import org.kebs.app.kotlin.apollo.store.model.std.DecisionFeedback
+import org.kebs.app.kotlin.apollo.store.model.std.StandardDraft
+import org.kebs.app.kotlin.apollo.store.repo.std.DecisionFeedbackRepository
+import org.kebs.app.kotlin.apollo.store.repo.std.StandardDraftRepository
+import org.kebs.app.kotlin.apollo.store.repo.std.StandardsDocumentsRepository
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
+import org.springframework.web.multipart.MultipartFile
+import java.sql.Timestamp
 
 @Service
 class PublishingService(
@@ -19,8 +31,12 @@ class PublishingService(
     @Qualifier("processEngine") private val processEngine: ProcessEngine,
     private val repositoryService: RepositoryService,
     private val standardDraftRepository: StandardDraftRepository,
-    private val decisionFeedbackRepository: DecisionFeedbackRepository
-) {
+    private val decisionFeedbackRepository: DecisionFeedbackRepository,
+    val commonDaoServices: CommonDaoServices,
+    private val sdNwaUploadsEntityRepository: StandardsDocumentsRepository,
+
+
+    ) {
     val PROCESS_DEFINITION_KEY = "sd_publishing"
     val TASK_HEAD_OF_PUBLISHING = "head_of_publishing"
     val TASK_EDITOR = "editor"
@@ -32,18 +48,30 @@ class PublishingService(
         .addClasspathResource("processes/std/publishing_module.bpmn20.xml")
         .deploy()
 
-    fun sumbitDraftStandard(standardDraft: StandardDraft): ProcessInstanceResponse {
+    fun sumbitDraftStandard(standardDraft: StandardDraft): ProcessInstanceResponseValue {
         val variables: MutableMap<String, Any> = HashMap()
-
-        standardDraft.standardOfficerId?.let { variables.put("standard_officer_id", it) }
-        standardDraft.requestorId?.let { variables.put("requestor_id", it) }
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        standardDraft.standardOfficerId?.let {
+            variables.put(
+                (loggedInUser.id ?: throw ExpectedDataNotFound("No USER ID Found")).toString(), it
+            )
+        }
+        standardDraft.standardOfficerName = loggedInUser.firstName + " " + loggedInUser.lastName
+        variables["standardOfficerName"] = standardDraft.standardOfficerName!!
+        standardDraft.standardOfficerId = loggedInUser.id.toString()
+        variables["standardOfficerId"] = standardDraft.standardOfficerId!!
+        standardDraft.requestorId?.let { variables.put("requestorId", it) }
         standardDraft.title?.let { variables.put("title", it) }
-
-
+        standardDraft.submission_date = Timestamp(System.currentTimeMillis())
+        variables["submission_date"] = standardDraft.submission_date!!
+        standardDraft.versionNumber?.let { variables.put("version", it) }
         standardDraftRepository.save(standardDraft)
-
+        variables["ID"] = standardDraft.id
         val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
-        return ProcessInstanceResponse(processInstance.id, processInstance.isEnded)
+        return ProcessInstanceResponseValue(
+            standardDraft.id, processInstance.id, processInstance.isEnded,
+            standardDraft.standardOfficerId ?: throw NullValueNotAllowedException("ID is required")
+        )
     }
 
     fun getHOPTasks(): List<TaskDetails> {
@@ -91,15 +119,21 @@ class PublishingService(
 
     fun editDraftStandard(standardDraft: StandardDraft) {
         val variables: MutableMap<String, Any> = HashMap()
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
 
-        standardDraft.standardOfficerId?.let { variables.put("standard_officer_id", it) }
+        standardDraft.standardOfficerId?.let {
+            variables.put(
+                (loggedInUser.id ?: throw ExpectedDataNotFound("No USER ID Found")).toString(), it
+            )
+        }
+        standardDraft.standardOfficerId = loggedInUser.id.toString();
+        variables["standardOfficerId"] = standardDraft.standardOfficerId!!
         standardDraft.requestorId?.let { variables.put("requestor_id", it) }
         standardDraft.title?.let { variables.put("title", it) }
         standardDraft.versionNumber?.let { variables.put("versionNumber", it) }
         standardDraft.taskId?.let { variables.put("taskId", it) }
 
         standardDraftRepository.save(standardDraft)
-
         taskService.complete(standardDraft.taskId)
     }
 
@@ -117,7 +151,15 @@ class PublishingService(
     fun approveDraughtChange(standardDraft: StandardDraft) {
         val variables: MutableMap<String, Any> = HashMap()
 
-        standardDraft.standardOfficerId?.let { variables.put("standard_officer_id", it) }
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        standardDraft.standardOfficerId?.let {
+            variables.put(
+                (loggedInUser.id ?: throw ExpectedDataNotFound("No USER ID Found")).toString(), it
+            )
+        }
+        standardDraft.standardOfficerId = loggedInUser.id.toString();
+        variables["standardOfficerId"] = standardDraft.standardOfficerId!!
         standardDraft.requestorId?.let { variables.put("requestor_id", it) }
         standardDraft.title?.let { variables.put("title", it) }
         standardDraft.taskId?.let { variables.put("taskId", it) }
@@ -134,7 +176,15 @@ class PublishingService(
     fun uploadDraftStandard(standardDraft: StandardDraft) {
         val variables: MutableMap<String, Any> = HashMap()
 
-        standardDraft.standardOfficerId?.let { variables.put("standard_officer_id", it) }
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        standardDraft.standardOfficerId?.let {
+            variables.put(
+                (loggedInUser.id ?: throw ExpectedDataNotFound("No USER ID Found")).toString(), it
+            )
+        }
+        standardDraft.standardOfficerId = loggedInUser.id.toString();
+        variables["standardOfficerId"] = standardDraft.standardOfficerId!!
         standardDraft.requestorId?.let { variables.put("requestor_id", it) }
         standardDraft.title?.let { variables.put("title", it) }
         standardDraft.versionNumber?.let { variables.put("versionNumber", it) }
@@ -142,6 +192,31 @@ class PublishingService(
 
         standardDraftRepository.save(standardDraft)
         taskService.complete(standardDraft.taskId)
+    }
+
+    fun uploadSDFile(
+        uploads: DatKebsSdStandardsEntity,
+        docFile: MultipartFile,
+        doc: String,
+        user: UsersEntity,
+        DocDescription: String
+    ): DatKebsSdStandardsEntity {
+
+        with(uploads) {
+//            filepath = docFile.path
+            name = commonDaoServices.saveDocuments(docFile)
+//            fileType = docFile.contentType
+            fileType = docFile.contentType
+            documentType = doc
+            description = DocDescription
+            document = docFile.bytes
+            transactionDate = commonDaoServices.getCurrentDate()
+            status = 1
+            createdBy = commonDaoServices.concatenateName(user)
+            createdOn = commonDaoServices.getTimestamp()
+        }
+
+        return sdNwaUploadsEntityRepository.save(uploads)
     }
 
 }

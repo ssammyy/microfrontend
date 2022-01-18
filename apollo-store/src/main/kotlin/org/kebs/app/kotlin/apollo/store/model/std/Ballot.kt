@@ -60,7 +60,7 @@ class Ballot {
 
     override fun hashCode(): Int {
         var result = id.hashCode()
-        result = 31 * result + (prID?.hashCode() ?: 0)
+        result = 31 * result + (prID.hashCode())
         result = 31 * result + (ballotName?.hashCode() ?: 0)
         result = 31 * result + (ballotDraftBy?.hashCode() ?: 0)
         result = 31 * result + (ballotPath?.hashCode() ?: 0)

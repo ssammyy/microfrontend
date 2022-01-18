@@ -15,6 +15,20 @@ class CdInspectionOtherItemChecklistEntity : Serializable {
     @Id
     var id: Long? = null
 
+    @Transient
+    var itemIdTmp: Long? = null
+    @JoinColumn(name = "ITEM_ID", referencedColumnName = "ID")
+    @ManyToOne
+    var itemId: CdItemDetailsEntity? = null
+
+    @Column(name = "SSF_ID")
+    @Basic
+    var ssfId: Long? = null
+
+    @Column(name = "SCF_ID")
+    @Basic
+    var scfId: Long? = null
+
     @Column(name = "SERIAL_NUMBER")
     @Basic
     var serialNumber: String? = null
@@ -22,6 +36,10 @@ class CdInspectionOtherItemChecklistEntity : Serializable {
     @Column(name = "PRODUCT_DESCRIPTION")
     @Basic
     var productDescription: String? = null
+
+    @Column(name = "CATEGORY")
+    @Basic
+    var category: String? = null
 
     @Column(name = "BRAND")
     @Basic
@@ -54,6 +72,14 @@ class CdInspectionOtherItemChecklistEntity : Serializable {
     @Column(name = "DEFECTS")
     @Basic
     var defects: String? = null
+
+    @Column(name = "COMPLIANT")
+    @Basic
+    var compliant: String? = null
+
+    @Column(name = "SAMPLE_UPDATED")
+    @Basic
+    var sampleUpdated: Int? = 0
 
     @Column(name = "PRESENCE_ABSENCE_BANNED")
     @Basic
@@ -139,9 +165,9 @@ class CdInspectionOtherItemChecklistEntity : Serializable {
     @Basic
     var deletedOn: Timestamp? = null
 
-    @JoinColumn(name = "INSPECTION_GENERAL_ID", referencedColumnName = "ID")
+    @JoinColumn(name = "INSPECTION_ID", referencedColumnName = "ID")
     @ManyToOne
-    var inspectionGeneral: CdInspectionGeneralEntity? = null
+    var inspection: CdInspectionOtherChecklist? = null
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

@@ -1,0 +1,24 @@
+<h2 mat-dialog-title>Request Ministry Inspection</h2>
+<mat-dialog-content>
+    <div class="row no_margin" [formGroup]="form">
+        <div class="col-sm-12 col-md-8">
+            <label for="officer" class="waiver-form-label">Select Station</label>
+            <select id="officer" class="waiver-form-input-master" formControlName="stationId">
+                <option value="" disabled selected>Select Officer</option>
+                <option *ngFor="let station of stations" [value]="station.id">{{station.stationName}}-{{station.description}}</option>
+            </select>
+
+            <label for="remarks" class="waiver-form-label">Please write, in detail, your feedback for this
+                request:</label>
+            <textarea id="remarks" class="waiver-form-input-master"
+                      formControlName="remarks"></textarea>
+            <mat-error *ngIf="message">{{message}}</mat-error>
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <div class="row no_margin master-list-new-btn">
+        <button [disabled]="form.invalid" class="next-btn btn-gen new-btn" (click)="saveDetails()">SAVE
+        </button>
+    </div>
+</mat-dialog-actions>

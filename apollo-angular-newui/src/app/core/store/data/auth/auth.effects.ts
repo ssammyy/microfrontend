@@ -187,6 +187,7 @@ export class AuthEffects {
                                         accessToken: '',
                                         fullName: '',
                                         companyID: 0,
+                                        redirectUrl:''
                                     }
                                 }),
                                 loadUserCompanyInfoSuccess({data: null}),
@@ -211,8 +212,16 @@ export class AuthEffects {
             ),
         {dispatch: true}
     );
-
-
+    hasRole(privileges: string[], roles: any[]): boolean {
+        for (let role of roles) {
+            for (let p of privileges) {
+                if (role == p) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
     doLogin: Observable<Action> = createEffect(
         () =>
             this.actions$.pipe(
@@ -220,28 +229,28 @@ export class AuthEffects {
                 switchMap((action) => this.service.login(action.payload)
                     .pipe(
                         mergeMap((data) => {
-                            if (data.companyID != null) {
-
+                            data.redirectUrl = action.redirectUrl
+                            if(this.hasRole(["PERMIT_APPLICATION"], data.roles)){
                                 return [
                                     loadAuthsSuccess({profile: data, loggedIn: true}),
                                     loadUserCompanyInfo(),
                                     Go({
                                         payload: action.redirectUrl,
-                                        link: action.redirectUrl,
-                                        redirectUrl: action.redirectUrl
-                                    })
-                                ];
-                            } else {
-                                return [
-                                    loadAuthsSuccess({profile: data, loggedIn: true}),
-                                    Go({
-                                        payload: action.redirectUrl,
-                                        link: action.redirectUrl,
-                                        redirectUrl: action.redirectUrl
+                                        link: 'login/otp',
+                                        redirectUrl: null
                                     })
                                 ];
                             }
+                            return [
+                                loadAuthsSuccess({profile: data, loggedIn: true}),
+                                Go({
+                                    payload: action.redirectUrl,
+                                    link: 'login/otp',
+                                    redirectUrl: null
+                                })
+                            ];
                         }),
+
                         catchError(
                             (err: HttpErrorResponse) => of(loadResponsesFailure({
                                 error: {

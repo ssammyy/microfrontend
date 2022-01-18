@@ -1,0 +1,98 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">handshake</i>
+                        </div>
+                        <h4 class="card-title">PVOC Partners
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar">
+                            <div class="search-bar">
+                                <div class="input-group form-inline">
+                                    <input id="searchDocument" class="search-form-input" (keyup)="searchPhraseChanged()"
+                                           [(ngModel)]="keywords" placeholder="Search Document">
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-primary btn-background"
+                                                (click)="searchPhraseChanged()">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="input-group form-inline">
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-primary btn-background float-right"
+                                                (click)="addUpdatePartner(null)">
+                                            <i class="fa fa-plus"></i>Partner
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="material-datatables">
+                            <div class="table-responsive">
+                                <mat-table class="table-striped table-responsive table-condensed"
+                                           [dataSource]="partnerListing">
+                                    <ng-container matColumnDef="partnerRefNo">
+                                        <mat-header-cell *matHeaderCellDef>Ref No.</mat-header-cell>
+                                        <mat-cell *matCellDef="let element"> {{element.partnerRefNo}} </mat-cell>
+                                    </ng-container>
+                                    <ng-container matColumnDef="partnerName">
+                                        <mat-header-cell *matHeaderCellDef>Partner Name</mat-header-cell>
+                                        <mat-cell
+                                                *matCellDef="let element"> {{element.partnerName}} </mat-cell>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="partnerEmail">
+                                        <mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
+                                        <mat-cell *matCellDef="let element"> {{element.partnerEmail}} </mat-cell>
+                                    </ng-container>
+                                    <ng-container matColumnDef="partnerTelephoneNumber">
+                                        <mat-header-cell *matHeaderCellDef>Phone Number</mat-header-cell>
+                                        <mat-cell
+                                                *matCellDef="let element"> {{element.partnerTelephoneNumber}} </mat-cell>
+                                    </ng-container>
+                                    <ng-container matColumnDef="partnerFaxNumber">
+                                        <mat-header-cell *matHeaderCellDef>Fax Number</mat-header-cell>
+                                        <mat-cell *matCellDef="let element"> {{element.clientStatus}} </mat-cell>
+                                    </ng-container>
+                                    <ng-container matColumnDef="partnerCountry">
+                                        <mat-header-cell *matHeaderCellDef>Country</mat-header-cell>
+                                        <mat-cell *matCellDef="let element"> {{element.partnerCountry}} </mat-cell>
+                                    </ng-container>
+                                    <ng-container matColumnDef="partnerCity">
+                                        <mat-header-cell *matHeaderCellDef>Partner City</mat-header-cell>
+                                        <mat-cell *matCellDef="let element"> {{element.partnerCity}} </mat-cell>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="actions">
+                                        <mat-header-cell *matHeaderCellDef>ACTIONS</mat-header-cell>
+                                        <mat-cell *matCellDef="let element">
+                                            <button mat-raised-button (click)="addUpdatePartner(element)"><i
+                                                    class="fa fa-pencil-alt">Edit</i>
+                                            </button>
+                                            <button mat-raised-button (click)="viewPartner(element.partnerId)"><i
+                                                    class="fa fa-eye">View</i>
+                                            </button>
+                                        </mat-cell>
+                                    </ng-container>
+                                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                                    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                                </mat-table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end content-->
+                </div>
+                <!--  end card  -->
+            </div>
+            <!-- end col-md-12 -->
+        </div>
+        <!-- end row -->
+    </div>
+</div>

@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
-import {NgxSpinnerService} from "ngx-spinner";
+import {NgxSpinnerService} from 'ngx-spinner';
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +34,7 @@ export class LoadingService {
       this.loadingSub.next(true);
       this.spinner.show();
 
-    }else if (!loading && this.loadingMap.has(url)) {
+    } else if (!loading && this.loadingMap.has(url)) {
       this.loadingMap.delete(url);
       this.spinner.hide();
 

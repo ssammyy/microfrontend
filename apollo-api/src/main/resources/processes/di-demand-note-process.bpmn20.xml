@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="demandNoteGenerationProcess" name="Generate Demand Note for Consignment Documet" isExecutable="true" activiti:candidateStarterUsers="supervisor">
+    <startEvent id="startDemandNoteGeneration" name="Start Targeting"></startEvent>
+    <sequenceFlow id="flow4" name="Rejected" sourceRef="exclusivegateway2" targetRef="updateCocRejectionStatus">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!taskApproved}]]></conditionExpression>
+    </sequenceFlow>
+    <serviceTask id="demandNoteApprovedStatus" name="Approve Demand Note" activiti:expression="#{invoiceService.approveDemandNoteGeneration(cdUuid,demandNoteId,supervisor,remarks)}"></serviceTask>
+    <serviceTask id="updateCocRejectionStatus" name="Update Demand Note Rejection Status" activiti:expression="#{invoiceService.rejectDemandNoteGeneration(cdUuid,demandNoteId,remarks)}"></serviceTask>
+    <sequenceFlow id="flow6" sourceRef="updateCocRejectionStatus" targetRef="updateConsignmentDocumentProcessFields"></sequenceFlow>
+    <serviceTask id="updateConsignmentDocumentProcessFields" name="Update Consignment Document" activiti:expression="${diService.clearCurrentProcess(cdUuid)}"></serviceTask>
+    <endEvent id="endTargetConsignmentDocument" name="End"></endEvent>
+    <sequenceFlow id="flow8" sourceRef="servicetask3" targetRef="endTargetConsignmentDocument"></sequenceFlow>
+    <sequenceFlow id="flow10" sourceRef="servicetask1" targetRef="updateConsignmentDocumentProcessFields"></sequenceFlow>
+    <userTask id="requestApprovalOfExcludedItems" name="Approve Demand Note Generation" activiti:assignee="${supervisor}" activiti:category="${cfs_code}"></userTask>
+    <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow12" sourceRef="requestApprovalOfExcludedItems" targetRef="exclusivegateway2"></sequenceFlow>
+    <sequenceFlow id="flow13" name="Approved" sourceRef="exclusivegateway2" targetRef="demandNoteApprovedStatus">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${taskApproved}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow14" sourceRef="startDemandNoteGeneration" targetRef="requestApprovalOfExcludedItems"></sequenceFlow>
+    <sequenceFlow id="flow15" sourceRef="demandNoteApprovedStatus" targetRef="demandNotePaymentBatch"></sequenceFlow>
+    <serviceTask id="servicetask1" name="Update Consignment Document" activiti:expression="#{invoiceService.updateDemandNoteCdStatus(cdUuid,demandNoteId)}"></serviceTask>
+    <serviceTask id="demandNotePaymentBatch" name="Generate Payment Batch" activiti:expression="#{invoiceService.generateInvoiceBatch(cdUuid,demandNoteId)}"></serviceTask>
+    <sequenceFlow id="flow16" sourceRef="servicetask2" targetRef="servicetask1"></sequenceFlow>
+    <sequenceFlow id="flow17" sourceRef="demandNotePaymentBatch" targetRef="servicetask2"></sequenceFlow>
+    <serviceTask id="servicetask2" name="Send to SW" activiti:expression="#{invoiceService.updateDemandNoteSw(cdUuid,demandNoteId)}"></serviceTask>
+    <sequenceFlow id="flow18" sourceRef="updateConsignmentDocumentProcessFields" targetRef="servicetask3"></sequenceFlow>
+    <serviceTask id="servicetask3" name="Clear CD Process" activiti:expression="#{diService.clearCurrentProcess(cdUuid)}"></serviceTask>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_demandNoteGenerationProcess">
+    <bpmndi:BPMNPlane bpmnElement="demandNoteGenerationProcess" id="BPMNPlane_demandNoteGenerationProcess">
+      <bpmndi:BPMNShape bpmnElement="startDemandNoteGeneration" id="BPMNShape_startDemandNoteGeneration">
+        <omgdc:Bounds height="35.0" width="35.0" x="170.0" y="384.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="demandNoteApprovedStatus" id="BPMNShape_demandNoteApprovedStatus">
+        <omgdc:Bounds height="80.0" width="105.0" x="538.0" y="233.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="updateCocRejectionStatus" id="BPMNShape_updateCocRejectionStatus">
+        <omgdc:Bounds height="79.0" width="105.0" x="538.0" y="470.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="updateConsignmentDocumentProcessFields" id="BPMNShape_updateConsignmentDocumentProcessFields">
+        <omgdc:Bounds height="61.0" width="105.0" x="990.0" y="350.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endTargetConsignmentDocument" id="BPMNShape_endTargetConsignmentDocument">
+        <omgdc:Bounds height="35.0" width="35.0" x="1330.0" y="363.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="requestApprovalOfExcludedItems" id="BPMNShape_requestApprovalOfExcludedItems">
+        <omgdc:Bounds height="55.0" width="105.0" x="383.0" y="374.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway2" id="BPMNShape_exclusivegateway2">
+        <omgdc:Bounds height="40.0" width="40.0" x="570.0" y="381.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask1" id="BPMNShape_servicetask1">
+        <omgdc:Bounds height="67.0" width="105.0" x="990.0" y="239.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="demandNotePaymentBatch" id="BPMNShape_demandNotePaymentBatch">
+        <omgdc:Bounds height="80.0" width="105.0" x="680.0" y="233.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask2" id="BPMNShape_servicetask2">
+        <omgdc:Bounds height="68.0" width="105.0" x="830.0" y="239.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask3" id="BPMNShape_servicetask3">
+        <omgdc:Bounds height="55.0" width="105.0" x="1170.0" y="353.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="590.0" y="421.0"></omgdi:waypoint>
+        <omgdi:waypoint x="590.0" y="470.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="13.0" width="42.0" x="590.0" y="421.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="643.0" y="509.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1043.0" y="509.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1042.0" y="411.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+        <omgdi:waypoint x="1275.0" y="380.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1330.0" y="380.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
+        <omgdi:waypoint x="1042.0" y="306.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1042.0" y="350.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow12" id="BPMNEdge_flow12">
+        <omgdi:waypoint x="488.0" y="401.0"></omgdi:waypoint>
+        <omgdi:waypoint x="570.0" y="401.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
+        <omgdi:waypoint x="590.0" y="381.0"></omgdi:waypoint>
+        <omgdi:waypoint x="590.0" y="313.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="13.0" width="46.0" x="590.0" y="381.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow14" id="BPMNEdge_flow14">
+        <omgdi:waypoint x="205.0" y="401.0"></omgdi:waypoint>
+        <omgdi:waypoint x="383.0" y="401.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow15" id="BPMNEdge_flow15">
+        <omgdi:waypoint x="643.0" y="273.0"></omgdi:waypoint>
+        <omgdi:waypoint x="680.0" y="273.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow16" id="BPMNEdge_flow16">
+        <omgdi:waypoint x="935.0" y="273.0"></omgdi:waypoint>
+        <omgdi:waypoint x="990.0" y="272.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow17" id="BPMNEdge_flow17">
+        <omgdi:waypoint x="785.0" y="273.0"></omgdi:waypoint>
+        <omgdi:waypoint x="830.0" y="273.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow18" id="BPMNEdge_flow18">
+        <omgdi:waypoint x="1095.0" y="380.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1170.0" y="380.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

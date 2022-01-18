@@ -36,15 +36,16 @@ export class LoginComponent implements OnInit {
           password: new FormControl('', [Validators.required]),
         }
     );
-    this.returnUrl = this.route.snapshot.queryParams[`returnUrl`] || `login/otp`;
+    this.returnUrl = this.route.snapshot.queryParams[`returnUrl`] || `dashboard`;
   }
 
   public onClickLogin(valid: Boolean) {
     this.SpinnerService.show();
     if (valid) {
-      this.SpinnerService.hide();
       this.credential = this.loginForm.value;
       this.store$.dispatch(loadAuths({payload: this.credential, redirectUrl: this.returnUrl}));
+      this.SpinnerService.hide();
+
     }
 
   }

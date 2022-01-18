@@ -126,7 +126,7 @@ class QAControllerTest {
         val loggedInUser = usersRepo.findByUserName("kpaul7747@gmail.com")
 
         val allUnpaidInvoices =
-            loggedInUser?.let { postInvoiceToSageServices.postInvoiceTransactionToSage(1412, it, map) }
+            loggedInUser?.let { postInvoiceToSageServices.postInvoiceTransactionToSage(1412, it.userName!!, map) }
         KotlinLogging.logger { }.info { "DETAILS SAVE   " }
     }
 

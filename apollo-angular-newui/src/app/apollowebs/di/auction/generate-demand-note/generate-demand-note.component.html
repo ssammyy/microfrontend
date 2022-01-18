@@ -1,0 +1,28 @@
+<h2 mat-dialog-title>Generate Demand Note for Auction Goods</h2>
+<mat-dialog-content>
+    <div class="row no_margin" [formGroup]="form">
+        <div class="col-sm-12 col-md-8">
+            <label for="feeId" class="waiver-form-label">Select Fee</label>
+            <select id="feeId" name="portOfArrival" class="waiver-form-input-master"
+                    formControlName="feeId">
+                <option value="" disabled selected>Select Port</option>
+                <option *ngFor="let fee of fees" [value]="fee.id">{{fee.description}}({{fee.rate}} {{fee.rateType}})</option>
+            </select>
+
+            <label for="remarks" class="waiver-form-label">Please write, in detail, your feedback for this
+                consignment:</label>
+            <textarea id="remarks" class="waiver-form-input-master"
+                      formControlName="remarks"></textarea>
+            <mat-error *ngIf="message">{{message}}</mat-error>
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <div class="row no_margin master-list-new-btn">
+        <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
+        <button [disabled]="form.invalid||loading" class="next-btn btn-gen new-btn" (click)="saveRecord()">
+            GENERATE DEMAND NOTE
+            <mat-spinner [diameter]="20" color="warn" *ngIf="loading"></mat-spinner>
+        </button>
+    </div>
+</mat-dialog-actions>

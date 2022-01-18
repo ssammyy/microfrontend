@@ -237,6 +237,17 @@ class AngularRoutes {
                 "/logout".nest {
                     POST("", handler::handleLogout)
                 }
+                "/sidebar".nest {
+                    GET("", handler::handleGetSideBarMenusBasedOnLoggedInUser)
+                    POST("") {
+                        ServerResponse.badRequest().body("Invalid Request: Feature currently not supported")
+                    }
+                    "/{id}".nest {
+                        PUT("") { ServerResponse.badRequest().body("Invalid Request: Feature currently not supported") }
+                        GET("") { ServerResponse.badRequest().body("Invalid Request: Feature currently not supported") }
+                    }
+
+                }
                 "/companyDetails".nest {
                     POST("", handler::handleProvideCompanyDetailsForUser)
                 }
@@ -346,7 +357,7 @@ class AngularRoutes {
     }
 
     @Bean
-    fun migrationUserAdminNgrxRoutes(handler: SystemsAdministrationHandler)= router{
+    fun migrationUserAdminNgrxRoutes(handler: SystemsAdministrationHandler) = router {
         "/api/v1/migration/anonymous".nest {
             "/titles".nest {
                 GET("", handler::titlesListing)

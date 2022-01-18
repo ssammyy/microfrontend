@@ -1,0 +1,184 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">diamond-stone</i>
+                        </div>
+                        <h4 class="card-title" *ngIf="auctionDetails">
+                            Auction request Details
+                            <button class="btn btn-sm btn-default float-right mr-7"
+                                    (click)="goBack()"><i class="fa fa-arrow-left"></i> Back
+
+                            </button>
+                        </h4>
+
+                    </div>
+                    <div class="card-body" *ngIf="auctionDetails">
+                        <div class="row">
+                            <div class="col-md-2 col-sm-12">
+                                <div widget class=" border-0 box-shadow">
+                                    <div class="text-center pt-2" style="color: green;">
+                                        Auction Item Details
+                                    </div>
+                                    <div class="card-body pt-0 widget-body" *ngIf="auctionDetails.auction_details">
+                                        <table class="table-responsive">
+                                            <th>
+                                                Lot Number
+                                            </th>
+                                            <tr>
+                                                <td>{{auctionDetails.auction_details.auctionLotNo ? auctionDetails.auction_details.auctionLotNo : "NA"}}</td>
+                                            </tr>
+                                            <th *ngIf="auctionDetails.auction_details.serialNumber">
+                                                Serial Number
+                                            </th>
+                                            <tr *ngIf="auctionDetails.auction_details.serialNumber">
+                                                <td>{{auctionDetails.auction_details.serialNumber}}</td>
+                                            </tr>
+                                            <th>
+                                                Importer Name
+                                            </th>
+                                            <tr>
+                                                <td>{{auctionDetails.auction_details.importerName}}</td>
+                                            </tr>
+                                            <th>
+                                                Shipment Port
+                                            </th>
+                                            <tr>
+                                                <td>{{auctionDetails.auction_details.shipmentPort}}</td>
+                                            </tr>
+                                            <th>
+                                                Category Name
+                                            </th>
+                                            <tr>
+                                                <td>{{auctionDetails.auction_details.categoryName}}</td>
+                                            </tr>
+                                            <th>
+                                                Application Completed
+                                            </th>
+                                            <tr>
+                                                <td>{{auctionDetails.auction_details.completed}}</td>
+                                            </tr>
+                                            <th *ngIf="auctionDetails.auction_details.approvedRejectedOn">
+                                                Application Completed On
+                                            </th>
+                                            <tr *ngIf="auctionDetails.auction_details.approvedRejectedOn">
+                                                <td>{{auctionDetails.auction_details.approvedRejectedOn | date:'mediumDate'}} {{auctionDetails.auction_details.approvedRejectedOn| date:'shortTime'}}</td>
+                                            </tr>
+                                            <th>
+                                                PVOC Officer
+                                            </th>
+                                            <tr>
+                                                <td>{{auctionDetails.auction_details.assignedOfficer}}</td>
+                                            </tr>
+                                            <th>
+                                                Approval Status
+                                            </th>
+                                            <tr>
+                                                <td>{{auctionDetails.auction_details.approvalStatus == 0 ? "NEW" : auctionDetails.auction_details.approvalStatus == 1 ? "APPROVED" : "REJECTED"}}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-md-8 col-sm-12">
+
+                                <!-- <div class="d-flex"> -->
+                                <mat-tab-group [(selectedIndex)]="activeTab" [disablePagination]="true"
+                                               appMatMultilineTab
+                                               class="tab-wraps">
+                                    <mat-tab tabindex="1" label="Auction Items">
+                                        <div class="table-striped table-condensed table-responsive">
+                                            <ng2-smart-table class="table table-hover" [settings]="itemSettings"
+                                                             [source]="auctionDetails.items">
+                                            </ng2-smart-table>
+                                        </div>
+                                    </mat-tab>
+                                    <mat-tab tabindex="2" label="Payment Details" *ngIf="auctionDetails.payment">
+                                        <ul class="w-list-unstyled">
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Demand Note Number</div>
+                                                <div class="list-text-accordion">{{auctionDetails.payment.demandNoteNumber}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Amount</div>
+                                                <div class="list-text-accordion">{{auctionDetails.payment.amount}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Receipt Number</div>
+                                                <div class="list-text-accordion">{{auctionDetails.payment.receiptNo}}</div>
+                                            </li>
+                                        </ul>
+                                        <button (click)="viewDemandNote(auctionDetails.payment.demandNoteId)">View
+                                            Details
+                                        </button>
+                                    </mat-tab>
+                                    <mat-tab tabindex="3" label="Attachments">
+                                        <div class="table-striped table-condensed table-responsive">
+                                            <ng2-smart-table class="table table-hover" [settings]="attachmentSettings"
+                                                             [source]="auctionDetails.attachments"
+                                                             (custom)="tableActions($event)">
+                                            </ng2-smart-table>
+                                        </div>
+                                    </mat-tab>
+                                    <mat-tab tabindex="4" label="Inspection History Details">
+                                        <div class="table-striped table-condensed table-responsive">
+                                            <ng2-smart-table class="table table-hover" [settings]="historySettings"
+                                                             [source]="auctionDetails.history">
+                                            </ng2-smart-table>
+                                        </div>
+                                    </mat-tab>
+                                </mat-tab-group>
+                            </div>
+                            <div class="col-md-2 col-sm-12">
+                                <h5>Actions:</h5>
+                                <div *ngIf="auctionDetails.auction_details.isSupervisor">
+                                    <button *ngIf="auctionDetails.auction_details.assignedOfficer"
+                                            class="btn btn-sm btn-primary" (click)="assignAuctionItem(false)">
+                                        <i class="fa fa-upload"></i>Re-Assign IO
+                                    </button>
+                                    <button *ngIf="!auctionDetails.auction_details.assignedOfficer"
+                                            class="btn btn-sm btn-primary" (click)="assignAuctionItem(false)">
+                                        <i class="fa fa-upload"></i>Assign IO
+                                    </button>
+                                </div>
+                                <div *ngIf="auctionDetails.auction_details.isInspector && auctionDetails.auction_details.myTask">
+                                    <input type="file" (change)="uploadAuctionAttachment($event)" [hidden]="true"
+                                           #auctionReport>
+                                    <button *ngIf="auctionDetails.auction_details.approvalStatus===0"
+                                            class="btn btn-sm btn-primary" (click)="auctionReport.click()">
+                                        <i class="fa fa-attachment"></i>Upload Attachment
+                                    </button>
+                                    <button *ngIf="auctionDetails.auction_details.consignmentId"
+                                            class="btn btn-sm btn-primary" (click)="viewConsignmentDocument()">View
+                                        Consignment
+                                    </button>
+                                    <button *ngIf="!auctionDetails.payment && auctionDetails.auction_details.approvalStatus===0"
+                                            class="btn btn-sm btn-primary"
+                                            (click)="generateInvoice()">
+                                        Generate Demand Note
+                                    </button>
+                                    <button *ngIf="auctionDetails.auction_details.approvalStatus===0"
+                                            class="btn btn-sm btn-primary" (click)="approveRejectConsignment()">
+                                        Approve/Reject Application
+                                    </button>
+                                    <h5>Documents:</h5>
+                                    <button *ngIf="auctionDetails.auction_details.reportId"
+                                            class="btn btn-sm btn-primary" (click)="downloadISMReport()">Download Report
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end content-->
+                    </div>
+                    <!--  end card  -->
+                </div>
+                <!-- end col-md-12 -->
+            </div>
+            <!-- end row -->
+        </div>
+    </div>
+</div>

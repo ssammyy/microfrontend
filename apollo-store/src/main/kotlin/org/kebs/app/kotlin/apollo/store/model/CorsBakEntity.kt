@@ -1,12 +1,11 @@
 package org.kebs.app.kotlin.apollo.store.model
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntity
 import java.io.Serializable
 import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*
-import javax.validation.constraints.NotEmpty
-import javax.validation.constraints.NotNull
 
 @Entity
 @Table(name = "DAT_KEBS_CORS_BAK")
@@ -18,33 +17,27 @@ class CorsBakEntity : Serializable {
     @GeneratedValue(generator = "DAT_KEBS_CORS_BAK_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     var id: Long = 0
 
-    @NotEmpty(message = "Required field")
     @Column(name = "COR_NUMBER")
     @Basic
     var corNumber: String? = null
 
-    @NotNull(message = "Required field")
     @Column(name = "COR_ISSUE_DATE")
     @Basic
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     var corIssueDate: Timestamp? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "COUNTRY_OF_SUPPLY")
     @Basic
     var countryOfSupply: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "INSPECTION_CENTER")
     @Basic
     var inspectionCenter: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "EXPORTER_NAME")
     @Basic
     var exporterName: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "EXPORTER_ADDRESS_1")
     @Basic
     var exporterAddress1: String? = null
@@ -53,94 +46,79 @@ class CorsBakEntity : Serializable {
     @Basic
     var exporterAddress2: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "EXPORTER_EMAIL")
     @Basic
     var exporterEmail: String? = null
 
-    @NotNull(message = "Required field")
     @Column(name = "APPLICATION_BOOKING_DATE")
     @Basic
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     var applicationBookingDate: Timestamp? = null
 
-    @NotNull(message = "Required field")
     @Column(name = "INSPECTION_DATE")
     @Basic
-    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     var inspectionDate: Timestamp? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "MAKE")
     @Basic
     var make: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "MODEL")
     @Basic
     var model: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "CHASIS_NUMBER")
     @Basic
     var chasisNumber: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "ENGINE_NUMBER")
     @Basic
     var engineNumber: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "ENGINE_CAPACITY")
     @Basic
     var engineCapacity: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "YEAR_OF_MANUFACTURE")
     @Basic
     var yearOfManufacture: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "YEAR_OF_FIRST_REGISTRATION")
     @Basic
     var yearOfFirstRegistration: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "INSPECTION_MILEAGE")
     @Basic
     var inspectionMileage: String? = null
+    @Column(name = "CUSTOMS_IE_NO")
+    @Basic
+    var customsIeNo: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "UNITS_OF_MILEAGE")
     @Basic
     var unitsOfMileage: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "INSPECTION_REMARKS")
     @Basic
     var inspectionRemarks: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "PREVIOUS_REGISTRATION_NUMBER")
     @Basic
     var previousRegistrationNumber: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "PREVIOUS_COUNTRY_OF_REGISTRATION")
     @Basic
     var previousCountryOfRegistration: String? = null
 
-    @NotNull(message = "Required field")
     @Column(name = "TARE_WEIGHT")
     @Basic
     var tareWeight: Long = 0
 
-    @NotNull(message = "Required field")
     @Column(name = "LOAD_CAPACITY")
     @Basic
     var loadCapacity: Long = 0
 
-    @NotNull(message = "Required field")
     @Column(name = "GROSS_WEIGHT")
     @Basic
     var grossWeight: Long = 0
@@ -149,32 +127,30 @@ class CorsBakEntity : Serializable {
     @Basic
     var numberOfAxles: Long = 0
 
-    @NotEmpty(message = "Required field")
+    @Column(name = "INSPECTION_OFFICER")
+    @Basic
+    var inspectionOfficer: String = ""
+
     @Column(name = "TYPE_OF_VEHICLE")
     @Basic
     var typeOfVehicle: String? = null
 
-    @NotNull(message = "Required field")
     @Column(name = "NUMBER_OF_PASSANGERS")
     @Basic
     var numberOfPassangers: Long = 0
 
-    @NotEmpty(message = "Required field")
     @Column(name = "TYPE_OF_BODY")
     @Basic
     var typeOfBody: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "BODY_COLOR")
     @Basic
     var bodyColor: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "FUEL_TYPE")
     @Basic
     var fuelType: String? = null
 
-    @NotNull(message = "Required field")
     @Column(name = "INSPECTION_FEE")
     @Basic
     var inspectionFee: Long = 0
@@ -187,33 +163,26 @@ class CorsBakEntity : Serializable {
     @Basic
     var ucrNumber: String? = null
 
-    @NotEmpty(message = "Required field")
+    @Column(name = "transmission")
+    @Basic
+    var transmission: String? = null
+
     @Column(name = "INSPECTION_FEE_CURRENCY")
     @Basic
     var inspectionFeeCurrency: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "PARTNER")
     @Basic
     var partner: String? = null
 
-    @NotNull(message = "Required field")
     @Column(name = "INSPECTION_FEE_EXCHANGE_RATE")
     @Basic
     var inspectionFeeExchangeRate: Long = 0
 
-    @NotNull(message = "Required field")
     @Column(name = "INSPECTION_FEE_PAYMENT_DATE")
     @Basic
     var inspectionFeePaymentDate: Timestamp? = null
 
-    @Column(name = "LOCAL_COR_FILE")
-    @Lob
-    var localCorFile: ByteArray? = null
-
-    @Column(name = "LOCAL_COR_FILE_NAME", length = 200)
-    @Basic
-    var localCorFileName: String? = null
 
     @Column(name = "STATUS")
     @Basic
@@ -283,9 +252,13 @@ class CorsBakEntity : Serializable {
     @Basic
     var deletedOn: Timestamp? = null
 
+    @Column(name = "VERSION")
+    @Basic
+    var version: Long? = null
+
     @JoinColumn(name = "CONSIGNMENT_DOC_ID", referencedColumnName = "ID")
     @ManyToOne
-    var consignmentDocId: ConsignmentDocumentEntity? = null
+    var consignmentDocId: ConsignmentDocumentDetailsEntity? = null
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -322,8 +295,6 @@ class CorsBakEntity : Serializable {
                 approvalStatus == that.approvalStatus &&
                 inspectionFeeCurrency == that.inspectionFeeCurrency &&
                 inspectionFeePaymentDate == that.inspectionFeePaymentDate &&
-                Arrays.equals(localCorFile, that.localCorFile) &&
-                localCorFileName == that.localCorFileName &&
                 status == that.status &&
                 varField1 == that.varField1 &&
                 varField2 == that.varField2 &&
@@ -345,62 +316,60 @@ class CorsBakEntity : Serializable {
 
     override fun hashCode(): Int {
         var result = Objects.hash(
-            id,
-            corNumber,
-            corIssueDate,
-            countryOfSupply,
-            inspectionCenter,
-            exporterName,
-            exporterAddress1,
-            exporterAddress2,
-            exporterEmail,
-            applicationBookingDate,
-            inspectionDate,
-            make,
-            model,
-            chasisNumber,
-            engineNumber,
-            engineCapacity,
-            yearOfManufacture,
-            yearOfFirstRegistration,
-            inspectionMileage,
-            unitsOfMileage,
-            inspectionRemarks,
-            previousRegistrationNumber,
-            previousCountryOfRegistration,
-            tareWeight,
-            loadCapacity,
-            grossWeight,
-            numberOfAxles,
-            typeOfVehicle,
-            numberOfPassangers,
-            typeOfBody,
-            bodyColor,
-            fuelType,
-            inspectionFee,
-            inspectionFeeCurrency,
-            inspectionFeeExchangeRate,
-            inspectionFeePaymentDate,
-            localCorFileName,
-            status,
-            varField1,
-            varField2,
-            varField3,
-            varField4,
-            varField5,
-            varField6,
-            varField7,
-            varField8,
-            varField9,
-            varField10,
-            createdBy,
-            createdOn,
-            modifiedBy,
-            modifiedOn,
-            deleteBy,
-            deletedOn
+                id,
+                corNumber,
+                corIssueDate,
+                countryOfSupply,
+                inspectionCenter,
+                exporterName,
+                exporterAddress1,
+                exporterAddress2,
+                exporterEmail,
+                applicationBookingDate,
+                inspectionDate,
+                make,
+                model,
+                chasisNumber,
+                engineNumber,
+                engineCapacity,
+                yearOfManufacture,
+                yearOfFirstRegistration,
+                inspectionMileage,
+                unitsOfMileage,
+                inspectionRemarks,
+                previousRegistrationNumber,
+                previousCountryOfRegistration,
+                tareWeight,
+                loadCapacity,
+                grossWeight,
+                numberOfAxles,
+                typeOfVehicle,
+                numberOfPassangers,
+                typeOfBody,
+                bodyColor,
+                fuelType,
+                inspectionFee,
+                inspectionFeeCurrency,
+                inspectionFeeExchangeRate,
+                inspectionFeePaymentDate,
+                status,
+                varField1,
+                varField2,
+                varField3,
+                varField4,
+                varField5,
+                varField6,
+                varField7,
+                varField8,
+                varField9,
+                varField10,
+                createdBy,
+                createdOn,
+                modifiedBy,
+                modifiedOn,
+                deleteBy,
+                deletedOn
         )
-        result = 31 * result + Arrays.hashCode(localCorFile)
         return result
     }
 }

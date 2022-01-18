@@ -459,7 +459,27 @@ export class SmarkComponent implements OnInit {
         });
 
     }
+    onClickSaveSTA10(ok: boolean){
 
+    }
+    onClickSaveSTAPersonnel(ok: boolean){
+
+    }
+    onClickSaveSTARawMaterials(ok: boolean){
+
+    }
+    onClickSaveSTAMachineryPlant(ok: boolean){
+
+    }
+    onClickSaveSTAManufacturingProcess(ok: boolean){
+
+    }
+    onClickSaveSTA10F(ok: boolean){
+
+    }
+    onClickSaveSTAProductsManufactured(ok: boolean){
+
+    }
     openModalRemarks(divVal: string): void {
         const arrHead = ['hofQamCompletenessRemarks', 'labResultsCompletenessRemarks', 'reviewRemarksPCMRemarks', 'recommendationRemarks', 'pscApprovalRejectionRemarks', 'pcmApprovalRejectionRemarks'];
         // tslint:disable-next-line:max-line-length

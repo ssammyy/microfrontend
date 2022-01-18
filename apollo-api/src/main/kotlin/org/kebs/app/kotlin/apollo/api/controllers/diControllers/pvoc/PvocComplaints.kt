@@ -6,6 +6,10 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.exceptions.SupervisorNotFoundException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocComplaintEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocComplaintRemarksEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocComplaintsEmailVerificationEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocQueriesEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
@@ -19,7 +23,6 @@ import java.sql.Timestamp
 import java.time.Instant
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import kotlin.jvm.internal.Intrinsics
 
 @Controller
 @RequestMapping("/api/di/pvoc/")
@@ -36,13 +39,12 @@ class PvocComplaints(
     private val iPvocComplaintCategoryRepo: IPvocComplaintCategoryRepo,
     private val iUserRoleAssignmentsRepository: IUserRoleAssignmentsRepository,
     private val iRfcCocEntityRepo: IRfcCocEntityRepo,
-    private val pvocComplaintRemarksEntityRepo: PvocComplaintRemarksEntityRepo,
-    pvocComplainStatusEntityRepo: PvocComplainStatusEntityRepo
+    private val pvocComplaintRemarksEntityRepo: PvocComplaintRemarksEntityRepo
 ) {
 
     final val appId = applicationMapProperties.mapImportInspection
 
-    final val statuses = pvocComplainStatusEntityRepo.findByStatus(1)
+//    final val statuses = pvocComplainStatusEntityRepo.findByStatus(1)
 
     @GetMapping("email_entry")
     fun emailEntry(model: Model): String {
@@ -145,7 +147,7 @@ class PvocComplaints(
                 iPvocComplaintCertificationsSubCategoryRepo.findByIdOrNull(subCategoryId.toLong()).let { subCategory ->
                     complaint.compliantSubCategory = subCategory
                     complaint.compliantNature = category
-                    complaint.pvocAgent = agent
+//                    complaint.pvocAgent = agent
                     complaint.createdBy = complaint.email
                     complaint.status = 1
                     complaint.createdOn = Timestamp.from(Instant.now())
@@ -240,7 +242,7 @@ class PvocComplaints(
             remarksObj.createdBy = complaint.mpvoc?.firstName +' '+ complaint.mpvoc?.lastName
             remarksObj.createdOn = Timestamp.from(Instant.now())
             pvocComplaintRemarksEntityRepo.save(remarksObj)
-            complaint.reviewStatus = statuses.approve
+//            complaint.reviewStatus = statuses.approve
             iPvocComplaintRepo.save(complaint)
             return "redirect:/api/di/pvoc/complaint-details/${id}"
         }?: throw Exception("Complaint with ${id} id does not exist")
@@ -254,7 +256,7 @@ class PvocComplaints(
             remarksObj.createdBy = complaint.mpvoc?.firstName +' '+ complaint.mpvoc?.lastName
             remarksObj.createdOn = Timestamp.from(Instant.now())
             pvocComplaintRemarksEntityRepo.save(remarksObj)
-            complaint.reviewStatus = statuses.reject
+//            complaint.reviewStatus = statuses.reject
             iPvocComplaintRepo.save(complaint)
             return "redirect:/api/di/pvoc/complaint-details/${id}"
         }?: throw Exception("Complaint with ${id} id does not exist")

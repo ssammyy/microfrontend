@@ -5,6 +5,10 @@ import {PublishingService} from "../../../../core/store/data/std/publishing.serv
 import {HttpErrorResponse} from "@angular/common/http";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {NgxSpinnerService} from "ngx-spinner";
+import swal from "sweetalert2";
+import {selectUserInfo} from "../../../../core/store";
+import {Store} from "@ngrx/store";
+import {Router} from "@angular/router";
 
 declare const $: any;
 
@@ -20,20 +24,25 @@ export class StdPublishingComponent implements OnInit {
     public stdDraft !: StandardDraft | undefined;
     public prepareDraftStandardFormGroup!: FormGroup;
     public uploadedFiles: FileList;
+    fullname = '';
 
-    constructor(private  standardDevelopmentService: PublishingService,
+    constructor(private  publishingService: PublishingService,
                 private formBuilder: FormBuilder,
                 private notifyService: NotificationService,
                 private SpinnerService: NgxSpinnerService,
+                private store$: Store<any>,
+                private router:Router,
     ) {
     }
 
     ngOnInit(): void {
+        this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+            return this.fullname = u.fullName;
+        });
         this.prepareDraftStandardFormGroup = this.formBuilder.group({
             title: ['', Validators.required],
-            officer: ['', Validators.required],
             version: ['', Validators.required],
-            requestedBy: ['', Validators.required],
+            requestorId: ['', Validators.required],
             uploadedFiles: ['', Validators.required]
 
 
@@ -50,7 +59,7 @@ export class StdPublishingComponent implements OnInit {
 
     // public onUpload(standardDraft: StandardDraft): void {
     //     console.log(standardDraft);
-    //     this.standardDevelopmentService.uploadStdDraft(standardDraft).subscribe(
+    //     this.publishingService.uploadStdDraft(standardDraft).subscribe(
     //         (response: StandardDraft) => {
     //             console.log(response);
     //             //this.getTCSECTasks();
@@ -63,12 +72,12 @@ export class StdPublishingComponent implements OnInit {
     // }
     onUpload(): void {
         this.SpinnerService.show();
-        this.standardDevelopmentService.uploadStdDraft(this.prepareDraftStandardFormGroup.value).subscribe(
-            (response ) => {
+        this.publishingService.uploadStdDraft(this.prepareDraftStandardFormGroup.value).subscribe(
+            (response) => {
                 console.log(response);
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Successfully submitted draft standard`);
-             //   this.onClickSaveUploads(response.body.savedRowID)
+                this.onClickSaveUploads(response.body.savedRowID)
                 this.prepareDraftStandardFormGroup.reset();
             },
             (error: HttpErrorResponse) => {
@@ -76,6 +85,35 @@ export class StdPublishingComponent implements OnInit {
                 console.log(error.message);
             }
         );
+    }
+
+    onClickSaveUploads(draftStandardID: string) {
+        if (this.uploadedFiles.length > 0) {
+            const file = this.uploadedFiles;
+            const formData = new FormData();
+            for (let i = 0; i < file.length; i++) {
+                console.log(file[i]);
+                formData.append('docFile', file[i], file[i].name);
+            }
+            this.SpinnerService.show();
+            this.publishingService.uploadFileDetails(draftStandardID, formData).subscribe(
+                (data: any) => {
+                    this.SpinnerService.hide();
+                    this.uploadedFiles = null;
+                    console.log(data);
+                    swal.fire({
+                        title: 'Draft Standard Submitted To Head Of Publishing.',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+                    this.router.navigate(['/draftStandard']);
+                },
+            );
+        }
+
     }
 
     showNotification(from: any, align: any) {
