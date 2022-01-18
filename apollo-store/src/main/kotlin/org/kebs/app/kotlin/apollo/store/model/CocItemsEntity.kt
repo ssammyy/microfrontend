@@ -91,11 +91,11 @@ class CocItemsEntity : Serializable {
 
     @Column(name = "VAR_FIELD_1", nullable = true, length = 350)
     @Basic
-    var varField1: String? = null
+    var cocNumber: String? = null
 
     @Column(name = "VAR_FIELD_2", nullable = true, length = 350)
     @Basic
-    var varField2: String? = null
+    var coiNumber: String? = null
 
     @Column(name = "VAR_FIELD_3", nullable = true, length = 350)
     @Basic
@@ -176,8 +176,8 @@ class CocItemsEntity : Serializable {
                 ownerPin == that.ownerPin &&
                 ownerName == that.ownerName &&
                 status == that.status &&
-                varField1 == that.varField1 &&
-                varField2 == that.varField2 &&
+                cocNumber == that.cocNumber &&
+                coiNumber == that.coiNumber &&
                 varField3 == that.varField3 &&
                 varField4 == that.varField4 &&
                 varField5 == that.varField5 &&
@@ -213,8 +213,8 @@ class CocItemsEntity : Serializable {
             ownerPin,
             ownerName,
             status,
-            varField1,
-            varField2,
+            cocNumber,
+            coiNumber,
             varField3,
             varField4,
             varField5,

@@ -108,6 +108,7 @@ subprojects {
          */
         implementation("com.typesafe.akka:akka-actor_2.13:2.6.10")
         implementation("com.typesafe.akka:akka-testkit_2.13:2.6.10")
+        implementation ("org.apache.camel.springboot:camel-spring-boot-starter:3.9.0")
 
 //        implementation("org.scala-lang.modules:scala-java8-compat_2.13:0.9.1")
         implementation("com.typesafe:config:1.4.1")

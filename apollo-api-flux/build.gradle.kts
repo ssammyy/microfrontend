@@ -35,7 +35,7 @@ dependencies {
 
 application {
 //    mainClassName = "org.kebs.app.kotlin.apollo.api.flux.ApiFluxApplicationKt"
-    application.applicationName = "apollo-api-flux"
+  //  application.applicationName = "apollo-api-flux"
 }
 
 tasks.withType<BootWar>().configureEach {

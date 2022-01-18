@@ -4,7 +4,6 @@ import mu.KotlinLogging
 import org.joda.time.DateTime
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SchedulerImpl
-import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SftpSchedulerImpl
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
@@ -72,8 +71,8 @@ class SchedulerDevelopment(
 ) {
     @Scheduled(fixedDelay = 5_000)//60 Seconds for now
     fun updateDemandNotes() {
-        KotlinLogging.logger { }.info("DEV: UPDATING DEMAND NOTES on SW")
+    //    KotlinLogging.logger { }.info("DEV: UPDATING DEMAND NOTES on SW")
         schedulerImpl.updatePaidDemandNotesStatus()
-        KotlinLogging.logger { }.info("DEV: UPDATED DEMAND NOTES on SW")
+        //   KotlinLogging.logger { }.info("DEV: UPDATED DEMAND NOTES on SW")
     }
 }

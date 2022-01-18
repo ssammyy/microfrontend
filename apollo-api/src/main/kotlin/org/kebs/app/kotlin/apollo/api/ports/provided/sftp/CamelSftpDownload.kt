@@ -3,7 +3,6 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.sftp
 import com.fasterxml.jackson.databind.DeserializationFeature
 import mu.KotlinLogging
 import org.apache.camel.Exchange
-import org.apache.camel.Predicate
 import org.apache.camel.ProducerTemplate
 import org.apache.camel.builder.RouteBuilder
 import org.apache.camel.component.file.GenericFile
@@ -150,7 +149,8 @@ class SFTPService(
     }
 
     fun processDocumentResponses(exchange: Exchange) {
-        KotlinLogging.logger { }.info("Manifest Document: ${exchange.message.headers} | Content: ${exchange.message.body}|")
+        KotlinLogging.logger { }
+            .info("Manifest Document: ${exchange.message.headers} | Content: ${exchange.message.body}|")
         val ucrNumberMessage = exchange.message.body as UCRNumberMessage
         val baseDocRefNo = ucrNumberMessage.data?.dataIn?.sadId
         val ucrNumber = ucrNumberMessage.data?.dataIn?.ucrNumber
@@ -170,7 +170,8 @@ class SFTPService(
     }
 
     fun processUcrResultDocument(exchange: Exchange) {
-        KotlinLogging.logger { }.info("UCR Res Document: ${exchange.message.headers} | Content: ${exchange.message.body}|")
+        KotlinLogging.logger { }
+            .info("UCR Res Document: ${exchange.message.headers} | Content: ${exchange.message.body}|")
         val ucrNumberMessage = exchange.message.body as UCRNumberMessage
         val baseDocRefNo = ucrNumberMessage.data?.dataIn?.sadId
         val ucrNumber = ucrNumberMessage.data?.dataIn?.ucrNumber
