@@ -15,9 +15,7 @@ import org.kebs.app.kotlin.apollo.api.service.DestinationInspectionService
 import org.kebs.app.kotlin.apollo.api.service.InvoicePaymentService
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
-import org.kebs.app.kotlin.apollo.store.model.auction.AuctionUploadsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.DiUploadsEntity
-import org.springframework.core.io.ResourceLoader
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
@@ -324,8 +322,38 @@ class GeneralController(
 
     @GetMapping("/auction/report/{startDate}/{endDate}")
     fun downloadAuctionReport(@PathVariable("startDate") startDate: String, @PathVariable("endDate") endDate: String, httResponse: HttpServletResponse) {
-        val records=auctionService.downloadAuctionReport(startDate, endDate)
-        // TODO: Create Report
+        val response = ApiResponseModel()
+        try {
+            val records = auctionService.downloadAuctionReport(startDate, endDate)
+            if (records.isEmpty()) {
+                response.responseCode = ResponseCodes.EXCEPTION_STATUS
+                response.message = "No records found for the dates ${startDate} to ${endDate}"
+                httResponse.status = HttpStatus.SC_NOT_FOUND
+                httResponse.writer.write(ObjectMapper().writeValueAsString(response))
+                return
+            }
+            // Create Report
+            val data = HashMap<String, Any>()
+            data["imagePath"] = kebsLogoPath ?: ""
+            val startTimestamp = auctionService.getReportTimestamp(startDate, true)
+            val endTimestamp = auctionService.getReportTimestamp(startDate, false)
+            data["aucMonth"] = "${startTimestamp.month} ${endTimestamp.month}"
+            data["reportDate"] = "${startTimestamp.toLocalDateTime().toLocalDate()}-${endTimestamp.toLocalDateTime().toLocalDate()}"
+            // Create datasource report
+            val dataSource = HashMap<String, List<Any>>()
+            dataSource["itemDataSource"] = records
+            // Create a pdfStream
+            val pdfStream = reportsDaoService.extractReportMapDataSource(data, "classpath:reports/auctionGoodsReport.jrxml", dataSource)
+            val serialNumber = "${startDate}-${endDate}"
+            val fileName = "AUCTION-GOODS-${serialNumber}.pdf"
+            download(pdfStream, fileName, httResponse)
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Auction report", ex)
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.message = "Failed to generate auction report"
+            httResponse.status = HttpStatus.SC_INTERNAL_SERVER_ERROR
+            httResponse.writer.write(ObjectMapper().writeValueAsString(response))
+        }
     }
 
     @CrossOrigin

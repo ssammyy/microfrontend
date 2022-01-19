@@ -5,13 +5,16 @@ import org.kebs.app.kotlin.apollo.api.controllers.diControllers.pvoc.ExceptionPa
 import org.kebs.app.kotlin.apollo.api.handlers.forms.WaiverApplication
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
+import org.kebs.app.kotlin.apollo.api.payload.response.PvocWaiverDao
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.PvocBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.store.model.pvc.*
 import org.kebs.app.kotlin.apollo.store.repo.*
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
+import org.springframework.util.StringUtils
 import org.springframework.web.multipart.MultipartFile
 import java.math.BigDecimal
 import java.sql.Timestamp
@@ -35,7 +38,7 @@ class PvocService(
         private val iwaiversApplicationRepo: IwaiversApplicationRepo,
         private val commonDaoServices: CommonDaoServices,
         private val standardLevyRepo: IStandardLevyPaymentsRepository,
-        private val userRolesService: UserRolesService,
+        private val userRolesService: UserRolesService
 ) {
     fun checkExemptionApplicable(): ApiResponseModel {
         val response = ApiResponseModel()
@@ -76,23 +79,29 @@ class PvocService(
     }
 
 
-    fun kimsWaiverApplications(waiverStatus: String, page: PageRequest): ApiResponseModel {
+    fun kimsWaiverApplications(waiverStatus: String, keywords: String?, page: PageRequest): ApiResponseModel {
         val response = ApiResponseModel()
-        val requests = when (waiverStatus) {
-            "NEW" -> this.iwaiversApplicationRepo.findAllByReviewStatusOrderByCreatedOnDesc("NEW", page)
-            "DEFERED" -> this.iwaiversApplicationRepo.findAllByReviewStatusOrderByCreatedOnDesc("DEFERED", page)
-            "REVIEW_REJECTED" -> this.iwaiversApplicationRepo.findAllByReviewStatusOrderByCreatedOnDesc("REVIEW_REJECTED", page)
-            "REVIEW_APPROVED" -> this.iwaiversApplicationRepo.findAllByReviewStatusOrderByCreatedOnDesc("REVIEW_APPROVED", page)
-            "NSC_APPROVED" -> this.iwaiversApplicationRepo.findAllByNscApprovalStatusOrderByCreatedOnDesc("APPROVED", page)
-            "NSC_REJECTED" -> this.iwaiversApplicationRepo.findAllByNscApprovalStatusOrderByCreatedOnDesc("REJECTED", page)
-            "CS_APPROVED" -> this.iwaiversApplicationRepo.findAllByCsApprovalStatusOrderByCreatedOnDesc("APPROVED", page)
-            "CS_REJECTED" -> this.iwaiversApplicationRepo.findAllByCsApprovalStatusOrderByCreatedOnDesc("REJECTED", page)
-            else -> null
+        var requests: Page<PvocWaiversApplicationEntity>?
+        if (StringUtils.hasLength(keywords)) {
+            requests = this.iwaiversApplicationRepo.findAllBySerialNoContains(keywords!!, page)
+        } else {
+            requests = when (waiverStatus) {
+//                "ASSIGNED" -> this.iwaiversApplicationRepo.
+                "NEW" -> this.iwaiversApplicationRepo.findAllByReviewStatusOrderByCreatedOnDesc("NEW", page)
+                "DEFFERED" -> this.iwaiversApplicationRepo.findAllByReviewStatusOrderByCreatedOnDesc("DEFFERED", page)
+                "REVIEW_REJECTED" -> this.iwaiversApplicationRepo.findAllByReviewStatusOrderByCreatedOnDesc("REVIEW_REJECTED", page)
+                "REVIEW_APPROVED" -> this.iwaiversApplicationRepo.findAllByReviewStatusOrderByCreatedOnDesc("REVIEW_APPROVED", page)
+                "NSC_APPROVED" -> this.iwaiversApplicationRepo.findAllByNscApprovalStatusOrderByCreatedOnDesc("APPROVED", page)
+                "NSC_REJECTED" -> this.iwaiversApplicationRepo.findAllByNscApprovalStatusOrderByCreatedOnDesc("REJECTED", page)
+                "CS_APPROVED" -> this.iwaiversApplicationRepo.findAllByCsApprovalStatusOrderByCreatedOnDesc("APPROVED", page)
+                "CS_REJECTED" -> this.iwaiversApplicationRepo.findAllByCsApprovalStatusOrderByCreatedOnDesc("REJECTED", page)
+                else -> null
+            }
         }
         if (requests != null) {
             response.responseCode = ResponseCodes.SUCCESS_CODE
             response.message = "Success"
-            response.data = requests.toList()
+            response.data = PvocWaiverDao.fromList(requests.toList())
             response.totalPages = requests.totalPages
             response.totalCount = requests.totalElements
         } else {

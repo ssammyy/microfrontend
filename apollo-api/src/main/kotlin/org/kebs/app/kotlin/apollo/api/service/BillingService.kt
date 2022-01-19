@@ -95,25 +95,33 @@ class BillingService(
      * @param demandNote demand node to add for billing
      * @param map application properties
      */
-    fun registerBillTransaction(demandNote: CdDemandNoteEntity, map: ServiceMapsEntity): BillTransactionsEntity? {
-        val corporate = corporateCustomerRepository.findAllByCorporateIdentifier(demandNote.importerPin)
+    fun registerBillTransaction(demandNote: CdDemandNoteEntity, identifier: String?, map: ServiceMapsEntity): BillTransactionsEntity? {
+        // Find corporate by supplied indentifier(Courier Good) or importer Pin
+        val corporate = identifier?.let {
+            corporateCustomerRepository.findAllByCorporateIdentifier(it)
+        } ?: corporateCustomerRepository.findAllByCorporateIdentifier(demandNote.importerPin)
+        // Add transaction to billing if corporate billing exists
         if (corporate.isPresent) {
-            val transactionEntity = BillTransactionsEntity()
-            transactionEntity.amount = demandNote.totalAmount
-            transactionEntity.corporateId = corporate.get().id
-            transactionEntity.description = demandNote.descriptionGoods
-            transactionEntity.invoiceNumber = demandNote.demandNoteNumber
-            transactionEntity.transactionType = "DEMAND_NOTE"
-            transactionEntity.paidStatus = 0
-            transactionEntity.tempReceiptNumber = generateRefNoteNumber(corporate.get().accountLimits, map)
-            transactionEntity.status = 1
-            transactionEntity.transactionDate = Timestamp.from(Instant.now())
-            transactionEntity.transactionId = demandNote.id.toString()
-            transactionEntity.createdBy = demandNote.createdBy
-            transactionEntity.createdOn = Timestamp.from(Instant.now())
-            val saved = billTransactionRepo.save(transactionEntity)
-            this.addBillTransaction(transactionEntity, corporate.get())
-            return saved
+            // Check if account is suspended or blocked
+            if (!(corporate.get().accountSuspendend == 1 || corporate.get().accountBlocked == 1)) {
+
+                val transactionEntity = BillTransactionsEntity()
+                transactionEntity.amount = demandNote.totalAmount
+                transactionEntity.corporateId = corporate.get().id
+                transactionEntity.description = demandNote.descriptionGoods
+                transactionEntity.invoiceNumber = demandNote.demandNoteNumber
+                transactionEntity.transactionType = "DEMAND_NOTE"
+                transactionEntity.paidStatus = 0
+                transactionEntity.tempReceiptNumber = generateRefNoteNumber(corporate.get().accountLimits, map)
+                transactionEntity.status = 1
+                transactionEntity.transactionDate = Timestamp.from(Instant.now())
+                transactionEntity.transactionId = demandNote.id.toString()
+                transactionEntity.createdBy = demandNote.createdBy
+                transactionEntity.createdOn = Timestamp.from(Instant.now())
+                val saved = billTransactionRepo.save(transactionEntity)
+                this.addBillTransaction(transactionEntity, corporate.get())
+                return saved
+            }
         }
         return null
 

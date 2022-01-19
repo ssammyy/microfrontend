@@ -10,12 +10,13 @@ interface IwaiversApplicationRepo : HazelcastRepository<PvocWaiversApplicationEn
     fun findAllByStatusAndApplicantNameOrderByCreatedOnDesc(status: Int, applicantName: String, pageable: Pageable) : Page<PvocWaiversApplicationEntity>?
     fun findAllByStatusAndApplicantNameAndCreatedOnBetweenOrderByCreatedOnDesc(status: Int, applicantName: String, from: Date, to: Date, pageable: Pageable) : Page<PvocWaiversApplicationEntity>?
     fun findAllByStatusOrderByCreatedOnDesc(status: Int, pageable: Pageable) : Page<PvocWaiversApplicationEntity>?
-
+    fun findAllByPvocOfficerOrderByCreatedOnDesc(status: Int, pageable: Pageable) : Page<PvocWaiversApplicationEntity>?
     fun findAllByStatusAndCreatedOnBetweenOrderByCreatedOnDesc(status: Int, from: Date, to: Date, pageable: Pageable) : Page<PvocWaiversApplicationEntity>?
     fun findAllByReviewStatusOrderByCreatedOnDesc(reviewStatus: String, pageable: Pageable) : Page<PvocWaiversApplicationEntity>
     fun findAllByNscApprovalStatusOrderByCreatedOnDesc(nscReviewStatus: String, pageable: Pageable) : Page<PvocWaiversApplicationEntity>
     fun findAllByCsApprovalStatusOrderByCreatedOnDesc(csReviewStatus: String, pageable: Pageable) : Page<PvocWaiversApplicationEntity>
     fun findAllByCreatedBy(userName: String?, page: Pageable): Page<PvocWaiversApplicationEntity>?
+    fun findAllBySerialNoContains(keyword: String?, page: Pageable): Page<PvocWaiversApplicationEntity>?
     fun findFirstByCreatedByAndId(username: String?, id: Long): PvocWaiversApplicationEntity?
 }
 

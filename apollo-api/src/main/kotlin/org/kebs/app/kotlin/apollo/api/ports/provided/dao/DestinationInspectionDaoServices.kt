@@ -21,6 +21,7 @@ import org.kebs.app.kotlin.apollo.store.model.auction.AuctionRequests
 import org.kebs.app.kotlin.apollo.store.model.di.*
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmissionEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
+import org.kebs.app.kotlin.apollo.store.repo.auction.IAuctionRequestsRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.*
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleSubmissionRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -42,6 +43,12 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 
+// Documents issued after inspections
+enum class InspectionIssuedDocuments(val code: String) {
+    COC("COC"), NCR("NCR"), COI("COI"), COR("COR"), OTHER("OTHER")
+}
+
+// Local document type setting codes (varField1)
 enum class CdTypeCodes(val code: String) {
     COC("NO_COC"),
     COR("NO_COR"),
@@ -111,6 +118,7 @@ class DestinationInspectionDaoServices(
         private val iCdInspectionGeneralRepo: ICdInspectionGeneralRepository,
         private val cdMotorVehicleInspectionChecklistRepo: ICdInspectionMotorVehicleChecklistRepository,
         private val iCdInspectionAgrochemItemChecklistRepo: ICdInspectionAgrochemItemChecklistRepository,
+        private val auctionRequestRepository: IAuctionRequestsRepository,
         // Demand notes
         private val currencyExchangeRateRepository: ICfgCurrencyExchangeRateRepository,
         //Inspection Checklist Repos
@@ -124,24 +132,6 @@ class DestinationInspectionDaoServices(
 
     @Autowired
     lateinit var sftpService: SftpServiceImpl
-
-    @Value("\${destination.inspection.cd.type.coc}")
-    lateinit var cocCdType: String
-
-    @Value("\${destination.inspection.cd.type.exempted}")
-    lateinit var exemptedCdType: String
-
-    @Value("\${destination.inspection.cd.type.cor}")
-    lateinit var corCdType: String
-
-    @Value("\${destination.inspection.cd.type.no.cor}")
-    lateinit var noCorCdType: String
-
-    @Value("\${destination.inspection.cd.type.ncr}")
-    lateinit var ncrCdType: String
-
-    @Value("\${destination.inspection.cd.type.temporary.imports}")
-    lateinit var temporaryImportCdType: String
 
     @Value("\${destination.inspection.checklist.name}")
     lateinit var checkListName: String
@@ -280,6 +270,10 @@ class DestinationInspectionDaoServices(
                 ?: throw Exception("Local COC TYPE with type code = ${cocTypeCode}, does not Exist")
     }
 
+    fun findCocByCocNumber(cocNumber: String): CocsEntity? {
+        return this.cocRepo.findFirstByCocNumberAndCocNumberIsNotNullOrCoiNumberAndCoiNumberIsNotNull(cocNumber, cocNumber).orElse(null)
+    }
+
     fun createLocalCoc(
             user: UsersEntity,
             consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
@@ -412,7 +406,6 @@ class DestinationInspectionDaoServices(
                     try {
                         with(localNcr) {
                             coiNumber = "UNKNOWN"
-                            ncrCdType = "YES"
                             cocNumber = "KEBSNCR${
                                 generateRandomText(
                                         5,
@@ -2245,18 +2238,6 @@ class DestinationInspectionDaoServices(
         }
         return iConsignmentDocumentDetailsRepo.save(cdDetailsEntity)
 
-    }
-
-    fun updateCDDetailsWithCORData(
-            corsBakEntity: CorsBakEntity,
-            cdDetailsEntity: ConsignmentDocumentDetailsEntity
-    ): ConsignmentDocumentDetailsEntity {
-        KotlinLogging.logger { }.info { "CorsBakEntity = $corsBakEntity.id" }
-        with(cdDetailsEntity) {
-            cdType = findCdTypeDetailsWithUuid(corCdType)
-            docTypeId = corsBakEntity.id
-        }
-        return iConsignmentDocumentDetailsRepo.save(cdDetailsEntity)
     }
 
     fun findCOC(ucrNumber: String, docType: String): CocsEntity {

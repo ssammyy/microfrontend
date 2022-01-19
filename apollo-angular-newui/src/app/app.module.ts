@@ -253,6 +253,11 @@ import { AproveRejectAuctionItemComponent } from './apollowebs/di/auction/aprove
 import { GenerateDemandNoteComponent } from './apollowebs/di/auction/generate-demand-note/generate-demand-note.component';
 import { AddAuctionRecordComponent } from './apollowebs/di/auction/add-auction-record/add-auction-record.component';
 import { AddEditAuctionItemComponent } from './apollowebs/di/auction/add-edit-auction-item/add-edit-auction-item.component';
+import { ViewComplaintsComponent } from './apollowebs/pvoc/complaints/view-complaints/view-complaints.component';
+import { ViewComplaintDetailsComponent } from './apollowebs/pvoc/complaints/view-complaint-details/view-complaint-details.component';
+import { GenerateAuctionKraReportComponent } from './apollowebs/di/auction/generate-auction-kra-report/generate-auction-kra-report.component';
+import { ViewWaiverApplicationsComponent } from './apollowebs/pvoc/waivers/view-waiver-applications/view-waiver-applications.component';
+import { ViewWaiverDetailsComponent } from './apollowebs/pvoc/waivers/view-waiver-details/view-waiver-details.component';
 
 @NgModule({
     imports: [
@@ -530,6 +535,11 @@ import { AddEditAuctionItemComponent } from './apollowebs/di/auction/add-edit-au
         GenerateDemandNoteComponent,
         AddAuctionRecordComponent,
         AddEditAuctionItemComponent,
+        ViewComplaintsComponent,
+        ViewComplaintDetailsComponent,
+        GenerateAuctionKraReportComponent,
+        ViewWaiverApplicationsComponent,
+        ViewWaiverDetailsComponent,
     ],
     providers: [
         MatNativeDateModule,

@@ -123,7 +123,7 @@ export const ROUTES: RouteInfo[] = [
                 privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
             },
             {
-                path: 'waiver-applications',
+                path: 'waivers/applications',
                 title: 'Waiver application',
                 ab: 'WA',
                 privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']

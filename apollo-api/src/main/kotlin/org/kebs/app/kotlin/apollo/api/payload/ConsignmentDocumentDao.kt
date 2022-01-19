@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.api.payload
 
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.TaskDetails
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.di.DiTaskDetails
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CdTypeCodes
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.*
 import org.springframework.security.core.Authentication
@@ -50,7 +51,7 @@ class ConsignmentEnableUI {
     var canInspect: Boolean? = null
     var checklistFilled: Boolean = false
     var hasPort: Boolean? = null
-    var demandNoteRequired: Boolean=false
+    var demandNoteRequired: Boolean = false
     var hasActiveProcess = false
 
     companion object {
@@ -82,7 +83,7 @@ class ConsignmentEnableUI {
                 approveReject = (cd.targetApproveStatus == null || cd.inspectionDateSetStatus == map.activeStatus) && modify
             }
             cd.cdStandardsTwo?.let {
-                ui.demandNoteRequired="DES_INSP".equals(it.localCocType, true)
+                ui.demandNoteRequired = "DES_INSP".equals(it.localCocType, true)
             }
             ui.complianceDisabled = (cd.compliantStatus == map.activeStatus || cd.compliantStatus == map.initStatus) || !ui.checklistFilled || ui.targetRejected
             ui.approveReject = !(ui.targetDisabled && ui.demandNoteDisabled && ui.complianceDisabled)
@@ -147,7 +148,7 @@ class ConsignmentDocumentDao {
     var taskDetails: DiTaskDetails? = null
 
     companion object {
-        fun fromEntity(doc: ConsignmentDocumentDetailsEntity, ncrId: String = ""): ConsignmentDocumentDao {
+        fun fromEntity(doc: ConsignmentDocumentDetailsEntity): ConsignmentDocumentDao {
             val dt = ConsignmentDocumentDao()
             dt.id = doc.id
             dt.summaryPageURL = doc.summaryPageURL
@@ -159,7 +160,7 @@ class ConsignmentDocumentDao {
                 dt.cdTypeCategory = it.category
                 dt.cdTypeName = it.typeName
                 dt.cdTypeDescription = it.description
-                dt.isNcrDocument = it.uuid == ncrId
+                dt.isNcrDocument = it.varField1 == CdTypeCodes.NCR.code
             }
             doc.freightStation?.let {
                 dt.freightStation = it.cfsName
@@ -190,10 +191,10 @@ class ConsignmentDocumentDao {
             return dt
         }
 
-        fun fromList(docs: List<ConsignmentDocumentDetailsEntity>, ncrId: String = ""): List<ConsignmentDocumentDao> {
+        fun fromList(docs: List<ConsignmentDocumentDetailsEntity>): List<ConsignmentDocumentDao> {
             val documents = mutableListOf<ConsignmentDocumentDao>()
             docs.forEach {
-                documents.add(fromEntity(it, ncrId))
+                documents.add(fromEntity(it))
             }
             return documents
         }

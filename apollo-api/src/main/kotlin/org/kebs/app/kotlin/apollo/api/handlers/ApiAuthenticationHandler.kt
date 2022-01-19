@@ -16,6 +16,8 @@ import org.kebs.app.kotlin.apollo.store.model.UserVerificationTokensEntity
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.kebs.app.kotlin.apollo.store.repo.IUserVerificationTokensRepository
+import org.springframework.expression.spel.SpelParserConfiguration
+import org.springframework.expression.spel.support.StandardEvaluationContext
 import org.springframework.http.server.ServletServerHttpRequest
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -32,15 +34,16 @@ import java.time.temporal.ChronoUnit
 
 @Component
 class ApiAuthenticationHandler(
-    private val tokenService: JwtTokenService,
-    private val authenticationProperties: AuthenticationProperties,
-    private val authenticationManager: AuthenticationManager,
-    private val commonDaoServices: CommonDaoServices,
-    private val usersRepo: IUserRepository,
-    private val verificationTokensRepo: IUserVerificationTokensRepository,
-    private val smsService: SmsServiceImpl,
-    private val customAuthenticationProvider: CustomAuthenticationProvider
+        private val tokenService: JwtTokenService,
+        private val authenticationProperties: AuthenticationProperties,
+        private val authenticationManager: AuthenticationManager,
+        private val commonDaoServices: CommonDaoServices,
+        private val usersRepo: IUserRepository,
+        private val verificationTokensRepo: IUserVerificationTokensRepository,
+        private val smsService: SmsServiceImpl,
+        private val customAuthenticationProvider: CustomAuthenticationProvider
 ) {
+
 
     fun generateOtp(req: ServerRequest): ServerResponse {
         val reqBody = req.body<OtpRequestValuesDto>()
@@ -101,9 +104,9 @@ class ApiAuthenticationHandler(
     }
 
     fun generateTransactionReference(
-        length: Int = 12,
-        secureRandomAlgorithm: String = "SHA1PRNG",
-        messageDigestAlgorithm: String = "SHA-512", prefix: Boolean = false,
+            length: Int = 12,
+            secureRandomAlgorithm: String = "SHA1PRNG",
+            messageDigestAlgorithm: String = "SHA-512", prefix: Boolean = false,
     ): String {
         return generateRandomText(length, secureRandomAlgorithm, messageDigestAlgorithm, false)
     }
@@ -126,12 +129,12 @@ class ApiAuthenticationHandler(
                     val roles = tokenService.extractRolesFromToken(token)?.map { it.authority }
                     // TODO: Delay this part until correct token is provided
                     val response = JwtResponse(
-                        token,
-                        user.id,
-                        user.userName,
-                        user.email,
-                        commonDaoServices.concatenateName(user),
-                        roles
+                            token,
+                            user.id,
+                            user.userName,
+                            user.email,
+                            commonDaoServices.concatenateName(user),
+                            roles
                     ).apply {
                         /**
                          * TODO: Set expiry padding configuration  check this time stamp is false

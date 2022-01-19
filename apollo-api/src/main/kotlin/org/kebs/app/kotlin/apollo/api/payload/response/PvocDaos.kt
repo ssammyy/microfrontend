@@ -1,9 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.payload.response
 
-import org.kebs.app.kotlin.apollo.store.model.pvc.PvocComplaintRecommendationEntity
-import org.kebs.app.kotlin.apollo.store.model.pvc.PvocComplaintCategoryEntity
-import org.kebs.app.kotlin.apollo.store.model.pvc.PvocComplaintCertificationSubCategoriesEntity
-import org.kebs.app.kotlin.apollo.store.model.pvc.PvocComplaintEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.*
+import java.sql.Timestamp
 
 class PvocComplaintDao {
     var complaintId: Long? = null
@@ -24,6 +22,10 @@ class PvocComplaintDao {
     var recommendationId: Long? = null
     var recommendationAction: String? = null
     var recommendationDesc: String? = null
+    var complaintDate: Timestamp? = null
+    var officerName: String? = null
+    var hodName: String? = null
+    var mpvocName: String? = null
 
     companion object {
         fun fromEntity(complaint: PvocComplaintEntity): PvocComplaintDao {
@@ -36,6 +38,10 @@ class PvocComplaintDao {
                 address = complaint.address
                 cocNo = complaint.cocNo
                 email = complaint.email
+                complaintDate = complaint.createdOn
+                officerName = "${complaint.pvocUser?.firstName} ${complaint.pvocUser?.lastName}"
+                hodName = "${complaint.hod?.firstName} ${complaint.hod?.lastName}"
+                mpvocName = "${complaint.mpvoc?.firstName} ${complaint.mpvoc?.lastName}"
                 complaintDescription = complaint.generalDescription
                 pvocAgent = complaint.pvocAgent?.partnerName
                 pvocAgentId = complaint.pvocAgent?.id
@@ -43,9 +49,7 @@ class PvocComplaintDao {
                 categoryName = complaint.compliantNature?.name
                 subCategoryId = complaint.compliantSubCategory?.id
                 subCategoryName = complaint.compliantSubCategory?.name
-                recommendationId = complaint.recomendation?.id
-                recommendationAction = complaint.recomendation?.action
-                recommendationDesc = complaint.recomendation?.description
+                recommendationDesc = complaint.recomendation
             }
         }
 
@@ -120,6 +124,59 @@ class PvocComplaintRecommendationDao {
         fun fromList(complaints: List<PvocComplaintRecommendationEntity>): List<PvocComplaintRecommendationDao> {
             val daos = mutableListOf<PvocComplaintRecommendationDao>()
             complaints.forEach { daos.add(fromEntity(it)) }
+            return daos
+        }
+    }
+}
+
+class PvocWaiverDao {
+    var waiverId: Long = 0
+    var status: Int? = null
+    var applicantName: String? = null
+    var phoneNumber: String? = null
+    var emailAddress: String? = null
+    var kraPin: String? = null
+    var address: String? = null
+    var category: String? = null
+    var justification: String? = null
+    var productDescription: String? = null
+    var documentation: String? = null
+    var reviewStatus: String? = null
+    var nscApprovalStatus: String? = null
+    var csApprovalStatus: String? = null
+    var serialNo: String? = null
+    var csResponceCode: String? = null
+    var csResponceMessage: String? = null
+    var submittedOn: Timestamp? = null
+
+    companion object {
+        fun fromEntity(waiver: PvocWaiversApplicationEntity): PvocWaiverDao {
+            val dao = PvocWaiverDao().apply {
+                waiverId = waiver.id
+                status = waiver.status
+                applicantName = waiver.applicantName
+                phoneNumber = waiver.phoneNumber
+                emailAddress = waiver.emailAddress
+                kraPin = waiver.kraPin
+                address = waiver.address
+                category = waiver.category
+                justification = waiver.justification
+                productDescription = waiver.productDescription
+                documentation = waiver.documentation
+                reviewStatus = waiver.reviewStatus
+                nscApprovalStatus = waiver.nscApprovalStatus
+                csApprovalStatus = waiver.csApprovalStatus
+                serialNo = waiver.serialNo
+                csResponceCode = waiver.csResponceCode
+                csResponceMessage = waiver.csResponceMessage
+                submittedOn = waiver.createdOn
+            }
+            return dao
+        }
+
+        fun fromList(waivers: List<PvocWaiversApplicationEntity>): List<PvocWaiverDao> {
+            val daos = mutableListOf<PvocWaiverDao>()
+            waivers.forEach { daos.add(fromEntity(it)) }
             return daos
         }
     }

@@ -890,6 +890,11 @@ class CommonDaoServices(
                 }
                 ?: throw ExpectedDataNotFound("No Business Nature with Business Line of ID  = ${businessLineEntity.id} and status = $status, Existing")
     }
+    fun currentUserHasRole(roleName: String):Boolean {
+        val usersEntity=this.loggedInUserDetails()
+        val supervisorCount = this.roleAssignmentsRepository.checkUserHasRole(roleName, 1, usersEntity.id!!)
+        return supervisorCount > 0
+    }
 
     fun currentUserDiSupervisor():Boolean {
         val usersEntity=this.loggedInUserDetails()
@@ -1304,7 +1309,7 @@ class CommonDaoServices(
             data: Any?,
             sr: ServiceRequestsEntity? = null
     ): List<NotificationsBufferEntity>? {
-        notificationsRepo.findByServiceMapIdAndUuidAndStatus(map, uuid, map.activeStatus)
+        notificationsRepo.findByUuidAndStatus(uuid, map.activeStatus)
                 ?.let { notifications ->
                     return generateBufferedNotification(notifications, map, email, data, sr)
                 }

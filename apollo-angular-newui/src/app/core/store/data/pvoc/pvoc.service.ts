@@ -132,4 +132,57 @@ export class PVOCService {
         console.log(url)
         return this.sendFiles(data, files, url)
     }
+
+    public listComplaintRequests(status: string, page: any, size: any): Observable<any>{
+        let params={}
+        params["size"]=size
+        params["page"]=page
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/exemptions/get/"+status),{
+            params: params
+        })
+    }
+
+    public listExemptionApplications(status: string, page: any, size: any): Observable<any>{
+        let params={}
+        params["size"]=size
+        params["page"]=page
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/exemptions/get/"+status),{
+            params: params
+        })
+    }
+
+    public listComplaintApplications(keywords: string,status: string, page: any, size: any): Observable<any>{
+        let params={}
+        params["size"]=size
+        params["page"]=page
+        if(keywords){
+            params["keywords"]=keywords
+        }
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/complaint/get/"+status),{
+            params: params
+        })
+    }
+
+    getComplaintApplicationDetails(complaintId: any): Observable<any>{
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/complaint/details/"+complaintId))
+    }
+
+    public listWaiverApplications(keywords: string,status: string, page: any, size: any): Observable<any>{
+        let params={}
+        params["size"]=size
+        params["page"]=page
+        if(keywords){
+            params["keywords"]=keywords
+        }
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/waiver/get/"+status),{
+            params: params
+        })
+    }
+    getWaiverApplicationDetails(waiverId: any): Observable<any>{
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/waiver/details/"+waiverId))
+    }
+
+
+
+
 }

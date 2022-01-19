@@ -1713,7 +1713,7 @@ class RegistrationDaoServices(
         data: Any?,
         sr: ServiceRequestsEntity? = null
     ): List<NotificationsBufferEntity>? {
-        notificationsRepo.findByServiceMapIdAndServiceRequestStatusAndStatus(map, sr?.status, map.activeStatus)
+        notificationsRepo.findByServiceRequestStatusAndStatus(sr?.status, map.activeStatus)
             ?.let { notifications ->
                 return commonDaoServices.generateBufferedNotification(notifications, map, email, data, sr)
             }

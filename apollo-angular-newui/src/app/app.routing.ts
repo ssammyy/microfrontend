@@ -127,6 +127,10 @@ import {ViewBillLimitsComponent} from "./apollowebs/invoice/limits/view-bill-lim
 import {ViewTransactionsComponent} from "./apollowebs/invoice/corporate/view-transactions/view-transactions.component";
 import {ViewAuctionItemsComponent} from "./apollowebs/di/auction/view-auction-items/view-auction-items.component";
 import {AuctionItemDetailsComponent} from "./apollowebs/di/auction/auction-item-details/auction-item-details.component";
+import {ViewComplaintsComponent} from "./apollowebs/pvoc/complaints/view-complaints/view-complaints.component";
+import {ViewComplaintDetailsComponent} from "./apollowebs/pvoc/complaints/view-complaint-details/view-complaint-details.component";
+import {ViewWaiverApplicationsComponent} from "./apollowebs/pvoc/waivers/view-waiver-applications/view-waiver-applications.component";
+import {ViewWaiverDetailsComponent} from "./apollowebs/pvoc/waivers/view-waiver-details/view-waiver-details.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -458,7 +462,22 @@ export const routes: Routes = [
             },
             {
                 path: 'waivers',
-                component: ImportationWaiverComponent
+                children: [
+                    {
+                        path: '',
+                        component: ImportationWaiverComponent,
+                        pathMatch: 'full'
+                    },
+                    {
+                        path: 'applications',
+                        component: ViewWaiverApplicationsComponent,
+                        pathMatch: 'full'
+                    },
+                    {
+                        path: 'application/:id',
+                        component: ViewWaiverDetailsComponent
+                    }
+                ]
             },
             {
                 path: 'exceptions',
@@ -471,6 +490,19 @@ export const routes: Routes = [
             {
                 path: 'partners/view/:id',
                 component: ViewPartnerDetailsComponent
+            },
+            {
+                path: "complaints",
+                children: [
+                    {
+                        path: '',
+                        component: ViewComplaintsComponent
+                    },
+                    {
+                        path: ':id',
+                        component: ViewComplaintDetailsComponent
+                    }
+                ]
             }
         ]
     },
