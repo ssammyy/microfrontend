@@ -14,9 +14,6 @@ class PvocExceptionRawMaterialCategoryEntity : Serializable {
     @GeneratedValue(generator = "DAT_KEBS_PVOC_EXCEPTION_RAW_MATERIAL_CATEGORY_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     var id: Long = 0
 
-    @Column(name = "STATUS")
-    @Basic
-    var status: Long? = null
 
     @Column(name = "RAW_MATERIAL_DESCRIPTION")
     @Basic
@@ -45,6 +42,10 @@ class PvocExceptionRawMaterialCategoryEntity : Serializable {
     @Column(name = "HS_DESCRIPTION")
     @Basic
     var hsDescription: String? = null
+
+    @Column(name = "STATUS")
+    @Basic
+    var status: Long? = null
 
     @Column(name = "VAR_FIELD_1")
     @Basic

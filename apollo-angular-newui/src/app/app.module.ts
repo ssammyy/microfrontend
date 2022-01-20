@@ -258,6 +258,9 @@ import { ViewComplaintDetailsComponent } from './apollowebs/pvoc/complaints/view
 import { GenerateAuctionKraReportComponent } from './apollowebs/di/auction/generate-auction-kra-report/generate-auction-kra-report.component';
 import { ViewWaiverApplicationsComponent } from './apollowebs/pvoc/waivers/view-waiver-applications/view-waiver-applications.component';
 import { ViewWaiverDetailsComponent } from './apollowebs/pvoc/waivers/view-waiver-details/view-waiver-details.component';
+import { ViewExemptionApplicationsComponent } from './apollowebs/pvoc/exemptions/view-exemption-applications/view-exemption-applications.component';
+import { ViewExemptionDetailsComponent } from './apollowebs/pvoc/exemptions/view-exemption-details/view-exemption-details.component';
+import { UpdateExemptionTaskComponent } from './apollowebs/pvoc/exemptions/update-exemption-task/update-exemption-task.component';
 
 @NgModule({
     imports: [
@@ -540,6 +543,9 @@ import { ViewWaiverDetailsComponent } from './apollowebs/pvoc/waivers/view-waive
         GenerateAuctionKraReportComponent,
         ViewWaiverApplicationsComponent,
         ViewWaiverDetailsComponent,
+        ViewExemptionApplicationsComponent,
+        ViewExemptionDetailsComponent,
+        UpdateExemptionTaskComponent,
     ],
     providers: [
         MatNativeDateModule,

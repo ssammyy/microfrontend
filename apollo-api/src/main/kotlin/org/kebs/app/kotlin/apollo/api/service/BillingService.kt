@@ -131,9 +131,18 @@ class BillingService(
         val response = ApiResponseModel()
         val corporate = corporateCustomerRepository.findById(corporateId)
         if (corporate.isPresent) {
-            response.data = billTransactionRepo.findAllByCorporateIdAndBillId(billId, corporateId)
-            response.responseCode = ResponseCodes.SUCCESS_CODE
-            response.message = "Success"
+            val bill = this.billPaymentRepository.findById(billId)
+            if (bill.isPresent) {
+                val map = mutableMapOf<String, Any>()
+                map["transactions"] = billTransactionRepo.findAllByCorporateIdAndBillId(billId, corporateId)
+                map["bill"] = bill.get()
+                response.data = map
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+                response.message = "Success"
+            } else {
+                response.responseCode = ResponseCodes.NOT_FOUND
+                response.message = "Bill not found"
+            }
         } else {
             response.responseCode = ResponseCodes.NOT_FOUND
             response.message = "Corporate not found"

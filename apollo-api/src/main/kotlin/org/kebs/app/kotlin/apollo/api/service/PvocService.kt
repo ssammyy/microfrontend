@@ -1,11 +1,11 @@
-package org.kebs.app.kotlin.apollo.api.service;
+package org.kebs.app.kotlin.apollo.api.service
 
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.controllers.diControllers.pvoc.ExceptionPayload
 import org.kebs.app.kotlin.apollo.api.handlers.forms.WaiverApplication
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
-import org.kebs.app.kotlin.apollo.api.payload.response.PvocWaiverDao
+import org.kebs.app.kotlin.apollo.api.payload.response.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.PvocBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.store.model.pvc.*
@@ -21,6 +21,10 @@ import java.sql.Timestamp
 import java.time.Instant
 import java.time.LocalDateTime
 import java.util.*
+
+enum class PvocExemptionStatus(val status: String) {
+    NEW_APPLICATIONS("NEW"), PVOC_APPROVED("PVOC_APPROVE"), PVOC_REJECTED("PVOC_REJECTED"), DEFFERED("DEFFERED"), CERT_APPROVED("CERT_APPROVE"), CERT_REJECTED("CERT_REJECTED")
+}
 
 @Service
 class PvocService(
@@ -129,12 +133,12 @@ class PvocService(
             val request = optional.get()
             when (approvalStatus) {
                 "APPROVED" -> {
-                    request.nscApprovalStatus = "APPROVED"
+                    request.nscApprovalStatus = "NSC_APPROVED"
                     request.rejectionStatus = 0
                 }
                 "REJECTED" -> {
                     request.rejectionStatus = 1
-                    request.nscApprovalStatus = "REJECTED"
+                    request.nscApprovalStatus = "NSC_REJECTED"
                 }
             }
             request.varField2 = remarks
@@ -285,6 +289,22 @@ class PvocService(
         }
     }
 
+    fun approveDeferRejectExemption(requestId: Long, taskStatus: String, taskId: String, remarks: String): ApiResponseModel {
+        var response = ApiResponseModel()
+        try {
+            val data = mutableMapOf<String, Any>()
+            data["remarks"] = remarks
+            data["approve"] = taskStatus
+            this.pvocBpmn.pvocCompleteTask(taskId, data)
+            response.message = "Success"
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+        } catch (ex: Exception) {
+            response.message = "Task approval failed"
+            response.responseCode = ResponseCodes.FAILED_CODE
+        }
+        return response
+    }
+
     fun generateExemptionCertificate(requestId: Long, reviewOfficer: String) {
         val optional = this.iPvocApplicationRepo.findById(requestId)
         if (optional.isPresent) {
@@ -327,16 +347,16 @@ class PvocService(
     }
 
 
-    fun listOrSearchApplicationExceptions(status: String, page: PageRequest): ApiResponseModel {
+    fun listOrSearchApplicationExceptions(status: String, keywords: String?, page: PageRequest): ApiResponseModel {
         val response = ApiResponseModel()
         try {
             val pg = when (status) {
-                "NEW" -> this.iPvocApplicationRepo.findAllByReviewStatus(0, page)
-                "APPROVED" -> this.iPvocApplicationRepo.findAllByReviewStatus(1, page)
-                "REJECTED" -> this.iPvocApplicationRepo.findAllByReviewStatus(2, page)
-                "DEFERED" -> this.iPvocApplicationRepo.findAllByReviewStatus(3, page)
-                "CERT_REJECTED" -> this.iPvocApplicationRepo.findAllByFinalApproval(2, page)
-                "CERT_APPROVED" -> this.iPvocApplicationRepo.findAllByFinalApproval(1, page)
+                "NEW" -> this.iPvocApplicationRepo.findAllByReviewStatus(PvocExemptionStatus.NEW_APPLICATIONS.status, page)
+                "APPROVED" -> this.iPvocApplicationRepo.findAllByReviewStatus(PvocExemptionStatus.PVOC_APPROVED.status, page)
+                "REJECTED" -> this.iPvocApplicationRepo.findAllByReviewStatus(PvocExemptionStatus.PVOC_REJECTED.status, page)
+                "DEFFERED" -> this.iPvocApplicationRepo.findAllByReviewStatus(PvocExemptionStatus.DEFFERED.status, page)
+                "CERT_REJECTED" -> this.iPvocApplicationRepo.findAllByReviewStatus(PvocExemptionStatus.CERT_REJECTED.status, page)
+                "CERT_APPROVED" -> this.iPvocApplicationRepo.findAllByReviewStatus(PvocExemptionStatus.CERT_APPROVED.status, page)
                 else -> {
                     response.responseCode = ResponseCodes.FAILED_CODE
                     response.message = "Invalid request status: $status"
@@ -344,7 +364,7 @@ class PvocService(
                 }
             }
             if (pg != null) {
-                response.data = pg.toList()
+                response.data = PvocApplicationDto.fromList(pg.toList())
                 response.message = "Exemption application"
                 response.responseCode = ResponseCodes.SUCCESS_CODE
                 response.totalPages = pg.totalPages
@@ -379,8 +399,8 @@ class PvocService(
             pvocExceptionApp.postalAadress = manufacturer?.postalAddress
             pvocExceptionApp.physicalLocation = manufacturer?.physicalLocation
             pvocExceptionApp.contactPersorn = manufacturer?.contactPersonName
-            pvocExceptionApp.varField8 = manufacturer?.contactPersonEmail
-            pvocExceptionApp.varField9 = manufacturer?.contactPersonPhone
+            pvocExceptionApp.contactEmail = manufacturer?.contactPersonEmail
+            pvocExceptionApp.contactName = manufacturer?.contactPersonPhone
             with(pvocExceptionApp) {
                 createdBy = userDetails?.email
                 createdOn = Timestamp.from(Instant.now())
@@ -457,22 +477,9 @@ class PvocService(
 //
 //            )
             // PVOC application BPM process
-            pvocExceptionApp.id?.let {
-                userDetails?.id?.let { it1 ->
-                    pvocBpmn.startPvocApplicationExemptionsProcess(
-                            it,
-                            it1
-                    )
-                }
-            }
-
-            pvocExceptionApp.id?.let {
-                userRolesService.getUserId("PVOC_APPLICATION_PROCESS")?.let { it1 ->
-                    pvocBpmn.pvocEaSubmitApplicationComplete(it,
-                            it1
-                    )
-                }
-            }
+            pvocBpmn.startPvocApplicationExemptionsProcess(pvocExceptionApp)
+            // Save the update
+            this.iPvocApplicationRepo.save(pvocExceptionApp)
             return response
         }
     }
@@ -567,14 +574,14 @@ class PvocService(
         return response
     }
 
-    fun retrieveExemptionById(id: Long): ApiResponseModel {
+    fun retrieveMyExemptionApplicationById(id: Long): ApiResponseModel {
         val response = ApiResponseModel()
         val data = HashMap<String, Any?>()
         SecurityContextHolder.getContext().authentication.name.let { username ->
             iPvocApplicationRepo.findFirstByCreatedByAndId(username, id)?.let { exemption ->
-                data.put("exemption", exemption)
+                data.put("exemption", PvocApplicationDto.fromEntity(exemption))
                 data.put("products", this.iPvocApplicationProductsRepo.findAllByPvocApplicationId_Id(exemption.id))
-                data.put("rawMaterials", this.iPvocExceptionRawMaterialCategoryEntityRepo.findAllByExceptionId(exemption.id))
+                data.put("rawMaterials", PvocExceptionRawMaterialDao.fromList(this.iPvocExceptionRawMaterialCategoryEntityRepo.findAllByExceptionId(exemption.id)))
                 data.put("machinery", this.iPvocExceptionMainMachineryCategoryEntityRepo.findAllByExceptionId(exemption.id))
                 data.put("spares", this.iPvocExceptionIndustrialSparesCategoryEntityRepo.findAllByExceptionId(exemption.id))
                 response.data = data
@@ -584,6 +591,45 @@ class PvocService(
                 response.message = "Exemption with $id does not exist"
                 response.responseCode = ResponseCodes.NOT_FOUND
             }
+        }
+        return response
+    }
+
+    fun retrieveExemptionApplicationDetails(id: Long): ApiResponseModel {
+        val response = ApiResponseModel()
+        val data = HashMap<String, Any?>()
+        val exemptionOptional = iPvocApplicationRepo.findById(id)
+        if (exemptionOptional.isPresent) {
+            val exemption = exemptionOptional.get()
+            data.put("exemption", PvocApplicationDto.fromEntity(exemption))
+            // Exemption details
+            data.put("products", PvocApplicationProductDao.fromList(this.iPvocApplicationProductsRepo.findAllByPvocApplicationId_Id(exemption.id)))
+            data.put("rawMaterials", PvocExceptionRawMaterialDao.fromList(this.iPvocExceptionRawMaterialCategoryEntityRepo.findAllByExceptionId(exemption.id)))
+            data.put("machinery", PvocExceptionMainMachineryDao.fromList(this.iPvocExceptionMainMachineryCategoryEntityRepo.findAllByExceptionId(exemption.id)))
+            data.put("spares", PvocExceptionIndustrialSparesDao.fromList(this.iPvocExceptionIndustrialSparesCategoryEntityRepo.findAllByExceptionId(exemption.id)))
+            // Add Tasks based on roles
+            try {
+                val auth = commonDaoServices.loggedInUserAuthentication()
+                when {
+                    auth.authorities.stream().anyMatch { authority -> authority.authority == "PVOC_SECTION_OFFICER" } -> {
+                        data.put("is_section_officer", true)
+                        data.put("tasks", this.pvocBpmn.getExemptionTasks("SECTION_OFFICER", exemption.id!!))
+                    }
+                    auth.authorities.stream().anyMatch { authority -> authority.authority == "PVOC_EXEMPTION_CHAIRMAN" } -> {
+                        data.put("is_section_officer", false)
+                        data.put("tasks", this.pvocBpmn.getExemptionTasks("EXEMPTION_CHAIRMAN", exemption.id!!))
+                    }
+                }
+            } catch (ex: Exception) {
+                KotlinLogging.logger { }.error("Failed to add data", ex)
+            }
+            // Data
+            response.data = data
+            response.message = "Success"
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+        } else {
+            response.message = "Record not found"
+            response.responseCode = ResponseCodes.NOT_FOUND
         }
         return response
     }

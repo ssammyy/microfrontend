@@ -10,7 +10,6 @@ interface IwaiversApplicationRepo : HazelcastRepository<PvocWaiversApplicationEn
     fun findAllByStatusAndApplicantNameOrderByCreatedOnDesc(status: Int, applicantName: String, pageable: Pageable) : Page<PvocWaiversApplicationEntity>?
     fun findAllByStatusAndApplicantNameAndCreatedOnBetweenOrderByCreatedOnDesc(status: Int, applicantName: String, from: Date, to: Date, pageable: Pageable) : Page<PvocWaiversApplicationEntity>?
     fun findAllByStatusOrderByCreatedOnDesc(status: Int, pageable: Pageable) : Page<PvocWaiversApplicationEntity>?
-    fun findAllByPvocOfficerOrderByCreatedOnDesc(status: Int, pageable: Pageable) : Page<PvocWaiversApplicationEntity>?
     fun findAllByStatusAndCreatedOnBetweenOrderByCreatedOnDesc(status: Int, from: Date, to: Date, pageable: Pageable) : Page<PvocWaiversApplicationEntity>?
     fun findAllByReviewStatusOrderByCreatedOnDesc(reviewStatus: String, pageable: Pageable) : Page<PvocWaiversApplicationEntity>
     fun findAllByNscApprovalStatusOrderByCreatedOnDesc(nscReviewStatus: String, pageable: Pageable) : Page<PvocWaiversApplicationEntity>

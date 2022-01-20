@@ -1,0 +1,276 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">diamond-stone</i>
+                        </div>
+                        <h4 class="card-title" *ngIf="exemptionDetails">
+                            Exemption Application Details
+                            <button class="btn btn-sm btn-default float-right mr-7"
+                                    (click)="goBack()"><i class="fa fa-arrow-left"></i> Back
+                            </button>
+                        </h4>
+
+                    </div>
+                    <div class="card-body" *ngIf="exemptionDetails">
+                        <div class="row">
+                            <div class="col-md-2 col-sm-2">
+                                <div widget class=" border-0 box-shadow">
+                                    <div class="text-center pt-2" style="color: green;">
+                                        Exemption Details
+                                    </div>
+                                    <div class="card-body pt-0 widget-body" *ngIf="exemptionDetails.exemption">
+                                        <table class="table-responsive">
+                                            <th>
+                                                S/N
+                                            </th>
+                                            <tr>
+                                                <td>{{exemptionDetails.exemption.sn ? exemptionDetails.exemption.sn : "NA"}}</td>
+                                            </tr>
+                                            <th>
+                                                KRA PIN
+                                            </th>
+                                            <tr>
+                                                <td>{{exemptionDetails.exemption.companyPinNo}}</td>
+                                            </tr>
+                                            <th>
+                                                Company Name
+                                            </th>
+                                            <tr>
+                                                <td>{{exemptionDetails.exemption.companyName }}</td>
+                                            </tr>
+                                            <th>
+                                                Company Email
+                                            </th>
+                                            <tr>
+                                                <td>{{exemptionDetails.exemption.email}}</td>
+                                            </tr>
+                                            <th>
+                                                Applicant Status
+                                            </th>
+                                            <tr>
+                                                <td>{{exemptionDetails.exemption.reviewStatus}}</td>
+                                            </tr>
+                                            <th>
+                                                Application Date
+                                            </th>
+                                            <tr>
+                                                <td>{{exemptionDetails.exemption.applicationDate | date:'mediumDate'}}</td>
+                                            </tr>
+                                            <th>
+                                                Application Time
+                                            </th>
+                                            <tr>
+                                                <td>{{exemptionDetails.exemption.applicationDate| date:'shortTime'}}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-md-8 col-sm-12">
+
+                                <!-- <div class="d-flex"> -->
+                                <mat-tab-group [(selectedIndex)]="activeTab" [disablePagination]="true"
+                                               appMatMultilineTab
+                                               class="tab-wraps">
+                                    <mat-tab tabindex="1" label="Exemption Details">
+                                        <b class="text-primary">Exemption Details</b>
+                                        <div class="panel" style="max-height: 388px;">
+                                            <ul class="w-list-unstyled">
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Application Date</div>
+                                                    <div class="list-text-accordion">{{exemptionDetails.exemption.applicationDate| date: 'mediumDate'}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Application Time</div>
+                                                    <div class="list-text-accordion">{{exemptionDetails.exemption.applicationDate| date: 'shortTime'}}</div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </mat-tab>
+                                    <mat-tab tabindex="2" label="Industrial Spares" [hidden]="!exemptionDetails.spares">
+                                        <mat-table class="table-striped table-responsive table-condensed"
+                                                   [dataSource]="exemptionDetails.spares">
+                                            <ng-container matColumnDef="hsCode">
+                                                <mat-header-cell *matHeaderCellDef>Hs Code</mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.hsCode}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="industrialSpares">
+                                                <mat-header-cell *matHeaderCellDef>Industrial Spare</mat-header-cell>
+                                                <mat-cell
+                                                        *matCellDef="let element"> {{element.industrialSpares}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="countryOfOrigin">
+                                                <mat-header-cell *matHeaderCellDef>Country Of Origin</mat-header-cell>
+                                                <mat-cell
+                                                        *matCellDef="let element"> {{element.countryOfOrigin}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="machineToFit">
+                                                <mat-header-cell *matHeaderCellDef>Machine To Fit</mat-header-cell>
+                                                <mat-cell
+                                                        *matCellDef="let element"> {{element.machineToFit}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="actions">
+                                                <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
+                                                <mat-cell *matCellDef="let element">
+                                                </mat-cell>
+                                            </ng-container>
+                                            <mat-header-row *matHeaderRowDef="sparesColumns"></mat-header-row>
+                                            <mat-row *matRowDef="let row; columns: sparesColumns;"></mat-row>
+                                        </mat-table>
+                                    </mat-tab>
+                                    <mat-tab tabindex="3" label="Machinery" [hidden]="!exemptionDetails.machinery">
+                                        <mat-table class="table-striped table-responsive table-condensed"
+                                                   [dataSource]="exemptionDetails.machinery">
+                                            <ng-container matColumnDef="hsCode">
+                                                <mat-header-cell *matHeaderCellDef>Hs Code</mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.hsCode}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="machineDescription">
+                                                <mat-header-cell *matHeaderCellDef>Description</mat-header-cell>
+                                                <mat-cell
+                                                        *matCellDef="let element"> {{element.machineDescription}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="countryOfOrigin">
+                                                <mat-header-cell *matHeaderCellDef>Country Of Origin</mat-header-cell>
+                                                <mat-cell
+                                                        *matCellDef="let element"> {{element.countryOfOrigin}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="makeModel">
+                                                <mat-header-cell *matHeaderCellDef>Make/Model</mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.makeModel}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="actions">
+                                                <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
+                                                <mat-cell *matCellDef="let element">
+                                                </mat-cell>
+                                            </ng-container>
+                                            <mat-header-row *matHeaderRowDef="machineryColumns"></mat-header-row>
+                                            <mat-row *matRowDef="let row; columns: machineryColumns;"></mat-row>
+                                        </mat-table>
+                                    </mat-tab>
+                                    <mat-tab tabindex="4" label="Raw Materials"
+                                             [hidden]="!exemptionDetails.rawMaterials">
+                                        <mat-table class="table-striped table-responsive table-condensed"
+                                                   [dataSource]="exemptionDetails.rawMaterials">
+                                            <ng-container matColumnDef="hsCode">
+                                                <mat-header-cell *matHeaderCellDef>Hs Code</mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.hsCode}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="rawMaterialDescription">
+                                                <mat-header-cell *matHeaderCellDef>Description</mat-header-cell>
+                                                <mat-cell
+                                                        *matCellDef="let element"> {{element.rawMaterialDescription}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="countryOfOrigin">
+                                                <mat-header-cell *matHeaderCellDef>Country Of Origin</mat-header-cell>
+                                                <mat-cell
+                                                        *matCellDef="let element"> {{element.countryOfOrigin}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="endProduct">
+                                                <mat-header-cell *matHeaderCellDef>End Product</mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.endProduct}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="dutyRate">
+                                                <mat-header-cell *matHeaderCellDef>Duty Rate</mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.dutyRate}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="hsDescription">
+                                                <mat-header-cell *matHeaderCellDef>HS Description</mat-header-cell>
+                                                <mat-cell
+                                                        *matCellDef="let element"> {{element.hsDescription}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="actions">
+                                                <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
+                                                <mat-cell *matCellDef="let element">
+                                                </mat-cell>
+                                            </ng-container>
+                                            <mat-header-row *matHeaderRowDef="rawMaterialColumns"></mat-header-row>
+                                            <mat-row *matRowDef="let row; columns: rawMaterialColumns;"></mat-row>
+                                        </mat-table>
+                                    </mat-tab>
+                                    <mat-tab tabindex="5" label="Products" [hidden]="exemptionDetails.products">
+                                        <mat-table class="table-striped table-responsive table-condensed"
+                                                   [dataSource]="exemptionDetails.products">
+                                            <ng-container matColumnDef="productName">
+                                                <mat-header-cell *matHeaderCellDef>Product Name</mat-header-cell>
+                                                <mat-cell
+                                                        *matCellDef="let element"> {{element.productName}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="brand">
+                                                <mat-header-cell *matHeaderCellDef>Brand</mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.brand}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="kebsStandardizationMarkPermit">
+                                                <mat-header-cell *matHeaderCellDef>Permit No</mat-header-cell>
+                                                <mat-cell
+                                                        *matCellDef="let element"> {{element.kebsStandardizationMarkPermit}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="expirelyDate">
+                                                <mat-header-cell *matHeaderCellDef>Permit Expiry Date</mat-header-cell>
+                                                <mat-cell
+                                                        *matCellDef="let element"> {{element.expirelyDate}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="section">
+                                                <mat-header-cell *matHeaderCellDef>Section</mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.section}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="actions">
+                                                <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
+                                                <mat-cell *matCellDef="let element">
+                                                </mat-cell>
+                                            </ng-container>
+                                            <mat-header-row *matHeaderRowDef="productsColumns"></mat-header-row>
+                                            <mat-row *matRowDef="let row; columns: productsColumns;"></mat-row>
+                                        </mat-table>
+                                    </mat-tab>
+                                </mat-tab-group>
+                            </div>
+                            <div class="col-md-2 col-sm-12">
+                                <h5>Action:</h5>
+                                <br/>
+                                <div class="card" *ngFor="let task of exemptionDetails.tasks">
+                                    <div class="text-center pt-2" style="color: green;">
+                                        {{task.task}}
+                                    </div>
+                                    <div class="card-body pt-1 pb-0 widget-body">
+                                        <p *ngIf="task.description"><b>DESCRIPTION:</b> {{task.description}}</p>
+                                        <div>
+                                            <b>REMARKS:</b>
+                                            <p>{{task.map.remarks}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <button class="btn btn-sm btn-primary"
+                                                (click)="approveRejectTasks(task.objectId,task.map.exemptionId, task.task)">
+                                            Approve/Reject
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                                <button *ngIf="exemptionDetails.exemption.completed!=='YES'"
+                                        class="btn btn-sm btn-primary" (click)="approveRejectConsignment()">
+                                    Approve/Reject Application
+                                </button>
+                                <h5>Documents:</h5>
+                                <button *ngIf="exemptionDetails.exemption.completed==='YES'"
+                                        class="btn btn-sm btn-primary" (click)="downloadISMReport()">Download ISM
+                                    report
+                                </button>
+                            </div>
+                        </div>
+                        <!-- end content-->
+                    </div>
+                    <!--  end card  -->
+                </div>
+                <!-- end col-md-12 -->
+            </div>
+            <!-- end row -->
+        </div>
+    </div>
+</div>

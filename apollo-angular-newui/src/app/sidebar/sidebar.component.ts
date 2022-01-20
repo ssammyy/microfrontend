@@ -112,32 +112,27 @@ export const ROUTES: RouteInfo[] = [
         privilege: ['PERMIT_APPLICATION'],
     },
     {
+        path: '/company/applications',
+        title: 'Company application',
+        type: 'link',
+        icontype: 'apply',
+        privilege: ['PERMIT_APPLICATION'],
+    },
+    {
         path: '/pvoc',
         title: 'PVOC',
         type: 'sub',
         children: [
             {
-                path: 'applications',
-                title: 'Company application',
-                ab: 'PA',
-                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
-            },
-            {
-                path: 'waivers/applications',
+                path: 'waiver/applications',
                 title: 'Waiver application',
                 ab: 'WA',
                 privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
             },
             {
-                path: 'exemption-applications',
+                path: 'exemption/applications',
                 title: 'Exemption applications',
                 ab: 'EA',
-                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
-            },
-            {
-                path: 'company-applications',
-                title: 'Company Waiver application',
-                ab: 'CW',
                 privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
             },
             {

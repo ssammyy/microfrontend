@@ -1,10 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.routes
 
-import org.kebs.app.kotlin.apollo.api.handlers.invoice.CorporateCustomerHandler
-import org.kebs.app.kotlin.apollo.api.handlers.pvoc.PvocComplaintHandler
-import org.kebs.app.kotlin.apollo.api.handlers.pvoc.PvocHandler
-import org.kebs.app.kotlin.apollo.api.handlers.pvoc.PvocPartnersHandler
-import org.kebs.app.kotlin.apollo.api.handlers.pvoc.PvocWaiverHandler
+import org.kebs.app.kotlin.apollo.api.handlers.pvoc.*
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.bind.annotation.CrossOrigin
@@ -44,6 +40,16 @@ class PvocRouter {
             GET("/exemption/history", handler::exemptionHistory)
             GET("/exemption/{exemptionId}", handler::viewExemption)
 
+        }
+    }
+
+    @Bean
+    @CrossOrigin
+    fun pvocExemptions(handler: PvocExemptionHandler) = router {
+        "api/v1/pvoc/exemption".nest {
+            GET("/get/{applicationStatus}", handler::exemptionApplications)
+            GET("/details/{exemptionId}", handler::exemptionApplicationDetails)
+            POST("/status/update/{exemptionId}", handler::updateExemptionStatus)
         }
     }
 

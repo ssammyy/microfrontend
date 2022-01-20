@@ -131,6 +131,8 @@ import {ViewComplaintsComponent} from "./apollowebs/pvoc/complaints/view-complai
 import {ViewComplaintDetailsComponent} from "./apollowebs/pvoc/complaints/view-complaint-details/view-complaint-details.component";
 import {ViewWaiverApplicationsComponent} from "./apollowebs/pvoc/waivers/view-waiver-applications/view-waiver-applications.component";
 import {ViewWaiverDetailsComponent} from "./apollowebs/pvoc/waivers/view-waiver-details/view-waiver-details.component";
+import {ViewExemptionApplicationsComponent} from "./apollowebs/pvoc/exemptions/view-exemption-applications/view-exemption-applications.component";
+import {ViewExemptionDetailsComponent} from "./apollowebs/pvoc/exemptions/view-exemption-details/view-exemption-details.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -451,20 +453,25 @@ export const routes: Routes = [
         children: [{path: '', component: SmarkComponent}]
     },
     {
+        path: 'company',
+        component: ImportInspectionComponent,
+        children: [
+            {
+                path: 'applications',
+                component: ImportInspectionComponent
+            }
+        ]
+    },
+    {
         path: 'pvoc',
         component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [
             {
-                path: 'applications',
-                component: ImportInspectionComponent,
-                pathMatch: 'full'
-            },
-            {
-                path: 'waivers',
+                path: 'waiver',
                 children: [
                     {
-                        path: '',
+                        path: 'apply',
                         component: ImportationWaiverComponent,
                         pathMatch: 'full'
                     },
@@ -480,16 +487,35 @@ export const routes: Routes = [
                 ]
             },
             {
-                path: 'exceptions',
-                component: ExceptionsApplicationComponent
+                path: 'exemption',
+                children: [
+                    {
+                        path: 'apply',
+                        component: ExceptionsApplicationComponent
+                    },
+                    {
+                        path: 'applications',
+                        component: ViewExemptionApplicationsComponent
+                    },
+                    {
+                        path: 'view/:id',
+                        component: ViewExemptionDetailsComponent
+                    }
+                ]
+
             },
             {
                 path: 'partners',
-                component: ViewPartnersComponent
-            },
-            {
-                path: 'partners/view/:id',
-                component: ViewPartnerDetailsComponent
+                children: [
+                    {
+                        path: '',
+                        component: ViewPartnersComponent
+                    },
+                    {
+                        path: 'view/:id',
+                        component: ViewPartnerDetailsComponent
+                    }
+                ]
             },
             {
                 path: "complaints",

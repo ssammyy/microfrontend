@@ -13,18 +13,23 @@ class PvocApplicationEntity : Serializable {
     @SequenceGenerator(name = "DAT_KEBS_PVOC_APPLICATION_SEQ_GEN", sequenceName = "DAT_KEBS_PVOC_APPLICATION_SEQ", allocationSize = 1)
     @GeneratedValue(generator = "DAT_KEBS_PVOC_APPLICATION_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     var id: Long? = 0
+
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null
+
     @Column(name = "TERMS_CONDITIONS")
     @Basic
     var termsConditions: Int? = null
+
     @Column(name = "CONPANY_NAME")
     @Basic
     var conpanyName: String? = null
+
     @Column(name = "COMPANY_PIN_NO")
     @Basic
     var companyPinNo: String? = null
+
     @Column(name = "EMAIL")
     @Basic
     var email: String? = null
@@ -40,138 +45,159 @@ class PvocApplicationEntity : Serializable {
     @Column(name = "TELEPHONE_NO")
     @Basic
     var telephoneNo: String? = null
+
     @Column(name = "POSTAL_AADRESS")
     @Basic
     var postalAadress: String? = null
+
     @Column(name = "PHYSICAL_LOCATION")
     @Basic
     var physicalLocation: String? = null
+
     @Column(name = "CONTACT_PERSORN")
     @Basic
     var contactPersorn: String? = null
+
+    @Column(name = "CONTACT_NAME")
+    @Basic
+    var contactName: String? = null
+
+    @Column(name = "CONTACT_EMAIL")
+    @Basic
+    var contactEmail: String? = null
+
     @Column(name = "ADDRESS")
     @Basic
     var address: String? = null
+
     @Column(name = "EXCEPTION_CATEGORY")
     @Basic
     var exceptionCategory: String? = null
-    @Column(name = "HS_CODE")
-    @Basic
-    var hsCode: String? = null
-    @Column(name = "COUNTRY_OF_ORIGIN")
-    @Basic
-    var countryOfOrigin: String? = null
-    @Column(name = "INDUSTRIAL_SPARES_DESCRIPTION")
-    @Basic
-    var industrialSparesDescription: String? = null
-    @Column(name = "MACHINE_TO_BE_FITTED")
-    @Basic
-    var machineToBeFitted: String? = null
-    @Column(name = "RAW_MATERIAL_DESCRIPTION")
-    @Basic
-    var rawMaterialDescription: String? = null
-    @Column(name = "END_PRODUCT")
-    @Basic
-    var endProduct: String? = null
-    @Column(name = "DUTY_RATE")
-    @Basic
-    var dutyRate: String? = null
-    @Column(name = "MACHINE_DESCRIPTION")
-    @Basic
-    var machineDescription: String? = null
+
     @Column(name = "VAR_FIELD_1")
     @Basic
     var varField1: String? = null
+
     @Column(name = "VAR_FIELD_2")
     @Basic
     var varField2: String? = null
+
     @Column(name = "VAR_FIELD_3")
     @Basic
     var varField3: String? = null
+
     @Column(name = "VAR_FIELD_4")
     @Basic
     var varField4: String? = null
+
     @Column(name = "VAR_FIELD_5")
     @Basic
     var varField5: String? = null
+
     @Column(name = "VAR_FIELD_6")
     @Basic
     var varField6: String? = null
+
     @Column(name = "VAR_FIELD_7")
     @Basic
     var varField7: String? = null
+
     @Column(name = "VAR_FIELD_8")
     @Basic
     var varField8: String? = null
+
     @Column(name = "VAR_FIELD_9")
     @Basic
     var varField9: String? = null
+
     @Column(name = "VAR_FIELD_10")
     @Basic
     var varField10: String? = null
+
     @Column(name = "CREATED_BY")
     @Basic
     var createdBy: String? = null
+
     @Column(name = "CREATED_ON")
     @Basic
     var createdOn: Timestamp? = null
+
     @Column(name = "MODIFIED_BY")
     @Basic
     var modifiedBy: String? = null
+
     @Column(name = "MODIFIED_ON")
     @Basic
     var modifiedOn: Timestamp? = null
+
     @Column(name = "DELETE_BY")
     @Basic
     var deleteBy: String? = null
+
     @Column(name = "DELETED_ON")
     @Basic
     var deletedOn: Timestamp? = null
+
     @Column(name = "SECTION")
     @Basic
     var section: String? = null
+
     @Column(name = "APPLICATION_TYPE")
     @Basic
     var applicationType: Long? = null
+
     @Column(name = "MAKE_MODEL")
     @Basic
     var makeModel: String? = null
+
     @Column(name = "REVIEW_STATUS")
     @Basic
     var reviewStatus: String? = null
+
     @Column(name = "APPLICATION_DATE")
     @Basic
     var applicationDate: Date? = null
+
     @Column(name = "COMPANY_NAME_STATUS_REVIEW")
     @Basic
     var companyNameStatusReview: String? = null
+
     @Column(name = "COMPANY_PIN_STATUS_REVIEW")
     @Basic
     var companyPinStatusReview: String? = null
+
     @Column(name = "EMAIL_STATUS_REVIEW")
     @Basic
     var emailStatusReview: String? = null
+
     @Column(name = "TELEPHONE_STATUS_REVIEW")
     @Basic
     var telephoneStatusReview: String? = null
+
     @Column(name = "PHYSICAL_STATUS_REVIEW")
     @Basic
     var physicalStatusReview: String? = null
+
     @Column(name = "CONTACT_PERSON_STATUS_REVIEW")
     @Basic
     var contactPersonStatusReview: String? = null
+
     @Column(name = "ADDRESS_STATUS_REVIEW")
     @Basic
     var addressStatusReview: String? = null
+
     @Column(name = "EXCEPTION_CATEGORY_STATUS_REVIEW")
     @Basic
     var exceptionCategoryStatusReview: String? = null
+
     @Column(name = "HSCODE_STATUS_REVIEW")
     @Basic
     var hscodeStatusReview: String? = null
+
     @Column(name = "CONTRY_OF_ORIGIN_STATUS_REVIEW")
     @Basic
     var contryOfOriginStatusReview: String? = null
+
     @Column(name = "INDUSTRIAL_SPARES_STATUS_REVIEW")
     @Basic
     var industrialSparesStatusReview: String? = null
@@ -179,18 +205,23 @@ class PvocApplicationEntity : Serializable {
     @Column(name = "POSTAL_AADRESS_STATUS_REVIEW")
     @Basic
     var postalAadressStatusReview: String? = null
+
     @Column(name = "MACHINE_TO_BE_FITTED_STATUS_REVIEW")
     @Basic
     var machineToBeFittedStatusReview: String? = null
+
     @Column(name = "RAW_MATERIAL_DESCRIPTION_STATUS_REVIEW")
     @Basic
     var rawMaterialDescriptionStatusReview: String? = null
+
     @Column(name = "END_PRODUCT_STATUS_REVIEW")
     @Basic
     var endProductStatusReview: String? = null
+
     @Column(name = "DUTY_RATE_STATUS_REVIEW")
     @Basic
     var dutyRateStatusReview: String? = null
+
     @Column(name = "MACHINE_DESCRIPTION_STATUS_REVIEW")
     @Basic
     var machineDescriptionStatusReview: String? = null
@@ -198,9 +229,11 @@ class PvocApplicationEntity : Serializable {
     @Column(name = "APPLICATION_DATE_STATUS_REVIEW")
     @Basic
     var applicationDateStatusReview: String? = null
+
     @Column(name = "SECTION_ID_OFFICER")
     @Basic
     var sectionIdOfficer: Long? = null
+
     @Column(name = "PHYSICAL_LOCATION_STATUS_REVIEW")
     @Basic
     var physicalLocationStatusReview: String? = null
@@ -258,15 +291,7 @@ class PvocApplicationEntity : Serializable {
                 contactPersorn == that.contactPersorn &&
                 address == that.address &&
                 exceptionCategory == that.exceptionCategory &&
-                hsCode == that.hsCode &&
-                countryOfOrigin == that.countryOfOrigin &&
-                industrialSparesDescription == that.industrialSparesDescription &&
-                machineToBeFitted == that.machineToBeFitted &&
-                rawMaterialDescription == that.rawMaterialDescription &&
-                endProduct == that.endProduct &&
-                dutyRate == that.dutyRate &&
                 finished == that.finished &&
-                machineDescription == that.machineDescription &&
                 varField1 == that.varField1 &&
                 varField2 == that.varField2 &&
                 varField3 == that.varField3 &&
@@ -312,6 +337,6 @@ class PvocApplicationEntity : Serializable {
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(id, status, conpanyName, companyPinNo, email, sn, finished, termsConditions, telephoneNo, postalAadress, physicalLocation, contactPersorn, address, exceptionCategory, hsCode, countryOfOrigin, industrialSparesDescription, machineToBeFitted, rawMaterialDescription, endProduct, dutyRate, machineDescription, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn, section, applicationType, makeModel, reviewStatus, applicationDate, companyNameStatusReview, companyPinStatusReview, emailStatusReview, telephoneStatusReview, physicalStatusReview, contactPersonStatusReview, addressStatusReview, exceptionCategoryStatusReview, hscodeStatusReview, contryOfOriginStatusReview, industrialSparesStatusReview, machineToBeFittedStatusReview, rawMaterialDescriptionStatusReview, endProductStatusReview, dutyRateStatusReview, machineDescriptionStatusReview, applicationDateStatusReview, physicalLocationStatusReview, sectionIdOfficer, finalApproval,postalAadressStatusReview)
+        return Objects.hash(id, status, conpanyName, companyPinNo, email, sn, finished, termsConditions, telephoneNo, postalAadress, physicalLocation, contactPersorn, address, exceptionCategory, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn, section, applicationType, makeModel, reviewStatus, applicationDate, companyNameStatusReview, companyPinStatusReview, emailStatusReview, telephoneStatusReview, physicalStatusReview, contactPersonStatusReview, addressStatusReview, exceptionCategoryStatusReview, hscodeStatusReview, contryOfOriginStatusReview, industrialSparesStatusReview, machineToBeFittedStatusReview, rawMaterialDescriptionStatusReview, endProductStatusReview, dutyRateStatusReview, machineDescriptionStatusReview, applicationDateStatusReview, physicalLocationStatusReview, sectionIdOfficer, finalApproval, postalAadressStatusReview)
     }
 }

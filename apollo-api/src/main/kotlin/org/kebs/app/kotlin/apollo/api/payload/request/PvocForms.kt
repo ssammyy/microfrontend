@@ -862,3 +862,14 @@ class PvocComplaintForm {
     var subCategoryId: Long? = null
 
 }
+
+class ExemptionStatusForm {
+    @NotNull(message = "Task Identifier is required")
+    val taskId: String? = null
+
+    @NotNull(message = "Please select Approval Status")
+    val status: String? = null
+
+    @NotNull(message = "Rejection/Approval remarks are required")
+    val remarks: String? = null
+}
