@@ -58,7 +58,7 @@ export class IsmApplicationsComponent implements OnInit {
 
 
     viewRequest(requestId) {
-        this.router.navigate(["/ism/request",requestId])
+        this.router.navigate(["/di/ism/request",requestId])
     }
 
 }

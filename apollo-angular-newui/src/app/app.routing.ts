@@ -555,24 +555,14 @@ export const routes: Routes = [
         ]
     },
     {
-        path: 'kentrade/exchange/messages',
-        component: AdminLayoutComponent,
-        canActivate: [RouteGuard],
-        children: [
-            {
-                path: '',
-                component: MessageDashboardComponent
-            }
-        ]
-    },
-    {
         path: 'di',
         component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [
             {
                 path: '',
-                component: ConsignmentDocumentListComponent
+                component: ConsignmentDocumentListComponent,
+                pathMatch: 'full'
             },
             {
                 path: 'declaration/document/:id',
@@ -633,6 +623,26 @@ export const routes: Routes = [
                 canActivate: [RouteGuard],
                 component: AuctionItemDetailsComponent
             },
+            {
+                path: 'kentrade/exchange/messages',
+                canActivate: [RouteGuard],
+                component: MessageDashboardComponent
+            },
+            {
+                path: 'ism',
+                children: [
+                    {
+                        path: 'requests',
+                        canActivate: [RouteGuard],
+                        component: IsmApplicationsComponent
+                    },
+                    {
+                        path: 'request/:id',
+                        // canActivate: [RouteGuard],
+                        component: ViewIsmApplicationComponent
+                    }
+                ]
+            },
         ]
     },
     {
@@ -644,23 +654,6 @@ export const routes: Routes = [
                 path: 'inspection',
                 canActivate: [RouteGuard],
                 component: InspectionDashboardComponent
-            }
-        ]
-    },
-    {
-        path: 'ism',
-        component: AdminLayoutComponent,
-        // canActivate: [RouteGuard],
-        children: [
-            {
-                path: 'requests',
-                canActivate: [RouteGuard],
-                component: IsmApplicationsComponent
-            },
-            {
-                path: 'request/:id',
-                // canActivate: [RouteGuard],
-                component: ViewIsmApplicationComponent
             }
         ]
     },

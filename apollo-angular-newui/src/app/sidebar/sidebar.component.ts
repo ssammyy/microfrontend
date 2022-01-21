@@ -162,8 +162,8 @@ export const ROUTES: RouteInfo[] = [
     },
     {
         path: '/di',
-        title: 'Destination Inspection',
-        type: 'link',
+        title: 'Import Inspection',
+        type: 'sub',
         children: [
             {
                 path: '',
@@ -172,41 +172,27 @@ export const ROUTES: RouteInfo[] = [
                 privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
             },
             {
-                path: 'auctions',
+                path: 'auction/view',
                 title: 'Auction Goods',
                 ab: 'AG',
                 privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
+            },
+            {
+                path: 'ism/requests',
+                title: 'ISM Requests',
+                ab: 'SM',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
+            },
+            {
+                path: 'kentrade/exchange/messages',
+                title: 'KENTRADE Monitoring',
+                ab: 'KM',
+                privilege: ['SYSADMIN_VIEW', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
             },
         ],
         collapse: 'import-inspection',
         privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
         icontype: 'receipt'
-    },
-    {
-        path: '/di/auction/view',
-        title: 'Auction',
-        type: 'link',
-        collapse: 'auction-good',
-        privilege: ['SYSADMIN_VIEW', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
-        children: [],
-        icontype: 'market'
-    },
-    {
-        path: '/kentrade/exchange/messages',
-        title: 'KENTRADE Monitoring',
-        type: 'link',
-        collapse: 'exchange-messages',
-        privilege: ['SYSADMIN_VIEW', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
-        children: [],
-        icontype: 'message'
-    },
-    {
-        path: '/ism/requests',
-        title: 'ISM Requests',
-        privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
-        type: 'link',
-        collapse: 'tasks',
-        icontype: 'standard'
     },
     {
         path: '/transaction',

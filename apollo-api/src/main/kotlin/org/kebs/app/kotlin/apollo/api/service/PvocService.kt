@@ -25,7 +25,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 enum class PvocExemptionStatus(val status: String) {
-    NEW_APPLICATIONS("NEW"), PVOC_APPROVED("PVOC_APPROVE"), PVOC_REJECTED("PVOC_REJECTED"), DEFFERED("DEFFERED"), CERT_APPROVED("CERT_APPROVE"), CERT_REJECTED("CERT_REJECTED")
+    NEW_APPLICATIONS("NEW"), PVOC_APPROVED("PVOC_APPROVE"), PVOC_REJECTED("PVOC_REJECTED"), DEFERRED("DEFERRED"), CERT_APPROVED("CERT_APPROVE"), CERT_REJECTED("CERT_REJECTED")
 }
 
 @Service
@@ -404,7 +404,7 @@ class PvocService(
                 "NEW" -> this.iPvocApplicationRepo.findAllByReviewStatus(PvocExemptionStatus.NEW_APPLICATIONS.status, page)
                 "APPROVED" -> this.iPvocApplicationRepo.findAllByReviewStatus(PvocExemptionStatus.PVOC_APPROVED.status, page)
                 "REJECTED" -> this.iPvocApplicationRepo.findAllByReviewStatus(PvocExemptionStatus.PVOC_REJECTED.status, page)
-                "DEFFERED" -> this.iPvocApplicationRepo.findAllByReviewStatus(PvocExemptionStatus.DEFFERED.status, page)
+                "DEFERRED" -> this.iPvocApplicationRepo.findAllByReviewStatus(PvocExemptionStatus.DEFERRED.status, page)
                 "CERT_REJECTED" -> this.iPvocApplicationRepo.findAllByReviewStatus(PvocExemptionStatus.CERT_REJECTED.status, page)
                 "CERT_APPROVED" -> this.iPvocApplicationRepo.findAllByReviewStatus(PvocExemptionStatus.CERT_APPROVED.status, page)
                 else -> {
