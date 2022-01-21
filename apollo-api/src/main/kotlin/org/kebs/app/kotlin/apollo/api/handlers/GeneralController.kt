@@ -9,13 +9,11 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
-import org.kebs.app.kotlin.apollo.api.service.AuctionService
-import org.kebs.app.kotlin.apollo.api.service.ChecklistService
-import org.kebs.app.kotlin.apollo.api.service.DestinationInspectionService
-import org.kebs.app.kotlin.apollo.api.service.InvoicePaymentService
+import org.kebs.app.kotlin.apollo.api.service.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.di.DiUploadsEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocWaiversApplicationDocumentsEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
@@ -34,7 +32,8 @@ class GeneralController(
         private val invoicePaymentService: InvoicePaymentService,
         private val commonDaoServices: CommonDaoServices,
         private val limsServices: LimsServices,
-        private val auctionService: AuctionService
+        private val auctionService: AuctionService,
+        private val pvocService: PvocService,
 ) {
     val checkMark = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapCheckmarkImagePath)
     val smarkImage = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapSmarkImagePath)
@@ -300,6 +299,15 @@ class GeneralController(
         return true
     }
 
+    @GetMapping("/waiver/attachment/{uploadId}")
+    fun downloadWaiverAttachment(@PathVariable("uploadId") uploadId: Long, httResponse: HttpServletResponse) {
+        pvocService.waiverAttachment(uploadId)?.let { diUpload ->
+            // Response with file
+            diUpload.documentType?.let { doc ->
+                downloadBytes(doc, "ATTACHMENT-${diUpload.id}-${diUpload.name?.toUpperCase()}", httResponse)
+            } ?: throw ExpectedDataNotFound("Attachment file not found")
+        } ?: throw ExpectedDataNotFound("Attachment file not found")
+    }
 
     @GetMapping("/attachments/{uploadId}")
     fun downloadConsignmentDocumentAttachment(@PathVariable("uploadId") uploadId: Long, httResponse: HttpServletResponse) {

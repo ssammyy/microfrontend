@@ -3,8 +3,6 @@ import {SystemService} from "../../../../core/store/data/system/system.service";
 import {MatDialog} from "@angular/material/dialog";
 import {PVOCService} from "../../../../core/store/data/pvoc/pvoc.service";
 import {Router} from "@angular/router";
-import {AddApiClientComponent} from "../../../system/clients/add-api-client/add-api-client.component";
-import {ViewClientCredentialsComponent} from "../../../system/clients/view-client-credentials/view-client-credentials.component";
 
 @Component({
     selector: 'app-view-waiver-applications',

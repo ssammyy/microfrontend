@@ -177,6 +177,10 @@ export class PVOCService {
         return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/complaint/details/" + complaintId))
     }
 
+    updateComplaintStatus(complaintId: any, data): Observable<any>{
+        return this.http.post(ApiEndpointService.getEndpoint("/api/v1/pvoc/exemption/status/update/"+complaintId),data)
+    }
+
     public listWaiverApplications(keywords: string, status: string, page: any, size: any): Observable<any> {
         let params = {}
         params["size"] = size

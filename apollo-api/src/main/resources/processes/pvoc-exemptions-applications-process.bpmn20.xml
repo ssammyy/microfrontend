@@ -17,7 +17,7 @@
         </sequenceFlow>
         <userTask id="usertask5" name="Exemption Charman Approval" activiti:priority="EXEMPTION_CHAIRMAN"></userTask>
         <sequenceFlow id="flow7" sourceRef="servicetask1" targetRef="usertask5"></sequenceFlow>
-        <serviceTask id="servicetask1" name="Approve" activiti:expression="#{pvocService.updateReviewRequest(requestId, remarks, reviewOfficer, reviewStatus)}"></serviceTask>
+        <serviceTask id="servicetask1" name="Approve" activiti:expression="#{pvocService.updateReviewRequest(requestId, validity,remarks, reviewOfficer, reviewStatus)}"></serviceTask>
         <serviceTask id="servicetask2" name="Reject" activiti:expression="#{pvocService.updateReviewRequest(requestId, remarks, reviewOfficer, reviewStatus)}"></serviceTask>
         <sequenceFlow id="flow8" sourceRef="servicetask2" targetRef="usertask5"></sequenceFlow>
         <sequenceFlow id="flow9" sourceRef="servicetask6" targetRef="servicetask3"></sequenceFlow>

@@ -25,6 +25,11 @@ class PvocComplaintEntity : Serializable {
     @Basic
     var refNo: String? = null
 
+    @Column(name = "PROCESS_ID")
+    @Basic
+    var processId: String? = null
+
+
     @Column(name = "COMPLAINT_NAME")
     @Basic
     var complaintName: String? = null
@@ -54,6 +59,10 @@ class PvocComplaintEntity : Serializable {
     @Basic
     var agentReviewRemarks: String? = null
 
+    @Column(name = "AGENT_REMARKS_ON")
+    @Basic
+    var agentRemarksOn: Timestamp? = null
+
     @Column(name = "GENERAL_DESCRIPTION")
     @Basic
     var generalDescription: String? = null
@@ -73,6 +82,10 @@ class PvocComplaintEntity : Serializable {
     @Column(name = "MPVOC_RECOMENDATION_DATE")
     @Basic
     var mpvocRecomendationDate: Timestamp? = null
+
+    @Column(name = "MPVOC_REMARKS")
+    @Basic
+    var mpvocRemarks: String? = null
 
     @Column(name = "HOD_RECOMENDATION_DATE")
     @Basic
@@ -101,6 +114,10 @@ class PvocComplaintEntity : Serializable {
     @JoinColumn(name = "HOD", referencedColumnName = "ID")
     @ManyToOne
     var hod: UsersEntity? = null
+
+    @Column(name = "HOD_REMARKS")
+    @Basic
+    var hodRemarks: String? = null
 
     @Column(name = "STATUS")
     @Basic

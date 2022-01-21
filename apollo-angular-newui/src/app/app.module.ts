@@ -261,6 +261,8 @@ import { ViewWaiverDetailsComponent } from './apollowebs/pvoc/waivers/view-waive
 import { ViewExemptionApplicationsComponent } from './apollowebs/pvoc/exemptions/view-exemption-applications/view-exemption-applications.component';
 import { ViewExemptionDetailsComponent } from './apollowebs/pvoc/exemptions/view-exemption-details/view-exemption-details.component';
 import { UpdateExemptionTaskComponent } from './apollowebs/pvoc/exemptions/update-exemption-task/update-exemption-task.component';
+import { UpdateComplaintTaskComponent } from './apollowebs/pvoc/complaints/update-complaint-task/update-complaint-task.component';
+import { UpdateWaiverTaskComponent } from './apollowebs/pvoc/waivers/update-waiver-task/update-waiver-task.component';
 
 @NgModule({
     imports: [
@@ -546,6 +548,8 @@ import { UpdateExemptionTaskComponent } from './apollowebs/pvoc/exemptions/updat
         ViewExemptionApplicationsComponent,
         ViewExemptionDetailsComponent,
         UpdateExemptionTaskComponent,
+        UpdateComplaintTaskComponent,
+        UpdateWaiverTaskComponent,
     ],
     providers: [
         MatNativeDateModule,

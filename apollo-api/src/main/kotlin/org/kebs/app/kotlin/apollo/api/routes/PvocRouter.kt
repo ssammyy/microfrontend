@@ -58,6 +58,7 @@ class PvocRouter {
         "api/v1/pvoc/complaint".nest {
             GET("/get/{applicationStatus}", handler::complaintApplications)
             GET("/details/{complaintId}", handler::complaintApplicationDetails)
+            POST("/status/update/{complaintId}", handler::approveCurrentComplaintTask)
         }
     }
 
@@ -66,6 +67,7 @@ class PvocRouter {
         "/api/v1/pvoc/waiver".nest {
             GET("/get/{applicationStatus}", handler::waiverApplications)
             GET("/details/{waiverId}", handler::waiverApplicationDetails)
+            POST("/status/update/{waiverId}", handler::waiverTaskUpdate)
         }
     }
 }

@@ -10,6 +10,7 @@ import org.kebs.app.kotlin.apollo.api.payload.request.*
 import org.kebs.app.kotlin.apollo.api.payload.response.PvocComplaintCategoryDao
 import org.kebs.app.kotlin.apollo.api.payload.response.PvocComplaintDao
 import org.kebs.app.kotlin.apollo.api.payload.response.PvocComplaintRecommendationDao
+import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.PvocBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocComplaintEntity
@@ -34,6 +35,7 @@ class PvocAgentService(
         private val complaintSubCategoryRepo: IPvocComplaintCertificationsSubCategoryRepo,
         private val pvocComplaintRemarksEntityRepo: PvocComplaintRemarksEntityRepo,
         private val commonDaoServices: CommonDaoServices,
+        private val pvocBpmn: PvocBpmn,
         private val daoServices: DestinationInspectionDaoServices,
         private val notificationService: NotificationService
 ) {
@@ -96,6 +98,10 @@ class PvocAgentService(
                 response.data = saved.id
                 response.message = "Request received"
                 response.responseCode = ResponseCodes.SUCCESS_CODE
+                // Start BPM process
+                this.pvocBpmn.startPvocComplaintApplicationsProcess(saved)
+                // Update process
+                this.complaintEntityRepo.save(saved)
             } else {
                 response.errors = errors
                 response.responseCode = ResponseCodes.INVALID_CODE
@@ -118,6 +124,17 @@ class PvocAgentService(
 
     fun addUploads(complaintEntity: PvocComplaintEntity, files: MultipartFile) {
 
+    }
+
+    fun approveCurrentComplaint(complaintId: Long, action: String, taskId: String, remarks: String): ApiResponseModel {
+        val response = ApiResponseModel()
+        val data = mutableMapOf<String, Any>()
+        data["pvocOfficer"] = commonDaoServices.loggedInUserDetails().userName!!
+        data["remarks"] = remarks ?: "NO REMARKS"
+        this.pvocBpmn.pvocCompleteTask(taskId, data)
+        response.responseCode = ResponseCodes.SUCCESS_CODE
+        response.message = "Task completed"
+        return response
     }
 
     fun listComplaints(complaintStatus: String, keywords: String?, page: PageRequest): ApiResponseModel {
@@ -150,9 +167,44 @@ class PvocAgentService(
                 data["cd_uuid"] = cocDetails.consignmentDocId?.uuid
                 data["certificate_details"] = cocDetails
             }
+            // Complaint tasks and auto assignment
+            try {
+                val auth = commonDaoServices.loggedInUserAuthentication()
+                val activeUser = commonDaoServices.getLoggedInUser()
+                when {
+                    auth.authorities.stream().anyMatch { authority -> authority.authority == "PVOC_OFFICER" } -> {
+                        data.put("is_pvoc_officer", true)
+                        if (complaint.pvocUser == null) {
+                            complaint.pvocUser = activeUser
+                            this.complaintEntityRepo.save(complaint)
+                        }
+                        data.put("is_owner", complaint.pvocUser?.id == activeUser?.id)
+                        data.put("tasks", this.pvocBpmn.getComplaintTasks(listOf("REVIEW_RECOMMENDATION", "QUERY"), complaint.id!!))
+                    }
+                    auth.authorities.stream().anyMatch { authority -> authority.authority == "MPVOC_OFFICER" } -> {
+                        data.put("is_mpvoc_officer", true)
+                        if (complaint.mpvoc == null) {
+                            complaint.mpvoc = activeUser
+                            this.complaintEntityRepo.save(complaint)
+                        }
+                        data.put("is_owner", complaint.mpvoc?.id == activeUser?.id)
+                        data.put("tasks", this.pvocBpmn.getComplaintTasks(listOf("MPVOC_APPROVAL"), complaint.id!!))
+                    }
+                    auth.authorities.stream().anyMatch { authority -> authority.authority == "HOD_OFFICER" } -> {
+                        data.put("is_hod_officer", true)
+                        if (complaint.hod == null) {
+                            complaint.hod = activeUser
+                            this.complaintEntityRepo.save(complaint)
+                        }
+                        data.put("is_owner", complaint.hod?.id == activeUser?.id)
+                        data.put("tasks", this.pvocBpmn.getComplaintTasks(listOf("HOD_APPROVAL"), complaint.id!!))
+                    }
+                }
+            } catch (ex: Exception) {
+                KotlinLogging.logger { }.error("Failed to add data", ex)
+            }
+            // Add details
             data["assigned_officer"] = "${complaint.pvocUser?.firstName} ${complaint.pvocUser?.lastName}"
-            data["pvoc_officer"] = this.commonDaoServices.currentUserHasRole("PVOC_OFFICER")
-            data["mpvoc_officer"] = this.commonDaoServices.currentUserHasRole("MPVOC_OFFICER")
             data["complaint"] = PvocComplaintDao.fromEntity(complaint)
             response.data = data
             response.responseCode = ResponseCodes.SUCCESS_CODE
@@ -186,16 +238,25 @@ class PvocAgentService(
         return response
     }
 
-    fun pvocOfficerReviewStatus(complaintId: Long, recommendationId: Long, remarks: String, agentRemarks: String, action: String, pvocOfficer: String) {
+    fun pvocAgentQueryStatus(complaintId: Long, remarks: String, pvocOfficer: String) {
+        val optional = this.complaintEntityRepo.findById(complaintId)
+        if (optional.isPresent) {
+            val complaint = optional.get()
+            complaint.agentReviewRemarks = remarks
+            complaint.agentRemarksOn = Timestamp.from(Instant.now())
+            complaint.modifiedBy = commonDaoServices.findUserByUserName(pvocOfficer).userName
+            complaint.modifiedOn = Timestamp.from(Instant.now())
+            this.complaintEntityRepo.save(complaint)
+            addComplaintRemarks(complaintId, remarks, "AGENT_QUERY")
+        }
+    }
+
+    fun pvocOfficerReviewStatus(complaintId: Long, remarks: String, action: String, pvocOfficer: String) {
         val optional = this.complaintEntityRepo.findById(complaintId)
         if (optional.isPresent) {
             val complaint = optional.get()
             complaint.reviewStatus = action
-            val recommOptional = this.complaintRecommendationRepo.findById(recommendationId)
-            if (recommOptional.isPresent) {
-                complaint.recomendation = recommOptional.get().description
-            }
-            complaint.agentReviewRemarks = agentRemarks
+            complaint.recomendation = remarks
             complaint.reviewedOn = Timestamp.from(Instant.now())
             complaint.pvocUser = commonDaoServices.findUserByUserName(pvocOfficer)
             this.complaintEntityRepo.save(complaint)
@@ -203,21 +264,23 @@ class PvocAgentService(
         }
     }
 
-    fun mpvocReviewStatus(complaintId: Long, remarks: String, recommendations: String, action: String, pvocOfficer: String) {
+    fun mpvocReviewStatus(complaintId: Long, remarks: String, action: String, pvocOfficer: String) {
         val optional = this.complaintEntityRepo.findById(complaintId)
         if (optional.isPresent) {
             val complaint = optional.get()
             complaint.mpvoc = commonDaoServices.findUserByUserName(pvocOfficer)
             complaint.mpvocRecomendationDate = Timestamp.from(Instant.now())
+            complaint.mpvocRemarks = remarks
             this.complaintEntityRepo.save(complaint)
         }
     }
 
-    fun hodReviewStatus(complaintId: Long, remarks: String, recommendations: String, action: String, pvocOfficer: String) {
+    fun hodReviewStatus(complaintId: Long, remarks: String, action: String, pvocOfficer: String) {
         val optional = this.complaintEntityRepo.findById(complaintId)
         if (optional.isPresent) {
             val complaint = optional.get()
             complaint.hod = commonDaoServices.findUserByUserName(pvocOfficer)
+            complaint.hodRemarks = remarks
             complaint.hodRecomendationDate = Timestamp.from(Instant.now())
             this.complaintEntityRepo.save(complaint)
         }
@@ -241,9 +304,10 @@ class PvocAgentService(
         }
     }
 
-    fun pvocQueryPartner() {
 
+    fun pvocComplaintProcessCompleted(complaintId: Long) {
     }
+
 
     fun receiveCoc(coc: CocEntityForm): ApiResponseModel {
         val response = ApiResponseModel()

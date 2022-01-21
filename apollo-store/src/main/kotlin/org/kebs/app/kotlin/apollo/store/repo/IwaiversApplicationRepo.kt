@@ -20,17 +20,17 @@ interface IwaiversApplicationRepo : HazelcastRepository<PvocWaiversApplicationEn
 }
 
 interface IPvocMasterListRepo : HazelcastRepository<PvocMasterListEntity, Long>{
-    fun findAllByWaiversApplicationId (waiversApplicationId: Long) : List<PvocMasterListEntity>?
+    fun findAllByWaiversApplicationId (waiversApplicationId: Long) : List<PvocMasterListEntity>
 }
 
 interface IPvocWaiversStatusRepo : HazelcastRepository<PvocWaiversStatusEntity, Long>{
 }
 
 interface IPvocWaiversRemarksRepo : HazelcastRepository<PvocWaiversRemarksEntity, Long>{
-    fun findAllByWaiverId(waiverId : Long) : List<PvocWaiversRemarksEntity>?
-    fun findAllByWaiverReportId(waiverReportId : Long) : List<PvocWaiversRemarksEntity>?
-    fun findAllByMinuteId(minuteId : Long) : List<PvocWaiversRemarksEntity>?
-    fun findAllByCocTimelineId(cocTimelineId: Long) : List<PvocWaiversRemarksEntity>?
+    fun findAllByWaiverId(waiverId : Long) : List<PvocWaiversRemarksEntity>
+//    fun findAllByWaiverReportId(waiverReportId : Long) : List<PvocWaiversRemarksEntity>?
+//    fun findAllByMinuteId(minuteId : Long) : List<PvocWaiversRemarksEntity>?
+//    fun findAllByCocTimelineId(cocTimelineId: Long) : List<PvocWaiversRemarksEntity>?
 }
 
 interface IPvocWaiversCategoriesRepo : HazelcastRepository<PvocWaiversCategoriesEntity, Long>{

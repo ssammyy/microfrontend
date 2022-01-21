@@ -28,7 +28,7 @@ class PvocExemptionHandler(
                 response.errors = it
 
             } ?: run {
-                response = this.pvocService.approveDeferRejectExemption(exemptionId, form.status!!, form.taskId!!, form.remarks!!)
+                response = this.pvocService.approveDeferRejectExemption(exemptionId, form.certificateValidity!!, form.status!!, form.taskId!!, form.remarks!!)
                 response
             }
         } catch (ex: Exception) {

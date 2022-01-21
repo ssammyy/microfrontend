@@ -96,7 +96,8 @@
                                                     <div class="list-title-accordion">Complaint Details</div>
                                                     <div class="list-text-accordion">{{complaintDetails.complaint.complaintDescription}}</div>
                                                 </li>
-                                                <li class="list-item-accordion" *ngIf="complaintDetails.complaint.recommendation">
+                                                <li class="list-item-accordion"
+                                                    *ngIf="complaintDetails.complaint.recommendation">
                                                     <div class="list-title-accordion">Recommendation</div>
                                                     <div class="list-text-accordion">{{complaintDetails.complaint.recommendation}}</div>
                                                 </li>
@@ -333,14 +334,31 @@
                             <div class="col-md-2 col-sm-12">
                                 <h5>Action:</h5>
                                 <br/>
-                                <button *ngIf="complaintDetails.cd_uuid" class="btn btn-sm btn-primary" (click)="viewConsignmentDocument()">View
+                                <button *ngIf="complaintDetails.cd_uuid" class="btn btn-sm btn-primary"
+                                        (click)="viewConsignmentDocument()">View
                                     Consignment
                                 </button>
-
-                                <button *ngIf="complaintDetails.complaint.completed!=='YES'" class="btn btn-sm btn-primary" (click)="approveRejectConsignment()">Approve/Reject Application
-                                </button>
+                                <div class="card" *ngFor="let task of complaintDetails.tasks">
+                                    <div class="text-center pt-2" style="color: green;">
+                                        {{task.task}}
+                                    </div>
+                                    <div class="card-body pt-1 pb-0 widget-body">
+                                        <p *ngIf="task.description"><b>DESCRIPTION:</b> {{task.description}}</p>
+                                        <div>
+                                            <b>REMARKS:</b>
+                                            <p>{{task.map.remarks}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <button class="btn btn-sm btn-primary"
+                                                (click)="approveRejectTasks(task.objectId, task.task)">
+                                            Approve/Reject
+                                        </button>
+                                    </div>
+                                </div>
                                 <h5>Documents:</h5>
-                                <button *ngIf="complaintDetails.complaint.completed==='YES'" class="btn btn-sm btn-primary" (click)="downloadISMReport()">Download ISM
+                                <button *ngIf="complaintDetails.complaint.completed==='YES'"
+                                        class="btn btn-sm btn-primary" (click)="downloadISMReport()">Download ISM
                                     report
                                 </button>
                             </div>

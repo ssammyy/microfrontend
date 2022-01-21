@@ -150,6 +150,10 @@ class PvocApplicationEntity : Serializable {
     @Basic
     var makeModel: String? = null
 
+    @Column(name = "CERTIFICATE_VALIDITY")
+    @Basic
+    var certificateValidity:String?=null
+
     @Column(name = "REVIEW_STATUS")
     @Basic
     var reviewStatus: String? = null

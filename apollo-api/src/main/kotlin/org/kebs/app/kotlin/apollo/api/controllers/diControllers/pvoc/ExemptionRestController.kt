@@ -171,10 +171,10 @@ class ExemptionRestController(
             }
             pvocExceptionApp.id?.let {
                 userDetails?.id?.let { it1 ->
-                    pvocBpmn.startPvocApplicationExemptionsProcess(
-                        it,
-                        it1
-                    )
+//                    pvocBpmn.startPvocApplicationExemptionsProcess(
+//                        it,
+//                        it1
+//                    )
                 }
             }
             pvocExceptionApp.id?.let { userRolesService.getUserId("PVOC_APPLICATION_PROCESS")?.let { it1 ->

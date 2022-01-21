@@ -4,7 +4,9 @@ import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.extractPage
+import org.kebs.app.kotlin.apollo.api.payload.request.ComplaintStatusForm
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
+import org.kebs.app.kotlin.apollo.api.service.DaoValidatorService
 import org.kebs.app.kotlin.apollo.api.service.PvocAgentService
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.ServiceRequestsEntity
@@ -31,7 +33,8 @@ class PvocComplaintHandler(
         private val iPvocComplaintCategoryRepo: IPvocComplaintCategoryRepo,
         private val iUserProfilesRepository: IUserProfilesRepository,
         private val iPvocWaiversCategoriesRepo: IPvocWaiversCategoriesRepo,
-        private val agentService: PvocAgentService
+        private val agentService: PvocAgentService,
+        private val validator: DaoValidatorService
 
 ) {
     final val appId = applicationMapProperties.mapImportInspection
@@ -90,6 +93,28 @@ class PvocComplaintHandler(
             }
 
 
+    fun approveCurrentComplaintTask(req: ServerRequest): ServerResponse {
+        var response = ApiResponseModel()
+        try {
+            val complaintId = req.pathVariable("complaintId").toLong()
+            val form = req.body(ComplaintStatusForm::class.java)
+            this.validator.validateInputWithInjectedValidator(form)?.let {
+                response.errors = it
+                response.responseCode = ResponseCodes.INVALID_CODE
+                response.message = "Please correct errors"
+                response
+            } ?: run {
+                response = this.agentService.approveCurrentComplaint(complaintId, form.action!!, form.taskId!!, form.remarks!!)
+                response
+            }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to approve complaint task", ex)
+            response.message = "Request failed"
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+        }
+        return ServerResponse.ok().body(response)
+    }
+
     fun complaintApplications(req: ServerRequest): ServerResponse {
         val complaintStatus = req.pathVariable("applicationStatus")
         val keywords = req.param("keywords")
@@ -103,7 +128,7 @@ class PvocComplaintHandler(
             val complaintId = req.pathVariable("complaintId").toLong()
             response = this.agentService.complaintDetails(complaintId)
         } catch (ex: Exception) {
-            KotlinLogging.logger { }.error("Failed to fetch application",ex)
+            KotlinLogging.logger { }.error("Failed to fetch application", ex)
             response.message = "Request failed"
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
         }

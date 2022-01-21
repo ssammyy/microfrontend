@@ -85,9 +85,9 @@ class FileExcelProcessService {
             iPvocApplicationRepo.save(manufactuer)
             KotlinLogging.logger { }.info { "Finished successfully" }
             manufactuer.id?.let { commonDaoServices.getLoggedInUser()?.id?.let { it1 ->
-                pvocBpmn.startPvocApplicationExemptionsProcess(it,
-                    it1
-                )
+//                pvocBpmn.startPvocApplicationExemptionsProcess(it,
+//                    it1
+//                )
                 userRolesService.getUserId("PVOC_APPLICATION_PROCESS")?.let { it2 ->
                     pvocBpmn.pvocEaSubmitApplicationComplete(it,
                         it2

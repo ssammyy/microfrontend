@@ -8,6 +8,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.di.BpmnTaskDetails
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.di.DiTaskDetails
 import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SchedulerImpl
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocApplicationEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocComplaintEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocTimelinesDataEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocWaiversApplicationEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
@@ -160,10 +161,10 @@ class PvocBpmn(
         return false
     }
 
-    fun pvocCompleteTask(objectId: String, data: Map<String,Any>): HashMap<String, Any>? {
+    fun pvocCompleteTask(objectId: String, data: Map<String, Any>): HashMap<String, Any>? {
         KotlinLogging.logger { }.info("ObjectId : $objectId :  Completing task $data")
         try {
-            this.taskService.complete(objectId,data)
+            this.taskService.complete(objectId, data)
             KotlinLogging.logger { }.info("objectId : $objectId :  Completed")
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)
@@ -281,6 +282,7 @@ class PvocBpmn(
         }
         return null
     }
+
     private fun getTaskDetails(tasks: MutableList<org.flowable.task.api.Task>?): List<DiTaskDetails> {
         val taskDetails: MutableList<DiTaskDetails> = ArrayList()
         if (tasks != null) {
@@ -292,10 +294,27 @@ class PvocBpmn(
         return taskDetails
     }
 
-    fun getExemptionTasks(category: String,exemptionId: Long): List<DiTaskDetails> {
-        val tasks=taskService.createTaskQuery().taskCategory(category)
-                .processVariableValueEquals("exemptionId",exemptionId)
+    fun getExemptionTasks(category: String, exemptionId: Long): List<DiTaskDetails> {
+        val tasks = taskService.createTaskQuery().taskCategory(category)
+                .processVariableValueEquals("exemptionId", exemptionId)
                 .listPage(0, 30)
+        return getTaskDetails(tasks)
+    }
+
+    fun getWaiverTasks(category: String, waiverId: Long): List<DiTaskDetails> {
+        val tasks = taskService.createTaskQuery().taskCategory(category)
+                .processVariableValueEquals("waiverId", waiverId)
+                .listPage(0, 30)
+        return getTaskDetails(tasks)
+    }
+
+    fun getComplaintTasks(category: List<String>, exemptionId: Long): List<DiTaskDetails> {
+        val tasks = mutableListOf<org.flowable.task.api.Task>()
+        for (cat in category) {
+            tasks.addAll(taskService.createTaskQuery().taskCategory(cat)
+                    .processVariableValueEquals("complaintId", exemptionId)
+                    .listPage(0, 30))
+        }
         return getTaskDetails(tasks)
     }
 
@@ -368,33 +387,13 @@ class PvocBpmn(
     ***********************************************************************************
      */
     //Start the PVOC waivers applications process
-    fun startPvocWaiversApplicationsProcess(objectId: Long, assigneeId: Long, wetcId: Long): HashMap<String, String>? {
-        var variables: HashMap<String, Any> = HashMap()
-        KotlinLogging.logger { }.info("objectid : $objectId : Starting PVOC waivers applications process")
-        try {
-            //Remember to start by setting email and assignee to manufacturer
-            checkStartProcessInputs(objectId, assigneeId, pvocWaProcessDefinitionKey)?.let { checkVariables ->
-                val pvocApplication: PvocWaiversApplicationEntity = checkVariables["pvocWaiversApplicationEntity"] as PvocWaiversApplicationEntity
-                variables["objectId"] = pvocApplication.id.toString()
-                variables["waiverApproved"] = 0
-                variables["importerUserId"] = assigneeId
-                variables["wetcUserId"] = wetcId
-
-                bpmnCommonFunctions.startBpmnProcess(pvocWaProcessDefinitionKey, pvocWaBusinessKey, variables, assigneeId)?.let {
-                    pvocApplication.pvocWaProcessInstanceId = it["processInstanceId"]
-                    pvocApplication.pvocWaStartedOn = Timestamp.from(Instant.now())
-                    pvocApplication.pvocWaStatus = processStarted
-                    iwaiversApplicationRepo.save(pvocApplication)
-                    KotlinLogging.logger { }.info("objectId : $objectId : Successfully started PVOC waivers applications process")
-                    return it
-                } ?: run {
-                    KotlinLogging.logger { }.info("$objectId : Unable to start PVOC waivers applications process")
-                }
-            }
-        } catch (e: Exception) {
-            KotlinLogging.logger { }.error(e.message, e)
-        }
-        return null
+    fun startPvocWaiversApplicationsProcess(waiver: PvocWaiversApplicationEntity, username: String) {
+        val variables: HashMap<String, Any> = HashMap()
+        KotlinLogging.logger { }.info("Waiver ID : ${waiver.id} : Starting PVOC waivers applications process")
+        variables["waiverId"] = waiver.id
+        variables["startedBy"] = username
+        val process = this.runtimeService.startProcessInstanceById("waiverApplicationProcess", variables)
+        waiver.pvocWaProcessInstanceId = process.processInstanceId
     }
 
     //submit the application
@@ -696,6 +695,19 @@ class PvocBpmn(
             }
         } catch (e: Exception) {
             KotlinLogging.logger { }.error("$objectId : Unable to complete PVOC Monitoring process for $objectId")
+        }
+    }
+
+    fun startPvocComplaintApplicationsProcess(application: PvocComplaintEntity) {
+        val variables: HashMap<String, Any> = HashMap()
+        KotlinLogging.logger { }.info("Complaint : ${application.id} : Starting PVOC complaint applications process")
+        try {
+            variables.put("complaintId", application.id!!)
+            variables.put("appliedBy", application.email!!)
+            val process = this.runtimeService.startProcessInstanceById("complaintApplicationProcess", variables)
+            application.processId = process.processInstanceId
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
         }
     }
 }

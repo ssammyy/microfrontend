@@ -481,7 +481,7 @@ export const routes: Routes = [
                         pathMatch: 'full'
                     },
                     {
-                        path: 'application/:id',
+                        path: 'application/details/:id',
                         component: ViewWaiverDetailsComponent
                     }
                 ]
