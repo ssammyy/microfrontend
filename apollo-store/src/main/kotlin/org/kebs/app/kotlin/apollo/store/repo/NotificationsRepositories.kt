@@ -29,19 +29,16 @@ interface INotificationsRepository : HazelcastRepository<NotificationsEntity, In
      * TODO: Review queries below for correctness as on DB the fields combinations expected to return a single value are not unique on the DB, enforce uniqueness on the DB and/or correct the queries
      */
     fun findFirstByRequestTopicAndEventStatusAndNotificationTypeOrderByNotificationType(requestTopic: String?, eventStatus: String?, notificationType: NotificationTypesEntity?): NotificationsEntity?
-    fun findByNotificationTypeAndServiceMapIdAndServiceRequestStatusAndStatus(notificationType: NotificationTypesEntity, serviceMapId: ServiceMapsEntity, serviceRequestStatus: Int, status: Int): NotificationsEntity?
-    fun findByServiceMapIdAndServiceRequestStatusAndStatus(serviceMapId: ServiceMapsEntity?, serviceRequestStatus: Int?, status: Int?): Collection<NotificationsEntity>?
-    fun findByServiceMapIdAndEventStatusAndStatus(serviceMapId: ServiceMapsEntity, eventStatus: String, status: Int): Collection<NotificationsEntity>?
-    fun findByServiceMapIdAndUuidAndStatus(serviceMapId: ServiceMapsEntity, uuid: String, status: Int): Collection<NotificationsEntity>?
-    fun findFirstByEventStatusOrderByEventStatus(eventStatus: String): NotificationsEntity?
-    fun findFirstByRequestTopic(requestTopic: String): NotificationsEntity?
-
-    fun findByServiceMapIdAndServiceRequestStatusAndStatusAndNotificationType(serviceMapId: ServiceMapsEntity, serviceRequestStatus: Int?, status: Int?, notificationType: NotificationTypesEntity?): NotificationsEntity?
+    fun findByServiceRequestStatusAndStatus(serviceRequestStatus: Int?, status: Int?): Collection<NotificationsEntity>?
+    fun findByUuidAndStatus(uuid: String, status: Int): Collection<NotificationsEntity>?
+    fun findFirstByNotificationTypeAndReferenceNameOrderByNotificationType(notificationType: NotificationTypesEntity?, templateCode: String): Optional<NotificationsEntity>
 
 }
 
 @Repository
-interface INotificationTypesRepository : HazelcastRepository<NotificationTypesEntity, Int>
+interface INotificationTypesRepository : HazelcastRepository<NotificationTypesEntity, Int>{
+    fun findByTypeCode(code: String): Optional<NotificationTypesEntity>
+}
 
 @Repository
 interface INotificationsBufferRepository : HazelcastRepository<NotificationsBufferEntity, Long>{

@@ -862,3 +862,42 @@ class PvocComplaintForm {
     var subCategoryId: Long? = null
 
 }
+
+class ExemptionStatusForm {
+    @NotNull(message = "Task Identifier is required")
+    val taskId: String? = null
+
+    @NotNull(message = "Please select Approval Status")
+    val status: String? = null
+
+    @NotNull(message = "Please select certificate validity")
+    val certificateValidity: String? = null
+
+    @NotNull(message = "Rejection/Approval remarks are required")
+    val remarks: String? = null
+}
+
+class ComplaintStatusForm {
+    @NotNull(message = "Task Identifier is required")
+    val taskId: String? = null
+
+    @NotNull(message = "Please select Approval Status")
+    val status: String? = null
+
+    @NotNull(message = "Please select action")
+    val action: String? = null
+
+    @NotNull(message = "Rejection/Approval remarks are required")
+    val remarks: String? = null
+}
+
+class WaiverStatusForm {
+    @NotNull(message = "Task Identifier is required")
+    val taskId: String? = null
+
+    @NotNull(message = "Please select action")
+    val action: String? = null
+
+    @NotNull(message = "Rejection/Approval remarks are required")
+    val remarks: String? = null
+}

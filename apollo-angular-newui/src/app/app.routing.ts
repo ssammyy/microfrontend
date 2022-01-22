@@ -126,6 +126,12 @@ import {ViewBillLimitsComponent} from "./apollowebs/invoice/limits/view-bill-lim
 import {ViewTransactionsComponent} from "./apollowebs/invoice/corporate/view-transactions/view-transactions.component";
 import {ViewAuctionItemsComponent} from "./apollowebs/di/auction/view-auction-items/view-auction-items.component";
 import {AuctionItemDetailsComponent} from "./apollowebs/di/auction/auction-item-details/auction-item-details.component";
+import {ViewComplaintsComponent} from "./apollowebs/pvoc/complaints/view-complaints/view-complaints.component";
+import {ViewComplaintDetailsComponent} from "./apollowebs/pvoc/complaints/view-complaint-details/view-complaint-details.component";
+import {ViewWaiverApplicationsComponent} from "./apollowebs/pvoc/waivers/view-waiver-applications/view-waiver-applications.component";
+import {ViewWaiverDetailsComponent} from "./apollowebs/pvoc/waivers/view-waiver-details/view-waiver-details.component";
+import {ViewExemptionApplicationsComponent} from "./apollowebs/pvoc/exemptions/view-exemption-applications/view-exemption-applications.component";
+import {ViewExemptionDetailsComponent} from "./apollowebs/pvoc/exemptions/view-exemption-details/view-exemption-details.component";
 import {StdJustificationComponent} from "./apollowebs/standards-development/standard-request/std-justification/std-justification.component";
 import {StdTcWorkplanComponent} from "./apollowebs/standards-development/standard-request/std-tc-workplan/std-tc-workplan.component";
 import {PreparePreliminaryDraftComponent} from "./apollowebs/standards-development/committee-module/prepare-preliminary-draft/prepare-preliminary-draft.component";
@@ -468,30 +474,82 @@ export const routes: Routes = [
         children: [{path: '', component: SmarkComponent}]
     },
     {
+        path: 'company',
+        component: ImportInspectionComponent,
+        children: [
+            {
+                path: 'applications',
+                component: ImportInspectionComponent
+            }
+        ]
+    },
+    {
         path: 'pvoc',
         component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [
             {
-                path: 'applications',
-                component: ImportInspectionComponent,
-                pathMatch: 'full'
+                path: 'waiver',
+                children: [
+                    {
+                        path: 'apply',
+                        component: ImportationWaiverComponent,
+                        pathMatch: 'full'
+                    },
+                    {
+                        path: 'applications',
+                        component: ViewWaiverApplicationsComponent,
+                        pathMatch: 'full'
+                    },
+                    {
+                        path: 'application/details/:id',
+                        component: ViewWaiverDetailsComponent
+                    }
+                ]
             },
             {
-                path: 'waivers',
-                component: ImportationWaiverComponent
-            },
-            {
-                path: 'exceptions',
-                component: ExceptionsApplicationComponent
+                path: 'exemption',
+                children: [
+                    {
+                        path: 'apply',
+                        component: ExceptionsApplicationComponent
+                    },
+                    {
+                        path: 'applications',
+                        component: ViewExemptionApplicationsComponent
+                    },
+                    {
+                        path: 'view/:id',
+                        component: ViewExemptionDetailsComponent
+                    }
+                ]
+
             },
             {
                 path: 'partners',
-                component: ViewPartnersComponent
+                children: [
+                    {
+                        path: '',
+                        component: ViewPartnersComponent
+                    },
+                    {
+                        path: 'view/:id',
+                        component: ViewPartnerDetailsComponent
+                    }
+                ]
             },
             {
-                path: 'partners/view/:id',
-                component: ViewPartnerDetailsComponent
+                path: "complaints",
+                children: [
+                    {
+                        path: '',
+                        component: ViewComplaintsComponent
+                    },
+                    {
+                        path: ':id',
+                        component: ViewComplaintDetailsComponent
+                    }
+                ]
             }
         ]
     },
@@ -518,24 +576,14 @@ export const routes: Routes = [
         ]
     },
     {
-        path: 'kentrade/exchange/messages',
-        component: AdminLayoutComponent,
-        canActivate: [RouteGuard],
-        children: [
-            {
-                path: '',
-                component: MessageDashboardComponent
-            }
-        ]
-    },
-    {
         path: 'di',
         component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [
             {
                 path: '',
-                component: ConsignmentDocumentListComponent
+                component: ConsignmentDocumentListComponent,
+                pathMatch: 'full'
             },
             {
                 path: 'declaration/document/:id',
@@ -596,6 +644,26 @@ export const routes: Routes = [
                 canActivate: [RouteGuard],
                 component: AuctionItemDetailsComponent
             },
+            {
+                path: 'kentrade/exchange/messages',
+                canActivate: [RouteGuard],
+                component: MessageDashboardComponent
+            },
+            {
+                path: 'ism',
+                children: [
+                    {
+                        path: 'requests',
+                        canActivate: [RouteGuard],
+                        component: IsmApplicationsComponent
+                    },
+                    {
+                        path: 'request/:id',
+                        // canActivate: [RouteGuard],
+                        component: ViewIsmApplicationComponent
+                    }
+                ]
+            },
         ]
     },
     {
@@ -607,23 +675,6 @@ export const routes: Routes = [
                 path: 'inspection',
                 canActivate: [RouteGuard],
                 component: InspectionDashboardComponent
-            }
-        ]
-    },
-    {
-        path: 'ism',
-        component: AdminLayoutComponent,
-        // canActivate: [RouteGuard],
-        children: [
-            {
-                path: 'requests',
-                canActivate: [RouteGuard],
-                component: IsmApplicationsComponent
-            },
-            {
-                path: 'request/:id',
-                // canActivate: [RouteGuard],
-                component: ViewIsmApplicationComponent
             }
         ]
     },

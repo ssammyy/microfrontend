@@ -459,7 +459,6 @@ class PvocMonitoringAgents(
         remarkData.createdBy = user.firstName + " " + user.lastName
         remarkData.createdOn = Timestamp.from(Instant.now())
         remarkData.status = 1L
-        remarkData.cocTimelineId = id
         user.id?.let {  remarkData.role = iUserRolesRepository.findByIdOrNull(iUserRoleAssignmentsRepository.findByUserIdAndStatus(it, 1)?.get(0)?.roleId)?.roleName}
 
 

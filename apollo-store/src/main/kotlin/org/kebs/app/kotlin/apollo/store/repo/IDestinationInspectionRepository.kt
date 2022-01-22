@@ -106,6 +106,7 @@ interface IRemarksRepository : HazelcastRepository<RemarksEntity, Long>{
 interface ICocsRepository : HazelcastRepository<CocsEntity, Long> {
     fun findByUcrNumberAndCocType(ucrNumber: String,docType: String): CocsEntity?
     fun findFirstByCocNumber(cocNumber: String): CocsEntity?
+    fun findFirstByCocNumberAndCocNumberIsNotNullOrCoiNumberAndCoiNumberIsNotNull(cocNumber: String,coiNumber: String): Optional<CocsEntity>
     fun findFirstByCocNumberIsNotNullAndCocTypeAndConsignmentDocIdIsNotNull(cocType: String): CocsEntity?
     fun findFirstByCoiNumberIsNotNullAndCocTypeAndConsignmentDocIdIsNotNullOrderByCreatedOnDesc(cocType: String): CocsEntity?
     fun findAllByRouteAndShipmentSealNumbersIsNull(route: String, pageable: Pageable): Page<CocsEntity>?

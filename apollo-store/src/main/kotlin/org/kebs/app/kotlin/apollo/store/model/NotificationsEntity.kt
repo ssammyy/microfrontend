@@ -23,34 +23,71 @@ import javax.persistence.*
 @Table(name = "CFG_NOTIFICATIONS")
 class NotificationsEntity : Serializable {
 
-
-    @Basic
-    @Column(name = "ACTOR_CLASS")
-    var actorClass: String? = null
-
     @Id
     @SequenceGenerator(name = "CFG_NOTIFICATIONS_SEQ_GEN", allocationSize = 1, sequenceName = "CFG_NOTIFICATIONS_SEQ")
     @GeneratedValue(generator = "CFG_NOTIFICATIONS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
-    //@Basic
-    //@Column(name = "ID", nullable = true, precision = 0)
     @Column(name = "ID")
     var id: Int? = 0
-
-    @Basic
-    @Column(name = "DESCRIPTION")
-    var description: String? = null
 
     @Basic
     @Column(name = "UUID")
     var uuid: String? = null
 
+    @Basic
+    @Column(name = "ACTOR_CLASS")
+    var actorClass: String? = null
+
+    @Basic
+    @Column(name = "DESCRIPTION")
+    var description: String? = null
+
     @JoinColumn(name = "NOTIFICATION_TYPE", referencedColumnName = "ID")
     @ManyToOne
     var notificationType: NotificationTypesEntity? = null
 
-    @JoinColumn(name = "SERVICE_MAP_ID", referencedColumnName = "ID")
-    @ManyToOne
-    var serviceMapId: ServiceMapsEntity? = null
+    @Basic
+    @Column(name = "SENDER")
+    var sender: String? = null
+
+    @Basic
+    @Column(name = "SPEL_PROCESSOR")
+    var spelProcessor: String? = null
+
+    @Basic
+    @Column(name = "TEMPLATE_REFERENCE_NAME", nullable = true, length = 250)
+    var referenceName: String? = null
+
+    @Basic
+    @Column(name = "EMAIL_TEMPLATE")
+    var textTemplate: String? = null
+
+    @Basic
+    @Column(name = "SUBJECT")
+    var subject: String? = null
+
+    @Basic
+    @Column(name = "ATTACHMENT_FILE_NAME")
+    var attachmentFileName: String? = null
+
+    @Basic
+    @Column(name = "EVENT_STATUS")
+    var eventStatus: String? = null
+
+    @Basic
+    @Column(name = "REQUEST_TOPIC")
+    var requestTopic: String? = null
+
+    @Basic
+    @Column(name = "BEAN_PROCESSOR_NAME")
+    var beanProcessorName: String? = null
+
+    @Basic
+    @Column(name = "METHOD_NAME")
+    var methodName: String? = null
+
+    @Basic
+    @Column(name = "SERVICE_REQUEST_STATUS")
+    var serviceRequestStatus: Int? = null
 
     @Column(name = "STATUS")
     @Basic
@@ -119,47 +156,4 @@ class NotificationsEntity : Serializable {
     @Column(name = "DELETED_ON")
     @Basic
     var deletedOn: Timestamp? = null
-
-    @Basic
-    @Column(name = "SENDER")
-    var sender: String? = null
-
-    @Basic
-    @Column(name = "SPEL_PROCESSOR")
-    var spelProcessor: String? = null
-
-
-    @Basic
-    @Column(name = "EMAIL_TEMPLATE")
-    var emailTemplate: String? = null
-
-    @Basic
-    @Column(name = "SUBJECT")
-    var subject: String? = null
-
-    @Basic
-    @Column(name = "ATTACHMENT_FILE_NAME")
-    var attachmentFileName: String? = null
-
-    @Basic
-    @Column(name = "EVENT_STATUS")
-    var eventStatus: String? = null
-
-    @Basic
-    @Column(name = "REQUEST_TOPIC")
-    var requestTopic: String? = null
-
-    @Basic
-    @Column(name = "BEAN_PROCESSOR_NAME")
-    var beanProcessorName: String? = null
-
-    @Basic
-    @Column(name = "METHOD_NAME")
-    var methodName: String? = null
-
-    @Basic
-    @Column(name = "SERVICE_REQUEST_STATUS")
-    var serviceRequestStatus: Int? = null
-
-
 }

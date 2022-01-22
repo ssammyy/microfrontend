@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FinanceInvoiceService} from "../../../../core/store/data/invoice/finance-invoice.service";
 import {LocalDataSource} from "ng2-smart-table";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {DatePipe} from "@angular/common";
 import {ConsignmentStatusComponent} from "../../../../core/shared/customs/consignment-status/consignment-status.component";
 
@@ -80,8 +80,8 @@ export class ViewTransactionsComponent implements OnInit {
         }
     };
     dataSet: LocalDataSource = new LocalDataSource();
-
-    constructor(private activatedRoute: ActivatedRoute, private fiService: FinanceInvoiceService) {
+    billDetails: any
+    constructor(private activatedRoute: ActivatedRoute,private router: Router,private fiService: FinanceInvoiceService) {
     }
 
 
@@ -96,12 +96,17 @@ export class ViewTransactionsComponent implements OnInit {
 
     }
 
+    goBack() {
+        this.router.navigate(["/transaction/corporate", this.corporateId])
+    }
+
     loadBillTransactions() {
         this.fiService.loadBillTransactions(this.billId, this.corporateId, this.page, this.pageSize)
             .subscribe(
                 res => {
                     if (res.responseCode == "00") {
-                        this.dataSet.load(res.data)
+                        this.dataSet.load(res.data.transactions)
+                        this.billDetails=res.data.bill
                     } else {
                         this.fiService.showError(res.message, null)
                     }

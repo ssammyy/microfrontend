@@ -65,7 +65,7 @@ export class PVOCService {
         return this.http.put(ApiEndpointService.getEndpoint("/api/v1/partners/update/" + partnerId), data)
     }
 
-    addPartnerApiClient(data: any, partnerId: number): Observable<any>{
+    addPartnerApiClient(data: any, partnerId: number): Observable<any> {
         return this.http.post(ApiEndpointService.getEndpoint("/api/v1/partners/create/api-client/" + partnerId), data)
     }
 
@@ -73,7 +73,7 @@ export class PVOCService {
         return this.http.get(ApiEndpointService.getEndpoint("/api/v1/partners/details/" + partnerId))
     }
 
-    loadPartnerCountries(): Observable<any>{
+    loadPartnerCountries(): Observable<any> {
         return this.http.get(ApiEndpointService.getEndpoint("/api/v1/partners/countries"))
     }
 
@@ -132,4 +132,70 @@ export class PVOCService {
         console.log(url)
         return this.sendFiles(data, files, url)
     }
+
+    public listComplaintRequests(status: string, page: any, size: any): Observable<any> {
+        let params = {}
+        params["size"] = size
+        params["page"] = page
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/exemptions/get/" + status), {
+            params: params
+        })
+    }
+
+    public listExemptionApplications(keyword: any, status: string, page: any, size: any): Observable<any> {
+        let params = {}
+        params["size"] = size
+        params["page"] = page
+        if (keyword) {
+            params['keyword'] = keyword
+        }
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/exemption/get/" + status), {
+            params: params
+        })
+    }
+
+    getExemptionApplicationDetails(exemptionId: any): Observable<any>{
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/exemption/details/" + exemptionId))
+    }
+
+    updateExemptionStatus(exemptionId: any, data: any): Observable<any>{
+        return this.http.post(ApiEndpointService.getEndpoint("/api/v1/pvoc/exemption/status/update/" + exemptionId), data)
+    }
+    public listComplaintApplications(keywords: string, status: string, page: any, size: any): Observable<any> {
+        let params = {}
+        params["size"] = size
+        params["page"] = page
+        if (keywords) {
+            params["keywords"] = keywords
+        }
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/complaint/get/" + status), {
+            params: params
+        })
+    }
+
+    getComplaintApplicationDetails(complaintId: any): Observable<any> {
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/complaint/details/" + complaintId))
+    }
+
+    updateComplaintStatus(complaintId: any, data): Observable<any>{
+        return this.http.post(ApiEndpointService.getEndpoint("/api/v1/pvoc/exemption/status/update/"+complaintId),data)
+    }
+
+    public listWaiverApplications(keywords: string, status: string, page: any, size: any): Observable<any> {
+        let params = {}
+        params["size"] = size
+        params["page"] = page
+        if (keywords) {
+            params["keywords"] = keywords
+        }
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/waiver/get/" + status), {
+            params: params
+        })
+    }
+
+    getWaiverApplicationDetails(waiverId: any): Observable<any> {
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/waiver/details/" + waiverId))
+    }
+
+
 }

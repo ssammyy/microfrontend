@@ -16,6 +16,8 @@ import org.kebs.app.kotlin.apollo.store.model.UserVerificationTokensEntity
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.kebs.app.kotlin.apollo.store.repo.IUserVerificationTokensRepository
+import org.springframework.expression.spel.SpelParserConfiguration
+import org.springframework.expression.spel.support.StandardEvaluationContext
 import org.springframework.http.server.ServletServerHttpRequest
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -41,6 +43,7 @@ class ApiAuthenticationHandler(
     private val smsService: SmsServiceImpl,
     private val customAuthenticationProvider: CustomAuthenticationProvider
 ) {
+
 
     fun generateOtp(req: ServerRequest): ServerResponse {
         val reqBody = req.body<OtpRequestValuesDto>()
@@ -102,9 +105,9 @@ class ApiAuthenticationHandler(
     }
 
     fun generateTransactionReference(
-        length: Int = 12,
-        secureRandomAlgorithm: String = "SHA1PRNG",
-        messageDigestAlgorithm: String = "SHA-512", prefix: Boolean = false,
+            length: Int = 12,
+            secureRandomAlgorithm: String = "SHA1PRNG",
+            messageDigestAlgorithm: String = "SHA-512", prefix: Boolean = false,
     ): String {
         return generateRandomText(length, secureRandomAlgorithm, messageDigestAlgorithm, false)
     }

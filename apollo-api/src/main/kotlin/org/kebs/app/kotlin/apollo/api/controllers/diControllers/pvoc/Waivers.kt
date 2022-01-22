@@ -204,10 +204,10 @@ class Waivers(
             getLoggedInUser()?.id?.let { it ->
                 KotlinLogging.logger { }.info { "Entity id $id and impoter id is $it" }
                 userRolesService.getUserId("WAIVERS_APPLICATION_REVIEW")?.let { it1 ->
-                    pvocBpmn.startPvocWaiversApplicationsProcess(
-                        id, it,
-                        it1
-                    )
+//                    pvocBpmn.startPvocWaiversApplicationsProcess(
+//                        id, it,
+//                        it1
+//                    )
                 }
                 userRolesService.getUserId("WAIVERS_APPLICATION_REVIEW")?.let { it1 ->
                     pvocBpmn.pvocWaSubmitApplicationComplete(
@@ -402,18 +402,18 @@ class Waivers(
             }
             "report" -> {
                 model.addAttribute("message", "Remarks for Waivers Application Report. Reference No : $id")
-                model.addAttribute("remarks", iPvocWaiversRemarksRepo.findAllByWaiverReportId(id))
+//                model.addAttribute("remarks", iPvocWaiversRemarksRepo.findAllByWaiverReportId(id))
             }
             "minute" -> {
                 model.addAttribute("message", "Remarks for Waivers Application Generated Minute. Reference No : $id")
-                model.addAttribute("remarks", iPvocWaiversRemarksRepo.findAllByMinuteId(id))
+//                model.addAttribute("remarks", iPvocWaiversRemarksRepo.findAllByMinuteId(id))
             }
             "coc_timeline" -> {
                 model.addAttribute(
                     "message",
                     "Recomendation Remarks for Waivers PvocTimeline Coc Detail. Reference No : $id"
                 )
-                model.addAttribute("remarks", iPvocWaiversRemarksRepo.findAllByCocTimelineId(id))
+//                model.addAttribute("remarks", iPvocWaiversRemarksRepo.findAllByCocTimelineId(id))
             }
         }
         return "destination-inspection/pvoc/WaiversApplicationRemarks"
@@ -503,7 +503,7 @@ class Waivers(
     @GetMapping("waivers-reports/{id}")
     fun waiverReportDetails(@PathVariable("id") id: Long, model: Model): String {
         iPvocWaiversReportRepo.findByIdOrNull(id)?.let { report ->
-            model.addAttribute("remarksData", iPvocWaiversRemarksRepo.findAllByWaiverReportId(id))
+//            model.addAttribute("remarksData", iPvocWaiversRemarksRepo.findAllByWaiverReportId(id))
             model.addAttribute("remarks", PvocWaiversReportsEntity())
             model.addAttribute("waiverRemarks", report.waiverId?.let { iPvocWaiversRemarksRepo.findAllByWaiverId(it) })
             model.addAttribute("documents", iPvocWaiversApplicationDocumentRepo.findAllByWaiverId(report.id))
@@ -535,7 +535,6 @@ class Waivers(
                 }
                 iwaiversApplicationRepo.findByIdOrNull(report.waiverId)
                     ?.let { waiver ->
-                        remarkData.waiverReportId = id
                         when (remarksType) {
                             "recommend" -> {
                                 remarkData.remarks = remarks.wetcRecomendation

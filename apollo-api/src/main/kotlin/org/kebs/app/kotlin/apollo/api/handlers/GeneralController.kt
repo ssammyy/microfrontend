@@ -9,15 +9,11 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
-import org.kebs.app.kotlin.apollo.api.service.AuctionService
-import org.kebs.app.kotlin.apollo.api.service.ChecklistService
-import org.kebs.app.kotlin.apollo.api.service.DestinationInspectionService
-import org.kebs.app.kotlin.apollo.api.service.InvoicePaymentService
+import org.kebs.app.kotlin.apollo.api.service.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
-import org.kebs.app.kotlin.apollo.store.model.auction.AuctionUploadsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.DiUploadsEntity
-import org.springframework.core.io.ResourceLoader
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocWaiversApplicationDocumentsEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
@@ -36,7 +32,8 @@ class GeneralController(
         private val invoicePaymentService: InvoicePaymentService,
         private val commonDaoServices: CommonDaoServices,
         private val limsServices: LimsServices,
-        private val auctionService: AuctionService
+        private val auctionService: AuctionService,
+        private val pvocService: PvocService,
 ) {
     val checkMark = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapCheckmarkImagePath)
     val smarkImage = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapSmarkImagePath)
@@ -302,6 +299,15 @@ class GeneralController(
         return true
     }
 
+    @GetMapping("/waiver/attachment/{uploadId}")
+    fun downloadWaiverAttachment(@PathVariable("uploadId") uploadId: Long, httResponse: HttpServletResponse) {
+        pvocService.waiverAttachment(uploadId)?.let { diUpload ->
+            // Response with file
+            diUpload.documentType?.let { doc ->
+                downloadBytes(doc, "ATTACHMENT-${diUpload.id}-${diUpload.name?.toUpperCase()}", httResponse)
+            } ?: throw ExpectedDataNotFound("Attachment file not found")
+        } ?: throw ExpectedDataNotFound("Attachment file not found")
+    }
 
     @GetMapping("/attachments/{uploadId}")
     fun downloadConsignmentDocumentAttachment(@PathVariable("uploadId") uploadId: Long, httResponse: HttpServletResponse) {
@@ -324,8 +330,38 @@ class GeneralController(
 
     @GetMapping("/auction/report/{startDate}/{endDate}")
     fun downloadAuctionReport(@PathVariable("startDate") startDate: String, @PathVariable("endDate") endDate: String, httResponse: HttpServletResponse) {
-        val records=auctionService.downloadAuctionReport(startDate, endDate)
-        // TODO: Create Report
+        val response = ApiResponseModel()
+        try {
+            val records = auctionService.downloadAuctionReport(startDate, endDate)
+            if (records.isEmpty()) {
+                response.responseCode = ResponseCodes.EXCEPTION_STATUS
+                response.message = "No records found for the dates ${startDate} to ${endDate}"
+                httResponse.status = HttpStatus.SC_NOT_FOUND
+                httResponse.writer.write(ObjectMapper().writeValueAsString(response))
+                return
+            }
+            // Create Report
+            val data = HashMap<String, Any>()
+            data["imagePath"] = kebsLogoPath ?: ""
+            val startTimestamp = auctionService.getReportTimestamp(startDate, true)
+            val endTimestamp = auctionService.getReportTimestamp(startDate, false)
+            data["aucMonth"] = "${startTimestamp.month} ${endTimestamp.month}"
+            data["reportDate"] = "${startTimestamp.toLocalDateTime().toLocalDate()}-${endTimestamp.toLocalDateTime().toLocalDate()}"
+            // Create datasource report
+            val dataSource = HashMap<String, List<Any>>()
+            dataSource["itemDataSource"] = records
+            // Create a pdfStream
+            val pdfStream = reportsDaoService.extractReportMapDataSource(data, "classpath:reports/auctionGoodsReport.jrxml", dataSource)
+            val serialNumber = "${startDate}-${endDate}"
+            val fileName = "AUCTION-GOODS-${serialNumber}.pdf"
+            download(pdfStream, fileName, httResponse)
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Auction report", ex)
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.message = "Failed to generate auction report"
+            httResponse.status = HttpStatus.SC_INTERNAL_SERVER_ERROR
+            httResponse.writer.write(ObjectMapper().writeValueAsString(response))
+        }
     }
 
     @CrossOrigin

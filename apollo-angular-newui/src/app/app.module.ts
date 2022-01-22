@@ -275,6 +275,29 @@ import {CreateDepartmentComponent} from "./apollowebs/standards-development/stan
 import {CreatetechnicalcommitteeComponent} from "./apollowebs/standards-development/standard-request/createtechnicalcommittee/createtechnicalcommittee.component";
 import {CreateproductComponent} from "./apollowebs/standards-development/standard-request/createproduct/createproduct.component";
 import {CreateproductSubCategoryComponent} from "./apollowebs/standards-development/standard-request/createproduct-sub-category/createproduct-sub-category.component";
+import { ViewCorporateCustomersComponent } from './apollowebs/invoice/corporate/view-corporate-customers/view-corporate-customers.component';
+import { AddUpdateCorporateCustomerComponent } from './apollowebs/invoice/corporate/add-update-corporate-customer/add-update-corporate-customer.component';
+import { ViewCorporateComponent } from './apollowebs/invoice/corporate/view-corporate/view-corporate.component';
+import { ViewBillLimitsComponent } from './apollowebs/invoice/limits/view-bill-limits/view-bill-limits.component';
+import { ViewTransactionsComponent } from './apollowebs/invoice/corporate/view-transactions/view-transactions.component';
+import { ViewAuctionItemsComponent } from './apollowebs/di/auction/view-auction-items/view-auction-items.component';
+import { UploadFileComponent } from './apollowebs/di/auction/upload-file/upload-file.component';
+import { AuctionItemDetailsComponent } from './apollowebs/di/auction/auction-item-details/auction-item-details.component';
+import { AssignAuctionItemComponent } from './apollowebs/di/auction/assign-auction-item/assign-auction-item.component';
+import { AproveRejectAuctionItemComponent } from './apollowebs/di/auction/aprove-reject-auction-item/aprove-reject-auction-item.component';
+import { GenerateDemandNoteComponent } from './apollowebs/di/auction/generate-demand-note/generate-demand-note.component';
+import { AddAuctionRecordComponent } from './apollowebs/di/auction/add-auction-record/add-auction-record.component';
+import { AddEditAuctionItemComponent } from './apollowebs/di/auction/add-edit-auction-item/add-edit-auction-item.component';
+import { ViewComplaintsComponent } from './apollowebs/pvoc/complaints/view-complaints/view-complaints.component';
+import { ViewComplaintDetailsComponent } from './apollowebs/pvoc/complaints/view-complaint-details/view-complaint-details.component';
+import { GenerateAuctionKraReportComponent } from './apollowebs/di/auction/generate-auction-kra-report/generate-auction-kra-report.component';
+import { ViewWaiverApplicationsComponent } from './apollowebs/pvoc/waivers/view-waiver-applications/view-waiver-applications.component';
+import { ViewWaiverDetailsComponent } from './apollowebs/pvoc/waivers/view-waiver-details/view-waiver-details.component';
+import { ViewExemptionApplicationsComponent } from './apollowebs/pvoc/exemptions/view-exemption-applications/view-exemption-applications.component';
+import { ViewExemptionDetailsComponent } from './apollowebs/pvoc/exemptions/view-exemption-details/view-exemption-details.component';
+import { UpdateExemptionTaskComponent } from './apollowebs/pvoc/exemptions/update-exemption-task/update-exemption-task.component';
+import { UpdateComplaintTaskComponent } from './apollowebs/pvoc/complaints/update-complaint-task/update-complaint-task.component';
+import { UpdateWaiverTaskComponent } from './apollowebs/pvoc/waivers/update-waiver-task/update-waiver-task.component';
 
 @NgModule({
     imports: [
@@ -616,6 +639,16 @@ export class MaterialModule {}
         AppComponent,
         AdminLayoutComponent,
         AuthLayoutComponent
+        ViewComplaintsComponent,
+        ViewComplaintDetailsComponent,
+        GenerateAuctionKraReportComponent,
+        ViewWaiverApplicationsComponent,
+        ViewWaiverDetailsComponent,
+        ViewExemptionApplicationsComponent,
+        ViewExemptionDetailsComponent,
+        UpdateExemptionTaskComponent,
+        UpdateComplaintTaskComponent,
+        UpdateWaiverTaskComponent,
     ],
     providers: [
         MatNativeDateModule,

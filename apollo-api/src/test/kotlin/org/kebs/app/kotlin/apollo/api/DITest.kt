@@ -14,7 +14,6 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SchedulerImpl
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.UpAndDownLoad
 import org.kebs.app.kotlin.apollo.api.service.BillingService
 import org.kebs.app.kotlin.apollo.api.service.DestinationInspectionService
-import org.kebs.app.kotlin.apollo.api.service.InvoicePaymentService
 import org.kebs.app.kotlin.apollo.api.utils.Delimiters
 import org.kebs.app.kotlin.apollo.api.utils.XMLDocument
 import org.kebs.app.kotlin.apollo.common.dto.UserEntityDto
@@ -34,21 +33,20 @@ import org.kebs.app.kotlin.apollo.store.repo.di.IDestinationInspectionFeeReposit
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.Lazy
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.context.junit4.SpringRunner
+import org.w3c.dom.Document
+import org.xml.sax.InputSource
 import java.io.File
 import java.io.IOException
+import java.io.StringReader
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
-import org.w3c.dom.Document
-import org.xml.sax.InputSource
-import java.io.StringReader
-import java.util.concurrent.TimeUnit
 
 
 @SpringBootTest
@@ -728,7 +726,7 @@ class DITest {
         this.demandNoteRepository.findFirstByPaymentStatusAndCdRefNoIsNotNullAndImporterPinOrderByCreatedOnDesc(0, "PN890230023")?.let { demandNote ->
             KotlinLogging.logger { }.info("CdRef No: ${demandNote.cdRefNo}")
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-            billingService.registerBillTransaction(demandNote, map)?.let {
+            billingService.registerBillTransaction(demandNote,null, map)?.let {
                 KotlinLogging.logger { }.info("Billing temp ref: ${it.tempReceiptNumber}")
             } ?: throw ExpectedDataNotFound("Expected demand note to be added to billing")
             Thread.sleep(TimeUnit.SECONDS.toMillis(5))
@@ -890,6 +888,7 @@ class DITest {
 
         consignmentDoc.documentDetails?.consignmentDocDetails?.cdImporter?.physicalCountryName = country.countryName
         assertEquals("KENYA", consignmentDoc.documentDetails?.consignmentDocDetails?.cdImporter?.physicalCountryName)
+
     }
 
     @Test

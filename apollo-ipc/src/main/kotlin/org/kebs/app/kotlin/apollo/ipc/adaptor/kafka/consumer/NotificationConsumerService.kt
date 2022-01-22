@@ -103,7 +103,7 @@ class NotificationConsumerService(
         try {
             KotlinLogging.logger {}.info("received message=List with partition-offset=[$partitions-$offsets] Headers[$topic,$messageKey,$timestampType,$timestamp]")
             requests.forEach { request ->
-                notificationsRepo.findByServiceMapIdAndServiceRequestStatusAndStatus(request.serviceMapsId, request.status, request.serviceMapsId?.activeStatus)
+                notificationsRepo.findByServiceRequestStatusAndStatus(request.status, request.serviceMapsId?.activeStatus)
                         ?.let { notifications ->
                             notifications.forEach { notificationsEntity ->
                                 notificationsEntity.requestTopic

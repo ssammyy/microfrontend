@@ -1,0 +1,89 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">wave</i>
+                        </div>
+                        <h4 class="card-title">Exemption Applications
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar">
+                            <div class="search-bar">
+                                <div class="input-group form-inline">
+                                    <label for="searchDocument"></label>
+                                    <input id="searchDocument" class="search-form-input" (keyup)="searchPhraseChanged()"
+                                           [(ngModel)]="keywords" placeholder="Search Document">
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-primary btn-background"
+                                                (click)="searchPhraseChanged()">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="material-datatables">
+                            <div class="table-responsive">
+                                <mat-table class="table-striped table-responsive table-condensed"
+                                           [dataSource]="exemptionListing">
+                                    <ng-container matColumnDef="serialNo">
+                                        <mat-header-cell *matHeaderCellDef>S/N</mat-header-cell>
+                                        <mat-cell *matCellDef="let element"> {{element.sn}} </mat-cell>
+                                    </ng-container>
+                                    <ng-container matColumnDef="conpanyName">
+                                        <mat-header-cell *matHeaderCellDef>Company Name</mat-header-cell>
+                                        <mat-cell *matCellDef="let element"> {{element.conpanyName}} </mat-cell>
+                                    </ng-container>
+                                    <ng-container matColumnDef="companyPinNo">
+                                        <mat-header-cell *matHeaderCellDef>Company PIN</mat-header-cell>
+                                        <mat-cell *matCellDef="let element"> {{element.companyPinNo}} </mat-cell>
+                                    </ng-container>
+                                    <ng-container matColumnDef="companyEmail">
+                                        <mat-header-cell *matHeaderCellDef>Company Email</mat-header-cell>
+                                        <mat-cell *matCellDef="let element"> {{element.email}} </mat-cell>
+                                    </ng-container>
+                                    <ng-container matColumnDef="contactName">
+                                        <mat-header-cell *matHeaderCellDef>Contact Name</mat-header-cell>
+                                        <mat-cell *matCellDef="let element"> {{element.contactName}} </mat-cell>
+                                    </ng-container>
+                                    <ng-container matColumnDef="contactEmail">
+                                        <mat-header-cell *matHeaderCellDef>Contact Email</mat-header-cell>
+                                        <mat-cell *matCellDef="let element"> {{element.contactEmail}} </mat-cell>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="telephoneNo">
+                                        <mat-header-cell *matHeaderCellDef>Company Phone</mat-header-cell>
+                                        <mat-cell *matCellDef="let element"> {{element.telephoneNo}} </mat-cell>
+                                    </ng-container>
+                                    <ng-container matColumnDef="physicalLocation">
+                                        <mat-header-cell *matHeaderCellDef>Location</mat-header-cell>
+                                        <mat-cell
+                                                *matCellDef="let element"> {{element.physicalLocation}} </mat-cell>
+                                    </ng-container>
+                                    <ng-container matColumnDef="actions">
+                                        <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+                                        <mat-cell *matCellDef="let element">
+                                            <button mat-raised-button (click)="viewExemption(element.exemptionId)"><i
+                                                    class="fa fa-eye">View</i>
+                                            </button>
+                                        </mat-cell>
+                                    </ng-container>
+                                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                                    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                                </mat-table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end content-->
+                </div>
+                <!--  end card  -->
+            </div>
+            <!-- end col-md-12 -->
+        </div>
+        <!-- end row -->
+    </div>
+</div>

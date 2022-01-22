@@ -142,7 +142,8 @@ class InvoicePaymentService(
             val demandNote = daoServices.findDemandNoteWithID(demandNoteId)!!
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             // Try to add transaction to current bill or generate batch payment
-            this.billingService.registerBillTransaction(demandNote, map)?.let { billTrx ->
+            val transportDetails=daoServices.findCdTransportDetails(consignmentDocument.cdTransport?:0)
+            this.billingService.registerBillTransaction(demandNote, transportDetails.blawb, map)?.let { billTrx ->
                 demandNote.paymentStatus = 1
                 demandNote.receiptNo = billTrx.tempReceiptNumber
                 demandNote.billId = billTrx.id
