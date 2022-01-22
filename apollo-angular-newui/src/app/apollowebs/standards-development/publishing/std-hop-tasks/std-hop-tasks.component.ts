@@ -27,6 +27,7 @@ export class StdHopTasksComponent implements OnInit {
   isDtInitialized: boolean = false
   public itemId: number;
   loadingText: string;
+  blob: Blob;
 
 
   constructor(private publishingService: PublishingService, private notifyService: NotificationService,
@@ -86,12 +87,12 @@ export class StdHopTasksComponent implements OnInit {
 
   }
 
-  public decisionOnDraft(stdTCDecision: StdTCDecision, decision: string): void {
+  public decisionOnDraft(stdTCDecision: StdTCDecision, decision: string, draftStandard: number): void {
     this.loadingText = "Submitting Decision On Draft ...."
 
     this.SpinnerService.show();
     stdTCDecision.decision = decision;
-    this.publishingService.decisionOnKSDraft(stdTCDecision).subscribe(
+    this.publishingService.decisionOnKSDraft(stdTCDecision,draftStandard).subscribe(
         (response) => {
           console.log(response);
           this.SpinnerService.hide()
@@ -111,5 +112,22 @@ export class StdHopTasksComponent implements OnInit {
 
   public hideModel() {
     this.closeModal?.nativeElement.click();
+  }
+  viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
+    this.SpinnerService.show();
+    this.publishingService.viewDEditedApplicationPDF(pdfId,"DraftStandard").subscribe(
+        (dataPdf: any) => {
+          this.SpinnerService.hide();
+          this.blob = new Blob([dataPdf], {type: applicationType});
+
+          // tslint:disable-next-line:prefer-const
+          let downloadURL = window.URL.createObjectURL(this.blob);
+          const link = document.createElement('a');
+          link.href = downloadURL;
+          link.download = fileName;
+          link.click();
+          // this.pdfUploadsView = dataPdf;
+        },
+    );
   }
 }

@@ -1,6 +1,6 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {HttpErrorResponse} from "@angular/common/http";
-import {EditorTask, StdTCDecision} from "../../../../core/store/data/std/request_std.model";
+import {EditorTask, StandardDraft, StdTCDecision} from "../../../../core/store/data/std/request_std.model";
 import {PublishingService} from "../../../../core/store/data/std/publishing.service";
 import {Subject} from "rxjs";
 import {DataTableDirective} from "angular-datatables";
@@ -29,6 +29,7 @@ export class EditorTasksComponent implements OnInit {
     public itemId: number;
     loadingText: string;
     public uploadedFiles: FileList;
+
 
 
     constructor(private publishingService: PublishingService, private notifyService: NotificationService,
@@ -89,27 +90,43 @@ export class EditorTasksComponent implements OnInit {
 
     }
 
-    public decisionOnDraft(stdTCDecision: StdTCDecision, decision: string): void {
-        this.loadingText = "Submitting Edited Draft Standard For Proofreading...."
+    showToasterError(title: string, message: string) {
+        this.notifyService.showError(message, title)
 
-        this.SpinnerService.show();
-        stdTCDecision.decision = decision;
-        console.log(stdTCDecision);
-        this.publishingService.decisionOnKSDraft(stdTCDecision).subscribe(
-            (response) => {
-                console.log(response);
-                this.showToasterSuccess(response.httpStatus, `Draft Standard Submitted For Proofreading.`);
-                this.getEditorTasks();
-                this.SpinnerService.hide();
+    }
 
-            },
-            (error: HttpErrorResponse) => {
-                this.SpinnerService.hide();
+    public decisionOnDraft(uploadStdDraft: EditorTask, decision: string, draftId: number): void {
 
-                alert(error.message);
+        if (this.uploadedFiles != null) {
+            if (this.uploadedFiles.length > 0) {
+                this.loadingText = "Submitting Edited Draft Standard For Proofreading...."
+                this.SpinnerService.show();
+                //stdTCDecision.decision = decision;
+               // console.log(stdTCDecision);
+                this.publishingService.completeEditing(uploadStdDraft,draftId).subscribe(
+                    (response) => {
+                        console.log(response);
+                        this.showToasterSuccess(response.httpStatus, `Draft Standard Submitted For Proofreading.`);
+                        this.onClickSaveUploads(String(draftId))
+
+                        this.getEditorTasks();
+                        this.SpinnerService.hide();
+
+                    },
+                    (error: HttpErrorResponse) => {
+                        this.SpinnerService.hide();
+
+                        alert(error.message);
+                    }
+                )
+            } else {
+                this.showToasterError("Error", `Please Upload an Edited Draft Standard.`);
+
             }
-        )
+        } else {
+            this.showToasterError("Error", `Please Upload an Edited Draft Standard.`);
 
+        }
     }
 
     onClickSaveUploads(draftStandardID: string) {
@@ -121,7 +138,7 @@ export class EditorTasksComponent implements OnInit {
                 formData.append('docFile', file[i], file[i].name);
             }
             this.SpinnerService.show();
-            this.publishingService.uploadFileDetails(draftStandardID, formData).subscribe(
+            this.publishingService.uploadFileDetails(draftStandardID, formData, "EditedDraftStandard").subscribe(
                 (data: any) => {
                     this.SpinnerService.hide();
                     this.uploadedFiles = null;
@@ -143,7 +160,7 @@ export class EditorTasksComponent implements OnInit {
 
     viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
         this.SpinnerService.show();
-        this.publishingService.viewDEditedApplicationPDF(pdfId).subscribe(
+        this.publishingService.viewDEditedApplicationPDF(pdfId,"DraftStandard").subscribe(
             (dataPdf: any) => {
                 this.SpinnerService.hide();
                 this.blob = new Blob([dataPdf], {type: applicationType});

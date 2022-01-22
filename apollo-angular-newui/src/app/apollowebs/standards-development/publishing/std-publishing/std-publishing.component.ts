@@ -41,7 +41,7 @@ export class StdPublishingComponent implements OnInit {
         });
         this.prepareDraftStandardFormGroup = this.formBuilder.group({
             title: ['', Validators.required],
-            version: ['', Validators.required],
+            versionNumber: ['', Validators.required],
             requestorId: ['', Validators.required],
             uploadedFiles: ['', Validators.required]
 
@@ -51,6 +51,11 @@ export class StdPublishingComponent implements OnInit {
 
     showToasterSuccess(title: string, message: string) {
         this.notifyService.showSuccess(message, title)
+    }
+
+    showToasterError(title: string, message: string) {
+        this.notifyService.showError(message, title)
+
     }
 
     get formPrepareJustification(): any {
@@ -71,20 +76,28 @@ export class StdPublishingComponent implements OnInit {
     //     )
     // }
     onUpload(): void {
-        this.SpinnerService.show();
-        this.publishingService.uploadStdDraft(this.prepareDraftStandardFormGroup.value).subscribe(
-            (response) => {
-                console.log(response);
-                this.SpinnerService.hide();
-                this.showToasterSuccess(response.httpStatus, `Successfully submitted draft standard`);
-                this.onClickSaveUploads(response.body.savedRowID)
-                this.prepareDraftStandardFormGroup.reset();
-            },
-            (error: HttpErrorResponse) => {
-                this.SpinnerService.hide();
-                console.log(error.message);
+        if (this.uploadedFiles != null) {
+            if (this.uploadedFiles.length > 0) {
+                this.SpinnerService.show();
+                this.publishingService.uploadStdDraft(this.prepareDraftStandardFormGroup.value).subscribe(
+                    (response) => {
+                        console.log(response);
+                        this.SpinnerService.hide();
+                        this.showToasterSuccess(response.httpStatus, `Successfully submitted draft standard`);
+                        this.onClickSaveUploads(response.body.savedRowID)
+                        this.prepareDraftStandardFormGroup.reset();
+                    },
+                    (error: HttpErrorResponse) => {
+                        this.SpinnerService.hide();
+                        console.log(error.message);
+                    }
+                );
+            } else {
+                this.showToasterError("Error", `Please Upload a Draft Standard.`);
             }
-        );
+        } else {
+            this.showToasterError("Error", `Please Upload a Draft Standard.`);
+        }
     }
 
     onClickSaveUploads(draftStandardID: string) {
@@ -96,7 +109,7 @@ export class StdPublishingComponent implements OnInit {
                 formData.append('docFile', file[i], file[i].name);
             }
             this.SpinnerService.show();
-            this.publishingService.uploadFileDetails(draftStandardID, formData).subscribe(
+            this.publishingService.uploadFileDetails(draftStandardID, formData, "DraftStandard").subscribe(
                 (data: any) => {
                     this.SpinnerService.hide();
                     this.uploadedFiles = null;
