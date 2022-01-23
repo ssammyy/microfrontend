@@ -111,9 +111,10 @@ export class OtpComponent implements OnInit {
         } else {
           this.otpSent = false;
           // this.SpinnerService.hide()
-          this.showToasterError("Error", `You Have Entered The Wrong OTP.`);
 
           this.loginForm?.get('otp')?.reset();
+          this.loginForm.controls.otp.setErrors({invalidNumber:true})  // <--- Set invalidNumber to true
+
           // this.store$.dispatch(loadResponsesFailure({
           //   error: {
           //     payload: 'OTP is invalid!, Could not validate token',
