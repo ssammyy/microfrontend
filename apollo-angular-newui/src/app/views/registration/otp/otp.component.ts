@@ -10,6 +10,7 @@ import {
 import {select, Store} from '@ngrx/store';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NgxSpinnerService} from "ngx-spinner";
+import {NotificationService} from "../../../core/store/data/std/notification.service";
 
 @Component({
   selector: 'app-otp',
@@ -31,6 +32,7 @@ export class OtpComponent implements OnInit {
       private store$: Store<any>,
       private route: ActivatedRoute,
       private router: Router,
+      private notifyService: NotificationService,
       private SpinnerService: NgxSpinnerService) {
     this.credential = {username: '', password: ''};
     this.loginForm = new FormGroup({});
@@ -52,6 +54,11 @@ export class OtpComponent implements OnInit {
     });
 
     // this.returnUrl = this.route.snapshot.queryParams[`returnUrl`] || `/dashboard`;
+  }
+
+  showToasterError(title: string, message: string) {
+    this.notifyService.showError(message, title)
+
   }
 
   onClickValidateOtp() {
@@ -104,6 +111,8 @@ export class OtpComponent implements OnInit {
         } else {
           this.otpSent = false;
           // this.SpinnerService.hide()
+          this.showToasterError("Error", `You Have Entered The Wrong OTP.`);
+
           this.loginForm?.get('otp')?.reset();
           // this.store$.dispatch(loadResponsesFailure({
           //   error: {
@@ -122,6 +131,7 @@ export class OtpComponent implements OnInit {
     // }
 
   }
+
 
   public onClickLogin() {
     // if (valid) {
