@@ -12,6 +12,13 @@ export class FuelBatchDetailsDto {
     batchClosed: boolean;
 }
 
+export class LaboratoryDto {
+    id: number;
+    labName: string;
+    description: string;
+    status: boolean;
+}
+
 export class FuelEntityDto {
     company: string;
     petroleumProduct: string;

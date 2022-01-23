@@ -21,15 +21,14 @@
 
 package org.kebs.app.kotlin.apollo.store.repo.ms
 
-import org.kebs.app.kotlin.apollo.store.model.MsLaboratoryParametersEntity
-import org.kebs.app.kotlin.apollo.store.model.MsSampleSubmissionEntity
-import org.kebs.app.kotlin.apollo.store.model.MsWorkPlanGeneratedEntity
-import org.kebs.app.kotlin.apollo.store.model.WorkplanYearsCodesEntity
+import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.ms.*
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -38,7 +37,11 @@ interface IFuelBatchRepository : HazelcastRepository<MsFuelBatchInspectionEntity
     fun findAllByOrderByIdDesc(pageable: Pageable): Page<MsFuelBatchInspectionEntity>?
 //    fun findAllOrderByIdAsc(): List<MsFuelBatchInspectionEntity>?
     fun findByReferenceNumber(referenceNumber: String): MsFuelBatchInspectionEntity?
+    fun findByReferenceNumberAndRegionId(referenceNumber: String, regionId: Long): MsFuelBatchInspectionEntity?
+    fun findByReferenceNumberAndRegionIdAndCountyId(referenceNumber: String, regionId: Long, countyId: Long): MsFuelBatchInspectionEntity?
     fun findByYearNameIdAndCountyIdAndRegionId(yearNameId: Long, countyId: Long, regionId: Long): MsFuelBatchInspectionEntity?
+    fun findAllByCountyIdAndRegionId(countyId: Long, regionId: Long, pageable: Pageable): Page<MsFuelBatchInspectionEntity>
+    fun findAllByRegionId(regionId: Long, pageable: Pageable): Page<MsFuelBatchInspectionEntity>
 }
 
 @Repository
@@ -57,6 +60,16 @@ interface IFuelInspectionRepository : HazelcastRepository<MsFuelInspectionEntity
     fun findAllByBatchId(batchId: Long): List<MsFuelInspectionEntity>?
 
     fun findByReferenceNumber(referenceNumber: String): MsFuelInspectionEntity?
+
+    @Query(
+        "SELECT DISTINCT fi.* FROM DAT_KEBS_MS_FUEL_INSPECTION fi, DAT_KEBS_MS_FUEL_INSPECTION_OFFICERS fio" +
+                " WHERE  fi.ID = fio.INSPECTION_ID and fio.ASSIGNED_IO =:assignedIoID and fi.BATCH_ID =:batchId " ,
+        nativeQuery = true
+    )
+    fun findAllByBatchIdAndAssignOfficer(
+        @Param("assignedIoID") assignedIoID: Long,
+        @Param("batchId") batchId: Long
+    ): List<MsFuelInspectionEntity>?
 
 //    fun findByIdAndMsProcessStatus(id: Long, msProcessStatus: Int):  MsFuelInspectionEntity?
 //    fun findByUserId(userId: UsersEntity): List<WorkplanEntity>?

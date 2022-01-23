@@ -5,7 +5,7 @@ import {
   BSNumberSaveDto, CompliantRemediationDto,
   FuelEntityAssignOfficerDto,
   FuelEntityRapidTestDto,
-  FuelInspectionDto,
+  FuelInspectionDto, LaboratoryDto,
   LIMSFilesFoundDto, PDFSaveComplianceStatusDto, RemediationDto,
   SampleCollectionDto,
   SampleCollectionItemsDto,
@@ -62,6 +62,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
   dataSaveNotCompliantInvoice: CompliantRemediationDto;
   dataSaveRemediation: RemediationDto;
 
+  labList: LaboratoryDto[];
   roles: string[];
   userLoggedInID: number;
 
@@ -566,6 +567,18 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     this.msService.msFuelInspectionScheduledDetails(batchReferenceNumber, referenceNumber).subscribe(
         (data) => {
           this.fuelInspection = data;
+          // if(this.fuelInspection.sampleSubmittedStatus!= true){
+          //   this.msService.loadMSLabList().subscribe(
+          //       (data) => {
+          //         this.labList = data;
+          //         console.log(data);
+          //       },
+          //       error => {
+          //         console.log(error);
+          //         this.msService.showError('AN ERROR OCCURRED');
+          //       }
+          //   );
+          // }
           // this.totalCount = this.loadedData.length;
           // this.dataSet.load(this.loadedData);
           this.SpinnerService.hide();

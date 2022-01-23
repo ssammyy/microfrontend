@@ -431,6 +431,7 @@ export class ApiEndpointService {
     };
 
     public static MARKET_SURVEILLANCE_FUEL_ENDPOINT = {
+        LAB_LIST: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/fetch/laboratory-list`,
         ALL_BATCH_LIST: `${ApiEndpointService.MS_FUEL_CONTEXT}/all-batch-list`,
         ADD_BATCH: `${ApiEndpointService.MS_FUEL_CONTEXT}/add`,
         CLOSE_BATCH: `${ApiEndpointService.MS_FUEL_CONTEXT}/close`,

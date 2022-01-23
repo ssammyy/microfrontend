@@ -1588,6 +1588,14 @@ class CommonDaoServices(
             ?: throw ExpectedDataNotFound("User Profile with user ID  = ${user.id} and status = $status, does not Exist")
     }
 
+    fun findUserProfileByUserID(user: UsersEntity): UserProfilesEntity {
+        iUserProfilesRepo.findByUserId(user)
+            ?.let { userProfile ->
+                return userProfile
+            }
+            ?: throw ExpectedDataNotFound("User Profile with the following user ID  = ${user.id}, does not Exist")
+    }
+
     fun findDirectorateByID(directorateID: Long): DirectoratesEntity {
         directorateRepo.findByIdOrNull(directorateID)
             ?.let { directoratesEntity ->

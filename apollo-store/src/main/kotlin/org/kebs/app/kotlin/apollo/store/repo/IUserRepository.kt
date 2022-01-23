@@ -117,8 +117,8 @@ interface IUserRepository : HazelcastRepository<UsersEntity, Long>, JpaSpecifica
 
     @Query(
         "SELECT DISTINCT u.* FROM CFG_USER_ROLES_ASSIGNMENTS r, DAT_KEBS_USER_PROFILES pf,  DAT_KEBS_USERS u" +
-                " WHERE  pf.USER_ID = r.USER_ID and u.ID = pf.USER_ID and pf.REGION_ID = :regionId and pf.COUNTY_ID = :countyId  and pf.STATUS = :status" +
-                " AND u.ENABLED = :status and r.ROLE_ID = :roleId",
+                " WHERE  pf.USER_ID = r.USER_ID and u.ID = pf.USER_ID and pf.REGION_ID =:regionId and pf.COUNTY_ID =:countyId  and pf.STATUS =:status" +
+                " AND u.ENABLED =:status and r.ROLE_ID =:roleId",
         nativeQuery = true
     )
     fun findOfficerUsersByRegionAndCountyAndRoleFromUserDetails(

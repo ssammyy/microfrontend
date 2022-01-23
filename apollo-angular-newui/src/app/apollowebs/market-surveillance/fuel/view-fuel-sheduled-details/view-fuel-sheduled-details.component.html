@@ -348,7 +348,7 @@
                                         <label style="color: #0082f3">Lab Results Details</label>
                                         <div class="panel" style="max-height: 388px;">
                                             <div *ngFor="let role of roles">
-                                                <button  *ngIf="role == 'MS_IO_MODIFY' && fuelInspection?.bsNumberStatus && fuelInspection?.compliantStatusAdded==false" (click)="openModalAddDetails('ssfAddComplianceStatus')" mat-raised-button="" data-toggle="modal"
+                                                <button  *ngIf="role == 'MS_IOP_MODIFY' && fuelInspection?.bsNumberStatus && fuelInspection?.compliantStatusAdded==false" (click)="openModalAddDetails('ssfAddComplianceStatus')" mat-raised-button="" data-toggle="modal"
                                                         data-target="#myModal1"
                                                         class="btn btn-sm btn-primary mr-2"><span
                                                         class="mat-button-wrapper">ADD COMPLIANCE STATUS</span>
@@ -384,7 +384,7 @@
                                                 </div>
                                             </div>
                                             <div *ngFor="let role of roles">
-                                                <div  *ngIf="role == 'MS_IO_MODIFY'" class="form-row">
+                                                <div  *ngIf="role == 'MS_IOP_MODIFY'" class="form-row">
                                                 <div class="col-md-12 mb-3">
                                                     <label style="color: #0082f3">Lab Results PDF Found</label>
                                                 </div>
@@ -502,7 +502,7 @@
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
                                     </div>
-                                    <div *ngIf="role == 'MS_IO_MODIFY' && fuelInspection.assignedOfficerStatus && fuelInspection.officersAssigned.id == userLoggedInID">
+                                    <div *ngIf="role == 'MS_IOP_MODIFY' && fuelInspection.assignedOfficerStatus && fuelInspection.officersAssigned.id == userLoggedInID">
                                         <button *ngIf="fuelInspection.rapidTestDone == false" (click)="openModalAddDetails('rapidTest')" mat-raised-button="" data-toggle="modal"
                                                 data-target="#myModal1"
                                                 class="btn btn-sm btn-primary mr-2"><span
@@ -652,7 +652,7 @@
                                             <mat-select placeholder="Please Select an option"
                                                         [class.is-invalid]="formAssignOfficerForm.assignedUserID.invalid && formAssignOfficerForm.assignedUserID.touched"
                                                         formControlName="assignedUserID" id="assignedUserID" name="assignedUserID" >
-                                                <mat-option *ngFor="let app of fuelInspection.officersList| filterPipe: {status: true}" [value]="app.id">{{app.firstName}} {{app.lastName}}</mat-option>
+                                                <mat-option *ngFor="let app of fuelInspection.officersList" [value]="app.id">{{app.firstName}} {{app.lastName}}</mat-option>
 
                                             </mat-select>
                                         </mat-form-field>
@@ -1173,7 +1173,7 @@
                                     data-dismiss="modal">
                                 Close
                             </button>
-                            <button mat-raised-button type="button" class="btn btn-success" [disabled]="!sampleCollectForm.valid && !sampleCollectItemsForm.valid"
+                            <button mat-raised-button type="button"  data-dismiss="modal" class="btn btn-success" [disabled]="!sampleCollectForm.valid && !sampleCollectItemsForm.valid"
                                     (click)="onClickSaveSampleCollected(sampleCollectForm.valid,sampleCollectItemsForm.valid)">SUBMIT
                             </button>
                         </div>
@@ -1254,7 +1254,7 @@
                                 <div class="col">
                                     <div class="form-group">
                                                     <label><b>SIZE TEST SAMPLE</b> </label>
-                                                    <input type="text" class="form-control two-column-input"
+                                                    <input type="number" class="form-control two-column-input"
                                                            formControlName="sizeTestSample" name="sizeTestSample" required
                                                            [class.is-invalid]="formSampleSubmitForm.sizeTestSample.invalid && formSampleSubmitForm.sizeTestSample.touched">
                                     </div>
@@ -1265,7 +1265,7 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>SIZE REF SAMPLE</b></label>
-                                        <input type="text" class="form-control two-column-input"
+                                        <input type="number" class="form-control two-column-input"
                                                formControlName="sizeRefSample" name="sizeRefSample" required
                                                [class.is-invalid]="formSampleSubmitForm.sizeRefSample.invalid && formSampleSubmitForm.sizeRefSample.touched">
                                     </div>
@@ -1345,7 +1345,7 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>TEST CHARGES KSH</b></label>
-                                        <input type="text" class="form-control two-column-input"
+                                        <input type="number" class="form-control two-column-input"
                                                formControlName="testChargesKsh" name="testChargesKsh" required
                                                [class.is-invalid]="formSampleSubmitForm.testChargesKsh.invalid && formSampleSubmitForm.testChargesKsh.touched">
                                     </div>
@@ -1394,7 +1394,7 @@
                                 <div class="col">
                                     <div class="form-group">
                                                     <label><b>SAMPLE COLLECTION NUMBER</b> </label>
-                                                    <input type="text" class="form-control two-column-input"
+                                                    <input type="number" class="form-control two-column-input"
                                                            formControlName="sampleCollectionNumber" name="sampleCollectionNumber" required
                                                            [class.is-invalid]="formSampleSubmitForm.sampleCollectionNumber.invalid && formSampleSubmitForm.sampleCollectionNumber.touched">
                                     </div>
@@ -1419,6 +1419,14 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>LABORATORY NAME</b> </label>
+<!--                                        <mat-form-field>-->
+<!--                                            <mat-select placeholder="Please Select an option"-->
+<!--                                                        [class.is-invalid]="formSampleSubmitParamsForm.laboratoryName.invalid && formSampleSubmitParamsForm.laboratoryName.touched"-->
+<!--                                                        formControlName="laboratoryName" id="laboratoryName" name="laboratoryName" >-->
+<!--                                                <mat-option *ngFor="let app of labList" [value]="app.id">{{app.labName}}</mat-option>-->
+
+<!--                                            </mat-select>-->
+<!--                                        </mat-form-field>-->
                                         <input type="text" class="form-control two-column-input"
                                                formControlName="laboratoryName" name="laboratoryName" required
                                                [class.is-invalid]="formSampleSubmitParamsForm.laboratoryName.invalid && formSampleSubmitParamsForm.laboratoryName.touched">
@@ -1434,7 +1442,7 @@
                                     data-dismiss="modal">
                                 Close
                             </button>
-                            <button mat-raised-button type="button" class="btn btn-success" [disabled]="!sampleSubmitForm.valid && !sampleSubmitParamsForm.valid"
+                            <button mat-raised-button type="button" data-dismiss="modal" class="btn btn-success" [disabled]="!sampleSubmitForm.valid && !sampleSubmitParamsForm.valid"
                                     (click)="onClickSaveSampleSubmitted(sampleSubmitForm.valid,sampleSubmitParamsForm.valid)" >SUBMIT
                             </button>
                         </div>

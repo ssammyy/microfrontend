@@ -11,7 +11,7 @@ import {
     FuelEntityDto,
     FuelEntityRapidTestDto,
     FuelInspectionDto,
-    FuelInspectionScheduleListDetailsDto,
+    FuelInspectionScheduleListDetailsDto, LaboratoryDto,
     LabResultsParamDto,
     LIMSFilesFoundDto, MSSSFComplianceStatusDetailsDto, MSSSFLabResultsDto,
     MSSSFPDFListDetailsDto,
@@ -324,8 +324,22 @@ export class MsService {
         const params = new HttpParams()
             .set('page', page)
             .set('records', records);
-        return this.http.get<FuelBatchDetailsDto[]>(url).pipe(
+        return this.http.get<FuelBatchDetailsDto[]>(url, {params}).pipe(
             map(function (response: FuelBatchDetailsDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public loadMSLabList(): Observable<LaboratoryDto[]> {
+        // console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.LAB_LIST);
+        return this.http.get<LaboratoryDto[]>(url).pipe(
+            map(function (response: LaboratoryDto[]) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {

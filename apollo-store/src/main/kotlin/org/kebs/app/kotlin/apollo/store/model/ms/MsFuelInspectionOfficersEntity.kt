@@ -118,12 +118,12 @@ class MsFuelInspectionOfficersEntity : Serializable{
     @Transient
     var assignedUser: Long? = 0
 
-    @JoinColumn(name = "INSPECTION_ID", referencedColumnName = "ID")
-    @ManyToOne
-    var msFuelInspectionId: MsFuelInspectionEntity? = null
+    @Column(name = "INSPECTION_ID")
+    @Basic
+    var msFuelInspectionId: Long? = null
 
-    @JoinColumn(name = "ASSIGNED_IO", referencedColumnName = "ID")
-    @ManyToOne
-    var assignedIo: UsersEntity? = null
+    @Column(name = "ASSIGNED_IO")
+    @Basic
+    var assignedIo: Long? = null
 
 }

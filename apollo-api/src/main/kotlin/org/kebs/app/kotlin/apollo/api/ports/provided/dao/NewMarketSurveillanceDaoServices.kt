@@ -8,12 +8,14 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.di.CdLaboratoryEntity
 import org.kebs.app.kotlin.apollo.store.model.ms.*
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleLabTestResultsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmissionEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmittedPdfListDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaUploadsEntity
 import org.kebs.app.kotlin.apollo.store.repo.IServiceRequestsRepository
+import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
 import org.kebs.app.kotlin.apollo.store.repo.ms.*
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleLabTestResultsRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleSubmissionRepository
@@ -41,6 +43,7 @@ class NewMarketSurveillanceDaoServices(
     private val applicationMapProperties: ApplicationMapProperties,
     private val fuelBatchRepo: IFuelBatchRepository,
     private val limsServices: LimsServices,
+    private val laboratoryRepo: ILaboratoryRepository,
     private val fuelRemediationInvoiceChargesRepo: IFuelRemediationChargesRepository,
     private val sampleSubmissionSavedPdfListRepo: IQaSampleSubmittedPdfListRepository,
     private val workPlanYearsCodesRepo: IWorkplanYearsCodesRepository,
@@ -146,22 +149,63 @@ class NewMarketSurveillanceDaoServices(
         }
     }
 
+    @PreAuthorize("hasAuthority('MS_IOP_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun getAllLaboratoryList(): List<LaboratoryDto> {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val laboratoryList = laboratoryRepo.findByStatus(map.activeStatus)
+        return mapLaboratoryListDto(laboratoryList)
+    }
+
     @PreAuthorize("hasAuthority('EPRA') or  hasAuthority('MS_MP_MODIFY') or  hasAuthority('MS_IOP_MODIFY')")
    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun getAllFuelBatchList(page: PageRequest): List<FuelBatchDetailsDto> {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val auth = commonDaoServices.loggedInUserAuthentication()
+        val loggedInUserProfile = commonDaoServices.findUserProfileByUserID(loggedInUser)
         val map = commonDaoServices.serviceMapDetails(appId)
-        val fuelBatchList = findAllFuelBatchListBasedOnPageable(page).toList()
+        var fuelBatchList : List<MsFuelBatchInspectionEntity>? = null
+        when {
+            auth.authorities.stream().anyMatch { authority -> authority.authority == "EPRA" } -> {
+                fuelBatchList = findAllFuelBatchListBasedOnPageable(page).toList()
+            }
+            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_MP_MODIFY" } -> {
+                fuelBatchList = findAllFuelBatchListBasedOnPageableRegion(loggedInUserProfile.regionId?.id?: throw ExpectedDataNotFound("Missing region value on your user profile  details"),page).toList()
+            }
+            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_IOP_MODIFY" } -> {
+                fuelBatchList = findAllFuelBatchListBasedOnPageableCountyAndRegion(loggedInUserProfile.countyID?.id?: throw ExpectedDataNotFound("Missing county value on your user profile  details"),loggedInUserProfile.regionId?.id?: throw ExpectedDataNotFound("Missing region value on your user profile  details"),page).toList()
+            }
+        }
+
         return mapFuelBatchListDto(fuelBatchList, map)
     }
+
 
     @PreAuthorize("hasAuthority('EPRA') or  hasAuthority('MS_MP_MODIFY') or  hasAuthority('MS_IOP_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun getAllFuelInspectionListBasedOnBatchRefNo(batchReferenceNo: String,page: PageRequest): FuelInspectionScheduleListDetailsDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val auth = commonDaoServices.loggedInUserAuthentication()
+        val loggedInUserProfile = commonDaoServices.findUserProfileByUserID(loggedInUser)
         val map = commonDaoServices.serviceMapDetails(appId)
-        val findBatchDetail = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
-        val fileInspectionList = findAllFuelInspectionListBasedOnBatchIDPageRequest(findBatchDetail.id,page).toList()
+        var findBatchDetail : MsFuelBatchInspectionEntity? = null
+        var fileInspectionList : List<MsFuelInspectionEntity>? = null
+        if (auth.authorities.stream().anyMatch { authority -> authority.authority == "EPRA" }) {
+            findBatchDetail = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
+            fileInspectionList = findAllFuelInspectionListBasedOnBatchIDPageRequest(findBatchDetail.id,page).toList()
+        }
+        else if (auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_MP_MODIFY" }) {
+            findBatchDetail = findFuelBatchDetailByReferenceNumberAndRegionId(batchReferenceNo,loggedInUserProfile.regionId?.id?: throw ExpectedDataNotFound("Missing region value on your user profile  details"))
+            fileInspectionList = findAllFuelInspectionListBasedOnBatchIDPageRequest(findBatchDetail.id,page).toList()
+        }
+        else if (auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_IOP_MODIFY" }) {
+            findBatchDetail = findFuelBatchDetailByReferenceNumberAndRegionIdAndCountyId(batchReferenceNo,loggedInUserProfile.countyID?.id?: throw ExpectedDataNotFound("Missing county value on your user profile  details"),loggedInUserProfile.regionId?.id?: throw ExpectedDataNotFound("Missing region value on your user profile  details"))
+            fileInspectionList = findAllFuelInspectionListBasedOnBatchIDAndAssignedIO(findBatchDetail.id,loggedInUser.id ?: throw ExpectedDataNotFound("Missing Logged in user ID"))
+        }else{
+            throw ExpectedDataNotFound("YOU CAN'T ACCESS FILES WITH THOSE RIGHTS")
+        }
+
         return mapFuelInspectionListDto(fileInspectionList,mapFuelBatchDetailsDto(findBatchDetail, map))
     }
 
@@ -172,7 +216,7 @@ class NewMarketSurveillanceDaoServices(
         val map = commonDaoServices.serviceMapDetails(appId)
         val fileInspectionDetail = findFuelInspectionDetailByReferenceNumber(referenceNo)
         val batchDetails = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
-        val fuelInspectionOfficer = findFuelInspectionOfficerAssigned(fileInspectionDetail, map.activeStatus)
+//        val fuelInspectionOfficer = findFuelInspectionOfficerAssigned(fileInspectionDetail, map.activeStatus)
 
         return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
     }
@@ -219,7 +263,7 @@ class NewMarketSurveillanceDaoServices(
                          * Todo add notification for sending details to user
                          *
                          */
-                        commonDaoServices.sendEmailWithUserEntity(fileOfficerSaved.second.assignedIo?:throw ExpectedDataNotFound("MISSING OFFICER ASSIGNED DETAILS"), applicationMapProperties.mapMsFuelAssignedIONotification, fileSaved2.second, map, fileSaved2.first)
+                        commonDaoServices.sendEmailWithUserEntity(commonDaoServices.findUserByID(fileOfficerSaved.second.assignedIo?:throw ExpectedDataNotFound("MISSING OFFICER ASSIGNED DETAILS")), applicationMapProperties.mapMsFuelAssignedIONotification, fileSaved2.second, map, fileSaved2.first)
                         return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
                     }
                     else -> {
@@ -666,6 +710,10 @@ class NewMarketSurveillanceDaoServices(
 //        }
 //    }
 
+    fun findAllUserTaskMSByTaskID() {
+
+    }
+
     fun fuelInspectionMappingCommonDetails(
         fileInspectionDetail: MsFuelInspectionEntity,
         map: ServiceMapsEntity,
@@ -692,6 +740,7 @@ class NewMarketSurveillanceDaoServices(
         val sampleCollected = findSampleCollectedDetailByFuelInspectionID(fileInspectionDetail.id)
         val sampleCollectedParamList = sampleCollected?.id?.let { findAllSampleCollectedParametersBasedOnSampleCollectedID(it) }
         val sampleCollectedDtoValues = sampleCollectedParamList?.let { mapSampleCollectedParamListDto(it) }?.let { mapSampleCollectedDto(sampleCollected, it) }
+
         val sampleSubmitted = findSampleSubmissionDetailBySampleCollectedID(fileInspectionDetail.id)
         val sampleSubmittedParamList = sampleSubmitted?.id?.let { findAllSampleSubmissionParametersBasedOnSampleSubmissionID(it) }
         val sampleSubmittedDtoValues = sampleSubmittedParamList?.let { mapSampleSubmissionParamListDto(it) }?.let { mapSampleSubmissionDto(sampleSubmitted, it) }
@@ -708,7 +757,7 @@ class NewMarketSurveillanceDaoServices(
             rapidTestDone,
             compliantStatusDone,
             officerList,
-            fuelInspectionOfficer?.assignedIo,
+            fuelInspectionOfficer?.assignedIo?.let { commonDaoServices.findUserByID(it) },
             rapidTestStatus,
             sampleCollectedDtoValues,
             sampleSubmittedDtoValues,
@@ -808,13 +857,13 @@ class NewMarketSurveillanceDaoServices(
                 }
 
             with(fuelOfficerInspectEntity) {
-                assignedIo = commonDaoServices.findUserByID(body.assignedUserID)
+                assignedIo = body.assignedUserID
                 remarks = body.remarks
                 transactionDate = commonDaoServices.getCurrentDate()
                 status = map.activeStatus
                 createdBy = commonDaoServices.concatenateName(user)
                 createdOn = commonDaoServices.getTimestamp()
-                msFuelInspectionId = fileInspectionDetail
+                msFuelInspectionId = fileInspectionDetail.id
             }
             fuelOfficerInspectEntity = fuelInspectionOfficerRepo.save(fuelOfficerInspectEntity)
 
@@ -1657,6 +1706,14 @@ class NewMarketSurveillanceDaoServices(
             ?: throw ExpectedDataNotFound("No Fuel Schedules found with the following BATCH ID $batchId")
     }
 
+    fun findAllFuelInspectionListBasedOnBatchIDAndAssignedIO(batchId: Long,assignedIoID: Long): List<MsFuelInspectionEntity>? {
+       return  fuelInspectionRepo.findAllByBatchIdAndAssignOfficer(batchId,assignedIoID)
+//            ?.let {
+//                return it
+//            }
+//            ?: throw ExpectedDataNotFound("No Fuel Schedules found with the following BATCH ID $batchId")
+    }
+
     fun findAllSampleCollectedParametersBasedOnSampleCollectedID(sampleCollectedID: Long): List<MsCollectionParametersEntity>? {
         return sampleCollectParameterRepo.findBySampleCollectionId(sampleCollectedID)
     }
@@ -1737,9 +1794,9 @@ class NewMarketSurveillanceDaoServices(
 
     }
 
-    fun mapFuelInspectionListDto(fuelInspectionList: List<MsFuelInspectionEntity>, batchDetails: FuelBatchDetailsDto): FuelInspectionScheduleListDetailsDto {
+    fun mapFuelInspectionListDto(fuelInspectionList: List<MsFuelInspectionEntity>?, batchDetails: FuelBatchDetailsDto): FuelInspectionScheduleListDetailsDto {
         val fuelInspectionScheduledList = mutableListOf<FuelInspectionDto>()
-        fuelInspectionList.map {fuelInspectionScheduledList.add(FuelInspectionDto(it.id, it.referenceNumber, it.company, it.petroleumProduct, it.physicalLocation, it.inspectionDateFrom, it.inspectionDateTo, it.processStage, it.status==1))}
+        fuelInspectionList?.map {fuelInspectionScheduledList.add(FuelInspectionDto(it.id, it.referenceNumber, it.company, it.petroleumProduct, it.physicalLocation, it.inspectionDateFrom, it.inspectionDateTo, it.processStage, it.status==1))}
 
         return FuelInspectionScheduleListDetailsDto(
             fuelInspectionScheduledList,
@@ -1805,8 +1862,40 @@ class NewMarketSurveillanceDaoServices(
 //            ?: throw ExpectedDataNotFound("No Files found")
     }
 
+    fun findAllFuelBatchListBasedOnPageableCountyAndRegion(countyId: Long, regionId: Long,pageable: Pageable): Page<MsFuelBatchInspectionEntity> {
+        fuelBatchRepo.findAllByCountyIdAndRegionId(countyId,regionId,pageable)
+            .let {
+                return it
+            }
+//            ?: throw ExpectedDataNotFound("No Files found")
+    }
+
+    fun findAllFuelBatchListBasedOnPageableRegion(regionId: Long,pageable: Pageable): Page<MsFuelBatchInspectionEntity> {
+        fuelBatchRepo.findAllByRegionId(regionId,pageable)
+            .let {
+                return it
+            }
+//            ?: throw ExpectedDataNotFound("No Files found")
+    }
+
     fun findFuelBatchDetailByReferenceNumber(referenceNumber: String): MsFuelBatchInspectionEntity {
         fuelBatchRepo.findByReferenceNumber(referenceNumber)
+            ?.let {
+                return it
+            }
+            ?: throw ExpectedDataNotFound("No Fuel Batch File found with Ref No #$referenceNumber ")
+    }
+
+    fun findFuelBatchDetailByReferenceNumberAndRegionId(referenceNumber: String,regionId: Long): MsFuelBatchInspectionEntity {
+        fuelBatchRepo.findByReferenceNumberAndRegionId(referenceNumber,regionId)
+            ?.let {
+                return it
+            }
+            ?: throw ExpectedDataNotFound("No Fuel Batch File found with Ref No #$referenceNumber ")
+    }
+
+    fun findFuelBatchDetailByReferenceNumberAndRegionIdAndCountyId(referenceNumber: String,regionId: Long, countyId: Long): MsFuelBatchInspectionEntity {
+        fuelBatchRepo.findByReferenceNumberAndRegionIdAndCountyId(referenceNumber,regionId,countyId)
             ?.let {
                 return it
             }
@@ -1859,26 +1948,30 @@ class NewMarketSurveillanceDaoServices(
     }
 
     fun mapFuelBatchListDto(
-        fuelBatchList: List<MsFuelBatchInspectionEntity>,
+        fuelBatchList: List<MsFuelBatchInspectionEntity>?,
         map: ServiceMapsEntity
     ): List<FuelBatchDetailsDto> {
         val fuelBatchListDto = mutableListOf<FuelBatchDetailsDto>()
-        return fuelBatchList.map {
-            FuelBatchDetailsDto(
-                it.id,
-                it.regionId?.let { it1 -> commonDaoServices.findRegionEntityByRegionID(it1, map.activeStatus).region },
-                it.countyId?.let { it1 ->
-                    commonDaoServices.findCountiesEntityByCountyId(
-                        it1,
-                        map.activeStatus
-                    ).county
-                },
-                it.townId?.let { it1 -> commonDaoServices.findTownEntityByTownId(it1).town },
-                it.referenceNumber,
-                it.yearNameId?.let { it1 -> findPlanYear(it1).yearName },
-                it.remarks,
-                it.batchClosed == 1
-            )
+        if (fuelBatchList!=null){
+            return fuelBatchList.map {
+                FuelBatchDetailsDto(
+                    it.id,
+                    it.regionId?.let { it1 -> commonDaoServices.findRegionEntityByRegionID(it1, map.activeStatus).region },
+                    it.countyId?.let { it1 ->
+                        commonDaoServices.findCountiesEntityByCountyId(
+                            it1,
+                            map.activeStatus
+                        ).county
+                    },
+                    it.townId?.let { it1 -> commonDaoServices.findTownEntityByTownId(it1).town },
+                    it.referenceNumber,
+                    it.yearNameId?.let { it1 -> findPlanYear(it1).yearName },
+                    it.remarks,
+                    it.batchClosed == 1
+                )
+            }
+        }else{
+            return fuelBatchListDto
         }
     }
 
@@ -1912,6 +2005,17 @@ class NewMarketSurveillanceDaoServices(
                 it.userName,
                 it.email,
                 it.status == 1,
+            )
+        }
+    }
+
+    fun mapLaboratoryListDto(lab: List<CdLaboratoryEntity>): List<LaboratoryDto> {
+        return lab.map {
+            LaboratoryDto(
+                it.id,
+                it.labName,
+                it.description,
+                it.status == 1
             )
         }
     }
@@ -2156,8 +2260,8 @@ class NewMarketSurveillanceDaoServices(
             }
             rapidTest.rapidTestFailed==map.activeStatus -> {
                  FuelEntityRapidTestDto(
-                    rapidTest.rapidTestPassedRemarks,
-                    rapidTest.rapidTestPassed==1
+                    rapidTest.rapidTestFailedRemarks,
+                    rapidTest.rapidTestFailed==1
                 )
             }
             else -> null

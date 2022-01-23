@@ -67,6 +67,20 @@ class NewMarketSurveillanceHandler(
 
     fun notSupported(req: ServerRequest): ServerResponse = ServerResponse.badRequest().body("Invalid Request: Not supported")
 
+    fun getAllLaboratoryList(req: ServerRequest): ServerResponse {
+        return try {
+//            val page = commonDaoServices.extractPageRequest(req)
+            marketSurveillanceDaoServices.getAllLaboratoryList()
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
     fun getAllFuelBatchList(req: ServerRequest): ServerResponse {
         return try {
             val page = commonDaoServices.extractPageRequest(req)

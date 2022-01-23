@@ -65,21 +65,27 @@ data class FuelEntityDto(
         @NotNull(message = "Required field")
         @NotEmpty(message = "Required field")
         var company: String,
+
         @NotNull(message = "Required field")
         @NotEmpty(message = "Required field")
         var petroleumProduct: String,
+
         @NotNull(message = "Required field")
         @NotEmpty(message = "Required field")
         var physicalLocation: String,
+
         @NotNull(message = "Required field")
         @NotEmpty(message = "Required field")
         var inspectionDateFrom: Date,
+
         @NotNull(message = "Required field")
         @NotEmpty(message = "Required field")
         var inspectionDateTo: Date,
+
         @NotNull(message = "Required field")
         @NotEmpty(message = "Required field")
         var stationOwnerEmail: String,
+
         var remarks: String? = null,
 )
 
@@ -371,6 +377,13 @@ data class MsUsersDto(
         var userName: String? = null,
         var email: String? = null,
         val status: Boolean? = null
+)
+
+data class LaboratoryDto(
+        var id: Long?= null,
+        var labName: String?= null,
+        var description: String?= null,
+        var status: Boolean?= null,
 )
 
 

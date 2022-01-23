@@ -566,6 +566,7 @@ class AngularRoutes {
                     }
                     "/fetch".nest {
                         GET("/assign", handler::updateFuelScheduleAssignOfficer)
+                        GET("/laboratory-list", handler::getAllLaboratoryList)
 //                        POST("/rapid-test", handler::setFuelScheduleRapidTest)
 //                        POST("/sample-collect", handler::setFuelScheduleSampleCollection)
 //                        POST("/sample-submission", handler::setFuelScheduleSampleSubmission)
