@@ -166,6 +166,7 @@ export class LabResultsParamDto {
 }
 
 export class SampleSubmissionDto {
+    id: number;
     nameProduct : string;
     packaging : string;
     labellingIdentification : string;
@@ -202,6 +203,7 @@ export class BSNumberSaveDto {
 }
 
 export class SampleCollectionDto {
+    id: string;
     nameManufacturerTrader: string;
     addressManufacturerTrader: string;
     samplingMethod: string;

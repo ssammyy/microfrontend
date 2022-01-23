@@ -1,9 +1,9 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 import mu.KotlinLogging
+import org.kebs.app.kotlin.apollo.api.controllers.qaControllers.ReportsController
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.common.dto.ms.*
-import org.kebs.app.kotlin.apollo.common.dto.qa.LimsFilesFoundDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -20,6 +20,8 @@ import org.kebs.app.kotlin.apollo.store.repo.ms.*
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleLabTestResultsRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleSubmissionRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleSubmittedPdfListRepository
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Lazy
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
@@ -28,14 +30,12 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.util.ResourceUtils
 import org.springframework.web.multipart.MultipartFile
 import java.io.File
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
-import kotlin.math.log
 
 
 @Service
@@ -59,6 +59,7 @@ class NewMarketSurveillanceDaoServices(
     private val fuelInspectionRepo: IFuelInspectionRepository,
     private val fuelRemediationInvoiceRepo: IFuelRemediationInvoiceRepository,
     private val invoiceDaoService: InvoiceDaoService,
+    private val reportsDaoService: ReportsDaoService,
     private val serviceRequestsRepo: IServiceRequestsRepository,
     private val commonDaoServices: CommonDaoServices
 ) {
@@ -72,6 +73,10 @@ class NewMarketSurveillanceDaoServices(
     private final val transportAirTicketsChargesId: Long = 3
 
     final var appId = applicationMapProperties.mapMarketSurveillance
+
+    @Lazy
+    @Autowired
+    lateinit var reportsControllers: ReportsController
 
     @PreAuthorize("hasAuthority('EPRA')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -238,7 +243,7 @@ class NewMarketSurveillanceDaoServices(
 
     @PreAuthorize("hasAuthority('MS_MP_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun getFuelInspectionDetailsAssignOfficer(
+    fun vgetFuelInspectionDetailsAssignOfficer(
         referenceNo: String,
         batchReferenceNo: String,
         body: FuelEntityAssignOfficerDto
@@ -503,28 +508,31 @@ class NewMarketSurveillanceDaoServices(
             /*
             * Todo: ADD function for sending Lab results
             * */
-//            val fileUploaded = findUploadedFileBYId(
-//                saveSSFPdf.pdfSavedId ?: throw ExpectedDataNotFound("MISSING LAB REPORT FILE ID STATUS")
-//            )
-//            val fileContent = limsServices.mainFunctionLimsGetPDF(
-//                savedSSF.bsNumber ?: throw ExpectedDataNotFound("MISSING LBS NUMBER"),
-//                saveSSFPdf.pdfName ?: throw ExpectedDataNotFound("MISSING FILE NAME")
-//            )
-//            val mappedFileClass = commonDaoServices.mapClass(fileUploaded)
-//            sendComplianceStatusAndLabReport(
-//                permitDetails,
-//                complianceValue ?: throw ExpectedDataNotFound("MISSING COMPLIANCE STATUS"),
-//                saveSSFPdf.complianceRemarks ?: throw ExpectedDataNotFound("MISSING COMPLIANCE REMARKS"),
-//                mappedFileClass.document.toString()
-//            )
+            val labReportSentStatus = false
+            findSampleSubmittedListPdfBYSSFid(savedSSfComplianceStatus.second.id?: throw ExpectedDataNotFound("Missing SSF ID"))
+                ?.forEach {saveSSFPdf->
+                    val fileUploaded = findUploadedFileBYId(saveSSFPdf.pdfSavedId ?: throw ExpectedDataNotFound("MISSING LAB REPORT FILE ID STATUS"))
+                    val fileContent = limsServices.mainFunctionLimsGetPDF(
+                        savedSSfComplianceStatus.second.bsNumber ?: throw ExpectedDataNotFound("MISSING LBS NUMBER"),
+                        saveSSFPdf.pdfName ?: throw ExpectedDataNotFound("MISSING FILE NAME")
+                    )
+
+                    val mappedFileClass = commonDaoServices.mapClass(fileUploaded)
+                    commonDaoServices.sendEmailWithUserEmail(
+                        fileInspectionDetail.stationOwnerEmail ?: throw ExpectedDataNotFound("MISSING USER ID"),
+                        applicationMapProperties.mapMsFuelInspectionLabResultsNotification,
+                        savedSSfComplianceStatus.second,
+                        map,
+                        savedSSfComplianceStatus.first,
+                        mappedFileClass.document.toString()
+                    )
+                }
+
+
+
+
 //
-//            sendEmailWithLabResults(
-//                commonDaoServices.findUserByID(
-//                    permitDetails.userId ?: throw ExpectedDataNotFound("MISSING USER ID")
-//                ).email ?: throw ExpectedDataNotFound("MISSING USER ID"),
-//                mappedFileClass.document.toString(),
-//                permitDetails.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
-//            )
+
             return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
         }
         else {
@@ -569,15 +577,15 @@ class NewMarketSurveillanceDaoServices(
                     userTaskId = applicationMapProperties.mapMSUserTaskNameSTATIONOWNER
                 }
                 fileInspectionDetail= updateFuelInspectionDetails(fileInspectionDetail, map, loggedInUser).second
-//                val fuelInvoiceID = savedRemediationInvoice.second
-//
-//                val imagePath = ResourceUtils.getFile("classpath:static/images/KEBS_SMARK.png").toString()
-//                val map = hashMapOf<String, Any>()
-//                map["imagePath"] = imagePath
-//                savedRemediationInvoice.second.fuelInspectionId?.let {
-//                    msReportsControllers.extractAndSaveReport(map, "classpath:reports/remediationInvoice.jrxml", "Remediation-Invoice", iFuelRemediationInvoiceRepo.findFirstByFuelInspectionId(it) )
-//                }
-//                fuelInspectEntity.stationOwnerEmail?.let { sendEmailWithProforma(it, ResourceUtils.getFile("classpath:templates/TestPdf/Remediation-Invoice.pdf").toString()) }
+
+                commonDaoServices.sendEmailWithUserEmail(
+                    fileInspectionDetail.stationOwnerEmail ?: throw ExpectedDataNotFound("MISSING USER ID"),
+                    applicationMapProperties.mapMsFuelInspectionRemediationInvoiceNotification,
+                    fileInspectionDetail, map,
+                    savedRemediationInvoice.first,
+                    invoiceRemediationPDF(fileInspectionDetail.id).path
+                )
+
                 return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
             }
             else -> {
@@ -712,6 +720,24 @@ class NewMarketSurveillanceDaoServices(
 
     fun findAllUserTaskMSByTaskID() {
 
+    }
+
+
+    fun invoiceRemediationPDF(
+        fuelInspectionID: Long
+    ): File {
+
+
+        val map = hashMapOf<String, Any>()
+        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
+        val invoiceRemediationDetails = fuelRemediationInvoiceRepo.findFirstByFuelInspectionId(fuelInspectionID)
+
+        return reportsDaoService.generateEmailPDFReportWithDataSource(
+            "Remediation-Invoice-${invoiceRemediationDetails[0].invoiceNumber}.pdf",
+            map,
+            applicationMapProperties.mapMSFuelInvoiceRemediationPath,
+            invoiceRemediationDetails
+        )
     }
 
     fun fuelInspectionMappingCommonDetails(
@@ -2054,6 +2080,12 @@ class NewMarketSurveillanceDaoServices(
         }
     }
 
+    fun findUploadedFileBYId(fileID: Long): MsOnSiteUploadsEntity {
+        msUploadRepo.findByIdOrNull(fileID)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No File found with the following [ id=$fileID]")
+    }
+
     fun mapSampleSubmissionParamListDto(data: List<MsLaboratoryParametersEntity>): List<SampleSubmissionItemsDto> {
         return data.map {
             SampleSubmissionItemsDto(
@@ -2188,6 +2220,7 @@ class NewMarketSurveillanceDaoServices(
 
     fun mapSampleCollectedDto(data: MsSampleCollectionEntity, data2:List<SampleCollectionItemsDto>): SampleCollectionDto {
         return SampleCollectionDto(
+            data.id,
             data.nameManufacturerTrader,
             data.addressManufacturerTrader,
             data.samplingMethod,
@@ -2224,6 +2257,7 @@ class NewMarketSurveillanceDaoServices(
 
      fun mapSampleSubmissionDto(data: MsSampleSubmissionEntity, data2:List<SampleSubmissionItemsDto>): SampleSubmissionDto {
         return SampleSubmissionDto(
+            data.id,
             data.nameProduct,
             data.packaging,
             data.labellingIdentification,

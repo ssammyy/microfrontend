@@ -6,7 +6,7 @@ import {
   FuelEntityAssignOfficerDto,
   FuelEntityRapidTestDto,
   FuelInspectionDto, LaboratoryDto,
-  LIMSFilesFoundDto, PDFSaveComplianceStatusDto, RemediationDto,
+  LIMSFilesFoundDto, MSSSFPDFListDetailsDto, PDFSaveComplianceStatusDto, RemediationDto,
   SampleCollectionDto,
   SampleCollectionItemsDto,
   SampleSubmissionDto,
@@ -65,6 +65,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
   labList: LaboratoryDto[];
   roles: string[];
   userLoggedInID: number;
+  blob: Blob;
 
   attachments: any[];
   comments: any[];
@@ -337,7 +338,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       delete: false,
       custom: [
         // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
-        // {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View More</i>'}
+        {name: 'viewPDFRecord', title: '<i class="btn btn-sm btn-primary">View PDF</i>'},
       ],
       position: 'right' // left|right
     },
@@ -591,6 +592,8 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
         }
     );
 
+
+
     // let data = this.diService.listAssignedCd(documentTypeUuid, page, size, params);
     // console.log(this.activeStatus)
     // // Clear list before loading
@@ -626,6 +629,52 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       }
     }
     this.currDiv = divVal;
+  }
+
+  viewPdfFile(pdfId: string, fileName: string, applicationType: string): void {
+    this.SpinnerService.show();
+    this.msService.loadFileDetailsPDF(pdfId).subscribe(
+        (dataPdf: any) => {
+          this.SpinnerService.hide();
+          this.blob = new Blob([dataPdf], {type: applicationType});
+
+          // tslint:disable-next-line:prefer-const
+          let downloadURL = window.URL.createObjectURL(this.blob);
+          const link = document.createElement('a');
+          link.href = downloadURL;
+          link.download = fileName;
+          link.click();
+          // this.pdfUploadsView = dataPdf;
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        }
+    );
+  }
+
+  viewSampleCollectPdfFile(sampleCollectionID: string, fileName: string, applicationType: string): void {
+    this.SpinnerService.show();
+    this.msService.loadSampleCollectionDetailsPDF(sampleCollectionID).subscribe(
+        (dataPdf: any) => {
+          this.SpinnerService.hide();
+          this.blob = new Blob([dataPdf], {type: applicationType});
+
+          // tslint:disable-next-line:prefer-const
+          let downloadURL = window.URL.createObjectURL(this.blob);
+          const link = document.createElement('a');
+          link.href = downloadURL;
+          link.download = fileName;
+          link.click();
+          // this.pdfUploadsView = dataPdf;
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        }
+    );
   }
 
   onClickSaveAssignOfficerBatch(valid: boolean) {
@@ -876,6 +925,12 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     // this.router.navigate([`/epra/fuelInspection/details/`,data.referenceNumber]);
   }
 
+  viewLIMSPDFSaved(data: MSSSFPDFListDetailsDto) {
+    console.log('TEST 101 REF NO VIEW FILE: ' + data.pdfSavedId);
+    this.viewPdfFile(String(data.pdfSavedId),data.pdfName,'application/pdf')
+    // this.router.navigate([`/epra/fuelInspection/details/`,data.referenceNumber]);
+  }
+
   saveLIMSPDFRecord(data: LIMSFilesFoundDto) {
     console.log('TEST 101 REF NO SAVE: ' + data.fileName);
     this.selectedPDFFileName = data.fileName;
@@ -895,6 +950,14 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
         break;
       case 'saveRecord':
         this.saveLIMSPDFRecord(event.data);
+        break;
+    }
+  }
+
+  public onCustomLIMSPDFViewAction(event: any): void {
+    switch (event.action) {
+      case 'viewPDFRecord':
+        this.viewLIMSPDFSaved(event.data);
         break;
     }
   }

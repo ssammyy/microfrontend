@@ -431,6 +431,8 @@ export class ApiEndpointService {
     };
 
     public static MARKET_SURVEILLANCE_FUEL_ENDPOINT = {
+        VIEW_PDF_SAVED: `${ApiEndpointService.MS_CONTEXT}/view/attached`,
+        VIEW_PDF_SAMPLE_COLLECTION: `${ApiEndpointService.MS_CONTEXT}/report/sample-collection`,
         LAB_LIST: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/fetch/laboratory-list`,
         ALL_BATCH_LIST: `${ApiEndpointService.MS_FUEL_CONTEXT}/all-batch-list`,
         ADD_BATCH: `${ApiEndpointService.MS_FUEL_CONTEXT}/add`,

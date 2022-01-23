@@ -592,6 +592,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.ms.fuel.remediation.invoice.path}")
     val mapMSFuelInvoiceRemediationPath: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.ms.fuel.sample.collection.path}")
+    val mapMSSampleCollectionPath: String = ""
+
     @Value("\${destination.inspection.cd.status.type.coc.generated.and.send}")
     val mapDICdStatusTypeCOCGeneratedAndSendID: Long = 0L
 
@@ -708,6 +711,12 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.assigned.notification.io}")
     val mapMsFuelAssignedIONotification: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.remediation.invoice.notification}")
+    val mapMsFuelInspectionRemediationInvoiceNotification: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.lab.results.notification}")
+    val mapMsFuelInspectionLabResultsNotification: String = ""
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.lab.results.notification.io}")
     val mapMsLabResultsIONotification: String = ""

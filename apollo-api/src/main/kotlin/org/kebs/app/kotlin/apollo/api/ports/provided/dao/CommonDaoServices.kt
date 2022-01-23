@@ -1291,7 +1291,8 @@ class CommonDaoServices(
         uuid: String,
         valuesMapped: Any,
         map: ServiceMapsEntity,
-        sr: ServiceRequestsEntity
+        sr: ServiceRequestsEntity,
+        attachmentFilePath: String? = null
     ): Boolean {
 
         KotlinLogging.logger { }.info { "Started Mail process" }
@@ -1307,7 +1308,13 @@ class CommonDaoServices(
                             KotlinLogging.logger { }.info { "Started subject $subject" }
                             buffer.messageBody?.let { messageBody ->
                                 KotlinLogging.logger { }.info { "Started messageBody $messageBody" }
-                                notifications.sendEmail(recipient, subject, messageBody)
+                                if (attachmentFilePath!=null){
+                                    KotlinLogging.logger { }.info { "Started attached body $attachmentFilePath" }
+                                    notifications.sendEmail(recipient, subject, messageBody, attachmentFilePath)
+                                }else{
+                                    notifications.sendEmail(recipient, subject, messageBody)
+                                }
+
 //                                    notifications.processEmail(recipient, subject, messageBody)
                                 KotlinLogging.logger { }.info { "Email sent" }
                             }
@@ -1326,7 +1333,8 @@ class CommonDaoServices(
         uuid: String,
         valuesMapped: Any,
         map: ServiceMapsEntity,
-        sr: ServiceRequestsEntity
+        sr: ServiceRequestsEntity,
+        attachmentFilePath: String? = null
     ): Boolean {
 
         KotlinLogging.logger { }.info { "Started Mail process" }
@@ -1342,7 +1350,12 @@ class CommonDaoServices(
                             KotlinLogging.logger { }.info { "Started subject $subject" }
                             buffer.messageBody?.let { messageBody ->
                                 KotlinLogging.logger { }.info { "Started messageBody $messageBody" }
-                                notifications.sendEmail(recipient, subject, messageBody)
+                                if (attachmentFilePath!=null){
+                                    KotlinLogging.logger { }.info { "Started attached body $attachmentFilePath" }
+                                    notifications.sendEmail(recipient, subject, messageBody, attachmentFilePath)
+                                }else{
+                                    notifications.sendEmail(recipient, subject, messageBody)
+                                }
 //                                    notifications.processEmail(recipient, subject, messageBody)
                                 KotlinLogging.logger { }.info { "Email sent" }
                             }

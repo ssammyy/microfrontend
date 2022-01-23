@@ -110,6 +110,7 @@ data class FuelEntityCompliantStatusDto(
 )
 
 data class SampleCollectionDto(
+        var id: Long?= null,
         var nameManufacturerTrader: String?= null,
         var addressManufacturerTrader: String?= null,
         var samplingMethod: String?= null,
@@ -133,6 +134,7 @@ data class SampleCollectionItemsDto(
 )
 
 data class SampleSubmissionDto(
+        var id: Long? = null,
         var nameProduct : String? = null,
         var packaging : String? = null,
         var labellingIdentification : String? = null,

@@ -212,6 +212,14 @@ class ReportsController(
     }
 
 
+//    fun createRemediationInvoicePdf(ID: Long): Pair<HashMap<String, Any>, List<QaInvoiceMasterDetailsEntity>> {
+//        var map = hashMapOf<String, Any>()
+//        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
+//
+//        return Pair(map, batchInvoiceList)
+//    }
+
+
     fun permitCertificateIssuedCreation(id: Long): Pair<HashMap<String, Any>, String> {
         var map = hashMapOf<String, Any>()
         val appId: Int = applicationMapProperties.mapQualityAssurance

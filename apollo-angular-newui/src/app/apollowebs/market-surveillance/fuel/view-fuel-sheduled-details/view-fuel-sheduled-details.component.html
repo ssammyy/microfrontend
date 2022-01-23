@@ -202,7 +202,7 @@
                                                         {{fuelInspection?.sampleCollected?.dateWitness|date}}</div>
                                                 </li>
                                             </ul>
-                                            <button class="btn-sm btn-primary" >Download</button>
+                                            <button class="btn-sm btn-primary" (click)="viewSampleCollectPdfFile(fuelInspection?.sampleCollected?.id, fuelInspection?.referenceNumber,'application/pdf')">Download</button>
                                             <div class="form-row">
                                                 <div class="col-md-12 mb-3">
                                                     <label style="color: #0082f3">Items</label>
@@ -327,7 +327,7 @@
                                                         {{fuelInspection?.sampleSubmitted?.bsNumber}}</div>
                                                 </li>
                                             </ul>
-                                            <button class="btn-sm btn-primary" >Download</button>
+<!--                                            <button class="btn-sm btn-primary" >Download</button>-->
                                             <div class="form-row">
                                                 <div class="col-md-12 mb-3">
                                                     <label style="color: #0082f3">Items</label>
@@ -402,7 +402,11 @@
                                                     <label style="color: #0082f3">Lab Results PDF SAVED</label>
                                                 </div>
                                                 <div class="table-striped table-condensed table-responsive">
-                                                    <ng2-smart-table [settings]="settingsSavedPDFFiles" [source]="fuelInspection?.sampleLabResults?.savedPDFFiles"></ng2-smart-table>
+                                                    <ng2-smart-table [settings]="settingsSavedPDFFiles"
+                                                                     [source]="fuelInspection?.sampleLabResults?.savedPDFFiles"
+                                                                     (userRowSelect)="viewLIMSPDFSaved($event.data)"
+                                                                     (custom)="onCustomLIMSPDFViewAction($event)"
+                                                    ></ng2-smart-table>
                                                 </div>
                                             </div>
                                             <br>
