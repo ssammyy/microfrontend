@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersEntity
+import java.sql.Date
 import java.sql.Timestamp
 import java.util.*
 import javax.validation.constraints.Email
@@ -124,6 +125,9 @@ class CocItem {
 
     @JsonProperty("SHIPMENT_LINE_REGISTRATION")
     var shipmentLineRegistration: String? = null
+
+    @JsonProperty("SHIPMENT_BRAND_NAME")
+    var shipmentBrandName: String? = null
 
     @NotEmpty(message = "Required field")
     @JsonProperty("PRODUCT_CATEGORY")
@@ -298,6 +302,18 @@ class CocEntityForm {
     var shipmentMode: String? = null
 
     @NotEmpty(message = "Required field")
+    @JsonProperty("SHIPMENT_SEAL_NUMBER")
+    var shipmentSealNumbers: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonProperty("SHIPMENT_CONTAINER_NUMBER")
+    var shipmentContainerNumber: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonProperty("SHIPMENT_GROSS_WEIGHT")
+    var shipmentGrossWeight: String? = null
+
+    @NotEmpty(message = "Required field")
     @JsonProperty("COUNTRY_OF_SUPPLY")
     var countryOfSupply: String? = null
 
@@ -333,6 +349,10 @@ class CocEntityForm {
     @NotEmpty(message = "Required field")
     @JsonProperty("INSPECTION_FEE")
     var inspectionFee: DocumentPaymentDetails? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonProperty("VERSION")
+    var version: Long? = null
 }
 
 
@@ -356,7 +376,7 @@ class CoiItem {
     var status: Int = 0
 
     @NotNull(message = "Required field")
-    var shipmentLineHsCode: Long? = 0
+    var shipmentLineHsCode: String? = ""
 
     @NotNull(message = "Required field")
     var shipmentLineNumber: Long? = 0
@@ -384,6 +404,9 @@ class CoiItem {
 
     @NotEmpty(message = "Required field")
     var shipmentLineLicenceReference: String? = null
+
+    @NotEmpty(message = "Required field")
+    var shipmentLineRegistration: String? = null
 
     @NotEmpty(message = "Required field")
     var shipmentLineBrandName: String? = null
@@ -516,60 +539,31 @@ class CoiEntityForm {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     var finalInvoiceDate: Timestamp? = null
 
+    var shipmentSealNumbers: String? = null
+
+    var shipmentContainerNumber: String? = null
+
+    var shipmentGrossWeight: String? = null
+
     @NotEmpty(message = "Required field")
     var route: String? = null
 
     @NotEmpty(message = "Required field")
-    var coiItems: List<CocItem>? = null
+    var coiItems: List<CoiItem>? = null
 
     @NotEmpty(message = "Required field")
     var inspectionFee: DocumentPaymentDetails? = null
-}
-
-class RiskProfileForm {
-    @NotEmpty(message = "Required field")
-    var hsCode: String? = null
 
     @NotEmpty(message = "Required field")
-    var brandName: String? = null
-
-    @NotEmpty(message = "Required field")
-    var productDescription: String? = null
-
-    @NotEmpty(message = "Required field")
-    var countryOfSupply: String? = null
-
-    @NotEmpty(message = "Required field")
-    var manufacturer: String? = null
-
-    @NotEmpty(message = "Required field")
-    var traderName: String? = null
-
-    @NotEmpty(message = "Required field")
-    var importerName: String? = null
-
-    @NotEmpty(message = "Required field")
-    var exporterName: String? = null
-
-    @NotEmpty(message = "Required field")
-    var riskLevel: String? = null
-
-    @NotEmpty(message = "Required field")
-    var riskDescription: String? = null
-
-    @NotEmpty(message = "Required field")
-    var remarks: String? = null
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    var categorizationDate: Timestamp? = null
-
-    @NotEmpty(message = "Required field")
-    var partner: String? = null
+    var version: Long? = null
 }
 
 class CorEntityForm {
     @NotEmpty(message = "Please enter your phone number")
     var corNumber: String? = null
+
+    @NotEmpty(message = "Please enter your phone number")
+    var ucrNumber: String? = null
 
     @NotEmpty(message = "Please enter your phone number")
     var corIssueDate: String? = null
@@ -593,10 +587,12 @@ class CorEntityForm {
     var exporterEmail: String? = null
 
     @NotEmpty(message = "Please enter your phone number")
-    var applicationBookingDate: String? = null
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var applicationBookingDate: Timestamp? = null
 
     @NotEmpty(message = "Please enter your phone number")
-    var inspectionDate: String? = null
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var inspectionDate: Timestamp? = null
 
     @NotEmpty(message = "Please enter your phone number")
     var make: String? = null
@@ -635,22 +631,22 @@ class CorEntityForm {
     var previousCountryOfRegistration: String? = null
 
     @NotEmpty(message = "Please enter your phone number")
-    var tareWeight: String? = null
+    var tareWeight: Long? = null
 
     @NotEmpty(message = "Please enter your phone number")
-    var loadCapacity: String? = null
+    var loadCapacity: Long? = null
 
     @NotEmpty(message = "Please enter your phone number")
-    var grossWeight: String? = null
+    var grossWeight: Long? = null
 
     @NotEmpty(message = "Please enter your phone number")
-    var numberOfAxles: String? = null
+    var numberOfAxles: Long? = null
 
     @NotEmpty(message = "Please enter your phone number")
     var typeOfVehicle: String? = null
 
     @NotEmpty(message = "Please enter your phone number")
-    var numberOfPassangers: String? = null
+    var numberOfPassengers: Long? = null
 
     @NotEmpty(message = "Please enter your phone number")
     var typeOfBody: String? = null
@@ -662,19 +658,26 @@ class CorEntityForm {
     var fuelType: String? = null
 
     @NotEmpty(message = "Please enter your phone number")
-    var inspectionFee: String? = null
+    var inspectionFee: Double? = null
+
+    @NotEmpty(message = "Required field")
+    var transmission: String? = null
+
+    @NotEmpty(message = "Required field")
+    var inspectionOfficer: String? = null
 
     @NotEmpty(message = "Please enter your phone number")
     var inspectionFeeCurrency: String? = null
 
     @NotEmpty(message = "Please enter your phone number")
-    var inspectionFeeExchangeRate: String? = null
+    var inspectionFeeExchangeRate: Long? = null
 
     @NotEmpty(message = "Please enter your phone number")
-    var inspectionFeePaymentDate: String? = null
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var inspectionFeePaymentDate: Timestamp? = null
 
-    @NotEmpty(message = "Please enter your phone number")
-    var partner: String? = null
+    @NotEmpty(message = "Required field")
+    var version: Long? = null
 }
 
 class RfcCoiItem {
@@ -707,7 +710,7 @@ class RfcCoiEntityForm {
     var ucrNumber: String? = null
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    var rfcDate: Timestamp? = null
+    var rfcDate: Date? = null
 
     @NotEmpty(message = "Required field")
     var countryOfDestination: String? = null
@@ -829,6 +832,50 @@ class RfcCoiEntityForm {
     var items: List<RfcCoiItem>? = null
 
     var inspectionFee: DocumentPaymentDetails? = null
+}
+
+class RiskProfileForm {
+    @NotEmpty(message = "Required field")
+    var hsCode: String? = null
+
+    @NotEmpty(message = "Required field")
+    var brandName: String? = null
+
+    @NotEmpty(message = "Required field")
+    var productDescription: String? = null
+
+    @NotEmpty(message = "Required field")
+    var countryOfSupply: String? = null
+
+    @NotEmpty(message = "Required field")
+    var manufacturer: String? = null
+
+    @NotEmpty(message = "Required field")
+    var traderName: String? = null
+
+    @NotEmpty(message = "Required field")
+    var importerName: String? = null
+
+    @NotEmpty(message = "Required field")
+    var importerPin: String? = null
+
+    @NotEmpty(message = "Required field")
+    var exporterName: String? = null
+
+    @NotEmpty(message = "Required field")
+    var exporterPin: String? = null
+
+    @NotEmpty(message = "Required field")
+    var riskLevel: String? = null
+
+    @NotEmpty(message = "Required field")
+    var riskDescription: String? = null
+
+    @NotEmpty(message = "Required field")
+    var remarks: String? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var categorizationDate: java.sql.Date? = null
 }
 
 class PvocComplaintForm {

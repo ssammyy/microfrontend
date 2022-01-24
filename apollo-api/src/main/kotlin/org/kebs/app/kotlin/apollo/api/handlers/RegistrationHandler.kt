@@ -914,7 +914,7 @@ class RegistrationHandler(
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
-                    systemsAdminDaoService.validatePhoneNumberAndToken(body)
+                    systemsAdminDaoService.validatePhoneNumberAndToken(body,req)
                         ?.let { ok().body(it) }
                         ?: onErrors("We could not process your request at the moment")
 

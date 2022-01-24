@@ -153,7 +153,7 @@ class CorsBakEntity : Serializable {
 
     @Column(name = "INSPECTION_FEE")
     @Basic
-    var inspectionFee: Long = 0
+    var inspectionFee: Double? = 0.0
 
     @Column(name = "APPROVAL_STATUS")
     @Basic
@@ -173,7 +173,7 @@ class CorsBakEntity : Serializable {
 
     @Column(name = "PARTNER")
     @Basic
-    var partner: String? = null
+    var partner: Long? = null
 
     @Column(name = "INSPECTION_FEE_EXCHANGE_RATE")
     @Basic
@@ -182,7 +182,6 @@ class CorsBakEntity : Serializable {
     @Column(name = "INSPECTION_FEE_PAYMENT_DATE")
     @Basic
     var inspectionFeePaymentDate: Timestamp? = null
-
 
     @Column(name = "STATUS")
     @Basic

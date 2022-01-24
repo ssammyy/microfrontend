@@ -6,6 +6,7 @@ import org.json.JSONException
 import org.json.JSONObject
 import org.json.XML
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
+import org.kebs.app.kotlin.apollo.api.payload.request.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.SftpServiceImpl
 import org.kebs.app.kotlin.apollo.common.dto.MinistryInspectionListResponseDto
@@ -771,7 +772,7 @@ class DestinationInspectionDaoServices(
                         fuelType = "test"
                         customsIeNo = cdItemDetailsList.customsEntryNumber
                         transmission = cdMvInspectionEntity.transmissionAutoManual
-                        inspectionFee = 0
+                        inspectionFee = 0.0
                         version = cdItemDetailsList.cdDetails?.version ?: 1
                         approvalStatus = cdEntity.compliantStatus.toString()
                         ucrNumber = cdEntity.ucrNumber
@@ -3119,4 +3120,6 @@ class DestinationInspectionDaoServices(
     fun listExchangeRates(date: String): List<CurrencyExchangeRates> {
         return this.currencyExchangeRateRepository.findByApplicableDateAndStatus(date, 1)
     }
+
+
 }

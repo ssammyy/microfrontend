@@ -58,19 +58,19 @@ import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.RegistrationEmailDTO
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.RegistrationForEntryNumberEmailDTO
 import org.kebs.app.kotlin.apollo.api.ports.provided.sms.SmsServiceImpl
-import org.kebs.app.kotlin.apollo.common.dto.CustomResponse
-import org.kebs.app.kotlin.apollo.common.dto.HashedStringDto
-import org.kebs.app.kotlin.apollo.common.dto.SectionsDto
-import org.kebs.app.kotlin.apollo.common.dto.UserEntityDto
+import org.kebs.app.kotlin.apollo.api.security.jwt.JwtTokenService
+import org.kebs.app.kotlin.apollo.common.dto.*
 import org.kebs.app.kotlin.apollo.common.exceptions.*
 import org.kebs.app.kotlin.apollo.common.utils.composeUsingSpel
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.common.utils.placeHolderMapper
 import org.kebs.app.kotlin.apollo.common.utils.replacePrefixedItemsWithObjectValues
+import org.kebs.app.kotlin.apollo.config.properties.auth.AuthenticationProperties
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.di.CdLaboratoryEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocComplaintsEmailVerificationEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.ManufacturePlantDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileCommoditiesManufactureEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileContractsUndertakenEntity
@@ -78,10 +78,12 @@ import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileDirecto
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
+import org.kebs.app.kotlin.apollo.store.repo.external.ApiClientRepo
 import org.modelmapper.ModelMapper
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.ResourceLoader
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.http.server.ServletServerHttpRequest
 import org.springframework.mock.web.MockMultipartFile
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
@@ -89,6 +91,8 @@ import org.springframework.stereotype.Service
 import org.springframework.util.ResourceUtils
 import org.springframework.util.StringUtils
 import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.servlet.function.ServerRequest
+import org.springframework.web.servlet.function.ServerResponse
 import java.io.*
 import java.math.BigDecimal
 import java.net.URLConnection
@@ -111,57 +115,61 @@ import javax.xml.stream.XMLOutputFactory
 
 @Service
 class CommonDaoServices(
-        private val jasyptStringEncryptor: StringEncryptor,
-        private val usersRepo: IUserRepository,
-        private val companyProfileRepo: ICompanyProfileRepository,
-        private val workPlanYearsCodesRepo: IWorkplanYearsCodesRepository,
-        private val manufacturePlantRepository: IManufacturePlantDetailsRepository,
-        private val batchJobRepository: IBatchJobDetailsRepository,
-        private val iSubSectionsLevel2Repo: ISubSectionsLevel2Repository,
-        private val iSubSectionsLevel1Repo: ISubSectionsLevel1Repository,
-        private val configurationRepository: IIntegrationConfigurationRepository,
-        private val workflowTransactionsRepository: IWorkflowTransactionsRepository,
-        private val iUserProfilesRepo: IUserProfilesRepository,
-        private val iImporterRepo: IImporterContactRepository,
-        private val serviceRequestsRepository: IServiceRequestsRepository,
-        private val verificationTokensRepo: IUserVerificationTokensRepository,
-        private val iUserRepository: IUserRepository,
-        private val emailVerificationTokenEntityRepo: EmailVerificationTokenEntityRepo,
-        private val serviceMapsRepository: IServiceMapsRepository,
-        private val countriesRepository: ICountriesRepository,
-        private val notifications: Notifications,
-        private val directorateRepo: IDirectoratesRepository,
-        private val businessLinesRepo: IBusinessLinesRepository,
-        private val businessNatureRepo: IBusinessNatureRepository,
-        private val notificationsRepo: INotificationsRepository,
-        private val notificationsBufferRepo: INotificationsBufferRepository,
-        private val manufacturerContactDetailsRepository: IManufacturerContactsRepository,
-        private val manufacturersRepo: IManufacturerRepository,
-        private val iDivisionsRepo: IDivisionsRepository,
-        private val designationRepo: IDesignationsRepository,
-        private val iSectionsRepo: ISectionsRepository,
-        private val departmentRepo: IDepartmentsRepository,
-        private val regionsRepo: IRegionsRepository,
-        private val countiesRepo: ICountiesRepository,
-        private val townsRepo: ITownsRepository,
-        private val userTypesRepo: IUserTypesEntityRepository,
-        private val companyProfileDirectorsRepo: ICompanyProfileDirectorsRepository,
-        private val companyProfileCommoditiesManufactureRepo: ICompanyProfileCommoditiesManufactureRepository,
-        private val companyProfileContractsUndertakenRepo: ICompanyProfileContractsUndertakenRepository,
-        private val verificationTokensRepoB: IUserVerificationTokensRepositoryB,
-        private val countyRepo: ICountiesRepository,
-        private val standardCategoryRepo: IStandardCategoryRepository,
-        private val productCategoriesRepository: IKebsProductCategoriesRepository,
-        private val broadProductCategoryRepository: IBroadProductCategoryRepository,
-        private val productsRepo: IProductsRepository,
-        private val productSubCategoryRepo: IProductSubcategoryRepository,
-        private val roleAssignmentsRepository: IUserRoleAssignmentsRepository,
-        private val iProcessesStagesRepo: IProcessesStagesRepository,
-        private val iLaboratoryRepo: ILaboratoryRepository,
-        private val resourceLoader: ResourceLoader,
-        private val bufferRepo: INotificationsBufferRepository,
-        private val applicationMapProperties: ApplicationMapProperties,
-        private val smsService: SmsServiceImpl,
+    private val jasyptStringEncryptor: StringEncryptor,
+    private val usersRepo: IUserRepository,
+    private val companyProfileRepo: ICompanyProfileRepository,
+    private val workPlanYearsCodesRepo: IWorkplanYearsCodesRepository,
+    private val manufacturePlantRepository: IManufacturePlantDetailsRepository,
+    private val batchJobRepository: IBatchJobDetailsRepository,
+    private val iSubSectionsLevel2Repo: ISubSectionsLevel2Repository,
+    private val iSubSectionsLevel1Repo: ISubSectionsLevel1Repository,
+    private val configurationRepository: IIntegrationConfigurationRepository,
+    private val workflowTransactionsRepository: IWorkflowTransactionsRepository,
+    private val iUserProfilesRepo: IUserProfilesRepository,
+    private val iImporterRepo: IImporterContactRepository,
+    private val serviceRequestsRepository: IServiceRequestsRepository,
+    private val verificationTokensRepo: IUserVerificationTokensRepository,
+    private val iUserRepository: IUserRepository,
+    private val emailVerificationTokenEntityRepo: EmailVerificationTokenEntityRepo,
+    private val serviceMapsRepository: IServiceMapsRepository,
+    private val countriesRepository: ICountriesRepository,
+    private val notifications: Notifications,
+    private val directorateRepo: IDirectoratesRepository,
+    private val businessLinesRepo: IBusinessLinesRepository,
+    private val businessNatureRepo: IBusinessNatureRepository,
+    private val notificationsRepo: INotificationsRepository,
+    private val notificationsBufferRepo: INotificationsBufferRepository,
+    private val manufacturerContactDetailsRepository: IManufacturerContactsRepository,
+    private val manufacturersRepo: IManufacturerRepository,
+    private val iDivisionsRepo: IDivisionsRepository,
+    private val designationRepo: IDesignationsRepository,
+    private val iSectionsRepo: ISectionsRepository,
+    private val departmentRepo: IDepartmentsRepository,
+    private val regionsRepo: IRegionsRepository,
+    private val countiesRepo: ICountiesRepository,
+    private val townsRepo: ITownsRepository,
+    private val userTypesRepo: IUserTypesEntityRepository,
+    private val companyProfileDirectorsRepo: ICompanyProfileDirectorsRepository,
+    private val companyProfileCommoditiesManufactureRepo: ICompanyProfileCommoditiesManufactureRepository,
+    private val companyProfileContractsUndertakenRepo: ICompanyProfileContractsUndertakenRepository,
+    private val verificationTokensRepoB: IUserVerificationTokensRepositoryB,
+    private val countyRepo: ICountiesRepository,
+    private val standardCategoryRepo: IStandardCategoryRepository,
+    private val productCategoriesRepository: IKebsProductCategoriesRepository,
+    private val broadProductCategoryRepository: IBroadProductCategoryRepository,
+    private val productsRepo: IProductsRepository,
+    private val productSubCategoryRepo: IProductSubcategoryRepository,
+    private val roleAssignmentsRepository: IUserRoleAssignmentsRepository,
+    private val iProcessesStagesRepo: IProcessesStagesRepository,
+    private val iLaboratoryRepo: ILaboratoryRepository,
+    private val resourceLoader: ResourceLoader,
+    private val bufferRepo: INotificationsBufferRepository,
+    private val applicationMapProperties: ApplicationMapProperties,
+    private val smsService: SmsServiceImpl,
+    private val pvocPartnersRepository: IPvocPartnersRepository,
+    private val apiClientRepo: ApiClientRepo,
+    private val tokenService: JwtTokenService,
+    private val authenticationProperties: AuthenticationProperties
 ) {
 
     @Value("\${common.page.view.name}")
@@ -593,15 +601,16 @@ class CommonDaoServices(
     }
 
     fun userRegisteredEntryNumberSuccessfullEmailCompose(
-        companyProfile: CompanyProfileEntity,
-        map: ServiceMapsEntity,
-        token: String?
+            companyProfile: CompanyProfileEntity,
+            map: ServiceMapsEntity,
+            token: String?
     ): RegistrationForEntryNumberEmailDTO {
         val dataValue = RegistrationForEntryNumberEmailDTO()
         with(dataValue) {
             baseUrl = applicationMapProperties.baseUrlValue
             fullName =
-                concatenateName(findUserByID(companyProfile.userId ?: throw ExpectedDataNotFound("USER ID NOT FOUND")))
+                    concatenateName(findUserByID(companyProfile.userId
+                            ?: throw ExpectedDataNotFound("USER ID NOT FOUND")))
             entryNumber = companyProfile.entryNumber
             dateSubmitted = getCurrentDate()
 
@@ -642,16 +651,30 @@ class CommonDaoServices(
         return fileTypeMap.getContentType(fileName)
     }
 
+    fun loggedInPartnerDetails(): PvocPartnersEntity {
+        SecurityContextHolder.getContext().authentication?.name
+                ?.let { username ->
+                    val client = this.apiClientRepo.findByClientId(username)
+                    if (client.isPresent) {
+                        this.pvocPartnersRepository.findByApiClientId(client.get().id!!)?.let { apiClient ->
+                            return apiClient
+                        } ?: throw ExpectedDataNotFound("partner with client id not found")
+                    } else {
+                        throw ExpectedDataNotFound("Client name not found")
+                    }
+                } ?: throw ExpectedDataNotFound("No user has logged in")
+    }
+
     fun loggedInUserDetails(): UsersEntity {
         SecurityContextHolder.getContext().authentication?.name
-            ?.let { username ->
-                usersRepo.findByEmail(username)
-                    ?.let { loggedInUser ->
-                        return loggedInUser
-                    }
-                    ?: throw ExpectedDataNotFound("No userName with the following userName=$username, Exist in the users table")
-            }
-            ?: throw ExpectedDataNotFound("No user has logged in")
+                ?.let { username ->
+                    usersRepo.findByEmail(username)
+                            ?.let { loggedInUser ->
+                                return loggedInUser
+                            }
+                            ?: throw ExpectedDataNotFound("No userName with the following userName=$username, Exist in the users table")
+                }
+                ?: throw ExpectedDataNotFound("No user has logged in")
     }
 
     fun checkLoggedInUser(): String? {
@@ -908,56 +931,59 @@ class CommonDaoServices(
                 }
                 ?: throw ExpectedDataNotFound("No Business Nature with Business Line of ID  = ${businessLineEntity.id} and status = $status, Existing")
     }
-    fun currentUserHasRole(roleName: String):Boolean {
-        val usersEntity=this.loggedInUserDetails()
+
+    fun currentUserHasRole(roleName: String): Boolean {
+        val usersEntity = this.loggedInUserDetails()
         val supervisorCount = this.roleAssignmentsRepository.checkUserHasRole(roleName, 1, usersEntity.id!!)
         return supervisorCount > 0
     }
 
-    fun currentUserDiSupervisor():Boolean {
-        val usersEntity=this.loggedInUserDetails()
+    fun currentUserDiSupervisor(): Boolean {
+        val usersEntity = this.loggedInUserDetails()
         val supervisorCount = this.roleAssignmentsRepository.checkUserHasRole("DI_Officer_Charge", 1, usersEntity.id!!)
         return supervisorCount > 0
     }
-    fun currentUserDiOfficer():Boolean {
-        val usersEntity=this.loggedInUserDetails()
+
+    fun currentUserDiOfficer(): Boolean {
+        val usersEntity = this.loggedInUserDetails()
         val inspectorCount = this.roleAssignmentsRepository.checkUserHasRole("DI_Inspection_Officers", 1, usersEntity.id!!)
-        return inspectorCount>0
+        return inspectorCount > 0
     }
+
     fun findUserByUserName(userName: String): UsersEntity {
         usersRepo.findByEmail(userName)
-            ?.let { userEntity ->
-                return userEntity
-            }
-            ?: throw ExpectedDataNotFound("Email  = ${userName}, does not Exist")
+                ?.let { userEntity ->
+                    return userEntity
+                }
+                ?: throw ExpectedDataNotFound("Email  = ${userName}, does not Exist")
     }
 
     fun findOTPByToken(userName: String): UserVerificationTokensEntity {
         verificationTokensRepoB.findByToken(userName)
-            ?.let { UserVerificationTokensEntity ->
-                return UserVerificationTokensEntity
-            }
-            ?: throw ExpectedDataNotFound("OTP  = ${userName}, does not Exist")
+                ?.let { UserVerificationTokensEntity ->
+                    return UserVerificationTokensEntity
+                }
+                ?: throw ExpectedDataNotFound("OTP  = ${userName}, does not Exist")
     }
 
     fun findTokenStringByUserid(userId: Long): UserVerificationTokensEntity {
 
         verificationTokensRepoB.findAllByTokenByUserId(userId)
-            ?.let { UserVerificationTokensEntity ->
-                return UserVerificationTokensEntity
-            }
-            ?: throw ExpectedDataNotFound("Token, does not Exist")
+                ?.let { UserVerificationTokensEntity ->
+                    return UserVerificationTokensEntity
+                }
+                ?: throw ExpectedDataNotFound("Token, does not Exist")
     }
 
     fun findByToken(token: Long?): UserVerificationTokensEntity {
 
         token?.let {
             verificationTokensRepoB.findByVersion(it)
-                ?.let { UserVerificationTokensEntity ->
-                    return UserVerificationTokensEntity
-                }
+                    ?.let { UserVerificationTokensEntity ->
+                        return UserVerificationTokensEntity
+                    }
         }
-            ?: throw ExpectedDataNotFound("Token, does not Exist")
+                ?: throw ExpectedDataNotFound("Token, does not Exist")
     }
 
 //    fun findUserIdByToken(token: String?): UserVerificationTokensEntity {
@@ -1363,9 +1389,9 @@ class CommonDaoServices(
     }
 
     fun generateVerificationToken(
-        sr: ServiceRequestsEntity,
-        user: UsersEntity,
-        map: ServiceMapsEntity
+            sr: ServiceRequestsEntity,
+            user: UsersEntity,
+            map: ServiceMapsEntity
     ): UserVerificationTokensEntity? {
         try {
             val tokensEntity = UserVerificationTokensEntity().apply {
@@ -1377,7 +1403,7 @@ class CommonDaoServices(
                 map.tokenExpiryHours?.let { h ->
                     tokenExpiryDate = Timestamp.from(Instant.now().plus(h, ChronoUnit.HOURS))
                 }
-                    ?: throw Exception("Missing Configuration: Hours to Token Expiry")
+                        ?: throw Exception("Missing Configuration: Hours to Token Expiry")
                 transactionDate = Date(Date().time)
                 varField1 = UUID.randomUUID().toString()
             }
@@ -1779,29 +1805,81 @@ class CommonDaoServices(
         return generateRandomText(length, "SHA1PRNG", "SHA-1")
     }
 
-    fun validateOTPToken(token: String, phoneNumber: String?): CustomResponse {
+    fun validateOTPToken(token: String, phoneNumber: String?, req: ServerRequest?): CustomResponse {
         val result = CustomResponse()
         try {
             emailVerificationTokenEntityRepo.findFirstByTokenAndStatusOrderByIdDesc(token, 10)
-                    ?.let { verificationToken ->
-                        if (verificationToken.email != phoneNumber) throw InvalidValueException("Invalid Token provided")
+                ?.let { verificationToken ->
+                    if (verificationToken.email != phoneNumber) throw InvalidValueException("Invalid Token provided")
 
-                        verificationToken.tokenExpiryDate
-                                ?.let { expiry ->
-                                    when {
-                                        expiry.after(Timestamp.from(Instant.now())) -> {
+                    verificationToken.tokenExpiryDate
+                        ?.let { expiry ->
+                            when {
+                                expiry.after(Timestamp.from(Instant.now())) -> {
 
-                                            verificationToken.status = 30
-                                            verificationToken.lastModifiedOn = Timestamp.from(Instant.now())
-                                            verificationToken.lastModifiedBy = "Verification Token Received"
-                                            emailVerificationTokenEntityRepo.save(verificationToken)
-                                            return CustomResponse().apply {
-                                                response = "00"
-                                                payload = "Success, valid OTP received"
-                                                status = 200
-                                            }
+                                    verificationToken.status = 30
+
+
+                                    verificationToken.lastModifiedOn = Timestamp.from(Instant.now())
+                                    verificationToken.lastModifiedBy = "Verification Token Received"
+                                    emailVerificationTokenEntityRepo.save(verificationToken)
+
+
+
+                                    SecurityContextHolder.getContext().authentication
+                                        ?.let { auth ->
+                                            KotlinLogging.logger {  }.info("Authentication ${auth.name}")
+                                            usersRepo.findByEmail(auth.name)
+                                                ?.let { user ->
+                                                    val request = req?.servletRequest()
+                                                        ?.let { ServletServerHttpRequest(it) }
+                                                        ?: throw NullValueNotAllowedException("Empty request receivded during authentication flow")
+                                                    val oAuthToken =
+                                                        tokenService.tokenFromAuthentication(
+                                                            auth,
+                                                            concatenateName(user),
+                                                            request
+                                                        )
+
+                                                    val roles =
+                                                        tokenService.extractRolesFromToken(token)?.map { it.authority }
+                                                    val response = JwtResponse(
+                                                        oAuthToken,
+                                                        user.id,
+                                                        user.userName,
+                                                        user.email,
+                                                        concatenateName(user),
+                                                        roles,
+                                                    ).apply {
+                                                        /**
+                                                         * TODO: Set expiry padding configuration  check this time stamp is false
+                                                         */
+//                        val localDate = LocalDateTime.now().plusMinutes(authenticationProperties.jwtExpirationMs).minusSeconds(20L)
+//                        val timestamp: Timestamp = Timestamp.valueOf(localDate)
+//                        expiry = timestam
+                                                        companyID = user.companyId
+                                                        branchID = user.plantId
+
+                                                    }
+                                                    response.expiry =
+                                                        LocalDateTime.now()
+                                                            .plusMinutes(authenticationProperties.jwtExpirationMs)
+                                                            .minusSeconds(20L)
+
+                                                    ServerResponse.ok().body(response)
+                                                }
+                                                ?: throw NullValueNotAllowedException("Empty authentication after authentication attempt")
 
                                         }
+                                        ?: throw InvalidValueException("Verification Token without a valid expiry found")
+
+                                    return CustomResponse().apply {
+                                        response = "00"
+                                        payload = "Success, valid OTP received"
+                                        status = 200
+                                    }
+
+                                }
                                         else -> {
                                             verificationToken.status = 25
                                             verificationToken.lastModifiedOn = Timestamp.from(Instant.now())
@@ -1828,7 +1906,7 @@ class CommonDaoServices(
         }
     }
 
-    fun generateVerificationToken(input: String, phone: String): EmailVerificationTokenEntity {
+    fun generateVerificationToken(input: String, phone: String, id: Long? = 0L): EmailVerificationTokenEntity {
         val tokensEntity = EmailVerificationTokenEntity()
         with(tokensEntity) {
             token = input
@@ -1839,6 +1917,7 @@ class CommonDaoServices(
             tokenExpiryDate = Timestamp.from(Instant.now().plus(10, ChronoUnit.MINUTES))
             transactionDate = Date(java.util.Date().time)
             varField1 = UUID.randomUUID().toString()
+            varField10 = "$id"
 
         }
 

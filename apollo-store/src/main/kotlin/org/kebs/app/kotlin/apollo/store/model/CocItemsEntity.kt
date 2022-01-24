@@ -55,6 +55,9 @@ class CocItemsEntity : Serializable {
     @Basic
     var shipmentLineVin: String? = null
 
+    @Column(name = "DECLARED_HS_CODE", nullable = true, length = 400)
+    @Basic
+    var declaredHsCode: String? = null
 
     @Column(name = "SHIPMENT_LINE_STICKER_NUMBER", nullable = true, length = 30)
     @Basic
@@ -197,39 +200,39 @@ class CocItemsEntity : Serializable {
 
     override fun hashCode(): Int {
         return Objects.hash(
-            id,
-            cocId,
-            shipmentLineNumber,
-            shipmentLineHscode,
-            shipmentLineQuantity,
-            shipmentLineUnitofMeasure,
-            shipmentLineDescription,
-            shipmentLineVin,
-            shipmentLineStickerNumber,
-            shipmentLineIcs,
-            shipmentLineStandardsReference,
-            shipmentLineLicenceReference,
-            shipmentLineRegistration,
-            ownerPin,
-            ownerName,
-            status,
-            cocNumber,
-            coiNumber,
-            varField3,
-            varField4,
-            varField5,
-            varField6,
-            varField7,
-            varField8,
-            varField9,
-            varField10,
-            createdBy,
-            createdOn,
-            modifiedBy,
-            modifiedOn,
-            deleteBy,
-            deletedOn,
-            shipmentLineBrandName
+                id,
+                cocId,
+                shipmentLineNumber,
+                shipmentLineHscode,
+                shipmentLineQuantity,
+                shipmentLineUnitofMeasure,
+                shipmentLineDescription,
+                shipmentLineVin,
+                shipmentLineStickerNumber,
+                shipmentLineIcs,
+                shipmentLineStandardsReference,
+                shipmentLineLicenceReference,
+                shipmentLineRegistration,
+                ownerPin,
+                ownerName,
+                status,
+                cocNumber,
+                coiNumber,
+                varField3,
+                varField4,
+                varField5,
+                varField6,
+                varField7,
+                varField8,
+                varField9,
+                varField10,
+                createdBy,
+                createdOn,
+                modifiedBy,
+                modifiedOn,
+                deleteBy,
+                deletedOn,
+                shipmentLineBrandName
         )
     }
 }

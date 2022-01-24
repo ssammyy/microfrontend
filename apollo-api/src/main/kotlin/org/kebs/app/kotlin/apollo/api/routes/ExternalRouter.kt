@@ -28,6 +28,7 @@ class ExternalRouter {
             POST("/coc", handler::foreignCoc)
             POST("/cor", handler::foreignCor)
             POST("/ncr", handler::foreignNcr)
+            POST("/risk/profile", handler::riskProfile)
         }
     }
 }
