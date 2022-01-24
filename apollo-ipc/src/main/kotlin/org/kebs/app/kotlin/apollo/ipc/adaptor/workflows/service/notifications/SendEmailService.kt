@@ -107,16 +107,14 @@ class SendEmailService(
                         mailSender.send(mailMessage)
 
                         buffer.responseMessage = "Email sent successfully"
-                        buffer.responseStatus = notif.serviceMapId?.successStatusCode
-                        buffer.status = notif.serviceMapId?.successStatus
+
 
 
                     } catch (e: Exception) {
                         KotlinLogging.logger { }.error(e.message)
                         KotlinLogging.logger { }.debug(e.message, e)
                         buffer?.responseMessage = e.message
-                        buffer?.responseStatus = notif.serviceMapId?.exceptionStatusCode
-                        buffer?.status = notif.serviceMapId?.exceptionStatus
+
                     }
 
                 }
