@@ -13,6 +13,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {DISDTTasks, UsersEntity} from "../../../core/store/data/std/std.model";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Store} from "@ngrx/store";
+import {NgSelectModule} from '@ng-select/ng-select';
 import {selectUserInfo} from "../../../core/store";
 import swal from "sweetalert2";
 declare const $: any;
@@ -37,7 +38,7 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
     public users !: UsersEntity[] ;
     public usersPls !: UsersEntity[] ;
     public usersMns !: UsersEntity[] ;
-    manufactureUserDetails !: UsersEntityList[];
+    manufactureUserDetails !: UsersEntityList;
     selectedUser: number;
     selectedUserPl: number;
     selectedUserMn: number;
@@ -386,6 +387,7 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
         (response: ManufactureDetailList[])=> {
           this.dtTrigger.next();
           this.manufactureLists = response;
+          //console.log(response);
             this.SpinnerService.hide();
         },
         (error: HttpErrorResponse)=>{
@@ -397,10 +399,10 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
   }
     public getUserDetails(): void{
         this.levyService.getUserDetails().subscribe(
-        (response: UsersEntityList[])=> {
+        (response: UsersEntityList)=> {
 
             this.manufactureUserDetails = response;
-            console.log(response);
+            console.log(this.manufactureUserDetails);
         },
             (error: HttpErrorResponse)=>{
                 console.log(error.message);

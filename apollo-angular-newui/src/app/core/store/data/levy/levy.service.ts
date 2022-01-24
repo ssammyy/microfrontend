@@ -209,7 +209,7 @@ export class LevyService {
     public getUserDetails(): any {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_MANUFACTURE_USERS);
         const params = new HttpParams();
-        return this.http.get<UsersEntityList[]>(url, {params}).pipe();
+        return this.http.get<UsersEntityList>(url, {params}).pipe();
     }
     public getPlList(): Observable<UsersEntity[]> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_LIST_OF_USERS_PL);

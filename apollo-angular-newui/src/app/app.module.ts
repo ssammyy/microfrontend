@@ -626,6 +626,7 @@ export class MaterialModule {}
         NgxSpinnerModule,
         MatTableModule,
         MatTabsModule,
+        NgSelectModule
     ],
     declarations: [
         AppComponent,

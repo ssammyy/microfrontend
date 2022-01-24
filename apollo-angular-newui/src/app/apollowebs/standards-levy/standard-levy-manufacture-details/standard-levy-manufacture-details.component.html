@@ -74,27 +74,33 @@
                                                                             <form #approveForm="ngForm" >
                                                                                 <div class="modal-body">
 
-                                                                                        <div *ngIf="manufactureUserDetails[0]==61">
-                                                                                            <button (click)=toggleDisplayAssignForm() type="button" class="btn btn-primary btn-sm">Assign To Self</button>
-                                                                                            <button type="button" class="btn btn-success btn-sm">Add Remarks</button>
-                                                                                            <button type="button" class="btn btn-danger btn-sm">View Remarks</button>
-                                                                                            <button type="button" class="btn btn-warning btn-sm">Close Account</button>
-                                                                                        </div>
+                                                                                <div *ngIf="manufactureUserDetails?.name==61">
+                                                                                    <button (click)=toggleDisplayAssignForm() type="button" class="btn btn-primary btn-sm">Assign To Self</button>
+                                                                                    <button type="button" class="btn btn-success btn-sm">Add Remarks</button>
+                                                                                    <button type="button" class="btn btn-danger btn-sm">View Remarks</button>
+                                                                                    <button type="button" class="btn btn-warning btn-sm">Close Account</button>
+
+                                                                                </div>
 
 
-                                                                                        <div *ngIf="manufactureUserDetails[0]==62">
+
+
+                                                                                        <div *ngIf="manufactureUserDetails?.name==62">
                                                                                         <button (click)=toggleDisplayAssignForm() type="button" class="btn btn-primary btn-sm">Assign To Self</button>
                                                                                         <button (click)=toggleDisplayAssignTo1Form() type="button" class="btn btn-success btn-sm">Assign To Other</button>
                                                                                         <button type="button" class="btn btn-danger btn-sm">View Remarks</button>
                                                                                         <button type="button" class="btn btn-warning btn-sm">Close Account</button>
+
                                                                                     </div>
 
-                                                                                        <div *ngIf="manufactureUserDetails[0]==63">
+                                                                                        <div *ngIf="manufactureUserDetails?.name==63">
                                                                                         <button (click)=toggleDisplayAssignForm() type="button" class="btn btn-primary btn-sm">Assign To Self</button>
                                                                                         <button (click)=toggleDisplayAssignTo2Form() type="button" class="btn btn-success btn-sm">Assign To Other</button>
                                                                                         <button type="button" class="btn btn-danger btn-sm">View Remarks</button>
                                                                                         <button type="button" class="btn btn-warning btn-sm">Close Account</button>
+
                                                                                     </div>
+
                                                                                     <div class="container col-md-12" [hidden]="isShowAssignForm">
                                                                                         <form (ngSubmit)="assignCompanyTask()" [formGroup]="assignCompanyTaskFormGroup"  class="form">
                                                                                             <hr style="color: red">
@@ -135,6 +141,7 @@
                                                                                            <hr>
                                                                                             <div class="form-group col-12">
                                                                                                 <label>Select</label>
+
                                                                                                 <ng-select [(ngModel)]="selectedUserPl" formControlName="assignedTo"  class="form-control" ngModel name="assignedTo" >
                                                                                                     <ng-option *ngFor="let user of usersPls" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
                                                                                                 </ng-select>
@@ -884,7 +891,8 @@
                                                                                                 <form (ngSubmit)="saveReport()" [formGroup]="prepareReportFormGroup" class="form">
                                                                                                     <div class="form-body">
 
-                                                                                                        <input type="hidden"  ngModel="{{manufactureUserDetails[0]}}"  name="userType" value="{{manufactureUserDetails[0]}}" >
+
+                                                                                                        <input type="hidden"  ngModel="{{manufactureUserDetails?.name}}"  name="userType" value="{{manufactureUserDetails?.name}}" >
 
                                                                                                         <div class="row col-12">
                                                                                                             <div class="form-group col-12">
