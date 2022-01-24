@@ -10,9 +10,9 @@ import {
     ManufacturePenalty, ManufacturePendingTask,
     PaidLevy, ReportDecisionLevelOne, ReportDecisionLevelTwo, SiteVisitFeedBack, SiteVisitReport,
     SLevySL1,
-    StdLevyScheduleSiteVisitDTO, VisitTask
+    StdLevyScheduleSiteVisitDTO, UsersEntityList, VisitTask
 } from "./levy.model";
-import {DiSdtDECISION, KnwSecTasks, NWADiSdtJustification, NWAJustification, UsersEntity} from "../std/std.model";
+import {UsersEntity} from "../std/std.model";
 
 @Injectable({
   providedIn: 'root'
@@ -128,8 +128,7 @@ export class LevyService {
     }
     public viewReportDoc(visitID: any): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_VIEW_VISIT_REPORT_DOCUMENT);
-        const params = new HttpParams()
-            .set('visitID', visitID);
+        const params = new HttpParams().set('visitID', visitID);
         // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
         return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
             map(function (response: any) {
@@ -207,6 +206,23 @@ export class LevyService {
         const params = new HttpParams();
         return this.http.get<UsersEntity[]>(url, {params}).pipe();
     }
+    public getUserDetails(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_MANUFACTURE_USERS);
+        const params = new HttpParams();
+        return this.http.get<UsersEntityList[]>(url, {params}).pipe();
+    }
+    public getPlList(): Observable<UsersEntity[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_LIST_OF_USERS_PL);
+        const params = new HttpParams();
+        return this.http.get<UsersEntity[]>(url, {params}).pipe();
+    }
+    public getSlLvTwoList(): Observable<UsersEntity[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_LIST_OF_USERS_LV);
+        const params = new HttpParams();
+        return this.http.get<UsersEntity[]>(url, {params}).pipe();
+    }
+
+
 
 
 }
