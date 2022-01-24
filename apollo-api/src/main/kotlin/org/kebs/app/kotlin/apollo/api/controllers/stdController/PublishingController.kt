@@ -26,6 +26,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import java.util.stream.Collectors
 import javax.servlet.http.HttpServletResponse
 
+@CrossOrigin(origins = ["http://localhost:4200"])
 @RestController
 @RequestMapping("api/v1/migration/publishing")
 class PublishingController(
@@ -47,22 +48,31 @@ class PublishingController(
     //********************************************************** process submit draft standard **********************************************************
     @PostMapping("/submit")
     @ResponseBody
-    fun requestForStandard(@RequestBody standardDraft: StandardDraft): ServerResponse{
+    fun requestForStandard(@RequestBody standardDraft: StandardDraft): ServerResponse {
         //return ResponseEntity(standardRequestService.requestForStandard(standardRequest), HttpStatus.OK)
-        return ServerResponse(HttpStatus.OK,"Successfully submitted draft standard",publishingService.sumbitDraftStandard(standardDraft))
+        return ServerResponse(
+            HttpStatus.OK,
+            "Successfully submitted draft standard",
+            publishingService.submitDraftStandard(standardDraft)
+        )
     }
 
     @GetMapping("/getHOPTasks")
-    fun getHOPTasks():List<TaskDetails>
-    {
+    fun getHOPTasks(): List<TaskDetails> {
         return publishingService.getHOPTasks()
     }
 
     @PostMapping("/decisionOnKSDraft")
     @ResponseBody
-    fun decisionOnKSDraft(@RequestBody decision: Decision): ServerResponse
-    {
-        return ServerResponse(HttpStatus.OK,"Decision on KS draft by HOP",publishingService.decisionOnKSDraft(decision))
+    fun decisionOnKSDraft(
+        @RequestBody decision: Decision,
+        @RequestParam("draftStandardID") draftStandardID: Long,
+    ): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Decision on KS draft by HOP",
+            publishingService.decisionOnKSDraft(decision, draftStandardID)
+        )
     }
 
     @PostMapping("/uploadRejectionFeedback")
@@ -72,43 +82,56 @@ class PublishingController(
     }
 
     @GetMapping("/getEditorTasks")
-    fun getEditorTasks():List<TaskDetails>
-    {
+    fun getEditorTasks(): List<TaskDetails> {
         return publishingService.getEditorTasks()
     }
 
     @PostMapping("/finishEditingDraft")
     @ResponseBody
-    fun editDraftStandard(@RequestBody standardDraft: StandardDraft): ServerResponse {
-        return ServerResponse(HttpStatus.OK,"Finished editing draft",publishingService.editDraftStandard(standardDraft))
+    fun editDraftStandard(
+        @RequestBody standardDraft: StandardDraft,
+        @RequestParam("draftStandardID") draftStandardID: Long,
+    ): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Finished editing draft",
+            publishingService.editDraftStandard(standardDraft, draftStandardID)
+        )
     }
 
     @GetMapping("/getProofReaderTasks")
-    fun getProofreaderTasks():List<TaskDetails>
-    {
+    fun getProofreaderTasks(): List<TaskDetails> {
         return publishingService.getProofreaderTasks()
     }
 
     @PostMapping("/finishedProofReading")
     @ResponseBody
-    fun decisionOnProofReading(@RequestBody decision: Decision): ServerResponse {
-        return ServerResponse(HttpStatus.OK,"Finished checking proof reading",publishingService.decisionOnProofReading(decision))
+    fun decisionOnProofReading(
+        @RequestBody decision: Decision,
+        @RequestParam("draftStandardID") draftStandardID: Long,
+    ): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Finished checking proof reading",
+            publishingService.decisionOnProofReading(decision, draftStandardID)
+        )
     }
 
 
     @GetMapping("/getDraughtsmanTasks")
-    fun getDraughtsmanTasks():List<TaskDetails>
-    {
+    fun getDraughtsmanTasks(): List<TaskDetails> {
         return publishingService.getDraughtsmanTasks()
     }
 
     @PostMapping("/uploadDraughtChanges")
     @ResponseBody
-    fun uploadDraftStandard(@RequestBody standardDraft: StandardDraft): ServerResponse {
+    fun uploadDraftStandardDraughtChanges(
+        @RequestBody standardDraft: StandardDraft, @RequestParam("draftStandardID") draftStandardID: Long,
+    ): ServerResponse {
         return ServerResponse(
             HttpStatus.OK,
             "Finished draughting changes",
-            publishingService.uploadDraftStandard(standardDraft)
+            publishingService.uploadDraftStandardDraughtChanges(standardDraft, draftStandardID)
         )
     }
 
@@ -127,10 +150,14 @@ class PublishingController(
     fun uploadFilesDraftStandard(
         @RequestParam("draftStandardID") draftStandardID: Long,
         @RequestParam("docFile") docFile: List<MultipartFile>,
+        @RequestParam("type") type: String,
+
         model: Model
     ): CommonDaoServices.MessageSuccessFailDTO {
 
         val loggedInUser = commonDaoServices.loggedInUserDetails()
+        var docDescription = "DraftStandards";
+
         val nwaJustification = standardDraftRepository.findByIdOrNull(draftStandardID)
             ?: throw Exception("DRAFT DOCUMENT ID DOES NOT EXIST")
 
@@ -138,15 +165,31 @@ class PublishingController(
             val upload = DatKebsSdStandardsEntity()
             with(upload) {
                 sdDocumentId = nwaJustification.id
-                documentTypeDef = "DraftDocument"
+                documentTypeDef = type
 
+            }
+            when (type) {
+                "DraftStandard" -> {
+                    docDescription = "Draft Standard Publishing"
+                }
+                "EditedDraftStandard" -> {
+                    docDescription = "Edited Draft Standard Publishing"
+                }
+                "ProofReadDraftStandard" -> {
+                    docDescription = "ProofRead Draft Standard Publishing"
+
+                }
+                "DraughtingDraftStandard" -> {
+                    docDescription = "Draughting Draft Standard Publishing"
+                }
             }
             publishingService.uploadSDFile(
                 upload,
                 u,
                 "UPLOADS",
                 loggedInUser,
-                "Draft Standard Publishing"
+                docDescription
+
             )
         }
 
@@ -180,15 +223,13 @@ class PublishingController(
             }
 
 
-            message ="Uploaded the file successfully: ${file.originalFilename}"
+            message = "Uploaded the file successfully: ${file.originalFilename}"
             ResponseEntity.status(HttpStatus.OK).body(ResponseMessage(message))
-        }
-        catch (e: Exception){
-            message ="Could not upload the file: ${file.originalFilename}!"
+        } catch (e: Exception) {
+            message = "Could not upload the file: ${file.originalFilename}!"
             ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(ResponseMessage(message))
         }
     }
-
 
 
     @GetMapping("list/files/{type}/{itemId}")
@@ -200,16 +241,17 @@ class PublishingController(
 
                 files = draftDocumentService.getAllFiles(itemId).map { dbFile ->
                     val fileDownloadUri = ServletUriComponentsBuilder
-                            .fromCurrentContextPath()
-                            .path("/publishing/files/")
-                            .path(dbFile.id)
-                            .toUriString()
+                        .fromCurrentContextPath()
+                        .path("/publishing/files/")
+                        .path(dbFile.id)
+                        .toUriString()
 
                     ResponseFile(
-                            dbFile.name,
-                            fileDownloadUri,
-                            dbFile.type,
-                            dbFile.data.size)
+                        dbFile.name,
+                        fileDownloadUri,
+                        dbFile.type,
+                        dbFile.data.size
+                    )
 
                 }.collect(Collectors.toList())
             }
@@ -217,16 +259,17 @@ class PublishingController(
 
                 files = editorDocumentService.getAllFiles(itemId).map { dbFile ->
                     val fileDownloadUri = ServletUriComponentsBuilder
-                            .fromCurrentContextPath()
-                            .path("/publishing/files/")
-                            .path(dbFile.id)
-                            .toUriString()
+                        .fromCurrentContextPath()
+                        .path("/publishing/files/")
+                        .path(dbFile.id)
+                        .toUriString()
 
                     ResponseFile(
-                            dbFile.name,
-                            fileDownloadUri,
-                            dbFile.type,
-                            dbFile.data.size)
+                        dbFile.name,
+                        fileDownloadUri,
+                        dbFile.type,
+                        dbFile.data.size
+                    )
 
                 }.collect(Collectors.toList())
             }
@@ -234,16 +277,17 @@ class PublishingController(
 
                 files = draughtDocumentService.getAllFiles(itemId).map { dbFile ->
                     val fileDownloadUri = ServletUriComponentsBuilder
-                            .fromCurrentContextPath()
-                            .path("/publishing/files/")
-                            .path(dbFile.id)
-                            .toUriString()
+                        .fromCurrentContextPath()
+                        .path("/publishing/files/")
+                        .path(dbFile.id)
+                        .toUriString()
 
                     ResponseFile(
-                            dbFile.name,
-                            fileDownloadUri,
-                            dbFile.type,
-                            dbFile.data.size)
+                        dbFile.name,
+                        fileDownloadUri,
+                        dbFile.type,
+                        dbFile.data.size
+                    )
 
                 }.collect(Collectors.toList())
             }
@@ -256,16 +300,18 @@ class PublishingController(
     fun getFile(@PathVariable id: String?): ResponseEntity<ByteArray?>? {
         val fileDB = draftDocumentService.getFile(id!!)
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDB!!.name + "\"")
-                .body(fileDB.data)
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDB!!.name + "\"")
+            .body(fileDB.data)
     }
+
     // View DI SDT Uploaded document
     @GetMapping("/view/draftStandard")
     fun viewDiJustificationFile(
         response: HttpServletResponse,
-        @RequestParam("draftStandardId") diDocumentId: Long
+        @RequestParam("draftStandardId") diDocumentId: Long,
+        @RequestParam("doctype") doctype: String
     ) {
-        val fileUploaded = draftDocumentService.findUploadedDIFileBYId(diDocumentId)
+        val fileUploaded = draftDocumentService.findUploadedDIFileBYIdAndByType(diDocumentId, doctype)
         val fileDoc = commonDaoServices.mapClass(fileUploaded)
         response.contentType = "application/pdf"
 //                    response.setHeader("Content-Length", pdfReportStream.size().toString())

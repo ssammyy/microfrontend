@@ -7,6 +7,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {UploadFileComponent} from "../upload-file/upload-file.component";
 import {Router} from "@angular/router";
 import {AddAuctionRecordComponent} from "../add-auction-record/add-auction-record.component";
+import {GenerateAuctionKraReportComponent} from "../generate-auction-kra-report/generate-auction-kra-report.component";
 
 @Component({
     selector: 'app-view-auction-items',
@@ -58,7 +59,11 @@ export class ViewAuctionItemsComponent implements OnInit {
                 type: 'date',
                 valuePrepareFunction: (date) => {
                     if (date) {
-                        return new DatePipe('en-US').transform(date, 'dd/MM/yyyy');
+                        try {
+                            return new DatePipe('en-US').transform(date, 'dd/MM/yyyy');
+                        }catch (e) {
+                            return date
+                        }
                     }
                     return ""
                 },
@@ -91,7 +96,11 @@ export class ViewAuctionItemsComponent implements OnInit {
                 type: 'date',
                 valuePrepareFunction: (date) => {
                     if (date) {
-                        return new DatePipe('en-US').transform(date, 'dd/MM/yyyy');
+                        try {
+                            return new DatePipe('en-US').transform(date, 'dd/MM/yyyy');
+                        }catch (e) {
+                            return date
+                        }
                     }
                     return ""
                 },
@@ -165,7 +174,7 @@ export class ViewAuctionItemsComponent implements OnInit {
     }
 
     downloadReport(event: any) {
-
+        this.dialog.open(GenerateAuctionKraReportComponent)
     }
 
     uploadAuction(event: any) {

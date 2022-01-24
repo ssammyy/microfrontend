@@ -1,14 +1,9 @@
 package org.kebs.app.kotlin.apollo.api.payload.response
 
-import org.kebs.app.kotlin.apollo.api.payload.ConsignmentDocumentTypesEntityDao
-import org.kebs.app.kotlin.apollo.store.model.UsersEntity
-import org.kebs.app.kotlin.apollo.store.model.auction.AuctionCategory
 import org.kebs.app.kotlin.apollo.store.model.auction.AuctionRequests
 import org.kebs.app.kotlin.apollo.store.model.auction.AuctionUploadsEntity
-import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentTypesEntity
 import java.sql.Date
 import java.sql.Timestamp
-import javax.persistence.*
 
 class AuctionRequestDto {
     var requestId: Long? = null
@@ -16,17 +11,22 @@ class AuctionRequestDto {
     var categoryId: Long? = null // If it was inspected, this will be filled
     var categoryName: String? = null
     var auctionLotNo: String? = null
-    var auctionDate: Date? = null
+    var auctionDate: String? = null
     var shipmentPort: String? = null
     var shipmentDate: Timestamp? = null
-    var arrivalDate: Timestamp? = null
+    var arrivalDate: String? = null
     var importerName: String? = null
+    var goodsDesc: String? = null
+    var containerDets: String?=null
+    var manifestNo: String? = null
+    var blNo: String? = null
     var location: String? = null
     var importerPhone: String? = null
     var assigner: String? = null
     var assignedOfficer: String? = null
     var assignedOn: Date? = null
     var approvalStatus: Int? = null
+    var approvalStatusDesc: String? = null
     var completed: String? = null
     var assigned: Boolean? = null
     var myTask: Boolean? = null
@@ -47,24 +47,36 @@ class AuctionRequestDto {
                 requestId = auction.id
                 consignmentId = auction.consignmentId
                 auctionLotNo = auction.auctionLotNo
-                auctionDate = auction.auctionDate
+                auctionDate = auction.auctionDate?.toString()?:"NA"
                 shipmentPort = auction.shipmentPort
                 shipmentDate = auction.shipmentDate
-                arrivalDate = auction.arrivalDate
+                arrivalDate = auction.arrivalDate?.toString()
                 importerName = auction.importerName
                 importerPhone = auction.importerPhone
                 serialNumber = auction.serialNumber
+                reportId = auction.reportId
+                manifestNo="NA"
+                blNo="NA"
+                goodsDesc=""
+                containerDets=auction.location?:""
                 approvalStatus = auction.approvalStatus
                 approvedRejectedOn = auction.approvedRejectedOn
                 assignedOn = auction.assignedOn
                 demandNoteId = auction.demandNoteId
                 containerSize = auction.containerSize
+                remarks = auction.remarks
                 status = auction.status
                 assigned = false
             }
             dto.completed = when (auction.approvalStatus) {
                 0 -> "NO"
                 else -> "YES"
+            }
+            dto.approvalStatusDesc = when (auction.approvalStatus) {
+                0 -> "NEW"
+                1 -> "APPROVED"
+                2 -> "REJECTED"
+                else -> "UNKNOWN"
             }
             auction.category?.let {
                 dto.categoryName = it.categoryName

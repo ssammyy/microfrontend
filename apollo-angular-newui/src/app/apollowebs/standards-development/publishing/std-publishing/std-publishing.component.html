@@ -46,11 +46,11 @@
                                     <div class="form-group col-6">
                                         <label><b>Version</b></label>
                                         <input
-                                                [class.is-invalid]="formPrepareJustification.version.invalid && formPrepareJustification.version.touched"
-                                                formControlName="version"
+                                                [class.is-invalid]="formPrepareJustification.versionNumber.invalid && formPrepareJustification.versionNumber.touched"
+                                                formControlName="versionNumber"
                                                 aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                                                 class="form-control one-column-input" ngModel name="versionNumber"
-                                                placeholder="Version" type="text">
+                                                placeholder="Version" type="number">
                                     </div>
                                     <div class="form-group col-6">
                                         <label><b>Requestor</b></label>

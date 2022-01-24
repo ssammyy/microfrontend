@@ -45,4 +45,9 @@ class DraftDocumentService(
             ?: throw ExpectedDataNotFound("No File found with the following [ id=$diDocumentId]")
     }
 
+    fun findUploadedDIFileBYIdAndByType(diDocumentId: Long, doctype: String): DatKebsSdStandardsEntity {
+        return standardsDocumentsRepository.findBySdDocumentIdAndDocumentTypeDef(diDocumentId,doctype)
+            ?: throw ExpectedDataNotFound("No File found with the following [ id=$diDocumentId]")
+    }
+
 }

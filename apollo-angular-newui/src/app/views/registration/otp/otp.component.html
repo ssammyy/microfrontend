@@ -783,6 +783,8 @@
         <!--        <button class="login-button" type="submit" value="">SEND OTP</button>-->
 
         <div class="form-group">
+             <span class="err-msg"  *ngIf="loginForm.controls.otp.errors?.invalidNumber">Invalid OTP</span>
+            <br>
             <label style="color: white; font-size: 14px" class="input-placeholder" for="otp"><strong>Enter
                 OTP</strong>(Numbers only)</label
             ><input style="color: white;font-size: 20px;" class="form-control two-column-input"

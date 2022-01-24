@@ -1,9 +1,8 @@
 package org.kebs.app.kotlin.apollo.api.payload.response
 
-import org.kebs.app.kotlin.apollo.store.model.pvc.PvocComplaintRecommendationEntity
-import org.kebs.app.kotlin.apollo.store.model.pvc.PvocComplaintCategoryEntity
-import org.kebs.app.kotlin.apollo.store.model.pvc.PvocComplaintCertificationSubCategoriesEntity
-import org.kebs.app.kotlin.apollo.store.model.pvc.PvocComplaintEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.*
+import java.io.Serializable
+import java.sql.Timestamp
 
 class PvocComplaintDao {
     var complaintId: Long? = null
@@ -24,6 +23,10 @@ class PvocComplaintDao {
     var recommendationId: Long? = null
     var recommendationAction: String? = null
     var recommendationDesc: String? = null
+    var complaintDate: Timestamp? = null
+    var officerName: String? = null
+    var hodName: String? = null
+    var mpvocName: String? = null
 
     companion object {
         fun fromEntity(complaint: PvocComplaintEntity): PvocComplaintDao {
@@ -36,6 +39,10 @@ class PvocComplaintDao {
                 address = complaint.address
                 cocNo = complaint.cocNo
                 email = complaint.email
+                complaintDate = complaint.createdOn
+                officerName = "${complaint.pvocUser?.firstName} ${complaint.pvocUser?.lastName}"
+                hodName = "${complaint.hod?.firstName} ${complaint.hod?.lastName}"
+                mpvocName = "${complaint.mpvoc?.firstName} ${complaint.mpvoc?.lastName}"
                 complaintDescription = complaint.generalDescription
                 pvocAgent = complaint.pvocAgent?.partnerName
                 pvocAgentId = complaint.pvocAgent?.id
@@ -43,9 +50,7 @@ class PvocComplaintDao {
                 categoryName = complaint.compliantNature?.name
                 subCategoryId = complaint.compliantSubCategory?.id
                 subCategoryName = complaint.compliantSubCategory?.name
-                recommendationId = complaint.recomendation?.id
-                recommendationAction = complaint.recomendation?.action
-                recommendationDesc = complaint.recomendation?.description
+                recommendationDesc = complaint.recomendation
             }
         }
 
@@ -120,6 +125,342 @@ class PvocComplaintRecommendationDao {
         fun fromList(complaints: List<PvocComplaintRecommendationEntity>): List<PvocComplaintRecommendationDao> {
             val daos = mutableListOf<PvocComplaintRecommendationDao>()
             complaints.forEach { daos.add(fromEntity(it)) }
+            return daos
+        }
+    }
+}
+
+class PvocWaiverAttachmentDao {
+    var fileId: Long? = null
+    var status: Long? = null
+    var name: String? = null
+    var description: String? = null
+    var waiverId: Long? = null
+    var fileType: String? = null
+
+
+    companion object {
+        fun fromEntity(documentsEntity: PvocWaiversApplicationDocumentsEntity): PvocWaiverAttachmentDao {
+            val dao = PvocWaiverAttachmentDao().apply {
+                fileId = documentsEntity.id
+                name = documentsEntity.name
+                waiverId = documentsEntity.waiverId
+                fileType = documentsEntity.fileType
+                status = documentsEntity.status
+                description = documentsEntity.description
+            }
+            return dao
+        }
+
+        fun fromList(documents: List<PvocWaiversApplicationDocumentsEntity>): List<PvocWaiverAttachmentDao> {
+            val daos = mutableListOf<PvocWaiverAttachmentDao>()
+            documents.forEach { daos.add(fromEntity(it)) }
+            return daos
+        }
+    }
+}
+
+class PvocWaiverProductDao {
+    var productId: Long? = null
+    var hsCode: String? = null
+    var waiversApplicationId: Long? = null
+    var unit: String? = null
+    var quantity: String? = null
+    var totalAmount: String? = null
+    var origin: String? = null
+    var productDescription: String? = null
+    var serialNo: String? = null
+    var currency: String? = null
+    var createdBy: String? = null
+    var createdOn: Timestamp? = null
+    var status: Long? = null
+
+    companion object {
+        fun fromEntity(masterListEntity: PvocMasterListEntity): PvocWaiverProductDao {
+            val dao = PvocWaiverProductDao().apply {
+                productId = masterListEntity.id
+                hsCode = masterListEntity.hsCode
+                waiversApplicationId = masterListEntity.waiversApplicationId
+                unit = masterListEntity.unit
+                quantity = masterListEntity.quantity
+                totalAmount = masterListEntity.totalAmount
+                origin = masterListEntity.origin
+                productDescription = masterListEntity.productDescription
+                serialNo = masterListEntity.serialNo
+                currency = masterListEntity.currency
+                createdBy = masterListEntity.createdBy
+                createdOn = masterListEntity.createdOn
+                status = masterListEntity.status
+            }
+            return dao
+        }
+
+        fun fromList(productss: List<PvocMasterListEntity>): List<PvocWaiverProductDao> {
+            val daos = mutableListOf<PvocWaiverProductDao>()
+            productss.forEach { daos.add(fromEntity(it)) }
+            return daos
+        }
+    }
+
+}
+
+class PvocWaiverRemarksDao {
+    var remarkId: Long? = null
+    var status: Long? = null
+    var remarks: String? = null
+    var waiverAction: String? = null
+    var waiverId: Long? = null
+    var names: String? = null
+    var createdOn: Timestamp? = null
+
+
+    companion object {
+        fun fromEntity(documentsEntity: PvocWaiversRemarksEntity): PvocWaiverRemarksDao {
+            val dao = PvocWaiverRemarksDao().apply {
+                remarkId = documentsEntity.id
+                remarks = documentsEntity.remarks
+                waiverId = documentsEntity.waiverId
+                waiverAction = documentsEntity.waiverAction
+                names = "${documentsEntity.firstName} ${documentsEntity.lastName}".trim()
+                status = documentsEntity.status
+                createdOn = documentsEntity.createdOn
+            }
+            return dao
+        }
+
+        fun fromList(documents: List<PvocWaiversRemarksEntity>): List<PvocWaiverRemarksDao> {
+            val daos = mutableListOf<PvocWaiverRemarksDao>()
+            documents.forEach { daos.add(fromEntity(it)) }
+            return daos
+        }
+    }
+}
+
+class PvocWaiverDao {
+    var waiverId: Long = 0
+    var status: Int? = null
+    var applicantName: String? = null
+    var phoneNumber: String? = null
+    var emailAddress: String? = null
+    var kraPin: String? = null
+    var address: String? = null
+    var category: String? = null
+    var justification: String? = null
+    var productDescription: String? = null
+    var documentation: String? = null
+    var reviewStatus: String? = null
+    var nscApprovalStatus: String? = null
+    var csApprovalStatus: String? = null
+    var serialNo: String? = null
+    var csResponceCode: String? = null
+    var csResponceMessage: String? = null
+    var submittedOn: Timestamp? = null
+
+    companion object {
+        fun fromEntity(waiver: PvocWaiversApplicationEntity): PvocWaiverDao {
+            val dao = PvocWaiverDao().apply {
+                waiverId = waiver.id
+                status = waiver.status
+                applicantName = waiver.applicantName
+                phoneNumber = waiver.phoneNumber
+                emailAddress = waiver.emailAddress
+                kraPin = waiver.kraPin
+                address = waiver.address
+                category = waiver.category
+                justification = waiver.justification
+                productDescription = waiver.productDescription
+                documentation = waiver.documentation
+                reviewStatus = waiver.reviewStatus
+                nscApprovalStatus = waiver.nscApprovalStatus
+                csApprovalStatus = waiver.csApprovalStatus
+                serialNo = waiver.serialNo
+                csResponceCode = waiver.csResponceCode
+                csResponceMessage = waiver.csResponceMessage
+                submittedOn = waiver.createdOn
+            }
+            return dao
+        }
+
+        fun fromList(waivers: List<PvocWaiversApplicationEntity>): List<PvocWaiverDao> {
+            val daos = mutableListOf<PvocWaiverDao>()
+            waivers.forEach { daos.add(fromEntity(it)) }
+            return daos
+        }
+    }
+}
+
+class PvocApplicationDto {
+    var exemptionId: Long? = 0
+    var status: Int? = null
+    var companyName: String? = null
+    var companyPinNo: String? = null
+    var email: String? = null
+    var sn: String? = null
+    var applicationStatus: String? = null
+    var telephoneNo: String? = null
+    var postalAddress: String? = null
+    var physicalLocation: String? = null
+    var contactPerson: String? = null
+    var contactName: String? = null
+    var contactEmail: String? = null
+    var address: String? = null
+    var hsCode: String? = null
+    var applicationDate: Timestamp? = null
+
+    companion object {
+        fun fromEntity(exemption: PvocApplicationEntity): PvocApplicationDto {
+            val dao = PvocApplicationDto().apply {
+                exemptionId = exemption.id
+                status = exemption.status
+                companyName = exemption.conpanyName
+                companyPinNo = exemption.companyPinNo
+                email = exemption.email
+                sn = exemption.sn
+                applicationStatus = exemption.reviewStatus
+                address = exemption.address
+                telephoneNo = exemption.telephoneNo
+                postalAddress = exemption.postalAadress
+                physicalLocation = exemption.physicalLocation
+                contactPerson = exemption.contactPersorn
+                contactName = exemption.contactName
+                contactEmail = exemption.contactEmail
+                applicationDate = exemption.createdOn
+            }
+            return dao
+        }
+
+        fun fromList(exemption: List<PvocApplicationEntity>): List<PvocApplicationDto> {
+            val daos = mutableListOf<PvocApplicationDto>()
+            exemption.forEach { daos.add(fromEntity(it)) }
+            return daos
+        }
+    }
+}
+
+class PvocApplicationProductDao {
+    var productId: Long? = 0
+    var productName: String? = null
+    var brand: String? = null
+    var kebsStandardizationMarkPermit: String? = null
+    var expirelyDate: String? = null
+    var section: String? = null
+    var status: Int? = null
+
+    companion object {
+        fun fromEntity(exemptionProduct: PvocApplicationProductsEntity): PvocApplicationProductDao {
+            val dao = PvocApplicationProductDao().apply {
+                productId = exemptionProduct.id
+                productName = exemptionProduct.productName
+                brand = exemptionProduct.brand
+                kebsStandardizationMarkPermit = exemptionProduct.kebsStandardizationMarkPermit
+                expirelyDate = exemptionProduct.expirelyDate
+                section = exemptionProduct.section
+                status = exemptionProduct.status
+            }
+            return dao
+        }
+
+        fun fromList(products: List<PvocApplicationProductsEntity>): List<PvocApplicationProductDao> {
+            val daos = mutableListOf<PvocApplicationProductDao>()
+            products.forEach { daos.add(fromEntity(it)) }
+            return daos
+        }
+    }
+}
+
+class PvocExceptionRawMaterialDao {
+    var entryId: Long = 0
+    var rawMaterialDescription: String? = null
+    var countryOfOrgin: String? = null
+    var endProduct: String? = null
+    var hsCode: String? = null
+    var dutyRate: Long? = null
+    var exceptionId: Long? = null
+    var hsDescription: String? = null
+    var status: Long? = null
+
+    companion object {
+        fun fromEntity(exemptionProduct: PvocExceptionRawMaterialCategoryEntity): PvocExceptionRawMaterialDao {
+            val dao = PvocExceptionRawMaterialDao().apply {
+                entryId = exemptionProduct.id
+                rawMaterialDescription = exemptionProduct.rawMaterialDescription
+                countryOfOrgin = exemptionProduct.countryOfOrgin
+                endProduct = exemptionProduct.endProduct
+                dutyRate = exemptionProduct.dutyRate
+                exceptionId = exemptionProduct.exceptionId
+                status = exemptionProduct.status
+            }
+            return dao
+        }
+
+        fun fromList(products: List<PvocExceptionRawMaterialCategoryEntity>): List<PvocExceptionRawMaterialDao> {
+            val daos = mutableListOf<PvocExceptionRawMaterialDao>()
+            products.forEach { daos.add(fromEntity(it)) }
+            return daos
+        }
+    }
+}
+
+class PvocExceptionMainMachineryDao {
+    var machineryId: Long = 0
+    var machineDescription: String? = null
+    var countryOfOrigin: String? = null
+    var makeModel: String? = null
+    var hsCode: String? = null
+    var dutyRate: Long? = null
+    var exceptionId: Long? = null
+    var status: Long? = null
+
+    companion object {
+        fun fromEntity(exemptionProduct: PvocExceptionMainMachineryCategoryEntity): PvocExceptionMainMachineryDao {
+            val dao = PvocExceptionMainMachineryDao().apply {
+                machineryId = exemptionProduct.id
+                machineDescription = exemptionProduct.machineDescription
+                countryOfOrigin = exemptionProduct.countryOfOrigin
+                makeModel = exemptionProduct.makeModel
+                hsCode = exemptionProduct.hsCode
+                dutyRate = exemptionProduct.dutyRate
+                exceptionId = exemptionProduct.exceptionId
+                status = exemptionProduct.status
+            }
+            return dao
+        }
+
+        fun fromList(products: List<PvocExceptionMainMachineryCategoryEntity>): List<PvocExceptionMainMachineryDao> {
+            val daos = mutableListOf<PvocExceptionMainMachineryDao>()
+            products.forEach { daos.add(fromEntity(it)) }
+            return daos
+        }
+    }
+}
+
+class PvocExceptionIndustrialSparesDao : Serializable {
+    var spareId: Long = 0
+    var hsCode: String? = null
+    var industrialSpares: String? = null
+    var countryOfOrigin: String? = null
+    var machineToFit: String? = null
+    var exceptionId: Long? = null
+    var status: Long? = null
+
+    companion object {
+        fun fromEntity(exemptionProduct: PvocExceptionIndustrialSparesCategoryEntity): PvocExceptionIndustrialSparesDao {
+            val dao = PvocExceptionIndustrialSparesDao().apply {
+                spareId = exemptionProduct.id
+                hsCode = exemptionProduct.hsCode
+                industrialSpares = exemptionProduct.industrialSpares
+                countryOfOrigin = exemptionProduct.countryOfOrigin
+                hsCode = exemptionProduct.hsCode
+                machineToFit = exemptionProduct.machineToFit
+                exceptionId = exemptionProduct.exceptionId
+                status = exemptionProduct.status
+            }
+            return dao
+        }
+
+        fun fromList(products: List<PvocExceptionIndustrialSparesCategoryEntity>): List<PvocExceptionIndustrialSparesDao> {
+            val daos = mutableListOf<PvocExceptionIndustrialSparesDao>()
+            products.forEach { daos.add(fromEntity(it)) }
             return daos
         }
     }

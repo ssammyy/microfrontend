@@ -7,31 +7,28 @@ import javax.persistence.*
 import javax.persistence.JoinColumn
 
 
-
-
 @Entity
 @Table(name = "DAT_KEBS_PVOC_APPLICATION_PRODUCTS")
 class PvocApplicationProductsEntity : Serializable {
-//    @Column(name = "ID", nullable = false, precision = 0)
-//    @SequenceGenerator(name = "DAT_KEBS_PVOC_APPLICATION_PRODUCTS_SEQ_GEN", sequenceName = "DAT_KEBS_PVOC_APPLICATION_PRODUCTS_SEQ", allocationSize = 1)
-//    @GeneratedValue(generator = "DAT_KEBS_PVOC_APPLICATION_PRODUCTS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
-//    @Id
-//    var id: Long? = 0
 
     @Column(name = "ID", nullable = false, precision = 0)
     @Id
     @SequenceGenerator(name = "DAT_KEBS_PVOC_APPLICATION_PRODUCTS_SEQ_GEN", sequenceName = "DAT_KEBS_PVOC_APPLICATION_PRODUCTS_SEQ", allocationSize = 1)
     @GeneratedValue(generator = "DAT_KEBS_PVOC_APPLICATION_PRODUCTS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     var id: Long? = 0
+
     @Column(name = "STATUS", nullable = true, precision = 0)
     @Basic
     var status: Int? = null
+
     @Column(name = "PRODUCT_NAME", nullable = true, length = 200)
     @Basic
     var productName: String? = null
+
     @Column(name = "BRAND", nullable = true, length = 200)
     @Basic
     var brand: String? = null
+
     @Column(name = "KEBS_STANDARDIZATION_MARK_PERMIT", nullable = true, length = 200)
     @Basic
     var kebsStandardizationMarkPermit: String? = null
@@ -39,57 +36,74 @@ class PvocApplicationProductsEntity : Serializable {
     @Column(name = "EXPIRELY_DATE", nullable = true, length = 200)
     @Basic
     var expirelyDate: String? = null
-    @Column(name = "VAR_FIELD_1", nullable = true, length = 350)
-    @Basic
-    var varField1: String? = null
-    @Column(name = "VAR_FIELD_2", nullable = true, length = 350)
-    @Basic
-    var varField2: String? = null
-    @Column(name = "VAR_FIELD_3", nullable = true, length = 350)
-    @Basic
-    var varField3: String? = null
-    @Column(name = "VAR_FIELD_4", nullable = true, length = 350)
-    @Basic
-    var varField4: String? = null
-    @Column(name = "VAR_FIELD_5", nullable = true, length = 350)
-    @Basic
-    var varField5: String? = null
-    @Column(name = "VAR_FIELD_6", nullable = true, length = 350)
-    @Basic
-    var varField6: String? = null
-    @Column(name = "VAR_FIELD_7", nullable = true, length = 350)
-    @Basic
-    var varField7: String? = null
-    @Column(name = "VAR_FIELD_8", nullable = true, length = 350)
-    @Basic
-    var varField8: String? = null
-    @Column(name = "VAR_FIELD_9", nullable = true, length = 350)
-    @Basic
-    var varField9: String? = null
-    @Column(name = "VAR_FIELD_10", nullable = true, length = 350)
-    @Basic
-    var varField10: String? = null
-    @Column(name = "CREATED_BY", nullable = false, length = 100)
-    @Basic
-    var createdBy: String? = null
-    @Column(name = "CREATED_ON", nullable = false)
-    @Basic
-    var createdOn: Timestamp? = null
-    @Column(name = "MODIFIED_BY", nullable = true, length = 100)
-    @Basic
-    var modifiedBy: String? = null
-    @Column(name = "MODIFIED_ON", nullable = true)
-    @Basic
-    var modifiedOn: Timestamp? = null
-    @Column(name = "DELETE_BY", nullable = true, length = 100)
-    @Basic
-    var deleteBy: String? = null
-    @Column(name = "DELETED_ON", nullable = true)
-    @Basic
-    var deletedOn: Timestamp? = null
+
     @Column(name = "SECTION", nullable = true, length = 400)
     @Basic
     var section: String? = null
+
+    @Column(name = "VAR_FIELD_1", nullable = true, length = 350)
+    @Basic
+    var varField1: String? = null
+
+    @Column(name = "VAR_FIELD_2", nullable = true, length = 350)
+    @Basic
+    var varField2: String? = null
+
+    @Column(name = "VAR_FIELD_3", nullable = true, length = 350)
+    @Basic
+    var varField3: String? = null
+
+    @Column(name = "VAR_FIELD_4", nullable = true, length = 350)
+    @Basic
+    var varField4: String? = null
+
+    @Column(name = "VAR_FIELD_5", nullable = true, length = 350)
+    @Basic
+    var varField5: String? = null
+
+    @Column(name = "VAR_FIELD_6", nullable = true, length = 350)
+    @Basic
+    var varField6: String? = null
+
+    @Column(name = "VAR_FIELD_7", nullable = true, length = 350)
+    @Basic
+    var varField7: String? = null
+
+    @Column(name = "VAR_FIELD_8", nullable = true, length = 350)
+    @Basic
+    var varField8: String? = null
+
+    @Column(name = "VAR_FIELD_9", nullable = true, length = 350)
+    @Basic
+    var varField9: String? = null
+
+    @Column(name = "VAR_FIELD_10", nullable = true, length = 350)
+    @Basic
+    var varField10: String? = null
+
+    @Column(name = "CREATED_BY", nullable = false, length = 100)
+    @Basic
+    var createdBy: String? = null
+
+    @Column(name = "CREATED_ON", nullable = false)
+    @Basic
+    var createdOn: Timestamp? = null
+
+    @Column(name = "MODIFIED_BY", nullable = true, length = 100)
+    @Basic
+    var modifiedBy: String? = null
+
+    @Column(name = "MODIFIED_ON", nullable = true)
+    @Basic
+    var modifiedOn: Timestamp? = null
+
+    @Column(name = "DELETE_BY", nullable = true, length = 100)
+    @Basic
+    var deleteBy: String? = null
+
+    @Column(name = "DELETED_ON", nullable = true)
+    @Basic
+    var deletedOn: Timestamp? = null
 
     @Column(name = "CHECK_BOX_CHECKED", nullable = true, length = 400)
     @Basic

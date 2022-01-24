@@ -53,6 +53,10 @@ class NotificationTypesEntity : Serializable {
     var id: Int = 0
 
     @Basic
+    @Column(name = "TYPE_CODE", nullable = false, unique = true, length = 250)
+    var typeCode: String? = null
+
+    @Basic
     @Column(name = "DESCRIPTION", nullable = true, length = 250)
     var description: String? = null
 

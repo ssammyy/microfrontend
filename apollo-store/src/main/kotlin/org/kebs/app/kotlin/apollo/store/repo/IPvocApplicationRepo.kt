@@ -14,7 +14,7 @@ import java.util.*
 interface IPvocApplicationRepo : HazelcastRepository<PvocApplicationEntity, Long> {
     fun findByIdAndPvocWaStatus(id: Long, pvocWaStatus: Int): PvocApplicationEntity?
     fun findAllByFinalApproval(status: Int, pageable: Pageable): Page<PvocApplicationEntity>
-    fun findAllByReviewStatus(status: Int, pageable: Pageable): Page<PvocApplicationEntity>
+    fun findAllByReviewStatus(status: String, pageable: Pageable): Page<PvocApplicationEntity>
     fun findAllByStatus(status: Int, pageable: Pageable): Page<PvocApplicationEntity>?
     fun findAllByCreatedByOrderByCreatedOnDesc(username: String, pageable: Pageable): Page<PvocApplicationEntity>?
     fun findFirstByConpanyNameAndCompanyPinNo(conpanyName: String, companyPinNo: String): PvocApplicationEntity?
@@ -36,7 +36,7 @@ interface IPvocExceptionApplicationStatusEntityRepo : HazelcastRepository<PvocEx
 
 interface IPvocApplicationProductsRepo : HazelcastRepository<PvocApplicationProductsEntity, Long> {
     fun findAllByPvocApplicationId(pvocApplicationId: PvocApplicationEntity): List<PvocApplicationProductsEntity>?
-    fun findAllByPvocApplicationId_Id(pvocApplicationId: Long?): List<PvocApplicationProductsEntity>?
+    fun findAllByPvocApplicationId_Id(pvocApplicationId: Long?): List<PvocApplicationProductsEntity>
     fun findAllByIdAndPvocApplicationId_Id(itemId: Long, requestId: Long): Optional<PvocApplicationProductsEntity>
 }
 
@@ -62,7 +62,7 @@ interface IPvocWaiversReportRepo : HazelcastRepository<PvocWaiversReportsEntity,
 }
 
 interface IPvocWaiversApplicationDocumentRepo : HazelcastRepository<PvocWaiversApplicationDocumentsEntity, Long> {
-    fun findAllByWaiverId(waiverId: Long): List<PvocWaiversApplicationDocumentsEntity>?
+    fun findAllByWaiverId(waiverId: Long): List<PvocWaiversApplicationDocumentsEntity>
     fun findFirstByWaiverIdAndReason(waiverId: Long, reason: String): PvocWaiversApplicationDocumentsEntity?
 }
 

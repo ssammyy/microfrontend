@@ -36,6 +36,8 @@
                                         <th class="task">Task</th>
                                         <th class="task">Title</th>
                                         <th class="task">Version</th>
+                                        <th class="task">Document</th>
+
                                         <th class="action">Action</th>
                                     </tr>
                                     </thead>
@@ -45,6 +47,14 @@
                                         <td>{{task.name}}</td>
                                         <td>{{task.taskData.title}}</td>
                                         <td>{{task.taskData.versionNumber}}</td>
+                                        <td>
+                                            <button mat-raised-button type="button" data-toggle="modal"
+                                                    (click)="viewPdfFile( task.taskData.ID,'DraftStandard'+task.taskData.ID, 'application/pdf')"
+                                                    target="_blank" class="btn btn-info btn-sm ">
+                                                <i class="material-icons">visibility</i>
+
+                                            </button>
+                                        </td>
                                         <td><a (click)="onOpenModal(task,'edit')" type="button"
                                                class="btn btn-info tooltips"
                                                data-placement="top" data-original-title="Review draft">Review Draft</a>
@@ -92,7 +102,8 @@
                                                     <li><b>Version:</b>{{actionRequest?.taskData?.versionNumber}}</li>
                                                     <li><b>Standard
                                                         Officer:</b>{{actionRequest?.taskData?.standardOfficerId}}</li>
-                                                    <li><a href="#">View File Uploaded</a></li>
+                                                    <li><a href="#"  (click)="viewPdfFile( actionRequest?.taskData?.ID,'DraftStandard'+actionRequest?.taskData?.ID, 'application/pdf')"
+                                                           target="_blank" >View Draft Standard</a></li>
 
                                                 </ul>
                                             </div>
@@ -100,10 +111,10 @@
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-danger" #closeModal
                                                         data-dismiss="modal"
-                                                        (click)="decisionOnDraft(editForm.value,'false')">Reject
+                                                        (click)="decisionOnDraft(editForm.value,'false',actionRequest?.taskData?.ID)">Reject
                                                 </button>
                                                 <button class="btn btn-info" data-dismiss="modal" #closeModal
-                                                        (click)="decisionOnDraft(editForm.value,'true')">Approve
+                                                        (click)="decisionOnDraft(editForm.value,'true',actionRequest?.taskData?.ID)">Approve
                                                 </button>
                                             </div>
                                         </form>

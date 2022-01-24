@@ -20,18 +20,6 @@ import org.w3c.dom.Document
 import org.xml.sax.InputSource
 import java.io.StringReader
 
-enum class CdTypeCodes(code: String) {
-    COC("NO_COC"),
-    COR("NO_COR"),
-    FOREIGN_COC("WITH_COC_COI"),
-    FOREIGN_COR("WITH_COR"),
-    TEMPORARY_IMPORTS("TEMPORARY_IMPORTS"),
-    COURIER_GOODS("COURIER_GOODS"),
-    AUCTION_GOODS("AUCTION_GOODS"),
-    NCR("NCR"),
-    OTHER("OTHER")
-}
-
 @Service
 class ConsignmentDocumentDaoService(
         private val applicationMapProperties: ApplicationMapProperties,
@@ -485,9 +473,6 @@ class ConsignmentDocumentDaoService(
                     }
                     chassisNumber = nonStandards?.chassisNo
 
-                    //Add CD UPDATE DETAILS IF HAS COR OR NO COR DETAILS PROVIDED CHASSIS NUMBER IS NOT NULL DETAILS
-                    consignmentDocumentDetails?.let { daoServices.updateCdDetailsWIthCor(it, chassisNumber) }
-
                     //Add CD STANDARDS DETAILS
                     val cdItemNonCommodity = itemDetails.cdItemCommodity
                     val itemNonCommodity = cdItemNonCommodity?.let { cdItemNonCommodityDetails(it, user, map) }
@@ -505,6 +490,11 @@ class ConsignmentDocumentDaoService(
                     }
                     itemCurrier(itemCurrierDetails, map, user)
                 }
+
+        // Update Document Type Details and processing document
+        consignmentDocumentDetails?.let {
+            daoServices.updateCDDetailsWithCdType(consignmentDocDetails.cdStandardTwo?.localCocType ?: "OTHERS", it)
+        }
 
         //Add CD APPROVAL HISTORY DETAILS DETAILS
         consignmentDocDetails.approvalDetails?.approvalHistory
@@ -794,30 +784,6 @@ class ConsignmentDocumentDaoService(
         standardsTwoDetails = iCdStandardsTwoRepo.save(standardsTwoDetails)
 
         KotlinLogging.logger { }.info { "Standards Two Details saved ID = ${standardsTwoDetails.id}" }
-        with(consignmentDocumentDetailsEntity) {
-            cdStandardsTwo = standardsTwoDetails
-            val cocTypeDetails = standardsTwoDetails.cocType?.let { daoServices.findCocTypeWithTypeName(it) }
-            when {
-                applicationMapProperties.mapDICocTypeForeignID == cocTypeDetails?.id -> {
-                    consignmentDocumentDetailsEntity.cdStandard?.ucrNumber?.let {
-                        daoServices.findCocByUcrNumber(it)?.let { cocsBakEntity ->
-                            daoServices.updateCDDetailsWithCOCData(cocsBakEntity, consignmentDocumentDetailsEntity)
-                        }
-                    }
-                }
-                applicationMapProperties.mapDICocTypeLocalID == cocTypeDetails?.id -> {
-                    val cocLocalDetails =
-                            standardsTwoDetails.localCocType
-                                    ?.let { daoServices.findLocalCocTypeWithCocTypeCode(it) }
-                    cdCocLocalTypeId = cocLocalDetails?.id
-                    cdType = cocLocalDetails?.cdType?.let { daoServices.findCdTypeDetails(it) }
-                }
-                else -> {
-                    //Todo: If there is no value for for either local or Foregin (L/F)
-                }
-            }
-        }
-
 
         val consignmentDocumentDetails = updateConsignmentDocumentDetails(consignmentDocumentDetailsEntity, user, map)
         commonDaoServices.convertClassToJson(consignmentDocumentDetails)?.let {

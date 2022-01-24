@@ -17,10 +17,6 @@ class PvocComplaintEntity : Serializable {
     @GeneratedValue(generator = "DAT_KEBS_PVOC_COMPLAINT_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     var id: Long? = 0
 
-    @Column(name = "STATUS")
-    @Basic
-    var status: Int? = null
-
     @Column(name = "REF_PREFIX")
     @Basic
     var refPrefix: String? = null
@@ -28,6 +24,11 @@ class PvocComplaintEntity : Serializable {
     @Column(name = "REF_NO")
     @Basic
     var refNo: String? = null
+
+    @Column(name = "PROCESS_ID")
+    @Basic
+    var processId: String? = null
+
 
     @Column(name = "COMPLAINT_NAME")
     @Basic
@@ -44,6 +45,83 @@ class PvocComplaintEntity : Serializable {
     @JoinColumn(name = "PVOC_AGENT", referencedColumnName = "ID")
     @ManyToOne
     var pvocAgent: PvocPartnersEntity? = null
+
+    @Column(name = "REVIEW_STATUS")
+    @Basic
+    var reviewStatus: String? = null
+
+
+    @Column(name = "REVIEWED_ON")
+    @Basic
+    var reviewedOn: Timestamp? = null
+
+    @Column(name = "AGENT_REVIEW_REMARKS")
+    @Basic
+    var agentReviewRemarks: String? = null
+
+    @Column(name = "AGENT_REMARKS_ON")
+    @Basic
+    var agentRemarksOn: Timestamp? = null
+
+    @Column(name = "GENERAL_DESCRIPTION")
+    @Basic
+    var generalDescription: String? = null
+
+    @Column(name = "COC_NO")
+    @Basic
+    var cocNo: String? = null
+
+    @Column(name = "RFC_NO")
+    @Basic
+    var rfcNo: String? = null
+
+    @Column(name = "RECOMENDATION")
+    @Basic
+    var recomendation: String? = null
+
+    @Column(name = "MPVOC_RECOMENDATION_DATE")
+    @Basic
+    var mpvocRecomendationDate: Timestamp? = null
+
+    @Column(name = "MPVOC_REMARKS")
+    @Basic
+    var mpvocRemarks: String? = null
+
+    @Column(name = "HOD_RECOMENDATION_DATE")
+    @Basic
+    var hodRecomendationDate: Timestamp? = null
+
+    @Column(name = "EMAIL")
+    @Basic
+    var email: String? = null
+
+    @JoinColumn(name = "COMPLIANT_NATURE", referencedColumnName = "ID")
+    @ManyToOne
+    var compliantNature: PvocComplaintCategoryEntity? = null
+
+    @JoinColumn(name = "COMPLIANT_SUB_CATEGORY", referencedColumnName = "ID")
+    @ManyToOne
+    var compliantSubCategory: PvocComplaintCertificationSubCategoriesEntity? = null
+
+    @JoinColumn(name = "MPVOC", referencedColumnName = "ID")
+    @ManyToOne
+    var mpvoc: UsersEntity? = null
+
+    @JoinColumn(name = "PVOC_USER", referencedColumnName = "ID")
+    @ManyToOne
+    var pvocUser: UsersEntity? = null
+
+    @JoinColumn(name = "HOD", referencedColumnName = "ID")
+    @ManyToOne
+    var hod: UsersEntity? = null
+
+    @Column(name = "HOD_REMARKS")
+    @Basic
+    var hodRemarks: String? = null
+
+    @Column(name = "STATUS")
+    @Basic
+    var status: Int? = null
 
     @Column(name = "VAR_FIELD_1")
     @Basic
@@ -108,67 +186,6 @@ class PvocComplaintEntity : Serializable {
     @Column(name = "DELETED_ON")
     @Basic
     var deletedOn: Timestamp? = null
-
-    @Column(name = "REVIEW_STATUS")
-    @Basic
-    var reviewStatus: String? = null
-
-
-    @Column(name = "REVIEWED_ON")
-    @Basic
-    var reviewedOn: Timestamp? = null
-
-    @Column(name = "AGENT_REVIEW_REMARKS")
-    @Basic
-    var agentReviewRemarks: String? = null
-
-    @Column(name = "GENERAL_DESCRIPTION")
-    @Basic
-    var generalDescription: String? = null
-
-    @Column(name = "COC_NO")
-    @Basic
-    var cocNo: String? = null
-
-    @Column(name = "RFC_NO")
-    @Basic
-    var rfcNo: String? = null
-
-    @JoinColumn(name = "RECOMENDATION", referencedColumnName = "ID")
-    @ManyToOne
-    var recomendation: PvocComplaintRecommendationEntity? = null
-
-    @Column(name = "MPVOC_RECOMENDATION_DATE")
-    @Basic
-    var mpvocRecomendationDate: Timestamp? = null
-
-    @Column(name = "HOD_RECOMENDATION_DATE")
-    @Basic
-    var hodRecomendationDate: Timestamp? = null
-
-    @Column(name = "EMAIL")
-    @Basic
-    var email: String? = null
-
-    @JoinColumn(name = "COMPLIANT_NATURE", referencedColumnName = "ID")
-    @ManyToOne
-    var compliantNature: PvocComplaintCategoryEntity? = null
-
-    @JoinColumn(name = "COMPLIANT_SUB_CATEGORY", referencedColumnName = "ID")
-    @ManyToOne
-    var compliantSubCategory: PvocComplaintCertificationSubCategoriesEntity? = null
-
-    @JoinColumn(name = "MPVOC", referencedColumnName = "ID")
-    @ManyToOne
-    var mpvoc: UsersEntity? = null
-
-    @JoinColumn(name = "PVOC_USER", referencedColumnName = "ID")
-    @ManyToOne
-    var pvocUser: UsersEntity? = null
-
-    @JoinColumn(name = "HOD", referencedColumnName = "ID")
-    @ManyToOne
-    var hod: UsersEntity? = null
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

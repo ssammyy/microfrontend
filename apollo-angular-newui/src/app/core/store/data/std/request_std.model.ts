@@ -250,10 +250,17 @@ export interface HOFFeedback{
 }
 
 export interface StandardDraft {
-    title:string;
-    requestorId:string;
-    standardOfficerId:string;
-    versionNumber:string;
+    ID: number;
+    title: string;
+    requestorId: string;
+    standardOfficerId: string;
+    versionNumber: number;
+    standardOfficerName: string;
+    proofreadStatus: string;
+    editedStatus: string;
+    version: number;
+    draughtingStatus: string;
+
 }
 
 export interface HOPTasks {
@@ -432,15 +439,27 @@ export interface DraughtsManData {
     title: string;
     draught: string;
     versionNumber: string;
+    ID: number;
+    standardOfficerName: string;
+    proofreadStatus: string;
+    editedStatus: string;
+    version: number;
+    draughtingStatus: string;
 }
 
 export interface ProofReadData {
+    ID: number;
     submission_date: string;
     approved: string;
     requestorId: string;
     standardOfficerId: string;
     title: string;
     versionNumber: string;
+    standardOfficerName: string;
+    proofreadStatus: string;
+    editedStatus: string;
+    version: number;
+    draughtingStatus: string;
 }
 
 export interface DecisionFeedback {
@@ -459,11 +478,6 @@ export interface DecisionFeedback {
 }
 
 
-export interface EditorTask {
-    taskId: string;
-    name: string;
-    taskData: StandardDraft;
-}
 
 export interface StdWorkPlan{
     taskId: string;

@@ -14,9 +14,6 @@ class PvocExceptionMainMachineryCategoryEntity : Serializable {
     @GeneratedValue(generator = "DAT_KEBS_PVOC_EXCEPTION_MAIN_MACHINERY_CATEGORY_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     var id: Long = 0
 
-    @Column(name = "STATUS")
-    @Basic
-    var status: Long? = null
 
     @Column(name = "MACHINE_DESCRIPTION")
     @Basic
@@ -41,6 +38,10 @@ class PvocExceptionMainMachineryCategoryEntity : Serializable {
     @Column(name = "EXCEPTION_ID")
     @Basic
     var exceptionId: Long? = null
+
+    @Column(name = "STATUS")
+    @Basic
+    var status: Long? = null
 
     @Column(name = "VAR_FIELD_1")
     @Basic

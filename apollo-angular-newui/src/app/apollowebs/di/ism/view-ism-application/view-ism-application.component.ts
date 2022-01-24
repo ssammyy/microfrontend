@@ -28,7 +28,7 @@ export class ViewIsmApplicationComponent implements OnInit {
     }
 
     goBack() {
-        this.router.navigate(["/ism/requests"])
+        this.router.navigate(["/di/ism/requests"])
     }
 
     viewConsignmentDocument() {
@@ -63,7 +63,7 @@ export class ViewIsmApplicationComponent implements OnInit {
                         this.ismDetails = res.data
                     } else {
                         this.diService.showError(res.message, () => {
-                            this.router.navigate(["/ism/requests"])
+                            this.router.navigate(["/di/ism/requests"])
                         })
                     }
                 }

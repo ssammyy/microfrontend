@@ -28,13 +28,13 @@ export class PublishingService {
   }
 
   //upload justification Document
-  public uploadFileDetails(draftStandardID: string, data: FormData): Observable<any> {
+  public uploadFileDetails(draftStandardID: string, data: FormData, doctype: string): Observable<any> {
     const url = `${this.apiPublishingUrl}file-upload`;
 
     return this.http.post<any>(url, data, {
       headers: {
         'enctype': 'multipart/form-data'
-      }, params: {'draftStandardID': draftStandardID}
+      }, params: {'draftStandardID': draftStandardID, 'type': doctype}
     }).pipe(
         map(function (response: any) {
           return response;
@@ -50,8 +50,10 @@ export class PublishingService {
     return this.http.get<EditorTask[]>(`${this.apiPublishingUrl}` + 'getHOPTasks')
   }
 
-  public decisionOnKSDraft(reviewTask: StdTCDecision): Observable<any> {
-    return this.http.post<StandardTasks>(`${this.apiPublishingUrl}` + 'decisionOnKSDraft', reviewTask).pipe(
+  public decisionOnKSDraft(reviewTask: StdTCDecision,draftStandardId): Observable<any> {
+    const params = new HttpParams()
+        .set('draftStandardID', draftStandardId)
+    return this.http.post<StandardTasks>(`${this.apiPublishingUrl}` + 'decisionOnKSDraft', reviewTask,{params, responseType: 'arraybuffer' as 'json'}).pipe(
         map(function (response: any) {
           return response;
         }),
@@ -67,26 +69,42 @@ export class PublishingService {
   }
 
 
-  public completeEditing(editorTask: EditorTask): Observable<any> {
-    return this.http.post<EditorTask>(`${this.apiPublishingUrl}` + 'finishEditingDraft', editorTask)
+  public completeEditing(editorTask: EditorTask,draftStandardId): Observable<any> {
+    const params = new HttpParams()
+        .set('draftStandardID', draftStandardId)
+    return this.http.post<EditorTask>(`${this.apiPublishingUrl}` + 'finishEditingDraft', editorTask,{params, responseType: 'arraybuffer' as 'json'})
   }
 
   public getProofReaderTasks(): Observable<ProofReadTask[]> {
     return this.http.get<ProofReadTask[]>(`${this.apiPublishingUrl}` + 'getProofReaderTasks')
   }
 
-  public decisionOnProofReading(reviewTask: StdTCDecision): Observable<any> {
-    return this.http.post<StandardTasks>(`${this.apiPublishingUrl}` + 'finishedProofReading', reviewTask)
+  // public decisionOnProofReading(reviewTask: StdTCDecision): Observable<any> {
+  //   return this.http.post<StandardTasks>(`${this.apiPublishingUrl}` + 'finishedProofReading', reviewTask)
+  // }
+  public decisionOnProofReading(reviewTask: StdTCDecision,draftStandardId): Observable<any> {
+    const params = new HttpParams()
+        .set('draftStandardID', draftStandardId)
+    return this.http.post<StandardTasks>(`${this.apiPublishingUrl}` + 'finishedProofReading', reviewTask,{params, responseType: 'arraybuffer' as 'json'}).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          return throwError(fault);
+        })
+    );
   }
 
   public getDraughtsmanTasks(): Observable<DraughtsmanTask[]> {
     return this.http.get<DraughtsmanTask[]>(`${this.apiPublishingUrl}` + 'getDraughtsmanTasks')
   }
 
-  public uploadStdDraught(uploadStdDraft: StandardDraft): Observable<any> {
+  public uploadStdDraught(uploadStdDraft: StandardDraft,draftStandardId): Observable<any> {
 
     console.log(uploadStdDraft);
-    return this.http.post<StandardDraft>(`${this.apiPublishingUrl}` + 'uploadDraughtChanges', uploadStdDraft)
+    const params = new HttpParams()
+        .set('draftStandardID', draftStandardId)
+    return this.http.post<StandardDraft>(`${this.apiPublishingUrl}` + 'uploadDraughtChanges', uploadStdDraft,{params, responseType: 'arraybuffer' as 'json'})
   }
 
   public uploadFinishedStd(uploadStdDraft: StandardDraft): Observable<any> {
@@ -95,10 +113,12 @@ export class PublishingService {
     return this.http.post<StandardDraft>(`${this.apiPublishingUrl}` + 'approvedDraftStandard', uploadStdDraft)
   }
 
-  public viewDEditedApplicationPDF(editedDraftStandardDocumentId: any): Observable<any> {
-    const url = `${this.apiPublishingUrl}` + 'getDraughtsmanTasks';
+  public viewDEditedApplicationPDF(editedDraftStandardDocumentId: any, doctype: string): Observable<any> {
+    const url = `${this.apiPublishingUrl}` + 'view/draftStandard';
     const params = new HttpParams()
-        .set('editedDraftStandardDocumentId', editedDraftStandardDocumentId);
+        .set('draftStandardId', editedDraftStandardDocumentId)
+        .set('doctype', doctype);
+
     // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
     return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
         map(function (response: any) {

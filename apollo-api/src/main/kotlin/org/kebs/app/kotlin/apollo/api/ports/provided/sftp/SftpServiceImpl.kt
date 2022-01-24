@@ -21,7 +21,6 @@ import java.nio.file.Paths
 import java.sql.Timestamp
 import java.time.Instant
 import java.util.*
-import javax.xml.XMLConstants
 import javax.xml.transform.stream.StreamSource
 import javax.xml.validation.SchemaFactory
 

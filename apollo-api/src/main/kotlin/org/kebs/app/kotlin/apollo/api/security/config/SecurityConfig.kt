@@ -41,7 +41,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
-import org.springframework.web.servlet.config.annotation.CorsRegistry
 import java.util.*
 
 
@@ -96,15 +95,16 @@ class WebSecurityConfig(private val customUserDetailsService: CustomUserDetailsS
             configuration.allowedOrigins = listOf(*exclusionsCros)
             configuration.allowedHeaders =
                     Arrays.asList(
-                            "Origin",
-                            "Access-Control-Allow-Origin",
-                            "Content-Type",
-                            "Accept",
-                            "Authorization",
-                            "Origin,Accept",
-                            "X-Requested-With",
-                            "Access-Control-Request-Method",
-                            "Access-Control-Request-Headers"
+                        "Origin",
+                        "Access-Control-Allow-Origin",
+                        "Content-Type",
+                        "Accept",
+                        "Authorization",
+                        "Origin,Accept",
+                        "X-Requested-With",
+                        "Access-Control-Request-Method",
+                        "Access-Control-Request-Headers",
+                        "enctype"
                     )
             configuration.exposedHeaders = Arrays.asList(
                     "Origin", "Content-Type", "Accept", "Authorization",
