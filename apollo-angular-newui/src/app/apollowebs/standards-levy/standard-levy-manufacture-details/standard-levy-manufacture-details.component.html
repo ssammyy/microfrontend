@@ -73,18 +73,119 @@
                                                                             </div>
                                                                             <form #approveForm="ngForm" >
                                                                                 <div class="modal-body">
-                                                                                    <div>
-                                                                                        <button (click)=toggleDisplayAssignForm() type="button" class="btn btn-primary btn-sm">Assign</button>
-                                                                                        <button type="button" class="btn btn-success btn-sm">Add Remarks</button>
+
+                                                                                <div *ngIf="manufactureUserDetails?.name==61">
+                                                                                    <button (click)=toggleDisplayAssignForm() type="button" class="btn btn-primary btn-sm">Assign To Self</button>
+                                                                                    <button type="button" class="btn btn-success btn-sm">Add Remarks</button>
+                                                                                    <button type="button" class="btn btn-danger btn-sm">View Remarks</button>
+                                                                                    <button type="button" class="btn btn-warning btn-sm">Close Account</button>
+
+                                                                                </div>
+
+
+
+
+                                                                                        <div *ngIf="manufactureUserDetails?.name==62">
+                                                                                        <button (click)=toggleDisplayAssignForm() type="button" class="btn btn-primary btn-sm">Assign To Self</button>
+                                                                                        <button (click)=toggleDisplayAssignTo1Form() type="button" class="btn btn-success btn-sm">Assign To Other</button>
                                                                                         <button type="button" class="btn btn-danger btn-sm">View Remarks</button>
                                                                                         <button type="button" class="btn btn-warning btn-sm">Close Account</button>
+
                                                                                     </div>
+
+                                                                                        <div *ngIf="manufactureUserDetails?.name==63">
+                                                                                        <button (click)=toggleDisplayAssignForm() type="button" class="btn btn-primary btn-sm">Assign To Self</button>
+                                                                                        <button (click)=toggleDisplayAssignTo2Form() type="button" class="btn btn-success btn-sm">Assign To Other</button>
+                                                                                        <button type="button" class="btn btn-danger btn-sm">View Remarks</button>
+                                                                                        <button type="button" class="btn btn-warning btn-sm">Close Account</button>
+
+                                                                                    </div>
+
                                                                                     <div class="container col-md-12" [hidden]="isShowAssignForm">
                                                                                         <form (ngSubmit)="assignCompanyTask()" [formGroup]="assignCompanyTaskFormGroup"  class="form">
                                                                                             <hr style="color: red">
                                                                                             <p ><b>The Selected Task will be assigned to You. Click Assign to Proceed.</b></p>
                                                                                            <hr>
                                                                                             <input type="hidden" ngModel="{{userId}}" formControlName="assignedTo" name="assignedTo" value="{{userId}}" >
+
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.name}}" formControlName="companyName" name="companyName" value="{{actionRequestList?.name}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.kraPin}}" formControlName="kraPin" name="kraPin" value="{{actionRequestList?.kraPin}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.status}}" formControlName="status" name="status" value="{{actionRequestList?.status}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.registrationNumber}}" formControlName="registrationNumber" name="registrationNumber" value="{{actionRequestList?.registrationNumber}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.postalAddress}}" formControlName="postalAddress" name="postalAddress" value="{{actionRequestList?.postalAddress}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.physicalAddress}}" formControlName="physicalAddress" name="physicalAddress" value="{{actionRequestList?.physicalAddress}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.plotNumber}}" formControlName="plotNumber" name="plotNumber" value="{{actionRequestList?.plotNumber}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.companyEmail}}" formControlName="companyEmail" name="companyEmail" value="{{actionRequestList?.companyEmail}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.companyTelephone}}" formControlName="companyTelephone" name="companyTelephone" value="{{actionRequestList?.companyTelephone}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.yearlyTurnover}}" formControlName="yearlyTurnover" name="yearlyTurnover" value="{{actionRequestList?.yearlyTurnover}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.businessLines}}" formControlName="businessLines" name="businessLines" value="{{actionRequestList?.businessLines}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.businessNatures}}" formControlName="businessNatures" name="businessNatures" value="{{actionRequestList?.businessNatures}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.buildingName}}" formControlName="buildingName" name="buildingName" value="{{actionRequestList?.buildingName}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.branchName}}" formControlName="branchName" name="branchName" value="{{actionRequestList?.branchName}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.streetName}}" formControlName="streetName" name="streetName" value="{{actionRequestList?.streetName}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.directorIdNumber}}" formControlName="directorIdNumber" name="directorIdNumber" value="{{actionRequestList?.directorIdNumber}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.region}}" formControlName="region" name="region" value="{{actionRequestList?.region}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.county}}" formControlName="county" name="county" value="{{actionRequestList?.county}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.town}}" formControlName="town" name="town" value="{{actionRequestList?.town}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.manufactureStatus}}" formControlName="manufactureStatus" name="manufactureStatus" value="{{actionRequestList?.manufactureStatus}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.entryNumber}}" formControlName="entryNumber" name="entryNumber" value="{{actionRequestList?.entryNumber}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.id}}" formControlName="manufacturerEntity" name="manufacturerEntity" value="{{actionRequestList?.id}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.userId}}" formControlName="contactId" name="contactId" value="{{actionRequestList?.userId}}" >
+                                                                                            <button  class="btn btn-sm btn-primary float-right" type="submit">Assign</button>
+                                                                                        </form>
+                                                                                    </div>
+                                                                                    <div class="container col-md-12" [hidden]="isShowAssign1Form">
+                                                                                        <form (ngSubmit)="assignCompanyTaskOne()" [formGroup]="assignCompanyTask1FormGroup"  class="form">
+                                                                                            <hr style="color: red">
+                                                                                            <p ><b>Please Select Person to assign task to. Click Assign to Proceed.</b></p>
+                                                                                           <hr>
+                                                                                            <div class="form-group col-12">
+                                                                                                <label>Select</label>
+
+                                                                                                <ng-select [(ngModel)]="selectedUserPl" formControlName="assignedTo"  class="form-control" ngModel name="assignedTo" >
+                                                                                                    <ng-option *ngFor="let user of usersPls" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
+                                                                                                </ng-select>
+
+                                                                                            </div>
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.name}}" formControlName="companyName" name="companyName" value="{{actionRequestList?.name}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.kraPin}}" formControlName="kraPin" name="kraPin" value="{{actionRequestList?.kraPin}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.status}}" formControlName="status" name="status" value="{{actionRequestList?.status}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.registrationNumber}}" formControlName="registrationNumber" name="registrationNumber" value="{{actionRequestList?.registrationNumber}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.postalAddress}}" formControlName="postalAddress" name="postalAddress" value="{{actionRequestList?.postalAddress}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.physicalAddress}}" formControlName="physicalAddress" name="physicalAddress" value="{{actionRequestList?.physicalAddress}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.plotNumber}}" formControlName="plotNumber" name="plotNumber" value="{{actionRequestList?.plotNumber}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.companyEmail}}" formControlName="companyEmail" name="companyEmail" value="{{actionRequestList?.companyEmail}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.companyTelephone}}" formControlName="companyTelephone" name="companyTelephone" value="{{actionRequestList?.companyTelephone}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.yearlyTurnover}}" formControlName="yearlyTurnover" name="yearlyTurnover" value="{{actionRequestList?.yearlyTurnover}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.businessLines}}" formControlName="businessLines" name="businessLines" value="{{actionRequestList?.businessLines}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.businessNatures}}" formControlName="businessNatures" name="businessNatures" value="{{actionRequestList?.businessNatures}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.buildingName}}" formControlName="buildingName" name="buildingName" value="{{actionRequestList?.buildingName}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.branchName}}" formControlName="branchName" name="branchName" value="{{actionRequestList?.branchName}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.streetName}}" formControlName="streetName" name="streetName" value="{{actionRequestList?.streetName}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.directorIdNumber}}" formControlName="directorIdNumber" name="directorIdNumber" value="{{actionRequestList?.directorIdNumber}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.region}}" formControlName="region" name="region" value="{{actionRequestList?.region}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.county}}" formControlName="county" name="county" value="{{actionRequestList?.county}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.town}}" formControlName="town" name="town" value="{{actionRequestList?.town}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.manufactureStatus}}" formControlName="manufactureStatus" name="manufactureStatus" value="{{actionRequestList?.manufactureStatus}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.entryNumber}}" formControlName="entryNumber" name="entryNumber" value="{{actionRequestList?.entryNumber}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.id}}" formControlName="manufacturerEntity" name="manufacturerEntity" value="{{actionRequestList?.id}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.userId}}" formControlName="contactId" name="contactId" value="{{actionRequestList?.userId}}" >
+                                                                                            <button  class="btn btn-sm btn-primary float-right" type="submit">Assign</button>
+                                                                                        </form>
+                                                                                    </div>
+                                                                                    <div class="container col-md-12" [hidden]="isShowAssign2Form">
+                                                                                        <form (ngSubmit)="assignCompanyTaskTwo()" [formGroup]="assignCompanyTask2FormGroup"  class="form">
+                                                                                            <hr style="color: red">
+                                                                                            <p ><b>Please Select Person to assign task to. Click Assign to Proceed.</b></p>
+                                                                                            <hr>
+                                                                                            <div class="form-group col-12">
+                                                                                                <label>Select</label>
+                                                                                                <ng-select [(ngModel)]="selectedUserMn" formControlName="assignedTo"  class="form-control" ngModel name="assignedTo" >
+                                                                                                    <ng-option *ngFor="let user of usersMns" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
+                                                                                                </ng-select>
+
+                                                                                            </div>
+
                                                                                             <input type="hidden" ngModel="{{actionRequestList?.name}}" formControlName="companyName" name="companyName" value="{{actionRequestList?.name}}" >
                                                                                             <input type="hidden" ngModel="{{actionRequestList?.kraPin}}" formControlName="kraPin" name="kraPin" value="{{actionRequestList?.kraPin}}" >
                                                                                             <input type="hidden" ngModel="{{actionRequestList?.status}}" formControlName="status" name="status" value="{{actionRequestList?.status}}" >
@@ -790,6 +891,8 @@
                                                                                                 <form (ngSubmit)="saveReport()" [formGroup]="prepareReportFormGroup" class="form">
                                                                                                     <div class="form-body">
 
+
+                                                                                                        <input type="hidden"  ngModel="{{manufactureUserDetails?.name}}"  name="userType" value="{{manufactureUserDetails?.name}}" >
 
                                                                                                         <div class="row col-12">
                                                                                                             <div class="form-group col-12">
@@ -1911,6 +2014,7 @@
                                                                                                                           placeholder="Comments" type="text"></textarea>
                                                                                                             </div>
                                                                                                         </div>
+                                                                                                        <input type="hidden"  ngModel="{{actionRequestPending?.taskData?.userType}}"  name="userType" value="{{actionRequestPending?.taskData?.userType}}" >
                                                                                                         <input type="hidden" formControlName="assigneeId" name="assigneeId" ngModel="{{actionRequestPending?.taskData?.levelOneId}}" value="{{actionRequestPending?.taskData?.levelOneId}}" >
                                                                                                         <input type="hidden" formControlName="visitID" name="visitID" ngModel="{{actionRequestPending?.taskData?.visitID}}" value="{{actionRequestPending?.taskData?.visitID}}" >
                                                                                                         <input type="hidden" formControlName="accentTo" name="accentTo" ngModel="false" value="false" >

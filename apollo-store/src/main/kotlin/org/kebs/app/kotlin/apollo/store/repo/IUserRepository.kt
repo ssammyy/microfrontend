@@ -40,7 +40,9 @@ package org.kebs.app.kotlin.apollo.store.repo
 
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.registration.*
+import org.kebs.app.kotlin.apollo.store.model.std.DataHolder
 import org.kebs.app.kotlin.apollo.store.model.std.StandardReviewForm
+import org.kebs.app.kotlin.apollo.store.model.std.UserTypeHolder
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.JpaRepository
@@ -290,6 +292,15 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     @Query(value = "SELECT *  FROM DAT_KEBS_COMPANY_PROFILE WHERE ASSIGN_STATUS='1' AND ASSIGNED_TO = :assignedTo", nativeQuery = true)
     fun getMnPendingTask(@Param("assignedTo") assignedTo: Long?): MutableList<CompanyProfileEntity>
 
+
+}
+
+@Repository
+interface UsersEntityRepository : JpaRepository<UsersEntity, Long> {
+
+
+    @Query(value = "SELECT u.USER_TYPE as name  FROM DAT_KEBS_USERS u WHERE  u.ID = :id", nativeQuery = true)
+    fun getSlLoggedById(@Param("id") id: Long?): UserTypeHolder
 
 }
 

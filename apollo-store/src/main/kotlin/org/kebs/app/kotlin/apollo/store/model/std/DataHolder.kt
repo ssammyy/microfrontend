@@ -51,3 +51,8 @@ interface DataHolder {
     fun getV6(): String?
 
 }
+interface UserTypeHolder {
+    fun getName(): String?
+}
+
+

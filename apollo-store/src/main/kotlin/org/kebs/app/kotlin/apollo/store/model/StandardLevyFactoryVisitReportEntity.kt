@@ -172,6 +172,9 @@ class StandardLevyFactoryVisitReportEntity : Serializable {
     @Column(name = "DELETED_ON")
     @Basic
     var deletedOn: Timestamp? = null
+
+    var userType: Long? = null
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false

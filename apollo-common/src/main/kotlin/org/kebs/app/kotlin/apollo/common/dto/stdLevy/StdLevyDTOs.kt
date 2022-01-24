@@ -98,7 +98,8 @@ data class ReportOnSiteVisitDTO(
     var taskId: String? = null,
     var visitID: Long? = null,
     var assigneeId: Long? = null,
-    var manufacturerEntity: Long? = null
+    var manufacturerEntity: Long? = null,
+    var userType: Long? = null
 )
 
 class ProcessInstanceResponseValueSite(val savedRowID: Long?,val processId: String, val isEnded: Boolean) {
@@ -111,7 +112,8 @@ data class SiteVisitReportDecisionDTO(
     var assigneeId: Long? = null,
     var manufacturerEntity: Long? = null,
     var contactId: Long? = null,
-    var comments: String? = null
+    var comments: String? = null,
+    var userType: Long? = null
 ){
 
 }
@@ -129,3 +131,5 @@ class SiteVisitReportDecision(
 
 ) {
 }
+
+

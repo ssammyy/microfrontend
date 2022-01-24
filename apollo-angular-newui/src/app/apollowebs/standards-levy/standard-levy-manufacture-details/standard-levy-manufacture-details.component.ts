@@ -2,11 +2,9 @@ import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {Subject} from "rxjs";
 
 import {
-    ApproveVisitTask,
-    CompanyModel,
     ManufactureCompleteTask,
     ManufactureDetailList,
-    ManufacturePendingTask, ReportDecisionLevelOne, ReportDecisionLevelTwo
+    ManufacturePendingTask, UsersEntityList
 } from "../../../core/store/data/levy/levy.model";
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../core/store/data/std/notification.service";
@@ -15,6 +13,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {DISDTTasks, UsersEntity} from "../../../core/store/data/std/std.model";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Store} from "@ngrx/store";
+import {NgSelectModule} from '@ng-select/ng-select';
 import {selectUserInfo} from "../../../core/store";
 import swal from "sweetalert2";
 declare const $: any;
@@ -27,6 +26,7 @@ declare const $: any;
 })
 export class StandardLevyManufactureDetailsComponent implements OnInit {
     userId: number ;
+    userType: number ;
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
 
@@ -36,7 +36,12 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
     dtOptions2:DataTables.Settings = {};
     dtTrigger2: Subject<any> = new Subject<any>();
     public users !: UsersEntity[] ;
+    public usersPls !: UsersEntity[] ;
+    public usersMns !: UsersEntity[] ;
+    manufactureUserDetails !: UsersEntityList;
     selectedUser: number;
+    selectedUserPl: number;
+    selectedUserMn: number;
 
 
     manufactureLists: ManufactureDetailList[] = [];
@@ -47,6 +52,8 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
     public actionRequestComplete: ManufactureCompleteTask | undefined;
     public scheduleVisitFormGroup!: FormGroup;
     public assignCompanyTaskFormGroup!: FormGroup;
+    public assignCompanyTask1FormGroup!: FormGroup;
+    public assignCompanyTask2FormGroup!: FormGroup;
     public prepareReportFormGroup!: FormGroup;
     public prepareFeedBackFormGroup!: FormGroup;
     public approvalFormGroup!: FormGroup;
@@ -63,21 +70,44 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
     isShowApprovalForm2 = true;
     isShowRejectForm2= true;
     isShowSaveFeedBackForm= true;
+    isShowAssign1Form=true;
+    isShowAssign2Form=true;
 
     toggleDisplayScheduleForm() {
         this.isShowScheduleForm = !this.isShowScheduleForm;
         this.isShowAssignForm = true;
         this.isShowReportForm= true;
+        this.isShowAssign1Form= true;
+        this.isShowAssign2Form= true;
     }
     toggleDisplayAssignForm() {
         this.isShowAssignForm = !this.isShowAssignForm;
         this.isShowScheduleForm= true;
         this.isShowReportForm= true;
+        this.isShowAssign1Form= true;
+        this.isShowAssign2Form= true;
+    }
+    toggleDisplayAssignTo1Form() {
+        this.isShowAssign1Form = !this.isShowAssign1Form;
+        this.isShowScheduleForm= true;
+        this.isShowReportForm= true;
+        this.isShowAssignForm=true;
+        this.isShowAssign2Form= true;
+    }
+    toggleDisplayAssignTo2Form() {
+        this.isShowAssign2Form = !this.isShowAssign2Form;
+        this.isShowScheduleForm= true;
+        this.isShowReportForm= true;
+        this.isShowAssignForm=true;
+        this.isShowAssign1Form= true;
+
     }
     toggleDisplayReportForm() {
         this.isShowReportForm = !this.isShowReportForm;
         this.isShowScheduleForm= true;
         this.isShowAssignForm = true;
+        this.isShowAssign1Form= true;
+        this.isShowAssign2Form= true;
     }
     toggleDisplayApprovalForm1() {
         this.isShowApprovalForm1 = !this.isShowApprovalForm1;
@@ -109,11 +139,12 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
   ngOnInit(): void {
     //this.getMnCompleteTask();
     this.getManufacturerList();
-    //this.getMnPendingTask();
-      this.getUserList();
-      this.store$.select(selectUserInfo).pipe().subscribe((u) => {
-          return this.userId = u.id;
-      });
+    this.getUserDetails();
+    this.getUserList();
+    this.getUserData();
+    this.getSlLvTwoList();
+    this.getPlUserList();
+
 
       this.scheduleVisitFormGroup = this.formBuilder.group({
           scheduledVisitDate: ['', Validators.required],
@@ -148,6 +179,60 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
           contactId: []
 
       });
+      this.assignCompanyTask1FormGroup = this.formBuilder.group({
+          manufacturerEntity: [],
+          assignedTo: [],
+          companyName: [],
+          kraPin: [],
+          status: [],
+          registrationNumber: [],
+          postalAddress: [],
+          physicalAddress: [],
+          plotNumber: [],
+          companyEmail: [],
+          companyTelephone: [],
+          yearlyTurnover: [],
+          businessLines: [],
+          businessNatures: [],
+          buildingName: [],
+          branchName: [],
+          streetName: [],
+          directorIdNumber: [],
+          region: [],
+          county: [],
+          town: [],
+          manufactureStatus: [],
+          entryNumber: [],
+          contactId: []
+
+      });
+      this.assignCompanyTask2FormGroup = this.formBuilder.group({
+          manufacturerEntity: [],
+          assignedTo: [],
+          companyName: [],
+          kraPin: [],
+          status: [],
+          registrationNumber: [],
+          postalAddress: [],
+          physicalAddress: [],
+          plotNumber: [],
+          companyEmail: [],
+          companyTelephone: [],
+          yearlyTurnover: [],
+          businessLines: [],
+          businessNatures: [],
+          buildingName: [],
+          branchName: [],
+          streetName: [],
+          directorIdNumber: [],
+          region: [],
+          county: [],
+          town: [],
+          manufactureStatus: [],
+          entryNumber: [],
+          contactId: []
+
+      });
       this.prepareReportFormGroup = this.formBuilder.group({
           visitDate: ['', Validators.required],
           purpose: ['', Validators.required],
@@ -156,7 +241,8 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
           taskId: [],
           visitID: [],
           assigneeId: [],
-          manufacturerEntity: []
+          manufacturerEntity: [],
+          userType: []
 
       });
       this.prepareFeedBackFormGroup = this.formBuilder.group({
@@ -202,7 +288,8 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
           visitID: [],
           accentTo: [],
           taskId: [],
-          manufacturerEntity: []
+          manufacturerEntity: [],
+          userType: []
 
       });
   }
@@ -213,6 +300,12 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
 
     get assignCompanyTaskForm(): any {
         return this.assignCompanyTaskFormGroup.controls;
+    }
+    get assignCompanyTask1Form(): any {
+        return this.assignCompanyTask1FormGroup.controls;
+    }
+    get assignCompanyTask2Form(): any {
+        return this.assignCompanyTask2FormGroup.controls;
     }
     get formPrepareReport(): any {
         return this.prepareReportFormGroup.controls;
@@ -240,6 +333,11 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
         this.notifyService.showError(message, title)
 
     }
+    public getUserData(): void{
+        this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+            this.userId = u.id;
+        });
+    }
 
     public getUserList(): void {
         this.SpinnerService.show();
@@ -255,12 +353,41 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
         );
     }
 
+    public getPlUserList(): void {
+        this.SpinnerService.show();
+        this.levyService.getPlList().subscribe(
+            (response: UsersEntity[]) => {
+                this.SpinnerService.hide();
+                this.usersPls = response;
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                alert(error.message);
+            }
+        );
+    }
+
+    public getSlLvTwoList(): void {
+        this.SpinnerService.show();
+        this.levyService.getSlLvTwoList().subscribe(
+            (response: UsersEntity[]) => {
+                this.SpinnerService.hide();
+                this.usersMns = response;
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                alert(error.message);
+            }
+        );
+    }
+
   public getManufacturerList(): void{
     this.SpinnerService.show();
     this.levyService.getManufacturerList().subscribe(
         (response: ManufactureDetailList[])=> {
           this.dtTrigger.next();
           this.manufactureLists = response;
+          //console.log(response);
             this.SpinnerService.hide();
         },
         (error: HttpErrorResponse)=>{
@@ -270,6 +397,20 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
         }
     );
   }
+    public getUserDetails(): void{
+        this.levyService.getUserDetails().subscribe(
+        (response: UsersEntityList)=> {
+
+            this.manufactureUserDetails = response;
+            console.log(this.manufactureUserDetails);
+        },
+            (error: HttpErrorResponse)=>{
+                console.log(error.message);
+            }
+        );
+
+    }
+
   public getMnPendingTask(): void{
     this.SpinnerService.show();
     this.levyService.getMnPendingTask().subscribe(
@@ -397,6 +538,38 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Task Assigned`);
 
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Assigning Task`);
+                console.log(error.message);
+            }
+        );
+    }
+    assignCompanyTaskOne(): void {
+        this.SpinnerService.show();
+        this.levyService.assignCompanyTasks(this.assignCompanyTask1FormGroup.value).subscribe(
+            (response ) => {
+                console.log(response);
+                this.getManufacturerList();
+                this.SpinnerService.hide();
+                this.showToasterSuccess(response.httpStatus, `Task Assigned`);
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Assigning Task`);
+                console.log(error.message);
+            }
+        );
+    }
+    assignCompanyTaskTwo(): void {
+        this.SpinnerService.show();
+        this.levyService.assignCompanyTasks(this.assignCompanyTask2FormGroup.value).subscribe(
+            (response ) => {
+                console.log(response);
+                this.getManufacturerList();
+                this.SpinnerService.hide();
+                this.showToasterSuccess(response.httpStatus, `Task Assigned`);
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();

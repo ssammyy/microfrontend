@@ -34,6 +34,7 @@ export interface UsersEntity {
     id: number;
     lastName: string;
     firstName: string;
+    userTypes: number;
 
 
 }

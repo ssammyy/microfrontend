@@ -17,10 +17,7 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
-import org.kebs.app.kotlin.apollo.store.model.std.DatKebsSdNwaUploadsEntity
-import org.kebs.app.kotlin.apollo.store.model.std.NWAJustification
-import org.kebs.app.kotlin.apollo.store.model.std.NWAPreliminaryDraftUploads
-import org.kebs.app.kotlin.apollo.store.model.std.TechnicalCommittee
+import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.std.UserListRepository
 import org.kebs.app.kotlin.apollo.store.repo.stdLevy.ManufacturePenaltyDetailsDTO
@@ -46,7 +43,8 @@ class StandardLevyService(
     private val standardLevyFactoryVisitReportRepo: IStandardLevyFactoryVisitReportRepository,
     private val slUploadsRepo: ISlVisitUploadsRepository,
     private val bpmnService: StandardsLevyBpmn,
-    private val userListRepository: UserListRepository
+    private val userListRepository: UserListRepository,
+    private val usersEntityRepository: UsersEntityRepository
 ) {
     val PROCESS_DEFINITION_KEY = "sl_SiteVisitProcessFlow"
     val TASK_CANDIDATE_SL_PRINCIPAL_LEVY_OFFICER ="SL_PRINCIPAL_LEVY_OFFICER"
@@ -235,6 +233,9 @@ class StandardLevyService(
         standardLevyFactoryVisitReportEntity.id?.let { variables["visitID"] =it }
         standardLevyFactoryVisitReportEntity.status?.let { variables["status"] =it }
         standardLevyFactoryVisitReportEntity.assigneeId?.let { variables["assigneeId"] =it }
+        standardLevyFactoryVisitReportEntity.userType?.let { variables["userType"] =it }
+        val userIntType = standardLevyFactoryVisitReportEntity.userType
+        val userIntTypes = userIntType.toString()
 
         standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)?.let { standardLevyFactoryVisitReportEntity->
 
@@ -272,7 +273,14 @@ class StandardLevyService(
 
                             }
                             ?: KotlinLogging.logger {  }.error("No task found for $PROCESS_DEFINITION_KEY ")
-                        bpmnService.slAssignTask(processInstance.processInstanceId, "Notification of Report", standardLevyFactoryVisitReportEntity.assigneeId?:throw NullValueNotAllowedException("invalid user id provided"))
+                        if(userIntTypes.equals(61) ){
+                            bpmnService.slAssignTask(processInstance.processInstanceId, "Notification of Report", standardLevyFactoryVisitReportEntity.assigneeId?:throw NullValueNotAllowedException("invalid user id provided"))
+                        }else if (userIntTypes.equals(62)){
+                            bpmnService.slAssignTask(processInstance.processInstanceId, "View Report", standardLevyFactoryVisitReportEntity.assigneeId?:throw NullValueNotAllowedException("invalid user id provided"))
+                        }else if(userIntTypes.equals(63)){
+                            bpmnService.slAssignTask(processInstance.processInstanceId, "View Report", standardLevyFactoryVisitReportEntity.assigneeId?:throw NullValueNotAllowedException("invalid user id provided"))
+                        }
+
                         return ProcessInstanceResponseValueSite(standardLevyFactoryVisitReportEntity.id,processInstance.id, processInstance.isEnded)
                     }
                     ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${companyProfileEntity.slBpmnProcessInstance} ")
@@ -434,6 +442,8 @@ class StandardLevyService(
         standardLevyFactoryVisitReportEntity.cheifManagerRemarks?.let { variables["cheifManagerRemarks"] =it }
         variables["status"] = 2
         standardLevyFactoryVisitReportEntity.assigneeId?.let { variables["assigneeId"] =it }
+        val userIntType = standardLevyFactoryVisitReportEntity.userType
+        val userIntTypes = userIntType.toString()
         if(variables["Yes"]==true){
             standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)?.let { standardLevyFactoryVisitReportEntity->
 
@@ -504,9 +514,15 @@ class StandardLevyService(
 
                                 }
                                 ?: KotlinLogging.logger {  }.error("No task found for $PROCESS_DEFINITION_KEY ")
-                            bpmnService.slAssignTask(processInstance.processInstanceId, "View Report", standardLevyFactoryVisitReportEntity?.assigneeId?:throw NullValueNotAllowedException("invalid user id provided"))
-
-
+                            if(userIntTypes.equals(61) ){
+                                bpmnService.slAssignTask(processInstance.processInstanceId, "Notification of Report", standardLevyFactoryVisitReportEntity?.assigneeId?:throw NullValueNotAllowedException("invalid user id provided"))
+                            }else if (userIntTypes.equals(62)){
+                                bpmnService.slAssignTask(processInstance.processInstanceId, "Prepare Report on Visit", standardLevyFactoryVisitReportEntity?.assigneeId?:throw NullValueNotAllowedException("invalid user id provided"))
+                            }else if (userIntTypes.equals(63)){
+                                bpmnService.slAssignTask(processInstance.processInstanceId, "Prepare Report on Visit", standardLevyFactoryVisitReportEntity.assigneeId?:throw NullValueNotAllowedException("invalid user id provided"))
+                            }else{
+                                bpmnService.slAssignTask(processInstance.processInstanceId, "Prepare Report on Visit", standardLevyFactoryVisitReportEntity.assigneeId?:throw NullValueNotAllowedException("invalid user id provided"))
+                            }
                         }
                         ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${companyProfileEntity.slBpmnProcessInstance} ")
 
@@ -590,8 +606,22 @@ class StandardLevyService(
         return companyProfileRepo.getMnPendingTask(assignedTo)
     }
 
+    fun getPlList(): MutableList<UsersEntity> {
+        return userListRepository.getPlList()
+    }
+
+    fun getSlLvTwoList(): MutableList<UsersEntity> {
+        return userListRepository.getSlLvTwoList()
+    }
+
     fun getSlUsers(): MutableList<UsersEntity> {
-        return userListRepository.findFirst10ByIdOrderByIdDesc()
+        return userListRepository.getSlLvThreeList()
+    }
+
+    fun getSlLoggedIn(): UserTypeHolder {
+        commonDaoServices.loggedInUserDetails().id?.let { id ->
+            return usersEntityRepository.getSlLoggedById(id)
+        }?: throw NullValueNotAllowedException ("User Not Found")
     }
 
     fun closeTask(taskId: String) {
@@ -603,6 +633,8 @@ class StandardLevyService(
     fun closeProcess(taskId: String) {
         runtimeService.deleteProcessInstance(taskId, "cleaning")
     }
+
+
 
 
 }
