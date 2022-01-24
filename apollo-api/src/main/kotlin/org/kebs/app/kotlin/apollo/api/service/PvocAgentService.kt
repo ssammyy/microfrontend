@@ -3,7 +3,6 @@ package org.kebs.app.kotlin.apollo.api.service
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.notifications.NotificationCodes
 import org.kebs.app.kotlin.apollo.api.notifications.NotificationService
-import org.kebs.app.kotlin.apollo.api.notifications.NotificationTypeCodes
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.request.*
@@ -13,6 +12,8 @@ import org.kebs.app.kotlin.apollo.api.payload.response.PvocComplaintRecommendati
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.PvocBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ForeignPvocIntegrations
+import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocComplaintEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocComplaintRemarksEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
@@ -35,9 +36,12 @@ class PvocAgentService(
         private val complaintSubCategoryRepo: IPvocComplaintCertificationsSubCategoryRepo,
         private val pvocComplaintRemarksEntityRepo: PvocComplaintRemarksEntityRepo,
         private val commonDaoServices: CommonDaoServices,
+        private val cocRepo: ICocsRepository,
         private val pvocBpmn: PvocBpmn,
         private val daoServices: DestinationInspectionDaoServices,
-        private val notificationService: NotificationService
+        private val notificationService: NotificationService,
+        private val pvocIntegrations: ForeignPvocIntegrations,
+        private val properties: ApplicationMapProperties
 ) {
     fun getComplaintCategories(): ApiResponseModel {
         val response = ApiResponseModel()
@@ -311,26 +315,141 @@ class PvocAgentService(
 
     fun receiveCoc(coc: CocEntityForm): ApiResponseModel {
         val response = ApiResponseModel()
-
+        try {
+            val actiVerUser = commonDaoServices.loggedInPartnerDetails()
+            this.pvocIntegrations.foreignCoc(actiVerUser, coc, commonDaoServices.serviceMapDetails(properties.mapImportInspection))?.let { cocEntity ->
+                this.daoServices.sendLocalCoc(cocEntity)
+                response.data = coc
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+                response.message = "COC with ucr: " + coc.ucrNumber + " received"
+                response
+            } ?: run {
+                response.responseCode = ResponseCodes.DUPLICATE_ENTRY_STATUS
+                response.message = "COC with ucr: " + coc.ucrNumber + " already exists"
+                response
+            }
+        } catch (ex: Exception) {
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Failed to add COC with ucr number" + coc.ucrNumber
+            response.errors = ex.message
+        }
         return response
     }
 
-    fun receiveCor(coc: CorEntityForm): ApiResponseModel {
+    fun receiveCor(cor: CorEntityForm): ApiResponseModel {
         val response = ApiResponseModel()
-
+        try {
+            val activerUser = commonDaoServices.loggedInPartnerDetails()
+            this.pvocIntegrations.foreignCor(cor, commonDaoServices.serviceMapDetails(properties.mapImportInspection), activerUser)?.let { corEntity ->
+                // Send COR to KWS
+                this.daoServices.submitCoRToKesWS(corEntity)
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+                response.message = "COR with ucr: " + cor.ucrNumber + " received"
+                response
+            } ?: run {
+                response.responseCode = ResponseCodes.DUPLICATE_ENTRY_STATUS
+                response.message = "COR with ucr: " + cor.ucrNumber + " already exists"
+                response
+            }
+        } catch (ex: Exception) {
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Failed to add COC with ucr number" + cor.ucrNumber
+            response.errors = ex.message
+        }
         return response
     }
 
-    fun receiveCoi(form: CoiEntityForm): Any {
-        TODO("Not yet implemented")
+    fun receiveCoi(form: CoiEntityForm): ApiResponseModel {
+        val response = ApiResponseModel()
+        try {
+            val activerUser = commonDaoServices.loggedInPartnerDetails()
+            this.pvocIntegrations.foreignCoi(activerUser, form, commonDaoServices.serviceMapDetails(properties.mapImportInspection))?.let { corEntity ->
+                // Send Foreign COI to KEWS
+                this.daoServices.sendLocalCoi(corEntity)
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+                response.message = "COI with ucr: " + form.ucrNumber + " received"
+                response
+            } ?: run {
+                response.responseCode = ResponseCodes.DUPLICATE_ENTRY_STATUS
+                response.message = "CORI with ucr: " + form.ucrNumber + " already exists"
+                response
+            }
+        } catch (ex: Exception) {
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Failed to add COI with ucr number" + form.ucrNumber
+            response.errors = ex.message
+        }
+        return response
     }
 
-    fun receiveRfcCoi(form: RfcCoiEntityForm): Any {
-        TODO("Not yet implemented")
+    fun receiveRfcCoi(form: RfcCoiEntityForm): ApiResponseModel {
+        val response = ApiResponseModel()
+        try {
+            val activeUser = commonDaoServices.loggedInPartnerDetails()
+            this.pvocIntegrations.foreignRfcCoi(form, commonDaoServices.serviceMapDetails(properties.mapImportInspection), activeUser)?.let { rfcEntity ->
+                response.data = form
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+                response.message = "RFC with number: " + form.rfcNumber + " received"
+                response
+            } ?: run {
+                response.responseCode = ResponseCodes.DUPLICATE_ENTRY_STATUS
+                response.message = "RFC with ucr: " + form.ucrNumber + " already exists"
+                response
+            }
+        } catch (ex: Exception) {
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Failed to add COI with ucr number" + form.ucrNumber
+            response.errors = ex.message
+        }
+        return response
     }
 
-    fun pvocPartnerRiskProfile(form: RiskProfileForm) {
+    fun receiveNcr(ncr: CocEntityForm): ApiResponseModel {
+        val response = ApiResponseModel()
+        try {
+            val activerUser = commonDaoServices.loggedInPartnerDetails()
+            this.pvocIntegrations.foreignCoc(activerUser, ncr, commonDaoServices.serviceMapDetails(properties.mapImportInspection))?.let { ncrEntity ->
+                // Update document Type
+                ncrEntity.cocType = "NCR"
+                cocRepo.save(ncrEntity)
+                // Create response
+                response.data = ncr
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+                response.message = "NCR with ucr: " + ncr.ucrNumber + " received"
+                response
+            } ?: run {
+                response.responseCode = ResponseCodes.DUPLICATE_ENTRY_STATUS
+                response.message = "NCR with ucr: " + ncr.ucrNumber + " already exists"
+                response
+            }
+        } catch (ex: Exception) {
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Failed to add NCR with ucr number" + ncr.ucrNumber
+            response.errors = ex.message
+        }
+        return response
+    }
 
+    fun addRiskProfile(form: RiskProfileForm): ApiResponseModel {
+        val response = ApiResponseModel()
+        try {
+            val activeUser = commonDaoServices.loggedInPartnerDetails()
+            this.pvocIntegrations.foreignRiskProfile(form, commonDaoServices.serviceMapDetails(properties.mapImportInspection), activeUser)?.let { riskEntity ->
+                response.data = form
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+                response.message = "RISK for HS Code: " + form.hsCode + " received"
+                response
+            } ?: run {
+                response.responseCode = ResponseCodes.DUPLICATE_ENTRY_STATUS
+                response.message = "RISK for HS Code: " + form.hsCode + " already exists"
+                response
+            }
+        } catch (ex: Exception) {
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Failed to add Risk HS code" + form.hsCode
+            response.errors = ex.message
+        }
+        return response
     }
 
 

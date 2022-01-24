@@ -41,9 +41,17 @@ class RiskProfileEntity:Serializable {
     @Basic
     var importerName: String? = null
 
+    @Column(name = "IMPORTER_PIN", nullable = true, length = 250)
+    @Basic
+    var importerPin: String? = null
+
     @Column(name = "EXPORTER_NAME", nullable = true, length = 250)
     @Basic
     var exporterName: String? = null
+
+    @Column(name = "EXPORTER_PIN", nullable = true, length = 250)
+    @Basic
+    var exporterPin: String? = null
 
     @Column(name = "RISK_LEVEL", nullable = false, length = 50)
     @Basic
@@ -60,6 +68,10 @@ class RiskProfileEntity:Serializable {
     @Column(name = "CATEGORIZATION_DATE", nullable = false)
     @Basic
     var categorizationDate: Date? = null
+
+    @Column(name = "PARTNER_ID", nullable = true, precision = 0)
+    @Basic
+    var partnerId: Long? = null
 
     @Column(name = "STATUS", nullable = true, precision = 0)
     @Basic

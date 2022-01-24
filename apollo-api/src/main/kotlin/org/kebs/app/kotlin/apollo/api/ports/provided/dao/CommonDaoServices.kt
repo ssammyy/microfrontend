@@ -71,6 +71,7 @@ import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapPrope
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.di.CdLaboratoryEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocComplaintsEmailVerificationEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.ManufacturePlantDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileCommoditiesManufactureEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileContractsUndertakenEntity
@@ -78,6 +79,7 @@ import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileDirecto
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
+import org.kebs.app.kotlin.apollo.store.repo.external.ApiClientRepo
 import org.modelmapper.ModelMapper
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.ResourceLoader
@@ -162,6 +164,8 @@ class CommonDaoServices(
         private val bufferRepo: INotificationsBufferRepository,
         private val applicationMapProperties: ApplicationMapProperties,
         private val smsService: SmsServiceImpl,
+        private val pvocPartnersRepository: IPvocPartnersRepository,
+        private val apiClientRepo: ApiClientRepo
 ) {
 
     @Value("\${common.page.view.name}")
@@ -593,15 +597,16 @@ class CommonDaoServices(
     }
 
     fun userRegisteredEntryNumberSuccessfullEmailCompose(
-        companyProfile: CompanyProfileEntity,
-        map: ServiceMapsEntity,
-        token: String?
+            companyProfile: CompanyProfileEntity,
+            map: ServiceMapsEntity,
+            token: String?
     ): RegistrationForEntryNumberEmailDTO {
         val dataValue = RegistrationForEntryNumberEmailDTO()
         with(dataValue) {
             baseUrl = applicationMapProperties.baseUrlValue
             fullName =
-                concatenateName(findUserByID(companyProfile.userId ?: throw ExpectedDataNotFound("USER ID NOT FOUND")))
+                    concatenateName(findUserByID(companyProfile.userId
+                            ?: throw ExpectedDataNotFound("USER ID NOT FOUND")))
             entryNumber = companyProfile.entryNumber
             dateSubmitted = getCurrentDate()
 
@@ -642,16 +647,30 @@ class CommonDaoServices(
         return fileTypeMap.getContentType(fileName)
     }
 
+    fun loggedInPartnerDetails(): PvocPartnersEntity {
+        SecurityContextHolder.getContext().authentication?.name
+                ?.let { username ->
+                    val client = this.apiClientRepo.findByClientId(username)
+                    if (client.isPresent) {
+                        this.pvocPartnersRepository.findByApiClientId(client.get().id!!)?.let { apiClient ->
+                            return apiClient
+                        } ?: throw ExpectedDataNotFound("partner with client id not found")
+                    } else {
+                        throw ExpectedDataNotFound("Client name not found")
+                    }
+                } ?: throw ExpectedDataNotFound("No user has logged in")
+    }
+
     fun loggedInUserDetails(): UsersEntity {
         SecurityContextHolder.getContext().authentication?.name
-            ?.let { username ->
-                usersRepo.findByEmail(username)
-                    ?.let { loggedInUser ->
-                        return loggedInUser
-                    }
-                    ?: throw ExpectedDataNotFound("No userName with the following userName=$username, Exist in the users table")
-            }
-            ?: throw ExpectedDataNotFound("No user has logged in")
+                ?.let { username ->
+                    usersRepo.findByEmail(username)
+                            ?.let { loggedInUser ->
+                                return loggedInUser
+                            }
+                            ?: throw ExpectedDataNotFound("No userName with the following userName=$username, Exist in the users table")
+                }
+                ?: throw ExpectedDataNotFound("No user has logged in")
     }
 
     fun checkLoggedInUser(): String? {
@@ -908,56 +927,59 @@ class CommonDaoServices(
                 }
                 ?: throw ExpectedDataNotFound("No Business Nature with Business Line of ID  = ${businessLineEntity.id} and status = $status, Existing")
     }
-    fun currentUserHasRole(roleName: String):Boolean {
-        val usersEntity=this.loggedInUserDetails()
+
+    fun currentUserHasRole(roleName: String): Boolean {
+        val usersEntity = this.loggedInUserDetails()
         val supervisorCount = this.roleAssignmentsRepository.checkUserHasRole(roleName, 1, usersEntity.id!!)
         return supervisorCount > 0
     }
 
-    fun currentUserDiSupervisor():Boolean {
-        val usersEntity=this.loggedInUserDetails()
+    fun currentUserDiSupervisor(): Boolean {
+        val usersEntity = this.loggedInUserDetails()
         val supervisorCount = this.roleAssignmentsRepository.checkUserHasRole("DI_Officer_Charge", 1, usersEntity.id!!)
         return supervisorCount > 0
     }
-    fun currentUserDiOfficer():Boolean {
-        val usersEntity=this.loggedInUserDetails()
+
+    fun currentUserDiOfficer(): Boolean {
+        val usersEntity = this.loggedInUserDetails()
         val inspectorCount = this.roleAssignmentsRepository.checkUserHasRole("DI_Inspection_Officers", 1, usersEntity.id!!)
-        return inspectorCount>0
+        return inspectorCount > 0
     }
+
     fun findUserByUserName(userName: String): UsersEntity {
         usersRepo.findByEmail(userName)
-            ?.let { userEntity ->
-                return userEntity
-            }
-            ?: throw ExpectedDataNotFound("Email  = ${userName}, does not Exist")
+                ?.let { userEntity ->
+                    return userEntity
+                }
+                ?: throw ExpectedDataNotFound("Email  = ${userName}, does not Exist")
     }
 
     fun findOTPByToken(userName: String): UserVerificationTokensEntity {
         verificationTokensRepoB.findByToken(userName)
-            ?.let { UserVerificationTokensEntity ->
-                return UserVerificationTokensEntity
-            }
-            ?: throw ExpectedDataNotFound("OTP  = ${userName}, does not Exist")
+                ?.let { UserVerificationTokensEntity ->
+                    return UserVerificationTokensEntity
+                }
+                ?: throw ExpectedDataNotFound("OTP  = ${userName}, does not Exist")
     }
 
     fun findTokenStringByUserid(userId: Long): UserVerificationTokensEntity {
 
         verificationTokensRepoB.findAllByTokenByUserId(userId)
-            ?.let { UserVerificationTokensEntity ->
-                return UserVerificationTokensEntity
-            }
-            ?: throw ExpectedDataNotFound("Token, does not Exist")
+                ?.let { UserVerificationTokensEntity ->
+                    return UserVerificationTokensEntity
+                }
+                ?: throw ExpectedDataNotFound("Token, does not Exist")
     }
 
     fun findByToken(token: Long?): UserVerificationTokensEntity {
 
         token?.let {
             verificationTokensRepoB.findByVersion(it)
-                ?.let { UserVerificationTokensEntity ->
-                    return UserVerificationTokensEntity
-                }
+                    ?.let { UserVerificationTokensEntity ->
+                        return UserVerificationTokensEntity
+                    }
         }
-            ?: throw ExpectedDataNotFound("Token, does not Exist")
+                ?: throw ExpectedDataNotFound("Token, does not Exist")
     }
 
 //    fun findUserIdByToken(token: String?): UserVerificationTokensEntity {
@@ -1363,9 +1385,9 @@ class CommonDaoServices(
     }
 
     fun generateVerificationToken(
-        sr: ServiceRequestsEntity,
-        user: UsersEntity,
-        map: ServiceMapsEntity
+            sr: ServiceRequestsEntity,
+            user: UsersEntity,
+            map: ServiceMapsEntity
     ): UserVerificationTokensEntity? {
         try {
             val tokensEntity = UserVerificationTokensEntity().apply {
@@ -1377,7 +1399,7 @@ class CommonDaoServices(
                 map.tokenExpiryHours?.let { h ->
                     tokenExpiryDate = Timestamp.from(Instant.now().plus(h, ChronoUnit.HOURS))
                 }
-                    ?: throw Exception("Missing Configuration: Hours to Token Expiry")
+                        ?: throw Exception("Missing Configuration: Hours to Token Expiry")
                 transactionDate = Date(Date().time)
                 varField1 = UUID.randomUUID().toString()
             }
