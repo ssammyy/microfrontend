@@ -11,7 +11,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatStepperModule} from '@angular/material/stepper';
 import {MatIconModule} from '@angular/material/icon';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {MatDialogModule} from '@angular/material/dialog';
+import {MatDialogModule,MatDialog} from '@angular/material/dialog';
 
 
 import {AppComponent} from './app.component';
@@ -367,6 +367,7 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
         ApproveRejectItemComponent,
         ViewDemandNoteComponent,
         ItemSelectionComponent,
+
         ViewInspectionDetailsComponent,
         ItemChecklistComponent,
         EngineeringItemChecklistComponent,

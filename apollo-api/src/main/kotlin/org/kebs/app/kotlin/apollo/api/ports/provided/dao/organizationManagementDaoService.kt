@@ -24,6 +24,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.servlet.function.ServerRequest
 import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
@@ -259,12 +260,13 @@ class RegistrationManagementDaoService(
      * @param request the Http payload of SendTokenRequestDto
      * @return CustomResponse
      */
-    fun validateTokenFromThePhone(request: ValidateTokenRequestDto): CustomResponse? =
+    fun validateTokenFromThePhone(request: ValidateTokenRequestDto, req: ServerRequest?=null): CustomResponse? =
         usersRepo.findByEmail(request.username)
             ?.let { u ->
                 commonDaoServices.validateOTPToken(
                     request.token ?: throw NullValueNotAllowedException("Invalid Token provided"),
-                    u.cellphone ?: throw NullValueNotAllowedException("Valid Cellphone is required")
+                    u.cellphone ?: throw NullValueNotAllowedException("Valid Cellphone is required"),
+                    req
                 )
             }
             ?: throw NullValueNotAllowedException("")

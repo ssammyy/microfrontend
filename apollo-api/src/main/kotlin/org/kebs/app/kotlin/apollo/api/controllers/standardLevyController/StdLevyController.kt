@@ -21,10 +21,7 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
-import org.kebs.app.kotlin.apollo.store.model.std.DatKebsSdNwaUploadsEntity
-import org.kebs.app.kotlin.apollo.store.model.std.Department
-import org.kebs.app.kotlin.apollo.store.model.std.NWAJustification
-import org.kebs.app.kotlin.apollo.store.model.std.TechnicalCommittee
+import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.ICompanyProfileRepository
 import org.kebs.app.kotlin.apollo.store.repo.ISlVisitUploadsRepository
 import org.kebs.app.kotlin.apollo.store.repo.IStandardLevyFactoryVisitReportRepository
@@ -731,6 +728,7 @@ class StdLevyController(
             taskId= reportOnSiteVisitDTO.taskId
             assigneeId = reportOnSiteVisitDTO.assigneeId
             manufacturerEntity= reportOnSiteVisitDTO.manufacturerEntity
+            userType= reportOnSiteVisitDTO.userType
 
         }
         return ServerResponse(HttpStatus.OK,"Uploaded Feedback",standardLevyService.reportOnSiteVisit(standardLevyFactoryVisitReportEntity))
@@ -799,6 +797,7 @@ class StdLevyController(
             manufacturerEntity= siteVisitReportDecisionDTO.manufacturerEntity
             cheifManagerRemarks= siteVisitReportDecisionDTO.comments
             assigneeId = siteVisitReportDecisionDTO.assigneeId
+            userType= siteVisitReportDecisionDTO.userType
 
         }
         return ServerResponse(HttpStatus.OK,"Decision Saved",standardLevyService.decisionOnSiteReportLevelTwo(standardLevyFactoryVisitReportEntity))
@@ -857,6 +856,28 @@ class StdLevyController(
     fun getSlUsers(): MutableList<UsersEntity> {
         return standardLevyService.getSlUsers()
     }
+
+    @GetMapping("/getPlList")
+    @ResponseBody
+    fun getPlList(): MutableList<UsersEntity> {
+        return standardLevyService.getPlList()
+    }
+
+    @GetMapping("/getSlLvTwoList")
+    @ResponseBody
+    fun getSlLvTwoList(): MutableList<UsersEntity> {
+        return standardLevyService.getSlLvTwoList()
+    }
+
+    @GetMapping("/getSlLoggedIn")
+    @ResponseBody
+    fun getSlLoggedIn(): UserTypeHolder
+    {
+
+            return standardLevyService.getSlLoggedIn()
+
+        }
+
 
     @PostMapping("/anonymous/standard/close")
     fun clos(@RequestBody responseMessage: ResponseMessage) {

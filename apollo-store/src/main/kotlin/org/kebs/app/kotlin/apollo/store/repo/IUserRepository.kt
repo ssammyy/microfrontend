@@ -40,7 +40,9 @@ package org.kebs.app.kotlin.apollo.store.repo
 
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.registration.*
+import org.kebs.app.kotlin.apollo.store.model.std.DataHolder
 import org.kebs.app.kotlin.apollo.store.model.std.StandardReviewForm
+import org.kebs.app.kotlin.apollo.store.model.std.UserTypeHolder
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.JpaRepository
@@ -64,6 +66,8 @@ interface IUserRepository : HazelcastRepository<UsersEntity, Long>, JpaSpecifica
     fun findUsersInCfsAndProfiles(@Param("profileIds")profileIds:List<Long>, @Param("cfsUserIds") cfsUserIds: List<Long>): List<UsersEntity>
     //    @Query("SELECT u.Id, u.firstName, u.lastName, u.notifs, u.role, u.status from datKebsUsers u where u.notifs=?1")
     fun findByEmail(email: String): UsersEntity?
+
+
 
     //    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     fun findByUserName(userName: String): UsersEntity?
@@ -288,6 +292,15 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     @Query(value = "SELECT *  FROM DAT_KEBS_COMPANY_PROFILE WHERE ASSIGN_STATUS='1' AND ASSIGNED_TO = :assignedTo", nativeQuery = true)
     fun getMnPendingTask(@Param("assignedTo") assignedTo: Long?): MutableList<CompanyProfileEntity>
 
+
+}
+
+@Repository
+interface UsersEntityRepository : JpaRepository<UsersEntity, Long> {
+
+
+    @Query(value = "SELECT u.USER_TYPE as name  FROM DAT_KEBS_USERS u WHERE  u.ID = :id", nativeQuery = true)
+    fun getSlLoggedById(@Param("id") id: Long?): UserTypeHolder
 
 }
 

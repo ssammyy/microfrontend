@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.store.repo.std
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaRawMaterialEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaUploadsEntity
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.JpaRepository
@@ -144,8 +145,17 @@ interface UserListRepository : JpaRepository<UsersEntity, Long> {
     @Query("SELECT u.firstName,u.lastName FROM UsersEntity u WHERE u.id =:id")
     fun findNameById(@Param("id") id: Long?): String
 
-    @Query(value = "SELECT * FROM DAT_KEBS_USERS WHERE USER_TYPE IN ('63','62','61') ", nativeQuery = true)
-    fun findFirst10ByIdOrderByIdDesc(): MutableList<UsersEntity>
+    @Query(value = "SELECT * FROM DAT_KEBS_USERS  WHERE USER_TYPE IN ('63','62','61') ", nativeQuery = true)
+    fun getSlLvThreeList(): MutableList<UsersEntity>
+
+    @Query(value = "SELECT * FROM DAT_KEBS_USERS  WHERE USER_TYPE IN ('61') ", nativeQuery = true)
+    fun getPlList(): MutableList<UsersEntity>
+
+    @Query(value = "SELECT * FROM DAT_KEBS_USERS  WHERE USER_TYPE IN ('61','62') ", nativeQuery = true)
+    fun getSlLvTwoList(): MutableList<UsersEntity>
+
+
+
 }
 
 interface DatKebsSdNwaUploadsEntityRepository : JpaRepository<DatKebsSdNwaUploadsEntity, Long> {

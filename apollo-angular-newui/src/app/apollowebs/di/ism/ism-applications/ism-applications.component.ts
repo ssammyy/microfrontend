@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {DestinationInspectionService} from "../../../../core/store/data/di/destination-inspection.service";
 import {Router} from "@angular/router";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
     selector: 'app-ism-applications',

@@ -100,14 +100,22 @@ export class AuthEffects {
                 switchMap((action) => this.service.validateTokenForUser(action.payload)
                     .pipe(
                         mergeMap((data) => {
-                            if (data.status === 200) {
+                            if (data.id === 200) {
+                                // if(this.hasRole(["PERMIT_APPLICATION"], data.roles)){
                                 return [
-                                    doValidateTokenForUserSuccess({data: data, validated: true}),
-                                    loadResponsesSuccess({message: data})
+                                    loadAuthsSuccess({profile: data, loggedIn: true}),
+                                    loadUserCompanyInfo(),
+                                    doValidateTokenForUserSuccess({data: {payload: "Success, valid OTP received", response: "00", status: 200}, validated: true}),
+                                    loadResponsesSuccess({message: {payload: "Success, valid OTP received", response: "00", status: 200}})
                                 ];
+                                // }
+                                // else
+                                // {
+                                //
+                                // }
                             } else {
                                 return [
-                                    doValidateTokenForUserFailure({data: data, validated: false})
+                                    doValidateTokenForUserFailure({data: {payload: "Failed, invalid OTP received, try again", response: "99", status: 500}, validated: false})
                                 ];
                             }
                         }),
@@ -230,25 +238,23 @@ export class AuthEffects {
                     .pipe(
                         mergeMap((data) => {
                             data.redirectUrl = action.redirectUrl
-                            if(this.hasRole(["PERMIT_APPLICATION"], data.roles)){
+                            // if(this.hasRole(["PERMIT_APPLICATION"], data.roles)){
                                 return [
-                                    loadAuthsSuccess({profile: data, loggedIn: true}),
-                                    loadUserCompanyInfo(),
                                     Go({
                                         payload: action.redirectUrl,
                                         link: 'login/otp',
                                         redirectUrl: null
                                     })
                                 ];
-                            }
-                            return [
-                                loadAuthsSuccess({profile: data, loggedIn: true}),
-                                Go({
-                                    payload: action.redirectUrl,
-                                    link: 'login/otp',
-                                    redirectUrl: null
-                                })
-                            ];
+                         //   }
+                         //    return [
+                         //        loadAuthsSuccess({profile: data, loggedIn: true}),
+                         //        Go({
+                         //            payload: action.redirectUrl,
+                         //            link: 'login/otp',
+                         //            redirectUrl: null
+                         //        })
+                         //    ];
                         }),
 
                         catchError(

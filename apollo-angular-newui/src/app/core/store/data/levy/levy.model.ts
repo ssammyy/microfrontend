@@ -188,6 +188,7 @@ export interface SiteVisitReport {
     visitID: number;
     assigneeId: number;
     manufacturerEntity: number;
+    userType: number;
 
 }
 export interface ApproveVisitTask {
@@ -223,6 +224,7 @@ export interface ReportDecisionLevelTwo{
     visitID: bigint;
     comments: string;
     manufacturerEntity: number;
+    userType: number;
 }
 
 export interface SiteVisitFeedBack {
@@ -304,6 +306,7 @@ export interface ManufacturePendingTaskData{
     levyProcessInstance: string;
     levelOneId: number;
     officersFeedback: string;
+    userType: number;
 
 }
 export interface ManufactureCompleteTask {
@@ -331,6 +334,12 @@ export interface ManufactureCompleteTask {
     entryNumber: number;
     assignStatus: number;
     assignedTo: number;
+
+}
+export interface UsersEntityList {
+
+    name: string;
+
 
 }
 

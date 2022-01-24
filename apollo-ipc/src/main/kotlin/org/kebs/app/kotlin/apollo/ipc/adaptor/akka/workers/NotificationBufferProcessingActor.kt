@@ -61,7 +61,7 @@ class NotificationBufferProcessingActor(
         return receiveBuilder()
                 .match(NotificationsBufferEntity::class.java) { buffer ->
                     try {
-                        selectUseCase(buffer)
+                        //selectUseCase(buffer)
                     } catch (e: Exception) {
                         self().tell(e, self())
 
@@ -92,44 +92,44 @@ class NotificationBufferProcessingActor(
         TODO("Not yet implemented")
     }
 
-    private fun selectUseCase(buffer: NotificationsBufferEntity?) {
-        notificationsRepository.findByIdOrNull(buffer?.notificationId)
-                ?.let { notification ->
-                    try {
-                        when (buffer?.status) {
-                            notification.serviceMapId?.initStatus -> {
-                                notification.beanProcessorName
-                                        ?.let { beanName ->
-                                            context.getBean(beanName)
-                                                    .let { bean ->
-                                                        val beanClazz = bean::class.java
-                                                        val method: Method? = notification.methodName?.let { beanClazz.getMethod(it, NotificationsBufferEntity::class.java) }
-                                                        method?.invoke(bean, buffer)
-                                                    }
-                                        }
-
-                            }
-                            else -> {
-                                throw InvalidInputException("Received invalid notification request [id=${buffer?.id}]")
-
-                            }
-                        }
-
-
-                    } catch (e: Exception) {
-                        KotlinLogging.logger { }.error(e.message, e)
-                        KotlinLogging.logger { }.debug(e.message, e)
-                        buffer?.status = notification.serviceMapId?.exceptionStatus
-                        buffer?.responseStatus = notification.serviceMapId?.exceptionStatusCode
-                        buffer?.responseMessage = "${notification.serviceMapId}: ${e.message}"
-
-                    }
-
-                    buffer?.let { bufferRepository.save(it) }
-
-
-                }
-
-
-    }
+//    private fun selectUseCase(buffer: NotificationsBufferEntity?) {
+//        notificationsRepository.findByIdOrNull(buffer?.notificationId)
+//                ?.let { notification ->
+//                    try {
+//                        when (buffer?.status) {
+//                            notification.serviceRequestId?.initStatus -> {
+//                                notification.beanProcessorName
+//                                        ?.let { beanName ->
+//                                            context.getBean(beanName)
+//                                                    .let { bean ->
+//                                                        val beanClazz = bean::class.java
+//                                                        val method: Method? = notification.methodName?.let { beanClazz.getMethod(it, NotificationsBufferEntity::class.java) }
+//                                                        method?.invoke(bean, buffer)
+//                                                    }
+//                                        }
+//
+//                            }
+//                            else -> {
+//                                throw InvalidInputException("Received invalid notification request [id=${buffer?.id}]")
+//
+//                            }
+//                        }
+//
+//
+//                    } catch (e: Exception) {
+//                        KotlinLogging.logger { }.error(e.message, e)
+//                        KotlinLogging.logger { }.debug(e.message, e)
+//                        buffer?.status = notification.serviceMapId?.exceptionStatus
+//                        buffer?.responseStatus = notification.serviceMapId?.exceptionStatusCode
+//                        buffer?.responseMessage = "${notification.serviceMapId}: ${e.message}"
+//
+//                    }
+//
+//                    buffer?.let { bufferRepository.save(it) }
+//
+//
+//                }
+//
+//
+//    }
 }
