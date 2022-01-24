@@ -28,6 +28,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.servlet.function.ServerRequest
 import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
@@ -1248,10 +1249,11 @@ class SystemsAdminDaoService(
      * Receive payload with OTP and Phone number and validate that it is valid
      * @param request
      */
-    fun validatePhoneNumberAndToken(request: ValidatePhoneNumberTokenRequestDto): CustomResponse? =
+    fun validatePhoneNumberAndToken(request: ValidatePhoneNumberTokenRequestDto, req: ServerRequest): CustomResponse? =
         commonDaoServices.validateOTPToken(
             request.token ?: throw NullValueNotAllowedException("Invalid Token provided"),
-            commonDaoServices.makeKenyanMSISDNFormat(request.phone)
+            commonDaoServices.makeKenyanMSISDNFormat(request.phone),
+            req
         )
 
 

@@ -65,6 +65,8 @@ interface IUserRepository : HazelcastRepository<UsersEntity, Long>, JpaSpecifica
     //    @Query("SELECT u.Id, u.firstName, u.lastName, u.notifs, u.role, u.status from datKebsUsers u where u.notifs=?1")
     fun findByEmail(email: String): UsersEntity?
 
+
+
     //    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     fun findByUserName(userName: String): UsersEntity?
 

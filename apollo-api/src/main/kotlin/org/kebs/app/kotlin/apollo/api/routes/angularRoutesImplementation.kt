@@ -352,6 +352,17 @@ class AngularRoutes {
 
                 }
             }
+            "".nest {
+                "/validateToken".nest {
+                    POST("", handler::handleValidatePhoneNumberAndToken)
+                    GET("", otherHandler::notSupported)
+                    "/{id}".nest {
+                        GET("", otherHandler::notSupported)
+                        PUT("", otherHandler::notSupported)
+                    }
+
+                }
+            }
         }
 
     }

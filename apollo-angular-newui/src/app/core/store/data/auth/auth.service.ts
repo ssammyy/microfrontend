@@ -44,10 +44,10 @@ export class AuthService {
         );
     }
 
-    public validateTokenForUser(payload: ValidateTokenRequestDto): Observable<ApiResponse> {
+    public validateTokenForUser(payload: ValidateTokenRequestDto): Observable<LoggedInUser> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.VALIDATE_TOKEN_FOR_USER);
-        return this.http.post<ApiResponse>(url, payload).pipe(
-            map((r: ApiResponse): ApiResponse => r),
+        return this.http.post<LoggedInUser>(url, payload).pipe(
+            map((r: LoggedInUser): LoggedInUser => r),
             catchError((fault: HttpErrorResponse) => throwError(fault))
         );
     }
