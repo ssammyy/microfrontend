@@ -11,7 +11,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatStepperModule} from '@angular/material/stepper';
 import {MatIconModule} from '@angular/material/icon';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {MatDialogModule} from '@angular/material/dialog';
+import {MatDialogModule,MatDialog} from '@angular/material/dialog';
 
 
 import {AppComponent} from './app.component';
@@ -375,6 +375,7 @@ import { UpdateWaiverTaskComponent } from './apollowebs/pvoc/waivers/update-waiv
         ApproveRejectItemComponent,
         ViewDemandNoteComponent,
         ItemSelectionComponent,
+
         ViewInspectionDetailsComponent,
         ItemChecklistComponent,
         EngineeringItemChecklistComponent,
@@ -621,6 +622,8 @@ export class MaterialModule {}
         NgxPaginationModule,
         FontAwesomeModule,
         NgxSpinnerModule,
+        MatTableModule,
+        MatTabsModule,
     ],
     declarations: [
         AppComponent,
