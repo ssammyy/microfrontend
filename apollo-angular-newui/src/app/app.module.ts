@@ -601,6 +601,8 @@ export class MaterialModule {}
         // }),
         HttpClientModule,
         //MaterialModule,
+        // MatDialog,
+        MatDialogModule,
         SidebarModule,
         NavbarModule,
         FooterModule,
@@ -627,7 +629,7 @@ export class MaterialModule {}
     ],
     declarations: [
         AppComponent,
-        AdminLayoutComponent,
+        // AdminLayoutComponent,
         AuthLayoutComponent,
         ViewComplaintsComponent,
         ViewComplaintDetailsComponent,
