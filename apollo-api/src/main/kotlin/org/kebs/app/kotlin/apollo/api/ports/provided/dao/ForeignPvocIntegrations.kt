@@ -5,10 +5,12 @@ import org.kebs.app.kotlin.apollo.api.payload.request.*
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
+import org.springframework.stereotype.Component
 import java.math.BigDecimal
 import java.sql.Timestamp
 import java.time.Instant
 
+@Component
 class ForeignPvocIntegrations(
         private val cocRepo: ICocsRepository,
         private val iCocItemRepository: ICocItemRepository,
@@ -79,7 +81,7 @@ class ForeignPvocIntegrations(
                             shipmentGrossWeight = coc.shipmentGrossWeight ?: "UNKNOWN"
                             cocRemarks = coc.cocRemarks ?: "UNKNOWN"
                             route = coc.route ?: "Z"
-                            partner = user.id
+                            partner = user.partnerName
                             version = coc.version ?: 1
                             cocType = "COC"
                             productCategory = "UNKNOWN"
@@ -193,7 +195,7 @@ class ForeignPvocIntegrations(
                     version = coc.version ?: 1
                     cocType = "COI"
                     productCategory = "UNKNOWN"
-                    partner = user.id
+                    partner = user.partnerName
                     createdBy = commonDaoServices.loggedInUserAuthentication().name
                     createdOn = commonDaoServices.getTimestamp()
                 }
@@ -296,7 +298,7 @@ class ForeignPvocIntegrations(
                 inspectionFeePaymentDate = cor.inspectionFeePaymentDate ?: commonDaoServices.getTimestamp()
                 inspectionRemarks = cor.inspectionRemarks ?: "No Remarks"
                 status = s.activeStatus
-                partner = user.id
+                partner = user.partnerName
                 createdBy = commonDaoServices.loggedInUserAuthentication().name
                 createdOn = commonDaoServices.getTimestamp()
             }
