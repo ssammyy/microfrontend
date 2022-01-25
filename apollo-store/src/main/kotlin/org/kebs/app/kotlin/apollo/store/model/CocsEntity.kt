@@ -352,7 +352,7 @@ class CocsEntity : Serializable {
 
     @Column(name = "PARTNER", nullable = true, length = 50)
     @Basic
-    var partner: Long? = null
+    var partner: String? = null
 
     @Column(name = "PVOC_PARTNER", nullable = true, length = 50)
     @Basic

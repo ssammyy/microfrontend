@@ -173,7 +173,7 @@ class CorsBakEntity : Serializable {
 
     @Column(name = "PARTNER")
     @Basic
-    var partner: Long? = null
+    var partner: String? = null
 
     @Column(name = "INSPECTION_FEE_EXCHANGE_RATE")
     @Basic

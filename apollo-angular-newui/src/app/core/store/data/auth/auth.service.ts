@@ -60,10 +60,10 @@ export class AuthService {
         );
     }
 
-    public login(data: LoginCredentials): Observable<LoggedInUser> {
+    public login(data: LoginCredentials): Observable<ApiResponse> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOGIN_PAGE);
-        return this.http.post<LoggedInUser>(url, data).pipe(
-            map(function (response: LoggedInUser) {
+        return this.http.post<ApiResponse>(url, data).pipe(
+            map(function (response: ApiResponse) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
