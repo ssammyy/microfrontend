@@ -960,7 +960,7 @@ class DestinationInspectionService(
                             customsIeNo = "UNKNOWN"
                             fuelType = "UNKNOWN"
                             transmission = "UNKNOWN"
-                            inspectionFee = -1
+                            inspectionFee = -1.0
                             inspectionFeeCurrency = "NA"
                             inspectionFeePaymentDate = Timestamp.from(Instant.now())
                             inspectionOfficer = loggedInUser.userName ?: "NA"
