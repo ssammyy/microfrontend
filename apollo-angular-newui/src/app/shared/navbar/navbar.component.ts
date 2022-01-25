@@ -180,9 +180,9 @@ export class NavbarComponent implements OnInit {
             $layer.remove();
         }
 
-        setTimeout(function() {
-            $toggle.classList.remove('toggled');
-        }, 400);
+        // setTimeout(function() {
+        //     $toggle.classList.remove('toggled');
+        // }, 400);
 
         this.mobile_menu_visible = 0;
     }

@@ -17,10 +17,10 @@ export class ApiEndpointService {
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-         // LOCAL_DEV: 'localhost:8006'
+         LOCAL_DEV: 'localhost:8006'
         // LOCAL_DEV: '12:8006'
         // LOCAL_DEV: '41.72.209.58:8006'
-          LOCAL_DEV: `kimsint.kebs.org:8006`
+        //   LOCAL_DEV: `kimsint.kebs.org:8006`
         // LOCAL_DEV: `kims.kebs.org:8006`
         // LOCAL_DEV: '10.10.0.149:8007'
 
@@ -53,7 +53,7 @@ export class ApiEndpointService {
     /**
      * Map of contexts for API endpoints.
      */
-    public static AUTH_CONTEXT = '/api/v1/login';
+    public static AUTH_CONTEXT = '/api/v1/login/b';
     public static ANONYMOUS_CONTEXT = '/api/v1/migration/anonymous';
     public static ANONYMOUS_CONTEXT_NEP = '/api/v1/migration/anonymous/National_enquiry_point';
 
@@ -96,7 +96,7 @@ export class ApiEndpointService {
         HOME_PAGE: `${ApiEndpointService.ANONYMOUS_CONTEXT}`,
         SEND_TOKEN: `${ApiEndpointService.ANONYMOUS_CONTEXT}/sendToken`,
         SEND_TOKEN_FOR_USER: `${ApiEndpointService.ANONYMOUS_CONTEXT}/sendTokenForUser`,
-        VALIDATE_TOKEN_FOR_USER: `${ApiEndpointService.ANONYMOUS_CONTEXT}/validateTokenFromThePhone`,
+        VALIDATE_TOKEN_FOR_USER: `${ApiEndpointService.MASTERS_CONTEXT}/validateToken`,
         VALIDATE_TOKEN: `${ApiEndpointService.ANONYMOUS_CONTEXT}/validateToken`,
         REGISTER_COMPANY: `${ApiEndpointService.ANONYMOUS_CONTEXT}/registerCompany`,
         COMPANY_LIST: `${ApiEndpointService.MASTERS_CONTEXT}/company/`,

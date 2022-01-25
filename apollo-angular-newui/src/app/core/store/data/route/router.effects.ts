@@ -38,8 +38,13 @@ export class RouterEffects {
     ofType(Go),
     map((action) => action),
     tap((data) => {
-      // const extras: NavigationExtras = {state: data.payload};
-      this.router.navigate([data.link], {queryParams: {returnUrl: data.redirectUrl}});
+        // const extras: NavigationExtras = {state: data.payload};
+        if (data.redirectUrl) {
+            this.router.navigate([data.link], {queryParams: {returnUrl: data.redirectUrl}});
+        } else {
+            this.router.navigate([data.link]);
+
+        }
     })
   ), {dispatch: false});
 
