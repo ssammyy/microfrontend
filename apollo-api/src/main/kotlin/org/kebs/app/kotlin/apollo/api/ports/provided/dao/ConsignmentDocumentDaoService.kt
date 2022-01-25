@@ -116,45 +116,13 @@ class ConsignmentDocumentDaoService(
                                 //Update Old CD with Status 1
                                 with(cdDetails) {
                                     this?.oldCdStatus = map.activeStatus
+                                    this?.approveRejectCdStatusType = null
                                 }
                                 cdDetails = daoServices.updateCdDetailsInDB(cdDetails!!, loggedInUser)
 
-                                //Remove Unnecessary data that wont be used
-                                with(cdDetails) {
-                                    //Todo: Check if the Importer or foregin details to pe checked
-                                    this?.portOfArrival = null
-                                    this?.clusterId = null
-                                    this?.freightStation = null
-                                    this?.cdStandard = null
-                                    this?.cdType = null
-                                    this?.uuid = null
-                                    this?.idfNumber = null
-                                    this?.cdImporter = null
-                                    this?.cdConsignee = null
-                                    this?.cdExporter = null
-                                    this?.cdConsignor = null
-                                    this?.cdTransport = null
-                                    this?.cdHeaderOne = null
-                                    this?.cdStandardsTwo = null
-                                    this?.cdPgaHeader = null
-                                    this?.cdHeaderTwo = null
-                                    this?.oldCdStatus = null
-                                    this?.version = null
-                                    this?.createdBy = null
-                                    this?.createdOn = null
-                                    this?.modifiedOn = null
-                                    this?.modifiedBy = null
-                                    this?.approveRejectCdStatusType = null
-                                    this?.issuedDateTime = null
-                                    this?.summaryPageURL = null
-                                }
 
-                                val updatedCDDetails = daoServices.updateCdDetailsInDB(
-                                        commonDaoServices.updateDetails(
-                                                cdCreated,
-                                                cdDetails!!
-                                        ) as ConsignmentDocumentDetailsEntity, loggedInUser
-                                )
+                                // Update details
+                                daoServices.updateCdDetailsInDB(cdCreated, loggedInUser)
                             }
                         }
                     }

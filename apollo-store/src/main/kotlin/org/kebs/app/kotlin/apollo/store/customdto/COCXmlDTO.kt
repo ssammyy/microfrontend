@@ -135,7 +135,7 @@ class CustomCocXmlDto(cocNumber: String?, idfNumber: String?, rfiNumber: String?
     var finalInvoiceFobValue: String? = finalInvoiceFobValue.toString()
 
     @JacksonXmlProperty(localName = "FINAL_INVOICE_EXCHANGE_RATE")
-    var finalInvoiceExchangeRate: Double? = finalInvoiceExchangeRate?:0.0
+    var finalInvoiceExchangeRate: Double? = finalInvoiceExchangeRate ?: 0.0
 
     @JacksonXmlProperty(localName = "FINAL_INVOICE_CURRENCY")
     var finalInvoiceCurrency: String? = finalInvoiceCurrency
@@ -226,13 +226,13 @@ class CocDetails(shipmentLineNumber: Long, shipmentLineHscode: String, shipmentL
     var shipmentLineBrandName: String? = shipmentLineBrandName
 }
 
-fun CocsEntity.toCocXmlRecordRefl() =CustomCocXmlDto(
-        this.cocNumber, this.idfNumber, this.rfiNumber,this.ucrNumber,this.rfcDate,this.cocIssueDate,this.clean,
-        this.cocRemarks,this.issuingOffice,this.importerName,this.importerPin,this.importerAddress1, this.importerAddress2,
-        this.importerCity, importerCountry, this.importerZipCode, this.importerTelephoneNumber,this.importerFaxNumber,
-        this.importerEmail,this.exporterName, this.exporterPin,this.exporterAddress1, this.exporterAddress2, this.exporterCity,
+fun CocsEntity.toCocXmlRecordRefl() = CustomCocXmlDto(
+        this.cocNumber, this.idfNumber, this.rfiNumber, this.ucrNumber, this.rfcDate, this.cocIssueDate, this.clean,
+        this.cocRemarks, this.issuingOffice, this.importerName, this.importerPin, this.importerAddress1, this.importerAddress2,
+        this.importerCity, importerCountry, this.importerZipCode, this.importerTelephoneNumber, this.importerFaxNumber,
+        this.importerEmail, this.exporterName, this.exporterPin, this.exporterAddress1, this.exporterAddress2, this.exporterCity,
         this.exporterCountry, this.exporterZipCode, this.exporterTelephoneNumber, this.exporterFaxNumber, this.exporterEmail,
-        this.placeOfInspection,this.dateOfInspection,
+        this.placeOfInspection, this.dateOfInspection,
         this.portOfDestination,
         this.shipmentMode,
         this.countryOfSupply,
@@ -247,14 +247,14 @@ fun CocsEntity.toCocXmlRecordRefl() =CustomCocXmlDto(
         this.shipmentQuantityDelivered,
         this.route,
         this.productCategory,
-        this.partner
+        this.partner?.toString() ?: "NA"
 )
 
 fun CocItemsEntity.toCocItemDetailsXmlRecordRefl(cocNumber: String) = CocDetails(
-        this.shipmentLineNumber, this.shipmentLineHscode?:"NA", this.shipmentLineQuantity.toLong(),
-        this.shipmentLineUnitofMeasure?:"NA",
-        this.shipmentLineDescription?:"NA", this.shipmentLineVin?:"NA",
-        this.shipmentLineStickerNumber?:"NA", this.shipmentLineIcs?:"NA",
-        this.shipmentLineStandardsReference?:"NA", this.shipmentLineLicenceReference?:"NA",
-        this.shipmentLineRegistration?:"NA",cocNumber ,this.shipmentLineBrandName?:"NA"
+        this.shipmentLineNumber, this.shipmentLineHscode ?: "NA", this.shipmentLineQuantity.toLong(),
+        this.shipmentLineUnitofMeasure ?: "NA",
+        this.shipmentLineDescription ?: "NA", this.shipmentLineVin ?: "NA",
+        this.shipmentLineStickerNumber ?: "NA", this.shipmentLineIcs ?: "NA",
+        this.shipmentLineStandardsReference ?: "NA", this.shipmentLineLicenceReference ?: "NA",
+        this.shipmentLineRegistration ?: "NA", cocNumber, this.shipmentLineBrandName ?: "NA"
 )

@@ -23,7 +23,7 @@ class CdFileXmlEntity : Serializable {
     @Basic
     var filePath: String? = null
 
-    @Column(name = "FILE_ERROR", columnDefinition = "text")
+    @Column(name = "FILE_ERROR",length=1024)
     @Basic
     var fileErrors: String? = null
 

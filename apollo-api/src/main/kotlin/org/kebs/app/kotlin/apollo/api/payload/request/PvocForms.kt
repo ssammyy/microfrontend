@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersEntity
 import java.sql.Date
 import java.sql.Timestamp
-import java.util.*
 import javax.validation.constraints.Email
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
@@ -832,6 +831,126 @@ class RfcCoiEntityForm {
     var items: List<RfcCoiItem>? = null
 
     var inspectionFee: DocumentPaymentDetails? = null
+}
+
+class IdfItem {
+    @NotEmpty(message = "Required field")
+    var itemDescription: String? = null
+
+    @NotEmpty(message = "Required field")
+    var hsCode: String? = null
+
+    @NotEmpty(message = "Required field")
+    var quantity: Long? = null
+
+    @NotEmpty(message = "Required field")
+    var newUsed: String? = null
+
+    @NotEmpty(message = "Required field")
+    var unitOfMeasure: String? = null
+
+    @NotEmpty(message = "Required field")
+    var applicableStandard: String? = null
+
+    @NotEmpty(message = "Required field")
+    var itemCost: Long? = null
+}
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+class IdfEntityForm {
+    @NotEmpty(message = "Required field")
+    var idfNumber: String? = null
+
+    @NotEmpty(message = "Required field")
+    var ucrNumber: String? = null
+
+    @NotEmpty(message = "Required field")
+    var importerName: String? = null
+
+    @NotEmpty(message = "Required field")
+    var importerAddress: String? = null
+
+    @NotEmpty(message = "Required field")
+    var importerEmail: String? = null
+
+    @NotEmpty(message = "Required field")
+    var importerTelephoneNumber: String? = null
+
+    @NotEmpty(message = "Required field")
+    var importerContactName: String? = null
+
+    @NotEmpty(message = "Required field")
+    var importerFaxNumber: String? = null
+
+    @NotEmpty(message = "Required field")
+    var exporterName: String? = null
+
+    @NotEmpty(message = "Required field")
+    var exporterAddress: String? = null
+
+    @NotEmpty(message = "Required field")
+    var exporterEmail: String? = null
+
+    @NotEmpty(message = "Required field")
+    var exporterTelephoneNumber: String? = null
+
+    @NotEmpty(message = "Required field")
+    var exporterContactName: String? = null
+
+    @NotEmpty(message = "Required field")
+    var exporterFaxNumber: String? = null
+
+
+    @NotEmpty(message = "Required field")
+    var countryOfSupply: String? = null
+
+    @NotEmpty(message = "Required field")
+    var portOfDischarge: String? = null
+
+    @NotEmpty(message = "Required field")
+    var portOfCustomsClearance: String? = null
+
+    @NotEmpty(message = "Required field")
+    var modeOfTransport: String? = null
+
+    @NotEmpty(message = "Required field")
+    var comesa: String? = null
+
+    @NotEmpty(message = "Required field")
+    var invoiceNumber: String? = null
+
+    @NotEmpty(message = "Required field")
+    var invoiceDate: Timestamp? = null
+
+    @NotEmpty(message = "Required field")
+    var currency: String? = null
+
+    @NotEmpty(message = "Required field")
+    var exchangeRate: Double? = null
+
+    @NotEmpty(message = "Required field")
+    var fobValue: Double? = null
+
+    @NotEmpty(message = "Required field")
+    var freight: Double? = null
+
+    @NotEmpty(message = "Required field")
+    var insurance: Double? = null
+
+    @NotEmpty(message = "Required field")
+    var otherChargers: Double? = null
+
+    @NotEmpty(message = "Required field")
+    var total: Double? = null
+
+    @NotEmpty(message = "Required field")
+    var observations: String? = null
+
+    @NotEmpty(message = "Required field")
+    var usedStatus: String? = null
+
+    @NotEmpty(message = "Required field")
+    var items: List<IdfItem>? = null
 }
 
 class RiskProfileForm {
