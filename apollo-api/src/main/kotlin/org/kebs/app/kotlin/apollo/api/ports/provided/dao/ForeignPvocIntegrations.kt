@@ -24,85 +24,85 @@ class ForeignPvocIntegrations(
 ) {
 
     fun foreignCoc(
-            user: PvocPartnersEntity,
-            coc: CocEntityForm,
-            map: ServiceMapsEntity,
+        user: PvocPartnersEntity,
+        coc: CocEntityForm,
+        map: ServiceMapsEntity,
     ): CocsEntity? {
         coc.ucrNumber?.let { ucrNumber ->
             cocRepo.findByUcrNumberAndCocType(ucrNumber, "COC")
-                    ?.let { coc ->
-                        return null
-                    }
-        }
-                ?: kotlin.run {
-                    var localCoc = CocsEntity()
-                    KotlinLogging.logger { }.debug("Starting background task")
-                    try {
-                        with(localCoc) {
-                            coiNumber = "UNKNOWN"
-                            cocNumber = coc.cocNumber?.toUpperCase()
-                            idfNumber = coc.idfNumber ?: "UNKNOWN"
-                            rfiNumber = "UNKNOWN"
-                            ucrNumber = coc.ucrNumber
-                            rfcDate = commonDaoServices.getTimestamp()
-                            shipmentQuantityDelivered = "UNKNOWN"
-                            cocIssueDate = commonDaoServices.getTimestamp()
-                            clean = "Y"
-                            cocRemarks = coiRemarks ?: "NA"
-                            coiRemarks = "UNKNOWN"
-                            issuingOffice = coc.issuingOffice ?: "UNKNOWN"
-                            importerName = coc.importerName
-                            importerPin = coc.importerPin
-                            importerAddress1 = coc.importerAddress1
-                            importerAddress2 = coc.importerAddress2 ?: "UNKNOWN"
-                            importerCity = coc.importerCity ?: "UNKNOWN"
-                            importerCountry = coc.importerCountry ?: "UNKNOWN"
-                            importerZipCode = "UNKNOWN"
-                            importerTelephoneNumber = coc.importerTelephoneNumber ?: "UNKNOWN"
-                            importerFaxNumber = coc.importerFaxNumber ?: "UNKNOWN"
-                            importerEmail = coc.importerEmail ?: "UNKNOWN"
-                            exporterName = coc.exporterName ?: "UNKNOWN"
-                            exporterPin = coc.importerPin ?: "UNKNOWN"
-                            exporterAddress1 = coc.exporterAddress1 ?: "UNKOWN"
-                            exporterAddress2 = coc.exporterAddress2 ?: "UNKNOWN"
-                            exporterCity = coc.exporterCity ?: "UNKNOWN"
-                            exporterCountry = coc.exporterCountry ?: "UNKNOWN"
-                            exporterZipCode = coc.exporterZipCode ?: "UNKNOWN"
-                            exporterTelephoneNumber = coc.exporterTelephoneNumber ?: "UNKOWN"
-                            exporterFaxNumber = coc.exporterFaxNumber ?: "UNKOWN"
-                            exporterEmail = coc.exporterEmail ?: "UNKNOWN"
-                            placeOfInspection = coc.placeOfInspection ?: "UNKNOWN"
-                            dateOfInspection = coc.dateOfInspection
-                            portOfDestination = coc.portOfDestination ?: "UNKOWN"
-                            shipmentMode = coc.shipmentMode ?: "UNKNOWN"
-                            countryOfSupply = coc.countryOfSupply ?: "UNKNOWN"
-                            finalInvoiceCurrency = coc.finalInvoiceCurrency ?: "KES"
-                            finalInvoiceDate = coc.finalInvoiceDate ?: commonDaoServices.getTimestamp()
-                            shipmentSealNumbers = coc.shipmentSealNumbers ?: "UNKNOWN"
-                            shipmentContainerNumber = coc.shipmentContainerNumber ?: "UNKNOWN"
-                            shipmentGrossWeight = coc.shipmentGrossWeight ?: "UNKNOWN"
-                            cocRemarks = coc.cocRemarks ?: "UNKNOWN"
-                            route = coc.route ?: "Z"
-                            partner = user.id
-                            version = coc.version ?: 1
-                            cocType = "COC"
-                            documentsType="F"
-                            productCategory = "UNKNOWN"
-                            partner = null
-                            createdBy = commonDaoServices.loggedInUserAuthentication().name
-                            createdOn = commonDaoServices.getTimestamp()
-                        }
-                        // Add invoice details
-                        localCoc = cocRepo.save(localCoc)
-                        KotlinLogging.logger { }.info { "localCoc = ${localCoc.id}" }
-                        foreignCocItems(coc.cocItems, localCoc, map)
-                    } catch (e: Exception) {
-                        KotlinLogging.logger { }.debug("Threw error from forward express callback")
-                        KotlinLogging.logger { }.debug(e.message)
-                        KotlinLogging.logger { }.debug(e.toString())
-                    }
-                    return localCoc
+                ?.let { coc ->
+                    return null
                 }
+        }
+            ?: kotlin.run {
+                var localCoc = CocsEntity()
+                KotlinLogging.logger { }.debug("Starting background task")
+                try {
+                    with(localCoc) {
+                        coiNumber = "UNKNOWN"
+                        cocNumber = coc.cocNumber?.toUpperCase()
+                        idfNumber = coc.idfNumber ?: "UNKNOWN"
+                        rfiNumber = "UNKNOWN"
+                        ucrNumber = coc.ucrNumber
+                        rfcDate = commonDaoServices.getTimestamp()
+                        shipmentQuantityDelivered = "UNKNOWN"
+                        cocIssueDate = commonDaoServices.getTimestamp()
+                        clean = "Y"
+                        cocRemarks = coiRemarks ?: "NA"
+                        coiRemarks = "UNKNOWN"
+                        issuingOffice = coc.issuingOffice ?: "UNKNOWN"
+                        importerName = coc.importerName
+                        importerPin = coc.importerPin
+                        importerAddress1 = coc.importerAddress1
+                        importerAddress2 = coc.importerAddress2 ?: "UNKNOWN"
+                        importerCity = coc.importerCity ?: "UNKNOWN"
+                        importerCountry = coc.importerCountry ?: "UNKNOWN"
+                        importerZipCode = "UNKNOWN"
+                        importerTelephoneNumber = coc.importerTelephoneNumber ?: "UNKNOWN"
+                        importerFaxNumber = coc.importerFaxNumber ?: "UNKNOWN"
+                        importerEmail = coc.importerEmail ?: "UNKNOWN"
+                        exporterName = coc.exporterName ?: "UNKNOWN"
+                        exporterPin = coc.importerPin ?: "UNKNOWN"
+                        exporterAddress1 = coc.exporterAddress1 ?: "UNKOWN"
+                        exporterAddress2 = coc.exporterAddress2 ?: "UNKNOWN"
+                        exporterCity = coc.exporterCity ?: "UNKNOWN"
+                        exporterCountry = coc.exporterCountry ?: "UNKNOWN"
+                        exporterZipCode = coc.exporterZipCode ?: "UNKNOWN"
+                        exporterTelephoneNumber = coc.exporterTelephoneNumber ?: "UNKOWN"
+                        exporterFaxNumber = coc.exporterFaxNumber ?: "UNKOWN"
+                        exporterEmail = coc.exporterEmail ?: "UNKNOWN"
+                        placeOfInspection = coc.placeOfInspection ?: "UNKNOWN"
+                        dateOfInspection = coc.dateOfInspection
+                        portOfDestination = coc.portOfDestination ?: "UNKOWN"
+                        shipmentMode = coc.shipmentMode ?: "UNKNOWN"
+                        countryOfSupply = coc.countryOfSupply ?: "UNKNOWN"
+                        finalInvoiceCurrency = coc.finalInvoiceCurrency ?: "KES"
+                        finalInvoiceDate = coc.finalInvoiceDate ?: commonDaoServices.getTimestamp()
+                        shipmentSealNumbers = coc.shipmentSealNumbers ?: "UNKNOWN"
+                        shipmentContainerNumber = coc.shipmentContainerNumber ?: "UNKNOWN"
+                        shipmentGrossWeight = coc.shipmentGrossWeight ?: "UNKNOWN"
+                        cocRemarks = coc.cocRemarks ?: "UNKNOWN"
+                        route = coc.route ?: "Z"
+                        partner = user.id
+                        version = coc.version ?: 1
+                        cocType = "COC"
+                        documentsType = "F"
+                        productCategory = "UNKNOWN"
+                        partner = null
+                        createdBy = commonDaoServices.loggedInUserAuthentication().name
+                        createdOn = commonDaoServices.getTimestamp()
+                    }
+                    // Add invoice details
+                    localCoc = cocRepo.save(localCoc)
+                    KotlinLogging.logger { }.info { "localCoc = ${localCoc.id}" }
+                    foreignCocItems(coc.cocItems, localCoc, map)
+                } catch (e: Exception) {
+                    KotlinLogging.logger { }.debug("Threw error from forward express callback")
+                    KotlinLogging.logger { }.debug(e.message)
+                    KotlinLogging.logger { }.debug(e.toString())
+                }
+                return localCoc
+            }
 
     }
 
@@ -137,15 +137,15 @@ class ForeignPvocIntegrations(
     }
 
     fun foreignCoi(
-            user: PvocPartnersEntity,
-            coc: CoiEntityForm,
-            map: ServiceMapsEntity,
+        user: PvocPartnersEntity,
+        coc: CoiEntityForm,
+        map: ServiceMapsEntity,
     ): CocsEntity? {
         coc.ucrNumber?.let { ucrNumber ->
             cocRepo.findByUcrNumberAndCocType(ucrNumber, "COI")
-                    ?.let { coc ->
-                        return null
-                    }
+                ?.let { coc ->
+                    return null
+                }
         } ?: kotlin.run {
             var localCoc = CocsEntity()
             KotlinLogging.logger { }.debug("Starting background task")
@@ -197,7 +197,7 @@ class ForeignPvocIntegrations(
                     route = coc.route ?: "Z"
                     version = coc.version ?: 1
                     cocType = "COI"
-                    documentsType="F"
+                    documentsType = "F"
                     productCategory = "UNKNOWN"
                     partner = user.id
                     createdBy = commonDaoServices.loggedInUserAuthentication().name
@@ -249,9 +249,9 @@ class ForeignPvocIntegrations(
     }
 
     fun foreignCor(
-            cor: CorEntityForm,
-            s: ServiceMapsEntity,
-            user: PvocPartnersEntity,
+        cor: CorEntityForm,
+        s: ServiceMapsEntity,
+        user: PvocPartnersEntity,
     ): CorsBakEntity? {
         var localCor = CorsBakEntity()
         //Get CD Item by cd doc id
