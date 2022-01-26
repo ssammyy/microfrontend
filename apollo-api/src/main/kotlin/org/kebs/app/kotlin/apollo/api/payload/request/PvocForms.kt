@@ -857,7 +857,7 @@ class IdfItem {
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-class IdfEntityForm {
+open class IdfEntityForm {
     @NotEmpty(message = "Required field")
     var idfNumber: String? = null
 
@@ -951,6 +951,20 @@ class IdfEntityForm {
 
     @NotEmpty(message = "Required field")
     var items: List<IdfItem>? = null
+}
+
+class IdfCorForm: IdfEntityForm() {
+    @NotEmpty(message = "Required field")
+    var chassisNumber: String? = null
+
+    @NotEmpty(message = "Required field")
+    var engineNumber: String? = null
+
+    @NotEmpty(message = "Required field")
+    var yearOfManufacture: String? = null
+
+    @NotEmpty(message = "Required field")
+    var yearOfFirstRegistration: String? = null
 }
 
 class RiskProfileForm {

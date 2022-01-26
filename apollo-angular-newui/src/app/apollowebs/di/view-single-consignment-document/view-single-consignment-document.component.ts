@@ -3,7 +3,6 @@ import {MatDialog} from '@angular/material/dialog';
 import {ApproveRejectConsignmentComponent} from './approve-reject-consignment/approve-reject-consignment.component';
 import {ActivatedRoute, Router} from '@angular/router';
 import {DestinationInspectionService} from '../../../core/store/data/di/destination-inspection.service';
-import swal from 'sweetalert2';
 import {AttachmentDialogComponent} from './attachment-dialog/attachment-dialog.component';
 import {GenerateLocalCocComponent} from '../forms/generate-local-coc/generate-local-coc.component';
 import {GenerateLocalCorComponent} from '../forms/generate-local-cor/generate-local-cor.component';
@@ -17,11 +16,8 @@ import {TargetItemComponent} from '../forms/target-item/target-item.component';
 import {TargetSupervisorComponent} from '../forms/target-supervisor/target-supervisor.component';
 import {SendDemandNoteTokwsComponent} from '../forms/send-demand-note-tokws/send-demand-note-tokws.component';
 import {BlacklistComponent} from '../forms/blacklist/blacklist.component';
-import {selectUserInfo} from "../../../core/store/data/auth";
-import {Store} from "@ngrx/store";
-import {ViewDemandNoteComponent} from "../demand-note-list/view-demand-note/view-demand-note.component";
-import {ProcessRejectionComponent} from "../forms/process-rejection/process-rejection.component";
-import {PVOCService} from "../../../core/store/data/pvoc/pvoc.service";
+import {ViewDemandNoteComponent} from '../demand-note-list/view-demand-note/view-demand-note.component';
+import {ProcessRejectionComponent} from '../forms/process-rejection/process-rejection.component';
 
 @Component({
     selector: 'app-view-single-consignment-document',
@@ -309,15 +305,7 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
                         // Reload consignment details
                         this.loadConsignmentDetails()
                     } else {
-                        swal.fire({
-                            title: response.message,
-                            buttonsStyling: false,
-                            customClass: {
-                                confirmButton: 'btn btn-success form-wizard-next-btn ',
-                            },
-                            icon: 'error'
-                        }).then(this.goBackHome);
-                        console.log(response);
+                        this.diService.showError(response.message,this.goBackHome)
                     }
                 }
             );

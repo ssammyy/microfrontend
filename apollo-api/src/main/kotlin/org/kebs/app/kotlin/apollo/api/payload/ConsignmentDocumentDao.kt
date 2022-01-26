@@ -67,6 +67,7 @@ class ConsignmentEnableUI {
                 targeted = cd.targetStatus == map.activeStatus
                 targetRejected = cd.targetStatus == map.invalidStatus
                 idfAvailable = StringUtils.hasLength(cd.idfNumber)
+                declarationDocument = StringUtils.hasLength(cd.cdStandard?.declarationNumber)
                 demandNoteRejected = cd.sendDemandNote == map.invalidStatus
                 demandNoteDisabled = (cd.sendDemandNote == map.initStatus || cd.sendDemandNote == map.activeStatus || cd.inspectionChecklist == map.activeStatus)
                 owner = cd.assignedInspectionOfficer?.userName == authentication.name
