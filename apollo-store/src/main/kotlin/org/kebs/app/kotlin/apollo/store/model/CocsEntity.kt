@@ -270,18 +270,13 @@ class CocsEntity : Serializable {
     @Basic
     var productCategory: String? = null
 
-    //    @NotEmpty(message = "Required field")
     @Column(name = "COC_TYPE", length = 2)
     @Basic
     var cocType: String? = null
 
-//    @Column(name = "LOCAL_COC_FILE")
-//    @Lob
-//    var localCocFile: ByteArray? = null
-//
-//    @Column(name = "LOCAL_COC_FILE_NAME", length = 200)
-//    @Basic
-//    var localCocFileName: String? = null
+    @Column(name = "DOCUMENT_TYPE", length = 2)
+    @Basic
+    var documentsType: String? = "L"
 
     @Column(name = "STATUS", nullable = true, precision = 0)
     @Basic

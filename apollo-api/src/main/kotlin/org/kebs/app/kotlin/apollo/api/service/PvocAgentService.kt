@@ -452,5 +452,27 @@ class PvocAgentService(
         return response
     }
 
+    fun addIdfData(form: IdfEntityForm): ApiResponseModel {
+        val response = ApiResponseModel()
+        try {
+            val activeUser = commonDaoServices.loggedInPartnerDetails()
+            this.pvocIntegrations.foreignIdfData(form, commonDaoServices.serviceMapDetails(properties.mapImportInspection), activeUser)?.let { riskEntity ->
+                response.data = form
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+                response.message = "IDF for ucr: " + form.ucrNumber + " received"
+                response
+            } ?: run {
+                response.responseCode = ResponseCodes.DUPLICATE_ENTRY_STATUS
+                response.message = "IDF for ucr: " + form.ucrNumber + " already exists"
+                response
+            }
+        } catch (ex: Exception) {
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Failed to add IDF for ucr: " + form.ucrNumber
+            response.errors = ex.message
+        }
+        return response
+    }
+
 
 }

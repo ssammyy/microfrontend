@@ -354,7 +354,7 @@ class AngularRoutes {
             }
             "".nest {
                 "/validateToken".nest {
-                    POST("", handler::handleValidatePhoneNumberAndToken)
+                    POST("", handler::handleValidatePhoneNumberAndTokenSecure)
                     GET("", otherHandler::notSupported)
                     "/{id}".nest {
                         GET("", otherHandler::notSupported)

@@ -888,7 +888,7 @@ class DestinationInspectionService(
                                         status = 1L
                                         createdBy = loggedInUser.userName
                                         createdOn = Timestamp.from(Instant.now())
-                                        partner = loggedInUser.userName
+                                        partner = null
                                         pvocPartner = loggedInUser.id
 
 
@@ -960,12 +960,12 @@ class DestinationInspectionService(
                             customsIeNo = "UNKNOWN"
                             fuelType = "UNKNOWN"
                             transmission = "UNKNOWN"
-                            inspectionFee = -1.0
+                            inspectionFee = 0.0
                             inspectionFeeCurrency = "NA"
                             inspectionFeePaymentDate = Timestamp.from(Instant.now())
                             inspectionOfficer = loggedInUser.userName ?: "NA"
-                            tareWeight = -1
-                            grossWeight = -1
+                            tareWeight = 0
+                            grossWeight = 0
                             model = cor.vehicleModel
                             chasisNumber = cor.chassisNumber
                             engineNumber = cor.engineNumber
@@ -984,8 +984,7 @@ class DestinationInspectionService(
                             status = 1
                             createdBy = loggedInUser.userName
                             createdOn = Timestamp.from(Instant.now())
-                            partner = loggedInUser.userName
-                            partner = loggedInUser.userName
+                            partner = null
                         }
                         if (entity.inspectionRemarks.isNullOrEmpty()) {
                             entity.inspectionRemarks = "NA"

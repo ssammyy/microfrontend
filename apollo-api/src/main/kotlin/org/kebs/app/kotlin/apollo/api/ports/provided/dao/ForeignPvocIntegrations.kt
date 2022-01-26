@@ -5,12 +5,12 @@ import org.kebs.app.kotlin.apollo.api.payload.request.*
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.sql.Timestamp
 import java.time.Instant
 
-@Component
+@Service
 class ForeignPvocIntegrations(
         private val cocRepo: ICocsRepository,
         private val iCocItemRepository: ICocItemRepository,
@@ -18,6 +18,8 @@ class ForeignPvocIntegrations(
         private val rfcCoiRepository: IRfcCoiRepository,
         private val rfcCoiItemRepository: IRfcCoiItemsRepository,
         private val riskProfileRepository: IRiskProfileRepository,
+        private val idfsRepository: IdfsEntityRepository,
+        private val idfsItemRepository: IdfItemsEntityRepository,
         private val commonDaoServices: CommonDaoServices
 ) {
 
@@ -81,9 +83,10 @@ class ForeignPvocIntegrations(
                             shipmentGrossWeight = coc.shipmentGrossWeight ?: "UNKNOWN"
                             cocRemarks = coc.cocRemarks ?: "UNKNOWN"
                             route = coc.route ?: "Z"
-                            partner = user.partnerName
+                            partner = user.id
                             version = coc.version ?: 1
                             cocType = "COC"
+                            documentsType="F"
                             productCategory = "UNKNOWN"
                             partner = null
                             createdBy = commonDaoServices.loggedInUserAuthentication().name
@@ -124,7 +127,7 @@ class ForeignPvocIntegrations(
                     ownerName = localCoc.importerName ?: "UNKNOWN"
                     status = map.activeStatus
                     shipmentLineBrandName = item.shipmentBrandName ?: "UNKNOWN"
-                    createdBy = commonDaoServices.loggedInUserAuthentication()?.name
+                    createdBy = commonDaoServices.loggedInUserAuthentication().name
                     createdOn = commonDaoServices.getTimestamp()
                 }
                 localCocItems = iCocItemRepository.save(localCocItems)
@@ -194,8 +197,9 @@ class ForeignPvocIntegrations(
                     route = coc.route ?: "Z"
                     version = coc.version ?: 1
                     cocType = "COI"
+                    documentsType="F"
                     productCategory = "UNKNOWN"
-                    partner = user.partnerName
+                    partner = user.id
                     createdBy = commonDaoServices.loggedInUserAuthentication().name
                     createdOn = commonDaoServices.getTimestamp()
                 }
@@ -298,7 +302,7 @@ class ForeignPvocIntegrations(
                 inspectionFeePaymentDate = cor.inspectionFeePaymentDate ?: commonDaoServices.getTimestamp()
                 inspectionRemarks = cor.inspectionRemarks ?: "No Remarks"
                 status = s.activeStatus
-                partner = user.partnerName
+                partner = user.id
                 createdBy = commonDaoServices.loggedInUserAuthentication().name
                 createdOn = commonDaoServices.getTimestamp()
             }
@@ -372,6 +376,72 @@ class ForeignPvocIntegrations(
                     rfcItem.modifiedBy = auth.name
                     rfcItem.modifiedOn = Timestamp.from(Instant.now())
                     this.rfcCoiItemRepository.save(rfcItem)
+                }
+            }
+        }
+        return rfcEntity
+    }
+
+    fun foreignIdfData(rfc: IdfEntityForm, s: ServiceMapsEntity, user: PvocPartnersEntity): IdfsEntity? {
+        val rfcEntity = IdfsEntity()
+        val auth = this.commonDaoServices.loggedInUserAuthentication()
+        this.idfsRepository.findFirstByUcr(rfc.ucrNumber!!)?.let {
+            return null
+        } ?: run {
+            rfcEntity.idfNumber = rfc.idfNumber
+            rfcEntity.ucr = rfc.ucrNumber
+            rfcEntity.importerName = rfc.importerName
+            rfcEntity.importerAddress = rfc.importerAddress
+            rfcEntity.importerFax = rfc.importerFaxNumber
+            rfcEntity.importerTelephoneNumber = rfc.importerTelephoneNumber
+            rfcEntity.importerEmail = rfc.importerEmail
+            rfcEntity.importerContactName = rfc.importerContactName
+            rfcEntity.sellerName = rfc.exporterName
+            rfcEntity.sellerAddress = rfc.exporterAddress
+            rfcEntity.sellerFax = rfc.exporterFaxNumber
+            rfcEntity.sellerTelephoneNumber = rfc.exporterTelephoneNumber
+            rfcEntity.sellerContactName = rfc.exporterContactName
+            rfcEntity.sellerEmail = rfc.exporterEmail
+            rfcEntity.countryOfSupply = rfc.countryOfSupply
+            rfcEntity.portOfDischarge = rfc.portOfDischarge
+            rfcEntity.portOfCustomsClearance = rfc.portOfCustomsClearance
+            rfcEntity.modeOfTransport = rfc.modeOfTransport
+            rfcEntity.countryOfSupply = rfc.countryOfSupply
+            rfcEntity.comesa = rfc.comesa
+            rfcEntity.invoiceNumber = rfcEntity.invoiceNumber
+            rfcEntity.invoiceDate = rfc.invoiceDate
+            rfcEntity.currency = rfc.currency
+            rfcEntity.exchangeRate = rfc.exchangeRate ?: 0.0
+            rfcEntity.fobValue = rfc.fobValue ?: 0.0
+            rfcEntity.freight = rfc.freight ?: 0.0
+            rfcEntity.insurance = rfc.insurance ?: 0.0
+            rfcEntity.otherCharges = rfc.otherChargers ?: 0.0
+            rfcEntity.usedStatus = when ("YES".equals(rfc.usedStatus, true)) {
+                true -> 1
+                else -> 0
+            }
+            rfcEntity.total = rfc.total ?: 0.0
+            rfcEntity.partner = user.id
+
+            rfcEntity.status = s.activeStatus
+
+            val saved = this.idfsRepository.save(rfcEntity)
+            rfc.items?.let { items ->
+                for (item in items) {
+                    val rfcItem = IdfItemsEntity()
+                    rfcItem.idfId = saved.id
+                    rfcItem.itemDescription = item.itemDescription
+                    rfcItem.quantity = item.quantity ?: 0
+                    rfcItem.hsCode = item.hsCode
+                    rfcItem.unitOfMeasure = item.unitOfMeasure
+                    rfcItem.newUsed = item.newUsed
+                    rfcItem.applicableStandard = item.applicableStandard
+                    rfcItem.itemCost = item.itemCost ?: 0
+                    rfcItem.createdBy = auth.name
+                    rfcItem.createdOn = Timestamp.from(Instant.now())
+                    rfcItem.modifiedBy = auth.name
+                    rfcItem.modifiedOn = Timestamp.from(Instant.now())
+                    this.idfsItemRepository.save(rfcItem)
                 }
             }
         }

@@ -104,27 +104,27 @@ class IdfsEntity:Serializable {
 
     @Column(name = "EXCHANGE_RATE", nullable = false, precision = 2)
     @Basic
-    var exchangeRate: Long = 0
+    var exchangeRate: Double = 0.0
 
     @Column(name = "FOB_VALUE", nullable = false, precision = 2)
     @Basic
-    var fobValue: Long = 0
+    var fobValue: Double = 0.0
 
     @Column(name = "FREIGHT", nullable = false, precision = 2)
     @Basic
-    var freight: Long = 0
+    var freight: Double = 0.0
 
     @Column(name = "INSURANCE", nullable = true, precision = 2)
     @Basic
-    var insurance: Long? = null
+    var insurance: Double? = null
 
     @Column(name = "OTHER_CHARGES", nullable = false, precision = 2)
     @Basic
-    var otherCharges: Long = 0
+    var otherCharges: Double = 0.0
 
     @Column(name = "TOTAL", nullable = false, precision = 2)
     @Basic
-    var total: Long = 0
+    var total: Double = 0.0
 
     @Column(name = "OBSERVATIONS", nullable = false, length = 500)
     @Basic
@@ -137,6 +137,10 @@ class IdfsEntity:Serializable {
     @Column(name = "USED_STATUS", nullable = true, precision = 0)
     @Basic
     var usedStatus: Int? = null
+
+    @Column(name = "PARTNER_ID", nullable = true, precision = 0)
+    @Basic
+    var partner: Long? = null
 
     @Column(name = "VAR_FIELD_1", nullable = true, length = 350)
     @Basic

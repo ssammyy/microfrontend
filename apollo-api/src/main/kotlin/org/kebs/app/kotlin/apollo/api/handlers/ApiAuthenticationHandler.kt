@@ -194,7 +194,7 @@ class ApiAuthenticationHandler(
                     commonDaoServices.sendOtpViaSMS(tokenValidation)
                     val response = CustomResponse().apply {
                         response = "00"
-                        payload = "Success, valid OTP received"
+                        payload = "$token"
                         status = 200
                     }
                     ServerResponse.ok().header("Authorization","Bearer $token").body(response)

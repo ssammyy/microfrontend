@@ -93,15 +93,16 @@ export class OtpComponent implements OnInit {
         console.log(`value of inside is ${d}`);
         if (d) {
           // this.username = this.loginForm?.get('username')?.value;
-          console.log(this.username)
-          console.log("redirecturl ni hii " + this.redirectUrl)
+          // console.log(this.username)
+          // console.log("redirecturl ni hii " + this.redirectUrl)
           // this.step = 1;
           this.store$.select(selectUserInfo).pipe().subscribe((u) => {
 
             return this.redirectUrl = u.redirectUrl;
 
           });
-          if (this.redirectUrl === '') {
+
+          if (!(this.redirectUrl) || this.redirectUrl === '') {
             this.router.navigate(['dashboard']);
 
           } else {

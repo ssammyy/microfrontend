@@ -357,7 +357,6 @@ class DestinationInspectionDaoServices(
                             consignmentDocId = consignmentDocumentDetailsEntity
                             cocType = "COC"
                             productCategory = "UNKNOWN"
-                            partner = "UNKNOWN"
                             createdBy = commonDaoServices.concatenateName(user)
                             createdOn = commonDaoServices.getTimestamp()
                         }
@@ -469,7 +468,6 @@ class DestinationInspectionDaoServices(
                             consignmentDocId = consignmentDocumentDetailsEntity
                             cocType = "NCR"
                             productCategory = "UNKNOWN"
-                            partner = "UNKNOWN"
                             createdBy = commonDaoServices.concatenateName(user)
                             createdOn = commonDaoServices.getTimestamp()
                         }
@@ -570,7 +568,6 @@ class DestinationInspectionDaoServices(
                         route = routValue
                         cocType = "COI"
                         productCategory = "UNKNOWN"
-                        partner = "UNKNOWN"
                         createdBy = commonDaoServices.concatenateName(user)
                         createdOn = commonDaoServices.getTimestamp()
                     }
@@ -777,7 +774,6 @@ class DestinationInspectionDaoServices(
                         approvalStatus = cdEntity.compliantStatus.toString()
                         ucrNumber = cdEntity.ucrNumber
                         inspectionFeeCurrency = "USD"
-                        partner = "test"
                         inspectionOfficer = cdItemDetailsList.cdDetails?.assignedInspectionOfficer?.let {
                             "${it.firstName} ${it.lastName}"
                         } ?: ""

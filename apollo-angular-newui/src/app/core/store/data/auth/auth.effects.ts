@@ -100,22 +100,54 @@ export class AuthEffects {
                 switchMap((action) => this.service.validateTokenForUser(action.payload)
                     .pipe(
                         mergeMap((data) => {
-                            if (data.id === 200) {
-                                // if(this.hasRole(["PERMIT_APPLICATION"], data.roles)){
-                                return [
-                                    loadAuthsSuccess({profile: data, loggedIn: true}),
-                                    loadUserCompanyInfo(),
-                                    doValidateTokenForUserSuccess({data: {payload: "Success, valid OTP received", response: "00", status: 200}, validated: true}),
-                                    loadResponsesSuccess({message: {payload: "Success, valid OTP received", response: "00", status: 200}})
-                                ];
-                                // }
-                                // else
-                                // {
-                                //
-                                // }
+                            if (data.id) {
+                                if (this.hasRole(["PERMIT_APPLICATION"], data.roles)) {
+                                    return [
+                                        loadAuthsSuccess({profile: data, loggedIn: true}),
+                                        loadUserCompanyInfo(),
+                                        doValidateTokenForUserSuccess({
+                                            data: {
+                                                payload: "Success, valid OTP received",
+                                                response: "00",
+                                                status: 200
+                                            }, validated: true
+                                        }),
+                                        loadResponsesSuccess({
+                                            message: {
+                                                payload: "Success, valid OTP received",
+                                                response: "00",
+                                                status: 200
+                                            }
+                                        })
+                                    ];
+                                } else {
+                                    return [
+                                        loadAuthsSuccess({profile: data, loggedIn: true}),
+                                        doValidateTokenForUserSuccess({
+                                            data: {
+                                                payload: "Success, valid OTP received",
+                                                response: "00",
+                                                status: 200
+                                            }, validated: true
+                                        }),
+                                        loadResponsesSuccess({
+                                            message: {
+                                                payload: "Success, valid OTP received",
+                                                response: "00",
+                                                status: 200
+                                            }
+                                        })
+                                    ];
+                                }
                             } else {
                                 return [
-                                    doValidateTokenForUserFailure({data: {payload: "Failed, invalid OTP received, try again", response: "99", status: 500}, validated: false})
+                                    doValidateTokenForUserFailure({
+                                        data: {
+                                            payload: "Failed, invalid OTP received, try again",
+                                            response: "99",
+                                            status: 500
+                                        }, validated: false
+                                    })
                                 ];
                             }
                         }),
@@ -195,13 +227,13 @@ export class AuthEffects {
                                         accessToken: '',
                                         fullName: '',
                                         companyID: 0,
-                                        redirectUrl:''
+                                        redirectUrl:undefined
                                     }
                                 }),
                                 loadUserCompanyInfoSuccess({data: null}),
                                 loadBranchIdSuccess({branchId: null, branch: null}),
                                 loadCompanyIdSuccess({companyId: null, company: null}),
-                                Go({payload: null, link: action.loginUrl, redirectUrl: ''})
+                                Go({payload: null, link: action.loginUrl, redirectUrl: null})
                             ];
                         }),
                         catchError(
@@ -213,7 +245,7 @@ export class AuthEffects {
                                         response: (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`
                                     }, loggedIn: false, profile: null
                                 });
-                                return of(Go({payload: err, link: action.loginUrl, redirectUrl: ''}));
+                                return of(Go({payload: err, link: action.loginUrl, redirectUrl: null}));
                             })
                     )
                 )
@@ -237,9 +269,23 @@ export class AuthEffects {
                 switchMap((action) => this.service.login(action.payload)
                     .pipe(
                         mergeMap((data) => {
-                            data.redirectUrl = action.redirectUrl
+                            // data.redirectUrl = action.redirectUrl
                             // if(this.hasRole(["PERMIT_APPLICATION"], data.roles)){
                                 return [
+                                    loadAuthsSuccess({
+                                        loggedIn: false,
+                                        profile: {
+                                            id: 0,
+                                            username: action.payload.username,
+                                            roles: undefined,
+                                            expiry: undefined,
+                                            email: action.payload.username,
+                                            accessToken: data.payload,
+                                            fullName: '',
+                                            companyID: 0,
+                                            redirectUrl: action.redirectUrl
+                                        }
+                                    }),
                                     Go({
                                         payload: action.redirectUrl,
                                         link: 'login/otp',
