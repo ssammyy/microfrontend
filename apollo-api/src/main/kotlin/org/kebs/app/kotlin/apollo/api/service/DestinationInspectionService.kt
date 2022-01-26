@@ -776,7 +776,8 @@ class DestinationInspectionService(
             docFile: MultipartFile,
             upLoads: DiUploadsEntity,
             loggedInUser: UsersEntity,
-            map: ServiceMapsEntity
+            map: ServiceMapsEntity,
+            partnerId: Long?
     ) {
         val endsWith = docFile.originalFilename?.endsWith(".txt")
         if (!(docFile.contentType == "text/csv" || endsWith == true)) {
@@ -806,14 +807,14 @@ class DestinationInspectionService(
                 val cocs = service.readCocFileFromController(separator, targetReader)
                 GlobalScope.launch(Dispatchers.IO) {
                     delay(500L)
-                    processCocDocuments(cocs, loggedInUser)
+                    processCocDocuments(cocs, loggedInUser,partnerId)
                 }
             }
             "COR" -> {
                 val cors = service.readCorFileFromController(separator, targetReader)
                 GlobalScope.launch(Dispatchers.IO) {
                     delay(500L)
-                    processCorDocuments(cors, loggedInUser)
+                    processCorDocuments(cors, loggedInUser,partnerId)
                 }
             }
             else -> {
@@ -822,7 +823,7 @@ class DestinationInspectionService(
         }
     }
 
-    fun processCocDocuments(cocs: List<CocsItemsEntityDto>, loggedInUser: UsersEntity) {
+    fun processCocDocuments(cocs: List<CocsItemsEntityDto>, loggedInUser: UsersEntity,partnerId: Long?) {
         val uniqueCoc = cocs.map { it.cocNumber }.distinct()
         uniqueCoc.forEach {
             it
@@ -888,10 +889,7 @@ class DestinationInspectionService(
                                         status = 1L
                                         createdBy = loggedInUser.userName
                                         createdOn = Timestamp.from(Instant.now())
-                                        partner = null
-                                        pvocPartner = loggedInUser.id
-
-
+                                        partner = partnerId
                                     }
 
                                     if (coc.placeOfInspection.isNullOrEmpty()) {
@@ -939,7 +937,7 @@ class DestinationInspectionService(
         }
     }
 
-    fun processCorDocuments(cors: List<CorItemsEntityDto>, loggedInUser: UsersEntity) {
+    fun processCorDocuments(cors: List<CorItemsEntityDto>, loggedInUser: UsersEntity,partnerId: Long?) {
         cors.forEach { cor ->
             corRepository.findByChasisNumber(cor.chassisNumber ?: "")
                     ?.let {
@@ -984,7 +982,7 @@ class DestinationInspectionService(
                             status = 1
                             createdBy = loggedInUser.userName
                             createdOn = Timestamp.from(Instant.now())
-                            partner = null
+                            partner = partnerId
                         }
                         if (entity.inspectionRemarks.isNullOrEmpty()) {
                             entity.inspectionRemarks = "NA"
