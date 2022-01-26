@@ -171,9 +171,9 @@ class CorsBakEntity : Serializable {
     @Basic
     var inspectionFeeCurrency: String? = null
 
-    @Column(name = "PARTNER")
+    @Column(name = "PVOC_PARTNER")
     @Basic
-    var partner: String? = null
+    var partner: Long? = null
 
     @Column(name = "INSPECTION_FEE_EXCHANGE_RATE")
     @Basic

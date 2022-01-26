@@ -178,7 +178,7 @@ class Reconciliation(
                     val cocsTotal: Int = cocs.count()
                     for (i in 0 until cocsTotal) {
                         val coc = cocs[i]
-                        KotlinLogging.logger {}.info { "coc loop  " + coc.cocNumber + "partiner" + coc.pvocPartner }
+                        KotlinLogging.logger {}.info { "coc loop  " + coc.cocNumber + "partiner" + coc.partner }
                         val pvocReconciliationReportEntity = PvocReconciliationReportEntity()
                         with(pvocReconciliationReportEntity) {
                             route = coc.route
@@ -245,7 +245,7 @@ class Reconciliation(
         pvocReconciliationReportEntityRepo.findByIdOrNull(id).let { report ->
             report?.certificateNo?.let {
                 iCocsRepository.findFirstByCocNumber(it).let { cocDetails ->
-                    iPvocPartnersRepository.findByIdOrNull(cocDetails?.pvocPartner).let { partner ->
+                    iPvocPartnersRepository.findByIdOrNull(cocDetails?.partner).let { partner ->
                         val discount = 0
                         model.addAttribute("discount", discount)
                         model.addAttribute("partner", partner)
@@ -431,7 +431,7 @@ class Reconciliation(
     fun calculateRoyaltyToKebs(certificateNo: String, fobValue: Double): Long? {
         //find coc document details
         iCocsRepository.findFirstByCocNumber(certificateNo)?.let { cocDetails ->
-            pvocPartnersRepository.findByIdOrNull(cocDetails.pvocPartner).let { partinerDetails ->
+            pvocPartnersRepository.findByIdOrNull(cocDetails.partner).let { partinerDetails ->
                 partinerDetails?.id?.let {
                     pvocAgentContractEntityRepo.findByServiceRenderedIdAndPvocPartner(2, it)?.let { contract ->
                         KotlinLogging.logger { }.info { "royalty applicable ==> " + contract.applicableRoyalty }

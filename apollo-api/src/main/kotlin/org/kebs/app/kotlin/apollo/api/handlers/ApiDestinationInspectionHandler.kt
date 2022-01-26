@@ -127,6 +127,7 @@ class ApiDestinationInspectionHandler(
         val multipartFile = multipartRequest.getFile("file")
         val fileType = multipartRequest.getParameter("file_type")
         val docType = multipartRequest.getParameter("docType")
+        val partnerId=multipartRequest.getParameter("partnerId").toLongOrNull()
         val response = ApiResponseModel()
         if (multipartFile != null) {
             commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
@@ -137,7 +138,7 @@ class ApiDestinationInspectionHandler(
                                         val uploads = DiUploadsEntity()
                                         uploads.documentType = docType.toUpperCase()
                                         uploads.fileType = fileType
-                                        this.destinationInspectionService.saveUploadedCsvFileAndSendToKeSWS(multipartFile, uploads, loggedInUser, map)
+                                        this.destinationInspectionService.saveUploadedCsvFileAndSendToKeSWS(multipartFile, uploads, loggedInUser, map, partnerId)
                                         response.data = fileType
                                         response.message = "${uploads.documentType?.toUpperCase()} successfully uploaded"
                                         response.responseCode = ResponseCodes.SUCCESS_CODE

@@ -350,13 +350,9 @@ class CocsEntity : Serializable {
     @Basic
     var version: Long? = null
 
-    @Column(name = "PARTNER", nullable = true, length = 50)
-    @Basic
-    var partner: String? = null
-
     @Column(name = "PVOC_PARTNER", nullable = true, length = 50)
     @Basic
-    var pvocPartner: Long? = null
+    var partner: Long? = null
 
     @JoinColumn(name = "CD_ID", referencedColumnName = "ID")
     @ManyToOne
@@ -437,7 +433,6 @@ class CocsEntity : Serializable {
                 deleteBy == that.deleteBy &&
                 deletedOn == that.deletedOn &&
                 reportGenerationStatus == that.reportGenerationStatus &&
-                pvocPartner == that.pvocPartner &&
                 partner == that.partner
 
     }
@@ -514,7 +509,6 @@ class CocsEntity : Serializable {
                 deleteBy,
                 deletedOn,
                 reportGenerationStatus,
-                pvocPartner,
                 partner
         )
         return result
