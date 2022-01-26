@@ -30,6 +30,10 @@ class ConsignmentDocumentTypesEntity : Serializable {
     @Basic
     var description: String? = null
 
+    @Column(name = "DOCUMENT_TYPE")
+    @Basic
+    var documentType: String? = null
+
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null

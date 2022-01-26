@@ -119,8 +119,10 @@ class ConsignmentDocumentDaoService(
                                     this?.approveRejectCdStatusType = null
                                 }
                                 cdDetails = daoServices.updateCdDetailsInDB(cdDetails!!, loggedInUser)
-
-
+                                // Clear process data on new CD
+                                cdCreated.diProcessStatus=0
+                                cdCreated.diProcessStartedOn=null
+                                cdCreated.diProcessCompletedOn=null
                                 // Update details
                                 daoServices.updateCdDetailsInDB(cdCreated, loggedInUser)
                             }
@@ -391,7 +393,6 @@ class ConsignmentDocumentDaoService(
         consignmentDocDetails.cdProductDetails?.itemDetails
                 ?.forEach { itemDetails ->
                     val itemCountDetails = itemDetails.itemCount
-                    val chassisNumber: String?
                     //Add CD ITEMS DETAILS DETAILS
                     val cdProduct1Details = itemDetails.cdProduct1
                     val itemDetail = consignmentDocumentDetails?.let {
@@ -439,7 +440,6 @@ class ConsignmentDocumentDaoService(
                             )
                         }
                     }
-                    chassisNumber = nonStandards?.chassisNo
 
                     //Add CD STANDARDS DETAILS
                     val cdItemNonCommodity = itemDetails.cdItemCommodity
@@ -1448,7 +1448,10 @@ class ConsignmentDocumentDaoService(
             createdOn = commonDaoServices.getTimestamp()
         }
         nonStandardEntity = iCdItemNonStandardEntityRepository.save(nonStandardEntity)
-
+        // Update chassis number
+        cdItemDetails.chassisNumber=cdItemNonStandardResponse.chassisNo
+        this.iCdItemsRepo.save(cdItemDetails)
+        //
         KotlinLogging.logger { }.info { "Non standard Item Details saved ID = ${nonStandardEntity.id}" }
 
         return nonStandardEntity

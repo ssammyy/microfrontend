@@ -1,6 +1,13 @@
 <h2 mat-dialog-title>Upload Foreign COC/COR</h2>
 <mat-dialog-content>
     <div class="form-group row" [formGroup]="form">
+        <label for="partnerId" class="waiver-form-label">Select Partner</label>
+        <select id="partnerId" name="partnerId" class="waiver-form-input-master"
+                formControlName="partnerId">
+            <option value="" disabled selected>Select One</option>
+            <option value="" >N/A</option>
+            <option  *ngFor="let part of partners" [value]="part.partnerId">{{part.name}}</option>
+        </select>
         <label for="fileType" class="waiver-form-label">Select File Type</label>
         <select id="fileType" name="fileType" class="waiver-form-input-master"
                 formControlName="fileType">

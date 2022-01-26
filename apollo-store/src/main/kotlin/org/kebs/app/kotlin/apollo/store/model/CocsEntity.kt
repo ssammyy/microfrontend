@@ -274,7 +274,7 @@ class CocsEntity : Serializable {
     @Basic
     var cocType: String? = null
 
-    @Column(name = "DOCUMENT_TYPE", length = 2)
+    @Column(name = "DOCUMENT_TYPE", length = 10)
     @Basic
     var documentsType: String? = "L"
 

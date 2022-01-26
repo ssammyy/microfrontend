@@ -1012,7 +1012,7 @@
                                     <button *ngIf="consignment.ui.idfAvailable" class="btn btn-sm btn-primary"
                                             (click)="viewIdfDocument()">IDF DOCUMENT
                                     </button>
-                                    <button class="btn btn-sm btn-primary" (click)="viewDeclarationDocument()">
+                                    <button *ngIf="consignment.ui.idfAvailable" class="btn btn-sm btn-primary" (click)="viewDeclarationDocument()">
                                         DECLARATION DOCUMENT
                                     </button>
                                 </div>

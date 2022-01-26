@@ -42,7 +42,6 @@ import kotlin.collections.set
 class DestinationInspectionBpmn(
         private val taskService: TaskService,
         private val runtimeService: RuntimeService,
-        private val historyService: HistoryService,
         private val userRepo: IUserRepository,
         private val bpmnCommonFunctions: BpmnCommonFunctions,
         private val iConsignmentDocumentDetailsRepo: IConsignmentDocumentDetailsRepository,
@@ -422,50 +421,6 @@ class DestinationInspectionBpmn(
         return false
     }
 
-    //Start relevant BPMN process
-    fun startDiBpmProcessByCdType(consignmentDoc: ConsignmentDocumentDetailsEntity) {
-        consignmentDoc.cdType?.let {
-            it.uuid?.let { cdTypeUuid ->
-                when (cdTypeUuid) {
-                    corCdType -> consignmentDoc.id?.let { it1 ->
-                        consignmentDoc.assignedInspectionOfficer?.id?.let { it2 ->
-                            startImportedVehiclesWithCorProcess(
-                                    it1,
-                                    it2
-                            )
-                        }
-                    }
-                    else -> {
-                        KotlinLogging.logger { }.error("CD type uuid not found for CD: $consignmentDoc.id")
-                    }
-                }
-            }
-        }
-    }
-
-    //BPM: Assign officer
-    fun assignIOBpmTask(consignmentDoc: ConsignmentDocumentDetailsEntity) {
-        //Check if any item in consignment has been targeted
-        var supervisorTargetStatus = 0
-//        iCdItemsRepo.findByCdDocId(consignmentDoc)?.let { cdItemDetailsList ->
-//            val itemsTargeted =
-//                cdItemDetailsList.filter { item -> item.targetStatus == commonDaoServices.activeStatus.toInt() }
-//            KotlinLogging.logger { }.info("No of targeted items: ${itemsTargeted.size}")
-//            if (itemsTargeted.isNotEmpty()) {
-//                supervisorTargetStatus = 1
-//            }
-//        }
-        // Assign IO complete task
-        consignmentDoc.id?.let { it1 ->
-            consignmentDoc.assignedInspectionOfficer?.id?.let { it2 ->
-                diAssignIOComplete(
-                        it1,
-                        it2,
-                        supervisorTargetStatus
-                )
-            }
-        }
-    }
 
     //Update task variable by object Id and task Key
     fun updateTaskVariableByObjectIdAndKey(

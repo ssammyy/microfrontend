@@ -828,11 +828,12 @@ class DestinationInspectionService(
         uniqueCoc.forEach {
             it
                     ?.let { u ->
+                        KotlinLogging.logger{}.info("Unique COC: $u")
                         val coc = cocs.firstOrNull { it.cocNumber == u }
                         if (coc == null) {
                             return
                         }
-                        cocsRepository.findByUcrNumberAndCocType(coc.ucrNumber ?: "NA", "coc")
+                        cocsRepository.findByUcrNumberAndCocType(coc.ucrNumber ?: "NA", "COC")
                                 ?.let {
                                     KotlinLogging.logger {}.warn("CoC with UCR number already exists: ${coc.ucrNumber}")
                                 }
@@ -843,6 +844,7 @@ class DestinationInspectionService(
                                         rfiNumber = coc.rfiNumber
                                         ucrNumber = coc.ucrNumber
                                         rfcDate = coc.rfcDate
+                                        documentsType="F"
                                         cocIssueDate = coc.cocIssueDate
                                         clean = coc.clean
                                         shipmentGrossWeight = coc.shipmentGrossWeight ?: "0.0"
@@ -979,6 +981,7 @@ class DestinationInspectionService(
                             exporterEmail = "UNDEFINED"
                             previousCountryOfRegistration = cor.countryOfSupply
                             previousRegistrationNumber = "UNKNOWN"
+                            documentsType="F"
                             status = 1
                             createdBy = loggedInUser.userName
                             createdOn = Timestamp.from(Instant.now())

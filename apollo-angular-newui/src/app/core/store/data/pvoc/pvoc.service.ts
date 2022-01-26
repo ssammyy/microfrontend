@@ -57,6 +57,10 @@ export class PVOCService {
         })
     }
 
+    loadPartnerNames(): Observable<any> {
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/partners/names"))
+    }
+
     addPartner(data: any): Observable<any> {
         return this.http.post(ApiEndpointService.getEndpoint("/api/v1/partners/add"), data)
     }

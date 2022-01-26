@@ -214,11 +214,12 @@ export class DestinationInspectionService {
         return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/ministry/inspections/request/" + id), data)
     }
 
-    uploadForeignDocuments(file: File, fileType: string, documentType: any): Observable<any> {
+    uploadForeignDocuments(file: File, fileType: string, partnerId: any,documentType: any): Observable<any> {
         let fd = new FormData()
         fd.append("file", file)
         fd.append("docType", documentType)
         fd.append("file_type", fileType)
+        fd.append("partnerId",partnerId)
         return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/foreign/cd/upload"), fd)
     }
 

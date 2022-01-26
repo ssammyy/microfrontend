@@ -21,6 +21,10 @@ class CorsBakEntity : Serializable {
     @Basic
     var corNumber: String? = null
 
+    @Column(name = "DOCUMENT_TYPE", length = 2)
+    @Basic
+    var documentsType: String? = "L"
+    
     @Column(name = "COR_ISSUE_DATE")
     @Basic
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")

@@ -21,6 +21,7 @@ import {selectUserInfo} from "../../../core/store/data/auth";
 import {Store} from "@ngrx/store";
 import {ViewDemandNoteComponent} from "../demand-note-list/view-demand-note/view-demand-note.component";
 import {ProcessRejectionComponent} from "../forms/process-rejection/process-rejection.component";
+import {PVOCService} from "../../../core/store/data/pvoc/pvoc.service";
 
 @Component({
     selector: 'app-view-single-consignment-document',
@@ -39,6 +40,7 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
     demandNotes: any[];
     checkLists: any[];
     supervisorTasks: any[]
+
     supervisorCharge: boolean = false
     inspectionOfficer: boolean = false
 
@@ -60,22 +62,24 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
 
 
     }
-    removeTasks(taskId: any){
+
+    removeTasks(taskId: any) {
         this.diService.deleteTask(taskId)
             .subscribe(
-                res=>{
-                    if(res.responseCode=="00") {
-                        this.diService.showSuccess(res.message,()=>{
+                res => {
+                    if (res.responseCode == "00") {
+                        this.diService.showSuccess(res.message, () => {
                             this.loadSupervisorTasks()
                         })
                     } else {
-                        this.diService.showError(res.message,()=>{
+                        this.diService.showError(res.message, () => {
 
                         })
                     }
                 }
             )
     }
+
     viewDemandNote(demandNoteId: any) {
         this.dialog.open(ViewDemandNoteComponent, {
             data: {
@@ -84,8 +88,8 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
         })
             .afterClosed()
             .subscribe(
-                res=>{
-                    if(res){
+                res => {
+                    if (res) {
                         this.loadConsignmentDetails()
                     }
                 }
@@ -181,7 +185,7 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
     }
 
     viewCoC(docType: string) {
-        this.router.navigate(['/di/certificate',docType,'details', this.consignmentId]);
+        this.router.navigate(['/di/certificate', docType, 'details', this.consignmentId]);
     }
 
     loadUiConfigurations() {

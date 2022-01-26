@@ -9,6 +9,7 @@ import {selectUserInfo} from "../../../core/store/data/auth";
 import {Store} from "@ngrx/store";
 import {fromEvent, interval, Observable, Subject} from "rxjs";
 import {debounce} from "rxjs/operators";
+import {PVOCService} from "../../../core/store/data/pvoc/pvoc.service";
 
 @Component({
     selector: 'app-consignment-document-list',
@@ -132,40 +133,52 @@ export class ConsignmentDocumentListComponent implements OnInit {
     documentTypes: any[];
     message: any
     keywords: any;
+    pvocPartners: any[]
     private documentTypeUuid: string
     private documentTypeId: any
-    supervisorCharge: boolean=false
-    inspectionOfficer: boolean=false
+    supervisorCharge: boolean = false
+    inspectionOfficer: boolean = false
     search: Subject<string>
 
-    constructor(private store$: Store<any>,private dialog: MatDialog, private router: Router, private diService: DestinationInspectionService) {
+    constructor(private store$: Store<any>, private dialog: MatDialog, private router: Router, private diService: DestinationInspectionService, private pvocService: PVOCService) {
     }
 
     ngOnInit(): void {
         this.documentTypeUuid = null;
         this.loadTypes(() => {
-            this.search=new Subject<string>()
+            this.search = new Subject<string>()
             this.search.pipe(
-                debounce((keyword)=>interval(500))
+                debounce((keyword) => interval(500))
             ).subscribe(
-                res=>{
+                res => {
                     console.log(res)
                     this.searchDocuments(res)
                 }
             )
             this.loadData(this.documentTypeUuid, 0, this.defaultPageSize);
         })
-
+        this.loadPartners()
         this.store$.select(selectUserInfo)
             .subscribe((u) => {
                 this.supervisorCharge = this.diService.hasRole(['DI_OFFICER_CHARGE_READ'], u.roles)
-                this.inspectionOfficer = this.diService.hasRole(['DI_INSPECTION_OFFICER_READ'],u.roles)
+                this.inspectionOfficer = this.diService.hasRole(['DI_INSPECTION_OFFICER_READ'], u.roles)
             });
+    }
+
+    loadPartners() {
+        this.pvocService.loadPartnerNames()
+            .subscribe(
+                res => {
+                    if (res.responseCode === "00") {
+                        this.pvocPartners = res.data
+                    }
+                }
+            )
     }
 
     onSupervisorChange(event: any) {
 
-        if(this.supervisorCharge) {
+        if (this.supervisorCharge) {
             this.personalTasks = event.target.value
             this.loadData(this.documentTypeUuid, 0, this.defaultPageSize)
         }
@@ -252,7 +265,8 @@ export class ConsignmentDocumentListComponent implements OnInit {
     uploadForeignCoROrCor(event: any, type: string) {
         let ref = this.dialog.open(UploadForeignFormComponent, {
             data: {
-                documentType: type
+                documentType: type,
+                partners: this.pvocPartners
             }
         })
         ref.afterClosed()

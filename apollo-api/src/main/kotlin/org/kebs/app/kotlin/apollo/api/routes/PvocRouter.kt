@@ -17,6 +17,7 @@ class PvocRouter {
             GET("/countries", handler::listPartnerCountries)
             GET("/types", handler::listPartnerTypes)
             GET("/list", handler::listPartners)
+            GET("/names", handler::listPartnerNames)
             POST("/add", handler::createPartner)
             GET("/details/{partnerId}", handler::getPartnerDetails)
             PUT("/update/{partnerId}", handler::updatePartnerDetails)
