@@ -12,6 +12,6 @@ interface IPvocPartnersRepository : HazelcastRepository<PvocPartnersEntity, Long
     fun findByPartnerRefNoAndStatus(partnerRefNo: String, status: Int): PvocPartnersEntity?
     fun findByPartnerRefNo(partnerRefNo: String?): Optional<PvocPartnersEntity>
     fun findByPartnerRefNoContains(partnerRefNo: String?, page: Pageable): Page<PvocPartnersEntity>
-    fun findAllByStatus(status: Int): List<PvocPartnersEntity>?
+    fun findAllByStatus(status: Int): List<PvocPartnersEntity>
     fun findByApiClientId(clientId: Long): PvocPartnersEntity?
 }

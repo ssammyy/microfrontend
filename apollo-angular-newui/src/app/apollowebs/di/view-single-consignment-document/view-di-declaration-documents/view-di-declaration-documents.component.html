@@ -326,7 +326,7 @@
                                         </ul>
                                     </mat-tab>
 
-                                    <mat-tab tabindex="Item Details" [tabIndex]="5" *ngIf="declaration&& declaration.item_declaration">
+                                    <mat-tab label="Item Details" [tabIndex]="5" *ngIf="declaration&& declaration.item_declaration">
                                         <b class="text-primary">Item Details</b>
                                         <app-view-declaration-documents-item-details-list
                                                 *ngIf="declaration&& declaration.item_declaration"

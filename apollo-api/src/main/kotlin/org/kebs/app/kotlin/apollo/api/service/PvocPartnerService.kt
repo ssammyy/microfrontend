@@ -210,4 +210,17 @@ class PvocPartnerService(
         }
         return response
     }
+
+    fun listPartnerNames(): ApiResponseModel {
+        val response = ApiResponseModel()
+        val partners = this.partnersRepository.findAllByStatus(1)
+        val partnerNames = mutableListOf<Any>()
+        partners.forEach { part ->
+            partnerNames.add(mapOf(Pair("partnerId", part.id), Pair("name", part.partnerName)))
+        }
+        response.data = partnerNames
+        response.responseCode = ResponseCodes.SUCCESS_CODE
+        response.message = "Success"
+        return response
+    }
 }

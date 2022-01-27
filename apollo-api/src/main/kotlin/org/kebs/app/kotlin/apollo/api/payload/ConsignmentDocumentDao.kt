@@ -1,16 +1,15 @@
 package org.kebs.app.kotlin.apollo.api.payload
 
-import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.TaskDetails
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.di.DiTaskDetails
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CdTypeCodes
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.*
 import org.springframework.security.core.Authentication
+import org.springframework.util.StringUtils
 import java.io.Serializable
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
-import javax.persistence.*
 
 fun checkHasAuthority(role: String, auth: Authentication): Boolean {
     return auth.authorities.stream().anyMatch { authority -> authority.authority == role }
@@ -62,12 +61,13 @@ class ConsignmentEnableUI {
             val ui = ConsignmentEnableUI().apply {
                 supervisor = modify
                 inspector = change
-                hasActiveProcess = cd.diProcessStatus == map.activeStatus
+                hasActiveProcess = cd.diProcessStatus == map.activeStatus && cd.diProcessCompletedOn == null // Check has incomplete process
                 targetDisabled = (cd.targetStatus == map.initStatus || cd.targetStatus == map.invalidStatus)
                 assigned = cd.assignedInspectionOfficer != null
                 targeted = cd.targetStatus == map.activeStatus
                 targetRejected = cd.targetStatus == map.invalidStatus
-                idfAvailable = cd.idfNumber != null
+                idfAvailable = StringUtils.hasLength(cd.idfNumber)
+                declarationDocument = StringUtils.hasLength(cd.cdStandard?.declarationNumber)
                 demandNoteRejected = cd.sendDemandNote == map.invalidStatus
                 demandNoteDisabled = (cd.sendDemandNote == map.initStatus || cd.sendDemandNote == map.activeStatus || cd.inspectionChecklist == map.activeStatus)
                 owner = cd.assignedInspectionOfficer?.userName == authentication.name
@@ -116,7 +116,7 @@ class ConsignmentDocumentDao {
     var blacklistRemarks: String? = null
     var assignedStatus: Int? = null
     var docTypeId: Long? = null
-    var docType: Long? = null
+    var docType: String? = null
     var cdType: Long? = null
     var cdTypeCategory: String? = null
     var cdTypeName: String? = null
@@ -157,6 +157,7 @@ class ConsignmentDocumentDao {
             dt.lastModifiedBy = doc.modifiedBy
             doc.cdType?.let {
                 dt.cdType = it.id
+                dt.docType = it.documentType
                 dt.cdTypeCategory = it.category
                 dt.cdTypeName = it.typeName
                 dt.cdTypeDescription = it.description
@@ -187,7 +188,6 @@ class ConsignmentDocumentDao {
                 dt.applicationRefNo = it.applicationRefNo
                 dt.approvalStatus = it.approvalStatus
             }
-            dt.cdType = dt.cdType
             return dt
         }
 

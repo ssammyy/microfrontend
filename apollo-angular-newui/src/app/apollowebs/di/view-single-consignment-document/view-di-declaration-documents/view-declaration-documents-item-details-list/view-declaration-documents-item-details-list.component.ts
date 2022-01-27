@@ -10,7 +10,7 @@ export class ViewDeclarationDocumentsItemDetailsListComponent implements OnInit 
   public settings = {
     selectMode: 'single',  // single|multi
     hideHeader: false,
-    hideSubHeader: false,
+    hideSubHeader: true,
     actions: {
       columnTitle: 'Actions',
       add: false,

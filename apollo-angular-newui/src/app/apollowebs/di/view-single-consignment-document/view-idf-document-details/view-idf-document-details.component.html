@@ -233,12 +233,12 @@
                                         </ng-template>
                                     </li>
 
-                                    <li ngbNavItem="itemDetails" *ngIf="idfDetails.item_idf">
+                                    <li ngbNavItem="itemDetails" *ngIf="idfDetails.item_declaration">
                                         <a ngbNavLink>Item Details</a>
                                         <ng-template ngbNavContent>
                                             <b class="text-primary">Item Details</b>
                                             <app-view-declaration-documents-item-details-list
-                                                    [dataSet]="idfDetails.item_idf"></app-view-declaration-documents-item-details-list>
+                                                    [dataSet]="idfDetails.item_declaration"></app-view-declaration-documents-item-details-list>
                                         </ng-template>
                                     </li>
 

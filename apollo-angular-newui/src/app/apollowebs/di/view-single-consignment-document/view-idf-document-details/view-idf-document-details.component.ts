@@ -11,6 +11,7 @@ import swal from "sweetalert2";
 export class ViewIdfDocumentDetailsComponent implements OnInit {
     documentUuid: string;
     idfDetails: any;
+    active: any = 0
 
     constructor(
         private diService: DestinationInspectionService,
@@ -28,9 +29,11 @@ export class ViewIdfDocumentDetailsComponent implements OnInit {
                 }
             )
     }
+
     goBack() {
         this.router.navigate(["/di", this.documentUuid])
     }
+
     loadIdfDocument() {
         this.diService.loadIdfDocumentDetails(this.documentUuid)
             .subscribe(

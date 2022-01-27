@@ -421,7 +421,7 @@ class DITest {
             invoiceNumber = "invoiceNumber"
             invoiceDate = commonDaoServices.getTimestamp()
             currency = "currency"
-            insurance = 256L
+            insurance = 256.00
             observations = "observations"
             createdBy = commonDaoServices.concatenateName(user)
             createdOn = commonDaoServices.getTimestamp()
@@ -518,7 +518,7 @@ class DITest {
             typeOfBody = "Test"
             bodyColor = "Test"
             fuelType = "Test"
-            inspectionFee = 85
+            inspectionFee = 85.00
             inspectionFeeCurrency = "Test"
             inspectionFeeExchangeRate = 852
             inspectionFeePaymentDate = commonDaoServices.getTimestamp()
