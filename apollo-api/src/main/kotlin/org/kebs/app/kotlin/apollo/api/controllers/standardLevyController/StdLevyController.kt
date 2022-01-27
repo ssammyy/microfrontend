@@ -507,9 +507,10 @@ class StdLevyController(
         stdLevyNotificationForm: StdLevyNotificationForm,
         s: ServiceMapsEntity,
         sr: ServiceRequestsEntity,
+        companyProfileEntity: CompanyProfileEntity,
     ): ServerResponse
     {
-        return ServerResponse(HttpStatus.OK,"Successfully uploaded Form",daoServices.saveNotificationFormSL(stdLevyNotificationFormDTO,stdLevyNotificationForm,s,sr))
+        return ServerResponse(HttpStatus.OK,"Successfully uploaded Form",daoServices.saveNotificationFormSL(stdLevyNotificationFormDTO,stdLevyNotificationForm,s,sr,companyProfileEntity))
         //return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",response)
     }
 

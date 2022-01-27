@@ -206,6 +206,10 @@ class CompanyProfileEntity : Serializable {
     @Basic
     var slBpmnProcessInstance: String? = null
 
+    @Column(name = "BRANCH_NAME")
+    @Basic
+    var branchName: String? = null
+
     @Column(name = "CLOSURE_OF_OPERATIONS")
     @Basic
     var closureOfOperations: Int? = null
@@ -259,6 +263,7 @@ class CompanyProfileEntity : Serializable {
                 modifiedOn == that.modifiedOn &&
                 deleteBy == that.deleteBy &&
                 deletedOn == that.deletedOn
+                branchName == that.branchName
     }
 
     override fun hashCode(): Int {
@@ -307,7 +312,8 @@ class CompanyProfileEntity : Serializable {
             modifiedBy,
             modifiedOn,
             deleteBy,
-            deletedOn
+            deletedOn,
+            branchName
         )
     }
 }

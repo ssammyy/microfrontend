@@ -28,5 +28,11 @@ class RegistrationForEntryNumberEmailDTO {
     var entryNumber: String? = null
 
     var dateSubmitted: Date? = null
+
+    var companyName: String? = null
+
+    var kraPin: String? = null
+
+    var registrationNumber: String? = null
 }
 
