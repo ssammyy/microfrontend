@@ -613,6 +613,9 @@ class CommonDaoServices(
                             ?: throw ExpectedDataNotFound("USER ID NOT FOUND")))
             entryNumber = companyProfile.entryNumber
             dateSubmitted = getCurrentDate()
+            companyName= companyProfile.name
+            kraPin= companyProfile.kraPin
+            registrationNumber= companyProfile.registrationNumber
 
         }
 

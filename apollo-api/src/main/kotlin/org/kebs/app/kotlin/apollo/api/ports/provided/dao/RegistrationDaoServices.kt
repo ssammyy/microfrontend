@@ -644,6 +644,7 @@ class RegistrationDaoServices(
                 factoryVisitDate = cp.factoryVisitDate
                 factoryVisitStatus = cp.factoryVisitStatus
                 county = cp.county
+                branchName= cp.branchName
                 town = cp.town
                 region = county?.let { commonDaoServices.findCountiesEntityByCountyId(it, s.activeStatus).regionId }
                 manufactureStatus = 1
@@ -1048,13 +1049,15 @@ class RegistrationDaoServices(
         stdLevyNotificationFormDTO: StdLevyNotificationFormDTO,
         stdLevyNotificationForm: StdLevyNotificationForm,
         s: ServiceMapsEntity,
-        sr: ServiceRequestsEntity
+        sr: ServiceRequestsEntity,
+        companyProfileEntity: CompanyProfileEntity,
        ) : NotificationForm
     {
         val map = commonDaoServices.serviceMapDetails(appId)
         var add = stdLevyNotificationForm
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         var eNumber = generateEntryNumber(map, loggedInUser)
+
 
         with(add) {
             nameBusinessProprietor= stdLevyNotificationFormDTO.NameAndBusinessOfProprietors
@@ -1072,6 +1075,16 @@ class RegistrationDaoServices(
 
         }
         add = stdLevyNotificationFormRepository.save(add)
+
+        companyProfileRepo.findByIdOrNull(stdLevyNotificationFormDTO.companyProfileID)?.let { companyProfileEntity->
+
+            with(companyProfileEntity){
+                entryNumber=eNumber
+
+            }
+            companyProfileRepo.save(companyProfileEntity)
+        }?: throw Exception("Company ID Was not Found")
+
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/user/user-profile?userName=${loggedInUser.userName}"
         sm.message = "You have Successful Register, Email Has been sent with Entry Number "

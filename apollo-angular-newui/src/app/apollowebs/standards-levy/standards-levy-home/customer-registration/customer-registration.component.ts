@@ -158,14 +158,15 @@ export class CustomerRegistrationComponent implements OnInit {
             this.SpinnerService.hide();
             this.showToasterSuccess(response.httpStatus, `SL1 Details Saved..Entry number is ${response.body.entryNumber}`);
             swal.fire({
-              title: 'SL1 Saved..Entry number is'+ response.body.entryNumber,
+              title:'SLI SAVED;',
+              text: 'Entry number is'+ '\xa0\xa0' + response.body.entryNumber + '\xa0\xa0' +'Check your E-mail for registration details.',
               buttonsStyling: false,
               customClass: {
                 confirmButton: 'btn btn-success form-wizard-next-btn ',
               },
               icon: 'success'
             });
-            this.manufacturerInfoForm.reset();
+            this.router.navigateByUrl('/dashboard').then(r => {});
           },
           (error: HttpErrorResponse) => {
             this.SpinnerService.hide();
