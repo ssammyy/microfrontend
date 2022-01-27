@@ -3034,5 +3034,12 @@ class DestinationInspectionDaoServices(
         return this.currencyExchangeRateRepository.findByApplicableDateAndStatus(date, 1)
     }
 
+    fun updateIdfNumber(ucrNumber: String, baseDocRefNo: String) {
+        this.findCdWithUcrNumber(ucrNumber)?.let { cdDetails->
+            cdDetails.idfNumber=baseDocRefNo
+            iConsignmentDocumentDetailsRepo.save(cdDetails)
+        }
+    }
+
 
 }

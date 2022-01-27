@@ -183,6 +183,8 @@ class SFTPService(
             throw Exception("BaseDocRef Number or UcrNumber missing")
         }
         val idfUpdated = iDFDaoService.updateIdfUcrNumber(baseDocRefNo, ucrNumber)
+        // Update IDF number on consignment
+        this.destinationInspectionDaoServices.updateIdfNumber(ucrNumber,baseDocRefNo)
         KotlinLogging.logger { }.info("UCR Res Document: ${exchange.message.headers} | Saved Status: ${idfUpdated}|")
     }
 
