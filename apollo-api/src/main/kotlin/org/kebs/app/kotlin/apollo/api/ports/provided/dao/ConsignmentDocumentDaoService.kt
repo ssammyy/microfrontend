@@ -750,7 +750,8 @@ class ConsignmentDocumentDaoService(
             createdOn = commonDaoServices.getTimestamp()
         }
         standardsTwoDetails = iCdStandardsTwoRepo.save(standardsTwoDetails)
-
+        //  Set standard two
+        consignmentDocumentDetailsEntity.cdStandardsTwo=standardsTwoDetails
         KotlinLogging.logger { }.info { "Standards Two Details saved ID = ${standardsTwoDetails.id}" }
 
         val consignmentDocumentDetails = updateConsignmentDocumentDetails(consignmentDocumentDetailsEntity, user, map)
@@ -759,7 +760,7 @@ class ConsignmentDocumentDaoService(
                 processStage.process9?.let { it2 -> daoServices.createCDTransactionLog(map, user, it1, it, it2) }
             }
         }
-
+        // Update extra details
         cdStandardsTwoResponse.thirdPartyDetails?.thirdPartyResponses
                 ?.forEach { thirdParties ->
                     val containerDetails = thirdPartyDetails(thirdParties, user, map, standardsTwoDetails)

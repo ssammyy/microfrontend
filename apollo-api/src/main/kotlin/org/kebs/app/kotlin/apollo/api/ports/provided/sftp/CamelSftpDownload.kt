@@ -208,10 +208,10 @@ class SFTPService(
     }
 
     fun processBaseDocumentType(exchange: Exchange) {
-        KotlinLogging.logger { }.info("Base Document Type: ${exchange.message.headers} | Content: ${exchange.message.body}|")
+        KotlinLogging.logger { }.info("IDF Base Document Type: ${exchange.message.headers} | Content: ${exchange.message.body}|")
         val baseDocumentResponse = exchange.message.body as BaseDocumentResponse
         val docSaved = iDFDaoService.mapBaseDocumentToIDF(baseDocumentResponse)
-        KotlinLogging.logger { }.info("Base Document Type: ${exchange.message.headers} | Save status: ${docSaved}|")
+        KotlinLogging.logger { }.info("IDF Base Document Type: ${exchange.message.headers} | Save status: ${docSaved}|")
     }
 
     /**

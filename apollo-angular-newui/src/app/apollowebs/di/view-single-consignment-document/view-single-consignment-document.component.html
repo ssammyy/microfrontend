@@ -317,7 +317,7 @@
                                             </li>
                                         </ul>
                                     </mat-tab>
-                                    <mat-tab *ngIf="consignment.cd_exporter?.length" label="4">
+                                    <mat-tab *ngIf="consignment.cd_exporter" label="4">
                                         <ng-template mat-tab-label>
                                             Exporter Details
                                         </ng-template>
@@ -400,7 +400,7 @@
                                             </li>
                                         </ul>
                                     </mat-tab>
-                                    <mat-tab *ngIf="consignment.cd_consignor?.length" label="5">
+                                    <mat-tab *ngIf="consignment.cd_consignor" label="5">
                                         <ng-template mat-tab-label>
                                             Consignor Details
                                         </ng-template>
