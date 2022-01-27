@@ -73,6 +73,11 @@ export class ConsignmentDocumentListComponent implements OnInit {
                 title: 'Ref No.',
                 type: 'string'
             },
+            docType: {
+                title: 'Document Type',
+                type: 'string',
+                hidden: true
+            },
             applicationDate: {
                 title: 'Application Date',
                 type: 'date',

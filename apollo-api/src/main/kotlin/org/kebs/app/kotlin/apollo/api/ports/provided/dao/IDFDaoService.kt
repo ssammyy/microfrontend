@@ -33,11 +33,6 @@ class IDFDaoService {
             throw Exception("Invalid Base Document Received")
         }
 
-        iIDFDetailsEntityRepository.findByBaseDocRefNo(idfRefNumber)?.let {
-            KotlinLogging.logger { }.info { "IDF with the reference no: $idfRefNumber already exists" }
-            return true
-        }
-
         this.baseDocumentToIDFDetailsEntity(baseDocumentResponse)?.let { idfDetailsEntity ->
             baseDocumentResponse.data?.dataIn?.sad?.items?.isList?.let { items ->
                 if (!items.isEmpty()) {
@@ -52,7 +47,10 @@ class IDFDaoService {
     }
 
     fun baseDocumentToIDFDetailsEntity(baseDocumentResponse: BaseDocumentResponse): IDFDetailsEntity? {
-        var idfDetailsEntity = IDFDetailsEntity()
+        val idfRefNumber = baseDocumentResponse.data?.dataIn?.sad?.sadId
+        // Create or update IDF details if it exists
+        var idfDetailsEntity = iIDFDetailsEntityRepository.findByBaseDocRefNo(idfRefNumber!!) ?: IDFDetailsEntity()
+
         with(idfDetailsEntity) {
             userId = baseDocumentResponse.header?.userId
             messageDate = baseDocumentResponse.header?.messageDate?.let { commonDaoServices.convertISO8601DateToTimestamp(it) }
@@ -145,8 +143,17 @@ class IDFDaoService {
             }
             iIDFDetailsEntityRepository.save(idfDetailsEntity)
             return true
+        } ?: run {
+            KotlinLogging.logger { }.warn { "IDF Details Entity with REF NO: ${baseDocRefNo} not found" }
+            // Create details to ensure ordering is not required for Document processing
+            val idfDetailsEntity = IDFDetailsEntity()
+            idfDetailsEntity.baseDocRefNo = baseDocRefNo
+            idfDetailsEntity.ucrNo = baseDocRefNo
+            idfDetailsEntity.createdBy = createdByValue
+            idfDetailsEntity.createdOn = commonDaoServices.getTimestamp()
+            this.iIDFDetailsEntityRepository.save(idfDetailsEntity)
         }
-        KotlinLogging.logger { }.warn { "IDF Details Entity with REF NO: ${baseDocRefNo} not found" }
+
         return false
     }
- }
+}
