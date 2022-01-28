@@ -34,5 +34,7 @@ class RegistrationForEntryNumberEmailDTO {
     var kraPin: String? = null
 
     var registrationNumber: String? = null
+
+    var itaxUrl: String? = null
 }
 

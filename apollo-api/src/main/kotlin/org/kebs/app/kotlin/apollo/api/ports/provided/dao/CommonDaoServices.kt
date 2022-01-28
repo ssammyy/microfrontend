@@ -616,6 +616,8 @@ class CommonDaoServices(
             companyName= companyProfile.name
             kraPin= companyProfile.kraPin
             registrationNumber= companyProfile.registrationNumber
+            itaxUrl = applicationMapProperties.itaxBaseUrlValue
+
 
         }
 
