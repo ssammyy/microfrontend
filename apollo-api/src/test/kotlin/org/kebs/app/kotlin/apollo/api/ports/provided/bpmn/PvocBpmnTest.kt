@@ -2,6 +2,8 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.bpmn
 
 import org.junit.Ignore
 import org.junit.runner.RunWith
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocApplicationEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocWaiversApplicationEntity
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
@@ -46,7 +48,7 @@ class PvocBpmnTest {
     fun testPvocExemptionsApplicationsProcess() {
 
         //Start the process
-        pvocBpmn.startPvocApplicationExemptionsProcess(pvocAppEntityId, manufacturerId)?.let {
+        pvocBpmn.startPvocApplicationExemptionsProcess(PvocApplicationEntity())?.let {
             pvocBpmn.fetchTaskByObjectId(pvocAppEntityId, pvocEaProcessDefinitionKey)?.let { taskDetails ->
                 println("Task details after starting the process")
                 for (taskDetail in taskDetails) {
@@ -137,7 +139,7 @@ class PvocBpmnTest {
     @Test
     fun testPvocWaiversApplicationsProcess() {
         //Start the process
-        pvocBpmn.startPvocWaiversApplicationsProcess(pvocWaAppEntityId, importerId, wetcId)?.let {
+        pvocBpmn.startPvocWaiversApplicationsProcess(PvocWaiversApplicationEntity(),"")?.let {
             pvocBpmn.fetchTaskByObjectId(pvocWaAppEntityId, pvocWaProcessDefinitionKey)?.let { taskDetails ->
                 println("Task details after starting the process")
                 for (taskDetail in taskDetails) {
