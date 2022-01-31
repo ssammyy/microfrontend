@@ -77,7 +77,6 @@ class SFTPService(
         private val manifestDaoService: ManifestDaoService,
         private val destinationInspectionDaoServices: DestinationInspectionDaoServices,
         private val consignmentDocumentDaoService: ConsignmentDocumentDaoService,
-        private val producerTemplate: ProducerTemplate,
         private val eventPublisher: ApplicationEventPublisher,
         private val properties: CamelFtpProperties,
         private val resourceLoader: ResourceLoader,
@@ -150,7 +149,7 @@ class SFTPService(
 
     fun processDocumentResponses(exchange: Exchange) {
         KotlinLogging.logger { }
-            .info("Manifest Document: ${exchange.message.headers} | Content: ${exchange.message.body}|")
+            .info("Declaration Document Res: ${exchange.message.headers} | Content: ${exchange.message.body}|")
         val ucrNumberMessage = exchange.message.body as UCRNumberMessage
         val baseDocRefNo = ucrNumberMessage.data?.dataIn?.sadId
         val ucrNumber = ucrNumberMessage.data?.dataIn?.ucrNumber

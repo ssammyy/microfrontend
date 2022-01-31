@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ConsignmentDocument>
+    <DocumentHeader>
+        <DocumentReference>
+            <DocumentType>CUSREG</DocumentType>
+            <DocumentName>CONSIGNMENT DOCUMENT</DocumentName>
+            <DocumentNumber>0125153016000</DocumentNumber>
+            <CommonRefNumber>2022CKEBSKRA003000004139001</CommonRefNumber>
+            <MessageType>9</MessageType>
+            <SenderID>KESWS</SenderID>
+            <RegimeCode>C4</RegimeCode>
+            <CMSRegimeCode>I</CMSRegimeCode>
+            <ApprovalCategory>PRO</ApprovalCategory>
+        </DocumentReference>
+        <DocumentExchangeDetails>
+            <ReceivingPartyDetails>
+                <ReceivingParty>PGA</ReceivingParty>
+            </ReceivingPartyDetails>
+            <NotifyPartyDetails>
+                <NotifyParty>NPM003</NotifyParty>
+                <NotifyParty>NPM004</NotifyParty>
+            </NotifyPartyDetails>
+        </DocumentExchangeDetails>
+    </DocumentHeader>
+    <DocumentDetails>
+        <ConsignmentDocDetails>
+            <CDStandard>
+                <ServiceProvider>
+                    <ApplicationCode>Bollore</ApplicationCode>
+                    <Name>P000600883U</Name>
+                    <TIN>P000600883U</TIN>
+                </ServiceProvider>
+                <ApplicationTypeCode>CD</ApplicationTypeCode>
+                <ApplicationTypeDescription>Consignment Document</ApplicationTypeDescription>
+                <DocumentTypeCode>2</DocumentTypeCode>
+                <CMSDocumentTypeCode>P</CMSDocumentTypeCode>
+                <DocumentTypeDescription>Permit</DocumentTypeDescription>
+                <ConsignmentTypeCode>C</ConsignmentTypeCode>
+                <ConsignmentTypeDescription>Consignment</ConsignmentTypeDescription>
+                <MDACode>KEBS</MDACode>
+                <MDADescription>Kenya Bureau of Standards</MDADescription>
+                <DocumentCode>KRA003</DocumentCode>
+                <DocumentDescription>KEBS LOCAL COC</DocumentDescription>
+                <ProcessCode>NA</ProcessCode>
+                <ProcessDescription>NA</ProcessDescription>
+                <ApplicationDate>20220125</ApplicationDate>
+                <UpdatedDate>202201251530</UpdatedDate>
+                <ApprovalStatus>SU - Submitted</ApprovalStatus>
+                <ApplicationRefNo>2022CKEBSKRA0030000041390</ApplicationRefNo>
+                <VersionNo>1</VersionNo>
+                <UCRNumber>UCR2200008089</UCRNumber>
+            </CDStandard>
+            <ApprovalDetails>
+                <ApprovalHistory>
+                    <MDACode>KEBS</MDACode>
+                    <RoleCode>R_OGA_CO</RoleCode>
+                    <Status>Approval In-Progress</Status>
+                </ApprovalHistory>
+            </ApprovalDetails>
+            <CDImporter>
+                <Name>FARMERS CHOICE LTD</Name>
+                <TIN>P000592722P</TIN>
+                <PhysicalAddress>47791  00100 NAIROBI CHOICE CHOICE CHOICE </PhysicalAddress>
+                <PhyCountry>KE</PhyCountry>
+                <TeleFax>0712369852</TeleFax>
+                <Email>info@farmers.com</Email>
+            </CDImporter>
+            <CDConsignee>
+                <Name>FARMERS CHOICE LTD</Name>
+                <TIN>P000592722P</TIN>
+                <PhysicalAddress>47791  00100 NAIROBI CHOICE CHOICE CHOICE </PhysicalAddress>
+                <PhyCountry>KE</PhyCountry>
+                <TeleFax>0712369852</TeleFax>
+                <Email>info@farmers.com</Email>
+            </CDConsignee>
+            <CDExporter>
+                <Name>SEA FOOD COMPANY</Name>
+                <TIN>P000000000N</TIN>
+                <PhysicalAddress>JAPAN JAPAN JAPAN </PhysicalAddress>
+                <PhyCountry>JP</PhyCountry>
+                <PostalAddress>JAPAN JAPAN JAPAN </PostalAddress>
+                <TeleFax>0711741852</TeleFax>
+                <Email>info@seafood.com</Email>
+            </CDExporter>
+            <CDConsignor>
+                <Name>SEA FOOD COMPANY</Name>
+                <TIN>P000000000N</TIN>
+                <PhysicalAddress>JAPAN JAPAN JAPAN </PhysicalAddress>
+                <PhyCountry>JP</PhyCountry>
+                <PostalAddress>JAPAN JAPAN JAPAN </PostalAddress>
+                <TeleFax>0711741852</TeleFax>
+                <Email>info@seafood.com</Email>
+            </CDConsignor>
+            <CDTransport>
+                <ModeOfTransport>S</ModeOfTransport>
+                <ModeOfTransportDesc>Sea transport</ModeOfTransportDesc>
+                <VoyageNo>KIOP</VoyageNo>
+                <ShipmentDate>20220125</ShipmentDate>
+                <PortOfArrival>NN</PortOfArrival>
+                <PortOfArrivalDesc>NN</PortOfArrivalDesc>
+                <PortOfDeparture>JPMHI</PortOfDeparture>
+                <PortOfDepartureDesc>JPMHI</PortOfDepartureDesc>
+                <CustomsOffice>MBA</CustomsOffice>
+                <FreightStation>KLD</FreightStation>
+                <FreightStationDesc>KLD</FreightStationDesc>
+                <CargoTypeIndicator>VH</CargoTypeIndicator>
+                <DateOfArrival>20220125</DateOfArrival>
+            </CDTransport>
+            <CDHeaderOne>
+                <ForeignCurrencyCode>USD</ForeignCurrencyCode>
+                <ForexRate>109.849996</ForexRate>
+                <FOBFCY>4000.00</FOBFCY>
+                <FreightFCY>740.00</FreightFCY>
+                <InsuranceFCY>0.00</InsuranceFCY>
+                <OtherChargesFCY>0.00</OtherChargesFCY>
+                <CIFFCY>4740.00</CIFFCY>
+                <FOBNCY>439399.98</FOBNCY>
+                <FreightNCY>81289.00</FreightNCY>
+                <InsuranceNCY>0.00</InsuranceNCY>
+                <OtherChargesNCY>0.00</OtherChargesNCY>
+                <CIFNCY>520688.98</CIFNCY>
+                <INCOTerms>CIF</INCOTerms>
+                <COMESA>N</COMESA>
+                <InvoiceDate>20211124</InvoiceDate>
+                <InvoiceNumber>1000</InvoiceNumber>
+                <CountryOfSupply>JP</CountryOfSupply>
+            </CDHeaderOne>
+            <CDStandardTwo>
+                <PurposeOfImport>PURPSE2</PurposeOfImport>
+                <Attachments>
+                    <AttachDocumentCode>3</AttachDocumentCode>
+                    <AttachDocumentCodeDesc>Certificate of quality</AttachDocumentCodeDesc>
+                    <AttachDocumentRefNo>3</AttachDocumentRefNo>
+                    <AttachDocumentInternalRefNo>TEST ATTACHMENT.pdf</AttachDocumentInternalRefNo>
+                </Attachments>
+                <COCType>L</COCType>
+                <LocalCOCType>DG</LocalCOCType>
+            </CDStandardTwo>
+            <CDHdrAdditional/>
+            <CDProductDetails>
+                <ItemDetails>
+                    <ItemCount>1</ItemCount>
+                    <CDProduct1>
+                        <ItemNo>1</ItemNo>
+                        <ItemDescription>VEHICLES</ItemDescription>
+                        <ItemHSCode>8703239000</ItemHSCode>
+                        <HSDescription>OTHER VEHICLES, WITH SPARK-IGNITION INTERNAL COMBUSTION RECIPROCATING PISTON ENGINE, OF A CYLINDER CAPACITY EXCEEDING 1,500 CC BUT NOT EXCEEDING 3,000 CC, ASSEMBLED.</HSDescription>
+                        <Quantity>
+                            <Qty>1.0000</Qty>
+                            <UnitOfQty>UN</UnitOfQty>
+                            <UnitOfQtyDesc>Units</UnitOfQtyDesc>
+                        </Quantity>
+                        <PackageType>CT</PackageType>
+                        <PackageTypeDesc>CARTONS</PackageTypeDesc>
+                        <PackageQty>1.00</PackageQty>
+                        <ForeignCurrencyCode>USD</ForeignCurrencyCode>
+                        <UnitPriceFCY>4000.00</UnitPriceFCY>
+                        <TotalPriceFCY>4740.00</TotalPriceFCY>
+                        <UnitPriceNCY>439399.98</UnitPriceNCY>
+                        <CountryOfOrigin>JP</CountryOfOrigin>
+                        <TotalPriceNCY>440139.98</TotalPriceNCY>
+                        <ItemNetWeight>1000.0000</ItemNetWeight>
+                        <ItemGrossWeight>1000.0000</ItemGrossWeight>
+                    </CDProduct1>
+                    <CDProduct2>
+                        <ApplicantRemarks>OK</ApplicantRemarks>
+                    </CDProduct2>
+                    <CDItemNonStandard>
+                        <ChassisNo>AKMSAE6040</ChassisNo>
+                    </CDItemNonStandard>
+                </ItemDetails>
+            </CDProductDetails>
+            <CDRiskDetails>
+                <RiskAssessment>
+                    <ProfileCode>regime</ProfileCode>
+                    <ProfileName>Regime</ProfileName>
+                    <AssessedLane>1</AssessedLane>
+                    <AssesedDate>202201251530</AssesedDate>
+                    <ActionDetails>
+                        <Action>
+                            <ActionCode>INSPECTION</ActionCode>
+                            <ActionName>Inspection</ActionName>
+                        </Action>
+                        <Action>
+                            <ActionCode>QUARANTINE</ActionCode>
+                            <ActionName>Quarantine</ActionName>
+                        </Action>
+                        <Action>
+                            <ActionCode>LABTEST</ActionCode>
+                            <ActionName>Lab Test</ActionName>
+                        </Action>
+                        <Action>
+                            <ActionCode>Detention</ActionCode>
+                            <ActionName>detention</ActionName>
+                        </Action>
+                        <Action>
+                            <ActionCode>SEIZURE</ActionCode>
+                            <ActionName>Seizure</ActionName>
+                        </Action>
+                        <Action>
+                            <ActionCode>DOCUMENT</ActionCode>
+                            <ActionName>DOCUMEN</ActionName>
+                        </Action>
+                    </ActionDetails>
+                </RiskAssessment>
+            </CDRiskDetails>
+        </ConsignmentDocDetails>
+    </DocumentDetails>
+    <DocumentSummary>
+        <IssuedDateTime>25012022033017</IssuedDateTime>
+        <SummaryPageUrl>http://tfptrial.kenyatradenet.go.ke/TFBSEW/cusLogin/SummaryPage.mda/XL+vA3cijDCd4gXyjeRfOw==</SummaryPageUrl>
+    </DocumentSummary>
+</ConsignmentDocument>

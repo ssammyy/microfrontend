@@ -11,6 +11,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionB
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SchedulerImpl
+import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.SFTPService
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.UpAndDownLoad
 import org.kebs.app.kotlin.apollo.api.service.BillingService
 import org.kebs.app.kotlin.apollo.api.service.DestinationInspectionService
@@ -33,6 +34,7 @@ import org.kebs.app.kotlin.apollo.store.repo.di.IDestinationInspectionFeeReposit
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.core.io.ResourceLoader
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.context.junit4.SpringRunner
@@ -56,7 +58,7 @@ class DITest {
     lateinit var destinationInspectionDaoServices: DestinationInspectionDaoServices
 
     @Autowired
-    lateinit var destinationInspectionServices: DestinationInspectionService
+    lateinit var resourceLoader: ResourceLoader
 
     @Autowired
     lateinit var billingService: BillingService
@@ -117,6 +119,9 @@ class DITest {
 
     @Autowired
     lateinit var limsService: LimsServices
+
+    @Autowired
+    lateinit var camelService: SFTPService
 
     @Autowired
     lateinit var motorVehicleInspectionEntityRepo: ICdInspectionMotorVehicleItemChecklistRepository
@@ -865,10 +870,20 @@ class DITest {
 
     @Autowired
     lateinit var iCountryTypeCodesRepository: ICountryTypeCodesRepository
+    val stringToExclude = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
+    @Test
+    fun mapCorDonsignmentDocument() {
+        val resource=this.resourceLoader.getResource("classpath:cds/OG_SUB_CD-2022CKEBSKRA0030000041390-1-B-20220125033017.xml")
+        Assertions.assertNotNull(resource,"Expected file to be available")
+        val bytes=resource.file.readBytes()
+        val consignmentDoc: ConsignmentDocument = commonDaoServices.deserializeFromXML(bytes.decodeToString(), stringToExclude)
+        Assertions.assertNotNull(consignmentDoc.documentDetails?.consignmentDocDetails?.cdStandardTwo)
+        consignmentDocumentDaoService.insertConsignmentDetailsFromXml(consignmentDoc, consignmentDocument.encodeToByteArray())
 
+    }
     @Test
     fun canDecodeConsignmentDocument() {
-        val stringToExclude = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
+
         val consignmentDoc: ConsignmentDocument =
                 commonDaoServices.deserializeFromXML(consignmentDocument, stringToExclude)
         KotlinLogging.logger { }.info("DDD: " + consignmentDoc.documentDetails?.consignmentDocDetails?.cdStandardTwo?.attachments?.get(0)?.fileName)
@@ -888,6 +903,7 @@ class DITest {
 
         consignmentDoc.documentDetails?.consignmentDocDetails?.cdImporter?.physicalCountryName = country.countryName
         assertEquals("KENYA", consignmentDoc.documentDetails?.consignmentDocDetails?.cdImporter?.physicalCountryName)
+        consignmentDocumentDaoService.insertConsignmentDetailsFromXml(consignmentDoc, consignmentDocument.encodeToByteArray())
 
     }
 

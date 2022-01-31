@@ -42,14 +42,14 @@ export class ViewDeclarationDocumentsItemDetailsListComponent implements OnInit 
         type: 'string'
       },
       tariffGoodsDesc: {
-        title: 'TARIFF GOOD DESCRIPTION',
+        title: 'PRODUCT DESCRIPTION',
         type: 'string',
-        hide: true
+        hide: false
       },
       commercialGoods: {
         title: 'COMMERCIAL GOODS',
         type: 'string',
-        hide: true
+        hide: false
       }
     },
     pager: {

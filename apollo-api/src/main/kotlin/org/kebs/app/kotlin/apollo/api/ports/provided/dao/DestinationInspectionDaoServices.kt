@@ -31,6 +31,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.util.StringUtils
 import org.springframework.web.multipart.MultipartFile
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -54,10 +55,15 @@ enum class CdTypeCodes(val code: String) {
     COR("LOCAL_COR"),
     FOREIGN_COC("FOREIGN_COC_COI"),
     FOREIGN_COR("FOREIGN_COR"),
-    TEMPORARY_IMPORTS("TEMPORARY_IMPORTS"),
+    TEMPORARY_IMPORTS("TEMPORARY_IMPORT_GOODS"),
+    TEMPORARY_IMPORT_VEHICLES("TEMPORARY_IMPORT_VEHICLES"),
     COURIER_GOODS("COURIER_GOODS"),
     AUCTION_GOODS("AUCTION_GOODS"),
-    EXEMPTED_GOODS("NO_COC_PVOC"),
+    AUCTION_VEHICLE("AUCTION_VEHICLE"),
+    PVOC_GOODS("NO_COC_PVOC"),
+    PVOC_VEHICLES("NO_COR_PVOC"),
+    EXEMPTED_GOODS("EXEMPTED_COC"),
+    EXEMPTED_VEHICLES("EXEMPTED_COR"),
     NCR("NCR"),
     OTHER("OTHER")
 }
@@ -512,7 +518,7 @@ class DestinationInspectionDaoServices(
             shipmentLineHscode = cdItemDetails.itemHsCode
             shipmentLineQuantity = cdItemDetails.quantity ?: BigDecimal.ZERO
             shipmentLineUnitofMeasure = cdItemDetails.unitOfQuantity
-            shipmentLineDescription = cdItemDetails.itemDescription ?: cdItemDetails.hsDescription?:"UNKNOWN"
+            shipmentLineDescription = cdItemDetails.itemDescription ?: cdItemDetails.hsDescription ?: "UNKNOWN"
             shipmentLineVin = "UNKNOWN"
             shipmentLineStickerNumber = "UNKNOWN"
             shipmentLineIcs = "UNKNOWN"
@@ -1210,11 +1216,11 @@ class DestinationInspectionDaoServices(
                         telephone = cdImporter?.telephone
                         cdRefNo = consignmentDocument.cdStandard?.applicationRefNo
                         //todo: Entry Number
-                        entryAblNumber = "UNKNOWN"
+                        entryAblNumber = consignmentDocument.cdStandard?.declarationNumber ?: "UNKNOWN"
                         totalAmount = BigDecimal.ZERO
                         amountPayable = BigDecimal.ZERO
                         receiptNo = "NOT PAID"
-                        product = "UNKNOWN"
+                        product = consignmentDocument.ucrNumber ?: "UNKNOWN"
                         rate = "UNKNOWN"
                         ucrNumber = consignmentDocument.ucrNumber
                         cfvalue = BigDecimal.ZERO
@@ -2074,7 +2080,7 @@ class DestinationInspectionDaoServices(
             }
             "L" -> {
                 if (isCosGood) {
-                    documentType = CdTypeCodes.EXEMPTED_GOODS.code
+                    documentType = CdTypeCodes.PVOC_VEHICLES.code
                 } else {
                     documentType = CdTypeCodes.COR.code
                 }
@@ -2089,6 +2095,16 @@ class DestinationInspectionDaoServices(
         cocEntity?.let {
             cdDetailsEntity.docTypeId = it.id
         }
+
+        // PVOC countries
+        var isCosGood = false
+        cocEntity?.let {
+            cdDetailsEntity.docTypeId = it.id
+            it.id
+        } ?: run {
+            isCosGood = this.handleNoCorFromCosWithPvoc(cdDetailsEntity)
+            null
+        }
         // Document types
         when (documentCode) {
             "F" -> {
@@ -2100,7 +2116,11 @@ class DestinationInspectionDaoServices(
                         documentType = CdTypeCodes.NCR.code
                     }
                     else -> {
-                        documentType = CdTypeCodes.COC.code
+                        if (isCosGood) {
+                            documentType = CdTypeCodes.PVOC_GOODS.code
+                        } else {
+                            documentType = CdTypeCodes.COC.code
+                        }
                     }
                 }
             }
@@ -2120,31 +2140,42 @@ class DestinationInspectionDaoServices(
                 ?.let {
                     cdDetailsEntity.cdCocLocalTypeId = findLocalCocTypeWithCocTypeCode(it).id
                 }
+        KotlinLogging.logger { }.info("Map CD Type with Chassis Number: $chassisNumber")
         //  Add CD Type to Document
         when (documentCode) {
             "TIMP" -> {
                 // Temporary imports
-                cdDetailsEntity.cdType = findCdTypeDetailsWithName(CdTypeCodes.TEMPORARY_IMPORTS.code)
+                if (StringUtils.hasLength(chassisNumber)) {
+                    cdDetailsEntity.cdType = findCdTypeDetailsWithName(CdTypeCodes.TEMPORARY_IMPORTS.code)
+                } else {
+                    cdDetailsEntity.cdType = findCdTypeDetailsWithName(CdTypeCodes.TEMPORARY_IMPORT_VEHICLES.code)
+                }
             }
             "AG" -> {
                 // Auction Goods
-                cdDetailsEntity.cdType = findCdTypeDetailsWithName(CdTypeCodes.AUCTION_GOODS.code)
+                if (StringUtils.hasLength(chassisNumber)) {
+                    cdDetailsEntity.cdType = findCdTypeDetailsWithName(CdTypeCodes.AUCTION_VEHICLE.code)
+                } else {
+                    cdDetailsEntity.cdType = findCdTypeDetailsWithName(CdTypeCodes.AUCTION_GOODS.code)
+                }
             }
             "DG", "DMSG", "UPERR", "EXE", "MWG", "EAC", "RIMP" -> {
                 // goods Exempted from COC
-                cdDetailsEntity.cdType = findCdTypeDetailsWithName(CdTypeCodes.EXEMPTED_GOODS.code)
-            }
-            "ISGCDG" -> {
-                // Courier Goods
-                cdDetailsEntity.cdType = findCdTypeDetailsWithName(CdTypeCodes.COURIER_GOODS.code)
+                if (StringUtils.hasLength(chassisNumber)) {
+                    cdDetailsEntity.cdType = findCdTypeDetailsWithName(CdTypeCodes.EXEMPTED_VEHICLES.code)
+                } else {
+                    cdDetailsEntity.cdType = findCdTypeDetailsWithName(CdTypeCodes.EXEMPTED_GOODS.code)
+                }
             }
             else ->
                 when (chassisNumber) {
                     null -> {
+                        KotlinLogging.logger { }.info("Map COC")
                         // COC, NCR or NO_COC Goods
                         this.updateConsignmentCocDetails(cdDetailsEntity, cdDetailsEntity.cdStandardsTwo?.localCocType, documentCode, findCocByUcrNumber(ucrNumber))
                     }
                     else -> {
+                        KotlinLogging.logger { }.info("Map COR")
                         // COR, NO_COR_PVOC or NO_COR Goods
                         this.updateConsignmentCorDetails(cdDetailsEntity, cdDetailsEntity.cdStandardsTwo?.localCocType, documentCode, corsBakRepository.findByChasisNumber(chassisNumber))
                     }
@@ -3035,8 +3066,8 @@ class DestinationInspectionDaoServices(
     }
 
     fun updateIdfNumber(ucrNumber: String, baseDocRefNo: String) {
-        this.findCdWithUcrNumber(ucrNumber)?.let { cdDetails->
-            cdDetails.idfNumber=baseDocRefNo
+        this.findCdWithUcrNumber(ucrNumber)?.let { cdDetails ->
+            cdDetails.idfNumber = baseDocRefNo
             iConsignmentDocumentDetailsRepo.save(cdDetails)
         }
     }
