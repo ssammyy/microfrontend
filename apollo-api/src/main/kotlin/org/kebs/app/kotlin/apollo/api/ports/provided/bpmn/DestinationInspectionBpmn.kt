@@ -1,7 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.bpmn
 
 import mu.KotlinLogging
-import org.flowable.engine.HistoryService
 import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
@@ -215,6 +214,7 @@ class DestinationInspectionBpmn(
         consignmentDocument.localCocOrCorStatus = map.initStatus
         consignmentDocument.compliantStatus = map.initStatus
         consignmentDocument.diProcessStartedOn = Timestamp.from(Instant.now())
+        consignmentDocument.diProcessCompletedOn=null
         consignmentDocument.varField10 = "REQUEST COMPLIANCE APPROVAL"
         // Save process details
         this.auditService.addHistoryRecord(consignmentDocument.id!!, consignmentDocument.ucrNumber, data["remarks"] as String?, "REQUEST CONSIGNMENT COMPLIANCE UPDATE", "Request to mark Consignment as compliant")

@@ -61,7 +61,7 @@ class ConsignmentEnableUI {
             val ui = ConsignmentEnableUI().apply {
                 supervisor = modify
                 inspector = change
-                hasActiveProcess = cd.diProcessStatus == map.activeStatus && cd.diProcessCompletedOn == null // Check has incomplete process
+                hasActiveProcess = cd.diProcessStatus == map.activeStatus // Check has incomplete process
                 targetDisabled = (cd.targetStatus == map.initStatus || cd.targetStatus == map.invalidStatus)
                 assigned = cd.assignedInspectionOfficer != null
                 targeted = cd.targetStatus == map.activeStatus

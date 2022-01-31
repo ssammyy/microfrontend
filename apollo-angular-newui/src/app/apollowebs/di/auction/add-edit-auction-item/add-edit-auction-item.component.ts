@@ -1,6 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {MatDialogRef} from "@angular/material/dialog";
+import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 
 @Component({
     selector: 'app-add-edit-auction-item',
@@ -13,7 +13,7 @@ export class AddEditAuctionItemComponent implements OnInit {
     loading = false
     categories: any
 
-    constructor(private fb: FormBuilder, private dialodRef: MatDialogRef<any>) {
+    constructor(private fb: FormBuilder, private dialodRef: MatDialogRef<any>,@Inject(MAT_DIALOG_DATA) public data: any) {
     }
 
     ngOnInit(): void {

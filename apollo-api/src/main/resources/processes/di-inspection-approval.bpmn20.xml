@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="${cfs_code}">
-  <process id="updateConsignmentStatus" name="Approve Consignment Documet" isExecutable="true">
+  <process id="assignConsignmentToIO" name="Approve Consignment Documet" isExecutable="true">
     <startEvent id="startevent1" name="Start"></startEvent>
     <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
     <sequenceFlow id="flow3" name="Rejected" sourceRef="exclusivegateway1" targetRef="servicetask3">
@@ -25,12 +25,12 @@
     <serviceTask id="servicetask2" name="Reject Approval" activiti:expression="#{diService.consignmentChecks(cdUuid)}"></serviceTask>
     <sequenceFlow id="flow12" sourceRef="startevent1" targetRef="exclusivegateway1"></sequenceFlow>
     <serviceTask id="servicetask3" name="Update CD Status" activiti:expression="#{diService.updateStatus(cdUuid,cdStatusTypeId,supervisor,remarks)}"></serviceTask>
-    <serviceTask id="servicetask4" name="Update SW" activiti:expression="#{diService.updateBpmCompletionStatus(cdUuid,supervisor,remarks)}"></serviceTask>
+    <serviceTask id="servicetask4" name="Update SW" activiti:expression="#{diService.updateCdStatusOnSw(cdUuid,cdStatusTypeId,remarks)}"></serviceTask>
     <sequenceFlow id="flow13" sourceRef="servicetask4" targetRef="servicetask5"></sequenceFlow>
     <serviceTask id="servicetask5" name="Clear CD Process" activiti:expression="#{diService.clearCurrentProcess(cdUuid)}"></serviceTask>
   </process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_updateConsignmentStatus">
-    <bpmndi:BPMNPlane bpmnElement="updateConsignmentStatus" id="BPMNPlane_updateConsignmentStatus">
+  <bpmndi:BPMNDiagram id="BPMNDiagram_assignConsignmentToIO">
+    <bpmndi:BPMNPlane bpmnElement="assignConsignmentToIO" id="BPMNPlane_assignConsignmentToIO">
       <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
         <omgdc:Bounds height="35.0" width="35.0" x="130.0" y="230.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
@@ -38,7 +38,7 @@
         <omgdc:Bounds height="40.0" width="40.0" x="360.0" y="228.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="servicetask1" id="BPMNShape_servicetask1">
-        <omgdc:Bounds height="55.0" width="105.0" x="445.0" y="221.0"></omgdc:Bounds>
+        <omgdc:Bounds height="55.0" width="105.0" x="446.0" y="227.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="exclusivegateway2" id="BPMNShape_exclusivegateway2">
         <omgdc:Bounds height="40.0" width="40.0" x="595.0" y="229.0"></omgdc:Bounds>
@@ -67,10 +67,10 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
         <omgdi:waypoint x="400.0" y="248.0"></omgdi:waypoint>
-        <omgdi:waypoint x="445.0" y="248.0"></omgdi:waypoint>
+        <omgdi:waypoint x="446.0" y="254.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
-        <omgdi:waypoint x="550.0" y="248.0"></omgdi:waypoint>
+        <omgdi:waypoint x="551.0" y="254.0"></omgdi:waypoint>
         <omgdi:waypoint x="595.0" y="249.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
