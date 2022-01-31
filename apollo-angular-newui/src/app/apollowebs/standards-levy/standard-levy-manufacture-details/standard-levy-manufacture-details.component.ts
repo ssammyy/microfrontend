@@ -4,7 +4,7 @@ import {Subject} from "rxjs";
 import {
     ManufactureCompleteTask,
     ManufactureDetailList,
-    ManufacturePendingTask, UsersEntityList
+    ManufacturePendingTask, UserEntityRoles, UsersEntityList
 } from "../../../core/store/data/levy/levy.model";
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../core/store/data/std/notification.service";
@@ -26,7 +26,12 @@ declare const $: any;
 })
 export class StandardLevyManufactureDetailsComponent implements OnInit {
     userId: number ;
+    roles: string[];
     userType: number ;
+    levelOne= false;
+    levelTwo=false;
+    levelThree=false;
+    levelFour=false;
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
 
@@ -39,6 +44,7 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
     public usersPls !: UsersEntity[] ;
     public usersMns !: UsersEntity[] ;
     manufactureUserDetails !: UsersEntityList;
+    manufactureUserRoles !: UserEntityRoles;
     selectedUser: number;
     selectedUserPl: number;
     selectedUserMn: number;
@@ -139,11 +145,13 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
   ngOnInit(): void {
     //this.getMnCompleteTask();
     this.getManufacturerList();
-    this.getUserDetails();
+    this.getUserRoles();
     this.getUserList();
     this.getUserData();
     this.getSlLvTwoList();
     this.getPlUserList();
+    //this.checkIfTrue();
+    //  this.getUserDetails();
 
 
       this.scheduleVisitFormGroup = this.formBuilder.group({
@@ -338,6 +346,13 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
             this.userId = u.id;
         });
     }
+    public getUserRoles(): void{
+        this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+            this.roles = u.roles;
+            console.log(this.roles);
+            //return this.roles = u.roles;
+        });
+    }
 
     public getUserList(): void {
         this.SpinnerService.show();
@@ -410,6 +425,27 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
         );
 
     }
+
+    // public getUserRoles(): void{
+    //     this.levyService.getUserRoles().subscribe(
+    //         (response: UserEntityRoles)=> {
+    //
+    //             this.manufactureUserRoles = response;
+    //             console.log(response)
+    //             var found = Object.keys(response).filter(function(key) {
+    //                 return response[key] === '793';
+    //             });
+    //
+    //             if (found.length) {
+    //                 alert('exists');
+    //             }
+    //             },
+    //         (error: HttpErrorResponse)=>{
+    //             console.log(error.message);
+    //         }
+    //     );
+    //
+    // }
 
   public getMnPendingTask(): void{
     this.SpinnerService.show();
@@ -760,5 +796,32 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
                 '</div>'
         });
     }
+    // public checkIfTrue(){
+    //     // @ts-ignore
+    //     if (Object.values(this.manufactureUserRoles).indexOf(793) > -1) {
+    //         console.log('has test1');
+    //     }
+    //     if (Object.values(obj).indexOf('test1') > -1) {
+    //         console.log('has test1');
+    //     }
+    // }
+
+
+    // public checkIfTrue()
+    // {
+    //
+    //     if(this.manufactureUserRoles.includes('793') ){
+    //      this.levelOne=true;
+    //    }
+    //     if(this.manufactureUserRoles.includes(794) ){
+    //     this.levelTwo=true;
+    // }
+    //     if(this.manufactureUserRoles.includes(795) ){
+    //     this.levelThree=true;
+    // }
+    //     if(this.manufactureUserRoles.includes(796) ){
+    //     this.levelFour=true;
+    // }
+    // }
 
 }

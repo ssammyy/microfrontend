@@ -44,7 +44,9 @@ class StandardLevyService(
     private val slUploadsRepo: ISlVisitUploadsRepository,
     private val bpmnService: StandardsLevyBpmn,
     private val userListRepository: UserListRepository,
-    private val usersEntityRepository: UsersEntityRepository
+    private val usersEntityRepository: UsersEntityRepository,
+    private val iUserRoleAssignmentsRepository: IUserRoleAssignmentsRepository
+
 ) {
     val PROCESS_DEFINITION_KEY = "sl_SiteVisitProcessFlow"
     val TASK_CANDIDATE_SL_PRINCIPAL_LEVY_OFFICER ="SL_PRINCIPAL_LEVY_OFFICER"
@@ -623,6 +625,19 @@ class StandardLevyService(
             return usersEntityRepository.getSlLoggedById(id)
         }?: throw NullValueNotAllowedException ("User Not Found")
     }
+
+//    fun getRoleByUserId(): MutableList<UserRoleAssignmentsEntity>? {
+//        val taskDetails: MutableList<UserRoleAssignmentsEntity> = ArrayList()
+//        commonDaoServices.loggedInUserDetails().id?.let { id ->
+//            return iUserRoleAssignmentsRepository.getRoleByUserId(id)
+//        }?: throw NullValueNotAllowedException ("Role Not Found")
+//    }
+//
+    fun getRoles():List<UserRoleHolder>
+    {
+        commonDaoServices.loggedInUserDetails().id?.let { id ->
+            return iUserRoleAssignmentsRepository.getRoleByUserId(id)
+        }?: throw NullValueNotAllowedException ("Role Not Found")    }
 
     fun closeTask(taskId: String) {
         taskService.complete(taskId)

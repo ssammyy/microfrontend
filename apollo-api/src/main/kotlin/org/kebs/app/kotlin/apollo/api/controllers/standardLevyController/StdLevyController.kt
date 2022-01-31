@@ -877,7 +877,16 @@ class StdLevyController(
 
             return standardLevyService.getSlLoggedIn()
 
-        }
+    }
+
+    @GetMapping("/getRoleByUserId")
+    @ResponseBody
+    fun getRoleByUserId(): List<UserRoleHolder>?
+    {
+
+        return standardLevyService.getRoles()
+
+    }
 
 
     @PostMapping("/anonymous/standard/close")
