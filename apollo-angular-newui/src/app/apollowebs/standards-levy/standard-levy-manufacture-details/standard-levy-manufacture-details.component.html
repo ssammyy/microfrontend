@@ -74,7 +74,7 @@
                                                                             <form #approveForm="ngForm" >
                                                                                 <div class="modal-body">
 
-                                                                                <div *ngIf="manufactureUserDetails?.name==61">
+                                                                                <div *ngIf="roles?.includes('SL_IS_PL_OFFICER')">
                                                                                     <button (click)=toggleDisplayAssignForm() type="button" class="btn btn-primary btn-sm">Assign To Self</button>
                                                                                     <button type="button" class="btn btn-success btn-sm">Add Remarks</button>
                                                                                     <button type="button" class="btn btn-danger btn-sm">View Remarks</button>
@@ -85,7 +85,7 @@
 
 
 
-                                                                                        <div *ngIf="manufactureUserDetails?.name==62">
+                                                                                        <div *ngIf="roles?.includes('SL_IS_ASST_MANAGER')">
                                                                                         <button (click)=toggleDisplayAssignForm() type="button" class="btn btn-primary btn-sm">Assign To Self</button>
                                                                                         <button (click)=toggleDisplayAssignTo1Form() type="button" class="btn btn-success btn-sm">Assign To Other</button>
                                                                                         <button type="button" class="btn btn-danger btn-sm">View Remarks</button>
@@ -94,13 +94,21 @@
 
                                                                                     </div>
 
-                                                                                        <div *ngIf="manufactureUserDetails?.name==63">
+                                                                                        <div *ngIf="roles?.includes('SL_IS_MANAGER')">
                                                                                         <button (click)=toggleDisplayAssignForm() type="button" class="btn btn-primary btn-sm">Assign To Self</button>
                                                                                         <button (click)=toggleDisplayAssignTo2Form() type="button" class="btn btn-success btn-sm">Assign To Other</button>
                                                                                         <button type="button" class="btn btn-danger btn-sm">View Remarks</button>
                                                                                         <button type="button" class="btn btn-warning btn-sm">Close Account</button>
 
                                                                                     </div>
+                                                                                    <div *ngIf="roles?.includes('SL_IS_CHIEF_MANAGER')">
+                                                                                        <button (click)=toggleDisplayAssignForm() type="button" class="btn btn-primary btn-sm">Assign To Self</button>
+                                                                                        <button (click)=toggleDisplayAssignTo2Form() type="button" class="btn btn-success btn-sm">Assign To Other</button>
+                                                                                        <button type="button" class="btn btn-danger btn-sm">View Remarks</button>
+                                                                                        <button type="button" class="btn btn-warning btn-sm">Close Account</button>
+
+                                                                                    </div>
+
 
                                                                                     <div class="container col-md-12" [hidden]="isShowAssignForm">
                                                                                         <form (ngSubmit)="assignCompanyTask()" [formGroup]="assignCompanyTaskFormGroup"  class="form">

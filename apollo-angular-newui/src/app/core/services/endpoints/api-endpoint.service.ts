@@ -17,7 +17,7 @@ export class ApiEndpointService {
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-         // LOCAL_DEV: 'localhost:8006'
+        // LOCAL_DEV: 'localhost:8006'
         // LOCAL_DEV: '12:8006'
         // LOCAL_DEV: '41.72.209.58:8006'
            LOCAL_DEV: `kimsint.kebs.org:8006`
@@ -453,6 +453,7 @@ export class ApiEndpointService {
         STD_LEVY_MANUFACTURE_USERS: `${ApiEndpointService.STL_CONTEXT}/getSlLoggedIn`,
         STD_LEVY_LIST_OF_USERS_PL: `${ApiEndpointService.STL_CONTEXT}/getPlList`,
         STD_LEVY_LIST_OF_USERS_LV: `${ApiEndpointService.STL_CONTEXT}/getSlLvTwoList`,
+        STD_LEVY_MANUFACTURE_ROLES: `${ApiEndpointService.STL_CONTEXT}/getRoleByUserId`,
 
 
 

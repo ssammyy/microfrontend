@@ -342,4 +342,10 @@ export interface UsersEntityList {
 
 
 }
+export interface UserEntityRoles {
+
+    id: number;
+
+
+}
 
