@@ -10,7 +10,7 @@ import {
     ManufacturePenalty, ManufacturePendingTask,
     PaidLevy, ReportDecisionLevelOne, ReportDecisionLevelTwo, SiteVisitFeedBack, SiteVisitReport,
     SLevySL1,
-    StdLevyScheduleSiteVisitDTO, UsersEntityList, VisitTask
+    StdLevyScheduleSiteVisitDTO, UserEntityRoles, UsersEntityList, VisitTask
 } from "./levy.model";
 import {UsersEntity} from "../std/std.model";
 
@@ -210,6 +210,11 @@ export class LevyService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_MANUFACTURE_USERS);
         const params = new HttpParams();
         return this.http.get<UsersEntityList>(url, {params}).pipe();
+    }
+    public getUserRoles(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_MANUFACTURE_ROLES);
+        const params = new HttpParams();
+        return this.http.get<UserEntityRoles>(url, {params}).pipe();
     }
     public getPlList(): Observable<UsersEntity[]> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_LIST_OF_USERS_PL);

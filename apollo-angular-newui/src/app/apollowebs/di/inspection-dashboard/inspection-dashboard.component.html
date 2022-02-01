@@ -68,29 +68,55 @@
     </div>
     <h2 *ngIf="personalStats">Assigned Documents</h2>
     <div class="row" *ngIf="personalStats">
-        <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="col-lg-3 col-md-6 col-sm-6" *ngIf="personalStats.LOCAL_COR">
             <div class="card card-stats">
                 <div class="card-header card-header-success card-header-icon">
                     <div class="card-icon">
                         <i class="material-icons">assignment</i>
                     </div>
-                    <p class="card-category">COR</p>
-                    <h3 class="card-title">Generated: {{personalStats.COR.COR_ISSUED}}</h3>
-                    <h3 class="card-title">Pending: {{personalStats.COR.COR_PENDING}}</h3>
-                    <h3 class="card-title">Total: {{personalStats.COR.TOTAL_DOCUMENT}}</h3>
+                    <p class="card-category">Local COR</p>
+                    <h3 class="card-title">Generated: {{personalStats.LOCAL_COR.COR_ISSUED}}</h3>
+                    <h3 class="card-title">Pending: {{personalStats.LOCAL_COR.COR_PENDING}}</h3>
+                    <h3 class="card-title">Total: {{personalStats.LOCAL_COR.TOTAL_DOCUMENT}}</h3>
                 </div>
             </div>
         </div>
-        <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="col-lg-3 col-md-6 col-sm-6" *ngIf="personalStats.FOREIGN_COR">
             <div class="card card-stats">
                 <div class="card-header card-header-success card-header-icon">
                     <div class="card-icon">
                         <i class="material-icons">assignment</i>
                     </div>
-                    <p class="card-category">Local COC</p>
+                    <p class="card-category">Foreign COR</p>
+                    <h3 class="card-title">Generated: {{personalStats.FOREIGN_COR.COR_ISSUED}}</h3>
+                    <h3 class="card-title">Pending: {{personalStats.FOREIGN_COR.COR_PENDING}}</h3>
+                    <h3 class="card-title">Total: {{personalStats.FOREIGN_COR.TOTAL_DOCUMENT}}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6" *ngIf="personalStats.LOCAL_COC_COI">
+            <div class="card card-stats">
+                <div class="card-header card-header-success card-header-icon">
+                    <div class="card-icon">
+                        <i class="material-icons">assignment</i>
+                    </div>
+                    <p class="card-category">Local COC/COI</p>
                     <h3 class="card-title">Generated: {{personalStats.LOCAL_COC_COI.COC_ISSUED}}</h3>
                     <h3 class="card-title">Pending: {{personalStats.LOCAL_COC_COI.COC_PENDING}}</h3>
                     <h3 class="card-title">Total: {{personalStats.LOCAL_COC_COI.TOTAL_DOCUMENT}}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6" *ngIf="personalStats.FOREIGN_COC_COI">
+            <div class="card card-stats">
+                <div class="card-header card-header-success card-header-icon">
+                    <div class="card-icon">
+                        <i class="material-icons">assignment</i>
+                    </div>
+                    <p class="card-category">Foreign COC/COI</p>
+                    <h3 class="card-title">Generated: {{personalStats.FOREIGN_COC_COI.COC_ISSUED}}</h3>
+                    <h3 class="card-title">Pending: {{personalStats.FOREIGN_COC_COI.COC_PENDING}}</h3>
+                    <h3 class="card-title">Total: {{personalStats.FOREIGN_COC_COI.TOTAL_DOCUMENT}}</h3>
                 </div>
             </div>
         </div>
@@ -171,6 +197,19 @@
                     <h3 class="card-title">In Progress: {{personalStats.NO_COC_PVOC.INSPECTION_INPROGRESS}}</h3>
                     <h3 class="card-title">Inspection Completed: {{personalStats.NO_COC_PVOC.INSPECTION_COMPLETED}}</h3>
                     <h3 class="card-title">Total: {{personalStats.NO_COC_PVOC.TOTAL_DOCUMENT}}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6" *ngIf="personalStats.NO_COR_PVOC">
+            <div class="card card-stats">
+                <div class="card-header card-header-success card-header-icon">
+                    <div class="card-icon">
+                        <i class="material-icons">format_list_numbered_rtl</i>
+                    </div>
+                    <p class="card-category">No COR from PvoC</p>
+                    <h3 class="card-title">In Progress: {{personalStats.NO_COR_PVOC.INSPECTION_INPROGRESS}}</h3>
+                    <h3 class="card-title">Inspection Completed: {{personalStats.NO_COR_PVOC.INSPECTION_COMPLETED}}</h3>
+                    <h3 class="card-title">Total: {{personalStats.NO_COR_PVOC.TOTAL_DOCUMENT}}</h3>
                 </div>
             </div>
         </div>

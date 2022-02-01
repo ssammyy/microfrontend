@@ -55,10 +55,10 @@ class InspectionDashboard(
             "               when (cd.TARGET_STATUS = 1 and cd.INSPECTION_CHECKLIST != 1) then 1\n" +
             "               else 0 end)                                                                         INSPECTION_INPROGRESS,\n" +
             "       sum(case when (cd.LOCAL_COI = 1) then 1 else 0 end)                                         COI_ISSUED,\n" +
-            "       dt.TYPE_NAME\n" +
+            "       dt.VAR_FIELD_1 as KEY_NAME\n" +
             "  from DAT_KEBS_CONSIGNMENT_DOCUMENT_DETAILS cd\n" +
             "         left join CFG_KEBS_CONSIGNMENT_DOCUMENT_TYPES dt on (cd.CD_TYPE = dt.ID)\n" +
-            " group by dt.ID, dt.TYPE_NAME"
+            " group by dt.ID, dt.VAR_FIELD_1"
     private final val myAssignedDocumentsStats="select count(*) as                                                                                 total_document,\n" +
             "       sum(case when (cd.COMPLIANT_STATUS = 1) then 1 else 0 end)                                  compliant_documents,\n" +
             "       sum(case when (cd.LOCAL_COC_COR_STATUS = 1 and dt.LOCAL_COR_STATUS = 1) then 1 else 0 end)  COR_ISSUED,\n" +
@@ -71,12 +71,11 @@ class InspectionDashboard(
             "               when (cd.TARGET_STATUS = 1 and cd.INSPECTION_CHECKLIST != 1) then 1\n" +
             "               else 0 end)                                                                         INSPECTION_INPROGRESS,\n" +
             "       sum(case when (cd.LOCAL_COI = 1) then 1 else 0 end)                                         COI_ISSUED,\n" +
-            "       dt.TYPE_NAME,\n" +
             "       dt.VAR_FIELD_1 as KEY_NAME\n" +
             " from DAT_KEBS_CONSIGNMENT_DOCUMENT_DETAILS cd\n" +
             "         left join CFG_KEBS_CONSIGNMENT_DOCUMENT_TYPES dt on (cd.CD_TYPE = dt.ID)\n" +
             " where ASSIGNER = ?\n" +
-            " group by dt.ID, dt.TYPE_NAME, dt.VAR_FIELD_1"
+            " group by dt.ID,, dt.VAR_FIELD_1"
     private final val myConsignmentDocumentStats = "select count(*) as total_document,\n" +
             "       sum(case when (cd.COMPLIANT_STATUS = 1) then 1 else 0 end)                                  compliant_documents,\n" +
             "       sum(case when (cd.LOCAL_COC_COR_STATUS = 1 and dt.LOCAL_COR_STATUS = 1) then 1 else 0 end)  COR_ISSUED,\n" +
@@ -89,12 +88,11 @@ class InspectionDashboard(
             "               when (cd.TARGET_STATUS = 1 and cd.INSPECTION_CHECKLIST != 1) then 1\n" +
             "               else 0 end)                                                                         INSPECTION_INPROGRESS,\n" +
             "       sum(case when (cd.LOCAL_COI = 1) then 1 else 0 end)                                         COI_ISSUED,\n" +
-            "       dt.TYPE_NAME,\n" +
             "       dt.VAR_FIELD_1 as KEY_NAME\n" +
             " from DAT_KEBS_CONSIGNMENT_DOCUMENT_DETAILS cd\n" +
             "         left join CFG_KEBS_CONSIGNMENT_DOCUMENT_TYPES dt on (cd.CD_TYPE = dt.ID and cd.CD_TYPE is not null)\n" +
             " where ASSIGNED_INSPECTION_OFFICER = ?\n" +
-            " group by cd.CD_TYPE, dt.TYPE_NAME,dt.VAR_FIELD_1"
+            " group by cd.CD_TYPE,dt.VAR_FIELD_1"
 
     fun inspectionStatistics(req: ServerRequest): ServerResponse {
         val response = ApiResponseModel()
@@ -108,7 +106,7 @@ class InspectionDashboard(
             val cdStats = entityManager.createNativeQuery(consignmentDocumentStats, Tuple::class.java)
             cdStats.resultList.forEach {
                 val dt = fromTuple(it as Tuple)
-                stats.put(dt.get("TYPE_NAME").toString().toUpperCase(), dt)
+                stats.put(dt.get("KEY_NAME").toString().toUpperCase(), dt)
             }
             response.data = stats
             response.responseCode = ResponseCodes.SUCCESS_CODE

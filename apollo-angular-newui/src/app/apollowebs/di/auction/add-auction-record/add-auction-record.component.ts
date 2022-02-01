@@ -97,7 +97,8 @@ export class AddAuctionRecordComponent implements OnInit {
     addItem(oldItem: any) {
         this.dialog.open(AddEditAuctionItemComponent, {
             data: {
-                old: oldItem
+                old: oldItem,
+                categoryCode: this.form.value.categoryCode
             }
         })
             .afterClosed()

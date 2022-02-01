@@ -121,10 +121,24 @@ class DestinationInspectionService(
         return false
     }
 
-    fun updateStatus(cdUuid: String, cdStatusTypeId: Long, supervisor: String, remarks: String): Boolean {
+    fun updateCdStatusOnSw(cdUuid: String, cdStatusTypeId: Long, supervisor: String, remarks: String): Boolean {
         try {
             val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             val cdStatusType = daoServices.findCdStatusValue(cdStatusTypeId)
+            val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+            // Check if the consignment should be marked as completed
+            if (cdStatusType.modificationAllowed != map.activeStatus) {
+                consignmentDocument.compliantDate = java.sql.Date(Date().time)
+                consignmentDocument.compliantRemarks = remarks
+                when (cdStatusType.category) {
+                    "APPROVE" -> {
+                        consignmentDocument.compliantStatus = map.activeStatus
+                    }
+                    else -> {
+                        consignmentDocument.compliantStatus = map.inactiveStatus
+                    }
+                }
+            }
             consignmentDocument.approveRejectCdStatusType = cdStatusType
             consignmentDocument.approveRejectCdDate = Date(Date().time)
             consignmentDocument.varField10 = "UPDATE LOCAL STATUS TO SW"
@@ -134,7 +148,7 @@ class DestinationInspectionService(
                 consignmentDocument.cdStandard?.let { cdStd ->
                     daoServices.updateCDStatus(cdStd, cdStatusTypeId)
                 }
-                cdAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, remarks, "KEBS DOCUMENT APPROVED", "Consignment approved", username = supervisor)
+                cdAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, remarks, "KEBS DOCUMENT ${cdStatusType.category}", "Consignment ${cdStatusType.category?.toLowerCase()}", username = supervisor)
             } else if (cdStatusType.category == "AMENDMENT") {
                 consignmentDocument.cdStandard?.let { cdStd ->
                     daoServices.updateCDStatus(cdStd, cdStatusTypeId)
@@ -181,14 +195,14 @@ class DestinationInspectionService(
         return false
     }
 
-    fun assignInspectionOfficer(cdUuid: String, officerId: Long, supervisor: String, remarks: String) {
+    fun assignInspectionOfficer(cdUuid: String, officerId: Long, supervisor: String, remarks: String, selfAssign: Boolean = false) {
         try {
             val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
 
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             val loggedInUser = commonDaoServices.findUserByUserName(supervisor)
             val officer = daoServices.findUserById(officerId)
-            KotlinLogging.logger { }.info("ASSIGN to ${officer.get().userName}")
+            KotlinLogging.logger { }.info("ASSIGN to ${officer.get().userName}, self $selfAssign")
             with(consignmentDocument) {
                 assignedRemarks = remarks
                 assignedDate = Date(Date().time)
@@ -203,7 +217,11 @@ class DestinationInspectionService(
             consignmentDocument.cdStandard?.let { cdStd ->
                 daoServices.updateCDStatus(cdStd, applicationMapProperties.mapDIStatusTypeAssignIoId)
             }
-            cdAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, remarks, "KEBS_ASSIGN_IO", "Assign inspection officer to consignment", username = supervisor)
+            if (selfAssign) {
+                cdAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, remarks, "KEBS_SELF_ASSIGNED", "Picked consignment", username = officer.get().userName)
+            } else {
+                cdAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, remarks, "KEBS_ASSIGN_IO", "Assign inspection officer to consignment", username = supervisor)
+            }
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("ASSIGNMENT FAILED", ex)
         }
@@ -264,7 +282,7 @@ class DestinationInspectionService(
                     val conditions = cdType.autoRejectCondition?.split(",") ?: listOf()
                     if (cdType.autoTargetCondition.isNullOrEmpty() || conditions.contains(consignmentDocument.cdStandardsTwo?.localCocType)) {
                         daoServices.findCdStatusCategory("REJECT").let {
-                            this.updateStatus(cdUuid, it.id, "Auto Rejected Consignment ${consignmentDocument.cdType?.typeName}")
+                            this.updateCdStatusOnSw(cdUuid, it.id, "Auto Rejected Consignment ${consignmentDocument.cdType?.typeName}")
                         }
                     } else {
                         KotlinLogging.logger { }.info("Consignment document does not meet condition for auto reject")
@@ -285,7 +303,7 @@ class DestinationInspectionService(
             val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             consignmentDocument.apply {
                 diProcessCompletedOn = Timestamp.from(Instant.now())
-                diProcessStatus = 1
+                diProcessStatus = 0
                 varField10 = "IO Assigned"
             }
             commonDaoServices.findUserByUserName(supervisor).let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
@@ -733,7 +751,7 @@ class DestinationInspectionService(
         return response
     }
 
-    fun updateStatus(cdUuid: String, cdStatusTypeId: Long, remarks: String) {
+    fun updateCdStatusOnSw(cdUuid: String, cdStatusTypeId: Long, remarks: String) {
         val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
         KotlinLogging.logger { }.info { "approveRejectCdStatusType = ${cdStatusTypeId}" }
         val cdStatusType = cdStatusTypeId.let { daoServices.findCdStatusValue(it) }
@@ -807,14 +825,14 @@ class DestinationInspectionService(
                 val cocs = service.readCocFileFromController(separator, targetReader)
                 GlobalScope.launch(Dispatchers.IO) {
                     delay(500L)
-                    processCocDocuments(cocs, loggedInUser,partnerId)
+                    processCocDocuments(cocs, loggedInUser, partnerId)
                 }
             }
             "COR" -> {
                 val cors = service.readCorFileFromController(separator, targetReader)
                 GlobalScope.launch(Dispatchers.IO) {
                     delay(500L)
-                    processCorDocuments(cors, loggedInUser,partnerId)
+                    processCorDocuments(cors, loggedInUser, partnerId)
                 }
             }
             else -> {
@@ -823,12 +841,12 @@ class DestinationInspectionService(
         }
     }
 
-    fun processCocDocuments(cocs: List<CocsItemsEntityDto>, loggedInUser: UsersEntity,partnerId: Long?) {
+    fun processCocDocuments(cocs: List<CocsItemsEntityDto>, loggedInUser: UsersEntity, partnerId: Long?) {
         val uniqueCoc = cocs.map { it.cocNumber }.distinct()
         uniqueCoc.forEach {
             it
                     ?.let { u ->
-                        KotlinLogging.logger{}.info("Unique COC: $u")
+                        KotlinLogging.logger {}.info("Unique COC: $u")
                         val coc = cocs.firstOrNull { it.cocNumber == u }
                         if (coc == null) {
                             return
@@ -844,7 +862,7 @@ class DestinationInspectionService(
                                         rfiNumber = coc.rfiNumber
                                         ucrNumber = coc.ucrNumber
                                         rfcDate = coc.rfcDate
-                                        documentsType="F"
+                                        documentsType = "F"
                                         cocIssueDate = coc.cocIssueDate
                                         clean = coc.clean
                                         shipmentGrossWeight = coc.shipmentGrossWeight ?: "0.0"
@@ -939,7 +957,7 @@ class DestinationInspectionService(
         }
     }
 
-    fun processCorDocuments(cors: List<CorItemsEntityDto>, loggedInUser: UsersEntity,partnerId: Long?) {
+    fun processCorDocuments(cors: List<CorItemsEntityDto>, loggedInUser: UsersEntity, partnerId: Long?) {
         cors.forEach { cor ->
             corRepository.findByChasisNumber(cor.chassisNumber ?: "")
                     ?.let {
@@ -981,7 +999,7 @@ class DestinationInspectionService(
                             exporterEmail = "UNDEFINED"
                             previousCountryOfRegistration = cor.countryOfSupply
                             previousRegistrationNumber = "UNKNOWN"
-                            documentsType="F"
+                            documentsType = "F"
                             status = 1
                             createdBy = loggedInUser.userName
                             createdOn = Timestamp.from(Instant.now())
@@ -1423,11 +1441,12 @@ class DestinationInspectionService(
             val data = mutableMapOf<String, Any?>()
             data["remarks"] = addedComment
             data["reassign"] = false
+            data["selfAssign"] = true
             data["officerId"] = loggedInUser.id
             data["owner"] = loggedInUser.userName
             data["supervisor"] = it.userName
             data["cdUuid"] = cdDetails.uuid
-            // Start BPM process for assigneing inspection
+            // Start BPM process for assigning inspection
             this.diBpmn.startAssignmentProcesses(data, cdDetails)
             // Wait for BPM process to complete
             Thread.sleep(10_000)

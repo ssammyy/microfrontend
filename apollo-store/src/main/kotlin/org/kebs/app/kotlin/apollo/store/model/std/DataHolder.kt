@@ -55,4 +55,8 @@ interface UserTypeHolder {
     fun getName(): String?
 }
 
+interface UserRoleHolder {
+    fun getId(): Long?
+}
+
 
