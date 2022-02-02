@@ -59,4 +59,10 @@ interface UserRoleHolder {
     fun getId(): Long?
 }
 
+interface UserDetailHolder {
+    fun getId(): Long?
+    fun getFirstName(): String?
+    fun getLastName(): String?
+}
+
 

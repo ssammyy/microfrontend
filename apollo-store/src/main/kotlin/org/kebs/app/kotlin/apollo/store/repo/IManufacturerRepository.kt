@@ -26,6 +26,8 @@ import org.kebs.app.kotlin.apollo.store.model.qa.ManufacturePlantDetailsEntity
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 
 
@@ -87,6 +89,9 @@ interface IBusinessNatureRepository : HazelcastRepository<BusinessNatureEntity, 
     fun findByStatus(status: Int): List<BusinessNatureEntity>?
     fun findByIdAndStatus(id: Long, status: Int): BusinessNatureEntity?
     fun findByBusinessLinesIdAndStatus(businessLinesId: BusinessLinesEntity, status: Int): List<BusinessNatureEntity>?
+    @Query( value = "SELECT MANUFACTURE_STATUS  FROM CFG_KEBS_BUSINESS_NATURE WHERE ID= :id",
+        nativeQuery = true )
+    fun getManufacturerStatus(@Param("id") id: Long?): Long?
 }
 
 @Repository

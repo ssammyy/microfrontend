@@ -343,9 +343,10 @@ export interface UsersEntityList {
 
 }
 export interface UserEntityRoles {
-
     id: number;
+}
 
-
+export interface ManufacturingStatus {
+    name: boolean;
 }
 

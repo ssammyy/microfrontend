@@ -145,14 +145,26 @@ interface UserListRepository : JpaRepository<UsersEntity, Long> {
     @Query("SELECT u.firstName,u.lastName FROM UsersEntity u WHERE u.id =:id")
     fun findNameById(@Param("id") id: Long?): String
 
+    @Query(value = "SELECT u.FIRST_NAME AS FIRSTNAME,u.LAST_NAME AS LASTNAME,u.ID AS ID FROM DAT_KEBS_USERS u JOIN CFG_USER_ROLES_ASSIGNMENTS c ON u.ID=c.USER_ID " +
+            "JOIN CFG_USER_ROLES r ON c.ROLE_ID=r.ID WHERE r.ROLE_NAME IN ('SL_PL_OFFICER','SL_ASSISTANT_MGR','SL_MANAGER') ", nativeQuery = true)
+    fun getSlLvThreeList(): List<UserDetailHolder>
+
     @Query(value = "SELECT * FROM DAT_KEBS_USERS  WHERE USER_TYPE IN ('63','62','61') ", nativeQuery = true)
-    fun getSlLvThreeList(): MutableList<UsersEntity>
+    fun getSlLvThreeListv(): List<UsersEntity>
+
+    @Query(value = "SELECT u.FIRST_NAME AS FIRSTNAME,u.LAST_NAME AS LASTNAME,u.ID AS ID FROM DAT_KEBS_USERS u JOIN CFG_USER_ROLES_ASSIGNMENTS c ON u.ID=c.USER_ID " +
+            "JOIN CFG_USER_ROLES r ON c.ROLE_ID=r.ID WHERE r.ROLE_NAME IN ('SL_PL_OFFICER') ", nativeQuery = true)
+    fun getPlList(): List<UserDetailHolder>
 
     @Query(value = "SELECT * FROM DAT_KEBS_USERS  WHERE USER_TYPE IN ('61') ", nativeQuery = true)
-    fun getPlList(): MutableList<UsersEntity>
+    fun getPlListv(): List<UsersEntity>
+
+    @Query(value = "SELECT u.FIRST_NAME AS FIRSTNAME,u.LAST_NAME AS LASTNAME,u.ID AS ID FROM DAT_KEBS_USERS u JOIN CFG_USER_ROLES_ASSIGNMENTS c ON u.ID=c.USER_ID " +
+            "JOIN CFG_USER_ROLES r ON c.ROLE_ID=r.ID WHERE r.ROLE_NAME IN ('SL_PL_OFFICER','SL_ASSISTANT_MGR') ", nativeQuery = true)
+    fun getSlLvTwoList(): List<UserDetailHolder>
 
     @Query(value = "SELECT * FROM DAT_KEBS_USERS  WHERE USER_TYPE IN ('61','62') ", nativeQuery = true)
-    fun getSlLvTwoList(): MutableList<UsersEntity>
+    fun getSlLvTwoListv(): List<UsersEntity>
 
 
 

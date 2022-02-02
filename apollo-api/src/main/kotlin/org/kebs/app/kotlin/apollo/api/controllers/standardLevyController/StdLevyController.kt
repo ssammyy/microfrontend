@@ -854,19 +854,19 @@ class StdLevyController(
 
     @GetMapping("/getSlUsers")
     @ResponseBody
-    fun getSlUsers(): MutableList<UsersEntity> {
+    fun getSlUsers(): List<UserDetailHolder> {
         return standardLevyService.getSlUsers()
     }
 
     @GetMapping("/getPlList")
     @ResponseBody
-    fun getPlList(): MutableList<UsersEntity> {
+    fun getPlList(): List<UserDetailHolder> {
         return standardLevyService.getPlList()
     }
 
     @GetMapping("/getSlLvTwoList")
     @ResponseBody
-    fun getSlLvTwoList(): MutableList<UsersEntity> {
+    fun getSlLvTwoList(): List<UserDetailHolder> {
         return standardLevyService.getSlLvTwoList()
     }
 
@@ -887,6 +887,16 @@ class StdLevyController(
         return standardLevyService.getRoles()
 
     }
+
+    @GetMapping("/getManufacturerStatus")
+    @ResponseBody
+    fun getManufacturerStatus(): Boolean
+    {
+
+        return standardLevyService.getManufacturerStatus()
+
+    }
+
 
 
     @PostMapping("/anonymous/standard/close")

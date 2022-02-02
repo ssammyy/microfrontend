@@ -4,7 +4,7 @@ import {
   ManufactureBranchDto,
   ManufactureInfo,
   ManufacturingBranchDto,
-  ManufacturingInfo
+  ManufacturingInfo, ManufacturingStatus
 } from "../../../../core/store/data/levy/levy.model";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
@@ -28,6 +28,7 @@ export class CustomerRegistrationComponent implements OnInit {
   companySoFar: Partial<CompanyModel> | undefined;
   //company: CompanyModel;
   companyDetails !: CompanyModel[];
+  manufacturingStatus !: ManufacturingStatus;
   manufacturerInfoForm: FormGroup;
   manufacturingInfoForm: FormGroup;
   branchFormA: FormGroup;
@@ -53,6 +54,7 @@ export class CustomerRegistrationComponent implements OnInit {
 
   ngOnInit(): void {
       this.getCompanyProfile();
+      this.getManufacturerStatus();
 
     this.manufacturerInfoForm = this.formBuilder.group({
       businessCompanyName: [],
@@ -89,7 +91,9 @@ export class CustomerRegistrationComponent implements OnInit {
       location: ['', Validators.required],
       registrationNo: [],
       nameOfBranch: ['', Validators.required],
-      companyProfileID: []
+      companyProfileID: [],
+      registrationNumber: [],
+      kraPin: []
 
     });
 
@@ -110,6 +114,20 @@ export class CustomerRegistrationComponent implements OnInit {
       return this.roles = u.roles;
     });
   }
+
+  public getManufacturerStatus(): void{
+    this.levyService.getManufacturerStatus().subscribe(
+        (response: ManufacturingStatus)=> {
+          this.manufacturingStatus = response;
+          console.log(this.manufacturingStatus);
+        },
+        (error: HttpErrorResponse)=>{
+          console.log(error.message)
+          //alert(error.message);
+        }
+    );
+  }
+
     public getCompanyProfile(): void{
         this.SpinnerService.show();
         this.levyService.getCompanyProfile().subscribe(
@@ -181,12 +199,40 @@ export class CustomerRegistrationComponent implements OnInit {
 
 
   }
-
-  onClickSaveManufacturing(valid: boolean) {
+  onClickSaveManufacturing(valid: boolean): void {
     if (valid) {
+      this.SpinnerService.show();
+      this.levyService.addSL1Details(this.manufacturingInfoForm.value).subscribe(
+          (response) => {
+            console.log(response);
+            this.SpinnerService.hide();
+            this.showToasterSuccess(response.httpStatus, `SL1-C Details Saved..Entry number is ${response.body.entryNumber}`);
+            swal.fire({
+              title:'SLI-C SAVED;',
+              text: 'Entry number is'+ '\xa0\xa0' + response.body.entryNumber + '\xa0\xa0' +'Check your E-mail for registration details.',
+              buttonsStyling: false,
+              customClass: {
+                confirmButton: 'btn btn-success form-wizard-next-btn ',
+              },
+              icon: 'success'
+            });
+            this.router.navigateByUrl('/dashboard').then(r => {});
+          },
+          (error: HttpErrorResponse) => {
+            this.SpinnerService.hide();
+            console.log(error.message);
+          }
+      );
+    } else {
+
+      this.notifyService.showError("Please Fill In All The Fields", "Error");
 
     }
+
+
   }
+
+
   onClickAddBranches() {
     this.manufacturerBranchDetail = this.branchFormA.value;
     this.manufacturerBranchDetails.push(this.manufacturerBranchDetail);

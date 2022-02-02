@@ -1,6 +1,5 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
-import com.google.gson.Gson
 import mu.KotlinLogging
 import org.flowable.engine.ProcessEngine
 import org.flowable.engine.RepositoryService
@@ -8,9 +7,7 @@ import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
 import org.flowable.engine.repository.Deployment
 import org.flowable.task.api.Task
-import org.joda.time.DateTime
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
-import org.kebs.app.kotlin.apollo.common.dto.std.NWAPreliminaryDraftDecision
 import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
 import org.kebs.app.kotlin.apollo.common.dto.stdLevy.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
@@ -20,12 +17,10 @@ import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.std.UserListRepository
-import org.kebs.app.kotlin.apollo.store.repo.stdLevy.ManufacturePenaltyDetailsDTO
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
-import java.sql.Timestamp
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
@@ -45,7 +40,8 @@ class StandardLevyService(
     private val bpmnService: StandardsLevyBpmn,
     private val userListRepository: UserListRepository,
     private val usersEntityRepository: UsersEntityRepository,
-    private val iUserRoleAssignmentsRepository: IUserRoleAssignmentsRepository
+    private val iUserRoleAssignmentsRepository: IUserRoleAssignmentsRepository,
+    private val iBusinessNatureRepository: IBusinessNatureRepository
 
 ) {
     val PROCESS_DEFINITION_KEY = "sl_SiteVisitProcessFlow"
@@ -608,15 +604,15 @@ class StandardLevyService(
         return companyProfileRepo.getMnPendingTask(assignedTo)
     }
 
-    fun getPlList(): MutableList<UsersEntity> {
+    fun getPlList(): List<UserDetailHolder> {
         return userListRepository.getPlList()
     }
 
-    fun getSlLvTwoList(): MutableList<UsersEntity> {
+    fun getSlLvTwoList(): List<UserDetailHolder> {
         return userListRepository.getSlLvTwoList()
     }
 
-    fun getSlUsers(): MutableList<UsersEntity> {
+    fun getSlUsers(): List<UserDetailHolder> {
         return userListRepository.getSlLvThreeList()
     }
 
@@ -638,6 +634,26 @@ class StandardLevyService(
         commonDaoServices.loggedInUserDetails().id?.let { id ->
             return iUserRoleAssignmentsRepository.getRoleByUserId(id)
         }?: throw NullValueNotAllowedException ("Role Not Found")    }
+
+    fun getManufacturerStatus():Boolean {
+        commonDaoServices.loggedInUserDetails().id
+            ?.let { id ->
+                companyProfileRepo.getBusinessNature(id)
+                    .let {
+                        iBusinessNatureRepository.getManufacturerStatus(it)
+                            ?.let {
+
+                                //Manufacturer
+                                return true
+                            }
+                            ?: run {
+                                //Contractor
+                                return false
+                            }
+                    }
+            }
+            ?: return false
+    }
 
     fun closeTask(taskId: String) {
         taskService.complete(taskId)
