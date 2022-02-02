@@ -1036,12 +1036,12 @@ class PvocServiceFlux(
                     idfsResponse.invoiceNumber = idf.invoiceNumber
                     idfsResponse.invoiceDate = idf.invoiceDate
                     idfsResponse.currency = idf.currency
-                    idfsResponse.exchangeRate = idf.exchangeRate
-                    idfsResponse.fobValue = idf.fobValue
-                    idfsResponse.freight = idf.freight
-                    idfsResponse.insurance = idf.insurance
-                    idfsResponse.otherCharges = idf.otherCharges
-                    idfsResponse.total = idf.total
+//                    idfsResponse.exchangeRate = idf.exchangeRate
+//                    idfsResponse.fobValue = idf.fobValue
+//                    idfsResponse.freight = idf.freight
+//                    idfsResponse.insurance = idf.insurance
+//                    idfsResponse.otherCharges = idf.otherCharges
+//                    idfsResponse.total = idf.total
                     idfsResponse.observations = idf.observations
                     if (includeItems) {
                         idfsResponse.idfNumber?.let { idfsResponse.items.addAll(getIdfItemsData(idfNumber = it)) }
@@ -1084,12 +1084,12 @@ class PvocServiceFlux(
                 idfsResponse.invoiceNumber = idf.invoiceNumber
                 idfsResponse.invoiceDate = idf.invoiceDate
                 idfsResponse.currency = idf.currency
-                idfsResponse.exchangeRate = idf.exchangeRate
-                idfsResponse.fobValue = idf.fobValue
-                idfsResponse.freight = idf.freight
-                idfsResponse.insurance = idf.insurance
-                idfsResponse.otherCharges = idf.otherCharges
-                idfsResponse.total = idf.total
+//                idfsResponse.exchangeRate = idf.exchangeRate
+//                idfsResponse.fobValue = idf.fobValue
+//                idfsResponse.freight = idf.freight
+//                idfsResponse.insurance = idf.insurance
+//                idfsResponse.otherCharges = idf.otherCharges
+//                idfsResponse.total = idf.total
                 idfsResponse.observations = idf.observations
                 return idfsResponse
             }

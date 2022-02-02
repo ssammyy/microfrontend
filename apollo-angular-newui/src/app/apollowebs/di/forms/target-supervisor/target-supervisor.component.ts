@@ -20,7 +20,6 @@ export class TargetSupervisorComponent implements OnInit {
 
     ngOnInit(): void {
         this.form = this.fb.group({
-            inspectionNotificationStatus: ['', Validators.required],
             remarks: ['', Validators.required]
         })
     }

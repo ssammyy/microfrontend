@@ -355,6 +355,53 @@
     )
 )]]></imageExpression>
             </image>
+            <image>
+                <reportElement x="332" y="572" width="219" height="101" uuid="9044ec40-bfdc-4007-afaa-cc2c717394de"/>
+                <imageExpression><![CDATA["/app/apps_home/apollo/conf/test/reports/images/BMN_signature.png"]]></imageExpression>
+            </image>
         </band>
+        <band height="802">
+            <property name="com.jaspersoft.studio.unit.height" value="px"/>
+            <image>
+                <reportElement x="-7" y="0" width="570" height="802" uuid="01ab6f46-5533-4577-8c63-7ef92b929d42">
+                    <property name="com.jaspersoft.studio.unit.width" value="px"/>
+                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                </reportElement>
+                <imageExpression><![CDATA["/app/apps_home/apollo/conf/test/reports/images/kebs_dmark_background_image.png"]]></imageExpression>
+            </image>
+            <staticText>
+                <reportElement x="80" y="30" width="390" height="20" uuid="a5ffe669-cb88-4eec-a0c2-86ba85191ebd"/>
+                <textElement>
+                    <font fontName="SansSerif" size="14" isBold="true"/>
+                </textElement>
+                <text><![CDATA[CONDITIONS FOR USE OF KEBS STANDARDISATION MARK]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="-13" y="-40" width="564" height="730" uuid="274cbbde-9ec5-49a7-9fcb-8e01d8bd20e4">
+                    <property name="com.jaspersoft.studio.unit.x" value="px"/>
+                </reportElement>
+                <textElement verticalAlignment="Middle">
+                    <font fontName="SansSerif" size="13"/>
+                </textElement>
+                <text><![CDATA[1. This permit is issued subject to the provisions of the Standards Act, Cap 496 Laws of Kenya and Standardization Mark Logo (Permits and Fees) Regulations which include:
+
+           i. The permit-holder shall comply with the general and specific conditions and scheme of supervision and control which the Certification Body may issue from time to time.
+          ii. The permit is not transferable.
+         iii. Costs incurred during inspection to determine whether commodities to which standardization has been applied fulfill applicable requirements set forth by the Certification Body shall be defrayed by the permit-holder.
+          iv. The right to use the mark applies only to the commodities listed in the Permit.
+           v.  Costs incurred in applying the standardization mark shall be defrayed by the permit-holder.
+          vi. The Certification body reserves the right to revise the regulations for marking certified commodities.
+         vii. If the Kenya Standard on which the permit is based is revised, the Permit shall be valid only if the permit-holder agrees to comply with the requirements set forth in the revised Kenya Standard or approved specification.
+        viii. The permit shall be valid for the period shown unless suspended or revoked before expiry.
+          ix.   In the event that for any reason there is stoppage of production with regard to the product described on the permit, the permit-holder shall be obliged to notify the Regional Manager/Managing Director of Kenya Bureau of Standards about the stoppage, for the suspension of the permit. Failure to do so shall be deemed as misuse of the mark and shall lead to demand to pay accrued monies in the period that renewal of same permit had not taken place.
+
+
+2. The breach of any of the conditions contained in this permit constitutes an offence under the provisions of Standards act and the Standards marks (Permits and Fees) Regulations.
+
+3. Any permit-holder aggrieved by a decision of the Certification Body may appeal in writing to the Standards Tribunal.
+]]></text>
+            </staticText>
+        </band>
+
     </detail>
 </jasperReport>
