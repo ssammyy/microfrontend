@@ -7,7 +7,7 @@ import {
     ApproveVisitTask, AssignCompanyTaskDTO,
     CompanyModel, ManufactureCompleteTask, ManufactureDetailList,
     ManufactureInfo,
-    ManufacturePenalty, ManufacturePendingTask,
+    ManufacturePenalty, ManufacturePendingTask, ManufacturingStatus,
     PaidLevy, ReportDecisionLevelOne, ReportDecisionLevelTwo, SiteVisitFeedBack, SiteVisitReport,
     SLevySL1,
     StdLevyScheduleSiteVisitDTO, UserEntityRoles, UsersEntityList, VisitTask
@@ -48,6 +48,13 @@ export class LevyService {
         const params = new HttpParams();
         return this.http.get<CompanyModel>(url, {params}).pipe();
     }
+
+    public getManufacturerStatus(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_MANUFACTURE_STATUS);
+        const params = new HttpParams();
+        return this.http.get<ManufacturingStatus>(url, {params}).pipe();
+    }
+
     public scheduleSiteVisit(stdLevyScheduleSiteVisitDTO: StdLevyScheduleSiteVisitDTO): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_SCHEDULE_SITE_VISIT);
         const params = new HttpParams();

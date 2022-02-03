@@ -111,6 +111,10 @@ class BusinessNatureEntity : Serializable {
     @Basic
     var deleteBy: String? = null
 
+    @Column(name = "MANUFACTURE_STATUS")
+    @Basic
+    var manufactureStatus: Long? = null
+
     @Column(name = "DELETED_ON")
     @Basic
     var deletedOn: Timestamp? = null
@@ -144,7 +148,8 @@ class BusinessNatureEntity : Serializable {
                 modifiedBy == that.modifiedBy &&
                 modifiedOn == that.modifiedOn &&
                 deleteBy == that.deleteBy &&
-                deletedOn == that.deletedOn
+                deletedOn == that.deletedOn &&
+                manufactureStatus == that.manufactureStatus
     }
 
     override fun hashCode(): Int {
@@ -169,7 +174,8 @@ class BusinessNatureEntity : Serializable {
             modifiedBy,
             modifiedOn,
             deleteBy,
-            deletedOn
+            deletedOn,
+            manufactureStatus
         )
     }
 

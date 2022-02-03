@@ -16,6 +16,7 @@ import {Store} from "@ngrx/store";
 import {NgSelectModule} from '@ng-select/ng-select';
 import {selectUserInfo} from "../../../core/store";
 import swal from "sweetalert2";
+import {Router} from "@angular/router";
 declare const $: any;
 
 @Component({
@@ -135,6 +136,7 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
         this.isShowSaveFeedBackForm = !this.isShowSaveFeedBackForm;
     }
   constructor(
+      private router: Router,
       private store$: Store<any>,
       private formBuilder: FormBuilder,
       private levyService: LevyService,
@@ -570,9 +572,10 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
         this.levyService.assignCompanyTasks(this.assignCompanyTaskFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
-                this.getManufacturerList();
+                //this.getManufacturerList();
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Task Assigned`);
+                this.router.navigateByUrl('/slManufacturers').then(r => {});
 
             },
             (error: HttpErrorResponse) => {
@@ -587,9 +590,10 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
         this.levyService.assignCompanyTasks(this.assignCompanyTask1FormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
-                this.getManufacturerList();
+                //this.getManufacturerList();
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Task Assigned`);
+                this.router.navigateByUrl('/slManufacturers').then(r => {});
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();
@@ -603,9 +607,10 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
         this.levyService.assignCompanyTasks(this.assignCompanyTask2FormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
-                this.getManufacturerList();
+                //this.getManufacturerList();
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Task Assigned`);
+                this.router.navigateByUrl('/slManufacturers').then(r => {});
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();

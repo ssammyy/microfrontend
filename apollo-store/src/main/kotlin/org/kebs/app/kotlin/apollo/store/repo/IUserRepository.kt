@@ -323,6 +323,12 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     )
     fun getMnPendingTask(@Param("assignedTo") assignedTo: Long?): MutableList<CompanyProfileEntity>
 
+    @Query(
+        value = "SELECT BUSINESS_NATURES  FROM DAT_KEBS_COMPANY_PROFILE WHERE USER_ID= :id",
+        nativeQuery = true
+    )
+    fun getBusinessNature(@Param("id") id: Long?): Long
+
 
 }
 

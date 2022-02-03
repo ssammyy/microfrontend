@@ -24,9 +24,8 @@ type="ball-scale-multiple"
 
     </div>
     <div class="form-wizard">
-
         <div *ngFor="let companyDetail of companyDetails" class="row col-12">
-            <div *ngIf="roles?.includes('PERMIT_APPLICATION')" class="row col-12">
+            <div *ngIf="manufacturingStatus==true" class="row col-12">
 
                 <form (ngSubmit)="onClickSaveSL1(manufacturerInfoForm.valid)" [formGroup]="manufacturerInfoForm"
                       class="form col-12"
@@ -223,7 +222,7 @@ type="ball-scale-multiple"
                     </div>
                 </form>
             </div>
-            <div *ngIf="companyDetail.manufactureStatus==10" class="row col-12">
+            <div *ngIf="manufacturingStatus==false" class="row col-12">
                 <form (ngSubmit)="onClickSaveManufacturing(manufacturingInfoForm.valid)"
                       [formGroup]="manufacturingInfoForm"
                       class="form col-12"
@@ -330,9 +329,9 @@ type="ball-scale-multiple"
                            formControlName="companyProfileID" name="companyProfileID"
                     >
                     <input type="hidden" ngModel="{{companyDetail.registrationNumber}}" class="form-control"
-                           id="companyRegID" formControlName="companyProfileID" name="companyRegID">
+                           id="companyRegID" formControlName="registrationNumber" name="registrationNumber">
                     <input type="hidden" ngModel="{{companyDetail.kraPin}}" class="form-control"
-                           id="companyKRAID" formControlName="companyProfileID" name="companyKRAID">
+                           id="companyKRAID" formControlName="kraPin" name="kraPin">
 
                 </div>
 
@@ -340,12 +339,12 @@ type="ball-scale-multiple"
                 <div class="row">
                     <div class="form-group col-6">
                         <label for="nameOfBranch2">Name of Branch <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                        <input type="text" ngModel="" class="form-control" id="nameOfBranch2" formControlName="nameOfBranch" name="nameOfBranch"
-                               placeholder="Name of Branch" >
+                        <input type="text" ngModel="{{companyDetail.branchName}}" class="form-control" id="nameOfBranch2" formControlName="nameOfBranch" name="nameOfBranch"
+                             value="{{companyDetail.branchName}}"  placeholder="Name of Branch" >
                     </div>
                     <div class="form-group col-6">
                         <label for="location2">Location <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                        <input type="text" ngModel="" class="form-control" id="location2" formControlName="location" name="location"
+                        <input type="text" ngModel="{{companyDetail.physicalAddress}}" class="form-control" id="location2" formControlName="location" name="location"
                                placeholder="Location" >
 
                     </div>
