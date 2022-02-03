@@ -7,6 +7,7 @@ import org.junit.Ignore
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith
+import org.kebs.app.kotlin.apollo.api.payload.request.ConsignmentUpdateRequest
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
@@ -37,6 +38,8 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.core.io.ResourceLoader
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.test.context.junit4.SpringRunner
 import org.w3c.dom.Document
 import org.xml.sax.InputSource
@@ -285,6 +288,19 @@ class DITest {
         }
 
         return cdResult
+    }
+
+    @Test
+    fun testDocumentApproval() {
+        val form = ConsignmentUpdateRequest()
+        form.approvalStatus = 1
+        form.remarks = "OKay remarks"
+        val cdStatusType = destinationInspectionDaoServices.findCdStatusCategory("APPROVE")
+        form.cdStatusTypeId = cdStatusType.id
+        val cdUud = "9cd47862-7d84-4664-b1b1-f14a6b950441"
+        SecurityContextHolder.getContext().authentication=UsernamePasswordAuthenticationToken("APPROVE",null,null)
+        val response = this.destinationInspectionBpmn.startApprovalConsignment(cdUud, form)
+        Assertions.assertEquals("00", response.responseCode, response.message)
     }
 
     fun transportDetailsCDResults(): CdTransportDetailsEntity {
@@ -731,7 +747,7 @@ class DITest {
         this.demandNoteRepository.findFirstByPaymentStatusAndCdRefNoIsNotNullAndImporterPinOrderByCreatedOnDesc(0, "PN890230023")?.let { demandNote ->
             KotlinLogging.logger { }.info("CdRef No: ${demandNote.cdRefNo}")
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-            billingService.registerBillTransaction(demandNote,null, map)?.let {
+            billingService.registerBillTransaction(demandNote, null, map)?.let {
                 KotlinLogging.logger { }.info("Billing temp ref: ${it.tempReceiptNumber}")
             } ?: throw ExpectedDataNotFound("Expected demand note to be added to billing")
             Thread.sleep(TimeUnit.SECONDS.toMillis(5))
@@ -871,16 +887,18 @@ class DITest {
     @Autowired
     lateinit var iCountryTypeCodesRepository: ICountryTypeCodesRepository
     val stringToExclude = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
+
     @Test
     fun mapCorDonsignmentDocument() {
-        val resource=this.resourceLoader.getResource("classpath:cds/OG_SUB_CD-2022CKEBSKRA0030000041390-1-B-20220125033017.xml")
-        Assertions.assertNotNull(resource,"Expected file to be available")
-        val bytes=resource.file.readBytes()
+        val resource = this.resourceLoader.getResource("classpath:cds/OG_SUB_CD-2022CKEBSKRA0030000041390-1-B-20220125033017.xml")
+        Assertions.assertNotNull(resource, "Expected file to be available")
+        val bytes = resource.file.readBytes()
         val consignmentDoc: ConsignmentDocument = commonDaoServices.deserializeFromXML(bytes.decodeToString(), stringToExclude)
         Assertions.assertNotNull(consignmentDoc.documentDetails?.consignmentDocDetails?.cdStandardTwo)
         consignmentDocumentDaoService.insertConsignmentDetailsFromXml(consignmentDoc, consignmentDocument.encodeToByteArray())
 
     }
+
     @Test
     fun canDecodeConsignmentDocument() {
 

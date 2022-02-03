@@ -75,7 +75,7 @@ class InspectionDashboard(
             " from DAT_KEBS_CONSIGNMENT_DOCUMENT_DETAILS cd\n" +
             "         left join CFG_KEBS_CONSIGNMENT_DOCUMENT_TYPES dt on (cd.CD_TYPE = dt.ID)\n" +
             " where ASSIGNER = ?\n" +
-            " group by dt.ID,, dt.VAR_FIELD_1"
+            " group by dt.ID, dt.VAR_FIELD_1"
     private final val myConsignmentDocumentStats = "select count(*) as total_document,\n" +
             "       sum(case when (cd.COMPLIANT_STATUS = 1) then 1 else 0 end)                                  compliant_documents,\n" +
             "       sum(case when (cd.LOCAL_COC_COR_STATUS = 1 and dt.LOCAL_COR_STATUS = 1) then 1 else 0 end)  COR_ISSUED,\n" +
@@ -92,7 +92,7 @@ class InspectionDashboard(
             " from DAT_KEBS_CONSIGNMENT_DOCUMENT_DETAILS cd\n" +
             "         left join CFG_KEBS_CONSIGNMENT_DOCUMENT_TYPES dt on (cd.CD_TYPE = dt.ID and cd.CD_TYPE is not null)\n" +
             " where ASSIGNED_INSPECTION_OFFICER = ?\n" +
-            " group by cd.CD_TYPE,dt.VAR_FIELD_1"
+            " group by dt.VAR_FIELD_1"
 
     fun inspectionStatistics(req: ServerRequest): ServerResponse {
         val response = ApiResponseModel()

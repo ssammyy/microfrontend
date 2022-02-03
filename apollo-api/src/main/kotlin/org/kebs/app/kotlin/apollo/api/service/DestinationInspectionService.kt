@@ -121,7 +121,7 @@ class DestinationInspectionService(
         return false
     }
 
-    fun updateCdStatusOnSw(cdUuid: String, cdStatusTypeId: Long, supervisor: String, remarks: String): Boolean {
+    fun updateStatus(cdUuid: String, cdStatusTypeId: Long, supervisor: String, remarks: String): Boolean {
         try {
             val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             val cdStatusType = daoServices.findCdStatusValue(cdStatusTypeId)
@@ -320,8 +320,6 @@ class DestinationInspectionService(
 
             val loggedInUser = this.commonDaoServices.findUserByUserName(supervisor)
             daoServices.generateCor(consignmentDocument, map, loggedInUser).let { corDetails ->
-                // Send to KENTRADE
-                daoServices.submitCoRToKesWS(corDetails)
                 // Update CD
                 consignmentDocument.cdStandard?.let { cdStd ->
                     daoServices.updateCDStatus(
@@ -331,6 +329,8 @@ class DestinationInspectionService(
                 }
                 corDetails.varField10 = "COMPLIANCE APPROVED, COR GENERATED"
                 daoServices.saveCorDetails(corDetails)
+                // Send to KENTRADE
+                daoServices.submitCoRToKesWS(corDetails)
                 //Send Cor to importer
                 consignmentDocument.compliantStatus = map.activeStatus
                 consignmentDocument.localCocOrCorStatus = map.activeStatus
@@ -1541,6 +1541,7 @@ class DestinationInspectionService(
             map["NoOfPassengers"] = corDetails.numberOfPassangers.toString()
             map["PrevRegNo"] = corDetails.previousCountryOfRegistration.orEmpty()
             map["PrevCountryOfReg"] = corDetails.previousCountryOfRegistration.orEmpty()
+            map["CustomsIeNo"]=corDetails.customsIeNo?:"N/A"
             // todo: ADD CHECKLIST COMMENT
 //        val inspectionChecklist = findMotorVehicleInspectionByCdItem(cdItem)
             map["InspectionDetails"] = corDetails.inspectionRemarks ?: "NA"
@@ -1558,12 +1559,12 @@ class DestinationInspectionService(
                 map["CocNo"] = localCocEntity.cocNumber.orEmpty()
             }
             map["IssueDate"] = localCocEntity.cocIssueDate.toString()
-            map["EntryNo"] = ""
+            map["EntryNo"] = localCocEntity.customsEntryNumber?:"N/A"
             map["IdfNo"] = localCocEntity.idfNumber.orEmpty()
             map["ImporterName"] = localCocEntity.importerName.orEmpty()
             map["ImporterAddress"] = localCocEntity.importerAddress1.orEmpty()
             map["ImporterPin"] = localCocEntity.importerPin.orEmpty()
-            map["ClearingAgent"] = ""
+            map["ClearingAgent"] = localCocEntity.clearingAgent?:"N/A"
             map["PortOfEntry"] = localCocEntity.portOfDestination.orEmpty()
             map["UcrNo"] = localCocEntity.ucrNumber.orEmpty()
             map["Status"] = localCocEntity.status.toString()

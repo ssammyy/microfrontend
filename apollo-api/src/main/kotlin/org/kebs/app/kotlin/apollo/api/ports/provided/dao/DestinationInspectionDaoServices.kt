@@ -398,6 +398,11 @@ class DestinationInspectionDaoServices(
                 localCoc.finalInvoiceFobValue = itemNote.cfvalue?.toDouble() ?: 0.0
             }
         }
+        // Add inspection details
+        iCdInspectionGeneralRepo.findFirstByCdDetails(consignmentDocumentDetailsEntity)?.let { cdItemDetailsList ->
+            localCoc.customsEntryNumber = cdItemDetailsList.customsEntryNumber
+            localCoc.clearingAgent = cdItemDetailsList.clearingAgent
+        }
     }
 
     fun createLocalNcr(
@@ -654,67 +659,80 @@ class DestinationInspectionDaoServices(
                             localCor.chasisNumber = nonStandard.chassisNo.toString()
                         }
                     }
-                    // Fill checklist details
                     with(localCor) {
-                        corNumber = "COR${generateRandomText(5, s.secureRandom, s.messageDigestAlgorithm, true)}"
-                        corIssueDate = commonDaoServices.getTimestamp()
-                        val cdHeaderOne = cdEntity.cdHeaderOne?.let { findCdHeaderOneDetails(it) }
-                        countryOfSupply = cdHeaderOne?.countryOfSupply
                         inspectionCenter = cdItemDetailsList.cdDetails?.freightStation?.cfsName ?: "UNKNOWN"
-                        val cdExporter = cdEntity.cdExporter?.let { findCdExporterDetails(it) }
-                        exporterName = cdExporter?.name
-                        exporterAddress1 = cdExporter?.physicalAddress
-                        exporterAddress2 = cdExporter?.postalAddress
-                        exporterEmail = cdExporter?.email
-                        applicationBookingDate = commonDaoServices.getTimestamp()
-                        inspectionDate = commonDaoServices.getTimestamp()
                         make = cdMvInspectionEntity.makeVehicle
-                        model = "test"
                         engineNumber = cdMvInspectionEntity.engineNoCapacity
                         engineCapacity = cdMvInspectionEntity.engineNoCapacity
                         yearOfManufacture = cdMvInspectionEntity.manufactureDate.toString()
-                        yearOfFirstRegistration = "test"
                         inspectionMileage = cdMvInspectionEntity.odemetreReading ?: "UNKNOWN"
-                        unitsOfMileage = "KM"
                         inspectionRemarks = cdMvInspectionEntity.remarks
-                        previousRegistrationNumber = "test"
-                        previousCountryOfRegistration = "test"
-
                         tareWeight = (cdMvInspectionEntity.itemId?.itemNetWeight?.toBigDecimal()
                                 ?: BigDecimal.ZERO).toLong()
-                        loadCapacity = 0
                         grossWeight = (cdMvInspectionEntity.itemId?.itemGrossWeight?.toBigDecimal()
                                 ?: BigDecimal.ZERO).toLong()
-                        numberOfAxles = 0
                         typeOfVehicle = cdMvInspectionEntity.makeVehicle
-                        numberOfPassangers = 0
-                        typeOfBody = "test"
                         bodyColor = cdMvInspectionEntity.colour
-                        fuelType = "test"
                         customsIeNo = cdItemDetailsList.customsEntryNumber
                         transmission = cdMvInspectionEntity.transmissionAutoManual
-                        inspectionFee = 0.0
                         version = cdItemDetailsList.cdDetails?.version ?: 1
-                        approvalStatus = cdEntity.compliantStatus.toString()
-                        ucrNumber = cdEntity.ucrNumber
-                        inspectionFeeCurrency = "USD"
                         inspectionOfficer = cdItemDetailsList.cdDetails?.assignedInspectionOfficer?.let {
                             "${it.firstName} ${it.lastName}"
                         } ?: ""
-                        inspectionFeeExchangeRate = 0
-                        inspectionFeePaymentDate = commonDaoServices.getTimestamp()
                         inspectionRemarks = mvInspectionEntity.remarks ?: "No Remarks"
-                        consignmentDocId = cdEntity
-                        status = s.activeStatus
-                        createdBy = commonDaoServices.getUserName(user)
-                        createdOn = commonDaoServices.getTimestamp()
                     }
-                    KotlinLogging.logger { }.info("COR: $localCor")
-                    localCor = corsBakRepository.save(localCor)
-                    KotlinLogging.logger { }.info { "Generated Local CoR WITH id = ${localCor.id}" }
                 } ?: throw ExpectedDataNotFound("ITEM MVR INSPECTION CHECKLIST")
             } ?: throw ExpectedDataNotFound("NO MVR INSPECTION")
         } ?: throw ExpectedDataNotFound("NO GENERAL INSPECTION")
+        val vehicle = this.findVehicleFromCd(cdEntity)
+        // Fill checklist details
+        with(localCor) {
+            corNumber = "COR${generateRandomText(5, s.secureRandom, s.messageDigestAlgorithm, true)}"
+            corIssueDate = commonDaoServices.getTimestamp()
+            val cdHeaderOne = cdEntity.cdHeaderOne?.let { findCdHeaderOneDetails(it) }
+            countryOfSupply = cdHeaderOne?.countryOfSupply
+            val cdExporter = cdEntity.cdExporter?.let { findCdExporterDetails(it) }
+            exporterName = cdExporter?.name
+            exporterAddress1 = cdExporter?.physicalAddress
+            exporterAddress2 = cdExporter?.postalAddress
+            exporterEmail = cdExporter?.email
+            applicationBookingDate = commonDaoServices.getTimestamp()
+            inspectionDate = commonDaoServices.getTimestamp()
+            model = "test"
+            yearOfFirstRegistration = "test"
+            unitsOfMileage = "KM"
+            previousRegistrationNumber = "test"
+            previousCountryOfRegistration = "test"
+
+            loadCapacity = 0
+            numberOfAxles = 0
+            numberOfPassangers = 0
+            typeOfBody = "test"
+            fuelType = "test"
+            inspectionFee = 0.0
+            approvalStatus = cdEntity.compliantStatus.toString()
+            ucrNumber = cdEntity.ucrNumber
+            inspectionFeeCurrency = "KES"
+            inspectionFeeExchangeRate = 0
+            inspectionFeePaymentDate = commonDaoServices.getTimestamp()
+            consignmentDocId = cdEntity
+            status = s.activeStatus
+            createdBy = commonDaoServices.getUserName(user)
+            createdOn = commonDaoServices.getTimestamp()
+        }
+        // Add invoice details
+        cdEntity.id?.let { cdId ->
+            this.invoiceDaoService.findDemandNoteCdId(cdId)?.let { itemNote ->
+                localCor.inspectionFeeCurrency = "KES"
+                localCor.inspectionFee = itemNote.totalAmount?.toDouble() ?: 0.0
+                localCor.inspectionFeePaymentDate = itemNote.createdOn
+                localCor.inspectionFeeExchangeRate = itemNote.rate?.toLong() ?: 0
+            }
+        }
+        // Save local COR
+        KotlinLogging.logger { }.info("COR: $localCor")
+        localCor = corsBakRepository.save(localCor)
+        KotlinLogging.logger { }.info { "Generated Local CoR WITH id = ${localCor.id}" }
         return localCor
     }
 
@@ -2056,6 +2074,18 @@ class DestinationInspectionDaoServices(
             var item = iCdItemsRepo.findFirstByCdDocIdAndChassisNumberIsNotNull(cd)
             if (item.isPresent) {
                 return item.get().chassisNumber
+            }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Not Vehicle with", ex)
+        }
+        return null
+    }
+
+    fun findVehicleFromCd(cd: ConsignmentDocumentDetailsEntity): CdItemDetailsEntity? {
+        try {
+            var item = iCdItemsRepo.findFirstByCdDocIdAndChassisNumberIsNotNull(cd)
+            if (item.isPresent) {
+                return item.get()
             }
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Not Vehicle with", ex)

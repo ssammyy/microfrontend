@@ -1,7 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 
-import com.google.common.io.Files
 import mu.KotlinLogging
 import net.sf.jasperreports.engine.JREmptyDataSource
 import net.sf.jasperreports.engine.JasperCompileManager
@@ -13,19 +12,13 @@ import net.sf.jasperreports.engine.export.JRPdfExporter
 import net.sf.jasperreports.engine.xml.JRXmlLoader
 import net.sf.jasperreports.export.SimpleExporterInput
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput
-import org.kebs.app.kotlin.apollo.common.dto.reports.LocalCocItemsReportInput
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
-import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
-import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntity
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Lazy
 import org.springframework.core.io.ResourceLoader
 import org.springframework.stereotype.Service
 import org.springframework.util.ResourceUtils
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStream
-import javax.servlet.http.HttpServletResponse
 
 
 @Service

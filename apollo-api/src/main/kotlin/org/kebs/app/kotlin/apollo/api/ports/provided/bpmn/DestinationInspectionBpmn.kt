@@ -106,6 +106,7 @@ class DestinationInspectionBpmn(
     }
 
     fun startAssignmentProcesses(data: MutableMap<String, Any?>, consignmentDocument: ConsignmentDocumentDetailsEntity) {
+        KotlinLogging.logger {  }.info("Assign inspection officer to consignment: ${Thread.currentThread().name}")
         data.put("cfs_code", consignmentDocument.freightStation?.cfsCode)
         val processInstance = runtimeService.startProcessInstanceByKey("assignInspectionOfficer", data)
         consignmentDocument.diProcessInstanceId = processInstance.processDefinitionId

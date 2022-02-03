@@ -278,6 +278,14 @@ class CocsEntity : Serializable {
     @Basic
     var documentsType: String? = "L"
 
+    @Column(name = "CLEARING_AGENT")
+    @Basic
+    var clearingAgent: String? = null
+
+    @Column(name = "CUSTOMS_ENTRY_NUMBER")
+    @Basic
+    var customsEntryNumber: String? = null
+
     @Column(name = "STATUS", nullable = true, precision = 0)
     @Basic
     var status: Long? = null
