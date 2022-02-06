@@ -275,6 +275,7 @@ import {GenerateDemandNoteComponent} from './apollowebs/di/auction/generate-dema
 import {AddAuctionRecordComponent} from './apollowebs/di/auction/add-auction-record/add-auction-record.component';
 import {AddEditAuctionItemComponent} from './apollowebs/di/auction/add-edit-auction-item/add-edit-auction-item.component';
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
+import {ManageCorporateCustomerComponent} from './apollowebs/invoice/corporate/manage-corporate-customer/manage-corporate-customer.component';
 
 @NgModule({
     imports: [
@@ -577,7 +578,8 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
         EditorTasksComponent,
         StdProofreadComponent,
         StdDraughtsmanComponent,
-        ApproveDraftStdComponent
+        ApproveDraftStdComponent,
+        ManageCorporateCustomerComponent
     ],
     bootstrap: [
         AppComponent

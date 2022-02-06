@@ -9,8 +9,10 @@ import javax.persistence.*
 @Entity
 @Table(name = "DAT_KEBS_RISK_PROFILE")
 class RiskProfileEntity:Serializable {
-    @Column(name = "ID", nullable = false, precision = 0)
+    @Column(name = "ID", nullable = false)
     @Id
+    @SequenceGenerator(name = "DAT_KEBS_RISK_PROFILE_SEQ_GEN", allocationSize = 1, sequenceName = "DAT_KEBS_RISK_PROFILE_SEQ")
+    @GeneratedValue(generator = "DAT_KEBS_RISK_PROFILE_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     var id: Long = 0
 
     @Column(name = "HS_CODE", nullable = true, length = 20)

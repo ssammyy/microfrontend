@@ -8,6 +8,7 @@ import org.json.XML
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.SftpServiceImpl
+import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentStatus
 import org.kebs.app.kotlin.apollo.common.dto.MinistryInspectionListResponseDto
 import org.kebs.app.kotlin.apollo.common.dto.kesws.receive.DeclarationVerificationMessage
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
@@ -668,9 +669,9 @@ class DestinationInspectionDaoServices(
                         inspectionMileage = cdMvInspectionEntity.odemetreReading ?: "UNKNOWN"
                         inspectionRemarks = cdMvInspectionEntity.remarks
                         tareWeight = (cdMvInspectionEntity.itemId?.itemNetWeight?.toBigDecimal()
-                                ?: BigDecimal.ZERO).toLong()
+                                ?: BigDecimal.ZERO).toDouble()
                         grossWeight = (cdMvInspectionEntity.itemId?.itemGrossWeight?.toBigDecimal()
-                                ?: BigDecimal.ZERO).toLong()
+                                ?: BigDecimal.ZERO).toDouble()
                         typeOfVehicle = cdMvInspectionEntity.makeVehicle
                         bodyColor = cdMvInspectionEntity.colour
                         customsIeNo = cdItemDetailsList.customsEntryNumber
@@ -704,7 +705,7 @@ class DestinationInspectionDaoServices(
             previousRegistrationNumber = "test"
             previousCountryOfRegistration = "test"
 
-            loadCapacity = 0
+            loadCapacity = 0.0
             numberOfAxles = 0
             numberOfPassangers = 0
             typeOfBody = "test"
@@ -713,7 +714,7 @@ class DestinationInspectionDaoServices(
             approvalStatus = cdEntity.compliantStatus.toString()
             ucrNumber = cdEntity.ucrNumber
             inspectionFeeCurrency = "KES"
-            inspectionFeeExchangeRate = 0
+            inspectionFeeExchangeRate = 0.0
             inspectionFeePaymentDate = commonDaoServices.getTimestamp()
             consignmentDocId = cdEntity
             status = s.activeStatus
@@ -726,7 +727,7 @@ class DestinationInspectionDaoServices(
                 localCor.inspectionFeeCurrency = "KES"
                 localCor.inspectionFee = itemNote.totalAmount?.toDouble() ?: 0.0
                 localCor.inspectionFeePaymentDate = itemNote.createdOn
-                localCor.inspectionFeeExchangeRate = itemNote.rate?.toLong() ?: 0
+                localCor.inspectionFeeExchangeRate = itemNote.rate?.toDouble() ?: 0.0
             }
         }
         // Save local COR
@@ -1436,6 +1437,25 @@ class DestinationInspectionDaoServices(
     fun convert(json: String?, root: String): String? {
         val jsonObject = JSONObject(json)
         return """<?xml version="1.0" encoding="ISO-8859-15"?> <$root>${XML.toString(jsonObject)}</$root>"""
+    }
+
+    fun updateCDStatus(cdStandard: CdStandardsEntity, statusValue: ConsignmentDocumentStatus): Boolean {
+        var updateCD = cdStandard
+        var updateStatus = false
+        try {
+            val status = findCdStatusCategory(statusValue.code)
+            with(updateCD) {
+                approvalStatus = status.typeName
+                statusId = status.id
+                approvalDate = commonDaoServices.getCurrentDate().toString()
+            }
+            updateCD = iCdStandardsRepo.save(updateCD)
+            KotlinLogging.logger { }.info { "CD UPDATED STATUS TO = ${updateCD.approvalStatus}" }
+            updateStatus = true
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to assign status: " + statusValue.code, ex)
+        }
+        return updateStatus
     }
 
     fun updateCDStatus(cdStandard: CdStandardsEntity, statusValue: Long): Boolean {

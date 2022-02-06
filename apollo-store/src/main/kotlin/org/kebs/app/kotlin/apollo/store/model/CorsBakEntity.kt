@@ -115,17 +115,17 @@ class CorsBakEntity : Serializable {
     @Basic
     var previousCountryOfRegistration: String? = null
 
-    @Column(name = "TARE_WEIGHT")
+    @Column(name = "TARE_WEIGHT", precision = 15, scale = 2)
     @Basic
-    var tareWeight: Long = 0
+    var tareWeight: Double = 0.0
 
-    @Column(name = "LOAD_CAPACITY")
+    @Column(name = "LOAD_CAPACITY", precision = 15, scale = 2)
     @Basic
-    var loadCapacity: Long = 0
+    var loadCapacity: Double = 0.0
 
-    @Column(name = "GROSS_WEIGHT")
+    @Column(name = "GROSS_WEIGHT", scale = 2, precision = 15)
     @Basic
-    var grossWeight: Long = 0
+    var grossWeight: Double = 0.0
 
     @Column(name = "NUMBER_OF_AXLES")
     @Basic
@@ -155,7 +155,7 @@ class CorsBakEntity : Serializable {
     @Basic
     var fuelType: String? = null
 
-    @Column(name = "INSPECTION_FEE")
+    @Column(name = "INSPECTION_FEE", scale = 2, precision = 15)
     @Basic
     var inspectionFee: Double? = 0.0
 
@@ -179,9 +179,9 @@ class CorsBakEntity : Serializable {
     @Basic
     var partner: Long? = null
 
-    @Column(name = "INSPECTION_FEE_EXCHANGE_RATE")
+    @Column(name = "INSPECTION_FEE_EXCHANGE_RATE", precision = 15, scale = 2)
     @Basic
-    var inspectionFeeExchangeRate: Long = 0
+    var inspectionFeeExchangeRate: Double = 0.0
 
     @Column(name = "INSPECTION_FEE_PAYMENT_DATE")
     @Basic
@@ -318,7 +318,7 @@ class CorsBakEntity : Serializable {
     }
 
     override fun hashCode(): Int {
-        var result = Objects.hash(
+        return Objects.hash(
                 id,
                 corNumber,
                 corIssueDate,
@@ -373,6 +373,5 @@ class CorsBakEntity : Serializable {
                 deleteBy,
                 deletedOn
         )
-        return result
     }
 }

@@ -33,6 +33,23 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import kotlinx.coroutines.*
 
+enum class ConsignmentDocumentStatus(val code: String) {
+    NEW_CD("NEW_CD"), REVISED_CD("REVISED_CD"),
+    IO_ASSIGNED("IO_ASSIGNED"), IO_REASSIGNED("IO_REASSIGNED"), IO_SELF_ASSIGN("IO_SELF_ASSIGN"),
+    LAB_REQUEST("LAB_REQUEST"), LAB_RESULT_RESULT("LAB_RESULT"), ITEM_COMPLIANCE("COMPLIANCE"), ITEM_NON_COMPLIANCE("NON_COMPLIANCE"),
+    CHECKLIST_FILLED("CHECKLIST_FILLED"), CHECKLIST_COMPLETED("SSF_FILLED"), CHECKLIST_STARTED("CHECKLIST_STARTED"),
+    SCF_FILLED("SCF_FILLED"), SSF_FILLED("SSF_FILLED"), BS_NUMBER_FILLED("BS_NUMBER_FILLED"),
+    TARGET_REQUEST("TARGET_REQUEST"), TARGET_APPROVED("TARGET_APPROVED"), TARGET_REJECTED("TARGET_REJECTED"), KRA_VERIFICATION_REQUEST("KRA_VERIFICATION_REQUEST"), KRA_VERIFICATION("KRA_VERIFICATION"),
+    PAYMENT_REQUEST("PAYMENT_REQ"), PAYMENT_APPROVED("PAYMENT_APPROVE"), PAYMENT_REJECTED("PAYMENT_REJ"), PAYMENT_MADE("PAYMENT_MADE"), PAYMENT_FAILED("PAYMENT_FAILED"),
+    COMPLIANCE_REQUEST("COMPLIANCE_REQ"), COMPLIANCE_APPROVED("COMPLIANCE_APPROVE"), COMPLIANCE_REJECTED("COMPLIANCE_REJ"),
+    BLACKLIST_REQUEST("BLACKLIST_REQUEST"), BLACKLIST_APPROVED("BLACKLIST_APPROVED"), BLACKLIST_REJECTED("BLACKLIST_REJECTED"),
+    COC_ISSUED("COC_ISSUED"), COR_ISSUED("COR_ISSUED"), COI_ISSUED("COU_ISSUED"), NCR_ISSUED("NCR_ISSUED"),
+    REJ_AMEND_REQUEST("AMEND_REQUEST"), REJ_AMEND_APPROVED("AMENDMENT"), REJ_AMEND_REJECTED("AMEND_REJ"),
+    QUERY_REQUEST("QUERY_REQUEST"), AMEND_APPROVED("QUERY"), QUERY_REJECTED("QUERY_REJ"),
+    APPROVE_REQUEST("APPROVE_REQUEST"), APPROVE_APPROVED("APPROVE"), APPROVE_REJECTED("APPROVE_REJ"),
+    REJECT_REQUEST("REJECT_REQUEST"), REJECT_APPROVED("REJECT"), REJECT_REJECTED("REJECT_REJ"),
+    MINISTRY_REQUEST("MINISTRY_REQUEST"), MINISTRY_UPLOAD("MINISTRY_UPLOAD")
+}
 
 @Service("diService")
 class DestinationInspectionService(
@@ -79,8 +96,14 @@ class DestinationInspectionService(
     fun rejectComplianceRequests(cdUuid: String, supervisor: String, remarks: String): Boolean {
         val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
         val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-        consignmentDocument.compliantStatus = map.inactiveStatus
+        // Move back to officer tasks
+        consignmentDocument.compliantStatus = map.initStatus
+        consignmentDocument.approveRejectCdStatus = map.initStatus
         consignmentDocument.varField10 = "COMPLIANCE REJECTED"
+        // Update and add commnents
+        consignmentDocument.cdStandard?.let { cdStd ->
+            daoServices.updateCDStatus(cdStd, ConsignmentDocumentStatus.COMPLIANCE_REJECTED)
+        }
         daoServices.updateCdDetailsInDB(consignmentDocument, null)
         cdAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, remarks, "KEBS_REJECT_COMPLIANCE", "Reject compliance request", supervisor)
         return false
@@ -213,13 +236,17 @@ class DestinationInspectionService(
             }
 
             this.daoServices.updateCdDetailsInDB(consignmentDocument, loggedInUser)
-            // Update CD status
-            consignmentDocument.cdStandard?.let { cdStd ->
-                daoServices.updateCDStatus(cdStd, applicationMapProperties.mapDIStatusTypeAssignIoId)
-            }
             if (selfAssign) {
+                // Update CD status
+                consignmentDocument.cdStandard?.let { cdStd ->
+                    daoServices.updateCDStatus(cdStd, ConsignmentDocumentStatus.IO_SELF_ASSIGN)
+                }
                 cdAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, remarks, "KEBS_SELF_ASSIGNED", "Picked consignment", username = officer.get().userName)
             } else {
+                // Update CD status
+                consignmentDocument.cdStandard?.let { cdStd ->
+                    daoServices.updateCDStatus(cdStd, ConsignmentDocumentStatus.IO_ASSIGNED)
+                }
                 cdAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, remarks, "KEBS_ASSIGN_IO", "Assign inspection officer to consignment", username = supervisor)
             }
         } catch (ex: Exception) {
@@ -246,7 +273,7 @@ class DestinationInspectionService(
             this.daoServices.updateCdDetailsInDB(consignmentDocument, supervisorDetails)
             // Update CD status
             consignmentDocument.cdStandard?.let { cdStd ->
-                daoServices.updateCDStatus(cdStd, applicationMapProperties.mapDIStatusTypeReassignIoId)
+                daoServices.updateCDStatus(cdStd, ConsignmentDocumentStatus.IO_REASSIGNED)
             }
             cdAuditService.addHistoryRecord(consignmentDocument.id, remarks, "KEBS_REASSIGN_IO", "Re-Assign inspection officer : " + officer.get().userName, supervisor)
         } catch (ex: Exception) {
@@ -324,7 +351,7 @@ class DestinationInspectionService(
                 consignmentDocument.cdStandard?.let { cdStd ->
                     daoServices.updateCDStatus(
                             cdStd,
-                            applicationMapProperties.mapDICdStatusTypeCORGeneratedAndSendID
+                            ConsignmentDocumentStatus.COR_ISSUED
                     )
                 }
                 corDetails.varField10 = "COMPLIANCE APPROVED, COR GENERATED"
@@ -358,6 +385,10 @@ class DestinationInspectionService(
             val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             consignmentDocument.compliantStatus = 0
             consignmentDocument.localCocOrCorStatus = 0
+            // Update CD status
+            consignmentDocument.cdStandard?.let { cdStd ->
+                daoServices.updateCDStatus(cdStd, ConsignmentDocumentStatus.COMPLIANCE_REJECTED)
+            }
             daoServices.updateCdDetailsInDB(consignmentDocument, null)
             this.cdAuditService.addHistoryRecord(consignmentDocument.id!!, remarks, "REJECT COR", "COR of ${cdUuid} has been rejected by ${supervisor}", supervisor)
             KotlinLogging.logger { }.info("COR REJECTION UPDATED: ${cdUuid}")
@@ -529,6 +560,10 @@ class DestinationInspectionService(
             consignmentDocument.targetStatus = map.invalidStatus
             consignmentDocument.targetApproveRemarks = remarks
             consignmentDocument.targetApproveDate = Date(Date().time)
+            // Update status as rejected
+            consignmentDocument.cdStandard?.let { cdStd ->
+                daoServices.updateCDStatus(cdStd, ConsignmentDocumentStatus.TARGET_REJECTED)
+            }
             this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
             this.cdAuditService.addHistoryRecord(consignmentDocument.id!!, consignmentDocument.ucrNumber, remarks, "REJECT TARGETING", "Targting of ${cdUuid} has been rejected by ${supervisor}", supervisor)
             KotlinLogging.logger { }.info("TARGET REJECTION UPDATED: ${cdUuid}")
@@ -572,7 +607,7 @@ class DestinationInspectionService(
             // Submit consignment to Single/Window
             daoServices.submitCDStatusToKesWS("OH", "OH", consignmentDocument.version.toString(), consignmentDocument)
             consignmentDocument.cdStandard?.let { cdStd ->
-                daoServices.updateCDStatus(cdStd, applicationMapProperties.mapDIStatusTypeKraVerificationSendId)
+                daoServices.updateCDStatus(cdStd, ConsignmentDocumentStatus.KRA_VERIFICATION_REQUEST)
             }
             KotlinLogging.logger { }.info("REQUESTED TARGETING SCHEDULE: ${cdUuid}")
         } catch (ex: Exception) {
@@ -592,7 +627,7 @@ class DestinationInspectionService(
             consignmentDocument.cdStandard?.let { cdStd ->
                 daoServices.updateCDStatus(
                         cdStd,
-                        applicationMapProperties.mapDICdStatusTypeCOCGeneratedAndSendID
+                        ConsignmentDocumentStatus.COC_ISSUED
                 )
             }
             consignmentDocument.varField10 = "COMPLIANCE APPROVED, COC GENERATED"
@@ -663,7 +698,7 @@ class DestinationInspectionService(
             val loggedInUser = commonDaoServices.findUserByUserName(supervisor)
             val localCoi = daoServices.createLocalCoi(loggedInUser, consignmentDocument, map, remarks, "D")
             consignmentDocument.cdStandard?.let { cdStd ->
-                daoServices.updateCDStatus(cdStd, applicationMapProperties.mapDICdStatusTypeCOIGeneratedAndSendID)
+                daoServices.updateCDStatus(cdStd, ConsignmentDocumentStatus.COI_ISSUED)
             }
             // Update CoI generation
             consignmentDocument.localCoi = map.activeStatus
@@ -982,8 +1017,8 @@ class DestinationInspectionService(
                             inspectionFeeCurrency = "NA"
                             inspectionFeePaymentDate = Timestamp.from(Instant.now())
                             inspectionOfficer = loggedInUser.userName ?: "NA"
-                            tareWeight = 0
-                            grossWeight = 0
+                            tareWeight = 0.0
+                            grossWeight = 0.0
                             model = cor.vehicleModel
                             chasisNumber = cor.chassisNumber
                             engineNumber = cor.engineNumber
@@ -1541,7 +1576,7 @@ class DestinationInspectionService(
             map["NoOfPassengers"] = corDetails.numberOfPassangers.toString()
             map["PrevRegNo"] = corDetails.previousCountryOfRegistration.orEmpty()
             map["PrevCountryOfReg"] = corDetails.previousCountryOfRegistration.orEmpty()
-            map["CustomsIeNo"]=corDetails.customsIeNo?:"N/A"
+            map["CustomsIeNo"] = corDetails.customsIeNo ?: "N/A"
             // todo: ADD CHECKLIST COMMENT
 //        val inspectionChecklist = findMotorVehicleInspectionByCdItem(cdItem)
             map["InspectionDetails"] = corDetails.inspectionRemarks ?: "NA"
@@ -1559,12 +1594,12 @@ class DestinationInspectionService(
                 map["CocNo"] = localCocEntity.cocNumber.orEmpty()
             }
             map["IssueDate"] = localCocEntity.cocIssueDate.toString()
-            map["EntryNo"] = localCocEntity.customsEntryNumber?:"N/A"
+            map["EntryNo"] = localCocEntity.customsEntryNumber ?: "N/A"
             map["IdfNo"] = localCocEntity.idfNumber.orEmpty()
             map["ImporterName"] = localCocEntity.importerName.orEmpty()
             map["ImporterAddress"] = localCocEntity.importerAddress1.orEmpty()
             map["ImporterPin"] = localCocEntity.importerPin.orEmpty()
-            map["ClearingAgent"] = localCocEntity.clearingAgent?:"N/A"
+            map["ClearingAgent"] = localCocEntity.clearingAgent ?: "N/A"
             map["PortOfEntry"] = localCocEntity.portOfDestination.orEmpty()
             map["UcrNo"] = localCocEntity.ucrNumber.orEmpty()
             map["Status"] = localCocEntity.status.toString()

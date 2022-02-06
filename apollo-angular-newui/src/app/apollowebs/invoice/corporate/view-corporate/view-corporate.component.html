@@ -59,6 +59,10 @@
                                                 <label class="waiver-form-label">Account Suspended</label>
                                                 <p>{{corporateDetails.accountSuspended}}</p>
                                             </div>
+                                            <div class="col-sm-3 col-md-4" *ngIf="corporateDetails.remarks">
+                                                <label class="waiver-form-label">Last Remarks</label>
+                                                <p>{{corporateDetails.remarks}}</p>
+                                            </div>
                                         </div>
                                     </mat-tab>
                                     <mat-tab label="PENDING BILLS" tabIndex="2">
