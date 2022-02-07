@@ -590,7 +590,7 @@ import {ManageCorporateCustomerComponent} from './apollowebs/invoice/corporate/m
         ReviewApplicationComponent,
         ReviewRecommendationComponent,
         ReviewRecommendationOfSpcComponentComponent,
-        UploadTcMemberComponentComponent
+        UploadTcMemberComponentComponent,
         ApproveDraftStdComponent,
         ManageCorporateCustomerComponent
     ],
