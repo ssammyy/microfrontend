@@ -29,6 +29,7 @@
 	<parameter name="phoneNumber" class="java.lang.String"/>
 	<parameter name="FmarkLogo" class="java.lang.String"/>
 	<parameter name="QrCode" class="java.lang.String"/>
+	<parameter name="EffectiveDate" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -115,7 +116,7 @@
 					<bottomPen lineWidth="1.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$P{DateOfIssue}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{EffectiveDate}]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="ScaleFont">
 				<reportElement x="45" y="210" width="286" height="18" uuid="a38642ad-ea39-401f-baa1-44b66bc605d2"/>
@@ -215,8 +216,8 @@
 				<textElement>
 					<font fontName="SansSerif" size="10.5"/>
 				</textElement>
-				<text>
-					<![CDATA[To use the fortification mark of quality specified in the row hereunder and upon and in respect of the commodity and brand specified in the second and third rows there of, which commodity, conform to the standard specification in the fourth row.]]></text>
+				<text><![CDATA[
+					To use the fortification mark of quality specified in the row hereunder and upon and in respect of the commodity and brand specified in the second and third rows there of, which commodity, conform to the standard specification in the fourth row.]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="30" y="325" width="118" height="16" uuid="ec12324e-950e-46e5-b62e-44db3376325f"/>
@@ -308,7 +309,6 @@
 					<font fontName="SansSerif" size="8"/>
 				</textElement>
 				<text><![CDATA[1.EVERY PERMIT HOLDER SHALL PAY AN ANNUAL FEE IN RESPECT OF EACH PERMIT GRANTED OR RENEWED
-
 2. THIS PERMIT IS ISSUED SUBJECT TO THE CONDITIONS SET OUT IN THE  CONTRACT FOR USE OF THE FORTIFICATION MARK]]></text>
 			</staticText>
 			<line>
@@ -342,7 +342,7 @@
 )]]></imageExpression>
 			</image>
 			<image>
-				<reportElement x="332" y="572" width="219" height="101" uuid="9044ec40-bfdc-4007-afaa-cc2c717394de"/>
+				<reportElement x="332" y="572" width="219" height="51" uuid="9044ec40-bfdc-4007-afaa-cc2c717394de"/>
 				<imageExpression><![CDATA["/app/apps_home/apollo/conf/test/reports/images/BMN_signature.png"]]></imageExpression>
 			</image>
 		</band>
@@ -363,7 +363,7 @@
 				<text><![CDATA[CONDITIONS FOR USE OF KEBS STANDARDISATION MARK]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="-13" y="-40" width="564" height="730" uuid="274cbbde-9ec5-49a7-9fcb-8e01d8bd20e4">
+				<reportElement x="0" y="-40" width="551" height="730" uuid="274cbbde-9ec5-49a7-9fcb-8e01d8bd20e4">
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">

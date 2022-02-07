@@ -4,8 +4,8 @@ import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*
 
-@Entity
-@Table(name = "DAT_KEBS_CD_INSPECTION_MINISTRY_BODY_WORK", schema = "APOLLO", catalog = "")
+//@Entity
+//@Table(name = "DAT_KEBS_CD_INSPECTION_MINISTRY_BODY_WORK", schema = "APOLLO", catalog = "")
 class DatKebsCdInspectionMinistryBodyWorkEntity {
     @get:Column(name = "ID")
     @get:Id
