@@ -249,6 +249,7 @@ class ControllerRoutes {
             GET("/profile", handler::userProfile)
             GET("/blacklist/types",handler::loadBlacklistTypes)
             GET("/officers/{cdUuid}", handler::listInspectionOfficers)
+            GET("/in-my-station/{designation}", handler::listOfficersByDesignation)
             GET("/add/plant-details/save", handler::userProfile)
         }
     }

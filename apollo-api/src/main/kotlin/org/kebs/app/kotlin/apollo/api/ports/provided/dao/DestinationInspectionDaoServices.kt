@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import mu.KotlinLogging
+import org.flowable.idm.engine.impl.persistence.entity.UserEntity
 import org.json.JSONException
 import org.json.JSONObject
 import org.json.XML
@@ -2423,6 +2424,19 @@ class DestinationInspectionDaoServices(
             }
             return userProfiles
         } ?: throw ServiceMapNotFoundException("Freight Station details on consignment with ID = null, is Empty")
+    }
+
+    fun findOfficersByCategoryList(user: UserProfilesEntity, designationId: Long): List<UserProfilesEntity> {
+        val profilesAssignment = findAllCFSUserList(user.id!!)
+        KotlinLogging.logger { }.info("USR CFS COUNT: ${profilesAssignment.size}")
+        val userProfiles = mutableListOf<UserProfilesEntity>()
+        profilesAssignment.forEach { p ->
+            iUserProfilesRepo.findByIdAndDesignationId_IdAndStatus(p.userProfileId!!, designationId, 1)
+                    .ifPresent { pp -> userProfiles.add(pp) }
+
+        }
+        KotlinLogging.logger { }.info("USR COUNT: ${userProfiles.size}")
+        return userProfiles
     }
 
     fun convertEntityToJsonObject(entityToConvert: Any): Any {

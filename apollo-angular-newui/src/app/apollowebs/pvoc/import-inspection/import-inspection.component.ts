@@ -32,7 +32,7 @@ export class ImportInspectionComponent implements OnInit {
                     if (res.responseCode === "00") {
                         this.router.navigateByUrl(url)
                     } else {
-                        this.showError(res.responseMessage);
+                        this.pvoc.showError(res.responseMessage, null);
                     }
                 }
             )

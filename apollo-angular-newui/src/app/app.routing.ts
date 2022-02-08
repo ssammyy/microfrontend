@@ -422,7 +422,7 @@ export const routes: Routes = [
     },
     {
         path: 'company',
-        component: ImportInspectionComponent,
+        component: AdminLayoutComponent,
         children: [
             {
                 path: 'applications',

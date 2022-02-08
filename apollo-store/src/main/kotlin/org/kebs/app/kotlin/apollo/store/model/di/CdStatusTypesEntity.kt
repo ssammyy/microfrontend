@@ -19,7 +19,7 @@ class CdStatusTypesEntity : Serializable {
     @Basic
     var typeName: String? = null
 
-    @Column(name = "CATEGORY")
+    @Column(name = "CATEGORY", unique = true, nullable = false)
     @Basic
     var category: String? = null
 

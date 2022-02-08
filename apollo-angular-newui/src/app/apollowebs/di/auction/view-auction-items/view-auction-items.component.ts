@@ -61,7 +61,7 @@ export class ViewAuctionItemsComponent implements OnInit {
                     if (date) {
                         try {
                             return new DatePipe('en-US').transform(date, 'dd/MM/yyyy');
-                        }catch (e) {
+                        } catch (e) {
                             return date
                         }
                     }
@@ -98,17 +98,16 @@ export class ViewAuctionItemsComponent implements OnInit {
                     if (date) {
                         try {
                             return new DatePipe('en-US').transform(date, 'dd/MM/yyyy');
-                        }catch (e) {
+                        } catch (e) {
                             return date
                         }
                     }
                     return ""
                 },
             },
-            status: {
+            approvalStatusDesc: {
                 title: 'Status',
-                type: 'custom',
-                renderComponent: ConsignmentStatusComponent
+                type: 'string'
             }
         },
         pager: {
@@ -183,6 +182,7 @@ export class ViewAuctionItemsComponent implements OnInit {
             .subscribe(
                 res => {
                     if (res) {
+                        this.auctionType = 'new'
                         this.loadData()
                     }
                 }
@@ -218,6 +218,7 @@ export class ViewAuctionItemsComponent implements OnInit {
             }
             case "editRecord": {
                 this.addUpdateItem(action.data)
+                break
             }
         }
     }

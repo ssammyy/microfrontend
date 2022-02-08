@@ -49,17 +49,52 @@ class UserHandler(
         return ok()
                 .body(response)
     }
+
+    fun listOfficersByDesignation(req: ServerRequest): ServerResponse {
+        val response = ApiResponseModel()
+        try {
+            req.pathVariable("designation").let { categoryCode ->
+                val usersEntity = commonDaoServices.loggedInUserDetails()
+                val map = commonDaoServices.serviceMapDetails(appId)
+                val userProfilesEntity = commonDaoServices.findUserProfileByUserID(usersEntity, map.activeStatus)
+                response.message = "Success"
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+                when (categoryCode) {
+                    "io" -> {
+                        KotlinLogging.logger { }.info("Load inspection officers under profile: ${userProfilesEntity.id}")
+                        response.data = UserProfileDao.fromList(daoServices.findOfficersByCategoryList(userProfilesEntity, applicationMapProperties.mapDiInspectionOfficerDesignationId))
+                    }
+                    "supervisor" -> {
+                        KotlinLogging.logger { }.info("Load supervisors under profile: ${userProfilesEntity.id}")
+                        response.data = UserProfileDao.fromList(daoServices.findOfficersByCategoryList(userProfilesEntity, applicationMapProperties.mapDIOfficerInChargeID))
+                    }
+                    else -> {
+                        response.message = "Invalid category code: $categoryCode"
+                        response.responseCode = ResponseCodes.INVALID_CODE
+                        response.data = listOf<Any>()
+                    }
+                }
+
+            }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("LIST OFFICERS", ex)
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.message = "Request failed"
+        }
+        return ok().body(response)
+    }
+
     fun listInspectionOfficers(req: ServerRequest): ServerResponse {
         val response = ApiResponseModel()
         try {
             req.pathVariable("cdUuid").let { cdUuid ->
                 val cdDetails = daoServices.findCDWithUuid(cdUuid)
-                response.data = UserProfileDao.fromList(daoServices.findOfficersList(cdDetails.freightStation,applicationMapProperties.mapDiInspectionOfficerDesignationId))
+                response.data = UserProfileDao.fromList(daoServices.findOfficersList(cdDetails.freightStation, applicationMapProperties.mapDiInspectionOfficerDesignationId))
                 response.message = "Success"
                 response.responseCode = ResponseCodes.SUCCESS_CODE
             }
         } catch (ex: Exception) {
-            KotlinLogging.logger {  }.error("LIST OFFICERS",ex)
+            KotlinLogging.logger { }.error("LIST OFFICERS", ex)
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
             response.message = "Request failed"
         }

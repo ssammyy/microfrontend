@@ -100,7 +100,7 @@ class DestinationInspectionService(
         consignmentDocument.compliantStatus = map.initStatus
         consignmentDocument.approveRejectCdStatus = map.initStatus
         consignmentDocument.varField10 = "COMPLIANCE REJECTED"
-        // Update and add commnents
+        // Update and add comments
         consignmentDocument.cdStandard?.let { cdStd ->
             daoServices.updateCDStatus(cdStd, ConsignmentDocumentStatus.COMPLIANCE_REJECTED)
         }
@@ -119,11 +119,14 @@ class DestinationInspectionService(
             if (compliantStatus == 1) {
                 cdStatusType = daoServices.findCdStatusCategory("APPROVE")
                 consignmentDocument.varField10 = "Consignment Document Approved on Compliance"
+                consignmentDocument.approveRejectCdStatus = map.activeStatus
+                consignmentDocument.compliantStatus = map.activeStatus
             } else {
                 cdStatusType = daoServices.findCdStatusCategory("REJECT")
                 consignmentDocument.varField10 = "Consignment Document Rejected on Non-Compliance"
+                consignmentDocument.approveRejectCdStatus = map.invalidStatus
+                consignmentDocument.compliantStatus = map.invalidStatus
             }
-            consignmentDocument.approveRejectCdStatus = map.activeStatus
             consignmentDocument.approveRejectCdStatusType = cdStatusType
             consignmentDocument.approveRejectCdRemarks = remarks
             consignmentDocument.approveRejectCdDate = Date(Date().time)
@@ -156,6 +159,11 @@ class DestinationInspectionService(
                 when (cdStatusType.category) {
                     "APPROVE" -> {
                         consignmentDocument.compliantStatus = map.activeStatus
+                        consignmentDocument.approveRejectCdStatus = map.activeStatus
+                    }
+                    "REJECT" -> {
+                        consignmentDocument.approveRejectCdStatus = map.activeStatus
+                        consignmentDocument.compliantStatus = map.invalidStatus
                     }
                     else -> {
                         consignmentDocument.compliantStatus = map.inactiveStatus

@@ -20,7 +20,7 @@ export class AddEditAuctionItemComponent implements OnInit {
         this.form = this.fb.group({
             serialNo: [null, Validators.required],
             itemName: [null, Validators.required],
-            itemType: [null, Validators.required],
+            itemType: [this.data.categoryCode],
             quantity: [null, Validators.required],
             tareWeight: [null],
             chassisNo: [null],
