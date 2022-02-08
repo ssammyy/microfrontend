@@ -19,6 +19,7 @@ import org.springframework.util.ResourceUtils
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStream
+import javax.servlet.http.HttpServletResponse
 
 
 @Service
@@ -28,6 +29,9 @@ class ReportsDaoService(
         private val commonDaoServices: CommonDaoServices,
         private val invoiceDaoService: InvoiceDaoService
 ) {
+    //Get KEBS Logo
+    final val logoImageResource = resourceLoader.getResource(applicationMapProperties.mapKebsLogoPath)
+    val logoImageFile = logoImageResource.file.toString()
 
 
     fun addBankAndMPESADetails(map: HashMap<String, Any>, mpesaAccountNumber: String): HashMap<String, Any> {
@@ -103,6 +107,36 @@ class ReportsDaoService(
         pdfExporter.exporterOutput = SimpleOutputStreamExporterOutput(pdfReportStream)
         pdfExporter.exportReport()
         return pdfReportStream
+    }
+    fun extractReport(
+        map: HashMap<String, Any>,
+        response: HttpServletResponse,
+        filePath: String,
+        listCollect: List<Any>
+    ) {
+        map["imagePath"] = logoImageFile
+        val dataSource = JRBeanCollectionDataSource(listCollect)
+        val file = ResourceUtils.getFile(filePath)
+        val design = JRXmlLoader.load(file)
+        val jasperReport = JasperCompileManager.compileReport(design)
+        val jasperPrint = JasperFillManager.fillReport(jasperReport, map, dataSource)
+        val pdfExporter = JRPdfExporter()
+        val pdfReportStream = ByteArrayOutputStream()
+        pdfExporter.setExporterInput(SimpleExporterInput(jasperPrint))
+        pdfExporter.exporterOutput = SimpleOutputStreamExporterOutput(pdfReportStream)
+        pdfExporter.exportReport()
+//        response.contentType = "text/html"
+        response.contentType = "application/pdf"
+        response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Dispostion", "inline; filename=jasper.html;")
+        response.outputStream
+            .let { responseOutputStream ->
+                responseOutputStream.write(pdfReportStream.toByteArray())
+                responseOutputStream.close()
+                pdfReportStream.close()
+            }
+
+
     }
 
     /*
@@ -203,6 +237,33 @@ class ReportsDaoService(
         JasperExportManager.exportReportToPdfFile(jasperPrint, targetFile.absolutePath)
 
         return targetFile
+    }
+    /*
+Note: Use this method if your report contains multiple data bands and you have not set any fields in the report,
+i.e you're using Parameters only.
+ */
+    fun extractReportEmptyDataSource(map: HashMap<String, Any>, response: HttpServletResponse, filePath: String) {
+        map["imagePath"] = logoImageFile
+        val file = ResourceUtils.getFile(filePath)
+        val design = JRXmlLoader.load(file)
+        val jasperReport = JasperCompileManager.compileReport(design)
+        val jasperPrint = JasperFillManager.fillReport(jasperReport, map, JREmptyDataSource())
+        val pdfExporter = JRPdfExporter()
+        val pdfReportStream = ByteArrayOutputStream()
+        pdfExporter.setExporterInput(SimpleExporterInput(jasperPrint))
+        pdfExporter.exporterOutput = SimpleOutputStreamExporterOutput(pdfReportStream)
+        pdfExporter.exportReport()
+//        response.contentType = "text/html"
+        response.contentType = "application/pdf"
+        response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Dispostion", "inline; filename=file.pdf;")
+//        response.setHeader("Content-Disposition","inline, filename=myReport.html");
+        response.outputStream.let { responseOutputStream ->
+            responseOutputStream.write(pdfReportStream.toByteArray())
+            responseOutputStream.close()
+            pdfReportStream.close()
+        }
+
     }
 
 }

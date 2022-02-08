@@ -275,6 +275,12 @@ import {GenerateDemandNoteComponent} from './apollowebs/di/auction/generate-dema
 import {AddAuctionRecordComponent} from './apollowebs/di/auction/add-auction-record/add-auction-record.component';
 import {AddEditAuctionItemComponent} from './apollowebs/di/auction/add-edit-auction-item/add-edit-auction-item.component';
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
+import { CallsForApplicationComponent } from './apollowebs/standards-development/membershipToTc/calls-for-application/calls-for-application.component';
+import { SubmitApplicationComponent } from './apollowebs/standards-development/membershipToTc/submit-application/submit-application.component';
+import { ReviewApplicationComponent } from './apollowebs/standards-development/membershipToTc/review-application/review-application.component';
+import { ReviewRecommendationComponent } from './apollowebs/standards-development/membershipToTc/review-recommendation/review-recommendation.component';
+import { ReviewRecommendationOfSpcComponentComponent } from './apollowebs/standards-development/membershipToTc/review-recommendation-of-spc-component/review-recommendation-of-spc-component.component';
+import { UploadTcMemberComponentComponent } from './apollowebs/standards-development/membershipToTc/upload-tc-member-component/upload-tc-member-component.component';
 import {ManageCorporateCustomerComponent} from './apollowebs/invoice/corporate/manage-corporate-customer/manage-corporate-customer.component';
 
 @NgModule({
@@ -578,6 +584,13 @@ import {ManageCorporateCustomerComponent} from './apollowebs/invoice/corporate/m
         EditorTasksComponent,
         StdProofreadComponent,
         StdDraughtsmanComponent,
+        ApproveDraftStdComponent,
+        CallsForApplicationComponent,
+        SubmitApplicationComponent,
+        ReviewApplicationComponent,
+        ReviewRecommendationComponent,
+        ReviewRecommendationOfSpcComponentComponent,
+        UploadTcMemberComponentComponent,
         ApproveDraftStdComponent,
         ManageCorporateCustomerComponent
     ],

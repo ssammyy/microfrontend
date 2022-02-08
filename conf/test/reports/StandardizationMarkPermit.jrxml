@@ -32,6 +32,7 @@
     <parameter name="SmarkLogo" class="java.lang.String"/>
     <parameter name="QrCode" class="java.lang.String"/>
     <parameter name="backGroundImage" class="java.lang.String"/>
+    <parameter name="EffectiveDate" class="java.lang.String"/>
     <queryString>
         <![CDATA[]]>
     </queryString>
@@ -139,7 +140,7 @@
                     <bottomPen lineWidth="1.0"/>
                 </box>
                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                <textFieldExpression><![CDATA[$P{DateOfIssue}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$P{EffectiveDate}]]></textFieldExpression>
             </textField>
             <textField textAdjust="ScaleFont">
                 <reportElement x="92" y="111" width="230" height="15" uuid="018036fb-d410-46ca-9770-a311b4fe373a"/>
@@ -327,7 +328,6 @@
                     <font fontName="SansSerif" size="9"/>
                 </textElement>
                 <text><![CDATA[1. EVERY STANDARDIZATION MARK HOLDER SHALL PAY AN ANNUAL  FEE IN RESPECT OF EACH PERMIT GRANTED OR RENEWED
-
 2. THIS PERMIT IS ISSUED SUBJECT TO THE CONDITIONS SET OUT IN THE  CONTRACT FOR USE OF THE STANDARDIZATION MARK OF QUALITY]]></text>
             </staticText>
             <image>
@@ -356,7 +356,7 @@
 )]]></imageExpression>
             </image>
             <image>
-                <reportElement x="332" y="572" width="219" height="101" uuid="9044ec40-bfdc-4007-afaa-cc2c717394de"/>
+                <reportElement x="332" y="572" width="219" height="51" uuid="9044ec40-bfdc-4007-afaa-cc2c717394de"/>
                 <imageExpression><![CDATA["/app/apps_home/apollo/conf/test/reports/images/BMN_signature.png"]]></imageExpression>
             </image>
         </band>
@@ -377,7 +377,7 @@
                 <text><![CDATA[CONDITIONS FOR USE OF KEBS STANDARDISATION MARK]]></text>
             </staticText>
             <staticText>
-                <reportElement x="-13" y="-40" width="564" height="730" uuid="274cbbde-9ec5-49a7-9fcb-8e01d8bd20e4">
+                <reportElement x="0" y="-40" width="551" height="730" uuid="274cbbde-9ec5-49a7-9fcb-8e01d8bd20e4">
                     <property name="com.jaspersoft.studio.unit.x" value="px"/>
                 </reportElement>
                 <textElement verticalAlignment="Middle">
