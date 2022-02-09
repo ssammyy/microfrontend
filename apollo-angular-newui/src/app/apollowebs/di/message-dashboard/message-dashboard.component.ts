@@ -164,6 +164,7 @@ export class MessageDashboardComponent implements OnInit {
     toggleStatus(status) {
         if (status !== this.activeStatus) {
             this.activeStatus = status
+            this.currentPage = 0
             this.loadData()
         }
     }

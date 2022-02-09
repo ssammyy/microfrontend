@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api
 
 import mu.KotlinLogging
+import org.apache.camel.CamelContext
 import org.apache.commons.io.FileUtils
 import org.junit.Assert.assertTrue
 import org.junit.Ignore
@@ -124,7 +125,7 @@ class DITest {
     lateinit var limsService: LimsServices
 
     @Autowired
-    lateinit var camelService: SFTPService
+    lateinit var camelContext: CamelContext
 
     @Autowired
     lateinit var motorVehicleInspectionEntityRepo: ICdInspectionMotorVehicleItemChecklistRepository
@@ -530,9 +531,9 @@ class DITest {
             inspectionRemarks = "Test"
             previousRegistrationNumber = "Test"
             previousCountryOfRegistration = "Test"
-            tareWeight = 22
-            loadCapacity = 52
-            grossWeight = 58
+            tareWeight = 22.00
+            loadCapacity = 52.00
+            grossWeight = 58.00
             numberOfAxles = 69
             typeOfVehicle = "Test"
             numberOfPassangers = 89
@@ -541,7 +542,7 @@ class DITest {
             fuelType = "Test"
             inspectionFee = 85.00
             inspectionFeeCurrency = "Test"
-            inspectionFeeExchangeRate = 852
+            inspectionFeeExchangeRate = 852.00
             inspectionFeePaymentDate = commonDaoServices.getTimestamp()
             createdBy = commonDaoServices.concatenateName(user)
             createdOn = commonDaoServices.getTimestamp()

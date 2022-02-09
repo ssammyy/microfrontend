@@ -78,9 +78,9 @@ interface ISftpTransmissionEntityRepository : HazelcastRepository<SftpTransmissi
     fun findFirstByFilenameOrderByCreatedOn(fileName: String): SftpTransmissionEntity?
     fun findFirstByVarField10(exchangeId: String): SftpTransmissionEntity?
     fun findFirstByTransactionReference(exchangeId: String): SftpTransmissionEntity?
-    fun findFirstByFilenameContainingOrderByCreatedOn(fileName: String,pageable: Pageable): Page<SftpTransmissionEntity>
-    fun findByTransactionStatusInAndFlowDirection(statuses: List<Int>, flowDirection: String?,pageable: Pageable): Page<SftpTransmissionEntity>
-    fun findByTransactionStatusNotInAndFlowDirection(statuses: List<Int>, flowDirection: String?,pageable: Pageable): Page<SftpTransmissionEntity>
+    fun findFirstByFilenameContainingOrderByCreatedOnDesc(fileName: String, pageable: Pageable): Page<SftpTransmissionEntity>
+    fun findByTransactionStatusInAndFlowDirectionOrderByCreatedOnDesc(statuses: List<Int>, flowDirection: String?, pageable: Pageable): Page<SftpTransmissionEntity>
+    fun findByTransactionStatusNotInAndFlowDirectionOrderByCreatedOnDesc(statuses: List<Int>, flowDirection: String?, pageable: Pageable): Page<SftpTransmissionEntity>
 
     @Query("select count(*) as totalDocuments, FLOW_DIRECTION as flowDirection,RESPONSE_STATUS as responseStatus,FILE_TYPE as fileType from LOG_SFTP_TRANSMISSION where to_char(TRANSACTION_DATE,'DD-MM-YYYY')=:dateOfRef group by FLOW_DIRECTION, RESPONSE_STATUS,FILE_TYPE", nativeQuery = true)
     fun findStatisticsForDate(@Param("dateOfRef") date: String): List<FileStats>

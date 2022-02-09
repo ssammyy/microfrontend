@@ -2125,7 +2125,7 @@ class DestinationInspectionDaoServices(
             null
         }
         // Document Type
-        when (documentCode) {
+        when (localCocType) {
             "F" -> {
                 documentType = CdTypeCodes.FOREIGN_COR.code
             }
@@ -2157,7 +2157,7 @@ class DestinationInspectionDaoServices(
             null
         }
         // Document types
-        when (documentCode) {
+        when (localCocType) {
             "F" -> {
                 documentType = CdTypeCodes.FOREIGN_COC.code
             }
@@ -2219,16 +2219,16 @@ class DestinationInspectionDaoServices(
                 }
             }
             else ->
-                when (chassisNumber) {
-                    null -> {
+                when {
+                    StringUtils.hasLength(chassisNumber) -> {
+                        KotlinLogging.logger { }.info("Map COR")
+                        // COR, NO_COR_PVOC or NO_COR Goods
+                        this.updateConsignmentCorDetails(cdDetailsEntity, cdDetailsEntity.cdStandardsTwo?.localCocType, documentCode, corsBakRepository.findByChasisNumber(chassisNumber!!))
+                    }
+                    else -> {
                         KotlinLogging.logger { }.info("Map COC")
                         // COC, NCR or NO_COC Goods
                         this.updateConsignmentCocDetails(cdDetailsEntity, cdDetailsEntity.cdStandardsTwo?.localCocType, documentCode, findCocByUcrNumber(ucrNumber))
-                    }
-                    else -> {
-                        KotlinLogging.logger { }.info("Map COR")
-                        // COR, NO_COR_PVOC or NO_COR Goods
-                        this.updateConsignmentCorDetails(cdDetailsEntity, cdDetailsEntity.cdStandardsTwo?.localCocType, documentCode, corsBakRepository.findByChasisNumber(chassisNumber))
                     }
                 }
         }

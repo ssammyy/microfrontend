@@ -234,7 +234,7 @@ class DestinationInspectionService(
             val loggedInUser = commonDaoServices.findUserByUserName(supervisor)
             val officer = daoServices.findUserById(officerId)
             KotlinLogging.logger { }.info("ASSIGN to ${officer.get().userName}, self $selfAssign")
-            with(consignmentDocument) {
+            consignmentDocument.apply {
                 assignedRemarks = remarks
                 assignedDate = Date(Date().time)
                 assignedStatus = map.activeStatus
@@ -243,19 +243,20 @@ class DestinationInspectionService(
                 assignedInspectionOfficer = officer.get()
             }
 
-            this.daoServices.updateCdDetailsInDB(consignmentDocument, loggedInUser)
             if (selfAssign) {
+                val updateCd = this.daoServices.updateCdDetailsInDB(consignmentDocument, officer.get())
                 // Update CD status
-                consignmentDocument.cdStandard?.let { cdStd ->
+                updateCd.cdStandard?.let { cdStd ->
                     daoServices.updateCDStatus(cdStd, ConsignmentDocumentStatus.IO_SELF_ASSIGN)
                 }
-                cdAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, remarks, "KEBS_SELF_ASSIGNED", "Picked consignment", username = officer.get().userName)
+                cdAuditService.addHistoryRecord(updateCd.id, updateCd.ucrNumber, remarks, "KEBS_SELF_ASSIGNED", "Picked consignment", username = officer.get().userName)
             } else {
+                val updateCd = this.daoServices.updateCdDetailsInDB(consignmentDocument, loggedInUser)
                 // Update CD status
-                consignmentDocument.cdStandard?.let { cdStd ->
+                updateCd.cdStandard?.let { cdStd ->
                     daoServices.updateCDStatus(cdStd, ConsignmentDocumentStatus.IO_ASSIGNED)
                 }
-                cdAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, remarks, "KEBS_ASSIGN_IO", "Assign inspection officer to consignment", username = supervisor)
+                cdAuditService.addHistoryRecord(updateCd.id, updateCd.ucrNumber, remarks, "KEBS_ASSIGN_IO", "Assign inspection officer to consignment", username = supervisor)
             }
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("ASSIGNMENT FAILED", ex)
