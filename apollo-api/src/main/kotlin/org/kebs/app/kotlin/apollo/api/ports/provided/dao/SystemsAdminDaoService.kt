@@ -1246,10 +1246,22 @@ class SystemsAdminDaoService(
     }
 
     /**
-     * Receive payload with OTP and Phone number and validate that it is valid
+     * Receive payload with OTP and Phone number and validate that it is valid for anonymous user
      * @param request
      */
-    fun validatePhoneNumberAndToken(request: ValidatePhoneNumberTokenRequestDto, req: ServerRequest): JwtResponse? =
+    fun validatePhoneNumberAndToken(request: ValidatePhoneNumberTokenRequestDto, req: ServerRequest): CustomResponse? =
+        commonDaoServices.validateOTPToken(
+            request.token ?: throw NullValueNotAllowedException("Invalid Token provided"),
+            commonDaoServices.makeKenyanMSISDNFormat(request.phone),
+            req
+        )
+
+    /**
+     * Receive payload with OTP and Phone number and validate that it is valid for verified user
+     * @param request
+     */
+
+    fun validatePhoneNumberAndTokenB(request: ValidatePhoneNumberTokenRequestDto, req: ServerRequest): JwtResponse? =
         commonDaoServices.validateOTPTokenB(
             request.token ?: throw NullValueNotAllowedException("Invalid Token provided"),
             commonDaoServices.makeKenyanMSISDNFormat(request.phone),

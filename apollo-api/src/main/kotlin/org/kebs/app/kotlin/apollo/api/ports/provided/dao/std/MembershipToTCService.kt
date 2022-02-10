@@ -1,8 +1,5 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao.std
 
-import org.kebs.app.kotlin.apollo.common.dto.std.*
-import org.kebs.app.kotlin.apollo.store.model.std.*
-import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.flowable.engine.ProcessEngine
 import org.flowable.engine.RepositoryService
 import org.flowable.engine.RuntimeService
@@ -10,20 +7,40 @@ import org.flowable.engine.TaskService
 import org.flowable.engine.history.HistoricActivityInstance
 import org.flowable.engine.repository.Deployment
 import org.flowable.task.api.Task
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
+import org.kebs.app.kotlin.apollo.common.dto.std.ID
+import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponse
+import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
+import org.kebs.app.kotlin.apollo.store.model.std.CallForTCApplication
+import org.kebs.app.kotlin.apollo.store.model.std.DecisionFeedback
+import org.kebs.app.kotlin.apollo.store.model.std.MembershipTCApplication
+import org.kebs.app.kotlin.apollo.store.model.std.TechnicalCommitteMember
+import org.kebs.app.kotlin.apollo.store.repo.std.CallForApplicationTCRepository
+import org.kebs.app.kotlin.apollo.store.repo.std.DecisionFeedbackRepository
+import org.kebs.app.kotlin.apollo.store.repo.std.MembershipTCRepository
+import org.kebs.app.kotlin.apollo.store.repo.std.TechnicalCommitteMemberRepository
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
-import java.util.ArrayList
+import java.sql.Timestamp
+import java.time.Instant
+import java.time.temporal.ChronoUnit
+import java.util.*
+import kotlin.collections.HashMap
+import kotlin.collections.set
 
 @Service
-class MembershipToTCService(private val runtimeService: RuntimeService,
-                            private val taskService: TaskService,
-                            @Qualifier("processEngine") private val processEngine: ProcessEngine,
-                            private val repositoryService: RepositoryService,
-                            private val membershipTCRepository: MembershipTCRepository,
-                            private val callForApplicationTCRepository: CallForApplicationTCRepository,
-                            private val technicalCommitteMemberRepository: TechnicalCommitteMemberRepository,
-                            private val decisionFeedbackRepository: DecisionFeedbackRepository
-) {
+class MembershipToTCService(
+    private val runtimeService: RuntimeService,
+    private val taskService: TaskService,
+    @Qualifier("processEngine") private val processEngine: ProcessEngine,
+    private val repositoryService: RepositoryService,
+    private val membershipTCRepository: MembershipTCRepository,
+    private val callForApplicationTCRepository: CallForApplicationTCRepository,
+    private val technicalCommitteMemberRepository: TechnicalCommitteMemberRepository,
+    private val decisionFeedbackRepository: DecisionFeedbackRepository,
+    val commonDaoServices: CommonDaoServices,
+
+    ) {
 
     val PROCESS_DEFINITION_KEY = "membership_to_TC"
     val APPLICANTS = "applicants"
@@ -32,27 +49,76 @@ class MembershipToTCService(private val runtimeService: RuntimeService,
     val SAC = "SAC"
     val HOD_SIC = "HOD-SIC"
 
-    fun deployProcessDefinition(): Deployment =repositoryService
-            .createDeployment()
-            .addClasspathResource("processes/std/membership_to_tc.bpmn20.xml")
-            .deploy()
+    fun deployProcessDefinition(): Deployment = repositoryService
+        .createDeployment()
+        .addClasspathResource("processes/std/membership_to_tc.bpmn20.xml")
+        .deploy()
 
-    fun submitCallsForTCMembers(callForTCApplication: CallForTCApplication):ProcessInstanceResponse
-    {
-        val variable:MutableMap<String,Any> = HashMap()
-        callForTCApplication.tc?.let { variable.put("tc",it) }
-        callForTCApplication.dateOfPublishing?.let { variable.put("dateOfPublishing",it) }
+
+    //Create Form For Applicants To Apply
+
+    fun submitCallsForTCMembers(callForTCApplication: CallForTCApplication): ProcessInstanceResponse {
+        val variable: MutableMap<String, Any> = HashMap()
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        callForTCApplication.tc?.let { variable.put("tc", it) }
+        callForTCApplication.tcId?.let { variable.put("tcId", it) }
+        callForTCApplication.title?.let { variable.put("title", it) }
+        callForTCApplication.dateOfPublishing = Timestamp(System.currentTimeMillis()).toString()
+        callForTCApplication.dateOfPublishing?.let { variable.put("dateOfPublishing", it) }
+        callForTCApplication.status = "ACTIVE"
+        callForTCApplication.status?.let { variable.put("status", it) }
+        callForTCApplication.expiryDate = Timestamp(Instant.now().plus(21, ChronoUnit.DAYS).toEpochMilli())
+        callForTCApplication.expiryDate?.let { variable.put("expiryDate", it) }
+        callForTCApplication.createdBy = loggedInUser.id.toString()
+        callForTCApplication.createdBy?.let { variable.put("createdBy", it) }
+        callForTCApplication.createdOn = Timestamp(System.currentTimeMillis())
+        callForTCApplication.createdOn?.let { variable.put("createdOn", it) }
 
         callForApplicationTCRepository.save(callForTCApplication)
-
         val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variable)
+        //print(variables)
+
+        //val getProcessInstance = runtimeService.createProcessInstanceQuery().processInstanceBusinessKey(PROCESS_DEFINITION_KEY).singleResult()
+
+//        val gottenVariables = processIntance.body
+//
+//        println(gottenVariables)
+
         return ProcessInstanceResponse(processInstance.id, processInstance.isEnded)
 
     }
 
-    fun getCallForApplications():List<TaskDetails>
-    {
-        val tasks = taskService.createTaskQuery().taskCandidateGroup(APPLICANTS).list()
+    //Edit Form
+    fun editCallsForTCMembers(callForTCApplication: CallForTCApplication, applicationID: Long) {
+        val variable: MutableMap<String, Any> = HashMap()
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val u: CallForTCApplication = callForApplicationTCRepository.findById(applicationID).orElse(null);
+        u.tc?.let { variable.put("tc", it) }
+        u.tcId?.let { variable.put("tcId", it) }
+        u.title?.let { variable.put("title", it) }
+        u.modifiedBy = loggedInUser.id.toString()
+        u.modifiedOn = Timestamp(System.currentTimeMillis())
+        callForApplicationTCRepository.save(u)
+
+
+    }
+
+    //Delete Form
+    fun deleteCallsForTCMembers(callForTCApplication: CallForTCApplication, applicationID: Long) {
+        val variable: MutableMap<String, Any> = HashMap()
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val u: CallForTCApplication = callForApplicationTCRepository.findById(applicationID).orElse(null);
+        u.status?.let { variable.put("DELETED", it) }
+        callForTCApplication.deleteBy = loggedInUser.id.toString()
+        callForTCApplication.deletedOn = Timestamp(System.currentTimeMillis())
+        callForApplicationTCRepository.save(callForTCApplication)
+
+
+    }
+
+    fun getCallForApplications(): List<TaskDetails> {
+        val tasks = taskService.createTaskQuery().active().taskCandidateGroup(APPLICANTS).list()
         return getTaskDetails(tasks)
     }
 

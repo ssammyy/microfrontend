@@ -1831,52 +1831,52 @@ class CommonDaoServices(
 
 
 
-                                    SecurityContextHolder.getContext().authentication
-                                        ?.let { auth ->
-                                            KotlinLogging.logger {  }.info("Authentication ${auth.name}")
-                                            usersRepo.findByEmail(auth.name)
-                                                ?.let { user ->
-                                                    val request = req?.servletRequest()
-                                                        ?.let { ServletServerHttpRequest(it) }
-                                                        ?: throw NullValueNotAllowedException("Empty request receivded during authentication flow")
-                                                    val oAuthToken =
-                                                        tokenService.tokenFromAuthentication(
-                                                            auth,
-                                                            concatenateName(user),
-                                                            request
-                                                        )
-
-                                                    val roles =
-                                                        tokenService.extractRolesFromToken(token)?.map { it.authority }
-                                                    val response = JwtResponse(
-                                                        oAuthToken,
-                                                        user.id,
-                                                        user.userName,
-                                                        user.email,
-                                                        concatenateName(user),
-                                                        roles,
-                                                    ).apply {
-                                                        /**
-                                                         * TODO: Set expiry padding configuration  check this time stamp is false
-                                                         */
-//                        val localDate = LocalDateTime.now().plusMinutes(authenticationProperties.jwtExpirationMs).minusSeconds(20L)
-//                        val timestamp: Timestamp = Timestamp.valueOf(localDate)
-//                        expiry = timestam
-                                                        companyID = user.companyId
-                                                        branchID = user.plantId
-
-                                                    }
-                                                    response.expiry =
-                                                        LocalDateTime.now()
-                                                            .plusMinutes(authenticationProperties.jwtExpirationMs)
-                                                            .minusSeconds(20L)
-
-                                                    ServerResponse.ok().body(response)
-                                                }
-                                                ?: throw NullValueNotAllowedException("Empty authentication after authentication attempt")
-
-                                        }
-                                        ?: throw InvalidValueException("Verification Token without a valid expiry found")
+//                                    SecurityContextHolder.getContext().authentication
+//                                        ?.let { auth ->
+//                                            KotlinLogging.logger {  }.info("Authentication ${auth.name}")
+//                                            usersRepo.findByEmail(auth.name)
+//                                                ?.let { user ->
+//                                                    val request = req?.servletRequest()
+//                                                        ?.let { ServletServerHttpRequest(it) }
+//                                                        ?: throw NullValueNotAllowedException("Empty request receivded during authentication flow")
+//                                                    val oAuthToken =
+//                                                        tokenService.tokenFromAuthentication(
+//                                                            auth,
+//                                                            concatenateName(user),
+//                                                            request
+//                                                        )
+//
+//                                                    val roles =
+//                                                        tokenService.extractRolesFromToken(token)?.map { it.authority }
+//                                                    val response = JwtResponse(
+//                                                        oAuthToken,
+//                                                        user.id,
+//                                                        user.userName,
+//                                                        user.email,
+//                                                        concatenateName(user),
+//                                                        roles,
+//                                                    ).apply {
+//                                                        /**
+//                                                         * TODO: Set expiry padding configuration  check this time stamp is false
+//                                                         */
+////                        val localDate = LocalDateTime.now().plusMinutes(authenticationProperties.jwtExpirationMs).minusSeconds(20L)
+////                        val timestamp: Timestamp = Timestamp.valueOf(localDate)
+////                        expiry = timestam
+//                                                        companyID = user.companyId
+//                                                        branchID = user.plantId
+//
+//                                                    }
+//                                                    response.expiry =
+//                                                        LocalDateTime.now()
+//                                                            .plusMinutes(authenticationProperties.jwtExpirationMs)
+//                                                            .minusSeconds(20L)
+//
+//                                                    ServerResponse.ok().body(response)
+//                                                }
+//                                                ?: throw NullValueNotAllowedException("Empty authentication after authentication attempt")
+//
+//                                        }
+//                                        ?: throw InvalidValueException("Verification Token without a valid expiry found")
 
                                     return CustomResponse().apply {
                                         response = "00"

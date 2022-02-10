@@ -342,8 +342,8 @@
 )]]></imageExpression>
 			</image>
 			<image>
-				<reportElement x="332" y="572" width="219" height="51" uuid="9044ec40-bfdc-4007-afaa-cc2c717394de"/>
-				<imageExpression><![CDATA["/app/apps_home/apollo/conf/test/reports/images/BMN_signature.png"]]></imageExpression>
+				<reportElement x="373" y="588" width="138" height="50" uuid="757a26ee-d8e2-4529-a01e-bf8332d078d0"/>
+				<imageExpression><![CDATA["/app/apps_home/apollo/conf/test/reports/images/BMNSignature.jpg"]]></imageExpression>
 			</image>
 		</band>
 		<band height="802">

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*
 class MembershipToTCController(val membershipToTCService: MembershipToTCService) {
 
     //********************************************************** deployment endpoints ********************************************//
-    @PostMapping("/deploy")
+    @PostMapping("/anonymous/deploy")
     fun deployWorkflow(): ServerResponse {
         membershipToTCService.deployProcessDefinition()
         return ServerResponse(HttpStatus.OK,"Successfully deployed server", HttpStatus.OK)
@@ -26,7 +26,7 @@ class MembershipToTCController(val membershipToTCService: MembershipToTCService)
         return ServerResponse(HttpStatus.OK,"Successfully submitted call for applications",membershipToTCService.submitCallsForTCMembers(callForTCApplication))
     }
 
-    @GetMapping("/getCallForApplications")
+    @GetMapping("anonymous/getCallForApplications")
     fun getCallForApplications():List<TaskDetails>
     {
         return membershipToTCService.getCallForApplications()
@@ -40,7 +40,7 @@ class MembershipToTCController(val membershipToTCService: MembershipToTCService)
     }
 
 
-    @PostMapping("/submitTCMemberApplication")
+    @PostMapping("anonymous/submitTCMemberApplication")
     @ResponseBody
     fun submitTCMemberApplication(@RequestBody membershipTCApplication: MembershipTCApplication): ServerResponse{
         return ServerResponse(HttpStatus.OK,"Successfully application to be TC Member",membershipToTCService.submitTCMemberApplication(membershipTCApplication))
