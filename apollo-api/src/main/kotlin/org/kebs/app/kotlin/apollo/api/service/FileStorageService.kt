@@ -51,12 +51,13 @@ class FileStorageService(
         val response = ApiResponseModel()
         this.sftpRepository.findByIdOrNull(messageId)?.let {
             try {
-                response.data = this.ftpService.getUploadedDownloadedFile(it.fileType, it.flowDirection, it.transactionStatus == 1)
+                response.data = this.ftpService.getUploadedDownloadedFile(it.filename, it.flowDirection, it.transactionStatus == 1)
                 response.responseCode = ResponseCodes.SUCCESS_CODE
-                response.message = "Succces"
+                response.message = "Success"
             } catch (ex: Exception) {
-                response.responseCode = ex.localizedMessage
-                response.message = "Succces"
+                KotlinLogging.logger { }.error("Failed to fetch file", ex)
+                response.responseCode = ResponseCodes.FAILED_CODE
+                response.message = "Success"
             }
         } ?: run {
             response.message = "Not found"

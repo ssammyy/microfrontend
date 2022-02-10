@@ -244,6 +244,7 @@ class DestinationInspectionService(
             }
 
             if (selfAssign) {
+                KotlinLogging.logger { }.info("PICK CONSIGNMENT: ${officer.get().userName}")
                 val updateCd = this.daoServices.updateCdDetailsInDB(consignmentDocument, officer.get())
                 // Update CD status
                 updateCd.cdStandard?.let { cdStd ->

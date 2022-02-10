@@ -79,7 +79,8 @@ class ConsignmentEnableUI {
                 ncrAvailable = !cd.ncrNumber.isNullOrEmpty()
                 checklistFilled = cd.inspectionChecklist == map.activeStatus
                 hasPort = (cd.portOfArrival != null && cd.freightStation != null)
-                completed = cd.approveRejectCdStatusType?.let { it.modificationAllowed != map.activeStatus } == true || cd.oldCdStatus != null
+                completed = cd.approveRejectCdStatusType?.let { it.finalStatus == map.activeStatus } == true || cd.oldCdStatus != null
+                canChange = cd.approveRejectCdStatusType?.let { it.modificationAllowed == map.activeStatus } == true
                 approveReject = (cd.targetApproveStatus == null || cd.inspectionDateSetStatus == map.activeStatus) && modify
             }
             cd.cdStandardsTwo?.let {

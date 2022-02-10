@@ -35,6 +35,10 @@ class CdStatusTypesEntity : Serializable {
     @Basic
     var modificationAllowed: Int? = 1
 
+    @Column(name = "FINAL_STATUS", nullable = true)
+    @Basic
+    var finalStatus: Int? = 1
+
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null
