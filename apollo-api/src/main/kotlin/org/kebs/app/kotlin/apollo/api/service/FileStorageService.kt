@@ -76,18 +76,18 @@ class FileStorageService(
         // Date
         data = when {
             fileName.isPresent->{
-                this.sftpRepository.findFirstByFilenameContainingOrderByCreatedOnDesc(fileName.get(), page)
+                this.sftpRepository.findFirstByFilenameContainingOrderByTransactionDateDesc(fileName.get(), page)
             }
             statusOpt.isPresent -> {
                 val status = statusOpt.get().toInt()
                 if (status > 0) {
-                    this.sftpRepository.findByTransactionStatusInAndFlowDirectionOrderByCreatedOnDesc(listOf(status), flowDirection, page)
+                    this.sftpRepository.findByTransactionStatusInAndFlowDirectionOrderByTransactionDateDesc(listOf(status), flowDirection, page)
                 } else {
-                    this.sftpRepository.findByTransactionStatusNotInAndFlowDirectionOrderByCreatedOnDesc(listOf(1), flowDirection, page)
+                    this.sftpRepository.findByTransactionStatusNotInAndFlowDirectionOrderByTransactionDateDesc(listOf(1, 20, 0), flowDirection, page)
                 }
             }
             else -> {
-                this.sftpRepository.findByTransactionStatusNotInAndFlowDirectionOrderByCreatedOnDesc(listOf(1, 0), flowDirection, page)
+                this.sftpRepository.findByTransactionStatusNotInAndFlowDirectionOrderByTransactionDateDesc(listOf(-1), flowDirection, page)
             }
         }
         response.data = data.toList()

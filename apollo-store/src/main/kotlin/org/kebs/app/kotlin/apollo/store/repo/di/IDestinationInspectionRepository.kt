@@ -479,6 +479,7 @@ interface ICdValuesHeaderLevelEntityRepository : HazelcastRepository<CdValuesHea
 interface IUsersCfsAssignmentsRepository : HazelcastRepository<UsersCfsAssignmentsEntity, Long> {
     fun findAllById(Id: Long): List<UsersCfsAssignmentsEntity>?
     fun findAllByCfsId(Id: Long): List<UsersCfsAssignmentsEntity>?
+    fun findAllByCfsIdInAndStatus(Ids: List<Long>, status: Int): List<UsersCfsAssignmentsEntity>
 
     @Query("select CKCTC.CFS_CODE from CFG_USERS_CFS_ASSIGNMENTS CCA left join CFG_KEBS_CFS_TYPE_CODES CKCTC on CCA.CFS_ID = CKCTC.ID where CCA.STATUS=1 and CCA.USER_PROFILE_ID=:profileId", nativeQuery = true)
     fun findAllUserCfsCodes(@Param("profileId") Id: Long): List<String>

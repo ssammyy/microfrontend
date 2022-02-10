@@ -2416,25 +2416,30 @@ class DestinationInspectionDaoServices(
         freightStation?.let { fs ->
 
             val profilesAssignment = findByCFSId(fs.id)
-            val userProfiles = mutableListOf<UserProfilesEntity>()
+            val userProfiles = mutableListOf<Long>()
             profilesAssignment.forEach { p ->
-                iUserProfilesRepo.findByIdAndDesignationId_IdAndStatus(p.userProfileId!!, designationId, 1)
-                        .ifPresent { pp -> userProfiles.add(pp) }
-
+                userProfiles.add(p.userProfileId!!)
             }
-            return userProfiles
+            return iUserProfilesRepo.findByIdInAndDesignationId_IdAndStatus(userProfiles, designationId, 1)
         } ?: throw ServiceMapNotFoundException("Freight Station details on consignment with ID = null, is Empty")
     }
 
-    fun findOfficersByCategoryList(user: UserProfilesEntity, designationId: Long): List<UserProfilesEntity> {
-        val profilesAssignment = findAllCFSUserList(user.id!!)
-        KotlinLogging.logger { }.info("USR CFS COUNT: ${profilesAssignment.size}")
-        val userProfiles = mutableListOf<UserProfilesEntity>()
-        profilesAssignment.forEach { p ->
-            iUserProfilesRepo.findByIdAndDesignationId_IdAndStatus(p.userProfileId!!, designationId, 1)
-                    .ifPresent { pp -> userProfiles.add(pp) }
+    fun findOfficersInMyCfsList(user: UserProfilesEntity, designationId: Long): List<UserProfilesEntity> {
 
+        val profilesAssignment = findAllCFSUserList(user.id!!)
+        KotlinLogging.logger { }.info("USR CFS COUNT: ${profilesAssignment.size}-${user.id}")
+        // CFS in my profile
+        val cfsIds = mutableListOf<Long>()
+        profilesAssignment.forEach { p ->
+            cfsIds.add(p.cfsId!!)
         }
+        // Profiles in my CFS
+        val profilIds = mutableListOf<Long>()
+        usersCfsRepo.findAllByCfsIdInAndStatus(cfsIds.distinct(), 1).forEach {
+            profilIds.add(it.userProfileId!!)
+        }
+        // Users
+        val userProfiles = iUserProfilesRepo.findByIdInAndDesignationId_IdAndStatus(profilIds.distinct(), designationId, 1)
         KotlinLogging.logger { }.info("USR COUNT: ${userProfiles.size}")
         return userProfiles
     }
@@ -2817,8 +2822,12 @@ class DestinationInspectionDaoServices(
             user: UsersEntity?
     ): ConsignmentDocumentDetailsEntity {
         if (user != null) {
-            with(updateCD) {
+            updateCD.apply {
                 modifiedBy = commonDaoServices.getUserName(user)
+                modifiedOn = commonDaoServices.getTimestamp()
+            }
+        } else {
+            updateCD.apply {
                 modifiedOn = commonDaoServices.getTimestamp()
             }
         }

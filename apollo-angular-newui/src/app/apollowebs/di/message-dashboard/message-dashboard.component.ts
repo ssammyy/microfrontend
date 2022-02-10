@@ -73,6 +73,7 @@ export class MessageDashboardComponent implements OnInit {
             ]
         }
     };
+    maxPages = 20
     currentPage = 0
     defaultPageSize = 20
     totalCount = 20

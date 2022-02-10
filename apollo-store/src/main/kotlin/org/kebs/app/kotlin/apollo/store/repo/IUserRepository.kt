@@ -373,20 +373,26 @@ interface IUserProfilesRepository : HazelcastRepository<UserProfilesEntity, Long
     ): List<UserProfilesEntity>?
 
     fun findByDesignationIdAndSectionIdAndStatus(
-        designationId: DesignationsEntity,
-        sectionId: SectionsEntity,
-        status: Int
+            designationId: DesignationsEntity,
+            sectionId: SectionsEntity,
+            status: Int
     ): UserProfilesEntity?
 
     fun findByIdAndDesignationId_IdAndStatus(
-        id: Long,
-        designationId: Long,
-        status: Int
+            id: Long,
+            designationId: Long,
+            status: Int
     ): Optional<UserProfilesEntity>
 
+    fun findByIdInAndDesignationId_IdAndStatus(
+            id: List<Long>,
+            designationId: Long,
+            status: Int
+    ): List<UserProfilesEntity>
+
     fun findByRegionIdAndDesignationId(
-        regionId: RegionsEntity,
-        designationId: DesignationsEntity
+            regionId: RegionsEntity,
+            designationId: DesignationsEntity
     ): List<UserProfilesEntity>?
 
     fun findBySubSectionL1IdAndStatus(subSectionL1Id: SubSectionsLevel1Entity, status: Int): List<UserProfilesEntity>?
