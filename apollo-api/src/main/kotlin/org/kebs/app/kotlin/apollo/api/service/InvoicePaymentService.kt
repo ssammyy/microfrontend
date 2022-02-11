@@ -256,11 +256,21 @@ class InvoicePaymentService(
         val exchangeRates = service.readExchangeRatesFromController(separator, targetReader)
         for (rate in exchangeRates) {
             val exchangeRateEntity = CurrencyExchangeRates()
+            // Clear the old rate
+            this.exchangeRateRepository.findAllByCurrencyCodeAndCurrentRate(rate.currencyCode!!, 1).forEach { oldRate ->
+                oldRate.currentRate = 0
+                oldRate.changeDate = Timestamp.from(Instant.now())
+                oldRate.modifiedOn = Timestamp.from(Instant.now())
+                oldRate.modifiedBy = loggedInUser?.userName
+                this.exchangeRateRepository.save(oldRate)
+            }
+            // Add new rate
             with(exchangeRateEntity) {
                 applicableDate = Timestamp.from(Instant.now())
                 currencyCode = rate.currencyCode
                 exchangeRate = rate.exchangeRate
                 description = rate.description
+                currentRate = 1
                 status = 1
                 createdBy = loggedInUser?.userName
                 createdOn = Timestamp.from(Instant.now())

@@ -32,6 +32,14 @@ class CurrencyExchangeRates : Serializable {
     @Basic
     var description: String? = null
 
+    @Column(name = "CURRENT_RATE", nullable = false)
+    @Basic
+    var currentRate: Int? = null
+
+    @Column(name = "CHANGE_DATE")
+    @Basic
+    var changeDate: Timestamp? = null
+
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null
@@ -85,7 +93,7 @@ class CurrencyExchangeRates : Serializable {
         if (other == null || javaClass != other.javaClass) return false
         val that = other as CurrencyExchangeRates
         return id == that.id &&
-                 currencyCode== that.currencyCode &&
+                currencyCode == that.currencyCode &&
                 description == that.description &&
                 status == that.status &&
                 varField1 == that.varField1 &&

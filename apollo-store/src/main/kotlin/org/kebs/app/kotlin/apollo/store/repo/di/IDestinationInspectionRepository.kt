@@ -205,6 +205,10 @@ interface ICfgMoneyTypeCodesRepository : HazelcastRepository<MoneyTypeCodesEntit
 
 @Repository
 interface ICfgCurrencyExchangeRateRepository : HazelcastRepository<CurrencyExchangeRates, Long> {
+    fun findAllByCurrencyCodeAndCurrentRate(code: String, current: Int): List<CurrencyExchangeRates>
+    fun findFirstByCurrencyCodeAndCurrentRateAndStatus(code: String, current: Int, status: Int): CurrencyExchangeRates?
+    fun findAllByCurrentRateAndStatus(current: Int, status: Int): List<CurrencyExchangeRates>
+
     @Query("SELECT * from CFG_CURRENCY_EXCHANGE_RATES where to_char(APPLICABLE_DATE,'DD-MM-YYYY')=:date and STATUS=:status", nativeQuery = true)
     fun findByApplicableDateAndStatus(@Param("date") date: String, @Param("status") status: Int): List<CurrencyExchangeRates>
 
@@ -318,7 +322,7 @@ interface IDemandNoteRepository : HazelcastRepository<CdDemandNoteEntity, Long> 
     fun findAllByPaymentStatus(paymentStatus: Int): List<CdDemandNoteEntity>?
     fun findFirstByPaymentStatusAndCdRefNoIsNotNull(paymentStatus: Int): CdDemandNoteEntity?
     fun findFirstByPaymentStatusAndCdRefNoIsNotNullOrderByCreatedOnDesc(paymentStatus: Int): CdDemandNoteEntity?
-    fun findFirstByPaymentStatusAndCdRefNoIsNotNullAndImporterPinOrderByCreatedOnDesc(paymentStatus: Int,importerPin: String): CdDemandNoteEntity?
+    fun findFirstByPaymentStatusAndCdRefNoIsNotNullAndImporterPinOrderByCreatedOnDesc(paymentStatus: Int, importerPin: String): CdDemandNoteEntity?
 
     @Query("select count(*) as totalCount, sum(AMOUNT_PAYABLE) totalAmount,paymentStatus from DAT_KEBS_CD_DEMAND_NOTE where  to_char(DATE_GENERATED,'DD-MM-YYYY')=:date group by PAYMENT_STATUS", nativeQuery = true)
     fun transactionStats(date: String): List<TransactionStats>
@@ -604,12 +608,12 @@ interface IPvocPartnersCountriesRepository : HazelcastRepository<PvocPartnersCou
 }
 
 @Repository
-interface IPvocPartnersRegion : HazelcastRepository<PvocPartnersRegionEntity, Long>{
+interface IPvocPartnersRegion : HazelcastRepository<PvocPartnersRegionEntity, Long> {
     fun findAllByStatus(status: Int): List<PvocPartnersRegionEntity>
 }
 
 @Repository
-interface IPvocPartnerTypeRepository : HazelcastRepository<PvocPartnerTypeEntity, Long>{
+interface IPvocPartnerTypeRepository : HazelcastRepository<PvocPartnerTypeEntity, Long> {
     fun findAllByStatus(status: Int): List<PvocPartnerTypeEntity>
 }
 

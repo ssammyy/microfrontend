@@ -11,6 +11,7 @@ import {DatePipe} from "@angular/common";
     styleUrls: ['./currency-exchange-rates.component.css']
 })
 export class CurrencyExchangeRatesComponent implements OnInit {
+    activeTab = 0
     public settings = {
         selectMode: 'single',  // single|multi
         hideHeader: false,
@@ -68,6 +69,7 @@ export class CurrencyExchangeRatesComponent implements OnInit {
         }
     };
     dataSet: LocalDataSource = new LocalDataSource();
+    activeDataSet: LocalDataSource = new LocalDataSource();
 
     constructor(private diService: DestinationInspectionService) {
     }
@@ -107,7 +109,12 @@ export class CurrencyExchangeRatesComponent implements OnInit {
             .subscribe(
                 res => {
                     if (res.responseCode == "00") {
-                        this.dataSet.load(res.data)
+                        if (res.data.today) {
+                            this.dataSet.load(res.data.today)
+                        }
+                        if (res.data.active) {
+                            this.activeDataSet.load(res.data.active)
+                        }
                     } else {
                         this.diService.showError(res.message, null)
                     }

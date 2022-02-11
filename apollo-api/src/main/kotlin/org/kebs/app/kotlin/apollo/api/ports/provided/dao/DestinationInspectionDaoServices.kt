@@ -1025,8 +1025,12 @@ class DestinationInspectionDaoServices(
             return amount?.times(exchangeRateEntity.exchangeRate
                     ?: BigDecimal.ZERO) ?: BigDecimal.ZERO
         } ?: run {
-            // uncomment exception in production
-            throw ExpectedDataNotFound("Conversion rate for currency ${currencyCode} not found")
+            currencyExchangeRateRepository.findFirstByCurrencyCodeAndCurrentRateAndStatus(currencyCode, 1, 1)?.let { exchangeRateEntity ->
+                return amount?.times(exchangeRateEntity.exchangeRate
+                        ?: BigDecimal.ZERO) ?: BigDecimal.ZERO
+            } ?: run {
+                throw ExpectedDataNotFound("Conversion rate for currency ${currencyCode} not found")
+            }
         }
     }
 
@@ -1036,10 +1040,15 @@ class DestinationInspectionDaoServices(
             demandNoteItem?.cfvalue = amount?.times(exchangeRateEntity.exchangeRate
                     ?: BigDecimal.ZERO) ?: BigDecimal.ZERO
         } ?: run {
-            demandNoteItem?.cfvalue = amount ?: BigDecimal.ZERO
-            // TODO: uncomment exception in production
-            throw ExpectedDataNotFound("Conversion rate for currency ${currencyCode} not found")
-
+            KotlinLogging.logger { }.warn("Exchange rate for today not found, using the last known exchange rate")
+            currencyExchangeRateRepository.findFirstByCurrencyCodeAndCurrentRateAndStatus(currencyCode, 1, 1)?.let { exchangeRateEntity ->
+                demandNoteItem?.cfvalue = amount?.times(exchangeRateEntity.exchangeRate
+                        ?: BigDecimal.ZERO) ?: BigDecimal.ZERO
+                demandNoteItem?.exchangeRateId = exchangeRateEntity.id
+            } ?: run {
+                demandNoteItem?.cfvalue = amount ?: BigDecimal.ZERO
+                throw ExpectedDataNotFound("Conversion rate for currency ${currencyCode} not found")
+            }
         }
     }
 
@@ -3146,6 +3155,10 @@ class DestinationInspectionDaoServices(
 
     fun listExchangeRates(date: String): List<CurrencyExchangeRates> {
         return this.currencyExchangeRateRepository.findByApplicableDateAndStatus(date, 1)
+    }
+
+    fun listCurrentExchangeRates(status: Int): List<CurrencyExchangeRates> {
+        return this.currencyExchangeRateRepository.findAllByCurrentRateAndStatus(status, 1)
     }
 
     fun updateIdfNumber(ucrNumber: String, baseDocRefNo: String) {

@@ -76,7 +76,10 @@ class InvoiceHandlers(
                 }
                 dt
             } ?: LocalDate.now()
-            response.data = daoServices.listExchangeRates(DATE_FORMAT.format(date))
+            response.data = mapOf(
+                    Pair("today", daoServices.listExchangeRates(DATE_FORMAT.format(date))),
+                    Pair("active", daoServices.listCurrentExchangeRates(1))
+            )
             response.message = "Success"
             response.responseCode = ResponseCodes.SUCCESS_CODE
         } catch (e: Exception) {
