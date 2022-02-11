@@ -64,6 +64,7 @@
                                                      (custom)="onCustomAction($event)">
                                     </ng2-smart-table>
                                     <ngb-pagination [(page)]="currentPage" [pageSize]="defaultPageSize"
+                                                    [maxSize]="maxPages"
                                                     [collectionSize]="totalCount"
                                                     (pageChange)=pageChange($event)>
                                         <ng-template ngbPaginationFirst>First</ng-template>

@@ -39,20 +39,11 @@ package org.kebs.app.kotlin.apollo.api
 
 import org.codehaus.jackson.map.ObjectMapper
 import org.codehaus.jackson.map.annotate.JsonSerialize
-import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.boot.runApplication
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.annotation.Bean
-import org.springframework.web.client.RestTemplate
-import org.springframework.web.servlet.config.annotation.CorsRegistration
-import org.springframework.web.servlet.config.annotation.CorsRegistry
-import scala.sys.*
-
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
-
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 
 @SpringBootApplication(scanBasePackages = ["org.kebs.app.kotlin.apollo"])

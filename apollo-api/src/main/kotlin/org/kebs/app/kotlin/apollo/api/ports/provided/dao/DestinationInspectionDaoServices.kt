@@ -2125,7 +2125,7 @@ class DestinationInspectionDaoServices(
             null
         }
         // Document Type
-        when (documentCode) {
+        when (localCocType) {
             "F" -> {
                 documentType = CdTypeCodes.FOREIGN_COR.code
             }
@@ -2157,7 +2157,7 @@ class DestinationInspectionDaoServices(
             null
         }
         // Document types
-        when (documentCode) {
+        when (localCocType) {
             "F" -> {
                 documentType = CdTypeCodes.FOREIGN_COC.code
             }
@@ -2219,16 +2219,16 @@ class DestinationInspectionDaoServices(
                 }
             }
             else ->
-                when (chassisNumber) {
-                    null -> {
+                when {
+                    StringUtils.hasLength(chassisNumber) -> {
+                        KotlinLogging.logger { }.info("Map COR")
+                        // COR, NO_COR_PVOC or NO_COR Goods
+                        this.updateConsignmentCorDetails(cdDetailsEntity, cdDetailsEntity.cdStandardsTwo?.localCocType, documentCode, corsBakRepository.findByChasisNumber(chassisNumber!!))
+                    }
+                    else -> {
                         KotlinLogging.logger { }.info("Map COC")
                         // COC, NCR or NO_COC Goods
                         this.updateConsignmentCocDetails(cdDetailsEntity, cdDetailsEntity.cdStandardsTwo?.localCocType, documentCode, findCocByUcrNumber(ucrNumber))
-                    }
-                    else -> {
-                        KotlinLogging.logger { }.info("Map COR")
-                        // COR, NO_COR_PVOC or NO_COR Goods
-                        this.updateConsignmentCorDetails(cdDetailsEntity, cdDetailsEntity.cdStandardsTwo?.localCocType, documentCode, corsBakRepository.findByChasisNumber(chassisNumber))
                     }
                 }
         }
@@ -2416,25 +2416,30 @@ class DestinationInspectionDaoServices(
         freightStation?.let { fs ->
 
             val profilesAssignment = findByCFSId(fs.id)
-            val userProfiles = mutableListOf<UserProfilesEntity>()
+            val userProfiles = mutableListOf<Long>()
             profilesAssignment.forEach { p ->
-                iUserProfilesRepo.findByIdAndDesignationId_IdAndStatus(p.userProfileId!!, designationId, 1)
-                        .ifPresent { pp -> userProfiles.add(pp) }
-
+                userProfiles.add(p.userProfileId!!)
             }
-            return userProfiles
+            return iUserProfilesRepo.findByIdInAndDesignationId_IdAndStatus(userProfiles, designationId, 1)
         } ?: throw ServiceMapNotFoundException("Freight Station details on consignment with ID = null, is Empty")
     }
 
-    fun findOfficersByCategoryList(user: UserProfilesEntity, designationId: Long): List<UserProfilesEntity> {
-        val profilesAssignment = findAllCFSUserList(user.id!!)
-        KotlinLogging.logger { }.info("USR CFS COUNT: ${profilesAssignment.size}")
-        val userProfiles = mutableListOf<UserProfilesEntity>()
-        profilesAssignment.forEach { p ->
-            iUserProfilesRepo.findByIdAndDesignationId_IdAndStatus(p.userProfileId!!, designationId, 1)
-                    .ifPresent { pp -> userProfiles.add(pp) }
+    fun findOfficersInMyCfsList(user: UserProfilesEntity, designationId: Long): List<UserProfilesEntity> {
 
+        val profilesAssignment = findAllCFSUserList(user.id!!)
+        KotlinLogging.logger { }.info("USR CFS COUNT: ${profilesAssignment.size}-${user.id}")
+        // CFS in my profile
+        val cfsIds = mutableListOf<Long>()
+        profilesAssignment.forEach { p ->
+            cfsIds.add(p.cfsId!!)
         }
+        // Profiles in my CFS
+        val profilIds = mutableListOf<Long>()
+        usersCfsRepo.findAllByCfsIdInAndStatus(cfsIds.distinct(), 1).forEach {
+            profilIds.add(it.userProfileId!!)
+        }
+        // Users
+        val userProfiles = iUserProfilesRepo.findByIdInAndDesignationId_IdAndStatus(profilIds.distinct(), designationId, 1)
         KotlinLogging.logger { }.info("USR COUNT: ${userProfiles.size}")
         return userProfiles
     }
@@ -2817,8 +2822,12 @@ class DestinationInspectionDaoServices(
             user: UsersEntity?
     ): ConsignmentDocumentDetailsEntity {
         if (user != null) {
-            with(updateCD) {
+            updateCD.apply {
                 modifiedBy = commonDaoServices.getUserName(user)
+                modifiedOn = commonDaoServices.getTimestamp()
+            }
+        } else {
+            updateCD.apply {
                 modifiedOn = commonDaoServices.getTimestamp()
             }
         }

@@ -133,11 +133,11 @@ class UserHandler(
                 when (categoryCode) {
                     "io" -> {
                         KotlinLogging.logger { }.info("Load inspection officers under profile: ${userProfilesEntity.id}")
-                        response.data = UserProfileDao.fromList(daoServices.findOfficersByCategoryList(userProfilesEntity, applicationMapProperties.mapDiInspectionOfficerDesignationId))
+                        response.data = UserProfileDao.fromList(daoServices.findOfficersInMyCfsList(userProfilesEntity, applicationMapProperties.mapDiInspectionOfficerDesignationId))
                     }
                     "supervisor" -> {
                         KotlinLogging.logger { }.info("Load supervisors under profile: ${userProfilesEntity.id}")
-                        response.data = UserProfileDao.fromList(daoServices.findOfficersByCategoryList(userProfilesEntity, applicationMapProperties.mapDIOfficerInChargeID))
+                        response.data = UserProfileDao.fromList(daoServices.findOfficersInMyCfsList(userProfilesEntity, applicationMapProperties.mapDIOfficerInChargeID))
                     }
                     else -> {
                         response.message = "Invalid category code: $categoryCode"
