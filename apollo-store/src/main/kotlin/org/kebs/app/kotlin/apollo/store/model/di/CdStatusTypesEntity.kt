@@ -1,6 +1,5 @@
 package org.kebs.app.kotlin.apollo.store.model.di
 
-import org.kebs.app.kotlin.apollo.store.model.di.CdStatusTypesEntity
 import java.io.Serializable
 import java.sql.Timestamp
 import java.util.*
@@ -38,6 +37,10 @@ class CdStatusTypesEntity : Serializable {
     @Column(name = "FINAL_STATUS", nullable = true)
     @Basic
     var finalStatus: Int? = 1
+
+    @Column(name = "APPLICATION_STATUS", nullable = false)
+    @Basic
+    var applicationStatus: Int? = 1
 
     @Column(name = "STATUS")
     @Basic

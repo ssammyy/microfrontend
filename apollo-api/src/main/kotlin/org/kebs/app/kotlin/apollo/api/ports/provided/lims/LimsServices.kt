@@ -13,6 +13,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.lims.response.RootLabPdfLis
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.response.RootTestResultsAndParameters
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.response.TestParameter
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.response.TestResult
+import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentStatus
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleLabTestParametersEntity
@@ -222,8 +223,8 @@ class LimsServices(
                 if ("OK".equals(resultsParam.status, true)) {
                     results = true
                 }
-            }catch (ex: Exception){
-                KotlinLogging.logger {  }.error("Failed to decode reponse", ex)
+            } catch (ex: Exception) {
+                KotlinLogging.logger { }.error("Failed to decode reponse", ex)
             }
         }
         return results
@@ -403,12 +404,10 @@ class LimsServices(
                                                 diDaoServices.findCD(cdItem.cdDocId?.id
                                                         ?: throw Exception("CD ID NOT FOUND"))
                                                         .let { updatedCDDetails ->
-                                                            updatedCDDetails.cdStandard?.let { cdStd ->
-                                                                diDaoServices.updateCDStatus(
-                                                                        cdStd,
-                                                                        applicationMapProperties.mapDIStatusTypeInspectionSampleResultsReceivedId
-                                                                )
-                                                            }
+                                                            diDaoServices.updateCDStatus(
+                                                                    updatedCDDetails,
+                                                                    ConsignmentDocumentStatus.LAB_RESULT_RESULT
+                                                            )
                                                         }
 
                                             }

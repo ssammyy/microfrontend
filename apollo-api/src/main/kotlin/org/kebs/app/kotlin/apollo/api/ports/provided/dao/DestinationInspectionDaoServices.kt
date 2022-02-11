@@ -2,7 +2,6 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import mu.KotlinLogging
-import org.flowable.idm.engine.impl.persistence.entity.UserEntity
 import org.json.JSONException
 import org.json.JSONObject
 import org.json.XML
@@ -792,6 +791,10 @@ class DestinationInspectionDaoServices(
                 ?: throw Exception("CoR Entity with the following chassis number = ${chassisNo}, does not Exist")
     }
 
+    fun findCdManualAssignable(status: Int): List<CdStatusTypesEntity> {
+        return iCdStatusTypesDetailsRepo.findByStatusAndApplicationStatus(status, 0)
+    }
+
     fun findCdStatusValueList(status: Int): List<CdStatusTypesEntity> {
         iCdStatusTypesDetailsRepo.findByStatus(status)
                 ?.let { cdStatusDetails ->
@@ -1383,7 +1386,7 @@ class DestinationInspectionDaoServices(
     ): CdDemandNoteEntity {
         (updateCdItemDetailsInDB(itemDetails, user).cdDocId
                 ?.let { cdDetails ->
-                    cdDetails.cdStandard?.let { updateCDStatus(it, awaitPaymentStatus.toLong()) }
+                    updateCDStatus(cdDetails, ConsignmentDocumentStatus.PAYMENT_REQUEST)
                     updateCdDetailsInDB(cdDetails, user)
                             .let {
                                 return demandNote
@@ -1440,37 +1443,48 @@ class DestinationInspectionDaoServices(
         return """<?xml version="1.0" encoding="ISO-8859-15"?> <$root>${XML.toString(jsonObject)}</$root>"""
     }
 
-    fun updateCDStatus(cdStandard: CdStandardsEntity, statusValue: ConsignmentDocumentStatus): Boolean {
-        var updateCD = cdStandard
-        var updateStatus = false
+    fun updateCDStatus(consignment: ConsignmentDocumentDetailsEntity, statusValue: ConsignmentDocumentStatus): ConsignmentDocumentDetailsEntity {
+        var updateStatus = consignment
         try {
             val status = findCdStatusCategory(statusValue.code)
-            with(updateCD) {
-                approvalStatus = status.typeName
-                statusId = status.id
-                approvalDate = commonDaoServices.getCurrentDate().toString()
+            consignment.cdStandard?.let { cdStandard ->
+                with(cdStandard) {
+                    approvalStatus = status.typeName
+                    statusId = status.id
+                    approvalDate = commonDaoServices.getCurrentDate().toString()
+                }
+                val updateCD = iCdStandardsRepo.save(cdStandard)
+                KotlinLogging.logger { }.info { "CD UPDATED STATUS TO = ${updateCD.approvalStatus}" }
             }
-            updateCD = iCdStandardsRepo.save(updateCD)
-            KotlinLogging.logger { }.info { "CD UPDATED STATUS TO = ${updateCD.approvalStatus}" }
-            updateStatus = true
+            // Update consignment status as well
+            consignment.approveRejectCdStatusType = status
+            updateStatus = this.iConsignmentDocumentDetailsRepo.save(consignment)
         } catch (ex: Exception) {
-            KotlinLogging.logger { }.error("Failed to assign status: " + statusValue.code, ex)
+            KotlinLogging.logger { }.error("Failed to assign status:  ${statusValue.code}", ex)
         }
         return updateStatus
     }
 
-    fun updateCDStatus(cdStandard: CdStandardsEntity, statusValue: Long): Boolean {
-        var updateCD = cdStandard
-        val status = findCdStatusValue(statusValue)
-        with(updateCD) {
-            approvalStatus = status.typeName
-            statusId = status.id
-            approvalDate = commonDaoServices.getCurrentDate().toString()
+    fun updateCDStatus(consignment: ConsignmentDocumentDetailsEntity, statusValue: Long): ConsignmentDocumentDetailsEntity {
+        var updateStatus = consignment
+        try {
+            val status = findCdStatusValue(statusValue)
+            consignment.cdStandard?.let { cdStandard ->
+                with(cdStandard) {
+                    approvalStatus = status.typeName
+                    statusId = status.id
+                    approvalDate = commonDaoServices.getCurrentDate().toString()
+                }
+                val updateCD = iCdStandardsRepo.save(cdStandard)
+                KotlinLogging.logger { }.info { "CD UPDATED STATUS TO = ${updateCD.approvalStatus}" }
+            }
+            // Update consignment status as well
+            consignment.approveRejectCdStatusType = status
+            updateStatus = this.iConsignmentDocumentDetailsRepo.save(consignment)
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to assign status: $statusValue", ex)
         }
-        updateCD = iCdStandardsRepo.save(updateCD)
-        KotlinLogging.logger { }.info { "CD UPDATED STATUS TO = ${updateCD.approvalStatus}" }
-
-        return true
+        return updateStatus
     }
 
     fun updateItemCdStatus(item: CdItemDetailsEntity, statusValue: Long): CdItemDetailsEntity {
@@ -3080,11 +3094,7 @@ class DestinationInspectionDaoServices(
                     inspectionDateSetStatus = commonDaoServices.activeStatus.toInt()
                 }
                 iConsignmentDocumentDetailsRepo.save(cdDetails)
-
-                cdDetails.cdStandard?.let { cdStd ->
-                    updateCDStatus(cdStd, applicationMapProperties.mapDIStatusTypeKraVerificationApprovedId)
-                }
-
+                updateCDStatus(cdDetails, ConsignmentDocumentStatus.KRA_VERIFICATION)
             }
                     ?: KotlinLogging.logger { }.info { "Consignment document for declaration: ${declarationVerificationDocumentMessage.data?.dataIn?.sad?.sadId} not found" }
         }

@@ -34,13 +34,13 @@ import java.time.ZoneId
 import kotlinx.coroutines.*
 
 enum class ConsignmentDocumentStatus(val code: String) {
-    NEW_CD("NEW_CD"), REVISED_CD("REVISED_CD"),
-    IO_ASSIGNED("IO_ASSIGNED"), IO_REASSIGNED("IO_REASSIGNED"), IO_SELF_ASSIGN("IO_SELF_ASSIGN"),
+    NEW_CD("NEW_CD"), REVISED_CD("REVISED_CD"), OLD_CD("OLD_CD"),
+    IO_ASSIGNED("IO_ASSIGNED"), IO_REASSIGNED("IO_REASSIGNED"), IO_SELF_ASSIGN("IO_SELF_ASSIGNED"),
     LAB_REQUEST("LAB_REQUEST"), LAB_RESULT_RESULT("LAB_RESULT"), ITEM_COMPLIANCE("COMPLIANCE"), ITEM_NON_COMPLIANCE("NON_COMPLIANCE"),
     CHECKLIST_FILLED("CHECKLIST_FILLED"), CHECKLIST_COMPLETED("SSF_FILLED"), CHECKLIST_STARTED("CHECKLIST_STARTED"),
     SCF_FILLED("SCF_FILLED"), SSF_FILLED("SSF_FILLED"), BS_NUMBER_FILLED("BS_NUMBER_FILLED"),
     TARGET_REQUEST("TARGET_REQUEST"), TARGET_APPROVED("TARGET_APPROVED"), TARGET_REJECTED("TARGET_REJECTED"), KRA_VERIFICATION_REQUEST("KRA_VERIFICATION_REQUEST"), KRA_VERIFICATION("KRA_VERIFICATION"),
-    PAYMENT_REQUEST("PAYMENT_REQ"), PAYMENT_APPROVED("PAYMENT_APPROVE"), PAYMENT_REJECTED("PAYMENT_REJ"), PAYMENT_MADE("PAYMENT_MADE"), PAYMENT_FAILED("PAYMENT_FAILED"),
+    PAYMENT_REQUEST("PAYMENT_REQUEST"), PAYMENT_APPROVED("PAYMENT_APPROVE"), PAYMENT_REJECTED("PROCESS_REJECT"), PAYMENT_MADE("PAYMENT_MADE"), PAYMENT_FAILED("PAYMENT_FAILED"),
     COMPLIANCE_REQUEST("COMPLIANCE_REQ"), COMPLIANCE_APPROVED("COMPLIANCE_APPROVE"), COMPLIANCE_REJECTED("COMPLIANCE_REJ"),
     BLACKLIST_REQUEST("BLACKLIST_REQUEST"), BLACKLIST_APPROVED("BLACKLIST_APPROVED"), BLACKLIST_REJECTED("BLACKLIST_REJECTED"),
     COC_ISSUED("COC_ISSUED"), COR_ISSUED("COR_ISSUED"), COI_ISSUED("COU_ISSUED"), NCR_ISSUED("NCR_ISSUED"),
@@ -94,17 +94,14 @@ class DestinationInspectionService(
     }
 
     fun rejectComplianceRequests(cdUuid: String, supervisor: String, remarks: String): Boolean {
-        val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
+        var consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
         val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
         // Move back to officer tasks
         consignmentDocument.compliantStatus = map.initStatus
         consignmentDocument.approveRejectCdStatus = map.initStatus
         consignmentDocument.varField10 = "COMPLIANCE REJECTED"
         // Update and add comments
-        consignmentDocument.cdStandard?.let { cdStd ->
-            daoServices.updateCDStatus(cdStd, ConsignmentDocumentStatus.COMPLIANCE_REJECTED)
-        }
-        daoServices.updateCdDetailsInDB(consignmentDocument, null)
+        consignmentDocument = daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.COMPLIANCE_REJECTED)
         cdAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, remarks, "KEBS_REJECT_COMPLIANCE", "Reject compliance request", supervisor)
         return false
     }
@@ -135,10 +132,8 @@ class DestinationInspectionService(
             // Update SW status
             cdStatusType.statusCode?.let {
                 daoServices.submitCDStatusToKesWS(remarks, it, consignmentDocument.version.toString(), consignmentDocument)
-                consignmentDocument.cdStandard?.let { cdStd ->
-                    consignmentDocument.approveRejectCdStatusType?.id?.let { it2 ->
-                        daoServices.updateCDStatus(cdStd, it2)
-                    }
+                consignmentDocument.approveRejectCdStatusType?.id?.let { it2 ->
+                    daoServices.updateCDStatus(consignmentDocument, it2)
                 }
             }
         } catch (ex: Exception) {
@@ -149,7 +144,7 @@ class DestinationInspectionService(
 
     fun updateStatus(cdUuid: String, cdStatusTypeId: Long, supervisor: String, remarks: String): Boolean {
         try {
-            val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
+            var consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             val cdStatusType = daoServices.findCdStatusValue(cdStatusTypeId)
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             // Check if the consignment should be marked as completed
@@ -173,27 +168,19 @@ class DestinationInspectionService(
             consignmentDocument.approveRejectCdStatusType = cdStatusType
             consignmentDocument.approveRejectCdDate = Date(Date().time)
             consignmentDocument.varField10 = "UPDATE LOCAL STATUS TO SW"
-            daoServices.updateCdDetailsInDB(consignmentDocument, commonDaoServices.findUserByUserName(supervisor))
+            consignmentDocument = daoServices.updateCdDetailsInDB(consignmentDocument, commonDaoServices.findUserByUserName(supervisor))
             // Update Local status
             if (cdStatusType.category == "APPROVE" || cdStatusType.category == "REJECT") {
-                consignmentDocument.cdStandard?.let { cdStd ->
-                    daoServices.updateCDStatus(cdStd, cdStatusTypeId)
-                }
+                consignmentDocument = daoServices.updateCDStatus(consignmentDocument, cdStatusTypeId)
                 cdAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, remarks, "KEBS DOCUMENT ${cdStatusType.category}", "Consignment ${cdStatusType.category?.toLowerCase()}", username = supervisor)
             } else if (cdStatusType.category == "AMENDMENT") {
-                consignmentDocument.cdStandard?.let { cdStd ->
-                    daoServices.updateCDStatus(cdStd, cdStatusTypeId)
-                }
+                consignmentDocument = daoServices.updateCDStatus(consignmentDocument, cdStatusTypeId)
                 cdAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, remarks, "KEBS AMENDMENT REQUEST", "Consignment rejected for amendment", username = supervisor)
             } else if (cdStatusType.category === "QUERY") {
-                consignmentDocument.cdStandard?.let { cdStd ->
-                    daoServices.updateCDStatus(cdStd, cdStatusTypeId)
-                }
+                consignmentDocument = daoServices.updateCDStatus(consignmentDocument, cdStatusTypeId)
                 cdAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, remarks, "KEBS QUERY IMPORTER", "Consignment query for importer submitted", username = supervisor)
             } else {
-                consignmentDocument.cdStandard?.let { cdStd ->
-                    daoServices.updateCDStatus(cdStd, cdStatusTypeId)
-                }
+                consignmentDocument = daoServices.updateCDStatus(consignmentDocument, cdStatusTypeId)
                 cdAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, remarks, "KEBS DOCUMENT STATUS TO ${cdStatusType.category}", "Consignment document ${cdStatusType.category?.toLowerCase()}", username = supervisor)
             }
         } catch (ex: Exception) {
@@ -204,7 +191,7 @@ class DestinationInspectionService(
 
     fun updateBpmCompletionStatus(cdUuid: String, supervisor: String, remarks: String): Boolean {
         try {
-            val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
+            var consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             consignmentDocument.varField10 = "SEND COMPLIANCE STATUS TO SW"
             val usersEntity = commonDaoServices.findUserByUserName(supervisor)
             daoServices.updateCdDetailsInDB(consignmentDocument, usersEntity)
@@ -213,12 +200,10 @@ class DestinationInspectionService(
                 daoServices.submitCDStatusToKesWS(remarks, it, consignmentDocument.version.toString(), consignmentDocument)
             }
             // Local Status
-            consignmentDocument.cdStandard?.let { cdStd ->
-                consignmentDocument.approveRejectCdStatusType?.id?.let { it2 ->
-                    daoServices.updateCDStatus(cdStd, it2)
-                }
-            }
             consignmentDocument.varField10 = "SW COMPLIANCE UPDATED"
+            consignmentDocument.approveRejectCdStatusType?.id?.let { it2 ->
+                consignmentDocument = daoServices.updateCDStatus(consignmentDocument, it2)
+            }
             daoServices.updateCdDetailsInDB(consignmentDocument, usersEntity)
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("FAILED TO UPDATE ON SW", ex)
@@ -228,12 +213,11 @@ class DestinationInspectionService(
 
     fun assignInspectionOfficer(cdUuid: String, officerId: Long, supervisor: String, remarks: String, selfAssign: Boolean = false) {
         try {
-            val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
-
+            var consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             val loggedInUser = commonDaoServices.findUserByUserName(supervisor)
             val officer = daoServices.findUserById(officerId)
-            KotlinLogging.logger { }.info("ASSIGN to ${officer.get().userName}, self $selfAssign")
+            KotlinLogging.logger { }.info("${loggedInUser.userName} ASSIGN to ${officer.get().userName}, self $selfAssign")
             consignmentDocument.apply {
                 assignedRemarks = remarks
                 assignedDate = Date(Date().time)
@@ -245,19 +229,15 @@ class DestinationInspectionService(
 
             if (selfAssign) {
                 KotlinLogging.logger { }.info("PICK CONSIGNMENT: ${officer.get().userName}")
-                val updateCd = this.daoServices.updateCdDetailsInDB(consignmentDocument, officer.get())
+                consignmentDocument = this.daoServices.updateCdDetailsInDB(consignmentDocument, officer.get())
                 // Update CD status
-                updateCd.cdStandard?.let { cdStd ->
-                    daoServices.updateCDStatus(cdStd, ConsignmentDocumentStatus.IO_SELF_ASSIGN)
-                }
-                cdAuditService.addHistoryRecord(updateCd.id, updateCd.ucrNumber, remarks, "KEBS_SELF_ASSIGNED", "Picked consignment", username = officer.get().userName)
+                daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.IO_SELF_ASSIGN)
+                cdAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, remarks, "KEBS_SELF_ASSIGNED", "Picked consignment", username = officer.get().userName)
             } else {
-                val updateCd = this.daoServices.updateCdDetailsInDB(consignmentDocument, loggedInUser)
+                consignmentDocument = this.daoServices.updateCdDetailsInDB(consignmentDocument, loggedInUser)
                 // Update CD status
-                updateCd.cdStandard?.let { cdStd ->
-                    daoServices.updateCDStatus(cdStd, ConsignmentDocumentStatus.IO_ASSIGNED)
-                }
-                cdAuditService.addHistoryRecord(updateCd.id, updateCd.ucrNumber, remarks, "KEBS_ASSIGN_IO", "Assign inspection officer to consignment", username = supervisor)
+                daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.IO_ASSIGNED)
+                cdAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, remarks, "KEBS_ASSIGN_IO", "Assign inspection officer to consignment", username = supervisor)
             }
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("ASSIGNMENT FAILED", ex)
@@ -266,7 +246,7 @@ class DestinationInspectionService(
 
     fun reassignInspectionOfficer(cdUuid: String, officerId: Long, supervisor: String, remarks: String) {
         try {
-            val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
+            var consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             val supervisorDetails = commonDaoServices.findUserByUserName(supervisor)
             val officer = daoServices.findUserById(officerId)
@@ -280,11 +260,9 @@ class DestinationInspectionService(
                 assignedInspectionOfficer = officer.get()
             }
 
-            this.daoServices.updateCdDetailsInDB(consignmentDocument, supervisorDetails)
+            consignmentDocument = this.daoServices.updateCdDetailsInDB(consignmentDocument, supervisorDetails)
             // Update CD status
-            consignmentDocument.cdStandard?.let { cdStd ->
-                daoServices.updateCDStatus(cdStd, ConsignmentDocumentStatus.IO_REASSIGNED)
-            }
+            daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.IO_REASSIGNED)
             cdAuditService.addHistoryRecord(consignmentDocument.id, remarks, "KEBS_REASSIGN_IO", "Re-Assign inspection officer : " + officer.get().userName, supervisor)
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("FAILED TO REASSIGN", ex)
@@ -358,12 +336,10 @@ class DestinationInspectionService(
             val loggedInUser = this.commonDaoServices.findUserByUserName(supervisor)
             daoServices.generateCor(consignmentDocument, map, loggedInUser).let { corDetails ->
                 // Update CD
-                consignmentDocument.cdStandard?.let { cdStd ->
-                    daoServices.updateCDStatus(
-                            cdStd,
-                            ConsignmentDocumentStatus.COR_ISSUED
-                    )
-                }
+                daoServices.updateCDStatus(
+                        consignmentDocument,
+                        ConsignmentDocumentStatus.COR_ISSUED
+                )
                 corDetails.varField10 = "COMPLIANCE APPROVED, COR GENERATED"
                 daoServices.saveCorDetails(corDetails)
                 // Send to KENTRADE
@@ -396,9 +372,7 @@ class DestinationInspectionService(
             consignmentDocument.compliantStatus = 0
             consignmentDocument.localCocOrCorStatus = 0
             // Update CD status
-            consignmentDocument.cdStandard?.let { cdStd ->
-                daoServices.updateCDStatus(cdStd, ConsignmentDocumentStatus.COMPLIANCE_REJECTED)
-            }
+            daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.COMPLIANCE_REJECTED)
             daoServices.updateCdDetailsInDB(consignmentDocument, null)
             this.cdAuditService.addHistoryRecord(consignmentDocument.id!!, remarks, "REJECT COR", "COR of ${cdUuid} has been rejected by ${supervisor}", supervisor)
             KotlinLogging.logger { }.info("COR REJECTION UPDATED: ${cdUuid}")
@@ -571,9 +545,7 @@ class DestinationInspectionService(
             consignmentDocument.targetApproveRemarks = remarks
             consignmentDocument.targetApproveDate = Date(Date().time)
             // Update status as rejected
-            consignmentDocument.cdStandard?.let { cdStd ->
-                daoServices.updateCDStatus(cdStd, ConsignmentDocumentStatus.TARGET_REJECTED)
-            }
+            daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.TARGET_REJECTED)
             this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
             this.cdAuditService.addHistoryRecord(consignmentDocument.id!!, consignmentDocument.ucrNumber, remarks, "REJECT TARGETING", "Targting of ${cdUuid} has been rejected by ${supervisor}", supervisor)
             KotlinLogging.logger { }.info("TARGET REJECTION UPDATED: ${cdUuid}")
@@ -616,9 +588,7 @@ class DestinationInspectionService(
             this.cdAuditService.addHistoryRecord(consignmentDocument.id!!, consignmentDocument.ucrNumber, remarks, "APPROVE TARGETING", "Targeting of ${cdUuid} has been rejected by ${supervisor}", supervisor)
             // Submit consignment to Single/Window
             daoServices.submitCDStatusToKesWS("OH", "OH", consignmentDocument.version.toString(), consignmentDocument)
-            consignmentDocument.cdStandard?.let { cdStd ->
-                daoServices.updateCDStatus(cdStd, ConsignmentDocumentStatus.KRA_VERIFICATION_REQUEST)
-            }
+            daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.KRA_VERIFICATION_REQUEST)
             KotlinLogging.logger { }.info("REQUESTED TARGETING SCHEDULE: ${cdUuid}")
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("REJECTION UPDATE STATUS", ex)
@@ -630,16 +600,14 @@ class DestinationInspectionService(
     fun swGenerateCoC(cdUuid: String, remarks: String, supervisor: String): Boolean {
         KotlinLogging.logger { }.info("REQUESTING COC: ${cdUuid}")
         try {
-            val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
+            var consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             val loggedInUser = commonDaoServices.findUserByUserName(supervisor)
             val localCoc = daoServices.createLocalCoc(loggedInUser, consignmentDocument, map, remarks, "A")
-            consignmentDocument.cdStandard?.let { cdStd ->
-                daoServices.updateCDStatus(
-                        cdStd,
-                        ConsignmentDocumentStatus.COC_ISSUED
-                )
-            }
+            consignmentDocument = daoServices.updateCDStatus(
+                    consignmentDocument,
+                    ConsignmentDocumentStatus.COC_ISSUED
+            )
             consignmentDocument.varField10 = "COMPLIANCE APPROVED, COC GENERATED"
             consignmentDocument.localCocOrCorStatus = map.activeStatus
             consignmentDocument.compliantStatus = map.activeStatus
@@ -703,13 +671,11 @@ class DestinationInspectionService(
     fun swGenerateCoI(cdUuid: String, remarks: String, supervisor: String): Boolean {
         KotlinLogging.logger { }.info("REQUESTING COI GENERATION: ${cdUuid}")
         try {
-            val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
+            var consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             val loggedInUser = commonDaoServices.findUserByUserName(supervisor)
             val localCoi = daoServices.createLocalCoi(loggedInUser, consignmentDocument, map, remarks, "D")
-            consignmentDocument.cdStandard?.let { cdStd ->
-                daoServices.updateCDStatus(cdStd, ConsignmentDocumentStatus.COI_ISSUED)
-            }
+            consignmentDocument = daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.COI_ISSUED)
             // Update CoI generation
             consignmentDocument.localCoi = map.activeStatus
             consignmentDocument.localCoiRemarks = remarks
@@ -814,9 +780,7 @@ class DestinationInspectionService(
                 cdStatus.statusCode?.let {
                     daoServices.submitCDStatusToKesWS(it1, it, consignmentDocument.version.toString(), consignmentDocument)
                 }
-                updatedCDDetails.cdStandard?.let { cdStd ->
-                    updatedCDDetails.approveRejectCdStatusType?.id?.let { it2 -> daoServices.updateCDStatus(cdStd, it2) }
-                }
+                updatedCDDetails.approveRejectCdStatusType?.id?.let { it2 -> daoServices.updateCDStatus(updatedCDDetails, it2) }
             }
             cdAuditService.addHistoryRecord(updatedCDDetails.id, consignmentDocument.ucrNumber, remarks, "KEBS_${cdStatus.category?.toUpperCase()}", "${cdStatus.category?.capitalize()} consignment")
         }

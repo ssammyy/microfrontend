@@ -108,6 +108,7 @@ interface ICdStatusTypesEntityRepository : HazelcastRepository<CdStatusTypesEnti
     fun findByTypeNameAndStatus(typeName: String, status: Long): CdStatusTypesEntity?
     fun findByCategoryAndStatus(category: String, status: Int): CdStatusTypesEntity?
     fun findByStatus(status: Int): List<CdStatusTypesEntity>?
+    fun findByStatusAndApplicationStatus(status: Int, appStatus: Int): List<CdStatusTypesEntity>
 //    fun findAllById(Id: Long): List<ConsignmentDocumentTypesEntity>?
 }
 

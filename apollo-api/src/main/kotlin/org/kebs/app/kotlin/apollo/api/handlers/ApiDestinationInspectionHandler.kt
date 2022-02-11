@@ -108,7 +108,7 @@ class ApiDestinationInspectionHandler(
                 Pair("inActiveStatus", s.inactiveStatus),
                 Pair("initStatus", s.initStatus),
                 Pair("currentDate", commonDaoServices.getCurrentDate()),
-                Pair("CDStatusTypes", daoServices.findCdStatusValueList(s.activeStatus)),
+                Pair("CDStatusTypes", daoServices.findCdManualAssignable(s.activeStatus)),
                 Pair("cdTypeGoodsCategory", daoServices.cdTypeGoodsCategory),
                 Pair("cdTypeVehiclesCategory", daoServices.cdTypeVehiclesCategory)
         )

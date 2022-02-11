@@ -480,7 +480,7 @@ export class ApiEndpointService {
   public static getEndpoint(endpoint: string): string {
     const protocol: string = ApiEndpointService.PROTOCOL.HTTPS;
     const domain: string = ApiEndpointService.DOMAIN.LOCAL_DEV;
-    const context: string = ApiEndpointService.CONTEXT
+      const context: string = ApiEndpointService.CONTEXT;
     return `${protocol}${domain}${context}${endpoint}`;
   }
 
