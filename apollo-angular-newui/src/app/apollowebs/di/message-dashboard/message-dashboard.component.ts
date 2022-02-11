@@ -73,6 +73,7 @@ export class MessageDashboardComponent implements OnInit {
             ]
         }
     };
+    maxPages = 20
     currentPage = 0
     defaultPageSize = 20
     totalCount = 20
@@ -164,6 +165,7 @@ export class MessageDashboardComponent implements OnInit {
     toggleStatus(status) {
         if (status !== this.activeStatus) {
             this.activeStatus = status
+            this.currentPage = 0
             this.loadData()
         }
     }

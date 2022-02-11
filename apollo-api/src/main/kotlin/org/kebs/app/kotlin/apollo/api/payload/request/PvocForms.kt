@@ -3,11 +3,12 @@ package org.kebs.app.kotlin.apollo.api.payload.request
 import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.JsonProperty
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersEntity
 import java.sql.Date
 import java.sql.Timestamp
+import javax.validation.Valid
 import javax.validation.constraints.Email
+import javax.validation.constraints.Min
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
 
@@ -67,69 +68,69 @@ class PvocPartnersForms {
 
 class CocItem {
     @NotNull(message = "Required field")
-    @JsonProperty("SHIPMENT_PARTIAL_NUMBER")
+    @JsonAlias("SHIPMENT_PARTIAL_NUMBER")
     var shipmentPartialNumber: Long = 0
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("SHIPMENT_SEAL_NUMBERS")
+    @JsonAlias("SHIPMENT_SEAL_NUMBERS")
     var shipmentSealNumbers: String? = null
 
-    @JsonProperty("SHIPMENT_CONTAINER_NUMBER")
+    @JsonAlias("SHIPMENT_CONTAINER_NUMBER")
     var shipmentContainerNumber: String? = null
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("SHIPMENT_GROSS_WEIGHT")
+    @JsonAlias("SHIPMENT_GROSS_WEIGHT")
     var shipmentGrossWeight: String? = null
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("SHIPMENT_QUANTITY_DELIVERED")
+    @JsonAlias("SHIPMENT_QUANTITY_DELIVERED")
     var shipmentQuantityDelivered: String? = null
 
     @NotNull(message = "Required field")
-    @JsonProperty("SHIPMENT_LINE_NUMBER")
+    @JsonAlias("SHIPMENT_LINE_NUMBER")
     var shipmentLineNumber: Long = 0
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("SHIPMENT_LINE_HS_CODE")
+    @JsonAlias("SHIPMENT_LINE_HS_CODE")
     var shipmentLineHscode: String? = null
 
     @NotNull(message = "Required field")
-    @JsonProperty("SHIPMENT_LINE_QUANTITY")
+    @JsonAlias("SHIPMENT_LINE_QUANTITY")
     var shipmentLineQuantity: Double = 0.0
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("Shipment Line Unit of Measure")
+    @JsonAlias("Shipment Line Unit of Measure")
     var shipmentLineUnitofMeasure: String? = null
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("SHIPMENT_LINE_DESCRIPTION")
+    @JsonAlias("SHIPMENT_LINE_DESCRIPTION")
     var shipmentLineDescription: String? = null
 
-    @JsonProperty("SHIPMENT_LINE_VIN")
+    @JsonAlias("SHIPMENT_LINE_VIN")
     var shipmentLineVin: String? = null
 
 
-    @JsonProperty("SHIPMENT_LINE_STICKER_NUMBER")
+    @JsonAlias("SHIPMENT_LINE_STICKER_NUMBER")
     var shipmentLineStickerNumber: String? = null
 
-    @JsonProperty("SHIPMENT_LINE_ICS")
+    @JsonAlias("SHIPMENT_LINE_ICS")
     var shipmentLineIcs: String? = null
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("SHIPMENT_LINE_STANDARDS_REFERENCE")
+    @JsonAlias("SHIPMENT_LINE_STANDARDS_REFERENCE")
     var shipmentLineStandardsReference: String? = null
 
-    @JsonProperty("SHIPMENT_LINE_LICENCE_REFERENCE")
+    @JsonAlias("SHIPMENT_LINE_LICENCE_REFERENCE")
     var shipmentLineLicenceReference: String? = null
 
-    @JsonProperty("SHIPMENT_LINE_REGISTRATION")
+    @JsonAlias("SHIPMENT_LINE_REGISTRATION")
     var shipmentLineRegistration: String? = null
 
-    @JsonProperty("SHIPMENT_BRAND_NAME")
+    @JsonAlias("SHIPMENT_BRAND_NAME")
     var shipmentBrandName: String? = null
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("PRODUCT_CATEGORY")
+    @JsonAlias("PRODUCT_CATEGORY")
     var productCategory: String? = null
 
 }
@@ -137,31 +138,31 @@ class CocItem {
 class DocumentPaymentDetails {
 
     @NotNull(message = "Required field")
-    @JsonProperty("INSPECTION_VALUE")
+    @JsonAlias("INSPECTION_VALUE")
     var inspectionValue: Double = 0.0
 
     @NotNull(message = "Required field")
-    @JsonProperty("INSPECTION_PENALTY")
+    @JsonAlias("INSPECTION_PENALTY")
     var penaltyValue: Double = 0.0
 
     @NotNull(message = "Required field")
-    @JsonProperty("INSPECTION_TAX")
+    @JsonAlias("INSPECTION_TAX")
     var taxValue: Double = 0.0
 
     @NotNull(message = "Required field")
-    @JsonProperty("INSPECTION_EXCHANGE_RATE")
+    @JsonAlias("INSPECTION_EXCHANGE_RATE")
     var innvoiceExchangeRate: Double = 0.0
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("INSPECTION_CURRENCY")
+    @JsonAlias("INSPECTION_CURRENCY")
     var inspectionCurrency: String? = null
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("RECEIPT_NUMBER")
+    @JsonAlias("RECEIPT_NUMBER")
     var receiptNumber: String? = null
 
     @NotNull(message = "Required field")
-    @JsonProperty("PAYMENT_DATE")
+    @JsonAlias("PAYMENT_DATE")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     var paymentDate: Timestamp? = null
 }
@@ -169,218 +170,396 @@ class DocumentPaymentDetails {
 @JsonIgnoreProperties(ignoreUnknown = true)
 class CocEntityForm {
 
-    @JsonProperty("COC_NUMBER")
+    @JsonAlias("COC_NUMBER")
     var cocNumber: String? = null
 
-    @JsonProperty("IDF NUMBER")
+    @JsonAlias("IDF NUMBER")
     var idfNumber: String? = null
 
-    @JsonProperty("RFI_NUMBER")
+    @JsonAlias("RFI_NUMBER")
     var rfiNumber: String? = null
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("UCR_NUMBER")
+    @JsonAlias("UCR_NUMBER")
     var ucrNumber: String? = null
 
-    @JsonProperty("RFC DATE")
     @JsonAlias("RFC_DATE")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     var rfcDate: Timestamp? = null
 
 
-    @JsonProperty("COC_ISSUED_DATE")
+    @JsonAlias("COC_ISSUED_DATE")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     var cocIssueDate: Timestamp? = null
 
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("CLEAN")
+    @JsonAlias("CLEAN")
     var clean: String? = null
 
-    @JsonProperty("COC_REMARKS")
+    @JsonAlias("COC_REMARKS")
     var cocRemarks: String? = null
 
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("ISSUING_OFFICE")
+    @JsonAlias("ISSUING_OFFICE")
     var issuingOffice: String? = null
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("IMPORTER_NAME")
+    @JsonAlias("IMPORTER_NAME")
     var importerName: String? = null
 
-    @JsonProperty("IMPORTER_PIN")
+    @JsonAlias("IMPORTER_PIN")
     var importerPin: String? = null
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("IMPORTER_ADDRESS_1")
+    @JsonAlias("IMPORTER_ADDRESS_1")
     var importerAddress1: String? = null
 
 
-    @JsonProperty("IMPORTER_ADDRESS_2")
+    @JsonAlias("IMPORTER_ADDRESS_2")
     var importerAddress2: String? = null
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("IMPORTER_CITY")
+    @JsonAlias("IMPORTER_CITY")
     var importerCity: String? = null
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("IMPORTER_COUNTRY")
-    @JsonAlias("")
+    @JsonAlias("IMPORTER_COUNTRY")
     var importerCountry: String? = null
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("IMPORTER_ZIP_CODE")
+    @JsonAlias("IMPORTER_ZIP_CODE")
     var importerZipCode: String? = null
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("IMPORTER_TELEPHONE_NUMBER")
+    @JsonAlias("IMPORTER_TELEPHONE_NUMBER")
     var importerTelephoneNumber: String? = null
 
 
-    @JsonProperty("IMPORTER_FAX_NUMBER")
+    @JsonAlias("IMPORTER_FAX_NUMBER")
     var importerFaxNumber: String? = null
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("IMPORTER_EMAIL")
+    @JsonAlias("IMPORTER_EMAIL")
     var importerEmail: String? = null
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("EXPORTER_NAME")
+    @JsonAlias("EXPORTER_NAME")
     var exporterName: String? = null
 
-    @JsonProperty("EXPORTER_PIN")
+    @JsonAlias("EXPORTER_PIN")
     var exporterPin: String? = null
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("EXPORTER_ADDRESS_1")
+    @JsonAlias("EXPORTER_ADDRESS_1")
     var exporterAddress1: String? = null
 
 
-    @JsonProperty("EXPORTER_ADDRESS_2")
+    @JsonAlias("EXPORTER_ADDRESS_2")
     var exporterAddress2: String? = null
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("EXPORTER_CITY")
+    @JsonAlias("EXPORTER_CITY")
     var exporterCity: String? = null
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("EXPORTER_COUNTRY")
+    @JsonAlias("EXPORTER_COUNTRY")
     var exporterCountry: String? = null
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("EXPORTER_ZIP_CODE")
+    @JsonAlias("EXPORTER_ZIP_CODE")
     var exporterZipCode: String? = null
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("EXPORTER_TELEPHONE_NUMBER")
+    @JsonAlias("EXPORTER_TELEPHONE_NUMBER")
     var exporterTelephoneNumber: String? = null
 
-    @JsonProperty("EXPORTER_FAX_NUMBER")
+    @JsonAlias("EXPORTER_FAX_NUMBER")
     var exporterFaxNumber: String? = null
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("EXPORTER_EMAIL")
+    @JsonAlias("EXPORTER_EMAIL")
     var exporterEmail: String? = null
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("PLACE_OF_INSPECTION")
+    @JsonAlias("PLACE_OF_INSPECTION")
     var placeOfInspection: String? = null
 
     @NotNull(message = "Required field")
-    @JsonProperty("DATE_OF_INSPECTION")
+    @JsonAlias("DATE_OF_INSPECTION")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     var dateOfInspection: Timestamp? = null
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("PORT_OF_DESTINATION")
+    @JsonAlias("PORT_OF_DESTINATION")
     var portOfDestination: String? = null
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("SHIPMENT_MODE")
+    @JsonAlias("SHIPMENT_MODE")
     var shipmentMode: String? = null
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("SHIPMENT_SEAL_NUMBER")
+    @JsonAlias("SHIPMENT_SEAL_NUMBER")
     var shipmentSealNumbers: String? = null
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("SHIPMENT_CONTAINER_NUMBER")
+    @JsonAlias("SHIPMENT_CONTAINER_NUMBER")
     var shipmentContainerNumber: String? = null
 
-    @NotEmpty(message = "Required field")
-    @JsonProperty("SHIPMENT_GROSS_WEIGHT")
-    var shipmentGrossWeight: String? = null
+    @NotNull(message = "Required field")
+    @Min(value = 0, message = "Gross weight should not be negative")
+    @JsonAlias("SHIPMENT_GROSS_WEIGHT")
+    var shipmentGrossWeight: Double? = null
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("COUNTRY_OF_SUPPLY")
+    @JsonAlias("COUNTRY_OF_SUPPLY")
     var countryOfSupply: String? = null
 
     @NotNull(message = "Required field")
-    @JsonProperty("FINAL_INVOICE_FOB_VALUE")
+    @Min(value = 0, message = "FOB invoice value should not be negative")
+    @JsonAlias("FINAL_INVOICE_FOB_VALUE")
     var finalInvoiceFobValue: Double = 0.0
 
     @NotNull(message = "Required field")
-    @JsonProperty("FINAL_INVOICE_EXCHANGE_RATE")
+    @Min(value = 0, message = "Tax rate should not be negative")
+    @JsonAlias("FINAL_INVOICE_EXCHANGE_RATE")
     var finalInvoiceExchangeRate: Double = 0.0
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("FINAL_INVOICE_CURRENCY")
+    @JsonAlias("FINAL_INVOICE_CURRENCY")
     var finalInvoiceCurrency: String? = null
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("FINAL_INVOICE_NUMBER")
+    @JsonAlias("FINAL_INVOICE_NUMBER")
     var finalInvoiceNumber: String? = null
 
     @NotNull(message = "Required field")
-    @JsonProperty("FINAL_INVOICE_DATE")
+    @JsonAlias("FINAL_INVOICE_DATE")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     var finalInvoiceDate: Timestamp? = null
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("ROUTE")
+    @JsonAlias("ROUTE")
     var route: String? = null
 
     @NotEmpty(message = "Required field")
-    @JsonProperty("PRODUCT")
+    @JsonAlias("PRODUCT")
     var cocItems: List<CocItem>? = null
 
-    @NotEmpty(message = "Required field")
-    @JsonProperty("INSPECTION_FEE")
+    @NotNull(message = "Required field")
+    @JsonAlias("INSPECTION_FEE")
     var inspectionFee: DocumentPaymentDetails? = null
 
-    @NotEmpty(message = "Required field")
-    @JsonProperty("VERSION")
+    @NotNull(message = "Required field")
+    @Min(value = 1, message = "Version should be greater than or equal to one")
+    @JsonAlias("VERSION")
     var version: Long? = null
 }
 
+@JsonIgnoreProperties(ignoreUnknown = true)
+class NcrEntityForm {
+
+    @JsonAlias("COC_NUMBER")
+    var ncrNumber: String? = null
+
+    @JsonAlias("IDF NUMBER")
+    var idfNumber: String? = null
+
+    @JsonAlias("RFI_NUMBER")
+    var rfiNumber: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonAlias("UCR_NUMBER")
+    var ucrNumber: String? = null
+
+    @JsonAlias("RFC_DATE")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var rfcDate: Timestamp? = null
+
+
+    @JsonAlias("COC_ISSUED_DATE")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var ncrIssueDate: Timestamp? = null
+
+
+    @NotEmpty(message = "Required field")
+    @JsonAlias("CLEAN")
+    var clean: String? = null
+
+    @JsonAlias("COC_REMARKS")
+    var ncrRemarks: String? = null
+
+
+    @NotEmpty(message = "Required field")
+    @JsonAlias("ISSUING_OFFICE")
+    var issuingOffice: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonAlias("IMPORTER_NAME")
+    var importerName: String? = null
+
+    @JsonAlias("IMPORTER_PIN")
+    var importerPin: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonAlias("IMPORTER_ADDRESS_1")
+    var importerAddress1: String? = null
+
+
+    @JsonAlias("IMPORTER_ADDRESS_2")
+    var importerAddress2: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonAlias("IMPORTER_CITY")
+    var importerCity: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonAlias("IMPORTER_COUNTRY")
+    var importerCountry: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonAlias("IMPORTER_ZIP_CODE")
+    var importerZipCode: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonAlias("IMPORTER_TELEPHONE_NUMBER")
+    var importerTelephoneNumber: String? = null
+
+
+    @JsonAlias("IMPORTER_FAX_NUMBER")
+    var importerFaxNumber: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonAlias("IMPORTER_EMAIL")
+    var importerEmail: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonAlias("EXPORTER_NAME")
+    var exporterName: String? = null
+
+    @JsonAlias("EXPORTER_PIN")
+    var exporterPin: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonAlias("EXPORTER_ADDRESS_1")
+    var exporterAddress1: String? = null
+
+
+    @JsonAlias("EXPORTER_ADDRESS_2")
+    var exporterAddress2: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonAlias("EXPORTER_CITY")
+    var exporterCity: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonAlias("EXPORTER_COUNTRY")
+    var exporterCountry: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonAlias("EXPORTER_ZIP_CODE")
+    var exporterZipCode: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonAlias("EXPORTER_TELEPHONE_NUMBER")
+    var exporterTelephoneNumber: String? = null
+
+    @JsonAlias("EXPORTER_FAX_NUMBER")
+    var exporterFaxNumber: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonAlias("EXPORTER_EMAIL")
+    var exporterEmail: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonAlias("PLACE_OF_INSPECTION")
+    var placeOfInspection: String? = null
+
+    @NotNull(message = "Required field")
+    @JsonAlias("DATE_OF_INSPECTION")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var dateOfInspection: Timestamp? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonAlias("PORT_OF_DESTINATION")
+    var portOfDestination: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonAlias("SHIPMENT_MODE")
+    var shipmentMode: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonAlias("SHIPMENT_SEAL_NUMBER")
+    var shipmentSealNumbers: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonAlias("SHIPMENT_CONTAINER_NUMBER")
+    var shipmentContainerNumber: String? = null
+
+    @NotNull(message = "Required field")
+    @Min(value = 0, message = "Gross weight should not be negative")
+    @JsonAlias("SHIPMENT_GROSS_WEIGHT")
+    var shipmentGrossWeight: Double? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonAlias("COUNTRY_OF_SUPPLY")
+    var countryOfSupply: String? = null
+
+    @NotNull(message = "Required field")
+    @Min(value = 0, message = "FOB invoice value should not be negative")
+    @JsonAlias("FINAL_INVOICE_FOB_VALUE")
+    var finalInvoiceFobValue: Double = 0.0
+
+    @NotNull(message = "Required field")
+    @Min(value = 0, message = "Tax rate should not be negative")
+    @JsonAlias("FINAL_INVOICE_EXCHANGE_RATE")
+    var finalInvoiceExchangeRate: Double = 0.0
+
+    @NotEmpty(message = "Required field")
+    @JsonAlias("FINAL_INVOICE_CURRENCY")
+    var finalInvoiceCurrency: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonAlias("FINAL_INVOICE_NUMBER")
+    var finalInvoiceNumber: String? = null
+
+    @NotNull(message = "Required field")
+    @JsonAlias("FINAL_INVOICE_DATE")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var finalInvoiceDate: Timestamp? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonAlias("ROUTE")
+    var route: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonAlias("NCR_ITEMS")
+    var ncrItems: List<CocItem>? = null
+
+    @NotNull(message = "Required field")
+    @Min(value = 1, message = "Version should be greater than or equal to one")
+    @JsonAlias("VERSION")
+    var version: Long? = null
+}
 
 class CoiItem {
-    @NotNull(message = "Required field")
-    var coiNumber: String = ""
 
-    @NotNull(message = "Required field")
+    @NotEmpty(message = "Required field")
     var declaredHsCode: String = ""
 
-    @NotNull(message = "Required field")
-    var itemQuantity: String? = ""
-
-    @NotNull(message = "Required field")
+    @NotEmpty(message = "Required field")
     var productDescription: String? = ""
 
-    @NotNull(message = "Required field")
-    var ownerPin: String? = ""
-
-    @NotNull(message = "Required field")
-    var status: Int = 0
-
-    @NotNull(message = "Required field")
+    @NotEmpty(message = "Required field")
     var shipmentLineHsCode: String? = ""
 
     @NotNull(message = "Required field")
+    @Min(value = 0, message = "Shipment Line number cannot be negative")
     var shipmentLineNumber: Long? = 0
 
-    @NotEmpty(message = "Required field")
+    @NotNull(message = "Required field")
+    @Min(value = 0, message = "Quantity cannot be negative")
     var shipmentLineQuantity: Long? = null
 
     @NotEmpty(message = "Required field")
@@ -437,7 +616,7 @@ class CoiEntityForm {
     var clean: String? = null
 
     @NotEmpty(message = "Required field")
-    var cocRemarks: String? = null
+    var coiRemarks: String? = null
 
 
     @NotEmpty(message = "Required field")
@@ -538,125 +717,140 @@ class CoiEntityForm {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     var finalInvoiceDate: Timestamp? = null
 
+    @NotEmpty(message = "Required field")
     var shipmentSealNumbers: String? = null
 
+    @NotEmpty(message = "Required field")
     var shipmentContainerNumber: String? = null
 
-    var shipmentGrossWeight: String? = null
+    @NotNull(message = "Required field")
+    @Min(value = 0, message = "Minimum value is 0")
+    var shipmentGrossWeight: Double? = null
 
     @NotEmpty(message = "Required field")
     var route: String? = null
 
+    @Valid
     @NotEmpty(message = "Required field")
+    @NotNull(message = "Required field")
     var coiItems: List<CoiItem>? = null
 
-    @NotEmpty(message = "Required field")
+    @Valid
+    @NotNull(message = "Required field")
     var inspectionFee: DocumentPaymentDetails? = null
 
-    @NotEmpty(message = "Required field")
+    @NotNull(message = "Required field")
+    @Min(value = 1, message = "Version should not be less than one")
     var version: Long? = null
 }
 
 class CorEntityForm {
-    @NotEmpty(message = "Please enter your phone number")
+    @NotEmpty(message = "COR numnber is required")
     var corNumber: String? = null
 
-    @NotEmpty(message = "Please enter your phone number")
+    @NotNull(message = "UCR Number is required")
     var ucrNumber: String? = null
 
-    @NotEmpty(message = "Please enter your phone number")
-    var corIssueDate: String? = null
+    @NotNull(message = "COR issue date is required")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var corIssueDate: Timestamp? = null
 
-    @NotEmpty(message = "Please enter your phone number")
+    @NotEmpty(message = "Country of supply is required")
     var countryOfSupply: String? = null
 
-    @NotEmpty(message = "Please enter your phone number")
+    @NotEmpty(message = "Inspection center is required")
     var inspectionCenter: String? = null
 
-    @NotEmpty(message = "Please enter your phone number")
+    @NotEmpty(message = "Required field")
     var exporterName: String? = null
 
-    @NotEmpty(message = "Please enter your phone number")
+    @NotEmpty(message = "Required field")
     var exporterAddress1: String? = null
 
-    @NotEmpty(message = "Please enter your phone number")
+    @NotEmpty(message = "Required field")
     var exporterAddress2: String? = null
 
-    @NotEmpty(message = "Please enter your phone number")
+    @NotEmpty(message = "Required field")
     var exporterEmail: String? = null
 
-    @NotEmpty(message = "Please enter your phone number")
+    @NotNull(message = "Booking date is required")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     var applicationBookingDate: Timestamp? = null
 
-    @NotEmpty(message = "Please enter your phone number")
+    @NotNull(message = "Inspection date is required")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     var inspectionDate: Timestamp? = null
 
-    @NotEmpty(message = "Please enter your phone number")
+    @NotEmpty(message = "Make is required")
     var make: String? = null
 
-    @NotEmpty(message = "Please enter your phone number")
+    @NotEmpty(message = "Field is required")
     var model: String? = null
 
-    @NotEmpty(message = "Please enter your phone number")
+    @NotEmpty(message = "Required field")
     var chasisNumber: String? = null
 
-    @NotEmpty(message = "Please enter your phone number")
+    @NotEmpty(message = "Required field")
     var engineNumber: String? = null
 
-    @NotEmpty(message = "Please enter your phone number")
+    @NotEmpty(message = "Required field")
     var engineCapacity: String? = null
 
-    @NotEmpty(message = "Please enter your phone number")
+    @NotEmpty(message = "Required field")
     var yearOfManufacture: String? = null
 
-    @NotEmpty(message = "Please enter your phone number")
+    @NotEmpty(message = "Required field")
     var yearOfFirstRegistration: String? = null
 
-    @NotEmpty(message = "Please enter your phone number")
+    @NotEmpty(message = "Required field")
     var inspectionMileage: String? = null
 
-    @NotEmpty(message = "Please enter your phone number")
+    @NotEmpty(message = "Required field")
     var unitsOfMileage: String? = null
 
-    @NotEmpty(message = "Please enter your phone number")
+    @NotEmpty(message = "Required field")
     var inspectionRemarks: String? = null
 
-    @NotEmpty(message = "Please enter your phone number")
+    @NotEmpty(message = "Required field")
     var previousRegistrationNumber: String? = null
 
-    @NotEmpty(message = "Please enter your phone number")
+    @NotEmpty(message = "Required field")
     var previousCountryOfRegistration: String? = null
 
-    @NotEmpty(message = "Please enter your phone number")
-    var tareWeight: Long? = null
+    @NotNull(message = "Required field")
+    @Min(value = 0, message = "Tare weight cannot be negative")
+    var tareWeight: Double? = null
 
-    @NotEmpty(message = "Please enter your phone number")
-    var loadCapacity: Long? = null
+    @NotNull(message = "Required field")
+    @Min(value = 0, message = "Load capacity cannot be negative")
+    var loadCapacity: Double? = null
 
-    @NotEmpty(message = "Please enter your phone number")
-    var grossWeight: Long? = null
+    @NotNull(message = "Required field")
+    @Min(value = 0, message = "Gross weight cannot be negative")
+    var grossWeight: Double? = null
 
-    @NotEmpty(message = "Please enter your phone number")
+    @NotNull(message = "Required field")
+    @Min(value = 0, message = "Axles cannot be negative")
     var numberOfAxles: Long? = null
 
-    @NotEmpty(message = "Please enter your phone number")
+    @NotEmpty(message = "Required field")
     var typeOfVehicle: String? = null
 
-    @NotEmpty(message = "Please enter your phone number")
+    @NotNull(message = "Required field")
+    @Min(value = 0, message = "Number of passengers cannot be negative")
     var numberOfPassengers: Long? = null
 
-    @NotEmpty(message = "Please enter your phone number")
+    @NotEmpty(message = "Required field")
     var typeOfBody: String? = null
 
-    @NotEmpty(message = "Please enter your phone number")
+    @NotEmpty(message = "Required field")
     var bodyColor: String? = null
 
-    @NotEmpty(message = "Please enter your phone number")
+    @NotEmpty(message = "Required field")
     var fuelType: String? = null
 
-    @NotEmpty(message = "Please enter your phone number")
+    @NotNull(message = "Required field")
+    @Min(value = 0, message = "Inspection fee cannot be negative")
     var inspectionFee: Double? = null
 
     @NotEmpty(message = "Required field")
@@ -665,17 +859,19 @@ class CorEntityForm {
     @NotEmpty(message = "Required field")
     var inspectionOfficer: String? = null
 
-    @NotEmpty(message = "Please enter your phone number")
+    @NotEmpty(message = "Required field")
     var inspectionFeeCurrency: String? = null
 
-    @NotEmpty(message = "Please enter your phone number")
-    var inspectionFeeExchangeRate: Long? = null
+    @NotNull(message = "Required field")
+    @Min(value = 0, message = "Exchange rate cannot be negative")
+    var inspectionFeeExchangeRate: Double? = null
 
-    @NotEmpty(message = "Please enter your phone number")
+    @NotNull(message = "Required field")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     var inspectionFeePaymentDate: Timestamp? = null
 
-    @NotEmpty(message = "Required field")
+    @NotNull(message = "Required field")
+    @Min(value = 1, message = "Varsion cannot be less than one")
     var version: Long? = null
 }
 
@@ -683,8 +879,9 @@ class RfcCoiItem {
     @NotEmpty(message = "Required field")
     var declaredHsCode: String? = null
 
-    @NotEmpty(message = "Required field")
-    var itemQuantity: String? = null
+    @NotNull(message = "Required field")
+    @Min(value = 0, message = "Quantity cannot be negative")
+    var itemQuantity: Long? = null
 
     @NotEmpty(message = "Required field")
     var productDescription: String? = null
@@ -789,10 +986,6 @@ class RfcCoiEntityForm {
     @NotEmpty(message = "Required field")
     var placeOfInspection: String? = null
 
-    @NotNull(message = "Required field")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    var dateOfInspection: Timestamp? = null
-
     @NotEmpty(message = "Required field")
     var placeOfInspectionAddress: String? = null
 
@@ -810,7 +1003,7 @@ class RfcCoiEntityForm {
     var portOfDischarge: String? = null
 
     @NotEmpty(message = "Required field")
-    var shipmentMode: String? = null
+    var shipmentMethod: String? = null
 
     @NotEmpty(message = "Required field")
     var countryOfSupply: String? = null
@@ -825,12 +1018,11 @@ class RfcCoiEntityForm {
     var assemblyState: String? = null
 
     @NotEmpty(message = "Required field")
-    var linkToAttachedDocuments: List<String>? = null
+    var linkToAttachedDocuments: String? = null
 
+    @Valid
     @NotEmpty(message = "Required field")
     var items: List<RfcCoiItem>? = null
-
-    var inspectionFee: DocumentPaymentDetails? = null
 }
 
 class IdfItem {
@@ -840,11 +1032,12 @@ class IdfItem {
     @NotEmpty(message = "Required field")
     var hsCode: String? = null
 
-    @NotEmpty(message = "Required field")
+    @NotNull(message = "Required field")
+    @Min(value = 0, message = "Quantity should be greater than or equal to zero")
     var quantity: Long? = null
 
-    @NotEmpty(message = "Required field")
-    var newUsed: String? = null
+    @NotNull(message = "Required field")
+    var used: Boolean? = null
 
     @NotEmpty(message = "Required field")
     var unitOfMeasure: String? = null
@@ -852,7 +1045,8 @@ class IdfItem {
     @NotEmpty(message = "Required field")
     var applicableStandard: String? = null
 
-    @NotEmpty(message = "Required field")
+    @NotNull(message = "Required field")
+    @Min(value = 0, message = "Item Cost should be greater than or equal to zero")
     var itemCost: Long? = null
 }
 
@@ -919,41 +1113,49 @@ open class IdfEntityForm {
     @NotEmpty(message = "Required field")
     var invoiceNumber: String? = null
 
-    @NotEmpty(message = "Required field")
+    @NotNull(message = "Required field")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     var invoiceDate: Timestamp? = null
 
     @NotEmpty(message = "Required field")
     var currency: String? = null
 
-    @NotEmpty(message = "Required field")
+    @NotNull(message = "Required field")
+    @Min(value = 0, message = "Exchange rate should be greater than or equal to zero")
     var exchangeRate: Double? = null
 
-    @NotEmpty(message = "Required field")
+    @NotNull(message = "Required field")
+    @Min(value = 0, message = "FOB value should be greater than or equal to zero")
     var fobValue: Double? = null
 
-    @NotEmpty(message = "Required field")
+    @NotNull(message = "Required field")
+    @Min(value = 0, message = "Freight rate should be greater than or equal to zero")
     var freight: Double? = null
 
-    @NotEmpty(message = "Required field")
+    @NotNull(message = "Required field")
+    @Min(value = 0, message = "Insurance amount should be greater than or equal to zero")
     var insurance: Double? = null
 
-    @NotEmpty(message = "Required field")
-    var otherChargers: Double? = null
+    @NotNull(message = "Required field")
+    @Min(value = 0, message = "Charges should be greater than or equal to zero")
+    var otherCharges: Double? = null
 
-    @NotEmpty(message = "Required field")
+    @NotNull(message = "Required field")
+    @Min(value = 0, message = "Total charges should be greater than or equal to zero")
     var total: Double? = null
 
     @NotEmpty(message = "Required field")
     var observations: String? = null
 
-    @NotEmpty(message = "Required field")
-    var usedStatus: String? = null
+    @NotNull(message = "Required field")
+    var usedStatus: Boolean? = null
 
+    @Valid
     @NotEmpty(message = "Required field")
     var items: List<IdfItem>? = null
 }
 
-class IdfCorForm: IdfEntityForm() {
+class IdfCorForm : IdfEntityForm() {
     @NotEmpty(message = "Required field")
     var chassisNumber: String? = null
 

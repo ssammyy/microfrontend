@@ -50,7 +50,7 @@ export class AssignAuctionItemComponent implements OnInit {
     // Load data here
     loadOfficers(): void {
         this.loading = true
-        this.diService.listOfficersForConsignment(this.data.uuid)
+        this.diService.listOfficersInMyStation('io')
             .subscribe(
                 res => {
                     this.loading = false

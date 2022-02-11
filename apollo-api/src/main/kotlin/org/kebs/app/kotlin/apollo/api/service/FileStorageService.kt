@@ -51,12 +51,13 @@ class FileStorageService(
         val response = ApiResponseModel()
         this.sftpRepository.findByIdOrNull(messageId)?.let {
             try {
-                response.data = this.ftpService.getUploadedDownloadedFile(it.fileType, it.flowDirection, it.transactionStatus == 1)
+                response.data = this.ftpService.getUploadedDownloadedFile(it.filename, it.flowDirection, it.transactionStatus == 1)
                 response.responseCode = ResponseCodes.SUCCESS_CODE
-                response.message = "Succces"
+                response.message = "Success"
             } catch (ex: Exception) {
-                response.responseCode = ex.localizedMessage
-                response.message = "Succces"
+                KotlinLogging.logger { }.error("Failed to fetch file", ex)
+                response.responseCode = ResponseCodes.FAILED_CODE
+                response.message = "Success"
             }
         } ?: run {
             response.message = "Not found"
@@ -76,18 +77,18 @@ class FileStorageService(
         // Date
         data = when {
             fileName.isPresent->{
-                this.sftpRepository.findFirstByFilenameContainingOrderByCreatedOn(fileName.get(), page)
+                this.sftpRepository.findFirstByFilenameContainingOrderByTransactionDateDesc(fileName.get(), page)
             }
             statusOpt.isPresent -> {
                 val status = statusOpt.get().toInt()
                 if (status > 0) {
-                    this.sftpRepository.findByTransactionStatusInAndFlowDirection(listOf(status), flowDirection, page)
+                    this.sftpRepository.findByTransactionStatusInAndFlowDirectionOrderByTransactionDateDesc(listOf(status), flowDirection, page)
                 } else {
-                    this.sftpRepository.findByTransactionStatusNotInAndFlowDirection(listOf(1), flowDirection, page)
+                    this.sftpRepository.findByTransactionStatusNotInAndFlowDirectionOrderByTransactionDateDesc(listOf(1, 20, 0), flowDirection, page)
                 }
             }
             else -> {
-                this.sftpRepository.findByTransactionStatusNotInAndFlowDirection(listOf(1, 0), flowDirection, page)
+                this.sftpRepository.findByTransactionStatusNotInAndFlowDirectionOrderByTransactionDateDesc(listOf(-1), flowDirection, page)
             }
         }
         response.data = data.toList()

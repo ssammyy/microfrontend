@@ -41,7 +41,7 @@ fun extractPage(req: ServerRequest, field: String = "id"): PageRequest {
         }
     }
     if ("asc".equals(direction)) {
-        return PageRequest.of(page, size, Sort.by(Sort.Order.asc(field)))
+        return PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, field))
     }
-    return PageRequest.of(page, size, Sort.by(Sort.Order.desc(field)))
+    return PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, field))
 }

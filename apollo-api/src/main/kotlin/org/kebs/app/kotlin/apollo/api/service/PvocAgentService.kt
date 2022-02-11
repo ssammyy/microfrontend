@@ -13,6 +13,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.PvocBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ForeignPvocIntegrations
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocComplaintEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocComplaintRemarksEntity
@@ -352,6 +353,7 @@ class PvocAgentService(
                 response
             }
         } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to add COR", ex)
             response.responseCode = ResponseCodes.FAILED_CODE
             response.message = "Failed to add COC with ucr number" + cor.ucrNumber
             response.errors = ex.message
@@ -375,9 +377,9 @@ class PvocAgentService(
                 response
             }
         } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to add COI", ex)
             response.responseCode = ResponseCodes.FAILED_CODE
             response.message = "Failed to add COI with ucr number" + form.ucrNumber
-            response.errors = ex.message
         }
         return response
     }
@@ -396,7 +398,11 @@ class PvocAgentService(
                 response.message = "RFC with ucr: " + form.ucrNumber + " already exists"
                 response
             }
+        } catch (ex: ExpectedDataNotFound) {
+            response.responseCode = ResponseCodes.NOT_FOUND
+            response.message = ex.localizedMessage
         } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to add RFC data", ex)
             response.responseCode = ResponseCodes.FAILED_CODE
             response.message = "Failed to add COI with ucr number" + form.ucrNumber
             response.errors = ex.message
@@ -404,14 +410,11 @@ class PvocAgentService(
         return response
     }
 
-    fun receiveNcr(ncr: CocEntityForm): ApiResponseModel {
+    fun receiveNcr(ncr: NcrEntityForm): ApiResponseModel {
         val response = ApiResponseModel()
         try {
             val activerUser = commonDaoServices.loggedInPartnerDetails()
-            this.pvocIntegrations.foreignCoc(activerUser, ncr, commonDaoServices.serviceMapDetails(properties.mapImportInspection))?.let { ncrEntity ->
-                // Update document Type
-                ncrEntity.cocType = "NCR"
-                cocRepo.save(ncrEntity)
+            this.pvocIntegrations.foreignNcr(activerUser, ncr, commonDaoServices.serviceMapDetails(properties.mapImportInspection))?.let { ncrEntity ->
                 // Create response
                 response.data = ncr
                 response.responseCode = ResponseCodes.SUCCESS_CODE
@@ -467,9 +470,10 @@ class PvocAgentService(
                 response
             }
         } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to add IDF data", ex)
             response.responseCode = ResponseCodes.FAILED_CODE
             response.message = "Failed to add IDF for ucr: " + form.ucrNumber
-            response.errors = ex.message
+            response.errors = ex.localizedMessage
         }
         return response
     }

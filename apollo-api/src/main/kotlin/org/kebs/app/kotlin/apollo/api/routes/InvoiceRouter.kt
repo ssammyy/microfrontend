@@ -19,7 +19,7 @@ class InvoiceRouter {
             GET("/bills/{corporateId}/status/{billStatus}", handler::corporateBillStatus)
             GET("/bill/{corporateId}/details/{billId}", handler::corporateBillDetails)
             PUT("/update/{corporateId}", handler::updateCorporateCustomer)
-            PATCH("/status/{corporateId}", handler::updateCorporateCustomerStatus)
+            POST("/status/{corporateId}", handler::updateCorporateCustomerStatus)
         }
         "/api/v1/bill".nest {
             GET("/limits", handler::listCorporateBillingLimits)

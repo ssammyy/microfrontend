@@ -13,16 +13,18 @@ import org.kebs.app.kotlin.apollo.standardsdevelopment.models.NEPNotification
 import org.kebs.app.kotlin.apollo.standardsdevelopment.models.NotificationReceived
 import org.kebs.app.kotlin.apollo.standardsdevelopment.repositories.NEPNotificationRepository
 import org.kebs.app.kotlin.apollo.standardsdevelopment.repositories.NotificationReceivedRepository
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 
 
 @Service
-class NEPDomesticNotificationService(private val runtimeService: RuntimeService,
-                                     private val taskService: TaskService,
-                                     private val processEngine: ProcessEngine,
-                                     private val repositoryService: RepositoryService,
-                                     private val notificationReceivedRepository: NotificationReceivedRepository,
-                                     private val nepNotificationRepository: NEPNotificationRepository
+class NEPDomesticNotificationService(
+    private val runtimeService: RuntimeService,
+    private val taskService: TaskService,
+    @Qualifier("processEngine") private val processEngine: ProcessEngine,
+    private val repositoryService: RepositoryService,
+    private val notificationReceivedRepository: NotificationReceivedRepository,
+    private val nepNotificationRepository: NEPNotificationRepository
 ) {
 
     var PROCESS_DEFINITION_KEY: String = "NEPDomesticNotification"

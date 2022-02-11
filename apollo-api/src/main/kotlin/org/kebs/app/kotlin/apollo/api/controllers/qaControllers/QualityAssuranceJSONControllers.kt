@@ -1,6 +1,5 @@
 package org.kebs.app.kotlin.apollo.api.controllers.qaControllers
 
-import com.google.gson.Gson
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
@@ -10,14 +9,11 @@ import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapPrope
 import org.kebs.app.kotlin.apollo.store.model.ServiceRequestsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaUploadsEntity
 import org.springframework.core.io.ResourceLoader
-import org.springframework.http.MediaType
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
-import java.io.ByteArrayOutputStream
-import java.math.BigDecimal
 import javax.servlet.http.HttpServletResponse
 
 
@@ -216,20 +212,12 @@ class QualityAssuranceJSONControllers(
 
         map = reportsDaoService.addBankAndMPESADetails(map, batchInvoice.invoiceNumber.toString())
 
-        val pdfReportStream=reportsDaoService.extractReport(
+        reportsDaoService.extractReport(
             map,
+            response,
             applicationMapProperties.mapReportProfomaInvoiceWithItemsPath,
             batchInvoiceList
         )
-        response.contentType = "text/html"
-        response.contentType = "application/pdf"
-        response.setHeader("Content-Length", pdfReportStream.size().toString())
-        response.addHeader("Content-Dispostion", "inline; PROFOMA-${ID}.pdf;")
-        response.outputStream.let { responseOutputStream ->
-            responseOutputStream.write(pdfReportStream.toByteArray())
-            responseOutputStream.close()
-            pdfReportStream.close()
-        }
     }
 
     @RequestMapping(value = ["/report/braked-down-invoice-with-Item"], method = [RequestMethod.GET])
@@ -273,20 +261,12 @@ class QualityAssuranceJSONControllers(
 
         map = reportsDaoService.addBankAndMPESADetails(map, masterInvoice.invoiceRef.toString())
 
-        val pdfReportStream=reportsDaoService.extractReport(
+        reportsDaoService.extractReport(
             map,
+            response,
             applicationMapProperties.mapReportBreakDownInvoiceWithItemsPath,
             invoiceDetailsList
         )
-        response.contentType = "text/html"
-        response.contentType = "application/pdf"
-        response.setHeader("Content-Length", pdfReportStream.size().toString())
-        response.addHeader("Content-Dispostion", "inline; filename=BRAKE_DOWN_INVOICE.pdf;")
-        response.outputStream.let { responseOutputStream ->
-            responseOutputStream.write(pdfReportStream.toByteArray())
-            responseOutputStream.close()
-            pdfReportStream.close()
-        }
     }
 
     /*
@@ -313,6 +293,8 @@ class QualityAssuranceJSONControllers(
             foundPermitDetails.dateOfIssue?.let { commonDaoServices.convertDateToString(it, "dd-MM-YYYY") }!!
         map["ExpiryDate"] =
             foundPermitDetails.dateOfExpiry?.let { commonDaoServices.convertDateToString(it, "dd-MM-YYYY") }!!
+        map["EffectiveDate"] =
+            foundPermitDetails.effectiveDate?.let { commonDaoServices.convertDateToString(it, "dd-MM-YYYY") }!!
 
 //        map["FirmName"] = foundPermitDetails.firmName.toString()
         map["CommodityDesc"] = foundPermitDetails.commodityDescription.toString()
@@ -323,39 +305,32 @@ class QualityAssuranceJSONControllers(
         map["EmailAddress"] = foundPermitDetails.email.toString()
         map["phoneNumber"] = foundPermitDetails.telephoneNo.toString()
         map["QrCode"] = foundPermitDetails.permitNumber.toString()
-        var pdfReportStream: ByteArrayOutputStream?=null
+
+
         when (foundPermitDetails.permitTypeID) {
             applicationMapProperties.mapQAPermitTypeIDDmark -> {
                 map["DmarkLogo"] = dMarkImageFile
-                pdfReportStream=reportsDaoService.extractReportEmptyDataSource(
+                reportsDaoService.extractReportEmptyDataSource(
                     map,
+                    response,
                     applicationMapProperties.mapReportDmarkPermitReportPath
                 )
             }
             applicationMapProperties.mapQAPermitTypeIdSmark -> {
                 map["SmarkLogo"] = sMarkImageFile
-                pdfReportStream=reportsDaoService.extractReportEmptyDataSource(
+                reportsDaoService.extractReportEmptyDataSource(
                     map,
+                    response,
                     applicationMapProperties.mapReportSmarkPermitReportPath
                 )
             }
             applicationMapProperties.mapQAPermitTypeIdFmark -> {
                 map["FmarkLogo"] = fMarkImageFile
-                pdfReportStream=reportsDaoService.extractReportEmptyDataSource(
+                reportsDaoService.extractReportEmptyDataSource(
                     map,
+                    response,
                     applicationMapProperties.mapReportFmarkPermitReportPath
                 )
-            }
-        }
-        if(pdfReportStream!=null) {
-            response.contentType = "text/html"
-            response.contentType = "application/pdf"
-            response.setHeader("Content-Length", pdfReportStream.size().toString())
-            response.addHeader("Content-Dispostion", "inline; filename=file.pdf;")
-            response.outputStream.let { responseOutputStream ->
-                responseOutputStream.write(pdfReportStream.toByteArray())
-                responseOutputStream.close()
-                pdfReportStream.close()
             }
         }
     }
@@ -562,5 +537,4 @@ class QualityAssuranceJSONControllers(
         return sm
 //        return commonDaoServices.returnValues(result ?: throw Exception("invalid results"), map, sm)
     }
-
 }

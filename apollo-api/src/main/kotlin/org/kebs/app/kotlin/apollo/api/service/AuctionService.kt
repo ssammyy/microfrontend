@@ -325,7 +325,7 @@ class AuctionService(
         val auctionRequest = AuctionRequests()
         form.fillDetails(auctionRequest)
         auctionRequest.approvalStatus = AuctionGoodStatus.NEW.status
-        auctionRequest.status = 1
+        auctionRequest.status = 0
         auctionRequest.serialNumber = "NA"
         auctionRequest.createdBy = commonDaoServices.loggedInUserAuthentication().name
         auctionRequest.createdOn = Timestamp.from(Instant.now())

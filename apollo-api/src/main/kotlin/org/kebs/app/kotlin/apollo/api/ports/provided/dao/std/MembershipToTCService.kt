@@ -34,7 +34,7 @@ class MembershipToTCService(private val runtimeService: RuntimeService,
 
     fun deployProcessDefinition(): Deployment =repositoryService
             .createDeployment()
-            .addClasspathResource("processes/membership_to_tc.bpmn20.xml")
+            .addClasspathResource("processes/std/membership_to_tc.bpmn20.xml")
             .deploy()
 
     fun submitCallsForTCMembers(callForTCApplication: CallForTCApplication):ProcessInstanceResponse

@@ -67,6 +67,9 @@ class InvoicePaymentService(
                 consignmentDocument.sendDemandNote = map.invalidStatus
                 consignmentDocument.diProcessStatus = map.inactiveStatus
                 consignmentDocument.diProcessInstanceId = null
+                consignmentDocument.cdStandard?.let { cdStd ->
+                    daoServices.updateCDStatus(cdStd, ConsignmentDocumentStatus.PAYMENT_REJECTED)
+                }
                 this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
                 this.iDemandNoteRepo.save(demand)
                 this.auditService.addHistoryRecord(consignmentDocument.id!!, consignmentDocument.ucrNumber, remarks, "REJECT DEMAND NOTE", "Demand note ${demandNoteId} rejected")
@@ -88,6 +91,9 @@ class InvoicePaymentService(
                 demand.varField3 = "APPROVED"
                 demand.varField10 = remarks
                 // Update CD status
+                consignmentDocument.cdStandard?.let { cdStd ->
+                    daoServices.updateCDStatus(cdStd, ConsignmentDocumentStatus.PAYMENT_APPROVED)
+                }
                 consignmentDocument.sendDemandNote = map.activeStatus
                 this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
                 // Update demand note
@@ -113,7 +119,7 @@ class InvoicePaymentService(
                 consignmentDocument.cdStandard?.let { cdStd ->
                     daoServices.updateCDStatus(
                             cdStd,
-                            daoServices.awaitPaymentStatus.toLong()
+                            ConsignmentDocumentStatus.PAYMENT_APPROVED
                     )
                 }
                 demand.varField3 = "UPDATED DEMAND NOTE STATUS"
@@ -218,7 +224,7 @@ class InvoicePaymentService(
             consignmentDocument?.cdStandard?.let { cdStd ->
                 daoServices.updateCDStatus(
                         cdStd,
-                        daoServices.paymentMadeStatus.toLong()
+                        ConsignmentDocumentStatus.PAYMENT_MADE
                 )
             }
         }

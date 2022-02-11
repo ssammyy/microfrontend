@@ -154,6 +154,12 @@ import {StdProofreadComponent} from "./apollowebs/standards-development/publishi
 import {EditorTasksComponent} from "./apollowebs/standards-development/publishing/editor-tasks/editor-tasks.component";
 import {StdHopTasksComponent} from "./apollowebs/standards-development/publishing/std-hop-tasks/std-hop-tasks.component";
 import {StdPublishingComponent} from "./apollowebs/standards-development/publishing/std-publishing/std-publishing.component";
+import {CallsForApplicationComponent} from "./apollowebs/standards-development/membershipToTc/calls-for-application/calls-for-application.component";
+import {ReviewApplicationsComponent} from "./apollowebs/standards-development/standard-request/review-applications/review-applications.component";
+import {ReviewRecommendationComponent} from "./apollowebs/standards-development/membershipToTc/review-recommendation/review-recommendation.component";
+import {ReviewRecommendationOfSpcComponentComponent} from "./apollowebs/standards-development/membershipToTc/review-recommendation-of-spc-component/review-recommendation-of-spc-component.component";
+import {SubmitApplicationComponent} from "./apollowebs/standards-development/membershipToTc/submit-application/submit-application.component";
+import {UploadTcMemberComponentComponent} from "./apollowebs/standards-development/membershipToTc/upload-tc-member-component/upload-tc-member-component.component";
 
 export const routes: Routes = [
     {
@@ -422,7 +428,7 @@ export const routes: Routes = [
     },
     {
         path: 'company',
-        component: ImportInspectionComponent,
+        component: AdminLayoutComponent,
         children: [
             {
                 path: 'applications',
@@ -1005,7 +1011,48 @@ export const routes: Routes = [
     /****************************************************************
      * END OF STANDARD DEVELOPMENT - FORMATION OF TECHNICAL COMMITTEE ROUTES
      ***************************************************************/
-
+    /****************************************************************
+     * MEMBERSHIP OF TECHNICAL COMMITTEE
+     ***************************************************************/
+    {
+        path: 'callsForApplication',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: CallsForApplicationComponent}]
+    },
+    {
+        path: 'submitApplication',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: SubmitApplicationComponent}]
+    },
+    {
+        path: 'reviewApplication',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: ReviewApplicationsComponent}]
+    },
+    {
+        path: 'reviewRecommendation',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: ReviewRecommendationComponent}]
+    },
+    {
+        path: 'reviewRecommendationOfSpc',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: ReviewRecommendationOfSpcComponentComponent}]
+    },
+    {
+        path: 'uploadTcMember',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: UploadTcMemberComponentComponent}]
+    },
+    /****************************************************************
+     * END OF STANDARD DEVELOPMENT - MEMBERSHIP OF TECHNICAL COMMITTEE
+     ***************************************************************/
 
     {
         path: 'productSubCategory', component: AdminLayoutComponent,

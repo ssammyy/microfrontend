@@ -247,11 +247,23 @@ class ControllerRoutes {
         "/api/v1/user".nest {
             GET("/notifications", handler::notificationList)
             GET("/profile", handler::userProfile)
-            GET("/blacklist/types",handler::loadBlacklistTypes)
+            GET("/blacklist/types", handler::loadBlacklistTypes)
             GET("/officers/{cdUuid}", handler::listInspectionOfficers)
+            GET("/in-my-station/{designation}", handler::listOfficersByDesignation)
             GET("/add/plant-details/save", handler::userProfile)
+
         }
     }
+
+    @Bean
+    fun userRouteB(handler: UserHandler) =
+        router {
+            "/api/user".nest {
+                GET("/user-notifications", handler::notificationListB)
+                GET("/user-profile", handler::userProfileB)
+                GET("/add/plant-details/save", handler::userProfileB)
+            }
+        }
 
     @Bean
     @CrossOrigin
@@ -341,7 +353,7 @@ class ControllerRoutes {
 
     @Bean
     fun qualityAssuranceRoutes(handler: QualityAssuranceHandler) = router {
-        "/api/v1/qa".nest {
+        "/api/qa".nest {
             println("**************************")
             GET("/home", handler::home)
             GET("/permits-list", handler::permitList)

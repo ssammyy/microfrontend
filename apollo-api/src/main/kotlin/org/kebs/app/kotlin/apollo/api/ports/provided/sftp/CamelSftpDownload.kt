@@ -103,8 +103,10 @@ class SFTPService(
     }
 
     fun resubmitFile(fileDetails: SftpTransmissionEntity): Boolean {
-        val successPath = Paths.get(properties.preMove, fileDetails.filename)
+        val successPath = Paths.get(properties.uploadPreMove, fileDetails.filename)
+        KotlinLogging.logger { }.info("Success: ${successPath.toAbsolutePath()}")
         val failedPath = Paths.get(properties.outboundDirectory, "error", fileDetails.filename)
+        KotlinLogging.logger { }.info("Failed: ${failedPath.toAbsolutePath()}")
         if (Files.exists(successPath)) {
             return this.uploadFile(successPath.toFile(), move = true)
         } else if (Files.exists(failedPath)) {
@@ -120,18 +122,29 @@ class SFTPService(
             }
             "OUT" -> {
                 try {
-                    val resouce: Resource
-                    if (successful) {
-                        resouce = this.resourceLoader.getResource("${this.properties.preMove}/${fileName}")
+                    val outboundFilePath = Paths.get(this.properties.outboundDirectory, fileName)
+                    val successFilePaht = Paths.get(this.properties.uploadPreMove, fileName);
+                    val failedFilePath = Paths.get(this.properties.outboundDirectory, "error", fileName)
+                    if (Files.exists(successFilePaht)) {
+                        KotlinLogging.logger { }.info("Reading file from ${this.properties.uploadPreMove}: $fileName")
+                        return successFilePaht.toFile().readText()
+                    } else if (Files.exists(failedFilePath)) {
+                        KotlinLogging.logger { }.info("Reading file from ${this.properties.outboundDirectory}/error: $fileName")
+                        return failedFilePath.toFile().readText()
+                    } else if (Files.exists(outboundFilePath)) {
+                        KotlinLogging.logger { }.info("Reading file from ${this.properties.outboundDirectory}: $fileName")
+                        return outboundFilePath.toFile().readText()
                     } else {
-                        resouce = this.resourceLoader.getResource("${this.properties.outboundDirectory}/error/${fileName}")
+                        KotlinLogging.logger { }.warn("Failed to find any file ${fileName}:")
+                        KotlinLogging.logger { }.info("Outbound Files: ${outboundFilePath.toAbsolutePath()}")
+                        KotlinLogging.logger { }.info("Success Filed: ${successFilePaht.toAbsolutePath()}")
+                        KotlinLogging.logger { }.info("Failed Filed: ${failedFilePath.toAbsolutePath()}")
                     }
-                    return resouce.file.readText()
+                    return ""
                 } catch (ex: Exception) {
-                    KotlinLogging.logger { }.error("Failed to open file")
+                    KotlinLogging.logger { }.error("Failed to open file", ex)
                     throw ExpectedDataNotFound("Could not find file specified")
                 }
-
             }
             else -> {
                 throw ExpectedDataNotFound("invalid message direction: $flowDirection")
@@ -149,7 +162,7 @@ class SFTPService(
 
     fun processDocumentResponses(exchange: Exchange) {
         KotlinLogging.logger { }
-            .info("Declaration Document Res: ${exchange.message.headers} | Content: ${exchange.message.body}|")
+                .info("Declaration Document Res: ${exchange.message.headers} | Content: ${exchange.message.body}|")
         val ucrNumberMessage = exchange.message.body as UCRNumberMessage
         val baseDocRefNo = ucrNumberMessage.data?.dataIn?.sadId
         val ucrNumber = ucrNumberMessage.data?.dataIn?.ucrNumber
@@ -170,7 +183,7 @@ class SFTPService(
 
     fun processUcrResultDocument(exchange: Exchange) {
         KotlinLogging.logger { }
-            .info("UCR Res Document: ${exchange.message.headers} | Content: ${exchange.message.body}|")
+                .info("UCR Res Document: ${exchange.message.headers} | Content: ${exchange.message.body}|")
         val ucrNumberMessage = exchange.message.body as UCRNumberMessage
         val baseDocRefNo = ucrNumberMessage.data?.dataIn?.sadId
         val ucrNumber = ucrNumberMessage.data?.dataIn?.ucrNumber
@@ -183,7 +196,7 @@ class SFTPService(
         }
         val idfUpdated = iDFDaoService.updateIdfUcrNumber(baseDocRefNo, ucrNumber)
         // Update IDF number on consignment
-        this.destinationInspectionDaoServices.updateIdfNumber(ucrNumber,baseDocRefNo)
+        this.destinationInspectionDaoServices.updateIdfNumber(ucrNumber, baseDocRefNo)
         KotlinLogging.logger { }.info("UCR Res Document: ${exchange.message.headers} | Saved Status: ${idfUpdated}|")
     }
 

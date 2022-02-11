@@ -4,6 +4,7 @@ import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog
 import {DestinationInspectionService} from "../../../../core/store/data/di/destination-inspection.service";
 import {AddEditAuctionItemComponent} from "../add-edit-auction-item/add-edit-auction-item.component";
 import {LocalDataSource} from "ng2-smart-table";
+import {DatePipe} from "@angular/common";
 
 @Component({
     selector: 'app-add-auction-record',
@@ -140,6 +141,9 @@ export class AddAuctionRecordComponent implements OnInit {
         let data = this.form.value
         this.auctionItems.getAll().then(dd => {
             data['items'] = dd
+            data["auctionDate"] = new DatePipe("En-US").transform(this.form.value.auctionDate, "dd-MM-yyyy")
+            data["shipmentDate"] = new DatePipe("En-US").transform(this.form.value.shipmentDate, "dd-MM-yyyy")
+            data["arrivalDate"] = new DatePipe("En-US").transform(this.form.value.arrivalDate, "dd-MM-yyyy")
             this.diService.addAuctionItem(data)
                 .subscribe(
                     res => {

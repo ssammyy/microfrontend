@@ -76,7 +76,8 @@ class AuctionRequestDto {
                 0 -> "NEW"
                 1 -> "APPROVED"
                 2 -> "REJECTED"
-                else -> "UNKNOWN"
+                3 -> "PENDING PAYMENT"
+                else -> "OTHER"
             }
             auction.category?.let {
                 dto.categoryName = it.categoryName

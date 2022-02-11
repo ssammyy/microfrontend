@@ -2,12 +2,14 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import mu.KotlinLogging
+import org.flowable.idm.engine.impl.persistence.entity.UserEntity
 import org.json.JSONException
 import org.json.JSONObject
 import org.json.XML
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.SftpServiceImpl
+import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentStatus
 import org.kebs.app.kotlin.apollo.common.dto.MinistryInspectionListResponseDto
 import org.kebs.app.kotlin.apollo.common.dto.kesws.receive.DeclarationVerificationMessage
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
@@ -398,6 +400,11 @@ class DestinationInspectionDaoServices(
                 localCoc.finalInvoiceFobValue = itemNote.cfvalue?.toDouble() ?: 0.0
             }
         }
+        // Add inspection details
+        iCdInspectionGeneralRepo.findFirstByCdDetails(consignmentDocumentDetailsEntity)?.let { cdItemDetailsList ->
+            localCoc.customsEntryNumber = cdItemDetailsList.customsEntryNumber
+            localCoc.clearingAgent = cdItemDetailsList.clearingAgent
+        }
     }
 
     fun createLocalNcr(
@@ -654,67 +661,80 @@ class DestinationInspectionDaoServices(
                             localCor.chasisNumber = nonStandard.chassisNo.toString()
                         }
                     }
-                    // Fill checklist details
                     with(localCor) {
-                        corNumber = "COR${generateRandomText(5, s.secureRandom, s.messageDigestAlgorithm, true)}"
-                        corIssueDate = commonDaoServices.getTimestamp()
-                        val cdHeaderOne = cdEntity.cdHeaderOne?.let { findCdHeaderOneDetails(it) }
-                        countryOfSupply = cdHeaderOne?.countryOfSupply
                         inspectionCenter = cdItemDetailsList.cdDetails?.freightStation?.cfsName ?: "UNKNOWN"
-                        val cdExporter = cdEntity.cdExporter?.let { findCdExporterDetails(it) }
-                        exporterName = cdExporter?.name
-                        exporterAddress1 = cdExporter?.physicalAddress
-                        exporterAddress2 = cdExporter?.postalAddress
-                        exporterEmail = cdExporter?.email
-                        applicationBookingDate = commonDaoServices.getTimestamp()
-                        inspectionDate = commonDaoServices.getTimestamp()
                         make = cdMvInspectionEntity.makeVehicle
-                        model = "test"
                         engineNumber = cdMvInspectionEntity.engineNoCapacity
                         engineCapacity = cdMvInspectionEntity.engineNoCapacity
                         yearOfManufacture = cdMvInspectionEntity.manufactureDate.toString()
-                        yearOfFirstRegistration = "test"
                         inspectionMileage = cdMvInspectionEntity.odemetreReading ?: "UNKNOWN"
-                        unitsOfMileage = "KM"
                         inspectionRemarks = cdMvInspectionEntity.remarks
-                        previousRegistrationNumber = "test"
-                        previousCountryOfRegistration = "test"
-
                         tareWeight = (cdMvInspectionEntity.itemId?.itemNetWeight?.toBigDecimal()
-                                ?: BigDecimal.ZERO).toLong()
-                        loadCapacity = 0
+                                ?: BigDecimal.ZERO).toDouble()
                         grossWeight = (cdMvInspectionEntity.itemId?.itemGrossWeight?.toBigDecimal()
-                                ?: BigDecimal.ZERO).toLong()
-                        numberOfAxles = 0
+                                ?: BigDecimal.ZERO).toDouble()
                         typeOfVehicle = cdMvInspectionEntity.makeVehicle
-                        numberOfPassangers = 0
-                        typeOfBody = "test"
                         bodyColor = cdMvInspectionEntity.colour
-                        fuelType = "test"
                         customsIeNo = cdItemDetailsList.customsEntryNumber
                         transmission = cdMvInspectionEntity.transmissionAutoManual
-                        inspectionFee = 0.0
                         version = cdItemDetailsList.cdDetails?.version ?: 1
-                        approvalStatus = cdEntity.compliantStatus.toString()
-                        ucrNumber = cdEntity.ucrNumber
-                        inspectionFeeCurrency = "USD"
                         inspectionOfficer = cdItemDetailsList.cdDetails?.assignedInspectionOfficer?.let {
                             "${it.firstName} ${it.lastName}"
                         } ?: ""
-                        inspectionFeeExchangeRate = 0
-                        inspectionFeePaymentDate = commonDaoServices.getTimestamp()
                         inspectionRemarks = mvInspectionEntity.remarks ?: "No Remarks"
-                        consignmentDocId = cdEntity
-                        status = s.activeStatus
-                        createdBy = commonDaoServices.getUserName(user)
-                        createdOn = commonDaoServices.getTimestamp()
                     }
-                    KotlinLogging.logger { }.info("COR: $localCor")
-                    localCor = corsBakRepository.save(localCor)
-                    KotlinLogging.logger { }.info { "Generated Local CoR WITH id = ${localCor.id}" }
                 } ?: throw ExpectedDataNotFound("ITEM MVR INSPECTION CHECKLIST")
             } ?: throw ExpectedDataNotFound("NO MVR INSPECTION")
         } ?: throw ExpectedDataNotFound("NO GENERAL INSPECTION")
+        val vehicle = this.findVehicleFromCd(cdEntity)
+        // Fill checklist details
+        with(localCor) {
+            corNumber = "COR${generateRandomText(5, s.secureRandom, s.messageDigestAlgorithm, true)}"
+            corIssueDate = commonDaoServices.getTimestamp()
+            val cdHeaderOne = cdEntity.cdHeaderOne?.let { findCdHeaderOneDetails(it) }
+            countryOfSupply = cdHeaderOne?.countryOfSupply
+            val cdExporter = cdEntity.cdExporter?.let { findCdExporterDetails(it) }
+            exporterName = cdExporter?.name
+            exporterAddress1 = cdExporter?.physicalAddress
+            exporterAddress2 = cdExporter?.postalAddress
+            exporterEmail = cdExporter?.email
+            applicationBookingDate = commonDaoServices.getTimestamp()
+            inspectionDate = commonDaoServices.getTimestamp()
+            model = "test"
+            yearOfFirstRegistration = "test"
+            unitsOfMileage = "KM"
+            previousRegistrationNumber = "test"
+            previousCountryOfRegistration = "test"
+
+            loadCapacity = 0.0
+            numberOfAxles = 0
+            numberOfPassangers = 0
+            typeOfBody = "test"
+            fuelType = "test"
+            inspectionFee = 0.0
+            approvalStatus = cdEntity.compliantStatus.toString()
+            ucrNumber = cdEntity.ucrNumber
+            inspectionFeeCurrency = "KES"
+            inspectionFeeExchangeRate = 0.0
+            inspectionFeePaymentDate = commonDaoServices.getTimestamp()
+            consignmentDocId = cdEntity
+            status = s.activeStatus
+            createdBy = commonDaoServices.getUserName(user)
+            createdOn = commonDaoServices.getTimestamp()
+        }
+        // Add invoice details
+        cdEntity.id?.let { cdId ->
+            this.invoiceDaoService.findDemandNoteCdId(cdId)?.let { itemNote ->
+                localCor.inspectionFeeCurrency = "KES"
+                localCor.inspectionFee = itemNote.totalAmount?.toDouble() ?: 0.0
+                localCor.inspectionFeePaymentDate = itemNote.createdOn
+                localCor.inspectionFeeExchangeRate = itemNote.rate?.toDouble() ?: 0.0
+            }
+        }
+        // Save local COR
+        KotlinLogging.logger { }.info("COR: $localCor")
+        localCor = corsBakRepository.save(localCor)
+        KotlinLogging.logger { }.info { "Generated Local CoR WITH id = ${localCor.id}" }
         return localCor
     }
 
@@ -1420,6 +1440,25 @@ class DestinationInspectionDaoServices(
         return """<?xml version="1.0" encoding="ISO-8859-15"?> <$root>${XML.toString(jsonObject)}</$root>"""
     }
 
+    fun updateCDStatus(cdStandard: CdStandardsEntity, statusValue: ConsignmentDocumentStatus): Boolean {
+        var updateCD = cdStandard
+        var updateStatus = false
+        try {
+            val status = findCdStatusCategory(statusValue.code)
+            with(updateCD) {
+                approvalStatus = status.typeName
+                statusId = status.id
+                approvalDate = commonDaoServices.getCurrentDate().toString()
+            }
+            updateCD = iCdStandardsRepo.save(updateCD)
+            KotlinLogging.logger { }.info { "CD UPDATED STATUS TO = ${updateCD.approvalStatus}" }
+            updateStatus = true
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to assign status: " + statusValue.code, ex)
+        }
+        return updateStatus
+    }
+
     fun updateCDStatus(cdStandard: CdStandardsEntity, statusValue: Long): Boolean {
         var updateCD = cdStandard
         val status = findCdStatusValue(statusValue)
@@ -2063,6 +2102,18 @@ class DestinationInspectionDaoServices(
         return null
     }
 
+    fun findVehicleFromCd(cd: ConsignmentDocumentDetailsEntity): CdItemDetailsEntity? {
+        try {
+            var item = iCdItemsRepo.findFirstByCdDocIdAndChassisNumberIsNotNull(cd)
+            if (item.isPresent) {
+                return item.get()
+            }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Not Vehicle with", ex)
+        }
+        return null
+    }
+
     fun updateConsignmentCorDetails(cdDetailsEntity: ConsignmentDocumentDetailsEntity, localCocType: String?, documentCode: String, corsBakEntity: CorsBakEntity?) {
         var documentType = CdTypeCodes.COR.code
         var isCosGood = false
@@ -2074,7 +2125,7 @@ class DestinationInspectionDaoServices(
             null
         }
         // Document Type
-        when (documentCode) {
+        when (localCocType) {
             "F" -> {
                 documentType = CdTypeCodes.FOREIGN_COR.code
             }
@@ -2106,7 +2157,7 @@ class DestinationInspectionDaoServices(
             null
         }
         // Document types
-        when (documentCode) {
+        when (localCocType) {
             "F" -> {
                 documentType = CdTypeCodes.FOREIGN_COC.code
             }
@@ -2168,16 +2219,16 @@ class DestinationInspectionDaoServices(
                 }
             }
             else ->
-                when (chassisNumber) {
-                    null -> {
+                when {
+                    StringUtils.hasLength(chassisNumber) -> {
+                        KotlinLogging.logger { }.info("Map COR")
+                        // COR, NO_COR_PVOC or NO_COR Goods
+                        this.updateConsignmentCorDetails(cdDetailsEntity, cdDetailsEntity.cdStandardsTwo?.localCocType, documentCode, corsBakRepository.findByChasisNumber(chassisNumber!!))
+                    }
+                    else -> {
                         KotlinLogging.logger { }.info("Map COC")
                         // COC, NCR or NO_COC Goods
                         this.updateConsignmentCocDetails(cdDetailsEntity, cdDetailsEntity.cdStandardsTwo?.localCocType, documentCode, findCocByUcrNumber(ucrNumber))
-                    }
-                    else -> {
-                        KotlinLogging.logger { }.info("Map COR")
-                        // COR, NO_COR_PVOC or NO_COR Goods
-                        this.updateConsignmentCorDetails(cdDetailsEntity, cdDetailsEntity.cdStandardsTwo?.localCocType, documentCode, corsBakRepository.findByChasisNumber(chassisNumber))
                     }
                 }
         }
@@ -2365,14 +2416,32 @@ class DestinationInspectionDaoServices(
         freightStation?.let { fs ->
 
             val profilesAssignment = findByCFSId(fs.id)
-            val userProfiles = mutableListOf<UserProfilesEntity>()
+            val userProfiles = mutableListOf<Long>()
             profilesAssignment.forEach { p ->
-                iUserProfilesRepo.findByIdAndDesignationId_IdAndStatus(p.userProfileId!!, designationId, 1)
-                        .ifPresent { pp -> userProfiles.add(pp) }
-
+                userProfiles.add(p.userProfileId!!)
             }
-            return userProfiles
+            return iUserProfilesRepo.findByIdInAndDesignationId_IdAndStatus(userProfiles, designationId, 1)
         } ?: throw ServiceMapNotFoundException("Freight Station details on consignment with ID = null, is Empty")
+    }
+
+    fun findOfficersInMyCfsList(user: UserProfilesEntity, designationId: Long): List<UserProfilesEntity> {
+
+        val profilesAssignment = findAllCFSUserList(user.id!!)
+        KotlinLogging.logger { }.info("USR CFS COUNT: ${profilesAssignment.size}-${user.id}")
+        // CFS in my profile
+        val cfsIds = mutableListOf<Long>()
+        profilesAssignment.forEach { p ->
+            cfsIds.add(p.cfsId!!)
+        }
+        // Profiles in my CFS
+        val profilIds = mutableListOf<Long>()
+        usersCfsRepo.findAllByCfsIdInAndStatus(cfsIds.distinct(), 1).forEach {
+            profilIds.add(it.userProfileId!!)
+        }
+        // Users
+        val userProfiles = iUserProfilesRepo.findByIdInAndDesignationId_IdAndStatus(profilIds.distinct(), designationId, 1)
+        KotlinLogging.logger { }.info("USR COUNT: ${userProfiles.size}")
+        return userProfiles
     }
 
     fun convertEntityToJsonObject(entityToConvert: Any): Any {
@@ -2753,8 +2822,12 @@ class DestinationInspectionDaoServices(
             user: UsersEntity?
     ): ConsignmentDocumentDetailsEntity {
         if (user != null) {
-            with(updateCD) {
+            updateCD.apply {
                 modifiedBy = commonDaoServices.getUserName(user)
+                modifiedOn = commonDaoServices.getTimestamp()
+            }
+        } else {
+            updateCD.apply {
                 modifiedOn = commonDaoServices.getTimestamp()
             }
         }

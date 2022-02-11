@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.18.1.final using JasperReports Library version 6.18.1-9d75d1969e774d4f179fb3be8401e98a0e6d1611  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="DiamondMarkPermit" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed21babd-bc90-4f45-a015-31c53503a62e">
-	<property name="background.image.path" value="/app/apps_home/apollo/conf/test/reports/images/kebs_dmark_background_image.png"/>
+<!-- Created with Jaspersoft Studio version 6.13.0.final using JasperReports Library version 6.13.0-46ada4d1be8f3c5985fd0b6146f3ed44caed6f05  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+			  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			  xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+			  name="DiamondMarkPermit" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20"
+			  rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed21babd-bc90-4f45-a015-31c53503a62e">
+	<property name="background.image.path"
+			  value="/app/apps_home/apollo/conf/test/reports/images/kebs_dmark_background_image.png"/>
 	<property name="background.image.x" value="10"/>
 	<property name="background.image.y" value="10"/>
 	<property name="background.image.widht" value="595"/>
@@ -19,6 +24,7 @@
 	<parameter name="TradeMark" class="java.lang.String"/>
 	<parameter name="StandardTitle" class="java.lang.String"/>
 	<parameter name="QrCode" class="java.lang.String"/>
+	<parameter name="EffectiveDate" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -30,7 +36,8 @@
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<imageExpression><![CDATA["/app/apps_home/apollo/conf/test/reports/images/kebs_dmark_background_image.png"]]></imageExpression>
+				<imageExpression>
+					<![CDATA["/app/apps_home/apollo/conf/test/reports/images/kebs_dmark_background_image.png"]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement x="-3" y="0" width="133" height="15" uuid="e4540e61-ccee-4ff2-9383-1a9a47b6fdf9">
@@ -98,7 +105,7 @@
 					<bottomPen lineWidth="1.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$P{DateOfIssue}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{EffectiveDate}]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement x="97" y="155" width="231" height="1" uuid="7286fb26-d739-4ae2-995f-23cec69a3407"/>
@@ -290,7 +297,6 @@
 					<font fontName="SansSerif" size="8"/>
 				</textElement>
 				<text><![CDATA[1. EVERY DIAMOND MARK HOLDER SHALL PAY AN ANNUAL  FEE IN RESPECT OF EACH PERMIT GRANTED OR RENEWED
-
 2. THIS PERMIT IS ISSUED SUBJECT TO THE CONDITIONS SET OUT IN THE  CONTRACT FOR USE OF THE DIAMOND MARK OF QUALITY]]></text>
 			</staticText>
 			<staticText>
@@ -325,7 +331,7 @@
 )]]></imageExpression>
 			</image>
 			<image>
-				<reportElement x="332" y="572" width="219" height="101" uuid="9044ec40-bfdc-4007-afaa-cc2c717394de"/>
+				<reportElement x="332" y="572" width="219" height="51" uuid="9044ec40-bfdc-4007-afaa-cc2c717394de"/>
 				<imageExpression><![CDATA["/app/apps_home/apollo/conf/test/reports/images/BMN_signature.png"]]></imageExpression>
 			</image>
 		</band>
@@ -346,7 +352,7 @@
 				<text><![CDATA[CONDITIONS FOR USE OF KEBS STANDARDISATION MARK]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="-13" y="-40" width="564" height="730" uuid="274cbbde-9ec5-49a7-9fcb-8e01d8bd20e4">
+				<reportElement x="0" y="-40" width="551" height="730" uuid="274cbbde-9ec5-49a7-9fcb-8e01d8bd20e4">
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">

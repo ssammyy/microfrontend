@@ -1,13 +1,6 @@
 <h2 mat-dialog-title>Add/Update Auction Item</h2>
 <mat-dialog-content>
     <div class="form-group row" [formGroup]="form">
-        <label for="itemType" class="waiver-form-label">Select Category</label>
-        <select id="itemType" name="itemType" class="waiver-form-input-master"
-                formControlName="itemType">
-            <option value="" disabled selected>Select One</option>
-            <option value="VEHICLE">Vehicle</option>
-            <option value="GOODS">GOODS</option>
-        </select>
         <label for="serialNo" class="waiver-form-label">Serial Number</label>
         <input id="serialNo" name="serialNo" class="waiver-form-input-master"
                formControlName="serialNo" type="text"/>

@@ -27,12 +27,12 @@ class CORXmlDTO {
     var cor: CustomCorXmlDto? = null
 }
 
-class CustomCorXmlDto(id: Long?,corNumber: String?,corIssueDate: Timestamp?,countryOfSupply: String?,inspectionCenter: String?,exporterName: String?,
-                      exporterAddress1: String?,exporterEmail: String?, applicationBookingDate: Timestamp?,inspectionDate: Timestamp? ,make: String?,model: String?,
-                      chasisNumber: String?,engineNumber: String?,engineCapacity: String?,yearOfManufacture: String?, yearOfFirstRegistration: String?,inspectionMileage: String?,
-                      unitsOfMileage: String?,inspectionRemarks: String?,previousRegistrationNumber: String?,previousCountryOfRegistration: String?,tareWeight:  Long?,
-                      loadCapacity:  Long?,grossWeight:  Long? ,numberOfAxles:  Long?,typeOfVehicle: String?,numberOfPassangers:  Long?,typeOfBody: String?,
-                      bodyColor: String?,fuelType: String?
+class CustomCorXmlDto(id: Long?, corNumber: String?, corIssueDate: Timestamp?, countryOfSupply: String?, inspectionCenter: String?, exporterName: String?,
+                      exporterAddress1: String?, exporterEmail: String?, applicationBookingDate: Timestamp?, inspectionDate: Timestamp?, make: String?, model: String?,
+                      chasisNumber: String?, engineNumber: String?, engineCapacity: String?, yearOfManufacture: String?, yearOfFirstRegistration: String?, inspectionMileage: String?,
+                      unitsOfMileage: String?, inspectionRemarks: String?, previousRegistrationNumber: String?, previousCountryOfRegistration: String?, tareWeight: Double?,
+                      loadCapacity: Double?, grossWeight: Double?, numberOfAxles: Long?, typeOfVehicle: String?, numberOfPassangers: Long?, typeOfBody: String?,
+                      bodyColor: String?, fuelType: String?, version: Long?
 ) {
 
     @JacksonXmlProperty(localName = "ID")
@@ -129,7 +129,7 @@ class CustomCorXmlDto(id: Long?,corNumber: String?,corIssueDate: Timestamp?,coun
     var fuelType: String? = fuelType
 
     @JacksonXmlProperty(localName = "VERSION")
-    var version: String? = null
+    var version: String? = version?.toString() ?: "1"
 
     fun convertTimestampToKeswsValidDate(timestamp: Timestamp?): String? {
         if(timestamp==null){

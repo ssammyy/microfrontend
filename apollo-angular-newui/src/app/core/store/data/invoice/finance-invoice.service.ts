@@ -35,6 +35,10 @@ export class FinanceInvoiceService {
         })
     }
 
+    sendCorporateAction(data: any, corporateId: any): Observable<any> {
+        return this.http.post(ApiEndpointService.getEndpoint("/api/v1/corporate/status/" + corporateId), data)
+    }
+
     loadBillTypes(): Observable<any> {
         return this.http.get(ApiEndpointService.getEndpoint("/api/v1/bill/limits"))
     }

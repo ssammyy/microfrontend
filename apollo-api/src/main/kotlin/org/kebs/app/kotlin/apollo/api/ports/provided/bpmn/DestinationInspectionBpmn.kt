@@ -12,6 +12,8 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.di.DiTaskDetails
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentAuditService
+import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentStatus
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.CdDemandNoteEntity
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
@@ -93,7 +95,7 @@ class DestinationInspectionBpmn(
         detail.varField8 = processStarted.toString()
         detail.varField9 = Timestamp.from(Instant.now()).toString()
         detail.varField10 = "Submitted to ministry"
-        saved.varField1=processInstance.processDefinitionId
+        saved.varField1 = processInstance.processDefinitionId
         // Update CD status
         this.daoServices.updateCdItemDetailsInDB(detail, null)
         detail.cdDocId?.let {
@@ -106,6 +108,7 @@ class DestinationInspectionBpmn(
     }
 
     fun startAssignmentProcesses(data: MutableMap<String, Any?>, consignmentDocument: ConsignmentDocumentDetailsEntity) {
+        KotlinLogging.logger { }.info("Assign inspection officer to consignment: ${Thread.currentThread().name}")
         data.put("cfs_code", consignmentDocument.freightStation?.cfsCode)
         val processInstance = runtimeService.startProcessInstanceByKey("assignInspectionOfficer", data)
         consignmentDocument.diProcessInstanceId = processInstance.processDefinitionId
@@ -138,38 +141,58 @@ class DestinationInspectionBpmn(
             return response
         }
         // Check already approved
-        commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-                .let { map ->
-                    KotlinLogging.logger { }.info { "approveRejectCdStatusType = ${form.cdStatusTypeId}" }
-                    val cdStatusType = form.cdStatusTypeId?.let { daoServices.findCdStatusValue(it) }
-                    if (cdStatusType != null) {
-                        cdStatusType.let {
-                            val processProperties = mutableMapOf<String, Any?>()
-                            val loggedInUser = this.commonDaoServices.getLoggedInUser()
-                            processProperties.put("cdUuid", cdUuid)
-                            processProperties.put("supervisor", consignmentDocument.assigner?.userName
-                                    ?: loggedInUser?.userName)
-                            processProperties.put("cfs_code", consignmentDocument.freightStation?.cfsCode)
-                            processProperties.put("remarks", form.remarks)
-                            processProperties.put("activeStatus", map.activeStatus)
-                            processProperties.put("cdStatusTypeId", it.id)
-                            processProperties.put("consignmentDocumentApproved", it.category == "APPROVED")
-                            // Attach Process to consignment
-                            val processInstance = runtimeService.startProcessInstanceByKey("updateConsignmentStatus", processProperties)
-                            consignmentDocument.varField9 = processInstance.processDefinitionId
-                            consignmentDocument.varField8 = processInstance.id
-                            consignmentDocument.diProcessInstanceId=processInstance.id
-                            consignmentDocument.diProcessStatus=map.activeStatus
-                            this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
-
-                            response.responseCode = ResponseCodes.SUCCESS_CODE
-                            response.message = "Success"
-                        }
-                    } else {
-                        response.responseCode = ResponseCodes.FAILED_CODE
-                        response.message = "Please select approval status"
+        val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+        KotlinLogging.logger { }.info { "approveRejectCdStatusType = ${form.cdStatusTypeId}" }
+        val cdStatusType = form.cdStatusTypeId?.let { daoServices.findCdStatusValue(it) }
+        if (cdStatusType != null) {
+            cdStatusType.let {
+                val status: ConsignmentDocumentStatus
+                when (cdStatusType.category) {
+                    "APPROVED" -> {
+                        status = ConsignmentDocumentStatus.APPROVE_REQUEST
                     }
+                    "REJECT" -> {
+                        status = ConsignmentDocumentStatus.REJECT_REQUEST
+                    }
+                    "QUERY" -> {
+                        status = ConsignmentDocumentStatus.QUERY_REQUEST
+                    }
+                    "AMENDMENT" -> {
+                        status = ConsignmentDocumentStatus.REJ_AMEND_REQUEST
+                    }
+                    else -> throw ExpectedDataNotFound("Invalid transaction status")
                 }
+                // Update process status
+                consignmentDocument.cdStandard?.let { cdStd ->
+                    daoServices.updateCDStatus(cdStd, status)
+                }
+                // Add process variables
+                val processProperties = mutableMapOf<String, Any?>()
+                val loggedInUser = this.commonDaoServices.getLoggedInUser()
+                processProperties.put("cdUuid", cdUuid)
+                processProperties.put("supervisor", consignmentDocument.assigner?.userName
+                        ?: loggedInUser?.userName)
+                processProperties.put("cfs_code", consignmentDocument.freightStation?.cfsCode)
+                processProperties.put("remarks", form.remarks)
+                processProperties.put("activeStatus", map.activeStatus)
+                processProperties.put("cdStatusTypeId", it.id)
+                processProperties.put("consignmentDocumentApproved", it.category == "APPROVED")
+                // Attach Process to consignment
+                val processInstance = runtimeService.startProcessInstanceByKey("updateConsignmentStatus", processProperties)
+                consignmentDocument.varField9 = processInstance.processDefinitionId
+                consignmentDocument.varField8 = processInstance.id
+                consignmentDocument.diProcessInstanceId = processInstance.id
+                consignmentDocument.diProcessStatus = map.activeStatus
+
+                this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
+
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+                response.message = "Success"
+            }
+        } else {
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Please select approval status"
+        }
         return response
     }
 
@@ -202,7 +225,7 @@ class DestinationInspectionBpmn(
         this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
         // Update status to wait targeting approval
         consignmentDocument.cdStandard?.let { cdStd ->
-            daoServices.updateCDStatus(cdStd, applicationMapProperties.mapDIStatusTypeAwaitingTargetingApprovalId)
+            daoServices.updateCDStatus(cdStd, ConsignmentDocumentStatus.TARGET_REQUEST)
         }
     }
 
@@ -214,9 +237,12 @@ class DestinationInspectionBpmn(
         consignmentDocument.localCocOrCorStatus = map.initStatus
         consignmentDocument.compliantStatus = map.initStatus
         consignmentDocument.diProcessStartedOn = Timestamp.from(Instant.now())
-        consignmentDocument.diProcessCompletedOn=null
+        consignmentDocument.diProcessCompletedOn = null
         consignmentDocument.varField10 = "REQUEST COMPLIANCE APPROVAL"
         // Save process details
+        consignmentDocument.cdStandard?.let { cdStd ->
+            daoServices.updateCDStatus(cdStd, ConsignmentDocumentStatus.COMPLIANCE_REQUEST)
+        }
         this.auditService.addHistoryRecord(consignmentDocument.id!!, consignmentDocument.ucrNumber, data["remarks"] as String?, "REQUEST CONSIGNMENT COMPLIANCE UPDATE", "Request to mark Consignment as compliant")
         // Update current process
         this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
@@ -230,6 +256,9 @@ class DestinationInspectionBpmn(
         consignmentDocument.diProcessStartedOn = Timestamp.from(Instant.now())
         consignmentDocument.varField8 = processInstance.id
         // Save process details
+        consignmentDocument.cdStandard?.let { cdStd ->
+            daoServices.updateCDStatus(cdStd, ConsignmentDocumentStatus.BLACKLIST_REQUEST)
+        }
         this.auditService.addHistoryRecord(consignmentDocument.id!!, consignmentDocument.ucrNumber, data["remarks"] as String?, "REQUEST CONSIGNMENT BLACKLISTING", "Consignment blacklist request")
         // Update current process
         this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
@@ -263,13 +292,17 @@ class DestinationInspectionBpmn(
 
     fun startGenerateDemandNote(map: ServiceMapsEntity, data: MutableMap<String, Any?>, consignmentDocument: ConsignmentDocumentDetailsEntity) {
         data.put("cfs_code", consignmentDocument.freightStation?.cfsCode)
+        // Update CD
+        consignmentDocument.cdStandard?.let { cdStd ->
+            daoServices.updateCDStatus(cdStd, ConsignmentDocumentStatus.PAYMENT_REQUEST)
+        }
+        // Start process
         val processInstance = runtimeService.startProcessInstanceByKey("demandNoteGenerationProcess", data)
         consignmentDocument.diProcessInstanceId = processInstance.processDefinitionId
         consignmentDocument.diProcessStatus = map.activeStatus
         consignmentDocument.sendDemandNote = map.initStatus
         consignmentDocument.diProcessStartedOn = Timestamp.from(Instant.now())
         consignmentDocument.targetReason = data.get("remarks") as String?
-
         // Save process details
         this.auditService.addHistoryRecord(consignmentDocument.id!!, consignmentDocument.ucrNumber, data["remarks"] as String?, "DEMAND NOTE CONSIGNMENT", "Consignment demand note request")
         this.daoServices.updateCdDetailsInDB(consignmentDocument, null)

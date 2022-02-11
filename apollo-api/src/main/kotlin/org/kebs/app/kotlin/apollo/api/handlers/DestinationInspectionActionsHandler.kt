@@ -375,6 +375,7 @@ class DestinationInspectionActionsHandler(
                         val data = mutableMapOf<String, Any?>()
                         data["remarks"] = form.remarks
                         data["reassign"] = form.reassign
+                        data["selfAssign"]=false
                         data["officerId"] = form.officerId
                         data["owner"] = officer.get().userName
                         data["supervisor"] = loggedInUser.userName
