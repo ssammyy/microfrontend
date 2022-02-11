@@ -63,6 +63,10 @@ class StandardLevyFactoryVisitReportEntity : Serializable {
     @Basic
     var officersFeedback: String? = null
 
+    @Column(name = "REPORT_REMARKS")
+    @Basic
+    var makeRemarks: String? = null
+
     @Column(name = "MANUFACTURER_ENTITY")
     @Basic
     var manufacturerEntity: Long? = null
@@ -96,6 +100,10 @@ class StandardLevyFactoryVisitReportEntity : Serializable {
     @Column(name = "SL_PROCESS_INSTANCE_ID")
     @Basic
     var slProcessInstanceId: String? = null
+
+    @Column(name = "SL_PROCESS_STATUS")
+    @Basic
+    var slProcessStatus: Int? = null
 
     @Column(name = "VAR_FIELD_1")
     @Basic
@@ -173,13 +181,60 @@ class StandardLevyFactoryVisitReportEntity : Serializable {
     @Basic
     var deletedOn: Timestamp? = null
 
+    @Column(name = "COMPANY_NAME")
+    @Basic
+    var companyName: String? = null
+
+    @Column(name = "ENTRY_NUMBER")
+    @Basic
+    var entryNumber: String? = null
+
+    @Column(name = "KRA_PIN")
+    @Basic
+    var kraPin: String? = null
+
+    @Column(name = "REGISTRATION_NUMBER")
+    @Basic
+    var registrationNumber: String? = null
+
     var userType: Long? = null
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
         val that = other as StandardLevyFactoryVisitReportEntity
-        return id == that.id && status == that.status && assistantManagerApproval == that.assistantManagerApproval && managersApproval == that.managersApproval && purpose == that.purpose && personMet == that.personMet && actionTaken == that.actionTaken && remarks == that.remarks && officersFeedback == that.officersFeedback && varField1 == that.varField1 && varField2 == that.varField2 && varField3 == that.varField3 && varField4 == that.varField4 && varField5 == that.varField5 && varField6 == that.varField6 && varField7 == that.varField7 && varField8 == that.varField8 && assigneeId == that.assigneeId && taskId == that.taskId && createdBy == that.createdBy && createdOn == that.createdOn && modifiedBy == that.modifiedBy && modifiedOn == that.modifiedOn && deleteBy == that.deleteBy && deletedOn == that.deletedOn && accentTo == that.accentTo
+        return id == that.id &&
+                status == that.status &&
+                assistantManagerApproval == that.assistantManagerApproval &&
+                managersApproval == that.managersApproval &&
+                purpose == that.purpose &&
+                personMet == that.personMet &&
+                actionTaken == that.actionTaken &&
+                remarks == that.remarks &&
+                officersFeedback == that.officersFeedback &&
+                varField1 == that.varField1 &&
+                varField2 == that.varField2 &&
+                varField3 == that.varField3 &&
+                varField4 == that.varField4 &&
+                varField5 == that.varField5 &&
+                varField6 == that.varField6 &&
+                varField7 == that.varField7 &&
+                varField8 == that.varField8 &&
+                assigneeId == that.assigneeId &&
+                taskId == that.taskId &&
+                createdBy == that.createdBy &&
+                createdOn == that.createdOn &&
+                modifiedBy == that.modifiedBy &&
+                modifiedOn == that.modifiedOn &&
+                deleteBy == that.deleteBy &&
+                deletedOn == that.deletedOn &&
+                accentTo == that.accentTo &&
+                makeRemarks ==that.makeRemarks &&
+                slProcessStatus == that.slProcessStatus &&
+                companyName == that.companyName &&
+                entryNumber == that.entryNumber &&
+                kraPin ==that.kraPin &&
+                registrationNumber == that.registrationNumber
     }
 
     override fun hashCode(): Int {
@@ -209,7 +264,15 @@ class StandardLevyFactoryVisitReportEntity : Serializable {
             modifiedOn,
             deleteBy,
             deletedOn,
-            accentTo
+            accentTo,
+            makeRemarks,
+            slProcessStatus,
+            companyName,
+            entryNumber,
+            kraPin,
+            registrationNumber
+
+
         )
     }
 }

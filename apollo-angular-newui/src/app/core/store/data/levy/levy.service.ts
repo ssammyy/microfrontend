@@ -5,7 +5,7 @@ import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
 import {catchError, map} from "rxjs/operators";
 import {
     ApproveVisitTask, AssignCompanyTaskDTO,
-    CompanyModel, ManufactureCompleteTask, ManufactureDetailList,
+    CompanyModel, EditCompanyDTO, ManufactureCompletedTask, ManufactureCompleteTask, ManufactureDetailList,
     ManufactureInfo,
     ManufacturePenalty, ManufacturePendingTask, ManufacturingStatus,
     PaidLevy, ReportDecisionLevelOne, ReportDecisionLevelTwo, SiteVisitFeedBack, SiteVisitReport,
@@ -67,10 +67,23 @@ export class LevyService {
             })
         );
     }
+
     public assignCompanyTasks(assignCompanyTaskDTO: AssignCompanyTaskDTO): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_ASSIGN_COMPANY_TASK);
         const params = new HttpParams();
         return this.http.post<AssignCompanyTaskDTO>(url, assignCompanyTaskDTO, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+    public editCompany(editCompanyDTO: EditCompanyDTO): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_EDIT_COMPANY);
+        const params = new HttpParams();
+        return this.http.post<EditCompanyDTO>(url, editCompanyDTO, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),
@@ -186,7 +199,7 @@ export class LevyService {
     public getMnCompleteTask(): any {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_MANUFACTURE_COMPLETE_TASKS);
         const params = new HttpParams();
-        return this.http.get<ManufactureCompleteTask>(url, {params}).pipe();
+        return this.http.get<ManufactureCompletedTask>(url, {params}).pipe();
     }
 
     public getManufacturerList(): any {

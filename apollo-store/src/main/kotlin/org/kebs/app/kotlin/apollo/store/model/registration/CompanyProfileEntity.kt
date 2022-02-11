@@ -94,6 +94,11 @@ class CompanyProfileEntity : Serializable {
     @Basic
     var firmCategory: Long? = null
 
+
+    @Column(name = "EDIT_STATUS")
+    @Basic
+    var editStatus: Long? = null
+
     @Column(name = "TOWN")
     @Basic
     var town: Long? = null

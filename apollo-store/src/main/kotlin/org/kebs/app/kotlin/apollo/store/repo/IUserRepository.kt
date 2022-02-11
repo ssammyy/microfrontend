@@ -318,7 +318,7 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     fun getMnCompleteTask(@Param("assignedTo") assignedTo: Long?): MutableList<CompanyProfileEntity>
 
     @Query(
-        value = "SELECT *  FROM DAT_KEBS_COMPANY_PROFILE WHERE ASSIGN_STATUS='1' AND ASSIGNED_TO = :assignedTo",
+        value = "SELECT *  FROM DAT_KEBS_COMPANY_PROFILE WHERE ASSIGN_STATUS='1' AND ASSIGNED_TO = :assignedTo ",
         nativeQuery = true
     )
     fun getMnPendingTask(@Param("assignedTo") assignedTo: Long?): MutableList<CompanyProfileEntity>
@@ -328,6 +328,9 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
         nativeQuery = true
     )
     fun getBusinessNature(@Param("id") id: Long?): Long
+
+
+
 
 
 }
@@ -533,5 +536,10 @@ interface IUserVerificationTokensRepositoryB : JpaRepository<UserVerificationTok
         nativeQuery = true
     )
     fun findAllByVarField1(@Param("id") id: String?): String?
+}
+@Repository
+interface CompanyProfileEditEntityRepository : HazelcastRepository<CompanyProfileEditEntity, Long> {
+    fun findAllByManufactureId(manufactureId: Long): CompanyProfileEditEntity
+
 }
 

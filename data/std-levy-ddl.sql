@@ -1557,4 +1557,79 @@ begin
 end;
 
 /
+create  table DAT_KEBS_COMPANY_PROFILE_EDIT
+(
+    id                   number                                      not null primary key,
+    PHYSICAL_ADDRESS            varchar2(350 char)                          ,
+    POSTAL_ADDRESS           varchar2(350 char)                          ,
+    OWNERSHIP           varchar2(350 char)                          ,
+    CLOSURE_OF_OPERATIONS            varchar(350)            ,
+    var_field_1          VARCHAR2(350 CHAR),
+    var_field_2          VARCHAR2(350 CHAR),
+    var_field_3          VARCHAR2(350 CHAR),
+    var_field_4          VARCHAR2(350 CHAR),
+    var_field_5          VARCHAR2(350 CHAR),
+    var_field_6          VARCHAR2(350 CHAR),
+    var_field_7          VARCHAR2(350 CHAR),
+    var_field_8          VARCHAR2(350 CHAR),
+    var_field_9          VARCHAR2(350 CHAR),
+    var_field_10         VARCHAR2(350 CHAR),
+    created_by           VARCHAR2(100 CHAR)          DEFAULT 'admin' NOT NULL ENABLE,
+    created_on           TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate NOT NULL ENABLE,
+    modified_by          VARCHAR2(100 CHAR),
+    modified_on          TIMESTAMP(6) WITH TIME ZONE,
+    update_by            VARCHAR2(100 CHAR),
+    updated_on           TIMESTAMP(6) WITH TIME ZONE,
+    delete_by            VARCHAR2(100 CHAR),
+    deleted_on           TIMESTAMP(6) WITH TIME ZONE,
+    VERSION              NUMBER
+)
+/
+alter table DAT_KEBS_COMPANY_PROFILE_EDIT
+    add MANUFACTURER_ID NUMBER;
 
+/
+alter table DAT_KEBS_COMPANY_PROFILE
+    add EDIT_STATUS NUMBER;
+
+/
+alter table DAT_KEBS_COMPANY_PROFILE
+    modify EDIT_STATUS NUMBER DEFAULT '0' ;
+
+
+/
+alter table DAT_STANDARD_LEVY_FACTORY_VISIT_REPORT
+    add REPORT_REMARKS VARCHAR2(350 CHAR);
+/
+drop table DAT_KEBS_COMPANY_PROFILE_EDIT
+
+/
+create sequence DAT_KEBS_COMPANY_PROFILE_EDIT_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+create or replace trigger DAT_KEBS_COMPANY_PROFILE_EDIT_trg
+    before
+        insert
+    on DAT_KEBS_COMPANY_PROFILE_EDIT
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select DAT_KEBS_COMPANY_PROFILE_EDIT_seq.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+    /
+alter table DAT_STANDARD_LEVY_FACTORY_VISIT_REPORT
+    modify MANUFACTURER_ENTITY NUMBER(2);
+
+drop  index DAT_STANDARD_LEVY_FACTORY_VISIT_REPORT_MANUFACTURER_ENTITY_STATUS_IDX;
+
+/
+alter table DAT_STANDARD_LEVY_FACTORY_VISIT_REPORT
+    add REGISTRATION_NUMBER VARCHAR(350 char) ;
+/
+alter table DAT_KEBS_COMPANY_PROFILE
+    add SL_PROCESS_STATUS NUMBER(2) DEFAULT '0' ;
