@@ -48,7 +48,7 @@ export class CurrencyExchangeRatesComponent implements OnInit {
                 type: 'string'
             },
             applicableDate: {
-                title: 'Exchange Date',
+                title: 'Upload Date',
                 type: 'date',
                 valuePrepareFunction: (date) => {
                     if (date) {
@@ -68,6 +68,7 @@ export class CurrencyExchangeRatesComponent implements OnInit {
             perPage: 20
         }
     };
+
     dataSet: LocalDataSource = new LocalDataSource();
     activeDataSet: LocalDataSource = new LocalDataSource();
 
