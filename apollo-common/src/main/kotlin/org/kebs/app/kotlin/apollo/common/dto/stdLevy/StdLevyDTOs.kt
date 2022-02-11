@@ -48,9 +48,19 @@ data class StdLevyScheduleSiteVisitDTO(
     var assistantManagerRemarks: String? = null,
     var createdBy: Long? = null,
     var createdOn:  Timestamp? = null,
-    var taskId: String? = null
+    var taskId: String? = null,
+    var entryNumber: String? = null,
+    var companyName: String? = null,
+    var kraPin: String? = null,
+    var registrationNumber: String? = null
 
 
+)
+data class EditCompanyTaskToDTO(
+    var postalAddress: String? = null,
+    var physicalAddress: String? = null,
+    var ownership: String? = null,
+    var companyId: Long? = null,
 )
 data class AssignCompanyTaskToDTO(
     var manufacturerEntity: Long? = null,
@@ -87,6 +97,7 @@ data class ReportOnSiteVisitDTO(
     var purpose: String? = null,
     var personMet: String? = null,
     var actionTaken: String? = null,
+    var makeRemarks: String? = null,
     var status: Int? = null,
     var assistantManager: Long? = null,
     var reportDate: LocalDate? = null,

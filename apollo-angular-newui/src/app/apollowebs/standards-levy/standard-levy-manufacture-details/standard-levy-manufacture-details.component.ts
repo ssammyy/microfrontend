@@ -2,6 +2,7 @@ import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {Subject} from "rxjs";
 
 import {
+    ManufactureCompletedTask,
     ManufactureCompleteTask,
     ManufactureDetailList,
     ManufacturePendingTask, UserEntityRoles, UsersEntityList
@@ -53,10 +54,10 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
 
     manufactureLists: ManufactureDetailList[] = [];
     manufacturePendingTasks: ManufacturePendingTask[] = [];
-    manufactureCompleteTasks: ManufactureCompleteTask[] = [];
+    manufactureCompleteTasks: ManufactureCompletedTask[] = [];
     public actionRequestList: ManufactureDetailList | undefined;
     public actionRequestPending: ManufacturePendingTask | undefined;
-    public actionRequestComplete: ManufactureCompleteTask | undefined;
+    public actionRequestComplete: ManufactureCompletedTask | undefined;
     public scheduleVisitFormGroup!: FormGroup;
     public assignCompanyTaskFormGroup!: FormGroup;
     public assignCompanyTask1FormGroup!: FormGroup;
@@ -67,6 +68,8 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
     public rejectFormGroup!: FormGroup;
     public approvalTwoFormGroup!: FormGroup;
     public rejectTwoFormGroup!: FormGroup;
+    public editCompanyFormGroup!: FormGroup;
+    public editedCompanyFormGroup!: FormGroup;
     blob: Blob;
     public uploadedFiles:  FileList;
     isShowScheduleForm = true;
@@ -79,10 +82,33 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
     isShowSaveFeedBackForm= true;
     isShowAssign1Form=true;
     isShowAssign2Form=true;
+    isShowEditForm= true;
+    isShowEditedForm= true;
 
     toggleDisplayScheduleForm() {
         this.isShowScheduleForm = !this.isShowScheduleForm;
         this.isShowAssignForm = true;
+        this.isShowReportForm= true;
+        this.isShowAssign1Form= true;
+        this.isShowAssign2Form= true;
+        this.isShowEditedForm= true;
+        this.isShowEditForm= true;
+    }
+
+    toggleDisplayEditForm() {
+        this.isShowEditForm= !this.isShowEditForm;
+        this.isShowAssignForm = true;
+        this.isShowEditedForm = true;
+        this.isShowScheduleForm= true;
+        this.isShowReportForm= true;
+        this.isShowAssign1Form= true;
+        this.isShowAssign2Form= true;
+    }
+    toggleDisplayEditedForm() {
+        this.isShowEditedForm= !this.isShowEditedForm;
+        this.isShowEditForm= true;
+        this.isShowAssignForm = true;
+        this.isShowScheduleForm= true;
         this.isShowReportForm= true;
         this.isShowAssign1Form= true;
         this.isShowAssign2Form= true;
@@ -93,6 +119,8 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
         this.isShowReportForm= true;
         this.isShowAssign1Form= true;
         this.isShowAssign2Form= true;
+        this.isShowEditedForm= true;
+        this.isShowEditForm= true;
     }
     toggleDisplayAssignTo1Form() {
         this.isShowAssign1Form = !this.isShowAssign1Form;
@@ -100,6 +128,8 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
         this.isShowReportForm= true;
         this.isShowAssignForm=true;
         this.isShowAssign2Form= true;
+        this.isShowEditedForm= true;
+        this.isShowEditForm= true;
     }
     toggleDisplayAssignTo2Form() {
         this.isShowAssign2Form = !this.isShowAssign2Form;
@@ -107,6 +137,8 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
         this.isShowReportForm= true;
         this.isShowAssignForm=true;
         this.isShowAssign1Form= true;
+        this.isShowEditedForm= true;
+        this.isShowEditForm= true;
 
     }
     toggleDisplayReportForm() {
@@ -115,6 +147,8 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
         this.isShowAssignForm = true;
         this.isShowAssign1Form= true;
         this.isShowAssign2Form= true;
+        this.isShowEditedForm= true;
+        this.isShowEditForm= true;
     }
     toggleDisplayApprovalForm1() {
         this.isShowApprovalForm1 = !this.isShowApprovalForm1;
@@ -155,11 +189,30 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
     //this.checkIfTrue();
     //  this.getUserDetails();
 
+      this.editCompanyFormGroup = this.formBuilder.group({
+          postalAddress: [],
+          physicalAddress: [],
+          companyId: [],
+          ownership: []
+
+      });
+
+      this.editedCompanyFormGroup = this.formBuilder.group({
+          postalAddress: [],
+          physicalAddress: [],
+          companyId: [],
+          ownership: []
+
+      });
 
       this.scheduleVisitFormGroup = this.formBuilder.group({
           scheduledVisitDate: ['', Validators.required],
           manufacturerEntity: [],
           taskId: [],
+          entryNumber: [],
+          companyName: [],
+          kraPin: [],
+          registrationNumber: []
 
       });
       this.assignCompanyTaskFormGroup = this.formBuilder.group({
@@ -248,6 +301,7 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
           purpose: ['', Validators.required],
           personMet: ['', Validators.required],
           actionTaken: ['', Validators.required],
+          makeRemarks: ['', Validators.required],
           taskId: [],
           visitID: [],
           assigneeId: [],
@@ -467,7 +521,7 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
   public getMnCompleteTask(): void{
     this.SpinnerService.show();
     this.levyService.getMnCompleteTask().subscribe(
-        (response: ManufactureCompleteTask[])=> {
+        (response: ManufactureCompletedTask[])=> {
           this.dtTrigger2.next();
           this.manufactureCompleteTasks = response;
             this.SpinnerService.hide();
@@ -530,7 +584,7 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
 
     }
 
-    public onOpenModalComplete(manufactureCompleteTask: ManufactureCompleteTask,mode:string): void{
+    public onOpenModalComplete(manufactureCompleteTask: ManufactureCompletedTask,mode:string): void{
         const container = document.getElementById('main-container');
         const button = document.createElement('button');
         button.type = 'button';
@@ -619,6 +673,46 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
             }
         );
     }
+    editCompany(): void {
+
+        this.SpinnerService.show();
+        this.levyService.editCompany(this.editCompanyFormGroup.value).subscribe(
+            (response ) => {
+                console.log(response);
+                //this.getManufacturerList();
+                this.SpinnerService.hide();
+                this.showToasterSuccess(response.httpStatus, `Company Edited`);
+                this.router.navigateByUrl('/slManufacturers').then(r => {});
+
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Editing Company`);
+                console.log(error.message);
+            }
+        );
+    }
+
+    editedCompany(): void {
+
+        this.SpinnerService.show();
+        this.levyService.editCompany(this.editCompanyFormGroup.value).subscribe(
+            (response ) => {
+                console.log(response);
+                //this.getManufacturerList();
+                this.SpinnerService.hide();
+                this.showToasterSuccess(response.httpStatus, `Company Edited`);
+                this.router.navigateByUrl('/slManufacturers').then(r => {});
+
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Editing Company`);
+                console.log(error.message);
+            }
+        );
+    }
+
     saveReport(): void {
         this.SpinnerService.show();
         this.levyService.saveSiteVisitReport(this.prepareReportFormGroup.value).subscribe(

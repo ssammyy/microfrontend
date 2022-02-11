@@ -133,6 +133,12 @@ export interface StdLevyScheduleSiteVisitDTO {
     taskId: string;
 
 }
+export interface EditCompanyDTO {
+    postalAddress: string;
+    physicalAddress: string;
+    ownership: string;
+    companyId: number;
+}
 export interface AssignCompanyTaskDTO {
     manufacturerEntity:number;
     assignedTo: number;
@@ -189,6 +195,7 @@ export interface SiteVisitReport {
     assigneeId: number;
     manufacturerEntity: number;
     userType: number;
+    makeRemarks: string;
 
 }
 export interface ApproveVisitTask {
@@ -261,6 +268,7 @@ export interface ManufactureDetailList {
     assignStatus: number;
     assignedTo: number;
     userId: number;
+    ownership: string;
 
 }
 export interface ManufacturePendingTask {
@@ -307,6 +315,10 @@ export interface ManufacturePendingTaskData{
     levelOneId: number;
     officersFeedback: string;
     userType: number;
+    makeRemarks: string;
+    comments: string;
+    assistantManagerRemarks: string;
+    cheifManagerRemarks: string;
 
 }
 export interface ManufactureCompleteTask {
@@ -334,6 +346,26 @@ export interface ManufactureCompleteTask {
     entryNumber: number;
     assignStatus: number;
     assignedTo: number;
+
+}
+export interface ManufactureCompletedTask {
+    id: number;
+    purpose: string;
+    personMet: string;
+    actionTaken: string;
+    remarks: string;
+    officersFeedback: string;
+    makeRemarks: string;
+    manufacturerEntity: string;
+    scheduledVisitDate: Timestamp<number>;
+    visitDate: Timestamp<number>;
+    reportDate: Timestamp<number>;
+    cheifManagerRemarks: string;
+    assistantManagerRemarks: string;
+    companyName: string;
+    entryNumber: string;
+    kraPin: string;
+    registrationNumber: string;
 
 }
 export interface UsersEntityList {

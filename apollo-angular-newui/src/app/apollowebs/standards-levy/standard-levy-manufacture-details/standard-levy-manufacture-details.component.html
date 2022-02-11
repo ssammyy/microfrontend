@@ -76,7 +76,7 @@
 
                                                                                 <div *ngIf="roles?.includes('SL_IS_PL_OFFICER')">
                                                                                     <button (click)=toggleDisplayAssignForm() type="button" class="btn btn-primary btn-sm">Assign To Self</button>
-                                                                                    <button type="button" class="btn btn-success btn-sm">Add Remarks</button>
+                                                                                    <button (click)=toggleDisplayEditForm() type="button" class="btn btn-success btn-sm">Edit Company Details</button>
                                                                                     <button type="button" class="btn btn-danger btn-sm">View Remarks</button>
                                                                                     <button type="button" class="btn btn-warning btn-sm">Close Account</button>
 
@@ -88,8 +88,8 @@
                                                                                         <div *ngIf="roles?.includes('SL_IS_ASST_MANAGER')">
                                                                                         <button (click)=toggleDisplayAssignForm() type="button" class="btn btn-primary btn-sm">Assign To Self</button>
                                                                                         <button (click)=toggleDisplayAssignTo1Form() type="button" class="btn btn-success btn-sm">Assign To Other</button>
-                                                                                        <button type="button" class="btn btn-danger btn-sm">View Remarks</button>
-                                                                                        <button type="button" class="btn btn-warning btn-sm">Close Account</button>
+                                                                                            <button (click)=toggleDisplayEditForm() type="button" class="btn btn-info btn-sm">Edit Company Details</button>
+                                                                                        <button (click)=toggleDisplayEditedForm(manufactureList.id) type="button" class="btn btn-warning btn-sm">Approve Edited Company</button>
 <!--                                                                                            //Changes for code test-->
 
                                                                                     </div>
@@ -97,15 +97,15 @@
                                                                                         <div *ngIf="roles?.includes('SL_IS_MANAGER')">
                                                                                         <button (click)=toggleDisplayAssignForm() type="button" class="btn btn-primary btn-sm">Assign To Self</button>
                                                                                         <button (click)=toggleDisplayAssignTo2Form() type="button" class="btn btn-success btn-sm">Assign To Other</button>
-                                                                                        <button type="button" class="btn btn-danger btn-sm">View Remarks</button>
-                                                                                        <button type="button" class="btn btn-warning btn-sm">Close Account</button>
+                                                                                            <button (click)=toggleDisplayEditForm() type="button" class="btn btn-info btn-sm">Edit Company Details</button>
+                                                                                            <button (click)=toggleDisplayEditedForm(manufactureList.id) type="button" class="btn btn-warning btn-sm">Approve Edited Company</button>
 
                                                                                     </div>
                                                                                     <div *ngIf="roles?.includes('SL_IS_CHIEF_MANAGER')">
                                                                                         <button (click)=toggleDisplayAssignForm() type="button" class="btn btn-primary btn-sm">Assign To Self</button>
                                                                                         <button (click)=toggleDisplayAssignTo2Form() type="button" class="btn btn-success btn-sm">Assign To Other</button>
-                                                                                        <button type="button" class="btn btn-danger btn-sm">View Remarks</button>
-                                                                                        <button type="button" class="btn btn-warning btn-sm">Close Account</button>
+                                                                                        <button (click)=toggleDisplayEditForm() type="button" class="btn btn-info btn-sm">Edit Company Details</button>
+                                                                                        <button (click)=toggleDisplayEditedForm(manufactureList.id) type="button" class="btn btn-warning btn-sm">Approve Edited Company</button>
 
                                                                                     </div>
 
@@ -116,11 +116,12 @@
                                                                                             <p ><b>The Selected Task will be assigned to You. Click Assign to Proceed.</b></p>
                                                                                            <hr>
                                                                                             <input type="hidden" ngModel="{{userId}}" formControlName="assignedTo" name="assignedTo" value="{{userId}}" >
-
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.entryNumber}}" formControlName="entryNumber" name="entryNumber" value="{{actionRequestList?.entryNumber}}" >
                                                                                             <input type="hidden" ngModel="{{actionRequestList?.name}}" formControlName="companyName" name="companyName" value="{{actionRequestList?.name}}" >
                                                                                             <input type="hidden" ngModel="{{actionRequestList?.kraPin}}" formControlName="kraPin" name="kraPin" value="{{actionRequestList?.kraPin}}" >
-                                                                                            <input type="hidden" ngModel="{{actionRequestList?.status}}" formControlName="status" name="status" value="{{actionRequestList?.status}}" >
                                                                                             <input type="hidden" ngModel="{{actionRequestList?.registrationNumber}}" formControlName="registrationNumber" name="registrationNumber" value="{{actionRequestList?.registrationNumber}}" >
+                                                                                            <input type="hidden" ngModel="{{actionRequestList?.status}}" formControlName="status" name="status" value="{{actionRequestList?.status}}" >
+
                                                                                             <input type="hidden" ngModel="{{actionRequestList?.postalAddress}}" formControlName="postalAddress" name="postalAddress" value="{{actionRequestList?.postalAddress}}" >
                                                                                             <input type="hidden" ngModel="{{actionRequestList?.physicalAddress}}" formControlName="physicalAddress" name="physicalAddress" value="{{actionRequestList?.physicalAddress}}" >
                                                                                             <input type="hidden" ngModel="{{actionRequestList?.plotNumber}}" formControlName="plotNumber" name="plotNumber" value="{{actionRequestList?.plotNumber}}" >
@@ -137,7 +138,7 @@
                                                                                             <input type="hidden" ngModel="{{actionRequestList?.county}}" formControlName="county" name="county" value="{{actionRequestList?.county}}" >
                                                                                             <input type="hidden" ngModel="{{actionRequestList?.town}}" formControlName="town" name="town" value="{{actionRequestList?.town}}" >
                                                                                             <input type="hidden" ngModel="{{actionRequestList?.manufactureStatus}}" formControlName="manufactureStatus" name="manufactureStatus" value="{{actionRequestList?.manufactureStatus}}" >
-                                                                                            <input type="hidden" ngModel="{{actionRequestList?.entryNumber}}" formControlName="entryNumber" name="entryNumber" value="{{actionRequestList?.entryNumber}}" >
+
                                                                                             <input type="hidden" ngModel="{{actionRequestList?.id}}" formControlName="manufacturerEntity" name="manufacturerEntity" value="{{actionRequestList?.id}}" >
                                                                                             <input type="hidden" ngModel="{{actionRequestList?.userId}}" formControlName="contactId" name="contactId" value="{{actionRequestList?.userId}}" >
                                                                                             <button  class="btn btn-sm btn-primary float-right" type="submit">Assign</button>
@@ -219,6 +220,90 @@
                                                                                             <input type="hidden" ngModel="{{actionRequestList?.id}}" formControlName="manufacturerEntity" name="manufacturerEntity" value="{{actionRequestList?.id}}" >
                                                                                             <input type="hidden" ngModel="{{actionRequestList?.userId}}" formControlName="contactId" name="contactId" value="{{actionRequestList?.userId}}" >
                                                                                             <button  class="btn btn-sm btn-primary float-right" type="submit">Assign</button>
+                                                                                        </form>
+                                                                                    </div>
+                                                                                    <div class="container col-md-12" [hidden]="isShowEditForm">
+                                                                                        <form (ngSubmit)="editCompany()" [formGroup]="editCompanyFormGroup"  class="form">
+                                                                                            <hr style="color: red">
+                                                                                            <p ><b>Edit Company Details.</b></p>
+                                                                                            <hr>
+                                                                                            <div class="form-body">
+                                                                                                <div class="row">
+                                                                                                    <div class="form-group col-12">
+                                                                                                        <label for="physicalAddress">Main Physical Location <span
+                                                                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                                        <input type="hidden" ngModel="{{actionRequestList?.id}}" class="form-control"
+                                                                                                               formControlName="companyId" name="companyId"
+                                                                                                        >
+                                                                                                        <textarea type="text" ngModel="{{actionRequestList?.physicalAddress}}" class="form-control"
+                                                                                                                  id="physicalAddress" name="physicalAddress"
+                                                                                                                  formControlName="physicalAddress"
+                                                                                                                  placeholder="Main Physical Location"></textarea>
+
+                                                                                                    </div>
+                                                                                                    <div class="form-group col-12">
+                                                                                                        <label for="postalAddress2">Postal Address <span
+                                                                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                                        <input type="text" ngModel="{{actionRequestList?.postalAddress}}" class="form-control"
+                                                                                                               id="postalAddress2" name="postalAddress"
+                                                                                                               formControlName="postalAddress" placeholder="Postal Address" >
+                                                                                                    </div>
+                                                                                                    <div class="form-group col-12">
+                                                                                                        <label for="ownership">Ownership <span
+                                                                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                                        <ng-select id="ownership" ngModel="{{actionRequestList?.ownership}}" formControlName="ownership"  class="form-control" name="ownership" >
+                                                                                                            <ng-option  value="{{actionRequestList?.ownership}}" >{{actionRequestList?.ownership}} {{actionRequestList?.ownership}}</ng-option>
+                                                                                                            <ng-option  value="Single_Ownership" >Single Ownership</ng-option>
+                                                                                                            <ng-option  value="Limited_Company" >Limited Company</ng-option>
+
+                                                                                                        </ng-select>
+
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <button  class="btn btn-sm btn-primary float-right" type="submit">Save</button>
+                                                                                        </form>
+                                                                                    </div>
+                                                                                    <div class="container col-md-12" [hidden]="isShowEditedForm">
+                                                                                        <form (ngSubmit)="editedCompany()" [formGroup]="editedCompanyFormGroup"  class="form">
+                                                                                            <hr style="color: red">
+                                                                                            <p ><b>Confirm Edited Company Details.</b></p>
+                                                                                            <hr>
+                                                                                            <div class="form-body">
+                                                                                                <div class="row">
+                                                                                                    <div class="form-group col-12">
+                                                                                                        <label for="physicalAddressx">Main Physical Location <span
+                                                                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                                        <input type="hidden" ngModel="{{actionRequestList?.id}}" class="form-control"
+                                                                                                               formControlName="companyId" name="companyId"
+                                                                                                        >
+                                                                                                        <textarea type="text" ngModel="{{actionRequestList?.physicalAddress}}" class="form-control"
+                                                                                                                  id="physicalAddressx" name="physicalAddress"
+                                                                                                                  formControlName="physicalAddress"
+                                                                                                                  placeholder="Main Physical Location"></textarea>
+
+                                                                                                    </div>
+                                                                                                    <div class="form-group col-12">
+                                                                                                        <label for="postalAddress2x">Postal Address <span
+                                                                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                                        <input type="text" ngModel="{{actionRequestList?.postalAddress}}" class="form-control"
+                                                                                                               id="postalAddress2x" name="postalAddress"
+                                                                                                               formControlName="postalAddress" placeholder="Postal Address" >
+                                                                                                    </div>
+                                                                                                    <div class="form-group col-12">
+                                                                                                        <label for="ownershipx">Ownership <span
+                                                                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                                        <ng-select id="ownershipx" ngModel="{{actionRequestList?.ownership}}" formControlName="ownership"  class="form-control" name="ownership" >
+                                                                                                            <ng-option  value="{{actionRequestList?.ownership}}" >{{actionRequestList?.ownership}} {{actionRequestList?.ownership}}</ng-option>
+                                                                                                            <ng-option  value="Single_Ownership" >Single Ownership</ng-option>
+                                                                                                            <ng-option  value="Limited_Company" >Limited Company</ng-option>
+
+                                                                                                        </ng-select>
+
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <button  class="btn btn-sm btn-primary float-right" type="submit">Save</button>
                                                                                         </form>
                                                                                     </div>
 
@@ -592,6 +677,10 @@
                                                                                                                class="form-control"  formControlName="scheduledVisitDate" name="scheduledVisitDate" type="date">
                                                                                                     </div>
                                                                                                 </div>
+                                                                                                <input type="hidden" ngModel="{{actionRequestPending?.taskData?.entryNumber}}" formControlName="entryNumber" name="entryNumber" value="{{actionRequestPending?.taskData?.entryNumber}}" >
+                                                                                                <input type="hidden" ngModel="{{actionRequestPending?.taskData?.companyName}}" formControlName="companyName" name="companyName" value="{{actionRequestPending?.taskData?.companyName}}" >
+                                                                                                <input type="hidden" ngModel="{{actionRequestPending?.taskData?.kraPin}}" formControlName="kraPin" name="kraPin" value="{{actionRequestPending?.taskData?.kraPin}}" >
+                                                                                                <input type="hidden" ngModel="{{actionRequestPending?.taskData?.registrationNumber}}" formControlName="registrationNumber" name="registrationNumber" value="{{actionRequestPending?.taskData?.registrationNumber}}" >
                                                                                                 <input type="hidden" ngModel="{{actionRequestPending?.taskData?.manufacturerEntity}}" formControlName="manufacturerEntity" name="manufacturerEntity" value="{{actionRequestPending?.taskData?.manufacturerEntity}}" >
                                                                                                 <input type="hidden" ngModel="{{actionRequestPending?.taskId}}" formControlName="taskId" name="taskId" value="{{actionRequestPending?.taskId}}" >
                                                                                             </div>
@@ -900,9 +989,18 @@
                                                                                                 <form (ngSubmit)="saveReport()" [formGroup]="prepareReportFormGroup" class="form">
                                                                                                     <div class="form-body">
 
-
-                                                                                                        <input type="hidden"  ngModel="{{manufactureUserDetails?.name}}"  name="userType" value="{{manufactureUserDetails?.name}}" >
-
+                                                                                                        <div *ngIf="roles?.includes('SL_IS_PL_OFFICER')">
+                                                                                                        <input type="hidden"  ngModel="61"  name="userType" value="61" >
+                                                                                                        </div>
+                                                                                                        <div *ngIf="roles?.includes('SL_IS_ASST_MANAGER')">
+                                                                                                            <input type="hidden"  ngModel="62"  name="userType" value="61" >
+                                                                                                        </div>
+                                                                                                        <div *ngIf="roles?.includes('SL_IS_MANAGER')">
+                                                                                                            <input type="hidden"  ngModel="63"  name="userType" value="61" >
+                                                                                                        </div>
+                                                                                                        <div *ngIf="roles?.includes('SL_IS_CHIEF_MANAGER')">
+                                                                                                            <input type="hidden"  ngModel="63"  name="userType" value="61" >
+                                                                                                        </div>
                                                                                                         <div class="row col-12">
                                                                                                             <div class="form-group col-12">
                                                                                                                 <label><b>Visit Date</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
@@ -930,6 +1028,15 @@
                                                                                                                           aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                                                                                                                           class="form-control one-column-input" formControlName="personMet" name="personMet"
                                                                                                                           placeholder="Name" type="text"></textarea>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                        <div class="row col-12">
+                                                                                                            <div class="form-group col-12">
+                                                                                                                <label><b>Remarks</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                                                <textarea [class.is-invalid]="formPrepareReport.makeRemarks.invalid && formPrepareReport.makeRemarks.touched"
+                                                                                                                          aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                                                                          class="form-control one-column-input" formControlName="makeRemarks" name="makeRemarks"
+                                                                                                                          placeholder="Remarks" type="text"></textarea>
                                                                                                             </div>
                                                                                                         </div>
                                                                                                         <div class="row col-12">
@@ -1659,7 +1766,21 @@
 
                                                                                                     </div>
 
+
                                                                                                     <p class="text-sm mb-0">{{actionRequestPending?.taskData?.actionTaken}}.</p>
+                                                                                                </a>
+                                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                                                        <div>
+                                                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Report Remarks</b></h5>
+                                                                                                            </div>
+                                                                                                        </div>
+
+                                                                                                    </div>
+
+
+                                                                                                    <p class="text-sm mb-0">{{actionRequestPending?.taskData?.makeRemarks}}.</p>
                                                                                                 </a>
                                                                                                 <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                                                                     <div class="d-flex w-100 justify-content-between">
@@ -2082,6 +2203,32 @@
                                                                                                     <div class="d-flex w-100 justify-content-between">
                                                                                                         <div>
                                                                                                             <div class="d-flex w-100 align-items-center">
+                                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Report Remarks</b></h5>
+                                                                                                            </div>
+                                                                                                        </div>
+
+                                                                                                    </div>
+
+
+                                                                                                    <p class="text-sm mb-0">{{actionRequestPending?.taskData?.makeRemarks}}.</p>
+                                                                                                </a>
+                                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                                                        <div>
+                                                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Assistant Manager Comments</b></h5>
+                                                                                                            </div>
+                                                                                                        </div>
+
+                                                                                                    </div>
+
+
+                                                                                                    <p class="text-sm mb-0">{{actionRequestPending?.taskData?.assistantManagerRemarks}}.</p>
+                                                                                                </a>
+                                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                                                        <div>
+                                                                                                            <div class="d-flex w-100 align-items-center">
                                                                                                                 <h5 class="mb-1" style="color: #0d0505"><b>Action Taken</b></h5>
                                                                                                             </div>
                                                                                                         </div>
@@ -2493,6 +2640,45 @@
                                                                                                     <div class="d-flex w-100 justify-content-between">
                                                                                                         <div>
                                                                                                             <div class="d-flex w-100 align-items-center">
+                                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Remarks on Visit</b></h5>
+                                                                                                            </div>
+                                                                                                        </div>
+
+                                                                                                    </div>
+
+
+                                                                                                    <p class="text-sm mb-0">{{actionRequestPending?.taskData?.makeRemarks}}.</p>
+                                                                                                </a>
+                                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                                                        <div>
+                                                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Assistant Manager Comments</b></h5>
+                                                                                                            </div>
+                                                                                                        </div>
+
+                                                                                                    </div>
+
+
+                                                                                                    <p class="text-sm mb-0">{{actionRequestPending?.taskData?.assistantManagerRemarks}}.</p>
+                                                                                                </a>
+                                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                                                        <div>
+                                                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Manager Comments</b></h5>
+                                                                                                            </div>
+                                                                                                        </div>
+
+                                                                                                    </div>
+
+
+                                                                                                    <p class="text-sm mb-0">{{actionRequestPending?.taskData?.cheifManagerRemarks}}.</p>
+                                                                                                </a>
+                                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                                                        <div>
+                                                                                                            <div class="d-flex w-100 align-items-center">
                                                                                                                 <h5 class="mb-1" style="color: #0d0505"><b>View Attached Document</b></h5>
                                                                                                             </div>
                                                                                                         </div>
@@ -2547,7 +2733,7 @@
                                                             <tr  >
                                                             <tr  *ngFor="let manufactureCompleteTask of manufactureCompleteTasks let i=index">
                                                                 <td >{{i+1}} </td>
-                                                                <td>{{manufactureCompleteTask.name}}</td>
+                                                                <td>{{manufactureCompleteTask.companyName}}</td>
                                                                 <td>{{manufactureCompleteTask.entryNumber}}</td>
                                                                 <td>{{manufactureCompleteTask.kraPin}}</td>
                                                                 <td>{{manufactureCompleteTask.registrationNumber}}</td>

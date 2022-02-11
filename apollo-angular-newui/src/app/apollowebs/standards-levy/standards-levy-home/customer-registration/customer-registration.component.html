@@ -107,7 +107,7 @@ type="ball-scale-multiple"
                         <div class="row">
                             <div class="form-group col-12">
                                 <label for="AllCommoditiesManufuctured1">All Commodities Manufactured or to be
-                                    Manufactured<span
+                                    Manufactured<span style="font-size: medium; color: blue;">(Commodities are comma separated)</span><span
                                             style="font-size: xx-small; color: red;">(*)Required</span></label>
                                 <textarea
                                         [class.is-invalid]="manufacturerInfo.AllCommoditiesManufuctured.invalid && manufacturerInfo.AllCommoditiesManufuctured.touched"
@@ -262,7 +262,7 @@ type="ball-scale-multiple"
                             <div class="form-group col-6">
                                 <label for="postalAddress2">Postal Address <span
                                         style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                <input type="text" ngModel="14{{companyDetail.postalAddress}}" class="form-control"
+                                <input type="text" ngModel="{{companyDetail.postalAddress}}" class="form-control"
                                        id="postalAddress2" name="postalAddress"
                                        formControlName="postalAddress" placeholder="Postal Address" disabled>
                             </div>
@@ -301,7 +301,7 @@ type="ball-scale-multiple"
                 </div>
                 <div class="row">
                     <div class="form-group col-12">
-                        <label for="AllCommoditiesManufuctured2">All Commodities Manufactured or to be Manufactured<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                        <label for="AllCommoditiesManufuctured2">All Commodities Manufactured or to be Manufactured<span style="font-size: medium; color: blue;">(Commodities are comma separated)</span><span style="font-size: xx-small; color: red;">(*)Required</span></label>
                         <textarea [class.is-invalid]="manufacturingInfo.AllCommoditiesManufuctured.invalid && manufacturingInfo.AllCommoditiesManufuctured.touched" type="text"  id="AllCommoditiesManufuctured2" formControlName="AllCommoditiesManufuctured" name="AllCommoditiesManufuctured" class="form-control" placeholder=""></textarea>
                     </div>
 
