@@ -311,6 +311,7 @@ class PvocAgentService(
 
 
     fun pvocComplaintProcessCompleted(complaintId: Long) {
+
     }
 
 
@@ -478,5 +479,19 @@ class PvocAgentService(
         return response
     }
 
+    fun receivePartnerQuery(form: PvocKebsQueryForm): ApiResponseModel {
+        return ApiResponseModel()
+    }
 
+    fun receivePartnerQueryResponse(form: PvocQueryResponse): ApiResponseModel {
+        return ApiResponseModel()
+    }
+
+    fun sendPartnerQuery(form: KebsPvocQueryForm): PvocResponseModel {
+        return PvocResponseModel()
+    }
+
+    fun sendPartnerQueryResponse(form: PvocQueryResponse): PvocResponseModel {
+        return PvocResponseModel()
+    }
 }

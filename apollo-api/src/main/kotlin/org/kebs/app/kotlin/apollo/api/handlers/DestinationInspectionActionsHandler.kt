@@ -9,6 +9,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionB
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentAuditService
+import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentStatus
 import org.kebs.app.kotlin.apollo.api.service.DestinationInspectionService
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.springframework.stereotype.Service
@@ -173,13 +174,11 @@ class DestinationInspectionActionsHandler(
                             //updating of Details in DB
                             val updatedCDDetails = daoServices.updateCdDetailsInDB(consignmentDocument, loggedInUser)
                             //Send Coi message To Single Window
-                            val localCoi = updatedCDDetails.ucrNumber?.let { daoServices.findCOC(it,"coi") }
+                            val localCoi = updatedCDDetails.ucrNumber?.let { daoServices.findCOC(it, "coi") }
                             if (localCoi != null) {
                                 daoServices.localCocCoiItems(updatedCDDetails, localCoi, loggedInUser, map)
                                 daoServices.sendLocalCoi(localCoi)
-                                updatedCDDetails.cdStandard?.let { cdStd ->
-                                    daoServices.updateCDStatus(cdStd, applicationMapProperties.mapDICdStatusTypeCOIGeneratedAndSendID)
-                                }
+                                daoServices.updateCDStatus(updatedCDDetails, ConsignmentDocumentStatus.COI_ISSUED)
                             }
                             consignmentAuditService.addHistoryRecord(updatedCDDetails.id, updatedCDDetails.ucrNumber, form.remarks, "KEBS_COI", "Send Certificate of Inspection")
                             response.data = ConsignmentDocumentDao.fromEntity(consignmentDocument)
@@ -209,7 +208,6 @@ class DestinationInspectionActionsHandler(
         }
         return ServerResponse.ok().body(response)
     }
-
 
 
     fun assignPort(req: ServerRequest): ServerResponse {
@@ -298,9 +296,11 @@ class DestinationInspectionActionsHandler(
         }
         return ServerResponse.ok().body(response)
     }
+
     fun deleteSupervisorTasks(req: ServerRequest): ServerResponse {
         return ServerResponse.ok().body(this.diBpmn.deleteTask(req.pathVariable("taskId")))
     }
+
     fun supervisorTasks(req: ServerRequest): ServerResponse {
         return ServerResponse.ok()
                 .body(this.diBpmn.listUserTasks())
@@ -375,13 +375,14 @@ class DestinationInspectionActionsHandler(
                         val data = mutableMapOf<String, Any?>()
                         data["remarks"] = form.remarks
                         data["reassign"] = form.reassign
-                        data["selfAssign"]=false
+                        data["selfAssign"] = false
                         data["officerId"] = form.officerId
                         data["owner"] = officer.get().userName
                         data["supervisor"] = loggedInUser.userName
                         data["cdUuid"] = cdUuid
                         // Start BPM process
-                        this.diBpmn.startAssignmentProcesses(data, consignmentDocument);
+                        this.diBpmn.startAssignmentProcesses(data, consignmentDocument)
+                        Thread.sleep(1000)
                         // Prepare response
                         response.responseCode = ResponseCodes.SUCCESS_CODE
                         response.message = "Inspection officer assigned"

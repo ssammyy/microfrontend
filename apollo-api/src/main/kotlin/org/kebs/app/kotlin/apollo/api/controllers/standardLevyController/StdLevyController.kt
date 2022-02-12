@@ -20,6 +20,7 @@ import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEditEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.ICompanyProfileRepository
@@ -575,12 +576,57 @@ class StdLevyController(
           createdOn= Timestamp(System.currentTimeMillis())
           taskId= stdLevyScheduleSiteVisitDTO.taskId
           assigneeId= commonDaoServices.loggedInUserDetails().id
+          entryNumber= stdLevyScheduleSiteVisitDTO.entryNumber
+          companyName= stdLevyScheduleSiteVisitDTO.companyName
+          registrationNumber= stdLevyScheduleSiteVisitDTO.registrationNumber
+          kraPin = stdLevyScheduleSiteVisitDTO.kraPin
       }
              val gson = Gson()
         KotlinLogging.logger { }.info { "INVOICE CALCULATED" + gson.toJson(standardLevyFactoryVisitReportEntity) }
       return ServerResponse(HttpStatus.OK,"Site Visit Scheduled",standardLevyService.scheduleSiteVisit(standardLevyFactoryVisitReportEntity))
 
   }
+
+    @PreAuthorize("hasAuthority('MODIFY_COMPANY')")
+    @PostMapping("/editCompanyDetails")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun editCompanyDetails(
+        @RequestBody editCompanyDTO: EditCompanyTaskToDTO
+    ): ServerResponse
+    {
+        val companyProfileEditEntity= CompanyProfileEditEntity().apply {
+            manufactureId = editCompanyDTO.companyId
+            postalAddress = editCompanyDTO.postalAddress
+            physicalAddress = editCompanyDTO.physicalAddress
+            ownership = editCompanyDTO.ownership
+
+        }
+
+        return ServerResponse(HttpStatus.OK,"Company Details Edited",standardLevyService.editCompanyDetails(companyProfileEditEntity))
+
+    }
+
+    @PreAuthorize("hasAuthority('MODIFY_COMPANY')")
+    @PostMapping("/editCompanyDetailsConfirm")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun editCompanyDetailsConfirm(
+        @RequestBody editCompanyDTO: EditCompanyTaskToDTO
+    ): ServerResponse
+    {
+        val companyProfileEntity= CompanyProfileEntity().apply {
+            id = editCompanyDTO.companyId
+            postalAddress = editCompanyDTO.postalAddress
+            physicalAddress = editCompanyDTO.physicalAddress
+            ownership = editCompanyDTO.ownership
+
+        }
+
+        return ServerResponse(HttpStatus.OK,"Company Details Edited",standardLevyService.editCompanyDetailsConfirm(companyProfileEntity))
+
+    }
+
 
     @PreAuthorize("hasAuthority('SL_ASSIGN_COMPANY')")
     @PostMapping("/assignCompany")
@@ -648,6 +694,7 @@ class StdLevyController(
             assigneeId=reportOnSiteVisitDTO.assigneeId
             taskId= reportOnSiteVisitDTO.taskId
             manufacturerEntity= reportOnSiteVisitDTO.manufacturerEntity
+            makeRemarks = reportOnSiteVisitDTO.makeRemarks
         }
         return ServerResponse(HttpStatus.OK,"Uploaded Report",standardLevyService.reportOnSiteVisit(standardLevyFactoryVisitReportEntity))
         //return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",response)
@@ -732,7 +779,7 @@ class StdLevyController(
             userType= reportOnSiteVisitDTO.userType
 
         }
-        return ServerResponse(HttpStatus.OK,"Uploaded Feedback",standardLevyService.reportOnSiteVisit(standardLevyFactoryVisitReportEntity))
+        return ServerResponse(HttpStatus.OK,"Uploaded Feedback",standardLevyService.siteVisitReportFeedback(standardLevyFactoryVisitReportEntity))
 
     }
 
@@ -894,6 +941,24 @@ class StdLevyController(
     {
 
         return standardLevyService.getManufacturerStatus()
+
+    }
+    @GetMapping("/getCompanyEditedDetails")
+    fun getCompanyEditedDetails(
+        response: HttpServletResponse,
+        @RequestParam("manufactureId") manufactureId: Long
+    ): CompanyProfileEditEntity {
+        return standardLevyService.getCompanyEditedDetails(manufactureId)
+    }
+
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
+    @GetMapping("/getCompleteTasks")
+    @ResponseBody
+    fun getCompleteTasks(): MutableList<StandardLevyFactoryVisitReportEntity>
+    {
+
+            return standardLevyService.getCompleteTasks()
+
 
     }
 

@@ -11,6 +11,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionB
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.response.PaymentStatusResult
+import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentStatus
 import org.kebs.app.kotlin.apollo.api.service.InvoicePaymentService
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
@@ -75,7 +76,10 @@ class InvoiceHandlers(
                 }
                 dt
             } ?: LocalDate.now()
-            response.data = daoServices.listExchangeRates(DATE_FORMAT.format(date))
+            response.data = mapOf(
+                    Pair("today", daoServices.listExchangeRates(DATE_FORMAT.format(date))),
+                    Pair("active", daoServices.listCurrentExchangeRates(1))
+            )
             response.message = "Success"
             response.responseCode = ResponseCodes.SUCCESS_CODE
         } catch (e: Exception) {
@@ -277,8 +281,6 @@ class InvoiceHandlers(
 
                         this.diBpmn.startGenerateDemandNote(map, data, cdDetails)
                         daoServices.upDateDemandNote(demandNote)
-                        cdDetails.varField10 = "DEMAND NOTE SUBMITTED AWAITING APPROVAL"
-                        this.daoServices.updateCdDetailsInDB(cdDetails, commonDaoServices.getLoggedInUser())
                         response.responseCode = ResponseCodes.SUCCESS_CODE
                         response.message = "Demand note submitted, awaiting supervisor approval"
                     } else {

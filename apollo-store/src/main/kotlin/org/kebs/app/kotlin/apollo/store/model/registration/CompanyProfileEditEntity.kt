@@ -1,4 +1,4 @@
-package org.kebs.app.kotlin.apollo.store.model.di
+package org.kebs.app.kotlin.apollo.store.model.registration
 
 import java.io.Serializable
 import java.sql.Timestamp
@@ -6,45 +6,38 @@ import java.util.*
 import javax.persistence.*
 
 @Entity
-@Table(name = "CFG_CD_STATUS_TYPES")
-class CdStatusTypesEntity : Serializable {
-    @Column(name = "ID")
-    @SequenceGenerator(name = "CFG_CD_STATUS_TYPES_SEQ_GEN", sequenceName = "CFG_CD_STATUS_TYPES_SEQ", allocationSize = 1)
-    @GeneratedValue(generator = "CFG_CD_STATUS_TYPES_SEQ_GEN", strategy = GenerationType.SEQUENCE)
+@Table(name = "DAT_KEBS_COMPANY_PROFILE_EDIT")
+class CompanyProfileEditEntity : Serializable {
+
     @Id
+    @Column(name = "ID")
+    @SequenceGenerator(
+        name = "DAT_KEBS_COMPANY_PROFILE_EDIT_SEQ_GEN",
+        sequenceName = "DAT_KEBS_COMPANY_PROFILE_EDIT_SEQ",
+        allocationSize = 1
+    )
+    @GeneratedValue(generator = "DAT_KEBS_COMPANY_PROFILE_EDIT_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     var id: Long = 0
 
-    @Column(name = "TYPE_NAME")
+    @Column(name = "POSTAL_ADDRESS")
     @Basic
-    var typeName: String? = null
+    var postalAddress: String? = null
 
-    @Column(name = "CATEGORY", unique = true, nullable = false)
+    @Column(name = "PHYSICAL_ADDRESS")
     @Basic
-    var category: String? = null
+    var physicalAddress: String? = null
 
-    @Column(name = "STATUS_CODE")
+    @Column(name = "OWNERSHIP")
     @Basic
-    var statusCode: String? = null
+    var ownership: String? = null
 
-    @Column(name = "DESCRIPTION")
+    @Column(name = "CLOSURE_OF_OPERATIONS")
     @Basic
-    var description: String? = null
+    var closureOfOperations: Int? = null
 
-    @Column(name = "MODIFICATION_ALLOWED")
+    @Column(name = "MANUFACTURER_ID")
     @Basic
-    var modificationAllowed: Int? = 1
-
-    @Column(name = "FINAL_STATUS", nullable = true)
-    @Basic
-    var finalStatus: Int? = 1
-
-    @Column(name = "APPLICATION_STATUS", nullable = false)
-    @Basic
-    var applicationStatus: Int? = 1
-
-    @Column(name = "STATUS")
-    @Basic
-    var status: Int? = null
+    var manufactureId: Long? = null
 
     @Column(name = "VAR_FIELD_1")
     @Basic
@@ -109,16 +102,17 @@ class CdStatusTypesEntity : Serializable {
     @Column(name = "DELETED_ON")
     @Basic
     var deletedOn: Timestamp? = null
-    override fun equals(o: Any?): Boolean {
-        if (this === o) return true
-        if (o == null || javaClass != o.javaClass) return false
-        val that = o as CdStatusTypesEntity
+
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
+        val that = other as CompanyProfileEditEntity
         return id == that.id &&
-                statusCode == that.statusCode &&
-                typeName == that.typeName &&
-                description == that.description &&
-                status == that.status &&
-                category == that.category &&
+                physicalAddress == that.physicalAddress &&
+                postalAddress == that.postalAddress &&
+                manufactureId == that.manufactureId &&
+                closureOfOperations == that.closureOfOperations &&
                 varField1 == that.varField1 &&
                 varField2 == that.varField2 &&
                 varField3 == that.varField3 &&
@@ -136,31 +130,29 @@ class CdStatusTypesEntity : Serializable {
                 deleteBy == that.deleteBy &&
                 deletedOn == that.deletedOn
     }
-
     override fun hashCode(): Int {
         return Objects.hash(
-                id,
-                typeName,
-                statusCode,
-                description,
-                category,
-                status,
-                varField1,
-                varField2,
-                varField3,
-                varField4,
-                varField5,
-                varField6,
-                varField7,
-                varField8,
-                varField9,
-                varField10,
-                createdBy,
-                createdOn,
-                modifiedBy,
-                modifiedOn,
-                deleteBy,
-                deletedOn
+            id,
+            postalAddress,
+            physicalAddress,
+            manufactureId,
+            closureOfOperations,
+            varField1,
+            varField2,
+            varField3,
+            varField4,
+            varField5,
+            varField6,
+            varField7,
+            varField8,
+            varField9,
+            varField10,
+            createdBy,
+            createdOn,
+            modifiedBy,
+            modifiedOn,
+            deleteBy,
+            deletedOn
         )
     }
 }

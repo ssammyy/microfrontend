@@ -1169,6 +1169,45 @@ class IdfCorForm : IdfEntityForm() {
     var yearOfFirstRegistration: String? = null
 }
 
+class PvocResponseModel {
+    @NotEmpty(message = "Required field")
+    val responseCode: String? = null
+
+    @NotEmpty(message = "Required field")
+    val responseMessage: String? = null
+    val data: Map<String, Any?>? = null
+}
+
+class PvocKebsQueryForm {
+    var queryReference: String? = null
+    var documentType: String? = null
+    var certNumber: String? = null
+    var rfcNumber: String? = null
+    var invoiceNumber: String? = null
+    var ucrNumber: String? = null
+    var partnerQuery: String? = null
+}
+
+class PvocQueryResponse {
+    var documentType: String? = null
+    var certNumber: String? = null
+    var queryReference: String? = null
+    var queryResponse: String? = null
+    var queryAnalysis: String? = null
+    var conclusion: String? = null
+    var linkToUploads: String? = null
+}
+
+class KebsPvocQueryForm {
+    var queryReference: String? = null
+    var documentType: String? = null
+    var certNumber: String? = null
+    var rfcNumber: String? = null
+    var invoiceNumber: String? = null
+    var ucrNumber: String? = null
+    var kebsQuery: String? = null
+}
+
 class RiskProfileForm {
     @NotEmpty(message = "Required field")
     var hsCode: String? = null

@@ -10,6 +10,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
+import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentStatus
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -307,12 +308,10 @@ class SchedulerImpl(
                                                         cdItem.cdDocId?.id ?: throw Exception("CD ID NOT FOUND")
                                                 )
                                                         .let { updatedCDDetails ->
-                                                            updatedCDDetails.cdStandard?.let { cdStd ->
-                                                                diDaoServices.updateCDStatus(
-                                                                        cdStd,
-                                                                        applicationMapProperties.mapDIStatusTypeInspectionSampleResultsReceivedId
-                                                                )
-                                                            }
+                                                            diDaoServices.updateCDStatus(
+                                                                    updatedCDDetails,
+                                                                    ConsignmentDocumentStatus.LAB_RESULT_RESULT
+                                                            )
                                                         }
 
                                             }
