@@ -152,6 +152,48 @@ class PvocClientHandler(
         return ServerResponse.ok().body(response)
     }
 
+    fun pvocPartnerQueryRequest(req: ServerRequest): ServerResponse {
+        val response = ApiResponseModel()
+        try {
+            val form = req.body(PvocKebsQueryForm::class.java)
+            validatorService.validateInputWithInjectedValidator(form)?.let {
+                response.message = "Request validation failed"
+                response.errors = it
+                response.responseCode = ResponseCodes.INVALID_CODE
+                response.data = form
+                response
+            } ?: run {
+                return ServerResponse.ok().body(pvocService.receivePartnerQuery(form))
+            }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Partner query failed", ex)
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Invalid request data"
+        }
+        return ServerResponse.ok().body(response)
+    }
+
+    fun pvocPartnerQueryResponse(req: ServerRequest): ServerResponse {
+        val response = ApiResponseModel()
+        try {
+            val form = req.body(PvocQueryResponse::class.java)
+            validatorService.validateInputWithInjectedValidator(form)?.let {
+                response.message = "Request validation failed"
+                response.errors = it
+                response.responseCode = ResponseCodes.INVALID_CODE
+                response.data = form
+                response
+            } ?: run {
+                return ServerResponse.ok().body(pvocService.receivePartnerQueryResponse(form))
+            }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Query response failed", ex)
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Invalid request data"
+        }
+        return ServerResponse.ok().body(response)
+    }
+
     fun riskProfile(req: ServerRequest): ServerResponse {
         val response = ApiResponseModel()
         try {

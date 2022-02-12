@@ -1,11 +1,10 @@
 package org.kebs.app.kotlin.apollo.api.controllers.diControllers.pvoc
 
-import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.exceptions.SupervisorNotFoundException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
-import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.ServiceRequestsEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocComplaintEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocComplaintRemarksEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocComplaintsEmailVerificationEntity
@@ -119,16 +118,16 @@ class PvocComplaints(
             iUserRepository.findAllByIdIn(usersIds).let { mpvocs ->
                 model.addAttribute("mpvocs", mpvocs)
             }
-            complaint.rfcNo?.let {
-                complaint.cocNo?.let { it1 ->
-                    iPvocQuerriesRepository.findByCocNumberOrRfcNumber(
-                        it1, it
-                    ).let { enquires ->
-                        KotlinLogging.logger {  }.info { "Queries ==> "+enquires?.count() }
-                        model.addAttribute("enquires", enquires)
-                    }
-                }
-            }
+//            complaint.rfcNo?.let {
+//                complaint.cocNo?.let { it1 ->
+//                    iPvocQuerriesRepository.findByCocNumberOrRfcNumber(
+//                        it1, it
+//                    ).let { enquires ->
+//                        KotlinLogging.logger {  }.info { "Queries ==> "+enquires?.count() }
+//                        model.addAttribute("enquires", enquires)
+//                    }
+//                }
+//            }
             model.addAttribute("complaint", complaint)
             model.addAttribute("complaintObj", PvocComplaintEntity())
             model.addAttribute("remarksObj", PvocComplaintRemarksEntity())
@@ -272,7 +271,7 @@ class PvocComplaints(
                 pvocQuery.ucrNumber = pvocQuery.ucrNumber ?: "No UCR No"
                 pvocQuery.createdBy = userDetails?.firstName + ' ' + userDetails?.lastName
                 pvocQuery.status = 1
-                pvocQuery.partnerResponceAnalysisStatus = 0
+//                pvocQuery.partnerResponceAnalysisStatus = 0
                 pvocQuery.kebsReplyReplyStatus = 0
                 pvocQuery.pvocAgentReplyStatus = 0
                 pvocQuery.createdOn = Timestamp.from(Instant.now())

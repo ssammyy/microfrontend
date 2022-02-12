@@ -30,6 +30,8 @@ class ExternalRouter {
             POST("/ncr", handler::foreignNcr)
             POST("/risk/profile", handler::riskProfile)
             POST("/idf/items", handler::idfDataWithItems)
+            POST("query/request", handler::pvocPartnerQueryRequest)
+            POST("query/response", handler::pvocPartnerQueryResponse)
         }
     }
 }

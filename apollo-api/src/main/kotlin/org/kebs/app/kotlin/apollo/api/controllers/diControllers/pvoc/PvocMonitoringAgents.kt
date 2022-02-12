@@ -288,7 +288,7 @@ class PvocMonitoringAgents(
                 model.addAttribute("orderNumber", generatingRandomInvoice("5"))
                 model.addAttribute("customerNumber", generatingRandomInvoice("5"))
                 model.addAttribute("penaltyInvoice", PvocPenaltyInvoicingEntity())
-                model.addAttribute("enquires" , coc.cocNumber?.let { iPvocQuerriesRepository.findAllByCocNumber(it) })
+//                model.addAttribute("enquires" , coc.cocNumber?.let { iPvocQuerriesRepository.findAllByCocNumber(it) })
                 iUserRoleAssignmentsRepository.findByRoleIdAndStatus(role.id, 1)
                     ?.let { it ->
                         val userList = mutableListOf<Long?>()
@@ -564,18 +564,18 @@ class PvocMonitoringAgents(
     @GetMapping("pvoc-query-details/{id}")
     fun pvocQueryDetails(@PathVariable("id") id: Long, model: Model): String {
         iPvocQuerriesRepository.findByIdOrNull(id)?.let { coc ->
-            coc.cocNumber?.let {
-                rfcCocEntityRepo.findByCocNumber(it).let { rfcDoc ->
-                    model.addAttribute("rfc", rfcDoc)
-                    rfcDoc?.partner?.let { it2 ->
-                        pvocPartnersRepository.findByIdOrNull(it2).let { partnerDetails ->
-                            model.addAttribute("partner", partnerDetails)
-                            model.addAttribute("invoice", pvocInvoicingRepository.findFirstByPartner(it2))
-                        }
-                    }
-                }
-            }
-            model.addAttribute("coc", coc.cocNumber?.let { iPvocTimelinesDataRepository.findByCocNumber(it) })
+//            coc.cocNumber?.let {
+//                rfcCocEntityRepo.findByCocNumber(it).let { rfcDoc ->
+//                    model.addAttribute("rfc", rfcDoc)
+//                    rfcDoc?.partner?.let { it2 ->
+//                        pvocPartnersRepository.findByIdOrNull(it2).let { partnerDetails ->
+//                            model.addAttribute("partner", partnerDetails)
+//                            model.addAttribute("invoice", pvocInvoicingRepository.findFirstByPartner(it2))
+//                        }
+//                    }
+//                }
+//            }
+//            model.addAttribute("coc", coc.cocNumber?.let { iPvocTimelinesDataRepository.findByCocNumber(it) })
             model.addAttribute("queryDetails", coc)
             return "destination-inspection/pvoc/monitoring/PvocQueryDetails"
         } ?: throw Exception("Query with $id id does not exist")
@@ -599,7 +599,7 @@ class PvocMonitoringAgents(
             iUserRepository.findByUserName(username).let { userDetails ->
                 pvocQuery.createdBy = userDetails?.firstName + ' ' + userDetails?.lastName
                 pvocQuery.status = 1
-                pvocQuery.partnerResponceAnalysisStatus = 0
+//                pvocQuery.partnerResponceAnalysisStatus = 0
                 pvocQuery.kebsReplyReplyStatus = 0
                 pvocQuery.pvocAgentReplyStatus = 0
                 pvocQuery.createdOn = Timestamp.from(Instant.now())
@@ -632,7 +632,7 @@ class PvocMonitoringAgents(
     @PostMapping("save-partner-response-analysis")
     fun savePartnerResponseAnalysis(@RequestParam("pvocQueryId") pvocQueryId: Long, pvocQuery: PvocQueriesEntity): String {
         iPvocQuerriesRepository.findByIdOrNull(pvocQueryId)?.let { kebsQuery ->
-            kebsQuery.partnerResponseAnalysis = pvocQuery.partnerResponseAnalysis
+//            kebsQuery.partnerResponseAnalysis = pvocQuery.partnerResponseAnalysis
             kebsQuery.pvocAgentReplyStatus = 1
             iPvocQuerriesRepository.save(kebsQuery)
             return "redirect:/api/di/pvoc/pvoc-query-details/${pvocQueryId}"
