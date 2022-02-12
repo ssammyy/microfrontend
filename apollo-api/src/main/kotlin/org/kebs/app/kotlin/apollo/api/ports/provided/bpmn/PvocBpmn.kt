@@ -17,7 +17,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.sql.Timestamp
 import java.time.Instant
-import java.util.ArrayList
+import java.util.*
 import kotlin.collections.HashMap
 
 @Service
@@ -119,7 +119,7 @@ class PvocBpmn(
                     KotlinLogging.logger { }.trace("CD : $objectId : Valid Pvoc Timeline Data found")
                     when (process) {
                         pvocMoProcessDefinitionKey -> {
-                            processInstanceId = pvocTimelinesDataEntity.pvocMonitProcessInstanceId.toString()
+//                            processInstanceId = pvocTimelinesDataEntity.pvocMonitProcessInstanceId.toString()
                         }
                         else -> {
                             //do nothing
@@ -234,13 +234,13 @@ class PvocBpmn(
                     variables["pvocTimelinesData"] = pvocTimelinesDataEntity
                     when (processKey) {
                         pvocEaProcessDefinitionKey -> {
-                            pvocTimelinesDataEntity.pvocMonitStatus?.let { status ->
-                                /*
+//                            pvocTimelinesDataEntity.pvocMonitStatus?.let { status ->
+                            /*
                                 if (status != 0) {
                                     KotlinLogging.logger { }.info("objectId : $objectId : Pvoc Application already has a application task assigned"); return null
                                 }
                                 */
-                            }
+//                            }
                         }
                         else -> {
                             //do nothing
@@ -551,9 +551,9 @@ class PvocBpmn(
                 variables["pvocAgentId"] = 0
 
                 bpmnCommonFunctions.startBpmnProcess(pvocMoProcessDefinitionKey, pvocMoBusinessKey, variables, assigneeId)?.let {
-                    pvocTimelinesData.pvocMonitProcessInstanceId = it["processInstanceId"]
-                    pvocTimelinesData.pvocMonitStartedOn = Timestamp.from(Instant.now())
-                    pvocTimelinesData.pvocMonitStatus = processStarted
+//                    pvocTimelinesData.pvocMonitProcessInstanceId = it["processInstanceId"]
+//                    pvocTimelinesData.pvocMonitStartedOn = Timestamp.from(Instant.now())
+//                    pvocTimelinesData.pvocMonitStatus = processStarted
                     pvocTimelinesDataRepo.save(pvocTimelinesData)
                     KotlinLogging.logger { }.info("objectId : $objectId : Successfully started PVOC monitoring process")
                     return it
@@ -689,8 +689,8 @@ class PvocBpmn(
         KotlinLogging.logger { }.info("End PVOC Monitoring process for objectId $objectId")
         try {
             pvocTimelinesDataRepo.findByIdOrNull(objectId.toLong())?.let { pvocTimelinesData ->
-                pvocTimelinesData.pvocMonitCompletedOn = Timestamp.from(Instant.now())
-                pvocTimelinesData.pvocMonitStatus = processCompleted
+//                pvocTimelinesData.pvocMonitCompletedOn = Timestamp.from(Instant.now())
+//                pvocTimelinesData.pvocMonitStatus = processCompleted
                 pvocTimelinesDataRepo.save(pvocTimelinesData)
             }
         } catch (e: Exception) {

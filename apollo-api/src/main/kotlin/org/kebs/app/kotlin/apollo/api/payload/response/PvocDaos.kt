@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.payload.response
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import org.kebs.app.kotlin.apollo.store.model.pvc.*
 import java.io.Serializable
 import java.sql.Timestamp
@@ -462,6 +463,76 @@ class PvocExceptionIndustrialSparesDao : Serializable {
             val daos = mutableListOf<PvocExceptionIndustrialSparesDao>()
             products.forEach { daos.add(fromEntity(it)) }
             return daos
+        }
+    }
+}
+
+
+class PvocPartnerTimelinesDataDto : Serializable {
+    var certNumber: String? = null
+    var certType: String? = null
+    var ucrNumber: String? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    var rfcDate: Timestamp? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    var dateOfInspection: Timestamp? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    var docIssueDate: Timestamp? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    var requestDateOfInspection: Timestamp? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    var cocConfirmationDate: Timestamp? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    var accDocumentsSubmissionDate: Timestamp? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    var finalDocumentsSubmissionDate: Timestamp? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    var paymentDate: Timestamp? = null
+    var rfcToInspectionDays: Long = 0
+    var inspectionToIssuanceDays: Long = 0
+    var rfcToIssuanceDays: Long = 0
+    var accDocumentsToIssuanceDays: Long = 0
+    var paymentToIssuanceDays: Long = 0
+    var finalDocumentsToIssuanceDays: Long = 0
+    var route: String? = null
+
+    companion object {
+        fun fromEntity(timeline: PvocTimelinesDataEntity): PvocPartnerTimelinesDataDto {
+            return PvocPartnerTimelinesDataDto().apply {
+                certNumber = timeline.certNumber
+                certType = timeline.certType
+                ucrNumber = timeline.ucrNumber
+                rfcDate = timeline.rfcDate
+                paymentDate = timeline.paymentDate
+                dateOfInspection = timeline.dateOfInspection
+                docIssueDate = timeline.docIssueDate
+                requestDateOfInspection = timeline.requestDateOfInspection
+                cocConfirmationDate = timeline.docConfirmationDate
+                accDocumentsSubmissionDate = timeline.accDocumentsSubmissionDate
+                finalDocumentsSubmissionDate = timeline.finalDocumentsSubmissionDate
+                rfcToIssuanceDays = timeline.rfcToIssuanceDays
+                rfcToInspectionDays = timeline.rfcToInspectionDays
+                accDocumentsToIssuanceDays = timeline.accDocumentsToIssuanceDays
+                paymentToIssuanceDays = timeline.paymentToIssuanceDays
+                finalDocumentsToIssuanceDays = timeline.finalDocumentsToIssuanceDays
+                route = timeline.route
+            }
+        }
+
+        fun fromList(timelines: List<PvocTimelinesDataEntity>): List<PvocPartnerTimelinesDataDto> {
+            val dtos = mutableListOf<PvocPartnerTimelinesDataDto>()
+            timelines.forEach {
+                dtos.add(fromEntity(it))
+            }
+            return dtos
         }
     }
 }

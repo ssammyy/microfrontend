@@ -9,6 +9,7 @@ import org.kebs.app.kotlin.apollo.api.payload.request.*
 import org.kebs.app.kotlin.apollo.api.payload.response.PvocComplaintCategoryDao
 import org.kebs.app.kotlin.apollo.api.payload.response.PvocComplaintDao
 import org.kebs.app.kotlin.apollo.api.payload.response.PvocComplaintRecommendationDao
+import org.kebs.app.kotlin.apollo.api.payload.response.PvocPartnerTimelinesDataDto
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.PvocBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
@@ -26,6 +27,7 @@ import java.sql.Timestamp
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 enum class ComplaintStatus {
     NEW, PVOC_APPROVED, PVOC_REJECTED
@@ -39,7 +41,7 @@ class PvocAgentService(
         private val complaintSubCategoryRepo: IPvocComplaintCertificationsSubCategoryRepo,
         private val pvocComplaintRemarksEntityRepo: PvocComplaintRemarksEntityRepo,
         private val commonDaoServices: CommonDaoServices,
-        private val cocRepo: ICocsRepository,
+        private val timelinesRepository: IPvocTimelinesDataRepository,
         private val partnerService: PvocPartnerService,
         private val apiClientService: ApiClientService,
         private val partnerQuerriesRepository: IPvocQuerriesRepository,
@@ -50,6 +52,7 @@ class PvocAgentService(
         private val properties: ApplicationMapProperties
 ) {
     val DATE_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd")
+    val TIMELINE_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyyMM")
     fun getComplaintCategories(): ApiResponseModel {
         val response = ApiResponseModel()
         val categories = this.complaintCategoryRepo.findAllByStatus(1)
@@ -65,6 +68,20 @@ class PvocAgentService(
         response.data = PvocComplaintRecommendationDao.fromList(categories)
         response.responseCode = ResponseCodes.SUCCESS_CODE
         response.message = "Success"
+        return response
+    }
+
+    fun timelineIssues(yearMonth: Optional<String>): ApiResponseModel {
+        val partner = commonDaoServices.loggedInPartnerDetails()
+        val issues = when {
+            yearMonth.isPresent -> this.timelinesRepository.findByRecordYearMonthAndPartnerId(yearMonth.get(), partner.id)
+            else -> this.timelinesRepository.findByRecordYearMonthAndPartnerId(TIMELINE_DATE_FORMAT.format(LocalDateTime.now()), partner.id)
+        }
+        val response = ApiResponseModel()
+        response.data = PvocPartnerTimelinesDataDto.fromList(issues)
+        response.message = "Success"
+        response.responseCode = ResponseCodes.SUCCESS_CODE
+
         return response
     }
 
@@ -390,7 +407,6 @@ class PvocAgentService(
         }
         return response
     }
-
     fun receiveRfcCoi(form: RfcCoiEntityForm): ApiResponseModel {
         val response = ApiResponseModel()
         try {

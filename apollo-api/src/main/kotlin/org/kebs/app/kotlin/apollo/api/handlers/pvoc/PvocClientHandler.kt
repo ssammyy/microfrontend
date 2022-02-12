@@ -1,6 +1,5 @@
 package org.kebs.app.kotlin.apollo.api.handlers.pvoc
 
-import com.fasterxml.jackson.databind.exc.InvalidFormatException
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
@@ -190,6 +189,18 @@ class PvocClientHandler(
             KotlinLogging.logger { }.error("Query response failed", ex)
             response.responseCode = ResponseCodes.FAILED_CODE
             response.message = "Invalid request data"
+        }
+        return ServerResponse.ok().body(response)
+    }
+
+    fun pvocTimelineIssues(req: ServerRequest): ServerResponse {
+        var response = ApiResponseModel()
+        try {
+            response = pvocService.timelineIssues(req.param("yearMonth"))
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Time line issues failed", ex)
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.message = "Failed to process request"
         }
         return ServerResponse.ok().body(response)
     }

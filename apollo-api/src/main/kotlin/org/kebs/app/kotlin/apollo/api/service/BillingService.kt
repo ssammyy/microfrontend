@@ -4,12 +4,14 @@ import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.CdDemandNoteEntity
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.invoice.*
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.data.domain.PageRequest
 import org.springframework.scheduling.annotation.Scheduled
@@ -35,6 +37,7 @@ class BillingService(
         private val billingLimitsRepository: IBillingLimitsRepository,
         private val batchInvoiceRepository: InvoiceBatchDetailsRepo,
         private val invoiceDaoService: InvoiceDaoService,
+        private val diServiceDao: DestinationInspectionDaoServices,
         private val billTransactionRepo: IBillTransactionsEntityRepository,
         private val commonDaoServices: CommonDaoServices,
 
@@ -122,6 +125,39 @@ class BillingService(
                 this.addBillTransaction(transactionEntity, corporate.get())
                 return saved
             }
+        }
+        return null
+
+    }
+
+    /**
+     * Registers transaction for billing and send assigns a temporally transaction reference/receipt
+     *
+     * @param demandNote demand node to add for billing
+     * @param map application properties
+     */
+    fun registerPvocTransaction(transactionEntity: BillTransactionsEntity, partner: PvocPartnersEntity): BillTransactionsEntity? {
+        // Find corporate by supplied indentifier(Courier Good) or importer Pin
+        val corporate = corporateCustomerRepository.findById(partner.billingId!!)
+        val map = commonDaoServices.serviceMapDetails(properties.mapImportInspection)
+        // Add transaction to billing if corporate billing exists
+        if (corporate.isPresent) {
+            transactionEntity.fobAmount = this.diServiceDao.convertAmount(transactionEntity.fobAmount, transactionEntity.currency
+                    ?: "USD")
+            transactionEntity.amount = this.diServiceDao.convertAmount(transactionEntity.amount, transactionEntity.currency
+                    ?: "USD")
+            transactionEntity.currency = "KES"
+            transactionEntity.corporateId = corporate.get().id
+            transactionEntity.transactionType = "PVOC_CHARGE"
+            transactionEntity.paidStatus = 0
+            transactionEntity.tempReceiptNumber = generateRefNoteNumber(corporate.get().accountLimits, map)
+            transactionEntity.status = 1
+            transactionEntity.transactionDate = Timestamp.from(Instant.now())
+            transactionEntity.createdBy = transactionEntity.createdBy
+            transactionEntity.createdOn = Timestamp.from(Instant.now())
+            val saved = billTransactionRepo.save(transactionEntity)
+            this.addBillTransaction(transactionEntity, corporate.get())
+            return saved
         }
         return null
 

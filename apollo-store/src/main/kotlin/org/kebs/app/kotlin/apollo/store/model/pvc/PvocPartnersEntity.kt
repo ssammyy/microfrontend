@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.model.pvc
 
 import java.io.Serializable
+import java.math.BigDecimal
 import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*
@@ -19,6 +20,10 @@ class PvocPartnersEntity : Serializable {
     @Basic
     var apiClientId: Long? = 0
 
+    @JoinColumn(name = "PARTNER_TYPE_ID", referencedColumnName = "ID", nullable = true)
+    @ManyToOne(fetch = FetchType.LAZY)
+    var partnerType: PvocPartnerTypeEntity? = null
+
     @Column(name = "BILLING_ID", nullable = true)
     @Basic
     var billingId: Long? = 0
@@ -27,7 +32,7 @@ class PvocPartnersEntity : Serializable {
     @Basic
     var partnerRefNo: String? = null
 
-    @Column(name = "PARTNER_NAME", nullable = false, length = 1000)
+    @Column(name = "PARTNER_NAME", nullable = false, length = 150)
     @Basic
     var partnerName: String? = null
 
@@ -35,11 +40,11 @@ class PvocPartnersEntity : Serializable {
     @Basic
     var partnerPin: String? = null
 
-    @Column(name = "PARTNER_ADDRESS_1", nullable = false, length = 1000)
+    @Column(name = "PARTNER_ADDRESS_1", nullable = false, length = 150)
     @Basic
     var partnerAddress1: String? = null
 
-    @Column(name = "PARTNER_ADDRESS_2", nullable = true, length = 1000)
+    @Column(name = "PARTNER_ADDRESS_2", nullable = true, length = 150)
     @Basic
     var partnerAddress2: String? = null
 
@@ -70,6 +75,10 @@ class PvocPartnersEntity : Serializable {
     @JoinColumn(name = "PARTNER_REGION", referencedColumnName = "ID", nullable = true)
     @ManyToOne
     var partnerRegion: PvocPartnersRegionEntity? = null
+
+    @Column(name = "CHARGE_RATE", nullable = true, precision = 10, scale = 2)
+    @Basic
+    var chargeRate: BigDecimal? = null
 
     @Column(name = "STATUS", nullable = true, precision = 0)
     @Basic

@@ -3,7 +3,8 @@ package org.kebs.app.kotlin.apollo.api.controllers.diControllers.pvoc
 
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.exceptions.SupervisorNotFoundException
-import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.CocsEntity
+import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.*
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.data.domain.PageRequest
@@ -159,16 +160,16 @@ class PvocMonitoringAgents(
                         when {
                             auth.authorities.stream().anyMatch { authority -> authority.authority == "PVOC_APPLICATION_READ" || authority.authority == "PVOC_APPLICATION_PROCESS" } -> {
                                 when (filter) {
-                                    "filter" -> {
-                                        iPvocTimelinesDataRepository.findAllByCocNumberNotNull(page).let { pvocTimelines ->
-                                            model.addAttribute("pvocTimelines", pvocTimelines)
-                                        }
-                                    }
-                                    else -> {
-                                        iPvocTimelinesDataRepository.findAllByCocNumberNotNull(page).let { pvocTimelines ->
-                                            model.addAttribute("pvocTimelines", pvocTimelines)
-                                        }
-                                    }
+//                                    "filter" -> {
+//                                        iPvocTimelinesDataRepository.findAllByCocNumberNotNull(page).let { pvocTimelines ->
+//                                            model.addAttribute("pvocTimelines", pvocTimelines)
+//                                        }
+//                                    }
+//                                    else -> {
+//                                        iPvocTimelinesDataRepository.findAllByCocNumberNotNull(page).let { pvocTimelines ->
+//                                            model.addAttribute("pvocTimelines", pvocTimelines)
+//                                        }
+//                                    }
                                 }
                             }
                             else -> throw SupervisorNotFoundException("Only users with the following privilege PVOC Appliaction READ or PVOC APPLICATION PROCESS, can access this page")
@@ -315,7 +316,7 @@ class PvocMonitoringAgents(
                                     partnerDetails?.partnerName?.let { it1 -> pvocAgentContractEntityRepo.findByServiceRenderedIdAndName(2, it1.toUpperCase())
                                     }?.let { pvocAgentContract ->
                                         val applicableRoyalty = pvocAgentContract.applicableRoyalty
-                                        coc.cocNumber?.let { it1 ->
+                                        coc.certNumber?.let { it1 ->
                                             pvocRevenueReportEntityRepo.findByCocNo(it1)?.let { revenueReport ->
                                                 val inpectionFee = revenueReport.inspectionFee?.toLong()
                                                 val intialPenalty = inpectionFee?.times(10)
@@ -323,9 +324,10 @@ class PvocMonitoringAgents(
                                                 var totalPenalties = 0.0
                                                 val fobValue = revenueReport.fobValue?.toDouble()
                                                 var fobToKebs = 0.0
-                                                val royaltyValue = applicableRoyalty?.let { it1 -> inpectionFee?.times(it1) }?: 0
+                                                val royaltyValue = applicableRoyalty?.let { it1 -> inpectionFee?.times(it1) }
+                                                        ?: 0
                                                 if (intialPenalty != null) {
-                                                    latePenalties = when(partnerDetails.partnerName) {
+                                                    latePenalties = when (partnerDetails.partnerName) {
                                                         "QISJ" -> {
                                                             royaltyValue.times(1.15).times(penaltyMonths)
                                                         }
@@ -471,7 +473,7 @@ class PvocMonitoringAgents(
     @PostMapping("coc-timelines-hod-status-update/{id}")
     fun cocTimelineHodStatusUpdate(@PathVariable("id") id: Long, pvocTimelineData: PvocTimelinesDataEntity): String {
         iPvocTimelinesDataRepository.findByIdOrNull(id)?.let { doc ->
-            doc.hodStatus = pvocTimelineData.hodStatus
+//            doc.hodStatus = pvocTimelineData.hodStatus
             iPvocTimelinesDataRepository.save(doc)
             return "redirect:/api/di/pvoc/coc-with-timeline-issue/${id}"
         } ?: throw Exception("Pvoc Timeline document with {id} id does not exist")
@@ -480,7 +482,7 @@ class PvocMonitoringAgents(
     @PostMapping("coc-timelines-hod-assign-mpvoc/{id}")
     fun cocTimelineHodAssignMpvoc(@PathVariable("id") id: Long, pvocTimelineData: PvocTimelinesDataEntity): String {
         iPvocTimelinesDataRepository.findByIdOrNull(id)?.let { doc ->
-            doc.mpvocAgent = pvocTimelineData.mpvocAgent
+//            doc.mpvocAgent = pvocTimelineData.mpvocAgent
             iPvocTimelinesDataRepository.save(doc)
             return "redirect:/api/di/pvoc/coc-with-timeline-issue/${id}"
         } ?: throw Exception("Pvoc Timeline document with {id} id does not exist")

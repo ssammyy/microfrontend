@@ -609,7 +609,7 @@ class CoiEntityForm {
     var rfcDate: Timestamp? = null
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    var cocIssueDate: Timestamp? = null
+    var coiIssueDate: Timestamp? = null
 
 
     @NotEmpty(message = "Required field")
@@ -755,6 +755,10 @@ class CorEntityForm {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     var corIssueDate: Timestamp? = null
 
+    @NotNull(message = "RFC date is required")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var rfcDate: Timestamp? = null
+
     @NotEmpty(message = "Country of supply is required")
     var countryOfSupply: String? = null
 
@@ -854,6 +858,9 @@ class CorEntityForm {
     var inspectionFee: Double? = null
 
     @NotEmpty(message = "Required field")
+    var inspectionFeeReceipt: String? = null
+
+    @NotEmpty(message = "Required field")
     var transmission: String? = null
 
     @NotEmpty(message = "Required field")
@@ -869,6 +876,9 @@ class CorEntityForm {
     @NotNull(message = "Required field")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     var inspectionFeePaymentDate: Timestamp? = null
+
+    @NotEmpty(message = "Required field")
+    var route: String? = null
 
     @NotNull(message = "Required field")
     @Min(value = 1, message = "Varsion cannot be less than one")
