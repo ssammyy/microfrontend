@@ -1,7 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.repo
 
 import org.kebs.app.kotlin.apollo.store.model.*
-import org.kebs.app.kotlin.apollo.store.model.di.*
+import org.kebs.app.kotlin.apollo.store.model.di.CdImporterDetailsEntity
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
@@ -104,7 +104,8 @@ interface IRemarksRepository : HazelcastRepository<RemarksEntity, Long>{
 
 @Repository
 interface ICocsRepository : HazelcastRepository<CocsEntity, Long> {
-    fun findByUcrNumberAndCocType(ucrNumber: String,docType: String): CocsEntity?
+    fun findByUcrNumberAndCocType(ucrNumber: String, docType: String): CocsEntity?
+    fun findByUcrNumberAndCocTypeAndVersion(ucrNumber: String, docType: String, version: Long?): CocsEntity?
     fun findFirstByCocNumber(cocNumber: String): CocsEntity?
     fun findFirstByCocNumberAndCocNumberIsNotNullOrCoiNumberAndCoiNumberIsNotNull(cocNumber: String,coiNumber: String): Optional<CocsEntity>
     fun findFirstByCocNumberIsNotNullAndCocTypeAndConsignmentDocIdIsNotNull(cocType: String): CocsEntity?

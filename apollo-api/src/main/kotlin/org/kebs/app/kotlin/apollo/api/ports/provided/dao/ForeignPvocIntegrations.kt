@@ -41,7 +41,7 @@ class ForeignPvocIntegrations(
             map: ServiceMapsEntity,
     ): CocsEntity? {
         coc.ucrNumber?.let { ucrNumber ->
-            cocRepo.findByUcrNumberAndCocType(ucrNumber, "COC")
+            cocRepo.findByUcrNumberAndCocTypeAndVersion(ucrNumber, "COC", coc.version)
                     ?.let { coc ->
                         return null
                     }
@@ -89,7 +89,10 @@ class ForeignPvocIntegrations(
                             portOfDestination = coc.portOfDestination ?: "UNKOWN"
                             shipmentMode = coc.shipmentMode ?: "UNKNOWN"
                             countryOfSupply = coc.countryOfSupply ?: "UNKNOWN"
+                            finalInvoiceFobValue = coc.finalInvoiceFobValue ?: 0.0
+                            finalInvoiceExchangeRate = coc.finalInvoiceExchangeRate ?: 0.0
                             finalInvoiceCurrency = coc.finalInvoiceCurrency ?: "KES"
+                            finalInvoiceNumber = coc.finalInvoiceNumber ?: "NA"
                             finalInvoiceDate = coc.finalInvoiceDate ?: commonDaoServices.getTimestamp()
                             shipmentSealNumbers = coc.shipmentSealNumbers ?: "UNKNOWN"
                             shipmentContainerNumber = coc.shipmentContainerNumber ?: "UNKNOWN"
@@ -126,7 +129,7 @@ class ForeignPvocIntegrations(
             map: ServiceMapsEntity,
     ): CocsEntity? {
         ncr.ucrNumber?.let { ucrNumber ->
-            cocRepo.findByUcrNumberAndCocType(ucrNumber, "NCR")
+            cocRepo.findByUcrNumberAndCocTypeAndVersion(ucrNumber, "NCR", ncr.version)
                     ?.let { coc ->
                         return null
                     }
@@ -173,6 +176,9 @@ class ForeignPvocIntegrations(
                             portOfDestination = ncr.portOfDestination ?: "UNKOWN"
                             shipmentMode = ncr.shipmentMode ?: "UNKNOWN"
                             countryOfSupply = ncr.countryOfSupply ?: "UNKNOWN"
+                            finalInvoiceFobValue = ncr.finalInvoiceFobValue ?: 0.0
+                            finalInvoiceNumber = ncr.finalInvoiceNumber ?: "NA"
+                            finalInvoiceExchangeRate = ncr.finalInvoiceExchangeRate ?: 0.0
                             finalInvoiceCurrency = ncr.finalInvoiceCurrency ?: "KES"
                             finalInvoiceDate = ncr.finalInvoiceDate ?: commonDaoServices.getTimestamp()
                             shipmentSealNumbers = ncr.shipmentSealNumbers ?: "UNKNOWN"
@@ -242,7 +248,7 @@ class ForeignPvocIntegrations(
             map: ServiceMapsEntity,
     ): CocsEntity? {
         coi.ucrNumber?.let { ucrNumber ->
-            cocRepo.findByUcrNumberAndCocType(ucrNumber, "COI")
+            cocRepo.findByUcrNumberAndCocTypeAndVersion(ucrNumber, "COI", coi.version)
                     ?.let { coc ->
                         return null
                     }
@@ -288,6 +294,9 @@ class ForeignPvocIntegrations(
                     portOfDestination = coi.portOfDestination ?: "UNKOWN"
                     shipmentMode = coi.shipmentMode ?: "UNKNOWN"
                     countryOfSupply = coi.countryOfSupply ?: "UNKNOWN"
+                    finalInvoiceFobValue = coi.finalInvoiceFobValue ?: 0.0
+                    finalInvoiceNumber = coi.finalInvoiceNumber ?: "NA"
+                    finalInvoiceExchangeRate = coi.finalInvoiceExchangeRate ?: 0.0
                     finalInvoiceCurrency = coi.finalInvoiceCurrency ?: "KES"
                     finalInvoiceDate = coi.finalInvoiceDate ?: commonDaoServices.getTimestamp()
                     shipmentSealNumbers = coi.shipmentSealNumbers ?: "UNKNOWN"
@@ -349,17 +358,20 @@ class ForeignPvocIntegrations(
         }
     }
 
+    /**
+     * Apply penalty configured or apply the default 15% penalty
+     */
     private fun calculatePenalty(amount: BigDecimal?, first: Boolean, route: String?, user: PvocPartnersEntity): BigDecimal? {
         return this.timelinePenaltiesRepository.findByPartnerTypeAndRoute(user.partnerType, route
                 ?: "OTHER")?.let { penalty ->
             if (first) {
-                return amount?.times(penalty.firstPenalty ?: BigDecimal.ZERO)
+                return (amount?.times(penalty.firstPenalty ?: BigDecimal.ZERO))?.divide(BigDecimal.valueOf(100))
             }
-            return amount?.times(penalty.applicablePenalty ?: BigDecimal.ZERO)
-        }
+            return (amount?.times(penalty.applicablePenalty ?: BigDecimal.ZERO))?.divide(BigDecimal.valueOf(100))
+        } ?: amount?.times(BigDecimal.valueOf(15).divide(BigDecimal.valueOf(100)))
     }
 
-    private fun checkTimelineIssue(timeline: PvocTimelinesDataEntity, transaction: BillTransactionsEntity, user: PvocPartnersEntity): Boolean {
+    private fun checkTimelineIssue(timeline: PvocTimelinesDataEntity, transaction: BillTransactionsEntity, user: PvocPartnersEntity, version: Long?): Boolean {
         val rfcToIspectionDays = timeline.rfcDate?.let { rfcDate ->
             timeline.dateOfInspection?.let { inspectionDate ->
                 Duration.between(rfcDate.toLocalDateTime(), inspectionDate.toLocalDateTime()).toDays()
@@ -453,22 +465,30 @@ class ForeignPvocIntegrations(
         }
         // TRX: Add billing details
         val rate: BigDecimal
-        if (BigDecimal.ZERO < user.chargeRate ?: BigDecimal.ZERO) {
+        if ((user.chargeRate ?: BigDecimal.ZERO) > BigDecimal.ZERO) {
             rate = user.chargeRate ?: BigDecimal.ZERO
         } else {
             rate = user.partnerType?.chargeAmount ?: BigDecimal.ZERO
         }
         transaction.amount = transaction.fobAmount?.let { fob -> fob.times(rate).divide(BigDecimal.valueOf(100)) }
+        // Skip add transaction when amount is less than or equal to zero or version is greater than one
         if (BigDecimal.ZERO < transaction.amount) {
             transaction.rate = rate
-            billingService.registerPvocTransaction(transaction, user)
+            if (version ?: 0 <= 1) {
+                val trx = billingService.registerPvocTransaction(transaction, user)
+                KotlinLogging.logger { }.info("Transaction added: ${trx?.tempReceiptNumber}")
+            } else {
+                KotlinLogging.logger { }.info("Transaction versioned: $version")
+            }
+        } else {
+            KotlinLogging.logger { }.warn("Transaction did not have any amount: ${transaction.amount}")
         }
         // Save timeline if any violation is
         var timeAdded = false
         if (timeline.rfcToInspectionViolation || timeline.rfcToIssuanceViolation || timeline.inspectionToIssuanceViolation || timeline.paymentToIssuanceViolation || timeline.accDocumentsToIssuanceViolation || timeline.finalDocumentsToIssuanceViolation) {
             val date = LocalDateTime.now()
             timeline.royaltyValue = transaction.amount
-            timeline.currencyCode = transaction.currency ?: ""
+            timeline.currencyCode = transaction.currency ?: "KES"
             timeline.applicablePenalty = calculatePenalty(transaction.amount, true, timeline.route, user)
             timeline.createdOn = Timestamp.valueOf(date)
             timeline.createdBy = commonDaoServices.loggedInUserAuthentication().name
@@ -485,16 +505,15 @@ class ForeignPvocIntegrations(
 
     fun checkCocCoiDocumentCompliance(entity: CocsEntity, user: PvocPartnersEntity, documentType: String) {
         val transaction = BillTransactionsEntity()
-        transaction.fobAmount = entity.finalInvoiceFobValue?.let { BigDecimal.valueOf(it) } ?: BigDecimal.ZERO
+        transaction.fobAmount = BigDecimal.valueOf(entity.finalInvoiceFobValue)
         transaction.description = "$documentType PVOC charges"
         transaction.currency = entity.finalInvoiceCurrency
         transaction.varField1 = "PVOC$documentType"
         transaction.invoiceNumber = entity.finalInvoiceNumber
+        transaction.transactionId = entity.id.toString()
 
         val timeline = PvocTimelinesDataEntity()
-
         timeline.certType = documentType
-
         timeline.ucrNumber = entity.ucrNumber
         timeline.route = entity.route
         timeline.docConfirmationDate = entity.dateOfInspection
@@ -505,7 +524,7 @@ class ForeignPvocIntegrations(
         timeline.rfcDate = entity.rfcDate?.let { Timestamp(it.time) }
         timeline.partnerId = user.id
         timeline.recordId = entity.id
-        transaction.invoiceNumber = entity.finalInvoiceNumber
+
         when (documentType) {
             "COC" -> {
                 timeline.docIssueDate = entity.cocIssueDate
@@ -520,8 +539,7 @@ class ForeignPvocIntegrations(
                 timeline.certNumber = entity.cocNumber
             }
         }
-        transaction.transactionId = entity.id.toString()
-        if (checkTimelineIssue(timeline, transaction, user)) {
+        if (checkTimelineIssue(timeline, transaction, user, entity.version)) {
             KotlinLogging.logger { }.info("Added $documentType timeline issue: ${timeline.id}")
         }
     }
@@ -548,7 +566,7 @@ class ForeignPvocIntegrations(
         timeline.partnerId = user.id
         timeline.recordId = entity.id
         transaction.transactionId = entity.id.toString()
-        if (checkTimelineIssue(timeline, transaction, user)) {
+        if (checkTimelineIssue(timeline, transaction, user, entity.version)) {
             KotlinLogging.logger { }.info("Added COR timeline issue: ${timeline.id}")
         }
 
@@ -562,7 +580,7 @@ class ForeignPvocIntegrations(
     ): CorsBakEntity? {
         var localCor = CorsBakEntity()
         //Get CD Item by cd doc id
-        this.corsBakRepository.findByChasisNumber(cor.chasisNumber!!)?.let {
+        this.corsBakRepository.findByChasisNumberAndVersion(cor.chasisNumber!!, cor.version)?.let {
             return null
         } ?: run {
             // Fill checklist details

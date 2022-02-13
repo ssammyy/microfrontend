@@ -13,8 +13,8 @@ class PvocTimelinePenalties : Serializable {
     @Id
     var id: Long? = null
 
-    @Column(name = "PARTNER_TYPE", unique = true)
-    @Basic
+    @JoinColumn(name = "PARTNER_TYPE", referencedColumnName = "ID")
+    @ManyToOne(fetch = FetchType.LAZY)
     var partnerType: PvocPartnerTypeEntity? = null
 
     @Column(name = "ROUTE")

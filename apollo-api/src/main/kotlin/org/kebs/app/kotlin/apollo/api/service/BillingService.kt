@@ -6,6 +6,7 @@ import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.CdDemandNoteEntity
@@ -158,9 +159,9 @@ class BillingService(
             val saved = billTransactionRepo.save(transactionEntity)
             this.addBillTransaction(transactionEntity, corporate.get())
             return saved
+        } else {
+            throw ExpectedDataNotFound("Could not find associated billing account")
         }
-        return null
-
     }
 
     fun billTransactions(billId: Long, corporateId: Long): ApiResponseModel {
