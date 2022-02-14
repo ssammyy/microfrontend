@@ -13,13 +13,14 @@
                     <div class="card-body">
                         <div class="btn-group btn-group-sm" role="group" aria-label="Applications Status">
                             <label for="filter-date">Filter Currency</label>
-                            <input class="search-form-input" id="filter-date"  type="date" (change)="filterByCurrency($event)"
+                            <input class="search-form-input" id="filter-date" type="date"
+                                   (change)="filterByCurrency($event)"
                                    placeholder="dd-mm-yyyy"
                                    min="2021-01-01" max="2050-12-31">
                         </div>
                         <div class="btn-group btn-group-sm pull-right" role="group"
                              aria-label="Applications Status">
-                            <input type="file" accept="text/csv"  [hidden]="true"
+                            <input type="file" accept="text/csv" [hidden]="true"
                                    (change)="uploadRates($event)" #uploadFile>
                             <button class="btn btn-sm btn-primary mr-7"
 
@@ -27,11 +28,22 @@
 
                             </button>
                         </div>
-                        <div class="table-responsive table-striped">
-                            <ng2-smart-table class="table table-hover" [settings]="settings"
-                                             [source]="dataSet">
-                            </ng2-smart-table>
-                        </div>
+                        <mat-tab-group [(selectedIndex)]="activeTab">
+                            <mat-tab label="TODAY'S RATES" [tabIndex]="0">
+                                <div class="table-responsive table-striped">
+                                    <ng2-smart-table class="table table-hover" [settings]="settings"
+                                                     [source]="dataSet">
+                                    </ng2-smart-table>
+                                </div>
+                            </mat-tab>
+                            <mat-tab label="ACTIVE RATES" [tabIndex]="1">
+                                <div class="table-responsive table-striped">
+                                    <ng2-smart-table class="table table-hover" [settings]="settings"
+                                                     [source]="activeDataSet">
+                                    </ng2-smart-table>
+                                </div>
+                            </mat-tab>
+                        </mat-tab-group>
                     </div>
                 </div>
             </div>

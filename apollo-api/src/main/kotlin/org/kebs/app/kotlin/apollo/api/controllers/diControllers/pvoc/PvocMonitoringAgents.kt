@@ -3,7 +3,8 @@ package org.kebs.app.kotlin.apollo.api.controllers.diControllers.pvoc
 
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.exceptions.SupervisorNotFoundException
-import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.CocsEntity
+import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.*
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.data.domain.PageRequest
@@ -23,30 +24,27 @@ import kotlin.streams.asSequence
 @Controller
 @RequestMapping("/api/di/pvoc/")
 class PvocMonitoringAgents(
-    private val iCocsRepository: ICocsRepository,
-    private val iCdSampleCollectionEntityRepo: ICdSampleCollectionEntityRepo,
-    private val iPvocCoiTimelinesDataEntityRepo: IPvocCoiTimelinesDataEntityRepo,
-    private val iCdItemDetailsRepo: ICdItemDetailsRepo,
-    private val iDestinationInspectionRepository: IDestinationInspectionRepository,
-    private val iPvocTimelinesDataRepository: IPvocTimelinesDataRepository,
-    private val iPvocWaiversRemarksRepo: IPvocWaiversRemarksRepo,
-    private val iUserRepository: IUserRepository,
-    private val iUserRoleAssignmentsRepository: IUserRoleAssignmentsRepository,
-    private val iPvocAgentMonitoringStatusEntityRepo: IPvocAgentMonitoringStatusEntityRepo,
-    private val iUserRolesRepository: IUserRolesRepository,
-    private val iPvocTimelineDataPenaltyInvoiceEntityRepo: PvocTimelineDataPenaltyInvoiceEntityRepo,
-    private val iPvocQuerriesRepository: IPvocQuerriesRepository,
-    private val rfcCocEntityRepo: IRfcCocEntityRepo,
-    private val commonDaoServices: CommonDaoServices,
-    private val pvocInvoicingRepository: IPvocInvoicingRepository,
-    private val pvocPartnersRepository: IPvocPartnersRepository,
-    private val pvocAgentContractEntityRepo: PvocAgentContractEntityRepo,
-    private val pvocRevenueReportEntityRepo: PvocRevenueReportEntityRepo,
-    private val pvocPenaltyInvoicingEntityRepo: PvocPenaltyInvoicingEntityRepo,
-    private val iPvocCorTimelinesDataEntityRepo: IPvocCorTimelinesDataEntityRepo
-//        private val iUserRoleAssignmentsRepository: IUserRoleAssignmentsRepository
+        private val iCocsRepository: ICocsRepository,
+        private val iCdSampleCollectionEntityRepo: ICdSampleCollectionEntityRepo,
+        private val iCdItemDetailsRepo: ICdItemDetailsRepo,
+        private val iDestinationInspectionRepository: IDestinationInspectionRepository,
+        private val iPvocTimelinesDataRepository: IPvocTimelinesDataEntityRepository,
+        private val iPvocWaiversRemarksRepo: IPvocWaiversRemarksRepo,
+        private val iUserRepository: IUserRepository,
+        private val iUserRoleAssignmentsRepository: IUserRoleAssignmentsRepository,
+        private val iPvocAgentMonitoringStatusEntityRepo: IPvocAgentMonitoringStatusEntityRepo,
+        private val iUserRolesRepository: IUserRolesRepository,
+        private val iPvocTimelineDataPenaltyInvoiceEntityRepo: PvocTimelineDataPenaltyInvoiceEntityRepo,
+        private val iPvocQuerriesRepository: IPvocQuerriesRepository,
+        private val rfcCocEntityRepo: IRfcCocEntityRepo,
+        private val commonDaoServices: CommonDaoServices,
+        private val pvocInvoicingRepository: IPvocInvoicingRepository,
+        private val pvocPartnersRepository: IPvocPartnersRepository,
+        private val pvocAgentContractEntityRepo: PvocAgentContractEntityRepo,
+        private val pvocRevenueReportEntityRepo: PvocRevenueReportEntityRepo,
+        private val pvocPenaltyInvoicingEntityRepo: PvocPenaltyInvoicingEntityRepo,
 
-) {
+        ) {
 
     // Generating random invoice numbers
     private fun generatingRandomInvoice(stringLen: String): String {
@@ -136,7 +134,7 @@ class PvocMonitoringAgents(
             model.addAttribute("coc", sampleDetails)
             model.addAttribute("monitoring_status", iPvocAgentMonitoringStatusEntityRepo.findAllByStatus(1))
             model.addAttribute("remarkData", PvocWaiversRemarksEntity())
-            model.addAttribute("pvocTimelineData", PvocTimelinesDataEntity())
+            model.addAttribute("pvocTimelineData", PvocSealIssuesEntity())
             return "destination-inspection/pvoc/monitoring/GoodsSampledByMarketSurveillanceDetails"
         }?: throw Exception("item with id ${id} does not exist")
 
@@ -159,16 +157,16 @@ class PvocMonitoringAgents(
                         when {
                             auth.authorities.stream().anyMatch { authority -> authority.authority == "PVOC_APPLICATION_READ" || authority.authority == "PVOC_APPLICATION_PROCESS" } -> {
                                 when (filter) {
-                                    "filter" -> {
-                                        iPvocTimelinesDataRepository.findAllByCocNumberNotNull(page).let { pvocTimelines ->
-                                            model.addAttribute("pvocTimelines", pvocTimelines)
-                                        }
-                                    }
-                                    else -> {
-                                        iPvocTimelinesDataRepository.findAllByCocNumberNotNull(page).let { pvocTimelines ->
-                                            model.addAttribute("pvocTimelines", pvocTimelines)
-                                        }
-                                    }
+//                                    "filter" -> {
+//                                        iPvocTimelinesDataRepository.findAllByCocNumberNotNull(page).let { pvocTimelines ->
+//                                            model.addAttribute("pvocTimelines", pvocTimelines)
+//                                        }
+//                                    }
+//                                    else -> {
+//                                        iPvocTimelinesDataRepository.findAllByCocNumberNotNull(page).let { pvocTimelines ->
+//                                            model.addAttribute("pvocTimelines", pvocTimelines)
+//                                        }
+//                                    }
                                 }
                             }
                             else -> throw SupervisorNotFoundException("Only users with the following privilege PVOC Appliaction READ or PVOC APPLICATION PROCESS, can access this page")
@@ -196,14 +194,14 @@ class PvocMonitoringAgents(
                             auth.authorities.stream().anyMatch { authority -> authority.authority == "PVOC_APPLICATION_READ" || authority.authority == "PVOC_APPLICATION_PROCESS" } -> {
                                 when (filter) {
                                     "filter" -> {
-                                        iPvocCoiTimelinesDataEntityRepo.findAllByCoiNumberNotNull(page).let { pvocTimelines ->
-                                            model.addAttribute("pvocTimelines", pvocTimelines)
-                                        }
+//                                        iPvocCoiTimelinesDataEntityRepo.findAllByCoiNumberNotNull(page).let { pvocTimelines ->
+//                                            model.addAttribute("pvocTimelines", pvocTimelines)
+//                                        }
                                     }
                                     else -> {
-                                        iPvocCoiTimelinesDataEntityRepo.findAllByCoiNumberNotNull(page).let { pvocTimelines ->
-                                            model.addAttribute("pvocTimelines", pvocTimelines)
-                                        }
+//                                        iPvocCoiTimelinesDataEntityRepo.findAllByCoiNumberNotNull(page).let { pvocTimelines ->
+//                                            model.addAttribute("pvocTimelines", pvocTimelines)
+//                                        }
                                     }
                                 }
                             }
@@ -232,14 +230,14 @@ class PvocMonitoringAgents(
                             auth.authorities.stream().anyMatch { authority -> authority.authority == "PVOC_APPLICATION_READ" || authority.authority == "PVOC_APPLICATION_PROCESS" } -> {
                                 when (filter) {
                                     "filter" -> {
-                                        iPvocCorTimelinesDataEntityRepo.findAllByUcrNumberNotNull(page)?.let { pvocTimelines ->
-                                            model.addAttribute("pvocTimelines", pvocTimelines)
-                                        }
+//                                        iPvocCorTimelinesDataEntityRepo.findAllByUcrNumberNotNull(page)?.let { pvocTimelines ->
+//                                            model.addAttribute("pvocTimelines", pvocTimelines)
+//                                        }
                                     }
                                     else -> {
-                                        iPvocCorTimelinesDataEntityRepo.findAllByUcrNumberNotNull(page).let { pvocTimelines ->
-                                            model.addAttribute("pvocTimelines", pvocTimelines)
-                                        }
+//                                        iPvocCorTimelinesDataEntityRepo.findAllByUcrNumberNotNull(page).let { pvocTimelines ->
+//                                            model.addAttribute("pvocTimelines", pvocTimelines)
+//                                        }
                                     }
                                 }
                             }
@@ -253,29 +251,29 @@ class PvocMonitoringAgents(
 
     @GetMapping("coi-with-timeline-issue/{id}")
     fun coiWithTimelineIssueDetails(model: Model, @PathVariable("id") id: Long): String {
-        iPvocCoiTimelinesDataEntityRepo.findByIdOrNull(id)?.let { coi ->
-            iUserRolesRepository.findByRoleNameAndStatus("MPVOC", 1)?.let { role ->
-                model.addAttribute("users", UsersEntity())
-                model.addAttribute("invoiceNo", generatingRandomInvoice("8"))
-                model.addAttribute("orderNumber", generatingRandomInvoice("5"))
-                model.addAttribute("customerNumber", generatingRandomInvoice("5"))
-                model.addAttribute("penaltyInvoice", PvocPenaltyInvoicingEntity())
-                iUserRoleAssignmentsRepository.findByRoleIdAndStatus(role.id, 1)
-                    ?.let { it ->
-                        val userList = mutableListOf<Long?>()
-                        it.map {userList.add(it.userId) }
-                        model.addAttribute("pmvocs", iUserRepository.findAllByIdIn(userList))
-                        model.addAttribute("users", UsersEntity())
-                    }
-                    ?: throw Exception("Role [id=${role.id}] not found, may not be active or assigned yet")
-            } ?: throw Exception("User role name does not exist")
-            model.addAttribute("monitoring_status", iPvocAgentMonitoringStatusEntityRepo.findAllByStatus(1))
-            model.addAttribute("coc", coi)
-            model.addAttribute("cocTimeline", PvocAgentMonitoringStatusEntity())
-            model.addAttribute("remarkData", PvocWaiversRemarksEntity())
-            model.addAttribute("pvocTimelineData", PvocTimelinesDataEntity())
-            return "destination-inspection/pvoc/monitoring/CoiWithTimelineIssueDetails"
-        } ?: throw Exception("Coc Timeline data with {id} id does not exist")
+//        iPvocCoiTimelinesDataEntityRepo.findByIdOrNull(id)?.let { coi ->
+//            iUserRolesRepository.findByRoleNameAndStatus("MPVOC", 1)?.let { role ->
+//                model.addAttribute("users", UsersEntity())
+//                model.addAttribute("invoiceNo", generatingRandomInvoice("8"))
+//                model.addAttribute("orderNumber", generatingRandomInvoice("5"))
+//                model.addAttribute("customerNumber", generatingRandomInvoice("5"))
+//                model.addAttribute("penaltyInvoice", PvocPenaltyInvoicingEntity())
+//                iUserRoleAssignmentsRepository.findByRoleIdAndStatus(role.id, 1)
+//                    ?.let { it ->
+//                        val userList = mutableListOf<Long?>()
+//                        it.map {userList.add(it.userId) }
+//                        model.addAttribute("pmvocs", iUserRepository.findAllByIdIn(userList))
+//                        model.addAttribute("users", UsersEntity())
+//                    }
+//                    ?: throw Exception("Role [id=${role.id}] not found, may not be active or assigned yet")
+//            } ?: throw Exception("User role name does not exist")
+//            model.addAttribute("monitoring_status", iPvocAgentMonitoringStatusEntityRepo.findAllByStatus(1))
+//            model.addAttribute("coc", coi)
+//            model.addAttribute("cocTimeline", PvocAgentMonitoringStatusEntity())
+//            model.addAttribute("remarkData", PvocWaiversRemarksEntity())
+//            model.addAttribute("pvocTimelineData", PvocSealIssuesEntity())
+        return "destination-inspection/pvoc/monitoring/CoiWithTimelineIssueDetails"
+//        } ?: throw Exception("Coc Timeline data with {id} id does not exist")
 
     }
 
@@ -288,7 +286,7 @@ class PvocMonitoringAgents(
                 model.addAttribute("orderNumber", generatingRandomInvoice("5"))
                 model.addAttribute("customerNumber", generatingRandomInvoice("5"))
                 model.addAttribute("penaltyInvoice", PvocPenaltyInvoicingEntity())
-                model.addAttribute("enquires" , coc.cocNumber?.let { iPvocQuerriesRepository.findAllByCocNumber(it) })
+//                model.addAttribute("enquires" , coc.cocNumber?.let { iPvocQuerriesRepository.findAllByCocNumber(it) })
                 iUserRoleAssignmentsRepository.findByRoleIdAndStatus(role.id, 1)
                     ?.let { it ->
                         val userList = mutableListOf<Long?>()
@@ -315,7 +313,7 @@ class PvocMonitoringAgents(
                                     partnerDetails?.partnerName?.let { it1 -> pvocAgentContractEntityRepo.findByServiceRenderedIdAndName(2, it1.toUpperCase())
                                     }?.let { pvocAgentContract ->
                                         val applicableRoyalty = pvocAgentContract.applicableRoyalty
-                                        coc.cocNumber?.let { it1 ->
+                                        coc.certNumber?.let { it1 ->
                                             pvocRevenueReportEntityRepo.findByCocNo(it1)?.let { revenueReport ->
                                                 val inpectionFee = revenueReport.inspectionFee?.toLong()
                                                 val intialPenalty = inpectionFee?.times(10)
@@ -323,9 +321,10 @@ class PvocMonitoringAgents(
                                                 var totalPenalties = 0.0
                                                 val fobValue = revenueReport.fobValue?.toDouble()
                                                 var fobToKebs = 0.0
-                                                val royaltyValue = applicableRoyalty?.let { it1 -> inpectionFee?.times(it1) }?: 0
+                                                val royaltyValue = applicableRoyalty?.let { it1 -> inpectionFee?.times(it1) }
+                                                        ?: 0
                                                 if (intialPenalty != null) {
-                                                    latePenalties = when(partnerDetails.partnerName) {
+                                                    latePenalties = when (partnerDetails.partnerName) {
                                                         "QISJ" -> {
                                                             royaltyValue.times(1.15).times(penaltyMonths)
                                                         }
@@ -411,7 +410,7 @@ class PvocMonitoringAgents(
 
             model.addAttribute("cocTimeline", PvocAgentMonitoringStatusEntity())
             model.addAttribute("remarkData", PvocWaiversRemarksEntity())
-            model.addAttribute("pvocTimelineData", PvocTimelinesDataEntity())
+            model.addAttribute("pvocTimelineData", PvocSealIssuesEntity())
             return "destination-inspection/pvoc/monitoring/CocWithTimelineIssueDetails"
         } ?: throw Exception("Coc Timeline data with {id} id does not exist")
 
@@ -469,18 +468,18 @@ class PvocMonitoringAgents(
 
 
     @PostMapping("coc-timelines-hod-status-update/{id}")
-    fun cocTimelineHodStatusUpdate(@PathVariable("id") id: Long, pvocTimelineData: PvocTimelinesDataEntity): String {
+    fun cocTimelineHodStatusUpdate(@PathVariable("id") id: Long, pvocTimelineData: PvocSealIssuesEntity): String {
         iPvocTimelinesDataRepository.findByIdOrNull(id)?.let { doc ->
-            doc.hodStatus = pvocTimelineData.hodStatus
+//            doc.hodStatus = pvocTimelineData.hodStatus
             iPvocTimelinesDataRepository.save(doc)
             return "redirect:/api/di/pvoc/coc-with-timeline-issue/${id}"
         } ?: throw Exception("Pvoc Timeline document with {id} id does not exist")
     }
 
     @PostMapping("coc-timelines-hod-assign-mpvoc/{id}")
-    fun cocTimelineHodAssignMpvoc(@PathVariable("id") id: Long, pvocTimelineData: PvocTimelinesDataEntity): String {
+    fun cocTimelineHodAssignMpvoc(@PathVariable("id") id: Long, pvocTimelineData: PvocSealIssuesEntity): String {
         iPvocTimelinesDataRepository.findByIdOrNull(id)?.let { doc ->
-            doc.mpvocAgent = pvocTimelineData.mpvocAgent
+//            doc.mpvocAgent = pvocTimelineData.mpvocAgent
             iPvocTimelinesDataRepository.save(doc)
             return "redirect:/api/di/pvoc/coc-with-timeline-issue/${id}"
         } ?: throw Exception("Pvoc Timeline document with {id} id does not exist")
@@ -564,18 +563,18 @@ class PvocMonitoringAgents(
     @GetMapping("pvoc-query-details/{id}")
     fun pvocQueryDetails(@PathVariable("id") id: Long, model: Model): String {
         iPvocQuerriesRepository.findByIdOrNull(id)?.let { coc ->
-            coc.cocNumber?.let {
-                rfcCocEntityRepo.findByCocNumber(it).let { rfcDoc ->
-                    model.addAttribute("rfc", rfcDoc)
-                    rfcDoc?.partner?.let { it2 ->
-                        pvocPartnersRepository.findByIdOrNull(it2).let { partnerDetails ->
-                            model.addAttribute("partner", partnerDetails)
-                            model.addAttribute("invoice", pvocInvoicingRepository.findFirstByPartner(it2))
-                        }
-                    }
-                }
-            }
-            model.addAttribute("coc", coc.cocNumber?.let { iPvocTimelinesDataRepository.findByCocNumber(it) })
+//            coc.cocNumber?.let {
+//                rfcCocEntityRepo.findByCocNumber(it).let { rfcDoc ->
+//                    model.addAttribute("rfc", rfcDoc)
+//                    rfcDoc?.partner?.let { it2 ->
+//                        pvocPartnersRepository.findByIdOrNull(it2).let { partnerDetails ->
+//                            model.addAttribute("partner", partnerDetails)
+//                            model.addAttribute("invoice", pvocInvoicingRepository.findFirstByPartner(it2))
+//                        }
+//                    }
+//                }
+//            }
+//            model.addAttribute("coc", coc.cocNumber?.let { iPvocTimelinesDataRepository.findByCocNumber(it) })
             model.addAttribute("queryDetails", coc)
             return "destination-inspection/pvoc/monitoring/PvocQueryDetails"
         } ?: throw Exception("Query with $id id does not exist")
@@ -599,7 +598,7 @@ class PvocMonitoringAgents(
             iUserRepository.findByUserName(username).let { userDetails ->
                 pvocQuery.createdBy = userDetails?.firstName + ' ' + userDetails?.lastName
                 pvocQuery.status = 1
-                pvocQuery.partnerResponceAnalysisStatus = 0
+//                pvocQuery.partnerResponceAnalysisStatus = 0
                 pvocQuery.kebsReplyReplyStatus = 0
                 pvocQuery.pvocAgentReplyStatus = 0
                 pvocQuery.createdOn = Timestamp.from(Instant.now())
@@ -632,7 +631,7 @@ class PvocMonitoringAgents(
     @PostMapping("save-partner-response-analysis")
     fun savePartnerResponseAnalysis(@RequestParam("pvocQueryId") pvocQueryId: Long, pvocQuery: PvocQueriesEntity): String {
         iPvocQuerriesRepository.findByIdOrNull(pvocQueryId)?.let { kebsQuery ->
-            kebsQuery.partnerResponseAnalysis = pvocQuery.partnerResponseAnalysis
+//            kebsQuery.partnerResponseAnalysis = pvocQuery.partnerResponseAnalysis
             kebsQuery.pvocAgentReplyStatus = 1
             iPvocQuerriesRepository.save(kebsQuery)
             return "redirect:/api/di/pvoc/pvoc-query-details/${pvocQueryId}"

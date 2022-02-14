@@ -461,7 +461,7 @@ class ConsignmentDocumentDaoService(
 
         // Update Document Type Details and processing document
         consignmentDocumentDetails?.let {
-            daoServices.updateCDDetailsWithCdType(consignmentDocDetails.cdStandardTwo?.localCocType ?: "OTHERS", it)
+            daoServices.updateCDDetailsWithCdType(consignmentDocDetails.cdStandardTwo?.localCocType ?: "L", it)
         }
 
         //Add CD APPROVAL HISTORY DETAILS DETAILS

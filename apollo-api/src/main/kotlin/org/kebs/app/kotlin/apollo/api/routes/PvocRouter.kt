@@ -55,6 +55,16 @@ class PvocRouter {
     }
 
     @Bean
+    @CrossOrigin
+    fun pvocQueries(handler: PvocQueryHandler) = router {
+        "api/v1/pvoc/kebs/query".nest {
+            POST("/request", handler::pvocPartnerQueryRequest)
+            POST("/conclusion", handler::pvocPartnerQueryConclusion)
+            POST("/response", handler::pvocPartnerQueryResponse)
+        }
+    }
+
+    @Bean
     fun pvocComplaint(handler: PvocComplaintHandler) = router {
         "api/v1/pvoc/complaint".nest {
             GET("/get/{applicationStatus}", handler::complaintApplications)

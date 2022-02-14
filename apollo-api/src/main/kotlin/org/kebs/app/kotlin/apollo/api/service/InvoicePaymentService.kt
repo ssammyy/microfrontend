@@ -55,7 +55,7 @@ class InvoicePaymentService(
 
     fun rejectDemandNoteGeneration(cdUuid: String, demandNoteId: Long, remarks: String): Boolean {
         try {
-            val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
+            var consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             val demandNote = iDemandNoteRepo.findById(demandNoteId)
             if (demandNote.isPresent) {
                 val demand = demandNote.get()
@@ -67,9 +67,7 @@ class InvoicePaymentService(
                 consignmentDocument.sendDemandNote = map.invalidStatus
                 consignmentDocument.diProcessStatus = map.inactiveStatus
                 consignmentDocument.diProcessInstanceId = null
-                consignmentDocument.cdStandard?.let { cdStd ->
-                    daoServices.updateCDStatus(cdStd, ConsignmentDocumentStatus.PAYMENT_REJECTED)
-                }
+                consignmentDocument = daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.PAYMENT_REJECTED)
                 this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
                 this.iDemandNoteRepo.save(demand)
                 this.auditService.addHistoryRecord(consignmentDocument.id!!, consignmentDocument.ucrNumber, remarks, "REJECT DEMAND NOTE", "Demand note ${demandNoteId} rejected")
@@ -82,7 +80,7 @@ class InvoicePaymentService(
 
     fun approveDemandNoteGeneration(cdUuid: String, demandNoteId: Long, supervisor: String, remarks: String): Boolean {
         try {
-            val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
+            var consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             val demandNote = iDemandNoteRepo.findById(demandNoteId)
             if (demandNote.isPresent) {
                 val demand = demandNote.get()
@@ -91,9 +89,7 @@ class InvoicePaymentService(
                 demand.varField3 = "APPROVED"
                 demand.varField10 = remarks
                 // Update CD status
-                consignmentDocument.cdStandard?.let { cdStd ->
-                    daoServices.updateCDStatus(cdStd, ConsignmentDocumentStatus.PAYMENT_APPROVED)
-                }
+                consignmentDocument = daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.PAYMENT_APPROVED)
                 consignmentDocument.sendDemandNote = map.activeStatus
                 this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
                 // Update demand note
@@ -113,15 +109,13 @@ class InvoicePaymentService(
         try {
             // Update submission status
             if (demandNote.isPresent) {
-                val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
+                var consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
                 val demand = demandNote.get()
                 // Update CD status
-                consignmentDocument.cdStandard?.let { cdStd ->
-                    daoServices.updateCDStatus(
-                            cdStd,
-                            ConsignmentDocumentStatus.PAYMENT_APPROVED
-                    )
-                }
+                consignmentDocument = daoServices.updateCDStatus(
+                        consignmentDocument,
+                        ConsignmentDocumentStatus.PAYMENT_APPROVED
+                )
                 demand.varField3 = "UPDATED DEMAND NOTE STATUS"
                 consignmentDocument.varField10 = "Demand Approved, awaiting payment"
                 this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
@@ -148,7 +142,7 @@ class InvoicePaymentService(
             val demandNote = daoServices.findDemandNoteWithID(demandNoteId)!!
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             // Try to add transaction to current bill or generate batch payment
-            val transportDetails=daoServices.findCdTransportDetails(consignmentDocument.cdTransport?:0)
+            val transportDetails = daoServices.findCdTransportDetails(consignmentDocument.cdTransport ?: 0)
             this.billingService.registerBillTransaction(demandNote, transportDetails.blawb, map)?.let { billTrx ->
                 demandNote.paymentStatus = 1
                 demandNote.receiptNo = billTrx.tempReceiptNumber
@@ -219,14 +213,12 @@ class InvoicePaymentService(
             demandNote.swStatus = map.activeStatus
             demandNote.varField10 = "PAYMENT COMPLETED"
             val demandNoteDetails = daoServices.upDateDemandNote(demandNote)
-            val consignmentDocument = demandNoteDetails.cdId?.let { cdId -> daoServices.findCD(cdId) }
+            val consignmentDocument = daoServices.findCD(demandNoteDetails.cdId!!)
             // 2. Update CD status
-            consignmentDocument?.cdStandard?.let { cdStd ->
-                daoServices.updateCDStatus(
-                        cdStd,
-                        ConsignmentDocumentStatus.PAYMENT_MADE
-                )
-            }
+            daoServices.updateCDStatus(
+                    consignmentDocument,
+                    ConsignmentDocumentStatus.PAYMENT_MADE
+            )
         }
         return true
     }
@@ -264,11 +256,21 @@ class InvoicePaymentService(
         val exchangeRates = service.readExchangeRatesFromController(separator, targetReader)
         for (rate in exchangeRates) {
             val exchangeRateEntity = CurrencyExchangeRates()
+            // Clear the old rate
+            this.exchangeRateRepository.findAllByCurrencyCodeAndCurrentRate(rate.currencyCode!!, 1).forEach { oldRate ->
+                oldRate.currentRate = 0
+                oldRate.changeDate = Timestamp.from(Instant.now())
+                oldRate.modifiedOn = Timestamp.from(Instant.now())
+                oldRate.modifiedBy = loggedInUser?.userName
+                this.exchangeRateRepository.save(oldRate)
+            }
+            // Add new rate
             with(exchangeRateEntity) {
                 applicableDate = Timestamp.from(Instant.now())
                 currencyCode = rate.currencyCode
                 exchangeRate = rate.exchangeRate
                 description = rate.description
+                currentRate = 1
                 status = 1
                 createdBy = loggedInUser?.userName
                 createdOn = Timestamp.from(Instant.now())
@@ -277,17 +279,6 @@ class InvoicePaymentService(
             }
             this.exchangeRateRepository.save(exchangeRateEntity)
         }
-    }
-
-    fun toSqlDate(date: LocalDateTime): java.sql.Date {
-        val defaultZoneId = ZoneOffset.systemDefault()
-        val sDate = Date.from(date.atZone(ZoneId.systemDefault()).toInstant());
-        return java.sql.Date(sDate.time)
-    }
-
-    fun toSqlTimestamp(date: LocalDateTime): java.sql.Timestamp {
-        val sDate = Date.from(date.atZone(ZoneId.systemDefault()).toInstant());
-        return java.sql.Timestamp(sDate.time)
     }
 
     /**

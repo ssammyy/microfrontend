@@ -481,9 +481,7 @@ class ChecklistService(
                     ).let { cdInspectionMVChecklist ->
                         cdInspectionMVChecklist.inspection?.inspectionGeneral?.cdDetails?.let { cdetails ->
                             //Update status
-                            cdetails.cdStandard?.let { cdStd ->
-                                daoServices.updateCDStatus(cdStd, applicationMapProperties.mapDIStatusTypeMinistryInspectionUploadedId)
-                            }
+                            daoServices.updateCDStatus(cdetails, ConsignmentDocumentStatus.MINISTRY_UPLOAD)
                             this.consignmentAuditService.addHistoryRecord(cdetails.id, cdetails.ucrNumber, comment, "MINISTRY", "Ministry Inspection Report submitted")
                         }
                     }

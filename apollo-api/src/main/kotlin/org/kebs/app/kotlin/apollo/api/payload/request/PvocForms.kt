@@ -183,6 +183,14 @@ class CocEntityForm {
     @JsonAlias("UCR_NUMBER")
     var ucrNumber: String? = null
 
+    @JsonAlias("ACCEPTABLE_DOC_DATE")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var acceptableDocDate: Timestamp? = null
+
+    @JsonAlias("FINAL_DOC_DATE")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var finalDocDate: Timestamp? = null
+
     @JsonAlias("RFC_DATE")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     var rfcDate: Timestamp? = null
@@ -372,6 +380,14 @@ class NcrEntityForm {
     @NotEmpty(message = "Required field")
     @JsonAlias("UCR_NUMBER")
     var ucrNumber: String? = null
+
+    @JsonAlias("ACCEPTABLE_DOC_DATE")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var acceptableDocDate: Timestamp? = null
+
+    @JsonAlias("FINAL_DOC_DATE")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var finalDocDate: Timestamp? = null
 
     @JsonAlias("RFC_DATE")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
@@ -605,11 +621,19 @@ class CoiEntityForm {
     @NotEmpty(message = "Required field")
     var ucrNumber: String? = null
 
+    @JsonAlias("ACCEPTABLE_DOC_DATE")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var acceptableDocDate: Timestamp? = null
+
+    @JsonAlias("FINAL_DOC_DATE")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var finalDocDate: Timestamp? = null
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     var rfcDate: Timestamp? = null
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    var cocIssueDate: Timestamp? = null
+    var coiIssueDate: Timestamp? = null
 
 
     @NotEmpty(message = "Required field")
@@ -751,9 +775,21 @@ class CorEntityForm {
     @NotNull(message = "UCR Number is required")
     var ucrNumber: String? = null
 
+    @JsonAlias("ACCEPTABLE_DOC_DATE")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var acceptableDocDate: Timestamp? = null
+
+    @JsonAlias("FINAL_DOC_DATE")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var finalDocDate: Timestamp? = null
+
     @NotNull(message = "COR issue date is required")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     var corIssueDate: Timestamp? = null
+
+    @NotNull(message = "RFC date is required")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var rfcDate: Timestamp? = null
 
     @NotEmpty(message = "Country of supply is required")
     var countryOfSupply: String? = null
@@ -854,6 +890,9 @@ class CorEntityForm {
     var inspectionFee: Double? = null
 
     @NotEmpty(message = "Required field")
+    var inspectionFeeReceipt: String? = null
+
+    @NotEmpty(message = "Required field")
     var transmission: String? = null
 
     @NotEmpty(message = "Required field")
@@ -869,6 +908,9 @@ class CorEntityForm {
     @NotNull(message = "Required field")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     var inspectionFeePaymentDate: Timestamp? = null
+
+    @NotEmpty(message = "Required field")
+    var route: String? = null
 
     @NotNull(message = "Required field")
     @Min(value = 1, message = "Varsion cannot be less than one")
@@ -1167,6 +1209,96 @@ class IdfCorForm : IdfEntityForm() {
 
     @NotEmpty(message = "Required field")
     var yearOfFirstRegistration: String? = null
+}
+
+class PvocResponseModel {
+    lateinit var responseCode: String
+    lateinit var responseMessage: String
+    var data: Map<String, Any?>? = null
+}
+
+class PvocKebsQueryForm {
+    @NotEmpty(message = "Document type is required")
+    var documentType: String? = null
+
+    @NotEmpty(message = "Cert number is required")
+    var certNumber: String? = null
+
+    @NotEmpty(message = "RFC number is required")
+    var rfcNumber: String? = null
+
+    @NotEmpty(message = "Invoice number is required")
+    var invoiceNumber: String? = null
+
+    @NotEmpty(message = "UCR number is required")
+    var ucrNumber: String? = null
+
+    @NotEmpty(message = "Query is required")
+    var partnerQuery: String? = null
+}
+
+class PvocQueryResponse {
+    @NotEmpty(message = "Document type is required")
+    var documentType: String? = null
+
+    @NotEmpty(message = "Serial number is required")
+    var serialNumber: String? = null
+
+    @NotEmpty(message = "Query response is required")
+    var queryResponse: String? = null
+
+    @NotEmpty(message = "Query analysis is required")
+    var queryAnalysis: String? = null
+    var linkToUploads: String? = null
+}
+
+class PvocQueryConclusion {
+    @NotEmpty(message = "Serial number is required")
+    var serialNumber: String? = null
+
+    @NotEmpty(message = "Conclusion is required")
+    var conclusion: String? = null
+}
+
+class KebsQueryResponseForm {
+    @NotEmpty(message = "Query serial number is required")
+    var serialNumber: String? = null
+
+    @NotEmpty(message = "Query response is required")
+    var queryResponse: String? = null
+
+    @NotEmpty(message = "Query analysis is required")
+    var queryAnalysis: String? = null
+
+    @NotEmpty(message = "Query conclusion is required")
+    var conclusion: String? = null
+    var linkToUploads: String? = null
+
+}
+
+class KebsQueryResponse {
+    var documentType: String? = null
+    var certNumber: String? = null
+    var serialNumber: String? = null
+    var rfcNumber: String? = null
+    var invoiceNumber: String? = null
+    var ucrNumber: String? = null
+    var queryResponse: String? = null
+    var queryAnalysis: String? = null
+    var conclusion: String? = null
+    var linkToUploads: String? = null
+
+}
+
+class KebsPvocQueryForm {
+    var partnerId: Long? = null
+    var serialNumber: String? = null
+    var documentType: String? = null
+    var certNumber: String? = null
+    var rfcNumber: String? = null
+    var invoiceNumber: String? = null
+    var ucrNumber: String? = null
+    var kebsQuery: String? = null
 }
 
 class RiskProfileForm {

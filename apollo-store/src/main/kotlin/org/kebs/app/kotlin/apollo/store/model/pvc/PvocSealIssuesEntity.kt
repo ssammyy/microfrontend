@@ -6,69 +6,45 @@ import java.util.*
 import javax.persistence.*
 
 @Entity
-@Table(name = "DAT_KEBS_PVOC_QUERIES")
-class PvocQueriesEntity:Serializable {
+@Table(name = "DAT_KEBS_PVOC_SEAL_ISSUES")
+class PvocSealIssuesEntity : Serializable {
     @Column(name = "ID", nullable = false, precision = 0)
     @Id
-    @SequenceGenerator(name = "DAT_KEBS_PVOC_QUERIES_SEQ_GEN", sequenceName = "DAT_KEBS_PVOC_QUERIES_SEQ", allocationSize = 1)
-    @GeneratedValue(generator = "DAT_KEBS_PVOC_QUERIES_SEQ_GEN", strategy = GenerationType.SEQUENCE)
-    var id: Long? = 0
+    @SequenceGenerator(name = "DAT_KEBS_PVOC_SEAL_ISSUES_SEQ_GEN", sequenceName = "DAT_KEBS_PVOC_SEAL_ISSUES_DATA_SEQ", allocationSize = 1)
+    @GeneratedValue(generator = "DAT_KEBS_PVOC_SEAL_ISSUES_SEQ_GEN", strategy = GenerationType.SEQUENCE)
+    var id: Long = 0
 
-    @Column(name = "PARTNER_ID", nullable = true, length = 4000)
+    @Column(name = "PARTNER_ID", nullable = true)
     @Basic
     var partnerId: Long? = null
 
-    @Column(name = "SERIAL_NUMBER", nullable = true, length = 50)
+    @Column(name = "RECORD_ID", nullable = true)
     @Basic
-    var serialNumber: String? = null
-
-    @Column(name = "CERT_NUMBER", nullable = true, length = 50)
-    @Basic
-    var certNumber: String? = null
+    var recordId: Long? = null
 
     @Column(name = "CERT_TYPE", nullable = true, length = 50)
     @Basic
     var certType: String? = null
 
-    @Column(name = "QUERY_ORIGIN", nullable = true, length = 50)
+    @Column(name = "CERT_NUMBER", nullable = true, length = 80)
     @Basic
-    var queryOrigin: String? = null
+    var certNumber: String? = null
 
-    @Column(name = "RFC_NUMBER", nullable = true, length = 50)
+    @Column(name = "RECORD_YEAR_MONTH", nullable = true, precision = 0)
     @Basic
-    var rfcNumber: String? = null
+    var recordYearMonth: String? = null
 
-    @Column(name = "INVOICE_NUMBER", nullable = true, length = 50)
-    @Basic
-    var invoiceNumber: String? = null
-
-    @Column(name = "UCR_NUMBER", nullable = false, length = 50)
+    @Column(name = "UCR_NUMBER", nullable = false, length = 80)
     @Basic
     var ucrNumber: String? = null
 
-    @Column(name = "QUERY_DETAILS", nullable = true, length = 4000)
+    @Column(name = "ROUTE")
     @Basic
-    var queryDetails: String? = null
+    var route: String? = null
 
-    @Column(name = "QUERY_RESPONSE", nullable = true, length = 4000)
+    @Column(name = "MONITORING_ID", nullable = true)
     @Basic
-    var queryResponse: String? = null
-
-    @Column(name = "PARTNER_RESPONSE", nullable = true, length = 4000)
-    @Basic
-    var partnerResponse: String? = null
-
-    @Column(name = "RESPONSE_ANALYSIS", nullable = true, length = 4000)
-    @Basic
-    var responseAnalysis: String? = null
-
-    @Column(name = "CONCLUSION", nullable = true, length = 4000)
-    @Basic
-    var conclusion: String? = null
-
-    @Column(name = "LINK_TO_UPLOADS", nullable = true, length = 4000)
-    @Basic
-    var linkToUploads: String? = null
+    var monitoringId: Long? = null
 
     @Column(name = "STATUS", nullable = true, precision = 0)
     @Basic
@@ -138,30 +114,19 @@ class PvocQueriesEntity:Serializable {
     @Basic
     var deletedOn: Timestamp? = null
 
-    @Column(name = "PVOC_AGENT_REPLY_STATUS", nullable = true)
+    @Column(name = "RISK_STATUS")
     @Basic
-    var pvocAgentReplyStatus: Int? = null
+    var riskStatus: Int? = null
 
-    @Column(name = "KEBS_REPLY_STATUS", nullable = true)
-    @Basic
-    var kebsReplyReplyStatus: Int? = null
 
-    @Column(name = "CONCLUSION_STATUS", nullable = true)
-    @Basic
-    var conclusionStatus: Int? = null
-
-    override fun equals(o: Any?): Boolean {
-        if (this === o) return true
-        if (o == null || javaClass != o.javaClass) return false
-        val that = o as PvocQueriesEntity
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
+        val that = other as PvocSealIssuesEntity
         return id == that.id &&
                 certNumber == that.certNumber &&
-                rfcNumber == that.rfcNumber &&
-                invoiceNumber == that.invoiceNumber &&
                 ucrNumber == that.ucrNumber &&
-                partnerResponse == that.partnerResponse &&
-                conclusion == that.conclusion &&
-                linkToUploads == that.linkToUploads &&
+                route == that.route &&
                 status == that.status &&
                 varField1 == that.varField1 &&
                 varField2 == that.varField2 &&
@@ -178,22 +143,15 @@ class PvocQueriesEntity:Serializable {
                 modifiedBy == that.modifiedBy &&
                 modifiedOn == that.modifiedOn &&
                 deleteBy == that.deleteBy &&
-                pvocAgentReplyStatus == that.pvocAgentReplyStatus &&
-                kebsReplyReplyStatus == that.kebsReplyReplyStatus &&
-                conclusionStatus == that.conclusionStatus &&
                 deletedOn == that.deletedOn
     }
 
     override fun hashCode(): Int {
         return Objects.hash(
                 id,
-                certNumber,
-                rfcNumber,
-                invoiceNumber,
+                certNumber, certType,
                 ucrNumber,
-                partnerResponse,
-                conclusion,
-                linkToUploads,
+                route,
                 status,
                 varField1,
                 varField2,
@@ -210,9 +168,8 @@ class PvocQueriesEntity:Serializable {
                 modifiedBy,
                 modifiedOn,
                 deleteBy,
-                deletedOn,
-                pvocAgentReplyStatus,
-                kebsReplyReplyStatus
+                deletedOn
         )
     }
 }
+

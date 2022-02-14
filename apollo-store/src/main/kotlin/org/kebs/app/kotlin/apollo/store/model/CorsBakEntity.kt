@@ -24,7 +24,17 @@ class CorsBakEntity : Serializable {
     @Column(name = "DOCUMENT_TYPE", length = 2)
     @Basic
     var documentsType: String? = "L"
-    
+
+    @Column(name = "ACCEPTABLE_DOC_DATE", nullable = true)
+    @Basic
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    var acceptableDocDate: Timestamp? = null
+
+    @Column(name = "FINAL_DOC_DATE", nullable = true)
+    @Basic
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    var finalDocDate: Timestamp? = null
+
     @Column(name = "COR_ISSUE_DATE")
     @Basic
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
@@ -159,6 +169,10 @@ class CorsBakEntity : Serializable {
     @Basic
     var inspectionFee: Double? = 0.0
 
+    @Column(name = "INSPECTION_FEE_RECEIPTS")
+    @Basic
+    var inspectionFeeReceipt: String? = null
+
     @Column(name = "APPROVAL_STATUS")
     @Basic
     var approvalStatus: String? = null
@@ -186,6 +200,10 @@ class CorsBakEntity : Serializable {
     @Column(name = "INSPECTION_FEE_PAYMENT_DATE")
     @Basic
     var inspectionFeePaymentDate: Timestamp? = null
+
+    @Column(name = "ROUTE")
+    @Basic
+    var route: String? = null
 
     @Column(name = "STATUS")
     @Basic

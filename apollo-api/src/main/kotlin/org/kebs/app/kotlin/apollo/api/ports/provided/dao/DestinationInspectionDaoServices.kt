@@ -2,7 +2,6 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import mu.KotlinLogging
-import org.flowable.idm.engine.impl.persistence.entity.UserEntity
 import org.json.JSONException
 import org.json.JSONObject
 import org.json.XML
@@ -792,6 +791,10 @@ class DestinationInspectionDaoServices(
                 ?: throw Exception("CoR Entity with the following chassis number = ${chassisNo}, does not Exist")
     }
 
+    fun findCdManualAssignable(status: Int): List<CdStatusTypesEntity> {
+        return iCdStatusTypesDetailsRepo.findByStatusAndApplicationStatus(status, 0)
+    }
+
     fun findCdStatusValueList(status: Int): List<CdStatusTypesEntity> {
         iCdStatusTypesDetailsRepo.findByStatus(status)
                 ?.let { cdStatusDetails ->
@@ -1022,8 +1025,12 @@ class DestinationInspectionDaoServices(
             return amount?.times(exchangeRateEntity.exchangeRate
                     ?: BigDecimal.ZERO) ?: BigDecimal.ZERO
         } ?: run {
-            // uncomment exception in production
-            throw ExpectedDataNotFound("Conversion rate for currency ${currencyCode} not found")
+            currencyExchangeRateRepository.findFirstByCurrencyCodeAndCurrentRateAndStatus(currencyCode, 1, 1)?.let { exchangeRateEntity ->
+                return amount?.times(exchangeRateEntity.exchangeRate
+                        ?: BigDecimal.ZERO) ?: BigDecimal.ZERO
+            } ?: run {
+                throw ExpectedDataNotFound("Conversion rate for currency ${currencyCode} not found")
+            }
         }
     }
 
@@ -1033,10 +1040,15 @@ class DestinationInspectionDaoServices(
             demandNoteItem?.cfvalue = amount?.times(exchangeRateEntity.exchangeRate
                     ?: BigDecimal.ZERO) ?: BigDecimal.ZERO
         } ?: run {
-            demandNoteItem?.cfvalue = amount ?: BigDecimal.ZERO
-            // TODO: uncomment exception in production
-            throw ExpectedDataNotFound("Conversion rate for currency ${currencyCode} not found")
-
+            KotlinLogging.logger { }.warn("Exchange rate for today not found, using the last known exchange rate")
+            currencyExchangeRateRepository.findFirstByCurrencyCodeAndCurrentRateAndStatus(currencyCode, 1, 1)?.let { exchangeRateEntity ->
+                demandNoteItem?.cfvalue = amount?.times(exchangeRateEntity.exchangeRate
+                        ?: BigDecimal.ZERO) ?: BigDecimal.ZERO
+                demandNoteItem?.exchangeRateId = exchangeRateEntity.id
+            } ?: run {
+                demandNoteItem?.cfvalue = amount ?: BigDecimal.ZERO
+                throw ExpectedDataNotFound("Conversion rate for currency ${currencyCode} not found")
+            }
         }
     }
 
@@ -1383,7 +1395,7 @@ class DestinationInspectionDaoServices(
     ): CdDemandNoteEntity {
         (updateCdItemDetailsInDB(itemDetails, user).cdDocId
                 ?.let { cdDetails ->
-                    cdDetails.cdStandard?.let { updateCDStatus(it, awaitPaymentStatus.toLong()) }
+                    updateCDStatus(cdDetails, ConsignmentDocumentStatus.PAYMENT_REQUEST)
                     updateCdDetailsInDB(cdDetails, user)
                             .let {
                                 return demandNote
@@ -1440,37 +1452,48 @@ class DestinationInspectionDaoServices(
         return """<?xml version="1.0" encoding="ISO-8859-15"?> <$root>${XML.toString(jsonObject)}</$root>"""
     }
 
-    fun updateCDStatus(cdStandard: CdStandardsEntity, statusValue: ConsignmentDocumentStatus): Boolean {
-        var updateCD = cdStandard
-        var updateStatus = false
+    fun updateCDStatus(consignment: ConsignmentDocumentDetailsEntity, statusValue: ConsignmentDocumentStatus): ConsignmentDocumentDetailsEntity {
+        var updateStatus = consignment
         try {
             val status = findCdStatusCategory(statusValue.code)
-            with(updateCD) {
-                approvalStatus = status.typeName
-                statusId = status.id
-                approvalDate = commonDaoServices.getCurrentDate().toString()
+            consignment.cdStandard?.let { cdStandard ->
+                with(cdStandard) {
+                    approvalStatus = status.typeName
+                    statusId = status.id
+                    approvalDate = commonDaoServices.getCurrentDate().toString()
+                }
+                val updateCD = iCdStandardsRepo.save(cdStandard)
+                KotlinLogging.logger { }.info { "CD UPDATED STATUS TO = ${updateCD.approvalStatus}" }
             }
-            updateCD = iCdStandardsRepo.save(updateCD)
-            KotlinLogging.logger { }.info { "CD UPDATED STATUS TO = ${updateCD.approvalStatus}" }
-            updateStatus = true
+            // Update consignment status as well
+            consignment.approveRejectCdStatusType = status
+            updateStatus = this.iConsignmentDocumentDetailsRepo.save(consignment)
         } catch (ex: Exception) {
-            KotlinLogging.logger { }.error("Failed to assign status: " + statusValue.code, ex)
+            KotlinLogging.logger { }.error("Failed to assign status:  ${statusValue.code}", ex)
         }
         return updateStatus
     }
 
-    fun updateCDStatus(cdStandard: CdStandardsEntity, statusValue: Long): Boolean {
-        var updateCD = cdStandard
-        val status = findCdStatusValue(statusValue)
-        with(updateCD) {
-            approvalStatus = status.typeName
-            statusId = status.id
-            approvalDate = commonDaoServices.getCurrentDate().toString()
+    fun updateCDStatus(consignment: ConsignmentDocumentDetailsEntity, statusValue: Long): ConsignmentDocumentDetailsEntity {
+        var updateStatus = consignment
+        try {
+            val status = findCdStatusValue(statusValue)
+            consignment.cdStandard?.let { cdStandard ->
+                with(cdStandard) {
+                    approvalStatus = status.typeName
+                    statusId = status.id
+                    approvalDate = commonDaoServices.getCurrentDate().toString()
+                }
+                val updateCD = iCdStandardsRepo.save(cdStandard)
+                KotlinLogging.logger { }.info { "CD UPDATED STATUS TO = ${updateCD.approvalStatus}" }
+            }
+            // Update consignment status as well
+            consignment.approveRejectCdStatusType = status
+            updateStatus = this.iConsignmentDocumentDetailsRepo.save(consignment)
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to assign status: $statusValue", ex)
         }
-        updateCD = iCdStandardsRepo.save(updateCD)
-        KotlinLogging.logger { }.info { "CD UPDATED STATUS TO = ${updateCD.approvalStatus}" }
-
-        return true
+        return updateStatus
     }
 
     fun updateItemCdStatus(item: CdItemDetailsEntity, statusValue: Long): CdItemDetailsEntity {
@@ -2114,7 +2137,7 @@ class DestinationInspectionDaoServices(
         return null
     }
 
-    fun updateConsignmentCorDetails(cdDetailsEntity: ConsignmentDocumentDetailsEntity, localCocType: String?, documentCode: String, corsBakEntity: CorsBakEntity?) {
+    fun updateConsignmentCorDetails(cdDetailsEntity: ConsignmentDocumentDetailsEntity, cocType: String?, documentCode: String, corsBakEntity: CorsBakEntity?) {
         var documentType = CdTypeCodes.COR.code
         var isCosGood = false
         corsBakEntity?.let {
@@ -2124,8 +2147,8 @@ class DestinationInspectionDaoServices(
             isCosGood = this.handleNoCorFromCosWithPvoc(cdDetailsEntity)
             null
         }
-        // Document Type
-        when (localCocType) {
+        // COC Type
+        when (cocType) {
             "F" -> {
                 documentType = CdTypeCodes.FOREIGN_COR.code
             }
@@ -2223,12 +2246,12 @@ class DestinationInspectionDaoServices(
                     StringUtils.hasLength(chassisNumber) -> {
                         KotlinLogging.logger { }.info("Map COR")
                         // COR, NO_COR_PVOC or NO_COR Goods
-                        this.updateConsignmentCorDetails(cdDetailsEntity, cdDetailsEntity.cdStandardsTwo?.localCocType, documentCode, corsBakRepository.findByChasisNumber(chassisNumber!!))
+                        this.updateConsignmentCorDetails(cdDetailsEntity, cdDetailsEntity.cdStandardsTwo?.cocType, documentCode, corsBakRepository.findByChasisNumber(chassisNumber!!))
                     }
                     else -> {
                         KotlinLogging.logger { }.info("Map COC")
                         // COC, NCR or NO_COC Goods
-                        this.updateConsignmentCocDetails(cdDetailsEntity, cdDetailsEntity.cdStandardsTwo?.localCocType, documentCode, findCocByUcrNumber(ucrNumber))
+                        this.updateConsignmentCocDetails(cdDetailsEntity, cdDetailsEntity.cdStandardsTwo?.cocType, documentCode, findCocByUcrNumber(ucrNumber))
                     }
                 }
         }
@@ -3080,11 +3103,7 @@ class DestinationInspectionDaoServices(
                     inspectionDateSetStatus = commonDaoServices.activeStatus.toInt()
                 }
                 iConsignmentDocumentDetailsRepo.save(cdDetails)
-
-                cdDetails.cdStandard?.let { cdStd ->
-                    updateCDStatus(cdStd, applicationMapProperties.mapDIStatusTypeKraVerificationApprovedId)
-                }
-
+                updateCDStatus(cdDetails, ConsignmentDocumentStatus.KRA_VERIFICATION)
             }
                     ?: KotlinLogging.logger { }.info { "Consignment document for declaration: ${declarationVerificationDocumentMessage.data?.dataIn?.sad?.sadId} not found" }
         }
@@ -3136,6 +3155,10 @@ class DestinationInspectionDaoServices(
 
     fun listExchangeRates(date: String): List<CurrencyExchangeRates> {
         return this.currencyExchangeRateRepository.findByApplicableDateAndStatus(date, 1)
+    }
+
+    fun listCurrentExchangeRates(status: Int): List<CurrencyExchangeRates> {
+        return this.currencyExchangeRateRepository.findAllByCurrentRateAndStatus(status, 1)
     }
 
     fun updateIdfNumber(ucrNumber: String, baseDocRefNo: String) {

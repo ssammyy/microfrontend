@@ -139,6 +139,7 @@ export class ConsignmentDocumentListComponent implements OnInit {
     message: any
     keywords: any;
     pvocPartners: any[]
+    prevRequest: any
     private documentTypeUuid: string
     private documentTypeId: any
     supervisorCharge: boolean = false
@@ -197,10 +198,17 @@ export class ConsignmentDocumentListComponent implements OnInit {
         }
     }
 
+    private cancelPrevious() {
+        if (this.prevRequest) {
+            this.prevRequest.unsubscribe();
+        }
+    }
+
     private loadData(documentTypeUuid: string, page: number, size: number): any {
         let params = {
             'personal': this.personalTasks
         }
+        this.cancelPrevious()
         let data = this.diService.listAssignedCd(documentTypeUuid, page, size, params);
         console.log(this.activeStatus)
         // Clear list before loading
@@ -213,7 +221,7 @@ export class ConsignmentDocumentListComponent implements OnInit {
         } else if (this.activeStatus === "not-assigned") {
             data = this.diService.listManualAssignedCd(documentTypeUuid, page, size)
         }
-        data.subscribe(
+        this.prevRequest = data.subscribe(
             result => {
                 if (result.responseCode === "00") {
                     let listD: any[] = result.data;
@@ -289,6 +297,7 @@ export class ConsignmentDocumentListComponent implements OnInit {
     }
 
     searchDocuments(keywords: string) {
+        this.cancelPrevious()
         this.dataSet.load([])
         this.previousStatus = this.activeStatus
         this.searchStatus = 'search-result'
@@ -300,7 +309,7 @@ export class ConsignmentDocumentListComponent implements OnInit {
             'category': this.activeStatus
         }
         console.log(data)
-        this.diService.searchConsignmentDocuments(data)
+        this.prevRequest = this.diService.searchConsignmentDocuments(data)
             .subscribe(
                 res => {
                     if (res.responseCode == "00") {
