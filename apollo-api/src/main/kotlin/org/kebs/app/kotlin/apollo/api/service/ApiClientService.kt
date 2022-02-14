@@ -1,4 +1,4 @@
-package org.kebs.app.kotlin.apollo.api.service;
+package org.kebs.app.kotlin.apollo.api.service
 
 
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -193,6 +193,14 @@ class ApiClientService(
         }
     }
 
+    fun getApiClient(clientId: Long): SystemApiClient? {
+        val client = this.apiClientRepo.findById(clientId)
+        if (client.isPresent) {
+            return client.get()
+        }
+        return null
+    }
+
     fun getClientDetails(clientId: Long): ApiClientDao? {
         val client = this.apiClientRepo.findById(clientId)
         if (client.isPresent) {
@@ -202,7 +210,7 @@ class ApiClientService(
     }
 
     fun postToUrl(data: Any, url: String) {
-
+        KotlinLogging.logger { }.info("Send to client URL[$url]: ${objectMapper.writeValueAsString(data)}")
     }
 
     fun publishCallback(data: Any, clientId: String) {

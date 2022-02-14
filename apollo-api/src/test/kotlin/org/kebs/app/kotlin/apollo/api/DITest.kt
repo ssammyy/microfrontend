@@ -13,10 +13,8 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionB
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SchedulerImpl
-import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.SFTPService
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.UpAndDownLoad
 import org.kebs.app.kotlin.apollo.api.service.BillingService
-import org.kebs.app.kotlin.apollo.api.service.DestinationInspectionService
 import org.kebs.app.kotlin.apollo.api.utils.Delimiters
 import org.kebs.app.kotlin.apollo.api.utils.XMLDocument
 import org.kebs.app.kotlin.apollo.common.dto.UserEntityDto
@@ -299,7 +297,7 @@ class DITest {
         val cdStatusType = destinationInspectionDaoServices.findCdStatusCategory("APPROVE")
         form.cdStatusTypeId = cdStatusType.id
         val cdUud = "9cd47862-7d84-4664-b1b1-f14a6b950441"
-        SecurityContextHolder.getContext().authentication=UsernamePasswordAuthenticationToken("APPROVE",null,null)
+        SecurityContextHolder.getContext().authentication = UsernamePasswordAuthenticationToken("APPROVE", null, null)
         val response = this.destinationInspectionBpmn.startApprovalConsignment(cdUud, form)
         Assertions.assertEquals("00", response.responseCode, response.message)
     }
@@ -1337,12 +1335,11 @@ class DITest {
                     val map = commonDaoServices.serviceMapDetails(appId)
                     val consignmentDocumentEntity: ConsignmentDocumentDetailsEntity = destinationInspectionDaoServices.findCD(941)
                     val localCoc = destinationInspectionDaoServices.createLocalCoc(loggedInUser, consignmentDocumentEntity, map, "", "A")
-                    consignmentDocumentEntity.cdStandard?.let { cdStd ->
-                        destinationInspectionDaoServices.updateCDStatus(
-                                cdStd,
-                                applicationMapProperties.mapDICdStatusTypeCOCGeneratedAndSendID
-                        )
-                    }
+                    // Update status
+                    destinationInspectionDaoServices.updateCDStatus(
+                            consignmentDocumentEntity,
+                            applicationMapProperties.mapDICdStatusTypeCOCGeneratedAndSendID
+                    )
                     KotlinLogging.logger { }.info { "localCoc = ${localCoc.id}" }
 //                reportsDaoService.generateLocalCoCReportWithDataSource(consignmentDocumentEntity, applicationMapProperties.mapReportLocalCocPath)?.let { file ->
 //            notifications.processEmail("anthonykihagi@gmail.com","Test subject","Test Message",file.path)

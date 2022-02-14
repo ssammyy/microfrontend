@@ -10,6 +10,7 @@ import org.kebs.app.kotlin.apollo.api.payload.response.PvocPartnerDto
 import org.kebs.app.kotlin.apollo.api.payload.response.PvocPartnerTypeDto
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
+import org.kebs.app.kotlin.apollo.store.model.external.SystemApiClient
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersEntity
 import org.kebs.app.kotlin.apollo.store.repo.IPvocPartnersRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IPvocPartnerTypeRepository
@@ -134,6 +135,23 @@ class PvocPartnerService(
             response.message = "Partner does not exist"
         }
         return response
+    }
+
+    fun getPartner(partnerId: Long): PvocPartnersEntity? {
+        val partnerOptional = partnersRepository.findById(partnerId)
+        if (partnerOptional.isPresent) {
+            return partnerOptional.get()
+        }
+        return null
+    }
+
+    fun getPartnerApiClient(partnerId: Long): SystemApiClient? {
+        val partnerOptional = partnersRepository.findById(partnerId)
+        if (partnerOptional.isPresent) {
+            val partner = partnerOptional.get()
+            return this.apiClientService.getApiClient(partner.apiClientId!!)
+        }
+        return null
     }
 
     fun getPartnerDetails(partnerId: Long): ApiResponseModel {

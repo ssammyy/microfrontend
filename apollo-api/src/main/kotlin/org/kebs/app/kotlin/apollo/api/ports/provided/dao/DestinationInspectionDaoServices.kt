@@ -2137,7 +2137,7 @@ class DestinationInspectionDaoServices(
         return null
     }
 
-    fun updateConsignmentCorDetails(cdDetailsEntity: ConsignmentDocumentDetailsEntity, localCocType: String?, documentCode: String, corsBakEntity: CorsBakEntity?) {
+    fun updateConsignmentCorDetails(cdDetailsEntity: ConsignmentDocumentDetailsEntity, cocType: String?, documentCode: String, corsBakEntity: CorsBakEntity?) {
         var documentType = CdTypeCodes.COR.code
         var isCosGood = false
         corsBakEntity?.let {
@@ -2147,8 +2147,8 @@ class DestinationInspectionDaoServices(
             isCosGood = this.handleNoCorFromCosWithPvoc(cdDetailsEntity)
             null
         }
-        // Document Type
-        when (localCocType) {
+        // COC Type
+        when (cocType) {
             "F" -> {
                 documentType = CdTypeCodes.FOREIGN_COR.code
             }
@@ -2246,12 +2246,12 @@ class DestinationInspectionDaoServices(
                     StringUtils.hasLength(chassisNumber) -> {
                         KotlinLogging.logger { }.info("Map COR")
                         // COR, NO_COR_PVOC or NO_COR Goods
-                        this.updateConsignmentCorDetails(cdDetailsEntity, cdDetailsEntity.cdStandardsTwo?.localCocType, documentCode, corsBakRepository.findByChasisNumber(chassisNumber!!))
+                        this.updateConsignmentCorDetails(cdDetailsEntity, cdDetailsEntity.cdStandardsTwo?.cocType, documentCode, corsBakRepository.findByChasisNumber(chassisNumber!!))
                     }
                     else -> {
                         KotlinLogging.logger { }.info("Map COC")
                         // COC, NCR or NO_COC Goods
-                        this.updateConsignmentCocDetails(cdDetailsEntity, cdDetailsEntity.cdStandardsTwo?.localCocType, documentCode, findCocByUcrNumber(ucrNumber))
+                        this.updateConsignmentCocDetails(cdDetailsEntity, cdDetailsEntity.cdStandardsTwo?.cocType, documentCode, findCocByUcrNumber(ucrNumber))
                     }
                 }
         }

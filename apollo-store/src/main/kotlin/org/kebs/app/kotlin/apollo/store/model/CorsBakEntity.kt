@@ -159,6 +159,10 @@ class CorsBakEntity : Serializable {
     @Basic
     var inspectionFee: Double? = 0.0
 
+    @Column(name = "INSPECTION_FEE_RECEIPTS")
+    @Basic
+    var inspectionFeeReceipt: String? = null
+
     @Column(name = "APPROVAL_STATUS")
     @Basic
     var approvalStatus: String? = null
@@ -186,6 +190,10 @@ class CorsBakEntity : Serializable {
     @Column(name = "INSPECTION_FEE_PAYMENT_DATE")
     @Basic
     var inspectionFeePaymentDate: Timestamp? = null
+
+    @Column(name = "ROUTE")
+    @Basic
+    var route: String? = null
 
     @Column(name = "STATUS")
     @Basic

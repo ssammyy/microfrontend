@@ -1,6 +1,5 @@
 package org.kebs.app.kotlin.apollo.api.handlers.pvoc
 
-import com.fasterxml.jackson.databind.exc.InvalidFormatException
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
@@ -148,6 +147,60 @@ class PvocClientHandler(
             KotlinLogging.logger { }.error("Failed to add  idf data", ex)
             response.responseCode = ResponseCodes.FAILED_CODE
             response.message = "Invalid request data"
+        }
+        return ServerResponse.ok().body(response)
+    }
+
+    fun pvocPartnerQueryRequest(req: ServerRequest): ServerResponse {
+        val response = ApiResponseModel()
+        try {
+            val form = req.body(PvocKebsQueryForm::class.java)
+            validatorService.validateInputWithInjectedValidator(form)?.let {
+                response.message = "Request validation failed"
+                response.errors = it
+                response.responseCode = ResponseCodes.INVALID_CODE
+                response.data = form
+                response
+            } ?: run {
+                return ServerResponse.ok().body(pvocService.receivePartnerQuery(form))
+            }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Partner query failed", ex)
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Invalid request data"
+        }
+        return ServerResponse.ok().body(response)
+    }
+
+    fun pvocPartnerQueryResponse(req: ServerRequest): ServerResponse {
+        val response = ApiResponseModel()
+        try {
+            val form = req.body(PvocQueryResponse::class.java)
+            validatorService.validateInputWithInjectedValidator(form)?.let {
+                response.message = "Request validation failed"
+                response.errors = it
+                response.responseCode = ResponseCodes.INVALID_CODE
+                response.data = form
+                response
+            } ?: run {
+                return ServerResponse.ok().body(pvocService.receivePartnerQueryResponse(form))
+            }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Query response failed", ex)
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Invalid request data"
+        }
+        return ServerResponse.ok().body(response)
+    }
+
+    fun pvocTimelineIssues(req: ServerRequest): ServerResponse {
+        var response = ApiResponseModel()
+        try {
+            response = pvocService.timelineIssues(req.param("yearMonth"))
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Time line issues failed", ex)
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.message = "Failed to process request"
         }
         return ServerResponse.ok().body(response)
     }

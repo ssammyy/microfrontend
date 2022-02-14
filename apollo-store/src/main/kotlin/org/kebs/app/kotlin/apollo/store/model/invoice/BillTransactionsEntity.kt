@@ -45,6 +45,18 @@ class BillTransactionsEntity : Serializable {
     @Basic
     var transactionDate: Timestamp? = null
 
+    @Column(name = "FOB_AMOUNT")
+    @Basic
+    var fobAmount: BigDecimal? = null
+
+    @Column(name = "CURRENCY")
+    @Basic
+    var currency: String? = null
+
+    @Column(name = "RATE")
+    @Basic
+    var rate: BigDecimal? = null
+
     @Column(name = "AMOUNT")
     @Basic
     var amount: BigDecimal? = null
