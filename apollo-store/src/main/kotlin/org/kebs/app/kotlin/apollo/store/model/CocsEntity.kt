@@ -42,6 +42,16 @@ class CocsEntity : Serializable {
     @Basic
     var ucrNumber: String? = null
 
+    @Column(name = "ACCEPTABLE_DOC_DATE", nullable = true)
+    @Basic
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    var acceptableDocDate: Timestamp? = null
+
+    @Column(name = "FINAL_DOC_DATE", nullable = true)
+    @Basic
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    var finalDocDate: Timestamp? = null
+
     @Column(name = "RFC_DATE", nullable = true)
     @Basic
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")

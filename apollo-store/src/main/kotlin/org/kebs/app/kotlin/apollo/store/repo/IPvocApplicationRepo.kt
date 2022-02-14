@@ -42,6 +42,8 @@ interface IPvocApplicationProductsRepo : HazelcastRepository<PvocApplicationProd
 
 interface IPvocAgentMonitoringStatusEntityRepo : HazelcastRepository<PvocAgentMonitoringStatusEntity, Long> {
     fun findAllByStatus(status: Int): List<PvocAgentMonitoringStatusEntity>?
+    fun findFirstByPartnerIdAndYearMonthAndStatus(id: PvocPartnersEntity, yearMonth: String, status: Int): Optional<PvocAgentMonitoringStatusEntity>
+    fun countByPartnerIdAndYearMonth(agent: PvocPartnersEntity, yearMonth: String): Long
 }
 
 interface IPvocExceptionCertificateRepository : HazelcastRepository<PvocExceptionCertificate, Long> {

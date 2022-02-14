@@ -1,9 +1,6 @@
 package org.kebs.app.kotlin.apollo.store.repo
 
-import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnerTypeEntity
-import org.kebs.app.kotlin.apollo.store.model.pvc.PvocTimelineConfigurations
-import org.kebs.app.kotlin.apollo.store.model.pvc.PvocTimelinePenalties
-import org.kebs.app.kotlin.apollo.store.model.pvc.PvocTimelinesDataEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.*
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
@@ -22,8 +19,15 @@ interface IPvocTimelinesConfigurationRepository : HazelcastRepository<PvocTimeli
 }
 
 @Repository
-interface IPvocTimelinesDataRepository : HazelcastRepository<PvocTimelinesDataEntity, Long> {
+interface IPvocTimelinesDataEntityRepository : HazelcastRepository<PvocTimelinesDataEntity, Long> {
     fun findAllByCertNumberNotNull(pageable: Pageable): Page<PvocTimelinesDataEntity>?
     fun findByCertNumberAndCertType(certNumber: String, certType: String): PvocTimelinesDataEntity
     fun findByRecordYearMonthAndPartnerId(yearMonth: String, partnerId: Long): List<PvocTimelinesDataEntity>
+}
+
+@Repository
+interface IPvocSealIssuesEntityRepository : HazelcastRepository<PvocSealIssuesEntity, Long> {
+    fun findAllByCertNumberNotNull(pageable: Pageable): Page<PvocSealIssuesEntity>?
+    fun findByCertNumberAndCertType(certNumber: String, certType: String): PvocSealIssuesEntity
+    fun findByRecordYearMonthAndPartnerId(yearMonth: String, partnerId: Long): List<PvocSealIssuesEntity>
 }

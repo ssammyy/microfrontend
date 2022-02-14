@@ -9,9 +9,12 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.di.DiTaskDetails
 import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SchedulerImpl
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocApplicationEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocComplaintEntity
-import org.kebs.app.kotlin.apollo.store.model.pvc.PvocTimelinesDataEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocSealIssuesEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocWaiversApplicationEntity
-import org.kebs.app.kotlin.apollo.store.repo.*
+import org.kebs.app.kotlin.apollo.store.repo.IPvocApplicationRepo
+import org.kebs.app.kotlin.apollo.store.repo.ISchedulerRepository
+import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
+import org.kebs.app.kotlin.apollo.store.repo.IwaiversApplicationRepo
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -26,7 +29,6 @@ class PvocBpmn(
         private val runtimeService: RuntimeService,
         private val userRepo: IUserRepository,
         private val pvocApplicationRepo: IPvocApplicationRepo,
-        private val pvocTimelinesDataRepo: IPvocTimelinesDataRepository,
         private val schedulerRepo: ISchedulerRepository,
         private val schedulerImpl: SchedulerImpl,
         private val bpmnCommonFunctions: BpmnCommonFunctions,
@@ -115,21 +117,21 @@ class PvocBpmn(
 
                 } ?: KotlinLogging.logger { }.info("CD : $objectId : No Pvoc Timeline Data found")
             } else if (process == pvocMoProcessDefinitionKey) {
-                pvocTimelinesDataRepo.findByIdOrNull(objectId)?.let { pvocTimelinesDataEntity ->
-                    KotlinLogging.logger { }.trace("CD : $objectId : Valid Pvoc Timeline Data found")
-                    when (process) {
-                        pvocMoProcessDefinitionKey -> {
-//                            processInstanceId = pvocTimelinesDataEntity.pvocMonitProcessInstanceId.toString()
-                        }
-                        else -> {
-                            //do nothing
-                        }
-                    }
-                    variables["processInstanceId"] = processInstanceId
-                    variables["pvocTimelinesData"] = pvocTimelinesDataEntity
-                    return variables
-
-                } ?: KotlinLogging.logger { }.info("CD : $objectId : No Pvoc Timeline Data found")
+//                pvocTimelinesDataRepo.findByIdOrNull(objectId)?.let { pvocTimelinesDataEntity ->
+//                    KotlinLogging.logger { }.trace("CD : $objectId : Valid Pvoc Timeline Data found")
+//                    when (process) {
+//                        pvocMoProcessDefinitionKey -> {
+////                            processInstanceId = pvocTimelinesDataEntity.pvocMonitProcessInstanceId.toString()
+//                        }
+//                        else -> {
+//                            //do nothing
+//                        }
+//                    }
+//                    variables["processInstanceId"] = processInstanceId
+//                    variables["pvocTimelinesData"] = pvocTimelinesDataEntity
+//                    return variables
+//
+//                } ?: KotlinLogging.logger { }.info("CD : $objectId : No Pvoc Timeline Data found")
             }
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)
@@ -230,23 +232,23 @@ class PvocBpmn(
                 }
 
             } else if (processKey == pvocMoProcessDefinitionKey) {
-                pvocTimelinesDataRepo.findByIdOrNull(objectId)?.let { pvocTimelinesDataEntity ->
-                    variables["pvocTimelinesData"] = pvocTimelinesDataEntity
-                    when (processKey) {
-                        pvocEaProcessDefinitionKey -> {
-//                            pvocTimelinesDataEntity.pvocMonitStatus?.let { status ->
-                            /*
-                                if (status != 0) {
-                                    KotlinLogging.logger { }.info("objectId : $objectId : Pvoc Application already has a application task assigned"); return null
-                                }
-                                */
-//                            }
-                        }
-                        else -> {
-                            //do nothing
-                        }
-                    }
-                }
+//                pvocTimelinesDataRepo.findByIdOrNull(objectId)?.let { pvocTimelinesDataEntity ->
+//                    variables["pvocTimelinesData"] = pvocTimelinesDataEntity
+//                    when (processKey) {
+//                        pvocEaProcessDefinitionKey -> {
+////                            pvocTimelinesDataEntity.pvocMonitStatus?.let { status ->
+//                            /*
+//                                if (status != 0) {
+//                                    KotlinLogging.logger { }.info("objectId : $objectId : Pvoc Application already has a application task assigned"); return null
+//                                }
+//                                */
+////                            }
+//                        }
+//                        else -> {
+//                            //do nothing
+//                        }
+//                    }
+//                }
             }
 
             //Check that the assignee is valid
@@ -544,7 +546,7 @@ class PvocBpmn(
         KotlinLogging.logger { }.info("objectid : $objectId : Starting PVOC monitoring process")
         try {
             checkStartProcessInputs(objectId, assigneeId, pvocMoProcessDefinitionKey)?.let { checkVariables ->
-                val pvocTimelinesData: PvocTimelinesDataEntity = checkVariables["pvocTimelinesData"] as PvocTimelinesDataEntity
+                val pvocTimelinesData: PvocSealIssuesEntity = checkVariables["pvocTimelinesData"] as PvocSealIssuesEntity
                 variables["objectId"] = pvocTimelinesData.id.toString()
                 variables["analysisReportOk"] = 0
                 variables["analysisReportAction"] = 0
@@ -554,7 +556,7 @@ class PvocBpmn(
 //                    pvocTimelinesData.pvocMonitProcessInstanceId = it["processInstanceId"]
 //                    pvocTimelinesData.pvocMonitStartedOn = Timestamp.from(Instant.now())
 //                    pvocTimelinesData.pvocMonitStatus = processStarted
-                    pvocTimelinesDataRepo.save(pvocTimelinesData)
+//                    pvocTimelinesDataRepo.save(pvocTimelinesData)
                     KotlinLogging.logger { }.info("objectId : $objectId : Successfully started PVOC monitoring process")
                     return it
                 } ?: run {
@@ -688,11 +690,11 @@ class PvocBpmn(
     fun endPvocMoProcess(objectId: String) {
         KotlinLogging.logger { }.info("End PVOC Monitoring process for objectId $objectId")
         try {
-            pvocTimelinesDataRepo.findByIdOrNull(objectId.toLong())?.let { pvocTimelinesData ->
-//                pvocTimelinesData.pvocMonitCompletedOn = Timestamp.from(Instant.now())
-//                pvocTimelinesData.pvocMonitStatus = processCompleted
-                pvocTimelinesDataRepo.save(pvocTimelinesData)
-            }
+//            pvocTimelinesDataRepo.findByIdOrNull(objectId.toLong())?.let { pvocTimelinesData ->
+////                pvocTimelinesData.pvocMonitCompletedOn = Timestamp.from(Instant.now())
+////                pvocTimelinesData.pvocMonitStatus = processCompleted
+//                pvocTimelinesDataRepo.save(pvocTimelinesData)
+//            }
         } catch (e: Exception) {
             KotlinLogging.logger { }.error("$objectId : Unable to complete PVOC Monitoring process for $objectId")
         }

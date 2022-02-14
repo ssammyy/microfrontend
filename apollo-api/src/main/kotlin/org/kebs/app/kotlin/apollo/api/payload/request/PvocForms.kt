@@ -183,6 +183,14 @@ class CocEntityForm {
     @JsonAlias("UCR_NUMBER")
     var ucrNumber: String? = null
 
+    @JsonAlias("ACCEPTABLE_DOC_DATE")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var acceptableDocDate: Timestamp? = null
+
+    @JsonAlias("FINAL_DOC_DATE")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var finalDocDate: Timestamp? = null
+
     @JsonAlias("RFC_DATE")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     var rfcDate: Timestamp? = null
@@ -372,6 +380,14 @@ class NcrEntityForm {
     @NotEmpty(message = "Required field")
     @JsonAlias("UCR_NUMBER")
     var ucrNumber: String? = null
+
+    @JsonAlias("ACCEPTABLE_DOC_DATE")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var acceptableDocDate: Timestamp? = null
+
+    @JsonAlias("FINAL_DOC_DATE")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var finalDocDate: Timestamp? = null
 
     @JsonAlias("RFC_DATE")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
@@ -605,6 +621,14 @@ class CoiEntityForm {
     @NotEmpty(message = "Required field")
     var ucrNumber: String? = null
 
+    @JsonAlias("ACCEPTABLE_DOC_DATE")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var acceptableDocDate: Timestamp? = null
+
+    @JsonAlias("FINAL_DOC_DATE")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var finalDocDate: Timestamp? = null
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     var rfcDate: Timestamp? = null
 
@@ -750,6 +774,14 @@ class CorEntityForm {
 
     @NotNull(message = "UCR Number is required")
     var ucrNumber: String? = null
+
+    @JsonAlias("ACCEPTABLE_DOC_DATE")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var acceptableDocDate: Timestamp? = null
+
+    @JsonAlias("FINAL_DOC_DATE")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var finalDocDate: Timestamp? = null
 
     @NotNull(message = "COR issue date is required")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
