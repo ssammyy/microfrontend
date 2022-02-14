@@ -456,6 +456,7 @@ export class ApiEndpointService {
         STD_LEVY_LIST_OF_USERS_LV: `${ApiEndpointService.STL_CONTEXT}/getSlLvTwoList`,
         STD_LEVY_MANUFACTURE_ROLES: `${ApiEndpointService.STL_CONTEXT}/getRoleByUserId`,
         STD_LEVY_EDIT_COMPANY: `${ApiEndpointService.STL_CONTEXT}/editCompanyDetails`,
+        STD_LEVY_EDITED_COMPANY_DATA: `${ApiEndpointService.STL_CONTEXT}/getCompanyEditedDetails`,
 
 
 

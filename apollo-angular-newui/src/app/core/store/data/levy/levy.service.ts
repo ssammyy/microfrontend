@@ -247,6 +247,18 @@ export class LevyService {
         return this.http.get<UsersEntity[]>(url, {params}).pipe();
     }
 
+    // public getCompanyEditedDetails(manufactureId: any): any {
+    //     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_EDITED_COMPANY_DATA);
+    //     const params = new HttpParams();
+    //     return this.http.get<EditCompanyDTO>(url, {params}).pipe();
+    // }
+
+    public getCompanyEditedDetails(manufactureId: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_EDITED_COMPANY_DATA);
+        const params = new HttpParams().set('manufactureId', manufactureId);
+        return this.http.get<EditCompanyDTO>(url, {params}).pipe();
+    }
+
 
 
 

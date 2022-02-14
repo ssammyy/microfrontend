@@ -2,6 +2,7 @@ import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {Subject} from "rxjs";
 
 import {
+    EditCompanyDTO,
     ManufactureCompletedTask,
     ManufactureCompleteTask,
     ManufactureDetailList,
@@ -26,7 +27,8 @@ declare const $: any;
   styleUrls: ['./standard-levy-manufacture-details.component.css','../../../../../node_modules/@ng-select/ng-select/themes/default.theme.css'],
     encapsulation: ViewEncapsulation.None
 })
-export class StandardLevyManufactureDetailsComponent implements OnInit {
+export class StandardLevyManufactureDetailsComponent implements OnInit
+{
     userId: number ;
     roles: string[];
     userType: number ;
@@ -55,6 +57,7 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
     manufactureLists: ManufactureDetailList[] = [];
     manufacturePendingTasks: ManufacturePendingTask[] = [];
     manufactureCompleteTasks: ManufactureCompletedTask[] = [];
+    editedCompanyData: EditCompanyDTO;
     public actionRequestList: ManufactureDetailList | undefined;
     public actionRequestPending: ManufacturePendingTask | undefined;
     public actionRequestComplete: ManufactureCompletedTask | undefined;
@@ -104,7 +107,19 @@ export class StandardLevyManufactureDetailsComponent implements OnInit {
         this.isShowAssign1Form= true;
         this.isShowAssign2Form= true;
     }
-    toggleDisplayEditedForm() {
+    toggleDisplayEditedForm(manufactureId: number) {
+        this.SpinnerService.show();
+        this.levyService.getCompanyEditedDetails(manufactureId).subscribe(
+            (response: EditCompanyDTO)=> {
+                this.editedCompanyData = response;
+                this.SpinnerService.hide();
+                console.log(this.editedCompanyData)
+            },
+            (error: HttpErrorResponse)=>{
+                this.SpinnerService.hide();
+                console.log(error.message);
+            }
+        );
         this.isShowEditedForm= !this.isShowEditedForm;
         this.isShowEditForm= true;
         this.isShowAssignForm = true;
