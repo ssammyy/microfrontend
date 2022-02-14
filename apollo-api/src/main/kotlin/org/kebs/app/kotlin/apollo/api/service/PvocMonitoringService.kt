@@ -33,4 +33,14 @@ class PvocMonitoringService(
             return this.iPvocAgentMonitoringStatusEntityRepo.save(monitoring)
         }
     }
+
+//    fun listAgentMonitoring(status: String, page: PageRequest): ApiResponseModel {
+//        val response = ApiResponseModel()
+//        val page= extractPage(req)
+//        when (status) {
+//            "NEW" -> iPvocAgentMonitoringStatusEntityRepo.findAllByStatus(MonitoringStatus.OPEN.status,page)
+//            ""
+//        }
+//        return response
+//    }
 }

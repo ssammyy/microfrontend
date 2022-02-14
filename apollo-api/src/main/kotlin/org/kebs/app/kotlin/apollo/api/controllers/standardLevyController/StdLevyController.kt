@@ -948,7 +948,8 @@ class StdLevyController(
         response: HttpServletResponse,
         @RequestParam("manufactureId") manufactureId: Long
     ): CompanyProfileEditEntity {
-        return standardLevyService.getCompanyEditedDetails(manufactureId)
+        return standardLevyService.
+        getCompanyEditedDetails(manufactureId)
     }
 
     @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
