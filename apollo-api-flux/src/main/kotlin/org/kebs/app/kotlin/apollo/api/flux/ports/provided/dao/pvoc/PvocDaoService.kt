@@ -12,8 +12,8 @@ import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapPrope
 import org.kebs.app.kotlin.apollo.store.customdto.*
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocQueriesDataEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocSealIssuesEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocStdMonitoringDataEntity
-import org.kebs.app.kotlin.apollo.store.model.pvc.PvocTimelinesDataEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -822,7 +822,7 @@ class PvocServiceFlux(
         return generalResponse
     }
 
-    fun saveTimelinesData(monitoringTimelines: PvocTimelinesDataEntity): GeneralResponse {
+    fun saveTimelinesData(monitoringTimelines: PvocSealIssuesEntity): GeneralResponse {
         val generalResponse = GeneralResponse()
         val log = WorkflowTransactionsEntity()
         try {

@@ -3,10 +3,12 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.payload.request.*
 import org.kebs.app.kotlin.apollo.api.service.BillingService
+import org.kebs.app.kotlin.apollo.api.service.PvocMonitoringService
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.invoice.BillTransactionsEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocSealIssuesEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocTimelinesDataEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.stereotype.Service
@@ -27,12 +29,14 @@ class ForeignPvocIntegrations(
         private val rfcCoiItemRepository: IRfcCoiItemsRepository,
         private val riskProfileRepository: IRiskProfileRepository,
         private val timelinesConfigurationRepository: IPvocTimelinesConfigurationRepository,
-        private val timelinesRepository: IPvocTimelinesDataRepository,
+        private val timelinesRepository: IPvocTimelinesDataEntityRepository,
+        private val sealIssuesRepository: IPvocSealIssuesEntityRepository,
         private val timelinePenaltiesRepository: IPvocTimelinePenaltiesRepository,
         private val idfsRepository: IdfsEntityRepository,
         private val idfsItemRepository: IdfItemsEntityRepository,
         private val commonDaoServices: CommonDaoServices,
-        private val billingService: BillingService
+        private val billingService: BillingService,
+        private val monitoringService: PvocMonitoringService
 ) {
     private final val YEAR_MONTH_FORMATTER = DateTimeFormatter.ofPattern("yyyyMM")
     fun foreignCoc(
@@ -56,6 +60,8 @@ class ForeignPvocIntegrations(
                             idfNumber = coc.idfNumber ?: "UNKNOWN"
                             rfiNumber = coc.rfiNumber ?: "UNKNOWN"
                             ucrNumber = coc.ucrNumber
+                            acceptableDocDate = coc.acceptableDocDate
+                            finalDocDate = coc.finalDocDate
                             rfcDate = coc.rfcDate
                             shipmentQuantityDelivered = "UNKNOWN"
                             cocIssueDate = coc.cocIssueDate
@@ -145,6 +151,8 @@ class ForeignPvocIntegrations(
                             rfiNumber = ncr.rfiNumber ?: "UNKNOWN"
                             ucrNumber = ncr.ucrNumber
                             rfcDate = ncr.rfcDate
+                            acceptableDocDate = ncr.acceptableDocDate
+                            finalDocDate = ncr.finalDocDate
                             shipmentQuantityDelivered = "UNKNOWN"
                             cocIssueDate = ncr.ncrIssueDate
                             clean = "N"
@@ -262,6 +270,8 @@ class ForeignPvocIntegrations(
                     idfNumber = coi.idfNumber ?: "UNKNOWN"
                     rfiNumber = coi.rfiNumber ?: "UNKNOWN"
                     ucrNumber = coi.ucrNumber
+                    acceptableDocDate = coi.acceptableDocDate
+                    finalDocDate = coi.finalDocDate
                     rfcDate = coi.rfcDate
                     shipmentQuantityDelivered = "UNKNOWN"
                     cocIssueDate = coi.coiIssueDate
@@ -496,9 +506,11 @@ class ForeignPvocIntegrations(
             timeline.modifiedBy = commonDaoServices.loggedInUserAuthentication().name
             timeline.recordYearMonth = YEAR_MONTH_FORMATTER.format(date)
             timeline.riskStatus = 1
+            timeline.monitoringId = this.monitoringService.findMonitoringRecord(timeline.recordYearMonth!!, user).id
             this.timelinesRepository.save(timeline)
             timeAdded = true
         }
+
 
         return timeAdded
     }
@@ -516,9 +528,9 @@ class ForeignPvocIntegrations(
         timeline.certType = documentType
         timeline.ucrNumber = entity.ucrNumber
         timeline.route = entity.route
-        timeline.docConfirmationDate = entity.dateOfInspection
+        timeline.docConfirmationDate = entity.acceptableDocDate
         timeline.dateOfInspection = entity.dateOfInspection
-        timeline.finalDocumentsSubmissionDate = entity.rfcDate?.let { Timestamp(it.time) }
+        timeline.finalDocumentsSubmissionDate = entity.finalDocDate?.let { Timestamp(it.time) }
         timeline.requestDateOfInspection = entity.dateOfInspection
         timeline.paymentDate = entity.finalInvoiceDate
         timeline.rfcDate = entity.rfcDate?.let { Timestamp(it.time) }
@@ -539,9 +551,31 @@ class ForeignPvocIntegrations(
                 timeline.certNumber = entity.cocNumber
             }
         }
+        // 1. Check timeline issues
         if (checkTimelineIssue(timeline, transaction, user, entity.version)) {
             KotlinLogging.logger { }.info("Added $documentType timeline issue: ${timeline.id}")
         }
+        // 2. Check seal issues
+        if ("A".equals(entity.route, true) && (entity.shipmentContainerNumber == null || "NA".equals(entity.shipmentContainerNumber, true) || "UNKNOWN".equals(entity.shipmentContainerNumber, true))) {
+            val date = LocalDateTime.now()
+            val sealIssue = PvocSealIssuesEntity()
+            sealIssue.partnerId = user.id
+            sealIssue.recordId = entity.id
+            sealIssue.certType = documentType
+            sealIssue.certNumber = timeline.certNumber
+            sealIssue.route = entity.route
+            sealIssue.ucrNumber = entity.ucrNumber
+            sealIssue.recordYearMonth = YEAR_MONTH_FORMATTER.format(date)
+            sealIssue.riskStatus = 1
+            sealIssue.status = 1
+            sealIssue.monitoringId = this.monitoringService.findMonitoringRecord(sealIssue.recordYearMonth!!, user).id
+            sealIssue.createdBy = commonDaoServices.loggedInUserAuthentication().name
+            sealIssue.createdOn = Timestamp.valueOf(date)
+            sealIssue.modifiedOn = Timestamp.valueOf(date)
+            this.sealIssuesRepository.save(sealIssue)
+        }
+        // 3. Check product categorization issues
+        // TODO: add when categorization date is received
     }
 
     fun checkCorDocumentCompliance(entity: CorsBakEntity, rfcDate: Timestamp?, user: PvocPartnersEntity) {
@@ -552,8 +586,8 @@ class ForeignPvocIntegrations(
         transaction.invoiceNumber = entity.inspectionFeeReceipt
 
         val timeline = PvocTimelinesDataEntity()
-        timeline.docConfirmationDate = entity.applicationBookingDate
-        timeline.finalDocumentsSubmissionDate = rfcDate?.let { Timestamp(it.time) }
+        timeline.docConfirmationDate = entity.acceptableDocDate
+        timeline.finalDocumentsSubmissionDate = entity.finalDocDate?.let { Timestamp(it.time) }
         timeline.rfcDate = rfcDate?.let { Timestamp(it.time) }
         timeline.docIssueDate = entity.corIssueDate
         timeline.dateOfInspection = entity.inspectionDate
@@ -569,7 +603,6 @@ class ForeignPvocIntegrations(
         if (checkTimelineIssue(timeline, transaction, user, entity.version)) {
             KotlinLogging.logger { }.info("Added COR timeline issue: ${timeline.id}")
         }
-
     }
 
     @Transactional
@@ -593,6 +626,8 @@ class ForeignPvocIntegrations(
                 exporterAddress1 = cor.exporterAddress1
                 exporterAddress2 = cor.exporterAddress2
                 exporterEmail = cor.exporterEmail
+                acceptableDocDate = cor.acceptableDocDate
+                finalDocDate = cor.finalDocDate
                 applicationBookingDate = cor.applicationBookingDate ?: commonDaoServices.getTimestamp()
                 inspectionDate = cor.inspectionDate ?: commonDaoServices.getTimestamp()
                 make = cor.make

@@ -8,10 +8,13 @@ import org.kebs.app.kotlin.apollo.api.flux.ports.provided.dao.pvoc.PvocServiceFl
 import org.kebs.app.kotlin.apollo.api.flux.ports.provided.validation.AbstractValidationHandler
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
-import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.CocItemsEntity
+import org.kebs.app.kotlin.apollo.store.model.CocsEntity
+import org.kebs.app.kotlin.apollo.store.model.CoiItemsEntity
+import org.kebs.app.kotlin.apollo.store.model.RiskProfileDataEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocQueriesDataEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocSealIssuesEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocStdMonitoringDataEntity
-import org.kebs.app.kotlin.apollo.store.model.pvc.PvocTimelinesDataEntity
 import org.springframework.stereotype.Component
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.Errors
@@ -308,9 +311,9 @@ class PvocHandler(
 
     suspend fun receiveMonitoringTimelines(req: ServerRequest): ServerResponse {
         return try {
-            req.awaitBodyOrNull<PvocTimelinesDataEntity>()
+            req.awaitBodyOrNull<PvocSealIssuesEntity>()
                 ?.let { body ->
-                    val errors: Errors = BeanPropertyBindingResult(body, PvocTimelinesDataEntity::class.java.name)
+                    val errors: Errors = BeanPropertyBindingResult(body, PvocSealIssuesEntity::class.java.name)
                     validator.validate(body, errors)
                     if (errors.allErrors.isEmpty()) {
                         ServerResponse.ok().bodyValueAndAwait(service.saveTimelinesData(body))

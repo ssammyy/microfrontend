@@ -41,7 +41,7 @@ class PvocAgentService(
         private val complaintSubCategoryRepo: IPvocComplaintCertificationsSubCategoryRepo,
         private val pvocComplaintRemarksEntityRepo: PvocComplaintRemarksEntityRepo,
         private val commonDaoServices: CommonDaoServices,
-        private val timelinesRepository: IPvocTimelinesDataRepository,
+        private val timelinesRepository: IPvocTimelinesDataEntityRepository,
         private val partnerService: PvocPartnerService,
         private val apiClientService: ApiClientService,
         private val partnerQuerriesRepository: IPvocQuerriesRepository,

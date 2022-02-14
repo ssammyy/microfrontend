@@ -8,65 +8,104 @@ import javax.persistence.*
 @Entity
 @Table(name = "DAT_KEBS_PVOC_AGENT_MONITORING_STATUS")
 class PvocAgentMonitoringStatusEntity : Serializable {
-    @get:Column(name = "ID")
-    @get:Id
+    @Column(name = "ID")
+    @Id
     var id: Long = 0
-    @get:Column(name = "STATUS")
-    @get:Basic
-    var status: Int? = null
-    @get:Column(name = "NAME")
-    @get:Basic
+
+    @JoinColumn(name = "PARTNER_ID", referencedColumnName = "ID")
+    @ManyToOne
+    var partnerId: PvocPartnersEntity? = null
+
+    @Column(name = "YEAR_MONTH")
+    @Basic
+    var yearMonth: String? = null
+
+    @Column(name = "RECORD_NUMBER")
+    @Basic
+    var recordNumber: String? = null
+
+    @Column(name = "NAME")
+    @Basic
     var name: String? = null
-    @get:Column(name = "DESCRIPTION")
-    @get:Basic
+
+    @Column(name = "DESCRIPTION")
+    @Basic
     var description: String? = null
-    @get:Column(name = "VAR_FIELD_1")
-    @get:Basic
+
+    @Column(name = "MONITORING_STATUS")
+    @Basic
+    var monitoringStatus: Int? = null
+
+    @Column(name = "MONITORING_STATUS_DESC")
+    @Basic
+    var monitoringStatusDesc: String? = null
+
+    @Column(name = "STATUS")
+    @Basic
+    var status: Int? = null
+
+    @Column(name = "VAR_FIELD_1")
+    @Basic
     var varField1: String? = null
-    @get:Column(name = "VAR_FIELD_2")
-    @get:Basic
+
+    @Column(name = "VAR_FIELD_2")
+    @Basic
     var varField2: String? = null
-    @get:Column(name = "VAR_FIELD_3")
-    @get:Basic
+
+    @Column(name = "VAR_FIELD_3")
+    @Basic
     var varField3: String? = null
-    @get:Column(name = "VAR_FIELD_4")
-    @get:Basic
+
+    @Column(name = "VAR_FIELD_4")
+    @Basic
     var varField4: String? = null
-    @get:Column(name = "VAR_FIELD_5")
-    @get:Basic
+
+    @Column(name = "VAR_FIELD_5")
+    @Basic
     var varField5: String? = null
-    @get:Column(name = "VAR_FIELD_6")
-    @get:Basic
+
+    @Column(name = "VAR_FIELD_6")
+    @Basic
     var varField6: String? = null
-    @get:Column(name = "VAR_FIELD_7")
-    @get:Basic
+
+    @Column(name = "VAR_FIELD_7")
+    @Basic
     var varField7: String? = null
-    @get:Column(name = "VAR_FIELD_8")
-    @get:Basic
+
+    @Column(name = "VAR_FIELD_8")
+    @Basic
     var varField8: String? = null
-    @get:Column(name = "VAR_FIELD_9")
-    @get:Basic
+
+    @Column(name = "VAR_FIELD_9")
+    @Basic
     var varField9: String? = null
-    @get:Column(name = "VAR_FIELD_10")
-    @get:Basic
+
+    @Column(name = "VAR_FIELD_10")
+    @Basic
     var varField10: String? = null
-    @get:Column(name = "CREATED_BY")
-    @get:Basic
+
+    @Column(name = "CREATED_BY")
+    @Basic
     var createdBy: String? = null
-    @get:Column(name = "CREATED_ON")
-    @get:Basic
+
+    @Column(name = "CREATED_ON")
+    @Basic
     var createdOn: Timestamp? = null
-    @get:Column(name = "MODIFIED_BY")
-    @get:Basic
+
+    @Column(name = "MODIFIED_BY")
+    @Basic
     var modifiedBy: String? = null
-    @get:Column(name = "MODIFIED_ON")
-    @get:Basic
+
+    @Column(name = "MODIFIED_ON")
+    @Basic
     var modifiedOn: Timestamp? = null
-    @get:Column(name = "DELETE_BY")
-    @get:Basic
+
+    @Column(name = "DELETE_BY")
+    @Basic
     var deleteBy: String? = null
-    @get:Column(name = "DELETED_ON")
-    @get:Basic
+
+    @Column(name = "DELETED_ON")
+    @Basic
     var deletedOn: Timestamp? = null
 
     override fun equals(o: Any?): Boolean {
