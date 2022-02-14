@@ -270,14 +270,14 @@
                                                                                             <p ><b>Confirm Edited Company Details.</b></p>
                                                                                             <hr>
                                                                                             <div class="form-body">
-                                                                                                <div class="row">
+                                                                                                <div class="row"   >
                                                                                                     <div class="form-group col-12">
                                                                                                         <label for="physicalAddressx">Main Physical Location <span
                                                                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                                                                        <input type="hidden" ngModel="{{actionRequestList?.id}}" class="form-control"
+                                                                                                        <input type="text" ngModel="" class="form-control"
                                                                                                                formControlName="companyId" name="companyId"
                                                                                                         >
-                                                                                                        <textarea type="text" ngModel="{{actionRequestList?.physicalAddress}}" class="form-control"
+                                                                                                        <textarea type="text" ngModel="" class="form-control"
                                                                                                                   id="physicalAddressx" name="physicalAddress"
                                                                                                                   formControlName="physicalAddress"
                                                                                                                   placeholder="Main Physical Location"></textarea>
@@ -286,14 +286,14 @@
                                                                                                     <div class="form-group col-12">
                                                                                                         <label for="postalAddress2x">Postal Address <span
                                                                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                                                                        <input type="text" ngModel="{{actionRequestList?.postalAddress}}" class="form-control"
+                                                                                                        <input type="text" ngModel="" class="form-control"
                                                                                                                id="postalAddress2x" name="postalAddress"
                                                                                                                formControlName="postalAddress" placeholder="Postal Address" >
                                                                                                     </div>
                                                                                                     <div class="form-group col-12">
                                                                                                         <label for="ownershipx">Ownership <span
                                                                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                                                                        <ng-select id="ownershipx" ngModel="{{actionRequestList?.ownership}}" formControlName="ownership"  class="form-control" name="ownership" >
+                                                                                                        <ng-select id="ownershipx" ngModel="" formControlName="ownership"  class="form-control" name="ownership" >
                                                                                                             <ng-option  value="{{actionRequestList?.ownership}}" >{{actionRequestList?.ownership}} {{actionRequestList?.ownership}}</ng-option>
                                                                                                             <ng-option  value="Single_Ownership" >Single Ownership</ng-option>
                                                                                                             <ng-option  value="Limited_Company" >Limited Company</ng-option>
