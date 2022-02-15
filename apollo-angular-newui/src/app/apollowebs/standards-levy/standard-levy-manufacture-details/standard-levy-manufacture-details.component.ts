@@ -1,7 +1,8 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {Subject} from "rxjs";
 
 import {
+    ConfirmEditCompanyDTO,
     EditCompanyDTO,
     ManufactureCompletedTask,
     ManufactureCompleteTask,
@@ -19,6 +20,7 @@ import {NgSelectModule} from '@ng-select/ng-select';
 import {selectUserInfo} from "../../../core/store";
 import swal from "sweetalert2";
 import {Router} from "@angular/router";
+import {DataTableDirective} from "angular-datatables";
 declare const $: any;
 
 @Component({
@@ -27,8 +29,9 @@ declare const $: any;
   styleUrls: ['./standard-levy-manufacture-details.component.css','../../../../../node_modules/@ng-select/ng-select/themes/default.theme.css'],
     encapsulation: ViewEncapsulation.None
 })
-export class StandardLevyManufactureDetailsComponent implements OnInit
+export class StandardLevyManufactureDetailsComponent implements OnInit, OnDestroy
 {
+
     userId: number ;
     roles: string[];
     userType: number ;
@@ -36,8 +39,12 @@ export class StandardLevyManufactureDetailsComponent implements OnInit
     levelTwo=false;
     levelThree=false;
     levelFour=false;
-  dtOptions: DataTables.Settings = {};
-  dtTrigger: Subject<any> = new Subject<any>();
+
+    dtOptions: DataTables.Settings = {};
+    dtTrigger: Subject<any> = new Subject<any>();
+    @ViewChild(DataTableDirective, {static: false})
+    dtElement: DataTableDirective;
+    isDtInitialized: boolean = false
 
   dtOptions1:DataTables.Settings = {};
     dtTrigger1: Subject<any> = new Subject<any>();
@@ -57,7 +64,7 @@ export class StandardLevyManufactureDetailsComponent implements OnInit
     manufactureLists: ManufactureDetailList[] = [];
     manufacturePendingTasks: ManufacturePendingTask[] = [];
     manufactureCompleteTasks: ManufactureCompletedTask[] = [];
-    editedCompanyData: EditCompanyDTO;
+    editedCompanyData: ConfirmEditCompanyDTO;
     public actionRequestList: ManufactureDetailList | undefined;
     public actionRequestPending: ManufacturePendingTask | undefined;
     public actionRequestComplete: ManufactureCompletedTask | undefined;
@@ -110,7 +117,7 @@ export class StandardLevyManufactureDetailsComponent implements OnInit
     toggleDisplayEditedForm(manufactureId: number) {
         this.SpinnerService.show();
         this.levyService.getCompanyEditedDetails(manufactureId).subscribe(
-            (response: EditCompanyDTO)=> {
+            (response: ConfirmEditCompanyDTO)=> {
                 this.editedCompanyData = response;
                 this.SpinnerService.hide();
                 console.log(this.editedCompanyData)
@@ -371,6 +378,12 @@ export class StandardLevyManufactureDetailsComponent implements OnInit
           userType: []
 
       });
+
+      this.dtOptions = {
+          pagingType: 'full_numbers',
+          pageLength: 10,
+          processing: true
+      };
   }
 
     get scheduleVisitForm(): any {
@@ -471,10 +484,18 @@ export class StandardLevyManufactureDetailsComponent implements OnInit
     this.SpinnerService.show();
     this.levyService.getManufacturerList().subscribe(
         (response: ManufactureDetailList[])=> {
-          this.dtTrigger.next();
           this.manufactureLists = response;
-          //console.log(response);
+          console.log(this.manufactureLists);
             this.SpinnerService.hide();
+            if (this.isDtInitialized) {
+                this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                    dtInstance.destroy();
+                    this.dtTrigger.next();
+                });
+            } else {
+                this.isDtInitialized = true
+                this.dtTrigger.next();
+            }
         },
         (error: HttpErrorResponse)=>{
           this.SpinnerService.hide();
@@ -711,7 +732,7 @@ export class StandardLevyManufactureDetailsComponent implements OnInit
     editedCompany(): void {
 
         this.SpinnerService.show();
-        this.levyService.editCompany(this.editCompanyFormGroup.value).subscribe(
+        this.levyService.editCompanyDetailsConfirm(this.editedCompanyFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
                 //this.getManufacturerList();
@@ -937,5 +958,9 @@ export class StandardLevyManufactureDetailsComponent implements OnInit
     //     this.levelFour=true;
     // }
     // }
+
+    ngOnDestroy(): void {
+        this.dtTrigger.unsubscribe();
+    }
 
 }

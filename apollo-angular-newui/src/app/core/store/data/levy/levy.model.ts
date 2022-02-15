@@ -138,6 +138,15 @@ export interface EditCompanyDTO {
     physicalAddress: string;
     ownership: string;
     companyId: number;
+    closureOfOperations: string;
+}
+export interface ConfirmEditCompanyDTO {
+    postalAddress: string;
+    physicalAddress: string;
+    ownership: string;
+    companyId: number;
+    manufactureId: number
+    closureOfOperations: string;
 }
 export interface AssignCompanyTaskDTO {
     manufacturerEntity:number;

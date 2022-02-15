@@ -4,13 +4,28 @@ import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.servi
 import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
 import {catchError, map} from "rxjs/operators";
 import {
-    ApproveVisitTask, AssignCompanyTaskDTO,
-    CompanyModel, EditCompanyDTO, ManufactureCompletedTask, ManufactureCompleteTask, ManufactureDetailList,
+    ApproveVisitTask,
+    AssignCompanyTaskDTO,
+    CompanyModel,
+    ConfirmEditCompanyDTO,
+    EditCompanyDTO,
+    ManufactureCompletedTask,
+    ManufactureCompleteTask,
+    ManufactureDetailList,
     ManufactureInfo,
-    ManufacturePenalty, ManufacturePendingTask, ManufacturingStatus,
-    PaidLevy, ReportDecisionLevelOne, ReportDecisionLevelTwo, SiteVisitFeedBack, SiteVisitReport,
+    ManufacturePenalty,
+    ManufacturePendingTask,
+    ManufacturingStatus,
+    PaidLevy,
+    ReportDecisionLevelOne,
+    ReportDecisionLevelTwo,
+    SiteVisitFeedBack,
+    SiteVisitReport,
     SLevySL1,
-    StdLevyScheduleSiteVisitDTO, UserEntityRoles, UsersEntityList, VisitTask
+    StdLevyScheduleSiteVisitDTO,
+    UserEntityRoles,
+    UsersEntityList,
+    VisitTask
 } from "./levy.model";
 import {UsersEntity} from "../std/std.model";
 
@@ -256,7 +271,20 @@ export class LevyService {
     public getCompanyEditedDetails(manufactureId: any): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_EDITED_COMPANY_DATA);
         const params = new HttpParams().set('manufactureId', manufactureId);
-        return this.http.get<EditCompanyDTO>(url, {params}).pipe();
+        return this.http.get<ConfirmEditCompanyDTO>(url, {params}).pipe();
+    }
+
+    public editCompanyDetailsConfirm(editCompanyDTO: EditCompanyDTO): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_COMPANY_EDIT_COMPANY_DATA);
+        const params = new HttpParams();
+        return this.http.post<EditCompanyDTO>(url, editCompanyDTO, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
     }
 
 
