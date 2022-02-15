@@ -56,6 +56,16 @@ class PvocRouter {
 
     @Bean
     @CrossOrigin
+    fun pvocAgentMonitoring(handler: PvocMonitoringHandler) = router {
+        "api/v1/pvoc/monitoring".nest {
+            GET("/get/{applicationStatus}", handler::listMonitoringIssues)
+//            GET("/details/{exemptionId}", handler::exemptionApplicationDetails)
+//            POST("/status/update/{exemptionId}", handler::updateExemptionStatus)
+        }
+    }
+
+    @Bean
+    @CrossOrigin
     fun pvocQueries(handler: PvocQueryHandler) = router {
         "api/v1/pvoc/kebs/query".nest {
             POST("/request", handler::pvocPartnerQueryRequest)
