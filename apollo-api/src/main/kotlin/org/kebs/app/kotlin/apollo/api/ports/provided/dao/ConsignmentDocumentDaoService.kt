@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.UpAndDownLoad
+import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentStatus
 import org.kebs.app.kotlin.apollo.api.utils.Delimiters
 import org.kebs.app.kotlin.apollo.api.utils.XMLDocument
 import org.kebs.app.kotlin.apollo.common.dto.kesws.receive.*
@@ -89,7 +90,7 @@ class ConsignmentDocumentDaoService(
                             KotlinLogging.logger { }
                                     .info { ":::::::::::::::::::::CD With UCR = $ucr, Does Not exist::::::::::::::::::::::::::: " }
                             consignmentDoc.documentDetails?.consignmentDocDetails?.let { consignmentDocDetails ->
-                                mainCDFunction(
+                                val cdDoc = mainCDFunction(
                                         consignmentDocDetails,
                                         docSummary,
                                         byteArray,
@@ -98,6 +99,7 @@ class ConsignmentDocumentDaoService(
                                         commonDaoServices.findProcesses(appId),
                                         1
                                 )
+                                daoServices.updateCDStatus(cdDoc, ConsignmentDocumentStatus.NEW_CD)
                             }
                         }
                         else -> {
@@ -118,13 +120,13 @@ class ConsignmentDocumentDaoService(
                                     this?.oldCdStatus = map.activeStatus
                                     this?.approveRejectCdStatusType = null
                                 }
-                                cdDetails = daoServices.updateCdDetailsInDB(cdDetails!!, loggedInUser)
+                                cdDetails = daoServices.updateCDStatus(cdDetails!!, ConsignmentDocumentStatus.OLD_CD)
                                 // Clear process data on new CD
                                 cdCreated.diProcessStatus=0
                                 cdCreated.diProcessStartedOn=null
                                 cdCreated.diProcessCompletedOn=null
+                                daoServices.updateCDStatus(cdCreated, ConsignmentDocumentStatus.REVISED_CD)
                                 // Update details
-                                daoServices.updateCdDetailsInDB(cdCreated, loggedInUser)
                             }
                         }
                     }
