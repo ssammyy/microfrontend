@@ -163,7 +163,7 @@
                                                                                                 </ng-select>
 
                                                                                             </div>
-                                                                                            <div *ngIf="roles?.includes('SL_CHIEF_MANAGER')" class="form-group col-12">
+                                                                                            <div *ngIf="roles?.includes('SL_IS_CHIEF_MANAGER')" class="form-group col-12">
                                                                                                 <label>Select</label>
                                                                                                 <ng-select [(ngModel)]="assignedUsersThree" formControlName="assignedTo"  class="form-control" ngModel name="assignedTo" >
                                                                                                     <ng-option *ngFor="let user of assignUsersThree" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
@@ -215,7 +215,7 @@
                                                                                                 </ng-select>
 
                                                                                             </div>
-                                                                                            <div *ngIf="roles?.includes('SL_CHIEF_MANAGER')" class="form-group col-12">
+                                                                                            <div *ngIf="roles?.includes('SL_IS_CHIEF_MANAGER')" class="form-group col-12">
                                                                                                 <label>Select</label>
                                                                                                 <ng-select [(ngModel)]="assignedUsersThree" formControlName="assignedTo"  class="form-control" ngModel name="assignedTo" >
                                                                                                     <ng-option *ngFor="let user of assignUsersThree" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>

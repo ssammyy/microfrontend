@@ -240,7 +240,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
           this.getApproveLevelThree();
           this.getAssignLevelTwo()
       }
-      if(this.roles?.includes('SL_CHIEF_MANAGER')){
+      if(this.roles?.includes('SL_IS_CHIEF_MANAGER')){
           this.getAssignLevelThree()
       }
     //this.checkIfTrue();
