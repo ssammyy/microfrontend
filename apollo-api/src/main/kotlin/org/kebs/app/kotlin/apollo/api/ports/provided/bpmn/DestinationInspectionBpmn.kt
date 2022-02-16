@@ -11,6 +11,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.di.BpmnTaskDetails
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.di.DiTaskDetails
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
+import org.kebs.app.kotlin.apollo.api.service.ConsignmentApprovalStatus
 import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentAuditService
 import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentStatus
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
@@ -32,10 +33,6 @@ import java.sql.Timestamp
 import java.time.Instant
 import java.util.*
 import kotlin.collections.HashMap
-import kotlin.collections.List
-import kotlin.collections.MutableList
-import kotlin.collections.MutableMap
-import kotlin.collections.mutableMapOf
 import kotlin.collections.set
 
 
@@ -80,7 +77,8 @@ class DestinationInspectionBpmn(
         detail.varField8 = processStarted.toString()
         detail.varField9 = Timestamp.from(Instant.now()).toString()
         detail.varField10 = "Submitted to ministry"
-        saved.varField1 = processInstance.processDefinitionId
+        detail.varField1 = processInstance.processDefinitionId
+        detail.status = ConsignmentApprovalStatus.WAITING.code
         // Update CD status
         this.daoServices.updateCdItemDetailsInDB(detail, null)
         detail.cdDocId?.let {
@@ -134,7 +132,7 @@ class DestinationInspectionBpmn(
             cdStatusType.let {
                 val status: ConsignmentDocumentStatus
                 when (cdStatusType.category) {
-                    "APPROVED" -> {
+                    "APPROVE" -> {
                         status = ConsignmentDocumentStatus.APPROVE_REQUEST
                     }
                     "REJECT" -> {
@@ -146,7 +144,10 @@ class DestinationInspectionBpmn(
                     "AMENDMENT" -> {
                         status = ConsignmentDocumentStatus.REJ_AMEND_REQUEST
                     }
-                    else -> throw ExpectedDataNotFound("Invalid transaction status")
+                    "ONHOLD" -> {
+                        status = ConsignmentDocumentStatus.ON_HOLD
+                    }
+                    else -> throw ExpectedDataNotFound("Invalid transaction status: ${cdStatusType.category}")
                 }
                 // Update process status
                 consignmentDocument = daoServices.updateCDStatus(consignmentDocument, status)
@@ -167,7 +168,7 @@ class DestinationInspectionBpmn(
                 consignmentDocument.varField8 = processInstance.id
                 consignmentDocument.diProcessInstanceId = processInstance.id
                 consignmentDocument.diProcessStatus = map.activeStatus
-
+                consignmentDocument.status = ConsignmentApprovalStatus.WAITING.code
                 this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
 
                 response.responseCode = ResponseCodes.SUCCESS_CODE
@@ -204,6 +205,7 @@ class DestinationInspectionBpmn(
         consignmentDocument.varField10 = "Request Targeting"
         consignmentDocument.targetStatus = map.initStatus
         consignmentDocument.targetReason = data.get("remarks") as String?
+        consignmentDocument.status = ConsignmentApprovalStatus.WAITING.code
         // Save process details
         this.auditService.addHistoryRecord(consignmentDocument.id!!, consignmentDocument.ucrNumber, data["remarks"] as String?, "REQUEST CONSIGNMENT TARGETING", "Consignment targeting request")
         this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
@@ -221,6 +223,7 @@ class DestinationInspectionBpmn(
         consignmentDocument.diProcessStartedOn = Timestamp.from(Instant.now())
         consignmentDocument.diProcessCompletedOn = null
         consignmentDocument.varField10 = "REQUEST COMPLIANCE APPROVAL"
+        consignmentDocument.status = ConsignmentApprovalStatus.WAITING.code
         // Save process details
         val updateCd = daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.COMPLIANCE_REQUEST)
         this.auditService.addHistoryRecord(consignmentDocument.id!!, consignmentDocument.ucrNumber, data["remarks"] as String?, "REQUEST CONSIGNMENT COMPLIANCE UPDATE", "Request to mark Consignment as compliant")
@@ -277,6 +280,7 @@ class DestinationInspectionBpmn(
         updateCd.diProcessInstanceId = processInstance.processDefinitionId
         updateCd.diProcessStatus = map.activeStatus
         updateCd.sendDemandNote = map.initStatus
+        updateCd.status = ConsignmentApprovalStatus.WAITING.code
         updateCd.varField10 = "DEMAND NOTE SUBMITTED AWAITING APPROVAL"
         updateCd.diProcessStartedOn = Timestamp.from(Instant.now())
         updateCd.targetReason = data.get("remarks") as String?

@@ -5,7 +5,7 @@
             <label for="feeId" class="waiver-form-label">Select Fee</label>
             <select id="feeId" name="portOfArrival" class="waiver-form-input-master"
                     formControlName="feeId">
-                <option value="" disabled selected>Select Port</option>
+                <option value="" disabled selected>Select Fee</option>
                 <option *ngFor="let fee of fees" [value]="fee.id">{{fee.description}}({{fee.rate}} {{fee.rateType}})</option>
             </select>
 

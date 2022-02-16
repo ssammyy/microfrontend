@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.UpAndDownLoad
+import org.kebs.app.kotlin.apollo.api.service.ConsignmentApprovalStatus
 import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentStatus
 import org.kebs.app.kotlin.apollo.api.utils.Delimiters
 import org.kebs.app.kotlin.apollo.api.utils.XMLDocument
@@ -230,7 +231,7 @@ class ConsignmentDocumentDaoService(
         var consignmentDocumentDetails = ConsignmentDocumentDetailsEntity()
         with(consignmentDocumentDetails) {
             uuid = commonDaoServices.generateUUIDString()
-            status = map.initStatus
+            status = ConsignmentApprovalStatus.NEW.code
             version = versionNumber
             createdBy = commonDaoServices.concatenateName(user)
             createdOn = commonDaoServices.getTimestamp()
@@ -253,7 +254,6 @@ class ConsignmentDocumentDaoService(
             map: ServiceMapsEntity
     ): ConsignmentDocumentDetailsEntity {
         with(consignmentDocumentDetails) {
-            status = map.initStatus
             modifiedBy = commonDaoServices.concatenateName(user)
             modifiedOn = commonDaoServices.getTimestamp()
         }

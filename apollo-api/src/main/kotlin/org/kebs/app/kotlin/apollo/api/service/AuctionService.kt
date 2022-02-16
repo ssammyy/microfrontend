@@ -133,8 +133,8 @@ class AuctionService(
             val auctionRequest = optional.get()
             commonDaoServices.getLoggedInUser()?.let {
                 val items = this.auctionItemsRepo.findByAuctionId(auctionId)
-                for (i in 0..items.size) {
-                    items[i].paymentFeeIdSelected = this.feeRepository.findById(feeId).orElse(null)
+                for (element in items) {
+                    element.paymentFeeIdSelected = this.feeRepository.findById(feeId).orElse(null)
                 }
                 val demandNote = destinationInspectionDaoServices.generateAuctionDemandNoteWithItemList(items, map, auctionRequest, false, 0.0, it)
                 auctionRequest.demandNoteId = demandNote.id
@@ -298,7 +298,7 @@ class AuctionService(
             dataMap["auction_details"] = auctionDto
             dataMap["attachments"] = AuctionUploadDao.fromList(auctionUploadRepo.findByAuctionId(auction))
             dataMap["items"] = auctionItemsRepo.findByAuctionId(auctionId)
-            dataMap["history"] = auctionRequestHistoryRepo.findByAuctionIdAndStatus(auctionId, 1)
+            dataMap["history"] = auctionRequestHistoryRepo.findByAuctionIdAndStatusOrderByCreatedOnDesc(auctionId, 1)
             auction.demandNoteId?.let { demandNoteId ->
                 this.destinationInspectionDaoServices.findDemandNoteWithID(demandNoteId)?.let { demandNote ->
                     dataMap["payment"] = demandNote

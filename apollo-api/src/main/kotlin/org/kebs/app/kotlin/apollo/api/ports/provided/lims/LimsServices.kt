@@ -6,14 +6,13 @@ import org.apache.commons.codec.binary.Base64
 import org.apache.commons.io.FileUtils
 import org.jasypt.encryption.StringEncryptor
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.response.RootLabPdfList
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.response.RootTestResultsAndParameters
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.response.TestParameter
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.response.TestResult
-import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentStatus
+import org.kebs.app.kotlin.apollo.api.service.ChecklistService
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleLabTestParametersEntity
@@ -39,7 +38,7 @@ import javax.net.ssl.HttpsURLConnection
 class LimsServices(
         private val commonDaoServices: CommonDaoServices,
         private val jasyptStringEncryptor: StringEncryptor,
-        private val daoService: DaoService,
+        private val checklistService: ChecklistService,
         private val downloaderFile: DownloaderFile,
         private val applicationMapProperties: ApplicationMapProperties,
         private val sampleLabTestResults: IQaSampleLabTestResultsRepository,
@@ -401,14 +400,14 @@ class LimsServices(
                                             ssfFound.cdItemId ?: throw Exception("CD ITEM ID NOT FOUND")
                                     )
                                             .let { cdItem ->
+                                                // Update Item result
+                                                cdItem.allTestReportStatus = map.activeStatus
+                                                cdItem.varField10 = "LAB RESULT RECEIVED"
+                                                diDaoServices.updateCdItemDetailsInDB(cdItem, null)
+                                                // Update consignment status if all reports have been received
                                                 diDaoServices.findCD(cdItem.cdDocId?.id
                                                         ?: throw Exception("CD ID NOT FOUND"))
-                                                        .let { updatedCDDetails ->
-                                                            diDaoServices.updateCDStatus(
-                                                                    updatedCDDetails,
-                                                                    ConsignmentDocumentStatus.LAB_RESULT_RESULT
-                                                            )
-                                                        }
+                                                        .let { updatedCDDetails -> checklistService.updateConsignmentSampledStatus(updatedCDDetails, true) }
 
                                             }
                                 }

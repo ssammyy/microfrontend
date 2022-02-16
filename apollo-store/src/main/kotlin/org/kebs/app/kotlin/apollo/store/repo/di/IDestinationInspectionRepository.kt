@@ -33,21 +33,16 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
     ): Page<ConsignmentDocumentDetailsEntity>
 
 
-    fun findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIsNull(
+    fun findAllByAssignerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndStatusIn(
             assignedInspectionOfficer: UsersEntity,
             cdType: ConsignmentDocumentTypesEntity,
+            statuses: List<Int?>,
             page: Pageable
     ): Page<ConsignmentDocumentDetailsEntity>
 
-
-    fun findAllByAssignerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIsNotNullOrApproveRejectCdStatusIsNotNull(
+    fun findAllByAssignerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndStatusIn(
             assignedInspectionOfficer: UsersEntity,
-            cdType: ConsignmentDocumentTypesEntity,
-            page: Pageable
-    ): Page<ConsignmentDocumentDetailsEntity>
-
-    fun findAllByAssignerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIsNotNullOrApproveRejectCdStatusIsNotNull(
-            assignedInspectionOfficer: UsersEntity,
+            statuses: List<Int?>,
             page: Pageable
     ): Page<ConsignmentDocumentDetailsEntity>
 
@@ -64,29 +59,27 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
             statuses: List<Int?>,
             page: Pageable): Page<ConsignmentDocumentDetailsEntity>
 
-    fun findByFreightStation_IdInAndCdTypeAndAssignedInspectionOfficerIsNullAndOldCdStatusIsNull(
+    fun findByFreightStation_IdInAndCdTypeAndAssignedInspectionOfficerIsNullAndOldCdStatusIsNullAndStatusIn(
             cfsIds: MutableList<Long>,
             cdType: ConsignmentDocumentTypesEntity,
+            statuses: List<Int?>,
             page: Pageable): Page<ConsignmentDocumentDetailsEntity>
 
-    fun findByFreightStation_IdInAndAssignedInspectionOfficerIsNullAndOldCdStatusIsNull(
-            cfsIds: MutableList<Long>,
-            page: Pageable): Page<ConsignmentDocumentDetailsEntity>
-
-    fun findByFreightStation_IdInAndAssignedInspectionOfficerIsNullAndOldCdStatusIsNullAndCompliantStatusIn(
+    fun findByFreightStation_IdInAndAssignedInspectionOfficerIsNullAndOldCdStatusIsNullAndStatusIn(
             cfsIds: MutableList<Long>,
             statuses: List<Int?>,
             page: Pageable): Page<ConsignmentDocumentDetailsEntity>
 
 
-    fun findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIsNull(
+    fun findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndStatusIn(
             usersEntity: UsersEntity,
+            statuses: List<Int?>,
             page: Pageable): Page<ConsignmentDocumentDetailsEntity>
 
-    fun findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIn(
+    fun findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndStatusIn(
             usersEntity: UsersEntity,
             cdStatus: ConsignmentDocumentTypesEntity,
-            statuses: List<Int>, page: Pageable): Page<ConsignmentDocumentDetailsEntity>
+            statuses: List<Int?>, page: Pageable): Page<ConsignmentDocumentDetailsEntity>
 
     fun findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIn(
             usersEntity: UsersEntity,

@@ -132,6 +132,7 @@ class ConsignmentDocumentDao {
     var inspectionDate: Date? = null
     var targetStatus: Int? = null
     var description: String? = null
+    var cocType: String? = null
     var status: Int? = null
     var applicantName: String? = null
     var applicationDate: Timestamp? = null
@@ -188,6 +189,9 @@ class ConsignmentDocumentDao {
                 dt.declarationNumber = it.declarationNumber
                 dt.applicationRefNo = it.applicationRefNo
                 dt.approvalStatus = it.approvalStatus
+            }
+            doc.cdStandardsTwo?.let {
+                dt.cocType = it.cocType
             }
             return dt
         }

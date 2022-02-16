@@ -11,9 +11,9 @@
         <label for="remarks" class="waiver-form-label">Enter details remarks for <b>{{form.value.approve=='true'?'Approval':"Rejection"}}</b></label>
         <input id="remarks" name="remarks" class="waiver-form-input-master"
                formControlName="remarks" type="text"/>
-        <label for="select-file" class="col-5 col-form-label">SELECT REPORT DOCUMENT(Optional)</label>
+        <label for="select-file" class="col-5 col-form-label">SELECT REPORT DOCUMENT(Required)</label>
         <div class="col-7">
-            <input id="select-file" type="file" accept=".csv,.txt" (change)="uploadAuctionItems($event)"
+            <input id="select-file" type="file" accept="application/pdf" (change)="uploadAuctionItems($event)"
                    class="display-nothing" #cocFiles>
             <button type="button" (click)="cocFiles.click()"
                     class="btn btn-sm btn-primary mr-2">Select File

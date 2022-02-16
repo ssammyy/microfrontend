@@ -1,5 +1,9 @@
 package org.kebs.app.kotlin.apollo.api.service
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.payload.*
 import org.kebs.app.kotlin.apollo.api.payload.request.SearchForms
@@ -10,31 +14,36 @@ import org.kebs.app.kotlin.apollo.common.dto.CorItemsEntityDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
-import org.kebs.app.kotlin.apollo.store.model.di.*
+import org.kebs.app.kotlin.apollo.store.events.SearchInitialization
+import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.di.CdStatusTypesEntity
+import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntity
+import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentTypesEntity
+import org.kebs.app.kotlin.apollo.store.model.di.DiUploadsEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
-import org.kebs.app.kotlin.apollo.store.repo.di.*
+import org.kebs.app.kotlin.apollo.store.repo.di.ICfsTypeCodesRepository
+import org.kebs.app.kotlin.apollo.store.repo.di.IConsignmentDocumentTypesEntityRepository
+import org.kebs.app.kotlin.apollo.store.repo.di.IDiUploadsRepository
+import org.kebs.app.kotlin.apollo.store.repo.di.IMinistryStationEntityRepository
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.io.InputStreamReader
 import java.io.Reader
+import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
-import java.util.*
-import org.kebs.app.kotlin.apollo.store.events.SearchInitialization
-import org.kebs.app.kotlin.apollo.store.model.*
-import org.springframework.data.domain.PageRequest
-import java.io.ByteArrayOutputStream
-import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.time.ZoneId
-import kotlinx.coroutines.*
+import java.util.*
 
 enum class ConsignmentDocumentStatus(val code: String) {
-    NEW_CD("NEW_CD"), REVISED_CD("REVISED_CD"), OLD_CD("OLD_CD"),
+    NEW_CD("NEW_CD"), REVISED_CD("REVISED_CD"), OLD_CD("OLD_CD"), ON_HOLD("ONHOLD"),
     IO_ASSIGNED("IO_ASSIGNED"), IO_REASSIGNED("IO_REASSIGNED"), IO_SELF_ASSIGN("IO_SELF_ASSIGNED"),
     LAB_REQUEST("LAB_REQUEST"), LAB_RESULT_RESULT("LAB_RESULT"), ITEM_COMPLIANCE("COMPLIANCE"), ITEM_NON_COMPLIANCE("NON_COMPLIANCE"),
     CHECKLIST_FILLED("CHECKLIST_FILLED"), CHECKLIST_COMPLETED("SSF_FILLED"), CHECKLIST_STARTED("CHECKLIST_STARTED"),
@@ -49,6 +58,10 @@ enum class ConsignmentDocumentStatus(val code: String) {
     APPROVE_REQUEST("APPROVE_REQUEST"), APPROVE_APPROVED("APPROVE"), APPROVE_REJECTED("APPROVE_REJ"),
     REJECT_REQUEST("REJECT_REQUEST"), REJECT_APPROVED("REJECT"), REJECT_REJECTED("REJECT_REJ"),
     MINISTRY_REQUEST("MINISTRY_REQUEST"), MINISTRY_UPLOAD("MINISTRY_UPLOAD")
+}
+
+enum class ConsignmentApprovalStatus(val code: Int) {
+    NEW(10), UNDER_INSPECTION(0), APPROVED(1), REJECTED(2), REJECTED_AMEND(3), WAITING(4), QUERIED(5);
 }
 
 @Service("diService")
@@ -84,6 +97,7 @@ class DestinationInspectionService(
         if (taskApproved) {
             val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             consignmentDocument.compliantStatus = compliantStatus
+            consignmentDocument.status = ConsignmentApprovalStatus.APPROVED.code
             consignmentDocument.compliantDate = commonDaoServices.getCurrentDate()
             consignmentDocument.compliantRemarks = remarks
             val loggedInUser = commonDaoServices.findUserByUserName(supervisor)
@@ -97,6 +111,7 @@ class DestinationInspectionService(
         var consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
         val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
         // Move back to officer tasks
+        consignmentDocument.status = ConsignmentApprovalStatus.UNDER_INSPECTION.code
         consignmentDocument.compliantStatus = map.initStatus
         consignmentDocument.approveRejectCdStatus = map.initStatus
         consignmentDocument.varField10 = "COMPLIANCE REJECTED"
@@ -153,21 +168,31 @@ class DestinationInspectionService(
                 consignmentDocument.compliantRemarks = remarks
                 when (cdStatusType.category) {
                     "APPROVE" -> {
+                        consignmentDocument.status = ConsignmentApprovalStatus.APPROVED.code
                         consignmentDocument.compliantStatus = map.activeStatus
                         consignmentDocument.approveRejectCdStatus = map.activeStatus
+                        consignmentDocument.varField10 = "Consignment Approved"
                     }
                     "REJECT" -> {
+                        consignmentDocument.status = ConsignmentApprovalStatus.REJECTED.code
                         consignmentDocument.approveRejectCdStatus = map.activeStatus
                         consignmentDocument.compliantStatus = map.invalidStatus
+                        consignmentDocument.varField10 = "Consignment Rejected"
+                    }
+                    "QUERY" -> {
+                        consignmentDocument.status = ConsignmentApprovalStatus.QUERIED.code
+                        consignmentDocument.compliantStatus = map.inactiveStatus
+                        consignmentDocument.varField10 = "Waiting for QUERY response"
                     }
                     else -> {
+                        consignmentDocument.varField10 = "Consignment ${cdStatusType.category}"
+                        consignmentDocument.status = ConsignmentApprovalStatus.WAITING.code
                         consignmentDocument.compliantStatus = map.inactiveStatus
                     }
                 }
             }
             consignmentDocument.approveRejectCdStatusType = cdStatusType
             consignmentDocument.approveRejectCdDate = Date(Date().time)
-            consignmentDocument.varField10 = "UPDATE LOCAL STATUS TO SW"
             consignmentDocument = daoServices.updateCdDetailsInDB(consignmentDocument, commonDaoServices.findUserByUserName(supervisor))
             // Update Local status
             if (cdStatusType.category == "APPROVE" || cdStatusType.category == "REJECT") {
@@ -223,6 +248,7 @@ class DestinationInspectionService(
                 assignedDate = Date(Date().time)
                 assignedStatus = map.activeStatus
                 assigner = loggedInUser
+                status = ConsignmentApprovalStatus.UNDER_INSPECTION.code
                 varField10 = "Assigned IO"
                 assignedInspectionOfficer = officer.get()
             }
@@ -541,6 +567,7 @@ class DestinationInspectionService(
             consignmentDocument.varField9 = null
             consignmentDocument.varField10 = "Targeting rejected"
             consignmentDocument.targetApproveStatus = 0
+            consignmentDocument.status = ConsignmentApprovalStatus.UNDER_INSPECTION.code
             consignmentDocument.targetStatus = map.invalidStatus
             consignmentDocument.targetApproveRemarks = remarks
             consignmentDocument.targetApproveDate = Date(Date().time)
