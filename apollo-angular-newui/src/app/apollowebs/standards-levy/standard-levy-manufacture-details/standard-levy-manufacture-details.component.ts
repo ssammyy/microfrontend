@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {Subject} from "rxjs";
 
 import {
@@ -29,7 +29,7 @@ declare const $: any;
   styleUrls: ['./standard-levy-manufacture-details.component.css','../../../../../node_modules/@ng-select/ng-select/themes/default.theme.css'],
     encapsulation: ViewEncapsulation.None
 })
-export class StandardLevyManufactureDetailsComponent implements OnInit, OnDestroy
+export class StandardLevyManufactureDetailsComponent implements AfterViewInit, OnDestroy, OnInit
 {
 
     userId: number ;
@@ -39,19 +39,31 @@ export class StandardLevyManufactureDetailsComponent implements OnInit, OnDestro
     levelTwo=false;
     levelThree=false;
     levelFour=false;
-
-    dtOptions: DataTables.Settings = {};
-    dtTrigger: Subject<any> = new Subject<any>();
     @ViewChild(DataTableDirective, {static: false})
     dtElement: DataTableDirective;
+
+    //dtOptions: DataTables.Settings[] = [];
+    dtOptions: DataTables.Settings = {};
+    dtTrigger: Subject<any> = new Subject<any>();
+    displayTable: boolean = false;
+
     isDtInitialized: boolean = false
 
-  dtOptions1:DataTables.Settings = {};
+  //dtOptions1:DataTables.Settings = {};
     dtTrigger1: Subject<any> = new Subject<any>();
 
-    dtOptions2:DataTables.Settings = {};
+
+
+
+    //dtOptions2:DataTables.Settings = {};
     dtTrigger2: Subject<any> = new Subject<any>();
     public users !: UsersEntity[] ;
+    public approveUsersOne !: UsersEntity[] ;
+    public approveUsersTwo !: UsersEntity[] ;
+    public approveUsersThree !: UsersEntity[] ;
+    public assignUsersOne !: UsersEntity[] ;
+    public assignUsersTwo !: UsersEntity[] ;
+    public assignUsersThree !: UsersEntity[] ;
     public usersPls !: UsersEntity[] ;
     public usersMns !: UsersEntity[] ;
     manufactureUserDetails !: UsersEntityList;
@@ -59,6 +71,12 @@ export class StandardLevyManufactureDetailsComponent implements OnInit, OnDestro
     selectedUser: number;
     selectedUserPl: number;
     selectedUserMn: number;
+    approvedUsersOne: number;
+    approvedUsersTwo: number;
+    approvedUsersThree: number;
+    assignedUsersOne: number;
+    assignedUsersTwo: number;
+    assignedUsersThree: number;
 
 
     manufactureLists: ManufactureDetailList[] = [];
@@ -198,16 +216,33 @@ export class StandardLevyManufactureDetailsComponent implements OnInit, OnDestro
       private levyService: LevyService,
       private SpinnerService: NgxSpinnerService,
       private notifyService : NotificationService
-  ) { }
+  ) {
+
+  }
 
   ngOnInit(): void {
     //this.getMnCompleteTask();
     this.getManufacturerList();
     this.getUserRoles();
-    this.getUserList();
+    //this.getUserList();
     this.getUserData();
-    this.getSlLvTwoList();
-    this.getPlUserList();
+    //this.getSlLvTwoList();
+    //this.getPlUserList();
+
+    if(this.roles?.includes('SL_IS_PL_OFFICER')){
+        this.getApproveLevelOne();
+    }
+      if(this.roles?.includes('SL_IS_ASST_MANAGER')){
+          this.getApproveLevelTwo();
+          this.getAssignLevelOne();
+      }
+      if(this.roles?.includes('SL_IS_MANAGER')){
+          this.getApproveLevelThree();
+          this.getAssignLevelTwo()
+      }
+      if(this.roles?.includes('SL_CHIEF_MANAGER')){
+          this.getAssignLevelThree()
+      }
     //this.checkIfTrue();
     //  this.getUserDetails();
 
@@ -379,11 +414,7 @@ export class StandardLevyManufactureDetailsComponent implements OnInit, OnDestro
 
       });
 
-      this.dtOptions = {
-          pagingType: 'full_numbers',
-          pageLength: 10,
-          processing: true
-      };
+
   }
 
     get scheduleVisitForm(): any {
@@ -452,6 +483,91 @@ export class StandardLevyManufactureDetailsComponent implements OnInit, OnDestro
         );
     }
 
+    public getApproveLevelOne(): void {
+        this.SpinnerService.show();
+        this.levyService.getApproveLevelOne().subscribe(
+            (response: UsersEntity[]) => {
+                this.SpinnerService.hide();
+                this.approveUsersOne = response;
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                alert(error.message);
+            }
+        );
+    }
+
+    public getApproveLevelTwo(): void {
+        this.SpinnerService.show();
+        this.levyService.getApproveLevelTwo().subscribe(
+            (response: UsersEntity[]) => {
+                this.SpinnerService.hide();
+                this.approveUsersTwo = response;
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                alert(error.message);
+            }
+        );
+    }
+
+    public getAssignLevelOne(): void {
+        this.SpinnerService.show();
+        this.levyService.getAssignLevelOne().subscribe(
+            (response: UsersEntity[]) => {
+                this.SpinnerService.hide();
+                this.assignUsersOne = response;
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                alert(error.message);
+            }
+        );
+    }
+
+    public getAssignLevelTwo(): void {
+        this.SpinnerService.show();
+        this.levyService.getAssignLevelTwo().subscribe(
+            (response: UsersEntity[]) => {
+                this.SpinnerService.hide();
+                this.assignUsersTwo = response;
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                alert(error.message);
+            }
+        );
+    }
+
+    public getAssignLevelThree(): void {
+        this.SpinnerService.show();
+        this.levyService.getAssignLevelThree().subscribe(
+            (response: UsersEntity[]) => {
+                this.SpinnerService.hide();
+                this.assignUsersThree = response;
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                alert(error.message);
+            }
+        );
+    }
+
+    public getApproveLevelThree(): void {
+        this.SpinnerService.show();
+        this.levyService.getApproveLevelThree().subscribe(
+            (response: UsersEntity[]) => {
+                this.SpinnerService.hide();
+                this.approveUsersThree = response;
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                alert(error.message);
+            }
+        );
+    }
+
+
     public getPlUserList(): void {
         this.SpinnerService.show();
         this.levyService.getPlList().subscribe(
@@ -485,16 +601,27 @@ export class StandardLevyManufactureDetailsComponent implements OnInit, OnDestro
     this.levyService.getManufacturerList().subscribe(
         (response: ManufactureDetailList[])=> {
           this.manufactureLists = response;
-          console.log(this.manufactureLists);
+          //console.log(this.manufactureLists);
             this.SpinnerService.hide();
+            this.displayTable = true;
+            setTimeout(()=>{
+                $('#datatable').DataTable( {
+                    pagingType: 'full_numbers',
+                    pageLength: 5,
+                    processing: true,
+                    lengthMenu : [5, 10, 25]
+                } );
+            }, 1);
             if (this.isDtInitialized) {
                 this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
                     dtInstance.destroy();
                     this.dtTrigger.next();
+
                 });
             } else {
                 this.isDtInitialized = true
                 this.dtTrigger.next();
+
             }
         },
         (error: HttpErrorResponse)=>{
@@ -543,10 +670,19 @@ export class StandardLevyManufactureDetailsComponent implements OnInit, OnDestro
     this.SpinnerService.show();
     this.levyService.getMnPendingTask().subscribe(
         (response: ManufacturePendingTask[])=> {
-          this.dtTrigger1.next();
           //console.log(this.manufacturePendingTasks);
           this.manufacturePendingTasks = response;
             this.SpinnerService.hide();
+            if (this.isDtInitialized) {
+                this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                    dtInstance.destroy();
+                    this.dtTrigger1.next();
+                });
+            } else {
+                this.isDtInitialized = true
+                this.dtTrigger1.next();
+            }
+
         },
         (error: HttpErrorResponse)=>{
           this.SpinnerService.hide();
@@ -558,9 +694,17 @@ export class StandardLevyManufactureDetailsComponent implements OnInit, OnDestro
     this.SpinnerService.show();
     this.levyService.getMnCompleteTask().subscribe(
         (response: ManufactureCompletedTask[])=> {
-          this.dtTrigger2.next();
           this.manufactureCompleteTasks = response;
             this.SpinnerService.hide();
+            if (this.isDtInitialized) {
+                this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                    dtInstance.destroy();
+                    this.dtTrigger2.next();
+                });
+            } else {
+                this.isDtInitialized = true
+                this.dtTrigger2.next();
+            }
         },
         (error: HttpErrorResponse)=>{
           this.SpinnerService.hide();
@@ -787,6 +931,10 @@ export class StandardLevyManufactureDetailsComponent implements OnInit, OnDestro
                         icon: 'success'
                     });
                 },
+                (error: HttpErrorResponse) => {
+                    this.SpinnerService.hide();
+                    console.log(error.message);
+                }
             );
         }
 
@@ -959,8 +1107,16 @@ export class StandardLevyManufactureDetailsComponent implements OnInit, OnDestro
     // }
     // }
 
+    ngAfterViewInit(): void {
+        this.dtTrigger.next();
+        this.dtTrigger1.next();
+        this.dtTrigger2.next();
+    }
+
     ngOnDestroy(): void {
         this.dtTrigger.unsubscribe();
+        this.dtTrigger1.unsubscribe();
+        this.dtTrigger2.unsubscribe();
     }
 
 }

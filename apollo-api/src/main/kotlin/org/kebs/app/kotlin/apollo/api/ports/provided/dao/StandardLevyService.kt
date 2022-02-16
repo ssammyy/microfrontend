@@ -113,9 +113,9 @@ class StandardLevyService(
 
                 val loggedInUser = commonDaoServices.loggedInUserDetails()
                 entity.apply {
-                    physicalAddress = entity.physicalAddress
-                    postalAddress = entity.postalAddress
-                    ownership = entity.ownership
+                    physicalAddress = companyProfileEntity.physicalAddress
+                    postalAddress = companyProfileEntity.postalAddress
+                    ownership = companyProfileEntity.ownership
                     modifiedBy = loggedInUser.userName
                     modifiedOn = commonDaoServices.getTimestamp()
                 }
@@ -798,6 +798,30 @@ class StandardLevyService(
         return userListRepository.getSlLvThreeList()
     }
 
+    fun getApproveLevelOne(): List<UserDetailHolder> {
+        return userListRepository.getApproveLevelOne()
+    }
+
+    fun getApproveLevelTwo(): List<UserDetailHolder> {
+            return userListRepository.getApproveLevelTwo()
+        }
+
+    fun getApproveLevelThree(): List<UserDetailHolder> {
+        return userListRepository.getApproveLevelThree()
+    }
+
+    fun getAssignLevelOne(): List<UserDetailHolder> {
+        return userListRepository.getAssignLevelOne()
+    }
+
+    fun getAssignLevelTwo(): List<UserDetailHolder> {
+        return userListRepository.getAssignLevelTwo()
+    }
+
+    fun getAssignLevelThree(): List<UserDetailHolder> {
+        return userListRepository.getAssignLevelThree()
+    }
+
     fun getSlLoggedIn(): UserTypeHolder {
         commonDaoServices.loggedInUserDetails().id?.let { id ->
             return usersEntityRepository.getSlLoggedById(id)
@@ -838,7 +862,7 @@ class StandardLevyService(
     }
 
     fun getCompanyEditedDetails(manufactureId: Long): CompanyProfileEditEntity {
-        return companyProfileEditEntityRepository.findAllByManufactureId(manufactureId) ?: throw ExpectedDataNotFound("No Data Found")
+        return companyProfileEditEntityRepository.findFirstByManufactureIdOrderByIdDesc(manufactureId) ?: throw ExpectedDataNotFound("No Data Found")
     }
 
     fun getCompleteTasks(): MutableList<StandardLevyFactoryVisitReportEntity> {
