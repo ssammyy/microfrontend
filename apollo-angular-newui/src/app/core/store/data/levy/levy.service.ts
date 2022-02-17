@@ -287,6 +287,42 @@ export class LevyService {
         );
     }
 
+    public getApproveLevelOne(): Observable<UsersEntity[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_APPROVED_USERS_LEVEL_ONE);
+        const params = new HttpParams();
+        return this.http.get<UsersEntity[]>(url, {params}).pipe();
+    }
+
+    public getApproveLevelTwo(): Observable<UsersEntity[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_APPROVED_USERS_LEVEL_TWO);
+        const params = new HttpParams();
+        return this.http.get<UsersEntity[]>(url, {params}).pipe();
+    }
+
+    public getApproveLevelThree(): Observable<UsersEntity[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_APPROVED_USERS_LEVEL_THREE);
+        const params = new HttpParams();
+        return this.http.get<UsersEntity[]>(url, {params}).pipe();
+    }
+
+    public getAssignLevelOne(): Observable<UsersEntity[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_ASSIGN_USERS_LEVEL_ONE);
+        const params = new HttpParams();
+        return this.http.get<UsersEntity[]>(url, {params}).pipe();
+    }
+
+    public getAssignLevelTwo(): Observable<UsersEntity[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_ASSIGN_USERS_LEVEL_TWO);
+        const params = new HttpParams();
+        return this.http.get<UsersEntity[]>(url, {params}).pipe();
+    }
+
+    public getAssignLevelThree(): Observable<UsersEntity[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_ASSIGN_USERS_LEVEL_THREE);
+        const params = new HttpParams();
+        return this.http.get<UsersEntity[]>(url, {params}).pipe();
+    }
+
 
 
 

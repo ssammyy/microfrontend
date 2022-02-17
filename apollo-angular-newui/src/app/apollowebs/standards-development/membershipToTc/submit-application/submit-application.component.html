@@ -1,1 +1,185 @@
-<p>submit-application works!</p>
+<div class="container-fluid" style="margin-top: 5%" id="main-container">
+    <div class="loading-spinner ">
+        <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-scale-multiple">
+            <p style="font-size: 20px; color: white">{{loadingText}}</p>
+        </ngx-spinner>
+    </div>
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="row">
+
+
+                <div *ngFor="let task of submitApplicationsTask  let i= index;" class="col-md-4">
+                    <div class="card card-chart">
+                        <div class="card-header card-header-rose l-bg-cherry" data-header-animation="true">
+                            <div class="l-bg-cherry">
+                                <div class="card-statistic-3 p-4">
+                                    <div class="card-icon card-icon-large"><i class="fas fa-clipboard"></i></div>
+                                    <div class="mb-4">
+                                        <h3 class="card-title mb-0">{{task.title}} </h3>
+                                    </div>
+                                    <div class="row align-items-center mb-2 d-flex">
+                                        <div class="col-8">
+                                            <h4 class="d-flex align-items-center mb-0">
+                                                <a href="" (click)="onOpenModal(task,'edit')" type="button"
+                                                   style="color: white">Apply</a>
+                                            </h4>
+                                        </div>
+                                        <div class="col-4 text-right">
+                                            <span> <i class="fa fa-arrow-right"></i></span>
+                                        </div>
+                                    </div>
+                                    <div class="progress mt-1 " data-height="8" style="height: 8px;">
+                                        <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="25"
+                                             class="progress-bar l-bg-cyan" data-width="25%" role="progressbar"
+                                             style="width: 25%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-actions">
+                                <h4 class="card-title">Technical Committee</h4>
+                                <p class="card-category">{{task.tc}}</p>
+                            </div>
+
+                            <h4 class="card-title">Description</h4>
+                            <p class="card-category">{{task.description}}</p>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+                                <button (click)="onOpenModal(task,'edit')" type="button"
+                                        class="btn btn-sm btn-primary btn-round btn-block" href="#pablo">Make
+                                    Application
+
+                                </button>
+                            </div>
+                            <div class="stats">
+                                <i class="material-icons">access_time</i> Expires
+                                On {{formatDate(task.expiryDate)}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="modal fade bd-example-modal-lg" id="justificationDecisionModal" tabindex="-1" role="dialog"
+             aria-labelledby="updateExampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="updateExampleModalLabel">{{actionRequest?.title}}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <form (ngSubmit)="onUpload()" [formGroup]="prepareDraftStandardFormGroup" class="form">
+                            <div class="row">
+                                <div class="form-group col-6">
+                                    <label><b>Technical Committee</b></label>
+
+                                    <input [class.is-invalid]="formPrepareJustification.technicalCommittee.invalid && formPrepareJustification.technicalCommittee.touched"
+                                           formControlName="technicalCommittee"
+                                           aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                           class="form-control one-column-input"
+                                           ngModel="{{actionRequest?.tc}}" value="" name="technicalCommittee"
+                                           type="text" readonly>
+
+                                </div>
+                                <div class="form-group col-6">
+                                    <label><b>Email Address</b></label>
+
+                                    <input [class.is-invalid]="formPrepareJustification.email.invalid && formPrepareJustification.email.touched"
+                                           formControlName="email"
+                                           aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                           class="form-control one-column-input" ngModel name="email"
+                                           placeholder="Email Address" type="email" required>
+
+                                </div>
+                            </div>
+                            <div formGroupName="name">
+                                <div class="row">
+
+
+                                    <div class="form-group col-6">
+                                        <label><b>First Name</b></label>
+                                        <input
+                                                [class.is-invalid]="formPrepareJustification.name.invalid && formPrepareJustification.name.touched"
+                                                formControlName="firstName"
+                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                class="form-control one-column-input" ngModel name="title"
+                                                placeholder="First Name" type="text" required>
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <label><b>Last Name</b></label>
+
+                                        <input
+                                                [class.is-invalid]="formPrepareJustification.name.invalid && formPrepareJustification.name.touched"
+                                                formControlName="lastName"
+                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                class="form-control one-column-input" ngModel name="lastName"
+                                                placeholder="Last Name" type="text" required>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-6">
+                                    <label><b>Phone number</b></label>
+                                    <input
+                                            [class.is-invalid]="formPrepareJustification.mobileNumber.invalid && formPrepareJustification.mobileNumber.touched"
+                                            formControlName="mobileNumber"
+                                            aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                            class="form-control one-column-input" ngModel name="mobileNumber"
+                                            placeholder="Phone number" type="number" required>
+                                </div>
+                                <div class="form-group col-6">
+                                    <label><b>Postal Address</b></label>
+                                    <input
+                                            [class.is-invalid]="formPrepareJustification.postalAddress.invalid && formPrepareJustification.postalAddress.touched"
+                                            formControlName="postalAddress"
+                                            aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                            class="form-control one-column-input" ngModel name="postalAddress"
+                                            placeholder="Postal Address" type="text" required>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-12">
+                                    <label><b>Upload Your CV</b></label>
+                                    <form #demoForm="ngForm">
+                                        <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles" fileslimit="2"
+                                                     accept=".pdf"></file-upload>
+                                        <input class="form-control one-column-input" ngModel="DraftStandard"
+                                               name="DocDescription" type="hidden">
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input
+                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                        class="form-control one-column-input" hidden
+                                        formControlName="taskId" ngModel="{{actionRequest?.tcId}}" type="text"
+                                        name="taskId">
+                                <input
+                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                        class="form-control one-column-input" hidden
+                                        formControlName="tcApplicationId" ngModel="{{actionRequest?.id}}" type="text"
+                                        name="tcApplicationId">
+                            </div>
+                            <button class="btn btn-info"
+                                    type="submit">Submit
+                            </button>
+
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

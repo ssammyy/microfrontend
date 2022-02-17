@@ -9,6 +9,7 @@ import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
+import org.springframework.dao.IncorrectResultSizeDataAccessException
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -56,6 +57,15 @@ class CustomExceptionHandler {
         return errorMessageAlert(req, exception, HttpStatus.BAD_REQUEST)
     }
 
+    @ExceptionHandler(IncorrectResultSizeDataAccessException::class)
+    @Throws(Exception::class)
+    fun handleIncorrectResultSizeDataAccessException(req: HttpServletRequest, exception: Exception): ErrorResponse? {
+
+        val details = mutableListOf<String?>()
+        details.add(" ${exception.message}")
+        return ErrorResponse("Required input missing", details)
+    }
+
     @ExceptionHandler(NullValueNotAllowedException::class)
     @Throws(Exception::class)
     fun handleNullValueNotAllowedException(req: HttpServletRequest, exception: Exception): ModelAndView? {
@@ -86,6 +96,8 @@ class CustomExceptionHandler {
         mav.viewName = "error"
         return mav
     }
+
+
 
 
     @ExceptionHandler(ServiceMapNotFoundException::class)

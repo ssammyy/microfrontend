@@ -9,7 +9,7 @@
     <userTask id="submitApplication" name="Submit application" flowable:candidateGroups="applicants"
               flowable:formFieldValidation="true"/>
     <serviceTask id="receiveAcknowledgement" name="Send acknowledgment on submission"
-                 flowable:class="org.kebs.app.kotlin.apollo.api.handlers.EmailHandler"/>
+                 flowable:class="org.kebs.app.kotlin.apollo.api.handlers.std.EmailHandler"/>
     <parallelGateway id="parallelGateway"/>
     <userTask id="reviewRecommendation" name="Review for recommendations" flowable:candidateGroups="HOF"
               flowable:formFieldValidation="true"/>
@@ -52,18 +52,18 @@
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${readvertise}]]></conditionExpression>
     </sequenceFlow>
     <serviceTask id="notificationForApplication" name="Send notification of applications"
-                 flowable:class="org.kebs.app.kotlin.apollo.api.handlers.EmailHandler"/>
+                 flowable:class="org.kebs.app.kotlin.apollo.api.handlers.std.EmailHandler"/>
     <serviceTask id="sendAppointment" name="Send appointment letters and terms of reference"
-                 flowable:class="org.kebs.app.kotlin.apollo.api.handlers.EmailHandler"/>
+                 flowable:class="org.kebs.app.kotlin.apollo.api.handlers.std.EmailHandler"/>
     <serviceTask id="acceptanceEmail" name="Send acceptance email"
-                 flowable:class="org.kebs.app.kotlin.apollo.api.handlers.EmailHandler"/>
+                 flowable:class="org.kebs.app.kotlin.apollo.api.handlers.std.EmailHandler"/>
     <serviceTask id="receiveAppointmentLetter" name="Send appointment letter via email"
-                 flowable:class="org.kebs.app.kotlin.apollo.api.handlers.EmailHandler"/>
+                 flowable:class="org.kebs.app.kotlin.apollo.api.handlers.std.EmailHandler"/>
     <serviceTask id="introductionEmail"
                  name="Send an email notification with introduction message and log in credentials"
-                 flowable:class="org.kebs.app.kotlin.apollo.api.handlers.EmailHandler"/>
+                 flowable:class="org.kebs.app.kotlin.apollo.api.handlers.std.EmailHandler"/>
     <serviceTask id="noticeForMeeting" name="Send notice for a meeting"
-                 flowable:class="org.kebs.app.kotlin.apollo.api.handlers.EmailHandler"/>
+                 flowable:class="org.kebs.app.kotlin.apollo.api.handlers.std.EmailHandler"/>
     <sequenceFlow id="flow1" sourceRef="startEvent" targetRef="submitApplication"/>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_membership_to_TC">

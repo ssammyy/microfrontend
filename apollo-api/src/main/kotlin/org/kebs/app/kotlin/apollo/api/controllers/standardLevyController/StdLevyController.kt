@@ -948,8 +948,7 @@ class StdLevyController(
         response: HttpServletResponse,
         @RequestParam("manufactureId") manufactureId: Long
     ): CompanyProfileEditEntity {
-        return standardLevyService.
-        getCompanyEditedDetails(manufactureId)
+        return standardLevyService.getCompanyEditedDetails(manufactureId)
     }
 
     @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
@@ -961,6 +960,42 @@ class StdLevyController(
             return standardLevyService.getCompleteTasks()
 
 
+    }
+
+    @GetMapping("/getApproveLevelOne")
+    @ResponseBody
+    fun getApproveLevelOne(): List<UserDetailHolder> {
+        return standardLevyService.getApproveLevelOne()
+    }
+
+    @GetMapping("/getApproveLevelTwo")
+    @ResponseBody
+    fun getApproveLevelTwo(): List<UserDetailHolder> {
+        return standardLevyService.getApproveLevelTwo()
+    }
+
+    @GetMapping("/getApproveLevelThree")
+    @ResponseBody
+    fun getApproveLevelThree(): List<UserDetailHolder> {
+        return standardLevyService.getApproveLevelThree()
+    }
+
+    @GetMapping("/getAssignLevelOne")
+    @ResponseBody
+    fun getAssignLevelOne(): List<UserDetailHolder> {
+        return standardLevyService.getAssignLevelOne()
+    }
+
+    @GetMapping("/getAssignLevelTwo")
+    @ResponseBody
+    fun getAssignLevelTwo(): List<UserDetailHolder> {
+        return standardLevyService.getAssignLevelTwo()
+    }
+
+    @GetMapping("/getAssignLevelThree")
+    @ResponseBody
+    fun getAssignLevelThree(): List<UserDetailHolder> {
+        return standardLevyService.getAssignLevelThree()
     }
 
 
