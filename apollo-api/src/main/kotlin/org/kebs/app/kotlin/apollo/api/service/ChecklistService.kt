@@ -24,6 +24,8 @@ import org.kebs.app.kotlin.apollo.store.repo.di.*
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleCollectionRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleLabTestParametersRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleLabTestResultsRepository
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Lazy
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
@@ -66,9 +68,15 @@ class ChecklistService(
         private val qaISampleCollectRepository: IQaSampleCollectionRepository,
         private val consignmentAuditService: ConsignmentDocumentAuditService,
         private val daoServices: DestinationInspectionDaoServices,
-        private val limsServices: LimsServices,
-        private val qaDaoServices: QADaoServices
 ) {
+    @Lazy
+    @Autowired
+    lateinit var qaDaoServices: QADaoServices
+
+    @Lazy
+    @Autowired
+    lateinit var limsServices: LimsServices
+
     fun listLabPdfFiles(ssfId: Long, loggedInUser: UsersEntity): ApiResponseModel {
         val response = ApiResponseModel()
         try {
