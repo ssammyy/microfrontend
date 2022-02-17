@@ -35,7 +35,7 @@ class PvocServiceFlux(
     private val corsBakRepository: ICorsBakRepository,
     private val coisRepository: ICoisRepository,
     private val riskProfileDataRepository: IRiskProfileDataRepository,
-    private val timelinesDataRepository: IPvocTimelinesDataRepository,
+   // private val timelinesDataRepository: IPvocTimelinesDataRepository,
     private val pvocStdMonitoringDataRepository: IPvocStdMonitoringDataRepository,
     private val pvocQueriesDataRepository: IPvocQueriesDataRepository,
     private val idfsRepository: IIdfsRepository,
@@ -833,7 +833,7 @@ class PvocServiceFlux(
                 createdOn = Timestamp.from(Instant.now())
 
             }
-            timelinesDataRepository.save(monitoringTimelines)
+            //timelinesDataRepository.save(monitoringTimelines)
 
 
             generalResponse.responseCode = pvocIntegrationProperties.pvocIntegSuccessResponseCode

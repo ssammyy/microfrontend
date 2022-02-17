@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.13.0.final using JasperReports Library version 6.13.0-46ada4d1be8f3c5985fd0b6146f3ed44caed6f05  -->
+<!-- Created with Jaspersoft Studio version 6.18.1.final using JasperReports Library version 6.18.1-9d75d1969e774d4f179fb3be8401e98a0e6d1611  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
 			  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 			  xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
@@ -105,13 +105,15 @@
 					<bottomPen lineWidth="1.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$P{EffectiveDate}]]></textFieldExpression>
+				<!--				<textFieldExpression><![CDATA[$P{EffectiveDate}]]></textFieldExpression>-->
+				<textFieldExpression><![CDATA[$P{DateOfIssue}]]></textFieldExpression>
+
 			</textField>
 			<line>
 				<reportElement x="97" y="155" width="231" height="1" uuid="7286fb26-d739-4ae2-995f-23cec69a3407"/>
 			</line>
 			<staticText>
-				<reportElement x="-2" y="137" width="110" height="18" uuid="02c7eb1d-f5cc-482f-a275-5521228a5187"/>
+				<reportElement x="-3" y="140" width="110" height="18" uuid="02c7eb1d-f5cc-482f-a275-5521228a5187"/>
 				<textElement>
 					<font fontName="SansSerif"/>
 				</textElement>
@@ -132,14 +134,14 @@
 				<text><![CDATA[PERMIT  GRANTED TO :]]></text>
 			</staticText>
 			<textField textAdjust="ScaleFont">
-				<reportElement x="-1" y="114" width="329" height="19" uuid="627cd414-c2ff-42c5-87d7-726eddcd50c0"/>
+				<reportElement x="80" y="90" width="246" height="19" uuid="627cd414-c2ff-42c5-87d7-726eddcd50c0"/>
 				<box>
 					<bottomPen lineWidth="1.0"/>
 				</box>
 				<textFieldExpression><![CDATA[$P{FirmName}]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="ScaleFont">
-				<reportElement x="-1" y="156" width="329" height="24" uuid="8461a050-7591-4015-8e23-06995cabe920"/>
+				<reportElement x="108" y="139" width="216" height="16" uuid="8461a050-7591-4015-8e23-06995cabe920"/>
 				<box>
 					<bottomPen lineWidth="1.0" lineStyle="Solid"/>
 				</box>
@@ -331,8 +333,9 @@
 )]]></imageExpression>
 			</image>
 			<image>
-				<reportElement x="373" y="588" width="138" height="50" uuid="757a26ee-d8e2-4529-a01e-bf8332d078d0"/>
-				<imageExpression><![CDATA["/app/apps_home/apollo/conf/test/reports/images/BMNSignature.jpg"]]></imageExpression>
+				<reportElement x="373" y="570" width="138" height="50" uuid="757a26ee-d8e2-4529-a01e-bf8332d078d0"/>
+				<imageExpression>
+					<![CDATA["/app/apps_home/apollo/conf/test/reports/images/BMNSignature-transparent.png"]]></imageExpression>
 			</image>
 		</band>
 		<band height="802">

@@ -9,24 +9,24 @@ import org.flowable.engine.repository.Deployment
 import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.ID
-import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponse
 import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
+import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
+import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.std.CallForTCApplication
-import org.kebs.app.kotlin.apollo.store.model.std.DecisionFeedback
+import org.kebs.app.kotlin.apollo.store.model.std.DatKebsSdStandardsEntity
 import org.kebs.app.kotlin.apollo.store.model.std.MembershipTCApplication
-import org.kebs.app.kotlin.apollo.store.model.std.TechnicalCommitteMember
-import org.kebs.app.kotlin.apollo.store.repo.std.CallForApplicationTCRepository
-import org.kebs.app.kotlin.apollo.store.repo.std.DecisionFeedbackRepository
-import org.kebs.app.kotlin.apollo.store.repo.std.MembershipTCRepository
-import org.kebs.app.kotlin.apollo.store.repo.std.TechnicalCommitteMemberRepository
+import org.kebs.app.kotlin.apollo.store.model.std.TechnicalCommitteeMember
+import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
+import org.springframework.web.multipart.MultipartFile
 import java.sql.Timestamp
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.*
 import kotlin.collections.HashMap
 import kotlin.collections.set
+import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponseValue as ProcessInstanceResponseValue1
 
 @Service
 class MembershipToTCService(
@@ -39,6 +39,9 @@ class MembershipToTCService(
     private val technicalCommitteMemberRepository: TechnicalCommitteMemberRepository,
     private val decisionFeedbackRepository: DecisionFeedbackRepository,
     val commonDaoServices: CommonDaoServices,
+    private val technicalCommitteeRepository: TechnicalCommitteeRepository,
+    private val sdNwaUploadsEntityRepository: StandardsDocumentsRepository,
+
 
     ) {
 
@@ -56,14 +59,27 @@ class MembershipToTCService(
 
 
     //Create Form For Applicants To Apply
+    //Status
+    // if 1- submitted to HOf for review
+    // if 2- submitted to SPC for review
+    // if 3- submitted to SAC for review
+    // if 4- submitted to HOf for review for approval
+    // if 5- submitted to SPC for review for rejection
+    // if 6- HOP Approved and sent as email
 
-    fun submitCallsForTCMembers(callForTCApplication: CallForTCApplication): ProcessInstanceResponse {
+
+    fun submitCallsForTCMembers(callForTCApplication: CallForTCApplication) {
         val variable: MutableMap<String, Any> = HashMap()
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
-        callForTCApplication.tc?.let { variable.put("tc", it) }
         callForTCApplication.tcId?.let { variable.put("tcId", it) }
+        //select TC TITLE
+        val technicalCommittee =
+            callForTCApplication.tcId?.let { technicalCommitteeRepository.findById(it).orElse(null) };
+        callForTCApplication.tc = technicalCommittee?.title
+        callForTCApplication.tc?.let { variable.put("tc", it) }
         callForTCApplication.title?.let { variable.put("title", it) }
+        callForTCApplication.description?.let { variable.put("description", it) }
         callForTCApplication.dateOfPublishing = Timestamp(System.currentTimeMillis()).toString()
         callForTCApplication.dateOfPublishing?.let { variable.put("dateOfPublishing", it) }
         callForTCApplication.status = "ACTIVE"
@@ -74,18 +90,7 @@ class MembershipToTCService(
         callForTCApplication.createdBy?.let { variable.put("createdBy", it) }
         callForTCApplication.createdOn = Timestamp(System.currentTimeMillis())
         callForTCApplication.createdOn?.let { variable.put("createdOn", it) }
-
         callForApplicationTCRepository.save(callForTCApplication)
-        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variable)
-        //print(variables)
-
-        //val getProcessInstance = runtimeService.createProcessInstanceQuery().processInstanceBusinessKey(PROCESS_DEFINITION_KEY).singleResult()
-
-//        val gottenVariables = processIntance.body
-//
-//        println(gottenVariables)
-
-        return ProcessInstanceResponse(processInstance.id, processInstance.isEnded)
 
     }
 
@@ -117,9 +122,9 @@ class MembershipToTCService(
 
     }
 
-    fun getCallForApplications(): List<TaskDetails> {
-        val tasks = taskService.createTaskQuery().active().taskCandidateGroup(APPLICANTS).list()
-        return getTaskDetails(tasks)
+    fun getCallForApplications(): List<CallForTCApplication> {
+        return callForApplicationTCRepository.findAll()
+
     }
 
     private fun getTaskDetails(tasks: List<Task>): List<TaskDetails> {
@@ -131,119 +136,195 @@ class MembershipToTCService(
         return taskDetails
     }
 
-    fun submitTCMemberApplication(membershipTCApplication: MembershipTCApplication)
-    {
-        val variable:MutableMap<String, Any> = HashMap()
-        membershipTCApplication.technicalCommittee?.let{variable.put("technicalCommittee", it)}
-        membershipTCApplication.organization?.let{variable.put("organization", it)}
-        membershipTCApplication.nomineeName?.let{variable.put("nomineeName", it)}
-        membershipTCApplication.position?.let{variable.put("position", it)}
-        membershipTCApplication.postalAddress?.let{variable.put("postalAddress", it)}
-        membershipTCApplication.mobileNumber?.let{variable.put("mobileNumber", it)}
-        membershipTCApplication.email?.let{variable.put("email", it)}
-        membershipTCApplication.authorizingName?.let{variable.put("authorizingName", it)}
-        membershipTCApplication.authorisingPersonPosition?.let{variable.put("authorisingPersonPosition", it)}
-        membershipTCApplication.authorisingPersonEmail?.let{variable.put("authorisingPersonEmail", it)}
-        membershipTCApplication.qualifications?.let{variable.put("qualifications", it)}
-        membershipTCApplication.commitment?.let{variable.put("commitment", it)}
-
-        println(membershipTCApplication.toString())
+    fun submitTCMemberApplication(membershipTCApplication: MembershipTCApplication): ProcessInstanceResponseValue1 {
+        val variable: MutableMap<String, Any> = HashMap()
+        membershipTCApplication.technicalCommittee?.let { variable.put("technicalCommittee", it) }
+        membershipTCApplication.organization?.let { variable.put("organization", it) }
+        membershipTCApplication.nomineeName?.let { variable.put("nomineeName", it) }
+        membershipTCApplication.position?.let { variable.put("position", it) }
+        membershipTCApplication.postalAddress?.let { variable.put("postalAddress", it) }
+        membershipTCApplication.mobileNumber?.let { variable.put("mobileNumber", it) }
+        membershipTCApplication.email?.let { variable.put("email", it) }
+        membershipTCApplication.authorizingName?.let { variable.put("authorizingName", it) }
+        membershipTCApplication.authorisingPersonPosition?.let { variable.put("authorisingPersonPosition", it) }
+        membershipTCApplication.authorisingPersonEmail?.let { variable.put("authorisingPersonEmail", it) }
+        membershipTCApplication.qualifications?.let { variable.put("qualifications", it) }
+        membershipTCApplication.commitment?.let { variable.put("commitment", it) }
+        membershipTCApplication.tcApplicationId?.let { variable.put("commitment", it) }
+        membershipTCApplication.dateOfApplication = Timestamp(System.currentTimeMillis())
+        membershipTCApplication.dateOfApplication?.let { variable.put("dateOfPublishing", it) }
         membershipTCRepository.save(membershipTCApplication)
-
-        taskService.complete(membershipTCApplication.taskId,variable)
         println("Applicant has uploaded application")
+
+        variable["id"] = membershipTCApplication.id
+        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variable)
+        return ProcessInstanceResponseValue1(
+            membershipTCApplication.id, processInstance.id, processInstance.isEnded,
+            membershipTCApplication.technicalCommittee ?: throw NullValueNotAllowedException("ID is required")
+        )
+
     }
 
-    fun getApplicationsForReview():List<TaskDetails>
-    {
-        val tasks = taskService.createTaskQuery().taskCandidateGroup(HOF).list()
-        return getTaskDetails(tasks)
+    fun getApplicationsForReview(): List<MembershipTCApplication> {
+        return membershipTCRepository.findByStatusIsNull()
+
     }
 
-    fun decisionOnApplicantRecommendation(decisionFeedback: DecisionFeedback)
-    {
-        val variables: MutableMap<String, Any> = java.util.HashMap()
+    // HOF Has Received The applications and is reviewing them and giving a decision. Status will be set to 1
+    fun decisionOnApplicantRecommendation(membershipTCApplication: MembershipTCApplication, applicationID: Long) {
+        val variable: MutableMap<String, Any> = java.util.HashMap()
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null);
+        u.status = "1"
+        u.comments_by_hof = membershipTCApplication.comments_by_hof
+        u.hofId = loggedInUser.id.toString()
+        membershipTCRepository.save(u)
 
-        decisionFeedback.user_id.let{variables.put("user_id", it)}
-        decisionFeedback.item_id?.let{variables.put("item_id", it)}
-        decisionFeedback.comment?.let{variables.put("comment", it)}
-        decisionFeedback.taskId?.let{variables.put("taskId", it)}
-
-        variables["readvertise"] = decisionFeedback.status!!
-        taskService.complete(decisionFeedback.taskId, variables)
-
-        decisionFeedbackRepository.save(decisionFeedback)
     }
 
-    fun getRecommendationsFromHOF():List<TaskDetails>
-    {
-        val tasks = taskService.createTaskQuery().taskCandidateGroup(SPC).list()
-        return getTaskDetails(tasks)
+    //SPC
+    fun getRecommendationsFromHOF(): List<MembershipTCApplication> {
+
+        return membershipTCRepository.findByStatus("1")
     }
 
-    fun completeSPCReview(taskId: String)
-    {
-        taskService.complete(taskId)
+
+    fun completeSPCReview(membershipTCApplication: MembershipTCApplication, applicationID: Long) {
+        val variable: MutableMap<String, Any> = java.util.HashMap()
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null);
+        u.status = "2"
+        u.commentsBySpc = membershipTCApplication.commentsBySpc
+        u.spcId = loggedInUser.id.toString()
+        membershipTCRepository.save(u)
+
     }
 
-    fun getRecommendationsFromSPC():List<TaskDetails>
-    {
-        val tasks = taskService.createTaskQuery().taskCandidateGroup(SAC).list()
-        return getTaskDetails(tasks)
+    //SAC
+    fun getRecommendationsFromSPC(): List<MembershipTCApplication> {
+
+        return membershipTCRepository.findByStatus("2")
     }
 
-    fun decisionOnSPCRecommendation(decisionFeedback: DecisionFeedback)
-    {
-        val variables: MutableMap<String, Any> = java.util.HashMap()
+    fun decisionOnSPCRecommendation(
+        membershipTCApplication: MembershipTCApplication,
+        applicationID: Long,
+        decision: String
+    ) {
+        val variable: MutableMap<String, Any> = java.util.HashMap()
 
-        decisionFeedback.user_id?.let{variables.put("user_id", it)}
-        decisionFeedback.item_id?.let{variables.put("item_id", it)}
-        decisionFeedback.comment?.let{variables.put("comment", it)}
-        decisionFeedback.taskId?.let{variables.put("taskId", it)}
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null);
+        if (decision == "YES") {
+            u.status = "4" // approved and send to HOD to send appointment letters
+        } else {
+            u.status = "3" //rejected and sent back to SPC with recommendations
 
-        variables["approve"] = decisionFeedback.status!!
-        taskService.complete(decisionFeedback.taskId, variables)
-
-        decisionFeedbackRepository.save(decisionFeedback)
+        }
+        u.commentsBySac = membershipTCApplication.commentsBySac
+        u.sacId = loggedInUser.id.toString()
+        membershipTCRepository.save(u)
     }
 
-    fun getTCMemberCreationTasks():List<TaskDetails>
-    {
+    //SPC Get Rejected
+    fun getRejected(): List<MembershipTCApplication> {
+
+        return membershipTCRepository.findByStatus("3")
+    }
+
+    //HOF Get Accepted
+    fun getAccepted(): List<MembershipTCApplication> {
+
+        return membershipTCRepository.findByStatus("4")
+    }
+
+
+    fun getTCMemberCreationTasks(): List<TaskDetails> {
         val tasks = taskService.createTaskQuery().taskCandidateGroup(HOD_SIC).list()
         return getTaskDetails(tasks)
     }
 
-    fun saveTCMember(technicalCommitteMember: TechnicalCommitteMember)
-    {
-        val variable:MutableMap<String, Any> = HashMap()
-        technicalCommitteMember.userId.let{variable.put("userId", it)}
-        technicalCommitteMember.tc?.let{variable.put("tc", it)}
-        technicalCommitteMember.name?.let{variable.put("name", it)}
-        technicalCommitteMember.email?.let{variable.put("email", it)}
+    fun saveTCMember(technicalCommitteeMember: TechnicalCommitteeMember) {
+        val variable: MutableMap<String, Any> = HashMap()
+        technicalCommitteeMember.userId.let { variable.put("userId", it) }
+        technicalCommitteeMember.tc?.let { variable.put("tc", it) }
+        technicalCommitteeMember.name?.let { variable.put("name", it) }
+        technicalCommitteeMember.email?.let { variable.put("email", it) }
 
-        println(technicalCommitteMember.toString())
-        technicalCommitteMemberRepository.save(technicalCommitteMember)
+        println(technicalCommitteeMember.toString())
+        technicalCommitteMemberRepository.save(technicalCommitteeMember)
 
-        taskService.complete(technicalCommitteMember.taskId,variable)
+        taskService.complete(technicalCommitteeMember.taskId, variable)
         println("Applicant has TC Member")
     }
 
     fun checkProcessHistory(id: ID): List<HistoricActivityInstance> {
         val historyService = processEngine.historyService
         val activities = historyService
-                .createHistoricActivityInstanceQuery()
-                .processInstanceId(id.ID)
-                .finished()
-                .orderByHistoricActivityInstanceEndTime()
-                .asc()
-                .list()
+            .createHistoricActivityInstanceQuery()
+            .processInstanceId(id.ID)
+            .finished()
+            .orderByHistoricActivityInstanceEndTime()
+            .asc()
+            .list()
         for (activity in activities) {
             println(
-                    activity.activityId + " took " + activity.durationInMillis + " milliseconds")
+                activity.activityId + " took " + activity.durationInMillis + " milliseconds"
+            )
         }
 
         return activities
 
+    }
+
+    fun uploadSDFile(
+        uploads: DatKebsSdStandardsEntity,
+        docFile: MultipartFile,
+        doc: String,
+        user: UsersEntity,
+        DocDescription: String
+    ): DatKebsSdStandardsEntity {
+
+        with(uploads) {
+//            filepath = docFile.path
+            name = commonDaoServices.saveDocuments(docFile)
+//            fileType = docFile.contentType
+            fileType = docFile.contentType
+            documentType = doc
+            description = DocDescription
+            document = docFile.bytes
+            transactionDate = commonDaoServices.getCurrentDate()
+            status = 1
+            createdBy = commonDaoServices.concatenateName(user)
+            createdOn = commonDaoServices.getTimestamp()
+        }
+
+        return sdNwaUploadsEntityRepository.save(uploads)
+    }
+
+    fun uploadSDFileNotLoggedIn(
+        uploads: DatKebsSdStandardsEntity,
+        docFile: MultipartFile,
+        doc: String,
+        nomineeName: String,
+        DocDescription: String
+    ): DatKebsSdStandardsEntity {
+
+        with(uploads) {
+//            filepath = docFile.path
+            name = commonDaoServices.saveDocuments(docFile)
+//            fileType = docFile.contentType
+            fileType = docFile.contentType
+            documentType = doc
+            description = DocDescription
+            document = docFile.bytes
+            transactionDate = commonDaoServices.getCurrentDate()
+            status = 1
+            createdBy = nomineeName
+            createdOn = commonDaoServices.getTimestamp()
+        }
+
+        return sdNwaUploadsEntityRepository.save(uploads)
     }
 
 }

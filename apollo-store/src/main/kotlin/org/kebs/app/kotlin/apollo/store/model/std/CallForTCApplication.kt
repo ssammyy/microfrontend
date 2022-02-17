@@ -32,9 +32,9 @@ class CallForTCApplication {
     @Basic
     var expiryDate: Timestamp? = null
 
-    @Column(name = "VAR_FIELD_3")
+    @Column(name = "DESCRIPTION")
     @Basic
-    var varField3: String? = null
+    var description: String? = null
 
     @Column(name = "VAR_FIELD_4")
     @Basic
@@ -104,7 +104,7 @@ class CallForTCApplication {
 
                 title == that.title &&
                 expiryDate == that.expiryDate &&
-                varField3 == that.varField3 &&
+                description == that.description &&
                 varField4 == that.varField4 &&
                 varField5 == that.varField5 &&
                 varField6 == that.varField6 &&
@@ -130,7 +130,7 @@ class CallForTCApplication {
             tcId,
             title,
             expiryDate,
-            varField3,
+            description,
             varField4,
             varField5,
             varField6,

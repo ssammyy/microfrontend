@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.13.0.final using JasperReports Library version 6.13.0-46ada4d1be8f3c5985fd0b6146f3ed44caed6f05  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
-			  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-			  xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
-			  name="DiamondMarkPermit" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail"
-			  columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20"
-			  uuid="ed21babd-bc90-4f45-a015-31c53503a62e">
-	<property name="background.image.path"
-			  value="/app/apps_home/apollo/conf/test/reports/images/kebs_fmark_background_image.png"/>
+<!-- Created with Jaspersoft Studio version 6.18.1.final using JasperReports Library version 6.18.1-9d75d1969e774d4f179fb3be8401e98a0e6d1611  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="DiamondMarkPermit" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed21babd-bc90-4f45-a015-31c53503a62e">
+	<property name="background.image.path" value="/app/apps_home/apollo/conf/test/reports/images/kebs_fmark_background_image.png"/>
 	<property name="background.image.x" value="10"/>
 	<property name="background.image.y" value="10"/>
 	<property name="background.image.widht" value="595"/>
@@ -41,8 +35,7 @@
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<imageExpression>
-					<![CDATA["/app/apps_home/apollo/conf/test/reports/images/kebs_fmark_background_image.png"]]></imageExpression>
+				<imageExpression><![CDATA["/app/apps_home/apollo/conf/test/reports/images/kebs_fmark_background_image.png"]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement x="20" y="36" width="440" height="20" uuid="c40346a8-cdb9-447e-b973-5631bee8113f"/>
@@ -104,7 +97,7 @@
 				<textFieldExpression><![CDATA[$P{DateOfIssue}]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="ScaleFont">
-				<reportElement x="2" y="162" width="329" height="24" uuid="b2b9b831-0701-4e5e-b746-951f658c1b31"/>
+				<reportElement x="96" y="138" width="231" height="24" uuid="b2b9b831-0701-4e5e-b746-951f658c1b31"/>
 				<box>
 					<bottomPen lineWidth="1.0" lineStyle="Solid"/>
 				</box>
@@ -127,7 +120,7 @@
 				<textFieldExpression><![CDATA[$P{faxNumber}]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="ScaleFont">
-				<reportElement x="2" y="121" width="329" height="19" uuid="830f15a3-47d0-49d3-90be-9c0c7ab5acf3"/>
+				<reportElement x="83" y="100" width="245" height="19" uuid="830f15a3-47d0-49d3-90be-9c0c7ab5acf3"/>
 				<box>
 					<bottomPen lineWidth="1.0"/>
 				</box>
@@ -151,7 +144,9 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif"/>
 				</textElement>
-				<text><![CDATA[EFFECTIVE FROM:]]></text>
+<!--				<text><![CDATA[EFFECTIVE FROM:]]></text>-->
+				<text><![CDATA[DATE OF ISSUE:]]></text>
+
 			</staticText>
 			<staticText>
 				<reportElement x="2" y="212" width="49" height="18" uuid="0a16f290-293b-4152-8813-082e01c8b812"/>
@@ -342,8 +337,8 @@
 )]]></imageExpression>
 			</image>
 			<image>
-				<reportElement x="373" y="588" width="138" height="50" uuid="757a26ee-d8e2-4529-a01e-bf8332d078d0"/>
-				<imageExpression><![CDATA["/app/apps_home/apollo/conf/test/reports/images/BMNSignature.jpg"]]></imageExpression>
+				<reportElement x="350" y="548" width="138" height="50" uuid="757a26ee-d8e2-4529-a01e-bf8332d078d0"/>
+				<imageExpression><![CDATA["/app/apps_home/apollo/conf/test/reports/images/BMNSignature-transparent.png"]]></imageExpression>
 			</image>
 		</band>
 		<band height="802">
@@ -388,6 +383,5 @@
 ]]></text>
 			</staticText>
 		</band>
-
 	</detail>
 </jasperReport>

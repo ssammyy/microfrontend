@@ -160,6 +160,7 @@ import {ReviewRecommendationComponent} from "./apollowebs/standards-development/
 import {ReviewRecommendationOfSpcComponentComponent} from "./apollowebs/standards-development/membershipToTc/review-recommendation-of-spc-component/review-recommendation-of-spc-component.component";
 import {SubmitApplicationComponent} from "./apollowebs/standards-development/membershipToTc/submit-application/submit-application.component";
 import {UploadTcMemberComponentComponent} from "./apollowebs/standards-development/membershipToTc/upload-tc-member-component/upload-tc-member-component.component";
+import {ReviewApplicationComponent} from "./apollowebs/standards-development/membershipToTc/review-application/review-application.component";
 
 export const routes: Routes = [
     {
@@ -1030,7 +1031,7 @@ export const routes: Routes = [
         path: 'reviewApplication',
         component: AdminLayoutComponent,
         //canActivate: [AuthGuard],
-        children: [{path: '', component: ReviewApplicationsComponent}]
+        children: [{path: '', component: ReviewApplicationComponent}]
     },
     {
         path: 'reviewRecommendation',
