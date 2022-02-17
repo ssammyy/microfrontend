@@ -541,5 +541,7 @@ interface IUserVerificationTokensRepositoryB : JpaRepository<UserVerificationTok
 interface CompanyProfileEditEntityRepository : HazelcastRepository<CompanyProfileEditEntity, Long> {
     fun findAllByManufactureId(manufactureId: Long): CompanyProfileEditEntity
 
+    fun findFirstByManufactureIdOrderByIdDesc(manufactureId: Long): CompanyProfileEditEntity
+
 }
 

@@ -39,8 +39,9 @@
                                             </nav>
                                             <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
                                                 <div class="tab-pane fade show active" id="nav-allApps" role="tabpanel" aria-labelledby="nav-home-tab">
-                                                    <div class="material-datatables table-responsive col-md-12">
-                                                        <table  class="table table-striped table-bordered table-hover " id="datatable1" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"  cellspacing="0" width="100%">
+                                                    <div *ngIf="manufactureLists && manufactureLists.length > 0" class="material-datatables table-responsive col-md-12">
+
+                                                        <table  class="table table-striped table-bordered table-hover " id="datatable"    cellspacing="0" width="100%">
                                                             <thead>
                                                             <tr>
                                                                 <th>#</th>
@@ -102,7 +103,6 @@
 
                                                                                     </div>
                                                                                     <div *ngIf="roles?.includes('SL_IS_CHIEF_MANAGER')">
-                                                                                        <button (click)=toggleDisplayAssignForm() type="button" class="btn btn-primary btn-sm">Assign To Self</button>
                                                                                         <button (click)=toggleDisplayAssignTo2Form() type="button" class="btn btn-success btn-sm">Assign To Other</button>
                                                                                         <button (click)=toggleDisplayEditForm() type="button" class="btn btn-info btn-sm">Edit Company Details</button>
                                                                                         <button (click)=toggleDisplayEditedForm(manufactureList.id) type="button" class="btn btn-warning btn-sm">Approve Edited Company</button>
@@ -149,11 +149,24 @@
                                                                                             <hr style="color: red">
                                                                                             <p ><b>Please Select Person to assign task to. Click Assign to Proceed.</b></p>
                                                                                            <hr>
-                                                                                            <div class="form-group col-12">
-                                                                                                <label>Select</label>
+                                                                                            <div *ngIf="roles?.includes('SL_IS_ASST_MANAGER')" class="form-group col-12">
+                                                                                                <label>Select User</label>
+                                                                                                <ng-select [(ngModel)]="assignedUsersOne" formControlName="assignedTo"  class="form-control" ngModel name="assignedTo" >
+                                                                                                    <ng-option *ngFor="let user of assignUsersOne" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
+                                                                                                </ng-select>
 
-                                                                                                <ng-select [(ngModel)]="selectedUserPl" formControlName="assignedTo"  class="form-control" ngModel name="assignedTo" >
-                                                                                                    <ng-option *ngFor="let user of usersPls" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
+                                                                                            </div>
+                                                                                            <div *ngIf="roles?.includes('SL_IS_MANAGER')" class="form-group col-12">
+                                                                                                <label>Select</label>
+                                                                                                <ng-select [(ngModel)]="assignedUsersTwo" formControlName="assignedTo"  class="form-control" ngModel name="assignedTo" >
+                                                                                                    <ng-option *ngFor="let user of assignUsersTwo" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
+                                                                                                </ng-select>
+
+                                                                                            </div>
+                                                                                            <div *ngIf="roles?.includes('SL_IS_CHIEF_MANAGER')" class="form-group col-12">
+                                                                                                <label>Select</label>
+                                                                                                <ng-select [(ngModel)]="assignedUsersThree" formControlName="assignedTo"  class="form-control" ngModel name="assignedTo" >
+                                                                                                    <ng-option *ngFor="let user of assignUsersThree" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
                                                                                                 </ng-select>
 
                                                                                             </div>
@@ -188,10 +201,24 @@
                                                                                             <hr style="color: red">
                                                                                             <p ><b>Please Select Person to assign task to. Click Assign to Proceed.</b></p>
                                                                                             <hr>
-                                                                                            <div class="form-group col-12">
+                                                                                            <div *ngIf="roles?.includes('SL_IS_ASST_MANAGER')" class="form-group col-12">
+                                                                                                <label>Select User</label>
+                                                                                                <ng-select [(ngModel)]="assignedUsersOne" formControlName="assignedTo"  class="form-control" ngModel name="assignedTo" >
+                                                                                                    <ng-option *ngFor="let user of assignUsersOne" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
+                                                                                                </ng-select>
+
+                                                                                            </div>
+                                                                                            <div *ngIf="roles?.includes('SL_IS_MANAGER')" class="form-group col-12">
                                                                                                 <label>Select</label>
-                                                                                                <ng-select [(ngModel)]="selectedUserMn" formControlName="assignedTo"  class="form-control" ngModel name="assignedTo" >
-                                                                                                    <ng-option *ngFor="let user of usersMns" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
+                                                                                                <ng-select [(ngModel)]="assignedUsersTwo" formControlName="assignedTo"  class="form-control" ngModel name="assignedTo" >
+                                                                                                    <ng-option *ngFor="let user of assignUsersTwo" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
+                                                                                                </ng-select>
+
+                                                                                            </div>
+                                                                                            <div *ngIf="roles?.includes('SL_IS_CHIEF_MANAGER')" class="form-group col-12">
+                                                                                                <label>Select</label>
+                                                                                                <ng-select [(ngModel)]="assignedUsersThree" formControlName="assignedTo"  class="form-control" ngModel name="assignedTo" >
+                                                                                                    <ng-option *ngFor="let user of assignUsersThree" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
                                                                                                 </ng-select>
 
                                                                                             </div>
@@ -617,7 +644,7 @@
                                                 </div>
                                                 <div class="tab-pane fade" id="nav-myTasks" role="tabpanel" aria-labelledby="nav-profile-tab">
                                                     <div class="material-datatables table-responsive col-md-12">
-                                                        <table  class="table table-striped table-bordered table-hover " id="datatable2" datatable [dtOptions]="dtOptions1" [dtTrigger]="dtTrigger1"  cellspacing="0" width="100%">
+                                                        <table  class="table table-striped table-bordered table-hover " id="datatable1"    cellspacing="0" width="100%">
                                                             <thead>
                                                             <tr>
                                                                 <th>#</th>
@@ -986,19 +1013,6 @@
 
                                                                                                 <form (ngSubmit)="saveReport()" [formGroup]="prepareReportFormGroup" class="form">
                                                                                                     <div class="form-body">
-
-                                                                                                        <div *ngIf="roles?.includes('SL_IS_PL_OFFICER')">
-                                                                                                        <input type="hidden"  ngModel="61"  name="userType" value="61" >
-                                                                                                        </div>
-                                                                                                        <div *ngIf="roles?.includes('SL_IS_ASST_MANAGER')">
-                                                                                                            <input type="hidden"  ngModel="62"  name="userType" value="61" >
-                                                                                                        </div>
-                                                                                                        <div *ngIf="roles?.includes('SL_IS_MANAGER')">
-                                                                                                            <input type="hidden"  ngModel="63"  name="userType" value="61" >
-                                                                                                        </div>
-                                                                                                        <div *ngIf="roles?.includes('SL_IS_CHIEF_MANAGER')">
-                                                                                                            <input type="hidden"  ngModel="63"  name="userType" value="61" >
-                                                                                                        </div>
                                                                                                         <div class="row col-12">
                                                                                                             <div class="form-group col-12">
                                                                                                                 <label><b>Visit Date</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
@@ -1045,13 +1059,29 @@
                                                                                                                           class="form-control one-column-input" formControlName="actionTaken" name="actionTaken"
                                                                                                                           placeholder="Name" type="text"></textarea>
                                                                                                             </div>
-                                                                                                            <div class="form-group col-12">
+                                                                                                            <div *ngIf="roles?.includes('SL_IS_PL_OFFICER')" class="form-group col-12">
+                                                                                                                <input type="hidden"  ngModel="61"  name="userType" value="61" >
                                                                                                                 <label>Send Report To</label>
-                                                                                                                <ng-select [(ngModel)]="selectedUser" formControlName="assigneeId"  class="form-control" ngModel name="assigneeId" >
-                                                                                                                    <ng-option *ngFor="let user of users" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
+                                                                                                                <ng-select [(ngModel)]="approvedUsersOne" formControlName="assigneeId"  class="form-control" ngModel name="assigneeId" >
+                                                                                                                    <ng-option *ngFor="let user of approveUsersOne" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
                                                                                                                 </ng-select>
-
                                                                                                             </div>
+                                                                                                            <div *ngIf="roles?.includes('SL_IS_ASST_MANAGER')" class="form-group col-12">
+                                                                                                                <input type="hidden"  ngModel="62"  name="userType" value="62" >
+                                                                                                                <label>Send Report To</label>
+                                                                                                                <ng-select [(ngModel)]="approvedUsersTwo" formControlName="assigneeId"  class="form-control" ngModel name="assigneeId" >
+                                                                                                                    <ng-option *ngFor="let user of approveUsersTwo" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
+                                                                                                                </ng-select>
+                                                                                                            </div>
+                                                                                                            <div *ngIf="roles?.includes('SL_IS_MANAGER')" class="form-group col-12">
+                                                                                                                <input type="hidden"  ngModel="63"  name="userType" value="63" >
+                                                                                                                <label>Send Report To</label>
+                                                                                                                <ng-select [(ngModel)]="approvedUsersThree" formControlName="assigneeId"  class="form-control" ngModel name="assigneeId" >
+                                                                                                                    <ng-option *ngFor="let user of approveUsersThree" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
+                                                                                                                </ng-select>
+                                                                                                            </div>
+
+
                                                                                                         </div>
 
                                                                                                         <input type="hidden" formControlName="visitID" name="visitID" ngModel="{{actionRequestPending?.taskData?.visitID}}" value="{{actionRequestPending?.taskData?.visitID}}" >
@@ -2715,7 +2745,7 @@
                                                 </div>
                                                 <div class="tab-pane fade" id="nav-completeTasks" role="tabpanel" aria-labelledby="nav-contact-tab">
                                                     <div class="material-datatables table-responsive col-md-12">
-                                                        <table  class="table table-striped table-bordered table-hover " id="datatable3" datatable [dtOptions]="dtOptions2" [dtTrigger]="dtTrigger2"  cellspacing="0" width="100%">
+                                                        <table  class="table table-striped table-bordered table-hover " id="datatable2"    cellspacing="0" width="100%">
                                                             <thead>
                                                             <tr>
                                                                 <th>#</th>

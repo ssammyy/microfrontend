@@ -283,6 +283,7 @@ import {ReviewRecommendationOfSpcComponentComponent} from './apollowebs/standard
 import {UploadTcMemberComponentComponent} from './apollowebs/standards-development/membershipToTc/upload-tc-member-component/upload-tc-member-component.component';
 import {ManageCorporateCustomerComponent} from './apollowebs/invoice/corporate/manage-corporate-customer/manage-corporate-customer.component';
 
+
 @NgModule({
     imports: [
         CommonModule,
@@ -344,7 +345,7 @@ import {ManageCorporateCustomerComponent} from './apollowebs/invoice/corporate/m
         NoopAnimationsModule,
         MatTabsModule,
         MatProgressSpinnerModule,
-        MDBBootstrapModule.forRoot(),
+        MDBBootstrapModule.forRoot()
     ],
     declarations: [
         AppComponent,
