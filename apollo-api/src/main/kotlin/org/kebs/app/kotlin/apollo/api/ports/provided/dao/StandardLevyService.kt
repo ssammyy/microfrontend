@@ -299,6 +299,40 @@ class StandardLevyService(
         return getTaskDetails(tasks)
     }
 
+    fun reportOnSiteVisitTest(standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity) {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val variables: MutableMap<String, Any> = java.util.HashMap()
+        standardLevyFactoryVisitReportEntity.visitDate?.let { variables["visitDate"] = it }
+        standardLevyFactoryVisitReportEntity.purpose?.let { variables["purpose"] = it }
+        standardLevyFactoryVisitReportEntity.personMet?.let { variables["personMet"] = it }
+        standardLevyFactoryVisitReportEntity.actionTaken?.let { variables["actionTaken"] = it }
+        standardLevyFactoryVisitReportEntity.id?.let { variables["visitID"] = it }
+        standardLevyFactoryVisitReportEntity.status?.let { variables["status"] = it }
+        standardLevyFactoryVisitReportEntity.assigneeId?.let { variables["assigneeId"] = it }
+        standardLevyFactoryVisitReportEntity.userType?.let { variables["userType"] = it }
+        standardLevyFactoryVisitReportEntity.makeRemarks?.let { variables["makeRemarks"] = it }
+        val userIntType = standardLevyFactoryVisitReportEntity.userType
+        val plUserTypes = 61L
+        val asManagerUserTypes = 62L
+        val managerUserTypes = 63L
+        val gson = Gson()
+//        when (userIntType) {
+//            plUserTypes -> {
+//
+//                KotlinLogging.logger { }.info { "Notification Report" }
+//            }
+//            asManagerUserTypes -> {
+//                KotlinLogging.logger { }.info { "Assignment Report" }
+//            }
+//            managerUserTypes -> {
+//                KotlinLogging.logger { }.info { "View Report" }
+//            }
+//        }
+
+
+
+    }
+
     fun reportOnSiteVisit(standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity): ProcessInstanceResponseValueSite {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val variables: MutableMap<String, Any> = java.util.HashMap()
@@ -312,12 +346,14 @@ class StandardLevyService(
         standardLevyFactoryVisitReportEntity.userType?.let { variables["userType"] = it }
         standardLevyFactoryVisitReportEntity.makeRemarks?.let { variables["makeRemarks"] = it }
         val userIntType = standardLevyFactoryVisitReportEntity.userType
-        val userIntTypes = userIntType.toString()
+        val plUserTypes=61L
+        val asManagerUserTypes=62L
+        val managerUserTypes=63L
 
         standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)
-            ?.let { standardLevyFactoryVisitReportEntity ->
+            ?.let { entity ->
 
-                with(standardLevyFactoryVisitReportEntity) {
+                entity.apply {
                     visitDate = standardLevyFactoryVisitReportEntity.visitDate
                     purpose = standardLevyFactoryVisitReportEntity.purpose
                     personMet = standardLevyFactoryVisitReportEntity.personMet
@@ -327,8 +363,9 @@ class StandardLevyService(
                     assigneeId = standardLevyFactoryVisitReportEntity.assigneeId
 
                 }
-                standardLevyFactoryVisitReportRepo.save(standardLevyFactoryVisitReportEntity)
+                standardLevyFactoryVisitReportRepo.save(entity)
             } ?: throw Exception("SCHEDULED VISIT NOT FOUND")
+
 
         companyProfileRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.manufacturerEntity)
             ?.let { companyProfileEntity ->
@@ -357,28 +394,51 @@ class StandardLevyService(
 
                             }
                             ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
-                        if (userIntTypes.equals(61)) {
-                            bpmnService.slAssignTask(
-                                processInstance.processInstanceId,
-                                "Notification of Report",
-                                standardLevyFactoryVisitReportEntity.assigneeId
-                                    ?: throw NullValueNotAllowedException("invalid user id provided")
-                            )
-                        } else if (userIntTypes.equals(62)) {
-                            bpmnService.slAssignTask(
-                                processInstance.processInstanceId,
-                                "View Report",
-                                standardLevyFactoryVisitReportEntity.assigneeId
-                                    ?: throw NullValueNotAllowedException("invalid user id provided")
-                            )
-                        } else if (userIntTypes.equals(63)) {
-                            bpmnService.slAssignTask(
-                                processInstance.processInstanceId,
-                                "View Report",
-                                standardLevyFactoryVisitReportEntity.assigneeId
-                                    ?: throw NullValueNotAllowedException("invalid user id provided")
-                            )
+
+//                        if(userIntType==true){
+//                            bpmnService.slAssignTask(
+//                                processInstance.processInstanceId,
+//                                "Notification of Report",
+//                                standardLevyFactoryVisitReportEntity.assigneeId
+//                                    ?: throw NullValueNotAllowedException("invalid user id provided")
+//                            )
+//                        }else if(userIntType==false){
+//                            bpmnService.slAssignTask(
+//                                processInstance.processInstanceId,
+//                                "View The Report",
+//                                standardLevyFactoryVisitReportEntity.assigneeId
+//                                    ?: throw NullValueNotAllowedException("invalid user id provided")
+//                            )
+//                        }
+
+
+                        when (userIntType) {
+                            plUserTypes -> {
+                                bpmnService.slAssignTask(
+                                    processInstance.processInstanceId,
+                                    "Notification of Report",
+                                    standardLevyFactoryVisitReportEntity.assigneeId
+                                        ?: throw NullValueNotAllowedException("invalid user id provided")
+                                )
+                            }
+                            asManagerUserTypes -> {
+                                bpmnService.slAssignTask(
+                                    processInstance.processInstanceId,
+                                    "View The Report",
+                                    standardLevyFactoryVisitReportEntity.assigneeId
+                                        ?: throw NullValueNotAllowedException("invalid user id provided")
+                                )
+                            }
+//                            managerUserTypes -> {
+//                                bpmnService.slAssignTask(
+//                                    processInstance.processInstanceId,
+//                                    "View The Report",
+//                                    standardLevyFactoryVisitReportEntity.assigneeId
+//                                        ?: throw NullValueNotAllowedException("invalid user id provided")
+//                                )
+//                            }
                         }
+
 
                         return ProcessInstanceResponseValueSite(
                             standardLevyFactoryVisitReportEntity.id,
