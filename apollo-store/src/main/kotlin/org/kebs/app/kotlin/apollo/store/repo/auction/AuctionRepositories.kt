@@ -30,7 +30,7 @@ interface IAuctionItemDetailsRepository : HazelcastRepository<AuctionItemDetails
 }
 
 interface IAuctionRequestHistoryRepository : HazelcastRepository<AuctionRequestHistory, Long> {
-    fun findByAuctionIdAndStatus(auctionId: Long,status: Int): List<AuctionRequestHistory>
+    fun findByAuctionIdAndStatusOrderByCreatedOnDesc(auctionId: Long, status: Int): List<AuctionRequestHistory>
 }
 
 interface IAuctionUploadsEntityRepository : HazelcastRepository<AuctionUploadsEntity, Long> {

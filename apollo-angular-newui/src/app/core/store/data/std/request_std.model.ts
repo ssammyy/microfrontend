@@ -53,7 +53,7 @@ export interface Department {
 
 export class LiaisonOrganization {
     id?: number;
-    name?: string="hahaha";
+    name?: string;
 
 
 }
@@ -305,10 +305,18 @@ export interface ReviewFeedbackFromSPC {
     taskData: ProposalForTC;
 }
 
-export interface CallForApplication{
-    user_id: string,
+export interface CallForApplication {
+    id: number,
+    tcId: number,
+    expiryDate: string,
     dateOfPublishing: string,
-    tc: string
+    description: string,
+    title: string,
+    status: string,
+    tc: string,
+    createdOn: string,
+    createdBy: number,
+
 }
 
 export interface SubmitApplicationsTask
@@ -318,11 +326,33 @@ export interface SubmitApplicationsTask
     taskData: CallForApplication;
 }
 
-export interface ReviewApplicationTask
-{
-    taskId: string;
-    name: string;
-    taskData: SubmitApplication;
+export interface ReviewApplicationTask {
+
+    id: number,
+    technicalCommittee: string,
+    organization: string,
+    nomineeName: string,
+    position: string,
+    postalAddress: string,
+    mobileNumber: string,
+    email: string,
+    authorizingName: string,
+    authorisingPersonPosition: string,
+    authorisingPersonEmail: string,
+    qualifications: string,
+    commitment: string,
+    tcApplicationId: number,
+    dateOfApplication: string,
+    status: string,
+    comments_by_hof: string,
+    commentsBySpc: string,
+    commentsBySac: string,
+    hofId: string,
+    spcId: string,
+    sacId: string,
+    varField9: string,
+    varField10: string,
+    taskId: string
 }
 
 export interface HOFRecommendationTask
@@ -384,16 +414,17 @@ export interface SubmitApplication
     technicalCommittee: string;
     organization: string;
     nomineeName: string;
-    position:string;
-    postalAddress:string;
-    mobileNumber:string;
-    email:string;
-    authorizingName:string;
-    authorisingPersonPosition:string;
-    authorisingPersonEmail:string;
-    qualifications:string;
-    commitment:string;
-    taskId:string;
+    position: string;
+    postalAddress: string;
+    mobileNumber: string;
+    email: string;
+    authorizingName: string;
+    authorisingPersonPosition: string;
+    authorisingPersonEmail: string;
+    qualifications: string;
+    commitment: string;
+    taskId: string;
+    id: number;
 }
 
 export interface ProposalForTC {

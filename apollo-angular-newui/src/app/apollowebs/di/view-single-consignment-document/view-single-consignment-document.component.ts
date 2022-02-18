@@ -506,7 +506,8 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
             data: {
                 uuid: this.consignmentId,
                 configurations: this.configurations,
-                complianceStatus: this.consignment.cd_details.complianceStatus
+                complianceStatus: this.consignment.cd_details.complianceStatus,
+                documentType: this.consignment.cd_details.cocType
             }
         });
         ref.afterClosed()

@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.13.0.final using JasperReports Library version 6.13.0-46ada4d1be8f3c5985fd0b6146f3ed44caed6f05  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
-              name="StandardMarkPermit" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail"
-              columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20"
-              whenResourceMissingType="Empty" uuid="ed21babd-bc90-4f45-a015-31c53503a62e">
+<!-- Created with Jaspersoft Studio version 6.18.1.final using JasperReports Library version 6.18.1-9d75d1969e774d4f179fb3be8401e98a0e6d1611  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="StandardMarkPermit" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="ed21babd-bc90-4f45-a015-31c53503a62e">
     <property name="com.jaspersoft.studio.unit." value="pixel"/>
     <property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
     <property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
@@ -39,13 +34,11 @@
     <detail>
         <band height="802">
             <image>
-                <reportElement positionType="FixRelativeToBottom" x="0" y="0" width="555" height="802"
-                               uuid="e1382649-ac12-412e-afba-5e814c3459ca">
+                <reportElement positionType="FixRelativeToBottom" x="0" y="0" width="555" height="802" uuid="e1382649-ac12-412e-afba-5e814c3459ca">
                     <property name="com.jaspersoft.studio.unit.width" value="px"/>
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
                 </reportElement>
-                <imageExpression>
-                    <![CDATA["/app/apps_home/apollo/conf/test/reports/images/kebs_smark_background_image.png"]]></imageExpression>
+                <imageExpression><![CDATA["/app/apps_home/apollo/conf/test/reports/images/kebs_smark_background_image.png"]]></imageExpression>
             </image>
             <staticText>
                 <reportElement x="10" y="27" width="454" height="20" uuid="614eea48-cb68-464f-be18-c03f01c3dccf"/>
@@ -69,8 +62,7 @@
                 <text><![CDATA[ORIGINAL FORM STA/2]]></text>
             </staticText>
             <textField textAdjust="ScaleFont">
-                <reportElement stretchType="ContainerHeight" x="111" y="193" width="222" height="16"
-                               uuid="2863ffe8-1b42-4366-8ddb-f5cdc3aa4e3b"/>
+                <reportElement stretchType="ContainerHeight" x="114" y="174" width="222" height="16" uuid="2863ffe8-1b42-4366-8ddb-f5cdc3aa4e3b"/>
                 <textFieldExpression><![CDATA[$P{PhysicalAddress}]]></textFieldExpression>
             </textField>
             <staticText>
@@ -134,16 +126,8 @@
                 </textElement>
                 <text><![CDATA[TELEPHONE NO:]]></text>
             </staticText>
-            <textField>
-                <reportElement x="440" y="126" width="113" height="17" uuid="90be2415-4c25-49b1-a407-285268602525"/>
-                <box>
-                    <bottomPen lineWidth="1.0"/>
-                </box>
-                <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                <textFieldExpression><![CDATA[$P{EffectiveDate}]]></textFieldExpression>
-            </textField>
             <textField textAdjust="ScaleFont">
-                <reportElement x="92" y="111" width="230" height="15" uuid="018036fb-d410-46ca-9770-a311b4fe373a"/>
+                <reportElement x="91" y="94" width="230" height="15" uuid="018036fb-d410-46ca-9770-a311b4fe373a"/>
                 <textFieldExpression><![CDATA[$P{FirmName}]]></textFieldExpression>
             </textField>
             <staticText>
@@ -219,7 +203,7 @@
                 <text><![CDATA[PERMIT IS GRANTED TO :]]></text>
             </staticText>
             <textField textAdjust="ScaleFont">
-                <reportElement x="131" y="150" width="200" height="18" uuid="20584da0-6f4d-45b5-ac63-15fe5e90a2f1"/>
+                <reportElement x="108" y="131" width="200" height="18" uuid="20584da0-6f4d-45b5-ac63-15fe5e90a2f1"/>
                 <textFieldExpression><![CDATA[$P{PostalAddress}]]></textFieldExpression>
             </textField>
             <line>
@@ -356,9 +340,17 @@
 )]]></imageExpression>
             </image>
             <image>
-                <reportElement x="332" y="572" width="219" height="51" uuid="9044ec40-bfdc-4007-afaa-cc2c717394de"/>
-                <imageExpression><![CDATA["/app/apps_home/apollo/conf/test/reports/images/BMN_signature.png"]]></imageExpression>
+                <reportElement x="360" y="567" width="138" height="50" uuid="757a26ee-d8e2-4529-a01e-bf8332d078d0"/>
+                <imageExpression><![CDATA["/app/apps_home/apollo/conf/test/reports/images/BMNSignature-transparent.png"]]></imageExpression>
             </image>
+            <textField>
+                <reportElement x="441" y="125" width="109" height="20" uuid="cf8a9d00-cea8-476a-82bc-17e0ade37517"/>
+                <box>
+                    <bottomPen lineWidth="1.0"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$P{DateOfIssue}]]></textFieldExpression>
+            </textField>
         </band>
         <band height="802">
             <property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -402,6 +394,5 @@
 ]]></text>
             </staticText>
         </band>
-
     </detail>
 </jasperReport>

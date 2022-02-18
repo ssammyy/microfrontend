@@ -7,7 +7,7 @@ import {LocalDataSource} from "ng2-smart-table";
 import {DatePipe} from "@angular/common";
 import {selectUserInfo} from "../../../core/store/data/auth";
 import {Store} from "@ngrx/store";
-import {fromEvent, interval, Observable, Subject} from "rxjs";
+import {interval, Subject} from "rxjs";
 import {debounce} from "rxjs/operators";
 import {PVOCService} from "../../../core/store/data/pvoc/pvoc.service";
 
@@ -207,6 +207,11 @@ export class ConsignmentDocumentListComponent implements OnInit {
     private loadData(documentTypeUuid: string, page: number, size: number): any {
         let params = {
             'personal': this.personalTasks
+        }
+        if (this.activeStatus == 'waiting') {
+            params['active'] = 0
+        } else {
+            params['active'] = 1
         }
         this.cancelPrevious()
         let data = this.diService.listAssignedCd(documentTypeUuid, page, size, params);

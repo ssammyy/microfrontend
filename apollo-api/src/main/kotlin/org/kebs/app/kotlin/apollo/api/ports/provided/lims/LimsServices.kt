@@ -6,19 +6,20 @@ import org.apache.commons.codec.binary.Base64
 import org.apache.commons.io.FileUtils
 import org.jasypt.encryption.StringEncryptor
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.response.RootLabPdfList
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.response.RootTestResultsAndParameters
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.response.TestParameter
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.response.TestResult
+import org.kebs.app.kotlin.apollo.api.service.ConsignmentApprovalStatus
 import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentStatus
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleLabTestParametersEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleLabTestResultsEntity
-import org.kebs.app.kotlin.apollo.store.repo.IIntegrationConfigurationRepository
+import org.kebs.app.kotlin.apollo.store.repo.di.IConsignmentItemsRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IPermitApplicationsRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleLabTestParametersRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleLabTestResultsRepository
@@ -39,14 +40,13 @@ import javax.net.ssl.HttpsURLConnection
 class LimsServices(
         private val commonDaoServices: CommonDaoServices,
         private val jasyptStringEncryptor: StringEncryptor,
-        private val daoService: DaoService,
         private val downloaderFile: DownloaderFile,
         private val applicationMapProperties: ApplicationMapProperties,
         private val sampleLabTestResults: IQaSampleLabTestResultsRepository,
         private val sampleLabTestParameters: IQaSampleLabTestParametersRepository,
         private val sampleSubmissionRepo: IQaSampleSubmissionRepository,
         private val permitRepo: IPermitApplicationsRepository,
-        private val configurationRepository: IIntegrationConfigurationRepository
+        private val iCdItemsRepo: IConsignmentItemsRepository
 ) {
 
     @Lazy
@@ -401,14 +401,14 @@ class LimsServices(
                                             ssfFound.cdItemId ?: throw Exception("CD ITEM ID NOT FOUND")
                                     )
                                             .let { cdItem ->
+                                                // Update Item result
+                                                cdItem.allTestReportStatus = map.activeStatus
+                                                cdItem.varField10 = "LAB RESULT RECEIVED"
+                                                diDaoServices.updateCdItemDetailsInDB(cdItem, null)
+                                                // Update consignment status if all reports have been received
                                                 diDaoServices.findCD(cdItem.cdDocId?.id
                                                         ?: throw Exception("CD ID NOT FOUND"))
-                                                        .let { updatedCDDetails ->
-                                                            diDaoServices.updateCDStatus(
-                                                                    updatedCDDetails,
-                                                                    ConsignmentDocumentStatus.LAB_RESULT_RESULT
-                                                            )
-                                                        }
+                                                        .let { updatedCDDetails -> updateConsignmentSampledStatus(updatedCDDetails, true) }
 
                                             }
                                 }
@@ -421,6 +421,34 @@ class LimsServices(
                     }
 
                 }
+    }
+
+    /**
+     * Check lab result status:
+     * 2. else Check if we added any lab result request during checklist saving
+     */
+    fun updateConsignmentSampledStatus(cdItemDetails: ConsignmentDocumentDetailsEntity, result: Boolean): Boolean {
+        var response = false
+        try {
+            val items = iCdItemsRepo.findByCdDocIdAndSampledStatus(cdItemDetails, 1)
+            var allItemsResult = true
+            for (itm in items) {
+                if (itm.allTestReportStatus != 1) {
+                    allItemsResult = false
+                    break
+                }
+            }
+            // All lab results have been received
+            if (allItemsResult) {
+                cdItemDetails.status = ConsignmentApprovalStatus.UNDER_INSPECTION.code
+                cdItemDetails.varField10 = "Lab result received"
+                diDaoServices.updateCDStatus(cdItemDetails, ConsignmentDocumentStatus.LAB_RESULT_RESULT)
+                response = true
+            }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to update lab result")
+        }
+        return response
     }
 
     fun checkPDFFiles(bsNumber: String): List<String>? {

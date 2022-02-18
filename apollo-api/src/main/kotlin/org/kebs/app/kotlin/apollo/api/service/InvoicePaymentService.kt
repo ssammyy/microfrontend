@@ -17,7 +17,8 @@ import java.io.ByteArrayInputStream
 import java.io.InputStreamReader
 import java.io.Reader
 import java.sql.Timestamp
-import java.time.*
+import java.time.Instant
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
 
@@ -65,6 +66,7 @@ class InvoicePaymentService(
                 demand.varField10 = remarks
                 consignmentDocument.varField10 = "Demand note rejected"
                 consignmentDocument.sendDemandNote = map.invalidStatus
+                consignmentDocument.status = ConsignmentApprovalStatus.UNDER_INSPECTION.code
                 consignmentDocument.diProcessStatus = map.inactiveStatus
                 consignmentDocument.diProcessInstanceId = null
                 consignmentDocument = daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.PAYMENT_REJECTED)
@@ -88,6 +90,7 @@ class InvoicePaymentService(
                 demand.status = map.initStatus
                 demand.varField3 = "APPROVED"
                 demand.varField10 = remarks
+
                 // Update CD status
                 consignmentDocument = daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.PAYMENT_APPROVED)
                 consignmentDocument.sendDemandNote = map.activeStatus
@@ -117,6 +120,7 @@ class InvoicePaymentService(
                         ConsignmentDocumentStatus.PAYMENT_APPROVED
                 )
                 demand.varField3 = "UPDATED DEMAND NOTE STATUS"
+                consignmentDocument.status = ConsignmentApprovalStatus.WAITING.code
                 consignmentDocument.varField10 = "Demand Approved, awaiting payment"
                 this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
                 // Update Demand note status
@@ -235,6 +239,7 @@ class InvoicePaymentService(
             // 3. Clear Payment process completed
             consignmentDocument.diProcessStatus = 0
             consignmentDocument.diProcessInstanceId = null
+            consignmentDocument.status = ConsignmentApprovalStatus.UNDER_INSPECTION.code
             this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
             return true
         } catch (ex: Exception) {
@@ -296,7 +301,7 @@ class InvoicePaymentService(
                 val searchDate = LocalDate.parse(date.get(), dateTimeFormat)
                 val startDate = searchDate.atStartOfDay()
                 val endDate = searchDate.plusDays(1).atStartOfDay()
-                KotlinLogging.logger { }.info("Start Date: ${startDate}, End Date: ${endDate}")
+                KotlinLogging.logger { }.info("Start Date: ${startDate}, End Date: $endDate")
                 demandNotes = when (status) {
                     null -> iDemandNoteRepo.findByModifiedOnAndModifiedOnLessThanAndStatusOrderByIdAsc(dateTimeFormat.format(startDate), listOf(map.activeStatus, map.initStatus, map.workingStatus), page)
                     else -> iDemandNoteRepo.findByModifiedOnAndModifiedOnLessThanAndPaymentStatusAndStatusOrderByIdAsc(dateTimeFormat.format(startDate), status, listOf(map.activeStatus, map.initStatus, map.workingStatus), page)

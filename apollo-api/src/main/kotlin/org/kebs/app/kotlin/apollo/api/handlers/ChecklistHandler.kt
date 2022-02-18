@@ -306,7 +306,11 @@ class ChecklistHandler(
                     }
                     cdItem.inspectionChecklist = map.activeStatus
                     cdItem.varField10 = "CHECKLIST FILLED, AWAITING COMPLIANCE STATUS"
-                    daoServices.updateCdDetailsInDB(cdItem, loggedInUser)
+                    val cdDetails = daoServices.updateCdDetailsInDB(cdItem, loggedInUser)
+                    // Update lab status if vehicle was not in consignment
+                    if (form.vehicle == null) {
+                        checlistService.updateConsignmentSampledStatus(cdDetails, false)
+                    }
                 }
                 response.message = "Checklist submitted successfully"
                 response.responseCode = ResponseCodes.SUCCESS_CODE

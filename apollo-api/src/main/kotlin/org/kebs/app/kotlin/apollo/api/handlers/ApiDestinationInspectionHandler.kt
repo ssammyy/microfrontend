@@ -6,6 +6,7 @@ import org.kebs.app.kotlin.apollo.api.payload.*
 import org.kebs.app.kotlin.apollo.api.payload.request.SearchForms
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
+import org.kebs.app.kotlin.apollo.api.service.ConsignmentApprovalStatus
 import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentAuditService
 import org.kebs.app.kotlin.apollo.api.service.DestinationInspectionService
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
@@ -127,7 +128,7 @@ class ApiDestinationInspectionHandler(
         val multipartFile = multipartRequest.getFile("file")
         val fileType = multipartRequest.getParameter("file_type")
         val docType = multipartRequest.getParameter("docType")
-        val partnerId=multipartRequest.getParameter("partnerId").toLongOrNull()
+        val partnerId = multipartRequest.getParameter("partnerId").toLongOrNull()
         val response = ApiResponseModel()
         if (multipartFile != null) {
             commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
@@ -286,9 +287,10 @@ class ApiDestinationInspectionHandler(
                 if (cdTypeUuid != null) {
                     cdType = daoServices.findCdTypeDetailsWithUuid(cdTypeUuid)
                 }
-                val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
                 val usersEntity = commonDaoServices.findUserByUserName(auth.name)
+                val activeDocument = req.paramOrNull("active") ?: "1"
                 // Query supervisor assigned or inspection officer assigned
+                val page = extractPage(req)
                 var data: Page<ConsignmentDocumentDetailsEntity>? = null
                 when {
                     auth.authorities.stream().anyMatch { authority -> authority.authority == "DI_OFFICER_CHARGE_READ" } -> {
@@ -298,10 +300,25 @@ class ApiDestinationInspectionHandler(
                             personal = it.toBoolean()
                         }
                         val supervisorCategory = req.paramOrNull("category")
-                        response = destinationInspectionService.findDocumentsWithActions(usersEntity, supervisorCategory, personal, extractPage(req))
+                        if ("1".equals(activeDocument, false)) {
+                            response = destinationInspectionService.findDocumentsWithActions(usersEntity, supervisorCategory, personal, page)
+                        } else {
+                            data = daoServices.findAllInspectionsCdWithAssigner(usersEntity, cdType, arrayListOf(ConsignmentApprovalStatus.QUERIED.code, ConsignmentApprovalStatus.UNDER_INSPECTION.code), page)
+                            // Add data to response
+                            response.data = ConsignmentDocumentDao.fromList(data.toList())
+                            response.pageNo = data.number
+                            response.totalPages = data.totalPages
+                            response.totalCount = data.totalElements
+                            response.message = "Assigned CD"
+                            response.responseCode = ResponseCodes.SUCCESS_CODE
+                        }
                     }
                     auth.authorities.stream().anyMatch { authority -> authority.authority == "DI_INSPECTION_OFFICER_READ" } -> {
-                        data = daoServices.findAllCdWithAssignedIoID(usersEntity, cdType, arrayListOf(0, null), extractPage(req))
+                        data = if ("1".equals(activeDocument, false)) {
+                            daoServices.findAllCdWithAssignedIoID(usersEntity, cdType, arrayListOf(ConsignmentApprovalStatus.UNDER_INSPECTION.code), page)
+                        } else {
+                            daoServices.findAllCdWithAssignedIoID(usersEntity, cdType, arrayListOf(ConsignmentApprovalStatus.WAITING.code, ConsignmentApprovalStatus.QUERIED.code), page)
+                        }
                         // Add data to response
                         response.data = ConsignmentDocumentDao.fromList(data.toList())
                         response.pageNo = data.number
@@ -340,7 +357,7 @@ class ApiDestinationInspectionHandler(
                 val userProfilesEntity = commonDaoServices.findUserProfileByUserID(usersEntity, map.activeStatus)
                 val allUserCFS = daoServices.findAllCFSUserList(userProfilesEntity.id!!)
 
-                val pp = daoServices.findAllOngoingCdWithFreightStationID(allUserCFS, cdType, listOf(map.activeStatus, map.inactiveStatus), page)
+                val pp = daoServices.findAllOngoingCdWithFreightStationID(allUserCFS, cdType, listOf(ConsignmentApprovalStatus.UNDER_INSPECTION.code, ConsignmentApprovalStatus.WAITING.code, ConsignmentApprovalStatus.QUERIED.code), page)
                 response.data = ConsignmentDocumentDao.fromList(pp.toList())
                 response.pageNo = pp.number
                 response.totalPages = pp.totalPages
@@ -367,11 +384,11 @@ class ApiDestinationInspectionHandler(
                 if (cdTypeUuid != null) {
                     cdType = daoServices.findCdTypeDetailsWithUuid(cdTypeUuid)
                 }
-                val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
                 val usersEntity = commonDaoServices.findUserByUserName(auth.name)
+                val statuses = arrayListOf(ConsignmentApprovalStatus.APPROVED.code, ConsignmentApprovalStatus.REJECTED.code, ConsignmentApprovalStatus.REJECTED_AMEND.code)
                 when {
                     auth.authorities.stream().anyMatch { authority -> authority.authority == "DI_OFFICER_CHARGE_READ" } -> {
-                        val pp = daoServices.findAllCompleteCdWithAssigner(usersEntity, cdType, arrayListOf(map.inactiveStatus, map.activeStatus), page)
+                        val pp = daoServices.findAllCompleteCdWithAssigner(usersEntity, cdType, statuses, page)
                         response.data = ConsignmentDocumentDao.fromList(pp.toList())
                         response.totalPages = pp.totalPages
                         response.pageNo = pp.number
@@ -380,7 +397,7 @@ class ApiDestinationInspectionHandler(
                         response.message = "Success"
                     }
                     auth.authorities.stream().anyMatch { authority -> authority.authority == "DI_INSPECTION_OFFICER_READ" } -> {
-                        val pp = daoServices.findAllCompleteCdWithAssignedIoID(usersEntity, cdType, arrayListOf(map.inactiveStatus, map.activeStatus, map.initStatus), page)
+                        val pp = daoServices.findAllCompleteCdWithAssignedIoID(usersEntity, cdType, statuses, page)
                         response.data = ConsignmentDocumentDao.fromList(pp.toList())
                         response.pageNo = pp.number
                         response.totalPages = pp.totalPages
@@ -413,7 +430,7 @@ class ApiDestinationInspectionHandler(
                 val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
                 val userProfilesEntity = commonDaoServices.findUserProfileByUserID(usersEntity, map.activeStatus)
                 val allUserCFS = daoServices.findAllCFSUserList(userProfilesEntity.id!!)
-                val statuses = listOf(0, -1, null)
+                val statuses = listOf(ConsignmentApprovalStatus.NEW.code, -1, null)
                 // Find documents
                 val pp = daoServices.findAllAvailableCdWithPortOfEntry(allUserCFS, cdType, statuses, page)
                 response.data = ConsignmentDocumentDao.fromList(pp.toList())

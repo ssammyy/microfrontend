@@ -50,6 +50,10 @@ enum class InspectionIssuedDocuments(val code: String) {
     COC("COC"), NCR("NCR"), COI("COI"), COR("COR"), OTHER("OTHER")
 }
 
+enum class PaymentPurpose(val code: String) {
+    AUDIT("AUDIT"), CONSIGNMENT("CD"), OTHER("OTHER")
+}
+
 // Local document type setting codes (varField1)
 enum class CdTypeCodes(val code: String) {
     COC("LOCAL_COC_COI"),
@@ -1267,6 +1271,7 @@ class DestinationInspectionDaoServices(
                                     )
                                 }".toUpperCase()
                         paymentStatus = map.inactiveStatus
+                        paymentPurpose = PaymentPurpose.CONSIGNMENT.code
                         dateGenerated = commonDaoServices.getCurrentDate()
                         generatedBy = commonDaoServices.concatenateName(user)
                         status = map.workingStatus
@@ -1336,7 +1341,7 @@ class DestinationInspectionDaoServices(
                     var demandNote = CdDemandNoteEntity()
                     with(demandNote) {
                         cdId = auctionRequest.id
-                        paymentPurpose = ""
+                        paymentPurpose = PaymentPurpose.AUDIT.code
 
                         nameImporter = auctionRequest.importerName
                         address = auctionRequest.location
@@ -1456,14 +1461,17 @@ class DestinationInspectionDaoServices(
         var updateStatus = consignment
         try {
             val status = findCdStatusCategory(statusValue.code)
-            consignment.cdStandard?.let { cdStandard ->
-                with(cdStandard) {
-                    approvalStatus = status.typeName
-                    statusId = status.id
-                    approvalDate = commonDaoServices.getCurrentDate().toString()
+            // Add non application status to cd standard
+            if (status.applicationStatus != 1) {
+                consignment.cdStandard?.let { cdStandard ->
+                    with(cdStandard) {
+                        approvalStatus = status.typeName
+                        statusId = status.id
+                        approvalDate = commonDaoServices.getCurrentDate().toString()
+                    }
+                    val updateCD = iCdStandardsRepo.save(cdStandard)
+                    KotlinLogging.logger { }.info { "CD UPDATED STATUS TO = ${updateCD.approvalStatus}" }
                 }
-                val updateCD = iCdStandardsRepo.save(cdStandard)
-                KotlinLogging.logger { }.info { "CD UPDATED STATUS TO = ${updateCD.approvalStatus}" }
             }
             // Update consignment status as well
             consignment.approveRejectCdStatusType = status
@@ -2310,14 +2318,16 @@ class DestinationInspectionDaoServices(
             it.cfsId?.let { it1 -> cfsIds.add(it1) }
         }
         return cdType?.let {
-            iConsignmentDocumentDetailsRepo.findByFreightStation_IdInAndCdTypeAndAssignedInspectionOfficerIsNullAndOldCdStatusIsNull(
+            iConsignmentDocumentDetailsRepo.findByFreightStation_IdInAndCdTypeAndAssignedInspectionOfficerIsNullAndOldCdStatusIsNullAndStatusIn(
                     cfsIds,
                     cdType,
+                    statuses,
                     page
             )
         } ?: run {
-            iConsignmentDocumentDetailsRepo.findByFreightStation_IdInAndAssignedInspectionOfficerIsNullAndOldCdStatusIsNull(
+            iConsignmentDocumentDetailsRepo.findByFreightStation_IdInAndAssignedInspectionOfficerIsNullAndOldCdStatusIsNullAndStatusIn(
                     cfsIds,
+                    statuses,
                     page
             )
         }
@@ -2355,14 +2365,16 @@ class DestinationInspectionDaoServices(
             page: PageRequest
     ): Page<ConsignmentDocumentDetailsEntity> {
         return cdType?.let {
-            iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIsNull(
+            iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndStatusIn(
                     usersEntity,
                     it,
+                    statuses,
                     page
             )
         } ?: run {
-            iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIsNull(
+            iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndStatusIn(
                     usersEntity,
+                    statuses,
                     page
             )
         }
@@ -2375,7 +2387,7 @@ class DestinationInspectionDaoServices(
             page: PageRequest
     ): Page<ConsignmentDocumentDetailsEntity> {
         return cdType?.let {
-            iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIn(
+            iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndStatusIn(
                     usersEntity,
                     it,
                     statuses,
@@ -2397,14 +2409,38 @@ class DestinationInspectionDaoServices(
             page: PageRequest
     ): Page<ConsignmentDocumentDetailsEntity> {
         return cdType?.let {
-            iConsignmentDocumentDetailsRepo.findAllByAssignerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIsNotNullOrApproveRejectCdStatusIsNotNull(
+            iConsignmentDocumentDetailsRepo.findAllByAssignerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndStatusIn(
                     usersEntity,
                     it,
+                    statuses,
                     page
             )
         } ?: run {
-            iConsignmentDocumentDetailsRepo.findAllByAssignerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIsNotNullOrApproveRejectCdStatusIsNotNull(
+            iConsignmentDocumentDetailsRepo.findAllByAssignerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndStatusIn(
                     usersEntity,
+                    statuses,
+                    page
+            )
+        }
+    }
+
+    fun findAllInspectionsCdWithAssigner(
+            usersEntity: UsersEntity,
+            cdType: ConsignmentDocumentTypesEntity?,
+            statuses: List<Int>,
+            page: PageRequest
+    ): Page<ConsignmentDocumentDetailsEntity> {
+        return cdType?.let {
+            iConsignmentDocumentDetailsRepo.findAllByAssignerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndStatusIn(
+                    usersEntity,
+                    it,
+                    statuses,
+                    page
+            )
+        } ?: run {
+            iConsignmentDocumentDetailsRepo.findAllByAssignerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndStatusIn(
+                    usersEntity,
+                    statuses,
                     page
             )
         }
@@ -2915,8 +2951,11 @@ class DestinationInspectionDaoServices(
         when (sampled) {
             "YES" -> {
                 updateItem.sampledStatus = map.activeStatus
+                updateItem.varField10 = "LAB RESULT PENDING"
+                updateItem.allTestReportStatus = map.inactiveStatus
             }
             "NO" -> {
+                updateItem.allTestReportStatus = map.activeStatus
                 updateItem = updateItemNoSampling(item, map)
             }
         }

@@ -11,6 +11,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDa
 import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentAuditService
 import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentStatus
 import org.kebs.app.kotlin.apollo.api.service.DestinationInspectionService
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.springframework.stereotype.Service
 import org.springframework.web.servlet.function.ServerRequest
@@ -201,10 +202,13 @@ class DestinationInspectionActionsHandler(
                 val form = req.body(ConsignmentUpdateRequest::class.java)
                 response = this.diBpmn.startApprovalConsignment(cdUuid, form)
             }
+        } catch (ex: ExpectedDataNotFound) {
+            response.responseCode = ResponseCodes.INVALID_CODE
+            response.message = ex.localizedMessage
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("PROCESS ERROR", ex)
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
-            response.message = ex.localizedMessage
+            response.message = "Request failed,please try again later"
         }
         return ServerResponse.ok().body(response)
     }

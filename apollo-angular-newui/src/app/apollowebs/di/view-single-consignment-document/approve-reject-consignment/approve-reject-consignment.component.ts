@@ -36,6 +36,8 @@ export class ApproveRejectConsignmentComponent implements OnInit {
                     default:
                         this.statuses.push(item)
                 }
+            } else if (this.data.documentType === "F") {
+                this.statuses.push(item)
             } else {
                 if (item.category !== "APPROVE") {
                     this.statuses.push(item)

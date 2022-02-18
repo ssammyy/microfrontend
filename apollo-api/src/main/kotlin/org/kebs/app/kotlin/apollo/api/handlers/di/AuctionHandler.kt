@@ -204,6 +204,7 @@ class AuctionHandler(
                 response
             }
         } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to process request", ex)
             response.message = "Invalid identifier"
             response.responseCode = ResponseCodes.INVALID_CODE
         }
