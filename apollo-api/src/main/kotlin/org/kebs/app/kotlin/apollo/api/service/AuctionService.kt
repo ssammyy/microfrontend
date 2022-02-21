@@ -188,12 +188,12 @@ class AuctionService(
             val reportRequired = "VEHICLE".equals(auction.category?.categoryCode)
             if (approved) {
                 auction.reportId = this.addReport(multipartFile, auction, "Approval Report", reportRequired)
-                auction.approvalStatus = 1
+                auction.approvalStatus = AuctionGoodStatus.APPROVED.status
                 addAuctionHistory(auctionId, "APPROVE-REQUEST", remarks, commonDaoServices.loggedInUserAuthentication().name)
                 this.processCallback(auction.createdBy, ResponseCodes.SUCCESS_CODE, "Auction Request approved", auction.auctionLotNo, "APPROVED")
             } else {
                 auction.reportId = this.addReport(multipartFile, auction, "Rejection Report", reportRequired)
-                auction.approvalStatus = 2
+                auction.approvalStatus = AuctionGoodStatus.REJECTED.status
                 addAuctionHistory(auctionId, "REJECT-REQUEST", remarks, commonDaoServices.loggedInUserAuthentication().name)
                 this.processCallback(auction.createdBy, ResponseCodes.SUCCESS_CODE, "Auction Request approved", auction.auctionLotNo, "REJECTED")
             }
@@ -215,7 +215,7 @@ class AuctionService(
             val pg = when {
                 StringUtils.hasLength(keywords) -> this.auctionRequestsRepository.findByAuctionLotNoContains(keywords!!, page)
                 else -> {
-                    when (status) {
+                    when (status.toLowerCase()) {
                         "rejected" -> this.auctionRequestsRepository.findByApprovalStatus(AuctionGoodStatus.REJECTED.status, page)
                         "approved" -> this.auctionRequestsRepository.findByApprovalStatus(AuctionGoodStatus.APPROVED.status, page)
                         "new" -> this.auctionRequestsRepository.findByApprovalStatusInAndAssignedOfficerIsNull(listOf(AuctionGoodStatus.NEW.status), page)

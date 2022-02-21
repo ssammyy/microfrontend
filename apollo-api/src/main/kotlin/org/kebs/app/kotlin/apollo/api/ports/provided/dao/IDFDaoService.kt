@@ -9,6 +9,7 @@ import org.kebs.app.kotlin.apollo.store.repo.di.IIDFDetailsEntityRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IIDFItemDetailsEntityRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.util.StringUtils
 
 @Service
 class IDFDaoService {
@@ -94,6 +95,14 @@ class IDFDaoService {
             createdBy = createdByValue
             createdOn = commonDaoServices.getTimestamp()
         }
+        //
+        if (StringUtils.hasLength(idfDetailsEntity.ucrNo)) {
+            idfDetailsEntity.varField1 = "COMPLETE DOCUMENT"
+            idfDetailsEntity.status = 1
+        } else {
+            idfDetailsEntity.status = 0
+            idfDetailsEntity.varField1 = "IDF DOCUMENT RECEIVED PENDING LINKING"
+        }
         idfDetailsEntity = iIDFDetailsEntityRepository.save(idfDetailsEntity)
 
         KotlinLogging.logger { }.info { "IDF Details Entity ID = ${idfDetailsEntity.id}" }
@@ -138,6 +147,8 @@ class IDFDaoService {
         iIDFDetailsEntityRepository.findByBaseDocRefNo(baseDocRefNo)?.let { idfDetailsEntity ->
             with(idfDetailsEntity) {
                 ucrNo = ucrNumber
+                status = 1
+                varField1 = "COMPLETE IDF DOCUMENT"
                 modifiedBy = "SYSTEM"
                 modifiedOn = commonDaoServices.getTimestamp()
             }
@@ -149,6 +160,8 @@ class IDFDaoService {
             val idfDetailsEntity = IDFDetailsEntity()
             idfDetailsEntity.baseDocRefNo = baseDocRefNo
             idfDetailsEntity.ucrNo = baseDocRefNo
+            idfDetailsEntity.status = 0
+            idfDetailsEntity.varField1 = "PENDING IDF FILE"
             idfDetailsEntity.createdBy = createdByValue
             idfDetailsEntity.createdOn = commonDaoServices.getTimestamp()
             this.iIDFDetailsEntityRepository.save(idfDetailsEntity)

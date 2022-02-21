@@ -13,7 +13,7 @@ class CallbackRouter {
     @CrossOrigin
     fun paymentCallbacks(handler: InvoiceHandlers) = router {
         "/api/v1/callback".nest {
-            GET("/payment/completed", handler::paymentCallback)
+            POST("/payment/completed", handler::paymentCallback)
         }
     }
 }

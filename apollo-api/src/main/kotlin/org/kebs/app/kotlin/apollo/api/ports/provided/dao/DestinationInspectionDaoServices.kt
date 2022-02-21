@@ -1470,9 +1470,12 @@ class DestinationInspectionDaoServices(
                         approvalDate = commonDaoServices.getCurrentDate().toString()
                     }
                     val updateCD = iCdStandardsRepo.save(cdStandard)
-                    KotlinLogging.logger { }.info { "CD UPDATED STATUS TO = ${updateCD.approvalStatus}" }
+                    KotlinLogging.logger { }.info { "CD STANDARD UPDATED STATUS TO = ${status.typeName}" }
                 }
+            } else {
+                KotlinLogging.logger { }.info { "CD UPDATED STATUS TO = ${status.typeName}" }
             }
+
             // Update consignment status as well
             consignment.approveRejectCdStatusType = status
             updateStatus = this.iConsignmentDocumentDetailsRepo.save(consignment)

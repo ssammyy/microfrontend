@@ -1,8 +1,5 @@
 package org.kebs.app.kotlin.apollo.store.model
 
-import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
-import org.kebs.app.kotlin.apollo.store.model.di.DestinationInspectionFeeEntity
-import org.kebs.app.kotlin.apollo.store.model.invoice.CurrencyMasterEntity
 import java.io.Serializable
 import java.math.BigDecimal
 import java.sql.Date
@@ -75,6 +72,10 @@ class CdDemandNoteEntity : Serializable {
     @Basic
     var proIdeNumber: String? = null
 
+    @Column(name = "PAYMENT_DATE")
+    @Basic
+    var paymentDate: Timestamp? = null
+
     @Column(name = "DATE_GENERATED")
     @Basic
     var dateGenerated: Date? = null
@@ -90,6 +91,44 @@ class CdDemandNoteEntity : Serializable {
     @Column(name = "CD_REF_NUMBER")
     @Basic
     var cdRefNo: String? = null
+
+    @Column(name = "DEMAND_NOTE_NUMBER")
+    @Basic
+    var demandNoteNumber: String? = null
+
+    @Column(name = "RECEIPT_NO")
+    @Basic
+    var receiptNo: String? = null
+
+    @Column(name = "PAYMENT_SOURCE")
+    @Basic
+    var paymentSource: String? = null
+
+
+    @Column(name = "RECEIPT_DATE")
+    @Basic
+    var receiptDate: Timestamp? = null
+
+    @Column(name = "GENERATED_BY")
+    @Basic
+    var generatedBy: String? = null
+
+    @Column(name = "PAYMENT_STATUS")
+    @Basic
+    var paymentStatus: Int? = 0
+
+    @Column(name = "PAYMENT_PURPOSE")
+    @Basic
+    var paymentPurpose: String? = null
+
+    @Column(name = "BILL_ID")
+    @Basic
+    var billId: Long? = 0
+
+    @Column(name = "CD_ID")
+    @Basic
+    var cdId: Long? = 0
+
 
     @Column(name = "STATUS")
     @Basic
@@ -158,35 +197,6 @@ class CdDemandNoteEntity : Serializable {
     @Column(name = "DELETED_ON")
     @Basic
     var deletedOn: Timestamp? = null
-
-    @Column(name = "DEMAND_NOTE_NUMBER")
-    @Basic
-    var demandNoteNumber: String? = null
-
-    @Column(name = "RECEIPT_NO")
-    @Basic
-    var receiptNo: String? = null
-
-    @Column(name = "GENERATED_BY")
-    @Basic
-    var generatedBy: String? = null
-
-    @Column(name = "PAYMENT_STATUS")
-    @Basic
-    var paymentStatus: Int? = 0
-
-    @Column(name = "PAYMENT_PURPOSE")
-    @Basic
-    var paymentPurpose: String? = null
-
-    @Column(name = "BILL_ID")
-    @Basic
-    var billId: Long? = 0
-
-    @Column(name = "CD_ID")
-    @Basic
-    var cdId: Long? = 0
-
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

@@ -50,13 +50,13 @@ enum class ConsignmentDocumentStatus(val code: String) {
     SCF_FILLED("SCF_FILLED"), SSF_FILLED("SSF_FILLED"), BS_NUMBER_FILLED("BS_NUMBER_FILLED"),
     TARGET_REQUEST("TARGET_REQUEST"), TARGET_APPROVED("TARGET_APPROVED"), TARGET_REJECTED("TARGET_REJECTED"), KRA_VERIFICATION_REQUEST("KRA_VERIFICATION_REQUEST"), KRA_VERIFICATION("KRA_VERIFICATION"),
     PAYMENT_REQUEST("PAYMENT_REQUEST"), PAYMENT_APPROVED("PAYMENT_APPROVE"), PAYMENT_REJECTED("PROCESS_REJECT"), PAYMENT_MADE("PAYMENT_MADE"), PAYMENT_FAILED("PAYMENT_FAILED"),
-    COMPLIANCE_REQUEST("COMPLIANCE_REQ"), COMPLIANCE_APPROVED("COMPLIANCE_APPROVE"), COMPLIANCE_REJECTED("COMPLIANCE_REJ"),
+    COMPLIANCE_REQUEST("COMPLIANCE_REQ"), COMPLIANCE_APPROVED("COMPLIANCE_APPROVE"), COMPLIANCE_REJECTED("COMPLIANCE_REJECTED"),
     BLACKLIST_REQUEST("BLACKLIST_REQUEST"), BLACKLIST_APPROVED("BLACKLIST_APPROVED"), BLACKLIST_REJECTED("BLACKLIST_REJECTED"),
     COC_ISSUED("COC_ISSUED"), COR_ISSUED("COR_ISSUED"), COI_ISSUED("COU_ISSUED"), NCR_ISSUED("NCR_ISSUED"),
-    REJ_AMEND_REQUEST("AMEND_REQUEST"), REJ_AMEND_APPROVED("AMENDMENT"), REJ_AMEND_REJECTED("AMEND_REJ"),
-    QUERY_REQUEST("QUERY_REQUEST"), AMEND_APPROVED("QUERY"), QUERY_REJECTED("QUERY_REJ"),
-    APPROVE_REQUEST("APPROVE_REQUEST"), APPROVE_APPROVED("APPROVE"), APPROVE_REJECTED("APPROVE_REJ"),
-    REJECT_REQUEST("REJECT_REQUEST"), REJECT_APPROVED("REJECT"), REJECT_REJECTED("REJECT_REJ"),
+    REJ_AMEND_REQUEST("AMEND_REQUEST"), REJ_AMEND_APPROVED("AMENDMENT"), REJ_AMEND_REJECTED("AMEND_REJECTED"),
+    QUERY_REQUEST("QUERY_REQUEST"), AMEND_APPROVED("QUERY"), QUERY_REJECTED("QUERY_REJECTED"),
+    APPROVE_REQUEST("APPROVE_REQUEST"), APPROVE_APPROVED("APPROVE"), APPROVE_REJECTED("APPROVE_REJECTED"),
+    REJECT_REQUEST("REJECT_REQUEST"), REJECT_APPROVED("REJECT"), REJECT_REJECTED("REJECT_REJECTED"),
     MINISTRY_REQUEST("MINISTRY_REQUEST"), MINISTRY_UPLOAD("MINISTRY_UPLOAD")
 }
 
@@ -601,22 +601,22 @@ class DestinationInspectionService(
         KotlinLogging.logger { }.info("REQUESTING TARGETING SCHEDULE: ${cdUuid}")
         try {
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-            val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
+            var consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             consignmentDocument.targetStatus = map.activeStatus
             consignmentDocument.varField10 = "Target approved awaiting inspection"
             consignmentDocument.targetApproveDate = Date(Date().time)
             consignmentDocument.targetApproveRemarks = remarks
             consignmentDocument.targetApproveDate = Date(Date().time)
-            if (supervisor == null) {
+            consignmentDocument = if (supervisor == null) {
                 this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
             } else {
                 this.daoServices.updateCdDetailsInDB(consignmentDocument, this.commonDaoServices.findUserByUserName(supervisor))
             }
+            daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.TARGET_APPROVED)
             this.cdAuditService.addHistoryRecord(consignmentDocument.id!!, consignmentDocument.ucrNumber, remarks, "APPROVE TARGETING", "Targeting of ${cdUuid} has been rejected by ${supervisor}", supervisor)
             // Submit consignment to Single/Window
-            daoServices.submitCDStatusToKesWS("OH", "OH", consignmentDocument.version.toString(), consignmentDocument)
-            daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.KRA_VERIFICATION_REQUEST)
             KotlinLogging.logger { }.info("REQUESTED TARGETING SCHEDULE: ${cdUuid}")
+            daoServices.submitCDStatusToKesWS("OH", "OH", consignmentDocument.version.toString(), consignmentDocument)
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("REJECTION UPDATE STATUS", ex)
         }

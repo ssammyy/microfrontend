@@ -2,17 +2,22 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.sage.response
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.OptBoolean
 import java.math.BigDecimal
-import java.sql.Date
 import java.sql.Timestamp
+import javax.validation.Valid
+import javax.validation.constraints.NotNull
 
-// import com.fasterxml.jackson.databind.ObjectMapper; // version 2.11.1
-// import com.fasterxml.jackson.annotation.JsonProperty; // version 2.11.1
-/* ObjectMapper om = new ObjectMapper();
-Root root = om.readValue(myJsonString), Root.class); */
 class Header {
+    @JsonProperty("messageID")
     var messageID: String? = null
+
+    @JsonProperty("statusCode")
+    @NotNull(message = "Status code is required")
     var statusCode: String? = null
+
+    @JsonProperty("statusDescription")
+    @NotNull(message = "Status description is required")
     var statusDescription: String? = null
 }
 
@@ -30,28 +35,41 @@ class RootResponse {
 }
 
 class PaymentResult {
-    @JsonProperty("DemandNoteNo")
-    val demandNoteNo: String?=null
+    @JsonProperty("BillReferenceNo")
+    @NotNull(message = "Bill reference No is required")
+    val demandNoteNo: String? = null
+
     @JsonProperty("PaymentDate")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yyyy")
-    val paymentDate: Timestamp?=null
+    @JsonFormat(shape = JsonFormat.Shape.STRING, lenient = OptBoolean.TRUE)
+    val paymentDate: Timestamp? = null
+
     @JsonProperty("CurrencyCode")
-    val currencyCode: String?=null
+    val currencyCode: String? = null
+
     @JsonProperty("PaymentReferenceNo")
-    val paymentReferenceNo: String?=null
+    val paymentReferenceNo: String? = null
+
     @JsonProperty("PaymentCode")
-    val paymentCode: String?=null
+    val paymentCode: String? = null
+
     @JsonProperty("PaymentAmount")
-    val paymentAmount: BigDecimal?=null
+    val paymentAmount: BigDecimal? = null
+
     @JsonProperty("PaymentDescription")
-    val paymentDescription: BigDecimal?=null
+    val paymentDescription: String? = null
+
     @JsonProperty("AdditionalInfo")
-    val additionalInfo: BigDecimal?=null
+    val additionalInfo: String? = null
 }
 
 class PaymentStatusResult {
     @JsonProperty("header")
-    var header: Header?=null
+    @Valid
+    @NotNull(message = "Header details are required")
+    var header: Header? = null
+
+    @Valid
     @JsonProperty("request")
-    val response: PaymentResult?=null
+    @NotNull(message = "Request details are required")
+    val response: PaymentResult? = null
 }
