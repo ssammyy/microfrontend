@@ -42,21 +42,17 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
     @ViewChild(DataTableDirective, {static: false})
     dtElement: DataTableDirective;
 
-    //dtOptions: DataTables.Settings[] = [];
-    dtOptions: DataTables.Settings = {};
-    dtTrigger: Subject<any> = new Subject<any>();
+    dtOptions: DataTables.Settings[] = [];
+    dtTrigger: Subject<any> = new Subject();
     displayTable: boolean = false;
 
     isDtInitialized: boolean = false
 
-  //dtOptions1:DataTables.Settings = {};
-    dtTrigger1: Subject<any> = new Subject<any>();
+    dtOptions1: DataTables.Settings = {};
+    dtTrigger1: Subject<any> = new Subject();
 
-
-
-
-    //dtOptions2:DataTables.Settings = {};
-    dtTrigger2: Subject<any> = new Subject<any>();
+    dtOptions2: DataTables.Settings = {};
+    dtTrigger2: Subject<any> = new Subject();
     public users !: UsersEntity[] ;
     public approveUsersOne !: UsersEntity[] ;
     public approveUsersTwo !: UsersEntity[] ;
@@ -240,13 +236,37 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
   }
 
   ngOnInit(): void {
-    //this.getMnCompleteTask();
+
+      this.dtOptions[0] = {
+          pagingType: 'full_numbers',
+          pageLength: 10,
+          processing: true
+      };
+      this.dtOptions[1] = {
+          pagingType: 'full_numbers',
+          pageLength: 10,
+          processing: true
+      };
+      this.dtOptions[2] = {
+          pagingType: 'full_numbers',
+          pageLength: 10,
+          processing: true
+      };
+      this.dtOptions1 = {
+          pagingType: 'full_numbers',
+          pageLength: 10,
+          processing: true
+      };
+      this.dtOptions2 = {
+          pagingType: 'full_numbers',
+          pageLength: 10,
+          processing: true
+      };
+
     this.getManufacturerList();
     this.getUserRoles();
-    //this.getUserList();
     this.getUserData();
-    //this.getSlLvTwoList();
-    //this.getPlUserList();
+
 
     if(this.roles?.includes('SL_IS_PL_OFFICER')){
         this.getApproveLevelOne();
@@ -636,25 +656,17 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
           //console.log(this.manufactureLists);
             this.SpinnerService.hide();
             this.displayTable = true;
-            setTimeout(()=>{
-                $('#datatable').DataTable( {
-                    pagingType: 'full_numbers',
-                    pageLength: 5,
-                    processing: true,
-                    lengthMenu : [5, 10, 25]
-                } );
-            }, 1);
-            if (this.isDtInitialized) {
-                this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-                    dtInstance.destroy();
-                    this.dtTrigger.next();
-
-                });
-            } else {
-                this.isDtInitialized = true
-                this.dtTrigger.next();
-
-            }
+            this.rerender();
+            // if (this.isDtInitialized) {
+            //     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+            //         dtInstance.destroy();
+            //         //this.dtTrigger[0].next();
+            //     });
+            // } else {
+            //     this.isDtInitialized = true
+            //     //this.dtTrigger[0].next();
+            //
+            // }
         },
         (error: HttpErrorResponse)=>{
           this.SpinnerService.hide();
@@ -663,6 +675,13 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         }
     );
   }
+    rerender(): void {
+        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+            dtInstance.destroy();
+            this.dtTrigger.next();
+        });}
+
+
     public getUserDetails(): void{
         this.levyService.getUserDetails().subscribe(
         (response: UsersEntityList)=> {
@@ -705,15 +724,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
           //console.log(this.manufacturePendingTasks);
           this.manufacturePendingTasks = response;
             this.SpinnerService.hide();
-            if (this.isDtInitialized) {
-                this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-                    dtInstance.destroy();
-                    this.dtTrigger1.next();
-                });
-            } else {
-                this.isDtInitialized = true
-                this.dtTrigger1.next();
-            }
+            this.rerender1();
 
         },
         (error: HttpErrorResponse)=>{
@@ -722,21 +733,21 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         }
     );
   }
+
+    rerender1(): void {
+        this.dtElement.dtInstance.then((dtInstance1: DataTables.Api) => {
+            dtInstance1.destroy();
+            this.dtTrigger1.next();
+        });}
+
   public getMnCompleteTask(): void{
     this.SpinnerService.show();
     this.levyService.getMnCompleteTask().subscribe(
         (response: ManufactureCompletedTask[])=> {
           this.manufactureCompleteTasks = response;
             this.SpinnerService.hide();
-            if (this.isDtInitialized) {
-                this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-                    dtInstance.destroy();
-                    this.dtTrigger2.next();
-                });
-            } else {
-                this.isDtInitialized = true
-                this.dtTrigger2.next();
-            }
+            this.rerender2();
+
         },
         (error: HttpErrorResponse)=>{
           this.SpinnerService.hide();
@@ -744,6 +755,13 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         }
     );
   }
+
+    rerender2(): void {
+        this.dtElement.dtInstance.then((dtInstance2: DataTables.Api) => {
+            dtInstance2.destroy();
+            this.dtTrigger2.next();
+        });}
+
     public onOpenModalList(manufactureLists: ManufactureDetailList,mode:string): void{
         const container = document.getElementById('main-container');
         const button = document.createElement('button');

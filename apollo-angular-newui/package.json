@@ -39,6 +39,7 @@
     "@ngrx/schematics": "^10.0.0",
     "@ngrx/store": "^10.0.0",
     "@ngrx/store-devtools": "^10.0.0",
+    "@swimlane/ngx-datatable": "^20.0.0",
     "@types/chart.js": "^2.7.40",
     "ajv": "6.12.5",
     "angular-bootstrap-md": "^10.1.1",

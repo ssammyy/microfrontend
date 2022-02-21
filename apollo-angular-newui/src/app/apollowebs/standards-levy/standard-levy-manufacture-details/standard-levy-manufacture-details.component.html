@@ -39,9 +39,9 @@
                                             </nav>
                                             <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
                                                 <div class="tab-pane fade show active" id="nav-allApps" role="tabpanel" aria-labelledby="nav-home-tab">
-                                                    <div *ngIf="manufactureLists && manufactureLists.length > 0" class="material-datatables table-responsive col-md-12">
 
-                                                        <table  class="table table-striped table-bordered table-hover " id="datatable"    cellspacing="0" width="100%">
+                                                    <div *ngIf="manufactureLists && manufactureLists.length > 0" class="material-datatables table-responsive col-md-12">
+                                                        <table datatable [dtOptions]="dtOptions[0]" class="row-border hover">
                                                             <thead>
                                                             <tr>
                                                                 <th>#</th>
@@ -54,7 +54,7 @@
                                                             </tr>
                                                             </thead>
                                                             <tbody>
-                                                            <tr  >
+
                                                             <tr  *ngFor="let manufactureList of manufactureLists let i=index">
                                                                 <td >{{i+1}} </td>
                                                                 <td>{{manufactureList.name}}</td>
@@ -644,7 +644,7 @@
                                                 </div>
                                                 <div class="tab-pane fade" id="nav-myTasks" role="tabpanel" aria-labelledby="nav-profile-tab">
                                                     <div class="material-datatables table-responsive col-md-12">
-                                                        <table  class="table table-striped table-bordered table-hover " id="datatable1"    cellspacing="0" width="100%">
+                                                        <table datatable [dtOptions]="dtOptions[1]" class="row-border hover">
                                                             <thead>
                                                             <tr>
                                                                 <th>#</th>
@@ -658,7 +658,6 @@
                                                             </tr>
                                                             </thead>
                                                             <tbody>
-                                                            <tr  >
                                                             <tr  *ngFor="let manufacturePendingTask of manufacturePendingTasks let i=index">
                                                                 <td >{{i+1}} </td>
                                                                 <td>{{manufacturePendingTask.taskData.companyName}}</td>
@@ -3230,7 +3229,7 @@
                                                 </div>
                                                 <div class="tab-pane fade" id="nav-completeTasks" role="tabpanel" aria-labelledby="nav-contact-tab">
                                                     <div class="material-datatables table-responsive col-md-12">
-                                                        <table  class="table table-striped table-bordered table-hover " id="datatable2"    cellspacing="0" width="100%">
+                                                        <table datatable [dtOptions]="dtOptions[2]" class="row-border hover">
                                                             <thead>
                                                             <tr>
                                                                 <th>#</th>
@@ -3243,7 +3242,6 @@
                                                             </tr>
                                                             </thead>
                                                             <tbody>
-                                                            <tr  >
                                                             <tr  *ngFor="let manufactureCompleteTask of manufactureCompleteTasks let i=index">
                                                                 <td >{{i+1}} </td>
                                                                 <td>{{manufactureCompleteTask.companyName}}</td>
