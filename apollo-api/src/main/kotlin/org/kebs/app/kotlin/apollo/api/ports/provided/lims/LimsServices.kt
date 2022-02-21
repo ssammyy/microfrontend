@@ -70,8 +70,6 @@ class LimsServices(
         val url: URL
         var response: String? = ""
         try {
-
-            val map = commonDaoServices.serviceMapDetails(appId)
             val config = commonDaoServices.findIntegrationConfigurationEntity(applicationMapID)
 
             url = URL(config.url)

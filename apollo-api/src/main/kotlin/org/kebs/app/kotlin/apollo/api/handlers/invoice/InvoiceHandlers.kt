@@ -6,13 +6,17 @@ import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.extractPage
 import org.kebs.app.kotlin.apollo.api.payload.request.DemandNoteForm
+import org.kebs.app.kotlin.apollo.api.payload.request.DemandNoteRequestForm
+import org.kebs.app.kotlin.apollo.api.payload.request.DemandNoteRequestItem
 import org.kebs.app.kotlin.apollo.api.payload.response.CallbackResponses
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.PaymentPurpose
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.response.PaymentStatusResult
-import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentStatus
+import org.kebs.app.kotlin.apollo.api.service.DaoValidatorService
 import org.kebs.app.kotlin.apollo.api.service.InvoicePaymentService
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
 import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteRepository
@@ -36,7 +40,8 @@ class InvoiceHandlers(
         private val applicationMapProperties: ApplicationMapProperties,
         private val daoServices: DestinationInspectionDaoServices,
         private val diBpmn: DestinationInspectionBpmn,
-        private val invoicePaymentService: InvoicePaymentService
+        private val invoicePaymentService: InvoicePaymentService,
+        private val daoValidatorService: DaoValidatorService,
 ) {
     final val errors = mutableMapOf<String, String>()
     final val DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy")
@@ -137,9 +142,9 @@ class InvoiceHandlers(
             val cdUuid = req.pathVariable("cdUuid")
             val cdDetails = daoServices.findCDWithUuid(cdUuid)
             val invoiceForm = req.body(DemandNoteForm::class.java)
-            val itemList = mutableListOf<CdItemDetailsEntity>()
             val mapErrors = mutableMapOf<Long, String>()
             var totalItems = 0
+            val demandRequest = DemandNoteRequestForm()
             if (invoiceForm.includeAll) {
                 daoServices.findCDItemsListWithCDID(cdDetails).forEach { item ->
                     val fees = invoiceForm.items.filter { it.itemId == item.id }
@@ -147,24 +152,58 @@ class InvoiceHandlers(
                         mapErrors.put(item.id!!, "Fee not selected with all items included")
                     } else {
                         try {
-                            item.paymentFeeIdSelected = daoServices.findDIFee(fees[0].feeId)
+                            val formItem = DemandNoteRequestItem()
+                            formItem.fee = daoServices.findDIFee(fees[0].feeId)
+                            formItem.itemValue = item.totalPriceNcy
+                            formItem.productName = item.itemDescription ?: item.hsDescription
+                                    ?: item.productTechnicalName
+                            formItem.itemId = item.id
+                            formItem.currency = item.foreignCurrencyCode
+                            formItem.quantity = item.quantity?.toLong() ?: 0
+                            demandRequest.addItem(formItem)
+                            // Update demand note status
+                            if (!invoiceForm.presentment) {
+                                item.dnoteStatus = map.activeStatus
+                                daoServices.updateCdItemDetailsInDB(
+                                        commonDaoServices.updateDetails(
+                                                item,
+                                                item
+                                        ) as CdItemDetailsEntity, loggedInUser
+                                )
+                            }
                         } catch (ex: Exception) {
                             mapErrors.put(item.id!!, ex.localizedMessage)
                         }
                     }
-                    itemList.add(item)
+
                 }
-                totalItems = itemList.size
+                totalItems = invoiceForm.items.size ?: 0
             } else {
                 invoiceForm.items.forEach {
                     val item = daoServices.findItemWithItemIDAndDocument(cdDetails, it.itemId)
                     // Add to list
                     try {
-                        item.paymentFeeIdSelected = daoServices.findDIFee(it.feeId)
+                        val formItem = DemandNoteRequestItem()
+                        formItem.fee = daoServices.findDIFee(it.feeId)
+                        formItem.itemValue = item.totalPriceNcy
+                        formItem.productName = item.itemDescription ?: item.hsDescription ?: item.productTechnicalName
+                        formItem.itemId = item.id
+                        formItem.currency = item.foreignCurrencyCode
+                        formItem.quantity = item.quantity?.toLong() ?: 0
+                        demandRequest.addItem(formItem)
+                        // Update demand note status
+                        if (!invoiceForm.presentment) {
+                            item.dnoteStatus = map.activeStatus
+                            daoServices.updateCdItemDetailsInDB(
+                                    commonDaoServices.updateDetails(
+                                            item,
+                                            item
+                                    ) as CdItemDetailsEntity, loggedInUser
+                            )
+                        }
                     } catch (ex: Exception) {
                         mapErrors.put(item.id!!, ex.localizedMessage)
                     }
-                    itemList.add(item)
                 }
                 totalItems = daoServices.findCDItemsListWithCDID(cdDetails).size
             }
@@ -176,31 +215,26 @@ class InvoiceHandlers(
                 return ServerResponse.ok().body(response)
             }
             // Reject for consignment with no items?
-            if (itemList.isEmpty() && totalItems > 0) {
+            if (demandRequest.items?.isEmpty() == true && totalItems > 0) {
                 response.responseCode = ResponseCodes.FAILED_CODE
                 response.message = "Consignment does not have items or none was selected"
                 return ServerResponse.ok().body(response)
             }
-            // Update if required
-            itemList.forEach { item ->
-                // Update item details
-                if (!invoiceForm.presentment) {
-                    val updatedItemDetails = daoServices.updateCdItemDetailsInDB(
-                            commonDaoServices.updateDetails(
-                                    item,
-                                    item
-                            ) as CdItemDetailsEntity, loggedInUser
-                    )
-                }
-            }
-            KotlinLogging.logger { }.info("Total Items: ${itemList.size}")
+            KotlinLogging.logger { }.info("Total Items: ${demandRequest.items?.size}")
+            // Add consignment details to Demand note
+            demandRequest.referenceId = cdDetails.id
+            val cdImporter = cdDetails.cdImporter?.let { daoServices.findCDImporterDetails(it) }
+            demandRequest.name = cdImporter?.name
+            demandRequest.address = cdImporter?.physicalAddress
+            demandRequest.phoneNumber = cdImporter?.telephone
+            demandRequest.referenceNumber = cdDetails.cdStandard?.applicationRefNo
+            demandRequest.ablNumber = cdDetails.cdStandard?.declarationNumber ?: "UNKNOWN"
+            demandRequest.product = cdDetails.ucrNumber ?: "UNKNOWN"
             // Calculate demand note amount and save
-            val demandNote = daoServices.generateDemandNoteWithItemList(
-                    itemList,
+            val demandNote = invoicePaymentService.generateDemandNoteWithItemList(
+                    demandRequest,
                     map,
-                    cdDetails,
-                    invoiceForm.presentment,
-                    invoiceForm.amount,
+                    PaymentPurpose.CONSIGNMENT,
                     loggedInUser
             )
             if (invoiceForm.presentment) {
@@ -210,7 +244,7 @@ class InvoiceHandlers(
             } else {
                 demandNote.status = map.workingStatus
                 demandNote.varField1 = invoiceForm.remarks
-                demandNote.varField2 = (itemList.size == totalItems).toString()
+                demandNote.varField2 = (demandRequest.items?.size == totalItems).toString()
                 demandNote.varField3 = "NEW"
                 daoServices.upDateDemandNote(demandNote)
                 cdDetails.varField10 = "DEMAND NOTE GENERATED AWAITING SUBMISSION"
@@ -395,13 +429,24 @@ class InvoiceHandlers(
         try {
             val responseStatus = req.body(PaymentStatusResult::class.java)
             KotlinLogging.logger { }.info("Payment result: $responseStatus")
-            if (this.invoicePaymentService.paymentReceived(responseStatus)) {
-                result.message = "Success"
-                result.status = ResponseCodes.SUCCESS_CODE
-            } else {
-                result.message = "Failed"
-                result.status = ResponseCodes.FAILED_CODE
+            this.daoValidatorService.validateInputWithInjectedValidator(responseStatus)?.let {
+                result.message = "Failed to process request"
+                result.errors = it
+                result.status = ResponseCodes.INVALID_CODE
+                result
+            } ?: run {
+                if (this.invoicePaymentService.paymentReceived(responseStatus)) {
+                    result.message = "Success"
+                    result.status = ResponseCodes.SUCCESS_CODE
+                } else {
+                    result.message = "Failed"
+                    result.status = ResponseCodes.FAILED_CODE
+                }
+                result
             }
+        } catch (ex: ExpectedDataNotFound) {
+            result.message = ex.localizedMessage
+            result.status = ResponseCodes.INVALID_CODE
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Payment Callback failed:", ex)
             result.message = "Request failed please try again later"

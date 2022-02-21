@@ -212,7 +212,7 @@ class IS {
     var subcategoryPro: String? = null
 
     @JsonProperty("b38_net_mass")
-    var b38NetMass: Long? = null
+    var b38NetMass: Double? = null
 
     @JsonProperty("b31_commercial_goods")
     var b31CommercialGoods: String? = null
@@ -233,7 +233,7 @@ class IS {
     var b34OriginCountry: String? = null
 
     @JsonProperty("b41_unit_num")
-    var b41UnitNum: Long? = null
+    var b41UnitNum: Double? = null
 
     @JsonProperty("b37_requested_pro")
     var b37RequestedPro: String? = null

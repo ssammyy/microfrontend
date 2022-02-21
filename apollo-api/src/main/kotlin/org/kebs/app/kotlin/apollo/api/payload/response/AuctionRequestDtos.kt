@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.payload.response
 
+import org.kebs.app.kotlin.apollo.api.service.AuctionGoodStatus
 import org.kebs.app.kotlin.apollo.store.model.auction.AuctionRequests
 import org.kebs.app.kotlin.apollo.store.model.auction.AuctionUploadsEntity
 import java.sql.Date
@@ -73,10 +74,10 @@ class AuctionRequestDto {
                 else -> "YES"
             }
             dto.approvalStatusDesc = when (auction.approvalStatus) {
-                0 -> "NEW"
-                1 -> "APPROVED"
-                2 -> "REJECTED"
-                3 -> "PENDING PAYMENT"
+                AuctionGoodStatus.NEW.status -> "NEW"
+                AuctionGoodStatus.APPROVED.status -> "APPROVED"
+                AuctionGoodStatus.REJECTED.status -> "REJECTED"
+                AuctionGoodStatus.PAYMENT_PENDING.status -> "PENDING PAYMENT"
                 else -> "OTHER"
             }
             auction.category?.let {
