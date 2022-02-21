@@ -95,6 +95,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
     public approvalFormGroup!: FormGroup;
     public rejectFormGroup!: FormGroup;
     public approvalTwoFormGroup!: FormGroup;
+    public approveTwoFormGroup!: FormGroup;
     public rejectTwoFormGroup!: FormGroup;
     public editCompanyFormGroup!: FormGroup;
     public editedCompanyFormGroup!: FormGroup;
@@ -112,6 +113,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
     isShowAssign2Form=true;
     isShowEditForm= true;
     isShowEditedForm= true;
+    isShowRemarksTab= true;
 
     toggleDisplayScheduleForm() {
         this.isShowScheduleForm = !this.isShowScheduleForm;
@@ -121,6 +123,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         this.isShowAssign2Form= true;
         this.isShowEditedForm= true;
         this.isShowEditForm= true;
+        this.isShowRemarksTab= true;
     }
 
     toggleDisplayEditForm() {
@@ -131,6 +134,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         this.isShowReportForm= true;
         this.isShowAssign1Form= true;
         this.isShowAssign2Form= true;
+        this.isShowRemarksTab= true;
     }
     toggleDisplayEditedForm(manufactureId: number) {
         this.SpinnerService.show();
@@ -152,6 +156,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         this.isShowReportForm= true;
         this.isShowAssign1Form= true;
         this.isShowAssign2Form= true;
+        this.isShowRemarksTab= true;
     }
     toggleDisplayAssignForm() {
         this.isShowAssignForm = !this.isShowAssignForm;
@@ -161,6 +166,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         this.isShowAssign2Form= true;
         this.isShowEditedForm= true;
         this.isShowEditForm= true;
+        this.isShowRemarksTab= true;
     }
     toggleDisplayAssignTo1Form() {
         this.isShowAssign1Form = !this.isShowAssign1Form;
@@ -170,6 +176,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         this.isShowAssign2Form= true;
         this.isShowEditedForm= true;
         this.isShowEditForm= true;
+        this.isShowRemarksTab= true;
     }
     toggleDisplayAssignTo2Form() {
         this.isShowAssign2Form = !this.isShowAssign2Form;
@@ -179,10 +186,22 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         this.isShowAssign1Form= true;
         this.isShowEditedForm= true;
         this.isShowEditForm= true;
+        this.isShowRemarksTab= true;
 
     }
     toggleDisplayReportForm() {
         this.isShowReportForm = !this.isShowReportForm;
+        this.isShowScheduleForm= true;
+        this.isShowAssignForm = true;
+        this.isShowAssign1Form= true;
+        this.isShowAssign2Form= true;
+        this.isShowEditedForm= true;
+        this.isShowEditForm= true;
+        this.isShowRemarksTab= true;
+    }
+    toggleDisplayRemarksTab(){
+        this.isShowRemarksTab = !this.isShowRemarksTab;
+        this.isShowReportForm=true;
         this.isShowScheduleForm= true;
         this.isShowAssignForm = true;
         this.isShowAssign1Form= true;
@@ -403,6 +422,16 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
           manufacturerEntity: []
 
       });
+      this.approveTwoFormGroup = this.formBuilder.group({
+          comments: ['', Validators.required],
+          assigneeId: [],
+          visitID: [],
+          accentTo: [],
+          taskId: [],
+          manufacturerEntity: []
+
+      });
+
       this.rejectTwoFormGroup = this.formBuilder.group({
           comments: ['', Validators.required],
           assigneeId: [],
@@ -444,6 +473,9 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
     }
     get formApprovalTwo(): any {
         return this.approvalTwoFormGroup.controls;
+    }
+    get formApproveTwo(): any {
+        return this.approveTwoFormGroup.controls;
     }
     get formRejectTwo(): any {
         return this.rejectTwoFormGroup.controls;
@@ -754,6 +786,10 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
             this.actionRequestPending=manufacturePendingTask;
             button.setAttribute('data-target','#reportNotification2');
         }
+        if (mode==='managementReport'){
+            this.actionRequestPending=manufacturePendingTask;
+            button.setAttribute('data-target','#managementReport');
+        }
         if (mode==='draftFeedback'){
             this.actionRequestPending=manufacturePendingTask;
             button.setAttribute('data-target','#draftFeedback');
@@ -1006,6 +1042,25 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Report Approved`);
                 this.approvalTwoFormGroup.reset();
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Approving Report; Try Again`);
+                console.log(error.message);
+            }
+        );
+    }
+
+    onDecisionTwo(): void {
+
+        this.SpinnerService.show();
+        this.levyService.decisionOnSiteReportLevelTwo(this.approveTwoFormGroup.value).subscribe(
+            (response ) => {
+                console.log(response);
+
+                this.SpinnerService.hide();
+                this.showToasterSuccess(response.httpStatus, `Report Approved`);
+                this.approveTwoFormGroup.reset();
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();

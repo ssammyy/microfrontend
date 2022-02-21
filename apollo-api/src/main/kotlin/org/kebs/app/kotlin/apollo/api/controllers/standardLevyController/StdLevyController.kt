@@ -695,9 +695,34 @@ class StdLevyController(
             taskId= reportOnSiteVisitDTO.taskId
             manufacturerEntity= reportOnSiteVisitDTO.manufacturerEntity
             makeRemarks = reportOnSiteVisitDTO.makeRemarks
+            userType=reportOnSiteVisitDTO.userType
         }
+
         return ServerResponse(HttpStatus.OK,"Uploaded Report",standardLevyService.reportOnSiteVisit(standardLevyFactoryVisitReportEntity))
-        //return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",response)
+    }
+
+    @PreAuthorize("hasAuthority('SL_SITE_VISIT_REPORT_CREATE')")
+    @PostMapping("/reportOnSiteVisitTest")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun reportOnSiteVisitTest(@RequestBody reportOnSiteVisitDTO: ReportOnSiteVisitDTO): ServerResponse
+    {
+        val standardLevyFactoryVisitReportEntity= StandardLevyFactoryVisitReportEntity().apply {
+            visitDate=reportOnSiteVisitDTO.visitDate
+            purpose = reportOnSiteVisitDTO.purpose
+            personMet = reportOnSiteVisitDTO.personMet
+            actionTaken = reportOnSiteVisitDTO.actionTaken
+            id= reportOnSiteVisitDTO.visitID
+            assigneeId=reportOnSiteVisitDTO.assigneeId
+            taskId= reportOnSiteVisitDTO.taskId
+            manufacturerEntity= reportOnSiteVisitDTO.manufacturerEntity
+            makeRemarks = reportOnSiteVisitDTO.makeRemarks
+            userType=reportOnSiteVisitDTO.userType
+        }
+//        val gson = Gson()
+//        KotlinLogging.logger { }.info { "INT TYPE" + gson.toJson(reportOnSiteVisitDTO) }
+        return ServerResponse(HttpStatus.OK,"Uploaded Report",standardLevyService.reportOnSiteVisitTest(standardLevyFactoryVisitReportEntity))
+
     }
 
 
@@ -799,7 +824,7 @@ class StdLevyController(
         return standardLevyService.decisionOnSiteReport(standardLevyFactoryVisitReportEntity)
     }
 
-    @PreAuthorize("hasAuthority('SL_SITE_VISIT_REPORT_APPROVAL_LEVEL_ONE')")
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
     @PostMapping("/decisionOnSiteReport")
     @ResponseBody
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -832,7 +857,7 @@ class StdLevyController(
 //        return standardLevyService.decisionOnSiteReportLevelTwo(siteVisitReportDecision)
 //    }
 
-    @PreAuthorize("hasAuthority('SL_SITE_VISIT_REPORT_APPROVAL_LEVEL_TWO')")
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
     @PostMapping("/decisionOnSiteReportLevelTwo")
     @ResponseBody
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
