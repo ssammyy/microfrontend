@@ -42,7 +42,8 @@ class StandardLevyService(
     private val usersEntityRepository: UsersEntityRepository,
     private val iUserRoleAssignmentsRepository: IUserRoleAssignmentsRepository,
     private val iBusinessNatureRepository: IBusinessNatureRepository,
-    private val companyProfileEditEntityRepository: CompanyProfileEditEntityRepository
+    private val companyProfileEditEntityRepository: CompanyProfileEditEntityRepository,
+    private val stdLevyNotificationFormRepo: IStdLevyNotificationFormRepository
 
 ) {
     val PROCESS_DEFINITION_KEY = "sl_SiteVisitProcessFlow"
@@ -783,6 +784,11 @@ class StandardLevyService(
 
         companyProfileRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.manufacturerEntity)
             ?.let { companyProfileEntity ->
+                with(companyProfileEntity){
+                    assignedTo=0
+                    assignStatus=0
+                }
+                companyProfileRepo.save(companyProfileEntity)
                 runtimeService.createProcessInstanceQuery()
                     .processInstanceId(companyProfileEntity.slBpmnProcessInstance).list()
                     ?.let { l ->
@@ -901,6 +907,26 @@ class StandardLevyService(
         } ?: throw NullValueNotAllowedException("Role Not Found")
     }
 
+    fun getSLNotificationStatus(): Boolean{
+        commonDaoServices.loggedInUserDetails().id
+            ?.let { id ->
+                companyProfileRepo.getManufactureId(id)
+                    .let {
+                        stdLevyNotificationFormRepo.findFirstByManufactureIdOrderByIdDesc(it)
+                            ?.let {
+
+                                //Manufacturer
+                                return true
+                            }
+                            ?: run {
+                                //Contractor
+                                return false
+                            }
+                    }
+            }
+            ?: return false
+    }
+
     fun getManufacturerStatus(): Boolean {
         commonDaoServices.loggedInUserDetails().id
             ?.let { id ->
@@ -925,7 +951,7 @@ class StandardLevyService(
         return companyProfileEditEntityRepository.findFirstByManufactureIdOrderByIdDesc(manufactureId) ?: throw ExpectedDataNotFound("No Data Found")
     }
 
-    fun getCompleteTasks(): MutableList<StandardLevyFactoryVisitReportEntity> {
+    fun getCompleteTasks(): List<CompleteTasksDetailHolder> {
         return standardLevyFactoryVisitReportRepo.getCompleteTasks()
     }
 

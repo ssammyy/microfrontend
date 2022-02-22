@@ -322,6 +322,11 @@ export class LevyService {
         const params = new HttpParams();
         return this.http.get<UsersEntity[]>(url, {params}).pipe();
     }
+    public getSLNotificationStatus(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_NOTIFICATION_FORM_STATUS);
+        const params = new HttpParams();
+        return this.http.get<ManufacturingStatus>(url, {params}).pipe();
+    }
 
 
 

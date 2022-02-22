@@ -355,26 +355,38 @@ export interface ManufactureCompleteTask {
     entryNumber: number;
     assignStatus: number;
     assignedTo: number;
+    visitID: number;
+
 
 }
+
 export interface ManufactureCompletedTask {
-    id: number;
-    purpose: string;
-    personMet: string;
-    actionTaken: string;
-    remarks: string;
-    officersFeedback: string;
-    makeRemarks: string;
-    manufacturerEntity: string;
-    scheduledVisitDate: Timestamp<number>;
-    visitDate: Timestamp<number>;
-    reportDate: Timestamp<number>;
-    cheifManagerRemarks: string;
-    assistantManagerRemarks: string;
-    companyName: string;
     entryNumber: string;
+    physicalAddress: string;
+    visitDate: Timestamp<number>;
+    purpose: string;
+    plotNumber: string;
     kraPin: string;
+    actionTaken: string;
+    streetName: string;
+    companyEmail: string;
+    businessLines: number;
+    companyId: number;
+    remarks: string;
+    postalAddress: string;
+    companyName: string;
+    directorIdNumber: number;
+    companyTelephone: string;
+    branchName: string;
+    businessNature: string;
+    visitId: number;
     registrationNumber: string;
+    reportRemarks: string;
+    feedBackRemarks: string;
+    person: string;
+    yearlyTurnOver: number;
+    asstManagerRemarks: number;
+    chiefManagerRemarks: string;
 
 }
 export interface UsersEntityList {

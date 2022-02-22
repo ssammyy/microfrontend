@@ -41,18 +41,17 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
     levelFour=false;
     @ViewChild(DataTableDirective, {static: false})
     dtElement: DataTableDirective;
+    dtElement1: DataTableDirective;
+    dtElement2: DataTableDirective;
 
     dtOptions: DataTables.Settings[] = [];
-    dtTrigger: Subject<any> = new Subject();
+    dtTrigger: Subject<any>[] = [];
+    //dtTrigger1: Subject<any> = new Subject();
+    //dtTrigger: Subject<any> = new Subject();
     displayTable: boolean = false;
 
     isDtInitialized: boolean = false
 
-    dtOptions1: DataTables.Settings = {};
-    dtTrigger1: Subject<any> = new Subject();
-
-    dtOptions2: DataTables.Settings = {};
-    dtTrigger2: Subject<any> = new Subject();
     public users !: UsersEntity[] ;
     public approveUsersOne !: UsersEntity[] ;
     public approveUsersTwo !: UsersEntity[] ;
@@ -252,16 +251,10 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
           pageLength: 10,
           processing: true
       };
-      this.dtOptions1 = {
-          pagingType: 'full_numbers',
-          pageLength: 10,
-          processing: true
-      };
-      this.dtOptions2 = {
-          pagingType: 'full_numbers',
-          pageLength: 10,
-          processing: true
-      };
+      // this.dtTrigger[0].next();
+      // this.dtTrigger[1].next();
+      // this.dtTrigger[2].next();
+
 
     this.getManufacturerList();
     this.getUserRoles();
@@ -653,20 +646,9 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
     this.levyService.getManufacturerList().subscribe(
         (response: ManufactureDetailList[])=> {
           this.manufactureLists = response;
-          //console.log(this.manufactureLists);
             this.SpinnerService.hide();
-            this.displayTable = true;
             this.rerender();
-            // if (this.isDtInitialized) {
-            //     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-            //         dtInstance.destroy();
-            //         //this.dtTrigger[0].next();
-            //     });
-            // } else {
-            //     this.isDtInitialized = true
-            //     //this.dtTrigger[0].next();
-            //
-            // }
+
         },
         (error: HttpErrorResponse)=>{
           this.SpinnerService.hide();
@@ -678,7 +660,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
     rerender(): void {
         this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
             dtInstance.destroy();
-            this.dtTrigger.next();
+            this.dtTrigger[0].next();
         });}
 
 
@@ -735,15 +717,16 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
   }
 
     rerender1(): void {
-        this.dtElement.dtInstance.then((dtInstance1: DataTables.Api) => {
-            dtInstance1.destroy();
-            this.dtTrigger1.next();
+        this.dtElement1.dtInstance.then((dtInstance: DataTables.Api) => {
+            dtInstance.destroy();
+            this.dtTrigger[1].next();
         });}
 
   public getMnCompleteTask(): void{
     this.SpinnerService.show();
     this.levyService.getMnCompleteTask().subscribe(
         (response: ManufactureCompletedTask[])=> {
+            console.log(this.manufactureCompleteTasks)
           this.manufactureCompleteTasks = response;
             this.SpinnerService.hide();
             this.rerender2();
@@ -757,9 +740,9 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
   }
 
     rerender2(): void {
-        this.dtElement.dtInstance.then((dtInstance2: DataTables.Api) => {
-            dtInstance2.destroy();
-            this.dtTrigger2.next();
+        this.dtElement2.dtInstance.then((dtInstance: DataTables.Api) => {
+            dtInstance.destroy();
+            this.dtTrigger[2].next();
         });}
 
     public onOpenModalList(manufactureLists: ManufactureDetailList,mode:string): void{
@@ -1152,44 +1135,24 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
                 '</div>'
         });
     }
-    // public checkIfTrue(){
-    //     // @ts-ignore
-    //     if (Object.values(this.manufactureUserRoles).indexOf(793) > -1) {
-    //         console.log('has test1');
-    //     }
-    //     if (Object.values(obj).indexOf('test1') > -1) {
-    //         console.log('has test1');
-    //     }
-    // }
 
-
-    // public checkIfTrue()
-    // {
-    //
-    //     if(this.manufactureUserRoles.includes('793') ){
-    //      this.levelOne=true;
-    //    }
-    //     if(this.manufactureUserRoles.includes(794) ){
-    //     this.levelTwo=true;
-    // }
-    //     if(this.manufactureUserRoles.includes(795) ){
-    //     this.levelThree=true;
-    // }
-    //     if(this.manufactureUserRoles.includes(796) ){
-    //     this.levelFour=true;
-    // }
-    // }
 
     ngAfterViewInit(): void {
-        this.dtTrigger.next();
-        this.dtTrigger1.next();
-        this.dtTrigger2.next();
+        this.dtTrigger[0].next();
+        this.dtTrigger[1].next();
+        this.dtTrigger[2].next();
+
     }
 
     ngOnDestroy(): void {
-        this.dtTrigger.unsubscribe();
-        this.dtTrigger1.unsubscribe();
-        this.dtTrigger2.unsubscribe();
+        this.dtTrigger[0].unsubscribe();
+        this.dtTrigger[1].unsubscribe();
+        this.dtTrigger[2].unsubscribe();
+
+    }
+    gotoAllApplications() {
+        this.router.navigate(['/slManufacturers']);
+
     }
 
 }

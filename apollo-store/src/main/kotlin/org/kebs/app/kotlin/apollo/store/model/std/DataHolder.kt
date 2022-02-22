@@ -1,5 +1,8 @@
 package org.kebs.app.kotlin.apollo.store.model.std
 
+import oracle.sql.TIMESTAMP
+import java.util.*
+
 
 //class DataHolder {
 //    @NotNull
@@ -63,6 +66,36 @@ interface UserDetailHolder {
     fun getId(): Long?
     fun getFirstName(): String?
     fun getLastName(): String?
+}
+
+interface CompleteTasksDetailHolder {
+    fun getPurpose(): String?
+    fun getPerson(): String?
+    fun getActionTaken(): String?
+    fun getRemarks(): String?
+    fun getFeedBackRemarks(): String?
+    fun getReportRemarks(): String?
+    fun getVisitId(): Long?
+    fun getVisitDate(): Date?
+    fun getChiefManagerRemarks(): String?
+    fun getAsstManagerRemarks(): String?
+    fun getCompanyId(): Long?
+    fun getCompanyName(): String?
+    fun getEntryNumber(): String?
+    fun getKraPin(): String?
+    fun getRegistrationNumber(): String?
+    fun getDirectorIdNumber(): Long?
+    fun getPostalAddress(): String?
+    fun getPhysicalAddress(): String?
+    fun getPlotNumber(): String?
+    fun getCompanyEmail(): String?
+    fun getCompanyTelephone(): String?
+    fun getYearlyTurnOver(): String?
+    fun getBusinessLines(): String?
+    fun getBusinessNature(): String?
+    fun getBranchName(): String?
+    fun getStreetName(): String?
+
 }
 
 
