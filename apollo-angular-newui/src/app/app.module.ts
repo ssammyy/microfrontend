@@ -282,11 +282,15 @@ import {ReviewRecommendationComponent} from './apollowebs/standards-development/
 import {ReviewRecommendationOfSpcComponentComponent} from './apollowebs/standards-development/membershipToTc/review-recommendation-of-spc-component/review-recommendation-of-spc-component.component';
 import {UploadTcMemberComponentComponent} from './apollowebs/standards-development/membershipToTc/upload-tc-member-component/upload-tc-member-component.component';
 import {ManageCorporateCustomerComponent} from './apollowebs/invoice/corporate/manage-corporate-customer/manage-corporate-customer.component';
+import {ReviewApplicationsAcceptedComponent} from './apollowebs/standards-development/membershipToTc/review-applications-accepted/review-applications-accepted.component';
+import {ReviewApplicationsRejectedComponent} from './apollowebs/standards-development/membershipToTc/review-applications-rejected/review-applications-rejected.component';
+import {ApproveApplicationComponent} from "./apollowebs/standards-development/membershipToTc/approve-application/approve-application.component";
 
 
 @NgModule({
     imports: [
         CommonModule,
+        DataTablesModule,
         NgxExtendedPdfViewerModule,
         MatAutocompleteModule,
         FileUploadModule,
@@ -325,7 +329,6 @@ import {ManageCorporateCustomerComponent} from './apollowebs/invoice/corporate/m
         CommonModule,
         BrowserModule,
         ModalModule,
-        DataTablesModule,
         Ng2SmartTableModule,
         NgbNavModule,
         MatDialogModule,
@@ -593,7 +596,10 @@ import {ManageCorporateCustomerComponent} from './apollowebs/invoice/corporate/m
         ReviewRecommendationOfSpcComponentComponent,
         UploadTcMemberComponentComponent,
         ApproveDraftStdComponent,
-        ManageCorporateCustomerComponent
+        ManageCorporateCustomerComponent,
+        ReviewApplicationsAcceptedComponent,
+        ReviewApplicationsRejectedComponent,
+        ApproveApplicationComponent
     ],
     providers: [DatePipe,
     ],
