@@ -336,10 +336,10 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     fun getBusinessNature(@Param("id") id: Long?): Long
 
     @Query(
-        value = "SELECT MANUFACTURE_STATUS  FROM DAT_KEBS_COMPANY_PROFILE WHERE USER_ID= :id",
+        value = "SELECT ID  FROM DAT_KEBS_COMPANY_PROFILE WHERE USER_ID= :id",
         nativeQuery = true
     )
-    fun getManufactureId(@Param("id") id: Long?): Long
+    fun getManufactureId(@Param("id") id: Long?): Long?
 
 
 

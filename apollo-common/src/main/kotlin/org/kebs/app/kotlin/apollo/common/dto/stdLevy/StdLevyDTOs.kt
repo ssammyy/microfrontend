@@ -18,6 +18,7 @@ data class StdLevyNotificationFormDTO(
     var status: Long? = null,
     var entryNumber: String? = null,
     var companyProfileID: Long? = null,
+    var nameOfBranch: String? = null
 
 )
 
