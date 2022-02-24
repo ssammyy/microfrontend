@@ -163,6 +163,9 @@ import {ReviewApplicationComponent} from "./apollowebs/standards-development/mem
 import {ReviewApplicationsAcceptedComponent} from "./apollowebs/standards-development/membershipToTc/review-applications-accepted/review-applications-accepted.component";
 import {ReviewApplicationsRejectedComponent} from "./apollowebs/standards-development/membershipToTc/review-applications-rejected/review-applications-rejected.component";
 import { ApproveApplicationComponent } from './apollowebs/standards-development/membershipToTc/approve-application/approve-application.component';
+import {StdLevyCompleteTasksComponent} from "./apollowebs/standards-levy/std-levy-complete-tasks/std-levy-complete-tasks.component";
+import {StdLevyPendingTasksComponent} from "./apollowebs/standards-levy/std-levy-pending-tasks/std-levy-pending-tasks.component";
+import {StdLevyApplicationsComponent} from "./apollowebs/standards-levy/std-levy-applications/std-levy-applications.component";
 
 export const routes: Routes = [
     {
@@ -1159,6 +1162,22 @@ export const routes: Routes = [
         path: 'slManufacturers', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [{path: '', component: StandardLevyManufactureDetailsComponent}]
+    },
+
+    {
+        path: 'slApplications', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: StdLevyApplicationsComponent}]
+    },
+    {
+        path: 'slPendingTasks', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: StdLevyPendingTasksComponent}]
+    },
+    {
+        path: 'slCompleteTasks', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: StdLevyCompleteTasksComponent}]
     },
 
 

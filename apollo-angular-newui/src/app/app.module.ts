@@ -285,6 +285,10 @@ import {ManageCorporateCustomerComponent} from './apollowebs/invoice/corporate/m
 import {ReviewApplicationsAcceptedComponent} from './apollowebs/standards-development/membershipToTc/review-applications-accepted/review-applications-accepted.component';
 import {ReviewApplicationsRejectedComponent} from './apollowebs/standards-development/membershipToTc/review-applications-rejected/review-applications-rejected.component';
 import {ApproveApplicationComponent} from "./apollowebs/standards-development/membershipToTc/approve-application/approve-application.component";
+import { StdLevyApplicationsComponent } from './apollowebs/standards-levy/std-levy-applications/std-levy-applications.component';
+import { StdLevyTasksComponent } from './apollowebs/standards-levy/std-levy-tasks/std-levy-tasks.component';
+import { StdLevyPendingTasksComponent } from './apollowebs/standards-levy/std-levy-pending-tasks/std-levy-pending-tasks.component';
+import { StdLevyCompleteTasksComponent } from './apollowebs/standards-levy/std-levy-complete-tasks/std-levy-complete-tasks.component';
 
 
 @NgModule({
@@ -599,7 +603,11 @@ import {ApproveApplicationComponent} from "./apollowebs/standards-development/me
         ManageCorporateCustomerComponent,
         ReviewApplicationsAcceptedComponent,
         ReviewApplicationsRejectedComponent,
-        ApproveApplicationComponent
+        ApproveApplicationComponent,
+        StdLevyApplicationsComponent,
+        StdLevyTasksComponent,
+        StdLevyPendingTasksComponent,
+        StdLevyCompleteTasksComponent
     ],
     providers: [DatePipe,
     ],

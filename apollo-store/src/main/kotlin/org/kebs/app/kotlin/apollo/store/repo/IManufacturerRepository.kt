@@ -23,6 +23,7 @@ package org.kebs.app.kotlin.apollo.store.repo
 
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.qa.ManufacturePlantDetailsEntity
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEditEntity
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
@@ -118,6 +119,7 @@ interface StdLevyNotificationFormRepository : HazelcastRepository<StdLevyNotific
     @Query( value = "SELECT max(ID)  FROM DAT_KEBS_STD_LEVY_NOTIFICATION_FORM_TBL WHERE MANUFACTURER_ID= :id ",
         nativeQuery = true )
     fun findTopByManufactureIdOrderByIdDesc(@Param("id") id: Long?): Long?
+    fun findFirstByManufactureIdOrderByIdDesc(manufactureId: Long): StdLevyNotificationForm
 }
 
 @Repository
