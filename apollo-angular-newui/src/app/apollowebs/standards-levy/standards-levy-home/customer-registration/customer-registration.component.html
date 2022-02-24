@@ -20,7 +20,7 @@ type="ball-scale-multiple"
 </div>
 </div>
 
-<div class="card-body" *ngIf="notificationFormStatus==true">
+<div class="card-body" *ngIf="notificationFormStatus==false">
     <div class="toolbar">
 
     </div>
@@ -408,7 +408,7 @@ type="ball-scale-multiple"
         </div>
     </div>
 </div>
-    <div class="card-body" *ngIf="notificationFormStatus==false">
+    <div class="card-body" *ngIf="notificationFormStatus==true">
         <div class="toolbar">
          <p style="color: red; font-weight: bold; font-size: medium">Form Has already been filled</p>
         </div>
