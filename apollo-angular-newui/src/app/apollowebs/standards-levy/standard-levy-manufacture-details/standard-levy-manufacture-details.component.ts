@@ -698,6 +698,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
     //     );
     //
     // }
+    private $route: any;
 
   public getMnPendingTask(): void{
     this.SpinnerService.show();
@@ -823,7 +824,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         this.levyService.scheduleSiteVisit(this.scheduleVisitFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
-
+                this.$route.reload();
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Visit Scheduled`);
                 this.scheduleVisitFormGroup.reset();
@@ -843,7 +844,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         this.levyService.assignCompanyTasks(this.assignCompanyTaskFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
-                //this.getManufacturerList();
+                this.reloadCurrentRoute();
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Task Assigned`);
                 this.router.navigateByUrl('/slManufacturers').then(r => {});
@@ -861,7 +862,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         this.levyService.assignCompanyTasks(this.assignCompanyTask1FormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
-                //this.getManufacturerList();
+                this.reloadCurrentRoute();
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Task Assigned`);
                 this.router.navigateByUrl('/slManufacturers').then(r => {});
@@ -878,7 +879,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         this.levyService.assignCompanyTasks(this.assignCompanyTask2FormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
-                //this.getManufacturerList();
+                this.reloadCurrentRoute();
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Task Assigned`);
                 this.router.navigateByUrl('/slManufacturers').then(r => {});
@@ -896,7 +897,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         this.levyService.editCompany(this.editCompanyFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
-                //this.getManufacturerList();
+                this.reloadCurrentRoute();
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Company Edited`);
                 this.router.navigateByUrl('/slManufacturers').then(r => {});
@@ -916,7 +917,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         this.levyService.editCompanyDetailsConfirm(this.editedCompanyFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
-                //this.getManufacturerList();
+                this.reloadCurrentRoute();
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Company Edited`);
                 this.router.navigateByUrl('/slManufacturers').then(r => {});
@@ -935,7 +936,9 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         this.levyService.saveSiteVisitReport(this.prepareReportFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
+                this.reloadCurrentRoute();
                 this.SpinnerService.hide();
+
                 this.onClickSaveUploads(response.body.savedRowID)
                 this.prepareReportFormGroup.reset();
             },
@@ -982,7 +985,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         this.levyService.levelOneDecisionOnReport(this.approvalFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
-
+                this.reloadCurrentRoute();
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Report Approved`);
                 this.approvalFormGroup.reset();
@@ -1001,7 +1004,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         this.levyService.levelOneDecisionOnReport(this.rejectFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
-
+                this.reloadCurrentRoute();
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Report Rejected`);
                 this.rejectFormGroup.reset();
@@ -1039,7 +1042,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         this.levyService.decisionOnSiteReportLevelTwo(this.approvalTwoFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
-
+                this.reloadCurrentRoute();
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Report Approved`);
                 this.approvalTwoFormGroup.reset();
@@ -1058,7 +1061,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         this.levyService.decisionOnSiteReportLevelTwo(this.approveTwoFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
-
+                this.reloadCurrentRoute();
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Report Approved`);
                 this.approveTwoFormGroup.reset();
@@ -1077,7 +1080,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         this.levyService.decisionOnSiteReportLevelTwo(this.rejectTwoFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
-
+                this.reloadCurrentRoute();
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Report Rejected`);
                 this.rejectTwoFormGroup.reset();
@@ -1097,6 +1100,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         this.levyService.saveSiteVisitFeedback(this.prepareFeedBackFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
+                this.reloadCurrentRoute();
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Feedback Saved and Sent`);
                 this.prepareFeedBackFormGroup.reset();
@@ -1153,6 +1157,13 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
     gotoAllApplications() {
         this.router.navigate(['/slManufacturers']);
 
+    }
+
+    reloadCurrentRoute() {
+        let currentUrl = this.router.url;
+        this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+        this.router.onSameUrlNavigation = 'reload';
+        this.router.navigate([currentUrl]);
     }
 
 }

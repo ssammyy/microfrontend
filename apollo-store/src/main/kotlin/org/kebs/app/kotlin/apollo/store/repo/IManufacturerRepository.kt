@@ -111,13 +111,13 @@ interface IManufacturerAddressRepository : HazelcastRepository<ManufacturerAddre
 interface IStdLevyNotificationFormRepository : HazelcastRepository<StdLevyNotificationFormEntity, Long> {
 //    fun findFirstByManufacturerIdAndStatus(manufacturerId: ManufacturersEntity, status: Long): StdLevyNotificationFormEntity?
 //    fun findByManufacturerIdAndStatus(manufacturerId: ManufacturersEntity, status: Long): Collection<StdLevyNotificationFormEntity>?
-@Query( value = "SELECT ID  FROM DAT_KEBS_STD_LEVY_NOTIFICATION_FORM WHERE MANUFACTURER_ID= :id",
-    nativeQuery = true )
-fun findFirstByManufactureIdOrderByIdDesc(@Param("id") id: Long?): Long?
+
 }
 @Repository
 interface StdLevyNotificationFormRepository : HazelcastRepository<StdLevyNotificationForm, Long> {
-
+    @Query( value = "SELECT max(ID)  FROM DAT_KEBS_STD_LEVY_NOTIFICATION_FORM_TBL WHERE MANUFACTURER_ID= :id ",
+        nativeQuery = true )
+    fun findTopByManufactureIdOrderByIdDesc(@Param("id") id: Long?): Long?
 }
 
 @Repository

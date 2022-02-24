@@ -37,6 +37,7 @@
 
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
+import com.google.gson.Gson
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.flowable.engine.RuntimeService
@@ -1058,28 +1059,33 @@ class RegistrationDaoServices(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         var eNumber = generateEntryNumber(map, loggedInUser)
 
+        val gson = Gson()
+        KotlinLogging.logger { }.info { "EDITED" + gson.toJson(stdLevyNotificationFormDTO) }
+      //  with(add) {
+        stdLevyNotificationForm.nameBusinessProprietor= stdLevyNotificationFormDTO.NameAndBusinessOfProprietors
+        stdLevyNotificationForm.commoditiesManufactured= stdLevyNotificationFormDTO.AllCommoditiesManufuctured
+            stdLevyNotificationForm.chiefExecutiveDirectors= stdLevyNotificationFormDTO.chiefExecutiveDirectors
+            stdLevyNotificationForm.chiefExecutiveDirectorsStatus= stdLevyNotificationFormDTO.chiefExecutiveDirectorsStatus
+            stdLevyNotificationForm.dateManufactureCommenced= stdLevyNotificationFormDTO.DateOfManufacture
+            stdLevyNotificationForm.totalValueOfManufacture= stdLevyNotificationFormDTO.totalValueOfManufacture
+            stdLevyNotificationForm.description= stdLevyNotificationFormDTO.description
+            stdLevyNotificationForm.status=1
+            stdLevyNotificationForm.entryNumber= eNumber
+            stdLevyNotificationForm.manufacturerId= stdLevyNotificationFormDTO.companyProfileID
+            stdLevyNotificationForm.createdOn = Timestamp.from(Instant.now())
+            stdLevyNotificationForm.createdBy = loggedInUser.firstName + " " + loggedInUser.lastName
 
-        with(add) {
-            nameBusinessProprietor= stdLevyNotificationFormDTO.NameAndBusinessOfProprietors
-            commoditiesManufactured= stdLevyNotificationFormDTO.AllCommoditiesManufuctured
-            chiefExecutiveDirectors= stdLevyNotificationFormDTO.chiefExecutiveDirectors
-            chiefExecutiveDirectorsStatus= stdLevyNotificationFormDTO.chiefExecutiveDirectorsStatus
-            dateManufactureCommenced= stdLevyNotificationFormDTO.DateOfManufacture
-            totalValueOfManufacture= stdLevyNotificationFormDTO.totalValueOfManufacture
-            description= stdLevyNotificationFormDTO.description
-            status=1
-            entryNumber= eNumber
-            manufacturerId= stdLevyNotificationFormDTO.companyProfileID
-            createdOn = Timestamp.from(Instant.now())
-            createdBy = loggedInUser.firstName + " " + loggedInUser.lastName
+       // }
+        stdLevyNotificationFormRepository.save(stdLevyNotificationForm)
 
-        }
-        add = stdLevyNotificationFormRepository.save(add)
 
         companyProfileRepo.findByIdOrNull(stdLevyNotificationFormDTO.companyProfileID)?.let { companyProfileEntity->
 
             with(companyProfileEntity){
                 entryNumber=eNumber
+                branchName=stdLevyNotificationFormDTO.nameOfBranch
+                assignStatus=0
+                assignedTo=0
 
             }
             companyProfileRepo.save(companyProfileEntity)
@@ -1089,7 +1095,7 @@ class RegistrationDaoServices(
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/user/user-profile?userName=${loggedInUser.userName}"
         sm.message = "You have Successful Register, Email Has been sent with Entry Number "
 
-        return NotificationForm(add.id,add.entryNumber?: throw NullValueNotAllowedException("Request Number is required"))
+        return NotificationForm(stdLevyNotificationForm.id,stdLevyNotificationForm.entryNumber?: throw NullValueNotAllowedException("Request Number is required"))
 
 
 
