@@ -282,6 +282,8 @@ import {ReviewRecommendationComponent} from './apollowebs/standards-development/
 import {ReviewRecommendationOfSpcComponentComponent} from './apollowebs/standards-development/membershipToTc/review-recommendation-of-spc-component/review-recommendation-of-spc-component.component';
 import {UploadTcMemberComponentComponent} from './apollowebs/standards-development/membershipToTc/upload-tc-member-component/upload-tc-member-component.component';
 import {ManageCorporateCustomerComponent} from './apollowebs/invoice/corporate/manage-corporate-customer/manage-corporate-customer.component';
+import {ManifestDocumentComponent} from './apollowebs/di/view-single-consignment-document/manifest-document/manifest-document.component';
+import {IncompleteIDFDocumentsComponent} from './apollowebs/di/message-dashboard/incomplete-idfdocuments/incomplete-idfdocuments.component';
 
 
 @NgModule({
@@ -593,7 +595,9 @@ import {ManageCorporateCustomerComponent} from './apollowebs/invoice/corporate/m
         ReviewRecommendationOfSpcComponentComponent,
         UploadTcMemberComponentComponent,
         ApproveDraftStdComponent,
-        ManageCorporateCustomerComponent
+        ManageCorporateCustomerComponent,
+        ManifestDocumentComponent,
+        IncompleteIDFDocumentsComponent
     ],
     providers: [DatePipe,
     ],

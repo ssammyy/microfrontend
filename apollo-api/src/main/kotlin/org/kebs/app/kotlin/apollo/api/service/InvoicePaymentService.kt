@@ -397,9 +397,10 @@ class InvoicePaymentService(
     @Transactional
     fun generateDemandNoteWithItemList(
             form: DemandNoteRequestForm,
+            items: MutableList<CdDemandNoteItemsDetailsEntity>,
             map: ServiceMapsEntity,
             purpose: PaymentPurpose,
-            user: UsersEntity
+            user: UsersEntity,
     ): CdDemandNoteEntity {
         return iDemandNoteRepo.findFirstByCdIdAndStatusIn(form.referenceId!!, listOf(map.workingStatus))
                 ?.let { demandNote ->
@@ -413,7 +414,7 @@ class InvoicePaymentService(
                     demandNote.totalAmount = BigDecimal.ZERO
                     demandNote.amountPayable = BigDecimal.ZERO
                     form.items?.forEach {
-                        addItemDetailsToDemandNote(it, demandNoteDetails, map, form.presentment, user)
+                        items.add(addItemDetailsToDemandNote(it, demandNoteDetails, map, form.presentment, user))
                     }
                     // Foreign CoR without Items
                     if (form.items?.isEmpty() == true) {
@@ -466,7 +467,7 @@ class InvoicePaymentService(
                     }
                     //Call Function to add Item Details To be attached To The Demand note
                     form.items?.forEach {
-                        addItemDetailsToDemandNote(it, demandNote, map, form.presentment, user)
+                        items.add(addItemDetailsToDemandNote(it, demandNote, map, form.presentment, user))
                         //Calculate the total Amount for Items In one Cd Tobe paid For
 //                        if (!presentment) {
 //                            demandNoteUpDatingCDAndItem(it, user, demandNote)
@@ -551,6 +552,8 @@ class InvoicePaymentService(
                 amount?.let {
                     when (minimumUsd) {
                         null -> {
+                            demandNoteItem.minimumAmount = minimumKes
+                            demandNoteItem.maximumAmount = maximumKes
                             if (it < minimumKes && minimumKes > BigDecimal.ZERO) {
                                 amount = minimumKes
                             } else if (it > maximumKes && maximumKes < BigDecimal.ZERO) {
@@ -558,6 +561,8 @@ class InvoicePaymentService(
                             }
                         }
                         else -> {
+                            demandNoteItem.minimumAmount = minimumUsd
+                            demandNoteItem.maximumAmount = maximumUsd
                             if (it < minimumUsd && minimumUsd > BigDecimal.ZERO) {
                                 amount = minimumUsd
                             } else if (maximumUsd != null && it > maximumUsd && maximumUsd > BigDecimal.ZERO) {
@@ -626,7 +631,7 @@ class InvoicePaymentService(
             itemDetails: DemandNoteRequestItem, demandNote: CdDemandNoteEntity, map: ServiceMapsEntity,
             presentment: Boolean,
             user: UsersEntity
-    ) {
+    ): CdDemandNoteItemsDetailsEntity {
         val fee = itemDetails.fee
                 ?: throw Exception("Item details with Id = ${itemDetails.itemId}, does not Have any Details For payment Fee Id Selected ")
         var demandNoteItem = iDemandNoteItemRepo.findByItemIdAndDemandNoteId(itemDetails.itemId, demandNote.id)
@@ -662,11 +667,12 @@ class InvoicePaymentService(
         // Skip saving for presentment
         if (!presentment) {
             iDemandNoteItemRepo.save(demandNoteItem)
-            return
+            return demandNoteItem
         }
         // Add this for presentment purposes
         demandNote.totalAmount = demandNote.totalAmount?.plus(demandNoteItem.adjustedAmount ?: BigDecimal.ZERO)
         demandNote.amountPayable = demandNote.amountPayable?.plus(demandNoteItem.amountPayable ?: BigDecimal.ZERO)
+        return demandNoteItem
     }
 
 

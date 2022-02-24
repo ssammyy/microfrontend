@@ -231,6 +231,10 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
         this.router.navigate(['/di/declaration/document', this.consignment.cd_details.uuid]);
     }
 
+    viewManifestDocument() {
+        this.router.navigate(['/di/manifest/document', this.consignment.cd_details.uuid]);
+    }
+
     goBackHome() {
         this.router.navigateByUrl('/di');
     }

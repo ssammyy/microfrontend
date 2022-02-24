@@ -1823,6 +1823,8 @@ class DestinationInspectionDaoServices(
                         return it
                     }
 
+    fun findCdWithUcrNumberAndVersion(ucrNumber: String, version: Long): Long = iConsignmentDocumentDetailsRepo.countByUcrNumberAndVersion(ucrNumber, version)
+
     fun findCdWithUcrNumberLatest(ucrNumber: String): ConsignmentDocumentDetailsEntity? =
             iConsignmentDocumentDetailsRepo.findTopByUcrNumberOrderByIdDesc(ucrNumber)
                     ?.let {
@@ -2011,6 +2013,10 @@ class DestinationInspectionDaoServices(
 //                    return idfsEntity
 //                }
 //                ?: throw Exception("IDF Details with the following UCR NUMBER = ${ucrNumber}, does not Exist")
+    }
+
+    fun findByManifestNumber(manifestNo: String): ManifestDetailsEntity? {
+        return manifestRepo.findByManifestNumber(manifestNo)
     }
 
     fun findDeclaration(ucrNumber: String): DeclarationDetailsEntity? {
@@ -3195,8 +3201,25 @@ class DestinationInspectionDaoServices(
         return ministryInspectionItem
     }
 
+    private fun formatDate(date: String, endOfDay: Boolean): Timestamp {
+        var dt = LocalDate.now()
+        if (!date.trim().isEmpty()) {
+            val parsedDate = LocalDate.from(DATE_FORMAT.parse(date))
+            dt = parsedDate
+        }
+        if (endOfDay) {
+            return Timestamp.valueOf(dt.plusDays(1).atStartOfDay())
+        }
+        return Timestamp.valueOf(dt.atStartOfDay())
+    }
+
     fun listExchangeRates(date: String): List<CurrencyExchangeRates> {
-        return this.currencyExchangeRateRepository.findByApplicableDateAndStatus(date, 1)
+        val dt = formatDate(date, false)
+        return this.currencyExchangeRateRepository.findByApplicableDateAndStatus(DATE_FORMAT.format(dt.toLocalDateTime()), 1)
+    }
+
+    fun listExchangeRatesRange(date: String, endDate: String): List<CurrencyExchangeRates> {
+        return this.currencyExchangeRateRepository.findAllByCreatedOnBetween(formatDate(date, false), formatDate(endDate, true))
     }
 
     fun listCurrentExchangeRates(status: Int): List<CurrencyExchangeRates> {

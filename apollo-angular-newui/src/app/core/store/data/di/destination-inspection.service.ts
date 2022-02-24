@@ -69,6 +69,11 @@ export class DestinationInspectionService {
         })
     }
 
+    loadIncompleteIdfDocuments(params): Observable<any> {
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/files/incomplete/idf"), {
+            params: params
+        })
+    }
 
     loadPersonalDashboard(): Observable<any> {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/dashboard/personal"))
@@ -86,11 +91,9 @@ export class DestinationInspectionService {
         return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/demand/note/upload/exchange-rate"), fd)
     }
 
-    loadConversionRates(rateDate: any): Observable<any> {
+    loadConversionRates(params: any): Observable<any> {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/demand/note/exchange-rates"), {
-            params: {
-                date: rateDate
-            }
+            params: params
         })
     }
 
@@ -376,8 +379,8 @@ export class DestinationInspectionService {
         })
     }
 
-    consignmentMetadata(documentUuid: String): Observable<any> {
-        return this.client.get("/api/v1/di/consignment/document/manifest/" + documentUuid)
+    consignmentManifest(documentUuid: String): Observable<any> {
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/manifest/" + documentUuid))
     }
 
     documentTypes(): Observable<any> {

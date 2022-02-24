@@ -37,6 +37,7 @@ class DestinationInspectionRoutes {
             GET("/get/{messageId}", handler::loadFileContent)
             POST("/resend/{messageId}", handler::resendFileViaSftp)
             GET("/list", handler::listFilesByStatus)
+            GET("/incomplete/idf", handler::listIncompleteIdfDocuments)
         }
     }
 

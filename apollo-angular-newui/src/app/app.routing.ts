@@ -155,12 +155,13 @@ import {EditorTasksComponent} from "./apollowebs/standards-development/publishin
 import {StdHopTasksComponent} from "./apollowebs/standards-development/publishing/std-hop-tasks/std-hop-tasks.component";
 import {StdPublishingComponent} from "./apollowebs/standards-development/publishing/std-publishing/std-publishing.component";
 import {CallsForApplicationComponent} from "./apollowebs/standards-development/membershipToTc/calls-for-application/calls-for-application.component";
-import {ReviewApplicationsComponent} from "./apollowebs/standards-development/standard-request/review-applications/review-applications.component";
 import {ReviewRecommendationComponent} from "./apollowebs/standards-development/membershipToTc/review-recommendation/review-recommendation.component";
 import {ReviewRecommendationOfSpcComponentComponent} from "./apollowebs/standards-development/membershipToTc/review-recommendation-of-spc-component/review-recommendation-of-spc-component.component";
 import {SubmitApplicationComponent} from "./apollowebs/standards-development/membershipToTc/submit-application/submit-application.component";
 import {UploadTcMemberComponentComponent} from "./apollowebs/standards-development/membershipToTc/upload-tc-member-component/upload-tc-member-component.component";
 import {ReviewApplicationComponent} from "./apollowebs/standards-development/membershipToTc/review-application/review-application.component";
+import {ManifestDocumentComponent} from "./apollowebs/di/view-single-consignment-document/manifest-document/manifest-document.component";
+import {IncompleteIDFDocumentsComponent} from "./apollowebs/di/message-dashboard/incomplete-idfdocuments/incomplete-idfdocuments.component";
 
 export const routes: Routes = [
     {
@@ -544,6 +545,10 @@ export const routes: Routes = [
                 component: ViewDiDeclarationDocumentsComponent
             },
             {
+                path: 'manifest/document/:id',
+                component: ManifestDocumentComponent
+            },
+            {
                 path: 'inspection/checklist/:id',
                 canActivate: [RouteGuard],
                 component: ChecklistDataFormComponent
@@ -602,6 +607,11 @@ export const routes: Routes = [
                 path: 'kentrade/exchange/messages',
                 canActivate: [RouteGuard],
                 component: MessageDashboardComponent
+            },
+            {
+                path: 'kentrade/idf/documents',
+                canActivate: [RouteGuard],
+                component: IncompleteIDFDocumentsComponent
             },
             {
                 path: 'ism',

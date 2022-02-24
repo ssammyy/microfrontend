@@ -21,14 +21,12 @@ import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntit
 import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentTypesEntity
 import org.kebs.app.kotlin.apollo.store.model.di.DiUploadsEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
-import org.kebs.app.kotlin.apollo.store.repo.di.ICfsTypeCodesRepository
-import org.kebs.app.kotlin.apollo.store.repo.di.IConsignmentDocumentTypesEntityRepository
-import org.kebs.app.kotlin.apollo.store.repo.di.IDiUploadsRepository
-import org.kebs.app.kotlin.apollo.store.repo.di.IMinistryStationEntityRepository
+import org.kebs.app.kotlin.apollo.store.repo.di.*
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.util.StringUtils
 import org.springframework.web.multipart.MultipartFile
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -86,6 +84,7 @@ class DestinationInspectionService(
         private val reportsDaoService: ReportsDaoService,
         private val privilegesRepository: IUserPrivilegesRepository,
         private val userEntityRepository: IUserRepository,
+        private val iManifestDetailsEntityRepository: IManifestDetailsEntityRepository,
         private val searchService: SearchInitialization,
 ) {
 
@@ -801,6 +800,7 @@ class DestinationInspectionService(
             }
             //updating of Details in DB
             val loggedInUser = commonDaoServices.loggedInUserDetails()
+            consignmentDocument.status = ConsignmentApprovalStatus.UNDER_INSPECTION.code
             val updatedCDDetails = daoServices.updateCdDetailsInDB(consignmentDocument, loggedInUser)
             //Send Approval/Rejection message To Single Window
             consignmentDocument.approveRejectCdRemarks?.let { it1 ->
@@ -1286,8 +1286,9 @@ class DestinationInspectionService(
             dataMap.put("cd_standard", CdStandardsEntityDao.fromEntity(it))
         }
         // Transporter
-        cdDetails.cdTransport?.let {
-            dataMap.put("cd_transport", daoServices.findCdTransportDetails(it))
+        val transportDetails = cdDetails.cdTransport?.let { daoServices.findCdTransportDetails(it) }
+        transportDetails?.let {
+            dataMap.put("cd_transport", it)
         }
         // Headers
         cdDetails.cdHeaderOne?.let {
@@ -1316,6 +1317,7 @@ class DestinationInspectionService(
                 uiDetails.demandNotePaid = !uiDetails.demandNoteRequired
                 uiDetails
             }
+            uiDetails.manifestDocument = StringUtils.hasLength(transportDetails?.manifestNo)
             try {
                 daoServices.findCORByCdId(cdDetails)?.let {
                     uiDetails.corAvailable = true
@@ -1405,19 +1407,18 @@ class DestinationInspectionService(
     fun consignmentDocumentManifestDetails(cdUuid: String): ApiResponseModel {
         val response = ApiResponseModel()
         try {
-            val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             val cdDetails = daoServices.findCDWithUuid(cdUuid)
-            val declarationDetails = cdDetails.ucrNumber?.let { daoServices.findDeclaration(it) }
-            val manifestDetails = declarationDetails?.billCode?.let { daoServices.findManifest(it) }
+            val transportDetails = cdDetails.cdTransport?.let { daoServices.findCdTransportDetails(it) }
+            val manifestDetails = transportDetails?.manifestNo?.let { daoServices.findByManifestNumber(it) }
             val dataMap = mutableMapOf<String, Any?>()
-            dataMap.put("manifest_details", manifestDetails)
-            dataMap.put("cd_details", cdDetails)
-            dataMap.put("configuration", map)
+            dataMap["manifest_details"] = manifestDetails
+            dataMap["transport_details"] = transportDetails
+            dataMap["consignment_details"] = ConsignmentDocumentDao.fromEntity(cdDetails)
             response.data = dataMap
             response.responseCode = ResponseCodes.SUCCESS_CODE
             response.message = "Success"
         } catch (e: Exception) {
-            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.responseCode = ResponseCodes.NOT_FOUND
             response.message = "CD manifests not found"
         }
         return response

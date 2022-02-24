@@ -52,6 +52,7 @@ class ConsignmentEnableUI {
     var hasPort: Boolean? = null
     var demandNoteRequired: Boolean = false
     var hasActiveProcess = false
+    var manifestDocument = false
 
     companion object {
         fun fromEntity(cd: ConsignmentDocumentDetailsEntity, map: ServiceMapsEntity, authentication: Authentication): ConsignmentEnableUI {
@@ -143,6 +144,7 @@ class ConsignmentDocumentDao {
     var summaryPageURL: String? = null
     var approvalStatus: String? = null
     var applicationStatus: String? = null
+    var applicationStatusDescription: String? = null
     var assigned: Boolean = false
     var lastModifiedOn: Timestamp? = null
     var lastModifiedBy: String? = null
@@ -169,7 +171,6 @@ class ConsignmentDocumentDao {
                 dt.freightStation = it.cfsName
                 dt.freightStationId = it.id
             }
-            dt.applicationStatus = doc.varField10
             dt.assigned = doc.assignedInspectionOfficer != null
             dt.localCoi = doc.localCoi
             dt.sendDemandNote = doc.sendDemandNote
@@ -189,6 +190,10 @@ class ConsignmentDocumentDao {
                 dt.declarationNumber = it.declarationNumber
                 dt.applicationRefNo = it.applicationRefNo
                 dt.approvalStatus = it.approvalStatus
+            }
+            dt.applicationStatusDescription = doc.varField10
+            doc.approveRejectCdStatusType?.let {
+                dt.applicationStatus = it.description
             }
             doc.cdStandardsTwo?.let {
                 dt.cocType = it.cocType
@@ -639,6 +644,7 @@ class CdStandardTwoEntityDao : Serializable {
     var localCocType: String? = null
     var description: String? = null
     var status: Int? = null
+    var cocRefNumber: String? = null
     var conditionsOfApproval: String? = null
     var applicantRemarks: String? = null
     var mdaRemarks: String? = null
@@ -651,6 +657,7 @@ class CdStandardTwoEntityDao : Serializable {
             return CdStandardTwoEntityDao()
                     .apply {
                         id = standerd.id
+                        cocRefNumber = standerd.cocRefNumber
                         purposeOfImport = standerd.purposeOfImport
                         cocType = standerd.cocType
                         localCocType = standerd.localCocType

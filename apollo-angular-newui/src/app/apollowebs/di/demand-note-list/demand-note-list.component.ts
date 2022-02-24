@@ -10,7 +10,7 @@ import {CurrencyFormatterComponent} from "../../../core/shared/currency-formatte
     styleUrls: ['./demand-note-list.component.css']
 })
 export class DemandNoteListComponent implements OnInit {
-    @Output()reloadDemandNotes= new EventEmitter<Boolean>();
+    @Output() reloadDemandNotes = new EventEmitter<Boolean>();
     public settings = {
         selectMode: 'single',  // single|multi
         hideHeader: false,
@@ -50,14 +50,10 @@ export class DemandNoteListComponent implements OnInit {
                 type: 'custom',
                 renderComponent: CurrencyFormatterComponent,
             },
-            varField10:{
-                title: 'Remarks',
+            varField10: {
+                title: 'Status',
                 type: 'string'
-            },
-            rate: {
-                title: 'RATE',
-                type: 'string'
-            },
+            }
         },
         pager: {
             display: true,
@@ -73,18 +69,19 @@ export class DemandNoteListComponent implements OnInit {
     ngOnInit(): void {
     }
 
-    viewDemandNote(demandNoteId: any){
-        this.dialog.open(ViewDemandNoteComponent,{
+    viewDemandNote(demandNoteId: any) {
+        this.dialog.open(ViewDemandNoteComponent, {
             data: {
                 id: demandNoteId
             }
         }).afterClosed()
             .subscribe(
-            res=> {
-                this.reloadDemandNotes.emit(res)
-            }
-        )
+                res => {
+                    this.reloadDemandNotes.emit(res)
+                }
+            )
     }
+
     onCustomAction(action: any) {
         switch (action.action) {
             case 'download':

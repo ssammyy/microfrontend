@@ -2,7 +2,7 @@
 <!--  This site was created in Webflow. http://www.webflow.com  -->
 <!--  Last Published: Wed Mar 18 2020 20:03:10 GMT+0000 (Coordinated Universal Time)  -->
 <html data-wf-page="5e70fb3a565ebdc05ddb37cf" data-wf-site="5e70fb3a565ebd99c1db37ce"
-      xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <title>KEBS</title>
@@ -11,7 +11,7 @@
 
 </head>
 <body>
-<div th:replace="fragments/general-form.html :: dashboard-page" ></div>
+<div th:replace="fragments/general-form.html :: dashboard-page"></div>
 
 <div class="dashboard-body">
     <div th:replace="fragments/general-form.html :: side-navigation-bar" ></div>
@@ -295,7 +295,19 @@
                                         <div class="list-text-accordion"
                                              th:text="${manifestDetails?.carrierAgentPin}"></div>
                                     </li>
+                                    <li class=<li class="list-item-accordion">
+                                        <div class="list-title-accordion">NIL CARGO</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.nilCargo}"></div>
+                                    </li>
                                     <li class="list-item-accordion">
+                                        <div class="list-title-accordion">ON BOARD</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.onboard}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">REMARK</div>
+                                        "list-item-accordion">
                                         <div class="list-title-accordion">CARRIER AGENT BUSINESS NATION</div>
                                         <div class="list-text-accordion"
                                              th:text="${manifestDetails?.carrierAgentBusinessNation}"></div>
