@@ -155,12 +155,14 @@ import {EditorTasksComponent} from "./apollowebs/standards-development/publishin
 import {StdHopTasksComponent} from "./apollowebs/standards-development/publishing/std-hop-tasks/std-hop-tasks.component";
 import {StdPublishingComponent} from "./apollowebs/standards-development/publishing/std-publishing/std-publishing.component";
 import {CallsForApplicationComponent} from "./apollowebs/standards-development/membershipToTc/calls-for-application/calls-for-application.component";
-import {ReviewApplicationsComponent} from "./apollowebs/standards-development/standard-request/review-applications/review-applications.component";
 import {ReviewRecommendationComponent} from "./apollowebs/standards-development/membershipToTc/review-recommendation/review-recommendation.component";
 import {ReviewRecommendationOfSpcComponentComponent} from "./apollowebs/standards-development/membershipToTc/review-recommendation-of-spc-component/review-recommendation-of-spc-component.component";
 import {SubmitApplicationComponent} from "./apollowebs/standards-development/membershipToTc/submit-application/submit-application.component";
 import {UploadTcMemberComponentComponent} from "./apollowebs/standards-development/membershipToTc/upload-tc-member-component/upload-tc-member-component.component";
 import {ReviewApplicationComponent} from "./apollowebs/standards-development/membershipToTc/review-application/review-application.component";
+import {ReviewApplicationsAcceptedComponent} from "./apollowebs/standards-development/membershipToTc/review-applications-accepted/review-applications-accepted.component";
+import {ReviewApplicationsRejectedComponent} from "./apollowebs/standards-development/membershipToTc/review-applications-rejected/review-applications-rejected.component";
+import { ApproveApplicationComponent } from './apollowebs/standards-development/membershipToTc/approve-application/approve-application.component';
 
 export const routes: Routes = [
     {
@@ -1045,6 +1047,25 @@ export const routes: Routes = [
         //canActivate: [AuthGuard],
         children: [{path: '', component: ReviewRecommendationOfSpcComponentComponent}]
     },
+    {
+        path: 'reviewAccepted',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: ReviewApplicationsAcceptedComponent}]
+    },
+    {
+        path: 'reviewRejected',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: ReviewApplicationsRejectedComponent}]
+    },
+
+    {
+        path: 'approveApplication',
+        component: StandardRequestComponent,
+        children: [{path: '', component: ApproveApplicationComponent}]
+    },
+
     {
         path: 'uploadTcMember',
         component: AdminLayoutComponent,

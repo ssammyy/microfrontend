@@ -3,6 +3,8 @@
 ###
 GET https://localhost:8006/api/v1/migration/anonymous/titles/
 
+#######
+GET https://localhost:8006/api/v1/migration/anonymous/membershipToTC/approve?applicationID=$2a$10$6zKH8JJ8vcVzOLe7ntWF6OODzGIdlP52.a7RuNoVW8gIfCnWEMe7G
 ###
 GET https://localhost:8006/api/v1/migration/secure/user/details/2046
 Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJJYW5fS2lwcm9ubyIsImlzcyI6ImtpbXMua2Vicy5vcmciLCJpYXQiOjE2MjkzNzcwNzcsImV4cCI6MTYyOTM4MzA3NywiYWRkcmVzcyI6IjEyNy4wLjAuMSIsInVzZXJBZ2VudCI6IltBcGFjaGUtSHR0cENsaWVudC80LjUuMTIgKEphdmEvMTEuMC4xMCldIiwiZnVsbE5hbWUiOiJJYW4gS2lwcm9ubyIsInJvbGVzIjoiUEVSTUlUX0FQUExJQ0FUSU9OLFBFUk1JVF9SRU5FV0FMLFBWT0NfQVBQTElDQVRJT05fUkVBRCxMSVNUX0NPTVBBTlksTU9ESUZZX0NPTVBBTlkifQ.T6rnoVjZ0kkIKUa_th1YYQKLFgxVw0O7dbkElm_7yJTCrPIzSEOt4Tj40eIa45VvdkBaUK7o13MKGp9nub_eUg
@@ -13,7 +15,6 @@ Content-Type: application/json
 
 {
   "username": "marvim@test.com",
-
   "password": "password"
 }
 
