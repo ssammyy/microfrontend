@@ -148,6 +148,78 @@ class MembershipToTCController(
 
     }
 
+    @GetMapping("/membershipToTC/getApproved")
+    fun getApprovedMembers(): List<MembershipTCApplication> {
+        return membershipToTCService.getApprovedEmail()
+    }
+
+    @PostMapping("/membershipToTC/forwardToHodIct")
+    @ResponseBody
+    fun forwardToHodIct(
+        @RequestBody membershipTCApplication: MembershipTCApplication,
+        @RequestParam("tCApplicationId") tCApplicationId: Long,
+        @RequestParam("decision") decision: String //scope
+    ) {
+        return membershipToTCService.decisionOnApprovedHof(membershipTCApplication, tCApplicationId, decision)
+
+    }
+
+    @GetMapping("/membershipToTC/getCredentials")
+    fun getMembersToCreateCredentials(): List<MembershipTCApplication> {
+        return membershipToTCService.getAllUsersToCreateCredentials()
+    }
+
+    @PostMapping("/membershipToTC/createdCredentials")
+    @ResponseBody
+    fun createdCredentials(
+        @RequestBody membershipTCApplication: MembershipTCApplication,
+        @RequestParam("tCApplicationId") tCApplicationId: Long
+    ) {
+        return membershipToTCService.decisionUponCreation(membershipTCApplication, tCApplicationId)
+
+    }
+
+    @GetMapping("/membershipToTC/getAllUsersCreatedCredentials")
+    fun getAllUsersCreatedCredentials(): List<MembershipTCApplication> {
+        return membershipToTCService.getAllUsersCreatedCredentials()
+    }
+
+    @PostMapping("/membershipToTC/induction")
+    @ResponseBody
+    fun sendInductionEmail(
+        @RequestBody membershipTCApplication: MembershipTCApplication,
+        @RequestParam("tCApplicationId") tCApplicationId: Long,
+    ) {
+        return membershipToTCService.sendEmailForInduction(membershipTCApplication, tCApplicationId)
+
+    }
+
+    @GetMapping("/anonymous/membershipToTC/getInduction")
+    fun getInduction(
+        response: ServerResponse,
+        @RequestParam("applicationID") applicationID: String
+    ): ResponseEntity<String> {
+        return membershipToTCService.approveUserInduction(applicationID)
+
+    }
+
+    @GetMapping("/membershipToTC/getAllUsersApprovedForInduction")
+    fun getAllUsersApprovedForInduction(): List<MembershipTCApplication> {
+        return membershipToTCService.getAllUsersApprovedForInduction()
+    }
+
+    @PostMapping("/membershipToTC/sendEmailForFirstMeeting")
+    @ResponseBody
+    fun sendEmailForFirstMeeting(
+        @RequestBody membershipTCApplication: MembershipTCApplication,
+        @RequestParam("tCApplicationId") tCApplicationId: Long,
+        @RequestParam("meetingDate") meetingDate: String,
+
+        ) {
+        return membershipToTCService.sendEmailForFirstMeeting(membershipTCApplication, tCApplicationId, meetingDate)
+
+    }
+
 
     @GetMapping("/membershipToTC/getTCMemberCreationTasks")
     fun getTCMemberCreationTasks(): List<TaskDetails> {

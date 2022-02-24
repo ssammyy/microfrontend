@@ -158,11 +158,15 @@ import {CallsForApplicationComponent} from "./apollowebs/standards-development/m
 import {ReviewRecommendationComponent} from "./apollowebs/standards-development/membershipToTc/review-recommendation/review-recommendation.component";
 import {ReviewRecommendationOfSpcComponentComponent} from "./apollowebs/standards-development/membershipToTc/review-recommendation-of-spc-component/review-recommendation-of-spc-component.component";
 import {SubmitApplicationComponent} from "./apollowebs/standards-development/membershipToTc/submit-application/submit-application.component";
-import {UploadTcMemberComponentComponent} from "./apollowebs/standards-development/membershipToTc/upload-tc-member-component/upload-tc-member-component.component";
 import {ReviewApplicationComponent} from "./apollowebs/standards-development/membershipToTc/review-application/review-application.component";
 import {ReviewApplicationsAcceptedComponent} from "./apollowebs/standards-development/membershipToTc/review-applications-accepted/review-applications-accepted.component";
 import {ReviewApplicationsRejectedComponent} from "./apollowebs/standards-development/membershipToTc/review-applications-rejected/review-applications-rejected.component";
-import { ApproveApplicationComponent } from './apollowebs/standards-development/membershipToTc/approve-application/approve-application.component';
+import {ApproveApplicationComponent} from './apollowebs/standards-development/membershipToTc/approve-application/approve-application.component';
+import {ApprovedMembersComponent} from "./apollowebs/standards-development/membershipToTc/approved-members/approved-members.component";
+import {MembersToCreateCredentialsComponent} from "./apollowebs/standards-development/membershipToTc/members-to-create-credentials/members-to-create-credentials.component";
+import {MembersCreatedCredentialsComponent} from "./apollowebs/standards-development/membershipToTc/members-created-credentials/members-created-credentials.component";
+import {ApproveInductionComponent} from "./apollowebs/standards-development/membershipToTc/approve-induction/approve-induction.component";
+import {ApproveInductionMembersComponent} from "./apollowebs/standards-development/membershipToTc/approve-induction-members/approve-induction-members.component";
 
 export const routes: Routes = [
     {
@@ -1065,12 +1069,41 @@ export const routes: Routes = [
         component: StandardRequestComponent,
         children: [{path: '', component: ApproveApplicationComponent}]
     },
+    {
+        path: 'approvedMembers',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: ApprovedMembersComponent}]
+    },
+    {
+        path: 'createCredentials',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: MembersToCreateCredentialsComponent}]
+    },
+    {
+        path: 'sendInductionEmail',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: MembersCreatedCredentialsComponent}]
+    },
+    {
+        path: 'getInduction',
+        component: StandardRequestComponent,
+        children: [{path: '', component: ApproveInductionComponent}]
+    },
+    {
+        path: 'sendNotice',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: MembersCreatedCredentialsComponent}]
+    },
 
     {
         path: 'uploadTcMember',
         component: AdminLayoutComponent,
         //canActivate: [AuthGuard],
-        children: [{path: '', component: UploadTcMemberComponentComponent}]
+        children: [{path: '', component: ApproveInductionMembersComponent}]
     },
     /****************************************************************
      * END OF STANDARD DEVELOPMENT - MEMBERSHIP OF TECHNICAL COMMITTEE

@@ -285,6 +285,11 @@ import {ManageCorporateCustomerComponent} from './apollowebs/invoice/corporate/m
 import {ReviewApplicationsAcceptedComponent} from './apollowebs/standards-development/membershipToTc/review-applications-accepted/review-applications-accepted.component';
 import {ReviewApplicationsRejectedComponent} from './apollowebs/standards-development/membershipToTc/review-applications-rejected/review-applications-rejected.component';
 import {ApproveApplicationComponent} from "./apollowebs/standards-development/membershipToTc/approve-application/approve-application.component";
+import { ApprovedMembersComponent } from './apollowebs/standards-development/membershipToTc/approved-members/approved-members.component';
+import { MembersToCreateCredentialsComponent } from './apollowebs/standards-development/membershipToTc/members-to-create-credentials/members-to-create-credentials.component';
+import { MembersCreatedCredentialsComponent } from './apollowebs/standards-development/membershipToTc/members-created-credentials/members-created-credentials.component';
+import { ApproveInductionComponent } from './apollowebs/standards-development/membershipToTc/approve-induction/approve-induction.component';
+import { ApproveInductionMembersComponent } from './apollowebs/standards-development/membershipToTc/approve-induction-members/approve-induction-members.component';
 
 
 @NgModule({
@@ -599,7 +604,12 @@ import {ApproveApplicationComponent} from "./apollowebs/standards-development/me
         ManageCorporateCustomerComponent,
         ReviewApplicationsAcceptedComponent,
         ReviewApplicationsRejectedComponent,
-        ApproveApplicationComponent
+        ApproveApplicationComponent,
+        ApprovedMembersComponent,
+        MembersToCreateCredentialsComponent,
+        MembersCreatedCredentialsComponent,
+        ApproveInductionComponent,
+        ApproveInductionMembersComponent
     ],
     providers: [DatePipe,
     ],
