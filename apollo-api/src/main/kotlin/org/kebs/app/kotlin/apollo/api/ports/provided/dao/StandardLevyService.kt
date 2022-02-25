@@ -137,9 +137,6 @@ class StandardLevyService(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
         val variables: MutableMap<String, Any> = mutableMapOf()
-        companyProfileRepo.findByIdOrNull(companyProfileEntity.id)
-            ?.let {
-                if ((it.assignStatus ?: 0L) == 1L) {
                     companyProfileEntity.assignedTo?.let { variables["assignedTo"] = it }
                     companyProfileEntity.name?.let { variables["companyName"] = it }
                     companyProfileEntity.kraPin?.let { variables["kraPin"] = it }
@@ -197,12 +194,8 @@ class StandardLevyService(
                     )
                     return ProcessInstanceSiteResponse(processInstance.id, processInstance.isEnded)
 
-                } else {
-                    return ProcessInstanceSiteResponse("Already Assigned", false)
 
-                }
-            }
-            ?: throw NullValueNotAllowedException("Company does not Exist")
+
 
 
     }

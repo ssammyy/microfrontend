@@ -290,6 +290,10 @@ import { MembersToCreateCredentialsComponent } from './apollowebs/standards-deve
 import { MembersCreatedCredentialsComponent } from './apollowebs/standards-development/membershipToTc/members-created-credentials/members-created-credentials.component';
 import { ApproveInductionComponent } from './apollowebs/standards-development/membershipToTc/approve-induction/approve-induction.component';
 import { ApproveInductionMembersComponent } from './apollowebs/standards-development/membershipToTc/approve-induction-members/approve-induction-members.component';
+import { StdLevyApplicationsComponent } from './apollowebs/standards-levy/std-levy-applications/std-levy-applications.component';
+import { StdLevyTasksComponent } from './apollowebs/standards-levy/std-levy-tasks/std-levy-tasks.component';
+import { StdLevyPendingTasksComponent } from './apollowebs/standards-levy/std-levy-pending-tasks/std-levy-pending-tasks.component';
+import { StdLevyCompleteTasksComponent } from './apollowebs/standards-levy/std-levy-complete-tasks/std-levy-complete-tasks.component';
 
 
 @NgModule({
@@ -609,7 +613,12 @@ import { ApproveInductionMembersComponent } from './apollowebs/standards-develop
         MembersToCreateCredentialsComponent,
         MembersCreatedCredentialsComponent,
         ApproveInductionComponent,
-        ApproveInductionMembersComponent
+        ApproveInductionMembersComponent,
+        ApproveApplicationComponent,
+        StdLevyApplicationsComponent,
+        StdLevyTasksComponent,
+        StdLevyPendingTasksComponent,
+        StdLevyCompleteTasksComponent
     ],
     providers: [DatePipe,
     ],

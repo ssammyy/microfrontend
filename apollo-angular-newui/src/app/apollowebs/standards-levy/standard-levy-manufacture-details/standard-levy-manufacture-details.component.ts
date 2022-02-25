@@ -1112,6 +1112,8 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
             }
         );
     }
+
+
     showNotification(from: any, align: any) {
         const type = ['', 'info', 'success', 'warning', 'danger', 'rose', 'primary'];
 

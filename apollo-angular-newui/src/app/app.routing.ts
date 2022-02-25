@@ -158,6 +158,7 @@ import {CallsForApplicationComponent} from "./apollowebs/standards-development/m
 import {ReviewRecommendationComponent} from "./apollowebs/standards-development/membershipToTc/review-recommendation/review-recommendation.component";
 import {ReviewRecommendationOfSpcComponentComponent} from "./apollowebs/standards-development/membershipToTc/review-recommendation-of-spc-component/review-recommendation-of-spc-component.component";
 import {SubmitApplicationComponent} from "./apollowebs/standards-development/membershipToTc/submit-application/submit-application.component";
+import {UploadTcMemberComponentComponent} from "./apollowebs/standards-development/membershipToTc/upload-tc-member-component/upload-tc-member-component.component";
 import {ReviewApplicationComponent} from "./apollowebs/standards-development/membershipToTc/review-application/review-application.component";
 import {ReviewApplicationsAcceptedComponent} from "./apollowebs/standards-development/membershipToTc/review-applications-accepted/review-applications-accepted.component";
 import {ReviewApplicationsRejectedComponent} from "./apollowebs/standards-development/membershipToTc/review-applications-rejected/review-applications-rejected.component";
@@ -167,6 +168,9 @@ import {MembersToCreateCredentialsComponent} from "./apollowebs/standards-develo
 import {MembersCreatedCredentialsComponent} from "./apollowebs/standards-development/membershipToTc/members-created-credentials/members-created-credentials.component";
 import {ApproveInductionComponent} from "./apollowebs/standards-development/membershipToTc/approve-induction/approve-induction.component";
 import {ApproveInductionMembersComponent} from "./apollowebs/standards-development/membershipToTc/approve-induction-members/approve-induction-members.component";
+import {StdLevyCompleteTasksComponent} from "./apollowebs/standards-levy/std-levy-complete-tasks/std-levy-complete-tasks.component";
+import {StdLevyPendingTasksComponent} from "./apollowebs/standards-levy/std-levy-pending-tasks/std-levy-pending-tasks.component";
+import {StdLevyApplicationsComponent} from "./apollowebs/standards-levy/std-levy-applications/std-levy-applications.component";
 
 export const routes: Routes = [
     {
@@ -1103,7 +1107,7 @@ export const routes: Routes = [
         path: 'uploadTcMember',
         component: AdminLayoutComponent,
         //canActivate: [AuthGuard],
-        children: [{path: '', component: ApproveInductionMembersComponent}]
+        children: [{path: '', component: UploadTcMemberComponentComponent}]
     },
     /****************************************************************
      * END OF STANDARD DEVELOPMENT - MEMBERSHIP OF TECHNICAL COMMITTEE
@@ -1192,6 +1196,22 @@ export const routes: Routes = [
         path: 'slManufacturers', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [{path: '', component: StandardLevyManufactureDetailsComponent}]
+    },
+
+    {
+        path: 'slApplications', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: StdLevyApplicationsComponent}]
+    },
+    {
+        path: 'slPendingTasks', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: StdLevyPendingTasksComponent}]
+    },
+    {
+        path: 'slCompleteTasks', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: StdLevyCompleteTasksComponent}]
     },
 
 
