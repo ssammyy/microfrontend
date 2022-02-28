@@ -1,12 +1,12 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {ReviewApplicationTask} from "../../../../core/store/data/std/request_std.model";
-import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
 import {MembershipToTcService} from "../../../../core/store/data/std/membership-to-tc.service";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {NgxSpinnerService} from "ngx-spinner";
 import {HttpErrorResponse} from "@angular/common/http";
 import {NgForm} from "@angular/forms";
+import {DataTableDirective} from "angular-datatables";
 
 @Component({
     selector: 'app-approved-members',
@@ -39,10 +39,12 @@ export class ApprovedMembersComponent implements OnInit {
     ngOnInit(): void {
         this.getApplicationsForReview();
 
+
     }
 
 
     public getApplicationsForReview(): void {
+
         this.loadingText = "Retrieving Approved Applicants Please Wait ...."
         this.SpinnerService.show();
         this.membershipToTcService.getApprovedMembers().subscribe(
@@ -103,6 +105,7 @@ export class ApprovedMembersComponent implements OnInit {
         this.notifyService.showSuccess(message, title)
 
     }
+
 
     public decisionOnApplications(reviewApplicationTask: ReviewApplicationTask, tCApplicationId: number, decision: string): void {
         if (reviewApplicationTask.varField10 === "") {
