@@ -321,6 +321,7 @@ import {ViewComplaintDetailsComponent} from "./apollowebs/pvoc/complaints/view-c
         RouterModule,
         AppRoutingModule,
         CoreModule,
+        MatRadioModule,
         ChartsModule,
         NgxSpinnerModule,
         WavesModule,
