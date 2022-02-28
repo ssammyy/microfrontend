@@ -1,0 +1,21 @@
+ul li {
+  padding-bottom: 3%;
+}
+
+h4 {
+  color: #0066B1;
+}
+
+
+.overdue-pill {
+  background-color: #DA2020;
+  color: white;
+  border-radius: 8px;
+  width: max-content;
+  height: 25px;
+  text-align: center;
+  font-weight: bold;
+  padding: 0 10px;
+}
+
+

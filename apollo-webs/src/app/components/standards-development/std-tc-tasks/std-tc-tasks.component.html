@@ -1,0 +1,27 @@
+<div class="justify-content-between d-flex flex-wrap align-items-center mt-5">
+  <div class="d-flex flex-wrap align-items-center">
+    <h5 class="mr-4">All Tasks</h5>
+    <div class="resolved-pill">
+      <p>{{tcTasks.length}}</p>
+    </div>
+  </div>
+
+  <button class="btn btn-sm btn-outline-secondary mr-2">EXPORT</button>
+
+</div>
+<table class="table-hover">
+  <thead>
+  <th class="id">ID</th>
+  <th class="task">Task</th>
+  <th class="action">Action</th>
+  <th></th>
+  </thead>
+  <tbody>
+  <tr *ngFor="let tcTask of tcTasks | paginate: { itemsPerPage: 10, currentPage: p2 }">
+    <td>{{tcTasks.length}}</td>
+    <td>{{tcTask.name}}</td>
+    <td><a   class="btn btn-primary tooltips" data-placement="top"  data-original-title="Upload NWI">New work Item</a></td>
+    <td><button type="submit" class="btn btn-danger">Reject</button></td>
+  </tr>
+  </tbody>
+</table>

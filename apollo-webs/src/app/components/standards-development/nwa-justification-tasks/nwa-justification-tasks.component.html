@@ -1,0 +1,86 @@
+<div class="container" id="main-container">
+  <div class="justify-content-between d-flex flex-wrap align-items-center mt-5">
+    <div class="d-flex flex-wrap align-items-center">
+      <h5 class="mr-4">All Tasks</h5>
+      <div class="resolved-pill">
+        <p>{{tasks.length}}</p>
+      </div>
+    </div>
+
+    <button class="btn btn-sm btn-outline-secondary mr-2">EXPORT</button>
+
+  </div>
+  <table class="table-hover">
+    <thead>
+    <th class="knw">KNW Committee</th>
+    <th class="sl">SL</th>
+    <th class="requestNumber">Request Number</th>
+    <th class="department">Department</th>
+    <th class="issuesAddressed">Issues Addressed</th>
+    <th class="referenceMaterial">Reference Material</th>
+    <th class="action">Action</th>
+    <th></th>
+    </thead>
+    <tbody>
+    <tr  *ngFor="let task of tasks | paginate: { itemsPerPage: 10, currentPage: p2 }">
+      <td>{{task.taskData.knw}}</td>
+      <td>{{task.taskData.sl}}</td>
+      <td>{{task.taskData.requestNumber}}</td>
+      <td>{{task.taskData.department}}</td>
+      <td>{{task.taskData.issuesAddressed}}</td>
+      <td>{{task.taskData.referenceMaterial}}</td>
+      <td><a  (click)="onOpenModal(task,'approve')" class="btn btn-primary btn-sm tooltips" data-placement="top"  data-original-title="Approve"> Approve</a></td>
+      <td><button (click)="onOpenModal(task,'reject')" type="submit" class="btn btn-danger btn-sm">Reject</button></td>
+    </tr>
+    </tbody>
+  </table>
+
+  <pagination-controls (pageChange)="p2 = $event"></pagination-controls>
+  <div class="modal fade" id="approveModal" tabindex="-1" role="dialog" aria-labelledby="approveExampleModalLabel" aria-hidden="true">a
+    <div class="modal-dialog " role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="approveExampleModalLabel">Approve Justification</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form #approveForm="ngForm" >
+          <div class="modal-body">
+            <p>Approve justification  </p>
+          </div>
+          <input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskId" >
+          <input type="hidden" ngModel="true" name="approved"  >
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary btn-sm" (click)="onDecision(approveForm.value)" data-dismiss="modal">Approve</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-labelledby="rejectExampleModalLabel" aria-hidden="true">a
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="rejectExampleModalLabel">Approve Justification</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form #rejectForm="ngForm" >
+          <div class="modal-body">
+            <p>Reject justification  </p>
+          </div>
+          <input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskId" >
+          <input type="hidden" ngModel="false" name="approved"  >
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary btn-sm" (click)="onDecision(rejectForm.value)" data-dismiss="modal">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+

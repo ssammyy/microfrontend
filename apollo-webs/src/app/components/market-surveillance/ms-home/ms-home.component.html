@@ -1,0 +1,73 @@
+<div class="pb-2 mb-3 border-bottom">
+  <h1 class="h2">Market Surveillance</h1>
+  <p>Welcome Back {{user?.fullName}},</p>
+</div>
+
+<div class="d-block mt-4">
+  <div class="row">
+
+    <div class="col-lg-4 mb-4">
+
+      <div class="card h-100">
+        <div routerLink="/complaints-page" class="card-body">
+          <div class="card-title">
+            <h3>Complaints</h3>
+          </div>
+          <div class="card-text">
+            <p>Ensuring that all complaints related to substandard and counterfeit products are acknowledged, reviewed,
+              evaluated and investigated to conclusion.</p>
+          </div>
+
+        </div>
+        <div class="card-footer">
+<!--          <a class="nav-link" routerLink="/complaints">-->
+          <span routerLink="/complaints-page">Go to Complaints <fa-icon [icon]="arrowRightIcon" style="padding-left: 3px"></fa-icon></span>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4 mb-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <div class="card-title">
+            <h3>Workplans</h3>
+          </div>
+          <div class="card-text">
+            <p>Conducting sector-targeted market surveillance activities (Compliance Assessment) using a programmed
+              schedule of activities and results of product risk assessment.</p>
+          </div>
+
+        </div>
+        <div class="card-footer">
+          <span>Go to Workplans <fa-icon [icon]="arrowRightIcon" style="padding-left: 3px"></fa-icon></span>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4 mb-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <div class="card-title">
+            <h3>Fuel Requests</h3>
+          </div>
+          <div class="card-text">
+            <p>Monitoring of products in the Kenyan market to ensure that they conform to relevant technical regulations
+              (Kenya Standards or Approved Specifications) with respect to health, safety and environmental
+              requirements, and to ensure that fair trade practices are promoted.</p>
+          </div>
+
+        </div>
+        <div class="card-footer">
+          <span>Go to Fuel Requests <fa-icon [icon]="arrowRightIcon" style="padding-left: 3px"></fa-icon></span>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+
