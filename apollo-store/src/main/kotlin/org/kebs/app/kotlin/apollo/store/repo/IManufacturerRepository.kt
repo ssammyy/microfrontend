@@ -119,7 +119,7 @@ interface StdLevyNotificationFormRepository : HazelcastRepository<StdLevyNotific
     @Query( value = "SELECT max(ID)  FROM DAT_KEBS_STD_LEVY_NOTIFICATION_FORM_TBL WHERE MANUFACTURER_ID= :id ",
         nativeQuery = true )
     fun findTopByManufactureIdOrderByIdDesc(@Param("id") id: Long?): Long?
-    fun findFirstByManufactureIdOrderByIdDesc(manufactureId: Long): StdLevyNotificationForm
+  //  fun findFirstByManufactureIdOrderByIdDesc(manufactureId: Long): StdLevyNotificationForm
 }
 
 @Repository

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {Subject} from "rxjs";
 
 import {
@@ -45,8 +45,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
     dtElement2: DataTableDirective;
 
     dtOptions: DataTables.Settings[] = [];
-    dtTrigger: Subject<any>[] = [];
-    //dtTrigger1: Subject<any> = new Subject();
+    dtTrigger: Subject<any> = new Subject<any>();
     //dtTrigger: Subject<any> = new Subject();
     displayTable: boolean = false;
 
@@ -658,10 +657,16 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
     );
   }
     rerender(): void {
-        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-            dtInstance.destroy();
-            this.dtTrigger[0].next();
-        });}
+        if (this.isDtInitialized) {
+            this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                dtInstance.destroy();
+                this.dtTrigger.next();
+            });
+        } else {
+            this.isDtInitialized = true
+            this.dtTrigger.next();
+        }
+    }
 
 
     public getUserDetails(): void{
@@ -844,10 +849,13 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         this.levyService.assignCompanyTasks(this.assignCompanyTaskFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
-                this.reloadCurrentRoute();
+               // this.reloadCurrentRoute();
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Task Assigned`);
-                this.router.navigateByUrl('/slManufacturers').then(r => {});
+                this.getManufacturerList()
+                // this.router.navigateByUrl('/slManufacturers').then(r => {});
+              //  window.location.href = "/slManufacturers";
+
 
             },
             (error: HttpErrorResponse) => {
@@ -1166,6 +1174,12 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         this.router.routeReuseStrategy.shouldReuseRoute = () => false;
         this.router.onSameUrlNavigation = 'reload';
         this.router.navigate([currentUrl]);
+    }
+
+    @ViewChild('closeViewModal') private closeModal: ElementRef;
+
+    public hideModel() {
+        this.closeModal?.nativeElement.click();
     }
 
 }

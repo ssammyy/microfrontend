@@ -12,6 +12,7 @@ import {MatStepperModule} from '@angular/material/stepper';
 import {MatIconModule} from '@angular/material/icon';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatDialogModule} from '@angular/material/dialog';
+import {MatRadioModule} from '@angular/material/radio';
 
 
 import {AppComponent} from './app.component';
@@ -294,6 +295,12 @@ import { StdLevyApplicationsComponent } from './apollowebs/standards-levy/std-le
 import { StdLevyTasksComponent } from './apollowebs/standards-levy/std-levy-tasks/std-levy-tasks.component';
 import { StdLevyPendingTasksComponent } from './apollowebs/standards-levy/std-levy-pending-tasks/std-levy-pending-tasks.component';
 import { StdLevyCompleteTasksComponent } from './apollowebs/standards-levy/std-levy-complete-tasks/std-levy-complete-tasks.component';
+import {ViewWaiverApplicationsComponent} from "./apollowebs/pvoc/waivers/view-waiver-applications/view-waiver-applications.component";
+import {ViewWaiverDetailsComponent} from "./apollowebs/pvoc/waivers/view-waiver-details/view-waiver-details.component";
+import {ViewExemptionApplicationsComponent} from "./apollowebs/pvoc/exemptions/view-exemption-applications/view-exemption-applications.component";
+import {ViewExemptionDetailsComponent} from "./apollowebs/pvoc/exemptions/view-exemption-details/view-exemption-details.component";
+import {ViewComplaintsComponent} from "./apollowebs/pvoc/complaints/view-complaints/view-complaints.component";
+import {ViewComplaintDetailsComponent} from "./apollowebs/pvoc/complaints/view-complaint-details/view-complaint-details.component";
 
 
 @NgModule({
@@ -618,7 +625,13 @@ import { StdLevyCompleteTasksComponent } from './apollowebs/standards-levy/std-l
         StdLevyApplicationsComponent,
         StdLevyTasksComponent,
         StdLevyPendingTasksComponent,
-        StdLevyCompleteTasksComponent
+        StdLevyCompleteTasksComponent,
+        ViewWaiverApplicationsComponent,
+        ViewWaiverDetailsComponent,
+        ViewExemptionApplicationsComponent,
+        ViewExemptionDetailsComponent,
+        ViewComplaintsComponent,
+        ViewComplaintDetailsComponent
     ],
     providers: [DatePipe,
     ],
