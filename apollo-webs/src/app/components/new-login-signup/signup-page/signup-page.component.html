@@ -1,0 +1,193 @@
+<div [ngSwitch]="page">
+
+  <div *ngSwitchCase="1" style="margin-top: 5%">
+      <form class="form" [formGroup]="firstFormGroup" (ngSubmit)="onClickNext(firstFormGroup.valid)">
+        <div class="row">
+          <div class="col">
+            <div class="form-group">
+              <label><b>Email address</b></label>
+              <input type="text" class="form-control two-column-input" aria-label="Small"
+                     aria-describedby="inputGroup-sizing-sm"
+                     placeholder="e.g. info@business.com"
+                     formControlName="email"
+                     name="email" required>
+              <div
+                *ngIf="secondFormGroup.controls['email'].invalid && (secondFormGroup.controls['email'].dirty
+              || secondFormGroup.controls['email'].touched)"
+                class="alert">
+                <div *ngIf="secondFormGroup.controls['email'].errors?.required" style="color: red">
+                  Please enter email address
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="form-group">
+              <label><b>Phone number</b></label>
+              <input type="text" class="form-control two-column-input"
+                     formControlName="phoneNumber"
+                     placeholder="e.g. +25408943212" name="phoneNumber" required>
+              <div
+                *ngIf="secondFormGroup.controls['phoneNumber'].invalid && (secondFormGroup.controls['phoneNumber'].dirty
+              || secondFormGroup.controls['phoneNumber'].touched)"
+                class="alert">
+                <div *ngIf="secondFormGroup.controls['phoneNumber'].errors?.required" style="color: red">
+                  Please enter a valid phone number
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-group">
+              <label><b>Name</b></label>
+              <input type="text" class="form-control two-column-input" aria-label="Small"
+                     aria-describedby="inputGroup-sizing-sm"
+                     placeholder="e.g. info@business.com"
+                     formControlName="email"
+                     name="email" required>
+              <div
+                *ngIf="secondFormGroup.controls['email'].invalid && (secondFormGroup.controls['email'].dirty
+              || secondFormGroup.controls['email'].touched)"
+                class="alert">
+                <div *ngIf="secondFormGroup.controls['email'].errors?.required" style="color: red">
+                  Please enter email address
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="form-group">
+              <label><b>KRA Pin</b></label>
+              <input type="text" class="form-control two-column-input"
+                     formControlName="phoneNumber"
+                     placeholder="e.g. +25408943212" name="phoneNumber" required>
+              <div
+                *ngIf="secondFormGroup.controls['phoneNumber'].invalid && (secondFormGroup.controls['phoneNumber'].dirty
+              || secondFormGroup.controls['phoneNumber'].touched)"
+                class="alert">
+                <div *ngIf="secondFormGroup.controls['phoneNumber'].errors?.required" style="color: red">
+                  Please enter a valid phone number
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <button type="button" value="" class="login-button">
+          <a routerLink="/dashboard2" class="login-ref">NEXT</a></button>
+        <br>
+        <div>
+          <a href="http://" class="reset-credentials">Don't have an account?
+            <span style="text-decoration: underline">Signup here</span></a>
+        </div>
+        <div>
+          <a href="http://" class="reset-credentials">Forgot Username / Password?
+            <span style="text-decoration: underline">Reset</span></a>
+        </div>
+      </form>
+  </div>
+  <div *ngSwitchCase="2" style="margin-top: 5%">
+      <form class="form" [formGroup]="firstFormGroup" (ngSubmit)="onClickNext(firstFormGroup.valid)">
+        <div class="row">
+          <div class="col">
+            <div class="form-group">
+              <label><b>Email address</b></label>
+              <input type="text" class="form-control two-column-input" aria-label="Small"
+                     aria-describedby="inputGroup-sizing-sm"
+                     placeholder="e.g. info@business.com"
+                     formControlName="email"
+                     name="email" required>
+              <div
+                *ngIf="secondFormGroup.controls['email'].invalid && (secondFormGroup.controls['email'].dirty
+              || secondFormGroup.controls['email'].touched)"
+                class="alert">
+                <div *ngIf="secondFormGroup.controls['email'].errors?.required" style="color: red">
+                  Please enter email address
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="form-group">
+              <label><b>Phone number</b></label>
+              <input type="text" class="form-control two-column-input"
+                     formControlName="phoneNumber"
+                     placeholder="e.g. +25408943212" name="phoneNumber" required>
+              <div
+                *ngIf="secondFormGroup.controls['phoneNumber'].invalid && (secondFormGroup.controls['phoneNumber'].dirty
+              || secondFormGroup.controls['phoneNumber'].touched)"
+                class="alert">
+                <div *ngIf="secondFormGroup.controls['phoneNumber'].errors?.required" style="color: red">
+                  Please enter a valid phone number
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-group">
+              <label><b>Name</b></label>
+              <input type="text" class="form-control two-column-input" aria-label="Small"
+                     aria-describedby="inputGroup-sizing-sm"
+                     placeholder="e.g. info@business.com"
+                     formControlName="email"
+                     name="email" required>
+              <div
+                *ngIf="secondFormGroup.controls['email'].invalid && (secondFormGroup.controls['email'].dirty
+              || secondFormGroup.controls['email'].touched)"
+                class="alert">
+                <div *ngIf="secondFormGroup.controls['email'].errors?.required" style="color: red">
+                  Please enter email address
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="form-group">
+              <label><b>KRA Pin</b></label>
+              <input type="text" class="form-control two-column-input"
+                     formControlName="phoneNumber"
+                     placeholder="e.g. +25408943212" name="phoneNumber" required>
+              <div
+                *ngIf="secondFormGroup.controls['phoneNumber'].invalid && (secondFormGroup.controls['phoneNumber'].dirty
+              || secondFormGroup.controls['phoneNumber'].touched)"
+                class="alert">
+                <div *ngIf="secondFormGroup.controls['phoneNumber'].errors?.required" style="color: red">
+                  Please enter a valid phone number
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <button type="button" value="" class="login-button">
+          <a routerLink="/dashboard2" class="login-ref">NEXT</a></button>
+        <br>
+        <div>
+          <a href="http://" class="reset-credentials">Don't have an account?
+            <span style="text-decoration: underline">Signup here</span></a>
+        </div>
+        <div>
+          <a href="http://" class="reset-credentials">Forgot Username / Password?
+            <span style="text-decoration: underline">Reset</span></a>
+        </div>
+      </form>
+  </div>
+
+  <div *ngSwitchDefault></div>
+
+
+</div>

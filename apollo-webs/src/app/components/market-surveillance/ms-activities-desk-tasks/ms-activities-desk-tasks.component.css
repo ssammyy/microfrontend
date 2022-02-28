@@ -1,0 +1,57 @@
+.nav-pills .nav-link {
+  border-radius: 0;
+}
+
+.nav-pills .nav-link.active, .nav-link.show >.nav-link {
+  color: #121212;
+  text-decoration: none;
+  border-bottom-width: 4px;
+  border-bottom-style: solid;
+  border-bottom-color: #FAA330;
+  background-color: #ffffff !important;
+}
+
+.nav-pills .nav-link:not(.active) {
+  background-color: #ffffff;
+  color: black;
+}
+
+input {
+  border: 0;
+  outline: 0;
+  margin-left: -1%;
+}
+
+.form-control {
+  color: #999999;
+}
+
+::placeholder { /* Most modern browsers support this now. */
+  color: #999999;
+}
+
+.form-control:focus {
+  color: #495057;
+  background-color: #fff;
+  border-color: #ffffff!important;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25)!important;
+}
+
+/*ul li {*/
+/*  display: inline-block;*/
+/*  padding: 10px;*/
+/*}*/
+
+.service-list {
+  list-style-type: none;
+  margin-left: 0;
+  padding-left: 0;
+  display: inline-block;
+}
+
+/*.service-list fa-icon {*/
+/*  float: left;*/
+/*}*/
+
+

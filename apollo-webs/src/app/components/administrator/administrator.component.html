@@ -1,0 +1,139 @@
+<div>
+  <nav class="navbar fixed-top flex-md-nowrap p-3" id="main-nav-under">
+    <div class="navbar-brand col-sm-3 col-md-2 mr-0"><a href="#">
+      <img src="./assets/project-images/kebs.png" style="width: 128px; height: 58px"></a>
+    </div>
+    <input aria-label="Search" class="form-control form-control-dark" placeholder="Search" style="width: 60%"
+           type="text">
+    <ul class="navbar-nav px-3">
+      <li class="nav-item dropdown">
+        <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle" data-toggle="dropdown"
+           href="#" role="button">
+          <img alt="Avatar" class="avatar" src="./assets/project-images/profilepic.png">
+          <!--          <img *ngIf="MyProfile" [src]="MyProfile.logo.url" [alt]="MyProfile.logo.name" class="avatar">-->
+        </a>
+        <div aria-labelledby="navbarDropdown" class="dropdown-menu dropdown-menu-right">
+          <a class="dropdown-item" routerLink="">Profile</a>
+          <a class="dropdown-item" href="#">Settings</a>
+          <div class="dropdown-divider"></div>
+          <a (click)="logout()" class="dropdown-item">Logout</a>
+        </div>
+      </li>
+    </ul>
+  </nav>
+
+  <nav class="navbar flex-md-nowrap p-3" id="main-nav">
+    <div class="navbar-brand col-sm-3 col-md-2 mr-0"><a href="#">
+      <img src="./assets/project-images/kebs.png" style="width: 128px; height: 48px"></a>
+    </div>
+    <input aria-label="Search" class="form-control form-control-dark w-100" placeholder="Search" style="width: 60%"
+           type="text">
+    <ul class="navbar-nav px-3">
+      <li class="nav-item dropdown">
+        <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle" data-toggle="dropdown"
+           id="navbarDropdown" role="button">
+          <img alt="Avatar" class="avatar" src="./assets/images/empty-avatar.png">
+          <!--          <img *ngIf="MyProfile" [src]="MyProfile.logo.url" [alt]="MyProfile.logo.name" class="avatar">-->
+        </a>
+        <div aria-labelledby="navbarDropdown" class="dropdown-menu dropdown-menu-right">
+          <a class="dropdown-item" routerLink="">Profile</a>
+          <a class="dropdown-item" href="#">Settings</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item">Logout</a>
+        </div>
+      </li>
+      <!--      <li class="nav-item">-->
+      <!--        <a class="nav-link" href="#">Link</a>-->
+      <!--      </li>-->
+    </ul>
+  </nav>
+</div>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+      <div class="sidebar-sticky">
+        <ul class="nav sidenav-items flex-column pt-5">
+          <li class="nav-item dropdown">
+            <a aria-expanded="false" class="dropdown-toggle nav-link" data-toggle="collapse" href="#pageSubmenu">
+              <span><fa-icon [icon]="dashboardIcon"></fa-icon></span>
+              <span>Dashboard</span>
+              <!--              <span style="float: right"><fa-icon [icon]="arrowDownIcon"></fa-icon></span>-->
+
+            </a>
+            <ul class="collapse" id="pageSubmenu" style="padding: 0 0 10% 20%">
+              <li><a href="#">Link</a></li>
+              <li><a href="#">Link</a></li>
+              <li class="dropdown-submenu">
+                <a aria-expanded="false" class="dropdown-toggle" data-toggle="collapse" href="#navSubmenu">Link</a>
+                <ul class="collapse" id="navSubmenu" style="padding-left: 5%">
+                  <li><a href="#">Link</a></li>
+                  <li><a href="#">LinkLinkLinkLinkLink</a></li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/profile">
+              <span><fa-icon [icon]="userIcon"></fa-icon></span>
+              <span>Profile</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/reports">
+              <span><fa-icon [icon]="reportsIcon"></fa-icon></span>
+              <span>Reports</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <span><fa-icon [icon]="paymentsIcon"></fa-icon></span>
+              <span>Payment History</span>
+            </a>
+          </li>
+        </ul>
+
+        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+          <span>Saved reports</span>
+          <a class="d-flex align-items-center text-muted" href="#">
+            <span data-feather="plus-circle"></span>
+          </a>
+        </h6>
+        <ul class="nav flex-column mb-2">
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <span data-feather="file-text"></span>
+              Current month
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <span data-feather="file-text"></span>
+              Last quarter
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <span data-feather="file-text"></span>
+              Social engagement
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <span data-feather="file-text"></span>
+              Year-end sale
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="col-md-9 ml-sm-auto col-lg-10 pt-5 px-4" role="main">
+      <main role="main" style="position: relative; overflow-y: auto">
+        <router-outlet #outlet="outlet"></router-outlet>
+      </main>
+    </div>
+  </div>
+</div>

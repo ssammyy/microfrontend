@@ -1,0 +1,62 @@
+<div id="main-container">
+  <div class="container" style="margin-top: 70px;">
+    <h2>Join Requests</h2>
+    <br>
+    <table class="table table-hover">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Designation/ Occupation</th>
+        <th>Address</th>
+        <th>E-mail address</th>
+        <th>Tel. No</th>
+        <th>Date</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody class="table-striped ">
+      <tr>
+        <td>James Chege</td>
+        <td>BSK Developer</td>
+        <td>P.O Box 12686 Nakuru</td>
+        <td>chegejames60@gmail.com</td>
+        <td>0704902807</td>
+        <td>06/05/2021</td>
+        <td>
+          <a   class="btn btn-outline-primary tooltips" data-placement="top"  data-original-title="Yes" data-toggle="modal" data-target="#myModal">Assign SIC Officer</a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <!-- Modal -->
+    <div id="myModal" class="modal fade" role="dialog">
+      <div class="modal-dialog modal-lg">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Division Feedback </h4>
+          </div>
+          <div class="modal-body">
+            <form #sendFeedback="ngForm">
+              <input type="hidden" ngModel="123" name="departmentResponseID" id="departmentResponseID">
+              <input type="hidden" ngModel="456" name="enquiryID" id="enquiryID">
+              <div class="form-group">
+                <select class="form-control form-control-lg" aria-label="Default select example">
+                  <option selected>--Select SIC Officer --</option>
+                  <option value="1">Marvin Makau</option>
+                  <option value="2">Edwin Inganji</option>
+                  <option value="3">Stephen Muganda</option>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-primary"  data-dismiss="modal">Submit</button>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

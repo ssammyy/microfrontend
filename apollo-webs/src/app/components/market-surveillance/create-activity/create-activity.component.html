@@ -1,0 +1,264 @@
+<div class="pb-2 mb-3 mr-2 border-bottom w-100">
+  <h2>
+    <fa-icon [icon]="arrowLeftIcon" routerLink="/workplan-activities"
+             style="padding-right: 3px; cursor: pointer"></fa-icon>
+    Create Activity
+  </h2>
+</div>
+<div class="container-fluid mb-5">
+  <form [formGroup]="activityFormGroup">
+    <div class="form-body">
+
+      <h5 class="mb-3" style="color: #0066B1">Activity Details</h5>
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label><b>Activity Type</b></label>
+            <div>
+              <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                      class="form-control" required
+                      formControlName="activityType"
+                      name="activityType">
+                <option value="" disabled selected hidden>Select</option>
+                <!--<option *ngFor="let industry of AllIndustryTypes" [value]="industry._id">{{industry.industryName}}</option>-->
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="form-group">
+            <label><b>Activity Name</b> </label>
+            <input type="text" class="form-control two-column-input"
+                   formControlName="activityName"
+                   name="activityName" required>
+          </div>
+        </div>
+      </div>
+      <div class="select-complaints" style="display: none">
+        <h5 class="mb-3" style="color: #0066B1">Select Complaint</h5>
+        <div class="form-check">
+          <label class="form-check-label" for="radio1">
+            <input type="radio" class="form-check-input" id="radio1" name="optradio" value="option1" checked>Option 1
+          </label>
+        </div>
+        <div class="form-check">
+          <label class="form-check-label" for="radio2">
+            <input type="radio" class="form-check-input" id="radio2" name="optradio" value="option2">Option 2
+          </label>
+        </div>
+
+      </div>
+
+      <h5 class="mb-3" style="color: #0066B1">Location Details</h5>
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label><b>Department</b></label>
+            <div>
+              <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                      class="form-control" required
+                      formControlName="department"
+                      name="department">
+                <option value="" disabled selected hidden>Select</option>
+                <!--<option *ngFor="let industry of AllIndustryTypes" [value]="industry._id">{{industry.industryName}}</option>-->
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="form-group">
+            <label><b>Division</b></label>
+            <div>
+              <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                      class="form-control" required
+                      formControlName="division"
+                      name="division">
+                <option value="" disabled selected hidden>Select</option>
+                <!--<option *ngFor="let industry of AllIndustryTypes" [value]="industry._id">{{industry.industryName}}</option>-->
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label><b>Region</b></label>
+            <div>
+              <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                      class="form-control" required
+                      formControlName="region"
+                      name="region">
+                <option value="" disabled selected hidden>Select</option>
+                <!--<option *ngFor="let industry of AllIndustryTypes" [value]="industry._id">{{industry.industryName}}</option>-->
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="form-group">
+            <label><b>County</b></label>
+            <div>
+              <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                      class="form-control" required
+                      formControlName="county"
+                      name="county">
+                <option value="" disabled selected hidden>Select</option>
+                <!--<option *ngFor="let industry of AllIndustryTypes" [value]="industry._id">{{industry.industryName}}</option>-->
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label><b>Town</b></label>
+            <div>
+              <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                      class="form-control" required
+                      formControlName="town"
+                      name="town">
+                <option value="" disabled selected hidden>Select</option>
+                <!--<option *ngFor="let industry of AllIndustryTypes" [value]="industry._id">{{industry.industryName}}</option>-->
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h5 class="mb-3" style="color: #0066B1">Product Details</h5>
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label><b>Broad Product Category</b></label>
+            <div>
+              <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                      class="form-control" required
+                      formControlName="broadProductCategory"
+                      name="broadProductCategory">
+                <option value="" disabled selected hidden>Select</option>
+                <!--<option *ngFor="let industry of AllIndustryTypes" [value]="industry._id">{{industry.industryName}}</option>-->
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="form-group">
+            <label><b>Product Classification</b></label>
+            <div>
+              <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                      class="form-control" required
+                      formControlName="productClassification"
+                      name="productClassification">
+                <option value="" disabled selected hidden>Select</option>
+                <!--<option *ngFor="let industry of AllIndustryTypes" [value]="industry._id">{{industry.industryName}}</option>-->
+              </select>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label><b>Product Subcategory</b></label>
+            <div>
+              <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                      class="form-control" required
+                      formControlName="productSubcategory"
+                      name="productSubcategory">
+                <option value="" disabled selected hidden>Select</option>
+                <!--<option *ngFor="let industry of AllIndustryTypes" [value]="industry._id">{{industry.industryName}}</option>-->
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="form-group">
+            <label><b>Product Name</b></label>
+            <input type="text" class="form-control one-column-input" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm"
+                   formControlName="productName"
+                   name="productName" required>
+          </div>
+        </div>
+      </div>
+
+      <h5 class="mb-3" style="color: #0066B1">Resources Required</h5>
+      <div class="row" style="align-items: center; margin-bottom: 10px">
+        <div class="col">
+          <div class="form-group">
+            <label><b>Resource Name</b></label>
+            <input type="text" class="form-control one-column-input" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm"
+                   formControlName="resource"
+                   name="resource" required>
+          </div>
+        </div>
+
+        <div class="col">
+          <button type="submit" class="submit-button"> ADD RESOURCE</button>
+        </div>
+
+      </div>
+      <h6>Added Resources</h6>
+      <div class="row">
+        <div class="col">
+          <div class="list-wrap mb-3" style="background-color: #f9f9f9">
+            <div class="list-item d-flex"><span class="mr-auto">Example Resource</span>
+              <fa-icon [icon]="deleteIcon"></fa-icon>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h5 class="mb-3" style="color: #0066B1">Activity Timelines</h5>
+      <div class="row" style="align-items: center">
+        <div class="col">
+          <div class="form-group">
+            <label><b>Activity Start Date</b></label>
+            <input type="date" class="form-control one-column-input" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm"
+                   formControlName="activityStartDate"
+                   name="activityStartDate" required>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="form-group">
+            <label><b>Activity End Date</b></label>
+            <input type="date" class="form-control one-column-input" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm"
+                   formControlName="activityEndDate"
+                   name="activityEndDate" required>
+          </div>
+        </div>
+
+      </div>
+
+      <h5 class="mb-3" style="color: #0066B1">Activity Budget</h5>
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label><b>Budget in KES</b></label>
+            <input type="text" class="form-control one-column-input" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm"
+                   formControlName="budget"
+                   name="budget" required>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <button type="submit" class="submit-button mt-3">SUBMIT</button>
+
+  </form>
+</div>

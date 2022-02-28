@@ -1,0 +1,226 @@
+html, body {
+  height: 100vh;
+  min-width: 100%;
+  overflow-x: auto;
+  overflow-y: auto;
+  font-family: "DM Sans" !important;
+}
+
+/*.container-fluid {*/
+/*  height: 100vh;*/
+/*}*/
+
+.submit-button {
+  background-color: #0066B1;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  padding: 10px;
+  width: auto;
+}
+
+.action-button {
+  border-radius: 3px;
+  padding: 10px;
+  width: calc(40vh);
+}
+
+.btn-outline-secondary {
+  border-color: #0066B1 !important;
+  color: #0066B1 !important;
+  width: auto;
+}
+
+button:disabled,
+button[disabled]{
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+}
+
+
+table {
+  width: 100%;
+  border: none;
+  margin-left: -2%;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  text-decoration-line: none;
+  font-size: 15px;
+  color: #121212!important;
+  cursor: pointer;
+}
+
+
+a {
+  -webkit-transition: all 0.3s ease-in-out;
+  -o-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+
+
+table {
+  width: 100%;
+  border: none;
+  margin-left: -1%;
+}
+
+th, td {
+  padding: 13px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+@media only screen and (max-width: 800px) {
+
+  #flip-scroll .cf:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+  }
+
+  #flip-scroll * html .cf {
+    zoom: 1;
+  }
+
+  #flip-scroll *:first-child + html .cf {
+    zoom: 1;
+  }
+
+  #flip-scroll table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+
+  #flip-scroll th,
+  #flip-scroll td {
+    margin: 0;
+    vertical-align: top;
+  }
+
+  #flip-scroll th {
+    text-align: left;
+  }
+
+  #flip-scroll table {
+    display: block;
+    position: relative;
+    width: 100%;
+  }
+
+  #flip-scroll thead {
+    display: block;
+    float: left;
+  }
+
+  #flip-scroll tbody {
+    display: block;
+    width: auto;
+    position: relative;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  #flip-scroll thead tr {
+    display: block;
+  }
+
+  #flip-scroll th {
+    display: block;
+    text-align: right;
+  }
+
+  #flip-scroll tbody tr {
+    display: inline-block;
+    vertical-align: top;
+  }
+
+  #flip-scroll td {
+    display: block;
+    min-height: 1.25em;
+    text-align: left;
+  }
+
+
+  /* sort out borders */
+  #flip-scroll th {
+    border-bottom: 0;
+    border-left: 0;
+  }
+
+  #flip-scroll td {
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
+  }
+
+  #flip-scroll tbody tr {
+    border-left: 1px solid #babcbf;
+  }
+
+  #flip-scroll th:last-child,
+  #flip-scroll td:last-child {
+    border-bottom: 1px solid #babcbf;
+  }
+}
+
+.resolved-pill {
+  background-color: #FEE2BF;
+  color: #FAA330;
+  border-radius: 8px;
+  width: min-content;
+  height: 25px;
+  text-align: center;
+  font-weight: bold;
+  padding: 0 10px;
+}
+
+.ref-link {
+  text-decoration-line: underline;
+  font-size: 15px;
+  color: #0066B1!important;
+  cursor: pointer;
+  -webkit-transition: all 0.3s ease-in-out;
+  -o-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+
+/*mouse over background slide from left*/
+.ref-link:hover, .ref-link:active, .ref-link:focus {
+  background-position: 0 0;
+  color: #252525;
+  outline: 0;
+}
+
+.field-titles {
+  font-weight: bold;
+  width: 40%;
+}
+
+
+.due-soon-pill {
+  background-color: #FAA330;
+  color: white;
+  border-radius: 8px;
+  width: max-content;
+  height: 25px;
+  text-align: center;
+  font-weight: bold;
+  padding: 0 10px;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

@@ -1,0 +1,130 @@
+<div class="container" id="main-container">
+  <div class="justify-content-between d-flex flex-wrap align-items-center mt-5">
+    <div class="d-flex flex-wrap align-items-center">
+      <h5 class="mr-4">All Tasks</h5>
+      <div class="resolved-pill">
+        <p>{{tasks.length}}</p>
+      </div>
+    </div>
+
+    <button class="btn btn-sm btn-outline-secondary mr-2">EXPORT</button>
+
+  </div>
+  <table class="table-hover">
+    <thead>
+    <th class="knw">Title</th>
+    <th class="sl">Reference Material</th>
+    <th class="requestNumber">Scope</th>
+    <th class="department">Normative Reference</th>
+    <th class="issuesAddressed">Issues Addressed</th>
+    <th class="referenceMaterial">Clause</th>
+    <th class="referenceMaterial">Special</th>
+    <th class="action">Action</th>
+    <th></th>
+    </thead>
+    <tbody>
+    <tr  *ngFor="let task of tasks | paginate: { itemsPerPage: 10, currentPage: p2 }">
+      <td>{{task.taskData.title}}</td>
+      <td>{{task.taskData.referenceMaterial}}</td>
+      <td>{{task.taskData.scope}}</td>
+      <td>{{task.taskData.normativeReference}}</td>
+      <td>{{task.taskData.issuesAddressed}}</td>
+      <td>{{task.taskData.clause}}</td>
+      <td>{{task.taskData.special}}</td>
+      <td *ngIf="task.name ==='Upload Gazette notice on the Website'"><a  (click)="onOpenModal(task,'notice')" class="btn btn-primary btn-sm tooltips" data-placement="top" style="width: 147px;" data-original-title="Edit">Upload Gazette Notice</a></td>
+      <td *ngIf="task.name ==='Update Gazettement Date'"><a  (click)="onOpenModal(task,'gazetteDate')" class="btn btn-success btn-sm tooltips" data-placement="top" style="width: 147px; " data-original-title="Edit">Update Gazette Date</a></td>
+    </tr>
+    </tbody>
+  </table>
+
+  <pagination-controls (pageChange)="p2 = $event"></pagination-controls>
+  <div class="modal fade" id="noticeModal" tabindex="-1" role="dialog" aria-labelledby="noticeExampleModalLabel" aria-hidden="true">a
+    <div class="modal-dialog " role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="noticeExampleModalLabel">Upload Gazette Notice on Website</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form #uploadForm="ngForm" >
+          <div class="modal-body">
+            <div class="row col-12">
+            <div class="form-group col-6">
+              <label>KS Number</label>
+              <input class="form-control"  ngModel name="ksNumber" type="text">
+            </div>
+            <div class="form-group col-6">
+              <label>Date of Upload</label>
+              <input class="form-control"  ngModel name="dateUploaded" type="date">
+            </div>
+          </div>
+            <div class="row col-12">
+              <div class="form-group col-12">
+                <label>Description</label>
+                <textarea class="form-control"  ngModel name="description" type="text"></textarea>
+              </div>
+            </div>
+
+
+          </div>
+          <input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskId" >
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary btn-sm" (click)="onSave(uploadForm.value)" data-dismiss="modal">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="gazettementModal" tabindex="-1" role="dialog" aria-labelledby="gazetteExampleModalLabel" aria-hidden="true">a
+    <div class="modal-dialog " role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="gazetteExampleModalLabel">Update Gazettement Date</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form #uploadForm="ngForm" >
+          <div class="modal-body">
+            <div class="row col-12">
+            </div>
+            <div class="row col-12">
+              <div class="form-group col-12">
+                <h5>KS Number: <b style="color: #0066B1">{{actionRequest?.taskData?.ksNumber}}</b></h5>
+
+              </div>
+            </div>
+            <div class="row col-12">
+              <div class="form-group col-12">
+                <h5>Date Uploaded: <b style="color: #0066B1">{{actionRequest?.taskData?.dateUploaded}}</b></h5>
+
+              </div>
+            </div>
+            <div class="row col-12">
+              <div class="form-group col-12">
+                <h5>Description:  <b style="color: #0066B1">{{actionRequest?.taskData?.description}}</b></h5>
+
+              </div>
+            </div>
+
+
+            <div class="row col-12">
+              <div class="form-group col-6">
+                <label>Set Date of Gazettement</label>
+                <input class="form-control"  ngModel name="dateOfGazettement" type="date">
+              </div>
+            </div>
+          </div>
+          <input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskId" >
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary btn-sm" (click)="onUpdate(uploadForm.value)" data-dismiss="modal">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+

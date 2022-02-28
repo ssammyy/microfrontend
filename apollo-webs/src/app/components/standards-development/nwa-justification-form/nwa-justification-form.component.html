@@ -1,0 +1,130 @@
+<div class="container" id="main-container">
+  <div class="d-flex flex-wrap align-items-center">
+    <h5 class="mr-4">Prepare Justification</h5>
+  </div>
+  <form (ngSubmit)="saveJustification()" [formGroup]="prepareJustificationFormGroup" class="form">
+    <div class="form-body">
+
+
+      <div class="row col-12">
+        <div class="form-group col-6">
+          <label><b>Meeting Date</b></label>
+          <input
+            [class.is-invalid]="formPrepareJustification.meetingDate.invalid && formPrepareJustification.meetingDate.touched"
+            aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+            class="form-control one-column-input" formControlName="meetingDate" name="meetingDate"
+            placeholder="Date" type="date">
+        </div>
+        <div class="form-group col-6">
+          <label>Department/Sector</label>
+          <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                  class="form-control" required formControlName="department"
+                  name="department"
+                  [class.is-invalid]="formPrepareJustification.department.invalid && formPrepareJustification.department.touched"
+          >
+            <option disabled>--Select Department--</option>
+            <option *ngFor="let nwaDepartment of nwaDepartments"
+                    value="{{nwaDepartment.id}}">{{nwaDepartment.name}}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row col-12">
+        <div class="form-group col-6">
+          <label>KNW Committee</label>
+          <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                  class="form-control" required formControlName="knw"
+                  [class.is-invalid]="formPrepareJustification.knw.invalid && formPrepareJustification.knw.touched"
+                  name="knw">
+            <option disabled>--Select committee--</option>
+            <option *ngFor="let nwaCommittee of nwaCommittees"
+                    [value]="nwaCommittee.id">{{nwaCommittee.technical_committee_no}}</option>
+          </select>
+        </div>
+        <div class="form-group col-6">
+          <label><b>SL Number</b></label>
+          <input [class.is-invalid]="formPrepareJustification.sl.invalid && formPrepareJustification.sl.touched"
+                 aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                 class="form-control one-column-input" formControlName="sl" name="sl"
+                 placeholder="Name" type="text">
+        </div>
+      </div>
+
+      <div class="row col-12">
+        <div class="form-group col-6">
+          <label><b>Request Number</b></label>
+          <input
+            [class.is-invalid]="formPrepareJustification.requestNumber.invalid && formPrepareJustification.requestNumber.touched"
+            aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+            class="form-control one-column-input" formControlName="requestNumber" name="requestNumber"
+            placeholder="1234567" type="text">
+        </div>
+
+        <div class="form-group col-6">
+          <label><b>Requested By</b></label>
+          <input
+            [class.is-invalid]="formPrepareJustification.requestedBy.invalid && formPrepareJustification.requestedBy.touched"
+            aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+            class="form-control one-column-input" formControlName="requestedBy" name="requestedBy"
+            placeholder="Name" type="text">
+        </div>
+      </div>
+
+      <input type="text" name="status" value="pending">
+      <input type="text"  name="remarks" value="NA">
+      <div class="row col-12">
+        <div class="form-group col-6">
+          <label><b>Issues Addressed</b></label>
+          <input
+            [class.is-invalid]="formPrepareJustification.issuesAddressed.invalid && formPrepareJustification.issuesAddressed.touched"
+            aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+            class="form-control one-column-input" formControlName="issuesAddressed" name="issuesAddressed"
+            placeholder="Name" type="text">
+        </div>
+        <div class="form-group col-6">
+          <label><b>Acceptance Date</b></label>
+          <input
+            [class.is-invalid]="formPrepareJustification.knwAcceptanceDate.invalid && formPrepareJustification.knwAcceptanceDate.touched"
+            aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+            class="form-control one-column-input" formControlName="knwAcceptanceDate" name="knwAcceptanceDate"
+            placeholder="Date" type="date">
+        </div>
+      </div>
+
+      <div class="row col-12">
+        <div class="form-group col-6">
+          <label><b>Reference Material</b></label>
+          <input
+            [class.is-invalid]="formPrepareJustification.referenceMaterial.invalid && formPrepareJustification.referenceMaterial.touched"
+            aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+            class="form-control one-column-input" formControlName="referenceMaterial" name="referenceMaterial"
+            placeholder="Name" type="text">
+        </div>
+        <div class="form-group col-6">
+          <label><b>KNW Secretary</b></label>
+          <input
+            [class.is-invalid]="formPrepareJustification.knwSecretary.invalid && formPrepareJustification.knwSecretary.touched"
+            aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+            class="form-control one-column-input" formControlName="knwSecretary" name="knwSecretary"
+            placeholder="Name" type="text">
+        </div>
+      </div>
+      <div class="row col-12">
+        <div class="form-group col-6">
+          <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                  class="form-control" formControlName="taskId" required
+                  name="taskId" style="">
+            <option disabled>--Select--</option>
+            <option *ngFor="let knwsectask of knwsectasks" value="{{knwsectask.taskId}}">{{knwsectask.name}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="row col-12 " style="margin: 3em 0 2em 0">
+        <button [disabled]="!prepareJustificationFormGroup.valid" class="submit-button" type="submit">SUBMIT</button>
+      </div>
+    </div>
+
+
+  </form>
+
+</div>

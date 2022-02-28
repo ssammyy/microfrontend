@@ -1,0 +1,70 @@
+<div class="container" id="main-container">
+  <div class="justify-content-between d-flex flex-wrap align-items-center mt-5">
+    <div class="d-flex flex-wrap align-items-center">
+      <h5 class="mr-4">All Tasks</h5>
+      <div class="resolved-pill">
+      </div>
+    </div>
+
+    <button class="btn btn-sm btn-outline-secondary mr-2">EXPORT</button>
+
+  </div>
+  <table class="table-hover">
+    <thead>
+    <th class="knw">Public Review Name</th>
+    <th class="sl">Drafted By</th>
+    <th class="requestNumber">File</th>
+    <th class="action">Action</th>
+    <th></th>
+    </thead>
+    <tbody>
+    <!--    <tr *ngFor="let task of newWorkItem | paginate: { itemsPerPage: 10, currentPage: p2 }">-->
+    <!--      <td>{{task.prdName}}</td>-->
+    <!--      <td>{{task.taskData.prdDraftBy}}</td>-->
+    <!--      <td>{{task.taskData.prdPath}}</td>-->
+    <!--      <td><a (click)="onOpenModal(task,'approve')" class="btn btn-primary btn-sm tooltips" data-placement="top"-->
+    <!--             data-original-title="Approve"> Make Comment</a></td>-->
+    <!--      &lt;!&ndash;      <td><button (click)="onOpenModal(task,'reject')" type="submit" class="btn btn-danger btn-sm">Reject</button></td>&ndash;&gt;-->
+    <!--    </tr>-->
+    <tr *ngFor="let pd of publicReviewDraftComment | async">
+      <td>{{pd.prdId}}</td>
+      <td>{{pd.title}}</td>
+      <td>{{pd.comment}}</td>
+      <td>
+<!--        <button (click)="public_review_details(pd.prdId)" class="btn btn-info" style="margin-left: 10px">Details</button>-->
+        <!--        <button (click)="pdDetails(pd.id)" class="btn btn-info" style="margin-left: 10px">Details</button>-->
+
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <pagination-controls (pageChange)="p2 = $event"></pagination-controls>
+  <div class="modal fade" id="approveModal" tabindex="-1" role="dialog" aria-labelledby="approveExampleModalLabel"
+       aria-hidden="true">a
+    <div class="modal-dialog " role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="approveExampleModalLabel">Approve Justification</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form #approveForm="ngForm">
+          <div class="modal-body">
+            <p>Approve justification </p>
+          </div>
+<!--         // <input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskId">-->
+          <input type="hidden" ngModel="true" name="approved">
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+            <!--            <button type="submit" class="btn btn-primary btn-sm" (click)="onDecision(approveForm.value)"-->
+            <!--                    data-dismiss="modal">Approve-->
+            <!--            </button>-->
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+

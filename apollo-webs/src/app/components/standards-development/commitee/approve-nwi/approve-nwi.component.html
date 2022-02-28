@@ -1,0 +1,65 @@
+<div class="container" id="main-container">
+
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <h2>New Work Item</h2>
+    </div>
+    <div class="panel-body">
+      <table class="table table-striped">
+        <thead>
+        <tr>
+          <th>Title</th>
+          <th>Edition</th>
+          <th>Reference</th>
+          <th>SL Number</th>
+          <th>Stage Date</th>
+          <th>Target Date</th>
+
+          <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let nwi of newWorkItem | async">
+          <td>{{nwi.title}}</td>
+          <td>{{nwi.ed}}</td>
+          <td>{{nwi.reference}}</td>
+          <td>{{nwi.slNo}}</td>
+          <td>{{nwi.stage_date}}</td>
+          <td>{{nwi.ta}}</td>
+          <td>
+            <a (click)="onOpenModal(nwi,'edit')" class="btn btn-primary tooltips" data-placement="top"
+               data-original-title="Review"> Approve</a>
+          <td>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+
+      <!-- Modal -->
+      <div class="modal fade" id="updateRequestModal" tabindex="-1" role="dialog"
+           aria-labelledby="updateExampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="updateExampleModalLabel">Approve New Work Item</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form #editForm="ngForm">
+              <div class="modal-body">
+                <p>You are approving New Work Item: {{actionRequest?.title}} </p>
+              </div>
+              <input type="hidden" ngModel="{{actionRequest?.id}}" name="id" id="id">
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button class="btn btn-info" data-dismiss="modal" (click)="onApproveTask(editForm.value)">Approve</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

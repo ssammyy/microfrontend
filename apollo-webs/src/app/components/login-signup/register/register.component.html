@@ -1,0 +1,107 @@
+<div class="container-fluid" style="margin-top: 5%">
+  <form (ngSubmit)="onSubmit()" [formGroup]="registerForm" class="form">
+    <h1>Welcome To KIMS</h1>
+    <p>Enter your details to be Registered into KIMS PLATFORM</p>
+    <hr>
+
+    <div class="form-body">
+      <div class="form-group">
+        <label><b>First Name</b></label>
+        <input [ngClass]="{ 'is-invalid': submitted && formRegister.firstName.errors }"
+               aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+               class="form-control one-column-input" formControlName="firstName" name="firstName"
+               placeholder="joe" type="text">
+        <div *ngIf="submitted && formRegister.firstName.errors" class="invalid-feedback">
+          <div *ngIf="formRegister.firstName.errors.required">First Name is required</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label><b>Last Name</b></label>
+        <input [ngClass]="{ 'is-invalid': submitted && formRegister.lastName.errors }"
+               aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+               class="form-control one-column-input" formControlName="lastName" name="lastName"
+               placeholder="Doe" type="text">
+        <div *ngIf="submitted && formRegister.lastName.errors" class="invalid-feedback">
+          <div *ngIf="formRegister.lastName.errors.required">Last name is required</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label><b>Email Address</b></label>
+        <input [ngClass]="{ 'is-invalid': submitted && formRegister.email.errors }"
+               aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+               class="form-control one-column-input " formControlName="email" name="email"
+               placeholder="email.gmail.com" type="email">
+        <div *ngIf="submitted && formRegister.email.errors" class="invalid-feedback">
+          <div *ngIf="formRegister.email.errors.required">Email is required</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label><b>Mobile Number</b></label>
+        <input [ngClass]="{ 'is-invalid': submitted && formRegister.email.errors }"
+               aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+               class="form-control one-column-input " formControlName="personalContactNumber" name="personalContactNumber"
+               placeholder="+254700000000" type="text">
+        <div *ngIf="submitted && formRegister.personalContactNumber.errors" class="invalid-feedback">
+          <div *ngIf="formRegister.personalContactNumber.errors.required">Mobile Number is required</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label><b>User type</b></label>
+        <select (change)="onChange($event.target.value)" aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                class="form-control" required
+                formControlName="typeOfUser"
+                name="typeOfUser"
+                [ngClass]="{ 'is-invalid': submitted && formRegister.typeOfUser.errors }">
+          <option [value]="" disabled label="--select something --"></option>
+          <option [value]="0" >Individual</option>
+          <option [value]="1" >Non-Individual</option>
+        </select>
+        <div *ngIf="submitted && formRegister.typeOfUser.errors" class="invalid-feedback">
+          <div *ngIf="formRegister.typeOfUser.errors.required">Selection is required</div>
+        </div>
+      </div>
+
+      <div *ngIf="selectedType == null" class="form-group"></div>
+      <div *ngIf="selectedType == 1" class="form-group">
+        <label><b>Pin Number</b></label>
+        <input [ngClass]="{ 'is-invalid': submitted && formRegister.userPinIdNumber.errors }"
+               aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+               class="form-control one-column-input " formControlName="userPinIdNumber" name="userPinIdNumber"
+               placeholder="0000000000" type="text">
+        <div *ngIf="submitted && formRegister.userPinIdNumber.errors" class="invalid-feedback">
+          <div *ngIf="formRegister.userPinIdNumber.errors.required">Id/Passport Number is required</div>
+        </div>
+      </div>
+
+      <div *ngIf="selectedType == 0" class="form-group">
+        <label><b>ID/Passport Number</b></label>
+        <input
+               aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+               class="form-control one-column-input " formControlName="userPinIdNumber" name="userPinIdNumber"
+               placeholder="0000000000" type="text">
+        <div *ngIf="submitted && formRegister.userPinIdNumber.errors" class="invalid-feedback">
+          <div *ngIf="formRegister.userPinIdNumber.errors.required">Id/Passport Number is required</div>
+        </div>
+      </div>
+
+
+
+      <div style="margin: 3em 0 2em 0">
+        <button  class="submit-button" type="submit">REGISTER</button>
+      </div>
+
+      <!--      <div>-->
+      <!--        <span>Don't have an account ? </span><span><a routerLink="/register" >Register</a></span>-->
+      <!--      </div>-->
+      <!--      <div>-->
+      <!--        <span>Forgot username/password ? </span><span><a>Reset</a></span>-->
+      <!--      </div>-->
+    </div>
+
+
+  </form>
+</div>
