@@ -39,6 +39,11 @@ export class StdLevyCompleteTasksComponent implements OnInit {
 
   ngOnInit(): void {
     this.getMnCompleteTask();
+      this.dtOptions = {
+          pagingType: 'full_numbers',
+          pageLength: 10,
+          processing: true
+      };
   }
   public getMnCompleteTask(): void{
     this.SpinnerService.show();

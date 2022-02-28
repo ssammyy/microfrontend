@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {UsersEntity} from "../../../core/store/data/std/std.model";
 import {ConfirmEditCompanyDTO, ManufactureDetailList} from "../../../core/store/data/levy/levy.model";
 import {FormBuilder, FormGroup} from "@angular/forms";
@@ -20,7 +20,7 @@ declare const $: any;
   styleUrls: ['./std-levy-applications.component.css','../../../../../node_modules/@ng-select/ng-select/themes/default.theme.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class StdLevyApplicationsComponent implements OnInit {
+export class StdLevyApplicationsComponent implements OnInit,AfterViewInit, OnDestroy {
   userId: number ;
   roles: string[];
   userType: number ;
@@ -100,11 +100,12 @@ export class StdLevyApplicationsComponent implements OnInit {
     this.isShowAssign2Form= true;
   }
 
-  dtOptions: DataTables.Settings = {};
-  dtTrigger: Subject<any> = new Subject<any>();
   @ViewChild(DataTableDirective, {static: false})
   dtElement: DataTableDirective;
+  dtOptions: DataTables.Settings[] = [];
+  dtTrigger: Subject<any> = new Subject<any>();
   isDtInitialized: boolean = false
+  displayTable: boolean = false;
 
   constructor(
       private router: Router,
@@ -121,6 +122,12 @@ export class StdLevyApplicationsComponent implements OnInit {
     this.getManufacturerList();
     this.getUserRoles();
     this.getUserData();
+
+    this.dtOptions[0] = {
+      pagingType: 'full_numbers',
+      pageLength: 10,
+      processing: true
+    };
 
     if(this.roles?.includes('SL_IS_PL_OFFICER')){
       this.getApproveLevelOne();
@@ -370,17 +377,7 @@ export class StdLevyApplicationsComponent implements OnInit {
         (response: ManufactureDetailList[])=> {
           this.manufactureLists = response;
           this.SpinnerService.hide();
-          if (this.isDtInitialized) {
-            this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-              dtInstance.destroy();
-              this.dtTrigger.next();
-            });
-          } else {
-            this.isDtInitialized = true
-            this.dtTrigger.next();
-          }
-
-
+          this.rerender();
         },
         (error: HttpErrorResponse)=>{
           this.SpinnerService.hide();
@@ -388,6 +385,26 @@ export class StdLevyApplicationsComponent implements OnInit {
 
         }
     );
+  }
+
+  rerender(): void {
+    if (this.isDtInitialized) {
+      this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+        dtInstance.destroy();
+        this.dtTrigger.next();
+      });
+    } else {
+      this.isDtInitialized = true
+      this.dtTrigger.next();
+    }
+  }
+
+  ngAfterViewInit(): void {
+    this.dtTrigger.next();
+  }
+  ngOnDestroy(): void {
+    this.dtTrigger.unsubscribe();
+
   }
   public onOpenModalList(manufactureLists: ManufactureDetailList,mode:string): void{
     const container = document.getElementById('main-container');

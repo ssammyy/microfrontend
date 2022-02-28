@@ -113,6 +113,12 @@ export class StdLevyPendingTasksComponent implements OnInit {
     this.getUserRoles();
     this.getUserData();
 
+    this.dtOptions = {
+      pagingType: 'full_numbers',
+      pageLength: 10,
+      processing: true
+    };
+
     if(this.roles?.includes('SL_IS_PL_OFFICER')){
       this.getApproveLevelOne();
     }
