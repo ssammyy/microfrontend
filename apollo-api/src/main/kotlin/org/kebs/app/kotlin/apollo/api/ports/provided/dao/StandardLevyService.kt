@@ -28,7 +28,7 @@ import java.util.*
 class StandardLevyService(
     private val runtimeService: RuntimeService,
     private val taskService: TaskService,
-    private val historyService:HistoryService,
+    private val historyService: HistoryService,
     @Qualifier("processEngine") private val processEngine: ProcessEngine,
     private val repositoryService: RepositoryService,
     private val iStagingStandardsLevyManufacturerPenaltyRepository: IStagingStandardsLevyManufacturerPenaltyRepository,
@@ -42,7 +42,9 @@ class StandardLevyService(
     private val usersEntityRepository: UsersEntityRepository,
     private val iUserRoleAssignmentsRepository: IUserRoleAssignmentsRepository,
     private val iBusinessNatureRepository: IBusinessNatureRepository,
-    private val companyProfileEditEntityRepository: CompanyProfileEditEntityRepository
+    private val companyProfileEditEntityRepository: CompanyProfileEditEntityRepository,
+    private val stdLevyNotificationFormRepo: IStdLevyNotificationFormRepository,
+    private val stdLevyNotificationFormRepository: StdLevyNotificationFormRepository
 
 ) {
     val PROCESS_DEFINITION_KEY = "sl_SiteVisitProcessFlow"
@@ -133,62 +135,68 @@ class StandardLevyService(
         companyProfileEntity: CompanyProfileEntity
     ): ProcessInstanceSiteResponse {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val variables: MutableMap<String, Any> = java.util.HashMap()
-        companyProfileEntity.assignedTo?.let { variables["assignedTo"] = it }
-        companyProfileEntity.name?.let { variables["companyName"] = it }
-        companyProfileEntity.kraPin?.let { variables["kraPin"] = it }
-        companyProfileEntity.status?.let { variables["status"] = it }
-        companyProfileEntity.registrationNumber?.let { variables["registrationNumber"] = it }
-        companyProfileEntity.postalAddress?.let { variables["postalAddress"] = it }
-        companyProfileEntity.physicalAddress?.let { variables["physicalAddress"] = it }
-        companyProfileEntity.plotNumber?.let { variables["plotNumber"] = it }
-        companyProfileEntity.companyEmail?.let { variables["companyEmail"] = it }
-        companyProfileEntity.companyTelephone?.let { variables["companyTelephone"] = it }
-        companyProfileEntity.yearlyTurnover?.let { variables["yearlyTurnover"] = it }
-        companyProfileEntity.businessLines?.let { variables["businessLines"] = it }
-        companyProfileEntity.businessNatures?.let { variables["businessNatures"] = it }
-        companyProfileEntity.buildingName?.let { variables["buildingName"] = it }
-        companyProfileEntity.directorIdNumber?.let { variables["directorIdNumber"] = it }
-        companyProfileEntity.region?.let { variables["region"] = it }
-        companyProfileEntity.county?.let { variables["county"] = it }
-        companyProfileEntity.town?.let { variables["town"] = it }
-        companyProfileEntity.manufactureStatus?.let { variables["manufactureStatus"] = it }
-        companyProfileEntity.entryNumber?.let { variables["entryNumber"] = it }
-        companyProfileEntity.id?.let { variables["manufacturerEntity"] = it } ?: throw Exception("COMPANY NOT FOUND")
-        companyProfileEntity.userId?.let { variables["contactId"] = it }
 
-        companyProfileEntity.assignedTo = companyProfileEntity.assignedTo
-        companyProfileEntity.assignStatus = 1
-        companyProfileEntity.createdBy = loggedInUser.userName
-        companyProfileEntity.createdOn = commonDaoServices.getTimestamp()
-        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
-        companyProfileEntity.slBpmnProcessInstance = processInstance?.processInstanceId
+        val variables: MutableMap<String, Any> = mutableMapOf()
+                    companyProfileEntity.assignedTo?.let { variables["assignedTo"] = it }
+                    companyProfileEntity.name?.let { variables["companyName"] = it }
+                    companyProfileEntity.kraPin?.let { variables["kraPin"] = it }
+                    companyProfileEntity.status?.let { variables["status"] = it }
+                    companyProfileEntity.registrationNumber?.let { variables["registrationNumber"] = it }
+                    companyProfileEntity.postalAddress?.let { variables["postalAddress"] = it }
+                    companyProfileEntity.physicalAddress?.let { variables["physicalAddress"] = it }
+                    companyProfileEntity.plotNumber?.let { variables["plotNumber"] = it }
+                    companyProfileEntity.companyEmail?.let { variables["companyEmail"] = it }
+                    companyProfileEntity.companyTelephone?.let { variables["companyTelephone"] = it }
+                    companyProfileEntity.yearlyTurnover?.let { variables["yearlyTurnover"] = it }
+                    companyProfileEntity.businessLines?.let { variables["businessLines"] = it }
+                    companyProfileEntity.businessNatures?.let { variables["businessNatures"] = it }
+                    companyProfileEntity.buildingName?.let { variables["buildingName"] = it }
+                    companyProfileEntity.directorIdNumber?.let { variables["directorIdNumber"] = it }
+                    companyProfileEntity.region?.let { variables["region"] = it }
+                    companyProfileEntity.county?.let { variables["county"] = it }
+                    companyProfileEntity.town?.let { variables["town"] = it }
+                    companyProfileEntity.manufactureStatus?.let { variables["manufactureStatus"] = it }
+                    companyProfileEntity.entryNumber?.let { variables["entryNumber"] = it }
+                    companyProfileEntity.id?.let { variables["manufacturerEntity"] = it }
+                        ?: throw Exception("COMPANY NOT FOUND")
+                    companyProfileEntity.userId?.let { variables["contactId"] = it }
 
-        companyProfileRepo.save(companyProfileEntity)
+                    companyProfileEntity.assignedTo = companyProfileEntity.assignedTo
+                    companyProfileEntity.assignStatus = 1
+                    companyProfileEntity.createdBy = loggedInUser.userName
+                    companyProfileEntity.createdOn = commonDaoServices.getTimestamp()
+                    val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
+                    companyProfileEntity.slBpmnProcessInstance = processInstance?.processInstanceId
 
-
-
-        taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
-            ?.let { t ->
-                t.list()[0]
-                    ?.let { task ->
-                        task.assignee =
-                            "${companyProfileEntity.assignedTo ?: throw NullValueNotAllowedException(" invalid user id provided")}"  //set the assignee}"
-
-                        taskService.saveTask(task)
-                    }
-                    ?: KotlinLogging.logger { }.error("Task list empty for $PROCESS_DEFINITION_KEY ")
+                    companyProfileRepo.save(companyProfileEntity)
 
 
-            }
-            ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
-        bpmnService.slAssignTask(
-            processInstance.processInstanceId,
-            "Schedule Site Visit",
-            companyProfileEntity?.assignedTo ?: throw NullValueNotAllowedException("invalid user id provided")
-        )
 
-        return ProcessInstanceSiteResponse(processInstance.id, processInstance.isEnded)
+                    taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
+                        ?.let { t ->
+                            t.list()[0]
+                                ?.let { task ->
+                                    task.assignee =
+                                        "${companyProfileEntity.assignedTo ?: throw NullValueNotAllowedException(" invalid user id provided")}"  //set the assignee}"
+
+                                    taskService.saveTask(task)
+                                }
+                                ?: KotlinLogging.logger { }.error("Task list empty for $PROCESS_DEFINITION_KEY ")
+
+
+                        }
+                        ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
+                    bpmnService.slAssignTask(
+                        processInstance.processInstanceId,
+                        "Schedule Site Visit",
+                        companyProfileEntity?.assignedTo
+                            ?: throw NullValueNotAllowedException("invalid user id provided")
+                    )
+                    return ProcessInstanceSiteResponse(processInstance.id, processInstance.isEnded)
+
+
+
+
 
     }
 
@@ -330,7 +338,6 @@ class StandardLevyService(
 //        }
 
 
-
     }
 
     fun reportOnSiteVisit(standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity): ProcessInstanceResponseValueSite {
@@ -346,9 +353,9 @@ class StandardLevyService(
         standardLevyFactoryVisitReportEntity.userType?.let { variables["userType"] = it }
         standardLevyFactoryVisitReportEntity.makeRemarks?.let { variables["makeRemarks"] = it }
         val userIntType = standardLevyFactoryVisitReportEntity.userType
-        val plUserTypes=61L
-        val asManagerUserTypes=62L
-        val managerUserTypes=63L
+        val plUserTypes = 61L
+        val asManagerUserTypes = 62L
+        val managerUserTypes = 63L
 
         standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)
             ?.let { entity ->
@@ -775,7 +782,7 @@ class StandardLevyService(
                     officersFeedback = standardLevyFactoryVisitReportEntity.officersFeedback
                     assigneeId = standardLevyFactoryVisitReportEntity.assigneeId
                     status = 3
-                    slProcessStatus=1
+                    slProcessStatus = 1
 
                 }
                 standardLevyFactoryVisitReportRepo.save(standardLevyFactoryVisitReportEntity)
@@ -783,6 +790,11 @@ class StandardLevyService(
 
         companyProfileRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.manufacturerEntity)
             ?.let { companyProfileEntity ->
+                with(companyProfileEntity) {
+                    assignedTo = 0
+                    assignStatus = 0
+                }
+                companyProfileRepo.save(companyProfileEntity)
                 runtimeService.createProcessInstanceQuery()
                     .processInstanceId(companyProfileEntity.slBpmnProcessInstance).list()
                     ?.let { l ->
@@ -863,8 +875,8 @@ class StandardLevyService(
     }
 
     fun getApproveLevelTwo(): List<UserDetailHolder> {
-            return userListRepository.getApproveLevelTwo()
-        }
+        return userListRepository.getApproveLevelTwo()
+    }
 
     fun getApproveLevelThree(): List<UserDetailHolder> {
         return userListRepository.getApproveLevelThree()
@@ -901,6 +913,41 @@ class StandardLevyService(
         } ?: throw NullValueNotAllowedException("Role Not Found")
     }
 
+    fun getSLNotificationStatus(): Boolean {
+        commonDaoServices.loggedInUserDetails().id
+            ?.let { id ->
+                companyProfileRepo.getManufactureId(id)
+                    .let {
+                        stdLevyNotificationFormRepository.findTopByManufactureIdOrderByIdDesc(it)
+                            ?.let {
+
+                                //Manufacturer
+                                return true
+                            }
+                            ?: run {
+                                //Contractor
+                                return false
+                            }
+                    }
+
+            }
+            ?: return false
+    }
+
+    fun getIfRecordExists(): Boolean {
+        val userId = commonDaoServices.loggedInUserDetails().id
+        val gson = Gson()
+        KotlinLogging.logger { }.info { "User ID" + gson.toJson(userId) }
+        val companyId = companyProfileRepo.getManufactureId(userId) ?: throw ExpectedDataNotFound("NO Company Found")
+        KotlinLogging.logger { }.info { "Company ID" + gson.toJson(companyId) }
+        //KotlinLogging.logger { }.info { "User ID" + gson.toJson(userId) }
+        stdLevyNotificationFormRepository.findTopByManufactureIdOrderByIdDesc(companyId)?.let {
+            return true
+        }
+            ?: return false
+
+    }
+
     fun getManufacturerStatus(): Boolean {
         commonDaoServices.loggedInUserDetails().id
             ?.let { id ->
@@ -922,13 +969,13 @@ class StandardLevyService(
     }
 
     fun getCompanyEditedDetails(manufactureId: Long): CompanyProfileEditEntity {
-        return companyProfileEditEntityRepository.findFirstByManufactureIdOrderByIdDesc(manufactureId) ?: throw ExpectedDataNotFound("No Data Found")
+        return companyProfileEditEntityRepository.findFirstByManufactureIdOrderByIdDesc(manufactureId)
+            ?: throw ExpectedDataNotFound("No Data Found")
     }
 
-    fun getCompleteTasks(): MutableList<StandardLevyFactoryVisitReportEntity> {
+    fun getCompleteTasks(): List<CompleteTasksDetailHolder> {
         return standardLevyFactoryVisitReportRepo.getCompleteTasks()
     }
-
 
 
     fun closeTask(taskId: String) {

@@ -2,50 +2,51 @@ import {Injectable} from '@angular/core';
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
 import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
 import {
-  CallForApplication,
-  HOFRecommendationTask,
-  ReviewApplicationTask,
-  SubmitApplication,
-  TCMemberDetails
+    CallForApplication,
+    HOFRecommendationTask,
+    ReviewApplicationTask,
+    SubmitApplication,
+    TCMemberDetails
 } from "./request_std.model";
 import {Observable, throwError} from "rxjs";
 import {catchError, map} from "rxjs/operators";
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class MembershipToTcService {
-  protocol = `https://`;
-  baseUrl = ApiEndpointService.DOMAIN.LOCAL_DEV
-  private apiMembershipToTCUrl = `${this.protocol}${this.baseUrl}/api/v1/migration/membershipToTC/`;
+    protocol = `https://`;
+    baseUrl = ApiEndpointService.DOMAIN.LOCAL_DEV
+    private apiMembershipToTCUrl = `${this.protocol}${this.baseUrl}/api/v1/migration/membershipToTC/`;
+    private apiMembershipToTCUrlAnonymous = `${this.protocol}${this.baseUrl}/api/v1/migration/anonymous/membershipToTC/`;
 
 
-  constructor(private http: HttpClient) {
-  }
+    constructor(private http: HttpClient) {
+    }
 
-  public uploadCallForApplications(callForApplication: CallForApplication): Observable<any> {
-    console.log(callForApplication);
-    return this.http.post<CallForApplication>(`${this.apiMembershipToTCUrl}` + 'submitCallForApplication', callForApplication)
-  }
+    public uploadCallForApplications(callForApplication: CallForApplication): Observable<any> {
+        console.log(callForApplication);
+        return this.http.post<CallForApplication>(`${this.apiMembershipToTCUrl}` + 'submitCallForApplication', callForApplication)
+    }
 
-  public getApplicantTasks(): Observable<CallForApplication[]> {
-    return this.http.get<CallForApplication[]>(`${this.apiMembershipToTCUrl}` + 'anonymous/getCallForApplications')
-  }
+    public getApplicantTasks(): Observable<CallForApplication[]> {
+        return this.http.get<CallForApplication[]>(`${this.apiMembershipToTCUrlAnonymous}` + 'getCallForApplications')
+    }
 
-  public onSubmitApplication(submitApplication: SubmitApplication): Observable<any> {
-    console.log(submitApplication);
-    return this.http.post<SubmitApplication>(`${this.apiMembershipToTCUrl}` + 'anonymous/submitTCMemberApplication', submitApplication)
-  }
+    public onSubmitApplication(submitApplication: SubmitApplication): Observable<any> {
+        console.log(submitApplication);
+        return this.http.post<SubmitApplication>(`${this.apiMembershipToTCUrlAnonymous}` + 'submitTCMemberApplication', submitApplication)
+    }
 
-  public getApplicationsForReview(): Observable<ReviewApplicationTask[]> {
-    return this.http.get<ReviewApplicationTask[]>(`${this.apiMembershipToTCUrl}` + 'getApplicationsForReview')
-  }
+    public getApplicationsForReview(): Observable<ReviewApplicationTask[]> {
+        return this.http.get<ReviewApplicationTask[]>(`${this.apiMembershipToTCUrl}` + 'getApplicationsForReview')
+    }
 
-  public decisionOnApplications(reviewApplicationTask: ReviewApplicationTask, tCApplicationId: number): Observable<any> {
-    const params = new HttpParams()
-        .set('tCApplicationId', String(tCApplicationId))
-    return this.http.post<ReviewApplicationTask>(`${this.apiMembershipToTCUrl}` + 'decisionOnApplicantRecommendation',
-        reviewApplicationTask, {params, responseType: 'arraybuffer' as 'json'})
+    public decisionOnApplications(reviewApplicationTask: ReviewApplicationTask, tCApplicationId: number): Observable<any> {
+        const params = new HttpParams()
+            .set('tCApplicationId', String(tCApplicationId))
+        return this.http.post<ReviewApplicationTask>(`${this.apiMembershipToTCUrl}` + 'decisionOnApplicantRecommendation',
+            reviewApplicationTask, {params, responseType: 'arraybuffer' as 'json'})
         .pipe(
             map(function (response: any) {
               return response;
@@ -90,43 +91,197 @@ export class MembershipToTcService {
         reviewApplicationTask, {params, responseType: 'arraybuffer' as 'json'})
         .pipe(
             map(function (response: any) {
-              return response;
+                return response;
             }),
             catchError((fault: HttpErrorResponse) => {
-              // console.warn(`getAllFault( ${fault.message} )`);
-              return throwError(fault);
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
             })
         );
   }
 
-  public getTCMemberCreationTasks(): Observable<HOFRecommendationTask[]> {
-    return this.http.get<HOFRecommendationTask[]>(`${this.apiMembershipToTCUrl}` + 'getTCMemberCreationTasks')
-  }
+    public getAcceptedMembers(): Observable<ReviewApplicationTask[]> {
+        return this.http.get<ReviewApplicationTask[]>(`${this.apiMembershipToTCUrl}` + 'getAcceptedFromSPC')
+
+    }
+
+    public getRejectedFromSPC(): Observable<ReviewApplicationTask[]> {
+        return this.http.get<ReviewApplicationTask[]>(`${this.apiMembershipToTCUrl}` + 'getRejectedFromSPC')
+
+    }
 
 
-  public saveTCMember(tCMemberDetails: TCMemberDetails): Observable<any> {
-    console.log(tCMemberDetails);
-    return this.http.post<TCMemberDetails>(`${this.apiMembershipToTCUrl}` + 'saveTCMember', tCMemberDetails)
-  }
+    public sendAppointmentEmail(reviewApplicationTask: ReviewApplicationTask, tCApplicationId: number): Observable<any> {
+        const params = new HttpParams()
+            .set('tCApplicationId', String(tCApplicationId))
 
-  //upload justification Document
-  public uploadFileDetails(draftStandardID: string, data: FormData, doctype: string, nomineeName: string): Observable<any> {
-    const url = `${this.apiMembershipToTCUrl}anonymous/file-upload`;
+        return this.http.post<ReviewApplicationTask>(`${this.apiMembershipToTCUrl}` + 'approve',
+            reviewApplicationTask, {params, responseType: 'arraybuffer' as 'json'})
+            .pipe(
+                map(function (response: any) {
+                    return response;
+                }),
+                catchError((fault: HttpErrorResponse) => {
+                    // console.warn(`getAllFault( ${fault.message} )`);
+                    return throwError(fault);
+                })
+            );
+    }
 
-    return this.http.post<any>(url, data, {
-      headers: {
-        'enctype': 'multipart/form-data'
-      }, params: {'callForTCApplicationId': draftStandardID, 'type': doctype, 'nomineeName': nomineeName}
-    }).pipe(
-        map(function (response: any) {
-          return response;
-        }),
-        catchError((fault: HttpErrorResponse) => {
-          // console.warn(`getAllFault( ${fault.message} )`);
-          return throwError(fault);
-        })
-    );
-  }
+    public approveAppointmentEmail(tCApplicationId: string): Observable<any> {
+
+        const url = `${this.apiMembershipToTCUrlAnonymous}` + 'approve';
+        const params = new HttpParams()
+            .set('applicationID', tCApplicationId);
+
+        return this.http.get<any>(url, {params, responseType: 'text' as 'json'}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public getApprovedMembers(): Observable<ReviewApplicationTask[]> {
+        return this.http.get<ReviewApplicationTask[]>(`${this.apiMembershipToTCUrl}` + 'getApproved')
+    }
+
+    public decisionOnForwardToHodIct(reviewApplicationTask: ReviewApplicationTask, tCApplicationId: number, decision: string): Observable<any> {
+        const params = new HttpParams()
+            .set('tCApplicationId', String(tCApplicationId))
+            .set('decision', String(decision))
+
+        return this.http.post<ReviewApplicationTask>(`${this.apiMembershipToTCUrl}` + 'forwardToHodIct',
+            reviewApplicationTask, {params, responseType: 'arraybuffer' as 'json'})
+            .pipe(
+                map(function (response: any) {
+                    return response;
+                }),
+                catchError((fault: HttpErrorResponse) => {
+                    // console.warn(`getAllFault( ${fault.message} )`);
+                    return throwError(fault);
+                })
+            );
+    }
+
+
+    public getMembersToCreateCredentials(): Observable<ReviewApplicationTask[]> {
+        return this.http.get<ReviewApplicationTask[]>(`${this.apiMembershipToTCUrl}` + 'getCredentials')
+    }
+
+    public decisionOnCreateCredentials(reviewApplicationTask: ReviewApplicationTask, tCApplicationId: number): Observable<any> {
+        const params = new HttpParams()
+            .set('tCApplicationId', String(tCApplicationId))
+
+        return this.http.post<ReviewApplicationTask>(`${this.apiMembershipToTCUrl}` + 'createdCredentials',
+            reviewApplicationTask, {params, responseType: 'arraybuffer' as 'json'})
+            .pipe(
+                map(function (response: any) {
+                    return response;
+                }),
+                catchError((fault: HttpErrorResponse) => {
+                    // console.warn(`getAllFault( ${fault.message} )`);
+                    return throwError(fault);
+                })
+            );
+    }
+
+    public getMembersCreatedCredentials(): Observable<ReviewApplicationTask[]> {
+        return this.http.get<ReviewApplicationTask[]>(`${this.apiMembershipToTCUrl}` + 'getAllUsersCreatedCredentials')
+    }
+
+    public sendInductionEmail(reviewApplicationTask: ReviewApplicationTask, tCApplicationId: number): Observable<any> {
+        const params = new HttpParams()
+            .set('tCApplicationId', String(tCApplicationId))
+
+        return this.http.post<ReviewApplicationTask>(`${this.apiMembershipToTCUrl}` + 'induction',
+            reviewApplicationTask, {params, responseType: 'arraybuffer' as 'json'})
+            .pipe(
+                map(function (response: any) {
+                    return response;
+                }),
+                catchError((fault: HttpErrorResponse) => {
+                    // console.warn(`getAllFault( ${fault.message} )`);
+                    return throwError(fault);
+                })
+            );
+    }
+
+    public approveInductionEmail(tCApplicationId: string): Observable<any> {
+
+        const url = `${this.apiMembershipToTCUrlAnonymous}` + 'getInduction';
+        const params = new HttpParams()
+            .set('applicationID', tCApplicationId);
+
+        return this.http.get<any>(url, {params, responseType: 'text' as 'json'}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+
+
+    public getAllUsersApprovedForInduction(): Observable<ReviewApplicationTask[]> {
+        return this.http.get<ReviewApplicationTask[]>(`${this.apiMembershipToTCUrl}` + 'getAllUsersApprovedForInduction')
+    }
+
+    public sendEmailForFirstMeeting(reviewApplicationTask: ReviewApplicationTask, tCApplicationId: number, meetingDate: string): Observable<any> {
+        const params = new HttpParams()
+            .set('tCApplicationId', String(tCApplicationId))
+            .set('meetingDate', String(meetingDate))
+
+
+        return this.http.post<ReviewApplicationTask>(`${this.apiMembershipToTCUrl}` + 'sendEmailForFirstMeeting',
+            reviewApplicationTask, {params, responseType: 'arraybuffer' as 'json'})
+            .pipe(
+                map(function (response: any) {
+                    return response;
+                }),
+                catchError((fault: HttpErrorResponse) => {
+                    // console.warn(`getAllFault( ${fault.message} )`);
+                    return throwError(fault);
+                })
+            );
+    }
+
+
+
+
+    public getTCMemberCreationTasks(): Observable<HOFRecommendationTask[]> {
+        return this.http.get<HOFRecommendationTask[]>(`${this.apiMembershipToTCUrl}` + 'getTCMemberCreationTasks')
+    }
+
+
+    public saveTCMember(tCMemberDetails: TCMemberDetails): Observable<any> {
+        return this.http.post<TCMemberDetails>(`${this.apiMembershipToTCUrl}` + 'saveTCMember', tCMemberDetails)
+    }
+
+    //upload justification Document
+    public uploadFileDetails(draftStandardID: string, data: FormData, doctype: string, nomineeName: string): Observable<any> {
+        const url = `${this.apiMembershipToTCUrlAnonymous}file-upload`;
+
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data'
+            }, params: {'callForTCApplicationId': draftStandardID, 'type': doctype, 'nomineeName': nomineeName}
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
 
   public viewDEditedApplicationPDF(applicationId: any, doctype: string): Observable<any> {
     const url = `${this.apiMembershipToTCUrl}` + 'view/CurriculumVitae';

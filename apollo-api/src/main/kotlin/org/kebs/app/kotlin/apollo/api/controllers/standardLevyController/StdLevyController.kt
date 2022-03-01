@@ -979,7 +979,7 @@ class StdLevyController(
     @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
     @GetMapping("/getCompleteTasks")
     @ResponseBody
-    fun getCompleteTasks(): MutableList<StandardLevyFactoryVisitReportEntity>
+    fun getCompleteTasks(): List<CompleteTasksDetailHolder>
     {
 
             return standardLevyService.getCompleteTasks()
@@ -1021,6 +1021,15 @@ class StdLevyController(
     @ResponseBody
     fun getAssignLevelThree(): List<UserDetailHolder> {
         return standardLevyService.getAssignLevelThree()
+    }
+
+    @GetMapping("/getSLNotificationStatus")
+    @ResponseBody
+    fun getSLNotificationStatus(): Boolean
+    {
+
+        return standardLevyService.getSLNotificationStatus()
+
     }
 
 

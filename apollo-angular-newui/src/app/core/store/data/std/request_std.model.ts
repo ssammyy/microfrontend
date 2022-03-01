@@ -366,9 +366,15 @@ export interface TCMemberDetails
 {
     taskId: string,
     userId: string,
+    tcId: string,
     tc: string,
     name: string,
-    email: string
+    email: string,
+    postalAddress: string
+    mobileNumber: string
+    dateOfCreation: string
+    status: string
+
 }
 
 export interface SACSummaryTask

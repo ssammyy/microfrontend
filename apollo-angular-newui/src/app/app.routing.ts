@@ -162,6 +162,17 @@ import {UploadTcMemberComponentComponent} from "./apollowebs/standards-developme
 import {ReviewApplicationComponent} from "./apollowebs/standards-development/membershipToTc/review-application/review-application.component";
 import {ManifestDocumentComponent} from "./apollowebs/di/view-single-consignment-document/manifest-document/manifest-document.component";
 import {IncompleteIDFDocumentsComponent} from "./apollowebs/di/message-dashboard/incomplete-idfdocuments/incomplete-idfdocuments.component";
+import {ReviewApplicationsAcceptedComponent} from "./apollowebs/standards-development/membershipToTc/review-applications-accepted/review-applications-accepted.component";
+import {ReviewApplicationsRejectedComponent} from "./apollowebs/standards-development/membershipToTc/review-applications-rejected/review-applications-rejected.component";
+import {ApproveApplicationComponent} from './apollowebs/standards-development/membershipToTc/approve-application/approve-application.component';
+import {ApprovedMembersComponent} from "./apollowebs/standards-development/membershipToTc/approved-members/approved-members.component";
+import {MembersToCreateCredentialsComponent} from "./apollowebs/standards-development/membershipToTc/members-to-create-credentials/members-to-create-credentials.component";
+import {MembersCreatedCredentialsComponent} from "./apollowebs/standards-development/membershipToTc/members-created-credentials/members-created-credentials.component";
+import {ApproveInductionComponent} from "./apollowebs/standards-development/membershipToTc/approve-induction/approve-induction.component";
+import {ApproveInductionMembersComponent} from "./apollowebs/standards-development/membershipToTc/approve-induction-members/approve-induction-members.component";
+import {StdLevyCompleteTasksComponent} from "./apollowebs/standards-levy/std-levy-complete-tasks/std-levy-complete-tasks.component";
+import {StdLevyPendingTasksComponent} from "./apollowebs/standards-levy/std-levy-pending-tasks/std-levy-pending-tasks.component";
+import {StdLevyApplicationsComponent} from "./apollowebs/standards-levy/std-levy-applications/std-levy-applications.component";
 
 export const routes: Routes = [
     {
@@ -1056,6 +1067,54 @@ export const routes: Routes = [
         children: [{path: '', component: ReviewRecommendationOfSpcComponentComponent}]
     },
     {
+        path: 'reviewAccepted',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: ReviewApplicationsAcceptedComponent}]
+    },
+    {
+        path: 'reviewRejected',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: ReviewApplicationsRejectedComponent}]
+    },
+
+    {
+        path: 'approveApplication',
+        component: StandardRequestComponent,
+        children: [{path: '', component: ApproveApplicationComponent}]
+    },
+    {
+        path: 'approvedMembers',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: ApprovedMembersComponent}]
+    },
+    {
+        path: 'createCredentials',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: MembersToCreateCredentialsComponent}]
+    },
+    {
+        path: 'sendInductionEmail',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: MembersCreatedCredentialsComponent}]
+    },
+    {
+        path: 'getInduction',
+        component: StandardRequestComponent,
+        children: [{path: '', component: ApproveInductionComponent}]
+    },
+    {
+        path: 'sendNotice',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: MembersCreatedCredentialsComponent}]
+    },
+
+    {
         path: 'uploadTcMember',
         component: AdminLayoutComponent,
         //canActivate: [AuthGuard],
@@ -1148,6 +1207,22 @@ export const routes: Routes = [
         path: 'slManufacturers', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [{path: '', component: StandardLevyManufactureDetailsComponent}]
+    },
+
+    {
+        path: 'slApplications', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: StdLevyApplicationsComponent}]
+    },
+    {
+        path: 'slPendingTasks', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: StdLevyPendingTasksComponent}]
+    },
+    {
+        path: 'slCompleteTasks', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: StdLevyCompleteTasksComponent}]
     },
 
 

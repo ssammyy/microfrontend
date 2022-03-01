@@ -7,10 +7,13 @@ import org.flowable.engine.TaskService
 import org.flowable.engine.history.HistoricActivityInstance
 import org.flowable.engine.repository.Deployment
 import org.flowable.task.api.Task
+import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.ID
 import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
+import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.std.CallForTCApplication
 import org.kebs.app.kotlin.apollo.store.model.std.DatKebsSdStandardsEntity
@@ -18,6 +21,8 @@ import org.kebs.app.kotlin.apollo.store.model.std.MembershipTCApplication
 import org.kebs.app.kotlin.apollo.store.model.std.TechnicalCommitteeMember
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.http.ResponseEntity
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.sql.Timestamp
@@ -32,6 +37,8 @@ import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponseValue as
 class MembershipToTCService(
     private val runtimeService: RuntimeService,
     private val taskService: TaskService,
+    private val notifications: Notifications,
+
     @Qualifier("processEngine") private val processEngine: ProcessEngine,
     private val repositoryService: RepositoryService,
     private val membershipTCRepository: MembershipTCRepository,
@@ -41,6 +48,7 @@ class MembershipToTCService(
     val commonDaoServices: CommonDaoServices,
     private val technicalCommitteeRepository: TechnicalCommitteeRepository,
     private val sdNwaUploadsEntityRepository: StandardsDocumentsRepository,
+    private val applicationMapProperties: ApplicationMapProperties,
 
 
     ) {
@@ -237,6 +245,175 @@ class MembershipToTCService(
 
         return membershipTCRepository.findByStatus("4")
     }
+
+    //HOF Send Email
+    fun sendEmailToApproved(
+        membershipTCApplication: MembershipTCApplication,
+        applicationID: Long
+    ) {
+        val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null);
+        //send email
+        val encryptedId = BCryptPasswordEncoder().encode(u.id.toString())
+        val link =
+            "${applicationMapProperties.baseUrlValue}/v1/migration/anonymous/membershipToTC/approve?applicationID=${encryptedId}"
+        val messageBody =
+            " Hello ${u.nomineeName} \n Thank you for your application. You have been appointed as a member of " +
+                    "${u.technicalCommittee}. Please click on the following link to confirm appointment \n " +
+                    link
+        u.email?.let { notifications.sendEmail(it, "Technical Committee Appointment  Letter", messageBody) }
+        u.status = "5" // approved and appointment letter email has been sent by HOD
+        u.varField10 = encryptedId
+
+
+
+        membershipTCRepository.save(u)
+    }
+
+    //Approve Process
+    fun approveUser(
+        applicationID: String
+    ): ResponseEntity<String> {
+
+        val u: MembershipTCApplication? = membershipTCRepository.findByVarField10(applicationID)
+        return if (u != null) {
+            if (u.status.equals("6")) {
+                ResponseEntity.ok("This Link Has Already Been Used");
+
+            } else {
+                u.status = "6"
+                membershipTCRepository.save(u)
+                ResponseEntity.ok("Saved");
+            }
+
+        } else {
+            throw ExpectedDataNotFound("This is not approved for appointment")
+        }
+
+
+        //val u: MembershipTCApplication = membershipTCRepository.findByVarField10(applicationID);
+
+
+        //send email
+
+    }
+
+    //HOF Get Users With Approved Email Together with TC-Sec
+    fun getApprovedEmail(): List<MembershipTCApplication> {
+
+        return membershipTCRepository.findByStatus("6")
+    }
+
+    //HOD Forwards to HOD-ICT
+    fun decisionOnApprovedHof(
+        membershipTCApplication: MembershipTCApplication,
+        applicationID: Long,
+        decision: String
+    ) {
+        val variable: MutableMap<String, Any> = java.util.HashMap()
+
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null);
+        u.status = "7" // approved and send to HOD-ICT
+        u.varField10 = decision //this is scope that is defined
+        membershipTCRepository.save(u)
+    }
+
+
+    //HOD ICT gets forwarded users
+    fun getAllUsersToCreateCredentials(): List<MembershipTCApplication> {
+
+        return membershipTCRepository.findByStatus("7")
+    }
+
+    fun decisionUponCreation(
+        membershipTCApplication: MembershipTCApplication,
+        applicationID: Long
+    ) {
+        val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null);
+        u.status = "8" // created as users on QAIMSS
+        membershipTCRepository.save(u)
+    }
+
+    //HOD  get all created as users on QAIMSS
+    fun getAllUsersCreatedCredentials(): List<MembershipTCApplication> {
+
+        return membershipTCRepository.findByStatus("8")
+    }
+
+    //HOD Send Email For Induction
+    fun sendEmailForInduction(
+        membershipTCApplication: MembershipTCApplication,
+        applicationID: Long
+    ) {
+        val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null);
+        //send email
+        val encryptedId = BCryptPasswordEncoder().encode(u.id.toString())
+        val link =
+            "${applicationMapProperties.baseUrlValue}/v1/migration/anonymous/membershipToTC/induction?applicationID=${encryptedId}"
+        val messageBody =
+            " Hello ${u.nomineeName} \n Welcome To KEBS QAIMSS. \n Your Login Credentials are as follows:TBD " +
+                    "${u.technicalCommittee}. Please click on the following link to confirm induction \n " +
+                    link
+        u.email?.let { notifications.sendEmail(it, "Technical Committee Induction  Letter", messageBody) }
+        u.status = "9" // approved and induction letter email has been sent by HOD
+        u.varField10 = encryptedId
+
+
+
+        membershipTCRepository.save(u)
+    }
+
+    //Approve Process Induction
+    fun approveUserInduction(
+        applicationID: String
+    ): ResponseEntity<String> {
+
+        val u: MembershipTCApplication? = membershipTCRepository.findByVarField10(applicationID)
+        return if (u != null) {
+            if (u.status.equals("10")) {
+                ResponseEntity.ok("This Link Has Already Been Used");
+
+            } else {
+                u.status = "10"
+                membershipTCRepository.save(u)
+                ResponseEntity.ok("Saved");
+            }
+
+        } else {
+            throw ExpectedDataNotFound("This is not approved for induction")
+        }
+
+
+        //val u: MembershipTCApplication = membershipTCRepository.findByVarField10(applicationID);
+
+
+        //send email
+
+    }
+
+    //Get all Approved for induction
+    fun getAllUsersApprovedForInduction(): List<MembershipTCApplication> {
+
+        return membershipTCRepository.findByStatus("10")
+    }
+
+    //HOD Send Email For Induction
+    fun sendEmailForFirstMeeting(
+        membershipTCApplication: MembershipTCApplication,
+        applicationID: Long,
+        meetingDate:String
+    ) {
+        val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null);
+        //send email
+        val messageBody =
+            " Hello ${u.nomineeName} \n We will be having our first meeting scheduled on ${meetingDate}. \n Looking Forward To Seeing You "
+        u.email?.let { notifications.sendEmail(it, "Technical Committee First Meeting", messageBody) }
+        u.status = "11" // approved and first meeting letter email has been sent by HOD
+
+        membershipTCRepository.save(u)
+    }
+
+
 
 
     fun getTCMemberCreationTasks(): List<TaskDetails> {

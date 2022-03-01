@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {Subject} from "rxjs";
 
 import {
@@ -41,22 +41,16 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
     levelFour=false;
     @ViewChild(DataTableDirective, {static: false})
     dtElement: DataTableDirective;
+    dtElement1: DataTableDirective;
+    dtElement2: DataTableDirective;
 
-    //dtOptions: DataTables.Settings[] = [];
-    dtOptions: DataTables.Settings = {};
+    dtOptions: DataTables.Settings[] = [];
     dtTrigger: Subject<any> = new Subject<any>();
+    //dtTrigger: Subject<any> = new Subject();
     displayTable: boolean = false;
 
     isDtInitialized: boolean = false
 
-  //dtOptions1:DataTables.Settings = {};
-    dtTrigger1: Subject<any> = new Subject<any>();
-
-
-
-
-    //dtOptions2:DataTables.Settings = {};
-    dtTrigger2: Subject<any> = new Subject<any>();
     public users !: UsersEntity[] ;
     public approveUsersOne !: UsersEntity[] ;
     public approveUsersTwo !: UsersEntity[] ;
@@ -240,13 +234,31 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
   }
 
   ngOnInit(): void {
-    //this.getMnCompleteTask();
+
+      this.dtOptions[0] = {
+          pagingType: 'full_numbers',
+          pageLength: 10,
+          processing: true
+      };
+      this.dtOptions[1] = {
+          pagingType: 'full_numbers',
+          pageLength: 10,
+          processing: true
+      };
+      this.dtOptions[2] = {
+          pagingType: 'full_numbers',
+          pageLength: 10,
+          processing: true
+      };
+      // this.dtTrigger[0].next();
+      // this.dtTrigger[1].next();
+      // this.dtTrigger[2].next();
+
+
     this.getManufacturerList();
     this.getUserRoles();
-    //this.getUserList();
     this.getUserData();
-    //this.getSlLvTwoList();
-    //this.getPlUserList();
+
 
     if(this.roles?.includes('SL_IS_PL_OFFICER')){
         this.getApproveLevelOne();
@@ -633,28 +645,9 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
     this.levyService.getManufacturerList().subscribe(
         (response: ManufactureDetailList[])=> {
           this.manufactureLists = response;
-          //console.log(this.manufactureLists);
             this.SpinnerService.hide();
-            this.displayTable = true;
-            setTimeout(()=>{
-                $('#datatable').DataTable( {
-                    pagingType: 'full_numbers',
-                    pageLength: 5,
-                    processing: true,
-                    lengthMenu : [5, 10, 25]
-                } );
-            }, 1);
-            if (this.isDtInitialized) {
-                this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-                    dtInstance.destroy();
-                    this.dtTrigger.next();
+            this.rerender();
 
-                });
-            } else {
-                this.isDtInitialized = true
-                this.dtTrigger.next();
-
-            }
         },
         (error: HttpErrorResponse)=>{
           this.SpinnerService.hide();
@@ -663,6 +656,19 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         }
     );
   }
+    rerender(): void {
+        if (this.isDtInitialized) {
+            this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                dtInstance.destroy();
+                this.dtTrigger.next();
+            });
+        } else {
+            this.isDtInitialized = true
+            this.dtTrigger.next();
+        }
+    }
+
+
     public getUserDetails(): void{
         this.levyService.getUserDetails().subscribe(
         (response: UsersEntityList)=> {
@@ -697,6 +703,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
     //     );
     //
     // }
+    private $route: any;
 
   public getMnPendingTask(): void{
     this.SpinnerService.show();
@@ -705,15 +712,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
           //console.log(this.manufacturePendingTasks);
           this.manufacturePendingTasks = response;
             this.SpinnerService.hide();
-            if (this.isDtInitialized) {
-                this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-                    dtInstance.destroy();
-                    this.dtTrigger1.next();
-                });
-            } else {
-                this.isDtInitialized = true
-                this.dtTrigger1.next();
-            }
+            this.rerender1();
 
         },
         (error: HttpErrorResponse)=>{
@@ -722,21 +721,22 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         }
     );
   }
+
+    rerender1(): void {
+        this.dtElement1.dtInstance.then((dtInstance: DataTables.Api) => {
+            dtInstance.destroy();
+            this.dtTrigger[1].next();
+        });}
+
   public getMnCompleteTask(): void{
     this.SpinnerService.show();
     this.levyService.getMnCompleteTask().subscribe(
         (response: ManufactureCompletedTask[])=> {
+            console.log(this.manufactureCompleteTasks)
           this.manufactureCompleteTasks = response;
             this.SpinnerService.hide();
-            if (this.isDtInitialized) {
-                this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-                    dtInstance.destroy();
-                    this.dtTrigger2.next();
-                });
-            } else {
-                this.isDtInitialized = true
-                this.dtTrigger2.next();
-            }
+            this.rerender2();
+
         },
         (error: HttpErrorResponse)=>{
           this.SpinnerService.hide();
@@ -744,6 +744,13 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         }
     );
   }
+
+    rerender2(): void {
+        this.dtElement2.dtInstance.then((dtInstance: DataTables.Api) => {
+            dtInstance.destroy();
+            this.dtTrigger[2].next();
+        });}
+
     public onOpenModalList(manufactureLists: ManufactureDetailList,mode:string): void{
         const container = document.getElementById('main-container');
         const button = document.createElement('button');
@@ -822,7 +829,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         this.levyService.scheduleSiteVisit(this.scheduleVisitFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
-
+                this.$route.reload();
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Visit Scheduled`);
                 this.scheduleVisitFormGroup.reset();
@@ -842,10 +849,13 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         this.levyService.assignCompanyTasks(this.assignCompanyTaskFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
-                //this.getManufacturerList();
+               // this.reloadCurrentRoute();
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Task Assigned`);
-                this.router.navigateByUrl('/slManufacturers').then(r => {});
+                this.getManufacturerList()
+                // this.router.navigateByUrl('/slManufacturers').then(r => {});
+              //  window.location.href = "/slManufacturers";
+
 
             },
             (error: HttpErrorResponse) => {
@@ -860,7 +870,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         this.levyService.assignCompanyTasks(this.assignCompanyTask1FormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
-                //this.getManufacturerList();
+                this.reloadCurrentRoute();
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Task Assigned`);
                 this.router.navigateByUrl('/slManufacturers').then(r => {});
@@ -877,7 +887,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         this.levyService.assignCompanyTasks(this.assignCompanyTask2FormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
-                //this.getManufacturerList();
+                this.reloadCurrentRoute();
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Task Assigned`);
                 this.router.navigateByUrl('/slManufacturers').then(r => {});
@@ -895,7 +905,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         this.levyService.editCompany(this.editCompanyFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
-                //this.getManufacturerList();
+                this.reloadCurrentRoute();
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Company Edited`);
                 this.router.navigateByUrl('/slManufacturers').then(r => {});
@@ -915,7 +925,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         this.levyService.editCompanyDetailsConfirm(this.editedCompanyFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
-                //this.getManufacturerList();
+                this.reloadCurrentRoute();
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Company Edited`);
                 this.router.navigateByUrl('/slManufacturers').then(r => {});
@@ -934,7 +944,9 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         this.levyService.saveSiteVisitReport(this.prepareReportFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
+                this.reloadCurrentRoute();
                 this.SpinnerService.hide();
+
                 this.onClickSaveUploads(response.body.savedRowID)
                 this.prepareReportFormGroup.reset();
             },
@@ -981,7 +993,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         this.levyService.levelOneDecisionOnReport(this.approvalFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
-
+                this.reloadCurrentRoute();
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Report Approved`);
                 this.approvalFormGroup.reset();
@@ -1000,7 +1012,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         this.levyService.levelOneDecisionOnReport(this.rejectFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
-
+                this.reloadCurrentRoute();
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Report Rejected`);
                 this.rejectFormGroup.reset();
@@ -1038,7 +1050,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         this.levyService.decisionOnSiteReportLevelTwo(this.approvalTwoFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
-
+                this.reloadCurrentRoute();
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Report Approved`);
                 this.approvalTwoFormGroup.reset();
@@ -1057,7 +1069,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         this.levyService.decisionOnSiteReportLevelTwo(this.approveTwoFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
-
+                this.reloadCurrentRoute();
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Report Approved`);
                 this.approveTwoFormGroup.reset();
@@ -1076,7 +1088,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         this.levyService.decisionOnSiteReportLevelTwo(this.rejectTwoFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
-
+                this.reloadCurrentRoute();
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Report Rejected`);
                 this.rejectTwoFormGroup.reset();
@@ -1096,6 +1108,7 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
         this.levyService.saveSiteVisitFeedback(this.prepareFeedBackFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
+                this.reloadCurrentRoute();
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Feedback Saved and Sent`);
                 this.prepareFeedBackFormGroup.reset();
@@ -1107,6 +1120,8 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
             }
         );
     }
+
+
     showNotification(from: any, align: any) {
         const type = ['', 'info', 'success', 'warning', 'danger', 'rose', 'primary'];
 
@@ -1134,44 +1149,37 @@ export class StandardLevyManufactureDetailsComponent implements AfterViewInit, O
                 '</div>'
         });
     }
-    // public checkIfTrue(){
-    //     // @ts-ignore
-    //     if (Object.values(this.manufactureUserRoles).indexOf(793) > -1) {
-    //         console.log('has test1');
-    //     }
-    //     if (Object.values(obj).indexOf('test1') > -1) {
-    //         console.log('has test1');
-    //     }
-    // }
 
-
-    // public checkIfTrue()
-    // {
-    //
-    //     if(this.manufactureUserRoles.includes('793') ){
-    //      this.levelOne=true;
-    //    }
-    //     if(this.manufactureUserRoles.includes(794) ){
-    //     this.levelTwo=true;
-    // }
-    //     if(this.manufactureUserRoles.includes(795) ){
-    //     this.levelThree=true;
-    // }
-    //     if(this.manufactureUserRoles.includes(796) ){
-    //     this.levelFour=true;
-    // }
-    // }
 
     ngAfterViewInit(): void {
-        this.dtTrigger.next();
-        this.dtTrigger1.next();
-        this.dtTrigger2.next();
+        this.dtTrigger[0].next();
+        this.dtTrigger[1].next();
+        this.dtTrigger[2].next();
+
     }
 
     ngOnDestroy(): void {
-        this.dtTrigger.unsubscribe();
-        this.dtTrigger1.unsubscribe();
-        this.dtTrigger2.unsubscribe();
+        this.dtTrigger[0].unsubscribe();
+        this.dtTrigger[1].unsubscribe();
+        this.dtTrigger[2].unsubscribe();
+
+    }
+    gotoAllApplications() {
+        this.router.navigate(['/slManufacturers']);
+
+    }
+
+    reloadCurrentRoute() {
+        let currentUrl = this.router.url;
+        this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+        this.router.onSameUrlNavigation = 'reload';
+        this.router.navigate([currentUrl]);
+    }
+
+    @ViewChild('closeViewModal') private closeModal: ElementRef;
+
+    public hideModel() {
+        this.closeModal?.nativeElement.click();
     }
 
 }

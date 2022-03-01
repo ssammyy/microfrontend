@@ -312,6 +312,12 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     fun getManufacturerList(): MutableList<CompanyProfileEntity>
 
     @Query(
+        value = "SELECT ID  FROM DAT_KEBS_COMPANY_PROFILE WHERE USER_ID= :id AND ASSIGN_STATUS='0'",
+        nativeQuery = true
+    )
+    fun getAssignStatus(@Param("id") id: Long?): Long
+
+    @Query(
         value = "SELECT *  FROM DAT_KEBS_COMPANY_PROFILE WHERE ASSIGN_STATUS='2' AND ASSIGNED_TO = :assignedTo",
         nativeQuery = true
     )
@@ -328,6 +334,12 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
         nativeQuery = true
     )
     fun getBusinessNature(@Param("id") id: Long?): Long
+
+    @Query(
+        value = "SELECT ID  FROM DAT_KEBS_COMPANY_PROFILE WHERE USER_ID= :id",
+        nativeQuery = true
+    )
+    fun getManufactureId(@Param("id") id: Long?): Long?
 
 
 

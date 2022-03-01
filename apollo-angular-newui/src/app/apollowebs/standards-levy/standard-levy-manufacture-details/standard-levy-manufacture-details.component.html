@@ -32,16 +32,16 @@
                                         <div class="col-md-12 ">
                                             <nav>
                                                 <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-                                                    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-allApps" role="tab" aria-controls="nav-home" aria-selected="true">All Applications</a>
+                                                    <a class="nav-item nav-link active" (click)=gotoAllApplications() id="nav-home-tab" data-toggle="tab" href="#nav-allApps" role="tab" aria-controls="nav-home" aria-selected="true">All Applications</a>
                                                     <a class="nav-item nav-link" (click)=getMnPendingTask() id="nav-profile-tab" data-toggle="tab" href="#nav-myTasks" role="tab" aria-controls="nav-profile" aria-selected="false">My Tasks</a>
                                                     <a class="nav-item nav-link" (click)=getMnCompleteTask() id="nav-contact-tab" data-toggle="tab" href="#nav-completeTasks" role="tab" aria-controls="nav-contact" aria-selected="false">Complete Tasks</a>
                                                 </div>
                                             </nav>
                                             <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
                                                 <div class="tab-pane fade show active" id="nav-allApps" role="tabpanel" aria-labelledby="nav-home-tab">
-                                                    <div *ngIf="manufactureLists && manufactureLists.length > 0" class="material-datatables table-responsive col-md-12">
 
-                                                        <table  class="table table-striped table-bordered table-hover " id="datatable"    cellspacing="0" width="100%">
+                                                    <div *ngIf="manufactureLists && manufactureLists.length > 0" class="material-datatables table-responsive col-md-12">
+                                                        <table datatable [dtOptions]="dtOptions[0]" [dtTrigger]="dtTrigger[0]" class="row-border hover" style="width: 100%">
                                                             <thead>
                                                             <tr>
                                                                 <th>#</th>
@@ -54,7 +54,7 @@
                                                             </tr>
                                                             </thead>
                                                             <tbody>
-                                                            <tr  >
+
                                                             <tr  *ngFor="let manufactureList of manufactureLists let i=index">
                                                                 <td >{{i+1}} </td>
                                                                 <td>{{manufactureList.name}}</td>
@@ -68,7 +68,7 @@
                                                                         <div class="modal-content">
                                                                             <div class="modal-header">
                                                                                 <h5 class="modal-title" id="viewListExampleModalLabel">Manufacturer Details</h5>
-                                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                <button type="button" #closeViewModal class="close" data-dismiss="modal" aria-label="Close">
                                                                                     <span aria-hidden="true">&times;</span>
                                                                                 </button>
                                                                             </div>
@@ -644,7 +644,7 @@
                                                 </div>
                                                 <div class="tab-pane fade" id="nav-myTasks" role="tabpanel" aria-labelledby="nav-profile-tab">
                                                     <div class="material-datatables table-responsive col-md-12">
-                                                        <table  class="table table-striped table-bordered table-hover " id="datatable1"    cellspacing="0" width="100%">
+                                                        <table datatable [dtOptions]="dtOptions[1]" [dtTrigger]="dtTrigger[1]" class="row-border hover" style="width: 100%">
                                                             <thead>
                                                             <tr>
                                                                 <th>#</th>
@@ -658,7 +658,6 @@
                                                             </tr>
                                                             </thead>
                                                             <tbody>
-                                                            <tr  >
                                                             <tr  *ngFor="let manufacturePendingTask of manufacturePendingTasks let i=index">
                                                                 <td >{{i+1}} </td>
                                                                 <td>{{manufacturePendingTask.taskData.companyName}}</td>
@@ -3230,7 +3229,7 @@
                                                 </div>
                                                 <div class="tab-pane fade" id="nav-completeTasks" role="tabpanel" aria-labelledby="nav-contact-tab">
                                                     <div class="material-datatables table-responsive col-md-12">
-                                                        <table  class="table table-striped table-bordered table-hover " id="datatable2"    cellspacing="0" width="100%">
+                                                        <table datatable [dtOptions]="dtOptions[2]" [dtTrigger]="dtTrigger[2]" class="row-border hover" style="width: 100%">
                                                             <thead>
                                                             <tr>
                                                                 <th>#</th>
@@ -3243,7 +3242,6 @@
                                                             </tr>
                                                             </thead>
                                                             <tbody>
-                                                            <tr  >
                                                             <tr  *ngFor="let manufactureCompleteTask of manufactureCompleteTasks let i=index">
                                                                 <td >{{i+1}} </td>
                                                                 <td>{{manufactureCompleteTask.companyName}}</td>
@@ -3252,10 +3250,356 @@
                                                                 <td>{{manufactureCompleteTask.registrationNumber}}</td>
                                                                 <td><button class="btn btn-sm btn-success">Complete</button></td>
                                                                 <td><button (click)="onOpenModalComplete(manufactureCompleteTask,'viewComplete')" type="submit" class="btn btn-success btn-sm">View More</button></td>
-
-
                                                             </tr>
                                                             </tbody>
+                                                            <div class="modal fade" id="viewComplete" tabindex="-1" role="dialog" aria-labelledby="viewCompleteExampleModalLabel" aria-hidden="true">a
+                                                                <div class="modal-dialog modal-lg" role="document">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title" id="viewCompleteExampleModalLabel">Completed Site Visit</h5>
+                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                <span aria-hidden="true">&times;</span>
+                                                                            </button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <nav>
+                                                                                <div class="nav nav-tabs nav-fill" id="nav-tabs-complete" role="tablist">
+                                                                                    <a class="nav-item nav-link active" id="nav-complete-tab" data-toggle="tab" href="#nav-comData-complete" role="tab" aria-controls="nav-com" aria-selected="true">Company Details</a>
+                                                                                    <a class="nav-item nav-link" id="nav-report-tab-complete" data-toggle="tab" href="#nav-comReport-complete" role="tab" aria-controls="nav-report" aria-selected="false">Site Visit Report</a>
+                                                                                </div>
+                                                                            </nav>
+                                                                            <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContents-complete">
+                                                                                <div class="tab-pane fade show active" id="nav-comData-complete" role="tabpanel" aria-labelledby="nav-complete-tab">
+                                                                                    <div class="list-group list-group-flush">
+                                                                                        <div class="row col-12">
+                                                                                            <div class="form-group col-12">
+                                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                                                        <div>
+                                                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Company Name</b></h5>
+                                                                                                            </div>
+                                                                                                        </div>
+
+                                                                                                    </div>
+
+                                                                                                    <p class="text-sm mb-0">{{actionRequestComplete?.companyName}}.</p>
+                                                                                                </a>
+                                                                                            </div>
+                                                                                            <div class="form-group col-12">
+                                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                                                        <div>
+                                                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>KRA PIN</b></h5>
+                                                                                                            </div>
+                                                                                                        </div>
+
+                                                                                                    </div>
+
+                                                                                                    <p class="text-sm mb-0">{{actionRequestComplete?.kraPin}}.</p>
+                                                                                                </a>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                        <div class="row col-12">
+                                                                                            <div class="form-group col-12">
+                                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                                                        <div>
+                                                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Registration Number</b></h5>
+                                                                                                            </div>
+                                                                                                        </div>
+
+                                                                                                    </div>
+
+                                                                                                    <p class="text-sm mb-0">{{actionRequestComplete?.registrationNumber}}.</p>
+                                                                                                </a>
+                                                                                            </div>
+
+                                                                                            <div class="form-group col-12">
+                                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                                                        <div>
+                                                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Postal Address</b></h5>
+                                                                                                            </div>
+                                                                                                        </div>
+
+                                                                                                    </div>
+
+                                                                                                    <p class="text-sm mb-0">{{actionRequestComplete?.postalAddress}}.</p>
+                                                                                                </a>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="row col-12">
+                                                                                            <div class="form-group col-12">
+                                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                                                        <div>
+                                                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Physical Address</b></h5>
+                                                                                                            </div>
+                                                                                                        </div>
+
+                                                                                                    </div>
+
+                                                                                                    <p class="text-sm mb-0">{{actionRequestComplete?.physicalAddress}}.</p>
+                                                                                                </a>
+                                                                                            </div>
+                                                                                            <div class="form-group col-12">
+                                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                                                        <div>
+                                                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Plot Number</b></h5>
+                                                                                                            </div>
+                                                                                                        </div>
+
+                                                                                                    </div>
+                                                                                                    <p class="text-sm mb-0">{{actionRequestComplete?.plotNumber}}.</p>
+                                                                                                </a>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="row col-12">
+                                                                                            <div class="form-group col-12">
+                                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                                                        <div>
+                                                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Company Email</b></h5>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <p class="text-sm mb-0">{{actionRequestComplete?.companyEmail}}.</p>
+                                                                                                </a>
+                                                                                            </div>
+
+                                                                                            <div class="form-group col-12">
+                                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                                                        <div>
+                                                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Company Telephone</b></h5>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+
+                                                                                                    <p class="text-sm mb-0">{{actionRequestComplete?.companyTelephone}}.</p>
+                                                                                                </a>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="row col-12">
+                                                                                            <div class="form-group col-12">
+                                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                                                        <div>
+                                                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Yearly Turn-Over</b></h5>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <!--                                <h4 class="mt-3 mb-1"> New order for Argon Dashboard</h4>-->
+                                                                                                    <p class="text-sm mb-0">{{actionRequestComplete?.yearlyTurnOver}}.</p>
+                                                                                                </a>
+                                                                                            </div>
+                                                                                            <div class="form-group col-12">
+                                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                                                        <div>
+                                                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Business Lines</b></h5>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+
+                                                                                                    <p class="text-sm mb-0">{{actionRequestComplete?.businessLines}}.</p>
+                                                                                                </a>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="row col-12">
+                                                                                            <div class="form-group col-12">
+                                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                                                        <div>
+                                                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Nature of Business</b></h5>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+
+                                                                                                    <p class="text-sm mb-0">{{actionRequestComplete?.businessNature}}.</p>
+                                                                                                </a>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                        <div class="row col-12">
+                                                                                            <div class="form-group col-12">
+                                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                                                        <div>
+                                                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Branch Name</b></h5>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+
+                                                                                                    <p class="text-sm mb-0">{{actionRequestComplete?.branchName}}.</p>
+                                                                                                </a>
+                                                                                            </div>
+                                                                                            <div class="form-group col-12">
+                                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                                                        <div>
+                                                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Street Name</b></h5>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+
+                                                                                                    <p class="text-sm mb-0">{{actionRequestComplete?.streetName}}.</p>
+                                                                                                </a>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="row col-12">
+                                                                                            <div class="form-group col-12">
+                                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                                                        <div>
+                                                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Director's ID Number</b></h5>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+
+                                                                                                    <p class="text-sm mb-0">{{actionRequestComplete?.directorIdNumber}}.</p>
+                                                                                                </a>
+                                                                                            </div>
+
+                                                                                        </div>
+
+
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="tab-pane fade" id="nav-comReport-complete" role="tabpanel" aria-labelledby="nav-report-tab-complete">
+                                                                                    <div class="row col-12">
+                                                                                        <div class="list-group list-group-flush">
+                                                                                            <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                                <div class="d-flex w-100 justify-content-between">
+                                                                                                    <div>
+                                                                                                        <div class="d-flex w-100 align-items-center">
+                                                                                                            <h5 class="mb-1" style="color: #0d0505"><b>Visit Date</b></h5>
+                                                                                                        </div>
+                                                                                                    </div>
+
+                                                                                                </div>
+
+                                                                                                <p class="text-sm mb-0">{{actionRequestComplete?.visitDate}}.</p>
+                                                                                            </a>
+                                                                                            <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                                <div class="d-flex w-100 justify-content-between">
+                                                                                                    <div>
+                                                                                                        <div class="d-flex w-100 align-items-center">
+                                                                                                            <h5 class="mb-1" style="color: #0d0505"><b>Purpose</b></h5>
+                                                                                                        </div>
+                                                                                                    </div>
+
+                                                                                                </div>
+
+                                                                                                <p class="text-sm mb-0">{{actionRequestComplete?.purpose}}.</p>
+                                                                                            </a>
+                                                                                            <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                                <div class="d-flex w-100 justify-content-between">
+                                                                                                    <div>
+                                                                                                        <div class="d-flex w-100 align-items-center">
+                                                                                                            <h5 class="mb-1" style="color: #0d0505"><b>Person Met</b></h5>
+                                                                                                        </div>
+                                                                                                    </div>
+
+                                                                                                </div>
+
+                                                                                                <p class="text-sm mb-0">{{actionRequestComplete?.person}}.</p>
+                                                                                            </a>
+                                                                                            <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                                <div class="d-flex w-100 justify-content-between">
+                                                                                                    <div>
+                                                                                                        <div class="d-flex w-100 align-items-center">
+                                                                                                            <h5 class="mb-1" style="color: #0d0505"><b>Action Taken</b></h5>
+                                                                                                        </div>
+                                                                                                    </div>
+
+                                                                                                </div>
+
+                                                                                                <p class="text-sm mb-0">{{actionRequestComplete?.actionTaken}}.</p>
+                                                                                            </a>
+                                                                                            <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                                <div class="d-flex w-100 justify-content-between">
+                                                                                                    <div>
+                                                                                                        <div class="d-flex w-100 align-items-center">
+                                                                                                            <h5 class="mb-1" style="color: #0d0505"><b>Remarks on Visit</b></h5>
+                                                                                                        </div>
+                                                                                                    </div>
+
+                                                                                                </div>
+
+
+                                                                                                <p class="text-sm mb-0">{{actionRequestComplete?.reportRemarks}}.</p>
+                                                                                            </a>
+                                                                                            <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                                <div class="d-flex w-100 justify-content-between">
+                                                                                                    <div>
+                                                                                                        <div class="d-flex w-100 align-items-center">
+                                                                                                            <h5 class="mb-1" style="color: #0d0505"><b>Assistant Manager Comments</b></h5>
+                                                                                                        </div>
+                                                                                                    </div>
+
+                                                                                                </div>
+
+
+                                                                                                <p class="text-sm mb-0">{{actionRequestComplete?.asstManagerRemarks}}.</p>
+                                                                                            </a>
+                                                                                            <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                                <div class="d-flex w-100 justify-content-between">
+                                                                                                    <div>
+                                                                                                        <div class="d-flex w-100 align-items-center">
+                                                                                                            <h5 class="mb-1" style="color: #0d0505"><b>Manager Comments</b></h5>
+                                                                                                        </div>
+                                                                                                    </div>
+
+                                                                                                </div>
+
+
+                                                                                                <p class="text-sm mb-0">{{actionRequestComplete?.chiefManagerRemarks}}.</p>
+                                                                                            </a>
+                                                                                            <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                                <div class="d-flex w-100 justify-content-between">
+                                                                                                    <div>
+                                                                                                        <div class="d-flex w-100 align-items-center">
+                                                                                                            <h5 class="mb-1" style="color: #0d0505"><b>View Attached Document</b></h5>
+                                                                                                        </div>
+                                                                                                    </div>
+
+                                                                                                </div>
+
+                                                                                                <button mat-raised-button type="button" data-toggle="modal"
+                                                                                                        (click)="viewPdfFile( actionRequestComplete?.visitId,'VisitReport'+actionRequestComplete?.visitId, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
+                                                                                                    <i class="material-icons">visibility</i>
+
+                                                                                                </button>
+                                                                                            </a>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+
+
+
+                                                                                </div>
+                                                                        </div>
+                                                                </div>
+                                                            </div>
+                                                            </div>
                                                         </table>
                                                     </div>
                                                 </div>
