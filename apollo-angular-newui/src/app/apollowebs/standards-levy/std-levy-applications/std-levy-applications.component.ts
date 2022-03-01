@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {UsersEntity} from "../../../core/store/data/std/std.model";
 import {ConfirmEditCompanyDTO, ManufactureDetailList} from "../../../core/store/data/levy/levy.model";
 import {FormBuilder, FormGroup} from "@angular/forms";
@@ -14,25 +14,26 @@ import {DataTableDirective} from "angular-datatables";
 
 
 declare const $: any;
+
 @Component({
   selector: 'app-std-levy-applications',
   templateUrl: './std-levy-applications.component.html',
-  styleUrls: ['./std-levy-applications.component.css','../../../../../node_modules/@ng-select/ng-select/themes/default.theme.css'],
+  styleUrls: ['./std-levy-applications.component.css', '../../../../../node_modules/@ng-select/ng-select/themes/default.theme.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class StdLevyApplicationsComponent implements OnInit,AfterViewInit, OnDestroy {
-  userId: number ;
+export class StdLevyApplicationsComponent implements OnInit {
+  userId: number;
   roles: string[];
-  userType: number ;
-  levelOne= false;
+  userType: number;
+  levelOne = false;
 
-  public users !: UsersEntity[] ;
-  public approveUsersOne !: UsersEntity[] ;
-  public approveUsersTwo !: UsersEntity[] ;
-  public approveUsersThree !: UsersEntity[] ;
-  public assignUsersOne !: UsersEntity[] ;
-  public assignUsersTwo !: UsersEntity[] ;
-  public assignUsersThree !: UsersEntity[] ;
+  public users !: UsersEntity[];
+  public approveUsersOne !: UsersEntity[];
+  public approveUsersTwo !: UsersEntity[];
+  public approveUsersThree !: UsersEntity[];
+  public assignUsersOne !: UsersEntity[];
+  public assignUsersTwo !: UsersEntity[];
+  public assignUsersThree !: UsersEntity[];
   approvedUsersOne: number;
   approvedUsersTwo: number;
   approvedUsersThree: number;
@@ -81,31 +82,33 @@ export class StdLevyApplicationsComponent implements OnInit,AfterViewInit, OnDes
   }
 
   toggleDisplayEditedForm(manufactureId: number) {
+    this.loadingText = "Loading ...."
     this.SpinnerService.show();
     this.levyService.getCompanyEditedDetails(manufactureId).subscribe(
-        (response: ConfirmEditCompanyDTO)=> {
+        (response: ConfirmEditCompanyDTO) => {
           this.editedCompanyData = response;
           this.SpinnerService.hide();
           console.log(this.editedCompanyData)
         },
-        (error: HttpErrorResponse)=>{
+        (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
           console.log(error.message);
         }
     );
-    this.isShowEditedForm= !this.isShowEditedForm;
-    this.isShowEditForm= true;
+    this.isShowEditedForm = !this.isShowEditedForm;
+    this.isShowEditForm = true;
     this.isShowAssignForm = true;
-    this.isShowAssign1Form= true;
-    this.isShowAssign2Form= true;
+    this.isShowAssign1Form = true;
+    this.isShowAssign2Form = true;
   }
 
   @ViewChild(DataTableDirective, {static: false})
   dtElement: DataTableDirective;
-  //dtOptions: DataTables.Settings[] = [];
+
+  dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
   isDtInitialized: boolean = false
-  displayTable: boolean = false;
+  loadingText: string;
 
   constructor(
       private router: Router,
@@ -113,7 +116,7 @@ export class StdLevyApplicationsComponent implements OnInit,AfterViewInit, OnDes
       private formBuilder: FormBuilder,
       private levyService: LevyService,
       private SpinnerService: NgxSpinnerService,
-      private notifyService : NotificationService
+      private notifyService: NotificationService
   ) {
 
   }
@@ -372,14 +375,23 @@ export class StdLevyApplicationsComponent implements OnInit,AfterViewInit, OnDes
   }
 
   public getManufacturerList(): void{
+    this.loadingText = "Retrieving Manufacturers ...."
     this.SpinnerService.show();
     this.levyService.getManufacturerList().subscribe(
-        (response: ManufactureDetailList[])=> {
+        (response: ManufactureDetailList[]) => {
           this.manufactureLists = response;
           this.SpinnerService.hide();
-          this.rerender();
+          if (this.isDtInitialized) {
+            this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+              dtInstance.destroy();
+              this.dtTrigger.next();
+            });
+          } else {
+            this.isDtInitialized = true
+            this.dtTrigger.next();
+          }
         },
-        (error: HttpErrorResponse)=>{
+        (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
           console.log(error.message);
 
@@ -387,25 +399,7 @@ export class StdLevyApplicationsComponent implements OnInit,AfterViewInit, OnDes
     );
   }
 
-  rerender(): void {
-    if (this.isDtInitialized) {
-      this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-        dtInstance.destroy();
-        this.dtTrigger.next();
-      });
-    } else {
-      this.isDtInitialized = true
-      this.dtTrigger.next();
-    }
-  }
 
-  ngAfterViewInit(): void {
-    this.dtTrigger.next();
-  }
-  ngOnDestroy(): void {
-    this.dtTrigger.unsubscribe();
-
-  }
   public onOpenModalList(manufactureLists: ManufactureDetailList,mode:string): void{
     const container = document.getElementById('main-container');
     const button = document.createElement('button');
@@ -426,7 +420,13 @@ export class StdLevyApplicationsComponent implements OnInit,AfterViewInit, OnDes
 
   }
 
+  @ViewChild('closeModal') private closeModal: ElementRef | undefined;
+  public hideModel() {
+    this.closeModal?.nativeElement.click();
+  }
+
   assignCompanyTask(): void {
+    this.loadingText = "Assigning Task ...."
 
     this.SpinnerService.show();
     this.levyService.assignCompanyTasks(this.assignCompanyTaskFormGroup.value).subscribe(
@@ -443,11 +443,15 @@ export class StdLevyApplicationsComponent implements OnInit,AfterViewInit, OnDes
           console.log(error.message);
         }
     );
+    this.hideModel();
+
   }
   assignCompanyTaskOne(): void {
+    this.loadingText = "Assigning Task ...."
+
     this.SpinnerService.show();
     this.levyService.assignCompanyTasks(this.assignCompanyTask1FormGroup.value).subscribe(
-        (response ) => {
+        (response) => {
           console.log(response);
           this.getManufacturerList();
           this.SpinnerService.hide();
@@ -459,11 +463,15 @@ export class StdLevyApplicationsComponent implements OnInit,AfterViewInit, OnDes
           console.log(error.message);
         }
     );
+    this.hideModel();
+
   }
   assignCompanyTaskTwo(): void {
+    this.loadingText = "Assigning Task ...."
+
     this.SpinnerService.show();
     this.levyService.assignCompanyTasks(this.assignCompanyTask2FormGroup.value).subscribe(
-        (response ) => {
+        (response) => {
           console.log(response);
           this.getManufacturerList();
           this.SpinnerService.hide();
@@ -475,12 +483,16 @@ export class StdLevyApplicationsComponent implements OnInit,AfterViewInit, OnDes
           console.log(error.message);
         }
     );
+    this.hideModel();
+
   }
   editCompany(): void {
+    this.loadingText = "Editing Company Details ...."
+
 
     this.SpinnerService.show();
     this.levyService.editCompany(this.editCompanyFormGroup.value).subscribe(
-        (response ) => {
+        (response) => {
           console.log(response);
           this.getManufacturerList();
           this.SpinnerService.hide();
@@ -493,13 +505,17 @@ export class StdLevyApplicationsComponent implements OnInit,AfterViewInit, OnDes
           console.log(error.message);
         }
     );
+    this.hideModel();
+
   }
 
   editedCompany(): void {
+    this.loadingText = "Editing Company Details ...."
+
 
     this.SpinnerService.show();
     this.levyService.editCompanyDetailsConfirm(this.editedCompanyFormGroup.value).subscribe(
-        (response ) => {
+        (response) => {
           console.log(response);
           this.getManufacturerList();
           this.SpinnerService.hide();
@@ -512,6 +528,8 @@ export class StdLevyApplicationsComponent implements OnInit,AfterViewInit, OnDes
           console.log(error.message);
         }
     );
+    this.hideModel();
+
   }
 
 
@@ -543,11 +561,7 @@ export class StdLevyApplicationsComponent implements OnInit,AfterViewInit, OnDes
     });
   }
 
-  @ViewChild('closeModal') private closeModal: ElementRef | undefined;
 
-  public hideModel() {
-    this.closeModal?.nativeElement.click();
-  }
 
 
 
