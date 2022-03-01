@@ -102,7 +102,7 @@ export class StdLevyApplicationsComponent implements OnInit,AfterViewInit, OnDes
 
   @ViewChild(DataTableDirective, {static: false})
   dtElement: DataTableDirective;
-  dtOptions: DataTables.Settings[] = [];
+  //dtOptions: DataTables.Settings[] = [];
   dtTrigger: Subject<any> = new Subject<any>();
   isDtInitialized: boolean = false
   displayTable: boolean = false;
@@ -123,11 +123,11 @@ export class StdLevyApplicationsComponent implements OnInit,AfterViewInit, OnDes
     this.getUserRoles();
     this.getUserData();
 
-    this.dtOptions[0] = {
-      pagingType: 'full_numbers',
-      pageLength: 10,
-      processing: true
-    };
+    // this.dtOptions[0] = {
+    //   pagingType: 'full_numbers',
+    //   pageLength: 10,
+    //   processing: true
+    // };
 
     if(this.roles?.includes('SL_IS_PL_OFFICER')){
       this.getApproveLevelOne();
