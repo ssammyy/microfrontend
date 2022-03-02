@@ -171,7 +171,7 @@ class StandardLevyService(
                     companyProfileEntity.slBpmnProcessInstance = processInstance?.processInstanceId
 
                     companyProfileRepo.save(companyProfileEntity)
-
+                    val taskType = 1L
 
 
                     taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
