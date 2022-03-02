@@ -58,6 +58,10 @@ interface UserTypeHolder {
     fun getName(): String?
 }
 
+interface UserEmailHolder {
+    fun getEmail(): String?
+}
+
 interface UserRoleHolder {
     fun getId(): Long?
 }
