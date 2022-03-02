@@ -442,6 +442,7 @@ class InvoicePaymentService(
                         receiptNo = "NOT PAID"
                         product = form.product ?: "UNKNOWN"
                         rate = "UNKNOWN"
+                        currency = "KES"
                         ucrNumber = form.ucrNumber
                         cfvalue = BigDecimal.ZERO
                         //Generate Demand note number

@@ -64,6 +64,9 @@ class CustomDemandNoteXmlDto {
     @JacksonXmlProperty(localName = "TOTAL_AMOUNT")
     var totalAmount: BigDecimal? = null
 
+    @JacksonXmlProperty(localName = "CURRENCY")
+    var currency: String? = null
+
     @JacksonXmlProperty(localName = "DEMAND_NOTE_NUMBER")
     var demandNoteNumber: String? = null
 

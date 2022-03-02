@@ -56,6 +56,10 @@ class CdDemandNoteEntity : Serializable {
     @Basic
     var rate: String? = null
 
+    @Column(name = "CURRENCY")
+    @Basic
+    var currency: String? = null
+
     @Column(name = "TOTAL_AMOUNT")
     @Basic
     var totalAmount: BigDecimal? = null

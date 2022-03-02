@@ -609,12 +609,59 @@
                                             </ul>
                                         </div>
                                     </mat-tab>
-                                    <mat-tab *ngIf="consignment.cd_standards_two" label="8">
+                                    <mat-tab label="8">
                                         <ng-template mat-tab-label>
-                                            Standards Two
+                                            Standards Details
                                         </ng-template>
+                                        <b class="text-primary" *ngIf="consignment.cd_standards">Standards Details</b>
+                                        <ul class="w-list-unstyled" *ngIf="consignment.cd_standards">
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Conditions Of Approval</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_standards_two.conditionsOfApproval}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Applicant Remarks</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_standards_two.applicantRemarks}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">MDA Remarks</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_standards_two.mdaRemarks}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Customs Remarks</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_standards_two.customsRemarks}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Purpose Of Import</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_standards_two.purposeOfImport}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Coc Type</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_standards_two.cocType}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Local Coc Type</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_standards_two.localCocType}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">COC Ref No.</div>
+                                                <div class="list-text-accordion">{{consignment.cd_standards_two.cocRefNumber}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">COC Type Description</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_standards_two.description}}</div>
+                                            </li>
+                                        </ul>
                                         <b class="text-primary">Standards Two</b>
-                                        <ul class="w-list-unstyled">
+                                        <ul class="w-list-unstyled" *ngIf="consignment.cd_standards_two">
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Conditions Of Approval</div>
                                                 <div class="list-text-accordion">

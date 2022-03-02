@@ -58,11 +58,6 @@ class ConsignmentDocumentDaoService(
         private val iCdExporterRepo: ICdExporterEntityRepository,
         private val upAndDownLoad: UpAndDownLoad
 ) {
-
-    fun cdUpload() {
-        upAndDownLoad.upload(applicationMapProperties.mapKeswsConfigIntegration)
-    }
-
     fun cdDownload() {
         val download = upAndDownLoad.download(applicationMapProperties.mapKeswsConfigIntegration)
 
@@ -737,6 +732,8 @@ class ConsignmentDocumentDaoService(
             purposeOfImport = cdStandardsTwoResponse.purposeOfImport
             cocType = cdStandardsTwoResponse.cocType
             localCocType = cdStandardsTwoResponse.localCocType
+            description = cdStandardsTwoResponse.localCocTypeDesc
+            cocRefNumber = cdStandardsTwoResponse.localCocRefNoType
             cdProcessingFeeId = cdStandardsTwoResponse.processingFeeResponse?.let {
                 processStage.process18?.let { it1 ->
                     standards2ProcessingFee(
