@@ -23,7 +23,7 @@ declare const $: any;
 export class StdLevyPendingTasksComponent implements OnInit {
   userId: number ;
   roles: string[];
-  userType: number ;
+  userType: number;
 
   public users !: UsersEntity[] ;
   public approveUsersOne !: UsersEntity[] ;
@@ -354,19 +354,19 @@ export class StdLevyPendingTasksComponent implements OnInit {
     this.SpinnerService.show();
     this.levyService.getMnPendingTask().subscribe(
         (response: ManufacturePendingTask[]) => {
-          //console.log(this.manufacturePendingTasks);
-          this.manufacturePendingTasks = response;
-          if (this.isDtInitialized) {
-            this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-              dtInstance.destroy();
-              dtInstance.ajax.reload()
-              this.dtTrigger.next();
-              this.SpinnerService.hide();
-            });
-          } else {
-            this.isDtInitialized = true
+            //console.log(this.manufacturePendingTasks);
+            this.manufacturePendingTasks = response;
+            if (this.isDtInitialized) {
+                this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                    dtInstance.destroy();
+                    // dtInstance.ajax.reload()
+                    this.dtTrigger.next();
+                    this.SpinnerService.hide();
+                });
+            } else {
+                this.isDtInitialized = true
 
-            this.dtTrigger.next();
+                this.dtTrigger.next();
             this.SpinnerService.hide();
           }
 
