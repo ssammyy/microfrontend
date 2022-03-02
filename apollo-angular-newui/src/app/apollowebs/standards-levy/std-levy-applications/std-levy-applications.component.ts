@@ -105,7 +105,6 @@ export class StdLevyApplicationsComponent implements OnInit {
   @ViewChild(DataTableDirective, {static: false})
   dtElement: DataTableDirective;
 
-  dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
   isDtInitialized: boolean = false
   loadingText: string;
