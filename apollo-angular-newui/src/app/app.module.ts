@@ -412,7 +412,6 @@ import {IncompleteIDFDocumentsComponent} from './apollowebs/di/message-dashboard
         MatMultilineTabDirective,
         InspectionDashboardComponent,
         LabResultsComponent,
-        AppComponent,
         LoginComponent,
         ResetCredentialsComponent,
         ViewMessageComponent,
@@ -639,6 +638,7 @@ import {IncompleteIDFDocumentsComponent} from './apollowebs/di/message-dashboard
         IncompleteIDFDocumentsComponent,
         AddApiClientComponent
     ],
+    entryComponents: [],
     providers: [DatePipe,
     ],
     bootstrap: [
