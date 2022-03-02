@@ -25,7 +25,6 @@ export class StdLevyPendingTasksComponent implements OnInit {
   roles: string[];
   userType: number ;
 
-  dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
   @ViewChild(DataTableDirective, {static: false})
   dtElement: DataTableDirective;
@@ -110,14 +109,13 @@ export class StdLevyPendingTasksComponent implements OnInit {
 
   ngOnInit(): void {
     this.getMnPendingTask();
+
+  }
+
+  ngAfterViewInit(): void {
+
     this.getUserRoles();
     this.getUserData();
-
-    this.dtOptions = {
-      pagingType: 'full_numbers',
-      pageLength: 10,
-      processing: true
-    };
 
     if(this.roles?.includes('SL_IS_PL_OFFICER')){
       this.getApproveLevelOne();
@@ -351,23 +349,26 @@ export class StdLevyPendingTasksComponent implements OnInit {
         (response: ManufacturePendingTask[])=> {
           //console.log(this.manufacturePendingTasks);
           this.manufacturePendingTasks = response;
+          this.rerender();
           this.SpinnerService.hide();
-          if (this.isDtInitialized) {
-            this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-              dtInstance.destroy();
-              this.dtTrigger.next();
-            });
-          } else {
-            this.isDtInitialized = true
-            this.dtTrigger.next();
-          }
-
         },
         (error: HttpErrorResponse)=>{
           this.SpinnerService.hide();
           console.log(error.message);
         }
     );
+  }
+
+  rerender(): void {
+    if (this.isDtInitialized) {
+      this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+        dtInstance.destroy();
+        this.dtTrigger.next();
+      });
+    } else {
+      this.isDtInitialized = true
+      this.dtTrigger.next();
+    }
   }
 
   public onOpenModalPending(manufacturePendingTask: ManufacturePendingTask,mode:string): void{
@@ -406,7 +407,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
 
   }
   scheduleVisit(): void {
-
+console.log(this.scheduleVisitFormGroup.value);
     this.SpinnerService.show();
     this.levyService.scheduleSiteVisit(this.scheduleVisitFormGroup.value).subscribe(
         (response ) => {

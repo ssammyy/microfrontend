@@ -376,8 +376,8 @@ export class StdLevyApplicationsComponent implements OnInit,AfterViewInit, OnDes
     this.levyService.getManufacturerList().subscribe(
         (response: ManufactureDetailList[])=> {
           this.manufactureLists = response;
-          this.SpinnerService.hide();
           this.rerender();
+          this.SpinnerService.hide();
         },
         (error: HttpErrorResponse)=>{
           this.SpinnerService.hide();

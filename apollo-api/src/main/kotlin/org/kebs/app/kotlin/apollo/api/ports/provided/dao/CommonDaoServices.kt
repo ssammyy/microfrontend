@@ -76,6 +76,7 @@ import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileCommodi
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileContractsUndertakenEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileDirectorsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
+import org.kebs.app.kotlin.apollo.store.model.std.UserEmailHolder
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
 import org.kebs.app.kotlin.apollo.store.repo.external.ApiClientRepo
@@ -169,7 +170,8 @@ class CommonDaoServices(
     private val pvocPartnersRepository: IPvocPartnersRepository,
     private val apiClientRepo: ApiClientRepo,
     private val tokenService: JwtTokenService,
-    private val authenticationProperties: AuthenticationProperties
+    private val authenticationProperties: AuthenticationProperties,
+    private val usersEntityRepository: UsersEntityRepository,
 ) {
 
     @Value("\${common.page.view.name}")
@@ -2063,6 +2065,11 @@ class CommonDaoServices(
             }
         }
 
+    }
+
+    fun getUserEmail(userId: Long): String {
+
+        return usersEntityRepository.getUserEmailById(userId) ?: throw ExpectedDataNotFound("No Email Address Found")
     }
 
 }

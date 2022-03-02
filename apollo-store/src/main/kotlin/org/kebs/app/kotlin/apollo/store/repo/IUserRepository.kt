@@ -40,10 +40,7 @@ package org.kebs.app.kotlin.apollo.store.repo
 
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.registration.*
-import org.kebs.app.kotlin.apollo.store.model.std.DataHolder
-import org.kebs.app.kotlin.apollo.store.model.std.StandardReviewForm
-import org.kebs.app.kotlin.apollo.store.model.std.UserRoleHolder
-import org.kebs.app.kotlin.apollo.store.model.std.UserTypeHolder
+import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.JpaRepository
@@ -353,6 +350,9 @@ interface UsersEntityRepository : JpaRepository<UsersEntity, Long> {
 
     @Query(value = "SELECT u.USER_TYPE as name  FROM DAT_KEBS_USERS u WHERE  u.ID = :id", nativeQuery = true)
     fun getSlLoggedById(@Param("id") id: Long?): UserTypeHolder
+
+    @Query(value = "SELECT u.EMAIL as email  FROM DAT_KEBS_USERS u WHERE  u.ID = :id", nativeQuery = true)
+    fun getUserEmailById(@Param("id") id: Long?): String
 
 }
 

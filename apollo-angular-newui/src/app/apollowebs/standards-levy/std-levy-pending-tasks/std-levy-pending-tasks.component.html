@@ -111,7 +111,7 @@
                             </div>
                             <div class="container col-md-12">
                                 <div class="material-datatables table-responsive col-md-12">
-                                    <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover" style="width: 100%">
+                                    <table datatable  [dtTrigger]="dtTrigger" class="row-border hover" style="width: 100%">
                                         <thead>
                                         <tr>
                                             <th>#</th>
@@ -149,7 +149,7 @@
                                                                 <span aria-hidden="true">&times;</span>
                                                             </button>
                                                         </div>
-                                                        <form #approveForm="ngForm" >
+
                                                             <div class="modal-body">
                                                                 <div>
                                                                     <button (click)=toggleDisplayScheduleForm()  class="btn btn-primary btn-sm">Schedule</button>
@@ -169,12 +169,12 @@
                                                                                            class="form-control"  formControlName="scheduledVisitDate" name="scheduledVisitDate" type="date">
                                                                                 </div>
                                                                             </div>
-                                                                            <input type="hidden" ngModel="{{actionRequestPending?.taskData?.entryNumber}}" formControlName="entryNumber" name="entryNumber" value="{{actionRequestPending?.taskData?.entryNumber}}" >
-                                                                            <input type="hidden" ngModel="{{actionRequestPending?.taskData?.companyName}}" formControlName="companyName" name="companyName" value="{{actionRequestPending?.taskData?.companyName}}" >
-                                                                            <input type="hidden" ngModel="{{actionRequestPending?.taskData?.kraPin}}" formControlName="kraPin" name="kraPin" value="{{actionRequestPending?.taskData?.kraPin}}" >
-                                                                            <input type="hidden" ngModel="{{actionRequestPending?.taskData?.registrationNumber}}" formControlName="registrationNumber" name="registrationNumber" value="{{actionRequestPending?.taskData?.registrationNumber}}" >
-                                                                            <input type="hidden" ngModel="{{actionRequestPending?.taskData?.manufacturerEntity}}" formControlName="manufacturerEntity" name="manufacturerEntity" value="{{actionRequestPending?.taskData?.manufacturerEntity}}" >
-                                                                            <input type="hidden" ngModel="{{actionRequestPending?.taskId}}" formControlName="taskId" name="taskId" value="{{actionRequestPending?.taskId}}" >
+                                                                            <input type="hidden" value="{{actionRequestPending?.taskData?.entryNumber}}" formControlName="entryNumber" name="entryNumber" >
+                                                                            <input type="hidden" value="{{actionRequestPending?.taskData?.companyName}}" formControlName="companyName" name="companyName"  >
+                                                                            <input type="hidden" value="{{actionRequestPending?.taskData?.kraPin}}" formControlName="kraPin" name="kraPin"  >
+                                                                            <input type="hidden" value="{{actionRequestPending?.taskData?.registrationNumber}}" formControlName="registrationNumber" name="registrationNumber"  >
+                                                                            <input type="hidden" value="{{actionRequestPending?.taskData?.manufacturerEntity}}" formControlName="manufacturerEntity" name="manufacturerEntity"  >
+                                                                            <input type="hidden" value="{{actionRequestPending?.taskId}}" formControlName="taskId" name="taskId"  >
                                                                         </div>
                                                                         <div class="col-12">
                                                                             <button *ngIf="scheduleVisitFormGroup.valid" [disabled]="!scheduleVisitFormGroup.valid" class="btn btn-sm btn-primary float-right" type="submit">Save</button>
@@ -453,16 +453,14 @@
 
 
                                                             </div>
-                                                            <input type="hidden" name="companyID" ngModel="{{actionRequestPending?.taskData?.id}}" >
 
-                                                        </form>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="modal fade" id="prepareSiteVisitReport" tabindex="-1" role="dialog" aria-labelledby="prepareSiteVisitReportExampleModalLabel" aria-hidden="true">a
                                                 <div class="modal-dialog modal-lg" role="document">
                                                     <div class="modal-content">
-                                                        <div class="modal-header">
+                                                value <div class="modal-header">
                                                             <h5 class="modal-title" id="prepareSiteVisitReportExampleModalLabel"><b>Prepare Site Visit Report</b></h5>
                                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                                 <span aria-hidden="true">&times;</span>
