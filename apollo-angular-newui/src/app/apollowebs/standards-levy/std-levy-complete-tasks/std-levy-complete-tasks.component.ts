@@ -18,11 +18,13 @@ declare const $: any;
 })
 export class StdLevyCompleteTasksComponent implements OnInit {
 
-  dtOptions: DataTables.Settings = {};
-  dtTrigger: Subject<any> = new Subject<any>();
-  @ViewChild(DataTableDirective, {static: false})
-  dtElement: DataTableDirective;
-  isDtInitialized: boolean = false
+    @ViewChild(DataTableDirective, {static: false})
+    dtElement: DataTableDirective;
+
+    dtOptions: DataTables.Settings = {};
+    dtTrigger: Subject<any> = new Subject<any>();
+    isDtInitialized: boolean = false
+    loadingText: string;
   blob: Blob;
 
   manufactureCompleteTasks: ManufactureCompletedTask[] = [];
@@ -39,11 +41,7 @@ export class StdLevyCompleteTasksComponent implements OnInit {
 
   ngOnInit(): void {
     this.getMnCompleteTask();
-      this.dtOptions = {
-          pagingType: 'full_numbers',
-          pageLength: 10,
-          processing: true
-      };
+
   }
   public getMnCompleteTask(): void{
     this.SpinnerService.show();

@@ -1032,6 +1032,12 @@ class StdLevyController(
 
     }
 
+    @GetMapping("/getUserEmail")
+    @ResponseBody
+    fun getUserEmail(): String {
+        return commonDaoServices.getUserEmail(3082)
+    }
+
 
 
     @PostMapping("/anonymous/standard/close")

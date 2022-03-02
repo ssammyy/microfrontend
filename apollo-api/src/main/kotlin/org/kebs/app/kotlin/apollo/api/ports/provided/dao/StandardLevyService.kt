@@ -5,6 +5,7 @@ import mu.KotlinLogging
 import org.flowable.engine.*
 import org.flowable.engine.repository.Deployment
 import org.flowable.task.api.Task
+import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
 import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
 import org.kebs.app.kotlin.apollo.common.dto.stdLevy.*
@@ -44,7 +45,8 @@ class StandardLevyService(
     private val iBusinessNatureRepository: IBusinessNatureRepository,
     private val companyProfileEditEntityRepository: CompanyProfileEditEntityRepository,
     private val stdLevyNotificationFormRepo: IStdLevyNotificationFormRepository,
-    private val stdLevyNotificationFormRepository: StdLevyNotificationFormRepository
+    private val stdLevyNotificationFormRepository: StdLevyNotificationFormRepository,
+    private val notifications: Notifications
 
 ) {
     val PROCESS_DEFINITION_KEY = "sl_SiteVisitProcessFlow"
@@ -573,7 +575,13 @@ class StandardLevyService(
                         accentTo = false
                     }
                     standardLevyFactoryVisitReportRepo.save(standardLevyFactoryVisitReportEntity)
+
                 } ?: throw Exception("TASK NOT FOUND")
+            val userEmail = standardLevyFactoryVisitReportEntity.assigneeId?.let { commonDaoServices.getUserEmail(it) };
+            val recipient= "Christine.gaiti@bskglobaltech.com"
+            val subject = "Report Rejected  $userEmail"
+            val messageBody= "Site visit report has been rejected by  "+ commonDaoServices.loggedInUserDetails().userName+".Log in to KIMS to make recommended changes."
+            notifications.sendEmail(recipient, subject, messageBody)
 
             companyProfileRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.manufacturerEntity)
                 ?.let { companyProfileEntity ->
@@ -608,6 +616,7 @@ class StandardLevyService(
                                 standardLevyFactoryVisitReportEntity?.assigneeId
                                     ?: throw NullValueNotAllowedException("invalid user id provided")
                             )
+
 
                         }
                         ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${companyProfileEntity.slBpmnProcessInstance} ")
@@ -648,6 +657,7 @@ class StandardLevyService(
                     }
                     standardLevyFactoryVisitReportRepo.save(standardLevyFactoryVisitReportEntity)
                 } ?: throw Exception("TASK NOT FOUND")
+
             companyProfileRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.manufacturerEntity)
                 ?.let { companyProfileEntity ->
                     runtimeService.createProcessInstanceQuery()
@@ -699,6 +709,13 @@ class StandardLevyService(
                     }
                     standardLevyFactoryVisitReportRepo.save(standardLevyFactoryVisitReportEntity)
                 } ?: throw Exception("TASK NOT FOUND")
+
+            val userEmail = standardLevyFactoryVisitReportEntity.assigneeId?.let { commonDaoServices.getUserEmail(it) };
+            val recipient= "Christine.gaiti@bskglobaltech.com"
+            val subject = "Report Rejected  $userEmail"
+            val messageBody= "Site visit report has been rejected by  "+ commonDaoServices.loggedInUserDetails().userName+".Log in to KIMS to make recommended changes."
+            notifications.sendEmail(recipient, subject, messageBody)
+
             companyProfileRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.manufacturerEntity)
                 ?.let { companyProfileEntity ->
                     runtimeService.createProcessInstanceQuery()
@@ -787,6 +804,12 @@ class StandardLevyService(
                 }
                 standardLevyFactoryVisitReportRepo.save(standardLevyFactoryVisitReportEntity)
             } ?: throw Exception("SCHEDULED VISIT NOT FOUND")
+
+        val userEmail = standardLevyFactoryVisitReportEntity.assigneeId?.let { commonDaoServices.getUserEmail(it) };
+        val recipient= "Christine.gaiti@bskglobaltech.com"
+        val subject = "Site Visit Report  $userEmail"
+        val messageBody= "Site visit report has been prepared and uploaded. Kindly login to the KIMS Portal to view"
+        notifications.sendEmail(recipient, subject, messageBody)
 
         companyProfileRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.manufacturerEntity)
             ?.let { companyProfileEntity ->
@@ -933,6 +956,7 @@ class StandardLevyService(
             }
             ?: return false
     }
+
 
     fun getIfRecordExists(): Boolean {
         val userId = commonDaoServices.loggedInUserDetails().id
