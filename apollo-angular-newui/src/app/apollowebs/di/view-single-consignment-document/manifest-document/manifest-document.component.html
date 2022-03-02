@@ -1,0 +1,334 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">MD</i>
+                        </div>
+                        <h4 class="card-title">Manifest Document Details
+                            <button class="btn btn-sm btn-default float-right mr-7"
+                                    (click)="goBack()"><i class="fa fa-arrow-left"></i> Back
+
+                            </button>
+                        </h4>
+
+                    </div>
+                    <div class="card-body" *ngIf="manifestDetails">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div widget class=" border-0 box-shadow">
+                                    <div class="text-center pt-2" style="color: green;">
+                                        CD Standard Details
+                                    </div>
+                                    <div class="card-body pt-0 widget-body">
+                                        <table class="table-responsive">
+                                            <th>
+                                                Application Ref Number
+                                            </th>
+                                            <tr>
+                                                <td>{{manifestDetails.consignment_details.applicationRefNo}}</td>
+                                            </tr>
+                                            <th>
+                                                Application Date
+                                            </th>
+                                            <tr>
+                                                <td>{{manifestDetails.consignment_details.applicationDate}}</td>
+                                            </tr>
+                                            <th>
+                                                Application status
+                                            </th>
+                                            <tr>
+                                                <td>{{manifestDetails.consignment_details.applicationStatus}}</td>
+                                            </tr>
+                                            <th>
+                                                Declaration Number
+                                            </th>
+                                            <tr>
+                                                <td>{{manifestDetails.consignment_details.declarationNumber}}</td>
+                                            </tr>
+                                            <th>
+                                                UCR Number
+                                            </th>
+                                            <tr>
+                                                <td>{{manifestDetails.consignment_details.ucrNumber}}</td>
+                                            </tr>
+                                            <th>
+                                                Assigned Officer
+                                            </th>
+                                            <tr>
+                                                <td>{{manifestDetails.consignment_details.inspectionOfficer}}</td>
+                                            </tr>
+                                            <th>
+                                                Document Type
+                                            </th>
+                                            <tr>
+                                                <td>{{manifestDetails.consignment_details.documentType}}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+
+                                <!-- <div class="d-flex"> -->
+                                <mat-tab-group [(selectedIndex)]="active" [disablePagination]="true"
+                                               appMatMultilineTab
+                                               class="tab-wraps">
+                                    <mat-tab label="Manifest General Details">
+                                        <b class="text-primary">Manifest General Details</b>
+                                        <ul class="w-list-unstyled">
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">MANIFEST NUMBER</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.manifestNumber}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">CUSTOMS OFFICE COUNTRY</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.customsOfficeCountry}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">EXIT OFFICE SUB2</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.exitOfficeSub2}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">EXIT OFFICE SUB3</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.exitOfficeSub3}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">TRANSPORT MODE</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.transportMode}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">TRADE MOVEMENT</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.tradeMovement}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">EXPECTED DATE</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.expectedDate}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">DISPATCH COUNTRY</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.dispatchCountry}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">DISCHARGE PLACE</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.dischargePlace}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">TRANSPORT NATIONALITY</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.transportNationality}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">TRANSPORT ID</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.transportId}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">VOYAGE NUMBER</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.voyageNumber}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">BOOKING NUMBER</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.bookingNumber}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">CONSIGNMENT NUMBER</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.consignmentNumber}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">UCR NO</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.ucrn}}</div>
+                                            </li>
+                                        </ul>
+                                    </mat-tab>
+                                    <mat-tab label="Carrier Details">
+                                        <b class="text-primary">Carrier Details</b>
+                                        <ul class="w-list-unstyled">
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">CARRIER AGENT REGISTERED</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.carrierAgentRegistered}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">CARRIER AGENT PIN</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.carrierAgentPin}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">NIL CARGO</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.nilCargo}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">ON BOARD</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.onboard}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">CARRIER AGENT BUSINESS NATION</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.carrierAgentBusinessNation}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">CARRIER AGENT BUSINESS NAME</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.carrierAgentBusinessName}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">CARRIER AGENT BUSINESS ADDRESS</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.carrierAgentBusinessAddress}}</div>
+                                            </li>
+                                        </ul>
+                                    </mat-tab>
+                                    <mat-tab label="Consignor Details">
+                                        <b class="text-primary">Consignor Details</b>
+                                        <ul class="w-list-unstyled">
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">CONSIGNOR REGISTERED</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.consignorRegistered}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">CONSIGNOR PIN NUMBER</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.consignorPinNumber}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">CONSIGNOR COUNTRY CODE</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.consignorCountryCode}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">CONSIGNOR BUSINESS NAME</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.consignorBusinessName}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">CONSIGNOR PHONE NUMBER</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.consignorPhoneNumber}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">CONSIGNOR BUSINESS ADDRESS</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.consignorBusinessAddress}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">CONSIGNOR BUSINESS NATION</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.consignorBusinessNation}}</div>
+                                            </li>
+                                        </ul>
+                                    </mat-tab>
+
+                                    <mat-tab label="Consignee Details">
+                                        <b class="text-primary">Consignee Details</b>
+                                        <ul class="w-list-unstyled">
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">CONSIGNEE REGISTERED</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.consigneeRegistered}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">CONSIGNEE PIN NUMBER</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.consigneePinNumber}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">CONSIGNEE COUNTRY CODE</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.consigneeCountryCode}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">CONSIGNEE BUSINESS NAME</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.consigneeBusinessName}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">CONSIGNEE PHONE NUMBER</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.consigneePhoneNumber}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">CONSIGNEE BUSINESS ADDRESS</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.consigneeBusinessAddress}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">CONSIGNEE BUSINESS NATION</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.consigneeBusinessNation}}</div>
+                                            </li>
+                                        </ul>
+                                    </mat-tab>
+                                    <mat-tab label="Other Details">
+                                        <b class="text-primary">Other Details</b>
+                                        <ul class="w-list-unstyled">
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">NIL CARGO</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.nilCargo}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">ON BOARD</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.onboard}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">REMARK</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.remark}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">REF SD REG NUMBER</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.refSdRegNumber}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">REF TD PREFIX</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.refTdPrefix}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">REF TD BILL CODE</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.refTdBillCode}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">TD PREFIX</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.tdPrefix}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">TD BILL CODE</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.tdBillCode}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">FREIGHT COST</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.freightCost}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">INSURANCE COSTS</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.insuranceCosts}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">FIRST PORT</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.firstPort}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">FIRST PORT DATE</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.firstPortDate}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">TRANSPORT EQU ID</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.transportEquId}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">ROUTING</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.routing}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">FINAL DEST LOC CITY</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.finalDestLocCity}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion"> PAY METHOD</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.payMethod}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion"> CURRENCY CODE</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.currencyCode}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion"> TOTAL INVOICE AMOUNT</div>
+                                                <div class="list-text-accordion">{{manifestDetails.manifest_details.totalInvoiceAmount}}</div>
+                                            </li>
+                                        </ul>
+                                    </mat-tab>
+                                </mat-tab-group>
+                            </div>
+
+                        </div>
+                        <!-- end content-->
+                    </div>
+                    <!--  end card  -->
+                </div>
+                <!-- end col-md-12 -->
+            </div>
+            <!-- end row -->
+        </div>
+    </div>
+</div>

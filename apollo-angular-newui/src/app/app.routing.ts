@@ -160,6 +160,8 @@ import {ReviewRecommendationOfSpcComponentComponent} from "./apollowebs/standard
 import {SubmitApplicationComponent} from "./apollowebs/standards-development/membershipToTc/submit-application/submit-application.component";
 import {UploadTcMemberComponentComponent} from "./apollowebs/standards-development/membershipToTc/upload-tc-member-component/upload-tc-member-component.component";
 import {ReviewApplicationComponent} from "./apollowebs/standards-development/membershipToTc/review-application/review-application.component";
+import {ManifestDocumentComponent} from "./apollowebs/di/view-single-consignment-document/manifest-document/manifest-document.component";
+import {IncompleteIDFDocumentsComponent} from "./apollowebs/di/message-dashboard/incomplete-idfdocuments/incomplete-idfdocuments.component";
 import {ReviewApplicationsAcceptedComponent} from "./apollowebs/standards-development/membershipToTc/review-applications-accepted/review-applications-accepted.component";
 import {ReviewApplicationsRejectedComponent} from "./apollowebs/standards-development/membershipToTc/review-applications-rejected/review-applications-rejected.component";
 import {ApproveApplicationComponent} from './apollowebs/standards-development/membershipToTc/approve-application/approve-application.component';
@@ -554,6 +556,10 @@ export const routes: Routes = [
                 component: ViewDiDeclarationDocumentsComponent
             },
             {
+                path: 'manifest/document/:id',
+                component: ManifestDocumentComponent
+            },
+            {
                 path: 'inspection/checklist/:id',
                 canActivate: [RouteGuard],
                 component: ChecklistDataFormComponent
@@ -612,6 +618,11 @@ export const routes: Routes = [
                 path: 'kentrade/exchange/messages',
                 canActivate: [RouteGuard],
                 component: MessageDashboardComponent
+            },
+            {
+                path: 'kentrade/idf/documents',
+                canActivate: [RouteGuard],
+                component: IncompleteIDFDocumentsComponent
             },
             {
                 path: 'ism',

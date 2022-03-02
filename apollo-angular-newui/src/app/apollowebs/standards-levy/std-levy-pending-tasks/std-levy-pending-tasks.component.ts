@@ -25,11 +25,6 @@ export class StdLevyPendingTasksComponent implements OnInit {
   roles: string[];
   userType: number ;
 
-  dtTrigger: Subject<any> = new Subject<any>();
-  @ViewChild(DataTableDirective, {static: false})
-  dtElement: DataTableDirective;
-  isDtInitialized: boolean = false
-
   public users !: UsersEntity[] ;
   public approveUsersOne !: UsersEntity[] ;
   public approveUsersTwo !: UsersEntity[] ;
@@ -91,44 +86,52 @@ export class StdLevyPendingTasksComponent implements OnInit {
     this.isShowApprovalForm2 = !this.isShowApprovalForm2;
     this.isShowRejectForm2 = true;
   }
+
   toggleDisplayRejectForm2() {
     this.isShowRejectForm2 = !this.isShowRejectForm2;
-    this.isShowApprovalForm1= true;
+    this.isShowApprovalForm1 = true;
   }
+
   toggleDisplaySaveFeedBackForm() {
     this.isShowSaveFeedBackForm = !this.isShowSaveFeedBackForm;
   }
+
+  @ViewChild(DataTableDirective, {static: false})
+  dtElement: DataTableDirective;
+
+  dtOptions: DataTables.Settings = {};
+  dtTrigger: Subject<any> = new Subject<any>();
+  isDtInitialized: boolean = false
+  loadingText: string;
+
   constructor(
       private router: Router,
       private store$: Store<any>,
       private formBuilder: FormBuilder,
       private levyService: LevyService,
       private SpinnerService: NgxSpinnerService,
-      private notifyService : NotificationService
-  ) { }
+      private notifyService: NotificationService
+  ) {
+  }
 
   ngOnInit(): void {
     this.getMnPendingTask();
-
-  }
-
-  ngAfterViewInit(): void {
-
     this.getUserRoles();
     this.getUserData();
 
-    if(this.roles?.includes('SL_IS_PL_OFFICER')){
+
+    if (this.roles?.includes('SL_IS_PL_OFFICER')) {
       this.getApproveLevelOne();
     }
-    if(this.roles?.includes('SL_IS_ASST_MANAGER')){
+    if (this.roles?.includes('SL_IS_ASST_MANAGER')) {
       this.getApproveLevelTwo();
       this.getAssignLevelOne();
     }
-    if(this.roles?.includes('SL_IS_MANAGER')){
+    if (this.roles?.includes('SL_IS_MANAGER')) {
       this.getApproveLevelThree();
       this.getAssignLevelTwo()
     }
-    if(this.roles?.includes('SL_IS_CHIEF_MANAGER')){
+    if (this.roles?.includes('SL_IS_CHIEF_MANAGER')) {
       this.getAssignLevelThree()
     }
 
@@ -142,6 +145,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
       registrationNumber: []
 
     });
+
+
     this.prepareReportFormGroup = this.formBuilder.group({
       visitDate: ['', Validators.required],
       purpose: ['', Validators.required],
@@ -343,14 +348,29 @@ export class StdLevyPendingTasksComponent implements OnInit {
         }
     );
   }
-  public getMnPendingTask(): void{
+
+  public getMnPendingTask(): void {
+
+    this.loadingText = "Retrieving Pending Tasks...";
     this.SpinnerService.show();
     this.levyService.getMnPendingTask().subscribe(
-        (response: ManufacturePendingTask[])=> {
+        (response: ManufacturePendingTask[]) => {
           //console.log(this.manufacturePendingTasks);
           this.manufacturePendingTasks = response;
-          this.rerender();
-          this.SpinnerService.hide();
+          if (this.isDtInitialized) {
+            this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+              dtInstance.destroy();
+              dtInstance.ajax.reload()
+              this.dtTrigger.next();
+              this.SpinnerService.hide();
+            });
+          } else {
+            this.isDtInitialized = true
+
+            this.dtTrigger.next();
+            this.SpinnerService.hide();
+          }
+
         },
         (error: HttpErrorResponse)=>{
           this.SpinnerService.hide();
@@ -359,47 +379,113 @@ export class StdLevyPendingTasksComponent implements OnInit {
     );
   }
 
-  rerender(): void {
-    if (this.isDtInitialized) {
-      this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-        dtInstance.destroy();
-        this.dtTrigger.next();
-      });
-    } else {
-      this.isDtInitialized = true
-      this.dtTrigger.next();
-    }
-  }
-
-  public onOpenModalPending(manufacturePendingTask: ManufacturePendingTask,mode:string): void{
+  public onOpenModalPending(manufacturePendingTask: ManufacturePendingTask, mode: string): void {
     const container = document.getElementById('main-container');
     const button = document.createElement('button');
     button.type = 'button';
     button.style.display = 'none';
-    button.setAttribute('data-toggle','modal');
-    if (mode==='viewPending'){
-      this.actionRequestPending=manufacturePendingTask;
-      button.setAttribute('data-target','#viewPending');
+    button.setAttribute('data-toggle', 'modal');
+    if (mode === 'viewPending') {
+      this.actionRequestPending = manufacturePendingTask;
+      button.setAttribute('data-target', '#viewPending');
+      // this.scheduleVisitFormGroup.controls.entry.setValue(this.actionRequestPending.taskData.entryNumber)
+
+      this.scheduleVisitFormGroup.patchValue(
+          {
+            companyName: this.actionRequestPending.taskData.companyName,
+            entryNumber: this.actionRequestPending.taskData.entryNumber,
+            kraPin: this.actionRequestPending.taskData.kraPin,
+            registrationNumber: this.actionRequestPending.taskData.registrationNumber,
+            manufacturerEntity: this.actionRequestPending.taskData.manufacturerEntity,
+            taskId: this.actionRequestPending.taskId,
+
+          });
+
+
     }
-    if (mode==='prepareSiteVisitReport'){
-      this.actionRequestPending=manufacturePendingTask;
-      button.setAttribute('data-target','#prepareSiteVisitReport');
+    if (mode === 'prepareSiteVisitReport') {
+      this.actionRequestPending = manufacturePendingTask;
+      button.setAttribute('data-target', '#prepareSiteVisitReport');
+      this.prepareReportFormGroup.patchValue(
+          {
+            visitID: this.actionRequestPending.taskData.visitID,
+            taskId: this.actionRequestPending.taskId,
+            manufacturerEntity: this.actionRequestPending.taskData.manufacturerEntity
+          }
+      );
+
     }
-    if (mode==='reportNotification1'){
-      this.actionRequestPending=manufacturePendingTask;
-      button.setAttribute('data-target','#reportNotification1');
+    if (mode === 'reportNotification1') {
+      this.actionRequestPending = manufacturePendingTask;
+      button.setAttribute('data-target', '#reportNotification1');
+      this.approvalFormGroup.patchValue(
+          {
+            visitID: this.actionRequestPending.taskData.visitID,
+            taskId: this.actionRequestPending.taskId,
+            manufacturerEntity: this.actionRequestPending.taskData.manufacturerEntity
+          }
+      );
+      this.rejectFormGroup.patchValue(
+          {
+            visitID: this.actionRequestPending.taskData.visitID,
+            taskId: this.actionRequestPending.taskId,
+            manufacturerEntity: this.actionRequestPending.taskData.manufacturerEntity
+          }
+      );
+
     }
-    if (mode==='reportNotification2'){
-      this.actionRequestPending=manufacturePendingTask;
-      button.setAttribute('data-target','#reportNotification2');
+    if (mode === 'reportNotification2') {
+      this.actionRequestPending = manufacturePendingTask;
+      button.setAttribute('data-target', '#reportNotification2');
+      this.approvalTwoFormGroup.patchValue(
+          {
+            visitID: this.actionRequestPending.taskData.visitID,
+            taskId: this.actionRequestPending.taskId,
+            manufacturerEntity: this.actionRequestPending.taskData.manufacturerEntity,
+            assigneeId: this.actionRequestPending.taskData.originator
+          }
+      );
+      this.rejectTwoFormGroup.patchValue(
+          {
+            visitID: this.actionRequestPending.taskData.visitID,
+            taskId: this.actionRequestPending.taskId,
+            manufacturerEntity: this.actionRequestPending.taskData.manufacturerEntity,
+            assigneeId: this.actionRequestPending.taskData.originator
+          }
+      );
     }
-    if (mode==='managementReport'){
-      this.actionRequestPending=manufacturePendingTask;
-      button.setAttribute('data-target','#managementReport');
+    if (mode === 'managementReport') {
+      this.actionRequestPending = manufacturePendingTask;
+      button.setAttribute('data-target', '#managementReport');
+      this.approveTwoFormGroup.patchValue(
+          {
+            visitID: this.actionRequestPending.taskData.visitID,
+            taskId: this.actionRequestPending.taskId,
+            manufacturerEntity: this.actionRequestPending.taskData.manufacturerEntity,
+            assigneeId: this.actionRequestPending.taskData.originator
+          }
+      );
+      this.rejectFormGroup.patchValue(
+          {
+            visitID: this.actionRequestPending.taskData.visitID,
+            taskId: this.actionRequestPending.taskId,
+            manufacturerEntity: this.actionRequestPending.taskData.manufacturerEntity,
+            assigneeId: this.actionRequestPending.taskData.originator
+          }
+      );
     }
-    if (mode==='draftFeedback'){
-      this.actionRequestPending=manufacturePendingTask;
-      button.setAttribute('data-target','#draftFeedback');
+    if (mode === 'draftFeedback') {
+      this.actionRequestPending = manufacturePendingTask;
+      button.setAttribute('data-target', '#draftFeedback');
+      this.prepareFeedBackFormGroup.patchValue(
+          {
+            visitID: this.actionRequestPending.taskData.visitID,
+            taskId: this.actionRequestPending.taskId,
+            manufacturerEntity: this.actionRequestPending.taskData.manufacturerEntity,
+            assigneeId: this.actionRequestPending.taskData.contactId
+          }
+      );
+
     }
     // @ts-ignore
     container.appendChild(button);
@@ -407,28 +493,40 @@ export class StdLevyPendingTasksComponent implements OnInit {
 
   }
   scheduleVisit(): void {
-console.log(this.scheduleVisitFormGroup.value);
-    this.SpinnerService.show();
-    this.levyService.scheduleSiteVisit(this.scheduleVisitFormGroup.value).subscribe(
-        (response ) => {
-          console.log(response);
-          this.getMnPendingTask();
-          this.SpinnerService.hide();
-          this.showToasterSuccess(response.httpStatus, `Visit Scheduled`);
-          this.scheduleVisitFormGroup.reset();
-        },
-        (error: HttpErrorResponse) => {
-          this.SpinnerService.hide();
-          this.showToasterError('Error', `Error Scheduling Visit`);
-          console.log(error.message);
-        }
-    );
+
+    if (this.scheduleVisitFormGroup.get("scheduledVisitDate").value === "") {
+      this.showToasterError("Error", `Please Enter A Date.`);
+
+    } else {
+      this.loadingText = "Scheduling Visit..";
+      //console.log(this.scheduleVisitFormGroup.value);
+      this.SpinnerService.show();
+
+      this.levyService.scheduleSiteVisit(this.scheduleVisitFormGroup.value).subscribe(
+          (response) => {
+            console.log(response);
+            this.getMnPendingTask();
+            this.SpinnerService.hide();
+            this.showToasterSuccess(response.httpStatus, `Visit Scheduled`);
+            this.scheduleVisitFormGroup.reset();
+          },
+          (error: HttpErrorResponse) => {
+            this.SpinnerService.hide();
+            this.showToasterError('Error', `Error Scheduling Visit`);
+            console.log(error.message);
+          }
+      );
+      this.hideModelCloseModalPending();
+
+      //alert(this.scheduleVisitFormGroup.get("scheduledVisitDate").value)
+    }
   }
   saveReport(): void {
     this.SpinnerService.show();
+    console.log(this.prepareReportFormGroup.value)
     this.levyService.saveSiteVisitReport(this.prepareReportFormGroup.value).subscribe(
-        (response ) => {
-          console.log(response);
+        (response) => {
+          //console.log(response);
           this.getMnPendingTask();
           this.SpinnerService.hide();
 
@@ -440,6 +538,7 @@ console.log(this.scheduleVisitFormGroup.value);
           console.log(error.message);
         }
     );
+    this.hideModelCloseModalSiteVisit()
   }
   onClickSaveUploads(reportFileID: string) {
     if (this.uploadedFiles.length > 0) {
@@ -641,4 +740,16 @@ console.log(this.scheduleVisitFormGroup.value);
     this.closeModal?.nativeElement.click();
   }
 
+  @ViewChild('closeModalPending') private closeModalPending: ElementRef | undefined;
+
+  public hideModelCloseModalPending() {
+    this.closeModalPending?.nativeElement.click();
+  }
+
+
+  @ViewChild('closeModalSiteVisit') private closeModalSiteVisit: ElementRef | undefined;
+
+  public hideModelCloseModalSiteVisit() {
+    this.closeModalSiteVisit?.nativeElement.click();
+  }
 }

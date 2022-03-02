@@ -4,7 +4,6 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {DestinationInspectionService} from "../../../../core/store/data/di/destination-inspection.service";
 import {SelectionModel} from "@angular/cdk/collections";
 import {MatTableDataSource} from "@angular/material/table";
-import {error} from "@angular/compiler/src/util";
 
 @Component({
     selector: 'app-send-demand-note-tokws',
@@ -12,7 +11,8 @@ import {error} from "@angular/compiler/src/util";
     styleUrls: ['./send-demand-note-tokws.component.css']
 })
 export class SendDemandNoteTokwsComponent implements OnInit {
-    displayedColumns: string[] = ['select', 'hsCode', 'description','quantity','unit_price', 'price', 'pricing'];
+    pricingDisplayedColumns: string[] = ['feeName', 'cfvalue', 'rate', 'amountPayable', 'minimumAmount', 'maximumAmount', 'adjustedAmount'];
+    displayedColumns: string[] = ['select', 'hsCode', 'description', 'quantity', 'unit_price', 'price', 'currency', 'pricing'];
     @Input() items: any[]
     paymentFees: any[]
     presentmentData: any
@@ -21,8 +21,10 @@ export class SendDemandNoteTokwsComponent implements OnInit {
     public form: FormGroup;
     initialSelection: any[]
     selectionDataSource: MatTableDataSource<any>
+    itemPricingDataSource: MatTableDataSource<any>
     selection: SelectionModel<any>
     invalidFeeSelection: Boolean;
+
 
     constructor(public dialogRef: MatDialogRef<any>, private fb: FormBuilder, @Inject(MAT_DIALOG_DATA) public data: any,
                 private diService: DestinationInspectionService) {
@@ -35,6 +37,7 @@ export class SendDemandNoteTokwsComponent implements OnInit {
         })
         this.items = this.data.items
         this.selectionDataSource = new MatTableDataSource<any>(this.items)
+        this.itemPricingDataSource = new MatTableDataSource<any>(this.items)
         this.paymentFees = this.data.paymentFees
         this.initialSelection = this.items
         this.invalidFeeSelection = true
@@ -124,8 +127,18 @@ export class SendDemandNoteTokwsComponent implements OnInit {
                     if (res.responseCode == "00") {
                         if (presentment) {
                             this.presentmentData = res.data
+                            let items = this.presentmentData.items
+                            // console.log(items)
+                            if (items) {
+                                items.push({
+                                    feeName: 'Total Amount',
+                                    amountPayable: this.presentmentData.demandNote.amountPayable,
+                                    adjustedAmount: this.presentmentData.demandNote.totalAmount,
+                                })
+                            }
+                            this.itemPricingDataSource.connect().next(items)
                         } else {
-                            this.diService.showSuccess(res.message,()=>{
+                            this.diService.showSuccess(res.message, () => {
                                 this.dialogRef.close(true)
                             })
                         }

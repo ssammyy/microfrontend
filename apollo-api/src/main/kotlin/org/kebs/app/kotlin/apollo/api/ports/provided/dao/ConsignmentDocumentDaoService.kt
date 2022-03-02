@@ -84,6 +84,15 @@ class ConsignmentDocumentDaoService(
                 val docSummary =
                         consignmentDoc.documentSummaryResponse
                                 ?: throw ExpectedDataNotFound("Document Summary, does not exist")
+                var version = consignmentDoc.documentDetails?.consignmentDocDetails?.cdStandard?.versionNo?.toLongOrNull()
+                if (version == null) {
+                    version = daoServices.getVersionCount(ucr)
+                }
+                // Reject document with similar version
+                if (daoServices.findCdWithUcrNumberAndVersion(ucr, version) > 0) {
+                    throw ExpectedDataNotFound("Duplicate: Found document with the same version and ucr number")
+                }
+
                 daoServices.findCdWithUcrNumberLatest(ucr).let { CDDocumentDetails ->
 
                     when (CDDocumentDetails) {
@@ -106,6 +115,7 @@ class ConsignmentDocumentDaoService(
                         else -> {
                             var cdDetails = CDDocumentDetails
                             KotlinLogging.logger { }.info { "::::::::::::::::::CD With UCR = $ucr, Exists::::::::::::::::::::: " }
+
                             consignmentDoc.documentDetails?.consignmentDocDetails?.let { consignmentDocDetails ->
                                 val cdCreated = mainCDFunction(
                                         consignmentDocDetails,
@@ -114,7 +124,7 @@ class ConsignmentDocumentDaoService(
                                         loggedInUser,
                                         map,
                                         commonDaoServices.findProcesses(appId),
-                                        this.daoServices.getVersionCount(ucr) + 1
+                                        version
                                 )
                                 //Update Old CD with Status 1
                                 with(cdDetails) {
@@ -123,9 +133,9 @@ class ConsignmentDocumentDaoService(
                                 }
                                 cdDetails = daoServices.updateCDStatus(cdDetails!!, ConsignmentDocumentStatus.OLD_CD)
                                 // Clear process data on new CD
-                                cdCreated.diProcessStatus=0
-                                cdCreated.diProcessStartedOn=null
-                                cdCreated.diProcessCompletedOn=null
+                                cdCreated.diProcessStatus = 0
+                                cdCreated.diProcessStartedOn = null
+                                cdCreated.diProcessCompletedOn = null
                                 daoServices.updateCDStatus(cdCreated, ConsignmentDocumentStatus.REVISED_CD)
                                 // Update details
                             }
@@ -753,7 +763,7 @@ class ConsignmentDocumentDaoService(
         }
         standardsTwoDetails = iCdStandardsTwoRepo.save(standardsTwoDetails)
         //  Set standard two
-        consignmentDocumentDetailsEntity.cdStandardsTwo=standardsTwoDetails
+        consignmentDocumentDetailsEntity.cdStandardsTwo = standardsTwoDetails
         KotlinLogging.logger { }.info { "Standards Two Details saved ID = ${standardsTwoDetails.id}" }
 
         val consignmentDocumentDetails = updateConsignmentDocumentDetails(consignmentDocumentDetailsEntity, user, map)
@@ -1452,7 +1462,7 @@ class ConsignmentDocumentDaoService(
         }
         nonStandardEntity = iCdItemNonStandardEntityRepository.save(nonStandardEntity)
         // Update chassis number
-        cdItemDetails.chassisNumber=cdItemNonStandardResponse.chassisNo
+        cdItemDetails.chassisNumber = cdItemNonStandardResponse.chassisNo
         this.iCdItemsRepo.save(cdItemDetails)
         //
         KotlinLogging.logger { }.info { "Non standard Item Details saved ID = ${nonStandardEntity.id}" }

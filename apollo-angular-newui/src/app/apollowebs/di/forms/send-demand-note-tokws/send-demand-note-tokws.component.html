@@ -1,7 +1,8 @@
-<h2 mat-dialog-title> Send Demand Note To KWS</h2>
+<h2 mat-dialog-title>Generate Demand Note for Consignment</h2>
 <mat-dialog-content>
     <div class="row no_margin">
         <div class="col-sm-12 col-md-11" *ngIf="this.items && this.items.length>0">
+            <p class="text-blue-dark">Consignment Items</p>
             <mat-table [dataSource]="selectionDataSource">
                 <ng-container matColumnDef="select">
                     <mat-header-cell *matHeaderCellDef>
@@ -22,16 +23,21 @@
                     <mat-cell *matCellDef="let row"> {{row.itemHsCode}} </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="quantity">
-                    <mat-header-cell *matHeaderCellDef>Total Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let row"> {{row.quantity?row.quantity:'NA'}} </mat-cell>
+                    <mat-header-cell *matHeaderCellDef>Quantity</mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.quantity ? row.quantity : 'NA'}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="currency">
+                    <mat-header-cell *matHeaderCellDef>Currency Code</mat-header-cell>
+                    <mat-cell
+                            *matCellDef="let row"> {{row.foreignCurrencyCode ? row.foreignCurrencyCode : 'NA'}} </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="unit_price">
-                    <mat-header-cell *matHeaderCellDef>Total Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let row"> {{row.unitPriceNcy?row.totalPriceFcy:'0'}} </mat-cell>
+                    <mat-header-cell *matHeaderCellDef>Total Amount(NCY)</mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.unitPriceNcy ? row.totalPriceNcy : '0'}} </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="price">
-                    <mat-header-cell *matHeaderCellDef>Total Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let row"> {{row.totalPriceNcy?row.totalPriceFcy:'0'}} </mat-cell>
+                    <mat-header-cell *matHeaderCellDef>Total Amount(FCY)</mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.totalPriceFcy ? row.totalPriceFcy : '0'}} </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="details">
                     <mat-header-cell *matHeaderCellDef>HS Cde Description</mat-header-cell>
@@ -61,9 +67,48 @@
             <mat-error *ngIf="message">{{message}}</mat-error>
         </div>
         <div class="col-sm-12 col-md-11" *ngIf="presentmentData">
-            <label class="waiver-form-label">CD PAYABLE AMOUNT: {{presentmentData.totalAmount | money}}</label>
-            <label class="waiver-form-label">CD ADJUSTED AMOUNT: {{presentmentData.amountPayable| money}}</label>
+            <p class="text-blue-dark">Pricing Applied</p>
+            <div class="separator-gray w-100"></div>
+            <mat-table [dataSource]="itemPricingDataSource">
+                <ng-container matColumnDef="feeName">
+                    <mat-header-cell *matHeaderCellDef>FEE NAME</mat-header-cell>
+                    <mat-cell ng-class="small" *matCellDef="let row"> {{row.feeName}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="cfvalue">
+                    <mat-header-cell *matHeaderCellDef>CFS VALUE</mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.cfvalue ? (row.cfvalue| money) : ""}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="rate">
+                    <mat-header-cell *matHeaderCellDef>RATE</mat-header-cell>
+                    <mat-cell
+                            *matCellDef="let row"> {{row.rateType == 'PERCENTAGE' ? row.rate + "%" : (row.rate| money)}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="amountPayable">
+                    <mat-header-cell *matHeaderCellDef>CALCULATE AMOUNT</mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.amountPayable | money}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="minimumAmount">
+                    <mat-header-cell *matHeaderCellDef>MIN AMOUNT</mat-header-cell>
+                    <mat-cell
+                            *matCellDef="let row"> {{row.minimumAmount ? (row.minimumAmount | money) : ""}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="maximumAmount">
+                    <mat-header-cell *matHeaderCellDef>MAX AMOUNT</mat-header-cell>
+                    <mat-cell
+                            *matCellDef="let row"> {{row.maximumAmount ? (row.maximumAmount | money) : ""}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="adjustedAmount">
+                    <mat-header-cell *matHeaderCellDef>PAYABLE AMOUNT</mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.adjustedAmount}} </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="pricingDisplayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: pricingDisplayedColumns;"></mat-row>
+            </mat-table>
         </div>
+        <!--        <div class="col-sm-12 col-md-11" *ngIf="presentmentData">-->
+        <!--            <label class="waiver-form-label">CD PAYABLE AMOUNT: {{presentmentData.demandNote.totalAmount | money}}</label>-->
+        <!--            <label class="waiver-form-label">CD ADJUSTED AMOUNT: {{presentmentData.demandNote.amountPayable| money}}</label>-->
+        <!--        </div>-->
         <div class="col-sm-12 col-md-11" *ngIf="items && items.length==0">
             <label for="fcorDemandAmount" class="waiver-form-label">Total Amount</label>
             <input id="fcorDemandAmount" class="waiver-form-input-master" formControlName="amount">

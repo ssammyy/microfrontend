@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.service
 
 import mu.KotlinLogging
+import okhttp3.internal.toLongOrDefault
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.SFTPService
@@ -8,6 +9,7 @@ import org.kebs.app.kotlin.apollo.store.model.SdlFactoryVisitReportsUploadEntity
 import org.kebs.app.kotlin.apollo.store.model.SftpTransmissionEntity
 import org.kebs.app.kotlin.apollo.store.repo.ISdlFactoryVisitReportsUploadEntityRepository
 import org.kebs.app.kotlin.apollo.store.repo.ISftpTransmissionEntityRepository
+import org.kebs.app.kotlin.apollo.store.repo.di.IIDFDetailsEntityRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
@@ -24,9 +26,37 @@ import java.util.*
 class FileStorageService(
         private val sftpRepository: ISftpTransmissionEntityRepository,
         private val ftpService: SFTPService,
+        private val iIDFDetailsEntityRepository: IIDFDetailsEntityRepository,
         private var iSdlFactoryVisitReportsUploadEntityRepository: ISdlFactoryVisitReportsUploadEntityRepository
 ) {
     val dateFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+    fun listIncompleteIdfDocuments(date: String?, status: String, page: PageRequest): ApiResponseModel {
+        var referenceDate = LocalDate.now()
+        if (!date.isNullOrEmpty()) {
+            referenceDate = LocalDate.from(dateFormat.parse(date))
+        }
+        val idfStatus = status.toLongOrDefault(0)
+        KotlinLogging.logger { }.debug("Date: $referenceDate")
+        val response = ApiResponseModel()
+        try {
+            val data = date?.let {
+                iIDFDetailsEntityRepository.findByStatusAndCreatedOnBetween(idfStatus
+                        ?: 0, Timestamp.valueOf(referenceDate.atStartOfDay()), Timestamp.valueOf(referenceDate.plusDays(1).atStartOfDay()), page)
+            } ?: iIDFDetailsEntityRepository.findByStatus(idfStatus ?: 0, page)
+            response.data = data.toList()
+            response.totalCount = data.totalElements
+            response.totalPages = data.totalPages
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+            response.message = "Success"
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to load data", ex)
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Failed, could not retrieve data"
+        }
+
+        return response
+    }
+
     fun todaysFileStats(date: String?): ApiResponseModel {
         var referenceDate = date
         if (referenceDate.isNullOrEmpty()) {
@@ -76,7 +106,7 @@ class FileStorageService(
         val data: Page<SftpTransmissionEntity>
         // Date
         data = when {
-            fileName.isPresent->{
+            fileName.isPresent -> {
                 this.sftpRepository.findFirstByFilenameContainingOrderByTransactionDateDesc(fileName.get(), page)
             }
             statusOpt.isPresent -> {

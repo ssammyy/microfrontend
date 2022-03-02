@@ -25,11 +25,19 @@ class FtpFileHandler(val fileStorage: FileStorageService) {
                 .body(fileStorage.loadFilesById(messageId.toLongOrDefault(0L)))
     }
 
-    fun resendFileViaSftp(req: ServerRequest): ServerResponse{
+    fun resendFileViaSftp(req: ServerRequest): ServerResponse {
         val messageId = req.pathVariable("messageId")
         return ServerResponse
                 .ok()
                 .body(fileStorage.resendFile(messageId.toLongOrDefault(0L)))
+    }
+
+    fun listIncompleteIdfDocuments(req: ServerRequest): ServerResponse {
+        val dateCreated = req.param("date")
+        val status = req.param("status").orElse("")
+        return ServerResponse
+                .ok()
+                .body(fileStorage.listIncompleteIdfDocuments(dateCreated.orElse(""), status, extractPage(req)))
     }
 
     fun listFilesByStatus(req: ServerRequest): ServerResponse {
@@ -40,6 +48,6 @@ class FtpFileHandler(val fileStorage: FileStorageService) {
         val page = extractPage(req)
         return ServerResponse
                 .ok()
-                .body(fileStorage.loadFilesByStatus(status, fileName,dateCreated.orElse(""), flowDirection.orElse(null), page))
+                .body(fileStorage.loadFilesByStatus(status, fileName, dateCreated.orElse(""), flowDirection.orElse(null), page))
     }
 }

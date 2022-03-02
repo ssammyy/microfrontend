@@ -189,6 +189,12 @@ export const ROUTES: RouteInfo[] = [
                 ab: 'KM',
                 privilege: ['SYSADMIN_VIEW', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
             },
+            {
+                path: 'kentrade/idf/documents',
+                title: 'IDF Documents',
+                ab: 'ID',
+                privilege: ['SYSADMIN_VIEW', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ']
+            },
         ],
         collapse: 'import-inspection',
         privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],

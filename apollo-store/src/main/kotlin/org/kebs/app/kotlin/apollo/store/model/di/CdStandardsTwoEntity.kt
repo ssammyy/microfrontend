@@ -18,6 +18,10 @@ class CdStandardsTwoEntity : Serializable {
     @Basic
     var purposeOfImport: String? = null
 
+    @Column(name = "COC_REF_NO")
+    @Basic
+    var cocRefNumber: String? = null
+
     @Column(name = "COC_TYPE")
     @Basic
     var cocType: String? = null

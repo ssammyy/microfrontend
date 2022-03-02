@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 import java.math.BigDecimal
+import java.sql.Timestamp
 import java.util.*
 
 
@@ -49,6 +50,7 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
     fun countByUcrNumber(ucrNumber: String): Long
 
     fun findByUcrNumber(ucrNumber: String): ConsignmentDocumentDetailsEntity?
+    fun countByUcrNumberAndVersion(ucrNumber: String, version: Long): Long
     fun findByUcrNumberAndOldCdStatus(ucrNumber: String, oldCdStatus: Int): List<ConsignmentDocumentDetailsEntity>?
     fun findTopByUcrNumberOrderByIdDesc(ucrNumber: String): ConsignmentDocumentDetailsEntity?
     fun findByUuid(uuid: String): ConsignmentDocumentDetailsEntity?
@@ -201,6 +203,8 @@ interface ICfgCurrencyExchangeRateRepository : HazelcastRepository<CurrencyExcha
     fun findAllByCurrencyCodeAndCurrentRate(code: String, current: Int): List<CurrencyExchangeRates>
     fun findFirstByCurrencyCodeAndCurrentRateAndStatus(code: String, current: Int, status: Int): CurrencyExchangeRates?
     fun findAllByCurrentRateAndStatus(current: Int, status: Int): List<CurrencyExchangeRates>
+
+    fun findAllByCreatedOnBetween(startDate: Timestamp, endDate: Timestamp): List<CurrencyExchangeRates>
 
     @Query("SELECT * from CFG_CURRENCY_EXCHANGE_RATES where to_char(APPLICABLE_DATE,'DD-MM-YYYY')=:date and STATUS=:status", nativeQuery = true)
     fun findByApplicableDateAndStatus(@Param("date") date: String, @Param("status") status: Int): List<CurrencyExchangeRates>
@@ -614,6 +618,8 @@ interface IPvocPartnerTypeRepository : HazelcastRepository<PvocPartnerTypeEntity
 interface IIDFDetailsEntityRepository : HazelcastRepository<IDFDetailsEntity, Long> {
     fun findByBaseDocRefNo(baseDocRefNo: String): IDFDetailsEntity?
     fun findFirstByUcrNo(ucrNo: String): IDFDetailsEntity?
+    fun findByStatus(status: Long, page: Pageable): Page<IDFDetailsEntity>
+    fun findByStatusAndCreatedOnBetween(status: Long, startDate: Timestamp, endDate: Timestamp, page: Pageable): Page<IDFDetailsEntity>
 }
 
 @Repository

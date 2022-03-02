@@ -31,6 +31,7 @@ export class AssignOfficerComponent implements OnInit {
 
     // Assign inspection officer to this consignment
     assignOfficer() {
+        this.loading = true
         let data = this.form.value
         data["officerId"] = parseInt(this.form.value.officerId)
         this.diService.assignInspectionOfficer(data, this.data.uuid)
@@ -43,6 +44,7 @@ export class AssignOfficerComponent implements OnInit {
                     } else {
                         this.message = res.message
                     }
+                    this.loading = false
                 }
             )
     }

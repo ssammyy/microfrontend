@@ -47,6 +47,8 @@ export class ReviewApplicationComponent implements OnInit {
                 console.log(response);
                 this.tcTasks = response;
                 this.SpinnerService.hide();
+
+
                 if (this.isDtInitialized) {
                     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
                         dtInstance.destroy();

@@ -18,6 +18,7 @@ import org.kebs.app.kotlin.apollo.api.service.DaoValidatorService
 import org.kebs.app.kotlin.apollo.api.service.InvoicePaymentService
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.kebs.app.kotlin.apollo.store.model.di.CdDemandNoteItemsDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
 import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteRepository
 import org.springframework.http.HttpStatus
@@ -26,11 +27,8 @@ import org.springframework.web.multipart.MultipartHttpServletRequest
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
-import org.springframework.web.servlet.function.paramOrNull
 import java.sql.Timestamp
 import java.time.Instant
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 
 @Component
@@ -44,7 +42,7 @@ class InvoiceHandlers(
         private val daoValidatorService: DaoValidatorService,
 ) {
     final val errors = mutableMapOf<String, String>()
-    final val DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+
     fun applicationUploadExchangeRates(req: ServerRequest): ServerResponse {
         val response = ApiResponseModel()
         try {
@@ -73,18 +71,22 @@ class InvoiceHandlers(
     fun applicationExchangeRates(req: ServerRequest): ServerResponse {
         val response = ApiResponseModel()
         try {
-            val date = req.paramOrNull("date")?.let {
-                var dt = LocalDate.now()
-                if (!it.trim().isEmpty()) {
-                    val parsedDate = LocalDate.from(DATE_FORMAT.parse(it))
-                    dt = parsedDate
+            val rangeType = req.param("rangeType").orElse("OTHER")
+            when (rangeType) {
+                "RANGE" -> {
+                    response.data = mapOf(
+                            Pair("today", daoServices.listExchangeRatesRange(req.param("date").orElse(""), req.param("endDate").orElse(""))),
+                            Pair("active", daoServices.listCurrentExchangeRates(1))
+                    )
                 }
-                dt
-            } ?: LocalDate.now()
-            response.data = mapOf(
-                    Pair("today", daoServices.listExchangeRates(DATE_FORMAT.format(date))),
-                    Pair("active", daoServices.listCurrentExchangeRates(1))
-            )
+                else -> {
+                    response.data = mapOf(
+                            Pair("today", daoServices.listExchangeRates(req.param("date").orElse(""))),
+                            Pair("active", daoServices.listCurrentExchangeRates(1))
+                    )
+                }
+            }
+
             response.message = "Success"
             response.responseCode = ResponseCodes.SUCCESS_CODE
         } catch (e: Exception) {
@@ -231,14 +233,19 @@ class InvoiceHandlers(
             demandRequest.ablNumber = cdDetails.cdStandard?.declarationNumber ?: "UNKNOWN"
             demandRequest.product = cdDetails.ucrNumber ?: "UNKNOWN"
             // Calculate demand note amount and save
+            val demandNoteItems = mutableListOf<CdDemandNoteItemsDetailsEntity>()
             val demandNote = invoicePaymentService.generateDemandNoteWithItemList(
                     demandRequest,
+                    demandNoteItems,
                     map,
                     PaymentPurpose.CONSIGNMENT,
                     loggedInUser
             )
             if (invoiceForm.presentment) {
-                response.data = demandNote
+                val dt = mutableMapOf<String, Any>()
+                dt["demandNote"] = demandNote
+                dt["items"] = demandNoteItems
+                response.data = dt
                 response.responseCode = ResponseCodes.SUCCESS_CODE
                 response.message = "Success"
             } else {

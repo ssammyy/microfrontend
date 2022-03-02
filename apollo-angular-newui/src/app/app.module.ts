@@ -301,6 +301,8 @@ import {ViewExemptionApplicationsComponent} from "./apollowebs/pvoc/exemptions/v
 import {ViewExemptionDetailsComponent} from "./apollowebs/pvoc/exemptions/view-exemption-details/view-exemption-details.component";
 import {ViewComplaintsComponent} from "./apollowebs/pvoc/complaints/view-complaints/view-complaints.component";
 import {ViewComplaintDetailsComponent} from "./apollowebs/pvoc/complaints/view-complaint-details/view-complaint-details.component";
+import {ManifestDocumentComponent} from './apollowebs/di/view-single-consignment-document/manifest-document/manifest-document.component';
+import {IncompleteIDFDocumentsComponent} from './apollowebs/di/message-dashboard/incomplete-idfdocuments/incomplete-idfdocuments.component';
 
 
 @NgModule({
@@ -632,7 +634,10 @@ import {ViewComplaintDetailsComponent} from "./apollowebs/pvoc/complaints/view-c
         ViewExemptionApplicationsComponent,
         ViewExemptionDetailsComponent,
         ViewComplaintsComponent,
-        ViewComplaintDetailsComponent
+        ViewComplaintDetailsComponent,
+        ManageCorporateCustomerComponent,
+        ManifestDocumentComponent,
+        IncompleteIDFDocumentsComponent
     ],
     providers: [DatePipe,
     ],

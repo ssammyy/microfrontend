@@ -52,6 +52,14 @@ class CdDemandNoteItemsDetailsEntity : Serializable {
     @Basic
     var amountPayable: BigDecimal? = null
 
+    @Column(name = "MAX_AMOUNT")
+    @Basic
+    var maximumAmount: BigDecimal? = null
+
+    @Column(name = "MIN_AMOUNT")
+    @Basic
+    var minimumAmount: BigDecimal? = null
+
     @Column(name = "ADJUSTED_AMOUNT")
     @Basic
     var adjustedAmount: BigDecimal? = null
