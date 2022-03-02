@@ -286,15 +286,15 @@ import {ManageCorporateCustomerComponent} from './apollowebs/invoice/corporate/m
 import {ReviewApplicationsAcceptedComponent} from './apollowebs/standards-development/membershipToTc/review-applications-accepted/review-applications-accepted.component';
 import {ReviewApplicationsRejectedComponent} from './apollowebs/standards-development/membershipToTc/review-applications-rejected/review-applications-rejected.component';
 import {ApproveApplicationComponent} from "./apollowebs/standards-development/membershipToTc/approve-application/approve-application.component";
-import { ApprovedMembersComponent } from './apollowebs/standards-development/membershipToTc/approved-members/approved-members.component';
-import { MembersToCreateCredentialsComponent } from './apollowebs/standards-development/membershipToTc/members-to-create-credentials/members-to-create-credentials.component';
-import { MembersCreatedCredentialsComponent } from './apollowebs/standards-development/membershipToTc/members-created-credentials/members-created-credentials.component';
-import { ApproveInductionComponent } from './apollowebs/standards-development/membershipToTc/approve-induction/approve-induction.component';
-import { ApproveInductionMembersComponent } from './apollowebs/standards-development/membershipToTc/approve-induction-members/approve-induction-members.component';
-import { StdLevyApplicationsComponent } from './apollowebs/standards-levy/std-levy-applications/std-levy-applications.component';
-import { StdLevyTasksComponent } from './apollowebs/standards-levy/std-levy-tasks/std-levy-tasks.component';
-import { StdLevyPendingTasksComponent } from './apollowebs/standards-levy/std-levy-pending-tasks/std-levy-pending-tasks.component';
-import { StdLevyCompleteTasksComponent } from './apollowebs/standards-levy/std-levy-complete-tasks/std-levy-complete-tasks.component';
+import {ApprovedMembersComponent} from './apollowebs/standards-development/membershipToTc/approved-members/approved-members.component';
+import {MembersToCreateCredentialsComponent} from './apollowebs/standards-development/membershipToTc/members-to-create-credentials/members-to-create-credentials.component';
+import {MembersCreatedCredentialsComponent} from './apollowebs/standards-development/membershipToTc/members-created-credentials/members-created-credentials.component';
+import {ApproveInductionComponent} from './apollowebs/standards-development/membershipToTc/approve-induction/approve-induction.component';
+import {ApproveInductionMembersComponent} from './apollowebs/standards-development/membershipToTc/approve-induction-members/approve-induction-members.component';
+import {StdLevyApplicationsComponent} from './apollowebs/standards-levy/std-levy-applications/std-levy-applications.component';
+import {StdLevyTasksComponent} from './apollowebs/standards-levy/std-levy-tasks/std-levy-tasks.component';
+import {StdLevyPendingTasksComponent} from './apollowebs/standards-levy/std-levy-pending-tasks/std-levy-pending-tasks.component';
+import {StdLevyCompleteTasksComponent} from './apollowebs/standards-levy/std-levy-complete-tasks/std-levy-complete-tasks.component';
 import {ViewWaiverApplicationsComponent} from "./apollowebs/pvoc/waivers/view-waiver-applications/view-waiver-applications.component";
 import {ViewWaiverDetailsComponent} from "./apollowebs/pvoc/waivers/view-waiver-details/view-waiver-details.component";
 import {ViewExemptionApplicationsComponent} from "./apollowebs/pvoc/exemptions/view-exemption-applications/view-exemption-applications.component";
@@ -568,7 +568,6 @@ import {IncompleteIDFDocumentsComponent} from './apollowebs/di/message-dashboard
         ViewPartnersComponent,
         AddUpdatePartnerComponent,
         ViewPartnerDetailsComponent,
-        AddApiClientComponent,
         IsmApplicationsComponent,
         ViewIsmApplicationComponent,
         ApproveRejectApplicationComponent,
@@ -637,7 +636,8 @@ import {IncompleteIDFDocumentsComponent} from './apollowebs/di/message-dashboard
         ViewComplaintDetailsComponent,
         ManageCorporateCustomerComponent,
         ManifestDocumentComponent,
-        IncompleteIDFDocumentsComponent
+        IncompleteIDFDocumentsComponent,
+        AddApiClientComponent
     ],
     providers: [DatePipe,
     ],

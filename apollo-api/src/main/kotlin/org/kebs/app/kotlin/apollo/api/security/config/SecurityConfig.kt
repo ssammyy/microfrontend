@@ -37,6 +37,7 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
@@ -47,7 +48,7 @@ import java.util.*
 @EnableWebSecurity
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-class WebSecurityConfig(private val customUserDetailsService: CustomUserDetailsService){
+class WebSecurityConfig(private val customUserDetailsService: CustomUserDetailsService) {
     @Bean
     fun passwordEncoder(): PasswordEncoder? {
         return BCryptPasswordEncoder()
@@ -95,16 +96,16 @@ class WebSecurityConfig(private val customUserDetailsService: CustomUserDetailsS
             configuration.allowedOrigins = listOf(*exclusionsCros)
             configuration.allowedHeaders =
                     Arrays.asList(
-                        "Origin",
-                        "Access-Control-Allow-Origin",
-                        "Content-Type",
-                        "Accept",
-                        "Authorization",
-                        "Origin,Accept",
-                        "X-Requested-With",
-                        "Access-Control-Request-Method",
-                        "Access-Control-Request-Headers",
-                        "enctype"
+                            "Origin",
+                            "Access-Control-Allow-Origin",
+                            "Content-Type",
+                            "Accept",
+                            "Authorization",
+                            "Origin,Accept",
+                            "X-Requested-With",
+                            "Access-Control-Request-Method",
+                            "Access-Control-Request-Headers",
+                            "enctype"
                     )
             configuration.exposedHeaders = Arrays.asList(
                     "Origin", "Content-Type", "Accept", "Authorization",
@@ -140,8 +141,9 @@ class WebSecurityConfig(private val customUserDetailsService: CustomUserDetailsS
                     }
                     .and()
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            http.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter::class.java)
-            http.addFilterAfter(clientFilter, UsernamePasswordAuthenticationFilter::class.java)
+
+            http.addFilterAfter(clientFilter, BasicAuthenticationFilter::class.java)
+            http.addFilterAfter(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter::class.java)
         }
     }
 

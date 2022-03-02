@@ -22,6 +22,7 @@ import org.kebs.app.kotlin.apollo.store.model.di.CdDemandNoteItemsDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
 import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteRepository
 import org.springframework.http.HttpStatus
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Component
 import org.springframework.web.multipart.MultipartHttpServletRequest
 import org.springframework.web.server.ResponseStatusException
@@ -431,6 +432,7 @@ class InvoiceHandlers(
         return ServerResponse.ok().body(response)
     }
 
+    @PreAuthorize("hasRole('PAYMENT')")
     fun paymentCallback(req: ServerRequest): ServerResponse {
         val result = CallbackResponses()
         try {

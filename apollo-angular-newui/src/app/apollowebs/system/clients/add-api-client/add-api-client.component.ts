@@ -38,6 +38,7 @@ export class AddApiClientComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        console.log(this.data);
         this.form = this.fb.group({
             clientType: [null, [Validators.required]],
             clientName: [null, [Validators.required]],
