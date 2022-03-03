@@ -479,8 +479,8 @@ class InvoicePaymentService(
                     }
                     // Foreign CoR/CoC without Items
                     if (form.items?.isEmpty() == true) {
-                        demandNote.totalAmount = form.amount.toBigDecimal()
-                        demandNote.amountPayable = form.amount.toBigDecimal()
+                        demandNote.totalAmount = form.amount.toBigDecimal().setScale(2, RoundingMode.UP)
+                        demandNote.amountPayable = form.amount.toBigDecimal().setScale(2, RoundingMode.UP)
                     }
                     return demandNote
 
@@ -546,6 +546,7 @@ class InvoicePaymentService(
         //2. Calculate based on the ranges provided
         when (feeType) {
             "PERCENTAGE" -> {
+                demandNoteItem.rate = rate?.setScale(0, RoundingMode.UP)?.toString()
                 amount = cfiValue.multiply(rate).divide(percentage.toBigDecimal())
                 demandNoteItem.amountPayable = BigDecimal(amount?.toDouble() ?: 0.0)
                 KotlinLogging.logger { }.info("$feeType MY AMOUNT BEFORE CALCULATION = $currencyCode-$amount")
@@ -572,26 +573,26 @@ class InvoicePaymentService(
                         }
                     }
                 }
-                demandNoteItem.adjustedAmount = amount
+                demandNoteItem.adjustedAmount = amount?.setScale(2, RoundingMode.UP)
                 KotlinLogging.logger { }.info("$feeType MY AMOUNT AFTER CALCULATION = $amount")
             }
             "FIXED" -> {
                 amount = fixedAmount
                 KotlinLogging.logger { }.info("FIXED AMOUNT BEFORE CALCULATION = $fixedAmount")
-                demandNoteItem.adjustedAmount = fixedAmount
-                demandNoteItem.amountPayable = fixedAmount
+                demandNoteItem.adjustedAmount = fixedAmount.setScale(2, RoundingMode.UP)
+                demandNoteItem.amountPayable = fixedAmount.setScale(2, RoundingMode.UP)
             }
             "MANUAL" -> {
                 // Not-Applicable to items
                 amount = BigDecimal.ZERO
-                demandNoteItem.adjustedAmount = amount
-                demandNoteItem.amountPayable = amount
+                demandNoteItem.adjustedAmount = amount?.setScale(2, RoundingMode.UP)
+                demandNoteItem.amountPayable = amount?.setScale(2, RoundingMode.UP)
                 KotlinLogging.logger { }.info("MANUAL AMOUNT BEFORE CALCULATION = $amount")
             }
             else -> {
                 amount = BigDecimal.ZERO
-                demandNoteItem.adjustedAmount = amount
-                demandNoteItem.amountPayable = amount
+                demandNoteItem.adjustedAmount = amount?.setScale(2, RoundingMode.UP)
+                demandNoteItem.amountPayable = amount?.setScale(2, RoundingMode.UP)
             }
         }
     }
