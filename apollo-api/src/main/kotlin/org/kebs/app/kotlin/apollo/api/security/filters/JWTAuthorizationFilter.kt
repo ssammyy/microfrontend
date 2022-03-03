@@ -22,6 +22,7 @@
 package org.kebs.app.kotlin.apollo.api.security.filters
 
 
+import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.security.bearer.AuthorizationPayloadExtractorService
 import org.kebs.app.kotlin.apollo.api.security.bearer.UsernamePasswordAuthenticationBearer
 import org.kebs.app.kotlin.apollo.api.security.jwt.JwtTokenService
@@ -62,11 +63,14 @@ class JWTAuthorizationFilter : OncePerRequestFilter() {
                                 myToken = token.replace(prefix, "")
                             }
 
-                    //TODO: fix error for try catch
-                    val authentication = UsernamePasswordAuthenticationBearer(tokenService).create(myToken)
-                    SecurityContextHolder.getContext().authentication = authentication
-                    response.addHeader(HttpHeaders.AUTHORIZATION, token)
-
+                    try {
+                        //TODO: fix error for try catch
+                        val authentication = UsernamePasswordAuthenticationBearer(tokenService).create(myToken)
+                        SecurityContextHolder.getContext().authentication = authentication
+                        response.addHeader(HttpHeaders.AUTHORIZATION, token)
+                    } catch (ex: Exception) {
+                        KotlinLogging.logger { }.warn("Failed to parse JWT token: ${ex.localizedMessage}")
+                    }
                 }
             filterChain.doFilter(request, response)
     }
