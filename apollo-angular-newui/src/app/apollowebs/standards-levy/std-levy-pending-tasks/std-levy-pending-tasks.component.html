@@ -563,21 +563,21 @@
                                                                       placeholder="Name" type="text"></textarea>
                                                         </div>
                                                         <div *ngIf="roles?.includes('SL_IS_PL_OFFICER')" class="form-group col-12">
-                                                            <input type="text" formControlName="userType"  name="userType" value="61" >
+                                                            <input type="hidden" formControlName="userType"  name="userType" class="form-control" value="{{userType}}" >
                                                             <label>Send Report To</label>
                                                             <ng-select [(ngModel)]="approvedUsersOne" formControlName="assigneeId"  class="form-control"  name="assigneeId" >
                                                                 <ng-option *ngFor="let user of approveUsersOne" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
                                                             </ng-select>
                                                         </div>
                                                         <div *ngIf="roles?.includes('SL_IS_ASST_MANAGER')" class="form-group col-12">
-                                                            <input type="hidden" formControlName="userType"  name="userType" value="62" >
+                                                            <input type="hidden" formControlName="userType"  name="userType" value="{{userType}}" >
                                                             <label>Send Report To</label>
                                                             <ng-select [(ngModel)]="approvedUsersTwo" formControlName="assigneeId"  class="form-control"  name="assigneeId" >
                                                                 <ng-option *ngFor="let user of approveUsersTwo" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
                                                             </ng-select>
                                                         </div>
                                                         <div *ngIf="roles?.includes('SL_IS_MANAGER')" class="form-group col-12">
-                                                            <input type="hidden" formControlName="userType"   name="userType" value="62" >
+                                                            <input type="hidden" formControlName="userType"   name="userType" value="{{userType}}" >
                                                             <label>Send Report To</label>
                                                             <ng-select [(ngModel)]="approvedUsersThree" formControlName="assigneeId"  class="form-control"  name="assigneeId" >
                                                                 <ng-option *ngFor="let user of approveUsersThree" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
@@ -1216,7 +1216,7 @@
 
                                                         </div>
                                                         <input type="hidden" formControlName="visitID" name="visitID"  value="{{actionRequestPending?.taskData?.visitID}}" >
-                                                        <input type="hidden" formControlName="accentTo" name="accentTo"  value="true" >
+                                                        <input type="hidden" formControlName="accentTo" name="accentTo"  value="{{approve}}" >
                                                         <input type="hidden" formControlName="taskId"  name="taskId" value="{{actionRequestPending?.taskId}}" >
                                                         <input type="hidden" formControlName="manufacturerEntity"  name="manufacturerEntity" value="{{actionRequestPending?.taskData?.manufacturerEntity}}" >
 
@@ -1246,7 +1246,7 @@
                                                         </div>
                                                         <input type="hidden" formControlName="assigneeId" name="assigneeId"  value="{{actionRequestPending?.taskData?.originator}}" >
                                                         <input type="hidden" formControlName="visitID" name="visitID"  value="{{actionRequestPending?.taskData?.visitID}}" >
-                                                        <input type="hidden" formControlName="accentTo" name="accentTo"  value="false" >
+                                                        <input type="hidden" formControlName="accentTo" name="accentTo"  value="{{reject}}" >
                                                         <input type="hidden" formControlName="taskId" name="taskId" value="{{actionRequestPending?.taskId}}" >
                                                         <input type="hidden" formControlName="manufacturerEntity"  name="manufacturerEntity" value="{{actionRequestPending?.taskData?.manufacturerEntity}}" >
 
@@ -1664,7 +1664,7 @@
                                                         </div>
                                                         <input type="hidden" formControlName="assigneeId" name="assigneeId" value="{{actionRequestPending?.taskData?.originator}}" >
                                                         <input type="hidden" formControlName="visitID" name="visitID" value="{{actionRequestPending?.taskData?.visitID}}" >
-                                                        <input type="hidden" formControlName="accentTo" name="accentTo"  value="true" >
+                                                        <input type="hidden" formControlName="accentTo" name="accentTo"  value="{{approve}}" >
                                                         <input type="hidden" formControlName="taskId"  name="taskId" value="{{actionRequestPending?.taskId}}" >
                                                         <input type="hidden" formControlName="manufacturerEntity"  name="manufacturerEntity" value="{{actionRequestPending?.taskData?.manufacturerEntity}}" >
 
@@ -1694,7 +1694,7 @@
                                                         </div>
                                                         <input type="hidden" formControlName="assigneeId" name="assigneeId"  value="{{actionRequestPending?.taskData?.originator}}" >
                                                         <input type="hidden" formControlName="visitID" name="visitID" value="{{actionRequestPending?.taskData?.visitID}}" >
-                                                        <input type="hidden" formControlName="accentTo" name="accentTo" value="false" >
+                                                        <input type="hidden" formControlName="accentTo" name="accentTo" value="{{reject}}" >
                                                         <input type="hidden" formControlName="taskId" name="taskId" value="{{actionRequestPending?.taskId}}" >
                                                         <input type="hidden" formControlName="manufacturerEntity"  name="manufacturerEntity" value="{{actionRequestPending?.taskData?.manufacturerEntity}}" >
 
@@ -2106,7 +2106,7 @@
                                                             </div>
                                                         </div>
                                                         <input type="hidden" formControlName="visitID" name="visitID"  value="{{actionRequestPending?.taskData?.visitID}}" >
-                                                        <input type="hidden" formControlName="accentTo" name="accentTo"  value="true" >
+                                                        <input type="hidden" formControlName="accentTo" name="accentTo"  value="{{approve}}" >
                                                         <input type="hidden" formControlName="assigneeId" name="assigneeId"  value="{{actionRequestPending?.taskData?.originator}}" >
                                                         <input type="hidden" formControlName="taskId"  name="taskId" value="{{actionRequestPending?.taskId}}" >
                                                         <input type="hidden" formControlName="manufacturerEntity"  name="manufacturerEntity" value="{{actionRequestPending?.taskData?.manufacturerEntity}}" >
@@ -2137,7 +2137,7 @@
                                                         <input type="hidden"   name="userType" value="{{actionRequestPending?.taskData?.userType}}" >
                                                         <input type="hidden" formControlName="assigneeId" name="assigneeId"  value="{{actionRequestPending?.taskData?.levelOneId}}" >
                                                         <input type="hidden" formControlName="visitID" name="visitID"  value="{{actionRequestPending?.taskData?.visitID}}" >
-                                                        <input type="hidden" formControlName="accentTo" name="accentTo"  value="false" >
+                                                        <input type="hidden" formControlName="accentTo" name="accentTo"  value="{{reject}}" >
                                                         <input type="hidden" formControlName="taskId" name="taskId" value="{{actionRequestPending?.taskId}}" >
                                                         <input type="hidden" formControlName="manufacturerEntity"  name="manufacturerEntity" value="{{actionRequestPending?.taskData?.manufacturerEntity}}" >
 

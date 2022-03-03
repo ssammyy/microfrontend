@@ -162,6 +162,7 @@ class StandardLevyService(
                     companyProfileEntity.id?.let { variables["manufacturerEntity"] = it }
                         ?: throw Exception("COMPANY NOT FOUND")
                     companyProfileEntity.userId?.let { variables["contactId"] = it }
+                    val taskType = 1L
 
                     companyProfileEntity.assignedTo = companyProfileEntity.assignedTo
                     companyProfileEntity.assignStatus = 1
@@ -171,7 +172,7 @@ class StandardLevyService(
                     companyProfileEntity.slBpmnProcessInstance = processInstance?.processInstanceId
 
                     companyProfileRepo.save(companyProfileEntity)
-                    val taskType = 1L
+
 
 
                     taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)

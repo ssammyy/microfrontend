@@ -10,6 +10,7 @@ import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../core/store/data/std/notification.service";
 import {selectUserInfo} from "../../../core/store";
 import {HttpErrorResponse} from "@angular/common/http";
+// @ts-ignore
 import {DataTableDirective} from "angular-datatables";
 import swal from "sweetalert2";
 
@@ -24,7 +25,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
   userId: number ;
   roles: string[];
   userType: number;
-
+    approve: string;
+    reject: string;
   public users !: UsersEntity[] ;
   public approveUsersOne !: UsersEntity[] ;
   public approveUsersTwo !: UsersEntity[] ;
@@ -58,6 +60,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
   isShowRejectForm2= true;
   isShowSaveFeedBackForm= true;
   isShowRemarksTab= true;
+
+
 
   toggleDisplayScheduleForm() {
     this.isShowScheduleForm = !this.isShowScheduleForm;
@@ -117,21 +121,26 @@ export class StdLevyPendingTasksComponent implements OnInit {
     this.getMnPendingTask();
     this.getUserRoles();
     this.getUserData();
-
+    this.approve='true';
+    this.reject='false';
 
     if (this.roles?.includes('SL_IS_PL_OFFICER')) {
       this.getApproveLevelOne();
+      this.userType=61;
     }
     if (this.roles?.includes('SL_IS_ASST_MANAGER')) {
       this.getApproveLevelTwo();
       this.getAssignLevelOne();
+        this.userType=62;
     }
     if (this.roles?.includes('SL_IS_MANAGER')) {
       this.getApproveLevelThree();
-      this.getAssignLevelTwo()
+      this.getAssignLevelTwo();
+        this.userType=62;
     }
     if (this.roles?.includes('SL_IS_CHIEF_MANAGER')) {
-      this.getAssignLevelThree()
+      this.getAssignLevelThree();
+        this.userType=62;
     }
 
     this.scheduleVisitFormGroup = this.formBuilder.group({
@@ -409,7 +418,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
           {
             visitID: this.actionRequestPending.taskData.visitID,
             taskId: this.actionRequestPending.taskId,
-            manufacturerEntity: this.actionRequestPending.taskData.manufacturerEntity
+            manufacturerEntity: this.actionRequestPending.taskData.manufacturerEntity,
+              userType: this.userType
           }
       );
 
@@ -421,14 +431,16 @@ export class StdLevyPendingTasksComponent implements OnInit {
           {
             visitID: this.actionRequestPending.taskData.visitID,
             taskId: this.actionRequestPending.taskId,
-            manufacturerEntity: this.actionRequestPending.taskData.manufacturerEntity
+            manufacturerEntity: this.actionRequestPending.taskData.manufacturerEntity,
+              accentTo: this.approve
           }
       );
       this.rejectFormGroup.patchValue(
           {
             visitID: this.actionRequestPending.taskData.visitID,
             taskId: this.actionRequestPending.taskId,
-            manufacturerEntity: this.actionRequestPending.taskData.manufacturerEntity
+            manufacturerEntity: this.actionRequestPending.taskData.manufacturerEntity,
+              accentTo: this.reject
           }
       );
 
@@ -441,7 +453,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
             visitID: this.actionRequestPending.taskData.visitID,
             taskId: this.actionRequestPending.taskId,
             manufacturerEntity: this.actionRequestPending.taskData.manufacturerEntity,
-            assigneeId: this.actionRequestPending.taskData.originator
+            assigneeId: this.actionRequestPending.taskData.originator,
+              accentTo: this.approve
           }
       );
       this.rejectTwoFormGroup.patchValue(
@@ -449,7 +462,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
             visitID: this.actionRequestPending.taskData.visitID,
             taskId: this.actionRequestPending.taskId,
             manufacturerEntity: this.actionRequestPending.taskData.manufacturerEntity,
-            assigneeId: this.actionRequestPending.taskData.originator
+            assigneeId: this.actionRequestPending.taskData.originator,
+              accentTo: this.reject
           }
       );
     }
@@ -461,7 +475,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
             visitID: this.actionRequestPending.taskData.visitID,
             taskId: this.actionRequestPending.taskId,
             manufacturerEntity: this.actionRequestPending.taskData.manufacturerEntity,
-            assigneeId: this.actionRequestPending.taskData.originator
+            assigneeId: this.actionRequestPending.taskData.originator,
+              accentTo: this.approve
           }
       );
       this.rejectFormGroup.patchValue(
@@ -469,7 +484,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
             visitID: this.actionRequestPending.taskData.visitID,
             taskId: this.actionRequestPending.taskId,
             manufacturerEntity: this.actionRequestPending.taskData.manufacturerEntity,
-            assigneeId: this.actionRequestPending.taskData.originator
+            assigneeId: this.actionRequestPending.taskData.originator,
+              accentTo: this.reject
           }
       );
     }
@@ -521,8 +537,9 @@ export class StdLevyPendingTasksComponent implements OnInit {
     }
   }
   saveReport(): void {
+      this.loadingText = "Saving Report...";
     this.SpinnerService.show();
-    console.log(this.prepareReportFormGroup.value)
+    //console.log(this.prepareReportFormGroup.value)
     this.levyService.saveSiteVisitReport(this.prepareReportFormGroup.value).subscribe(
         (response) => {
           //console.log(response);
@@ -571,7 +588,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
 
   }
   onDecision(): void {
-
+      this.loadingText = "Approving Report...";
     this.SpinnerService.show();
     this.levyService.levelOneDecisionOnReport(this.approvalFormGroup.value).subscribe(
         (response ) => {
@@ -590,7 +607,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
   }
 
   onDecisionReject(): void {
-
+      this.loadingText = "Rejecting Report...";
     this.SpinnerService.show();
     this.levyService.levelOneDecisionOnReport(this.rejectFormGroup.value).subscribe(
         (response ) => {
@@ -628,7 +645,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
     );
   }
   onDecisionLevelTwo(): void {
-
+      this.loadingText = "Approving Report...";
     this.SpinnerService.show();
     this.levyService.decisionOnSiteReportLevelTwo(this.approvalTwoFormGroup.value).subscribe(
         (response ) => {
@@ -647,7 +664,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
   }
 
   onDecisionTwo(): void {
-
+      this.loadingText = "Approving Report...";
     this.SpinnerService.show();
     this.levyService.decisionOnSiteReportLevelTwo(this.approveTwoFormGroup.value).subscribe(
         (response ) => {
@@ -666,7 +683,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
   }
 
   onDecisionRejectLevelTwo(): void {
-
+      this.loadingText = "Rejecting Report...";
     this.SpinnerService.show();
     this.levyService.decisionOnSiteReportLevelTwo(this.rejectTwoFormGroup.value).subscribe(
         (response ) => {
@@ -687,6 +704,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
 
 
   saveFeedBack(): void {
+      this.loadingText = "Saving Feedback...";
     this.SpinnerService.show();
     this.levyService.saveSiteVisitFeedback(this.prepareFeedBackFormGroup.value).subscribe(
         (response ) => {

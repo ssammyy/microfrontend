@@ -87,7 +87,8 @@ data class AssignCompanyTaskToDTO(
     var town: Long? = null,
     var manufactureStatus: Int? = null,
     var entryNumber: String? = null,
-    var contactId: Long? = null
+    var contactId: Long? = null,
+    var taskType: Long? = null
 )
 class ProcessInstanceSiteResponse(val processId: String, val isEnded: Boolean) {
 }
