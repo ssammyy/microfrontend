@@ -75,8 +75,8 @@ class SageRequest {
                 customerTelephone = dn.telephone
                 emailAddress = dn.address
                 entryNo = dn.demandNoteNumber
-                entryPoint = dn.entryPoint ?: "UNK"
-                courier = dn.courier ?: "UNK"
+                entryPoint = dn.entryPoint ?: "KSM"
+                courier = dn.courier ?: ""
                 otherInfo = dn.currency
                 totalAmount = dn.totalAmount ?: BigDecimal.ZERO
             }

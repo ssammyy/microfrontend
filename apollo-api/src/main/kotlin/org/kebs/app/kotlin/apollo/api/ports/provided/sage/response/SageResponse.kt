@@ -6,6 +6,18 @@ import com.fasterxml.jackson.annotation.OptBoolean
 import java.sql.Timestamp
 import javax.validation.Valid
 import javax.validation.constraints.NotNull
+class SageHeader {
+    @JsonProperty("messageID")
+    var messageID: String? = null
+
+    @JsonProperty("statusCode")
+    @NotNull(message = "Status code is required")
+    var statusCode: Int? = null
+
+    @JsonProperty("statusDescription")
+    @NotNull(message = "Status description is required")
+    var statusDescription: String? = null
+}
 
 class SageResponse {
     @JsonProperty("DemandNoteNo")
@@ -21,7 +33,7 @@ class SagePostingResponseResult {
     @JsonProperty("header")
     @Valid
     @NotNull(message = "Header details are required")
-    var header: Header? = null
+    var header: SageHeader? = null
 
     @Valid
     @JsonProperty("request")
