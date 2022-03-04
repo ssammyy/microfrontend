@@ -71,12 +71,12 @@ class SageRequest {
             return SageRequest().apply {
                 customerName = dn.nameImporter
                 documentDate = dn.dateGenerated
-                shippingAgent = dn.shippingAgent
+                shippingAgent = dn.shippingAgent ?: "UNKNOWN"
                 customerTelephone = dn.telephone
                 emailAddress = dn.address
                 entryNo = dn.demandNoteNumber
-                entryPoint = dn.entryPoint
-                courier = dn.courier
+                entryPoint = dn.entryPoint ?: "UNK"
+                courier = dn.courier ?: "UNK"
                 otherInfo = dn.currency
                 totalAmount = dn.totalAmount ?: BigDecimal.ZERO
             }

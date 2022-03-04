@@ -1,6 +1,8 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.sage
 
 import mu.KotlinLogging
+import org.jasypt.encryption.StringEncryptor
+import org.junit.Assert
 import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
@@ -27,12 +29,23 @@ class SageIntegrationTests {
     @Autowired
     lateinit var demandNoteRepository: IDemandNoteRepository
 
+    @Autowired
+    lateinit var jasyptStringEncryptor: StringEncryptor
+
+    @Test
+    fun encryptPasswords() {
+        KotlinLogging.logger { }.info("USER: " + jasyptStringEncryptor.encrypt("BSKAPI"))
+        KotlinLogging.logger { }.info("PWD: " + jasyptStringEncryptor.encrypt("P@\$\$word2021"))
+    }
+
     @Test
     fun demandNoteSubmission() {
         this.demandNoteRepository.findFirstByPaymentStatusAndCdRefNoIsNotNullOrderByCreatedOnDesc(0)?.let { demandNote ->
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             KotlinLogging.logger { }.info("CdRef No: ${demandNote.cdRefNo}")
             sageService.postInvoiceTransactionToSage(demandNote, "test", map)
+            Assert.assertEquals(1, demandNote.postingStatus)
+            Assert.assertNotNull("Expected remote reference", demandNote.postingReference)
             Thread.sleep(TimeUnit.SECONDS.toMillis(20))
         } ?: throw ExpectedDataNotFound("Could not find a single payment")
     }

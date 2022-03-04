@@ -228,7 +228,7 @@ class InvoiceHandlers(
             demandRequest.referenceId = cdDetails.id
             val cdImporter = cdDetails.cdImporter?.let { daoServices.findCDImporterDetails(it) }
             demandRequest.name = cdImporter?.name
-            demandRequest.address = cdImporter?.physicalAddress
+            demandRequest.address = cdImporter?.email
             demandRequest.phoneNumber = cdImporter?.telephone
             demandRequest.referenceNumber = cdDetails.cdStandard?.applicationRefNo
             demandRequest.ablNumber = cdDetails.cdStandard?.declarationNumber ?: "UNKNOWN"
