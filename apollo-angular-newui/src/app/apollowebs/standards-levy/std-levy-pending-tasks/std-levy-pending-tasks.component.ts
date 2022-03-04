@@ -10,7 +10,6 @@ import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../core/store/data/std/notification.service";
 import {selectUserInfo} from "../../../core/store";
 import {HttpErrorResponse} from "@angular/common/http";
-// @ts-ignore
 import {DataTableDirective} from "angular-datatables";
 import swal from "sweetalert2";
 

@@ -6,7 +6,7 @@ import {Store} from "@ngrx/store";
 import {Router} from "@angular/router";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {NgxSpinnerService} from "ngx-spinner";
-import {CallForApplication, SubmitApplicationsTask} from "../../../../core/store/data/std/request_std.model";
+import {CallForApplication} from "../../../../core/store/data/std/request_std.model";
 import {HttpErrorResponse} from "@angular/common/http";
 import {DatePipe} from "@angular/common";
 import swal from "sweetalert2";
@@ -51,6 +51,7 @@ export class SubmitApplicationComponent implements OnInit {
       postalAddress: ['', Validators.required],
       taskId: ['', Validators.required],
       tcApplicationId: ['', Validators.required],
+      authorisingPersonPosition: ['', Validators.required]
 
     })
     this.prepareDraftStandardFormGroup.get('name').valueChanges.subscribe((value) => {

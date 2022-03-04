@@ -146,6 +146,31 @@
                                             placeholder="Postal Address" type="text" required>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="form-group col-12">
+                                    <label><b>Organisation</b></label>
+                                    <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                                            class="form-control" required
+                                            formControlName="authorisingPersonPosition"
+                                            name="authorisingPersonPosition"
+                                            [class.is-invalid]="formPrepareJustification.authorisingPersonPosition.invalid && formPrepareJustification.authorisingPersonPosition.touched">
+                                        <option disabled>--Select Organisation--</option>
+                                        <option value="Government Lead Agency/Regulatory Authority">Government Lead Agency/Regulatory Authority</option>
+                                        <option value="Manufacturers, producers or service providers">Manufacturers, producers or service providers</option>
+                                        <option value="Major corporate consumers">Major corporate consumers</option>
+                                        <option value="University, Research and other Technical Institutions">University, Research and other Technical Institutions</option>
+                                        <option value="Industry Association">Industry Association</option>
+                                        <option value="Trade Association">Trade Association</option>
+                                        <option value="Professional Body">Professional Body</option>
+                                        <option value="Non-Governmental Organization">Non-Governmental Organization (NGO)</option>
+                                        <option value="Renown Professionals/experts">Renown Professionals/experts</option>
+                                        <option value="Small and Medium Enterprises">Small and Medium Enterprises (SMEs)</option>
+                                        <option value="SME trade associations">SME trade associations</option>
+
+                                    </select>
+                                </div>
+
+                            </div>
 
                             <div class="row">
                                 <div class="form-group col-12">

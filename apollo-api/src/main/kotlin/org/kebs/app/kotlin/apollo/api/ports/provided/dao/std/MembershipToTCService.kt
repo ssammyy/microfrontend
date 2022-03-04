@@ -255,11 +255,15 @@ class MembershipToTCService(
         //send email
         val encryptedId = BCryptPasswordEncoder().encode(u.id.toString())
         val link =
-            "${applicationMapProperties.baseUrlValue}/v1/migration/anonymous/membershipToTC/approve?applicationID=${encryptedId}"
+            "${applicationMapProperties.baseUrlQRValue}approveApplication?applicationID=${encryptedId}"
         val messageBody =
             " Hello ${u.nomineeName} \n Thank you for your application. You have been appointed as a member of " +
-                    "${u.technicalCommittee}. Please click on the following link to confirm appointment \n " +
-                    link
+                    "${u.technicalCommittee}. Please click on the following link to confirm appointment  \n " +
+                    link +
+                    "\n\n\n\n\n\n"
+
+        val messageBody2 = "<a href='${link}'>Next</a>"
+
         u.email?.let { notifications.sendEmail(it, "Technical Committee Appointment  Letter", messageBody) }
         u.status = "5" // approved and appointment letter email has been sent by HOD
         u.varField10 = encryptedId
@@ -314,7 +318,7 @@ class MembershipToTCService(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null);
         u.status = "7" // approved and send to HOD-ICT
-        u.varField10 = decision //this is scope that is defined
+        u.varField9 = decision //this is scope that is defined
         membershipTCRepository.save(u)
     }
 
@@ -349,11 +353,12 @@ class MembershipToTCService(
         //send email
         val encryptedId = BCryptPasswordEncoder().encode(u.id.toString())
         val link =
-            "${applicationMapProperties.baseUrlValue}/v1/migration/anonymous/membershipToTC/induction?applicationID=${encryptedId}"
+            "${applicationMapProperties.baseUrlQRValue}getInduction?applicationID=${encryptedId}"
         val messageBody =
             " Hello ${u.nomineeName} \n Welcome To KEBS QAIMSS. \n Your Login Credentials are as follows:TBD " +
                     "${u.technicalCommittee}. Please click on the following link to confirm induction \n " +
-                    link
+                    link +
+                    "\n\n\n\n\n\n"
         u.email?.let { notifications.sendEmail(it, "Technical Committee Induction  Letter", messageBody) }
         u.status = "9" // approved and induction letter email has been sent by HOD
         u.varField10 = encryptedId
