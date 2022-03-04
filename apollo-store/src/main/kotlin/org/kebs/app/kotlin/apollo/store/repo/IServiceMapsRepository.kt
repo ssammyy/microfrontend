@@ -46,7 +46,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
-import javax.persistence.Column
 
 
 @Repository
@@ -95,6 +94,7 @@ interface IServiceMapsWorkflowsRepository : HazelcastRepository<ServiceMapsWorkf
 @Repository
 interface IIntegrationConfigurationRepository : HazelcastRepository<IntegrationConfigurationEntity, Long> {
     fun findByWorkflowId(workflowId: Long): IntegrationConfigurationEntity?
+    fun findByConfigKeyword(configKeyworkd: String): IntegrationConfigurationEntity?
 }
 
 @Repository

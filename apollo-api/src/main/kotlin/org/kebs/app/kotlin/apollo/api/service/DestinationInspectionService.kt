@@ -356,9 +356,9 @@ class DestinationInspectionService(
     fun generateCorForDocument(cdUuid: String, supervisor: String, remarks: String): Boolean {
         try {
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-            val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
+            var consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
 
-            val loggedInUser = this.commonDaoServices.findUserByUserName(supervisor)
+            var loggedInUser = this.commonDaoServices.findUserByUserName(supervisor)
             daoServices.generateCor(consignmentDocument, map, loggedInUser).let { corDetails ->
                 // Update CD
                 daoServices.updateCDStatus(
@@ -372,7 +372,8 @@ class DestinationInspectionService(
                 //Send Cor to importer
                 consignmentDocument.compliantStatus = map.activeStatus
                 consignmentDocument.localCocOrCorStatus = map.activeStatus
-                daoServices.updateCdDetailsInDB(consignmentDocument, null)
+                consignmentDocument.status = ConsignmentApprovalStatus.APPROVED.code
+                consignmentDocument = this.daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.COMPLIANCE_APPROVED)
                 //Send email to importer
                 consignmentDocument.cdImporter?.let {
                     daoServices.findCDImporterDetails(it)
@@ -602,6 +603,7 @@ class DestinationInspectionService(
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             var consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             consignmentDocument.targetStatus = map.activeStatus
+            consignmentDocument.status = ConsignmentApprovalStatus.UNDER_INSPECTION.code
             consignmentDocument.varField10 = "Target approved awaiting inspection"
             consignmentDocument.targetApproveDate = Date(Date().time)
             consignmentDocument.targetApproveRemarks = remarks
@@ -643,7 +645,8 @@ class DestinationInspectionService(
                 consignmentDocument
             }
             consignmentDocument.cocNumber = localCoc.cocNumber
-            daoServices.updateCdDetailsInDB(consignmentDocument, null)
+            consignmentDocument.status = ConsignmentApprovalStatus.APPROVED.code
+            consignmentDocument = this.daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.COMPLIANCE_APPROVED)
 
             KotlinLogging.logger { }.info("Local CoC = ${localCoc.id}")
             // Send to single window
@@ -720,7 +723,8 @@ class DestinationInspectionService(
                 val fileName = makeCocOrCoiFile(localCoi.id)
                 importer.email?.let { daoServices.sendLocalCocReportEmail(it, fileName) }
             }
-            daoServices.updateCdDetailsInDB(consignmentDocument, null)
+            consignmentDocument.status = ConsignmentApprovalStatus.APPROVED.code
+            consignmentDocument = this.daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.COMPLIANCE_APPROVED)
             // Send to SW
             daoServices.sendLocalCoi(localCoi)
             this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }

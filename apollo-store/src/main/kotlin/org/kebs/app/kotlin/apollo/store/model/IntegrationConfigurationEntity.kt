@@ -92,7 +92,7 @@ class IntegrationConfigurationEntity : Serializable {
     @Basic
     var bodyParams: String? = null
 
-    @Column(name = "CONFIG_KEYWORD")
+    @Column(name = "CONFIG_KEYWORD", unique = true)
     @Basic
     var configKeyword: String? = null
 

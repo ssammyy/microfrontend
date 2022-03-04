@@ -200,14 +200,12 @@ class InvoicePaymentService(
                         accountNumber = importerDetails?.pin
                         currency = applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
                     }
-                    KotlinLogging.logger { }.info("ADD STAGING TO TABLE: $demandNoteId")
-                    // Create payment on staging table
-                    invoiceDaoService.createPaymentDetailsOnStgReconciliationTable(
+                    KotlinLogging.logger { }.info("SENDING to SAGE FOR PAYMENT: $demandNoteId")
+                    // Create payment on SAGE
+                    invoiceDaoService.postRequestToSage(
                             loggedInUser.userName!!,
-                            updateBatchInvoiceDetail,
-                            myAccountDetails
+                            demandNote
                     )
-
                 } ?: ExpectedDataNotFound("Demand note number not set")
             }
             return true
@@ -435,7 +433,9 @@ class InvoicePaymentService(
                         address = form.address
                         telephone = form.address
                         cdRefNo = form.referenceNumber
-                        //todo: Entry Number
+                        shippingAgent = form.customsOffice
+                        courier = form.courier
+                        entryPoint = form.entryPoint
                         entryAblNumber = form.ablNumber
                         totalAmount = BigDecimal.ZERO
                         amountPayable = BigDecimal.ZERO

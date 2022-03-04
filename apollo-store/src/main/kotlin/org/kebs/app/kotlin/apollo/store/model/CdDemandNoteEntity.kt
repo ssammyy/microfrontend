@@ -24,6 +24,18 @@ class CdDemandNoteEntity : Serializable {
     @Basic
     var importerPin: String? = null
 
+    @Column(name = "SHIPPING_AGENT")
+    @Basic
+    var shippingAgent: String? = null
+
+    @Column(name = "ENTRY_POINT")
+    @Basic
+    var entryPoint: String? = null
+
+    @Column(name = "COURIER")
+    @Basic
+    var courier: String? = null
+
     @Column(name = "SW_STATUS")
     @Basic
     var swStatus: Int? = 0
@@ -133,6 +145,13 @@ class CdDemandNoteEntity : Serializable {
     @Basic
     var cdId: Long? = 0
 
+    @Column(name = "POSTING_STATUS")
+    @Basic
+    var postingStatus: Int? = 0
+
+    @Column(name = "POSTING_REFERENCE")
+    @Basic
+    var postingReference: String? = null
 
     @Column(name = "STATUS")
     @Basic
@@ -249,17 +268,17 @@ class CdDemandNoteEntity : Serializable {
 
     override fun hashCode(): Int {
         return Objects.hash(
-            id,
-            cdId,
-            generatedBy,
-            invoiceBatchNumberId,
-            paymentStatus,
-            receiptNo,
-            destinationFeeValue,
-            nameImporter,
-            address,
-            telephone,
-            product,
+                id,
+                cdId,
+                generatedBy,
+                invoiceBatchNumberId,
+                paymentStatus,
+                receiptNo,
+                destinationFeeValue,
+                nameImporter,
+                address,
+                telephone,
+                product,
                 cfvalue,
                 rate,
                 totalAmount,

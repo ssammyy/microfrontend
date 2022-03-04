@@ -37,6 +37,9 @@ class DemandNoteRequestForm {
     var phoneNumber: String? = null
     var ablNumber: String? = null
     var address: String? = null
+    var courier: String? = null
+    var customsOffice: String? = null
+    var entryPoint: String? = null
     var remarks: String? = null
     var presentment: Boolean = false
     val amount: Double = 0.0 // For Foreign COC/COR

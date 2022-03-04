@@ -8,8 +8,10 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.requests.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.response.PaymentStatusResult
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.response.RootResponse
+import org.kebs.app.kotlin.apollo.api.ports.provided.sage.response.SagePostingResponseResult
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.kebs.app.kotlin.apollo.store.model.CdDemandNoteEntity
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.WorkflowTransactionsEntity
 import org.kebs.app.kotlin.apollo.store.model.invoice.InvoiceBatchDetailsEntity
@@ -119,7 +121,57 @@ class PostInvoiceToSageServices(
                 modifiedOn = commonDaoServices.getTimestamp()
             }
 
-            transactionsRequest = iLogStgPaymentReconciliationDetailsToSageRepo.save(transactionsRequest)
+            iLogStgPaymentReconciliationDetailsToSageRepo.save(transactionsRequest)
+        }
+    }
+
+    fun postInvoiceTransactionToSage(demandNote: CdDemandNoteEntity, user: String, map: ServiceMapsEntity) {
+        val config = commonDaoServices.findIntegrationConfiguration("SAGE_API_CLIENT")
+        val configUrl = config.url ?: throw Exception("URL CANNOT BE NULL")
+        runBlocking {
+
+            val headerBody = Header().apply {
+                serviceName = config.account
+                messageID = "SAGEREF${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
+                connectionID = jasyptStringEncryptor.decrypt(config.username)
+                connectionPassword = jasyptStringEncryptor.decrypt(config.password)
+
+            }
+
+            val requestBody = mutableMapOf<String, Any>()
+            val tmpRequest = SageRequest.fromEntity(demandNote)
+            requestBody["header"] = headerBody
+            requestBody["request"] = tmpRequest
+            requestBody["details"] = RequestItems.fromList(invoiceDaoService.findDemandNoteItemsCdId(demandNote.id!!))
+            // Send and log request
+            val log = daoService.createTransactionLog(0, "${demandNote.demandNoteNumber}_1")
+            val resp = daoService.getHttpResponseFromPostCall(
+                    false,
+                    configUrl + "urls/inspectionfee.php ",
+                    null,
+                    requestBody,
+                    config,
+                    null,
+                    null
+            )
+            val response: Triple<WorkflowTransactionsEntity, SagePostingResponseResult?, io.ktor.client.statement.HttpResponse?> =
+                    daoService.processResponses(resp, log, configUrl, config)
+            demandNote.varField2 = response.second?.response?.demandNoteNo
+            demandNote.varField3 = response.second?.response?.responseDate?.toString()
+            // update response
+            with(demandNote) {
+                varField5 = response.second?.header?.messageID
+                varField6 = response.second?.header?.statusCode
+                varField7 = response.second?.header?.statusDescription
+                postingReference = response.second?.response?.demandNoteNo
+                varField9 = response.second?.response?.responseDate?.toString()
+                postingStatus = when (response.second?.header?.statusCode) {
+                    "200" -> map.activeStatus
+                    else -> map.invalidStatus
+                }
+                modifiedBy = user
+                modifiedOn = commonDaoServices.getTimestamp()
+            }
         }
     }
 

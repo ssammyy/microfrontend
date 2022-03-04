@@ -233,6 +233,15 @@ class InvoiceHandlers(
             demandRequest.referenceNumber = cdDetails.cdStandard?.applicationRefNo
             demandRequest.ablNumber = cdDetails.cdStandard?.declarationNumber ?: "UNKNOWN"
             demandRequest.product = cdDetails.ucrNumber ?: "UNKNOWN"
+            // Add extra details
+            cdDetails.freightStation?.let {
+                demandRequest.entryPoint = it.altCfsCode ?: it.cfsCode
+            }
+            cdDetails.cdTransport?.let {
+                val transport = daoServices.findCdTransportDetails(it)
+                demandRequest.courier = transport.carrier
+                demandRequest.customsOffice = transport.customOffice
+            }
             // Calculate demand note amount and save
             val demandNoteItems = mutableListOf<CdDemandNoteItemsDetailsEntity>()
             val demandNote = invoicePaymentService.generateDemandNoteWithItemList(
