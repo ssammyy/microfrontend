@@ -806,11 +806,12 @@ class StandardLevyService(
                 standardLevyFactoryVisitReportRepo.save(standardLevyFactoryVisitReportEntity)
             } ?: throw Exception("SCHEDULED VISIT NOT FOUND")
 
-        val userEmail = standardLevyFactoryVisitReportEntity.assigneeId?.let { commonDaoServices.getUserEmail(it) };
-        val recipient= "Christine.gaiti@bskglobaltech.com"
-        val subject = "Site Visit Report  $userEmail"
+        val recipient = standardLevyFactoryVisitReportEntity.assigneeId?.let { commonDaoServices.getUserEmail(it) };
+        val subject = "Site Visit Report"
         val messageBody= "Site visit report has been prepared and uploaded. Kindly login to the KIMS Portal to view"
-        notifications.sendEmail(recipient, subject, messageBody)
+        if (recipient != null) {
+            notifications.sendEmail(recipient, subject, messageBody)
+        }
 
         companyProfileRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.manufacturerEntity)
             ?.let { companyProfileEntity ->
