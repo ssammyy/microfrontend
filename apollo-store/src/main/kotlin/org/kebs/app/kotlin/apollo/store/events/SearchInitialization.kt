@@ -52,15 +52,16 @@ class SearchInitialization(
                 .must(builder.range().onField("oldCdStatus").above(0).createQuery())
         if (StringUtils.hasLength(keywords)) {
             // Key words on application status
-            query.should(builder.phrase().withSlop(2)
-//                    .boostedTo(6.5f).withConstantScore()
+            query.should(builder.phrase()
+                    .boostedTo(2.5f).withConstantScore()
                     .onField("varField10").sentence(keywords).createQuery())
-            query.should(builder.phrase().withSlop(2)
-//                    .boostedTo(4.5f).withConstantScore()
+            query.should(builder.phrase()
+                    .boostedTo(2.5f).withConstantScore()
                     .onField("description").sentence(keywords).createQuery())
             // Others
             query.should(builder.keyword()
                     .onFields("ucrNumber", "cdRefNumber", "cocNumber", "idfNumber")
+                    .boostedTo(10.0f)
                     .matching(keywords).createQuery())
         }
         // Filter by Assigner
@@ -78,7 +79,7 @@ class SearchInitialization(
                     }
                 }
                 "completed" -> {
-                    query.must(builder.keyword().onField("approveRejectCdStatus").matching("NULL").createQuery())
+//                    query.must(builder.keyword().onField("approveRejectCdStatus").matching(keywords).createQuery())
                 }
             }
         }
@@ -86,17 +87,15 @@ class SearchInitialization(
         // Filter by area of consignment document type
         cdType?.let {
             query.must(builder.keyword()
-//                    .boostedTo(9.5f).withConstantScore()
+                    .boostedTo(4.25f).withConstantScore()
                     .onField("cdType").matching(it).createQuery())
         }
         val q=query.createQuery()
-        KotlinLogging.logger {  }.info("Query: ${q}")
+        KotlinLogging.logger { }.info("Query: $q")
         // Retrieve search result
         val queryResult: FullTextQuery = searchManager.createFullTextQuery(q, ConsignmentDocumentDetailsEntity::class.java)
                 .setFirstResult(page * 30)
                 .setMaxResults(30)
         return queryResult.getResultList() as List<ConsignmentDocumentDetailsEntity>
     }
-
-
 }

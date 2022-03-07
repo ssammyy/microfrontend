@@ -146,10 +146,8 @@
                                     </button>
                                 </div>
                                 <div *ngIf="auctionDetails.auction_details.isInspector && auctionDetails.auction_details.myTask">
-                                    <input type="file" (change)="uploadAuctionAttachment($event)" [hidden]="true"
-                                           #auctionReport>
                                     <button *ngIf="auctionDetails.auction_details.approvalStatus===0"
-                                            class="btn btn-sm btn-primary" (click)="auctionReport.click()">
+                                            class="btn btn-sm btn-primary" (click)="uploadAuctionAttachment($event)">
                                         <i class="fa fa-attachment"></i>Upload Attachment
                                     </button>
                                     <button *ngIf="auctionDetails.auction_details.consignmentId"

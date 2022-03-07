@@ -7,6 +7,7 @@ import {DatePipe} from "@angular/common";
 import {AssignAuctionItemComponent} from "../assign-auction-item/assign-auction-item.component";
 import {AproveRejectAuctionItemComponent} from "../aprove-reject-auction-item/aprove-reject-auction-item.component";
 import {GenerateDemandNoteComponent} from "../generate-demand-note/generate-demand-note.component";
+import {AddAttachmentComponent} from "../add-attachment/add-attachment.component";
 
 @Component({
     selector: 'app-auction-item-details',
@@ -201,19 +202,18 @@ export class AuctionItemDetailsComponent implements OnInit {
     }
 
     uploadAuctionAttachment(event: any) {
-        if (event.target.files && event.target.files.length > 0) {
-            this.diService.uploadAuctionReport(event.target.files[0], this.requestId, "Attachment")
-                .subscribe(
-                    res => {
-                        if (res.responseCode === "00") {
-                            this.diService.showSuccess(res.message)
-                            this.loadData()
-                        } else {
-                            this.diService.showError(res.message)
-                        }
+        this.dialog.open(AddAttachmentComponent, {
+            data: {
+                requestId: this.requestId
+            }
+        }).afterClosed()
+            .subscribe(
+                res => {
+                    if (res) {
+                        this.loadData()
                     }
-                )
-        }
+                }
+            )
     }
 
     generateInvoice() {

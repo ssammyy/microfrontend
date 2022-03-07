@@ -21,7 +21,10 @@ import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntit
 import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentTypesEntity
 import org.kebs.app.kotlin.apollo.store.model.di.DiUploadsEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
-import org.kebs.app.kotlin.apollo.store.repo.di.*
+import org.kebs.app.kotlin.apollo.store.repo.di.ICfsTypeCodesRepository
+import org.kebs.app.kotlin.apollo.store.repo.di.IConsignmentDocumentTypesEntityRepository
+import org.kebs.app.kotlin.apollo.store.repo.di.IDiUploadsRepository
+import org.kebs.app.kotlin.apollo.store.repo.di.IMinistryStationEntityRepository
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
@@ -84,7 +87,6 @@ class DestinationInspectionService(
         private val reportsDaoService: ReportsDaoService,
         private val privilegesRepository: IUserPrivilegesRepository,
         private val userEntityRepository: IUserRepository,
-        private val iManifestDetailsEntityRepository: IManifestDetailsEntityRepository,
         private val searchService: SearchInitialization,
 ) {
 
@@ -192,7 +194,7 @@ class DestinationInspectionService(
             }
             consignmentDocument.approveRejectCdStatusType = cdStatusType
             consignmentDocument.approveRejectCdDate = Date(Date().time)
-            consignmentDocument = daoServices.updateCdDetailsInDB(consignmentDocument, commonDaoServices.findUserByUserName(supervisor))
+            consignmentDocument = daoServices.updateCDStatus(consignmentDocument, cdStatusTypeId)
             // Update Local status
             if (cdStatusType.category == "APPROVE" || cdStatusType.category == "REJECT") {
                 consignmentDocument = daoServices.updateCDStatus(consignmentDocument, cdStatusTypeId)
