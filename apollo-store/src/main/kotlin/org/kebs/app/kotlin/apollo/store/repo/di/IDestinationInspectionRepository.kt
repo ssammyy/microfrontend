@@ -544,6 +544,7 @@ interface IConsignmentItemsRepository : HazelcastRepository<CdItemDetailsEntity,
     fun findFirstByCdDocIdAndChassisNumberIsNotNull(cdDocId: ConsignmentDocumentDetailsEntity): Optional<CdItemDetailsEntity>
     fun findByCdDocIdAndDnoteStatus(cdDocId: ConsignmentDocumentDetailsEntity, dnoteStatus: Int): List<CdItemDetailsEntity>?
     fun findByCdDocIdAndSampledStatus(cdDocId: ConsignmentDocumentDetailsEntity, sampledStatus: Int): List<CdItemDetailsEntity>
+    fun findByCdDocIdAndSampledStatusAndAllTestReportStatusNotIn(cdDocId: ConsignmentDocumentDetailsEntity, sampledStatus: Int, testStatus: List<Int>): List<CdItemDetailsEntity>
     fun findByUuid(uuid: String): CdItemDetailsEntity?
     fun findByCdDocIdAndId(cdType: ConsignmentDocumentDetailsEntity, id: Long?): CdItemDetailsEntity
     fun findByMinistrySubmissionStatus(status: Int): List<CdItemDetailsEntity>?

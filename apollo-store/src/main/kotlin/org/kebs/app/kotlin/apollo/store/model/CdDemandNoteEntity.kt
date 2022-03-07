@@ -28,6 +28,10 @@ class CdDemandNoteEntity : Serializable {
     @Basic
     var shippingAgent: String? = null
 
+    @Column(name = "ENTRY_NO")
+    @Basic
+    var entryNo: String? = null
+
     @Column(name = "ENTRY_POINT")
     @Basic
     var entryPoint: String? = null

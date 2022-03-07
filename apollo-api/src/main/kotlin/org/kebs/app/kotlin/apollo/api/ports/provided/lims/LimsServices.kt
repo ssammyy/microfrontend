@@ -406,7 +406,7 @@ class LimsServices(
                                                 // Update consignment status if all reports have been received
                                                 diDaoServices.findCD(cdItem.cdDocId?.id
                                                         ?: throw Exception("CD ID NOT FOUND"))
-                                                        .let { updatedCDDetails -> updateConsignmentSampledStatus(updatedCDDetails, true) }
+                                                        .let { updatedCDDetails -> updateConsignmentSampledStatus(updatedCDDetails) }
 
                                             }
                                 }
@@ -425,19 +425,12 @@ class LimsServices(
      * Check lab result status:
      * 2. else Check if we added any lab result request during checklist saving
      */
-    fun updateConsignmentSampledStatus(cdItemDetails: ConsignmentDocumentDetailsEntity, result: Boolean): Boolean {
+    fun updateConsignmentSampledStatus(cdItemDetails: ConsignmentDocumentDetailsEntity): Boolean {
         var response = false
         try {
-            val items = iCdItemsRepo.findByCdDocIdAndSampledStatus(cdItemDetails, 1)
-            var allItemsResult = true
-            for (itm in items) {
-                if (itm.allTestReportStatus != 1) {
-                    allItemsResult = false
-                    break
-                }
-            }
+            val items = iCdItemsRepo.findByCdDocIdAndSampledStatusAndAllTestReportStatusNotIn(cdItemDetails, 1, listOf(1))
             // All lab results have been received
-            if (allItemsResult) {
+            if (items.isEmpty()) {
                 cdItemDetails.status = ConsignmentApprovalStatus.UNDER_INSPECTION.code
                 cdItemDetails.varField10 = "Lab result received"
                 diDaoServices.updateCDStatus(cdItemDetails, ConsignmentDocumentStatus.LAB_RESULT_RESULT)

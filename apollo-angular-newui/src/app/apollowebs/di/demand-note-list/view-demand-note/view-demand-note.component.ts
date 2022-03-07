@@ -122,22 +122,25 @@ export class ViewDemandNoteComponent implements OnInit {
 
     submitDemandNote() {
         this.saveLoading = true
-        this.diService.submitDemandNote(this.demandNoteId, {})
-            .subscribe(
-                res => {
-                    this.saveLoading = false
-                    if (res.responseCode == "00") {
-                        this.diService.showSuccess(res.message, () => {
-                            this.dialogRef.close(true)
-                        })
-                    } else {
-                        this.message = res.message
-                    }
-                },
-                error => {
-                    this.saveLoading = false
+        let submission = this.diService.submitDemandNote(this.demandNoteId, {})
+        if (this.data.general) {
+            submission = this.diService.submitOtherDemandNote(this.demandNoteId, {})
+        }
+        submission.subscribe(
+            res => {
+                this.saveLoading = false
+                if (res.responseCode == "00") {
+                    this.diService.showSuccess(res.message, () => {
+                        this.dialogRef.close(true)
+                    })
+                } else {
+                    this.message = res.message
                 }
-            )
+            },
+            error => {
+                this.saveLoading = false
+            }
+        )
     }
 
     onCustomAction(action) {

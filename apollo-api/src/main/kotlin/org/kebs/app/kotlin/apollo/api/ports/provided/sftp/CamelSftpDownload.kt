@@ -194,10 +194,15 @@ class SFTPService(
         }
         KotlinLogging.logger { }
                 .info("UCR Res Document: $baseDocRefNo | UcrNumber: $ucrNumber|")
-        val idfUpdated = iDFDaoService.updateIdfUcrNumber(baseDocRefNo, ucrNumber)
+        try {
+            val idfUpdated = iDFDaoService.updateIdfUcrNumber(baseDocRefNo, ucrNumber)
+            KotlinLogging.logger { }.info("UCR Res Document: ${exchange.message.headers} | Saved Status: ${idfUpdated}|")
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }
+                    .warn("UCR Res Document not linked: $baseDocRefNo | UcrNumber: $ucrNumber|", ex)
+        }
         // Update IDF number on consignment
         this.destinationInspectionDaoServices.updateIdfNumber(ucrNumber, baseDocRefNo)
-        KotlinLogging.logger { }.info("UCR Res Document: ${exchange.message.headers} | Saved Status: ${idfUpdated}|")
     }
 
     fun processAirManifestDocument(exchange: Exchange) {

@@ -48,6 +48,7 @@ class DestinationInspectionRoutes {
             GET("/update/demand/note/payment-status/{invoiceId}", handlers::checkPaymentDemandNotePayment)
             GET("/demand/note/details/{invoiceId}", handlers::cdInvoiceDetails)
             POST("/demand/note/submit/{invoiceId}", handlers::submitDemandNoteForApproval)
+            POST("/other/demand/note/submit/{invoiceId}", handlers::submitDemandNoteRequest)
             DELETE("/demand/note/delete/{invoiceId}", handlers::deleteDemandNote)
             GET("/demand/note/list/{cdId}", handlers::listDemandNotes)
             GET("/demand-note/fees", handlers::applicationFee)

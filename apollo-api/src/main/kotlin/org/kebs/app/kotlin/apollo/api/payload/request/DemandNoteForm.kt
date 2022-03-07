@@ -32,6 +32,7 @@ class DemandNoteRequestForm {
     var referenceId: Long? = null
     var referenceNumber: String? = null
     var name: String? = null
+    var importerPin: String? = null
     var product: String? = null
     var ucrNumber: String? = null
     var phoneNumber: String? = null
@@ -40,9 +41,10 @@ class DemandNoteRequestForm {
     var courier: String? = null
     var customsOffice: String? = null
     var entryPoint: String? = null
+    var entryNo: String? = null
     var remarks: String? = null
     var presentment: Boolean = false
-    val amount: Double = 0.0 // For Foreign COC/COR
+    var amount: Double = 0.0 // For Foreign COC/COR
     fun addItem(itm: DemandNoteRequestItem) {
         if (this.items == null) {
             this.items = mutableListOf()

@@ -187,7 +187,6 @@ class AuctionHandler(
         }
         return ServerResponse.ok().body(response)
     }
-
     fun generateDemandNoteRequest(req: ServerRequest): ServerResponse {
         var response = ApiResponseModel()
         try {
@@ -226,7 +225,7 @@ class AuctionHandler(
             val witnessEmail = multipartRequest.getParameter("witnessEmail")
             val witnessDesignation = multipartRequest.getParameter("witnessDesignation")
             val approval = multipartRequest.getParameter("approve").toBoolean()
-            response = auctionService.approveRejectAuctionGood(auctionId, multipartFile, approval, remarks)
+            response = auctionService.approveRejectAuctionGood(auctionId, multipartFile, approval, remarks, witnessName, witnessDesignation, witnessEmail)
         } catch (ex: ResponseStatusException) {
             response.responseCode = ResponseCodes.FAILED_CODE
             response.message = ex.localizedMessage

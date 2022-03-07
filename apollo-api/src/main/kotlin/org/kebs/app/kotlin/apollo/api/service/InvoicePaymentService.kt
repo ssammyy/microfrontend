@@ -5,6 +5,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import mu.KotlinLogging
+import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
+import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.request.DemandNoteRequestForm
 import org.kebs.app.kotlin.apollo.api.payload.request.DemandNoteRequestItem
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
@@ -191,13 +193,10 @@ class InvoicePaymentService(
                             batchInvoiceDetail
                     )
                     // Find recipient of the invoice from importer details
-                    val importerDetails = consignmentDocument.cdImporter?.let {
-                        daoServices.findCDImporterDetails(it)
-                    }
                     val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
                     with(myAccountDetails) {
-                        accountName = importerDetails?.name
-                        accountNumber = importerDetails?.pin
+                        accountName = demandNote.nameImporter
+                        accountNumber = demandNote.importerPin
                         currency = applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
                     }
                     KotlinLogging.logger { }.info("SENDING to SAGE FOR PAYMENT: $demandNoteId")
@@ -213,6 +212,54 @@ class InvoicePaymentService(
             KotlinLogging.logger { }.error("Failed to generate batch number", ex)
         }
         return false
+    }
+
+    fun generateOtherInvoiceBatch(demandNoteId: Long): ApiResponseModel {
+        val response = ApiResponseModel()
+        KotlinLogging.logger { }.info("INVOICE GENERATION: $demandNoteId")
+        try {
+            //Send Demand Note
+            val demandNote = daoServices.findDemandNoteWithID(demandNoteId)!!
+            val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+            // Try to add transaction to current bill or generate batch payment
+            demandNote.demandNoteNumber?.let {
+                KotlinLogging.logger { }.info("Generate demand note Sage:${demandNote.demandNoteNumber}")
+                val loggedInUser = commonDaoServices.findUserByUserName(demandNote.createdBy ?: "NA")
+                // Create payment batch
+                val batchInvoiceDetail = invoiceDaoService.createBatchInvoiceDetails(loggedInUser.userName!!, it)
+                // Add demand note details to batch
+                val updateBatchInvoiceDetail = invoiceDaoService.addInvoiceDetailsToBatchInvoice(
+                        demandNote,
+                        applicationMapProperties.mapInvoiceTransactionsForDemandNote,
+                        loggedInUser,
+                        batchInvoiceDetail
+                )
+                // Find recipient of the invoice from importer details
+                val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
+                with(myAccountDetails) {
+                    accountName = demandNote.nameImporter
+                    accountNumber = demandNote.importerPin
+                    currency = applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
+                }
+                KotlinLogging.logger { }.info("SENDING to SAGE FOR PAYMENT: $demandNoteId")
+                // Create payment on SAGE
+                invoiceDaoService.postRequestToSage(
+                        loggedInUser.userName!!,
+                        demandNote
+                )
+                response.message = "Payment request submitted"
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+            } ?: ExpectedDataNotFound("Demand note number not set")
+        } catch (ex: ExpectedDataNotFound) {
+            response.message = ex.localizedMessage
+            response.responseCode = ResponseCodes.FAILED_CODE
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to generate batch number", ex)
+            response.errors = ex.localizedMessage
+            response.message = " Request failed, please try again later"
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+        }
+        return response
     }
 
     fun updateDemandNoteSw(cdUuid: String, demandNoteId: Long): Boolean {
@@ -430,11 +477,13 @@ class InvoicePaymentService(
                     with(demandNote) {
                         cdId = form.referenceId
                         nameImporter = form.name
+                        importerPin = form.importerPin
                         address = form.address
                         telephone = form.address
                         cdRefNo = form.referenceNumber
                         shippingAgent = form.customsOffice
                         courier = form.courier
+                        entryNo = form.entryNo
                         entryPoint = form.entryPoint
                         entryAblNumber = form.ablNumber
                         totalAmount = BigDecimal.ZERO
@@ -460,6 +509,7 @@ class InvoicePaymentService(
                         dateGenerated = commonDaoServices.getCurrentDate()
                         generatedBy = commonDaoServices.concatenateName(user)
                         status = map.workingStatus
+                        varField3 = "DRAFT"
                         createdOn = commonDaoServices.getTimestamp()
                         createdBy = commonDaoServices.getUserName(user)
                     }

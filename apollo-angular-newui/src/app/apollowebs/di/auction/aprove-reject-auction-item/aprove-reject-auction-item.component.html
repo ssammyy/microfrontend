@@ -5,10 +5,20 @@
         <select id="approve" name="approve" class="waiver-form-input-master"
                 formControlName="approve">
             <option value="" disabled selected>Select One</option>
-            <option value="true" >Approve Auction Item</option>
-            <option value="false" >Reject Auction Item</option>
+            <option value="true">Approve Auction Item</option>
+            <option value="false">Reject Auction Item</option>
         </select>
-        <label for="remarks" class="waiver-form-label">Enter details remarks for <b>{{form.value.approve=='true'?'Approval':"Rejection"}}</b></label>
+        <label for="witnessName" class="waiver-form-label">Witness Name</label>
+        <input id="witnessName" name="witnessName" class="waiver-form-input-master"
+               formControlName="witnessName" type="text"/>
+        <label for="witnessEmail" class="waiver-form-label">Witness Email</label>
+        <input id="witnessEmail" name="witnessEmail" class="waiver-form-input-master"
+               formControlName="witnessEmail" type="email"/>
+        <label for="witnessDesignation" class="waiver-form-label">Witness Designation</label>
+        <input id="witnessDesignation" name="witnessDesignation" class="waiver-form-input-master"
+               formControlName="witnessDesignation" type="text"/>
+        <label for="remarks" class="waiver-form-label">Enter details remarks for
+            <b>{{form.value.approve == 'true' ? 'Approval' : "Rejection"}}</b></label>
         <input id="remarks" name="remarks" class="waiver-form-input-master"
                formControlName="remarks" type="text"/>
         <label for="select-file" class="col-5 col-form-label">SELECT REPORT DOCUMENT(Required)</label>

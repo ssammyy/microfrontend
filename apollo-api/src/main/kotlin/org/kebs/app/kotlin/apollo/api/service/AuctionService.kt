@@ -5,11 +5,14 @@ import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.request.AuctionForm
 import org.kebs.app.kotlin.apollo.api.payload.request.AuctionItem
+import org.kebs.app.kotlin.apollo.api.payload.request.DemandNoteRequestForm
+import org.kebs.app.kotlin.apollo.api.payload.request.DemandNoteRequestItem
 import org.kebs.app.kotlin.apollo.api.payload.response.AuctionRequestDto
 import org.kebs.app.kotlin.apollo.api.payload.response.AuctionUploadDao
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.PaymentPurpose
 import org.kebs.app.kotlin.apollo.common.dto.AuditItemEntityDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
@@ -18,6 +21,8 @@ import org.kebs.app.kotlin.apollo.store.model.auction.AuctionItemDetails
 import org.kebs.app.kotlin.apollo.store.model.auction.AuctionRequestHistory
 import org.kebs.app.kotlin.apollo.store.model.auction.AuctionRequests
 import org.kebs.app.kotlin.apollo.store.model.auction.AuctionUploadsEntity
+import org.kebs.app.kotlin.apollo.store.model.di.CdDemandNoteItemsDetailsEntity
+import org.kebs.app.kotlin.apollo.store.model.di.DestinationInspectionFeeEntity
 import org.kebs.app.kotlin.apollo.store.repo.IUserRoleAssignmentsRepository
 import org.kebs.app.kotlin.apollo.store.repo.auction.*
 import org.kebs.app.kotlin.apollo.store.repo.di.IDestinationInspectionFeeRepository
@@ -56,7 +61,8 @@ class AuctionService(
         private val applicationMapProperties: ApplicationMapProperties,
         private val apiClientService: ApiClientService,
         private val roleAssignmentsRepository: IUserRoleAssignmentsRepository,
-        private val feeRepository: IDestinationInspectionFeeRepository
+        private val feeRepository: IDestinationInspectionFeeRepository,
+        private val invoicePaymentService: InvoicePaymentService
 ) {
     val REPORT_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd")
     fun listAuctionCategories(): ApiResponseModel {
@@ -125,18 +131,50 @@ class AuctionService(
         return saved.id
     }
 
+    fun createPaymentRequest(request: AuctionRequests, fee: DestinationInspectionFeeEntity): DemandNoteRequestForm {
+        val demandNoteReq = DemandNoteRequestForm()
+        demandNoteReq.product = "AUCTION"
+        demandNoteReq.name = request.importerName
+        demandNoteReq.amount = BigDecimal.ZERO.toDouble()
+        demandNoteReq.entryPoint = request.shipmentPort
+        demandNoteReq.courier = ""
+        demandNoteReq.ablNumber = request.serialNumber
+        demandNoteReq.invoicePrefix = "AG"
+        demandNoteReq.presentment = false
+        demandNoteReq.importerPin = request.importerPin
+        demandNoteReq.ucrNumber = request.auctionLotNo
+        demandNoteReq.address = request.location
+        demandNoteReq.phoneNumber = request.importerPhone
+        demandNoteReq.referenceNumber = request.auctionLotNo
+        demandNoteReq.referenceId = request.id
+        val itemDetailsList = mutableListOf<DemandNoteRequestItem>()
+        val items = this.auctionItemsRepo.findByAuctionId(request.id!!)
+        for (element in items) {
+            val itm = DemandNoteRequestItem()
+            itm.route = "D"
+            itm.quantity = element.quantity?.toLong() ?: 0
+            itm.currency = element.currency
+            itm.productName = element.itemName
+            itm.itemId = element.id
+            itm.itemValue = element.unitPrice
+            itm.fee = fee
+            itemDetailsList.add(itm)
+        }
+        demandNoteReq.items = itemDetailsList
+        return demandNoteReq
+    }
+
     fun requestPayment(auctionId: Long, remarks: String, feeId: Long): ApiResponseModel {
         val response = ApiResponseModel()
         val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
         val optional = this.auctionRequestsRepository.findById(auctionId)
-        if (optional.isPresent) {
+        val fee = feeRepository.findById(feeId)
+        if (optional.isPresent && fee.isPresent) {
             val auctionRequest = optional.get()
             commonDaoServices.getLoggedInUser()?.let {
-                val items = this.auctionItemsRepo.findByAuctionId(auctionId)
-                for (element in items) {
-                    element.paymentFeeIdSelected = this.feeRepository.findById(feeId).orElse(null)
-                }
-                val demandNote = destinationInspectionDaoServices.generateAuctionDemandNoteWithItemList(items, map, auctionRequest, false, 0.0, it)
+                val demandNoteReq = createPaymentRequest(auctionRequest, fee.get())
+                val returnList = mutableListOf<CdDemandNoteItemsDetailsEntity>()
+                val demandNote = this.invoicePaymentService.generateDemandNoteWithItemList(demandNoteReq, returnList, map, PaymentPurpose.AUDIT, it)
                 auctionRequest.demandNoteId = demandNote.id
                 auctionRequest.approvalStatus = AuctionGoodStatus.PAYMENT_PENDING.status
                 auctionRequest.varField1 = "PENDING PAYMENT"
@@ -180,7 +218,7 @@ class AuctionService(
         }
     }
 
-    fun approveRejectAuctionGood(auctionId: Long, multipartFile: MultipartFile?, approved: Boolean, remarks: String): ApiResponseModel {
+    fun approveRejectAuctionGood(auctionId: Long, multipartFile: MultipartFile?, approved: Boolean, remarks: String, witnessName: String, witnessDesc: String, witnessEmail: String): ApiResponseModel {
         val response = ApiResponseModel()
         val opttional = this.auctionRequestsRepository.findById(auctionId)
         if (opttional.isPresent) {
@@ -197,6 +235,9 @@ class AuctionService(
                 addAuctionHistory(auctionId, "REJECT-REQUEST", remarks, commonDaoServices.loggedInUserAuthentication().name)
                 this.processCallback(auction.createdBy, ResponseCodes.SUCCESS_CODE, "Auction Request approved", auction.auctionLotNo, "REJECTED")
             }
+            auction.witnessDesignation = witnessDesc
+            auction.witnessName = witnessName
+            auction.witnessEmail = witnessEmail
             auction.remarks = remarks
             auction.approvedRejectedOn = Timestamp.from(Instant.now())
             this.auctionRequestsRepository.save(auction)

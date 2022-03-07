@@ -74,7 +74,7 @@ class SageRequest {
                 shippingAgent = dn.shippingAgent ?: "UNKNOWN"
                 customerTelephone = dn.telephone
                 emailAddress = dn.address
-                entryNo = dn.demandNoteNumber
+                entryNo = dn.entryNo ?: ""
                 entryPoint = dn.entryPoint ?: "KSM"
                 courier = dn.courier ?: ""
                 otherInfo = dn.currency

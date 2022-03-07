@@ -865,7 +865,7 @@ class DestinationInspectionDaoServices(
             val bank3Details = invoiceDaoService.findPaymentMethodtype(applicationMapProperties.mapBankThreeDetails)
 
             val demandNote: CustomDemandNoteXmlDto = it.toCdDemandNoteXmlRecordRefl()
-            demandNote.demandNoteNumber = it.demandNoteNumber
+            demandNote.demandNoteNumber = it.postingReference
             demandNote.transactionNumber = it.cdRefNo
             demandNote.nameImporter = it.nameImporter
             demandNote.address = it.address

@@ -36,7 +36,7 @@ class SagePostingResponseResult {
     var header: SageHeader? = null
 
     @Valid
-    @JsonProperty("request")
+    @JsonProperty("response")
     @NotNull(message = "Request details are required")
     val response: SageResponse? = null
 }

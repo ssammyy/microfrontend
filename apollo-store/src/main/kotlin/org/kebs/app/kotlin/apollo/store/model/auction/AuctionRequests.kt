@@ -55,7 +55,11 @@ class AuctionRequests : Serializable {
     @Basic
     var importerPhone: String? = null
 
-    @JoinColumn(name = "ASSIGNER",referencedColumnName = "ID")
+    @Column(name = "IMPORTER_PIN")
+    @Basic
+    var importerPin: String? = null
+
+    @JoinColumn(name = "ASSIGNER", referencedColumnName = "ID")
     @ManyToOne(fetch = FetchType.LAZY)
     var assigner: UsersEntity? = null
 
@@ -82,6 +86,18 @@ class AuctionRequests : Serializable {
     @Column(name = "REMARKS")
     @Basic
     var remarks: String? = null
+
+    @Column(name = "WITNESS_NAME")
+    @Basic
+    var witnessName: String? = null
+
+    @Column(name = "WITNESS_EMAIL")
+    @Basic
+    var witnessEmail: String? = null
+
+    @Column(name = "WITNESS_DESIGNATION")
+    @Basic
+    var witnessDesignation: String? = null
 
     @Column(name = "REPORT_ID")
     @Basic
