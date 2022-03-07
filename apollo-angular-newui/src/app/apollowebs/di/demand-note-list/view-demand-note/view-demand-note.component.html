@@ -46,6 +46,26 @@
             <label class="waiver-form-label">REMARKS</label>
             <p>{{demandDetails.note.varField10}}</p>
         </div>
+        <div class="col-sm-3 col-md-4">
+            <label class="waiver-form-label">SAGE MSG REFERENCE</label>
+            <p>{{demandDetails.note.varField5}}</p>
+        </div>
+        <div class="col-sm-3 col-md-4">
+            <label class="waiver-form-label">SAGE STATUS</label>
+            <p>{{demandDetails.note.postingStatus == 0 ? "PENDING" ? demandDetails.note.postingStatus == 1 : "POSTED" : "POSTING FAILED"}}</p>
+        </div>
+        <div class="col-sm-3 col-md-4">
+            <label class="waiver-form-label">SAGE RESPONSE</label>
+            <p>{{demandDetails.note.varField6}} {{demandDetails.note.varField7}}</p>
+        </div>
+        <div class="col-sm-3 col-md-4">
+            <label class="waiver-form-label">SAGE RESPONSE DATE</label>
+            <p>{{demandDetails.note.varField6}} {{demandDetails.note.varField9}}</p>
+        </div>
+        <div class="col-sm-3 col-md-4">
+            <label class="waiver-form-label">SAGE REFERENCE</label>
+            <p>{{demandDetails.note.postingReference}}</p>
+        </div>
     </div>
     <div class="row no_margin" *ngIf="demandDetails">
         <div class=" table-striped">

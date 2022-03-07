@@ -1,7 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 import mu.KotlinLogging
-import org.kebs.app.kotlin.apollo.common.dto.kesws.receive.DeclarationDocumentMessage
 import org.kebs.app.kotlin.apollo.common.dto.kesws.receive.ManifestDocumentMessage
 import org.kebs.app.kotlin.apollo.store.model.di.ManifestDetailsEntity
 import org.kebs.app.kotlin.apollo.store.repo.di.IManifestDetailsEntityRepository
@@ -37,7 +36,9 @@ class ManifestDaoService {
     }
 
     fun manifestMessageToManifestDetailsEntity(manifestDocumentMessage: ManifestDocumentMessage): ManifestDetailsEntity? {
+
         var manifestDetailsEntity = ManifestDetailsEntity()
+
         with(manifestDetailsEntity) {
             messageDate = manifestDocumentMessage.header?.messageDate?.let { commonDaoServices.convertISO8601DateToTimestamp(it) }
             action = manifestDocumentMessage.header?.action

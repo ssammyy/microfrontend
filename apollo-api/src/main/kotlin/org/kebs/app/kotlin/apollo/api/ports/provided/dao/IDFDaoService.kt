@@ -8,6 +8,7 @@ import org.kebs.app.kotlin.apollo.store.model.di.IDFItemDetailsEntity
 import org.kebs.app.kotlin.apollo.store.repo.di.IIDFDetailsEntityRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IIDFItemDetailsEntityRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
 import org.springframework.util.StringUtils
 
@@ -51,6 +52,11 @@ class IDFDaoService {
         val idfRefNumber = baseDocumentResponse.data?.dataIn?.sad?.sadId
         // Create or update IDF details if it exists
         var idfDetailsEntity = iIDFDetailsEntityRepository.findByBaseDocRefNo(idfRefNumber!!) ?: IDFDetailsEntity()
+        try {
+            idfDetailsEntity = iIDFDetailsEntityRepository.save(idfDetailsEntity)
+        } catch (ex: DataIntegrityViolationException) {
+            idfDetailsEntity = iIDFDetailsEntityRepository.findByBaseDocRefNo(idfRefNumber) ?: IDFDetailsEntity()
+        }
 
         with(idfDetailsEntity) {
             userId = baseDocumentResponse.header?.userId
@@ -144,6 +150,7 @@ class IDFDaoService {
 
     //Update UCR no for IDF
     fun updateIdfUcrNumber(baseDocRefNo: String, ucrNumber: String): Boolean {
+
         iIDFDetailsEntityRepository.findByBaseDocRefNo(baseDocRefNo)?.let { idfDetailsEntity ->
             with(idfDetailsEntity) {
                 ucrNo = ucrNumber
@@ -157,14 +164,29 @@ class IDFDaoService {
         } ?: run {
             KotlinLogging.logger { }.warn { "IDF Details Entity with REF NO: ${baseDocRefNo} not found" }
             // Create details to ensure ordering is not required for Document processing
-            val idfDetailsEntity = IDFDetailsEntity()
-            idfDetailsEntity.baseDocRefNo = baseDocRefNo
-            idfDetailsEntity.ucrNo = baseDocRefNo
-            idfDetailsEntity.status = 0
-            idfDetailsEntity.varField1 = "PENDING IDF FILE"
-            idfDetailsEntity.createdBy = createdByValue
-            idfDetailsEntity.createdOn = commonDaoServices.getTimestamp()
-            this.iIDFDetailsEntityRepository.save(idfDetailsEntity)
+            try {
+                val idfDetailsEntity = IDFDetailsEntity()
+                idfDetailsEntity.baseDocRefNo = baseDocRefNo
+                idfDetailsEntity.ucrNo = baseDocRefNo
+                idfDetailsEntity.status = 0
+                idfDetailsEntity.varField1 = "PENDING IDF FILE"
+                idfDetailsEntity.createdBy = createdByValue
+                idfDetailsEntity.createdOn = commonDaoServices.getTimestamp()
+                this.iIDFDetailsEntityRepository.save(idfDetailsEntity)
+            } catch (ex: DataIntegrityViolationException) {
+                // Document received
+                iIDFDetailsEntityRepository.findByBaseDocRefNo(baseDocRefNo)?.let { idfDetailsEntity ->
+                    with(idfDetailsEntity) {
+                        ucrNo = ucrNumber
+                        status = 1
+                        varField1 = "COMPLETE IDF DOCUMENT"
+                        modifiedBy = "SYSTEM"
+                        modifiedOn = commonDaoServices.getTimestamp()
+                    }
+                    iIDFDetailsEntityRepository.save(idfDetailsEntity)
+                    return true
+                }
+            }
         }
 
         return false
