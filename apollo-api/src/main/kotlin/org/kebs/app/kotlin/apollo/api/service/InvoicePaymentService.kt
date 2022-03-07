@@ -210,8 +210,8 @@ class InvoicePaymentService(
             return true
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Failed to generate batch number", ex)
+            throw ex
         }
-        return false
     }
 
     fun generateOtherInvoiceBatch(demandNoteId: Long): ApiResponseModel {
