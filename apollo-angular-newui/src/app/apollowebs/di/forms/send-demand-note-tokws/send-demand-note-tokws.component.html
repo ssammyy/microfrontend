@@ -84,7 +84,7 @@
                             *matCellDef="let row"> {{row.rateType == 'PERCENTAGE' ? row.rate + "%" : (row.rate| money)}} </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="amountPayable">
-                    <mat-header-cell *matHeaderCellDef>CALCULATE AMOUNT</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>CALCULATED AMOUNT</mat-header-cell>
                     <mat-cell *matCellDef="let row"> {{row.amountPayable | money}} </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="minimumAmount">
@@ -99,7 +99,7 @@
                 </ng-container>
                 <ng-container matColumnDef="adjustedAmount">
                     <mat-header-cell *matHeaderCellDef>PAYABLE AMOUNT</mat-header-cell>
-                    <mat-cell *matCellDef="let row"> {{row.adjustedAmount}} </mat-cell>
+                    <mat-cell *matCellDef="let row"> {{row.adjustedAmount | money}} </mat-cell>
                 </ng-container>
                 <mat-header-row *matHeaderRowDef="pricingDisplayedColumns"></mat-header-row>
                 <mat-row *matRowDef="let row; columns: pricingDisplayedColumns;"></mat-row>

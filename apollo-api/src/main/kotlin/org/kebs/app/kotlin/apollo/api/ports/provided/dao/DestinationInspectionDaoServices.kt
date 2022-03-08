@@ -407,6 +407,10 @@ class DestinationInspectionDaoServices(
         iCdInspectionGeneralRepo.findFirstByCdDetails(consignmentDocumentDetailsEntity)?.let { cdItemDetailsList ->
             localCoc.customsEntryNumber = cdItemDetailsList.customsEntryNumber
             localCoc.clearingAgent = cdItemDetailsList.clearingAgent
+            localCoc
+        } ?: kotlin.run {
+            localCoc.customsEntryNumber = "UNKNOWN"
+            localCoc.clearingAgent = "UNKNOWN"
         }
     }
 
@@ -654,6 +658,7 @@ class DestinationInspectionDaoServices(
     ): CorsBakEntity {
         var localCor = CorsBakEntity()
         //Get CD Item by cd doc id
+        var mvirFound = false
         iCdInspectionGeneralRepo.findFirstByCdDetails(cdEntity)?.let { cdItemDetailsList ->
             this.cdMotorVehicleInspectionChecklistRepo.findByInspectionGeneral(cdItemDetailsList)?.let { mvInspectionEntity ->
                 this.iCdInspectionMotorVehicleItemChecklistRepo.findFirstByInspection(mvInspectionEntity)?.let { cdMvInspectionEntity ->
@@ -664,10 +669,11 @@ class DestinationInspectionDaoServices(
                             localCor.chasisNumber = nonStandard.chassisNo.toString()
                         }
                     }
+                    mvirFound = true
                     with(localCor) {
                         inspectionCenter = cdItemDetailsList.cdDetails?.freightStation?.cfsName ?: "UNKNOWN"
                         make = cdMvInspectionEntity.makeVehicle
-                        engineNumber = cdMvInspectionEntity.engineNoCapacity
+                        engineNumber = "UNKNOWN"
                         engineCapacity = cdMvInspectionEntity.engineNoCapacity
                         yearOfManufacture = cdMvInspectionEntity.manufactureDate.toString()
                         inspectionMileage = cdMvInspectionEntity.odemetreReading ?: "UNKNOWN"
@@ -687,9 +693,46 @@ class DestinationInspectionDaoServices(
                         inspectionRemarks = mvInspectionEntity.remarks ?: "No Remarks"
                     }
                 } ?: throw ExpectedDataNotFound("ITEM MVR INSPECTION CHECKLIST")
-            } ?: throw ExpectedDataNotFound("NO MVR INSPECTION")
-        } ?: throw ExpectedDataNotFound("NO GENERAL INSPECTION")
-        val vehicle = this.findVehicleFromCd(cdEntity)
+            }
+        }
+        // Approval without inspection checklist
+        if (!mvirFound) {
+            this.findVehicleFromCd(cdEntity)?.let { vehicle ->
+                this.findCdItemNonStandardByItemID(vehicle)?.let { nonStandardEntity ->
+                    localCor.make = nonStandardEntity.vehicleMake ?: "UNKNOWN"
+                    localCor.model = nonStandardEntity.vehicleModel ?: "UNKNOWN"
+                    localCor.typeOfVehicle = nonStandardEntity.vehicleMake ?: "UNKNOWN"
+                    localCor.yearOfManufacture = nonStandardEntity.vehicleYear ?: "UNKNOWN"
+                    localCor.chasisNumber = nonStandardEntity.chassisNo ?: "UNKNOWN"
+                    localCor
+                } ?: run {
+                    localCor.typeOfVehicle = "UNKNOWN"
+                    localCor.make = "UNKNOWN"
+                    localCor.model = "UNKNOWN"
+                    localCor
+                }
+                with(localCor) {
+                    inspectionCenter = cdEntity.freightStation?.cfsName ?: "UNKNOWN"
+                    inspectionMileage = "UNKNOWN"
+                    inspectionRemarks = "NONE"
+                    engineCapacity = "-1"
+                    customsIeNo = "UNKNOWN"
+                    transmission = "UNKNOWN"
+                    bodyColor = "UNKNOWN"
+                    typeOfBody = "UNKNOWN"
+                    fuelType = "UNKNOWN"
+                    engineNumber = "UNKNOWN"
+                    previousCountryOfRegistration = "UNKNOWN"
+                    yearOfFirstRegistration = "UNKNOWN"
+                    yearOfManufacture = "UNKNOWN"
+                    tareWeight = BigDecimal.ZERO.toDouble()
+                    grossWeight = BigDecimal.ZERO.toDouble()
+                    version = vehicle.cdDocId?.version ?: 1
+                    inspectionOfficer = "${user.firstName} ${user.lastName}"
+                    inspectionRemarks = "NA"
+                }
+            }
+        }
         // Fill checklist details
         with(localCor) {
             corNumber = "COR${generateRandomText(5, s.secureRandom, s.messageDigestAlgorithm, true)}"
@@ -701,20 +744,12 @@ class DestinationInspectionDaoServices(
             exporterAddress1 = cdExporter?.physicalAddress
             exporterAddress2 = cdExporter?.postalAddress
             exporterEmail = cdExporter?.email
-            applicationBookingDate = commonDaoServices.getTimestamp()
+            applicationBookingDate = Timestamp.valueOf(cdEntity.inspectionDate?.toLocalDate()?.atStartOfDay()
+                    ?: LocalDateTime.now())
             inspectionDate = commonDaoServices.getTimestamp()
-            model = "test"
-            yearOfFirstRegistration = "test"
-            unitsOfMileage = "KM"
-            previousRegistrationNumber = "test"
-            previousCountryOfRegistration = "test"
-
-            loadCapacity = 0.0
-            numberOfAxles = 0
-            numberOfPassangers = 0
-            typeOfBody = "test"
-            fuelType = "test"
             inspectionFee = 0.0
+            unitsOfMileage = "KM"
+            previousRegistrationNumber = "UNKNOWN"
             approvalStatus = cdEntity.compliantStatus.toString()
             ucrNumber = cdEntity.ucrNumber
             inspectionFeeCurrency = "KES"
@@ -886,6 +921,7 @@ class DestinationInspectionDaoServices(
             demandNote.paymentInstruction1 = PaymenInstruction1(bank1Details)
             demandNote.paymentInstruction2 = PaymenInstruction2(bank2Details)
             demandNote.paymentInstruction3 = PaymenInstruction3(bank3Details)
+            mpesaDetails.bankAccountNumber = demandNoteEntity.postingReference
             demandNote.paymentInstructionMpesa = PaymenInstructionMpesa(mpesaDetails)
             demandNote.paymentInstructionOther = PaymenInstructionOther(mpesaDetails)
             demandNote.version = demandNote.version ?: 1

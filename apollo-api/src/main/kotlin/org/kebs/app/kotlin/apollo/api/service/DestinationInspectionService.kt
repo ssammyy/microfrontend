@@ -167,7 +167,7 @@ class DestinationInspectionService(
             if (cdStatusType.modificationAllowed != map.activeStatus) {
                 consignmentDocument.compliantDate = java.sql.Date(Date().time)
                 consignmentDocument.compliantRemarks = remarks
-                when (cdStatusType.category) {
+                when (cdStatusType.category?.toUpperCase()) {
                     "APPROVE" -> {
                         consignmentDocument.status = ConsignmentApprovalStatus.APPROVED.code
                         consignmentDocument.compliantStatus = map.activeStatus
@@ -187,7 +187,7 @@ class DestinationInspectionService(
                     }
                     else -> {
                         consignmentDocument.varField10 = "Consignment ${cdStatusType.category}"
-                        consignmentDocument.status = ConsignmentApprovalStatus.WAITING.code
+                        consignmentDocument.status = ConsignmentApprovalStatus.REJECTED.code
                         consignmentDocument.compliantStatus = map.inactiveStatus
                     }
                 }

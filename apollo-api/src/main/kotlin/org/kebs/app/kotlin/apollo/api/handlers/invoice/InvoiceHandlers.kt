@@ -414,7 +414,7 @@ class InvoiceHandlers(
             val status = req.param("status")
             var transactionStatus: Int? = null
             if (status.isPresent) {
-                transactionStatus = status.get().toInt()
+                transactionStatus = status.get().toIntOrNull()
             }
             val date = req.param("date")
             val transactionNo = req.param("trx")

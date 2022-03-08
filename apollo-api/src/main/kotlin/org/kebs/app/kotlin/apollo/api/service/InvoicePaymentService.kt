@@ -68,14 +68,14 @@ class InvoicePaymentService(
         daoServices.findDemandNoteWithID(demandNoteId)?.let { demandNote ->
             map["preparedBy"] = demandNote.generatedBy.toString()
             map["datePrepared"] = demandNote.dateGenerated.toString()
-            map["demandNoteNo"] = demandNote.demandNoteNumber.toString()
+            map["demandNoteNo"] = demandNote.postingReference ?: "UNKNOWN"
             map["importerName"] = demandNote.nameImporter.toString()
             map["importerAddress"] = demandNote.address.toString()
             map["importerTelephone"] = demandNote.telephone.toString()
             map["ablNo"] = demandNote.entryAblNumber.toString()
             map["totalAmount"] = demandNote.totalAmount.toString()
             map["receiptNo"] = demandNote.receiptNo.toString()
-            map = reportsDaoService.addBankAndMPESADetails(map, demandNote.demandNoteNumber ?: "")
+            map = reportsDaoService.addBankAndMPESADetails(map, demandNote.postingReference ?: "UNKNOWN")
         }
         return map
     }
@@ -662,8 +662,10 @@ class InvoicePaymentService(
     }
 
     fun convertAmount(amount: BigDecimal?, currencyCode: String, demandNoteItem: CdDemandNoteItemsDetailsEntity?) {
+//        val exchangeRate=BigDecimal.ZERO
         currencyExchangeRateRepository.findFirstByCurrencyCodeAndApplicableDateOrderByApplicableDateDesc(currencyCode, DATE_FORMAT.format(LocalDate.now()))?.let { exchangeRateEntity ->
             demandNoteItem?.exchangeRateId = exchangeRateEntity.id
+            demandNoteItem?.rate = exchangeRateEntity.exchangeRate?.toPlainString() ?: "0.00"
             demandNoteItem?.cfvalue = amount?.times(exchangeRateEntity.exchangeRate
                     ?: BigDecimal.ZERO) ?: BigDecimal.ZERO
         } ?: run {
@@ -672,6 +674,7 @@ class InvoicePaymentService(
                 demandNoteItem?.cfvalue = amount?.times(exchangeRateEntity.exchangeRate
                         ?: BigDecimal.ZERO) ?: BigDecimal.ZERO
                 demandNoteItem?.exchangeRateId = exchangeRateEntity.id
+                demandNoteItem?.rate = exchangeRateEntity.exchangeRate?.toPlainString() ?: "0.00"
             } ?: run {
                 demandNoteItem?.cfvalue = amount ?: BigDecimal.ZERO
                 throw ExpectedDataNotFound("Conversion rate for currency $currencyCode not found")
@@ -694,9 +697,11 @@ class InvoicePaymentService(
         when (itemDetails.currency?.toUpperCase()) {
             "KES" -> {
                 demandNoteItem.cfvalue = itemDetails.itemValue
+                demandNote.rate = "0.00"
             }
             else -> {
                 convertAmount(itemDetails.itemValue, "${itemDetails.currency}", demandNoteItem)
+                demandNote.rate = demandNoteItem.rate ?: "0.00"
                 KotlinLogging.logger { }.warn("Exchange Rate for ${itemDetails.currency}:${itemDetails.itemValue} => ${demandNoteItem.cfvalue}")
             }
         }
@@ -724,6 +729,7 @@ class InvoicePaymentService(
         // Add this for presentment purposes
         demandNote.totalAmount = demandNote.totalAmount?.plus(demandNoteItem.adjustedAmount ?: BigDecimal.ZERO)
         demandNote.amountPayable = demandNote.amountPayable?.plus(demandNoteItem.amountPayable ?: BigDecimal.ZERO)
+        demandNote.cfvalue = demandNote.cfvalue?.plus(demandNote.cfvalue ?: BigDecimal.ZERO)
         return demandNoteItem
     }
 

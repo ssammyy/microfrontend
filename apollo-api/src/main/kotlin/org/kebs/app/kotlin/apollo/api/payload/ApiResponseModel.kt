@@ -21,26 +21,28 @@ fun extractPage(req: ServerRequest, field: String = "id"): PageRequest {
     // get page
     req.param("page").ifPresent { p ->
         p.toIntOrNull()?.let {
-            page = it
+            if (p in 0..100) {
+                page = it
+            }
         }
     }
     // Get page size
     req.param("size").ifPresent { p ->
         p.toIntOrNull()?.let {
-            if (it in 1..100) {
-                size = it
+            size = if (it in 1..100) {
+                it
             } else {
-                size = 20
+                20
             }
         }
     }
-    var direction = "desc"
+    var direction = "asc"
     req.param("direction").ifPresent {
-        if ("asc".equals(it)) {
+        if ("desc".equals(it, true)) {
             direction = it
         }
     }
-    if ("asc".equals(direction)) {
+    if ("asc".equals(direction, true)) {
         return PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, field))
     }
     return PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, field))

@@ -49,17 +49,18 @@ class SearchInitialization(
                 .get()
 // Remove Old CD from result
         val query = builder.bool()
-                .must(builder.range().onField("oldCdStatus").above(0).createQuery())
+                .must(builder.range().onField("oldCdStatus").below(1).createQuery())
         if (StringUtils.hasLength(keywords)) {
             // Key words on application status
-            query.should(builder.phrase()
+            query.should(builder.phrase().withSlop(2)
                     .boostedTo(2.5f).withConstantScore()
                     .onField("varField10").sentence(keywords).createQuery())
-            query.should(builder.phrase()
+            query.should(builder.phrase().withSlop(2)
                     .boostedTo(2.5f).withConstantScore()
                     .onField("description").sentence(keywords).createQuery())
             // Others
-            query.should(builder.keyword()
+            query.should(builder.keyword().fuzzy()
+                    .withEditDistanceUpTo(2)
                     .onFields("ucrNumber", "cdRefNumber", "cocNumber", "idfNumber")
                     .boostedTo(10.0f)
                     .matching(keywords).createQuery())
