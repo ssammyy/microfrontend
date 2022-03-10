@@ -150,18 +150,33 @@ class CompanyProfileEntity : Serializable {
     @Column(name = "VAR_FIELD_5")
     @Basic
     var varField5: String? = null
-
     @Column(name = "VAR_FIELD_6")
     @Basic
     var varField6: String? = null
-
     @Column(name = "VAR_FIELD_7")
     @Basic
     var varField7: String? = null
-
     @Column(name = "VAR_FIELD_8")
     @Basic
     var varField8: String? = null
+    @Column(name = "VAR_FIELD_9")
+    @Basic
+    var varField9: String? = null
+    @Column(name = "VAR_FIELD_10")
+    @Basic
+    var varField10: String? = null
+
+    @Column(name = "ACCENT_TO")
+    @Basic
+    var accentTo: Boolean? = null
+
+    @Column(name = "TASK_ID")
+    @Basic
+    var taskId: String? = null
+
+    @Column(name = "TASK_TYPE")
+    @Basic
+    var taskType: Long? = null
 
     @Column(name = "ASSIGN_STATUS")
     @Basic
@@ -260,6 +275,11 @@ class CompanyProfileEntity : Serializable {
                 varField6 == that.varField6 &&
                 varField7 == that.varField7 &&
                 varField8 == that.varField8 &&
+                varField9 == that.varField9 &&
+                varField10 == that.varField10 &&
+                accentTo == that.accentTo &&
+                taskId == that.taskId &&
+                taskType == that.taskType &&
                 assignStatus == that.assignStatus &&
                 assignedTo == that.assignedTo &&
                 createdBy == that.createdBy &&
@@ -310,6 +330,11 @@ class CompanyProfileEntity : Serializable {
             varField6,
             varField7,
             varField8,
+            varField9,
+            varField10,
+            accentTo,
+            taskId,
+            taskType,
             assignStatus,
             assignedTo,
             createdBy,

@@ -19,13 +19,13 @@ class CompanyProfileEditEntity : Serializable {
     @GeneratedValue(generator = "DAT_KEBS_COMPANY_PROFILE_EDIT_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     var id: Long = 0
 
-    @Column(name = "POSTAL_ADDRESS")
-    @Basic
-    var postalAddress: String? = null
-
     @Column(name = "PHYSICAL_ADDRESS")
     @Basic
     var physicalAddress: String? = null
+
+    @Column(name = "POSTAL_ADDRESS")
+    @Basic
+    var postalAddress: String? = null
 
     @Column(name = "OWNERSHIP")
     @Basic
@@ -34,10 +34,6 @@ class CompanyProfileEditEntity : Serializable {
     @Column(name = "CLOSURE_OF_OPERATIONS")
     @Basic
     var closureOfOperations: Int? = null
-
-    @Column(name = "MANUFACTURER_ID")
-    @Basic
-    var manufactureId: Long? = null
 
     @Column(name = "VAR_FIELD_1")
     @Basic
@@ -95,6 +91,14 @@ class CompanyProfileEditEntity : Serializable {
     @Basic
     var modifiedOn: Timestamp? = null
 
+    @Column(name = "UPDATE_BY")
+    @Basic
+    var updateBy: String? = null
+
+    @Column(name = "UPDATED_ON")
+    @Basic
+    var updatedOn: Timestamp? = null
+
     @Column(name = "DELETE_BY")
     @Basic
     var deleteBy: String? = null
@@ -102,6 +106,52 @@ class CompanyProfileEditEntity : Serializable {
     @Column(name = "DELETED_ON")
     @Basic
     var deletedOn: Timestamp? = null
+
+    @Column(name = "VERSION")
+    @Basic
+    var version: Long? = null
+
+    @Column(name = "MANUFACTURE_ID")
+    @Basic
+    var manufactureId: Long? = null
+
+    @Column(name = "SL_BPMN_PROCESS_INSTANCE")
+    @Basic
+    var slBpmnProcessInstance: String? = null
+
+    @Column(name = "USER_TYPE")
+    @Basic
+    var userType: Long? = null
+
+    @Column(name = "ASSIGNED_TO")
+    @Basic
+    var assignedTo: Long? = null
+
+    @Column(name = "TASK_TYPE")
+    @Basic
+    var taskType: Long? = null
+
+    @Column(name = "NAME")
+    @Basic
+    var name: String? = null
+
+    @Column(name = "KRA_PIN")
+    @Basic
+    var kraPin: String? = null
+
+    @Column(name = "REGISTRATION_NUMBER")
+    @Basic
+    var registrationNumber: String? = null
+
+    @Column(name = "ENTRY_NUMBER")
+    @Basic
+    var entryNumber: String? = null
+
+    @Column(name = "STATUS")
+    @Basic
+    var status: Long? = null
+
+
 
 
     override fun equals(other: Any?): Boolean {
@@ -123,12 +173,25 @@ class CompanyProfileEditEntity : Serializable {
                 varField8 == that.varField8 &&
                 varField9 == that.varField9 &&
                 varField10 == that.varField10 &&
+                slBpmnProcessInstance == that.slBpmnProcessInstance &&
+                userType == that.userType &&
+                assignedTo == that.assignedTo &&
+                taskType == that.taskType &&
                 createdBy == that.createdBy &&
                 createdOn == that.createdOn &&
                 modifiedBy == that.modifiedBy &&
                 modifiedOn == that.modifiedOn &&
                 deleteBy == that.deleteBy &&
-                deletedOn == that.deletedOn
+                deletedOn == that.deletedOn &&
+                name == that.name &&
+                kraPin == that.kraPin &&
+                registrationNumber == that.registrationNumber &&
+                entryNumber == that.entryNumber &&
+                status == that.status &&
+                version == that.version &&
+                updateBy == that.updateBy &&
+                ownership == that.ownership &&
+                updatedOn == that.updatedOn
     }
     override fun hashCode(): Int {
         return Objects.hash(
@@ -147,12 +210,27 @@ class CompanyProfileEditEntity : Serializable {
             varField8,
             varField9,
             varField10,
+            slBpmnProcessInstance,
+            userType,
+            assignedTo,
+            taskType,
             createdBy,
             createdOn,
             modifiedBy,
             modifiedOn,
             deleteBy,
-            deletedOn
+            deletedOn,
+            name,
+            kraPin,
+            registrationNumber,
+            entryNumber,
+            status,
+            version,
+            updateBy,
+            ownership,
+            updatedOn
+
+
         )
     }
 }

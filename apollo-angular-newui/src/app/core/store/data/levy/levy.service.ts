@@ -286,6 +286,31 @@ export class LevyService {
             })
         );
     }
+    public editCompanyDetailsConfirmLevelOne(editCompanyDTO: EditCompanyDTO): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_EDIT_COMPANY_LEVEL_ONE);
+        const params = new HttpParams();
+        return this.http.post<EditCompanyDTO>(url, editCompanyDTO, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public editCompanyDetailsConfirmLevelTwo(editCompanyDTO: EditCompanyDTO): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_EDIT_COMPANY_LEVEL_TWO);
+        const params = new HttpParams();
+        return this.http.post<EditCompanyDTO>(url, editCompanyDTO, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
 
     public getApproveLevelOne(): Observable<UsersEntity[]> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_APPROVED_USERS_LEVEL_ONE);

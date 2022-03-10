@@ -49,6 +49,12 @@ export class StdLevyPendingTasksComponent implements OnInit {
   public approvalTwoFormGroup!: FormGroup;
   public approveTwoFormGroup!: FormGroup;
   public rejectTwoFormGroup!: FormGroup;
+    public approveCompanyLevelOneFormGroup!: FormGroup;
+    public rejectCompanyLevelOneFormGroup!: FormGroup;
+    public approveEditRequestFormGroup!: FormGroup;
+    public rejectEditRequestFormGroup!: FormGroup;
+    public rejectEditRequestLevelTwoFormGroup!: FormGroup;
+    public approveEditRequestLevelTwoFormGroup!: FormGroup;
   blob: Blob;
   public uploadedFiles:  FileList;
   isShowScheduleForm = true;
@@ -59,9 +65,18 @@ export class StdLevyPendingTasksComponent implements OnInit {
   isShowRejectForm2= true;
   isShowSaveFeedBackForm= true;
   isShowRemarksTab= true;
+    isShowApproveRequestForm=true;
+    isShowRejectRequestForm=true;
 
 
-
+    toggleDisplayApproveEditRequest(){
+      this.isShowApproveRequestForm=!this.isShowApproveRequestForm;
+      this.isShowRejectRequestForm=true;
+    }
+    toggleDisplayRejectEditRequest(){
+        this.isShowRejectRequestForm=!this.isShowRejectRequestForm;
+        this.isShowApproveRequestForm=true;
+    }
   toggleDisplayScheduleForm() {
     this.isShowScheduleForm = !this.isShowScheduleForm;
     this.isShowReportForm= true;
@@ -141,6 +156,92 @@ export class StdLevyPendingTasksComponent implements OnInit {
       this.getAssignLevelThree();
         this.userType=62;
     }
+
+      this.approveEditRequestFormGroup = this.formBuilder.group({
+          postalAddress: [],
+          physicalAddress: [],
+          companyId: [],
+          ownership: [],
+          userType:[],
+          taskType:[],
+          assignedTo: [],
+          taskId: [],
+          accentTo:[],
+          processId:[]
+
+      });
+      this.rejectEditRequestFormGroup = this.formBuilder.group({
+          postalAddress: [],
+          physicalAddress: [],
+          companyId: [],
+          ownership: [],
+          userType:[],
+          taskType:[],
+          assignedTo: [],
+          taskId: [],
+          accentTo:[],
+          processId:[]
+
+
+      });
+
+      this.approveCompanyLevelOneFormGroup = this.formBuilder.group({
+          postalAddress: [],
+          physicalAddress: [],
+          companyId: [],
+          ownership: [],
+          userType:[],
+          taskType:[],
+          assignedTo: [],
+          taskId: [],
+          accentTo:[],
+          processId:[]
+
+
+      });
+      this.rejectCompanyLevelOneFormGroup = this.formBuilder.group({
+          postalAddress: [],
+          physicalAddress: [],
+          companyId: [],
+          ownership: [],
+          userType:[],
+          taskType:[],
+          assignedTo:[],
+          taskId: [],
+          accentTo:[],
+          processId:[]
+
+
+      });
+
+      this.approveEditRequestLevelTwoFormGroup = this.formBuilder.group({
+          postalAddress: [],
+          physicalAddress: [],
+          companyId: [],
+          ownership: [],
+          userType:[],
+          taskType:[],
+          assignedTo:[],
+          taskId: [],
+          accentTo:[],
+          processId:[]
+
+
+      });
+      this.rejectEditRequestLevelTwoFormGroup = this.formBuilder.group({
+          postalAddress: [],
+          physicalAddress: [],
+          companyId: [],
+          ownership: [],
+          userType:[],
+          taskType:[],
+          assignedTo:[],
+          taskId: [],
+          accentTo:[],
+          processId:[]
+
+
+      });
 
     this.scheduleVisitFormGroup = this.formBuilder.group({
       scheduledVisitDate: ['', Validators.required],
@@ -392,6 +493,20 @@ export class StdLevyPendingTasksComponent implements OnInit {
     button.type = 'button';
     button.style.display = 'none';
     button.setAttribute('data-toggle', 'modal');
+
+      if (mode === 'confirmDetails') {
+          this.actionRequestPending = manufacturePendingTask;
+          button.setAttribute('data-target', '#confirmDetails');
+      }
+      if (mode === 'approveDetails') {
+          this.actionRequestPending = manufacturePendingTask;
+          button.setAttribute('data-target', '#approveDetails');
+      }
+      if (mode === 'approveEditedDetails') {
+          this.actionRequestPending = manufacturePendingTask;
+          button.setAttribute('data-target', '#approveEditedDetails');
+      }
+
     if (mode === 'viewPending') {
       this.actionRequestPending = manufacturePendingTask;
       button.setAttribute('data-target', '#viewPending');
@@ -720,7 +835,128 @@ export class StdLevyPendingTasksComponent implements OnInit {
         }
     );
   }
+    approveCompanyLevelOne(): void {
+      console.log(this.approveCompanyLevelOneFormGroup.value)
+        this.loadingText = "Editing Company Details ...."
+        this.SpinnerService.show();
+        this.levyService.editCompanyDetailsConfirmLevelOne(this.approveCompanyLevelOneFormGroup.value).subscribe(
+            (response) => {
+                console.log(response);
+                this.getMnPendingTask();
+                this.SpinnerService.hide();
+                this.showToasterSuccess(response.httpStatus, `Company Edited`);
 
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Editing Company`);
+                console.log(error.message);
+            }
+        );
+        this.hideModelCloseModalCDetails();
+
+    }
+    rejectCompanyLevelOne(): void {
+        this.loadingText = "Editing Company Details ...."
+        this.SpinnerService.show();
+        this.levyService.editCompanyDetailsConfirmLevelOne(this.rejectCompanyLevelOneFormGroup.value).subscribe(
+            (response) => {
+                console.log(response);
+                this.getMnPendingTask();
+                this.SpinnerService.hide();
+                this.showToasterSuccess(response.httpStatus, `Company Edit Request Rejected`);
+
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Editing Company`);
+                console.log(error.message);
+            }
+        );
+        this.hideModelCloseModalCDetails();
+
+    }
+    approveEditRequest(): void {
+        this.loadingText = "Approving Edited Company Details ...."
+        this.SpinnerService.show();
+        this.levyService.editCompanyDetailsConfirm(this.approveEditRequestFormGroup.value).subscribe(
+            (response) => {
+                console.log(response);
+                this.getMnPendingTask();
+                this.SpinnerService.hide();
+                this.showToasterSuccess(response.httpStatus, `Company Edited`);
+
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Editing Company`);
+                console.log(error.message);
+            }
+        );
+        this.hideModelCloseModalADetails();
+
+    }
+    rejectEditRequest(): void {
+        this.loadingText = "Rejecting Edit Company Details Request ...."
+        this.SpinnerService.show();
+        this.levyService.editCompanyDetailsConfirm(this.rejectEditRequestFormGroup.value).subscribe(
+            (response) => {
+                console.log(response);
+                this.getMnPendingTask();
+                this.SpinnerService.hide();
+                this.showToasterSuccess(response.httpStatus, `Request has been rejected`);
+
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Editing Company`);
+                console.log(error.message);
+            }
+        );
+        this.hideModelCloseModalADetails();
+
+    }
+
+    approveEditRequestLevelTwo(): void {
+        this.loadingText = "Approving Edited Company Details ...."
+        this.SpinnerService.show();
+        this.levyService.editCompanyDetailsConfirmLevelTwo(this.approveEditRequestLevelTwoFormGroup.value).subscribe(
+            (response) => {
+                console.log(response);
+                this.getMnPendingTask();
+                this.SpinnerService.hide();
+                this.showToasterSuccess(response.httpStatus, `Company Edited`);
+
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Editing Company`);
+                console.log(error.message);
+            }
+        );
+        this.hideModelCloseModalA1Details();
+
+    }
+    rejectEditRequestLevelTwo(): void {
+        this.loadingText = "Rejecting Edit Company Details Request ...."
+        this.SpinnerService.show();
+        this.levyService.editCompanyDetailsConfirmLevelTwo(this.rejectEditRequestLevelTwoFormGroup.value).subscribe(
+            (response) => {
+                console.log(response);
+                this.getMnPendingTask();
+                this.SpinnerService.hide();
+                this.showToasterSuccess(response.httpStatus, `Request has been rejected`);
+
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Editing Company`);
+                console.log(error.message);
+            }
+        );
+        this.hideModelCloseModalA1Details();
+
+    }
 
   showNotification(from: any, align: any) {
     const type = ['', 'info', 'success', 'warning', 'danger', 'rose', 'primary'];
@@ -761,6 +997,24 @@ export class StdLevyPendingTasksComponent implements OnInit {
   public hideModelCloseModalPending() {
     this.closeModalPending?.nativeElement.click();
   }
+
+    @ViewChild('closeModalCDetails') private closeModalCDetails: ElementRef | undefined;
+
+    public hideModelCloseModalCDetails() {
+        this.closeModalCDetails?.nativeElement.click();
+    }
+
+    @ViewChild('closeModalADetails') private closeModalADetails: ElementRef | undefined;
+
+    public hideModelCloseModalADetails() {
+        this.closeModalADetails?.nativeElement.click();
+    }
+
+    @ViewChild('closeModalA1Details') private closeModalA1Details: ElementRef | undefined;
+
+    public hideModelCloseModalA1Details() {
+        this.closeModalA1Details?.nativeElement.click();
+    }
 
 
   @ViewChild('closeModalSiteVisit') private closeModalSiteVisit: ElementRef | undefined;

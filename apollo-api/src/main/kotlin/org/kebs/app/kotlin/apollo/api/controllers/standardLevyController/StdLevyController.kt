@@ -9,10 +9,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.StandardLevyService
 import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
 import org.kebs.app.kotlin.apollo.common.dto.CompanySl1DTO
 import org.kebs.app.kotlin.apollo.common.dto.ManufactureSubmitEntityDto
-import org.kebs.app.kotlin.apollo.common.dto.std.NWAPreliminaryDraftDecision
-import org.kebs.app.kotlin.apollo.common.dto.std.ResponseMessage
-import org.kebs.app.kotlin.apollo.common.dto.std.ServerResponse
-import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
+import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.common.dto.stdLevy.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidInputException
@@ -600,6 +597,15 @@ class StdLevyController(
             postalAddress = editCompanyDTO.postalAddress
             physicalAddress = editCompanyDTO.physicalAddress
             ownership = editCompanyDTO.ownership
+            taskType= editCompanyDTO.taskType
+            assignedTo= editCompanyDTO.assignedTo
+            userType= editCompanyDTO.userType
+            name=editCompanyDTO.companyName
+            kraPin=editCompanyDTO.kraPin
+            registrationNumber=editCompanyDTO.registrationNumber
+            entryNumber=editCompanyDTO.entryNumber
+
+
 
         }
 
@@ -620,10 +626,65 @@ class StdLevyController(
             postalAddress = editCompanyDTO.postalAddress
             physicalAddress = editCompanyDTO.physicalAddress
             ownership = editCompanyDTO.ownership
+            taskId = editCompanyDTO.taskId
+            slBpmnProcessInstance = editCompanyDTO.processId
+            assignedTo = editCompanyDTO.assignedTo
+            accentTo = editCompanyDTO.accentTo
+
 
         }
 
         return ServerResponse(HttpStatus.OK,"Company Details Edited",standardLevyService.editCompanyDetailsConfirm(companyProfileEntity))
+
+    }
+
+    @PreAuthorize("hasAuthority('MODIFY_COMPANY')")
+    @PostMapping("/editCompanyDetailsConfirmLvlOne")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun editCompanyDetailsConfirmLvlOne(
+        @RequestBody editCompanyDTO: EditCompanyTaskToDTO
+    ): ServerResponse
+    {
+        val companyProfileEntity= CompanyProfileEntity().apply {
+            id = editCompanyDTO.companyId
+            postalAddress = editCompanyDTO.postalAddress
+            physicalAddress = editCompanyDTO.physicalAddress
+            ownership = editCompanyDTO.ownership
+            taskId = editCompanyDTO.taskId
+            slBpmnProcessInstance = editCompanyDTO.processId
+            assignedTo = editCompanyDTO.assignedTo
+            accentTo = editCompanyDTO.accentTo
+
+
+        }
+
+        return ServerResponse(HttpStatus.OK,"Company Details Edited",standardLevyService.editCompanyDetailsConfirmLvlOne(companyProfileEntity))
+
+    }
+
+    @PreAuthorize("hasAuthority('MODIFY_COMPANY')")
+    @PostMapping("/editCompanyDetailsConfirmLvlTwo")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun editCompanyDetailsConfirmLvlTwo(
+        @RequestBody editCompanyDTO: EditCompanyTaskToDTO
+    ): ServerResponse
+    {
+        val companyProfileEntity= CompanyProfileEntity().apply {
+            id = editCompanyDTO.companyId
+            postalAddress = editCompanyDTO.postalAddress
+            physicalAddress = editCompanyDTO.physicalAddress
+            ownership = editCompanyDTO.ownership
+            taskId = editCompanyDTO.taskId
+            slBpmnProcessInstance = editCompanyDTO.processId
+            assignedTo = editCompanyDTO.assignedTo
+            accentTo = editCompanyDTO.accentTo
+
+
+        }
+
+        return ServerResponse(HttpStatus.OK,"Company Details Edited",standardLevyService.editCompanyDetailsConfirmLvlTwo(companyProfileEntity))
 
     }
 
@@ -659,6 +720,7 @@ class StdLevyController(
             manufactureStatus = assignToDTO.manufactureStatus
             entryNumber = assignToDTO.entryNumber
             userId= assignToDTO.contactId
+            taskType= assignToDTO.taskType
         }
 
         return ServerResponse(HttpStatus.OK,"Company Task Assigned",standardLevyService.assignCompany(companyProfileEntity))
@@ -667,14 +729,14 @@ class StdLevyController(
 
     @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
     @GetMapping("/getUserTasks")
-    fun getUserTasks():List<TaskDetails>
+    fun getUserTasks():List<TaskDetailsBody>
     {
         return standardLevyService.getUserTasks()
     }
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
     @GetMapping("/viewFeedBack")
-    fun viewFeedBack():List<TaskDetails>
+    fun viewFeedBack():List<TaskDetailsBody>
     {
         return standardLevyService.viewFeedBack()
     }
@@ -760,7 +822,7 @@ class StdLevyController(
     }
 
     @GetMapping("/getSiteReport")
-    fun getSiteReport():List<TaskDetails>
+    fun getSiteReport():List<TaskDetailsBody>
     {
         return standardLevyService.getSiteReport()
     }
@@ -809,7 +871,7 @@ class StdLevyController(
     }
 
     @PostMapping("/decisionOnSiteReportx")
-    fun decisionOnSiteReportx(@RequestBody siteVisitReportDecision: SiteVisitReportDecision) : List<TaskDetails>
+    fun decisionOnSiteReportx(@RequestBody siteVisitReportDecision: SiteVisitReportDecision) : List<TaskDetailsBody>
     {
         val standardLevyFactoryVisitReportEntity= StandardLevyFactoryVisitReportEntity().apply {
             assistantManagerRemarks = siteVisitReportDecision.comments
@@ -846,7 +908,7 @@ class StdLevyController(
     }
 
     @GetMapping("/getSiteReportLevelTwo")
-    fun getSiteReportLevelTwo():List<TaskDetails>
+    fun getSiteReportLevelTwo():List<TaskDetailsBody>
     {
         return standardLevyService.getSiteReportLevelTwo()
     }
@@ -880,7 +942,7 @@ class StdLevyController(
 
 
     @GetMapping("/getSiteFeedback")
-    fun getSiteFeedback():List<TaskDetails>
+    fun getSiteFeedback():List<TaskDetailsBody>
     {
         return standardLevyService.getSiteFeedback()
     }
@@ -975,6 +1037,15 @@ class StdLevyController(
     ): CompanyProfileEditEntity {
         return standardLevyService.getCompanyEditedDetails(manufactureId)
     }
+
+    @GetMapping("/getCompanyProcessId")
+    fun getCompanyProcessId(
+        response: HttpServletResponse,
+        @RequestParam("manufactureId") manufactureId: Long
+    ): CompanyProfileEditEntity {
+        return standardLevyService.getCompanyProcessId(manufactureId)
+    }
+
 
     @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
     @GetMapping("/getCompleteTasks")
