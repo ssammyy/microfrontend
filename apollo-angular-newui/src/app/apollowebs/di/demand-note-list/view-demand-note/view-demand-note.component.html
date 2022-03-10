@@ -46,6 +46,34 @@
             <label class="waiver-form-label">REMARKS</label>
             <p>{{demandDetails.note.varField10}}</p>
         </div>
+        <div class="col-sm-3 col-md-4" *ngIf="demandDetails.note.entryPoint">
+            <label class="waiver-form-label">SAGE ENTRY POINT</label>
+            <p>{{demandDetails.note.entryPoint + ', ' + demandDetails.note.entryNo}}</p>
+        </div>
+        <div class="col-sm-3 col-md-4" *ngIf="demandDetails.note.entryNo">
+            <label class="waiver-form-label">SAGE ENTRY NUMBER</label>
+            <p>{{demandDetails.note.entryNo}}</p>
+        </div>
+        <div class="col-sm-3 col-md-4" *ngIf="demandDetails.note.varField5">
+            <label class="waiver-form-label">SAGE MSG REFERENCE</label>
+            <p>{{demandDetails.note.varField5}}</p>
+        </div>
+        <div class="col-sm-3 col-md-4">
+            <label class="waiver-form-label">SAGE STATUS</label>
+            <p>{{formatPostingStatus(demandDetails.note.postingStatus)}}</p>
+        </div>
+        <div class="col-sm-3 col-md-4" *ngIf="demandDetails.note.varField7">
+            <label class="waiver-form-label">SAGE RESPONSE</label>
+            <p>{{demandDetails.note.varField6}}: {{demandDetails.note.varField7}}</p>
+        </div>
+        <div class="col-sm-3 col-md-4" *ngIf="demandDetails.note.varField9">
+            <label class="waiver-form-label">SAGE RESPONSE DATE</label>
+            <p>{{demandDetails.note.varField9| date:'short'}}</p>
+        </div>
+        <div class="col-sm-3 col-md-4" *ngIf="demandDetails.note.postingReference">
+            <label class="waiver-form-label">SAGE REFERENCE</label>
+            <p>{{demandDetails.note.postingReference}}</p>
+        </div>
     </div>
     <div class="row no_margin" *ngIf="demandDetails">
         <div class=" table-striped">

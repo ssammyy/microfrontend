@@ -5,6 +5,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import mu.KotlinLogging
+import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
+import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.request.DemandNoteRequestForm
 import org.kebs.app.kotlin.apollo.api.payload.request.DemandNoteRequestItem
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
@@ -66,14 +68,14 @@ class InvoicePaymentService(
         daoServices.findDemandNoteWithID(demandNoteId)?.let { demandNote ->
             map["preparedBy"] = demandNote.generatedBy.toString()
             map["datePrepared"] = demandNote.dateGenerated.toString()
-            map["demandNoteNo"] = demandNote.demandNoteNumber.toString()
+            map["demandNoteNo"] = demandNote.postingReference ?: "UNKNOWN"
             map["importerName"] = demandNote.nameImporter.toString()
             map["importerAddress"] = demandNote.address.toString()
             map["importerTelephone"] = demandNote.telephone.toString()
             map["ablNo"] = demandNote.entryAblNumber.toString()
             map["totalAmount"] = demandNote.totalAmount.toString()
             map["receiptNo"] = demandNote.receiptNo.toString()
-            map = reportsDaoService.addBankAndMPESADetails(map, demandNote.demandNoteNumber ?: "")
+            map = reportsDaoService.addBankAndMPESADetails(map, demandNote.postingReference ?: "UNKNOWN")
         }
         return map
     }
@@ -191,30 +193,73 @@ class InvoicePaymentService(
                             batchInvoiceDetail
                     )
                     // Find recipient of the invoice from importer details
-                    val importerDetails = consignmentDocument.cdImporter?.let {
-                        daoServices.findCDImporterDetails(it)
-                    }
                     val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
                     with(myAccountDetails) {
-                        accountName = importerDetails?.name
-                        accountNumber = importerDetails?.pin
+                        accountName = demandNote.nameImporter
+                        accountNumber = demandNote.importerPin
                         currency = applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
                     }
-                    KotlinLogging.logger { }.info("ADD STAGING TO TABLE: $demandNoteId")
-                    // Create payment on staging table
-                    invoiceDaoService.createPaymentDetailsOnStgReconciliationTable(
+                    KotlinLogging.logger { }.info("SENDING to SAGE FOR PAYMENT: $demandNoteId")
+                    // Create payment on SAGE
+                    invoiceDaoService.postRequestToSage(
                             loggedInUser.userName!!,
-                            updateBatchInvoiceDetail,
-                            myAccountDetails
+                            demandNote
                     )
-
                 } ?: ExpectedDataNotFound("Demand note number not set")
             }
             return true
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Failed to generate batch number", ex)
+            throw ex
         }
-        return false
+    }
+
+    fun generateOtherInvoiceBatch(demandNoteId: Long): ApiResponseModel {
+        val response = ApiResponseModel()
+        KotlinLogging.logger { }.info("INVOICE GENERATION: $demandNoteId")
+        try {
+            //Send Demand Note
+            val demandNote = daoServices.findDemandNoteWithID(demandNoteId)!!
+            val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+            // Try to add transaction to current bill or generate batch payment
+            demandNote.demandNoteNumber?.let {
+                KotlinLogging.logger { }.info("Generate demand note Sage:${demandNote.demandNoteNumber}")
+                val loggedInUser = commonDaoServices.findUserByUserName(demandNote.createdBy ?: "NA")
+                // Create payment batch
+                val batchInvoiceDetail = invoiceDaoService.createBatchInvoiceDetails(loggedInUser.userName!!, it)
+                // Add demand note details to batch
+                val updateBatchInvoiceDetail = invoiceDaoService.addInvoiceDetailsToBatchInvoice(
+                        demandNote,
+                        applicationMapProperties.mapInvoiceTransactionsForDemandNote,
+                        loggedInUser,
+                        batchInvoiceDetail
+                )
+                // Find recipient of the invoice from importer details
+                val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
+                with(myAccountDetails) {
+                    accountName = demandNote.nameImporter
+                    accountNumber = demandNote.importerPin
+                    currency = applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
+                }
+                KotlinLogging.logger { }.info("SENDING to SAGE FOR PAYMENT: $demandNoteId")
+                // Create payment on SAGE
+                invoiceDaoService.postRequestToSage(
+                        loggedInUser.userName!!,
+                        demandNote
+                )
+                response.message = "Payment request submitted"
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+            } ?: ExpectedDataNotFound("Demand note number not set")
+        } catch (ex: ExpectedDataNotFound) {
+            response.message = ex.localizedMessage
+            response.responseCode = ResponseCodes.FAILED_CODE
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to generate batch number", ex)
+            response.errors = ex.localizedMessage
+            response.message = " Request failed, please try again later"
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+        }
+        return response
     }
 
     fun updateDemandNoteSw(cdUuid: String, demandNoteId: Long): Boolean {
@@ -432,10 +477,14 @@ class InvoicePaymentService(
                     with(demandNote) {
                         cdId = form.referenceId
                         nameImporter = form.name
+                        importerPin = form.importerPin
                         address = form.address
                         telephone = form.address
                         cdRefNo = form.referenceNumber
-                        //todo: Entry Number
+                        shippingAgent = form.customsOffice
+                        courier = form.courier
+                        entryNo = form.entryNo
+                        entryPoint = form.entryPoint
                         entryAblNumber = form.ablNumber
                         totalAmount = BigDecimal.ZERO
                         amountPayable = BigDecimal.ZERO
@@ -460,6 +509,7 @@ class InvoicePaymentService(
                         dateGenerated = commonDaoServices.getCurrentDate()
                         generatedBy = commonDaoServices.concatenateName(user)
                         status = map.workingStatus
+                        varField3 = "DRAFT"
                         createdOn = commonDaoServices.getTimestamp()
                         createdBy = commonDaoServices.getUserName(user)
                     }
@@ -479,8 +529,8 @@ class InvoicePaymentService(
                     }
                     // Foreign CoR/CoC without Items
                     if (form.items?.isEmpty() == true) {
-                        demandNote.totalAmount = form.amount.toBigDecimal()
-                        demandNote.amountPayable = form.amount.toBigDecimal()
+                        demandNote.totalAmount = form.amount.toBigDecimal().setScale(2, RoundingMode.UP)
+                        demandNote.amountPayable = form.amount.toBigDecimal().setScale(2, RoundingMode.UP)
                     }
                     return demandNote
 
@@ -546,6 +596,7 @@ class InvoicePaymentService(
         //2. Calculate based on the ranges provided
         when (feeType) {
             "PERCENTAGE" -> {
+                demandNoteItem.rate = rate?.setScale(0, RoundingMode.UP)?.toString()
                 amount = cfiValue.multiply(rate).divide(percentage.toBigDecimal())
                 demandNoteItem.amountPayable = BigDecimal(amount?.toDouble() ?: 0.0)
                 KotlinLogging.logger { }.info("$feeType MY AMOUNT BEFORE CALCULATION = $currencyCode-$amount")
@@ -572,26 +623,26 @@ class InvoicePaymentService(
                         }
                     }
                 }
-                demandNoteItem.adjustedAmount = amount
+                demandNoteItem.adjustedAmount = amount?.setScale(2, RoundingMode.UP)
                 KotlinLogging.logger { }.info("$feeType MY AMOUNT AFTER CALCULATION = $amount")
             }
             "FIXED" -> {
                 amount = fixedAmount
                 KotlinLogging.logger { }.info("FIXED AMOUNT BEFORE CALCULATION = $fixedAmount")
-                demandNoteItem.adjustedAmount = fixedAmount
-                demandNoteItem.amountPayable = fixedAmount
+                demandNoteItem.adjustedAmount = fixedAmount.setScale(2, RoundingMode.UP)
+                demandNoteItem.amountPayable = fixedAmount.setScale(2, RoundingMode.UP)
             }
             "MANUAL" -> {
                 // Not-Applicable to items
                 amount = BigDecimal.ZERO
-                demandNoteItem.adjustedAmount = amount
-                demandNoteItem.amountPayable = amount
+                demandNoteItem.adjustedAmount = amount?.setScale(2, RoundingMode.UP)
+                demandNoteItem.amountPayable = amount?.setScale(2, RoundingMode.UP)
                 KotlinLogging.logger { }.info("MANUAL AMOUNT BEFORE CALCULATION = $amount")
             }
             else -> {
                 amount = BigDecimal.ZERO
-                demandNoteItem.adjustedAmount = amount
-                demandNoteItem.amountPayable = amount
+                demandNoteItem.adjustedAmount = amount?.setScale(2, RoundingMode.UP)
+                demandNoteItem.amountPayable = amount?.setScale(2, RoundingMode.UP)
             }
         }
     }
@@ -611,8 +662,10 @@ class InvoicePaymentService(
     }
 
     fun convertAmount(amount: BigDecimal?, currencyCode: String, demandNoteItem: CdDemandNoteItemsDetailsEntity?) {
+//        val exchangeRate=BigDecimal.ZERO
         currencyExchangeRateRepository.findFirstByCurrencyCodeAndApplicableDateOrderByApplicableDateDesc(currencyCode, DATE_FORMAT.format(LocalDate.now()))?.let { exchangeRateEntity ->
             demandNoteItem?.exchangeRateId = exchangeRateEntity.id
+            demandNoteItem?.rate = exchangeRateEntity.exchangeRate?.toPlainString() ?: "0.00"
             demandNoteItem?.cfvalue = amount?.times(exchangeRateEntity.exchangeRate
                     ?: BigDecimal.ZERO) ?: BigDecimal.ZERO
         } ?: run {
@@ -621,6 +674,7 @@ class InvoicePaymentService(
                 demandNoteItem?.cfvalue = amount?.times(exchangeRateEntity.exchangeRate
                         ?: BigDecimal.ZERO) ?: BigDecimal.ZERO
                 demandNoteItem?.exchangeRateId = exchangeRateEntity.id
+                demandNoteItem?.rate = exchangeRateEntity.exchangeRate?.toPlainString() ?: "0.00"
             } ?: run {
                 demandNoteItem?.cfvalue = amount ?: BigDecimal.ZERO
                 throw ExpectedDataNotFound("Conversion rate for currency $currencyCode not found")
@@ -643,9 +697,11 @@ class InvoicePaymentService(
         when (itemDetails.currency?.toUpperCase()) {
             "KES" -> {
                 demandNoteItem.cfvalue = itemDetails.itemValue
+                demandNote.rate = "0.00"
             }
             else -> {
                 convertAmount(itemDetails.itemValue, "${itemDetails.currency}", demandNoteItem)
+                demandNote.rate = demandNoteItem.rate ?: "0.00"
                 KotlinLogging.logger { }.warn("Exchange Rate for ${itemDetails.currency}:${itemDetails.itemValue} => ${demandNoteItem.cfvalue}")
             }
         }
@@ -673,6 +729,7 @@ class InvoicePaymentService(
         // Add this for presentment purposes
         demandNote.totalAmount = demandNote.totalAmount?.plus(demandNoteItem.adjustedAmount ?: BigDecimal.ZERO)
         demandNote.amountPayable = demandNote.amountPayable?.plus(demandNoteItem.amountPayable ?: BigDecimal.ZERO)
+        demandNote.cfvalue = demandNote.cfvalue?.plus(demandNote.cfvalue ?: BigDecimal.ZERO)
         return demandNoteItem
     }
 

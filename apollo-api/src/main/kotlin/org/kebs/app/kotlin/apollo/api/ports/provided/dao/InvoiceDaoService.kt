@@ -4,13 +4,17 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.PostInvoiceToSageServices
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
-import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.CdDemandNoteEntity
+import org.kebs.app.kotlin.apollo.store.model.PaymentMethodsEntity
+import org.kebs.app.kotlin.apollo.store.model.StagingPaymentReconciliation
+import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.di.CdDemandNoteItemsDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.invoice.InvoiceBatchDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaBatchInvoiceEntity
 import org.kebs.app.kotlin.apollo.store.repo.IPaymentMethodsRepository
 import org.kebs.app.kotlin.apollo.store.repo.IStagingPaymentReconciliationRepo
 import org.kebs.app.kotlin.apollo.store.repo.InvoiceBatchDetailsRepo
+import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteItemsDetailsRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
@@ -22,14 +26,15 @@ import java.math.BigDecimal
 
 @Service
 class InvoiceDaoService(
-    private val invoiceBatchDetailsRepo: InvoiceBatchDetailsRepo,
+        private val invoiceBatchDetailsRepo: InvoiceBatchDetailsRepo,
 //        private val diDaoServices: DestinationInspectionDaoServices,
 //    private val postInvoiceToSageServices: PostInvoiceToSageServices,
-    private val invoicePaymentRepo: IStagingPaymentReconciliationRepo,
-    private val iPaymentMethodsRepo: IPaymentMethodsRepository,
-    private val applicationMapProperties: ApplicationMapProperties,
-    private val iDemandNoteRepository: IDemandNoteRepository,
-    private val commonDaoServices: CommonDaoServices
+        private val invoicePaymentRepo: IStagingPaymentReconciliationRepo,
+        private val iPaymentMethodsRepo: IPaymentMethodsRepository,
+        private val applicationMapProperties: ApplicationMapProperties,
+        private val iDemandNoteRepository: IDemandNoteRepository,
+        private val iDemandNoteItemsRepository: IDemandNoteItemsDetailsRepository,
+        private val commonDaoServices: CommonDaoServices
 ) {
 
     @Lazy
@@ -71,26 +76,26 @@ class InvoiceDaoService(
 
     fun findInvoiceStgReconciliationDetails(referenceCode: String): StagingPaymentReconciliation {
         invoicePaymentRepo.findByReferenceCode(referenceCode)
-            ?.let {
-                return it
-            }
-            ?: throw ExpectedDataNotFound(" INVOICE WITH [REFERENCE CODE = ${referenceCode}], DOES NOT EXIST")
+                ?.let {
+                    return it
+                }
+                ?: throw ExpectedDataNotFound(" INVOICE WITH [REFERENCE CODE = ${referenceCode}], DOES NOT EXIST")
     }
 
     fun findInvoiceStgReconciliationDetailsByID(stgID: Long): StagingPaymentReconciliation {
         invoicePaymentRepo.findByIdOrNull(stgID)
-            ?.let {
-                return it
-            }
-            ?: throw ExpectedDataNotFound(" INVOICE WITH ID ON STAGING WITH ID = ${stgID}, DOES NOT EXIST")
+                ?.let {
+                    return it
+                }
+                ?: throw ExpectedDataNotFound(" INVOICE WITH ID ON STAGING WITH ID = ${stgID}, DOES NOT EXIST")
     }
 
     fun updateInvoiceBatchDetails(
-        invoiceBatchDetails: InvoiceBatchDetailsEntity,
-        tableSourcePrefix: String,
-        detailsDescription: String,
-        user: UsersEntity,
-        amount: BigDecimal
+            invoiceBatchDetails: InvoiceBatchDetailsEntity,
+            tableSourcePrefix: String,
+            detailsDescription: String,
+            user: UsersEntity,
+            amount: BigDecimal
     ): InvoiceBatchDetailsEntity {
         val map = commonDaoServices.serviceMapDetails(appId)
         with(invoiceBatchDetails) {
@@ -148,6 +153,15 @@ class InvoiceDaoService(
                 } ?: throw ExpectedDataNotFound("PAYMENT METHOD WITH [ID = $paymentMethodID], DOES NOT EXIST")
     }
 
+    fun postRequestToSage(user: String, demandNote: CdDemandNoteEntity) {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        postInvoiceToSageServices.postInvoiceTransactionToSage(demandNote, user, map)
+        iDemandNoteRepository.save(demandNote)
+        // Check if posting to sage was successful and raise error to allow retry
+        if (demandNote.postingStatus != map.activeStatus) {
+            throw ExpectedDataNotFound(demandNote.varField7)
+        }
+    }
 
     fun createPaymentDetailsOnStgReconciliationTable(user: String, invoiceBatchDetails: InvoiceBatchDetailsEntity, invoiceAccountDetails: InvoiceAccountDetails): StagingPaymentReconciliation {
         val map = commonDaoServices.serviceMapDetails(appId)
@@ -167,7 +181,7 @@ class InvoiceDaoService(
             transactionDate = commonDaoServices.getCurrentDate()
             invoiceDate = commonDaoServices.getCurrentDate()
             description =
-                "{BATCH DETAILS :${additionalInformation},BATCH NUMBER:${referenceCode},BATCH ID:${invoiceId},TOTAL AMOUNT:${invoiceAmount},TRANSACTION DATE:${transactionDate}}"
+                    "{BATCH DETAILS :${additionalInformation},BATCH NUMBER:${referenceCode},BATCH ID:${invoiceId},TOTAL AMOUNT:${invoiceAmount},TRANSACTION DATE:${transactionDate}}"
             paidAmount = BigDecimal.ZERO
             transactionId = null
             paymentTablesUpdatedStatus = null
@@ -180,7 +194,7 @@ class InvoiceDaoService(
         invoiceDetails = invoicePaymentRepo.save(invoiceDetails)
 
         postInvoiceToSageServices.postInvoiceTransactionToSage(
-            invoiceDetails.id ?: throw Exception("STG INVOICE CAN'T BE NULL"), user, map
+                invoiceDetails.id ?: throw Exception("STG INVOICE CAN'T BE NULL"), user, map
         )
 
         return invoiceDetails
@@ -242,7 +256,11 @@ class InvoiceDaoService(
     }
 
     fun findDemandNoteCdId(cdId: Long): CdDemandNoteEntity? {
-        return iDemandNoteRepository.findFirstByCdIdAndStatusIn(cdId, listOf(10,1))
+        return iDemandNoteRepository.findFirstByCdIdAndStatusIn(cdId, listOf(10, 1))
+    }
+
+    fun findDemandNoteItemsCdId(dnId: Long): List<CdDemandNoteItemsDetailsEntity> {
+        return iDemandNoteItemsRepository.findByDemandNoteId(dnId)
     }
 
     fun updateOfInvoiceTables() {
@@ -254,7 +272,7 @@ class InvoiceDaoService(
                 }
     }
 
-    class InvoiceAccountDetails{
+    class InvoiceAccountDetails {
 
         var accountName: String? = null
 

@@ -444,6 +444,10 @@ export class DestinationInspectionService {
         return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/demand/note/submit/" + demandNoteId), data)
     }
 
+    submitOtherDemandNote(demandNoteId: any, data: any): Observable<any> {
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/other/demand/note/submit/" + demandNoteId), data)
+    }
+
     deleteDemandNote(demandNoteId: any): Observable<any> {
         return this.client.delete(ApiEndpointService.getEndpoint("/api/v1/di/demand/note/delete/" + demandNoteId))
     }

@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.common.dto.kesws.receive;
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
+import java.math.BigDecimal
 import java.util.*
 
 
@@ -22,7 +23,7 @@ class ErrorMessageHeader {
     var receiver: String? = null
 
     @JsonProperty("version")
-    var version: Long? = null
+    var version: BigDecimal? = null
 
     @JsonProperty("msg_date")
     var msgDate: Date? = null

@@ -2,7 +2,6 @@ package org.kebs.app.kotlin.apollo.store.model.di
 
 import java.io.Serializable
 import java.math.BigDecimal
-import java.sql.Time
 import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*
@@ -49,7 +48,7 @@ class IDFDetailsEntity : Serializable {
     @Basic
     var messageNature: Long? = null
 
-    @Column(name = "BASE_DOC_REF_NO", nullable = true, length = 200)
+    @Column(name = "BASE_DOC_REF_NO", nullable = true, length = 200, unique = true)
     @Basic
     var baseDocRefNo: String? = null
 

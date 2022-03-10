@@ -621,6 +621,7 @@ class CdItemNonStandardEntityDto : Serializable {
                     id = upload.id
                     chassisNo = upload.chassisNo
                     usedIndicator = upload.usedIndicator
+                    vehicleModel = upload.vehicleModel
                     vehicleYear = upload.vehicleYear
                     vehicleMake = upload.vehicleMake
                     description = upload.description

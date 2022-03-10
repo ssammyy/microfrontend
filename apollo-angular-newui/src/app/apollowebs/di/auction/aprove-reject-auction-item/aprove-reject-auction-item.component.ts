@@ -2,7 +2,6 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {DestinationInspectionService} from "../../../../core/store/data/di/destination-inspection.service";
-import {formatDate} from "@angular/common";
 
 @Component({
     selector: 'app-aprove-reject-auction-item',
@@ -22,6 +21,9 @@ export class AproveRejectAuctionItemComponent implements OnInit {
     ngOnInit(): void {
         this.form = this.fb.group({
             approve: ["", Validators.required],
+            witnessDesignation: ["", Validators.required],
+            witnessName: ["", Validators.required],
+            witnessEmail: ["", [Validators.required, Validators.email]],
             remarks: ["", Validators.required]
         })
     }

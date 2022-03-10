@@ -88,6 +88,7 @@ export class ReviewApplicationComponent implements OnInit {
     }
 
     @ViewChild('editForm') private mytemplateForm: NgForm;
+    pdfSrc: any;
 
     public clearForm() {
         this.mytemplateForm?.resetForm();
@@ -136,6 +137,8 @@ export class ReviewApplicationComponent implements OnInit {
                 let downloadURL = window.URL.createObjectURL(this.blob);
                 const link = document.createElement('a');
                 link.href = downloadURL;
+                this.pdfSrc=downloadURL
+                console.log(downloadURL)
                 link.download = fileName;
                 link.click();
                 // this.pdfUploadsView = dataPdf;

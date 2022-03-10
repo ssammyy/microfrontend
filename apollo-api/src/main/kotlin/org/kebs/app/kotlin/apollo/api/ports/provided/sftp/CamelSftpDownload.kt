@@ -3,7 +3,6 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.sftp
 import com.fasterxml.jackson.databind.DeserializationFeature
 import mu.KotlinLogging
 import org.apache.camel.Exchange
-import org.apache.camel.ProducerTemplate
 import org.apache.camel.builder.RouteBuilder
 import org.apache.camel.component.file.GenericFile
 import org.apache.camel.model.dataformat.JacksonXMLDataFormat
@@ -17,7 +16,6 @@ import org.kebs.app.kotlin.apollo.store.model.SftpTransmissionEntity
 import org.kebs.app.kotlin.apollo.store.repo.ISftpTransmissionEntityRepository
 import org.springframework.context.ApplicationEvent
 import org.springframework.context.ApplicationEventPublisher
-import org.springframework.core.io.Resource
 import org.springframework.core.io.ResourceLoader
 import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
@@ -194,10 +192,17 @@ class SFTPService(
             }
             throw Exception("BaseDocRef Number or UcrNumber missing")
         }
-        val idfUpdated = iDFDaoService.updateIdfUcrNumber(baseDocRefNo, ucrNumber)
+        KotlinLogging.logger { }
+                .info("UCR Res Document: $baseDocRefNo | UcrNumber: $ucrNumber|")
+        try {
+            val idfUpdated = iDFDaoService.updateIdfUcrNumber(baseDocRefNo, ucrNumber)
+            KotlinLogging.logger { }.info("UCR Res Document: ${exchange.message.headers} | Saved Status: ${idfUpdated}|")
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }
+                    .warn("UCR Res Document not linked: $baseDocRefNo | UcrNumber: $ucrNumber|", ex)
+        }
         // Update IDF number on consignment
         this.destinationInspectionDaoServices.updateIdfNumber(ucrNumber, baseDocRefNo)
-        KotlinLogging.logger { }.info("UCR Res Document: ${exchange.message.headers} | Saved Status: ${idfUpdated}|")
     }
 
     fun processAirManifestDocument(exchange: Exchange) {

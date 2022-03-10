@@ -332,6 +332,9 @@ class DestinationInspectionActionsHandler(
                             .body(this.diBpmn.consignmentDocumentProcessUpdate(it, data, consignmentDocument))
                 }
             }
+        } catch (ex: ExpectedDataNotFound) {
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = ex.localizedMessage
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("PROCESS UPDATE FAILED", ex)
             response.responseCode = ResponseCodes.EXCEPTION_STATUS

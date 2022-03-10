@@ -5,13 +5,10 @@ import org.joda.time.DateTime
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.BpmnCommonFunctions
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
-import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.QualityAssuranceBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
-import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentStatus
-import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.SchedulerEntity
@@ -275,50 +272,46 @@ class SchedulerImpl(
                                 resultsDate = commonDaoServices.getCurrentDate()
                             }
                             sampleSubmissionRepo.save(ssfFound)
-                            when {
-                                ssfFound.permitRefNumber != null -> {
-                                    qaDaoServices.findPermitWithPermitRefNumberLatest(
-                                            ssfFound.permitRefNumber ?: throw Exception("PERMIT WITH REF NO, NOT FOUND")
-                                    )
-                                            .let { pm ->
-                                                with(pm) {
-                                                    userTaskId = applicationMapProperties.mapUserTaskNameQAO
-                                                    permitStatus =
-                                                            applicationMapProperties.mapQaStatusPLABResultsCompletness
-                                                    modifiedBy = "SYSTEM SCHEDULER"
-                                                    modifiedOn = commonDaoServices.getTimestamp()
-                                                }
-                                                permitRepo.save(pm)
-
-                                                qaDaoServices.sendEmailWithLabResultsFound(
-                                                        commonDaoServices.findUserByID(
-                                                                pm.qaoId ?: throw Exception("QAO ID, NOT FOUND")
-                                                        ).email ?: throw Exception("EMAIL FOR QAO, NOT FOUND"),
-                                                        pm.permitRefNumber
-                                                                ?: throw Exception("PERMIT WITH REF NO, NOT FOUND")
-                                                )
+                            // Update permits
+                            if (ssfFound.permitRefNumber != null) {
+                                qaDaoServices.findPermitWithPermitRefNumberLatest(
+                                        ssfFound.permitRefNumber ?: throw Exception("PERMIT WITH REF NO, NOT FOUND")
+                                )
+                                        .let { pm ->
+                                            with(pm) {
+                                                userTaskId = applicationMapProperties.mapUserTaskNameQAO
+                                                permitStatus =
+                                                        applicationMapProperties.mapQaStatusPLABResultsCompletness
+                                                modifiedBy = "SYSTEM SCHEDULER"
+                                                modifiedOn = commonDaoServices.getTimestamp()
                                             }
-                                }
-                                ssfFound.cdItemId != null -> {
-                                    diDaoServices.findItemWithItemID(
-                                            ssfFound.cdItemId ?: throw Exception("CD ITEM ID NOT FOUND")
-                                    )
-                                            .let { cdItem ->
-                                                diDaoServices.findCD(
-                                                        cdItem.cdDocId?.id ?: throw Exception("CD ID NOT FOUND")
-                                                )
-                                                        .let { updatedCDDetails ->
-                                                            diDaoServices.updateCDStatus(
-                                                                    updatedCDDetails,
-                                                                    ConsignmentDocumentStatus.LAB_RESULT_RESULT
-                                                            )
-                                                        }
+                                            permitRepo.save(pm)
 
-                                            }
-                                }
+                                            qaDaoServices.sendEmailWithLabResultsFound(
+                                                    commonDaoServices.findUserByID(
+                                                            pm.qaoId ?: throw Exception("QAO ID, NOT FOUND")
+                                                    ).email ?: throw Exception("EMAIL FOR QAO, NOT FOUND"),
+                                                    pm.permitRefNumber
+                                                            ?: throw Exception("PERMIT WITH REF NO, NOT FOUND")
+                                            )
+                                        }
                             }
-
-
+                            // Update item details
+                            if (ssfFound.cdItemId != null) {
+                                diDaoServices.findItemWithItemID(
+                                        ssfFound.cdItemId ?: throw Exception("CD ITEM ID NOT FOUND")
+                                )
+                                        .let { cdItem ->
+                                            // Update CD result received
+                                            cdItem.allTestReportStatus = 1
+                                            cdItem.varField1 = commonDaoServices.getTimestamp().toString()
+                                            diDaoServices.updateCdItemDetailsInDB(cdItem, null)
+                                            // Clear Lab result status if all results are received
+                                            cdItem.cdDocId?.let { updatedCDDetails ->
+                                                limsServices.updateConsignmentSampledStatus(updatedCDDetails)
+                                            } ?: throw Exception("CD ID NOT FOUND")
+                                        }
+                            }
                         }
                     }
 

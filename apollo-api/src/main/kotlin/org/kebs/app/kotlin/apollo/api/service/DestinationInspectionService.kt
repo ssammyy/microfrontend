@@ -21,7 +21,10 @@ import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntit
 import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentTypesEntity
 import org.kebs.app.kotlin.apollo.store.model.di.DiUploadsEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
-import org.kebs.app.kotlin.apollo.store.repo.di.*
+import org.kebs.app.kotlin.apollo.store.repo.di.ICfsTypeCodesRepository
+import org.kebs.app.kotlin.apollo.store.repo.di.IConsignmentDocumentTypesEntityRepository
+import org.kebs.app.kotlin.apollo.store.repo.di.IDiUploadsRepository
+import org.kebs.app.kotlin.apollo.store.repo.di.IMinistryStationEntityRepository
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
@@ -84,7 +87,6 @@ class DestinationInspectionService(
         private val reportsDaoService: ReportsDaoService,
         private val privilegesRepository: IUserPrivilegesRepository,
         private val userEntityRepository: IUserRepository,
-        private val iManifestDetailsEntityRepository: IManifestDetailsEntityRepository,
         private val searchService: SearchInitialization,
 ) {
 
@@ -165,7 +167,7 @@ class DestinationInspectionService(
             if (cdStatusType.modificationAllowed != map.activeStatus) {
                 consignmentDocument.compliantDate = java.sql.Date(Date().time)
                 consignmentDocument.compliantRemarks = remarks
-                when (cdStatusType.category) {
+                when (cdStatusType.category?.toUpperCase()) {
                     "APPROVE" -> {
                         consignmentDocument.status = ConsignmentApprovalStatus.APPROVED.code
                         consignmentDocument.compliantStatus = map.activeStatus
@@ -185,14 +187,14 @@ class DestinationInspectionService(
                     }
                     else -> {
                         consignmentDocument.varField10 = "Consignment ${cdStatusType.category}"
-                        consignmentDocument.status = ConsignmentApprovalStatus.WAITING.code
+                        consignmentDocument.status = ConsignmentApprovalStatus.REJECTED.code
                         consignmentDocument.compliantStatus = map.inactiveStatus
                     }
                 }
             }
             consignmentDocument.approveRejectCdStatusType = cdStatusType
             consignmentDocument.approveRejectCdDate = Date(Date().time)
-            consignmentDocument = daoServices.updateCdDetailsInDB(consignmentDocument, commonDaoServices.findUserByUserName(supervisor))
+            consignmentDocument = daoServices.updateCDStatus(consignmentDocument, cdStatusTypeId)
             // Update Local status
             if (cdStatusType.category == "APPROVE" || cdStatusType.category == "REJECT") {
                 consignmentDocument = daoServices.updateCDStatus(consignmentDocument, cdStatusTypeId)
@@ -356,9 +358,9 @@ class DestinationInspectionService(
     fun generateCorForDocument(cdUuid: String, supervisor: String, remarks: String): Boolean {
         try {
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-            val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
+            var consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
 
-            val loggedInUser = this.commonDaoServices.findUserByUserName(supervisor)
+            var loggedInUser = this.commonDaoServices.findUserByUserName(supervisor)
             daoServices.generateCor(consignmentDocument, map, loggedInUser).let { corDetails ->
                 // Update CD
                 daoServices.updateCDStatus(
@@ -372,7 +374,8 @@ class DestinationInspectionService(
                 //Send Cor to importer
                 consignmentDocument.compliantStatus = map.activeStatus
                 consignmentDocument.localCocOrCorStatus = map.activeStatus
-                daoServices.updateCdDetailsInDB(consignmentDocument, null)
+                consignmentDocument.status = ConsignmentApprovalStatus.APPROVED.code
+                consignmentDocument = this.daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.COMPLIANCE_APPROVED)
                 //Send email to importer
                 consignmentDocument.cdImporter?.let {
                     daoServices.findCDImporterDetails(it)
@@ -602,6 +605,7 @@ class DestinationInspectionService(
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             var consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             consignmentDocument.targetStatus = map.activeStatus
+            consignmentDocument.status = ConsignmentApprovalStatus.UNDER_INSPECTION.code
             consignmentDocument.varField10 = "Target approved awaiting inspection"
             consignmentDocument.targetApproveDate = Date(Date().time)
             consignmentDocument.targetApproveRemarks = remarks
@@ -643,7 +647,8 @@ class DestinationInspectionService(
                 consignmentDocument
             }
             consignmentDocument.cocNumber = localCoc.cocNumber
-            daoServices.updateCdDetailsInDB(consignmentDocument, null)
+            consignmentDocument.status = ConsignmentApprovalStatus.APPROVED.code
+            consignmentDocument = this.daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.COMPLIANCE_APPROVED)
 
             KotlinLogging.logger { }.info("Local CoC = ${localCoc.id}")
             // Send to single window
@@ -720,7 +725,8 @@ class DestinationInspectionService(
                 val fileName = makeCocOrCoiFile(localCoi.id)
                 importer.email?.let { daoServices.sendLocalCocReportEmail(it, fileName) }
             }
-            daoServices.updateCdDetailsInDB(consignmentDocument, null)
+            consignmentDocument.status = ConsignmentApprovalStatus.APPROVED.code
+            consignmentDocument = this.daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.COMPLIANCE_APPROVED)
             // Send to SW
             daoServices.sendLocalCoi(localCoi)
             this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }

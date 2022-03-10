@@ -139,6 +139,15 @@
                                                 <div class="row">
                                                     <div class="col-md-10">
                                                         <mat-form-field class="example-full-width">
+                                                            <input matInput placeholder="Organisation"
+                                                                   value="{{actionRequest?.authorisingPersonPosition}}"
+                                                                   disabled>
+                                                        </mat-form-field>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-10">
+                                                        <mat-form-field class="example-full-width">
                                                             <input matInput placeholder="Recommendation By HOF"
                                                                    value="{{actionRequest?.comments_by_hof}}"
                                                                    disabled>
@@ -156,7 +165,7 @@
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-10">
-                                                        <li><a href="#"
+                                                        <li><a
                                                                (click)="viewPdfFile( actionRequest?.id,'CV'+actionRequest?.id, 'application/pdf')"
                                                                target="_blank">View Curriculum Vitae</a>
                                                         </li>

@@ -57,7 +57,7 @@ class MembershipToTCController(
     }
 
 
-    @PostMapping("/process")
+    @PostMapping("/membershipToTC/process")
     @ResponseBody
     fun checkState( @RequestBody id: ID): ServerResponse {
         return ServerResponse(HttpStatus.OK,"Successfully returned process history",membershipToTCService.checkProcessHistory(id))
@@ -278,7 +278,7 @@ class MembershipToTCController(
     }
 
     // View DI SDT Uploaded document
-    @GetMapping("/view/CurriculumVitae")
+    @GetMapping("/membershipToTC/view/CurriculumVitae")
     fun viewDiJustificationFile(
         response: HttpServletResponse,
         @RequestParam("draftStandardId") diDocumentId: Long,

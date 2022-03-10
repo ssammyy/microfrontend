@@ -76,7 +76,6 @@ import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileCommodi
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileContractsUndertakenEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileDirectorsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
-import org.kebs.app.kotlin.apollo.store.model.std.UserEmailHolder
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
 import org.kebs.app.kotlin.apollo.store.repo.external.ApiClientRepo
@@ -93,7 +92,6 @@ import org.springframework.util.ResourceUtils
 import org.springframework.util.StringUtils
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.function.ServerRequest
-import org.springframework.web.servlet.function.ServerResponse
 import java.io.*
 import java.math.BigDecimal
 import java.net.URLConnection
@@ -420,6 +418,14 @@ class CommonDaoServices(
                     return it
                 }
                 ?: throw ExpectedDataNotFound("Configuration With the following ID $configID, does not exist")
+    }
+
+    fun findIntegrationConfiguration(keyword: String): IntegrationConfigurationEntity {
+        configurationRepository.findByConfigKeyword(keyword)
+                ?.let {
+                    return it
+                }
+                ?: throw ExpectedDataNotFound("Configuration With the following ID $keyword, does not exist")
     }
 
     fun findManufactureWithID(manufactureID: Long): ManufacturersEntity {

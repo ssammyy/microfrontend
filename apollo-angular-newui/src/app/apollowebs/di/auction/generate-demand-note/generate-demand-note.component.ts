@@ -63,5 +63,4 @@ export class GenerateDemandNoteComponent implements OnInit {
               this.loading = false
             })
   }
-
 }

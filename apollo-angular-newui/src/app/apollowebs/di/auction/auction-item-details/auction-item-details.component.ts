@@ -2,13 +2,12 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {DestinationInspectionService} from "../../../../core/store/data/di/destination-inspection.service";
 import {MatDialog} from "@angular/material/dialog";
-import {ApproveRejectApplicationComponent} from "../../ism/approve-reject-application/approve-reject-application.component";
 import {ViewDemandNoteComponent} from "../../demand-note-list/view-demand-note/view-demand-note.component";
 import {DatePipe} from "@angular/common";
-import {AssignOfficerComponent} from "../../forms/assign-officer/assign-officer.component";
 import {AssignAuctionItemComponent} from "../assign-auction-item/assign-auction-item.component";
 import {AproveRejectAuctionItemComponent} from "../aprove-reject-auction-item/aprove-reject-auction-item.component";
 import {GenerateDemandNoteComponent} from "../generate-demand-note/generate-demand-note.component";
+import {AddAttachmentComponent} from "../add-attachment/add-attachment.component";
 
 @Component({
     selector: 'app-auction-item-details',
@@ -203,19 +202,18 @@ export class AuctionItemDetailsComponent implements OnInit {
     }
 
     uploadAuctionAttachment(event: any) {
-        if (event.target.files && event.target.files.length > 0) {
-            this.diService.uploadAuctionReport(event.target.files[0], this.requestId, "Attachment")
-                .subscribe(
-                    res => {
-                        if (res.responseCode === "00") {
-                            this.diService.showSuccess(res.message)
-                            this.loadData()
-                        } else {
-                            this.diService.showError(res.message)
-                        }
+        this.dialog.open(AddAttachmentComponent, {
+            data: {
+                requestId: this.requestId
+            }
+        }).afterClosed()
+            .subscribe(
+                res => {
+                    if (res) {
+                        this.loadData()
                     }
-                )
-        }
+                }
+            )
     }
 
     generateInvoice() {
@@ -245,6 +243,7 @@ export class AuctionItemDetailsComponent implements OnInit {
     viewDemandNote(demandNoteId: any) {
         this.dialog.open(ViewDemandNoteComponent, {
             data: {
+                general: true,
                 id: demandNoteId
             }
         })

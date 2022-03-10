@@ -146,7 +146,7 @@ class InvoiceHandlers(
             val cdDetails = daoServices.findCDWithUuid(cdUuid)
             val invoiceForm = req.body(DemandNoteForm::class.java)
             val mapErrors = mutableMapOf<Long, String>()
-            var totalItems = 0
+            val totalItems: Int
             val demandRequest = DemandNoteRequestForm()
             if (invoiceForm.includeAll) {
                 daoServices.findCDItemsListWithCDID(cdDetails).forEach { item ->
@@ -180,7 +180,7 @@ class InvoiceHandlers(
                     }
 
                 }
-                totalItems = invoiceForm.items.size ?: 0
+                totalItems = invoiceForm.items.size
             } else {
                 invoiceForm.items.forEach {
                     val item = daoServices.findItemWithItemIDAndDocument(cdDetails, it.itemId)
@@ -228,11 +228,22 @@ class InvoiceHandlers(
             demandRequest.referenceId = cdDetails.id
             val cdImporter = cdDetails.cdImporter?.let { daoServices.findCDImporterDetails(it) }
             demandRequest.name = cdImporter?.name
-            demandRequest.address = cdImporter?.physicalAddress
+            demandRequest.address = cdImporter?.email
+            demandRequest.importerPin = cdImporter?.pin
             demandRequest.phoneNumber = cdImporter?.telephone
             demandRequest.referenceNumber = cdDetails.cdStandard?.applicationRefNo
             demandRequest.ablNumber = cdDetails.cdStandard?.declarationNumber ?: "UNKNOWN"
             demandRequest.product = cdDetails.ucrNumber ?: "UNKNOWN"
+            // Add extra details
+            cdDetails.freightStation?.let {
+                demandRequest.entryPoint = it.altCfsCode ?: it.cfsCode
+                demandRequest.entryNo = it.cfsNumber ?: ""
+            }
+            cdDetails.cdTransport?.let {
+                val transport = daoServices.findCdTransportDetails(it)
+                demandRequest.courier = transport.carrier
+                demandRequest.customsOffice = transport.customOffice
+            }
             // Calculate demand note amount and save
             val demandNoteItems = mutableListOf<CdDemandNoteItemsDetailsEntity>()
             val demandNote = invoicePaymentService.generateDemandNoteWithItemList(
@@ -301,6 +312,20 @@ class InvoiceHandlers(
         }
         return ServerResponse.ok().body(response)
     }
+
+    fun submitDemandNoteRequest(req: ServerRequest): ServerResponse {
+        var response = ApiResponseModel()
+        try {
+            val invoiceId = req.pathVariable("invoiceId").toLong()
+            response = invoicePaymentService.generateOtherInvoiceBatch(invoiceId)
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to process request", ex)
+            response.message = "Invalid identifier"
+            response.responseCode = ResponseCodes.INVALID_CODE
+        }
+        return ServerResponse.ok().body(response)
+    }
+
 
     fun submitDemandNoteForApproval(req: ServerRequest): ServerResponse {
         val response = ApiResponseModel()
@@ -389,7 +414,7 @@ class InvoiceHandlers(
             val status = req.param("status")
             var transactionStatus: Int? = null
             if (status.isPresent) {
-                transactionStatus = status.get().toInt()
+                transactionStatus = status.get().toIntOrNull()
             }
             val date = req.param("date")
             val transactionNo = req.param("trx")

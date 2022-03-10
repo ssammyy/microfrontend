@@ -144,7 +144,17 @@
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-10">
-                                                            <li><a href="#"
+                                                        <mat-form-field class="example-full-width">
+                                                            <input matInput placeholder="Organisation"
+                                                                   value="{{actionRequest?.authorisingPersonPosition}}"
+                                                                   disabled>
+                                                        </mat-form-field>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-10">
+                                                        <pdf-viewer [src]="pdfSrc"></pdf-viewer>
+                                                            <li><a
                                                                    (click)="viewPdfFile( actionRequest?.id,'CV'+actionRequest?.id, 'application/pdf')"
                                                                    target="_blank">View Curriculum Vitae</a>
                                                             </li>
