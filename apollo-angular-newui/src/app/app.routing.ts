@@ -169,10 +169,12 @@ import {ApprovedMembersComponent} from "./apollowebs/standards-development/membe
 import {MembersToCreateCredentialsComponent} from "./apollowebs/standards-development/membershipToTc/members-to-create-credentials/members-to-create-credentials.component";
 import {MembersCreatedCredentialsComponent} from "./apollowebs/standards-development/membershipToTc/members-created-credentials/members-created-credentials.component";
 import {ApproveInductionComponent} from "./apollowebs/standards-development/membershipToTc/approve-induction/approve-induction.component";
-import {ApproveInductionMembersComponent} from "./apollowebs/standards-development/membershipToTc/approve-induction-members/approve-induction-members.component";
 import {StdLevyCompleteTasksComponent} from "./apollowebs/standards-levy/std-levy-complete-tasks/std-levy-complete-tasks.component";
 import {StdLevyPendingTasksComponent} from "./apollowebs/standards-levy/std-levy-pending-tasks/std-levy-pending-tasks.component";
 import {StdLevyApplicationsComponent} from "./apollowebs/standards-levy/std-levy-applications/std-levy-applications.component";
+import {UploadSacSummaryComponent} from "./apollowebs/standards-development/adoptionOfEaStds/upload-sac-summary/upload-sac-summary.component";
+import {ViewSacSummaryComponent} from "./apollowebs/standards-development/adoptionOfEaStds/view-sac-summary/view-sac-summary.component";
+import {ViewSacSummaryApprovedComponent} from "./apollowebs/standards-development/adoptionOfEaStds/view-sac-summary-approved/view-sac-summary-approved.component";
 
 export const routes: Routes = [
     {
@@ -1044,9 +1046,7 @@ export const routes: Routes = [
     },
     {
         path: 'submitApplication',
-        component: AdminLayoutComponent,
-        //canActivate: [AuthGuard],
-        children: [{path: '', component: SubmitApplicationComponent}]
+        component: SubmitApplicationComponent
     },
     {
         path: 'reviewApplication',
@@ -1123,6 +1123,34 @@ export const routes: Routes = [
     /****************************************************************
      * END OF STANDARD DEVELOPMENT - MEMBERSHIP OF TECHNICAL COMMITTEE
      ***************************************************************/
+
+    /****************************************************************
+     * ADOPTION OF EA STANDARDS
+     ***************************************************************/
+    {
+        path: 'uploadSacSummary',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: UploadSacSummaryComponent}]
+    },
+    {
+        path: 'viewSacSummary',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: ViewSacSummaryComponent}]
+    },
+    {
+        path: 'viewSacSummaryApproved',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: ViewSacSummaryApprovedComponent}]
+    },
+
+    /****************************************************************
+     * END OF STANDARD DEVELOPMENT - ADOPTION OF EA STANDARDS
+     ***************************************************************/
+
+
 
     {
         path: 'productSubCategory', component: AdminLayoutComponent,

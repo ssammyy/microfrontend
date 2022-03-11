@@ -386,11 +386,22 @@ export interface SACSummaryTask
 
 export interface SACSummary
 {
+    id: number,
+    department: string,
+    technicalCommittee: string,
     sl: string,
     ks: string,
+    title: string,
+    edition: string,
     requestedBy: string,
     issuesAddressed: string,
-    backgroundInformation: string
+    referenceMaterial: string,
+    backgroundInformation: string,
+    dateOfApproval: string,
+    approvalStatus: string,
+    feedback: string,
+    eacGazette: string,
+    authenticText: string
 }
 
 export interface HOFRecommendation
