@@ -190,6 +190,8 @@ export interface AssignCompanyTaskDTO {
     manufactureStatus: number;
     entryNumber: number;
     contactId: number;
+    taskType: number;
+    userType: number;
 
 }
 export interface VisitTask {

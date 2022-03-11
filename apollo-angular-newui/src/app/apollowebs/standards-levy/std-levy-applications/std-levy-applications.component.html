@@ -221,6 +221,12 @@
                                             <p><b>The Selected Task will be assigned to You. Click Assign to
                                                 Proceed.</b></p>
                                             <hr>
+<!--                                            <input type="hidden"-->
+<!--                                                   formControlName="taskType" name="taskType"-->
+<!--                                                   value="{{taskTypeOne}}">-->
+                                            <input type="hidden" ngModel="1"
+                                                   formControlName="taskType" name="taskType"
+                                                   value="1">
                                             <input type="hidden" ngModel="{{userId}}" formControlName="assignedTo"
                                                    name="assignedTo" value="{{userId}}">
                                             <input type="hidden" ngModel="{{actionRequestList?.entryNumber}}"
@@ -334,6 +340,9 @@
                                                 </ng-select>
 
                                             </div>
+                                            <input type="hidden" ngModel="1"
+                                                   formControlName="taskType" name="taskType"
+                                                   value="1">
                                             <input type="hidden" ngModel="{{actionRequestList?.name}}"
                                                    formControlName="companyName" name="companyName"
                                                    value="{{actionRequestList?.name}}">
@@ -443,7 +452,9 @@
                                                 </ng-select>
 
                                             </div>
-
+                                            <input type="hidden" ngModel="1"
+                                                   formControlName="taskType" name="taskType"
+                                                   value="1">
                                             <input type="hidden" ngModel="{{actionRequestList?.name}}"
                                                    formControlName="companyName" name="companyName"
                                                    value="{{actionRequestList?.name}}">

@@ -63,16 +63,19 @@ export class StdLevyApplicationsComponent implements OnInit {
     this.isShowAssignForm = !this.isShowAssignForm;
     this.isShowAssign1Form= true;
     this.isShowAssign2Form= true;
+    this.isShowEditForm=true;
   }
   toggleDisplayAssignTo1Form() {
     this.isShowAssign1Form = !this.isShowAssign1Form;
     this.isShowAssignForm=true;
     this.isShowAssign2Form= true;
+    this.isShowEditForm=true;
   }
   toggleDisplayAssignTo2Form() {
     this.isShowAssign2Form = !this.isShowAssign2Form;
     this.isShowAssignForm=true;
     this.isShowAssign1Form= true;
+    this.isShowEditForm=true;
 
   }
   toggleDisplayEditForm() {
@@ -432,6 +435,24 @@ export class StdLevyApplicationsComponent implements OnInit {
             userType: this.userType
           }
       );
+      this.assignCompanyTaskFormGroup.patchValue(
+          {
+            taskType: this.taskTypeOne,
+            userType: this.userType
+          }
+      );
+      this.assignCompanyTask1FormGroup.patchValue(
+          {
+            taskType: this.taskTypeOne,
+            userType: this.userType
+          }
+      );
+      this.assignCompanyTask2FormGroup.patchValue(
+          {
+            taskType: this.taskTypeOne,
+            userType: this.userType
+          }
+      );
     }
     if (mode==='openSchedule'){
       this.actionRequestList=manufactureLists;
@@ -450,7 +471,7 @@ export class StdLevyApplicationsComponent implements OnInit {
 
   assignCompanyTask(): void {
     this.loadingText = "Assigning Task ...."
-
+console.log(this.assignCompanyTaskFormGroup.value);
     this.SpinnerService.show();
     this.levyService.assignCompanyTasks(this.assignCompanyTaskFormGroup.value).subscribe(
         (response ) => {
@@ -471,7 +492,7 @@ export class StdLevyApplicationsComponent implements OnInit {
   }
   assignCompanyTaskOne(): void {
     this.loadingText = "Assigning Task ...."
-
+    console.log(this.assignCompanyTask1FormGroup.value);
     this.SpinnerService.show();
     this.levyService.assignCompanyTasks(this.assignCompanyTask1FormGroup.value).subscribe(
         (response) => {
@@ -519,7 +540,7 @@ export class StdLevyApplicationsComponent implements OnInit {
           console.log(response);
           this.getManufacturerList();
           this.SpinnerService.hide();
-          this.showToasterSuccess(response.httpStatus, `Company Edited`);
+          this.showToasterSuccess(response.httpStatus, `Details Edited Pending Approval`);
 
         },
         (error: HttpErrorResponse) => {
@@ -542,7 +563,7 @@ export class StdLevyApplicationsComponent implements OnInit {
           console.log(response);
           this.getManufacturerList();
           this.SpinnerService.hide();
-          this.showToasterSuccess(response.httpStatus, `Company Edited`);
+          this.showToasterSuccess(response.httpStatus, `Details Edited Pending Approval`);
 
         },
         (error: HttpErrorResponse) => {

@@ -118,13 +118,7 @@ class StandardLevyService(
 
         companyProfileEditEntity.slBpmnProcessInstance = processInstance?.processInstanceId
         companyProfileEditEntity.slBpmnProcessInstance?.let{variables.put("slBpmnProcessInstance", it)}
-//        val gson = Gson()
-//        KotlinLogging.logger { }.info { "Save Entity" + gson.toJson(variables) }
-
-
           companyProfileEditEntityRepository.save(companyProfileEditEntity)
-
-
 
         taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
             ?.let { t ->
@@ -483,7 +477,6 @@ return getUserTasks();
 
     }
 
-
     fun assignCompany(
         companyProfileEntity: CompanyProfileEntity
     ): ProcessInstanceSiteResponse {
@@ -513,7 +506,7 @@ return getUserTasks();
                     companyProfileEntity.id?.let { variables["manufacturerEntity"] = it }
                         ?: throw Exception("COMPANY NOT FOUND")
                     companyProfileEntity.userId?.let { variables["contactId"] = it }
-                    companyProfileEntity.taskType?.let { variables["taskType"] }
+                    companyProfileEntity.taskType?.let { variables["taskType"] = it }
 
                     companyProfileEntity.assignedTo = companyProfileEntity.assignedTo
                     companyProfileEntity.assignStatus = 1
@@ -522,10 +515,10 @@ return getUserTasks();
                     val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
                     companyProfileEntity.slBpmnProcessInstance = processInstance?.processInstanceId
 
+//                val gson = Gson()
+//                 KotlinLogging.logger { }.info { "Save Entity" + gson.toJson(companyProfileEntity) }
+
                     companyProfileRepo.save(companyProfileEntity)
-
-
-
                     taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
                         ?.let { t ->
                             t.list()[0]

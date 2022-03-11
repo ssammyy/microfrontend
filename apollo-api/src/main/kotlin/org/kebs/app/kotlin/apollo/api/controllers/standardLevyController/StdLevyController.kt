@@ -722,6 +722,8 @@ class StdLevyController(
             userId= assignToDTO.contactId
             taskType= assignToDTO.taskType
         }
+//        val gson = Gson()
+//        KotlinLogging.logger { }.info { "Assigned Variables" + gson.toJson(assignToDTO) }
 
         return ServerResponse(HttpStatus.OK,"Company Task Assigned",standardLevyService.assignCompany(companyProfileEntity))
 
