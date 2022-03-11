@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {DestinationInspectionService} from "../../../core/store/data/di/destination-inspection.service";
 import {MatDialog} from "@angular/material/dialog";
 import {UploadForeignFormComponent} from "./upload-foreign-form/upload-foreign-form.component";
@@ -17,6 +17,7 @@ import {PVOCService} from "../../../core/store/data/pvoc/pvoc.service";
     styleUrls: ['./consignment-document-list.component.css']
 })
 export class ConsignmentDocumentListComponent implements OnInit {
+    allowedStatuses = ["my-tasks", "completed", "ongoing", "waiting", "search-result", "not-assigned"]
     activeStatus: string = 'my-tasks';
     previousStatus: string = 'my-tasks'
     searchStatus: any
@@ -146,29 +147,38 @@ export class ConsignmentDocumentListComponent implements OnInit {
     inspectionOfficer: boolean = false
     search: Subject<string>
 
-    constructor(private store$: Store<any>, private dialog: MatDialog, private router: Router, private diService: DestinationInspectionService, private pvocService: PVOCService) {
+    constructor(private store$: Store<any>, private dialog: MatDialog, private  activeRoute: ActivatedRoute, private router: Router, private diService: DestinationInspectionService, private pvocService: PVOCService) {
     }
 
     ngOnInit(): void {
         this.documentTypeUuid = null;
-        this.loadTypes(() => {
-            this.search = new Subject<string>()
-            this.search.pipe(
-                debounce((keyword) => interval(500))
-            ).subscribe(
-                res => {
-                    console.log(res)
-                    this.searchDocuments(res)
+        this.activeRoute.queryParamMap.subscribe(res => {
+            if (res.has("tab")) {
+                this.previousStatus = this.activeStatus
+                if (res.get("tab") in this.allowedStatuses) {
+                    this.activeStatus = res.get("tab")
                 }
-            )
-            this.loadData(this.documentTypeUuid, 0, this.defaultPageSize);
+            }
+            console.log(this.activeStatus)
+            this.loadTypes(() => {
+                this.search = new Subject<string>()
+                this.search.pipe(
+                    debounce((keyword) => interval(500))
+                ).subscribe(
+                    res => {
+                        console.log(res)
+                        this.searchDocuments(res)
+                    }
+                )
+                this.loadData(this.documentTypeUuid, 0, this.defaultPageSize);
+            })
+            this.loadPartners()
+            this.store$.select(selectUserInfo)
+                .subscribe((u) => {
+                    this.supervisorCharge = this.diService.hasRole(['DI_OFFICER_CHARGE_READ'], u.roles)
+                    this.inspectionOfficer = this.diService.hasRole(['DI_INSPECTION_OFFICER_READ'], u.roles)
+                });
         })
-        this.loadPartners()
-        this.store$.select(selectUserInfo)
-            .subscribe((u) => {
-                this.supervisorCharge = this.diService.hasRole(['DI_OFFICER_CHARGE_READ'], u.roles)
-                this.inspectionOfficer = this.diService.hasRole(['DI_INSPECTION_OFFICER_READ'], u.roles)
-            });
     }
 
     loadPartners() {
@@ -338,6 +348,11 @@ export class ConsignmentDocumentListComponent implements OnInit {
         this.searchStatus = null
         if (status !== this.activeStatus) {
             this.activeStatus = status;
+            this.router.navigate([], {
+                queryParams: {
+                    tab: status
+                }
+            })
             this.loadData(this.documentTypeUuid, 0, this.defaultPageSize)
         }
     }

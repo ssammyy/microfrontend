@@ -143,6 +143,17 @@ export class ViewDemandNoteComponent implements OnInit {
         )
     }
 
+    formatPostingStatus(status: number) {
+        switch (status) {
+            case 1:
+                return "POSTED"
+            case -1:
+                return "POSTING FAILED"
+            default:
+                return "PENDING"
+        }
+    }
+
     onCustomAction(action) {
 
     }

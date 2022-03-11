@@ -62,6 +62,16 @@ data class EditCompanyTaskToDTO(
     var physicalAddress: String? = null,
     var ownership: String? = null,
     var companyId: Long? = null,
+    var taskType: Long? = null,
+    var assignedTo: Long? = null,
+    var userType: Long? = null,
+    var processId: String?= null,
+    var taskId: String? = null,
+    var accentTo: Boolean? = null,
+    var companyName: String? = null,
+    var kraPin: String? = null,
+    var registrationNumber: String? = null,
+    var entryNumber: String? = null
 )
 data class AssignCompanyTaskToDTO(
     var manufacturerEntity: Long? = null,

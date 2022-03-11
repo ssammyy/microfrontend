@@ -181,10 +181,7 @@
                                         <button (click)=toggleDisplayEditForm() type="button"
                                                 class="btn btn-info btn-sm">Edit Company Details
                                         </button>
-                                        <button (click)=toggleDisplayEditedForm(actionRequestList.id) type="button"
-                                                class="btn btn-warning btn-sm">Approve Edited Company
-                                        </button>
-                                        <!--                                                                                            //Changes for code test-->
+                                                                                                                                  //Changes for code test-->
 
                                     </div>
 
@@ -198,9 +195,9 @@
                                         <button (click)=toggleDisplayEditForm() type="button"
                                                 class="btn btn-info btn-sm">Edit Company Details
                                         </button>
-                                        <button (click)=toggleDisplayEditedForm(actionRequestList.id) type="button"
-                                                class="btn btn-warning btn-sm">Approve Edited Company
-                                        </button>
+<!--                                        <button (click)=toggleDisplayEditedForm(actionRequestList.id) type="button"-->
+<!--                                                class="btn btn-warning btn-sm">Approve Edited Company-->
+<!--                                        </button>-->
 
                                     </div>
                                     <div *ngIf="roles?.includes('SL_IS_CHIEF_MANAGER')">
@@ -210,9 +207,9 @@
                                         <button (click)=toggleDisplayEditForm() type="button"
                                                 class="btn btn-info btn-sm">Edit Company Details
                                         </button>
-                                        <button (click)=toggleDisplayEditedForm(actionRequestList.id) type="button"
-                                                class="btn btn-warning btn-sm">Approve Edited Company
-                                        </button>
+<!--                                        <button (click)=toggleDisplayEditedForm(actionRequestList.id) type="button"-->
+<!--                                                class="btn btn-warning btn-sm">Approve Edited Company-->
+<!--                                        </button>-->
 
                                     </div>
 
@@ -224,6 +221,12 @@
                                             <p><b>The Selected Task will be assigned to You. Click Assign to
                                                 Proceed.</b></p>
                                             <hr>
+<!--                                            <input type="hidden"-->
+<!--                                                   formControlName="taskType" name="taskType"-->
+<!--                                                   value="{{taskTypeOne}}">-->
+                                            <input type="hidden" ngModel="1"
+                                                   formControlName="taskType" name="taskType"
+                                                   value="1">
                                             <input type="hidden" ngModel="{{userId}}" formControlName="assignedTo"
                                                    name="assignedTo" value="{{userId}}">
                                             <input type="hidden" ngModel="{{actionRequestList?.entryNumber}}"
@@ -337,6 +340,9 @@
                                                 </ng-select>
 
                                             </div>
+                                            <input type="hidden" ngModel="1"
+                                                   formControlName="taskType" name="taskType"
+                                                   value="1">
                                             <input type="hidden" ngModel="{{actionRequestList?.name}}"
                                                    formControlName="companyName" name="companyName"
                                                    value="{{actionRequestList?.name}}">
@@ -446,7 +452,9 @@
                                                 </ng-select>
 
                                             </div>
-
+                                            <input type="hidden" ngModel="1"
+                                                   formControlName="taskType" name="taskType"
+                                                   value="1">
                                             <input type="hidden" ngModel="{{actionRequestList?.name}}"
                                                    formControlName="companyName" name="companyName"
                                                    value="{{actionRequestList?.name}}">
@@ -529,6 +537,18 @@
                                             <div class="form-body">
                                                 <div class="row">
                                                     <div class="form-group col-12">
+                                                        <input type="hidden" ngModel="{{actionRequestList?.name}}"
+                                                               formControlName="companyName" name="companyName"
+                                                               value="{{actionRequestList?.name}}">
+                                                        <input type="hidden" ngModel="{{actionRequestList?.kraPin}}"
+                                                               formControlName="kraPin" name="kraPin"
+                                                               value="{{actionRequestList?.kraPin}}">
+                                                        <input type="hidden" ngModel="{{actionRequestList?.registrationNumber}}"
+                                                               formControlName="registrationNumber" name="registrationNumber"
+                                                               value="{{actionRequestList?.registrationNumber}}">
+                                                        <input type="hidden" ngModel="{{actionRequestList?.entryNumber}}"
+                                                               formControlName="entryNumber" name="entryNumber"
+                                                               value="{{actionRequestList?.entryNumber}}">
                                                         <label for="physicalAddress">Main Physical Location <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="hidden" ngModel="{{actionRequestList?.id}}"
@@ -567,6 +587,39 @@
                                                             <ng-option value="Limited_Company">Limited Company
                                                             </ng-option>
 
+                                                        </ng-select>
+                                                        <input type="hidden"
+                                                               formControlName="taskType" name="taskType"
+                                                               value="{{taskTypeTwo}}">
+                                                        <input type="hidden"
+                                                               formControlName="userType" name="userType"
+                                                               value="{{userType}}">
+                                                    </div>
+                                                    <div *ngIf="roles?.includes('SL_IS_PL_OFFICER')" class="form-group col-12">
+                                                        <label>Forward To</label>
+                                                        <ng-select [(ngModel)]="approvedUsersOne" formControlName="assignedTo"  class="form-control"  name="assignedTo" >
+                                                            <ng-option *ngFor="let user of approveUsersOne" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
+                                                        </ng-select>
+                                                    </div>
+                                                    <div *ngIf="roles?.includes('SL_IS_ASST_MANAGER')" class="form-group col-12">
+                                                        <label>Forward To</label>
+                                                        <ng-select [(ngModel)]="approvedUsersTwo" formControlName="assignedTo"  class="form-control"  name="assignedTo" >
+                                                            <ng-option *ngFor="let user of approveUsersTwo" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
+                                                        </ng-select>
+                                                    </div>
+                                                    <div *ngIf="roles?.includes('SL_IS_MANAGER')" class="form-group col-12">
+                                                        <label>Forward To</label>
+                                                        <ng-select [(ngModel)]="approvedUsersThree" formControlName="assignedTo"  class="form-control"  name="assignedTo" >
+                                                            <ng-option *ngFor="let user of approveUsersThree" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
+                                                        </ng-select>
+                                                    </div>
+                                                    <div *ngIf="roles?.includes('SL_IS_CHIEF_MANAGER')"
+                                                         class="form-group col-12">
+                                                        <label>Forward To</label>
+                                                        <ng-select [(ngModel)]="assignedUsersThree" formControlName="assignedTo"
+                                                                   class="form-control"  name="assignedTo">
+                                                            <ng-option *ngFor="let user of assignUsersThree"
+                                                                       [value]="user.id">{{user.firstName}} {{user.lastName}}</ng-option>
                                                         </ng-select>
 
                                                     </div>
