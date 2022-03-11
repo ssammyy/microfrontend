@@ -1306,7 +1306,7 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="reportNotification1ExampleModalLabel">Approve / Reject Report</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <button type="button" class="close" #closeModalReportOne data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
@@ -1770,7 +1770,7 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="managementReportExampleModalLabel">Approve / Reject Report</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <button type="button" class="close" #closeModalManagement data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
@@ -2086,7 +2086,7 @@
                                             </div>
                                             <div class="container col-md-12" [hidden]="isShowRejectForm1">
                                                 <h4 style="color: red"><b>Reject Report</b></h4>
-                                                <form (ngSubmit)="onDecisionReject()" [formGroup]="rejectFormGroup" class="form">
+                                                <form (ngSubmit)="onDecisionRejectTwo()" [formGroup]="rejectFormGroup" class="form">
                                                     <div class="form-body">
 
                                                         <div class="row">
@@ -2216,7 +2216,7 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="reportNotification2ExampleModalLabel">Approve / Reject Report</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <button type="button" class="close" #closeModalReportTwo data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
@@ -2675,7 +2675,7 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="draftFeedbackExampleModalLabel">Draft Feedback</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <button type="button" class="close" #closeModalFeedback data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>

@@ -718,6 +718,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
           console.log(error.message);
         }
     );
+    this.hideModelCloseModalReportOne();
   }
 
   onDecisionReject(): void {
@@ -737,7 +738,28 @@ export class StdLevyPendingTasksComponent implements OnInit {
           console.log(error.message);
         }
     );
+      this.hideModelCloseModalReportOne();
   }
+
+    onDecisionRejectTwo(): void {
+        this.loadingText = "Rejecting Report...";
+        this.SpinnerService.show();
+        this.levyService.levelOneDecisionOnReport(this.rejectFormGroup.value).subscribe(
+            (response ) => {
+                console.log(response);
+                this.getMnPendingTask();
+                this.SpinnerService.hide();
+                this.showToasterSuccess(response.httpStatus, `Report Rejected`);
+                this.rejectFormGroup.reset();
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Rejecting Report; Try Again`);
+                console.log(error.message);
+            }
+        );
+        this.hideModelCloseModalManagement();
+    }
 
 
 
@@ -775,6 +797,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
           console.log(error.message);
         }
     );
+    this.hideModelCloseModalReportTwo();
   }
 
   onDecisionTwo(): void {
@@ -794,6 +817,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
           console.log(error.message);
         }
     );
+    this.hideModelCloseModalManagement();
   }
 
   onDecisionRejectLevelTwo(): void {
@@ -813,6 +837,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
           console.log(error.message);
         }
     );
+    this.hideModelCloseModalReportTwo();
   }
 
 
@@ -834,6 +859,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
           console.log(error.message);
         }
     );
+    this.hideModelCloseModalFeedback();
   }
     approveCompanyLevelOne(): void {
       console.log(this.approveCompanyLevelOneFormGroup.value)
@@ -1022,4 +1048,28 @@ export class StdLevyPendingTasksComponent implements OnInit {
   public hideModelCloseModalSiteVisit() {
     this.closeModalSiteVisit?.nativeElement.click();
   }
+
+    @ViewChild('closeModalReportOne') private closeModalReportOne: ElementRef | undefined;
+
+    public hideModelCloseModalReportOne() {
+        this.closeModalReportOne?.nativeElement.click();
+    }
+
+    @ViewChild('closeModalManagement') private closeModalManagement: ElementRef | undefined;
+
+    public hideModelCloseModalManagement() {
+        this.closeModalManagement?.nativeElement.click();
+    }
+
+    @ViewChild('closeModalReportTwo') private closeModalReportTwo: ElementRef | undefined;
+
+    public hideModelCloseModalReportTwo() {
+        this.closeModalReportTwo?.nativeElement.click();
+    }
+
+    @ViewChild('closeModalFeedback') private closeModalFeedback: ElementRef | undefined;
+
+    public hideModelCloseModalFeedback() {
+        this.closeModalFeedback?.nativeElement.click();
+    }
 }
