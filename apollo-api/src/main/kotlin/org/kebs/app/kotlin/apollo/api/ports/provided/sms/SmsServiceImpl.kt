@@ -46,6 +46,7 @@ class SmsServiceImpl(
         val request = HttpEntity(map, headers)
         //Make request
         try {
+            KotlinLogging.logger { }.debug("SMS: $message")
             val response: ResponseEntity<String> = restTemplate.postForEntity<String>(
                 url, request, String::class.java)
             KotlinLogging.logger {  }.info { "Response received: ${response}" }

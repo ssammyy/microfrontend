@@ -68,18 +68,23 @@ class SageRequest {
 
     companion object {
         fun fromEntity(dn: CdDemandNoteEntity): SageRequest {
-            return SageRequest().apply {
+            val req = SageRequest().apply {
                 customerName = dn.nameImporter
                 documentDate = dn.dateGenerated
                 shippingAgent = dn.shippingAgent ?: "UNKNOWN"
                 customerTelephone = dn.telephone
                 emailAddress = dn.address
                 entryNo = dn.entryNo ?: ""
-                entryPoint = dn.entryPoint ?: "KSM"
-                courier = dn.courier ?: ""
+                courier = ""
                 otherInfo = dn.currency
                 totalAmount = dn.totalAmount ?: BigDecimal.ZERO
             }
+            // Only applicable to JKA
+            if ("JKA".equals(dn.shippingAgent, true)) {
+                req.entryPoint = dn.entryPoint ?: "KSM"
+                req.courier = dn.courier ?: ""
+            }
+            return req
         }
     }
 }

@@ -33,7 +33,7 @@ export class DemandNoteListComponent implements OnInit {
         noDataMessage: 'No data found',
         columns: {
             demandNoteNumber: {
-                title: 'DEMAND NOTE NUMBER',
+                title: 'REFERENCE NUMBER',
                 type: 'string'
             },
             dateGenerated: {

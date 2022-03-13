@@ -129,51 +129,54 @@ class DestinationInspectionBpmn(
         KotlinLogging.logger { }.info { "approveRejectCdStatusType = ${form.cdStatusTypeId}" }
         val cdStatusType = form.cdStatusTypeId?.let { daoServices.findCdStatusValue(it) }
         if (cdStatusType != null) {
-            cdStatusType.let {
-                val status: ConsignmentDocumentStatus
-                when (cdStatusType.category) {
-                    "APPROVE" -> {
-                        status = ConsignmentDocumentStatus.APPROVE_REQUEST
-                    }
-                    "REJECT" -> {
-                        status = ConsignmentDocumentStatus.REJECT_REQUEST
-                    }
-                    "QUERY" -> {
-                        status = ConsignmentDocumentStatus.QUERY_REQUEST
-                    }
-                    "AMENDMENT" -> {
-                        status = ConsignmentDocumentStatus.REJ_AMEND_REQUEST
-                    }
-                    "ONHOLD" -> {
-                        status = ConsignmentDocumentStatus.ON_HOLD
-                    }
-                    else -> throw ExpectedDataNotFound("Invalid transaction status: ${cdStatusType.category}")
+            val status: ConsignmentDocumentStatus
+            when (cdStatusType.category) {
+                "APPROVE" -> {
+                    status = ConsignmentDocumentStatus.APPROVE_REQUEST
                 }
-                // Update process status
-                consignmentDocument = daoServices.updateCDStatus(consignmentDocument, status)
-                // Add process variables
-                val processProperties = mutableMapOf<String, Any?>()
-                val loggedInUser = this.commonDaoServices.getLoggedInUser()
-                processProperties.put("cdUuid", cdUuid)
-                processProperties.put("supervisor", consignmentDocument.assigner?.userName
-                        ?: loggedInUser?.userName)
-                processProperties.put("cfs_code", consignmentDocument.freightStation?.cfsCode)
-                processProperties.put("remarks", form.remarks)
-                processProperties.put("activeStatus", map.activeStatus)
-                processProperties.put("cdStatusTypeId", it.id)
-                processProperties.put("consignmentDocumentApproved", it.category == "APPROVED")
-                // Attach Process to consignment
-                val processInstance = runtimeService.startProcessInstanceByKey("updateConsignmentStatus", processProperties)
-                consignmentDocument.varField9 = processInstance.processDefinitionId
-                consignmentDocument.varField8 = processInstance.id
-                consignmentDocument.diProcessInstanceId = processInstance.id
-                consignmentDocument.diProcessStatus = map.activeStatus
-                consignmentDocument.status = ConsignmentApprovalStatus.WAITING.code
-                this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
-
-                response.responseCode = ResponseCodes.SUCCESS_CODE
-                response.message = "Success"
+                "REJECT" -> {
+                    status = ConsignmentDocumentStatus.REJECT_REQUEST
+                }
+                "QUERY" -> {
+                    status = ConsignmentDocumentStatus.QUERY_REQUEST
+                }
+                "AMENDMENT" -> {
+                    status = ConsignmentDocumentStatus.REJ_AMEND_REQUEST
+                }
+                "ONHOLD" -> {
+                    status = ConsignmentDocumentStatus.ON_HOLD
+                }
+                else -> throw ExpectedDataNotFound("Invalid transaction status: ${cdStatusType.category}")
             }
+            // Update process status
+            consignmentDocument = daoServices.updateCDStatus(consignmentDocument, status)
+            // Add process variables
+            KotlinLogging.logger { }.info("Updated the process status to: ${status.name}")
+            val processProperties = mutableMapOf<String, Any?>()
+            val loggedInUser = this.commonDaoServices.getLoggedInUser()
+            processProperties.put("cdUuid", cdUuid)
+            processProperties.put("supervisor", consignmentDocument.assigner?.userName
+                    ?: loggedInUser?.userName)
+            processProperties.put("cfs_code", consignmentDocument.freightStation?.cfsCode)
+            processProperties.put("remarks", form.remarks)
+            processProperties.put("activeStatus", map.activeStatus)
+            processProperties.put("cdStatusTypeId", form.cdStatusTypeId ?: 0)
+            processProperties.put("consignmentDocumentApproved", cdStatusType.category == "APPROVED")
+            // Attach Process to consignment'
+            KotlinLogging.logger { }.info("Starting bpm process: ${cdStatusType.category}")
+            val processInstance = runtimeService.startProcessInstanceByKey("updateConsignmentStatus", processProperties)
+            Thread.sleep(5000)
+            consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
+            consignmentDocument.varField9 = processInstance.processDefinitionId
+            consignmentDocument.varField8 = processInstance.id
+            consignmentDocument.diProcessInstanceId = processInstance.id
+            consignmentDocument.diProcessStatus = map.activeStatus
+            consignmentDocument.modifiedOn = commonDaoServices.getTimestamp()
+
+            this.daoServices.updateCdDetailsInDB(consignmentDocument, this.commonDaoServices.getLoggedInUser())
+
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+            response.message = "Success"
         } else {
             response.responseCode = ResponseCodes.FAILED_CODE
             response.message = "Please select approval status"

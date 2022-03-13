@@ -519,10 +519,6 @@ class InvoicePaymentService(
                     //Call Function to add Item Details To be attached To The Demand note
                     form.items?.forEach {
                         items.add(addItemDetailsToDemandNote(it, demandNote, map, form.presentment, user))
-                        //Calculate the total Amount for Items In one Cd Tobe paid For
-//                        if (!presentment) {
-//                            demandNoteUpDatingCDAndItem(it, user, demandNote)
-//                        }
                     }
                     if (!form.presentment) {
                         demandNote = calculateTotalAmountDemandNote(demandNote, user, form.presentment)
@@ -594,9 +590,10 @@ class InvoicePaymentService(
         var amount: BigDecimal? = null
         KotlinLogging.logger { }.info("$feeType CFI AMOUNT BEFORE CALCULATION = $currencyCode-$cfiValue")
         //2. Calculate based on the ranges provided
+        demandNoteItem.rate = "0.00"
         when (feeType) {
             "PERCENTAGE" -> {
-                demandNoteItem.rate = rate?.setScale(0, RoundingMode.UP)?.toString()
+                demandNoteItem.rate = rate?.setScale(2, RoundingMode.UP)?.toString()
                 amount = cfiValue.multiply(rate).divide(percentage.toBigDecimal())
                 demandNoteItem.amountPayable = BigDecimal(amount?.toDouble() ?: 0.0)
                 KotlinLogging.logger { }.info("$feeType MY AMOUNT BEFORE CALCULATION = $currencyCode-$amount")
@@ -629,6 +626,7 @@ class InvoicePaymentService(
             "FIXED" -> {
                 amount = fixedAmount
                 KotlinLogging.logger { }.info("FIXED AMOUNT BEFORE CALCULATION = $fixedAmount")
+                demandNoteItem.amountPayable = BigDecimal.ZERO
                 demandNoteItem.adjustedAmount = fixedAmount.setScale(2, RoundingMode.UP)
                 demandNoteItem.amountPayable = fixedAmount.setScale(2, RoundingMode.UP)
             }
@@ -723,12 +721,19 @@ class InvoicePaymentService(
         demandNoteCalculation(demandNoteItem, fee, "KES", itemDetails.route, itemDetails.itemId)
         // Skip saving for presentment
         if (!presentment) {
-            iDemandNoteItemRepo.save(demandNoteItem)
-            return demandNoteItem
+            return iDemandNoteItemRepo.save(demandNoteItem)
+        }
+        var calculatedAmount = BigDecimal.ZERO
+        try {
+            val d = demandNote.varField4?.toBigDecimal() ?: BigDecimal.ZERO
+            calculatedAmount = d
+        } catch (ignored: Exception) {
         }
         // Add this for presentment purposes
         demandNote.totalAmount = demandNote.totalAmount?.plus(demandNoteItem.adjustedAmount ?: BigDecimal.ZERO)
         demandNote.amountPayable = demandNote.amountPayable?.plus(demandNoteItem.amountPayable ?: BigDecimal.ZERO)
+        calculatedAmount = calculatedAmount.plus(demandNoteItem.amountPayable ?: BigDecimal.ZERO)
+        demandNote.varField4 = calculatedAmount.setScale(2, RoundingMode.UP).toString()
         demandNote.cfvalue = demandNote.cfvalue?.plus(demandNote.cfvalue ?: BigDecimal.ZERO)
         return demandNoteItem
     }
@@ -743,9 +748,9 @@ class InvoicePaymentService(
         demandNote.totalAmount = BigDecimal.ZERO
         demandNote.cfvalue = BigDecimal.ZERO
         iDemandNoteItemRepo.findByDemandNoteId(demandNote.id!!).forEach { demandNoteItem ->
-            demandNote.amountPayable = demandNote.amountPayable?.plus(demandNoteItem.adjustedAmount
+            demandNote.amountPayable = demandNote.amountPayable?.plus(demandNoteItem.amountPayable
                     ?: BigDecimal.ZERO)
-            demandNote.totalAmount = demandNote.totalAmount?.plus(demandNoteItem.amountPayable
+            demandNote.totalAmount = demandNote.totalAmount?.plus(demandNoteItem.adjustedAmount
                     ?: BigDecimal.ZERO)
             demandNote.cfvalue = demandNote.cfvalue?.plus(demandNoteItem.cfvalue
                     ?: BigDecimal.ZERO)

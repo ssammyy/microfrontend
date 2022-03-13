@@ -202,7 +202,7 @@ class SFTPService(
                     .warn("UCR Res Document not linked: $baseDocRefNo | UcrNumber: $ucrNumber|", ex)
         }
         // Update IDF number on consignment
-        this.destinationInspectionDaoServices.updateIdfNumber(ucrNumber, baseDocRefNo)
+        this.destinationInspectionDaoServices.updateIdfNumber(ucrNumber, baseDocRefNo, ucrNumberMessage.data?.dataIn?.version)
     }
 
     fun processAirManifestDocument(exchange: Exchange) {

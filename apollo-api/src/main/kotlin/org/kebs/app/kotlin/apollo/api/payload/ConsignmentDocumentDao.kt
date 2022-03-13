@@ -334,6 +334,7 @@ class CdItemDetailsDao {
                 unitPriceNcy = item.unitPriceNcy
                 totalPriceFcy = item.totalPriceFcy
                 unitPriceFcy = item.unitPriceFcy
+                foreignCurrencyCode = item.foreignCurrencyCode
             }
             dt.ministrySubmitted = item.ministrySubmissionStatus == 1
             // Other details
@@ -351,7 +352,6 @@ class CdItemDetailsDao {
                     applicantRemarks = item.applicantRemarks
                     productClassCode = item.productClassCode
                     productClassDescription = item.productClassDescription
-                    foreignCurrencyCode = item.foreignCurrencyCode
                 }
             }
             return dt
