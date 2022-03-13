@@ -26,6 +26,8 @@ export class StdLevyApplicationsComponent implements OnInit {
   roles: string[];
   userType: number;
   levelOne = false;
+  taskTypeOne: number;
+  taskTypeTwo: number;
 
   public users !: UsersEntity[];
   public approveUsersOne !: UsersEntity[];
@@ -61,16 +63,19 @@ export class StdLevyApplicationsComponent implements OnInit {
     this.isShowAssignForm = !this.isShowAssignForm;
     this.isShowAssign1Form= true;
     this.isShowAssign2Form= true;
+    this.isShowEditForm=true;
   }
   toggleDisplayAssignTo1Form() {
     this.isShowAssign1Form = !this.isShowAssign1Form;
     this.isShowAssignForm=true;
     this.isShowAssign2Form= true;
+    this.isShowEditForm=true;
   }
   toggleDisplayAssignTo2Form() {
     this.isShowAssign2Form = !this.isShowAssign2Form;
     this.isShowAssignForm=true;
     this.isShowAssign1Form= true;
+    this.isShowEditForm=true;
 
   }
   toggleDisplayEditForm() {
@@ -124,33 +129,41 @@ export class StdLevyApplicationsComponent implements OnInit {
     this.getManufacturerList();
     this.getUserRoles();
     this.getUserData();
+    this.taskTypeOne=1;
+    this.taskTypeTwo=2;
 
-    // this.dtOptions[0] = {
-    //   pagingType: 'full_numbers',
-    //   pageLength: 10,
-    //   processing: true
-    // };
 
     if(this.roles?.includes('SL_IS_PL_OFFICER')){
       this.getApproveLevelOne();
+      this.userType=61;
     }
     if(this.roles?.includes('SL_IS_ASST_MANAGER')){
       this.getApproveLevelTwo();
       this.getAssignLevelOne();
+      this.userType=62;
     }
     if(this.roles?.includes('SL_IS_MANAGER')){
       this.getApproveLevelThree();
-      this.getAssignLevelTwo()
+      this.getAssignLevelTwo();
+      this.userType=62;
     }
     if(this.roles?.includes('SL_IS_CHIEF_MANAGER')){
-      this.getAssignLevelThree()
+      this.getAssignLevelThree();
+      this.userType=62;
     }
 
     this.editCompanyFormGroup = this.formBuilder.group({
       postalAddress: [],
       physicalAddress: [],
       companyId: [],
-      ownership: []
+      ownership: [],
+      assignedTo: [],
+      userType: [],
+      taskType: [],
+      companyName: [],
+      kraPin: [],
+      registrationNumber: [],
+      entryNumber: []
 
     });
 
@@ -158,7 +171,9 @@ export class StdLevyApplicationsComponent implements OnInit {
       postalAddress: [],
       physicalAddress: [],
       companyId: [],
-      ownership: []
+      ownership: [],
+      userType:[],
+      taskType:[]
 
     });
     this.assignCompanyTaskFormGroup = this.formBuilder.group({
@@ -185,7 +200,9 @@ export class StdLevyApplicationsComponent implements OnInit {
       town: [],
       manufactureStatus: [],
       entryNumber: [],
-      contactId: []
+      contactId: [],
+      userType:[],
+      taskType:[]
 
     });
     this.assignCompanyTask1FormGroup = this.formBuilder.group({
@@ -212,7 +229,9 @@ export class StdLevyApplicationsComponent implements OnInit {
       town: [],
       manufactureStatus: [],
       entryNumber: [],
-      contactId: []
+      contactId: [],
+      userType:[],
+      taskType:[]
 
     });
     this.assignCompanyTask2FormGroup = this.formBuilder.group({
@@ -239,7 +258,9 @@ export class StdLevyApplicationsComponent implements OnInit {
       town: [],
       manufactureStatus: [],
       entryNumber: [],
-      contactId: []
+      contactId: [],
+      userType:[],
+      taskType:[]
 
     });
 
@@ -408,6 +429,30 @@ export class StdLevyApplicationsComponent implements OnInit {
     if (mode==='viewList'){
       this.actionRequestList=manufactureLists;
       button.setAttribute('data-target','#viewList');
+      this.editCompanyFormGroup.patchValue(
+          {
+            taskType: this.taskTypeTwo,
+            userType: this.userType
+          }
+      );
+      this.assignCompanyTaskFormGroup.patchValue(
+          {
+            taskType: this.taskTypeOne,
+            userType: this.userType
+          }
+      );
+      this.assignCompanyTask1FormGroup.patchValue(
+          {
+            taskType: this.taskTypeOne,
+            userType: this.userType
+          }
+      );
+      this.assignCompanyTask2FormGroup.patchValue(
+          {
+            taskType: this.taskTypeOne,
+            userType: this.userType
+          }
+      );
     }
     if (mode==='openSchedule'){
       this.actionRequestList=manufactureLists;
@@ -426,7 +471,7 @@ export class StdLevyApplicationsComponent implements OnInit {
 
   assignCompanyTask(): void {
     this.loadingText = "Assigning Task ...."
-
+console.log(this.assignCompanyTaskFormGroup.value);
     this.SpinnerService.show();
     this.levyService.assignCompanyTasks(this.assignCompanyTaskFormGroup.value).subscribe(
         (response ) => {
@@ -447,7 +492,7 @@ export class StdLevyApplicationsComponent implements OnInit {
   }
   assignCompanyTaskOne(): void {
     this.loadingText = "Assigning Task ...."
-
+    console.log(this.assignCompanyTask1FormGroup.value);
     this.SpinnerService.show();
     this.levyService.assignCompanyTasks(this.assignCompanyTask1FormGroup.value).subscribe(
         (response) => {
@@ -495,7 +540,7 @@ export class StdLevyApplicationsComponent implements OnInit {
           console.log(response);
           this.getManufacturerList();
           this.SpinnerService.hide();
-          this.showToasterSuccess(response.httpStatus, `Company Edited`);
+          this.showToasterSuccess(response.httpStatus, `Details Edited Pending Approval`);
 
         },
         (error: HttpErrorResponse) => {
@@ -518,7 +563,7 @@ export class StdLevyApplicationsComponent implements OnInit {
           console.log(response);
           this.getManufacturerList();
           this.SpinnerService.hide();
-          this.showToasterSuccess(response.httpStatus, `Company Edited`);
+          this.showToasterSuccess(response.httpStatus, `Details Edited Pending Approval`);
 
         },
         (error: HttpErrorResponse) => {

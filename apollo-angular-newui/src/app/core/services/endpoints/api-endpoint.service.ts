@@ -21,6 +21,7 @@ export class ApiEndpointService {
         // LOCAL_DEV: '12:8006'
         // LOCAL_DEV: '41.72.209.58:8006'
         LOCAL_DEV: `kimsint.kebs.org:8006`
+        //  LOCAL_DEV: `kimsint.kebs.org:8006`
         // LOCAL_DEV: `kims.kebs.org`
         // LOCAL_DEV: '10.10.0.149:8007'
     };
@@ -461,6 +462,8 @@ export class ApiEndpointService {
         STD_LEVY_LIST_OF_USERS_LV: `${ApiEndpointService.STL_CONTEXT}/getSlLvTwoList`,
         STD_LEVY_MANUFACTURE_ROLES: `${ApiEndpointService.STL_CONTEXT}/getRoleByUserId`,
         STD_LEVY_EDIT_COMPANY: `${ApiEndpointService.STL_CONTEXT}/editCompanyDetails`,
+        STD_LEVY_EDIT_COMPANY_LEVEL_ONE: `${ApiEndpointService.STL_CONTEXT}/editCompanyDetailsConfirmLvlOne`,
+        STD_LEVY_EDIT_COMPANY_LEVEL_TWO: `${ApiEndpointService.STL_CONTEXT}/editCompanyDetailsConfirmLvlTwo`,
         STD_LEVY_EDITED_COMPANY_DATA: `${ApiEndpointService.STL_CONTEXT}/getCompanyEditedDetails`,
         STD_LEVY_COMPANY_EDIT_COMPANY_DATA: `${ApiEndpointService.STL_CONTEXT}/editCompanyDetailsConfirm`,
         STD_LEVY_NOTIFICATION_FORM_STATUS: `${ApiEndpointService.STL_CONTEXT}/getSLNotificationStatus`,

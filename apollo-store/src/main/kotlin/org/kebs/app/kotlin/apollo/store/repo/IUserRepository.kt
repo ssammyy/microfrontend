@@ -305,7 +305,7 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     fun findCompanyByUserId(userId: Long): MutableList<CompanyProfileEntity>
     fun findAllByFirmCategoryAndStatus(firmCategory: Long, status: Int): List<CompanyProfileEntity>?
 
-    @Query(value = "SELECT *  FROM DAT_KEBS_COMPANY_PROFILE WHERE ASSIGN_STATUS='0'", nativeQuery = true)
+    @Query(value = "SELECT * FROM DAT_KEBS_COMPANY_PROFILE  WHERE ASSIGN_STATUS='0'", nativeQuery = true)
     fun getManufacturerList(): MutableList<CompanyProfileEntity>
 
     @Query(
@@ -554,6 +554,14 @@ interface CompanyProfileEditEntityRepository : HazelcastRepository<CompanyProfil
     fun findAllByManufactureId(manufactureId: Long): CompanyProfileEditEntity
 
     fun findFirstByManufactureIdOrderByIdDesc(manufactureId: Long): CompanyProfileEditEntity
+
+    @Query(
+        "SELECT SL_BPMN_PROCESS_INSTANCE FROM DAT_KEBS_COMPANY_PROFILE_EDIT  WHERE MANUFACTURE_ID=:manufactureId AND STATUS='1' ",
+        nativeQuery = true
+    )
+    fun findStatusByManufactureId(manufactureId: Long): CompanyProfileEditEntity
+
+
 
 }
 

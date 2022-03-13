@@ -134,7 +134,12 @@
                                             <td *ngIf="manufacturePendingTask.name==='View The Report'"><span class="badge badge-secondary" style="width: 160px;">{{manufacturePendingTask.name}}</span></td>
                                             <td *ngIf="manufacturePendingTask.name==='View Report'"><span class="badge badge-success" style="width: 160px;">{{manufacturePendingTask.name}}</span></td>
                                             <td *ngIf="manufacturePendingTask.name==='Draft Feedback and share with manufacturer'"><span class="badge badge-dark text-wrap" style="width: 160px;">{{manufacturePendingTask.name}}</span></td>
-                                            <td *ngIf="manufacturePendingTask.name==='Receive Feedback'"><span class="badge badge-light" style="width: 160px;">{{manufacturePendingTask.name}}</span></td>
+                                            <td *ngIf="manufacturePendingTask.name==='Receive Feedback'"><span class="badge badge-info" style="width: 160px;">{{manufacturePendingTask.name}}</span></td>
+                                            <td *ngIf="manufacturePendingTask.name==='Confirm Edited Details'"><span class="badge badge-primary" style="width: 160px;">{{manufacturePendingTask.name}}</span></td>
+                                            <td *ngIf="manufacturePendingTask.name==='Approve Company Details'"><span class="badge badge-primary" style="width: 160px;">{{manufacturePendingTask.name}}</span></td>
+                                            <td *ngIf="manufacturePendingTask.name==='Approve Edited Company Details'"><span class="badge badge-primary" style="width: 160px;">{{manufacturePendingTask.name}}</span></td>
+                                            <td *ngIf="manufacturePendingTask.name==='Edit Approved'"><span class="badge badge-info" style="width: 160px;">{{manufacturePendingTask.name}}</span></td>
+                                            <td *ngIf="manufacturePendingTask.name==='Edit Not Approved'"><span class="badge badge-info" style="width: 160px;">{{manufacturePendingTask.name}}</span></td>
                                             <td><span class="badge badge-warning">Assigned</span></td>
                                             <td *ngIf="manufacturePendingTask.name==='Schedule Site Visit'"><button (click)="onOpenModalPending(manufacturePendingTask,'viewPending')" type="submit" class="btn btn-success btn-sm"  style="border-radius: 40px;"> More</button></td>
                                             <td *ngIf="manufacturePendingTask.name==='Prepare Report on Visit'"><button (click)="onOpenModalPending(manufacturePendingTask,'prepareSiteVisitReport')" type="submit" class="btn btn-success btn-sm"  style="border-radius: 40px;"> More</button></td>
@@ -142,12 +147,415 @@
                                             <td *ngIf="manufacturePendingTask.name==='View The Report'"><button (click)="onOpenModalPending(manufacturePendingTask,'managementReport')" type="submit" class="btn btn-success btn-sm"  style="border-radius: 40px;"> More</button></td>
                                             <td *ngIf="manufacturePendingTask.name==='View Report'"><button (click)="onOpenModalPending(manufacturePendingTask,'reportNotification2')" type="submit" class="btn btn-success btn-sm"  style="border-radius: 40px;"> More</button></td>
                                             <td *ngIf="manufacturePendingTask.name==='Draft Feedback and share with manufacturer'"><button (click)="onOpenModalPending(manufacturePendingTask,'draftFeedback')" type="submit" class="btn btn-success btn-sm"  style="border-radius: 40px;"> More</button></td>
-                                            <td *ngIf="manufacturePendingTask.name==='Receive Feedback'"><button  type="submit" class="btn btn-success btn-sm">View More</button></td>
+                                            <td *ngIf="manufacturePendingTask.name==='Confirm Edited Details'"><button (click)="onOpenModalPending(manufacturePendingTask,'confirmDetails')" type="submit" class="btn btn-success btn-sm"  style="border-radius: 40px;"> More</button></td>
+                                            <td *ngIf="manufacturePendingTask.name==='Approve Company Details'"><button (click)="onOpenModalPending(manufacturePendingTask,'approveDetails')" type="submit" class="btn btn-success btn-sm"  style="border-radius: 40px;"> More</button></td>
+                                            <td *ngIf="manufacturePendingTask.name==='Approve Edited Company Details'"><button (click)="onOpenModalPending(manufacturePendingTask,'approveEditedDetails')" type="submit" class="btn btn-success btn-sm"  style="border-radius: 40px;"> More</button></td>
+                                            <td *ngIf="manufacturePendingTask.name==='Edit Approved'"><button type="submit" class="btn btn-success btn-sm"  style="border-radius: 40px;"> More</button></td>
+                                            <td *ngIf="manufacturePendingTask.name==='Edit Not Approved'"><button  type="submit" class="btn btn-success btn-sm"  style="border-radius: 40px;"> More</button></td>
+                                            <td *ngIf="manufacturePendingTask.name==='Receive Feedback'"><button  type="submit" class="btn btn-success btn-sm">More</button></td>
 
                                         </tr>
                                         </tbody>
                                     </table>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="confirmDetails" tabindex="-1" role="dialog" aria-labelledby="confirmDetailsExampleModalLabel" aria-hidden="true">a
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="confirmDetailsExampleModalLabel"><b>Confirm Company Details</b></h5>
+                                    <button type="button" class="close" #closeModalCDetails data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div>
+                                        <button (click)=toggleDisplayApproveEditRequest()  class="btn btn-success btn-sm">Approve Edit Request</button>
+                                        <button (click)=toggleDisplayRejectEditRequest() type="button" class="btn btn-danger btn-sm">Reject Edit Request</button>
+                                    </div>
+                                    <div class="container col-md-12" [hidden]="isShowApproveRequestForm">
+                                        <form (ngSubmit)="approveCompanyLevelOne()" [formGroup]="approveCompanyLevelOneFormGroup"
+                                              class="form">
+                                            <hr style="color: red">
+                                            <p><b>Approve Edited Company Details.</b></p>
+                                            <hr>
+                                            <div class="form-body">
+                                                <div class="row">
+                                                    <div class="form-group col-12">
+                                                        <label for="Address">Main Physical Location <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="hidden"
+                                                               ngModel="{{actionRequestPending?.taskData?.manufactureId}}"
+                                                               class="form-control"
+                                                               formControlName="companyId" name="companyId"
+                                                        >
+                                                        <textarea type="text"
+                                                                  ngModel="{{actionRequestPending?.taskData?.physicalAddress}}"
+                                                                  class="form-control"
+                                                                  id="Address" name="physicalAddress"
+                                                                  formControlName="physicalAddress"
+                                                                  placeholder="Main Physical Location"></textarea>
+
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="postal">Postal Address <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text"
+                                                               ngModel="{{actionRequestPending?.taskData?.postalAddress}}"
+                                                               class="form-control"
+                                                               id="postal" name="postalAddress"
+                                                               formControlName="postalAddress"
+                                                               placeholder="Postal Address">
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="owner">Ownership <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text" ngModel="{{actionRequestPending?.taskData?.ownership}}"
+                                                               class="form-control"
+                                                               id="owner" name="ownership"
+                                                               formControlName="ownership" placeholder="OwnerShip">
+
+                                                        <input type="hidden" formControlName="accentTo" name="accentTo"  ngModel="{{approve}}" >
+                                                        <input type="hidden" formControlName="taskId"  name="taskId" ngModel="{{actionRequestPending?.taskId}}" >
+                                                        <input type="hidden" formControlName="processId"  name="processId" ngModel="{{actionRequestPending?.processId}}" >
+                                                        </div>
+                                                    <div *ngIf="roles?.includes('SL_IS_ASST_MANAGER')" class="form-group col-12">
+                                                        <label>Forward To</label>
+                                                        <ng-select [(ngModel)]="approvedUsersTwo" formControlName="assignedTo"  class="form-control"  name="assignedTo" >
+                                                            <ng-option *ngFor="let user of approveUsersTwo" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
+                                                        </ng-select>
+                                                    </div>
+                                                    <div *ngIf="roles?.includes('SL_IS_MANAGER')" class="form-group col-12">
+                                                        <label>Forward To</label>
+                                                        <ng-select [(ngModel)]="approvedUsersThree" formControlName="assignedTo"  class="form-control"  name="assignedTo" >
+                                                            <ng-option *ngFor="let user of approveUsersThree" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
+                                                        </ng-select>
+                                                    </div>
+                                                    <div *ngIf="roles?.includes('SL_IS_CHIEF_MANAGER')"
+                                                         class="form-group col-12">
+                                                        <label>Forward To</label>
+                                                        <ng-select [(ngModel)]="assignedUsersThree" formControlName="assignedTo"
+                                                                   class="form-control"  name="assignedTo">
+                                                            <ng-option *ngFor="let user of assignUsersThree"
+                                                                       [value]="user.id">{{user.firstName}} {{user.lastName}}</ng-option>
+                                                        </ng-select>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <button class="btn btn-sm btn-primary float-right" type="submit">Approve
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <div class="container col-md-12" [hidden]="isShowRejectRequestForm">
+                                        <form (ngSubmit)="rejectCompanyLevelOne()" [formGroup]="rejectCompanyLevelOneFormGroup"
+                                              class="form">
+                                            <hr style="color: red">
+                                            <p><b>Reject Edited Company Details.</b></p>
+                                            <hr>
+                                            <div class="form-body">
+                                                <div class="row">
+                                                    <div class="form-group col-12">
+                                                        <label for="Address1">Main Physical Location <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+
+                                                        <input type="hidden"
+                                                               ngModel="{{actionRequestPending?.taskData?.manufactureId}}"
+                                                               class="form-control"
+                                                               formControlName="companyId" name="companyId"
+                                                        >
+                                                        <textarea type="text"
+                                                                  ngModel="{{actionRequestPending?.taskData?.physicalAddress}}"
+                                                                  class="form-control"
+                                                                  id="Address1" name="physicalAddress"
+                                                                  formControlName="physicalAddress"
+                                                                  placeholder="Main Physical Location"></textarea>
+
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="postal1">Postal Address <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text"
+                                                               ngModel="{{actionRequestPending?.taskData?.postalAddress}}"
+                                                               class="form-control"
+                                                               id="postal1" name="postalAddress"
+                                                               formControlName="postalAddress"
+                                                               placeholder="Postal Address">
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="owner1">Ownership <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text" ngModel="{{actionRequestPending?.taskData?.ownership}}"
+                                                               class="form-control"
+                                                               id="owner1" name="ownership"
+                                                               formControlName="ownership" placeholder="OwnerShip">
+                                                        <input type="hidden" formControlName="accentTo" name="accentTo"  ngModel="{{reject}}" >
+                                                        <input type="hidden" formControlName="processId"  name="processId" ngModel="{{actionRequestPending?.processId}}" >
+                                                        <input type="hidden" formControlName="taskId"  name="taskId" ngModel="{{actionRequestPending?.taskId}}" >
+                                                        <input type="hidden" formControlName="assignedTo"  name="assignedTo" ngModel="{{actionRequestPending?.taskData?.originator}}" >
+                                                        </div>
+                                                </div>
+                                            </div>
+                                            <button class="btn btn-sm btn-warning float-right" type="submit">Reject
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="approveDetails" tabindex="-1" role="dialog" aria-labelledby="approveDetailsExampleModalLabel" aria-hidden="true">a
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="approveDetailsExampleModalLabel"><b>Company Details Edit Request</b></h5>
+                                    <button type="button" class="close" #closeModalADetails data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div>
+                                        <button (click)=toggleDisplayApproveEditRequest()  class="btn btn-success btn-sm">Approve Edit Request</button>
+                                        <button (click)=toggleDisplayRejectEditRequest() type="button" class="btn btn-danger btn-sm">Reject Edit Request</button>
+                                    </div>
+                                    <div class="container col-md-12" [hidden]="isShowApproveRequestForm">
+                                        <form (ngSubmit)="approveEditRequest()" [formGroup]="approveEditRequestFormGroup"
+                                              class="form">
+                                            <hr style="color: red">
+                                            <p><b>Approve Request to Edit Company Details.</b></p>
+                                            <hr>
+                                            <div class="form-body">
+                                                <div class="row">
+                                                    <div class="form-group col-12">
+                                                        <label for="Address2">Main Physical Location <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="hidden"
+                                                               ngModel="{{actionRequestPending?.taskData?.manufactureId}}"
+                                                               class="form-control"
+                                                               formControlName="companyId" name="companyId"
+                                                        >
+                                                        <textarea type="text"
+                                                                  ngModel="{{actionRequestPending?.taskData?.physicalAddress}}"
+                                                                  class="form-control"
+                                                                  id="Address2" name="physicalAddress"
+                                                                  formControlName="physicalAddress"
+                                                                  placeholder="Main Physical Location"></textarea>
+
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="postal2">Postal Address <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text"
+                                                               ngModel="{{actionRequestPending?.taskData?.postalAddress}}"
+                                                               class="form-control"
+                                                               id="postal2" name="postalAddress"
+                                                               formControlName="postalAddress"
+                                                               placeholder="Postal Address">
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="owner2">Ownership <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text" ngModel="{{actionRequestPending?.taskData?.ownership}}"
+                                                               class="form-control"
+                                                               id="owner2" name="ownership"
+                                                               formControlName="ownership" placeholder="OwnerShip">
+                                                        <input type="hidden" formControlName="accentTo" name="accentTo"  ngModel="{{approve}}" >
+                                                        <input type="hidden" formControlName="processId"  name="processId" ngModel="{{actionRequestPending?.processId}}" >
+                                                        <input type="hidden" formControlName="taskId"  name="taskId" ngModel="{{actionRequestPending?.taskId}}" >
+                                                        <input type="hidden" formControlName="assignedTo"  name="assignedTo" ngModel="{{actionRequestPending?.taskData?.originator}}" >
+                                                        </div>
+
+                                                </div>
+                                            </div>
+                                            <button class="btn btn-sm btn-primary float-right" type="submit">Approve
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <div class="container col-md-12" [hidden]="isShowRejectRequestForm">
+                                        <form (ngSubmit)="rejectEditRequest()" [formGroup]="rejectEditRequestFormGroup"
+                                              class="form">
+                                            <hr style="color: red">
+                                            <p><b>Reject Request to Edit Company Details.</b></p>
+                                            <hr>
+                                            <div class="form-body">
+                                                <div class="row">
+                                                    <div class="form-group col-12">
+                                                        <label for="Address3">Main Physical Location <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="hidden"
+                                                               ngModel="{{actionRequestPending?.taskData?.manufactureId}}"
+                                                               class="form-control"
+                                                               formControlName="companyId" name="companyId"
+                                                        >
+                                                        <textarea type="text"
+                                                                  ngModel="{{actionRequestPending?.taskData?.physicalAddress}}"
+                                                                  class="form-control"
+                                                                  id="Address3" name="physicalAddress"
+                                                                  formControlName="physicalAddress"
+                                                                  placeholder="Main Physical Location"></textarea>
+
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="postal3">Postal Address <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text"
+                                                               ngModel="{{actionRequestPending?.taskData?.postalAddress}}"
+                                                               class="form-control"
+                                                               id="postal3" name="postalAddress"
+                                                               formControlName="postalAddress"
+                                                               placeholder="Postal Address">
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="owner3">Ownership <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text" ngModel="{{actionRequestPending?.taskData?.ownership}}"
+                                                               class="form-control"
+                                                               id="owner3" name="ownership"
+                                                               formControlName="ownership" placeholder="OwnerShip">
+                                                        <input type="hidden" formControlName="accentTo" name="accentTo"  ngModel="{{reject}}" >
+                                                        <input type="hidden" formControlName="processId"  name="processId" ngModel="{{actionRequestPending?.processId}}" >
+                                                        <input type="hidden" formControlName="taskId"  name="taskId" ngModel="{{actionRequestPending?.taskId}}" >
+                                                        <input type="hidden" formControlName="assignedTo"  name="assignedTo" ngModel="{{actionRequestPending?.taskData?.originator}}" >
+                                                         </div>
+                                                </div>
+                                            </div>
+                                            <button class="btn btn-sm btn-warning float-right" type="submit">Reject
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="approveEditedDetails" tabindex="-1" role="dialog" aria-labelledby="approveEditedDetailsExampleModalLabel" aria-hidden="true">a
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="approveEditedDetailsExampleModalLabel"><b>Schedule Site Visit</b></h5>
+                                    <button type="button" class="close" #closeModalA1Details data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div>
+                                        <button (click)=toggleDisplayApproveEditRequest()  class="btn btn-success btn-sm">Approve Edit Request</button>
+                                        <button (click)=toggleDisplayRejectEditRequest() type="button" class="btn btn-danger btn-sm">Reject Edit Request</button>
+                                    </div>
+                                    <div class="container col-md-12" [hidden]="isShowApproveRequestForm">
+                                        <form (ngSubmit)="approveEditRequestLevelTwo()" [formGroup]="approveEditRequestLevelTwoFormGroup"
+                                              class="form">
+                                            <hr style="color: red">
+                                            <p><b>Approve Request to Edit Company Details.</b></p>
+                                            <hr>
+                                            <div class="form-body">
+                                                <div class="row">
+                                                    <div class="form-group col-12">
+                                                        <label for="Address4">Main Physical Location <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="hidden"
+                                                               ngModel="{{actionRequestPending?.taskData?.manufactureId}}"
+                                                               class="form-control"
+                                                               formControlName="companyId" name="companyId"
+                                                        >
+                                                        <textarea type="text"
+                                                                  ngModel="{{actionRequestPending?.taskData?.physicalAddress}}"
+                                                                  class="form-control"
+                                                                  id="Address4" name="physicalAddress"
+                                                                  formControlName="physicalAddress"
+                                                                  placeholder="Main Physical Location"></textarea>
+
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="postal4">Postal Address <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text"
+                                                               ngModel="{{actionRequestPending?.taskData?.postalAddress}}"
+                                                               class="form-control"
+                                                               id="postal4" name="postalAddress"
+                                                               formControlName="postalAddress"
+                                                               placeholder="Postal Address">
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="owner4">Ownership <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text" ngModel="{{actionRequestPending?.taskData?.ownership}}"
+                                                               class="form-control"
+                                                               id="owner4" name="ownership"
+                                                               formControlName="ownership" placeholder="OwnerShip">
+                                                        <input type="hidden" formControlName="accentTo" name="accentTo"  ngModel="{{approve}}" >
+                                                        <input type="hidden" formControlName="processId"  name="processId" ngModel="{{actionRequestPending?.processId}}" >
+                                                        <input type="hidden" formControlName="taskId"  name="taskId" ngModel="{{actionRequestPending?.taskId}}" >
+                                                        <input type="hidden" formControlName="assignedTo"  name="assignedTo" ngModel="{{actionRequestPending?.taskData?.originator}}" >
+                                                           </div>
+
+                                                </div>
+                                            </div>
+                                            <button class="btn btn-sm btn-primary float-right" type="submit">Approve
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <div class="container col-md-12" [hidden]="isShowRejectRequestForm">
+                                        <form (ngSubmit)="rejectEditRequestLevelTwo()" [formGroup]="rejectEditRequestLevelTwoFormGroup"
+                                              class="form">
+                                            <hr style="color: red">
+                                            <p><b>Reject Request to Edit Company Details.</b></p>
+                                            <hr>
+                                            <div class="form-body">
+                                                <div class="row">
+                                                    <div class="form-group col-12">
+                                                        <label for="Address5">Main Physical Location <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="hidden"
+                                                               ngModel="{{actionRequestPending?.taskData?.manufactureId}}"
+                                                               class="form-control"
+                                                               formControlName="companyId" name="companyId"
+                                                        >
+                                                        <textarea type="text"
+                                                                  ngModel="{{actionRequestPending?.taskData?.physicalAddress}}"
+                                                                  class="form-control"
+                                                                  id="Address5" name="physicalAddress"
+                                                                  formControlName="physicalAddress"
+                                                                  placeholder="Main Physical Location"></textarea>
+
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="postal5">Postal Address <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text"
+                                                               ngModel="{{actionRequestPending?.taskData?.postalAddress}}"
+                                                               class="form-control"
+                                                               id="postal5" name="postalAddress"
+                                                               formControlName="postalAddress"
+                                                               placeholder="Postal Address">
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="owner5">Ownership <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text" ngModel="{{actionRequestPending?.taskData?.ownership}}"
+                                                               class="form-control"
+                                                               id="owner5" name="ownership"
+                                                               formControlName="ownership" placeholder="OwnerShip">
+                                                        <input type="hidden" formControlName="accentTo" name="accentTo"  ngModel="{{reject}}" >
+                                                        <input type="hidden" formControlName="processId"  name="processId" ngModel="{{actionRequestPending?.processId}}" >
+                                                        <input type="hidden" formControlName="taskId"  name="taskId" ngModel="{{actionRequestPending?.taskId}}" >
+                                                        <input type="hidden" formControlName="assignedTo"  name="assignedTo" ngModel="{{actionRequestPending?.taskData?.createdBy}}" >
+                                                          </div>
+                                                </div>
+                                            </div>
+                                            <button class="btn btn-sm btn-warning float-right" type="submit">Reject
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -898,7 +1306,7 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="reportNotification1ExampleModalLabel">Approve / Reject Report</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <button type="button" class="close" #closeModalReportOne data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
@@ -1362,7 +1770,7 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="managementReportExampleModalLabel">Approve / Reject Report</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <button type="button" class="close" #closeModalManagement data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
@@ -1678,7 +2086,7 @@
                                             </div>
                                             <div class="container col-md-12" [hidden]="isShowRejectForm1">
                                                 <h4 style="color: red"><b>Reject Report</b></h4>
-                                                <form (ngSubmit)="onDecisionReject()" [formGroup]="rejectFormGroup" class="form">
+                                                <form (ngSubmit)="onDecisionRejectTwo()" [formGroup]="rejectFormGroup" class="form">
                                                     <div class="form-body">
 
                                                         <div class="row">
@@ -1808,7 +2216,7 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="reportNotification2ExampleModalLabel">Approve / Reject Report</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <button type="button" class="close" #closeModalReportTwo data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
@@ -2105,6 +2513,8 @@
                                                                           placeholder="Comments" type="text"></textarea>
                                                             </div>
                                                         </div>
+
+
                                                         <input type="hidden" formControlName="visitID" name="visitID"  value="{{actionRequestPending?.taskData?.visitID}}" >
                                                         <input type="hidden" formControlName="accentTo" name="accentTo"  value="{{approve}}" >
                                                         <input type="hidden" formControlName="assigneeId" name="assigneeId"  value="{{actionRequestPending?.taskData?.originator}}" >
@@ -2265,7 +2675,7 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="draftFeedbackExampleModalLabel">Draft Feedback</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <button type="button" class="close" #closeModalFeedback data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>

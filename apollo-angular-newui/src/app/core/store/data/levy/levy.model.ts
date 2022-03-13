@@ -139,6 +139,17 @@ export interface EditCompanyDTO {
     ownership: string;
     companyId: number;
     closureOfOperations: string;
+    companyName: string;
+    kraPin: string;
+    registrationNumber: string;
+    entryNumber: string;
+    processId: string;
+    userType: number;
+    taskType: number;
+    assignedTo: number;
+    taskId: string;
+    accentTo: boolean;
+
 }
 export interface ConfirmEditCompanyDTO {
     postalAddress: string;
@@ -147,6 +158,12 @@ export interface ConfirmEditCompanyDTO {
     companyId: number;
     manufactureId: number
     closureOfOperations: string;
+    processId: string;
+    userType: number;
+    taskType: number;
+    assignedTo: number;
+    taskId: string;
+    accentTo: boolean;
 }
 export interface AssignCompanyTaskDTO {
     manufacturerEntity:number;
@@ -173,6 +190,8 @@ export interface AssignCompanyTaskDTO {
     manufactureStatus: number;
     entryNumber: number;
     contactId: number;
+    taskType: number;
+    userType: number;
 
 }
 export interface VisitTask {
@@ -283,6 +302,7 @@ export interface ManufactureDetailList {
 export interface ManufacturePendingTask {
     taskId: string;
     name: string;
+    processId: string;
     taskData: ManufacturePendingTaskData;
 }
 export interface ManufacturePendingTaskData{
@@ -328,6 +348,9 @@ export interface ManufacturePendingTaskData{
     comments: string;
     assistantManagerRemarks: string;
     cheifManagerRemarks: string;
+    ownership: string;
+    createdBy: string;
+    manufactureId: string;
 
 }
 export interface ManufactureCompleteTask {

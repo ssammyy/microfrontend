@@ -41,9 +41,9 @@ export class ReviewApplicationsRejectedComponent implements OnInit {
 
 
   public getApplicationsForReview(): void {
-    this.loadingText = "Retrieving Applications Please Wait ...."
+    this.loadingText = "Retrieving Rejected Applications Please Wait ...."
     this.SpinnerService.show();
-    this.membershipToTcService.getAcceptedMembers().subscribe(
+    this.membershipToTcService.getRejectedFromSPC().subscribe(
         (response: ReviewApplicationTask[]) => {
           console.log(response);
           this.tcTasks = response;
