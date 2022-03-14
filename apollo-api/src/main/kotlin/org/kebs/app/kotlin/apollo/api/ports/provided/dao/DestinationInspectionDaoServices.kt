@@ -2447,7 +2447,7 @@ class DestinationInspectionDaoServices(
                     page
             )
         } ?: run {
-            iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIn(
+            iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndStatusIn(
                     usersEntity,
                     statuses,
                     page
