@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.payload
 
+import mu.KotlinLogging
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.web.servlet.function.ServerRequest
@@ -21,7 +22,7 @@ fun extractPage(req: ServerRequest, field: String = "id"): PageRequest {
     // get page
     req.param("page").ifPresent { p ->
         p.toIntOrNull()?.let {
-            if (p in 0..100) {
+            if (it in 0..100) {
                 page = it
             }
         }
@@ -29,7 +30,7 @@ fun extractPage(req: ServerRequest, field: String = "id"): PageRequest {
     // Get page size
     req.param("size").ifPresent { p ->
         p.toIntOrNull()?.let {
-            size = if (it in 1..100) {
+            size = if (it in 0..100) {
                 it
             } else {
                 20
@@ -42,6 +43,7 @@ fun extractPage(req: ServerRequest, field: String = "id"): PageRequest {
             direction = it
         }
     }
+    KotlinLogging.logger { }.debug("Page: $page, Size: $size, Direction: $direction")
     if ("asc".equals(direction, true)) {
         return PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, field))
     }

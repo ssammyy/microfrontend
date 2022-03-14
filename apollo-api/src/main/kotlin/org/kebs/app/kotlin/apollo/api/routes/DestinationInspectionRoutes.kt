@@ -147,7 +147,6 @@ class DestinationInspectionRoutes {
             GET("/cd/certificate/{docType}/details/{coUuid}", handler::certificateOfConformance)
             GET("/inspection/idf/details/{coUuid}", handler::importDeclarationFormDetails)
             GET("/inspection/cor/details/{coUuid}", handler::certificateOfRoadWorthines)
-
         }
     }
 }

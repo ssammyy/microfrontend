@@ -11,7 +11,7 @@ import swal from "sweetalert2";
 export class ViewIdfDocumentDetailsComponent implements OnInit {
     documentUuid: string;
     idfDetails: any;
-    active: any = 0
+    active: any = 'declarationGeneralDetails'
 
     constructor(
         private diService: DestinationInspectionService,
