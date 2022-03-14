@@ -101,5 +101,21 @@ interface CompleteTasksDetailHolder {
     fun getStreetName(): String?
 
 }
+interface NotificationFormDetailsHolder{
+//    fun getCompanyName(): String?
+//    fun getPlotNumber(): String?
+//    fun getStreetName(): String?
+//    fun getPhysicalAddress(): String?
+//    fun getTelephoneNumber(): String?
+//    fun getPostalAddress(): String?
+//    fun getRegistrationNumber(): String?
+//    fun getKraPin(): String?
+//    fun getBranchName(): String?
+    fun getCommodity(): String?
+    fun getDateOfManufacture(): Date?
+    fun getTotalValue(): Long?
+    fun getId(): Long?
+
+}
 
 

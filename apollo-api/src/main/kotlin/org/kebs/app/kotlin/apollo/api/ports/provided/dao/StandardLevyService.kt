@@ -620,8 +620,6 @@ return getUserTasks();
 
     //Return task details for PL OFFICER
     fun getUserTasks(): List<TaskDetailsBody> {
-
-//        val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_SL_PRINCIPAL_LEVY_OFFICER).processDefinitionKey(PROCESS_DEFINITION_KEY).list()
         val tasks = taskService.createTaskQuery()
             .taskAssignee("${commonDaoServices.loggedInUserDetails().id ?: throw NullValueNotAllowedException(" invalid user id provided")}")
             .list()
@@ -1280,6 +1278,20 @@ return getUserTasks();
         commonDaoServices.loggedInUserDetails().id?.let { id ->
             return iUserRoleAssignmentsRepository.getRoleByUserId(id)
         } ?: throw NullValueNotAllowedException("Role Not Found")
+    }
+    fun getNotificationFormDetails(): NotificationFormDetailsHolder{
+        commonDaoServices.loggedInUserDetails().id
+            ?.let { id ->
+                companyProfileRepo.getManufactureId(id)
+                    .let {
+                        stdLevyNotificationFormRepository.findTopByManufactureIdOrderByIdDesc(it)
+                            ?.let {
+                                return stdLevyNotificationFormRepository.getNotificationFormDetails(it)
+                            }
+
+                    }
+            } ?: throw NullValueNotAllowedException("User Not Found")
+
     }
 
     fun getSLNotificationStatus(): Boolean {
