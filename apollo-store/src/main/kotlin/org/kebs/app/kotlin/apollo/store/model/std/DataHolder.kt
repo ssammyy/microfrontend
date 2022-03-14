@@ -101,6 +101,10 @@ interface CompleteTasksDetailHolder {
     fun getStreetName(): String?
 
 }
+interface BranchNameHolder{
+    fun getBranchName(): String?
+
+}
 interface NotificationFormDetailsHolder{
 //    fun getCompanyName(): String?
 //    fun getPlotNumber(): String?

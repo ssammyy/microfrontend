@@ -901,6 +901,8 @@ class StdLevyController(
             assigneeId=siteVisitReportDecisionDTO.assigneeId
             manufacturerEntity= siteVisitReportDecisionDTO.manufacturerEntity
             assistantManagerRemarks =siteVisitReportDecisionDTO.comments
+            approvalStatus =siteVisitReportDecisionDTO.approvalStatus
+            approvalStatusId =siteVisitReportDecisionDTO.approvalStatusId
 
         }
 //        val gson = Gson()
@@ -1116,6 +1118,13 @@ class StdLevyController(
     fun getNotificationFormDetails(): NotificationFormDetailsHolder {
         return standardLevyService.getNotificationFormDetails()
     }
+
+    @GetMapping("/getBranchName")
+    @ResponseBody
+    fun getBranchName(): BranchNameHolder {
+        return standardLevyService.getBranchName()
+    }
+
 
 
 

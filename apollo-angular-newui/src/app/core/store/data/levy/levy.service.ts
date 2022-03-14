@@ -5,7 +5,7 @@ import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
 import {catchError, map} from "rxjs/operators";
 import {
     ApproveVisitTask,
-    AssignCompanyTaskDTO,
+    AssignCompanyTaskDTO, Branch,
     CompanyModel,
     ConfirmEditCompanyDTO,
     EditCompanyDTO,
@@ -357,6 +357,12 @@ export class LevyService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_NOTIFICATION_FORM_STATUS);
         const params = new HttpParams();
         return this.http.get<ManufacturingStatus>(url, {params}).pipe();
+    }
+
+    public getBranchName(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_BRANCH_NAME);
+        const params = new HttpParams();
+        return this.http.get<Branch>(url, {params}).pipe();
     }
 
 

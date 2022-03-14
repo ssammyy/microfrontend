@@ -24,6 +24,7 @@ package org.kebs.app.kotlin.apollo.store.repo
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.qa.ManufacturePlantDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEditEntity
+import org.kebs.app.kotlin.apollo.store.model.std.BranchNameHolder
 import org.kebs.app.kotlin.apollo.store.model.std.NotificationFormDetailsHolder
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -56,6 +57,14 @@ interface IManufacturePlantDetailsRepository : HazelcastRepository<ManufacturePl
     fun findByCompanyProfileId(manufactureId: Long): List<ManufacturePlantDetailsEntity>?
     fun findByCompanyProfileIdAndStatus(manufactureId: Long, status: Int): List<ManufacturePlantDetailsEntity>?
     fun countByCompanyProfileId(companyProfileId: Long): Long?
+    @Query( value = "SELECT max(ID)  FROM DAT_KEBS_MANUFACTURE_PLANT_DETAILS WHERE MANUFACTURE_ID= :id ",
+        nativeQuery = true )
+    fun findTopByManufactureIdOrderByIdDesc(@Param("id") id: Long?): Long?
+
+    @Query( value = "SELECT BRANCH_NAME as branchName  FROM DAT_KEBS_MANUFACTURE_PLANT_DETAILS WHERE ID= :id ",
+        nativeQuery = true )
+    fun findBranchName(@Param("id") id: Long?): BranchNameHolder
+
 
 }
 
