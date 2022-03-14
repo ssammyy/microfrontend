@@ -84,7 +84,7 @@ class ConsignmentDocumentDaoService(
                     version = daoServices.getVersionCount(ucr)
                 }
                 // Reject document with similar version
-                if (daoServices.findCdWithUcrNumberAndVersion(ucr, version) > 0) {
+                if (daoServices.countCdWithUcrNumberAndVersion(ucr, version) > 0) {
                     throw ExpectedDataNotFound("Duplicate: Found document with the same version and ucr number")
                 }
 

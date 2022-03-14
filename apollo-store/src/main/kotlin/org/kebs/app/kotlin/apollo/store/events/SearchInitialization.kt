@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.events
 
 import mu.KotlinLogging
+import org.apache.lucene.search.Sort
 import org.hibernate.CacheMode
 import org.hibernate.search.jpa.FullTextEntityManager
 import org.hibernate.search.jpa.FullTextQuery
@@ -95,6 +96,7 @@ class SearchInitialization(
         KotlinLogging.logger { }.info("Query: $q")
         // Retrieve search result
         val queryResult: FullTextQuery = searchManager.createFullTextQuery(q, ConsignmentDocumentDetailsEntity::class.java)
+                .setSort(Sort.RELEVANCE)
                 .setFirstResult(page * 30)
                 .setMaxResults(30)
         return queryResult.getResultList() as List<ConsignmentDocumentDetailsEntity>

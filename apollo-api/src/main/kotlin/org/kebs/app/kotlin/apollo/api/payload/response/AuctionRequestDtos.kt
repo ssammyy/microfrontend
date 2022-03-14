@@ -70,8 +70,8 @@ class AuctionRequestDto {
                 assigned = false
             }
             dto.completed = when (auction.approvalStatus) {
-                0 -> "NO"
-                else -> "YES"
+                AuctionGoodStatus.REJECTED.status, AuctionGoodStatus.APPROVED.status -> "YES"
+                else -> "NO"
             }
             dto.approvalStatusDesc = when (auction.approvalStatus) {
                 AuctionGoodStatus.NEW.status -> "NEW"

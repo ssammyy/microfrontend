@@ -36,9 +36,9 @@ fun extractPage(req: ServerRequest, field: String = "id"): PageRequest {
             }
         }
     }
-    var direction = "asc"
+    var direction = "desc"
     req.param("direction").ifPresent {
-        if ("desc".equals(it, true)) {
+        if ("asc".equals(it, true)) {
             direction = it
         }
     }

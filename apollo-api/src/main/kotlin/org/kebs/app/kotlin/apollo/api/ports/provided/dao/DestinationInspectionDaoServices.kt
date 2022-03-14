@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import mu.KotlinLogging
+import okhttp3.internal.toLongOrDefault
 import org.json.JSONException
 import org.json.JSONObject
 import org.json.XML
@@ -1514,6 +1515,7 @@ class DestinationInspectionDaoServices(
             }
 
             // Update consignment status as well
+            consignment.modifiedOn = commonDaoServices.getTimestamp()
             consignment.approveRejectCdStatusType = status
             updateStatus = this.iConsignmentDocumentDetailsRepo.save(consignment)
         } catch (ex: Exception) {
@@ -1526,16 +1528,19 @@ class DestinationInspectionDaoServices(
         var updateStatus = consignment
         try {
             val status = findCdStatusValue(statusValue)
-            consignment.cdStandard?.let { cdStandard ->
-                with(cdStandard) {
-                    approvalStatus = status.typeName
-                    statusId = status.id
-                    approvalDate = commonDaoServices.getCurrentDate().toString()
+            if (status.applicationStatus != 1) {
+                consignment.cdStandard?.let { cdStandard ->
+                    with(cdStandard) {
+                        approvalStatus = status.typeName
+                        statusId = status.id
+                        approvalDate = commonDaoServices.getCurrentDate().toString()
+                    }
+                    val updateCD = iCdStandardsRepo.save(cdStandard)
+                    KotlinLogging.logger { }.info { "CD UPDATED STATUS TO = ${updateCD.approvalStatus}" }
                 }
-                val updateCD = iCdStandardsRepo.save(cdStandard)
-                KotlinLogging.logger { }.info { "CD UPDATED STATUS TO = ${updateCD.approvalStatus}" }
             }
             // Update consignment status as well
+            consignment.modifiedOn = commonDaoServices.getTimestamp()
             consignment.approveRejectCdStatusType = status
             updateStatus = this.iConsignmentDocumentDetailsRepo.save(consignment)
         } catch (ex: Exception) {
@@ -1860,7 +1865,9 @@ class DestinationInspectionDaoServices(
                         return it
                     }
 
-    fun findCdWithUcrNumberAndVersion(ucrNumber: String, version: Long): Long = iConsignmentDocumentDetailsRepo.countByUcrNumberAndVersion(ucrNumber, version)
+    fun countCdWithUcrNumberAndVersion(ucrNumber: String, version: Long): Long = iConsignmentDocumentDetailsRepo.countByUcrNumberAndVersion(ucrNumber, version)
+
+    fun findCdWithUcrNumberAndVersion(ucrNumber: String, version: Long): ConsignmentDocumentDetailsEntity? = iConsignmentDocumentDetailsRepo.findByUcrNumberAndVersion(ucrNumber, version)
 
     fun findCdWithUcrNumberLatest(ucrNumber: String): ConsignmentDocumentDetailsEntity? =
             iConsignmentDocumentDetailsRepo.findTopByUcrNumberOrderByIdDesc(ucrNumber)
@@ -3263,9 +3270,11 @@ class DestinationInspectionDaoServices(
         return this.currencyExchangeRateRepository.findAllByCurrentRateAndStatus(status, 1)
     }
 
-    fun updateIdfNumber(ucrNumber: String, baseDocRefNo: String) {
-        this.findCdWithUcrNumber(ucrNumber)?.let { cdDetails ->
+    fun updateIdfNumber(ucrNumber: String, baseDocRefNo: String, version: String?) {
+        val v = version?.toLongOrDefault(1) ?: 0
+        this.findCdWithUcrNumberAndVersion(ucrNumber, v)?.let { cdDetails ->
             cdDetails.idfNumber = baseDocRefNo
+            cdDetails.modifiedOn = commonDaoServices.getTimestamp()
             iConsignmentDocumentDetailsRepo.save(cdDetails)
         }
     }

@@ -136,8 +136,11 @@ class AuctionService(
         demandNoteReq.product = "AUCTION"
         demandNoteReq.name = request.importerName
         demandNoteReq.amount = BigDecimal.ZERO.toDouble()
-        demandNoteReq.entryPoint = request.shipmentPort
+        // TODO: Change once we get response KRA
+        demandNoteReq.entryPoint = "KSM"
         demandNoteReq.courier = ""
+        demandNoteReq.customsOffice = request.shipmentPort ?: "NRB"
+        //
         demandNoteReq.ablNumber = request.serialNumber
         demandNoteReq.invoicePrefix = "AG"
         demandNoteReq.presentment = false

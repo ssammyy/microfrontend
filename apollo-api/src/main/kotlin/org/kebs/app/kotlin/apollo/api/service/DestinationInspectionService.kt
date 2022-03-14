@@ -140,6 +140,7 @@ class DestinationInspectionService(
                 consignmentDocument.approveRejectCdStatus = map.invalidStatus
                 consignmentDocument.compliantStatus = map.invalidStatus
             }
+            KotlinLogging.logger { }.info("1: Updating consignment status: ${cdStatusType.typeName}")
             consignmentDocument.approveRejectCdStatusType = cdStatusType
             consignmentDocument.approveRejectCdRemarks = remarks
             consignmentDocument.approveRejectCdDate = Date(Date().time)
@@ -192,6 +193,7 @@ class DestinationInspectionService(
                     }
                 }
             }
+            KotlinLogging.logger { }.info("2: Updating consignment status: ${cdStatusType.id} =>${cdStatusType.typeName} =>${consignmentDocument.status}")
             consignmentDocument.approveRejectCdStatusType = cdStatusType
             consignmentDocument.approveRejectCdDate = Date(Date().time)
             consignmentDocument = daoServices.updateCDStatus(consignmentDocument, cdStatusTypeId)
@@ -738,10 +740,11 @@ class DestinationInspectionService(
     }
 
     fun clearItemProcess(mvInspectionId: Long, cdItemId: Long): Boolean {
-        val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
         try {
             val itemDetails = this.daoServices.findItemWithItemID(cdItemId)
             itemDetails.inspectionProcessInstanceId = null
+            itemDetails.inspectionProcessStatus = 0
+            itemDetails.inspectionProcessCompletedOn = commonDaoServices.getTimestamp()
             itemDetails.varField9 = null
             itemDetails.varField8 = null
             itemDetails.varField7 = null
@@ -755,7 +758,7 @@ class DestinationInspectionService(
     /**
      * Clear consignment document current process information
      */
-    fun clearCurrentProcess(cdUuid: String): Boolean {
+    fun clearCurrentProcess(cdUuid: String) {
         try {
             val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             consignmentDocument.diProcessStatus = 0
@@ -763,11 +766,9 @@ class DestinationInspectionService(
             consignmentDocument.diProcessCompletedOn = Timestamp.from(Instant.now())
             this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
             KotlinLogging.logger { }.info("CLEARED PROCESS")
-            return true
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("UPDATE STATUS", ex)
         }
-        return false
     }
 
     fun applicationConfigurations(appId: Int): ApiResponseModel {

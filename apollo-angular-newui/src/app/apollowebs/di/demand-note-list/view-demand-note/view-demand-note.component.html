@@ -2,7 +2,7 @@
 <mat-dialog-content>
     <div class="row no_margin" *ngIf="demandDetails">
         <div class="col-sm-3 col-md-4">
-            <label class="waiver-form-label">Demand Note Number</label>
+            <label class="waiver-form-label">Reference Number</label>
             <p>{{demandDetails.note.demandNoteNumber}}</p>
         </div>
         <div class="col-sm-3 col-md-4">
@@ -71,7 +71,7 @@
             <p>{{demandDetails.note.varField9| date:'short'}}</p>
         </div>
         <div class="col-sm-3 col-md-4" *ngIf="demandDetails.note.postingReference">
-            <label class="waiver-form-label">SAGE REFERENCE</label>
+            <label class="waiver-form-label">DEMAND NODE NUMBER</label>
             <p>{{demandDetails.note.postingReference}}</p>
         </div>
     </div>

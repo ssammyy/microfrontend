@@ -48,8 +48,8 @@
                                     <td>+254{{tcTask.mobileNumber}}</td>
                                     <td>{{tcTask.technicalCommittee}}</td>
                                     <td><a type="button" (click)="onOpenModal(tcTask)" class="btn btn-success tooltips"
-                                           data-placement="top" data-original-title="View Application">Send
-                                        Appointment Letter</a></td>
+                                           data-placement="top" data-original-title="View Application">
+                                        Review</a></td>
 
                                 </tr>
                                 </tbody>
@@ -148,6 +148,15 @@
                                                 <div class="row">
                                                     <div class="col-md-10">
                                                         <mat-form-field class="example-full-width">
+                                                            <input matInput placeholder="Organisation Name"
+                                                                   value="{{actionRequest?.organization}}"
+                                                                   disabled>
+                                                        </mat-form-field>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-10">
+                                                        <mat-form-field class="example-full-width">
                                                             <input matInput placeholder="Recommendation By HOF"
                                                                    value="{{actionRequest?.comments_by_hof}}"
                                                                    disabled>
@@ -178,10 +187,10 @@
 
                                         <div class="modal-footer">
 
-                                            <button class="btn btn-success"
-                                                    (click)="decisionOnApplications(editForm.value,actionRequest?.id,'YES')">
-                                                Send Appointment Letter
-                                            </button>
+<!--                                            <button class="btn btn-success"-->
+<!--                                                    (click)="decisionOnApplications(editForm.value,actionRequest?.id,'YES')">-->
+<!--                                                Send Appointment Letter-->
+<!--                                            </button>-->
                                         </div>
                                     </form>
 

@@ -51,7 +51,8 @@ export class SubmitApplicationComponent implements OnInit {
       postalAddress: ['', Validators.required],
       taskId: ['', Validators.required],
       tcApplicationId: ['', Validators.required],
-      authorisingPersonPosition: ['', Validators.required]
+      authorisingPersonPosition: ['', Validators.required],
+      authorizingName: ['', Validators.required],
 
     })
     this.prepareDraftStandardFormGroup.get('name').valueChanges.subscribe((value) => {

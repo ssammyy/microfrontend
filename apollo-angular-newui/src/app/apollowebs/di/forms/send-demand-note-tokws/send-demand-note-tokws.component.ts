@@ -133,8 +133,7 @@ export class SendDemandNoteTokwsComponent implements OnInit {
                                 items.push({
                                     feeName: 'Total Amount',
                                     cfvalue: this.presentmentData.demandNote.cfvalue,
-                                    amountPayable: this.presentmentData.demandNote.amountPayable,
-                                    adjustedAmount: this.presentmentData.demandNote.totalAmount,
+                                    adjustedAmount: this.presentmentData.demandNote.amountPayable,
                                 })
                             }
                             this.itemPricingDataSource.connect().next(items)

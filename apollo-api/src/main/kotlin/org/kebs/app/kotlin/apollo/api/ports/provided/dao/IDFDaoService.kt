@@ -53,6 +53,7 @@ class IDFDaoService {
         // Create or update IDF details if it exists
         var idfDetailsEntity = iIDFDetailsEntityRepository.findByBaseDocRefNo(idfRefNumber!!) ?: IDFDetailsEntity()
         try {
+            idfDetailsEntity.baseDocRefNo = idfRefNumber
             idfDetailsEntity = iIDFDetailsEntityRepository.save(idfDetailsEntity)
         } catch (ex: DataIntegrityViolationException) {
             idfDetailsEntity = iIDFDetailsEntityRepository.findByBaseDocRefNo(idfRefNumber) ?: IDFDetailsEntity()
@@ -167,7 +168,7 @@ class IDFDaoService {
             try {
                 val idfDetailsEntity = IDFDetailsEntity()
                 idfDetailsEntity.baseDocRefNo = baseDocRefNo
-                idfDetailsEntity.ucrNo = baseDocRefNo
+                idfDetailsEntity.ucrNo = ucrNumber
                 idfDetailsEntity.status = 0
                 idfDetailsEntity.varField1 = "PENDING IDF FILE"
                 idfDetailsEntity.createdBy = createdByValue

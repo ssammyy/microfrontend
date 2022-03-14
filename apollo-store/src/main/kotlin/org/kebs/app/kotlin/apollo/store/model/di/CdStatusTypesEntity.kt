@@ -145,6 +145,7 @@ class CdStatusTypesEntity : Serializable {
                 description,
                 category,
                 status,
+                applicationStatus,
                 varField1,
                 varField2,
                 varField3,

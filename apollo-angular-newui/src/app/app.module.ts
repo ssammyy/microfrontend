@@ -303,6 +303,9 @@ import {ViewComplaintsComponent} from "./apollowebs/pvoc/complaints/view-complai
 import {ViewComplaintDetailsComponent} from "./apollowebs/pvoc/complaints/view-complaint-details/view-complaint-details.component";
 import {ManifestDocumentComponent} from './apollowebs/di/view-single-consignment-document/manifest-document/manifest-document.component';
 import {IncompleteIDFDocumentsComponent} from './apollowebs/di/message-dashboard/incomplete-idfdocuments/incomplete-idfdocuments.component';
+import {UploadSacSummaryComponent} from './apollowebs/standards-development/adoptionOfEaStds/upload-sac-summary/upload-sac-summary.component';
+import {ViewSacSummaryComponent} from './apollowebs/standards-development/adoptionOfEaStds/view-sac-summary/view-sac-summary.component';
+import {ViewSacSummaryApprovedComponent} from './apollowebs/standards-development/adoptionOfEaStds/view-sac-summary-approved/view-sac-summary-approved.component';
 import {AddAttachmentComponent} from './apollowebs/di/auction/add-attachment/add-attachment.component';
 
 
@@ -637,6 +640,10 @@ import {AddAttachmentComponent} from './apollowebs/di/auction/add-attachment/add
         ManageCorporateCustomerComponent,
         ManifestDocumentComponent,
         IncompleteIDFDocumentsComponent,
+        AddApiClientComponent,
+        UploadSacSummaryComponent,
+        ViewSacSummaryComponent,
+        ViewSacSummaryApprovedComponent,
         AddApiClientComponent,
         AddAttachmentComponent
     ],

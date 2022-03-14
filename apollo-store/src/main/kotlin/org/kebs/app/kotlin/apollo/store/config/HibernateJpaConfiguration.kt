@@ -24,8 +24,6 @@ package org.kebs.app.kotlin.apollo.store.config
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import mu.KotlinLogging
-import org.hibernate.search.jpa.FullTextEntityManager
-import org.hibernate.search.jpa.Search
 import org.kebs.app.kotlin.apollo.config.properties.jpa.JpaConnectionProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -39,7 +37,6 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.annotation.EnableTransactionManagement
 import java.util.*
-import javax.persistence.EntityManager
 import javax.sql.DataSource
 
 
@@ -79,6 +76,7 @@ class HibernateJpaConfiguration(private val jcp: JpaConnectionProperties) {
         val config = HikariConfig()
         var hc = HikariDataSource()
         try {
+            KotlinLogging.logger { }.info(">>DB URL: ${jcp.jdbcUrl}")
             config.jdbcUrl = jcp.jdbcUrl
             config.username = jcp.jdbcUser
             config.password = jcp.jdbcPass
