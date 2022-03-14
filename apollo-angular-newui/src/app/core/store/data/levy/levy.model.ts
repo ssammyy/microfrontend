@@ -80,6 +80,12 @@ export interface PaidLevy {
     levyPenalties: number;
     levyPenaltyPaymentDate: number;
 }
+export interface SlModel{
+    id: number;
+    commodity: string;
+    dateOfManufacture: string;
+    totalValue: number;
+}
 
 export interface CompanyModel {
     id: number;
@@ -106,6 +112,10 @@ export interface CompanyModel {
     entryNumber: number;
     assignStatus: number;
     assignedTo: number;
+    AllCommoditiesManufuctured: string;
+    DateOfManufacture: string;
+    totalValueOfManufacture: number;
+
 }
 export interface StdLevyScheduleSiteVisitDTO {
     status: number;

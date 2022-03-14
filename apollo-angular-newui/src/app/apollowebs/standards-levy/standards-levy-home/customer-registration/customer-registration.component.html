@@ -19,13 +19,13 @@ type="ball-scale-multiple"
 <i class="material-icons">assignment</i>
 </div>
 </div>
-
-<div class="card-body" *ngIf="notificationFormStatus==false">
+<div *ngFor="let companyDetail of companyDetails">
+    <div class="card-body" *ngIf="notificationFormStatus==false">
     <div class="toolbar">
 
     </div>
     <div class="form-wizard">
-        <div *ngFor="let companyDetail of companyDetails" class="row col-12">
+        <div  class="row col-12">
             <div *ngIf="manufacturingStatus==true" class="row col-12">
 
                 <form (ngSubmit)="onClickSaveSL1(manufacturerInfoForm.valid)" [formGroup]="manufacturerInfoForm"
@@ -237,7 +237,7 @@ type="ball-scale-multiple"
                     <div class="form-body">
                         <div class="row">
                             <div class="form-group col-6">
-                                <label for="businessCompanyName2">Business/Company Name <span
+                                <label for="businessCompanyName2">Name of Business <span
                                         style="font-size: xx-small; color: red;">(*)Required</span></label>
                                 <input type="text" class="form-control" ngModel="{{companyDetail.name}}"
                                        id="businessCompanyName2" name="businessCompanyName"
@@ -261,7 +261,7 @@ type="ball-scale-multiple"
                                        formControlName="roadStreet" placeholder="Road / Street " disabled>
                             </div>
                             <div class="form-group col-6">
-                                <label for="postalAddress2">Postal Address <span
+                                <label for="postalAddress2">Address <span
                                         style="font-size: xx-small; color: red;">(*)Required</span></label>
                                 <input type="text" ngModel="{{companyDetail.postalAddress}}" class="form-control"
                                        id="postalAddress2" name="postalAddress"
@@ -270,7 +270,7 @@ type="ball-scale-multiple"
                         </div>
                         <div class="row">
                             <div class="form-group col-6">
-                                <label for="telephone2">Telephone<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <label for="telephone2">Telephone Number<span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                 <input type="text" ngModel="{{companyDetail.companyTelephone}}" class="form-control"
                                        id="telephone2" name="telephone"
                                        formControlName="telephone" placeholder="Telephone" disabled>
@@ -279,7 +279,7 @@ type="ball-scale-multiple"
                         </div>
                         <div class="row">
                             <div class="form-group col-12">
-                                <label for="NameAndBusinessOfProprietors2">Name and Business of Proprietors and
+                                <label for="NameAndBusinessOfProprietors2">Name and Business of Proprietors or
                                     Partners; and In the case of Companies, the Chief Executive and Directors<span
                                             style="font-size: xx-small; color: red;">(*)Required</span></label>
                                 <textarea type="text" id="NameAndBusinessOfProprietors2"
@@ -291,7 +291,7 @@ type="ball-scale-multiple"
                         </div>
                         <div class="row">
                             <div class="form-group col-12">
-                                <label for="mainPhysicalLocation2">Main Physical Location <span
+                                <label for="mainPhysicalLocation2">Admin Location <span
                                         style="font-size: xx-small; color: red;">(*)Required</span></label>
                                 <textarea type="text" ngModel="{{companyDetail.physicalAddress}}" class="form-control"
                                           id="mainPhysicalLocation2" name="mainPhysicalLocation"
@@ -302,14 +302,14 @@ type="ball-scale-multiple"
                 </div>
                 <div class="row">
                     <div class="form-group col-12">
-                        <label for="AllCommoditiesManufuctured2">All Commodities Manufactured or to be Manufactured<span style="font-size: medium; color: blue;">(Commodities are comma separated)</span><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                        <label for="AllCommoditiesManufuctured2">Indicate which contracts were or undertaken (Electrical,Mechanical or Construction E/M/C)<span style="font-size: medium; color: blue;">(Commodities are comma separated)</span><span style="font-size: xx-small; color: red;">(*)Required</span></label>
                         <textarea [class.is-invalid]="manufacturingInfo.AllCommoditiesManufuctured.invalid && manufacturingInfo.AllCommoditiesManufuctured.touched" type="text"  id="AllCommoditiesManufuctured2" formControlName="AllCommoditiesManufuctured" name="AllCommoditiesManufuctured" class="form-control" placeholder=""></textarea>
                     </div>
 
                 </div>
                 <div class="row">
                     <div class="form-group col-6">
-                        <label for="DateOfManufacture2">Date upon which Manufacture Commenced or will Commence <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                        <label for="DateOfManufacture2">Date upon which Contracting Commenced or will Commence <span style="font-size: xx-small; color: red;">(*)Required</span></label>
                         <input type="date"
                                [class.is-invalid]="manufacturingInfo.DateOfManufacture.invalid && manufacturingInfo.DateOfManufacture.touched"
                                class="form-control" id="DateOfManufacture2"
@@ -408,13 +408,262 @@ type="ball-scale-multiple"
         </div>
     </div>
 </div>
+</div>
     <div class="card-body" *ngIf="notificationFormStatus==true">
         <div class="toolbar">
          <p style="color: red; font-weight: bold; font-size: medium">Form Has already been filled</p>
         </div>
-    </div>
+        <div *ngIf="manufacturingStatus==true" class="row col-12">
+                <div class="row">
+                    <div class="col-md-6 ml-auto mr-auto">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h3 style="color: #0d0505; font-weight: bold">SL1 Form</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
+                <div class="form-body">
+                    <div *ngFor="let companyDetail of companyDetails">
+                    <div class="row">
+                        <div class="form-group col-6">
+                            <label for="businessCompanyName1">Business/Company Name </label>
+                            <input type="text" class="form-control" ngModel="{{companyDetail.name}}"
+                                   id="businessCompanyName11"
+                                   placeholder="Business/Company Name" disabled>
+
+                        </div>
+
+                        <div class="form-group col-6">
+                            <label for="plotNumber1">Plot Number</label>
+                            <input type="text" ngModel="{{companyDetail.plotNumber}}" class="form-control"
+                                   id="plotNumber11" disabled>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-4">
+                            <label for="roadStreet1">Road / Street </label>
+                            <input type="text" ngModel="{{companyDetail.streetName}}" class="form-control"
+                                   id="roadStreet11"
+                                    disabled>
+                        </div>
+                        <div class="form-group col-4">
+                            <label for="postalAddress1">Postal Address </label>
+                            <input type="text" ngModel="{{companyDetail.postalAddress}}" class="form-control"
+                                   id="postalAddress11"
+                                   disabled>
+                        </div>
+                        <div class="form-group col-4">
+                            <label for="telephone1">Telephone</label>
+                            <input type="text" ngModel="{{companyDetail.companyTelephone}}" class="form-control"
+                                   id="telephone11"
+                                    disabled>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-12">
+                            <label for="mainPhysicalLocation1">Main Physical Location </label>
+                            <textarea type="text" ngModel="{{companyDetail.physicalAddress}}" class="form-control"
+                                      id="mainPhysicalLocation11"
+                                      disabled></textarea>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-12">
+                            <label for="NameAndBusinessOfProprietors1">Name and Business of Proprietors and
+                                Partners; and In the
+                                case of Companies, the Chief Executive and Directors</label>
+                            <textarea type="text" id="NameAndBusinessOfProprietors11"
+                                      ngModel="{{companyDetail.directorIdNumber}}"
+                                       class="form-control"
+                                       disabled></textarea>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-6">
+                            <label for="companyRegID11">
+                                Registration Number<span
+                                        style="font-size: xx-small; color: red;">(*)Required</span></label>
+                        <input type="text" ngModel="{{companyDetail.registrationNumber}}" class="form-control"
+                               id="companyRegID11" disabled>
+                        </div>
+                        <div class="form-group col-6">
+                            <label for="companyKRAID11">
+                                KRA Number<span
+                                    style="font-size: xx-small; color: red;">(*)Required</span></label>
+                        <input type="text" ngModel="{{companyDetail.kraPin}}" class="form-control"
+                               id="companyKRAID11" disabled>
+                    </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-6">
+                            <label for="nameOfBranch11">Name of Branch <span
+                                    style="font-size: xx-small; color: red;">(*)Required</span></label>
+                            <input type="text" ngModel="{{companyDetail.branchName}}" class="form-control" id="nameOfBranch11"
+                                   disabled>
+                        </div>
+                        <div class="form-group col-6">
+                            <label for="location11">Location <span
+                                    style="font-size: xx-small; color: red;">(*)Required</span></label>
+                            <input type="text" ngModel="{{companyDetail.physicalAddress}}" class="form-control" id="location11"
+                                  disabled>
+
+                        </div>
+                    </div>
+                </div>
+                    <div >
+                        <div class="row">
+                            <div class="form-group col-12">
+                                <label for="AllCommoditiesManufuctured1">All Commodities Manufactured or to be
+                                    Manufactured<span style="font-size: medium; color: blue;">(Commodities are comma separated)</span><span
+                                            style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <textarea
+                                        type="text" id="AllCommoditiesManufuctured11"
+                                        ngModel="{{slFormDetails.commodity}}"
+                                        class="form-control" disabled></textarea>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-6">
+                                <label for="DateOfManufacture1">Date upon which Manufacture Commenced or will Commence
+                                    <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <input type="text"
+                                       class="form-control" id="DateOfManufacture11"
+                                       ngModel="{{slFormDetails.dateOfManufacture | date:'dd/MM/yyyy ' }}" disabled>
+                            </div>
+                            <div class="form-group col-6">
+                                <label for="totalValueOfManufacture1">Total value of Manufacture in last Calender Year
+                                    (KSH) <span
+                                            style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <input type="number"
+                                       class="form-control" id="totalValueOfManufacture11"
+                                       ngModel="{{slFormDetails.totalValue}}" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+        <div *ngIf="manufacturingStatus==false" class="row col-12">
+                <div class="col-md-6 ml-auto mr-auto">
+                    <h3 style="color: #0d0505; font-weight: bold">SL1C</h3>
+                </div>
+                <div class="form-body">
+                    <div *ngFor="let companyDetail of companyDetails">
+                    <div class="row">
+                        <div class="form-group col-6">
+                            <label for="businessCompanyName22">Name of Business <span
+                                    style="font-size: xx-small; color: red;">(*)Required</span></label>
+                            <input type="text" class="form-control" ngModel="{{companyDetail.name}}"
+                                   id="businessCompanyName22"
+                                   disabled>
+
+                        </div>
+
+                        <div class="form-group col-6">
+                            <label for="plotNumber22">Plot Number<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                            <input type="text" ngModel="{{companyDetail.plotNumber}}" class="form-control"
+                                   id="plotNumber22" disabled>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-6">
+                            <label for="roadStreet22">Road / Street <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                            <input type="text" ngModel="{{companyDetail.streetName}}" class="form-control"
+                                   id="roadStreet22"  disabled>
+                        </div>
+                        <div class="form-group col-6">
+                            <label for="postalAddress22">Address <span
+                                    style="font-size: xx-small; color: red;">(*)Required</span></label>
+                            <input type="text" ngModel="{{companyDetail.postalAddress}}" class="form-control"
+                                   id="postalAddress22" disabled>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-6">
+                            <label for="telephone22">Telephone Number<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                            <input type="text" ngModel="{{companyDetail.companyTelephone}}" class="form-control"
+                                   id="telephone22"  disabled>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-12">
+                            <label for="NameAndBusinessOfProprietors22">Name and Business of Proprietors or
+                                Partners; and In the case of Companies, the Chief Executive and Directors<span
+                                        style="font-size: xx-small; color: red;">(*)Required</span></label>
+                            <textarea type="text" id="NameAndBusinessOfProprietors22"
+                                      ngModel="{{companyDetail.directorIdNumber}}" class="form-control"
+                                      disabled></textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-12">
+                            <label for="mainPhysicalLocation22">Admin Location <span
+                                    style="font-size: xx-small; color: red;">(*)Required</span></label>
+                            <textarea type="text" ngModel="{{companyDetail.physicalAddress}}" class="form-control"
+                                      id="mainPhysicalLocation22" disabled ></textarea>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-6">
+                            <label for="companyRegID22">Registration Number </label>
+                        <input type="text" ngModel="{{companyDetail.registrationNumber}}" class="form-control"
+                               id="companyRegID22" disabled>
+                        </div>
+                        <div class="form-group col-6">
+                            <label for="companyKRAID22">KRA Pin </label>
+                        <input type="text" ngModel="{{companyDetail.kraPin}}" class="form-control"
+                               id="companyKRAID22" disabled>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-6">
+                            <label for="nameOfBranch22">Name of Branch <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                            <input type="text" ngModel="{{companyDetail.branchName}}" class="form-control" id="nameOfBranch22"
+                                   value="{{companyDetail.branchName}}"  disabled >
+                        </div>
+                        <div class="form-group col-6">
+                            <label for="location22">Location <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                            <input type="text" ngModel="{{companyDetail.physicalAddress}}" class="form-control" id="location22" disabled >
+
+                        </div>
+
+                    </div>
+                    </div>
+                    <div >
+                        <div class="row">
+                            <div class="form-group col-12">
+                                <label for="AllCommoditiesManufuctured22">Indicate which contracts were or undertaken (Electrical,Mechanical or Construction E/M/C)<span style="font-size: medium; color: blue;">(Commodities are comma separated)</span><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <textarea type="text" ngModel="{{slFormDetails.commodity}}" class="form-control"  id="AllCommoditiesManufuctured22"  disabled ></textarea>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-6">
+                                <label for="DateOfManufacture22">Date upon which Contracting Commenced or will Commence </label>
+                                <input id="DateOfManufacture22" class="form-control" ngModel="{{slFormDetails.dateOfManufacture | date:'dd/MM/yyyy '}}" disabled >
+                            </div>
+                            <div class="form-group col-6">
+                                <label for="totalValueOfManufacture22">Total value of Manufacture in last Calender Year
+                                    KSH</label>
+                                <input type="number"  class="form-control" id="totalValueOfManufacture22" ngModel="{{slFormDetails.totalValue}}" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
 </div>
+
 </div>
 </div>
 </div>

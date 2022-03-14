@@ -1111,6 +1111,12 @@ class StdLevyController(
         return commonDaoServices.getUserEmail(3082)
     }
 
+    @GetMapping("/getNotificationFormDetails")
+    @ResponseBody
+    fun getNotificationFormDetails(): NotificationFormDetailsHolder {
+        return standardLevyService.getNotificationFormDetails()
+    }
+
 
 
     @PostMapping("/anonymous/standard/close")
@@ -1123,5 +1129,6 @@ class StdLevyController(
     fun closeTask(@RequestBody responseMessage: ResponseMessage) {
         return standardLevyService.closeTask(responseMessage.message)
     }
+
 
 }

@@ -4,7 +4,7 @@ import {
   ManufactureBranchDto,
   ManufactureInfo,
   ManufacturingBranchDto,
-  ManufacturingInfo, ManufacturingStatus
+  ManufacturingInfo, ManufacturingStatus, SlModel
 } from "../../../../core/store/data/levy/levy.model";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
@@ -29,6 +29,7 @@ export class CustomerRegistrationComponent implements OnInit {
   //company: CompanyModel;
   companyDetails !: CompanyModel[];
   manufacturingStatus !: ManufacturingStatus;
+  slFormDetails !: SlModel;
   notificationFormStatus !: ManufacturingStatus;
   manufacturerInfoForm: FormGroup;
   manufacturingInfoForm: FormGroup;
@@ -57,6 +58,7 @@ export class CustomerRegistrationComponent implements OnInit {
       this.getCompanyProfile();
       this.getManufacturerStatus();
       this.getSLNotificationStatus();
+      this.getCompanySLForm();
 
     this.manufacturerInfoForm = this.formBuilder.group({
       businessCompanyName: [],
@@ -129,6 +131,22 @@ export class CustomerRegistrationComponent implements OnInit {
         }
     );
   }
+  public getCompanySLForm(): void{
+    this.SpinnerService.show();
+    this.levyService.getCompanySLForm().subscribe(
+        (response: SlModel)=> {
+          this.slFormDetails = response;
+          console.log(this.slFormDetails);
+          this.SpinnerService.hide();
+        },
+        (error: HttpErrorResponse)=>{
+          this.SpinnerService.hide();
+          console.log(error.message)
+          //alert(error.message);
+        }
+    );
+  }
+
 
     public getCompanyProfile(): void{
         this.SpinnerService.show();

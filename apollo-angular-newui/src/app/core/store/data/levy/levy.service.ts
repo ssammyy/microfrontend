@@ -21,7 +21,7 @@ import {
     ReportDecisionLevelTwo,
     SiteVisitFeedBack,
     SiteVisitReport,
-    SLevySL1,
+    SLevySL1, SlModel,
     StdLevyScheduleSiteVisitDTO,
     UserEntityRoles,
     UsersEntityList,
@@ -63,6 +63,12 @@ export class LevyService {
         const params = new HttpParams();
         return this.http.get<CompanyModel>(url, {params}).pipe();
     }
+    public getCompanySLForm(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_SL_FORM);
+        const params = new HttpParams();
+        return this.http.get<SlModel>(url, {params}).pipe();
+    }
+
 
     public getManufacturerStatus(): any {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_MANUFACTURE_STATUS);
