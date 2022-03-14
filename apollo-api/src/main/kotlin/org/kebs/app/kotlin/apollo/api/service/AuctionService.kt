@@ -136,11 +136,12 @@ class AuctionService(
         demandNoteReq.product = "AUCTION"
         demandNoteReq.name = request.importerName
         demandNoteReq.amount = BigDecimal.ZERO.toDouble()
-        // TODO: Change once we get response KRA
-        demandNoteReq.entryPoint = "KSM"
-        demandNoteReq.courier = ""
-        demandNoteReq.customsOffice = request.shipmentPort ?: "NRB"
-        //
+        request.cfsId?.let {
+            demandNoteReq.entryPoint = it.altCfsCode ?: it.cfsCode ?: ""
+            demandNoteReq.entryNo = it.cfsNumber ?: ""
+            demandNoteReq.courier = ""
+            demandNoteReq.customsOffice = request.shipmentPort ?: "NRB"
+        }
         demandNoteReq.ablNumber = request.serialNumber
         demandNoteReq.invoicePrefix = "AG"
         demandNoteReq.presentment = false
@@ -159,7 +160,7 @@ class AuctionService(
             itm.currency = element.currency
             itm.productName = element.itemName
             itm.itemId = element.id
-            itm.itemValue = element.unitPrice
+            itm.itemValue = element.totalPrice ?: BigDecimal.ZERO
             itm.fee = fee
             itemDetailsList.add(itm)
         }
@@ -366,10 +367,20 @@ class AuctionService(
             response.message = "Auction with lot no exists: " + form.auctionLotNo
             return response
         }
+
+        val cfsCode = this.destinationInspectionDaoServices.findCfsCd((form.cfsCode ?: "").trim().toUpperCase())
+        if (cfsCode == null) {
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "CFS code ${form.cfsCode} does not exists, please enter a valid CFS code "
+            return response
+        }
+        KotlinLogging.logger { }.info("Adding auction with cfs code: ${form.cfsCode}")
         val auctionRequest = AuctionRequests()
         form.fillDetails(auctionRequest)
+        auctionRequest.cfsId = cfsCode
         auctionRequest.approvalStatus = AuctionGoodStatus.NEW.status
         auctionRequest.status = 0
+        auctionRequest.varField4 = form.cfsCode
         auctionRequest.serialNumber = "NA"
         auctionRequest.createdBy = commonDaoServices.loggedInUserAuthentication().name
         auctionRequest.createdOn = Timestamp.from(Instant.now())
@@ -416,6 +427,7 @@ class AuctionService(
         request.shipmentPort = item.shipName
         request.arrivalDate = item.dateOfArrival
         request.categoryCode = categoryCode
+        request.cfsCode = item.cfsCode
         request.importerName = item.consignee
         request.importerPhone = item.consignee
         request.containerSize = item.containerSize

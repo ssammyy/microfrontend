@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.model.auction
 
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
+import org.kebs.app.kotlin.apollo.store.model.di.CfsTypeCodesEntity
 import java.io.Serializable
 import java.sql.Date
 import java.sql.Timestamp
@@ -18,6 +19,10 @@ class AuctionRequests : Serializable {
     @Column(name = "CONSIGNMENT_ID")
     @Basic
     var consignmentId: Long? = null // If it was inspected, this will be filled
+
+    @JoinColumn(name = "CFS_ID", referencedColumnName = "ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    var cfsId: CfsTypeCodesEntity? = null // If it was inspected, this will be filled
 
     @JoinColumn(name = "CTAEGORY_ID", referencedColumnName = "ID")
     @ManyToOne(fetch = FetchType.LAZY)

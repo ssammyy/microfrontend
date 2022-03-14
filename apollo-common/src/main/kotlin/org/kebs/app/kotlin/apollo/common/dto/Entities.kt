@@ -1139,6 +1139,9 @@ class AuditItemEntityDto {
     @JsonProperty("LOT NUMBER")
     var lotNumber: String? = null
 
+    @JsonProperty("CFS")
+    var cfsCode: String? = null
+
     @JsonProperty("SHIP'S NAME AND DATE")
     var shipName: String? = null
 

@@ -479,7 +479,7 @@ class InvoicePaymentService(
                         nameImporter = form.name
                         importerPin = form.importerPin
                         address = form.address
-                        telephone = form.address
+                        telephone = form.phoneNumber
                         cdRefNo = form.referenceNumber
                         shippingAgent = form.customsOffice
                         courier = form.courier

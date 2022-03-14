@@ -1,11 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {DestinationInspectionService} from "../../../../core/store/data/di/destination-inspection.service";
 import {DatePipe} from "@angular/common";
-import {ConsignmentStatusComponent} from "../../../../core/shared/customs/consignment-status/consignment-status.component";
 import {LocalDataSource} from "ng2-smart-table";
 import {MatDialog} from "@angular/material/dialog";
 import {UploadFileComponent} from "../upload-file/upload-file.component";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {AddAuctionRecordComponent} from "../add-auction-record/add-auction-record.component";
 import {GenerateAuctionKraReportComponent} from "../generate-auction-kra-report/generate-auction-kra-report.component";
 
@@ -15,6 +14,7 @@ import {GenerateAuctionKraReportComponent} from "../generate-auction-kra-report/
     styleUrls: ['./view-auction-items.component.css']
 })
 export class ViewAuctionItemsComponent implements OnInit {
+    tabs = ['assigned', 'new', 'rejected', 'approved', 'search']
     auctionType = 'assigned'
     searchStatus = null
     categories: any
@@ -81,6 +81,10 @@ export class ViewAuctionItemsComponent implements OnInit {
                 title: 'Importer Phone',
                 type: 'string'
             },
+            cfsCode: {
+                title: 'CFS Station',
+                type: 'string'
+            },
             category: {
                 title: 'Category',
                 type: 'any',
@@ -117,12 +121,20 @@ export class ViewAuctionItemsComponent implements OnInit {
     };
     dataSet: LocalDataSource = new LocalDataSource()
 
-    constructor(private router: Router, private diService: DestinationInspectionService, private dialog: MatDialog) {
+    constructor(private router: Router, private activeRouter: ActivatedRoute, private diService: DestinationInspectionService, private dialog: MatDialog) {
     }
 
     ngOnInit(): void {
-        this.loadData()
         this.loadCategories()
+        this.activeRouter.queryParamMap.subscribe(res => {
+            if (res.has("tab")) {
+                let t = res.get('tab')
+                if (t in this.tabs) {
+                    this.auctionType = t;
+                }
+            }
+            this.loadData()
+        })
     }
 
     loadCategories() {
@@ -144,6 +156,12 @@ export class ViewAuctionItemsComponent implements OnInit {
             this.searchStatus = null
             this.keywords = null
             this.currentPageInternal = 0
+            // Update URL
+            this.router.navigate([], {
+                queryParams: {
+                    tab: status
+                }
+            })
             this.loadData()
         }
     }

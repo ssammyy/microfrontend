@@ -73,7 +73,10 @@ class SageRequest {
                 documentDate = dn.dateGenerated
                 shippingAgent = dn.shippingAgent ?: "UNKNOWN"
                 customerTelephone = dn.telephone
-                emailAddress = dn.address
+                emailAddress = when {
+                    dn.address?.contains('@') == true -> dn.address
+                    else -> "example@example.com"
+                }
                 entryNo = dn.entryNo ?: ""
                 courier = ""
                 otherInfo = dn.currency
@@ -82,7 +85,10 @@ class SageRequest {
             // Only applicable to JKA
             if ("JKA".equals(dn.shippingAgent, true)) {
                 req.entryPoint = dn.entryPoint ?: "KSM"
+                req.entryNo = dn.entryNo ?: ""
                 req.courier = dn.courier ?: ""
+            } else {
+                req.entryPoint = dn.entryPoint ?: "001"
             }
             return req
         }
