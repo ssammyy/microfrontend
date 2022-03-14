@@ -197,6 +197,14 @@ class StandardLevyFactoryVisitReportEntity : Serializable {
     @Basic
     var registrationNumber: String? = null
 
+    @Column(name = "APPROVAL_STATUS")
+    @Basic
+    var approvalStatus: String? = null
+
+    @Column(name = "APPROVAL_STATUS_ID")
+    @Basic
+    var approvalStatusId: Long? = null
+
     var userType: Long? = null
 
     override fun equals(other: Any?): Boolean {
@@ -234,7 +242,9 @@ class StandardLevyFactoryVisitReportEntity : Serializable {
                 companyName == that.companyName &&
                 entryNumber == that.entryNumber &&
                 kraPin ==that.kraPin &&
-                registrationNumber == that.registrationNumber
+                registrationNumber == that.registrationNumber &&
+                approvalStatus == that.approvalStatus &&
+                approvalStatusId == that.approvalStatusId
     }
 
     override fun hashCode(): Int {
@@ -270,7 +280,9 @@ class StandardLevyFactoryVisitReportEntity : Serializable {
             companyName,
             entryNumber,
             kraPin,
-            registrationNumber
+            registrationNumber,
+            approvalStatus,
+            approvalStatusId
 
 
         )

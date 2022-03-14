@@ -440,6 +440,7 @@ class SystemsAdminDaoService(
                         directorIdNumber = dto.directorIdNumber
                         postalAddress = dto.postalAddress
                         physicalAddress = dto.physicalAddress
+                        branchName =dto.branchName
                         plotNumber = dto.plotNumber
                         companyEmail = dto.companyEmail
                         companyTelephone = dto.companyTelephone
@@ -474,6 +475,7 @@ class SystemsAdminDaoService(
                     registrationNumber = dto.registrationNumber
                     directorIdNumber = dto.directorIdNumber
                     postalAddress = dto.postalAddress
+                    branchName = dto.branchName
                     physicalAddress = dto.physicalAddress
                     plotNumber = dto.plotNumber
                     companyEmail = dto.companyEmail
@@ -1365,7 +1367,7 @@ class SystemsAdminDaoService(
                                                 name = dto.company.name
                                                 kraPin = dto.company.kraPin
                                                 userId = user.id
-
+                                                branchName = dto.company.branchName
                                                 registrationNumber = dto.company.registrationNumber
                                                 postalAddress = dto.company.postalAddress
                                                 physicalAddress = dto.company.physicalAddress

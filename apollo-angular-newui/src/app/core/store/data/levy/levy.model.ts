@@ -361,6 +361,12 @@ export interface ManufacturePendingTaskData{
     ownership: string;
     createdBy: string;
     manufactureId: string;
+    approvalStatus: string;
+    approvalStatusId: number;
+    rejectStatus: string;
+    approvalStatusLevelTwo: string;
+    rejectStatusLevelTwo: string;
+
 
 }
 export interface ManufactureCompleteTask {
@@ -434,5 +440,9 @@ export interface UserEntityRoles {
 
 export interface ManufacturingStatus {
     name: boolean;
+}
+
+export interface Branch {
+    branchName: string;
 }
 

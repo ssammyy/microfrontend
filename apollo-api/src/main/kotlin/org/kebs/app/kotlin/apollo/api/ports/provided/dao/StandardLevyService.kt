@@ -47,7 +47,8 @@ class StandardLevyService(
     private val companyProfileEditEntityRepository: CompanyProfileEditEntityRepository,
     private val stdLevyNotificationFormRepo: IStdLevyNotificationFormRepository,
     private val stdLevyNotificationFormRepository: StdLevyNotificationFormRepository,
-    private val notifications: Notifications
+    private val notifications: Notifications,
+    private val manufacturePlantRepository: IManufacturePlantDetailsRepository
 
 ) {
     val PROCESS_DEFINITION_KEY = "sl_SiteVisitProcessFlow"
@@ -854,8 +855,13 @@ return getUserTasks();
         standardLevyFactoryVisitReportEntity.accentTo?.let { variables["Yes"] = it }
         standardLevyFactoryVisitReportEntity.assigneeId?.let { variables["assigneeId"] = it }
         variables["status"] = 1
+        val approverFname=loggedInUser.firstName
+        val approverLname=loggedInUser.firstName
+        variables["approvalStatus"]= "Approved by $approverFname  $approverLname"
         loggedInUser.id?.let { variables["levelOneId"] = it }
         if (variables["Yes"] == true) {
+            variables["approvalStatus"]= "Approved by $approverFname  $approverLname"
+            variables["approvalStatusId"]=1
             standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)
                 ?.let { standardLevyFactoryVisitReportEntity ->
 
@@ -908,6 +914,8 @@ return getUserTasks();
                 }
                 ?: throw NullValueNotAllowedException("COMPANY NOT FOUND")
         } else if (variables["No"] == false) {
+            variables["rejectStatus"]= "Rejected by $approverFname  $approverLname"
+            variables["approvalStatusId"]=0
             standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)
                 ?.let { standardLevyFactoryVisitReportEntity ->
 
@@ -982,6 +990,7 @@ return getUserTasks();
 
     fun decisionOnSiteReportLevelTwo(standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity): List<TaskDetailsBody> {
         val variables: MutableMap<String, Any> = mutableMapOf()
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
         standardLevyFactoryVisitReportEntity.accentTo?.let { variables["Yes"] = it }
         standardLevyFactoryVisitReportEntity.accentTo?.let { variables["No"] = it }
         standardLevyFactoryVisitReportEntity.cheifManagerRemarks?.let { variables["cheifManagerRemarks"] = it }
@@ -989,7 +998,12 @@ return getUserTasks();
         standardLevyFactoryVisitReportEntity.assigneeId?.let { variables["assigneeId"] = it }
         val userIntType = standardLevyFactoryVisitReportEntity.userType
         val userIntTypes = userIntType.toString()
+        val approverfname=loggedInUser.firstName
+        val approverlname=loggedInUser.lastName
+
         if (variables["Yes"] == true) {
+            variables["approvalStatusLevelTwo"]= "Approved by $approverfname  $approverlname"
+            variables["approvalStatusId"]=1
             standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)
                 ?.let { standardLevyFactoryVisitReportEntity ->
 
@@ -1042,6 +1056,8 @@ return getUserTasks();
                 }
                 ?: throw NullValueNotAllowedException("COMPANY NOT FOUND")
         } else if (variables["No"] == false) {
+            variables["rejectStatusLevelTwo"]= "Rejected by $approverfname  $approverlname"
+            variables["approvalStatusId"]=0
             standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)
                 ?.let { standardLevyFactoryVisitReportEntity ->
 
@@ -1087,6 +1103,7 @@ return getUserTasks();
                                 }
                                 ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
                             if (userIntTypes.equals(61)) {
+
                                 bpmnService.slAssignTask(
                                     processInstance.processInstanceId,
                                     "Notification of Report",
@@ -1279,6 +1296,7 @@ return getUserTasks();
             return iUserRoleAssignmentsRepository.getRoleByUserId(id)
         } ?: throw NullValueNotAllowedException("Role Not Found")
     }
+
     fun getNotificationFormDetails(): NotificationFormDetailsHolder{
         commonDaoServices.loggedInUserDetails().id
             ?.let { id ->
@@ -1287,6 +1305,21 @@ return getUserTasks();
                         stdLevyNotificationFormRepository.findTopByManufactureIdOrderByIdDesc(it)
                             ?.let {
                                 return stdLevyNotificationFormRepository.getNotificationFormDetails(it)
+                            }
+
+                    }
+            } ?: throw NullValueNotAllowedException("User Not Found")
+
+    }
+
+    fun getBranchName(): BranchNameHolder{
+        commonDaoServices.loggedInUserDetails().id
+            ?.let { id ->
+                companyProfileRepo.getManufactureId(id)
+                    .let {
+                        manufacturePlantRepository.findTopByManufactureIdOrderByIdDesc(it)
+                            ?.let {
+                                return manufacturePlantRepository.findBranchName(it)
                             }
 
                     }

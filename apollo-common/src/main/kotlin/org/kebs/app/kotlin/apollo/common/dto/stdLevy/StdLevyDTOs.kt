@@ -136,7 +136,9 @@ data class SiteVisitReportDecisionDTO(
     var manufacturerEntity: Long? = null,
     var contactId: Long? = null,
     var comments: String? = null,
-    var userType: Long? = null
+    var userType: Long? = null,
+    var approvalStatus: String? = null,
+    var approvalStatusId: Long? = null
 ){
 
 }

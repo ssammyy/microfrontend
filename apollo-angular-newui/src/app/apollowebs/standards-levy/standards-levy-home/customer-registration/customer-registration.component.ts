@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {
+  Branch,
   CompanyModel,
   ManufactureBranchDto,
   ManufactureInfo,
@@ -30,6 +31,7 @@ export class CustomerRegistrationComponent implements OnInit {
   companyDetails !: CompanyModel[];
   manufacturingStatus !: ManufacturingStatus;
   slFormDetails !: SlModel;
+  slBranchName !: Branch;
   notificationFormStatus !: ManufacturingStatus;
   manufacturerInfoForm: FormGroup;
   manufacturingInfoForm: FormGroup;
@@ -59,6 +61,7 @@ export class CustomerRegistrationComponent implements OnInit {
       this.getManufacturerStatus();
       this.getSLNotificationStatus();
       this.getCompanySLForm();
+      this.getBranchName();
 
     this.manufacturerInfoForm = this.formBuilder.group({
       businessCompanyName: [],
@@ -147,8 +150,24 @@ export class CustomerRegistrationComponent implements OnInit {
     );
   }
 
+  public getBranchName(): void{
+    this.SpinnerService.show();
+    this.levyService.getBranchName().subscribe(
+        (response: Branch)=> {
+          this.slBranchName = response;
+          console.log(this.slBranchName);
+          this.SpinnerService.hide();
+        },
+        (error: HttpErrorResponse)=>{
+          this.SpinnerService.hide();
+          console.log(error.message)
+          //alert(error.message);
+        }
+    );
+  }
 
-    public getCompanyProfile(): void{
+
+  public getCompanyProfile(): void{
         this.SpinnerService.show();
         this.levyService.getCompanyProfile().subscribe(
             (response: CompanyModel[])=> {
