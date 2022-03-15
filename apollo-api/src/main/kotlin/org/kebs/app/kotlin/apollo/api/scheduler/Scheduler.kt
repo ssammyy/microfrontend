@@ -71,6 +71,7 @@ class SchedulerDevelopment(
 ) {
     @Scheduled(fixedDelay = 5_000)//60 Seconds for now
     fun updateDemandNotes() {
+        schedulerImpl.updateLabResultsWithDetails()
     //    KotlinLogging.logger { }.info("DEV: UPDATING DEMAND NOTES on SW")
         schedulerImpl.updatePaidDemandNotesStatus()
         //   KotlinLogging.logger { }.info("DEV: UPDATED DEMAND NOTES on SW")

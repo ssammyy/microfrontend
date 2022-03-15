@@ -94,17 +94,17 @@ class LimsServices(
             val responseCode: Int = conn.responseCode
             if (responseCode == HttpsURLConnection.HTTP_OK) {
                 var line: String?
-                System.out.println("::::::::::::::::::::::::CONNECTION MADE::::::::::::::::")
+                KotlinLogging.logger { }.debug("::::::::::::::::::::::::CONNECTION MADE::::::::::::::::")
                 val br = BufferedReader(InputStreamReader(conn.inputStream))
                 while (br.readLine().also { line = it } != null) {
                     response += line
-                    System.out.println(response.toString())
+                    KotlinLogging.logger { }.debug(response.toString())
                 }
             } else {
                 response = ""
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            KotlinLogging.logger { }.error("Failed to connect", e)
         }
         return response
     }
@@ -177,7 +177,7 @@ class LimsServices(
         var myStatus: Boolean = false
         //Loop
         if (resultsParam.test_parameter?.isNullOrEmpty() == true) {
-            println("List is null or empty")
+            KotlinLogging.logger {}.debug("List is null or empty")
             throw ExpectedDataNotFound("NO RESULTS FOUND")
 //            return myStatus
         } else {
@@ -431,10 +431,13 @@ class LimsServices(
             val items = iCdItemsRepo.findByCdDocIdAndSampledStatusAndAllTestReportStatusNotIn(cdItemDetails, 1, listOf(1))
             // All lab results have been received
             if (items.isEmpty()) {
+                KotlinLogging.logger { }.info("CD ${cdItemDetails.ucrNumber} has all lab results, marking")
                 cdItemDetails.status = ConsignmentApprovalStatus.UNDER_INSPECTION.code
                 cdItemDetails.varField10 = "Lab result received"
                 diDaoServices.updateCDStatus(cdItemDetails, ConsignmentDocumentStatus.LAB_RESULT_RESULT)
                 response = true
+            } else {
+                KotlinLogging.logger { }.info("CD ${cdItemDetails.ucrNumber} expects ${items.size} Lab results")
             }
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Failed to update lab result")
