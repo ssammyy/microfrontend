@@ -302,6 +302,7 @@ interface IDemandNoteRepository : HazelcastRepository<CdDemandNoteEntity, Long> 
     fun findAllByCdIdAndStatusIn(cdId: Long, statuses: List<Int>): List<CdDemandNoteEntity>
     fun findFirstByCdIdAndStatusIn(cdId: Long, statuses: List<Int>): CdDemandNoteEntity?
     fun findByCdId(cdId: Long): CdDemandNoteEntity?
+    fun findByPostingReference(demandNoteNumber: String): CdDemandNoteEntity?
     fun findByDemandNoteNumber(demandNoteNumber: String): CdDemandNoteEntity?
 
     @Query("select * from DAT_KEBS_CD_DEMAND_NOTE where  to_char(DATE_GENERATED,'DD-MM-YYYY')=:date and STATUS in(:status)", nativeQuery = true)

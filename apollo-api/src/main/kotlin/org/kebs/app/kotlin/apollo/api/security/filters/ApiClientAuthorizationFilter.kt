@@ -56,6 +56,7 @@ class ApiClientAuthorizationFilter : OncePerRequestFilter() {
             try {
                 KotlinLogging.logger { }.info("Checking basic authentication: ${token.first}")
                 val authentication = authenticationManager.authenticate(OauthClientAuthenticationToken(token.first, token.second, "password"))
+                KotlinLogging.logger { }.info("Roles for authentication: ${authentication.authorities}")
                 SecurityContextHolder.getContext().authentication = authentication
             } catch (ex: Exception) {
                 KotlinLogging.logger { }.info("Failed to process basic authentication: ${ex.localizedMessage}")

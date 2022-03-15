@@ -457,7 +457,7 @@ class InvoiceHandlers(
         return ServerResponse.ok().body(response)
     }
 
-    @PreAuthorize("hasRole('PAYMENT')")
+    @PreAuthorize("hasAuthority('PAYMENT')")
     fun paymentCallback(req: ServerRequest): ServerResponse {
         val result = CallbackResponses()
         try {

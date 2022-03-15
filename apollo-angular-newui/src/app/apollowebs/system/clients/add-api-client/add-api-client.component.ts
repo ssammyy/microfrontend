@@ -20,6 +20,10 @@ export class AddApiClientComponent implements OnInit {
         {
             name: "KIMS",
             description: "KIMS roles"
+        },
+        {
+            name: "PAYMENT",
+            description: "SAGE callback role"
         }
     ]
     clientTypes = [
@@ -30,6 +34,10 @@ export class AddApiClientComponent implements OnInit {
         {
             name: "INTERNAL",
             description: "Internal client"
+        },
+        {
+            name: "PAYMENT",
+            description: "Callback client"
         }
     ]
 
