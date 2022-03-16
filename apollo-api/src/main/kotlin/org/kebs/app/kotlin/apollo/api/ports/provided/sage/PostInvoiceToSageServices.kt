@@ -9,6 +9,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.sage.requests.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.response.PaymentStatusResult
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.response.RootResponse
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.response.SagePostingResponseResult
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.CdDemandNoteEntity
@@ -154,6 +155,10 @@ class PostInvoiceToSageServices(
                     null,
                     null
             )
+            // Check response code
+            if (resp == null || resp.status.value != 200) {
+                throw ExpectedDataNotFound("Received invalid response[${resp?.status?.value}]:${resp?.status?.description}")
+            }
             val response: Triple<WorkflowTransactionsEntity, SagePostingResponseResult?, io.ktor.client.statement.HttpResponse?> =
                     daoService.processResponses(resp, log, configUrl, config)
             demandNote.varField2 = response.second?.response?.demandNoteNo

@@ -18,7 +18,7 @@ class AuctionRequestDto {
     var arrivalDate: String? = null
     var importerName: String? = null
     var goodsDesc: String? = null
-    var containerDets: String?=null
+    var containerDets: String? = null
     var manifestNo: String? = null
     var blNo: String? = null
     var location: String? = null
@@ -39,6 +39,8 @@ class AuctionRequestDto {
     var reportId: Long? = null
     var demandNoteId: Long? = null
     var containerSize: String? = null
+    var cfsCode: String? = null
+    var cfsName: String? = null
     var status: Int? = null
 
     companion object {
@@ -48,7 +50,7 @@ class AuctionRequestDto {
                 requestId = auction.id
                 consignmentId = auction.consignmentId
                 auctionLotNo = auction.auctionLotNo
-                auctionDate = auction.auctionDate?.toString()?:"NA"
+                auctionDate = auction.auctionDate?.toString() ?: "NA"
                 shipmentPort = auction.shipmentPort
                 shipmentDate = auction.shipmentDate
                 arrivalDate = auction.arrivalDate?.toString()
@@ -56,10 +58,12 @@ class AuctionRequestDto {
                 importerPhone = auction.importerPhone
                 serialNumber = auction.serialNumber
                 reportId = auction.reportId
-                manifestNo="NA"
-                blNo="NA"
-                goodsDesc=""
-                containerDets=auction.location?:""
+                cfsCode = auction.cfsId?.cfsCode
+                cfsName = auction.cfsId?.cfsName
+                manifestNo = "NA"
+                blNo = "NA"
+                goodsDesc = ""
+                containerDets = auction.location ?: ""
                 approvalStatus = auction.approvalStatus
                 approvedRejectedOn = auction.approvedRejectedOn
                 assignedOn = auction.assignedOn

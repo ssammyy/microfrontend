@@ -54,7 +54,7 @@ class InvoiceDaoService(
 
     fun createBatchInvoiceDetails(user: String, invoiceNumber: String): InvoiceBatchDetailsEntity {
         val map = commonDaoServices.serviceMapDetails(appId)
-        var batchInvoice = InvoiceBatchDetailsEntity()
+        var batchInvoice = invoiceBatchDetailsRepo.findByBatchNumber(invoiceNumber) ?: InvoiceBatchDetailsEntity()
         with(batchInvoice) {
 //            batchNumber = "KEBS/INVOICE-${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
             batchNumber = invoiceNumber

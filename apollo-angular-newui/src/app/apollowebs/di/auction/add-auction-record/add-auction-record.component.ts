@@ -27,8 +27,8 @@ export class AddAuctionRecordComponent implements OnInit {
             edit: false,
             delete: false,
             custom: [
-                // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
-                // {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View More</i>'}
+                {name: 'deleteItem', title: '<i class="fa fa-trash-alt">Delete</i>'},
+                {name: 'editRecord', title: '<i class="fa fa-pencil-alt">Edit</i>'}
             ],
             position: 'right' // left|right
         },
@@ -72,6 +72,7 @@ export class AddAuctionRecordComponent implements OnInit {
         console.log("Add auction Items: 2")
         this.form = this.fb.group({
             categoryCode: [null, Validators.required],
+            cfsCode: [null, Validators.required],
             auctionLotNo: [null, Validators.required],
             auctionDate: [null, Validators.required],
             shipmentPort: [null, Validators.required],

@@ -54,6 +54,9 @@ class IDFDaoService {
         var idfDetailsEntity = iIDFDetailsEntityRepository.findByBaseDocRefNo(idfRefNumber!!) ?: IDFDetailsEntity()
         try {
             idfDetailsEntity.baseDocRefNo = idfRefNumber
+            idfDetailsEntity.createdBy = createdByValue
+            idfDetailsEntity.status = 0
+            idfDetailsEntity.createdOn = commonDaoServices.getTimestamp()
             idfDetailsEntity = iIDFDetailsEntityRepository.save(idfDetailsEntity)
         } catch (ex: DataIntegrityViolationException) {
             idfDetailsEntity = iIDFDetailsEntityRepository.findByBaseDocRefNo(idfRefNumber) ?: IDFDetailsEntity()

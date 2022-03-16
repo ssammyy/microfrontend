@@ -394,13 +394,17 @@ class InvoicePaymentService(
     }
 
     fun paymentReceived(responseStatus: PaymentStatusResult): Boolean {
-        iDemandNoteRepo.findByDemandNoteNumber(responseStatus.response?.demandNoteNo ?: "")?.let { demandNode ->
+        iDemandNoteRepo.findByPostingReference(responseStatus.response?.demandNoteNo ?: "")?.let { demandNode ->
+            if (demandNode.paymentStatus == 1) {
+                throw ExpectedDataNotFound("Payment has already been made, duplicate callback")
+            }
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             demandNode.paymentSource = responseStatus.response?.paymentCode
             demandNode.receiptDate = responseStatus.response?.paymentDate
             demandNode.varField5 = responseStatus.response?.additionalInfo
             demandNode.varField6 = responseStatus.response?.currencyCode
             demandNode.varField7 = responseStatus.response?.paymentDescription
+            demandNode.receiptNo = responseStatus.response?.paymentReferenceNo
             if ("00".equals(responseStatus.header?.statusCode)) {
                 demandNode.paymentStatus = map.activeStatus
                 demandNode.paymentDate = Timestamp.from(Instant.now())
@@ -479,7 +483,7 @@ class InvoicePaymentService(
                         nameImporter = form.name
                         importerPin = form.importerPin
                         address = form.address
-                        telephone = form.address
+                        telephone = form.phoneNumber
                         cdRefNo = form.referenceNumber
                         shippingAgent = form.customsOffice
                         courier = form.courier
