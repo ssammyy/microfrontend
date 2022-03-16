@@ -364,6 +364,7 @@ export interface ManufacturePendingTaskData{
     contactId: number;
     levyProcessInstance: string;
     levelOneId: number;
+    levelOneAssignee: number;
     officersFeedback: string;
     userType: number;
     makeRemarks: string;

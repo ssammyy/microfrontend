@@ -632,7 +632,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
             visitID: this.actionRequestPending.taskData.visitID,
             taskId: this.actionRequestPending.taskId,
             manufacturerEntity: this.actionRequestPending.taskData.manufacturerEntity,
-            assigneeId: this.actionRequestPending.taskData.originator,
+            assigneeId: this.actionRequestPending.taskData.levelOneId,
               accentTo: this.reject,
               role:this.role,
               status:this.rejectStatus
