@@ -19,5 +19,5 @@ interface ISlVisitUploadsRepository : HazelcastRepository<SlVisitUploadsEntity, 
 
 }
 interface StandardLevySiteVisitRemarksRepository : HazelcastRepository<StandardLevySiteVisitRemarks, Long>, JpaSpecificationExecutor<StandardLevySiteVisitRemarks> {
-  fun findAllBySiteVisitId(id: Long): MutableList<StandardLevySiteVisitRemarks>
+  fun findAllBySiteVisitId(id: Long): List<StandardLevySiteVisitRemarks>?
 }

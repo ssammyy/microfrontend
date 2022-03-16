@@ -1060,7 +1060,7 @@ class StdLevyController(
     fun getSiteVisitRemarks(
         response: HttpServletResponse,
         @RequestParam("siteVisitId") siteVisitId: Long
-    ): MutableList<StandardLevySiteVisitRemarks> {
+    ): List<StandardLevySiteVisitRemarks> {
         return standardLevyService.getSiteVisitRemarks(siteVisitId)
     }
 
@@ -1145,6 +1145,22 @@ class StdLevyController(
     @ResponseBody
     fun getBranchName(): BranchNameHolder {
         return standardLevyService.getBranchName()
+    }
+    @PostMapping("/sendEntryNumber")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun sendEntryNumber(
+        @RequestParam("transmissionDate") transmissionDate: Timestamp,
+        @RequestParam("loginId") loginId: String,
+        @RequestParam("password") password: String,
+        @RequestParam("hash") hash: String,
+        @RequestParam("noOfRecords") noOfRecords: Long
+    ): ServerResponse
+    {
+       // String url = "https://196.61.52.30/KEBS/kebs/sendEntryDetails"
+
+
+        return ServerResponse(HttpStatus.OK,"Sent", HttpStatus.OK)
     }
 
 

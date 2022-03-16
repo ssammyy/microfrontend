@@ -1418,8 +1418,10 @@ return getUserTasks();
             ?: throw ExpectedDataNotFound("No Data Found")
     }
 
-    fun getSiteVisitRemarks(siteVisitId: Long): MutableList<StandardLevySiteVisitRemarks> {
-        return standardLevySiteVisitRemarksRepository.findAllBySiteVisitId(siteVisitId)
+    fun getSiteVisitRemarks(siteVisitId: Long): List<StandardLevySiteVisitRemarks> {
+        standardLevySiteVisitRemarksRepository.findAllBySiteVisitId(siteVisitId)?.let {
+          return it
+        }
             ?: throw ExpectedDataNotFound("No Data Found")
     }
 
