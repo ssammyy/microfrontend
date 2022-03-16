@@ -138,7 +138,12 @@ data class SiteVisitReportDecisionDTO(
     var comments: String? = null,
     var userType: Long? = null,
     var approvalStatus: String? = null,
-    var approvalStatusId: Long? = null
+    var approvalStatusId: Long? = null,
+    var status: String? = null,
+    var remarkBy: String? = null,
+    var role: String? = null,
+    var description: String? =null
+
 ){
 
 }

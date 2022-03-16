@@ -1681,5 +1681,36 @@ alter table DAT_STANDARD_LEVY_FACTORY_VISIT_REPORT
 alter table DAT_STANDARD_LEVY_FACTORY_VISIT_REPORT
     add APPROVAL_STATUS_ID NUMBER ;
 /
+create  table DAT_KEBS_SITE_VISIT_REMARKS
+(
+    id                   number   not null primary key,
+    SITE_VISIT_ID            NUMBER,
+    REMARKS           varchar(350 char),
+    STATUS           varchar(350 char),
+    REMARK_BY            varchar(350),
+    ROLE          VARCHAR2(350 CHAR),
+    DESCRIPTION          VARCHAR2(350 CHAR),
+    DATE_OF_REMARK          VARCHAR2(350 CHAR)
+)
+/
+create sequence DAT_KEBS_SITE_VISIT_REMARKS_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+create or replace trigger DAT_KEBS_SITE_VISIT_REMARKS_trg
+    before
+        insert
+    on DAT_KEBS_SITE_VISIT_REMARKS
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select DAT_KEBS_SITE_VISIT_REMARKS_seq.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+/
+
 
 

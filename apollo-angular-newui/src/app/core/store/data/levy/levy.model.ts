@@ -161,6 +161,14 @@ export interface EditCompanyDTO {
     accentTo: boolean;
 
 }
+export interface SiteVisitRemarks{
+    siteVisitId: number;
+    remarks: string;
+    remarkBy: string;
+    status: string;
+    role: string;
+    dateOfRemark: string;
+}
 export interface ConfirmEditCompanyDTO {
     postalAddress: string;
     physicalAddress: string;
@@ -261,6 +269,8 @@ export interface ReportDecisionLevelOne{
     comments: string;
     assigneeId: number;
     manufacturerEntity: number;
+    status: string;
+    role: string;
 }
 
 export interface ReportDecisionLevelTwo{
@@ -270,6 +280,8 @@ export interface ReportDecisionLevelTwo{
     comments: string;
     manufacturerEntity: number;
     userType: number;
+    status: string;
+    role: string;
 }
 
 export interface SiteVisitFeedBack {

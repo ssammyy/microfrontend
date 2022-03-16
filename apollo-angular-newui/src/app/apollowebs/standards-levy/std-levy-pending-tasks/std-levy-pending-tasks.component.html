@@ -124,7 +124,7 @@
                                         <tbody>
                                         <tr  *ngFor="let manufacturePendingTask of manufacturePendingTasks let i=index">
                                             <td >{{i+1}} </td>
-                                            <td>{{manufacturePendingTask.taskData.companyName}}</td>
+                                            <td>{{manufacturePendingTask.taskData.companyName}}{{manufacturePendingTask.taskData.visitID}}</td>
                                             <td>{{manufacturePendingTask.taskData.entryNumber}}</td>
                                             <td>{{manufacturePendingTask.taskData.kraPin}}</td>
                                             <td>{{manufacturePendingTask.taskData.registrationNumber}}</td>
@@ -890,31 +890,22 @@
                                 <div class="modal-body">
                                     <div>
                                         <button (click)=toggleDisplayReportForm()  class="btn btn-primary btn-sm">Prepare Report</button>
-                                        <button type="button" (click)=toggleDisplayRemarksTab() class="btn btn-danger btn-sm">View Remarks</button>
-                                        <button type="button" class="btn btn-warning btn-sm">Close Account</button>
+                                        <button type="button" (click)=toggleDisplayRemarksTab(actionRequestPending?.taskData?.visitID) class="btn btn-danger btn-sm">View Remarks</button>
+
                                     </div>
                                     <div class="col-12 row">
 
                                         <div class="container col-md-12" [hidden]="isShowRemarksTab">
                                             <div class="col-12">
-                                                <div class="list-group list-group-flush">
-                                                    <div class="row col-12">
-                                                        <div class="form-group col-12">
-                                                            <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                <div class="d-flex w-100 justify-content-between">
-                                                                    <div>
-                                                                        <div class="d-flex w-100 align-items-center">
-                                                                            <h5 class="mb-1" style="color: #e00d0d"><b>Remarks From Approving Officer</b></h5>
-                                                                        </div>
-                                                                    </div>
-
-                                                                </div>
-
-                                                                <p class="text-sm mb-0">{{actionRequestPending?.taskData?.assistantManagerRemarks}}.</p>
-                                                                <hr>
-                                                                <p class="text-sm mb-0">{{actionRequestPending?.taskData?.cheifManagerRemarks}}.</p>
-                                                            </a>
-                                                        </div>
+                                                <div class="card" *ngFor="let siteVisitRemark of siteVisitRemarks">
+                                                    <div class="card-header">
+                                                        <span class="badge badge-info">{{siteVisitRemark.status}}</span> By {{siteVisitRemark.remarkBy}} On {{siteVisitRemark.dateOfRemark | date: 'dd/MM/yyyy hh:mm:ss'}}
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <blockquote class="blockquote mb-0">
+                                                            <p>Remark: {{siteVisitRemark.remarks}}.</p>
+                                                            <footer class="blockquote-footer">Role: <cite title="Source Title">{{siteVisitRemark.role}}</cite></footer>
+                                                        </blockquote>
                                                     </div>
                                                 </div>
                                             </div>
@@ -925,20 +916,6 @@
                                             <form (ngSubmit)="saveReport()" [formGroup]="prepareReportFormGroup" class="form">
                                                 <div class="form-body">
                                                     <div class="row col-12">
-                                                        <div class="form-group col-12">
-                                                            <div class="form-group col-12">
-                                                                <span class="badge badge-success">{{actionRequestPending?.taskData?.approvalStatus}}</span>
-                                                            </div>
-                                                            <div class="form-group col-12">
-                                                                <span class="badge badge-warning">{{actionRequestPending?.taskData?.rejectStatus}}</span>
-                                                            </div>
-                                                            <div class="form-group col-12">
-                                                                <span class="badge badge-success">{{actionRequestPending?.taskData?.approvalStatusLevelTwo}}</span>
-                                                            </div>
-                                                            <div class="form-group col-12">
-                                                                <span class="badge badge-warning">{{actionRequestPending?.taskData?.rejectStatusLevelTwo}}</span>
-                                                            </div>
-                                                        </div>
                                                         <div class="form-group col-12">
                                                             <label><b>Visit Date</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                             <input
@@ -1601,6 +1578,24 @@
                                             <div>
                                                 <button (click)=toggleDisplayApprovalForm1()  class="btn btn-success btn-sm">Approve</button>
                                                 <button (click)=toggleDisplayRejectForm1()  class="btn btn-danger btn-sm">Reject</button>
+                                                <button type="button" (click)=toggleDisplayRemarksTab(actionRequestPending?.taskData?.visitID) class="btn btn-info btn-sm">View Remarks</button>
+
+                                            </div>
+                                            <div class="container col-md-12" [hidden]="isShowRemarksTab">
+                                                <div class="col-12">
+                                                    <div class="card" *ngFor="let siteVisitRemark of siteVisitRemarks">
+                                                        <div class="card-header">
+                                                            <span class="badge badge-info">{{siteVisitRemark.status}}</span> By {{siteVisitRemark.remarkBy}} On {{siteVisitRemark.dateOfRemark | date: 'dd/MM/yyyy hh:mm:ss'}}
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <blockquote class="blockquote mb-0">
+                                                                <p>Remark: {{siteVisitRemark.remarks}}.</p>
+                                                                <footer class="blockquote-footer">Role: <cite title="Source Title">{{siteVisitRemark.role}}</cite></footer>
+                                                            </blockquote>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
                                             </div>
                                             <div class="container col-md-12" [hidden]="isShowApprovalForm1">
                                                 <h4 style="color: red"><b>Approve Report</b></h4>
@@ -1609,20 +1604,6 @@
                                                     <div class="form-body">
 
                                                         <div class="row">
-                                                            <div class="form-group col-12">
-                                                                <div class="form-group col-12">
-                                                                    <span class="badge badge-success">{{actionRequestPending?.taskData?.approvalStatus}}</span>
-                                                                </div>
-                                                                <div class="form-group col-12">
-                                                                    <span class="badge badge-warning">{{actionRequestPending?.taskData?.rejectStatus}}</span>
-                                                                </div>
-                                                                <div class="form-group col-12">
-                                                                    <span class="badge badge-success">{{actionRequestPending?.taskData?.approvalStatusLevelTwo}}</span>
-                                                                </div>
-                                                                <div class="form-group col-12">
-                                                                    <span class="badge badge-warning">{{actionRequestPending?.taskData?.rejectStatusLevelTwo}}</span>
-                                                                </div>
-                                                            </div>
                                                             <div class="form-group col-12">
                                                                 <label><b>Comments/Remarks</b><span style="font-size: xx-small; color: orangered;">(*)Optional</span></label>
 
@@ -1633,6 +1614,7 @@
                                                             </div>
                                                             <div *ngIf="roles?.includes('SL_IS_PL_OFFICER')" class="form-group col-12">
                                                                 <label>Send Report To</label>
+
                                                                 <ng-select [(ngModel)]="approvedUsersOne" formControlName="assigneeId"  class="form-control" ngModel name="assigneeId" >
                                                                     <ng-option *ngFor="let user of approveUsersOne" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
                                                                 </ng-select>
@@ -1653,6 +1635,8 @@
                                                         </div>
                                                         <input type="hidden" formControlName="visitID" name="visitID"  value="{{actionRequestPending?.taskData?.visitID}}" >
                                                         <input type="hidden" formControlName="accentTo" name="accentTo"  value="{{approve}}" >
+                                                        <input type="hidden" formControlName="role" name="role"  value="{{role}}" >
+                                                        <input type="hidden" formControlName="status" name="status"  value="{{approveStatus}}" >
                                                         <input type="hidden" formControlName="taskId"  name="taskId" value="{{actionRequestPending?.taskId}}" >
                                                         <input type="hidden" formControlName="manufacturerEntity"  name="manufacturerEntity" value="{{actionRequestPending?.taskData?.manufacturerEntity}}" >
 
@@ -1670,20 +1654,7 @@
                                                     <div class="form-body">
 
                                                         <div class="row">
-                                                            <div class="form-group col-12">
-                                                                <div class="form-group col-12">
-                                                                    <span class="badge badge-success">{{actionRequestPending?.taskData?.approvalStatus}}</span>
-                                                                </div>
-                                                                <div class="form-group col-12">
-                                                                    <span class="badge badge-warning">{{actionRequestPending?.taskData?.rejectStatus}}</span>
-                                                                </div>
-                                                                <div class="form-group col-12">
-                                                                    <span class="badge badge-success">{{actionRequestPending?.taskData?.approvalStatusLevelTwo}}</span>
-                                                                </div>
-                                                                <div class="form-group col-12">
-                                                                    <span class="badge badge-warning">{{actionRequestPending?.taskData?.rejectStatusLevelTwo}}</span>
-                                                                </div>
-                                                            </div>
+
                                                             <div class="form-group col-12">
                                                                 <label><b>Comments/Remarks</b><span style="font-size: xx-small; color: orangered;">(*)Optional</span></label>
 
@@ -1694,6 +1665,8 @@
                                                             </div>
 
                                                         </div>
+                                                        <input type="hidden" formControlName="role" name="role"  value="{{role}}" >
+                                                        <input type="hidden" formControlName="status" name="status"  value="{{rejectStatus}}" >
                                                         <input type="hidden" formControlName="assigneeId" name="assigneeId"  value="{{actionRequestPending?.taskData?.originator}}" >
                                                         <input type="hidden" formControlName="visitID" name="visitID"  value="{{actionRequestPending?.taskData?.visitID}}" >
                                                         <input type="hidden" formControlName="accentTo" name="accentTo"  value="{{reject}}" >
@@ -1760,21 +1733,6 @@
 
 
                                                     <p class="text-sm mb-0">{{actionRequestPending?.taskData?.actionTaken}}.</p>
-                                                </a>
-                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                    <div class="d-flex w-100 justify-content-between">
-                                                        <div>
-                                                            <div class="d-flex w-100 align-items-center">
-                                                                <h5 class="mb-1" style="color: #be0909"><b>Report Remarks</b></h5>
-                                                            </div>
-                                                        </div>
-
-                                                    </div>
-                                                    <p class="text-sm mb-0">{{actionRequestPending?.taskData?.makeRemarks}}.</p>
-                                                    <hr>
-                                                    <p class="text-sm mb-0">{{actionRequestPending?.taskData?.assistantManagerRemarks}}.</p>
-                                                    <hr>
-                                                    <p class="text-sm mb-0">{{actionRequestPending?.taskData?.cheifManagerRemarks}}.</p>
                                                 </a>
                                                 <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                     <div class="d-flex w-100 justify-content-between">
@@ -2093,6 +2051,24 @@
                                             <div>
                                                 <button (click)=toggleDisplayApprovalForm1()  class="btn btn-success btn-sm">Approve</button>
                                                 <button (click)=toggleDisplayRejectForm1()  class="btn btn-danger btn-sm">Reject</button>
+                                                <button type="button" (click)=toggleDisplayRemarksTab(actionRequestPending?.taskData?.visitID) class="btn btn-info btn-sm">View Remarks</button>
+
+                                            </div>
+                                            <div class="container col-md-12" [hidden]="isShowRemarksTab">
+                                                <div class="col-12">
+                                                    <div class="card" *ngFor="let siteVisitRemark of siteVisitRemarks">
+                                                        <div class="card-header">
+                                                            <span class="badge badge-info">{{siteVisitRemark.status}}</span> By {{siteVisitRemark.remarkBy}} On {{siteVisitRemark.dateOfRemark | date: 'dd/MM/yyyy hh:mm:ss'}}
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <blockquote class="blockquote mb-0">
+                                                                <p>Remark: {{siteVisitRemark.remarks}}.</p>
+                                                                <footer class="blockquote-footer">Role: <cite title="Source Title">{{siteVisitRemark.role}}</cite></footer>
+                                                            </blockquote>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
                                             </div>
                                             <div class="container col-md-12" [hidden]="isShowApprovalForm1">
                                                 <h4 style="color: red"><b>Approve Report</b></h4>
@@ -2101,20 +2077,6 @@
                                                     <div class="form-body">
 
                                                         <div class="row">
-                                                            <div class="form-group col-12">
-                                                                <div class="form-group col-12">
-                                                                    <span class="badge badge-success">{{actionRequestPending?.taskData?.approvalStatus}}</span>
-                                                                </div>
-                                                                <div class="form-group col-12">
-                                                                    <span class="badge badge-warning">{{actionRequestPending?.taskData?.rejectStatus}}</span>
-                                                                </div>
-                                                                <div class="form-group col-12">
-                                                                    <span class="badge badge-success">{{actionRequestPending?.taskData?.approvalStatusLevelTwo}}</span>
-                                                                </div>
-                                                                <div class="form-group col-12">
-                                                                    <span class="badge badge-warning">{{actionRequestPending?.taskData?.rejectStatusLevelTwo}}</span>
-                                                                </div>
-                                                            </div>
                                                             <div class="form-group col-12">
                                                                 <label><b>Comments/Remarks</b><span style="font-size: xx-small; color: orangered;">(*)Optional</span></label>
 
@@ -2126,6 +2088,8 @@
 
 
                                                         </div>
+                                                        <input type="hidden" formControlName="role" name="role"  value="{{role}}" >
+                                                        <input type="hidden" formControlName="status" name="status"  value="{{approveStatus}}" >
                                                         <input type="hidden" formControlName="assigneeId" name="assigneeId" value="{{actionRequestPending?.taskData?.originator}}" >
                                                         <input type="hidden" formControlName="visitID" name="visitID" value="{{actionRequestPending?.taskData?.visitID}}" >
                                                         <input type="hidden" formControlName="accentTo" name="accentTo"  value="{{approve}}" >
@@ -2146,20 +2110,7 @@
                                                     <div class="form-body">
 
                                                         <div class="row">
-                                                            <div class="form-group col-12">
-                                                                <div class="form-group col-12">
-                                                                    <span class="badge badge-success">{{actionRequestPending?.taskData?.approvalStatus}}</span>
-                                                                </div>
-                                                                <div class="form-group col-12">
-                                                                    <span class="badge badge-warning">{{actionRequestPending?.taskData?.rejectStatus}}</span>
-                                                                </div>
-                                                                <div class="form-group col-12">
-                                                                    <span class="badge badge-success">{{actionRequestPending?.taskData?.approvalStatusLevelTwo}}</span>
-                                                                </div>
-                                                                <div class="form-group col-12">
-                                                                    <span class="badge badge-warning">{{actionRequestPending?.taskData?.rejectStatusLevelTwo}}</span>
-                                                                </div>
-                                                            </div>
+
                                                             <div class="form-group col-12">
                                                                 <label><b>Comments/Remarks</b><span style="font-size: xx-small; color: orangered;">(*)Optional</span></label>
 
@@ -2170,6 +2121,8 @@
                                                             </div>
 
                                                         </div>
+                                                        <input type="hidden" formControlName="role" name="role"  value="{{role}}" >
+                                                        <input type="hidden" formControlName="status" name="status"  value="{{rejectStatus}}" >
                                                         <input type="hidden" formControlName="assigneeId" name="assigneeId"  value="{{actionRequestPending?.taskData?.originator}}" >
                                                         <input type="hidden" formControlName="visitID" name="visitID" value="{{actionRequestPending?.taskData?.visitID}}" >
                                                         <input type="hidden" formControlName="accentTo" name="accentTo" value="{{reject}}" >
@@ -2237,20 +2190,7 @@
 
                                                     <p class="text-sm mb-0">{{actionRequestPending?.taskData?.actionTaken}}.</p>
                                                 </a>
-                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                    <div class="d-flex w-100 justify-content-between">
-                                                        <div>
-                                                            <div class="d-flex w-100 align-items-center">
-                                                                <h5 class="mb-1" style="color: #0d0505"><b>Report Remarks</b></h5>
-                                                            </div>
-                                                        </div>
-
-                                                    </div>
-
-
-                                                    <p class="text-sm mb-0">{{actionRequestPending?.taskData?.makeRemarks}}.</p>
-                                                </a>
-                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                 <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                     <div class="d-flex w-100 justify-content-between">
                                                         <div>
                                                             <div class="d-flex w-100 align-items-center">
@@ -2568,6 +2508,24 @@
                                             <div>
                                                 <button (click)=toggleDisplayApprovalForm2()  class="btn btn-success btn-sm">Approve</button>
                                                 <button (click)=toggleDisplayRejectForm2()  class="btn btn-danger btn-sm">Reject</button>
+                                                <button type="button" (click)=toggleDisplayRemarksTab(actionRequestPending?.taskData?.visitID) class="btn btn-info btn-sm">View Remarks</button>
+
+                                            </div>
+                                            <div class="container col-md-12" [hidden]="isShowRemarksTab">
+                                                <div class="col-12">
+                                                    <div class="card" *ngFor="let siteVisitRemark of siteVisitRemarks">
+                                                        <div class="card-header">
+                                                            <span class="badge badge-info">{{siteVisitRemark.status}}</span> By {{siteVisitRemark.remarkBy}} On {{siteVisitRemark.dateOfRemark | date: 'dd/MM/yyyy hh:mm:ss'}}
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <blockquote class="blockquote mb-0">
+                                                                <p>Remark: {{siteVisitRemark.remarks}}.</p>
+                                                                <footer class="blockquote-footer">Role: <cite title="Source Title">{{siteVisitRemark.role}}</cite></footer>
+                                                            </blockquote>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
                                             </div>
                                             <div class="container col-md-12" [hidden]="isShowApprovalForm2">
                                                 <h4 style="color: red"><b>Approve Report</b></h4>
@@ -2575,20 +2533,7 @@
                                                     <div class="form-body">
 
                                                         <div class="row">
-                                                            <div class="form-group col-12">
-                                                                <div class="form-group col-12">
-                                                                    <span class="badge badge-success">{{actionRequestPending?.taskData?.approvalStatus}}</span>
-                                                                </div>
-                                                                <div class="form-group col-12">
-                                                                    <span class="badge badge-warning">{{actionRequestPending?.taskData?.rejectStatus}}</span>
-                                                                </div>
-                                                                <div class="form-group col-12">
-                                                                    <span class="badge badge-success">{{actionRequestPending?.taskData?.approvalStatusLevelTwo}}</span>
-                                                                </div>
-                                                                <div class="form-group col-12">
-                                                                    <span class="badge badge-warning">{{actionRequestPending?.taskData?.rejectStatusLevelTwo}}</span>
-                                                                </div>
-                                                            </div>
+
                                                             <div class="form-group col-12">
                                                                 <label><b>Comments/Remarks</b><span style="font-size: xx-small; color: orangered;">(*)Optional</span></label>
                                                                 <textarea [class.is-invalid]="formApprovalTwo.comments.invalid && formApprovalTwo.comments.touched"
@@ -2598,7 +2543,8 @@
                                                             </div>
                                                         </div>
 
-
+                                                        <input type="hidden" formControlName="role" name="role"  value="{{role}}" >
+                                                        <input type="hidden" formControlName="status" name="status"  value="{{approveStatus}}" >
                                                         <input type="hidden" formControlName="visitID" name="visitID"  value="{{actionRequestPending?.taskData?.visitID}}" >
                                                         <input type="hidden" formControlName="accentTo" name="accentTo"  value="{{approve}}" >
                                                         <input type="hidden" formControlName="assigneeId" name="assigneeId"  value="{{actionRequestPending?.taskData?.originator}}" >
@@ -2620,20 +2566,7 @@
                                                     <div class="form-body">
 
                                                         <div class="row">
-                                                            <div class="form-group col-12">
-                                                                <div class="form-group col-12">
-                                                                    <span class="badge badge-success">{{actionRequestPending?.taskData?.approvalStatus}}</span>
-                                                                </div>
-                                                                <div class="form-group col-12">
-                                                                    <span class="badge badge-warning">{{actionRequestPending?.taskData?.rejectStatus}}</span>
-                                                                </div>
-                                                                <div class="form-group col-12">
-                                                                    <span class="badge badge-success">{{actionRequestPending?.taskData?.approvalStatusLevelTwo}}</span>
-                                                                </div>
-                                                                <div class="form-group col-12">
-                                                                    <span class="badge badge-warning">{{actionRequestPending?.taskData?.rejectStatusLevelTwo}}</span>
-                                                                </div>
-                                                            </div>
+
                                                             <div class="form-group col-12">
                                                                 <label><b>Comments/Remarks</b><span style="font-size: xx-small; color: orangered;">(*)Optional</span></label>
                                                                 <textarea [class.is-invalid]="formRejectTwo.comments.invalid && formRejectTwo.comments.touched"
@@ -2642,6 +2575,8 @@
                                                                           placeholder="Comments" type="text"></textarea>
                                                             </div>
                                                         </div>
+                                                        <input type="hidden" formControlName="role" name="role"  value="{{role}}" >
+                                                        <input type="hidden" formControlName="status" name="status"  value="{{rejectStatus}}" >
                                                         <input type="hidden"   name="userType" value="{{actionRequestPending?.taskData?.userType}}" >
                                                         <input type="hidden" formControlName="assigneeId" name="assigneeId"  value="{{actionRequestPending?.taskData?.levelOneId}}" >
                                                         <input type="hidden" formControlName="visitID" name="visitID"  value="{{actionRequestPending?.taskData?.visitID}}" >
@@ -3054,6 +2989,24 @@
                                         <div class="tab-pane fade" id="nav-comDraft" role="tabpanel" aria-labelledby="nav-report-tab">
                                             <div>
                                                 <button (click)=toggleDisplaySaveFeedBackForm()  class="btn btn-success btn-sm">Draft Report</button>
+                                                <button type="button" (click)=toggleDisplayRemarksTab(actionRequestPending?.taskData?.visitID) class="btn btn-info btn-sm">View Remarks</button>
+
+                                            </div>
+                                            <div class="container col-md-12" [hidden]="isShowRemarksTab">
+                                                <div class="col-12">
+                                                    <div class="card" *ngFor="let siteVisitRemark of siteVisitRemarks">
+                                                        <div class="card-header">
+                                                            <span class="badge badge-info">{{siteVisitRemark.status}}</span> By {{siteVisitRemark.remarkBy}} On {{siteVisitRemark.dateOfRemark | date: 'dd/MM/yyyy hh:mm:ss'}}
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <blockquote class="blockquote mb-0">
+                                                                <p>Remark: {{siteVisitRemark.remarks}}.</p>
+                                                                <footer class="blockquote-footer">Role: <cite title="Source Title">{{siteVisitRemark.role}}</cite></footer>
+                                                            </blockquote>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
                                             </div>
                                             <div class="container col-md-12" [hidden]="isShowSaveFeedBackForm">
                                                 <h4 style="color: red"><b>Feedback Report</b></h4>
@@ -3134,45 +3087,45 @@
 
                                                         <p class="text-sm mb-0">{{actionRequestPending?.taskData?.actionTaken}}.</p>
                                                     </a>
-                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                        <div class="d-flex w-100 justify-content-between">
-                                                            <div>
-                                                                <div class="d-flex w-100 align-items-center">
-                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Remarks on Visit</b></h5>
-                                                                </div>
-                                                            </div>
+<!--                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">-->
+<!--                                                        <div class="d-flex w-100 justify-content-between">-->
+<!--                                                            <div>-->
+<!--                                                                <div class="d-flex w-100 align-items-center">-->
+<!--                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Remarks on Visit</b></h5>-->
+<!--                                                                </div>-->
+<!--                                                            </div>-->
 
-                                                        </div>
-
-
-                                                        <p class="text-sm mb-0">{{actionRequestPending?.taskData?.makeRemarks}}.</p>
-                                                    </a>
-                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                        <div class="d-flex w-100 justify-content-between">
-                                                            <div>
-                                                                <div class="d-flex w-100 align-items-center">
-                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Assistant Manager Comments</b></h5>
-                                                                </div>
-                                                            </div>
-
-                                                        </div>
+<!--                                                        </div>-->
 
 
-                                                        <p class="text-sm mb-0">{{actionRequestPending?.taskData?.assistantManagerRemarks}}.</p>
-                                                    </a>
-                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                        <div class="d-flex w-100 justify-content-between">
-                                                            <div>
-                                                                <div class="d-flex w-100 align-items-center">
-                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Manager Comments</b></h5>
-                                                                </div>
-                                                            </div>
+<!--                                                        <p class="text-sm mb-0">{{actionRequestPending?.taskData?.makeRemarks}}.</p>-->
+<!--                                                    </a>-->
+<!--                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">-->
+<!--                                                        <div class="d-flex w-100 justify-content-between">-->
+<!--                                                            <div>-->
+<!--                                                                <div class="d-flex w-100 align-items-center">-->
+<!--                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Assistant Manager Comments</b></h5>-->
+<!--                                                                </div>-->
+<!--                                                            </div>-->
 
-                                                        </div>
+<!--                                                        </div>-->
 
 
-                                                        <p class="text-sm mb-0">{{actionRequestPending?.taskData?.cheifManagerRemarks}}.</p>
-                                                    </a>
+<!--                                                        <p class="text-sm mb-0">{{actionRequestPending?.taskData?.assistantManagerRemarks}}.</p>-->
+<!--                                                    </a>-->
+<!--                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">-->
+<!--                                                        <div class="d-flex w-100 justify-content-between">-->
+<!--                                                            <div>-->
+<!--                                                                <div class="d-flex w-100 align-items-center">-->
+<!--                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Manager Comments</b></h5>-->
+<!--                                                                </div>-->
+<!--                                                            </div>-->
+
+<!--                                                        </div>-->
+
+
+<!--                                                        <p class="text-sm mb-0">{{actionRequestPending?.taskData?.cheifManagerRemarks}}.</p>-->
+<!--                                                    </a>-->
                                                     <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                         <div class="d-flex w-100 justify-content-between">
                                                             <div>

@@ -19,7 +19,7 @@ import {
     PaidLevy,
     ReportDecisionLevelOne,
     ReportDecisionLevelTwo,
-    SiteVisitFeedBack,
+    SiteVisitFeedBack, SiteVisitRemarks,
     SiteVisitReport,
     SLevySL1, SlModel,
     StdLevyScheduleSiteVisitDTO,
@@ -278,6 +278,11 @@ export class LevyService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_EDITED_COMPANY_DATA);
         const params = new HttpParams().set('manufactureId', manufactureId);
         return this.http.get<ConfirmEditCompanyDTO>(url, {params}).pipe();
+    }
+    public getSiteVisitRemarks(siteVisitId: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_SITE_VISIT_REMARKS);
+        const params = new HttpParams().set('siteVisitId', siteVisitId);
+        return this.http.get<SiteVisitRemarks>(url, {params}).pipe();
     }
 
     public editCompanyDetailsConfirm(editCompanyDTO: EditCompanyDTO): Observable<any> {

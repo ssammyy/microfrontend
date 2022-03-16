@@ -1,7 +1,11 @@
 import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {Subject} from "rxjs";
 import {UsersEntity} from "../../../core/store/data/std/std.model";
-import {ManufacturePendingTask} from "../../../core/store/data/levy/levy.model";
+import {
+    ConfirmEditCompanyDTO, ManufactureDetailList,
+    ManufacturePendingTask,
+    SiteVisitRemarks
+} from "../../../core/store/data/levy/levy.model";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import {Store} from "@ngrx/store";
@@ -26,6 +30,14 @@ export class StdLevyPendingTasksComponent implements OnInit {
   userType: number;
     approve: string;
     reject: string;
+    plOfficer: string;
+    astManager: string;
+    manager: string;
+    chiefManager: string;
+    approveStatus: string;
+    rejectStatus: string;
+    role:string;
+
   public users !: UsersEntity[] ;
   public approveUsersOne !: UsersEntity[] ;
   public approveUsersTwo !: UsersEntity[] ;
@@ -40,6 +52,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
   assignedUsersTwo: number;
   assignedUsersThree: number;
   manufacturePendingTasks: ManufacturePendingTask[] = [];
+    siteVisitRemarks: SiteVisitRemarks[] = [];
   public actionRequestPending: ManufacturePendingTask | undefined;
   public scheduleVisitFormGroup!: FormGroup;
   public prepareReportFormGroup!: FormGroup;
@@ -87,31 +100,51 @@ export class StdLevyPendingTasksComponent implements OnInit {
     this.isShowScheduleForm= true;
     this.isShowRemarksTab= true;
   }
-  toggleDisplayRemarksTab(){
+  toggleDisplayRemarksTab(siteVisitId: number){
+      this.loadingText = "Loading ...."
+      this.SpinnerService.show();
+      this.levyService.getSiteVisitRemarks(siteVisitId).subscribe(
+          (response: SiteVisitRemarks[]) => {
+              this.siteVisitRemarks = response;
+              this.SpinnerService.hide();
+              console.log(this.siteVisitRemarks)
+          },
+          (error: HttpErrorResponse) => {
+              this.SpinnerService.hide();
+              console.log(error.message);
+          }
+      );
     this.isShowRemarksTab = !this.isShowRemarksTab;
     this.isShowReportForm=true;
     this.isShowScheduleForm= true;
+      this.isShowRejectForm1 = true;
+      this.isShowApprovalForm1 = true;
   }
   toggleDisplayApprovalForm1() {
     this.isShowApprovalForm1 = !this.isShowApprovalForm1;
     this.isShowRejectForm1 = true;
+    this.isShowRemarksTab = true;
   }
   toggleDisplayRejectForm1() {
     this.isShowRejectForm1 = !this.isShowRejectForm1;
     this.isShowApprovalForm1= true;
+    this.isShowRemarksTab= true;
   }
   toggleDisplayApprovalForm2() {
     this.isShowApprovalForm2 = !this.isShowApprovalForm2;
     this.isShowRejectForm2 = true;
+    this.isShowRemarksTab = true;
   }
 
   toggleDisplayRejectForm2() {
     this.isShowRejectForm2 = !this.isShowRejectForm2;
     this.isShowApprovalForm1 = true;
+    this.isShowRemarksTab = true;
   }
 
   toggleDisplaySaveFeedBackForm() {
     this.isShowSaveFeedBackForm = !this.isShowSaveFeedBackForm;
+    this.isShowRemarksTab =  true;
   }
 
   @ViewChild(DataTableDirective, {static: false})
@@ -137,24 +170,30 @@ export class StdLevyPendingTasksComponent implements OnInit {
     this.getUserData();
     this.approve='true';
     this.reject='false';
+    this.approveStatus='Approved';
+    this.rejectStatus='Rejected';
 
     if (this.roles?.includes('SL_IS_PL_OFFICER')) {
       this.getApproveLevelOne();
       this.userType=61;
+      this.role='PL Officer';
     }
     if (this.roles?.includes('SL_IS_ASST_MANAGER')) {
       this.getApproveLevelTwo();
       this.getAssignLevelOne();
         this.userType=62;
+        this.role='Assistant Manager';
     }
     if (this.roles?.includes('SL_IS_MANAGER')) {
       this.getApproveLevelThree();
       this.getAssignLevelTwo();
         this.userType=62;
+        this.role='Manager';
     }
     if (this.roles?.includes('SL_IS_CHIEF_MANAGER')) {
       this.getAssignLevelThree();
         this.userType=62;
+        this.role='Chief Manager';
     }
 
       this.approveEditRequestFormGroup = this.formBuilder.group({
@@ -283,7 +322,9 @@ export class StdLevyPendingTasksComponent implements OnInit {
       visitID: [],
       accentTo: ['', Validators.required],
       taskId: [],
-      manufacturerEntity: []
+      manufacturerEntity: [],
+        role:[],
+        status:[]
 
     });
     this.rejectFormGroup = this.formBuilder.group({
@@ -292,7 +333,9 @@ export class StdLevyPendingTasksComponent implements OnInit {
       visitID: [],
       accentTo: ['', Validators.required],
       taskId: [],
-      manufacturerEntity: []
+      manufacturerEntity: [],
+        role:[],
+        status:[]
 
     });
 
@@ -302,7 +345,9 @@ export class StdLevyPendingTasksComponent implements OnInit {
       visitID: [],
       accentTo: [],
       taskId: [],
-      manufacturerEntity: []
+      manufacturerEntity: [],
+        role:[],
+        status:[]
 
     });
     this.approveTwoFormGroup = this.formBuilder.group({
@@ -311,7 +356,9 @@ export class StdLevyPendingTasksComponent implements OnInit {
       visitID: [],
       accentTo: [],
       taskId: [],
-      manufacturerEntity: []
+      manufacturerEntity: [],
+        role:[],
+        status:[]
 
     });
 
@@ -322,7 +369,9 @@ export class StdLevyPendingTasksComponent implements OnInit {
       accentTo: [],
       taskId: [],
       manufacturerEntity: [],
-      userType: []
+      userType: [],
+        role:[],
+        status:[]
 
     });
 
@@ -546,7 +595,9 @@ export class StdLevyPendingTasksComponent implements OnInit {
             visitID: this.actionRequestPending.taskData.visitID,
             taskId: this.actionRequestPending.taskId,
             manufacturerEntity: this.actionRequestPending.taskData.manufacturerEntity,
-              accentTo: this.approve
+              accentTo: this.approve,
+              role:this.role,
+              status:this.approveStatus
           }
       );
       this.rejectFormGroup.patchValue(
@@ -554,7 +605,10 @@ export class StdLevyPendingTasksComponent implements OnInit {
             visitID: this.actionRequestPending.taskData.visitID,
             taskId: this.actionRequestPending.taskId,
             manufacturerEntity: this.actionRequestPending.taskData.manufacturerEntity,
-              accentTo: this.reject
+              accentTo: this.reject,
+              assigneeId: this.actionRequestPending.taskData.originator,
+              role:this.role,
+              status:this.rejectStatus
           }
       );
 
@@ -568,7 +622,9 @@ export class StdLevyPendingTasksComponent implements OnInit {
             taskId: this.actionRequestPending.taskId,
             manufacturerEntity: this.actionRequestPending.taskData.manufacturerEntity,
             assigneeId: this.actionRequestPending.taskData.originator,
-              accentTo: this.approve
+              accentTo: this.approve,
+              role:this.role,
+              status:this.approveStatus
           }
       );
       this.rejectTwoFormGroup.patchValue(
@@ -577,7 +633,9 @@ export class StdLevyPendingTasksComponent implements OnInit {
             taskId: this.actionRequestPending.taskId,
             manufacturerEntity: this.actionRequestPending.taskData.manufacturerEntity,
             assigneeId: this.actionRequestPending.taskData.originator,
-              accentTo: this.reject
+              accentTo: this.reject,
+              role:this.role,
+              status:this.rejectStatus
           }
       );
     }
@@ -590,7 +648,9 @@ export class StdLevyPendingTasksComponent implements OnInit {
             taskId: this.actionRequestPending.taskId,
             manufacturerEntity: this.actionRequestPending.taskData.manufacturerEntity,
             assigneeId: this.actionRequestPending.taskData.originator,
-              accentTo: this.approve
+              accentTo: this.approve,
+              role:this.role,
+              status:this.approveStatus
           }
       );
       this.rejectFormGroup.patchValue(
@@ -599,7 +659,9 @@ export class StdLevyPendingTasksComponent implements OnInit {
             taskId: this.actionRequestPending.taskId,
             manufacturerEntity: this.actionRequestPending.taskData.manufacturerEntity,
             assigneeId: this.actionRequestPending.taskData.originator,
-              accentTo: this.reject
+              accentTo: this.reject,
+              role:this.role,
+              status:this.rejectStatus
           }
       );
     }

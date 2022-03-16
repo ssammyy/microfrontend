@@ -578,8 +578,8 @@ class StdLevyController(
           registrationNumber= stdLevyScheduleSiteVisitDTO.registrationNumber
           kraPin = stdLevyScheduleSiteVisitDTO.kraPin
       }
-             val gson = Gson()
-        KotlinLogging.logger { }.info { "INVOICE CALCULATED" + gson.toJson(standardLevyFactoryVisitReportEntity) }
+//             val gson = Gson()
+//        KotlinLogging.logger { }.info { "INVOICE CALCULATED" + gson.toJson(standardLevyFactoryVisitReportEntity) }
       return ServerResponse(HttpStatus.OK,"Site Visit Scheduled",standardLevyService.scheduleSiteVisit(standardLevyFactoryVisitReportEntity))
 
   }
@@ -872,21 +872,21 @@ class StdLevyController(
 
     }
 
-    @PostMapping("/decisionOnSiteReportx")
-    fun decisionOnSiteReportx(@RequestBody siteVisitReportDecision: SiteVisitReportDecision) : List<TaskDetailsBody>
-    {
-        val standardLevyFactoryVisitReportEntity= StandardLevyFactoryVisitReportEntity().apply {
-            assistantManagerRemarks = siteVisitReportDecision.comments
-            assigneeId = siteVisitReportDecision.assigneeId
-            taskId= siteVisitReportDecision.taskId
-            id= siteVisitReportDecision.visitID
-            manufacturerEntity=siteVisitReportDecision.manufacturerEntity
-
-
-        }
-
-        return standardLevyService.decisionOnSiteReport(standardLevyFactoryVisitReportEntity)
-    }
+//    @PostMapping("/decisionOnSiteReportx")
+//    fun decisionOnSiteReportx(@RequestBody siteVisitReportDecision: SiteVisitReportDecision) : List<TaskDetailsBody>
+//    {
+//        val standardLevyFactoryVisitReportEntity= StandardLevyFactoryVisitReportEntity().apply {
+//            assistantManagerRemarks = siteVisitReportDecision.comments
+//            assigneeId = siteVisitReportDecision.assigneeId
+//            taskId= siteVisitReportDecision.taskId
+//            id= siteVisitReportDecision.visitID
+//            manufacturerEntity=siteVisitReportDecision.manufacturerEntity
+//
+//
+//        }
+//
+//        return standardLevyService.decisionOnSiteReport(standardLevyFactoryVisitReportEntity)
+//    }
 
     @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
     @PostMapping("/decisionOnSiteReport")
@@ -905,9 +905,16 @@ class StdLevyController(
             approvalStatusId =siteVisitReportDecisionDTO.approvalStatusId
 
         }
+        val standardLevySiteVisitRemarks= StandardLevySiteVisitRemarks().apply {
+            siteVisitId=siteVisitReportDecisionDTO.visitID
+            remarks=siteVisitReportDecisionDTO.comments
+            status=siteVisitReportDecisionDTO.status
+            role=siteVisitReportDecisionDTO.role
+
+        }
 //        val gson = Gson()
 //        KotlinLogging.logger { }.info { "Report Decision" + gson.toJson(siteVisitReportDecisionDTO) }
-        return ServerResponse(HttpStatus.OK,"Decision Saved",standardLevyService.decisionOnSiteReport(standardLevyFactoryVisitReportEntity))
+        return ServerResponse(HttpStatus.OK,"Decision Saved",standardLevyService.decisionOnSiteReport(standardLevyFactoryVisitReportEntity,standardLevySiteVisitRemarks))
 
     }
 
@@ -939,7 +946,14 @@ class StdLevyController(
             userType= siteVisitReportDecisionDTO.userType
 
         }
-        return ServerResponse(HttpStatus.OK,"Decision Saved",standardLevyService.decisionOnSiteReportLevelTwo(standardLevyFactoryVisitReportEntity))
+        val standardLevySiteVisitRemarks= StandardLevySiteVisitRemarks().apply {
+            siteVisitId=siteVisitReportDecisionDTO.visitID
+            remarks=siteVisitReportDecisionDTO.comments
+            status=siteVisitReportDecisionDTO.status
+            role=siteVisitReportDecisionDTO.role
+
+        }
+        return ServerResponse(HttpStatus.OK,"Decision Saved",standardLevyService.decisionOnSiteReportLevelTwo(standardLevyFactoryVisitReportEntity,standardLevySiteVisitRemarks))
 
     }
 
@@ -1040,6 +1054,14 @@ class StdLevyController(
         @RequestParam("manufactureId") manufactureId: Long
     ): CompanyProfileEditEntity {
         return standardLevyService.getCompanyEditedDetails(manufactureId)
+    }
+
+    @GetMapping("/getSiteVisitRemarks")
+    fun getSiteVisitRemarks(
+        response: HttpServletResponse,
+        @RequestParam("siteVisitId") siteVisitId: Long
+    ): MutableList<StandardLevySiteVisitRemarks> {
+        return standardLevyService.getSiteVisitRemarks(siteVisitId)
     }
 
     @GetMapping("/getCompanyProcessId")

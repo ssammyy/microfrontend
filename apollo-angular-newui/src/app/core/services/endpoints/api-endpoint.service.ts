@@ -17,7 +17,7 @@ export class ApiEndpointService {
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-         // LOCAL_DEV: 'localhost:8006'
+         //  LOCAL_DEV: 'localhost:8006'
         // LOCAL_DEV: '12:8006'
         // LOCAL_DEV: '41.72.209.58:8006'
          LOCAL_DEV: `kimsint.kebs.org:8006`
@@ -465,6 +465,7 @@ export class ApiEndpointService {
         STD_LEVY_EDIT_COMPANY_LEVEL_ONE: `${ApiEndpointService.STL_CONTEXT}/editCompanyDetailsConfirmLvlOne`,
         STD_LEVY_EDIT_COMPANY_LEVEL_TWO: `${ApiEndpointService.STL_CONTEXT}/editCompanyDetailsConfirmLvlTwo`,
         STD_LEVY_EDITED_COMPANY_DATA: `${ApiEndpointService.STL_CONTEXT}/getCompanyEditedDetails`,
+        STD_LEVY_SITE_VISIT_REMARKS: `${ApiEndpointService.STL_CONTEXT}/getSiteVisitRemarks`,
         STD_LEVY_COMPANY_EDIT_COMPANY_DATA: `${ApiEndpointService.STL_CONTEXT}/editCompanyDetailsConfirm`,
         STD_LEVY_NOTIFICATION_FORM_STATUS: `${ApiEndpointService.STL_CONTEXT}/getSLNotificationStatus`,
         STD_LEVY_BRANCH_NAME: `${ApiEndpointService.STL_CONTEXT}/getBranchName`,

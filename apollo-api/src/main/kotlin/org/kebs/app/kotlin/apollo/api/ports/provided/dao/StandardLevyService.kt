@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
+import java.sql.Timestamp
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
@@ -48,7 +49,9 @@ class StandardLevyService(
     private val stdLevyNotificationFormRepo: IStdLevyNotificationFormRepository,
     private val stdLevyNotificationFormRepository: StdLevyNotificationFormRepository,
     private val notifications: Notifications,
-    private val manufacturePlantRepository: IManufacturePlantDetailsRepository
+    private val manufacturePlantRepository: IManufacturePlantDetailsRepository,
+    private val standardLevySiteVisitRemarksRepository: StandardLevySiteVisitRemarksRepository,
+
 
 ) {
     val PROCESS_DEFINITION_KEY = "sl_SiteVisitProcessFlow"
@@ -847,7 +850,10 @@ return getUserTasks();
             ?: throw ExpectedDataNotFound("No File found with the following [ id=$visitId]")
     }
 
-    fun decisionOnSiteReport(standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity): List<TaskDetailsBody> {
+    fun decisionOnSiteReport(
+        standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity,
+        standardLevySiteVisitRemarks: StandardLevySiteVisitRemarks
+    ): List<TaskDetailsBody> {
         val variables: MutableMap<String, Any> = java.util.HashMap()
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         standardLevyFactoryVisitReportEntity.assistantManagerRemarks?.let { variables["assistantManagerRemarks"] = it }
@@ -856,7 +862,17 @@ return getUserTasks();
         standardLevyFactoryVisitReportEntity.assigneeId?.let { variables["assigneeId"] = it }
         variables["status"] = 1
         val approverFname=loggedInUser.firstName
-        val approverLname=loggedInUser.firstName
+        val approverLname=loggedInUser.lastName
+        val approveName= "$approverFname  $approverLname"
+        standardLevySiteVisitRemarks.siteVisitId= standardLevySiteVisitRemarks.siteVisitId
+        standardLevySiteVisitRemarks.remarks= standardLevySiteVisitRemarks.remarks
+        standardLevySiteVisitRemarks.status = standardLevySiteVisitRemarks.status
+        standardLevySiteVisitRemarks.role = standardLevySiteVisitRemarks.role
+        standardLevySiteVisitRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
+        standardLevySiteVisitRemarks.remarkBy = approveName
+
+//        val gson = Gson()
+//         KotlinLogging.logger { }.info { "Manufacturer" + gson.toJson(standardLevyFactoryVisitReportEntity) }
         variables["approvalStatus"]= "Approved by $approverFname  $approverLname"
         loggedInUser.id?.let { variables["levelOneId"] = it }
         if (variables["Yes"] == true) {
@@ -872,6 +888,8 @@ return getUserTasks();
                         accentTo = true
                     }
                     standardLevyFactoryVisitReportRepo.save(standardLevyFactoryVisitReportEntity)
+
+                    standardLevySiteVisitRemarksRepository.save(standardLevySiteVisitRemarks)
                 } ?: throw Exception("TASK NOT FOUND")
 
             companyProfileRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.manufacturerEntity)
@@ -927,12 +945,14 @@ return getUserTasks();
                     }
                     standardLevyFactoryVisitReportRepo.save(standardLevyFactoryVisitReportEntity)
 
+                    standardLevySiteVisitRemarksRepository.save(standardLevySiteVisitRemarks)
                 } ?: throw Exception("TASK NOT FOUND")
             val userEmail = standardLevyFactoryVisitReportEntity.assigneeId?.let { commonDaoServices.getUserEmail(it) };
             val recipient= "Christine.gaiti@bskglobaltech.com"
             val subject = "Report Rejected  $userEmail"
             val messageBody= "Site visit report has been rejected by  "+ commonDaoServices.loggedInUserDetails().userName+".Log in to KIMS to make recommended changes."
             notifications.sendEmail(recipient, subject, messageBody)
+
 
             companyProfileRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.manufacturerEntity)
                 ?.let { companyProfileEntity ->
@@ -988,7 +1008,8 @@ return getUserTasks();
         return getTaskDetails(tasks)
     }
 
-    fun decisionOnSiteReportLevelTwo(standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity): List<TaskDetailsBody> {
+    fun decisionOnSiteReportLevelTwo(standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity,
+                                     standardLevySiteVisitRemarks: StandardLevySiteVisitRemarks): List<TaskDetailsBody> {
         val variables: MutableMap<String, Any> = mutableMapOf()
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         standardLevyFactoryVisitReportEntity.accentTo?.let { variables["Yes"] = it }
@@ -998,11 +1019,18 @@ return getUserTasks();
         standardLevyFactoryVisitReportEntity.assigneeId?.let { variables["assigneeId"] = it }
         val userIntType = standardLevyFactoryVisitReportEntity.userType
         val userIntTypes = userIntType.toString()
-        val approverfname=loggedInUser.firstName
-        val approverlname=loggedInUser.lastName
+        val approverFname=loggedInUser.firstName
+        val approverLname=loggedInUser.lastName
+        val approveName= "$approverFname  $approverLname"
+        standardLevySiteVisitRemarks.siteVisitId= standardLevySiteVisitRemarks.siteVisitId
+        standardLevySiteVisitRemarks.remarks= standardLevySiteVisitRemarks.remarks
+        standardLevySiteVisitRemarks.status = standardLevySiteVisitRemarks.status
+        standardLevySiteVisitRemarks.role = standardLevySiteVisitRemarks.role
+        standardLevySiteVisitRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
+        standardLevySiteVisitRemarks.remarkBy = approveName
 
         if (variables["Yes"] == true) {
-            variables["approvalStatusLevelTwo"]= "Approved by $approverfname  $approverlname"
+            variables["approvalStatusLevelTwo"]= "Approved by $approverFname  $approverLname"
             variables["approvalStatusId"]=1
             standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)
                 ?.let { standardLevyFactoryVisitReportEntity ->
@@ -1013,6 +1041,7 @@ return getUserTasks();
                         accentTo = true
                     }
                     standardLevyFactoryVisitReportRepo.save(standardLevyFactoryVisitReportEntity)
+                    standardLevySiteVisitRemarksRepository.save(standardLevySiteVisitRemarks)
                 } ?: throw Exception("TASK NOT FOUND")
 
             companyProfileRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.manufacturerEntity)
@@ -1056,7 +1085,7 @@ return getUserTasks();
                 }
                 ?: throw NullValueNotAllowedException("COMPANY NOT FOUND")
         } else if (variables["No"] == false) {
-            variables["rejectStatusLevelTwo"]= "Rejected by $approverfname  $approverlname"
+            variables["rejectStatusLevelTwo"]= "Rejected by $approverFname  $approverLname"
             variables["approvalStatusId"]=0
             standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)
                 ?.let { standardLevyFactoryVisitReportEntity ->
@@ -1067,6 +1096,7 @@ return getUserTasks();
                         accentTo = false
                     }
                     standardLevyFactoryVisitReportRepo.save(standardLevyFactoryVisitReportEntity)
+                    standardLevySiteVisitRemarksRepository.save(standardLevySiteVisitRemarks)
                 } ?: throw Exception("TASK NOT FOUND")
 
             val userEmail = standardLevyFactoryVisitReportEntity.assigneeId?.let { commonDaoServices.getUserEmail(it) };
@@ -1385,6 +1415,11 @@ return getUserTasks();
 
     fun getCompanyEditedDetails(manufactureId: Long): CompanyProfileEditEntity {
         return companyProfileEditEntityRepository.findFirstByManufactureIdOrderByIdDesc(manufactureId)
+            ?: throw ExpectedDataNotFound("No Data Found")
+    }
+
+    fun getSiteVisitRemarks(siteVisitId: Long): MutableList<StandardLevySiteVisitRemarks> {
+        return standardLevySiteVisitRemarksRepository.findAllBySiteVisitId(siteVisitId)
             ?: throw ExpectedDataNotFound("No Data Found")
     }
 
