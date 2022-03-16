@@ -11,7 +11,7 @@ import {DestinationInspectionService} from "../../../../core/store/data/di/desti
 })
 export class IncompleteIDFDocumentsComponent implements OnInit {
 
-    activeTab = 0
+    activeTab = 1
     public settings = {
         selectMode: 'single',  // single|multi
         hideHeader: false,
