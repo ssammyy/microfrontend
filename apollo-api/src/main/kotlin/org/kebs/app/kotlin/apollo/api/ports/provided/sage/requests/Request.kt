@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.math.BigDecimal
 import java.sql.Date
+import java.sql.Timestamp
 
 // import com.fasterxml.jackson.databind.ObjectMapper; // version 2.11.1
 // import com.fasterxml.jackson.annotation.JsonProperty; // version 2.11.1
@@ -15,6 +16,9 @@ class Header {
     var connectionID: String? = null
     var connectionPassword: String? = null
 }
+
+
+
 
 class Request {
     @JsonProperty("DocumentNo")

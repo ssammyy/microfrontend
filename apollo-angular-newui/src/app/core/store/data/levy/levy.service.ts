@@ -15,7 +15,7 @@ import {
     ManufactureInfo,
     ManufacturePenalty,
     ManufacturePendingTask,
-    ManufacturingStatus,
+    ManufacturingStatus, NotificationStatus,
     PaidLevy,
     ReportDecisionLevelOne,
     ReportDecisionLevelTwo,
@@ -361,7 +361,7 @@ export class LevyService {
     public getSLNotificationStatus(): any {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_NOTIFICATION_FORM_STATUS);
         const params = new HttpParams();
-        return this.http.get<ManufacturingStatus>(url, {params}).pipe();
+        return this.http.get<NotificationStatus>(url, {params}).pipe();
     }
 
     public getBranchName(): any {

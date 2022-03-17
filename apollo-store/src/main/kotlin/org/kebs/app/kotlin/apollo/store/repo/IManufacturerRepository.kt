@@ -100,9 +100,9 @@ interface IBusinessNatureRepository : HazelcastRepository<BusinessNatureEntity, 
     fun findByStatus(status: Int): List<BusinessNatureEntity>?
     fun findByIdAndStatus(id: Long, status: Int): BusinessNatureEntity?
     fun findByBusinessLinesIdAndStatus(businessLinesId: BusinessLinesEntity, status: Int): List<BusinessNatureEntity>?
-    @Query( value = "SELECT MANUFACTURE_STATUS  FROM CFG_KEBS_BUSINESS_NATURE WHERE ID= :id",
+    @Query( value = "SELECT BUSINESS_TYPE_ID  FROM CFG_KEBS_BUSINESS_NATURE WHERE ID= :id",
         nativeQuery = true )
-    fun getManufacturerStatus(@Param("id") id: Long?): Long?
+    fun getManufacturerStatus(@Param("id") id: Long?): Long
 }
 
 @Repository

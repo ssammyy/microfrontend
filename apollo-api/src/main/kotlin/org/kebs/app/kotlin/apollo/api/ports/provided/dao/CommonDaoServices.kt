@@ -238,6 +238,11 @@ class CommonDaoServices(
         return date
     }
 
+    fun convertTimestampToKraValidDate(timestamp: Timestamp): String {
+        val timeStamp = SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss").format(timestamp)
+        return timeStamp
+    }
+
     fun convertDateToSAGEDate(dateChange: Date): String {
         val sdf = SimpleDateFormat("mm/dd/yyyy")
         return sdf.format(dateChange)
@@ -617,8 +622,7 @@ class CommonDaoServices(
         with(dataValue) {
             baseUrl = applicationMapProperties.baseUrlValue
             fullName =
-                    concatenateName(findUserByID(companyProfile.userId
-                            ?: throw ExpectedDataNotFound("USER ID NOT FOUND")))
+                    concatenateName(findUserByID(companyProfile.userId ?: throw ExpectedDataNotFound("USER ID NOT FOUND")))
             entryNumber = companyProfile.entryNumber
             dateSubmitted = getCurrentDate()
             companyName= companyProfile.name

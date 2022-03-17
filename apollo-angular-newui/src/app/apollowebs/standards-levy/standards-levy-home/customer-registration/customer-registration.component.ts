@@ -5,7 +5,7 @@ import {
   ManufactureBranchDto,
   ManufactureInfo,
   ManufacturingBranchDto,
-  ManufacturingInfo, ManufacturingStatus, SlModel
+  ManufacturingInfo, ManufacturingStatus, NotificationStatus, SlModel
 } from "../../../../core/store/data/levy/levy.model";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
@@ -32,7 +32,7 @@ export class CustomerRegistrationComponent implements OnInit {
   manufacturingStatus !: ManufacturingStatus;
   slFormDetails !: SlModel;
   slBranchName !: Branch;
-  notificationFormStatus !: ManufacturingStatus;
+  notificationFormStatus !: NotificationStatus;
   manufacturerInfoForm: FormGroup;
   manufacturingInfoForm: FormGroup;
   branchFormA: FormGroup;
@@ -329,7 +329,7 @@ export class CustomerRegistrationComponent implements OnInit {
 
   public getSLNotificationStatus(): void{
     this.levyService.getSLNotificationStatus().subscribe(
-        (response: ManufacturingStatus)=> {
+        (response: NotificationStatus)=> {
           this.notificationFormStatus = response;
           console.log(this.notificationFormStatus);
         },
