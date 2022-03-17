@@ -12,18 +12,26 @@ class RequestItems {
     var productName: String? = null
 
     @JsonProperty("MRate")
-    var rate: String? = null
+    var rate: Double? = null
 
     @JsonProperty("CFValue")
     var cfValue: BigDecimal? = null
 
     companion object {
         fun fromEntity(item: CdDemandNoteItemsDetailsEntity): RequestItems {
-            return RequestItems().apply {
+            val itm = RequestItems().apply {
                 cfValue = item.cfvalue
-                productName = item.product
-                rate = item.rate
             }
+            try {
+                itm.rate = item.rate?.toDoubleOrNull()
+            } catch (ex: NumberFormatException) {
+                itm.rate = 0.0
+            }
+            itm.productName = item.product
+            if ((item.product?.length ?: 0) > 50) {
+                itm.productName = item.product?.substring(0, 49)
+            }
+            return itm
         }
 
         fun fromList(items: List<CdDemandNoteItemsDetailsEntity>): List<RequestItems> {

@@ -191,9 +191,12 @@ class DestinationInspectionBpmn(
             taskService.complete(taskId, data)
             response.responseCode = ResponseCodes.SUCCESS_CODE
             response.message = "Task updated successfully"
+        } catch (ex: ExpectedDataNotFound) {
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = ex.localizedMessage
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("FAILED TO COMPLETE TASK", ex)
-            response.responseCode = ResponseCodes.FAILED_CODE
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
             response.message = "Task update failed"
         }
         return response
