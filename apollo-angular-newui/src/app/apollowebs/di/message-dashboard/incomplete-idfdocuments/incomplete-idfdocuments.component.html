@@ -39,14 +39,14 @@
 
                         </div>
                         <mat-tab-group [(selectedIndex)]="activeTab">
-                            <mat-tab label="COMPLETE" [tabIndex]="0">
+                            <mat-tab label="IN-COMPLETE" [tabIndex]="0">
                                 <div class="table-responsive table-striped">
                                     <ng2-smart-table class="table table-hover" [settings]="settings"
                                                      [source]="activeDataSet">
                                     </ng2-smart-table>
                                 </div>
                             </mat-tab>
-                            <mat-tab label="IN-COMPLETE" [tabIndex]="1">
+                            <mat-tab label="COMPLETE" [tabIndex]="1">
                                 <div class="table-responsive table-striped">
                                     <ng2-smart-table class="table table-hover" [settings]="settings"
                                                      [source]="dataSet">
