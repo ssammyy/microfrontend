@@ -20,6 +20,7 @@ export class SendDemandNoteTokwsComponent implements OnInit {
     saveDisabled: Boolean = false
     public form: FormGroup;
     initialSelection: any[]
+    presentmentRequest: any
     selectionDataSource: MatTableDataSource<any>
     itemPricingDataSource: MatTableDataSource<any>
     selection: SelectionModel<any>
@@ -115,12 +116,18 @@ export class SendDemandNoteTokwsComponent implements OnInit {
         let data = this.form.value
         if (presentment) {
             data["remarks"] = "Presenting"
+            try {
+                if (this.presentmentRequest) {
+                    this.presentmentRequest.unsubscribe();
+                }
+            } catch (e) {
+            }
         }
         data["includeAll"] = false
         data["presentment"] = presentment
         data["amount"] = this.items.length == 0 ? 0.0 : parseFloat(this.form.value.amount)
         data["items"] = selectedItems
-        this.diService.sendDemandNote(data, this.data.uuid)
+        this.presentmentRequest = this.diService.sendDemandNote(data, this.data.uuid)
             .subscribe(
                 res => {
                     this.saveDisabled = false

@@ -136,9 +136,10 @@ class AuctionService(
         demandNoteReq.product = "AUCTION"
         demandNoteReq.name = request.importerName
         demandNoteReq.amount = BigDecimal.ZERO.toDouble()
+        demandNoteReq.entryNo = request.auctionLotNo ?: ""
+        // Entry point
         request.cfsId?.let {
             demandNoteReq.entryPoint = it.altCfsCode ?: it.cfsCode ?: ""
-            demandNoteReq.entryNo = it.cfsNumber ?: ""
             demandNoteReq.courier = ""
             demandNoteReq.customsOffice = request.shipmentPort ?: "NRB"
         }
