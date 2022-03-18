@@ -10,9 +10,11 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.kra.request.KraHeader
 import org.kebs.app.kotlin.apollo.api.ports.provided.kra.request.KraRequest
 import org.kebs.app.kotlin.apollo.api.ports.provided.kra.response.KraResponse
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.kebs.app.kotlin.apollo.store.model.KraEntryNumberRequestLogEntity
 import org.kebs.app.kotlin.apollo.store.model.LogKraEntryNumberRequestEntity
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.WorkflowTransactionsEntity
+import org.kebs.app.kotlin.apollo.store.repo.IKraEntryNumberRequestLogEntityRepository
 import org.kebs.app.kotlin.apollo.store.repo.ILogKraEntryNumberRequestEntityRepository
 import org.springframework.stereotype.Service
 import java.math.BigInteger
@@ -25,6 +27,7 @@ class SendEntryNumberToKraServices(
     private val jasyptStringEncryptor: StringEncryptor,
     private val applicationMapProperties: ApplicationMapProperties,
     private val iLogKraEntryNumberRequestRepo: ILogKraEntryNumberRequestEntityRepository,
+    private val iKraEntryNumberRequestLogEntityRepository: IKraEntryNumberRequestLogEntityRepository,
     private val commonDaoServices: CommonDaoServices,
     private val daoService: DaoService
 ) {
@@ -55,7 +58,7 @@ class SendEntryNumberToKraServices(
                 details = detailBody
             }
 
-            var transactionsRequest = LogKraEntryNumberRequestEntity()
+            var transactionsRequest = KraEntryNumberRequestLogEntity()
             with(transactionsRequest) {
                 requestHash = headerBody.hash
                 requestTransmissionDate = headerBody.transmissionDate?.let { commonDaoServices.convertTimestampToKraValidDate(it) }
@@ -70,7 +73,7 @@ class SendEntryNumberToKraServices(
                 createdOn = commonDaoServices.getTimestamp()
             }
 
-            transactionsRequest = iLogKraEntryNumberRequestRepo.save(transactionsRequest)
+            transactionsRequest = iKraEntryNumberRequestLogEntityRepository.save(transactionsRequest)
 
 
             val log = daoService.createTransactionLog(0, "${companyProfile.entryNumber}_1")
@@ -95,7 +98,7 @@ class SendEntryNumberToKraServices(
                 updatedOn = commonDaoServices.getTimestamp()
             }
 
-            iLogKraEntryNumberRequestRepo.save(transactionsRequest)
+            iKraEntryNumberRequestLogEntityRepository.save(transactionsRequest)
         }
     }
 

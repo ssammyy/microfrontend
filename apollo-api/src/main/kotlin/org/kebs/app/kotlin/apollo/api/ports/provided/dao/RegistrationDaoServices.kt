@@ -1081,6 +1081,9 @@ class RegistrationDaoServices(
             stdLevyNotificationForm.createdBy = loggedInUser.firstName + " " + loggedInUser.lastName
 
        // }
+
+
+
         stdLevyNotificationFormRepository.save(stdLevyNotificationForm)
 
 
@@ -1104,9 +1107,16 @@ class RegistrationDaoServices(
 //
 //                    }
 //                    ?: throw Exception("Company ID Was not Found")
+//                stdLevyNotificationFormDTO.companyProfileID?.let {
+//                    sendEntryNumberToKraServices.postEntryNumberTransactionToKra(
+//                        it, commonDaoServices.getUserName(loggedInUser), map)
+//                }
 
-        } ?: throw Exception("Company ID Was not Found")
-       // stdLevyNotificationFormDTO.companyProfileID?.let { sendEntryNumberToKraServices.postEntryNumberTransactionToKra(it, commonDaoServices.getUserName(loggedInUser), map) }
+
+
+            } ?: throw Exception("Company ID Was not Found")
+
+        //stdLevyNotificationFormDTO.companyProfileID?.let { sendEntryNumberToKraServices.postEntryNumberTransactionToKra(it, commonDaoServices.getUserName(loggedInUser), map) }
 
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()

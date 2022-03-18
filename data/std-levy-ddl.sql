@@ -1770,5 +1770,65 @@ begin
     end if;
 end;
 /
+create TABLE DAT_KEBS_LOG_KRA_ENTRY_NUMBER_REQUEST
+(
+    id               NUMBER       NOT NULL PRIMARY KEY,
+    request_hash             varchar2(350 char),
+    request_transmission_date   varchar2(350 char),
+    request_no_of_records      VARCHAR2(300),
+    request_entry_number         VARCHAR2(300),
+    request_kra_pin     VARCHAR2(300),
+    request_manufacturer_name     VARCHAR2(300),
+    request_registration_date     VARCHAR2(300),
+    request_manufacture_status     VARCHAR2(300),
+    response_status           VARCHAR2(300),
+    response_response_code      VARCHAR2(300),
+    response_message           VARCHAR2(300),
+    status           NUMBER(2, 0),
+    descriptions     VARCHAR2(3800 CHAR),
+    var_field_1      VARCHAR2(350 CHAR),
+    var_field_2      VARCHAR2(350 CHAR),
+    var_field_3      VARCHAR2(350 CHAR),
+    var_field_4      VARCHAR2(350 CHAR),
+    var_field_5      VARCHAR2(350 CHAR),
+    var_field_6      VARCHAR2(350 CHAR),
+    var_field_7      VARCHAR2(350 CHAR),
+    var_field_8      VARCHAR2(350 CHAR),
+    var_field_9      VARCHAR2(350 CHAR),
+    var_field_10     VARCHAR2(350 CHAR),
+    created_by       VARCHAR2(100 CHAR)          DEFAULT 'admin' NOT NULL ENABLE,
+    created_on       TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate NOT NULL ENABLE,
+    last_modified_by VARCHAR2(100 CHAR),
+    last_modified_on TIMESTAMP(6) WITH TIME ZONE,
+    update_by        VARCHAR2(100 CHAR),
+    updated_on       TIMESTAMP(6) WITH TIME ZONE,
+    delete_by        VARCHAR2(100 CHAR),
+    deleted_on       TIMESTAMP(6) WITH TIME ZONE,
+    VERSION          NUMBER
+) TABLESPACE qaimssdb_data
+;
+
+
+create sequence DAT_KEBS_LOG_KRA_ENTRY_NUMBER_REQUEST_SEQ minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+
+create trigger DAT_KEBS_LOG_KRA_ENTRY_NUMBER_REQUEST_SEQ_TRG
+    before
+        insert
+    on DAT_KEBS_LOG_KRA_ENTRY_NUMBER_REQUEST
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select DAT_KEBS_LOG_KRA_ENTRY_NUMBER_REQUEST_SEQ.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+/
+
+
 
 
