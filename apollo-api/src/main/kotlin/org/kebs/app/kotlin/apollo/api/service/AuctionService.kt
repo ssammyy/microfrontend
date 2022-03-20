@@ -265,7 +265,7 @@ class AuctionService(
                         "rejected" -> this.auctionRequestsRepository.findByApprovalStatus(AuctionGoodStatus.REJECTED.status, page)
                         "approved" -> this.auctionRequestsRepository.findByApprovalStatus(AuctionGoodStatus.APPROVED.status, page)
                         "new" -> this.auctionRequestsRepository.findByApprovalStatusInAndAssignedOfficerIsNull(listOf(AuctionGoodStatus.NEW.status), page)
-                        "assigned" -> this.auctionRequestsRepository.findByApprovalStatusInAndAssignedOfficer(listOf(AuctionGoodStatus.NEW.status), this.commonDaoServices.loggedInUserDetails(), page)
+                        "assigned" -> this.auctionRequestsRepository.findByApprovalStatusInAndAssignedOfficer(listOf(AuctionGoodStatus.NEW.status, AuctionGoodStatus.PAYMENT_PENDING.status), this.commonDaoServices.loggedInUserDetails(), page)
                         else -> null
                     }
                 }

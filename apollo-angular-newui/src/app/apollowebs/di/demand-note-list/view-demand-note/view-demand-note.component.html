@@ -22,7 +22,7 @@
             <p>{{demandDetails.note.cfvalue | money }}</p>
         </div>
         <div class="col-sm-3 col-md-4">
-            <label class="waiver-form-label">CD CALCULATED AMOUNT</label>
+            <label class="waiver-form-label">TOTAL AMOUNT</label>
             <p>{{demandDetails.note.totalAmount | money}}</p>
         </div>
         <div class="col-sm-3 col-md-4">
@@ -30,7 +30,7 @@
             <p>{{demandDetails.note.varField3}}</p>
         </div>
         <div class="col-sm-3 col-md-4">
-            <label class="waiver-form-label">CD PAYABLE AMOUNT</label>
+            <label class="waiver-form-label">CD CALCULATED AMOUNT</label>
             <p>{{demandDetails.note.amountPayable | money}}</p>
         </div>
         <div class="col-sm-3 col-md-4">
@@ -48,7 +48,7 @@
         </div>
         <div class="col-sm-3 col-md-4" *ngIf="demandDetails.note.entryPoint">
             <label class="waiver-form-label">SAGE ENTRY POINT</label>
-            <p>{{demandDetails.note.entryPoint + ', ' + demandDetails.note.entryNo}}</p>
+            <p>{{demandDetails.note.entryPoint + ', ' + demandDetails.note.courier}}</p>
         </div>
         <div class="col-sm-3 col-md-4" *ngIf="demandDetails.note.entryNo">
             <label class="waiver-form-label">SAGE ENTRY NUMBER</label>

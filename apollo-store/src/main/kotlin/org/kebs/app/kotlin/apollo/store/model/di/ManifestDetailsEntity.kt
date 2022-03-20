@@ -1,8 +1,6 @@
 package org.kebs.app.kotlin.apollo.store.model.di
 
-import org.kebs.app.kotlin.apollo.store.model.di.ManifestDetailsEntity
 import java.io.Serializable
-import java.sql.Time
 import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*

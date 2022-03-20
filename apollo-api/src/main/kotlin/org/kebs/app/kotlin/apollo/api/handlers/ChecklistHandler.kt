@@ -274,6 +274,9 @@ class ChecklistHandler(
                     //Save the general checklist
                     val generalCheckList = form.generalChecklist()
                     generalCheckList.description = cdItem.description
+                    daoServices.findCDImporterDetails(cdItem?.id ?: 0).let { importer ->
+                        generalCheckList.importersName = importer.name
+                    }
                     generalCheckList.inspectionDate = Date(java.util.Date().time)
                     generalCheckList.cfs = cdItem.freightStation?.cfsName
                     val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)

@@ -655,7 +655,7 @@ interface IDeclarationItemDetailsEntityRepository : HazelcastRepository<Declarat
 @Repository
 interface IManifestDetailsEntityRepository : HazelcastRepository<ManifestDetailsEntity, Long> {
     fun findByManifestNumber(manifestNumber: String): ManifestDetailsEntity?
-
+    fun findByUcrn(ucrNumber: String): ManifestDetailsEntity?
     fun findFirstByTdBillCode(tdBillCode: String): ManifestDetailsEntity?
 }
 

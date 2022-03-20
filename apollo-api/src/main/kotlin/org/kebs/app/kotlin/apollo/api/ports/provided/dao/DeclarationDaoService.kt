@@ -20,6 +20,9 @@ class DeclarationDaoService {
     lateinit var iDeclarationDetailsEntityRepo: IDeclarationDetailsEntityRepository
 
     @Autowired
+    lateinit var destinationInspectionDaoServices: DestinationInspectionDaoServices
+
+    @Autowired
     lateinit var iDeclarationItemDetailsEntityRepo: IDeclarationItemDetailsEntityRepository
 
     private val createdByValue = "SYSTEM"
@@ -47,8 +50,28 @@ class DeclarationDaoService {
                 }
                 return true
             }
+            // Link with consignment document
+            linkManifestWithConsignment(declarationfRefNumber, declarationDetails.refNum, true)
         }
         return false
+    }
+
+    fun linkManifestWithConsignment(manifestNumber: String?, ucrNumber: String?, manifestDocument: Boolean) {
+        if (manifestDocument) {
+            this.destinationInspectionDaoServices.findCdWithUcrNumberLatest(ucrNumber
+                    ?: "")?.let { consignmentDocumentDetailsEntity ->
+                consignmentDocumentDetailsEntity.manifestNumber = manifestNumber
+                this.destinationInspectionDaoServices.updateCdDetailsInDB(consignmentDocumentDetailsEntity, null)
+            }
+        } else {
+            this.iDeclarationDetailsEntityRepo.findFirstByRefNum(ucrNumber ?: "")?.let { document ->
+                this.destinationInspectionDaoServices.findCdWithUcrNumberLatest(ucrNumber
+                        ?: "")?.let { consignmentDocumentDetailsEntity ->
+                    consignmentDocumentDetailsEntity.manifestNumber = document.manifestNumber
+                    this.destinationInspectionDaoServices.updateCdDetailsInDB(consignmentDocumentDetailsEntity, null)
+                }
+            }
+        }
     }
 
     fun declarationMessageToDeclarationDetailsEntity(declarationDocumentMessage: DeclarationDocumentMessage): DeclarationDetailsEntity? {

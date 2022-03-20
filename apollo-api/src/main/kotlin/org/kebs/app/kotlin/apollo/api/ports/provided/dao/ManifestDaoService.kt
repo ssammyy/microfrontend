@@ -16,6 +16,9 @@ class ManifestDaoService {
     @Autowired
     lateinit var iManifestDetailsEntityRepository: IManifestDetailsEntityRepository
 
+    @Autowired
+    lateinit var destinationInspectionDaoServices: DestinationInspectionDaoServices
+
     private val createdByValue = "SYSTEM"
 
     fun mapManifestMessageToManifestEntity(manifestDocumentMessage: ManifestDocumentMessage): Boolean {
@@ -34,6 +37,7 @@ class ManifestDaoService {
         this.manifestMessageToManifestDetailsEntity(manifestDocumentMessage)?.let { return true }
         return false
     }
+
 
     fun manifestMessageToManifestDetailsEntity(manifestDocumentMessage: ManifestDocumentMessage): ManifestDetailsEntity? {
 
@@ -134,9 +138,14 @@ class ManifestDaoService {
             createdOn = commonDaoServices.getTimestamp()
         }
         manifestDetailsEntity = iManifestDetailsEntityRepository.save(manifestDetailsEntity)
-
         KotlinLogging.logger { }.info { "Manifest Details Entity ID = ${manifestDetailsEntity.id}" }
-
+        // Link with consignment document
+        try {
+            destinationInspectionDaoServices.linkManifestWithConsignment(manifestDetailsEntity.manifestNumber, manifestDetailsEntity.ucrn, true)
+            KotlinLogging.logger { }.info("Linked manifest with consignment: ${manifestDetailsEntity.ucrn}")
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.info("Failed to link manifest with consignment", ex)
+        }
         return manifestDetailsEntity
     }
 }

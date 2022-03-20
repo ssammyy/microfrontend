@@ -68,7 +68,8 @@ class ConsignmentEnableUI {
                 targeted = cd.targetStatus == map.activeStatus
                 targetRejected = cd.targetStatus == map.invalidStatus
                 idfAvailable = StringUtils.hasLength(cd.idfNumber)
-                declarationDocument = StringUtils.hasLength(cd.cdStandard?.declarationNumber)
+                manifestDocument = StringUtils.hasLength(cd.manifestNumber) && !"NONE".equals(cd.manifestNumber, true) // Default value for manifest is NONE
+                declarationDocument = StringUtils.hasLength(cd.manifestNumber) && !"NONE".equals(cd.manifestNumber, true) // Default value for manifest is NONE
                 demandNoteRejected = cd.sendDemandNote == map.invalidStatus
                 demandNoteDisabled = (cd.sendDemandNote == map.initStatus || cd.sendDemandNote == map.activeStatus || cd.inspectionChecklist == map.activeStatus)
                 owner = cd.assignedInspectionOfficer?.userName == authentication.name
@@ -82,7 +83,6 @@ class ConsignmentEnableUI {
                 hasPort = (cd.portOfArrival != null && cd.freightStation != null)
                 completed = cd.approveRejectCdStatusType?.let { it.finalStatus == map.activeStatus } == true || cd.oldCdStatus != null
                 canChange = cd.approveRejectCdStatusType?.let { it.modificationAllowed == map.activeStatus } == true
-                approveReject = (cd.targetApproveStatus == null || cd.inspectionDateSetStatus == map.activeStatus) && modify
             }
             cd.cdStandardsTwo?.let {
                 ui.demandNoteRequired = "DES_INSP".equals(it.localCocType, true)
@@ -180,6 +180,7 @@ class ConsignmentDocumentDao {
             dt.cdRefNumber = doc.cdRefNumber
             dt.ucrNumber = doc.ucrNumber
             dt.applicantName = doc.createdBy
+            dt.approveRejectCdDate = doc.approveRejectCdDate
             dt.applicationDate = doc.createdOn
             dt.assignedStatus = doc.assignedStatus
             doc.assignedInspectionOfficer?.let {

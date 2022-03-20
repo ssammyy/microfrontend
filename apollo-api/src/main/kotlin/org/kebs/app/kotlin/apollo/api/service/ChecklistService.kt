@@ -642,6 +642,11 @@ class ChecklistService(
                 mvInpsection.itemId?.let { cdItemDetails ->
                     cdItemDetails.cdDocId?.let { cdDetails ->
                         dataMap["cd_details"] = ConsignmentDocumentDao.fromEntity(cdDetails)
+                        dataMap["feePaid"] = "NO"
+                        daoServices.findDemandNoteWithPaymentStatus(cdDetails.id ?: 0, 1)?.let { cdDemandNoteEntity ->
+                            dataMap["receiptNumber"] = cdDemandNoteEntity.receiptNo
+                            dataMap["feePaid"] = "YES"
+                        }
                     }
                     //Get inspection checklist details
                     mvInpsection.inspection?.inspectionGeneral?.let { generalInspection ->

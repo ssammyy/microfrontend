@@ -91,7 +91,7 @@ export class ConsignmentDocumentListComponent implements OnInit {
                 filter: false
             },
             approveRejectCdDate: {
-                title: 'Approval Date',
+                title: 'Completion Date',
                 type: 'data',
                 valuePrepareFunction: (date) => {
                     if (date) {

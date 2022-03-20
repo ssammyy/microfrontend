@@ -255,7 +255,6 @@ class DestinationInspectionService(
                 varField10 = "Assigned IO"
                 assignedInspectionOfficer = officer.get()
             }
-
             if (selfAssign) {
                 KotlinLogging.logger { }.info("PICK CONSIGNMENT: ${officer.get().userName}")
                 consignmentDocument = this.daoServices.updateCdDetailsInDB(consignmentDocument, officer.get())
@@ -1073,7 +1072,7 @@ class DestinationInspectionService(
         val response = ApiResponseModel()
         try {
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-            val cdDetails = daoServices.findCDWithUuid(cdUuid)
+            var cdDetails = daoServices.findCDWithUuid(cdUuid)
             // When IO requests for details, they are are auto assigned
             if (isInspectionOfficer && cdDetails.assignedInspectionOfficer == null) {
                 this.selfAssign(cdDetails)
@@ -1081,6 +1080,11 @@ class DestinationInspectionService(
                 response.responseCode = ResponseCodes.RELOAD_PAGE
                 response.message = "Consignment Assigned reload details"
             } else {
+                // Workaround for consignment that are already received and not linked. Maybe removed in future
+                if (!StringUtils.hasLength(cdDetails.manifestNumber)) {
+                    this.daoServices.linkManifestWithConsignment(null, cdDetails.ucrNumber, false)
+                    cdDetails = daoServices.findCDWithUuid(cdUuid)
+                }
                 // Load inspection details
                 response.data = loadCDDetails(cdDetails, map, isSupervisor, isInspectionOfficer)
                 response.responseCode = ResponseCodes.SUCCESS_CODE
@@ -1324,7 +1328,6 @@ class DestinationInspectionService(
                 uiDetails.demandNotePaid = !uiDetails.demandNoteRequired
                 uiDetails
             }
-            uiDetails.manifestDocument = StringUtils.hasLength(transportDetails?.manifestNo)
             try {
                 daoServices.findCORByCdId(cdDetails)?.let {
                     uiDetails.corAvailable = true
@@ -1415,15 +1418,18 @@ class DestinationInspectionService(
         val response = ApiResponseModel()
         try {
             val cdDetails = daoServices.findCDWithUuid(cdUuid)
-            val transportDetails = cdDetails.cdTransport?.let { daoServices.findCdTransportDetails(it) }
-            val manifestDetails = transportDetails?.manifestNo?.let { daoServices.findByManifestNumber(it) }
-            val dataMap = mutableMapOf<String, Any?>()
-            dataMap["manifest_details"] = manifestDetails
-            dataMap["transport_details"] = transportDetails
-            dataMap["consignment_details"] = ConsignmentDocumentDao.fromEntity(cdDetails)
-            response.data = dataMap
-            response.responseCode = ResponseCodes.SUCCESS_CODE
-            response.message = "Success"
+            daoServices.findByManifestNumber(cdDetails.manifestNumber ?: "")?.let { manifestDetails ->
+                val dataMap = mutableMapOf<String, Any?>()
+                dataMap["manifest_details"] = manifestDetails
+                dataMap["transport_details"] = cdDetails.cdTransport?.let { daoServices.findCdTransportDetails(it) }
+                dataMap["consignment_details"] = ConsignmentDocumentDao.fromEntity(cdDetails)
+                response.data = dataMap
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+                response.message = "Success"
+            } ?: run {
+                response.responseCode = ResponseCodes.FAILED_CODE
+                response.message = "Manifest with number '${cdDetails.manifestNumber}' does not exist"
+            }
         } catch (e: Exception) {
             response.responseCode = ResponseCodes.NOT_FOUND
             response.message = "CD manifests not found"

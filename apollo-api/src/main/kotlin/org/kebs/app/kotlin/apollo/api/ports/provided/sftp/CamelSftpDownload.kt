@@ -156,6 +156,13 @@ class SFTPService(
         // TOD: see this document saving xml
         val updated = consignmentDocumentDaoService.insertConsignmentDetailsFromXml(consignmentDoc, byteArrayOf())
         KotlinLogging.logger { }.info("CD File: ${exchange.message.headers} | Save Status: ${updated}|")
+        // Link with manifest details
+        try {
+            this.declarationDaoService.linkManifestWithConsignment(null, consignmentDoc.documentDetails?.consignmentDocDetails?.cdStandard?.ucrNumber, false)
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to link document:", ex)
+        }
+
     }
 
     fun processDocumentResponses(exchange: Exchange) {
