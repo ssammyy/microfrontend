@@ -38,6 +38,7 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 import com.google.gson.Gson
+import io.ktor.client.statement.*
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.flowable.engine.RuntimeService
@@ -47,6 +48,7 @@ import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.adaptor.kafka.producer.service.SendToKafkaQueue
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
+import org.kebs.app.kotlin.apollo.api.ports.provided.kra.SendEntryNumberToKraServices
 import org.kebs.app.kotlin.apollo.common.dto.*
 import org.kebs.app.kotlin.apollo.common.dto.brs.response.BrsLookUpRecords
 import org.kebs.app.kotlin.apollo.common.dto.brs.response.BrsLookUpResponse
@@ -91,12 +93,14 @@ class RegistrationDaoServices(
     private val applicationMapProperties: ApplicationMapProperties,
     private val userVerificationTokensRepository: IUserVerificationTokensRepository,
     private val serviceRequestRepo: IServiceRequestsRepository,
+    private val sendEntryNumberToKraServices: SendEntryNumberToKraServices,
 
     private val employeesRepo: IEmployeesRepository,
     private val companyProfileDirectorsRepo: ICompanyProfileDirectorsRepository,
     private val companyProfileCommoditiesManufactureRepo: ICompanyProfileCommoditiesManufactureRepository,
     private val companyProfileContractsUndertakenRepo: ICompanyProfileContractsUndertakenRepository,
     private val companyProfileRepo: ICompanyProfileRepository,
+    private val stagingStandardsLevyManufacturerEntryNumberRepo: IStagingStandardsLevyManufacturerEntryNumberRepository,
     private val userProfilesRepo: IUserProfilesRepository,
     private val iImporterRepo: IImporterRepository,
     private val iImporterContactRepo: IImporterContactRepository,
@@ -1046,6 +1050,7 @@ class RegistrationDaoServices(
     }
 
 
+
     fun saveNotificationFormSL(
         stdLevyNotificationFormDTO: StdLevyNotificationFormDTO,
         stdLevyNotificationForm: StdLevyNotificationForm,
@@ -1059,8 +1064,8 @@ class RegistrationDaoServices(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         var eNumber = generateEntryNumber(map, loggedInUser)
 
-        val gson = Gson()
-        KotlinLogging.logger { }.info { "EDITED" + gson.toJson(stdLevyNotificationFormDTO) }
+//        val gson = Gson()
+//        KotlinLogging.logger { }.info { "EDITED" + gson.toJson(stdLevyNotificationFormDTO) }
       //  with(add) {
         stdLevyNotificationForm.nameBusinessProprietor= stdLevyNotificationFormDTO.NameAndBusinessOfProprietors
         stdLevyNotificationForm.commoditiesManufactured= stdLevyNotificationFormDTO.AllCommoditiesManufuctured
@@ -1076,10 +1081,14 @@ class RegistrationDaoServices(
             stdLevyNotificationForm.createdBy = loggedInUser.firstName + " " + loggedInUser.lastName
 
        // }
+
+
+
         stdLevyNotificationFormRepository.save(stdLevyNotificationForm)
 
 
-        companyProfileRepo.findByIdOrNull(stdLevyNotificationFormDTO.companyProfileID)?.let { companyProfileEntity->
+        companyProfileRepo.findByIdOrNull(stdLevyNotificationFormDTO.companyProfileID)
+            ?.let { companyProfileEntity->
 
             with(companyProfileEntity){
                 entryNumber=eNumber
@@ -1088,8 +1097,27 @@ class RegistrationDaoServices(
                 assignedTo=0
 
             }
+
             companyProfileRepo.save(companyProfileEntity)
-        }?: throw Exception("Company ID Was not Found")
+//                stagingStandardsLevyManufacturerEntryNumberRepo.findByIdOrNull(stdLevyNotificationFormDTO.companyProfileID)
+//                    ?.let {stgLevyEntryNumber->
+//                        with(stgLevyEntryNumber){
+//                            manufacturerId = eNumber
+//                        }
+//
+//                    }
+//                    ?: throw Exception("Company ID Was not Found")
+//                stdLevyNotificationFormDTO.companyProfileID?.let {
+//                    sendEntryNumberToKraServices.postEntryNumberTransactionToKra(
+//                        it, commonDaoServices.getUserName(loggedInUser), map)
+//                }
+
+
+
+            } ?: throw Exception("Company ID Was not Found")
+
+        //stdLevyNotificationFormDTO.companyProfileID?.let { sendEntryNumberToKraServices.postEntryNumberTransactionToKra(it, commonDaoServices.getUserName(loggedInUser), map) }
+
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/user/user-profile?userName=${loggedInUser.userName}"

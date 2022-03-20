@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DaoService
+import org.kebs.app.kotlin.apollo.api.ports.provided.kra.SendEntryNumberToKraServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.MPesaService
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -51,6 +52,9 @@ class MpesaTest {
     lateinit var limsServices: LimsServices
 
     @Autowired
+    lateinit var entryNumberKraServices: SendEntryNumberToKraServices
+
+    @Autowired
     lateinit var usersRepo: IUserRepository
 
 //
@@ -61,14 +65,27 @@ class MpesaTest {
 
 //    {"username":"kims","password":"QVZy>Bzm7\">3Dq5P"}
 
+
     @Test
     fun hashString() {
-        val plainText = listOf("K3b5_ap0ll0", "QVZy>Bzm7\">3Dq5P")
+        val plainText = listOf("KEBSUSER", "password@1")
 
         plainText.forEach {
             val hashed = jasyptStringEncryptor.encrypt(it)
             KotlinLogging.logger { }.info { "my hashed value =$it =  $hashed" }
         }
+    }
+
+    @Test
+    fun kra256Hashing() {
+        val plainText = listOf("KEBSUSER", "password@1")
+        val numberRecords = "2"
+        val password = "password@1"
+        val loginid = "KEBSUSER"
+//        plainText.forEach {
+            val hashed = entryNumberKraServices.kraDataEncryption(numberRecords+password+loginid)
+            KotlinLogging.logger { }.info { "my hashed value   $hashed" }
+//        }
     }
 
     @Test

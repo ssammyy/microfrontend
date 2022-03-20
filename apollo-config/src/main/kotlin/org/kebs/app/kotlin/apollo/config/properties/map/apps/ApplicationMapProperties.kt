@@ -460,6 +460,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.sage.config.integration}")
     val mapSageConfigIntegration: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.kra.config.integration}")
+    val mapKraConfigIntegration: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.lims.config.integration}")
     val mapLimsConfigIntegration: Long = 0L
 

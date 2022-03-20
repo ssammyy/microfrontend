@@ -1042,10 +1042,10 @@ class StdLevyController(
 
     @GetMapping("/getManufacturerStatus")
     @ResponseBody
-    fun getManufacturerStatus(): Boolean
+    fun getManufacturerStatus(): Long
     {
-
-        return standardLevyService.getManufacturerStatus()
+        val userLoggedIn = commonDaoServices.loggedInUserDetails()
+        return standardLevyService.getManufacturerStatus(userLoggedIn.id  ?: throw ExpectedDataNotFound("Missing user ID"))
 
     }
     @GetMapping("/getCompanyEditedDetails")

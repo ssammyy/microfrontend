@@ -55,6 +55,7 @@ internal class HashingImplementationTest {
     fun hashString() {
         val plainText = listOf("apollo", "BSKL3tm31n2021")
 
+
         plainText.forEach {
             val hashed = jasyptStringEncryptor.encrypt(it)
             KotlinLogging.logger { }.info { "my hashed value = $hashed" }

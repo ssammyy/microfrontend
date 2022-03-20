@@ -7,11 +7,13 @@ import org.flowable.engine.repository.Deployment
 import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
-import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
 import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetailsBody
-import org.kebs.app.kotlin.apollo.common.dto.stdLevy.*
+import org.kebs.app.kotlin.apollo.common.dto.stdLevy.ProcessInstanceResponseSite
+import org.kebs.app.kotlin.apollo.common.dto.stdLevy.ProcessInstanceResponseValueSite
+import org.kebs.app.kotlin.apollo.common.dto.stdLevy.ProcessInstanceSiteResponse
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
+import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEditEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
@@ -25,7 +27,6 @@ import org.springframework.web.multipart.MultipartFile
 import java.sql.Timestamp
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.*
 
 @Service
 class StandardLevyService(
@@ -51,9 +52,11 @@ class StandardLevyService(
     private val notifications: Notifications,
     private val manufacturePlantRepository: IManufacturePlantDetailsRepository,
     private val standardLevySiteVisitRemarksRepository: StandardLevySiteVisitRemarksRepository,
+    private val applicationMapProperties: ApplicationMapProperties,
+    private val daoService: DaoService,
 
 
-) {
+    ) {
     val PROCESS_DEFINITION_KEY = "sl_SiteVisitProcessFlow"
     val TASK_CANDIDATE_SL_PRINCIPAL_LEVY_OFFICER = "SL_PRINCIPAL_LEVY_OFFICER"
     val TASK_CANDIDATE_SL_Assistant_Manager = "SL_Assistant_Manager"
@@ -1393,24 +1396,9 @@ return getUserTasks();
 
     }
 
-    fun getManufacturerStatus(): Boolean {
-        commonDaoServices.loggedInUserDetails().id
-            ?.let { id ->
-                companyProfileRepo.getBusinessNature(id)
-                    .let {
-                        iBusinessNatureRepository.getManufacturerStatus(it)
-                            ?.let {
-
-                                //Manufacturer
-                                return true
-                            }
-                            ?: run {
-                                //Contractor
-                                return false
-                            }
-                    }
-            }
-            ?: return false
+    fun getManufacturerStatus(userID:Long): Long {
+        val businessNature = companyProfileRepo.getBusinessNature(userID)
+        return iBusinessNatureRepository.getManufacturerStatus(businessNature)
     }
 
     fun getCompanyEditedDetails(manufactureId: Long): CompanyProfileEditEntity {
@@ -1419,7 +1407,7 @@ return getUserTasks();
     }
 
     fun getSiteVisitRemarks(siteVisitId: Long): List<StandardLevySiteVisitRemarks> {
-        standardLevySiteVisitRemarksRepository.findAllBySiteVisitId(siteVisitId)?.let {
+        standardLevySiteVisitRemarksRepository.findAllBySiteVisitIdOrderByIdDesc(siteVisitId)?.let {
           return it
         }
             ?: throw ExpectedDataNotFound("No Data Found")
@@ -1434,6 +1422,7 @@ return getUserTasks();
     fun getCompleteTasks(): List<CompleteTasksDetailHolder> {
         return standardLevyFactoryVisitReportRepo.getCompleteTasks()
     }
+
 
 
     fun closeTask(taskId: String) {
