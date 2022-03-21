@@ -12,18 +12,26 @@ class RequestItems {
     var productName: String? = null
 
     @JsonProperty("MRate")
-    var rate: String? = null
+    var rate: Double? = null
 
     @JsonProperty("CFValue")
     var cfValue: BigDecimal? = null
 
     companion object {
         fun fromEntity(item: CdDemandNoteItemsDetailsEntity): RequestItems {
-            return RequestItems().apply {
+            val itm = RequestItems().apply {
                 cfValue = item.cfvalue
-                productName = item.product
-                rate = item.rate
             }
+            try {
+                itm.rate = item.rate?.toDoubleOrNull()
+            } catch (ex: NumberFormatException) {
+                itm.rate = 0.0
+            }
+            itm.productName = item.product
+            if ((item.product?.length ?: 0) > 50) {
+                itm.productName = item.product?.substring(0, 49)
+            }
+            return itm
         }
 
         fun fromList(items: List<CdDemandNoteItemsDetailsEntity>): List<RequestItems> {
@@ -77,18 +85,11 @@ class SageRequest {
                     dn.address?.contains('@') == true -> dn.address
                     else -> "example@example.com"
                 }
+                entryPoint = dn.entryPoint
                 entryNo = dn.entryNo ?: ""
-                courier = ""
+                courier = dn.courier ?: ""
                 otherInfo = dn.currency
                 totalAmount = dn.totalAmount ?: BigDecimal.ZERO
-            }
-            // Only applicable to JKA
-            if ("JKA".equals(dn.shippingAgent, true)) {
-                req.entryPoint = dn.entryPoint ?: "KSM"
-                req.entryNo = dn.entryNo ?: ""
-                req.courier = dn.courier ?: ""
-            } else {
-                req.entryPoint = dn.entryPoint ?: "001"
             }
             return req
         }

@@ -255,6 +255,27 @@ class DestinationInspectionDaoServices(
         return false
     }
 
+    fun linkManifestWithConsignment(manifestNumber: String?, ucrNumber: String?, manifestDocument: Boolean) {
+        if (manifestDocument) {
+            this.findCdWithUcrNumberLatest(ucrNumber
+                    ?: "")?.let { consignmentDocumentDetailsEntity ->
+                consignmentDocumentDetailsEntity.manifestNumber = manifestNumber
+                this.iConsignmentDocumentDetailsRepo.save(consignmentDocumentDetailsEntity)
+            }
+        } else {
+            this.findCdWithUcrNumberLatest(ucrNumber ?: "")?.let { consignmentDocumentDetailsEntity ->
+                this.declarationRepo.findFirstByRefNum(ucrNumber ?: "")?.let { document ->
+                    consignmentDocumentDetailsEntity.manifestNumber = document.manifestNumber
+                    this.iConsignmentDocumentDetailsRepo.save(consignmentDocumentDetailsEntity)
+                    consignmentDocumentDetailsEntity
+                } ?: run {
+                    consignmentDocumentDetailsEntity.manifestNumber = "NONE"
+                    this.iConsignmentDocumentDetailsRepo.save(consignmentDocumentDetailsEntity)
+                    consignmentDocumentDetailsEntity
+                }
+            }
+        }
+    }
 
     fun findAllBlackListUsers(status: Int): List<CdBlackListUserTargetTypesEntity> {
         iBlackListUserTargetRep.findAllByStatusOrderByTypeName(status)

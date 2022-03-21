@@ -12,10 +12,10 @@
                                     (click)="goBack()"><i class="fa fa-arrow-left"></i> Back
                             </button>
                         </h4>
-                       
+
                     </div>
                     <div class="card-body" *ngIf="itemDetails">
-                        <div class="row"> 
+                        <div class="row">
                             <div class="col-md-2">
                                 <div widget class=" border-0 box-shadow">
                                     <div class="text-center pt-2" style="color: green;">
@@ -57,122 +57,125 @@
                                                 Customs Entry No
                                             </th>
                                             <tr>
-                                                <td>{{itemDetails.inspectionGeneralEntity.entryNo}}</td>
+                                                <td>{{itemDetails.inspectionGeneralEntity.customsEntryNumber}}</td>
                                             </tr>
                                             <th>
                                                 IDF No
                                             </th>
                                             <tr>
-                                                <td>{{itemDetails.inspectionGeneralEntity.idfNumber}}</td>
+                                                <td>{{itemDetails.cd_details.idfNumber}}</td>
                                             </tr>
                                             <th>
                                                 UCR No
                                             </th>
                                             <tr>
-                                                <td>{{itemDetails.inspectionGeneralEntity.ucrNumber}}</td>
+                                                <td>{{itemDetails.cd_details.ucrNumber}}</td>
                                             </tr>
                                             <th>
                                                 COC No:
                                             </th>
                                             <tr>
-                                                <td>{{itemDetails.inspectionGeneralEntity.cocNo}}</td>
+                                                <td>{{itemDetails.cd_details.cocNumber}}</td>
                                             </tr>
                                             <th>
                                                 Fee Paid:
                                             </th>
                                             <tr>
-                                                <td>{{itemDetails.inspectionGeneralEntity.feePaid}}</td>
+                                                <td>{{itemDetails.feePaid}}</td>
                                             </tr>
                                             <th>
                                                 Receipt No:
                                             </th>
                                             <tr>
-                                                <td>{{itemDetails.inspectionGeneralEntity.receiNo}}</td>
+                                                <td>{{itemDetails.receiptNumber}}</td>
                                             </tr>
-
-
-
-
                                         </table>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-8">
-                              
-                                <!-- <div class="d-flex"> -->
-                                    <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
-                                        
-                                        <li ngbNavItem="consignee">
-                                            <a ngbNavLink>USed Motor Vehicle Details</a>
-                                            <ng-template ngbNavContent>
-                                                <b class="text-primary">Used Motor Vehicle Details</b>
-                                                <ul class="w-list-unstyled">
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Serial Number:</div>
-                                                        <div class="list-text-accordion">{{itemDetails.mvInspectionChecklist.serialNumber}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Make Of Vehicle:</div>
-                                                        <div class="list-text-accordion">{{itemDetails.mvInspectionChecklist.makeVehicle}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Chassis No:</div>
-                                                        <div class="list-text-accordion">{{itemDetails.mvInspectionChecklist.chassisNo}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Engine No/Capacity:</div>
-                                                        <div class="list-text-accordion">{{itemDetails.mvInspectionChecklist.engineNoCapacity}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Manufacturer Date:</div>
-                                                        <div class="list-text-accordion">{{itemDetails.mvInspectionChecklist.manufactureDate}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Registration Date:</div>
-                                                        <div class="list-text-accordion">{{itemDetails.mvInspectionChecklist.registrationDate}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Odometre Reading:</div>
-                                                        <div class="list-text-accordion">{{itemDetails.mvInspectionChecklist.odemetreReading}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Drive:</div>
-                                                        <div class="list-text-accordion">{{itemDetails.mvInspectionChecklist.driveRhdLhd}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Transmission:</div>
-                                                        <div class="list-text-accordion">{{itemDetails.mvInspectionChecklist.transmissionAutoManual}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Colour:</div>
-                                                        <div class="list-text-accordion">{{itemDetails.mvInspectionChecklist.colour}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Overall Appearance:</div>
-                                                        <div class="list-text-accordion">{{itemDetails.mvInspectionChecklist.overallAppearance}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Remarks:</div>
-                                                        <div class="list-text-accordion">{{itemDetails.mvInspectionChecklist.remarks}}</div>
-                                                    </li>
-                                                </ul>
-                                            </ng-template>
-                                        </li>
-                                    </ul>
 
-                                    <div [ngbNavOutlet]="nav" class="ml-4"></div>
+                                <!-- <div class="d-flex"> -->
+                                <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
+
+                                    <li ngbNavItem="consignee">
+                                        <a ngbNavLink>USed Motor Vehicle Details</a>
+                                        <ng-template ngbNavContent>
+                                            <b class="text-primary">Used Motor Vehicle Details</b>
+                                            <ul class="w-list-unstyled">
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Serial Number:</div>
+                                                    <div class="list-text-accordion">{{itemDetails.mvInspectionChecklist.serialNumber}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Make Of Vehicle:</div>
+                                                    <div class="list-text-accordion">{{itemDetails.mvInspectionChecklist.makeVehicle}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Chassis No:</div>
+                                                    <div class="list-text-accordion">{{itemDetails.mvInspectionChecklist.chassisNo}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Engine No/Capacity:</div>
+                                                    <div class="list-text-accordion">{{itemDetails.mvInspectionChecklist.engineNoCapacity}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Manufacturer Date:</div>
+                                                    <div class="list-text-accordion">{{itemDetails.mvInspectionChecklist.manufactureDate}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Registration Date:</div>
+                                                    <div class="list-text-accordion">{{itemDetails.mvInspectionChecklist.registrationDate}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Odometre Reading:</div>
+                                                    <div class="list-text-accordion">{{itemDetails.mvInspectionChecklist.odemetreReading}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Drive:</div>
+                                                    <div class="list-text-accordion">{{itemDetails.mvInspectionChecklist.driveRhdLhd}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Transmission:</div>
+                                                    <div class="list-text-accordion">{{itemDetails.mvInspectionChecklist.transmissionAutoManual}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Colour:</div>
+                                                    <div class="list-text-accordion">{{itemDetails.mvInspectionChecklist.colour}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Overall Appearance:</div>
+                                                    <div class="list-text-accordion">{{itemDetails.mvInspectionChecklist.overallAppearance}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Remarks:</div>
+                                                    <div class="list-text-accordion">{{itemDetails.mvInspectionChecklist.remarks}}</div>
+                                                </li>
+                                            </ul>
+                                        </ng-template>
+                                    </li>
+                                </ul>
+
+                                <div [ngbNavOutlet]="nav" class="ml-4"></div>
                                 <!-- </div>  -->
                             </div>
                             <div class="col-md-2">
                                 <b>Action:</b>
-                                <br />
-                                <button *ngIf="!itemDetails.mvInspectionChecklist.ministryInspectionComplete" class="btn btn-sm btn-primary" (click)="downloadMinistryUnfilled()"><span class="fa-download">Unfilled Checklist</span></button>
-                                <button *ngIf="!itemDetails.mvInspectionChecklist.ministryInspectionComplete" class="btn btn-sm btn-primary" (click)="uploadReport()" ><span class="fa-upload">Filled Report</span></button>
-                                <br />
+                                <br/>
+                                <button *ngIf="!itemDetails.mvInspectionChecklist.ministryInspectionComplete"
+                                        class="btn btn-sm btn-primary" (click)="downloadMinistryUnfilled()"><span
+                                        class="fa-download">Unfilled Checklist</span></button>
+                                <button *ngIf="!itemDetails.mvInspectionChecklist.ministryInspectionComplete"
+                                        class="btn btn-sm btn-primary" (click)="uploadReport()"><span class="fa-upload">Filled Report</span>
+                                </button>
+                                <br/>
                                 <b>Document:</b>
-                                <br />
-                                <button *ngIf="itemDetails.mvInspectionChecklist.ministryInspectionComplete" class="btn btn-sm btn-primary" (click)="downloadReport()"><span class="fa-download">Ministry Inspection Report</span></button>
-                                <button class="btn btn-sm btn-primary" (click)="downloadMvir()" ><span class="fa-download">MVIR</span></button>
+                                <br/>
+                                <button *ngIf="itemDetails.mvInspectionChecklist.ministryInspectionComplete"
+                                        class="btn btn-sm btn-primary" (click)="downloadReport()"><span
+                                        class="fa-download">Ministry Inspection Report</span></button>
+                                <button class="btn btn-sm btn-primary" (click)="downloadMvir()"><span
+                                        class="fa-download">MVIR</span></button>
                             </div>
                         </div>
                         <!-- end content-->

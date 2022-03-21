@@ -136,9 +136,10 @@ class AuctionService(
         demandNoteReq.product = "AUCTION"
         demandNoteReq.name = request.importerName
         demandNoteReq.amount = BigDecimal.ZERO.toDouble()
+        demandNoteReq.entryNo = request.auctionLotNo ?: ""
+        // Entry point
         request.cfsId?.let {
             demandNoteReq.entryPoint = it.altCfsCode ?: it.cfsCode ?: ""
-            demandNoteReq.entryNo = it.cfsNumber ?: ""
             demandNoteReq.courier = ""
             demandNoteReq.customsOffice = request.shipmentPort ?: "NRB"
         }
@@ -264,7 +265,7 @@ class AuctionService(
                         "rejected" -> this.auctionRequestsRepository.findByApprovalStatus(AuctionGoodStatus.REJECTED.status, page)
                         "approved" -> this.auctionRequestsRepository.findByApprovalStatus(AuctionGoodStatus.APPROVED.status, page)
                         "new" -> this.auctionRequestsRepository.findByApprovalStatusInAndAssignedOfficerIsNull(listOf(AuctionGoodStatus.NEW.status), page)
-                        "assigned" -> this.auctionRequestsRepository.findByApprovalStatusInAndAssignedOfficer(listOf(AuctionGoodStatus.NEW.status), this.commonDaoServices.loggedInUserDetails(), page)
+                        "assigned" -> this.auctionRequestsRepository.findByApprovalStatusInAndAssignedOfficer(listOf(AuctionGoodStatus.NEW.status, AuctionGoodStatus.PAYMENT_PENDING.status), this.commonDaoServices.loggedInUserDetails(), page)
                         else -> null
                     }
                 }
