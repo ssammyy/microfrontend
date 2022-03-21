@@ -18,7 +18,7 @@ class StagingStandardsLevyManufacturerEntryNumber : Serializable {
 
     @Column(name = "MANUFACTURER_ID")
     @Basic
-    var manufacturerId: Long? = null
+    var manufacturerId: String? = null
 
     @Column(name = "KRA_PIN")
     @Basic

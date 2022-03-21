@@ -1099,14 +1099,14 @@ class RegistrationDaoServices(
             }
 
             companyProfileRepo.save(companyProfileEntity)
-//                stagingStandardsLevyManufacturerEntryNumberRepo.findByIdOrNull(stdLevyNotificationFormDTO.companyProfileID)
-//                    ?.let {stgLevyEntryNumber->
-//                        with(stgLevyEntryNumber){
-//                            manufacturerId = eNumber
-//                        }
-//
-//                    }
-//                    ?: throw Exception("Company ID Was not Found")
+                stagingStandardsLevyManufacturerEntryNumberRepo.findByIdOrNull(stdLevyNotificationFormDTO.companyProfileID)
+                    ?.let {stgLevyEntryNumber->
+                        with(stgLevyEntryNumber){
+                            manufacturerId = eNumber
+                        }
+
+                    }
+                    ?: throw Exception("Company ID Was not Found")
 //                stdLevyNotificationFormDTO.companyProfileID?.let {
 //                    sendEntryNumberToKraServices.postEntryNumberTransactionToKra(
 //                        it, commonDaoServices.getUserName(loggedInUser), map)
