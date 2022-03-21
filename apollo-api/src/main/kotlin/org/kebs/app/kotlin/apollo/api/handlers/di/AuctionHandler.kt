@@ -78,11 +78,12 @@ class AuctionHandler(
                     )
             val multipartFile = multipartRequest.getFile("file")
             val fileType = multipartRequest.getParameter("file_type")
+            val cfsCode = multipartRequest.getParameter("cfs_code")
             val categoryCode = multipartRequest.getParameter("categoryCode")
             val listingDate = dateFormatter.parse(multipartRequest.getParameter("listingDate"))
             if (multipartFile != null) {
                 listingDate?.let {
-                    response = auctionService.uploadAuctionGoods(multipartFile, fileType, categoryCode, java.sql.Date.valueOf(LocalDate.from(listingDate)))
+                    response = auctionService.uploadAuctionGoods(multipartFile, fileType, categoryCode, java.sql.Date.valueOf(LocalDate.from(listingDate)), cfsCode)
                     response
                 } ?: run {
                     response.errors = mapOf(Pair("listingDate", "Please select auction listing date"))

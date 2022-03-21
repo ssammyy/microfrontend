@@ -9,6 +9,7 @@ import org.kebs.app.kotlin.apollo.api.payload.request.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.service.ChecklistService
+import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentAuditService
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.repo.di.IChecklistCategoryRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IChecklistInspectionTypesRepository
@@ -29,6 +30,7 @@ class ChecklistHandler(
         private val iChecklistInspectionTypesRepo: IChecklistInspectionTypesRepository,
         private val iLaboratoryRepo: ILaboratoryRepository,
         private val commonDaoServices: CommonDaoServices,
+        private val cdAuditService: ConsignmentDocumentAuditService,
         private val applicationMapProperties: ApplicationMapProperties
 ) {
     fun ssfPdfFilesResults(req: ServerRequest): ServerResponse {
@@ -76,8 +78,7 @@ class ChecklistHandler(
         val multipartRequest = (req.servletRequest() as? MultipartHttpServletRequest)
         if (multipartRequest != null) {
             multipartRequest.getFile("file")?.let { multipartFile ->
-                val comment = req.attribute("comment")
-                        .orElse("")
+                val comment = multipartRequest.getParameter("comment")
                 val itemId = req.pathVariable("inspectionId")
                 response = checlistService.ministryInspectionList(itemId.toLongOrDefault(0L), comment.toString(), multipartFile)
                 response
@@ -273,6 +274,7 @@ class ChecklistHandler(
                     val cdItem = daoServices.findCDWithUuid(cdUuid)
                     //Save the general checklist
                     val generalCheckList = form.generalChecklist()
+
                     generalCheckList.description = cdItem.description
                     daoServices.findCDImporterDetails(cdItem?.id ?: 0).let { importer ->
                         generalCheckList.importersName = importer.name
@@ -314,6 +316,8 @@ class ChecklistHandler(
                     if (form.vehicle == null) {
                         checlistService.updateConsignmentSampledStatus(cdDetails, false)
                     }
+                    // Add inspection remarks
+                    this.cdAuditService.addHistoryRecord(cdItem.id!!, cdItem.ucrNumber, form.overallRemarks, "ADD_CHECKLIST", "Filled consignment checklist", loggedInUser.userName)
                 }
                 response.message = "Checklist submitted successfully"
                 response.responseCode = ResponseCodes.SUCCESS_CODE

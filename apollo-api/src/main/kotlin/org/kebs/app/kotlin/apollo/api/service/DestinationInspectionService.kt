@@ -113,7 +113,7 @@ class DestinationInspectionService(
         val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
         // Move back to officer tasks
         consignmentDocument.status = ConsignmentApprovalStatus.UNDER_INSPECTION.code
-        consignmentDocument.compliantStatus = map.initStatus
+        consignmentDocument.compliantStatus = map.inactiveStatus
         consignmentDocument.approveRejectCdStatus = map.initStatus
         consignmentDocument.varField10 = "COMPLIANCE REJECTED"
         // Update and add comments
@@ -1508,9 +1508,9 @@ class DestinationInspectionService(
     fun getSupervisor(cdDetails: ConsignmentDocumentDetailsEntity): UsersEntity? {
         cdDetails.freightStation?.let {
             val supervisorRoles = this.privilegesRepository.findRoleIdsByRoleName("DI_OFFICER_CHARGE_READ")
-            KotlinLogging.logger { }.info("ROLE IDS: ${supervisorRoles}")
+            KotlinLogging.logger { }.info("ROLE IDS: $supervisorRoles")
             val userIds = cfsTypesEntity.findCfsUserIds(it.id, 1)
-            KotlinLogging.logger { }.info("USR IDS: ${userIds}")
+            KotlinLogging.logger { }.info("USR IDS: $userIds")
             val supervisors = this.userEntityRepository.findUsersInCfsAndProfiles(supervisorRoles, userIds)
             KotlinLogging.logger { }.info("USR COUNT: ${supervisors.size}")
             var usersEntity: UsersEntity? = null

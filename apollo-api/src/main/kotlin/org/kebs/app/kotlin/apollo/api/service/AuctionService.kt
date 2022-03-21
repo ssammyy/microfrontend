@@ -368,7 +368,6 @@ class AuctionService(
             response.message = "Auction with lot no exists: " + form.auctionLotNo
             return response
         }
-
         val cfsCode = this.destinationInspectionDaoServices.findCfsCd((form.cfsCode ?: "").trim().toUpperCase())
         if (cfsCode == null) {
             response.responseCode = ResponseCodes.FAILED_CODE
@@ -462,7 +461,7 @@ class AuctionService(
         return response
     }
 
-    fun uploadAuctionGoods(multipartFile: MultipartFile, fileType: String?, categoryCode: String?, listingDate: Date): ApiResponseModel {
+    fun uploadAuctionGoods(multipartFile: MultipartFile, fileType: String?, categoryCode: String?, listingDate: Date, cfsCode: String?): ApiResponseModel {
         val response = ApiResponseModel()
         val endsWith = multipartFile.originalFilename?.endsWith(".txt")
         if (!(multipartFile.contentType == "text/csv" || endsWith == true)) {
@@ -479,6 +478,9 @@ class AuctionService(
         val audits = this.daoService.readAuditCsvFile(separator, targetReader)
         val errors = mutableListOf<Any>()
         for (a in audits) {
+            if (!StringUtils.hasLength(a.cfsCode)) {
+                a.cfsCode = cfsCode
+            }
             validatorService.validateInputWithInjectedValidator(a)?.let {
                 errors.add(it)
             } ?: run {

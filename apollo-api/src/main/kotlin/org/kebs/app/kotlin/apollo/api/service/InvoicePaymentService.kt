@@ -394,45 +394,46 @@ class InvoicePaymentService(
     }
 
     fun paymentReceived(responseStatus: PaymentStatusResult): Boolean {
-        iDemandNoteRepo.findByPostingReference(responseStatus.response?.demandNoteNo ?: "")?.let { demandNode ->
-            if (demandNode.paymentStatus == 1) {
+        iDemandNoteRepo.findByPostingReference(responseStatus.response?.demandNoteNo ?: "")?.let { demandNote ->
+            if (demandNote.paymentStatus == 1) {
                 throw ExpectedDataNotFound("Payment has already been made, duplicate callback")
             }
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-            demandNode.paymentSource = responseStatus.response?.paymentCode
-            demandNode.receiptDate = responseStatus.response?.paymentDate
-            demandNode.varField5 = responseStatus.response?.additionalInfo
-            demandNode.varField6 = responseStatus.response?.currencyCode
-            demandNode.varField7 = responseStatus.response?.paymentDescription
-            demandNode.receiptNo = responseStatus.response?.paymentReferenceNo
+            demandNote.paymentSource = responseStatus.response?.paymentCode
+            demandNote.receiptDate = responseStatus.response?.paymentDate
+            demandNote.varField5 = responseStatus.response?.additionalInfo
+            demandNote.varField6 = responseStatus.response?.currencyCode
+            demandNote.varField7 = responseStatus.response?.paymentDescription
+            demandNote.receiptNo = responseStatus.response?.paymentReferenceNo
             if ("00".equals(responseStatus.header?.statusCode)) {
-                demandNode.paymentStatus = map.activeStatus
-                demandNode.paymentDate = Timestamp.from(Instant.now())
-                demandNode.receiptDate = responseStatus.response?.paymentDate
-                invoiceBatchDetailsRepo.findByBatchNumber(demandNode.demandNoteNumber!!)?.let { batch ->
+                demandNote.paymentStatus = map.activeStatus
+                demandNote.paymentDate = Timestamp.from(Instant.now())
+                demandNote.receiptDate = responseStatus.response?.paymentDate
+                invoiceBatchDetailsRepo.findByBatchNumber(demandNote.demandNoteNumber!!)?.let { batch ->
                     batch.receiptNumber = responseStatus.response?.paymentReferenceNo
                     batch.paymentStarted = map.activeStatus
                     batch.receiptDate = responseStatus.response?.paymentDate?.time?.let { java.sql.Date(it) }
                     invoiceBatchDetailsRepo.save(batch)
                 }
             } else {
-                demandNode.paymentStatus = map.invalidStatus
-                invoiceBatchDetailsRepo.findByBatchNumber(demandNode.demandNoteNumber!!)?.let { batch ->
+                demandNote.paymentStatus = map.invalidStatus
+                invoiceBatchDetailsRepo.findByBatchNumber(demandNote.demandNoteNumber!!)?.let { batch ->
                     batch.receiptNumber = responseStatus.response?.paymentReferenceNo
                     batch.paymentStarted = map.invalidStatus
                     batch.receiptDate = responseStatus.response?.paymentDate?.time?.let { java.sql.Date(it) }
                     invoiceBatchDetailsRepo.save(batch)
                 }
             }
+            iDemandNoteRepo.save(demandNote)
             // Completion event
             GlobalScope.launch(Dispatchers.IO) {
                 delay(100L)
-                when (demandNode.paymentPurpose) {
+                when (demandNote.paymentPurpose) {
                     PaymentPurpose.CONSIGNMENT.code -> {
-                        invoicePaymentCompleted(demandNode.cdId!!, demandNode.id!!)
+                        invoicePaymentCompleted(demandNote.cdId!!, demandNote.id!!)
                     }
                     else -> {
-                        KotlinLogging.logger { }.info("Unhandled payment completion ${demandNode.id}-${demandNode.paymentPurpose}")
+                        KotlinLogging.logger { }.info("Unhandled payment completion ${demandNote.id}-${demandNote.paymentPurpose}")
                     }
                 }
             }

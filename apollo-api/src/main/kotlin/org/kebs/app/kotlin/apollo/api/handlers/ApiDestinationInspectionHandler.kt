@@ -12,6 +12,7 @@ import org.kebs.app.kotlin.apollo.api.service.DestinationInspectionService
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
+import org.kebs.app.kotlin.apollo.store.model.di.CfsTypeCodesEntity
 import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentTypesEntity
 import org.kebs.app.kotlin.apollo.store.model.di.DiUploadsEntity
@@ -54,6 +55,31 @@ class ApiDestinationInspectionHandler(
             KotlinLogging.logger { }.error { ex }
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
             response.message = "Failed to list blacklisted users"
+        }
+        return ServerResponse.ok().body(response)
+    }
+
+    fun listUserFreightStations(req: ServerRequest): ServerResponse {
+        val response = ApiResponseModel()
+        try {
+            // Load active ports
+            val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+            val user = commonDaoServices.loggedInUserDetails()
+            val userProfile = commonDaoServices.findUserProfileByUserID(user, map.activeStatus)
+            val supervisorsCfs = this.daoServices.findAllCFSUserCodes(userProfile.id!!)
+            val lt = mutableListOf<CfsTypeCodesEntity>()
+            supervisorsCfs.forEach {
+                daoServices.findCfsCd(it)?.let { cfs ->
+                    lt.add(cfs)
+                }
+            }
+            response.data = lt
+            response.message = "Success"
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error { ex }
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.message = "Failed to list ports"
         }
         return ServerResponse.ok().body(response)
     }

@@ -575,4 +575,7 @@ export class DestinationInspectionService {
     }
 
 
+    listMyCfs(): Observable<any> {
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/port/freight/user-stations"))
+    }
 }

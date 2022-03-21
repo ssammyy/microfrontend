@@ -121,6 +121,7 @@ class DestinationInspectionRoutes {
             GET("/cd/inspection/configuration", handler::loadCommonUIComponents)
             GET("/ports", handler::loadPortOfArrival)
             GET("/port/freight/stations/{portId}", handler::listPortFreightStations)
+            GET("/port/freight/user-stations", handler::listUserFreightStations)
             GET("/blacklist/users", handler::listBlackListedUser)
             // OTHERS
             GET("/consignment/document/details/{coUuid}", handler::consignmentDocumentDetails)

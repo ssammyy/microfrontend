@@ -15,6 +15,7 @@ export class UploadFileComponent implements OnInit {
     message: String
     form: FormGroup
     categories: any
+    cfsStation: any
     loading = false
 
     constructor(private fb: FormBuilder, @Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<any>, private diService: DestinationInspectionService) {
@@ -27,6 +28,16 @@ export class UploadFileComponent implements OnInit {
             fileType: ["", Validators.required]
         })
         this.loadCategories()
+        this.loadMyCfs()
+    }
+
+    loadMyCfs() {
+        this.diService.listMyCfs()
+            .subscribe(res => {
+                if (res.responseCode === '00') {
+                    this.cfsStation = res.data
+                }
+            })
     }
 
     loadCategories() {

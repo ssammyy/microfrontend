@@ -47,8 +47,8 @@
             <p>{{demandDetails.note.varField10}}</p>
         </div>
         <div class="col-sm-3 col-md-4" *ngIf="demandDetails.note.entryPoint">
-            <label class="waiver-form-label">SAGE ENTRY POINT</label>
-            <p>{{demandDetails.note.entryPoint + ', ' + demandDetails.note.courier}}</p>
+            <label class="waiver-form-label">SAGE ENTRY POINT & WAREHOUSE</label>
+            <p>{{demandDetails.note.entryPoint + (demandDetails.note.courier ? ', ' + demandDetails.note.courier : "")}}</p>
         </div>
         <div class="col-sm-3 col-md-4" *ngIf="demandDetails.note.entryNo">
             <label class="waiver-form-label">SAGE ENTRY NUMBER</label>
@@ -71,7 +71,7 @@
             <p>{{demandDetails.note.varField9| date:'short'}}</p>
         </div>
         <div class="col-sm-3 col-md-4" *ngIf="demandDetails.note.postingReference">
-            <label class="waiver-form-label">DEMAND NODE NUMBER</label>
+            <label class="waiver-form-label">DEMAND NOTE NUMBER</label>
             <p>{{demandDetails.note.postingReference}}</p>
         </div>
     </div>

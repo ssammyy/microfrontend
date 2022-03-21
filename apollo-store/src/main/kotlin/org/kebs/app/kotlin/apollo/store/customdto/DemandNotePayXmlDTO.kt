@@ -29,7 +29,7 @@ class DemandNotePayXmlDTO {
 class CustomDemandNotePayXmlDto(demandNoteEntity: CdDemandNoteEntity) {
 
     @JacksonXmlProperty(localName = "DEMAND_NOTE_NUMBER")
-    var demandNoteNumber: String? = demandNoteEntity.demandNoteNumber
+    var demandNoteNumber: String? = demandNoteEntity.postingReference
 
     @JacksonXmlProperty(localName = "AMOUNT_PAID")
     var amountPaid: BigDecimal? = demandNoteEntity.totalAmount

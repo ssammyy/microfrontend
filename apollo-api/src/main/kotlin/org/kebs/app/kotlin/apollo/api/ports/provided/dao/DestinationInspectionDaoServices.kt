@@ -3258,10 +3258,10 @@ class DestinationInspectionDaoServices(
         ministryInspectionItem.cdItemDetailsId = cdItemDetails.id
         this.findCdItemNonStandardByItemID(cdItemDetails)?.let { cdItemNonStandard ->
             ministryInspectionItem.chassis = cdItemNonStandard.chassisNo
-            ministryInspectionItem.used = cdItemNonStandard.usedIndicator
-            ministryInspectionItem.year = cdItemNonStandard.vehicleYear
-            ministryInspectionItem.model = cdItemNonStandard.vehicleModel
-            ministryInspectionItem.make = cdItemNonStandard.vehicleMake
+            ministryInspectionItem.used = cdItemNonStandard.usedIndicator ?: "N/A"
+            ministryInspectionItem.year = cdItemNonStandard.vehicleYear ?: "N/A"
+            ministryInspectionItem.model = cdItemNonStandard.vehicleModel ?: "N/A"
+            ministryInspectionItem.make = cdItemNonStandard.vehicleMake ?: "N/A"
         }
         return ministryInspectionItem
     }
