@@ -943,7 +943,7 @@ class DestinationInspectionDaoServices(
             demandNote.paymentInstruction1 = PaymenInstruction1(bank1Details)
             demandNote.paymentInstruction2 = PaymenInstruction2(bank2Details)
             demandNote.paymentInstruction3 = PaymenInstruction3(bank3Details)
-            mpesaDetails.bankAccountNumber = demandNoteEntity.postingReference
+            mpesaDetails.mpesaAccNo = demandNoteEntity.postingReference
             demandNote.paymentInstructionMpesa = PaymenInstructionMpesa(mpesaDetails)
             demandNote.paymentInstructionOther = PaymenInstructionOther(mpesaDetails)
             demandNote.version = demandNote.version ?: 1
