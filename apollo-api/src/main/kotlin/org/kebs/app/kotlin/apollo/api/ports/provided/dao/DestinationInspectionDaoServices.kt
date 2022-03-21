@@ -928,7 +928,7 @@ class DestinationInspectionDaoServices(
             demandNote.address = it.address
             demandNote.currency = it.currency ?: "KES"
             demandNote.telephone = it.telephone
-            demandNote.amountPayable = it.amountPayable ?: BigDecimal.ZERO
+            demandNote.amountPayable = it.totalAmount ?: BigDecimal.ZERO
             demandNote.cfvalue = it.cfvalue ?: BigDecimal.ZERO
             demandNote.id = it.id
             demandNote.receiptNo = it.receiptNo ?: "UNKNOWN"
