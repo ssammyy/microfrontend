@@ -14,6 +14,7 @@ import {DatePipe} from "@angular/common";
 export class AddAuctionRecordComponent implements OnInit {
     message: String
     form: FormGroup
+    cfsStation: any
     loading = false
     categories: any
     auctionItems: LocalDataSource = new LocalDataSource([])
@@ -86,10 +87,20 @@ export class AddAuctionRecordComponent implements OnInit {
         this.categories = this.data.categories
         this.form.valueChanges
             .subscribe(
-                res=>{
+                res => {
                     console.log(res)
                 }
             )
+        this.loadMyCfs()
+    }
+
+    loadMyCfs() {
+        this.diService.listMyCfs()
+            .subscribe(res => {
+                if (res.responseCode === '00') {
+                    this.cfsStation = res.data
+                }
+            })
     }
 
     isValid(): Boolean {

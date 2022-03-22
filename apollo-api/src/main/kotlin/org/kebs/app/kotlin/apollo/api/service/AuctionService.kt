@@ -138,11 +138,17 @@ class AuctionService(
         demandNoteReq.amount = BigDecimal.ZERO.toDouble()
         demandNoteReq.entryNo = request.auctionLotNo ?: ""
         // Entry point
+        demandNoteReq.customsOffice = request.location
         request.cfsId?.let {
             demandNoteReq.entryPoint = it.altCfsCode ?: it.cfsCode ?: ""
-            demandNoteReq.courier = ""
-            demandNoteReq.customsOffice = request.shipmentPort ?: "NRB"
+            if ("JKIA".equals(request.location, true)) {
+                demandNoteReq.courier = it.cfsCode
+                demandNoteReq.customsOffice = "JKA"
+            } else {
+                demandNoteReq.courier = ""
+            }
         }
+
         demandNoteReq.ablNumber = request.serialNumber
         demandNoteReq.invoicePrefix = "AG"
         demandNoteReq.presentment = false

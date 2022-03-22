@@ -689,17 +689,23 @@ class DestinationInspectionDaoServices(
                         localCor.varField1 = item.id?.toString()
                         findCdItemNonStandardByItemID(item)?.let { nonStandard ->
                             localCor.chasisNumber = nonStandard.chassisNo.toString()
+                            localCor.model = nonStandard.vehicleModel ?: "UNKNOWN"
+                            localCor.make = nonStandard.vehicleMake ?: "UNKNOWN"
+                            localCor.yearOfFirstRegistration = nonStandard.vehicleYear ?: "UNKNOWN"
+                            localCor.fuelType = "UNKNOWN"
+                            localCor.bodyColor = "UNKNOWN"
                         }
                     }
                     mvirFound = true
                     with(localCor) {
                         inspectionCenter = cdItemDetailsList.cdDetails?.freightStation?.cfsName ?: "UNKNOWN"
-                        make = cdMvInspectionEntity.makeVehicle
                         engineNumber = "UNKNOWN"
+                        typeOfBody = "UNKNOWN"
                         engineCapacity = cdMvInspectionEntity.engineNoCapacity
                         yearOfManufacture = cdMvInspectionEntity.manufactureDate.toString()
                         inspectionMileage = cdMvInspectionEntity.odemetreReading ?: "UNKNOWN"
                         inspectionRemarks = cdMvInspectionEntity.remarks
+                        previousCountryOfRegistration = "UNKNOWN"
                         tareWeight = (cdMvInspectionEntity.itemId?.itemNetWeight?.toBigDecimal()
                                 ?: BigDecimal.ZERO).toDouble()
                         grossWeight = (cdMvInspectionEntity.itemId?.itemGrossWeight?.toBigDecimal()
