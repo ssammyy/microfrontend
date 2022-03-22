@@ -62,13 +62,14 @@ interface IFuelInspectionRepository : HazelcastRepository<MsFuelInspectionEntity
     fun findByReferenceNumber(referenceNumber: String): MsFuelInspectionEntity?
 
     @Query(
-        "SELECT DISTINCT fi.* FROM DAT_KEBS_MS_FUEL_INSPECTION fi, DAT_KEBS_MS_FUEL_INSPECTION_OFFICERS fio" +
-                " WHERE  fi.ID = fio.INSPECTION_ID and fio.ASSIGNED_IO =:assignedIoID and fi.BATCH_ID =:batchId " ,
+        "SELECT DISTINCT fi.* FROM DAT_KEBS_MS_FUEL_INSPECTION fi\n" +
+                "JOIN DAT_KEBS_MS_FUEL_INSPECTION_OFFICERS fio ON fi.ID = fio.INSPECTION_ID\n" +
+                "WHERE  fi.BATCH_ID =:batchId AND fio.ASSIGNED_IO =:assignedIoID",
         nativeQuery = true
     )
     fun findAllByBatchIdAndAssignOfficer(
-        @Param("assignedIoID") assignedIoID: Long,
-        @Param("batchId") batchId: Long
+        @Param("batchId") batchId: Long,
+        @Param("assignedIoID") assignedIoID: Long
     ): List<MsFuelInspectionEntity>?
 
 //    fun findByIdAndMsProcessStatus(id: Long, msProcessStatus: Int):  MsFuelInspectionEntity?
@@ -80,8 +81,8 @@ interface IFuelInspectionRepository : HazelcastRepository<MsFuelInspectionEntity
 interface IFuelInspectionOfficerRepository : HazelcastRepository<MsFuelInspectionOfficersEntity, Long> {
     override fun findAll( pageable: Pageable): Page<MsFuelInspectionOfficersEntity>
     fun findAllByOrderByIdDesc( pageable: Pageable): Page<MsFuelInspectionOfficersEntity>
-    fun findByMsFuelInspectionId(msFuelInspectionId: MsFuelInspectionEntity): MsFuelInspectionOfficersEntity?
-    fun findByMsFuelInspectionIdAndStatus(msFuelInspectionId: MsFuelInspectionEntity, status: Int): MsFuelInspectionOfficersEntity?
+    fun findByMsFuelInspectionId(msFuelInspectionId: Long): MsFuelInspectionOfficersEntity?
+    fun findByMsFuelInspectionIdAndStatus(msFuelInspectionId: Long, status: Int): MsFuelInspectionOfficersEntity?
 //    fun findByUserId(userId: UsersEntity): List<WorkplanEntity>?
 //    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?
 }
@@ -106,6 +107,7 @@ interface IMSSampleSubmissionRepository : HazelcastRepository<MsSampleSubmission
     fun findByWorkPlanGeneratedID(workPlanGeneratedID: Long): MsSampleSubmissionEntity?
 
     fun findByMsFuelInspectionId(msFuelInspectionId: Long): MsSampleSubmissionEntity?
+
     fun findBySampleCollectionNumber(sampleCollectionNumber: Long): MsSampleSubmissionEntity?
 //    fun findByUserId(userId: UsersEntity): List<WorkplanEntity>?
 //    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?

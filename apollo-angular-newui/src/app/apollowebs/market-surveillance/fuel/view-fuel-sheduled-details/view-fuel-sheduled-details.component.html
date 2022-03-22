@@ -514,7 +514,7 @@
                                             <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
-                                        <div *ngIf="fuelInspection.rapidTestDone && fuelInspection.rapidTest.rapidTestStatus==false">
+                                        <div *ngIf="fuelInspection.rapidTestDone == true && fuelInspection.rapidTest.rapidTestStatus==false">
                                             <button *ngIf="fuelInspection.sampleCollectionStatus == false"  mat-raised-button="" data-toggle="modal"
                                                      data-target="#sampleCollectModal"
                                                      class="btn btn-sm btn-primary mr-2"><span
@@ -522,7 +522,7 @@
                                                 <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button *ngIf="fuelInspection.sampleCollectionStatus && fuelInspection.sampleSubmittedStatus== false" mat-raised-button="" data-toggle="modal"
+                                            <button *ngIf="fuelInspection.sampleCollectionStatus == true && fuelInspection.sampleSubmittedStatus== false" mat-raised-button="" data-toggle="modal"
                                                      data-target="#sampleSubmitModal"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">ADD SAMPLE SUBMITTED</span>

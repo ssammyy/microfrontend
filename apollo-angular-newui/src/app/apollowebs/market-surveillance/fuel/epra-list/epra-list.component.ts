@@ -67,7 +67,7 @@ export class EpraListComponent implements OnInit {
       delete: false,
       custom: [
         //  { name: 'editRecord', title: '<i class="btn btn-sm btn-primary">View More</i>' },
-        {name: 'viewRecord', title: '<a class="btn btn-sm btn-primary">View More</a>'}
+        {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View More</i>'}
       ],
       position: 'right' // left|right
     },

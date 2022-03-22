@@ -348,7 +348,7 @@ class SchedulerImpl(
                                                 val fuelInspectionOfficer = marketSurveillanceDaoServices.findFuelInspectionOfficerAssigned(fileInspectionDetail, map.activeStatus)
                                                 fuelInspectionOfficer?.assignedIo?.let {
                                                     commonDaoServices.sendEmailWithUserEntity(
-                                                        it, applicationMapProperties.mapMsLabResultsIONotification, fileInspectionDetail, map, sr)
+                                                        commonDaoServices.findUserByID(it), applicationMapProperties.mapMsLabResultsIONotification, fileInspectionDetail, map, sr)
                                                 }
                                             }
                                         }

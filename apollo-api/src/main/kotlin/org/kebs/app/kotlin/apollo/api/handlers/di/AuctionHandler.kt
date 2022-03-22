@@ -65,8 +65,7 @@ class AuctionHandler(
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
             response.message = "Failed to add auction"
         }
-        return ServerResponse.ok()
-                .body(response)
+        return ServerResponse.ok().body(response)
     }
 
     fun addAuctionRequest(req: ServerRequest): ServerResponse {

@@ -161,10 +161,7 @@ dependencies {
      * KRA Integrations
      */
 //    implementation("org.springframework.boot:spring-boot-devtools")
-    implementation("org.springframework.boot:spring-boot-starter-web-services")
-    implementation("javax.xml.bind:jaxb-api:2.3.0")
-    implementation("javax.activation:activation:1.1")
-    implementation("org.glassfish.jaxb:jaxb-runtime:2.3.0")
+
 //    implementation("javax.xml.bind:jaxb-api:2.3.0-b170201.1204")
 //    implementation("javax.activation:activation:1.1")
 //    implementation("org.glassfish.jaxb:jaxb-runtime:2.3.0-b170127.1453")
@@ -172,6 +169,14 @@ dependencies {
     implementation("org.glassfish.metro:webservices-rt:2.4.4")
     implementation("org.glassfish.metro:webservices-api:2.4.4")
     implementation("com.sun.xml.messaging.saaj:saaj-impl")
+
+    implementation("org.springframework.boot:spring-boot-starter-web-services")
+    implementation("javax.xml.bind:jaxb-api:2.3.0")
+    implementation("javax.activation:activation:1.1")
+    implementation("org.glassfish.jaxb:jaxb-runtime:2.3.0")
+
+    // https://mvnrepository.com/artifact/com.fasterxml.uuid/java-uuid-generator
+    implementation("com.fasterxml.uuid:java-uuid-generator:4.0.1")
 
 
     /**

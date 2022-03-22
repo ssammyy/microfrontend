@@ -28,8 +28,7 @@ class PostInvoiceToSageServices(
         private val invoiceDaoService: InvoiceDaoService
 ) {
     fun postInvoiceTransactionToSage(stgID: Long, user: String, map: ServiceMapsEntity) {
-        val config =
-                commonDaoServices.findIntegrationConfigurationEntity(applicationMapProperties.mapSageConfigIntegration)
+        val config = commonDaoServices.findIntegrationConfigurationEntity(applicationMapProperties.mapSageConfigIntegration)
         val configUrl = config.url ?: throw Exception("URL CANNOT BE NULL")
         val invoiceFound = invoiceDaoService.findInvoiceStgReconciliationDetailsByID(stgID)
         runBlocking {
