@@ -10,6 +10,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.service.ChecklistService
 import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentAuditService
+import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentStatus
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.repo.di.IChecklistCategoryRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IChecklistInspectionTypesRepository
@@ -288,6 +289,9 @@ class ChecklistHandler(
                         response.message = "Validation failed, please select and fill at least one checklist"
                         return ServerResponse.ok().body(response)
                     }
+                    cdItem.inspectionChecklist = map.activeStatus
+                    cdItem.varField10 = "CHECKLIST FILLED, AWAITING COMPLIANCE STATUS"
+                    val cdDetails = daoServices.updateCDStatus(cdItem, ConsignmentDocumentStatus.CHECKLIST_FILLED)
                     //Save the respective checklist
                     form.agrochem?.let {
                         val agrochemItemInspectionChecklist = form.agrochemChecklist()
@@ -309,9 +313,6 @@ class ChecklistHandler(
                         val otherItemInspectionChecklist = form.otherChecklist()
                         checlistService.addOtherChecklist(map, inspectionGeneral, form.otherChecklistItems(), otherItemInspectionChecklist, loggedInUser)
                     }
-                    cdItem.inspectionChecklist = map.activeStatus
-                    cdItem.varField10 = "CHECKLIST FILLED, AWAITING COMPLIANCE STATUS"
-                    val cdDetails = daoServices.updateCdDetailsInDB(cdItem, loggedInUser)
                     // Update lab status if vehicle was not in consignment
                     if (form.vehicle == null) {
                         checlistService.updateConsignmentSampledStatus(cdDetails, false)

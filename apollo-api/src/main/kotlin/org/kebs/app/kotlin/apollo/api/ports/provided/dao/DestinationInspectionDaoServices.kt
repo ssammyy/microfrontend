@@ -471,6 +471,7 @@ class DestinationInspectionDaoServices(
                             idfNumber = consignmentDocumentDetailsEntity.ucrNumber?.let { findIdf(it)?.baseDocRefNo }
                                     ?: "UNKNOWN"
                             rfiNumber = "UNKNOWN"
+                            cocType = "NCR"
                             clean = "N"
                             createdBy = commonDaoServices.concatenateName(user)
                             createdOn = commonDaoServices.getTimestamp()
@@ -2352,7 +2353,7 @@ class DestinationInspectionDaoServices(
                 ?.let { cocEntity ->
                     return cocEntity
                 }
-                ?: throw Exception(docType + " Details with the following UCR NUMBER = ${ucrNumber}, does not Exist")
+                ?: throw Exception(docType.toUpperCase() + " Details with the following UCR NUMBER = ${ucrNumber}, does not Exist")
     }
 
     fun findCOCById(cocId: Long): CocsEntity? {

@@ -43,7 +43,7 @@ export class AproveRejectAuctionItemComponent implements OnInit {
 
     saveAuctionStatus() {
         this.loading = true
-        this.diService.approveRejectAuctionItem(this.selectedFile, this.form.value.remarks, this.form.value.approve, this.data.auctionId)
+        this.diService.approveRejectAuctionItem(this.selectedFile, this.form.value, this.data.auctionId)
             .subscribe(
                 res => {
                     this.loading = false

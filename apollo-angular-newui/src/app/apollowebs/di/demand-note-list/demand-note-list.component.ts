@@ -45,8 +45,8 @@ export class DemandNoteListComponent implements OnInit {
                 type: 'custom',
                 renderComponent: CurrencyFormatterComponent,
             },
-            amountPayable: {
-                title: 'AMOUNT PAYABLE',
+            totalAmount: {
+                title: 'TOTAL AMOUNT',
                 type: 'custom',
                 renderComponent: CurrencyFormatterComponent,
             },

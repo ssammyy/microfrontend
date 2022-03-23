@@ -298,7 +298,7 @@ class InvoicePaymentService(
 
     fun invoicePaymentCompleted(cdId: Long, demandNoteId: Long): Boolean {
         try {
-            val consignmentDocument = this.daoServices.findCD(cdId)
+            var consignmentDocument = this.daoServices.findCD(cdId)
             // 1. Send demand payment status to SW
             daoServices.findDemandNoteWithID(demandNoteId)?.let { demandNote ->
                 daoServices.sendDemandNotePayedStatusToKWIS(demandNote)
@@ -309,7 +309,9 @@ class InvoicePaymentService(
             consignmentDocument.diProcessStatus = 0
             consignmentDocument.diProcessInstanceId = null
             consignmentDocument.status = ConsignmentApprovalStatus.UNDER_INSPECTION.code
-            this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
+            consignmentDocument = this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
+            // 4. Update payment status for invoice
+            this.daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.PAYMENT_MADE)
             return true
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("INVOICE UPDATE FAILED", ex)
@@ -397,6 +399,10 @@ class InvoicePaymentService(
         iDemandNoteRepo.findByPostingReference(responseStatus.response?.demandNoteNo ?: "")?.let { demandNote ->
             if (demandNote.paymentStatus == 1) {
                 throw ExpectedDataNotFound("Payment has already been made, duplicate callback")
+            }
+            // Check duplicate receipts
+            if (iDemandNoteRepo.findByReceiptNumber(responseStatus.response?.paymentReferenceNo ?: "").isPresent) {
+                throw ExpectedDataNotFound("Payment with receipt number already exists, duplicate receipt number")
             }
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             demandNote.paymentSource = responseStatus.response?.paymentCode

@@ -24,6 +24,7 @@ export class UploadFileComponent implements OnInit {
     ngOnInit(): void {
         this.form = this.fb.group({
             auctionReportDate: ["", Validators.required],
+            cfsCode: ["", Validators.required],
             categoryCode: ["", Validators.required],
             fileType: ["", Validators.required]
         })
@@ -70,7 +71,7 @@ export class UploadFileComponent implements OnInit {
             this.message = "Please select file"
             return
         }
-        this.diService.uploadAuctionGoodsAndVehicles(this.selectedFile, this.form.value.fileType, this.form.value.categoryCode, formatDate(this.form.value.auctionReportDate, 'dd-MM-yyyy', 'en-UD'))
+        this.diService.uploadAuctionGoodsAndVehicles(this.selectedFile, this.form.value.cfsCode, this.form.value.fileType, this.form.value.categoryCode, formatDate(this.form.value.auctionReportDate, 'dd-MM-yyyy', 'en-UD'))
             .subscribe(
                 res => {
                     this.loading = false

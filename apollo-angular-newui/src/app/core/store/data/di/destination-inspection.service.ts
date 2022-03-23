@@ -500,10 +500,11 @@ export class DestinationInspectionService {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/auction/categories"))
     }
 
-    uploadAuctionGoodsAndVehicles(selectedFile: File, fileType: any, categoryCode: any, auctionReportDate: string): Observable<any> {
+    uploadAuctionGoodsAndVehicles(selectedFile: File, cfsCode: any, fileType: any, categoryCode: any, auctionReportDate: string): Observable<any> {
         let fd = new FormData()
         fd.append("file", selectedFile)
         fd.append("categoryCode", categoryCode)
+        fd.append("cfsCode", cfsCode)
         fd.append("listingDate", auctionReportDate)
         fd.append("file_type", fileType)
         return this.client.post(ApiEndpointService.getEndpoint("/api/v1/auction/auction/upload"), fd)
@@ -532,11 +533,14 @@ export class DestinationInspectionService {
         return this.client.post(ApiEndpointService.getEndpoint("/api/v1/auction/auction/generate/demand-note/" + auctionId), data)
     }
 
-    approveRejectAuctionItem(selectedFile: File, remarks: any, approve: any, auctionId: number): Observable<any> {
+    approveRejectAuctionItem(selectedFile: File, data: any, auctionId: number): Observable<any> {
         let fd = new FormData()
         fd.append("file", selectedFile)
-        fd.append("remarks", remarks)
-        fd.append("approve", approve)
+        // Add request data
+        Object.keys(data).forEach((s) => {
+            fd.append(s, data[s])
+        })
+
         return this.client.post(ApiEndpointService.getEndpoint("/api/v1/auction/auction/approve-reject/" + auctionId), fd)
     }
 

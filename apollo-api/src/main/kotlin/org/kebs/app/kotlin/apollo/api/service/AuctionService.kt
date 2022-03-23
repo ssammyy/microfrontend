@@ -434,6 +434,7 @@ class AuctionService(
         request.arrivalDate = item.dateOfArrival
         request.categoryCode = categoryCode
         request.cfsCode = item.cfsCode
+        request.country = item.country
         request.importerName = item.consignee
         request.importerPhone = item.consignee
         request.containerSize = item.containerSize
