@@ -401,7 +401,7 @@ class InvoicePaymentService(
                 throw ExpectedDataNotFound("Payment has already been made, duplicate callback")
             }
             // Check duplicate receipts
-            if (iDemandNoteRepo.findByReceiptNumber(responseStatus.response?.paymentReferenceNo ?: "").isPresent) {
+            if (iDemandNoteRepo.findByReceiptNo(responseStatus.response?.paymentReferenceNo ?: "").isPresent) {
                 throw ExpectedDataNotFound("Payment with receipt number already exists, duplicate receipt number")
             }
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
@@ -411,7 +411,7 @@ class InvoicePaymentService(
             demandNote.varField6 = responseStatus.response?.currencyCode
             demandNote.varField7 = responseStatus.response?.paymentDescription
             demandNote.receiptNo = responseStatus.response?.paymentReferenceNo
-            if ("00".equals(responseStatus.header?.statusCode)) {
+            if ("00" == responseStatus.header?.statusCode) {
                 demandNote.paymentStatus = map.activeStatus
                 demandNote.paymentDate = Timestamp.from(Instant.now())
                 demandNote.receiptDate = responseStatus.response?.paymentDate
