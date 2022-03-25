@@ -49,6 +49,7 @@ data class FuelInspectionDto(
         var bsNumberStatus: Boolean? = null,
         var compliantStatusAdded: Boolean? = null,
         var remediationScheduledStatus: Boolean? = null,
+        var remendiationCompleteStatus: Boolean? = null,
         var proFormaInvoiceStatus: Boolean? = null,
         var endInspectionStatus: Boolean? = null,
         var batchDetails: FuelBatchDetailsDto?= null,

@@ -33,29 +33,29 @@ class Scheduler(
 
     private val msMarketSurveillancePrefix = "msMarketSurveillance"
 
-    @Scheduled(cron = "\${scheduler.cron.daily}")
-    fun runDailyScheduler() {
-        //KotlinLogging.logger { }.info("Now running scheduler.......")
-        //Trigger notifications
-
-        val currentDate = DateTime().toDate()
-
-        if (runSendNotifications.toInt() == 1) {
-            schedulerImpl.sendNotifications(currentDate)
-        }
-
-        if (runMsOverdueTaskNotifications.toInt() == 1) {
-            schedulerImpl.sendOverdueTaskNotifications(currentDate, msMarketSurveillancePrefix)
-        }
-    }
-
-    @Scheduled(fixedDelay = 60_000)//60 Seconds for now
-    fun updateDemandNotes() {
-        KotlinLogging.logger { }.debug("UPDATING DEMAND NOTES on SW")
-        schedulerImpl.updatePaidDemandNotesStatus()
-        msDaoServices.updateRemediationDetailsAfterPaymentDone()
-        KotlinLogging.logger { }.debug("UPDATED DEMAND NOTES on SW")
-    }
+//    @Scheduled(cron = "\${scheduler.cron.daily}")
+//    fun runDailyScheduler() {
+//        //KotlinLogging.logger { }.info("Now running scheduler.......")
+//        //Trigger notifications
+//
+//        val currentDate = DateTime().toDate()
+//
+//        if (runSendNotifications.toInt() == 1) {
+//            schedulerImpl.sendNotifications(currentDate)
+//        }
+//
+//        if (runMsOverdueTaskNotifications.toInt() == 1) {
+//            schedulerImpl.sendOverdueTaskNotifications(currentDate, msMarketSurveillancePrefix)
+//        }
+//    }
+//
+//    @Scheduled(fixedDelay = 60_000)//60 Seconds for now
+//    fun updateDemandNotes() {
+//        KotlinLogging.logger { }.debug("UPDATING DEMAND NOTES on SW")
+//        schedulerImpl.updatePaidDemandNotesStatus()
+//        msDaoServices.updateRemediationDetailsAfterPaymentDone()
+//        KotlinLogging.logger { }.debug("UPDATED DEMAND NOTES on SW")
+//    }
 
     @Scheduled(fixedDelay = 120_000) //2 Minutes for now
     fun runSchedulerAfterEveryFiveMin() {
@@ -76,10 +76,10 @@ class Scheduler(
 class SchedulerDevelopment(
         private val schedulerImpl: SchedulerImpl
 ) {
-    @Scheduled(fixedDelay = 5_000)//60 Seconds for now
-    fun updateDemandNotes() {
-        KotlinLogging.logger { }.info("DEV: UPDATING DEMAND NOTES on SW")
-        schedulerImpl.updatePaidDemandNotesStatus()
-        KotlinLogging.logger { }.info("DEV: UPDATED DEMAND NOTES on SW")
-    }
+//    @Scheduled(fixedDelay = 5_000)//60 Seconds for now
+//    fun updateDemandNotes() {
+//        KotlinLogging.logger { }.info("DEV: UPDATING DEMAND NOTES on SW")
+//        schedulerImpl.updatePaidDemandNotesStatus()
+//        KotlinLogging.logger { }.info("DEV: UPDATED DEMAND NOTES on SW")
+//    }
 }

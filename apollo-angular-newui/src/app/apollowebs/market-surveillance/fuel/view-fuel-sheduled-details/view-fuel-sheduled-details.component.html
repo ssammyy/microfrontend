@@ -391,8 +391,8 @@
                                                 <div class="table-striped table-condensed table-responsive">
                                                     <ng2-smart-table [settings]="settingsLIMSPDFFiles"
                                                                      [source]="fuelInspection?.sampleLabResults?.limsPDFFiles"
-                                                                     (userRowSelect)="viewLIMSPDFRecord($event.data)"
-                                                                     (custom)="onCustomLIMSPDFAction($event)"
+                                                                     (userRowSelect)="viewLIMSPDFRecord($event.data,fuelInspection?.sampleLabResults?.ssfResultsList.bsNumber)"
+                                                                     (custom)="onCustomLIMSPDFAction($event,fuelInspection?.sampleLabResults?.ssfResultsList.bsNumber)"
                                                     ></ng2-smart-table>
                                                 </div>
                                             </div>
@@ -545,7 +545,7 @@
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button *ngIf="fuelInspection.bsNumberStatus && fuelInspection.compliantStatusAdded && fuelInspection.remediationScheduledStatus
-                                            && fuelInspection.sampleLabResults.ssfResultsList.complianceStatus" (click)="openModalAddDetails('addRemediationDetails')" mat-raised-button="" data-toggle="modal"
+                                            && fuelInspection.sampleLabResults.ssfResultsList.complianceStatus && fuelInspection.remendiationCompleteStatus == false" (click)="openModalAddDetails('addRemediationDetails')" mat-raised-button="" data-toggle="modal"
                                                     data-target="#myModal1"
                                                     class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">REMEDIATION</span>
@@ -570,11 +570,18 @@
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button *ngIf="fuelInspection.compliantStatusAdded && fuelInspection.sampleLabResults.ssfResultsList.complianceStatus == false
-                                            && fuelInspection.proFormaInvoiceStatus && fuelInspection.remediationScheduledStatus"
+                                            && fuelInspection.proFormaInvoiceStatus && fuelInspection.remediationScheduledStatus && fuelInspection.remendiationCompleteStatus == false"
                                                     (click)="openModalAddDetails('addRemediationDetails')" mat-raised-button="" data-toggle="modal"
                                                     data-target="#myModal1"
                                                     class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">REMEDIATION</span>
+                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+                                            <button *ngIf="fuelInspection.remendiationCompleteStatus"
+                                                    (click)="onClickSaveEndRemediation()" mat-raised-button="" data-toggle="modal"
+                                                    class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">END FUEL</span>
                                                 <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>

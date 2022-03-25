@@ -620,8 +620,14 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
   }
 
   openModalAddDetails(divVal: string): void {
-    const arrHead = ['scheduleRemediationInvoicePaid', 'assignOfficer', 'rapidTest', 'addBsNumber', 'ssfAddComplianceStatus', 'scheduleRemediation', 'notCompliantInvoice'];
-    const arrHeadSave = ['SCHEDULE REMEDIATION DATE INVOICE PAID', 'SELECT OFFICER TO ASSIGN', 'RAPID TEST RESULTS', 'ADD BS NUMBER', 'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'SCHEDULE REMEDIATION DATE', 'ADD REMEDIATION INVOICE DETAILS'];
+    const arrHead = ['scheduleRemediationInvoicePaid', 
+      'assignOfficer', 'rapidTest', 'addBsNumber', 
+      'ssfAddComplianceStatus', 'scheduleRemediation',
+      'addRemediationDetails'];
+    const arrHeadSave = ['SCHEDULE REMEDIATION DATE INVOICE PAID',
+      'SELECT OFFICER TO ASSIGN', 'RAPID TEST RESULTS', 'ADD BS NUMBER',
+      'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'SCHEDULE REMEDIATION DATE',
+      'ADD REMEDIATION INVOICE DETAILS'];
 
     for (let h = 0; h < arrHead.length; h++) {
       if (divVal === arrHead[h]) {
@@ -634,6 +640,29 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
   viewPdfFile(pdfId: string, fileName: string, applicationType: string): void {
     this.SpinnerService.show();
     this.msService.loadFileDetailsPDF(pdfId).subscribe(
+        (dataPdf: any) => {
+          this.SpinnerService.hide();
+          this.blob = new Blob([dataPdf], {type: applicationType});
+
+          // tslint:disable-next-line:prefer-const
+          let downloadURL = window.URL.createObjectURL(this.blob);
+          const link = document.createElement('a');
+          link.href = downloadURL;
+          link.download = fileName;
+          link.click();
+          // this.pdfUploadsView = dataPdf;
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        }
+    );
+  }
+
+  viewLabResultsPdfFile(fileName: string, bsNumber: string, applicationType: string): void {
+    this.SpinnerService.show();
+    this.msService.loadFileDetailsLabResultsPDF(fileName, bsNumber).subscribe(
         (dataPdf: any) => {
           this.SpinnerService.hide();
           this.blob = new Blob([dataPdf], {type: applicationType});
@@ -686,8 +715,8 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
             this.fuelInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('OFFICER ASSIGNED SUCCESSFULLY',()=>{
-              this.msService.reloadCurrentRoute()
+            this.msService.showSuccess('OFFICER ASSIGNED SUCCESSFULLY', () => {
+              this.msService.reloadCurrentRoute();
             });
           },
           error => {
@@ -708,8 +737,8 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
             this.fuelInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('RAPID TEST RESULTS SAVED SUCCESSFULLY',()=>{
-              this.msService.reloadCurrentRoute()
+            this.msService.showSuccess('RAPID TEST RESULTS SAVED SUCCESSFULLY', () => {
+              this.msService.reloadCurrentRoute();
             });
           },
           error => {
@@ -736,8 +765,8 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
             this.fuelInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('SAMPLE COLLECTION SAVED SUCCESSFULLY',()=>{
-              this.msService.reloadCurrentRoute()
+            this.msService.showSuccess('SAMPLE COLLECTION SAVED SUCCESSFULLY', () => {
+              this.msService.reloadCurrentRoute();
             });
           },
           error => {
@@ -764,8 +793,8 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
             this.fuelInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('SAMPLE SUBMISSION SAVED SUCCESSFULLY',()=>{
-              this.msService.reloadCurrentRoute()
+            this.msService.showSuccess('SAMPLE SUBMISSION SAVED SUCCESSFULLY', () => {
+              this.msService.reloadCurrentRoute();
             });
           },
           error => {
@@ -786,8 +815,8 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
             this.fuelInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('BS NUMBER ADDED SUCCESSFULLYLY',()=>{
-              this.msService.reloadCurrentRoute()
+            this.msService.showSuccess('BS NUMBER ADDED SUCCESSFULLYLY', () => {
+              this.msService.reloadCurrentRoute();
             });
           },
           error => {
@@ -811,8 +840,8 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
             this.fuelInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('PDF LIMS SAVED SUCCESSFULLY',()=>{
-              this.msService.reloadCurrentRoute()
+            this.msService.showSuccess('PDF LIMS SAVED SUCCESSFULLY', () => {
+              this.msService.reloadCurrentRoute();
             });
           },
           error => {
@@ -836,8 +865,8 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
             this.fuelInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('LAB RESULTS COMPLIANCE STATUS SAVED SUCCESSFULLY',()=>{
-              this.msService.reloadCurrentRoute()
+            this.msService.showSuccess('LAB RESULTS COMPLIANCE STATUS SAVED SUCCESSFULLY', () => {
+              this.msService.reloadCurrentRoute();
             });
           },
           error => {
@@ -858,8 +887,8 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
             this.fuelInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('REMEDIATION SCHEDULE SAVED SUCCESSFULLY',()=>{
-              this.msService.reloadCurrentRoute()
+            this.msService.showSuccess('REMEDIATION SCHEDULE SAVED SUCCESSFULLY', () => {
+              this.msService.reloadCurrentRoute();
             });
           },
           error => {
@@ -880,8 +909,8 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
             this.fuelInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('REMEDIATION INVOICE GENERATED SUCCESSFULLY',()=>{
-              this.msService.reloadCurrentRoute()
+            this.msService.showSuccess('REMEDIATION INVOICE GENERATED SUCCESSFULLY', () => {
+              this.msService.reloadCurrentRoute();
             });
           },
           error => {
@@ -902,8 +931,8 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
             this.fuelInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('REMEDIATION DETAILS SAVED SUCCESSFULLY',()=>{
-              this.msService.reloadCurrentRoute()
+            this.msService.showSuccess('REMEDIATION DETAILS SAVED SUCCESSFULLY', () => {
+              this.msService.reloadCurrentRoute();
             });
           },
           error => {
@@ -915,19 +944,42 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     }
   }
 
+  onClickSaveEndRemediation() {
+    // if (valid) {
+      this.SpinnerService.show();
+      // this.dataSaveRemediation = {...this.dataSaveRemediation, ...this.remediationForm.value};
+      this.msService.msFuelInspectionEnd(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber).subscribe(
+          (data: any) => {
+            this.fuelInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('FUEL INSPECTION ENDED SUCCESSFULLY', () => {
+              this.msService.reloadCurrentRoute();
+            });
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          }
+      );
+    // }
+  }
+
   goBack() {
     console.log('TEST 101' + this.fuelInspection.batchDetails.referenceNumber);
     this.router.navigate([`/epra`, this.fuelInspection.batchDetails.referenceNumber]);
   }
 
-  viewLIMSPDFRecord(data: LIMSFilesFoundDto) {
+  viewLIMSPDFRecord(data: LIMSFilesFoundDto, bsNumber: string) {
     console.log('TEST 101 REF NO VIEW: ' + data.fileName);
+    this.viewLabResultsPdfFile(String(data.fileName), bsNumber, 'application/pdf');
     // this.router.navigate([`/epra/fuelInspection/details/`,data.referenceNumber]);
   }
 
   viewLIMSPDFSaved(data: MSSSFPDFListDetailsDto) {
     console.log('TEST 101 REF NO VIEW FILE: ' + data.pdfSavedId);
-    this.viewPdfFile(String(data.pdfSavedId),data.pdfName,'application/pdf')
+    this.viewPdfFile(String(data.pdfSavedId), data.pdfName, 'application/pdf');
     // this.router.navigate([`/epra/fuelInspection/details/`,data.referenceNumber]);
   }
 
@@ -943,10 +995,10 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     // this.router.navigate([`/epra/fuelInspection/details/`,data.referenceNumber]);
   }
 
-  public onCustomLIMSPDFAction(event: any): void {
+  public onCustomLIMSPDFAction(event: any, bsNumber: string): void {
     switch (event.action) {
       case 'viewRecord':
-        this.viewLIMSPDFRecord(event.data);
+        this.viewLIMSPDFRecord(event.data, bsNumber);
         break;
       case 'saveRecord':
         this.saveLIMSPDFRecord(event.data);

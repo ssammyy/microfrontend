@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
-import {Observable, throwError} from "rxjs";
-import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
-import {catchError, map} from "rxjs/operators";
+import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
+import {Observable, throwError} from 'rxjs';
+import {ApiEndpointService} from '../../../services/endpoints/api-endpoint.service';
+import {catchError, map} from 'rxjs/operators';
 import {
     BatchFileFuelSaveDto,
     BSNumberSaveDto, CompliantRemediationDto,
@@ -20,11 +20,11 @@ import {
     SampleCollectionItemsDto,
     SampleSubmissionDto,
     SampleSubmissionItemsDto, SSFSaveComplianceStatusDto
-} from "./ms.model";
-import swal from "sweetalert2";
-import {AbstractControl, ValidatorFn} from "@angular/forms";
-import Swal from "sweetalert2";
-import {AllPermitDetailsDto} from "../qa/qa.model";
+} from './ms.model';
+import swal from 'sweetalert2';
+import {AbstractControl, ValidatorFn} from '@angular/forms';
+import Swal from 'sweetalert2';
+import {AllPermitDetailsDto} from '../qa/qa.model';
 
 @Injectable({
     providedIn: 'root'
@@ -34,8 +34,8 @@ export class MsService {
     constructor(private http: HttpClient) {
     }
 
-   public fuelBatchDetailsListExamples(): FuelBatchDetailsDto[]{
-        let test101 = new FuelBatchDetailsDto();
+   public fuelBatchDetailsListExamples(): FuelBatchDetailsDto[] {
+        const test101 = new FuelBatchDetailsDto();
         test101.id = 123;
         test101.region = 'test';
         test101.county = 'test';
@@ -43,17 +43,17 @@ export class MsService {
         test101.referenceNumber = 'test';
         test101.batchFileYear = 'test';
         test101.remarks = 'test';
-        test101.batchClosed = true
+        test101.batchClosed = true;
 
-        let test : FuelBatchDetailsDto[] = [];
-        test.push(test101)
+        const test: FuelBatchDetailsDto[] = [];
+        test.push(test101);
 
-        return test
+        return test;
     }
 
-   public fuelInspectionDetailsExamples(): FuelInspectionDto{
-       let currentDate = new Date();
-       let test101BatchDetails = new FuelBatchDetailsDto();
+   public fuelInspectionDetailsExamples(): FuelInspectionDto {
+       const currentDate = new Date();
+       const test101BatchDetails = new FuelBatchDetailsDto();
        test101BatchDetails.id = 123;
        test101BatchDetails.region = 'test';
        test101BatchDetails.county = 'test';
@@ -61,9 +61,9 @@ export class MsService {
        test101BatchDetails.referenceNumber = 'test';
        test101BatchDetails.batchFileYear = 'test';
        test101BatchDetails.remarks = 'test';
-       test101BatchDetails.batchClosed = true
+       test101BatchDetails.batchClosed = true;
 
-       let test101MSUserDetails = new MsUsersDto();
+       const test101MSUserDetails = new MsUsersDto();
        test101MSUserDetails.id = 123;
        test101MSUserDetails.firstName = 'TESTUSER';
        test101MSUserDetails.lastName = 'TESTUSER';
@@ -71,20 +71,20 @@ export class MsService {
        test101MSUserDetails.email = 'TESTUSER';
        test101MSUserDetails.status = true;
 
-       let testUserList : MsUsersDto[] = [];
-       testUserList.push(test101MSUserDetails)
+       const testUserList: MsUsersDto[] = [];
+       testUserList.push(test101MSUserDetails);
 
-       let test101SampleCollectionItemsDto = new SampleCollectionItemsDto();
+       const test101SampleCollectionItemsDto = new SampleCollectionItemsDto();
        test101SampleCollectionItemsDto.id = 125;
        test101SampleCollectionItemsDto.productBrandName = 'test101SampleCollectionItemsDto';
        test101SampleCollectionItemsDto.batchNo = '123';
        test101SampleCollectionItemsDto.batchSize = '6776';
        test101SampleCollectionItemsDto.sampleSize = '756';
 
-       let testSampleCollectionItemsDto : SampleCollectionItemsDto[] = [];
-       testSampleCollectionItemsDto.push(test101SampleCollectionItemsDto)
+       const testSampleCollectionItemsDto: SampleCollectionItemsDto[] = [];
+       testSampleCollectionItemsDto.push(test101SampleCollectionItemsDto);
 
-       let test101MSSampleCollectDetails = new SampleCollectionDto();
+       const test101MSSampleCollectDetails = new SampleCollectionDto();
        test101MSSampleCollectDetails.nameManufacturerTrader = 'testSampleCollect';
        test101MSSampleCollectDetails.addressManufacturerTrader = 'testSampleCollect';
        test101MSSampleCollectDetails.samplingMethod = 'testSampleCollect';
@@ -98,14 +98,14 @@ export class MsService {
        test101MSSampleCollectDetails.dateWitness = currentDate;
        test101MSSampleCollectDetails.productsList = testSampleCollectionItemsDto;
 
-       let test101SampleSubmissionItemsDto = new SampleSubmissionItemsDto();
+       const test101SampleSubmissionItemsDto = new SampleSubmissionItemsDto();
        test101SampleSubmissionItemsDto.parameters = 'test198';
        test101SampleSubmissionItemsDto.laboratoryName = 'test198';
 
-       let testSampleSubmissionItemsDto : SampleSubmissionItemsDto[] = [];
-       testSampleSubmissionItemsDto.push(test101SampleSubmissionItemsDto)
+       const testSampleSubmissionItemsDto: SampleSubmissionItemsDto[] = [];
+       testSampleSubmissionItemsDto.push(test101SampleSubmissionItemsDto);
 
-       let test101SampleSubmissionDto = new SampleSubmissionDto();
+       const test101SampleSubmissionDto = new SampleSubmissionDto();
        test101SampleSubmissionDto.nameProduct = 'stringTest';
        test101SampleSubmissionDto.packaging = 'stringTest';
        test101SampleSubmissionDto.labellingIdentification = 'stringTest';
@@ -129,38 +129,38 @@ export class MsService {
        test101SampleSubmissionDto.bsNumber = 'stringTest';
        test101SampleSubmissionDto.parametersList = testSampleSubmissionItemsDto;
 
-       let test101LabResultsParamDto = new LabResultsParamDto();
+       const test101LabResultsParamDto = new LabResultsParamDto();
        test101LabResultsParamDto.param = 'labParam';
        test101LabResultsParamDto.result = 'labParam';
        test101LabResultsParamDto.method = 'labParam';
 
-       let testLabResultsParamDto : LabResultsParamDto[] = [];
-       testLabResultsParamDto.push(test101LabResultsParamDto)
+       const testLabResultsParamDto: LabResultsParamDto[] = [];
+       testLabResultsParamDto.push(test101LabResultsParamDto);
 
-       let limsFilesFoundDto = new LIMSFilesFoundDto();
+       const limsFilesFoundDto = new LIMSFilesFoundDto();
        limsFilesFoundDto.fileSavedStatus = true;
        limsFilesFoundDto.fileName = 'labParam';
 
-       let limsFilesFoundDtoList : LIMSFilesFoundDto[] = [];
-       limsFilesFoundDtoList.push(limsFilesFoundDto)
+       const limsFilesFoundDtoList: LIMSFilesFoundDto[] = [];
+       limsFilesFoundDtoList.push(limsFilesFoundDto);
 
-       let msSSFPDFListDetailsDto = new MSSSFPDFListDetailsDto();
+       const msSSFPDFListDetailsDto = new MSSSFPDFListDetailsDto();
        msSSFPDFListDetailsDto.pdfSavedId = 5265;
        msSSFPDFListDetailsDto.pdfName = 'steat';
        msSSFPDFListDetailsDto.sffId = 3434;
        msSSFPDFListDetailsDto.complianceRemarks = 'steat';
        msSSFPDFListDetailsDto.complianceStatus = true;
 
-       let msSSFPDFListDetailsDtoList : MSSSFPDFListDetailsDto[] = [];
-       msSSFPDFListDetailsDtoList.push(msSSFPDFListDetailsDto)
+       const msSSFPDFListDetailsDtoList: MSSSFPDFListDetailsDto[] = [];
+       msSSFPDFListDetailsDtoList.push(msSSFPDFListDetailsDto);
 
-       let msssfComplianceStatusDetailsDto = new MSSSFComplianceStatusDetailsDto();
+       const msssfComplianceStatusDetailsDto = new MSSSFComplianceStatusDetailsDto();
         msssfComplianceStatusDetailsDto.sffId = 5265;
        msssfComplianceStatusDetailsDto.bsNumber = 'steat';
        msssfComplianceStatusDetailsDto.complianceRemarks = '3434';
        msssfComplianceStatusDetailsDto.complianceStatus = true;
 
-       let test101LabResultsDto = new MSSSFLabResultsDto();
+       const test101LabResultsDto = new MSSSFLabResultsDto();
        test101LabResultsDto.ssfResultsList = msssfComplianceStatusDetailsDto;
        test101LabResultsDto.savedPDFFiles = msSSFPDFListDetailsDtoList;
        test101LabResultsDto.limsPDFFiles = limsFilesFoundDtoList;
@@ -169,7 +169,7 @@ export class MsService {
 
 
 
-        let test101 = new FuelInspectionDto();
+        const test101 = new FuelInspectionDto();
        test101.id = 123;
        test101.referenceNumber = 'test101';
        test101.company = 'testDetails';
@@ -186,11 +186,11 @@ export class MsService {
        test101.sampleLabResults = test101LabResultsDto;
 
 
-        return test101
+        return test101;
     }
-   public fuelInspectionListExamples(): FuelInspectionScheduleListDetailsDto{
-       let currentDate = new Date();
-       let test101BatchDetails = new FuelBatchDetailsDto();
+   public fuelInspectionListExamples(): FuelInspectionScheduleListDetailsDto {
+       const currentDate = new Date();
+       const test101BatchDetails = new FuelBatchDetailsDto();
        test101BatchDetails.id = 123;
        test101BatchDetails.region = 'test';
        test101BatchDetails.county = 'test';
@@ -198,9 +198,9 @@ export class MsService {
        test101BatchDetails.referenceNumber = 'test';
        test101BatchDetails.batchFileYear = 'test';
        test101BatchDetails.remarks = 'test';
-       test101BatchDetails.batchClosed = true
+       test101BatchDetails.batchClosed = true;
 
-        let test101 = new FuelInspectionDto();
+        const test101 = new FuelInspectionDto();
        test101.id = 123;
        test101.referenceNumber = 'test101';
        test101.company = 'testDetails';
@@ -211,21 +211,21 @@ export class MsService {
        test101.batchDetails = test101BatchDetails;
        test101.processStage = 'test Stage';
 
-        let test : FuelInspectionDto[] = [];
-        test.push(test101)
+        const test: FuelInspectionDto[] = [];
+        test.push(test101);
 
-       let test102 = new FuelInspectionScheduleListDetailsDto();
-       test102.fuelInspectionDto =test;
+       const test102 = new FuelInspectionScheduleListDetailsDto();
+       test102.fuelInspectionDto = test;
        test102.fuelBatchDetailsDto = test101BatchDetails;
 
 
-        return test102
+        return test102;
     }
 
     // Check if role is in required privileges
     public hasRole(privileges: string[], roles: any[]): boolean {
-        for (let role of roles) {
-            for (let p of privileges) {
+        for (const role of roles) {
+            for (const p of privileges) {
                 if (role == p) {
                     return true;
                 }
@@ -239,7 +239,7 @@ export class MsService {
     }
 
 
-    showSuccessWith2Message(title:string, text:string, cancelMessage: string, successMessage: string, fn?: Function) {
+    showSuccessWith2Message(title: string, text: string, cancelMessage: string, successMessage: string, fn?: Function) {
         const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
                 confirmButton: 'btn btn-success',
@@ -259,14 +259,14 @@ export class MsService {
         }).then((result) => {
             if (result.isConfirmed) {
                 if (fn) {
-                    let results = fn()
-                    if (results==true){
+                    const results = fn();
+                    if (results == true) {
                         swalWithBootstrapButtons.fire(
                             'Submitted!',
                             successMessage,
                             'success'
                         );
-                    }else if (results==false) {
+                    } else if (results == false) {
                         swalWithBootstrapButtons.fire(
                             'Submitted!',
                             'AN ERROR OCCURRED',
@@ -298,9 +298,9 @@ export class MsService {
             icon: 'success'
         }).then(() => {
             if (fn) {
-                fn()
+                fn();
             }
-        })
+        });
     }
 
    public showError(message: string, fn?: Function) {
@@ -313,12 +313,12 @@ export class MsService {
             icon: 'error'
         }).then(() => {
             if (fn) {
-                fn()
+                fn();
             }
-        })
+        });
     }
 
-    public loadMSFuelBatchList(page: string,records: string): Observable<FuelBatchDetailsDto[]> {
+    public loadMSFuelBatchList(page: string, records: string): Observable<FuelBatchDetailsDto[]> {
         // console.log(data);
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.ALL_BATCH_LIST);
         const params = new HttpParams()
@@ -353,6 +353,23 @@ export class MsService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.VIEW_PDF_SAVED);
         const params = new HttpParams()
             .set('fileID', fileID);
+        // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
+        return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public loadFileDetailsLabResultsPDF(fileName: string, bsNumber: string): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.VIEW_PDF_LAB_RESULT);
+        const params = new HttpParams()
+            .set('fileName', fileName)
+            .set('bsNumber', bsNumber);
         // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
         return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
             map(function (response: any) {
@@ -413,7 +430,7 @@ export class MsService {
         );
     }
 
-    public msFuelInspectionList(batchReferenceNo: string,page: string,records: string): Observable<FuelInspectionScheduleListDetailsDto> {
+    public msFuelInspectionList(batchReferenceNo: string, page: string, records: string): Observable<FuelInspectionScheduleListDetailsDto> {
         // console.log(data);
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_SCHEDULED_LIST);
         const params = new HttpParams()
@@ -591,7 +608,7 @@ export class MsService {
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
             .set('referenceNo', referenceNo);
-        return this.http.put<FuelInspectionDto>(url, data, {params}).pipe(
+        return this.http.post<FuelInspectionDto>(url, data, {params}).pipe(
             map(function (response: FuelInspectionDto) {
                 return response;
             }),
@@ -626,6 +643,23 @@ export class MsService {
             .set('batchReferenceNo', batchReferenceNo)
             .set('referenceNo', referenceNo);
         return this.http.put<FuelInspectionDto>(url, data, {params}).pipe(
+            map(function (response: FuelInspectionDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public msFuelInspectionEnd(batchReferenceNo: string, referenceNo: string): Observable<FuelInspectionDto> {
+        // console.log(da/ta);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.END_INSPECTION);
+        const params = new HttpParams()
+            .set('batchReferenceNo', batchReferenceNo)
+            .set('referenceNo', referenceNo);
+        return this.http.put<FuelInspectionDto>(url, null, {params}).pipe(
             map(function (response: FuelInspectionDto) {
                 return response;
             }),

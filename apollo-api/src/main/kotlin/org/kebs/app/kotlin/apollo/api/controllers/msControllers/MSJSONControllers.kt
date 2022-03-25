@@ -1,9 +1,11 @@
 package org.kebs.app.kotlin.apollo.api.controllers.msControllers
 
 import com.google.gson.Gson
+import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.NewMarketSurveillanceDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
+import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.repo.*
@@ -25,9 +27,32 @@ class MSJSONControllers(
     private val iSampleCollectViewRepo: ISampleCollectionViewRepository,
     private val commonDaoServices: CommonDaoServices,
     private val reportsDaoService: ReportsDaoService,
+    private val limsServices: LimsServices,
     private val resourceLoader: ResourceLoader,
 ){
     private val importInspection: Int = applicationMapProperties.mapImportInspection
+
+    @GetMapping("/view/attached-lab-pdf")
+    fun downloadFileLabResultsDocument(
+        response: HttpServletResponse,
+        @RequestParam("fileName") fileName: String,
+        @RequestParam("bsNumber") bsNumber: String
+    ) {
+        val file = limsServices.mainFunctionLimsGetPDF(bsNumber, fileName)
+        //            val targetFile = File(Files.createTempDir(), fileName)
+//            targetFile.deleteOnExit()
+        response.contentType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(file.name)
+//                    response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Disposition", "inline; filename=${file.name}")
+        response.outputStream
+            .let { responseOutputStream ->
+                responseOutputStream.write(file.readBytes())
+                responseOutputStream.close()
+            }
+
+        KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
+
+    }
 
     @GetMapping("/view/attached")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)

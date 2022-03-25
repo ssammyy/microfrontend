@@ -90,6 +90,7 @@ export class FuelInspectionDto {
     bsNumberStatus: boolean;
     compliantStatusAdded: boolean;
     remediationScheduledStatus: boolean;
+    remendiationCompleteStatus: boolean;
     proFormaInvoiceStatus: boolean;
     endInspectionStatus: boolean;
     batchDetails: FuelBatchDetailsDto;

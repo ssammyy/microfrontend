@@ -17,10 +17,10 @@ export class ApiEndpointService {
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-         // LOCAL_DEV: 'localhost:8006'
+         LOCAL_DEV: 'localhost:8007'
         // LOCAL_DEV: 'kimsfluxint.kebs.org:8005'
         // LOCAL_DEV: '41.72.209.58:8006'
-        LOCAL_DEV: 'kimsint.kebs.org:8007'
+        // LOCAL_DEV: 'kimsint.kebs.org:8007'
         // LOCAL_DEV: `kimsint.skebs.org:8006`
         // LOCAL_DEV: `kimsint.kebs.org:8005`,
         // LOCAL_DEV: `kims.kebs.org:8006`
@@ -431,6 +431,7 @@ export class ApiEndpointService {
     };
 
     public static MARKET_SURVEILLANCE_FUEL_ENDPOINT = {
+        VIEW_PDF_LAB_RESULT: `${ApiEndpointService.MS_CONTEXT}/view/attached-lab-pdf`,
         VIEW_PDF_SAVED: `${ApiEndpointService.MS_CONTEXT}/view/attached`,
         VIEW_PDF_SAMPLE_COLLECTION: `${ApiEndpointService.MS_CONTEXT}/report/sample-collection`,
         LAB_LIST: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/fetch/laboratory-list`,
@@ -450,6 +451,7 @@ export class ApiEndpointService {
         INSPECTION_SCHEDULED_REMEDIATION_DATE: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/fuel-remediation-schedule`,
         INSPECTION_SCHEDULED_REMEDIATION_INVOICE: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/fuel-remediation-invoice`,
         INSPECTION_SCHEDULED_ADD_REMEDIATION: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/fuel-remediation`,
+        END_INSPECTION: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/end-inspection`,
         // COUNTRY_DASHBOARD_DETAILS: `${ApiEndpointService.VERSION_THREE_CONTEXT}/country-dashboard-details`,
         // CLIENT_LIST: `${ApiEndpointService.VERSION_THREE_CONTEXT}/client-list`,
     }

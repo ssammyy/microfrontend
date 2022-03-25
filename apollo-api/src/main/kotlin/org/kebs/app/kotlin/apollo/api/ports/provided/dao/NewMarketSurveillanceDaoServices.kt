@@ -489,7 +489,7 @@ class NewMarketSurveillanceDaoServices(
                     body.complianceStatus -> {
                         compliantStatus = 1
                         notCompliantStatus =  0
-                        remediationStatus =1
+                        remediationStatus =0
                         remediationPaymentStatus = 1
                         compliantStatusDate = commonDaoServices.getCurrentDate()
                         compliantStatusBy = commonDaoServices.concatenateName(loggedInUser)
@@ -501,7 +501,7 @@ class NewMarketSurveillanceDaoServices(
                         notCompliantStatusDate = commonDaoServices.getCurrentDate()
                         notCompliantStatusBy = commonDaoServices.concatenateName(loggedInUser)
                         notCompliantStatusRemarks = body.complianceRemarks
-                        remediationStatus = 1
+                        remediationStatus = 0
                         remediationPaymentStatus = 0
                     }
                 }
@@ -668,11 +668,12 @@ class NewMarketSurveillanceDaoServices(
                 volumeOfProductContaminated = body.volumeOfProductContaminated
                 volumeAdded = body.volumeAdded
                 totalVolume = body.totalVolume
+                status = map.activeStatus
         }
         val updatedRemediation = updateFuelRemediationDetails(fuelRemediation, loggedInUser,map)
 
         when (updatedRemediation.first.status) {
-            map.successStatus -> {
+            map.activeStatus -> {
                 with(fileInspectionDetail){
                     remendiationCompleteStatus = map.activeStatus
                 }
@@ -1866,6 +1867,7 @@ class NewMarketSurveillanceDaoServices(
             fuelInspectionList.bsNumberStatus==1,
             compliantStatusDone,
             fuelInspectionList.remediationStatus==1,
+            fuelInspectionList.remendiationCompleteStatus==1,
             fuelInspectionList.remediationPaymentStatus==1,
             fuelInspectionList.inspectionCompleteStatus==1,
             batchDetails,
