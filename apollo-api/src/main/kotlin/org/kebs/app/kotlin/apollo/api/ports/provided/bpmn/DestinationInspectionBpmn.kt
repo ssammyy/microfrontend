@@ -86,7 +86,7 @@ class DestinationInspectionBpmn(
             it.varField8 = processStarted.toString()
             it.varField9 = Timestamp.from(Instant.now()).toString()
             it.varField10 = "Submitted to ministry"
-            this.daoServices.updateCdDetailsInDB(it, null)
+            val cdDetail = daoServices.updateCDStatus(it, ConsignmentDocumentStatus.MINISTRY_REQUEST)
         }
     }
 

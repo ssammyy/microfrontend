@@ -240,6 +240,10 @@ export class AuctionItemDetailsComponent implements OnInit {
         this.router.navigate(["/di", this.auctionDetails.cd_uuid])
     }
 
+    downloadDemandNote(demandNoteId: any) {
+        this.diService.downloadDocument("/api/v1/download/demand/note/" + demandNoteId)
+    }
+
     viewDemandNote(demandNoteId: any) {
         this.dialog.open(ViewDemandNoteComponent, {
             data: {

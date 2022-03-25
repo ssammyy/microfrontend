@@ -10,7 +10,6 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.service.ChecklistService
 import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentAuditService
-import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentStatus
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.repo.di.IChecklistCategoryRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IChecklistInspectionTypesRepository
@@ -37,8 +36,9 @@ class ChecklistHandler(
     fun ssfPdfFilesResults(req: ServerRequest): ServerResponse {
         val ssfId = req.pathVariable("ssfId")
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        return ServerResponse.ok().body(checlistService.listLabPdfFiles(ssfId.toLongOrDefault(0L),loggedInUser))
+        return ServerResponse.ok().body(checlistService.listLabPdfFiles(ssfId.toLongOrDefault(0L), loggedInUser))
     }
+
     fun approveRejectSampledItem(req: ServerRequest): ServerResponse {
         var response = ApiResponseModel()
         try {
@@ -272,7 +272,7 @@ class ChecklistHandler(
             //Get CD item
             req.pathVariable("cdUuid").let { cdUuid ->
                 commonDaoServices.getLoggedInUser()?.let { loggedInUser ->
-                    val cdItem = daoServices.findCDWithUuid(cdUuid)
+                    var cdItem = daoServices.findCDWithUuid(cdUuid)
                     //Save the general checklist
                     val generalCheckList = form.generalChecklist()
 
@@ -289,9 +289,6 @@ class ChecklistHandler(
                         response.message = "Validation failed, please select and fill at least one checklist"
                         return ServerResponse.ok().body(response)
                     }
-                    cdItem.inspectionChecklist = map.activeStatus
-                    cdItem.varField10 = "CHECKLIST FILLED, AWAITING COMPLIANCE STATUS"
-                    val cdDetails = daoServices.updateCDStatus(cdItem, ConsignmentDocumentStatus.CHECKLIST_FILLED)
                     //Save the respective checklist
                     form.agrochem?.let {
                         val agrochemItemInspectionChecklist = form.agrochemChecklist()
@@ -313,10 +310,10 @@ class ChecklistHandler(
                         val otherItemInspectionChecklist = form.otherChecklist()
                         checlistService.addOtherChecklist(map, inspectionGeneral, form.otherChecklistItems(), otherItemInspectionChecklist, loggedInUser)
                     }
-                    // Update lab status if vehicle was not in consignment
-                    if (form.vehicle == null) {
-                        checlistService.updateConsignmentSampledStatus(cdDetails, false)
-                    }
+                    // Update ministry and lab result status of a consignment
+                    cdItem = daoServices.findCDWithUuid(cdUuid)
+                    cdItem.inspectionChecklist = map.activeStatus
+                    checlistService.updateConsignmentSampledStatus(cdItem, false, form.vehicle != null)
                     // Add inspection remarks
                     this.cdAuditService.addHistoryRecord(cdItem.id!!, cdItem.ucrNumber, form.overallRemarks, "ADD_CHECKLIST", "Filled consignment checklist", loggedInUser.userName)
                 }

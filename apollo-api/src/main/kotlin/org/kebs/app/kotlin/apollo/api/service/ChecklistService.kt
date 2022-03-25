@@ -334,7 +334,7 @@ class ChecklistService(
      * 1. if result, then check if we have all result for all lab records and clear wait
      * 2. else Check if we added any lab result request during checklist saving
      */
-    fun updateConsignmentSampledStatus(cdItemDetails: ConsignmentDocumentDetailsEntity, result: Boolean): Boolean {
+    fun updateConsignmentSampledStatus(cdItemDetails: ConsignmentDocumentDetailsEntity, result: Boolean, isVehicle: Boolean): Boolean {
         var response = false
         try {
             if (result) {
@@ -356,9 +356,17 @@ class ChecklistService(
                 val items = iCdItemsRepo.findByCdDocIdAndSampledStatus(cdItemDetails, 1)
                 if (items.isNotEmpty()) {
                     cdItemDetails.status = ConsignmentApprovalStatus.WAITING.code
-                    cdItemDetails.varField10 = "Waiting for lab result"
-                    daoServices.updateCDStatus(cdItemDetails, ConsignmentDocumentStatus.LAB_REQUEST)
+                    if (isVehicle) {
+                        cdItemDetails.varField10 = "Waiting for ministry report"
+                        daoServices.updateCDStatus(cdItemDetails, ConsignmentDocumentStatus.MINISTRY_REQUEST)
+                    } else {
+                        cdItemDetails.varField10 = "Waiting for lab result"
+                        daoServices.updateCDStatus(cdItemDetails, ConsignmentDocumentStatus.LAB_REQUEST)
+                    }
                     response = true
+                } else {
+                    cdItemDetails.varField10 = "CHECKLIST FILLED, AWAITING COMPLIANCE STATUS"
+                    daoServices.updateCDStatus(cdItemDetails, ConsignmentDocumentStatus.CHECKLIST_FILLED)
                 }
             }
         } catch (ex: Exception) {
@@ -427,10 +435,6 @@ class ChecklistService(
                             this.motorVehicleItemChecklistRepository.save(checklistItem)
                             //Submit ministry inspection
                             this.bpmn.startMinistryInspection(saved, detail)
-                            general.cdDetails?.let { cdDetails ->
-                                cdDetails.status = ConsignmentApprovalStatus.WAITING.code
-                                daoServices.updateCDStatus(cdDetails, ConsignmentDocumentStatus.MINISTRY_REQUEST)
-                            }
                         } else {
                             // FIXME: Handle invalid selection here
                         }

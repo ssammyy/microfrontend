@@ -120,7 +120,7 @@ class InvoiceHandlers(
                 val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
                 KotlinLogging.logger { }.info("TTT: ${map.workingStatus}")
                 response.data = mapOf(
-                        Pair("deleteSubmitEnabled", noteWithID.status == map.workingStatus),
+                        Pair("deleteSubmitEnabled", (noteWithID.status == map.workingStatus && noteWithID.postingStatus != map.activeStatus)),
                         Pair("items", noteItems),
                         Pair("note", noteWithID)
                 )
@@ -293,7 +293,7 @@ class InvoiceHandlers(
                 val demandNote = daoServices.findDemandNoteWithID(invoiceId.toLongOrDefault(0L))
                 if (demandNote != null) {
                     val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-                    if (demandNote.status == map.workingStatus) {
+                    if (demandNote.status == map.workingStatus && demandNote.postingStatus != map.activeStatus) {
                         val loggedInUser = commonDaoServices.loggedInUserDetails()
                         demandNote.status = 50
                         demandNote.varField3 = "DELETED"

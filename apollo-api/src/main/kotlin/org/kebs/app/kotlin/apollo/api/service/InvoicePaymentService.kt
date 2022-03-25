@@ -22,6 +22,7 @@ import org.kebs.app.kotlin.apollo.store.model.di.CurrencyExchangeRates
 import org.kebs.app.kotlin.apollo.store.model.di.DestinationInspectionFeeEntity
 import org.kebs.app.kotlin.apollo.store.model.di.InspectionFeeRanges
 import org.kebs.app.kotlin.apollo.store.repo.InvoiceBatchDetailsRepo
+import org.kebs.app.kotlin.apollo.store.repo.auction.IAuctionRequestsRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.ICfgCurrencyExchangeRateRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteItemsDetailsRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteRepository
@@ -51,6 +52,7 @@ class InvoicePaymentService(
         private val reportsDaoService: ReportsDaoService,
         private val exchangeRateRepository: ICfgCurrencyExchangeRateRepository,
         private val service: DaoService,
+        private val auctionRequestsRepository: IAuctionRequestsRepository,
         private val invoiceBatchDetailsRepo: InvoiceBatchDetailsRepo,
         // Demand notes
         private val currencyExchangeRateRepository: ICfgCurrencyExchangeRateRepository,
@@ -220,6 +222,11 @@ class InvoicePaymentService(
         try {
             //Send Demand Note
             val demandNote = daoServices.findDemandNoteWithID(demandNoteId)!!
+            if (demandNote.postingStatus == 1) {
+                response.responseCode = ResponseCodes.INVALID_CODE
+                response.responseCode = "Demand note is already posted"
+                return response
+            }
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             // Try to add transaction to current bill or generate batch payment
             demandNote.demandNoteNumber?.let {
@@ -438,6 +445,9 @@ class InvoicePaymentService(
                     PaymentPurpose.CONSIGNMENT.code -> {
                         invoicePaymentCompleted(demandNote.cdId!!, demandNote.id!!)
                     }
+                    PaymentPurpose.AUDIT.code -> {
+                        paymentCompleted(demandNote.cdId!!, demandNote.id!!)
+                    }
                     else -> {
                         KotlinLogging.logger { }.info("Unhandled payment completion ${demandNote.id}-${demandNote.paymentPurpose}")
                     }
@@ -449,6 +459,16 @@ class InvoicePaymentService(
         return true
     }
 
+    fun paymentCompleted(auctionId: Long, demandNoteId: Long) {
+        val opttional = this.auctionRequestsRepository.findById(auctionId)
+        if (opttional.isPresent) {
+            val auctionRequest = opttional.get()
+            auctionRequest.status = AuctionGoodStatus.PAYMENT_COMPLETED.status
+            auctionRequest.varField7 = "PAYMENT MADE"
+            auctionRequest.modifiedOn = commonDaoServices.getTimestamp()
+            auctionRequestsRepository.save(auctionRequest)
+        }
+    }
 
     @Transactional
     fun generateDemandNoteWithItemList(
@@ -516,7 +536,7 @@ class InvoicePaymentService(
                                     )
                                 }".toUpperCase()
                         paymentStatus = map.inactiveStatus
-                        paymentPurpose = PaymentPurpose.CONSIGNMENT.code
+                        paymentPurpose = purpose.code
                         dateGenerated = commonDaoServices.getCurrentDate()
                         generatedBy = commonDaoServices.concatenateName(user)
                         status = map.workingStatus

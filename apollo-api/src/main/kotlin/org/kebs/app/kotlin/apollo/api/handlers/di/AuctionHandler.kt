@@ -78,7 +78,7 @@ class AuctionHandler(
                     )
             val multipartFile = multipartRequest.getFile("file")
             val fileType = multipartRequest.getParameter("file_type")
-            val cfsCode = multipartRequest.getParameter("cfs_code")
+            val cfsCode = multipartRequest.getParameter("cfsCode")
             val categoryCode = multipartRequest.getParameter("categoryCode")
             val listingDate = dateFormatter.parse(multipartRequest.getParameter("listingDate"))
             if (multipartFile != null) {

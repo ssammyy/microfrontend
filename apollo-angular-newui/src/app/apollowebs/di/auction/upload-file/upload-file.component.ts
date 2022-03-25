@@ -25,7 +25,7 @@ export class UploadFileComponent implements OnInit {
         this.form = this.fb.group({
             auctionReportDate: ["", Validators.required],
             cfsCode: ["", Validators.required],
-            categoryCode: ["", Validators.required],
+            // categoryCode: ["GOODS", Validators.required],
             fileType: ["", Validators.required]
         })
         this.loadCategories()

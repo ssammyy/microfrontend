@@ -44,7 +44,7 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 enum class AuctionGoodStatus(val status: Int) {
-    NEW(0), APPROVED(1), REJECTED(2), OTHER(3), PAYMENT_PENDING(7);
+    NEW(0), APPROVED(1), REJECTED(2), OTHER(3), PAYMENT_COMPLETED(5), PAYMENT_PENDING(7);
 }
 
 @Service
@@ -271,7 +271,7 @@ class AuctionService(
                         "rejected" -> this.auctionRequestsRepository.findByApprovalStatus(AuctionGoodStatus.REJECTED.status, page)
                         "approved" -> this.auctionRequestsRepository.findByApprovalStatus(AuctionGoodStatus.APPROVED.status, page)
                         "new" -> this.auctionRequestsRepository.findByApprovalStatusInAndAssignedOfficerIsNull(listOf(AuctionGoodStatus.NEW.status), page)
-                        "assigned" -> this.auctionRequestsRepository.findByApprovalStatusInAndAssignedOfficer(listOf(AuctionGoodStatus.NEW.status, AuctionGoodStatus.PAYMENT_PENDING.status), this.commonDaoServices.loggedInUserDetails(), page)
+                        "assigned" -> this.auctionRequestsRepository.findByApprovalStatusInAndAssignedOfficer(listOf(AuctionGoodStatus.NEW.status, AuctionGoodStatus.PAYMENT_PENDING.status, AuctionGoodStatus.PAYMENT_COMPLETED.status), this.commonDaoServices.loggedInUserDetails(), page)
                         else -> null
                     }
                 }
@@ -432,17 +432,24 @@ class AuctionService(
         request.auctionDate = auctionDate
         request.shipmentPort = item.shipName
         request.arrivalDate = item.dateOfArrival
-        request.categoryCode = categoryCode
         request.cfsCode = item.cfsCode
         request.country = item.country
+        // Check chassis number for category
+        if (StringUtils.hasLength(item.containerChassisNumber)) {
+            request.categoryCode = "VEHICLE"
+        } else {
+            request.categoryCode = "GOODS"
+        }
         request.importerName = item.consignee
         request.importerPhone = item.consignee
         request.containerSize = item.containerSize
         val tmpItem = AuctionItem()
+
         tmpItem.chassisNo = item.containerChassisNumber
         tmpItem.itemName = item.description
         tmpItem.itemType = item.manifestNo
         tmpItem.serialNo = item.blNo
+        tmpItem.itemType = request.categoryCode
         tmpItem.unitPrice = BigDecimal.ZERO
         tmpItem.quantity = BigDecimal.valueOf(1)
         request.items = arrayListOf(tmpItem)
