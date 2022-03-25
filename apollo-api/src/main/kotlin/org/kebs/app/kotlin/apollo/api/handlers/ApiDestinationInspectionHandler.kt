@@ -329,7 +329,7 @@ class ApiDestinationInspectionHandler(
                         if ("1".equals(activeDocument, false)) {
                             response = destinationInspectionService.findDocumentsWithActions(usersEntity, supervisorCategory, personal, page)
                         } else {
-                            data = daoServices.findAllInspectionsCdWithAssigner(usersEntity, cdType, arrayListOf(ConsignmentApprovalStatus.QUERIED.code, ConsignmentApprovalStatus.UNDER_INSPECTION.code), page)
+                            data = daoServices.findAllInspectionsCdWithAssigner(usersEntity, cdType, arrayListOf(ConsignmentApprovalStatus.QUERIED.code, ConsignmentApprovalStatus.NEW.code, ConsignmentApprovalStatus.UNDER_INSPECTION.code), page)
                             // Add data to response
                             response.data = ConsignmentDocumentDao.fromList(data.toList())
                             response.pageNo = data.number
@@ -341,7 +341,7 @@ class ApiDestinationInspectionHandler(
                     }
                     auth.authorities.stream().anyMatch { authority -> authority.authority == "DI_INSPECTION_OFFICER_READ" } -> {
                         data = if ("1".equals(activeDocument, false)) {
-                            daoServices.findAllCdWithAssignedIoID(usersEntity, cdType, arrayListOf(ConsignmentApprovalStatus.UNDER_INSPECTION.code), page)
+                            daoServices.findAllCdWithAssignedIoID(usersEntity, cdType, arrayListOf(ConsignmentApprovalStatus.UNDER_INSPECTION.code, ConsignmentApprovalStatus.NEW.code), page)
                         } else {
                             daoServices.findAllCdWithAssignedIoID(usersEntity, cdType, arrayListOf(ConsignmentApprovalStatus.WAITING.code, ConsignmentApprovalStatus.QUERIED.code), page)
                         }

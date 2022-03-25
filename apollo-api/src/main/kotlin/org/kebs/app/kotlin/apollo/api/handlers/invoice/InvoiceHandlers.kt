@@ -382,7 +382,9 @@ class InvoiceHandlers(
                 if (demandNote.paymentStatus == map.activeStatus) {
                     response.responseCode = ResponseCodes.SUCCESS_CODE
                     response.message = "Demand note payment status submitted to KenTrade"
-                    diBpmn.triggerDemandNotePaidBpmTask(demandNote)
+                    if (demandNote.paymentPurpose == PaymentPurpose.CONSIGNMENT.code) {
+                        diBpmn.triggerDemandNotePaidBpmTask(demandNote)
+                    }
                 } else {
                     response.responseCode = ResponseCodes.FAILED_CODE
                     response.message = "Demand note payment is not paid"

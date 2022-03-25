@@ -410,6 +410,7 @@ class DestinationInspectionDaoServices(
             shipmentContainerNumber = "UNKNOWN"
             shipmentGrossWeight = "UNKNOWN"
             route = routValue
+            status = 1
             version = consignmentDocumentDetailsEntity.version ?: 1
             consignmentDocId = consignmentDocumentDetailsEntity
             productCategory = "UNKNOWN"
@@ -420,7 +421,8 @@ class DestinationInspectionDaoServices(
         consignmentDocumentDetailsEntity.id?.let { cdId ->
             this.invoiceDaoService.findDemandNoteCdId(cdId)?.let { itemNote ->
                 localCoc.finalInvoiceCurrency = "KES"
-                localCoc.finalInvoiceExchangeRate = 0.0
+                localCoc.finalInvoiceExchangeRate = itemNote.rate?.toDouble() ?: 0.0
+                localCoc.finalInvoiceNumber = itemNote.receiptNo
                 localCoc.finalInvoiceDate = itemNote.createdOn
                 localCoc.finalInvoiceFobValue = itemNote.cfvalue?.toDouble() ?: 0.0
             }
@@ -695,8 +697,8 @@ class DestinationInspectionDaoServices(
                             localCor.yearOfFirstRegistration = nonStandard.vehicleYear ?: "UNKNOWN"
                             localCor.fuelType = "UNKNOWN"
                             localCor.bodyColor = "UNKNOWN"
-                        }
-                    }
+                        } ?: throw ExpectedDataNotFound("No Item Non standard details found, chassis number not found")
+                    } ?: throw ExpectedDataNotFound("No Item attached to this MVIR")
                     mvirFound = true
                     with(localCor) {
                         inspectionCenter = cdItemDetailsList.cdDetails?.freightStation?.cfsName ?: "UNKNOWN"
@@ -734,12 +736,7 @@ class DestinationInspectionDaoServices(
                     localCor.yearOfManufacture = nonStandardEntity.vehicleYear ?: "UNKNOWN"
                     localCor.chasisNumber = nonStandardEntity.chassisNo ?: "UNKNOWN"
                     localCor
-                } ?: run {
-                    localCor.typeOfVehicle = "UNKNOWN"
-                    localCor.make = "UNKNOWN"
-                    localCor.model = "UNKNOWN"
-                    localCor
-                }
+                } ?: throw ExpectedDataNotFound("No Item Non standard details found, chassis number not found")
                 with(localCor) {
                     inspectionCenter = cdEntity.freightStation?.cfsName ?: "UNKNOWN"
                     inspectionMileage = "UNKNOWN"
@@ -760,7 +757,7 @@ class DestinationInspectionDaoServices(
                     inspectionOfficer = "${user.firstName} ${user.lastName}"
                     inspectionRemarks = "NA"
                 }
-            }
+            } ?: throw ExpectedDataNotFound("No vehicle found in this consignment, chassis number not found")
         }
         // Fill checklist details
         with(localCor) {
@@ -3131,7 +3128,7 @@ class DestinationInspectionDaoServices(
 
 
     fun findAllDemandNotesWithSwPending(paymentStatus: Int): List<CdDemandNoteEntity> {
-        return iDemandNoteRepo.findAllByPaymentStatusAndSwStatusIn(paymentStatus, listOf(0, null))
+        return iDemandNoteRepo.findAllByPaymentStatusAndSwStatusInAndPaymentPurpose(paymentStatus, listOf(0, null), PaymentPurpose.CONSIGNMENT.code)
     }
 
     //Send CD status to KeSWS

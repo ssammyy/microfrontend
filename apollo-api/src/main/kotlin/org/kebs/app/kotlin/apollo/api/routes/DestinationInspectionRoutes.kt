@@ -72,7 +72,7 @@ class DestinationInspectionRoutes {
             POST("/consignment/document/item-ssf/{cdItemID}", handler::addSsfDetails) // Per inspection item
             POST("/consignment/document/item-ssf-result/{cdItemID}", handler::updateSsfResults) // Per inspection item
             GET("/lab-result/ssf-files/{ssfId}", handler::ssfPdfFilesResults) // Per inspection item
-            GET("/consignment/document/lab-results/{cdItemID}", handler::loadLabResult) // Lab Reult Per item
+            GET("/consignment/document/lab-results/{cdItemID}", handler::loadLabResult) // Lab Result Per item
             GET("/check-list/configurations", handler::checklistConfigurations)
             GET("/consignment/document/checklist/{cdUuid}", handler::consignmentDocumentChecklist)
             GET("/consignment/document/sampled-items/{cdUuid}", handler::consignmentDocumentChecklistSampled)

@@ -1617,7 +1617,10 @@ class DestinationInspectionService(
             map["ClearingAgent"] = localCocEntity.clearingAgent ?: "N/A"
             map["PortOfEntry"] = localCocEntity.portOfDestination.orEmpty()
             map["UcrNo"] = localCocEntity.ucrNumber.orEmpty()
-            map["Status"] = localCocEntity.status?.toString() ?: ""
+            map["Status"] = when {
+                localCocEntity.status?.toInt() == 1 || localCocEntity.status == null -> "APPROVED"
+                else -> "REJECTED"
+            }
             map["Remarks"] = localCocEntity.cocRemarks.orEmpty()
             map["CoCType"] = localCocEntity.cocType.orEmpty()
             val cocItems = daoServices.findCocItemList(cocId)
