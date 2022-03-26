@@ -1309,8 +1309,13 @@ class DestinationInspectionService(
             dataMap.put("cd_service_provider", it)
         }
         cdDetails.ucrNumber?.let {
-            daoServices.findAllOlderVersionCDsWithSameUcrNumber(it, map)?.let { it1 ->
-                dataMap.put("old_versions", ConsignmentDocumentDao.fromList(it1))
+            if (cdDetails.oldCdStatus == map.activeStatus) {
+                val otherCds = daoServices.findCdWithUcrNumberExcept(it, cdDetails.id)
+                dataMap.put("old_versions", ConsignmentDocumentDao.fromList(otherCds))
+            } else {
+                daoServices.findAllOlderVersionCDsWithSameUcrNumber(it, map)?.let { it1 ->
+                    dataMap.put("old_versions", ConsignmentDocumentDao.fromList(it1))
+                }
             }
         }
         dataMap.put("cd_details", ConsignmentDocumentDao.fromEntity(cdDetails))

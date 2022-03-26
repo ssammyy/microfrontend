@@ -48,7 +48,7 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
     ): Page<ConsignmentDocumentDetailsEntity>
 
     fun countByUcrNumber(ucrNumber: String): Long
-
+    fun findByUcrNumberAndIdNot(ucrNumber: String, id: Long?): List<ConsignmentDocumentDetailsEntity>
     fun findByUcrNumber(ucrNumber: String): ConsignmentDocumentDetailsEntity?
     fun countByUcrNumberAndVersion(ucrNumber: String, version: Long): Long
     fun findByUcrNumberAndVersion(ucrNumber: String, version: Long): ConsignmentDocumentDetailsEntity?

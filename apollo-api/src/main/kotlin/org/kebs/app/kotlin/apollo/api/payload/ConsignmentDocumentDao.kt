@@ -149,6 +149,7 @@ class ConsignmentDocumentDao {
     var lastModifiedOn: Timestamp? = null
     var lastModifiedBy: String? = null
     var isNcrDocument: Boolean = false
+    var current: String? = null
     var taskDetails: DiTaskDetails? = null
 
     companion object {
@@ -159,6 +160,10 @@ class ConsignmentDocumentDao {
             dt.uuid = doc.uuid
             dt.lastModifiedOn = doc.modifiedOn
             dt.lastModifiedBy = doc.modifiedBy
+            dt.current = when {
+                doc.oldCdStatus == 1 -> "OLD"
+                else -> "CURRENT"
+            }
             doc.cdType?.let {
                 dt.cdType = it.id
                 dt.docType = it.documentType

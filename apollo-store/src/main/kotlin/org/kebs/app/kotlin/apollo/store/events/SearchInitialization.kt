@@ -50,7 +50,7 @@ class SearchInitialization(
                 .get()
 // Remove Old CD from result
         val query = builder.bool()
-                .must(builder.range().onField("oldCdStatus").below(1).createQuery())
+                .must(builder.range().onField("oldCdStatus").below(1).excludeLimit().createQuery())
         if (StringUtils.hasLength(keywords)) {
             // Key words on application status
             query.should(builder.phrase().withSlop(2)

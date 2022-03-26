@@ -118,6 +118,9 @@ class AuctionHandler(
                 response = auctionService.addAuctionRequest(form)
                 response
             }
+        } catch (ex: ExpectedDataNotFound) {
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = ex.localizedMessage
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Failed to add audit", ex)
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
