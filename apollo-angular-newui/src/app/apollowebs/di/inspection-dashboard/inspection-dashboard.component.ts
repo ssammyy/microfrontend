@@ -33,6 +33,10 @@ export class InspectionDashboardComponent implements OnInit {
             });
     }
 
+    printObject(dd) {
+        console.log(dd)
+    }
+
     loadPersonalStats() {
         this.diService.loadPersonalDashboard()
             .subscribe(
