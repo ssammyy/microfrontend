@@ -131,8 +131,13 @@ class ConsignmentDocumentDaoService(
                                 cdCreated.diProcessStatus = 0
                                 cdCreated.diProcessStartedOn = null
                                 cdCreated.diProcessCompletedOn = null
-                                daoServices.updateCDStatus(cdCreated, ConsignmentDocumentStatus.REVISED_CD)
+                                // Return consignment to original supervisor
+                                cdCreated.assignedStatus = map.activeStatus
+                                cdCreated.assigner = CDDocumentDetails.assigner
+                                cdCreated.assignedRemarks = "Auto Re-assigned on amendment"
+                                cdCreated.assignedInspectionOfficer = CDDocumentDetails.assignedInspectionOfficer
                                 // Update details
+                                daoServices.updateCDStatus(cdCreated, ConsignmentDocumentStatus.REVISED_CD)
                             }
                         }
                     }

@@ -15,7 +15,6 @@ import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersEntity
 import org.kebs.app.kotlin.apollo.store.repo.IPvocPartnersRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IPvocPartnerTypeRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IPvocPartnersCountriesRepository
-import org.kebs.app.kotlin.apollo.store.repo.di.IPvocPartnersRegion
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -62,6 +61,7 @@ class PvocPartnerService(
                 }
             }
             partner.createdOn = Timestamp.from(Instant.now())
+            partner.status = 1
             partner.createdBy = this.commonDaoServices.getLoggedInUser()?.userName
             val saved = this.partnersRepository.save(partner)
             addUpdateBilling(form, partner, false)

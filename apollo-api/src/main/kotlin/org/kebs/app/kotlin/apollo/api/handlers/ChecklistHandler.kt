@@ -277,7 +277,7 @@ class ChecklistHandler(
                     val generalCheckList = form.generalChecklist()
 
                     generalCheckList.description = cdItem.description
-                    daoServices.findCDImporterDetails(cdItem?.id ?: 0).let { importer ->
+                    daoServices.findCDImporterDetails(cdItem.cdImporter ?: 0).let { importer ->
                         generalCheckList.importersName = importer.name
                     }
                     generalCheckList.inspectionDate = Date(java.util.Date().time)

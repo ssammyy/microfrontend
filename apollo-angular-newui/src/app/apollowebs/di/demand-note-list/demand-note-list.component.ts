@@ -1,8 +1,9 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, Input, OnInit, Output} from '@angular/core';
 import {DestinationInspectionService} from "../../../core/store/data/di/destination-inspection.service";
 import {MatDialog} from "@angular/material/dialog";
 import {ViewDemandNoteComponent} from "./view-demand-note/view-demand-note.component";
 import {CurrencyFormatterComponent} from "../../../core/shared/currency-formatter/currency-formatter.component";
+import {Subject} from "rxjs";
 
 @Component({
     selector: 'app-demand-note-list',
@@ -10,7 +11,7 @@ import {CurrencyFormatterComponent} from "../../../core/shared/currency-formatte
     styleUrls: ['./demand-note-list.component.css']
 })
 export class DemandNoteListComponent implements OnInit {
-    @Output() reloadDemandNotes = new EventEmitter<Boolean>();
+    @Output() reloadDemandNotes = new Subject<Boolean>();
     public settings = {
         selectMode: 'single',  // single|multi
         hideHeader: false,
@@ -77,7 +78,9 @@ export class DemandNoteListComponent implements OnInit {
         }).afterClosed()
             .subscribe(
                 res => {
-                    this.reloadDemandNotes.emit(res)
+                    if (res) {
+                        this.reloadDemandNotes.next(true)
+                    }
                 }
             )
     }
