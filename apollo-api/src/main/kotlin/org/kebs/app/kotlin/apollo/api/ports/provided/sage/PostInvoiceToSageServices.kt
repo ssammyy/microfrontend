@@ -168,7 +168,7 @@ class PostInvoiceToSageServices(
                 varField5 = response.second?.header?.messageID
                 varField6 = response.second?.header?.statusCode?.toString()
                 varField7 = response.second?.header?.statusDescription
-                postingReference = response.second?.response?.demandNoteNo
+                postingReference = response.second?.response?.demandNoteNo?.toUpperCase()
                 varField9 = response.second?.response?.responseDate?.toString()
                 postingStatus = when (response.second?.header?.statusCode) {
                     200 -> map.activeStatus

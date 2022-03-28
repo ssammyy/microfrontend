@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.handlers.invoice
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import mu.KotlinLogging
 import okhttp3.internal.toLongOrDefault
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
@@ -39,6 +40,7 @@ class InvoiceHandlers(
         private val applicationMapProperties: ApplicationMapProperties,
         private val daoServices: DestinationInspectionDaoServices,
         private val diBpmn: DestinationInspectionBpmn,
+        private val objectMapper: ObjectMapper,
         private val invoicePaymentService: InvoicePaymentService,
         private val daoValidatorService: DaoValidatorService,
 ) {
@@ -470,7 +472,7 @@ class InvoiceHandlers(
         val result = CallbackResponses()
         try {
             val responseStatus = req.body(PaymentStatusResult::class.java)
-            KotlinLogging.logger { }.info("Payment result: $responseStatus")
+            KotlinLogging.logger { }.info("Payment result: ${objectMapper.writeValueAsString(responseStatus)}")
             this.daoValidatorService.validateInputWithInjectedValidator(responseStatus)?.let {
                 result.message = "Failed to process request"
                 result.errors = it

@@ -403,7 +403,8 @@ class InvoicePaymentService(
     }
 
     fun paymentReceived(responseStatus: PaymentStatusResult): Boolean {
-        iDemandNoteRepo.findByPostingReference(responseStatus.response?.demandNoteNo ?: "")?.let { demandNote ->
+        iDemandNoteRepo.findByPostingReference(responseStatus.response?.demandNoteNo?.toUpperCase()
+                ?: "")?.let { demandNote ->
             if (demandNote.paymentStatus == 1) {
                 throw ExpectedDataNotFound("Payment has already been made, duplicate callback")
             }
