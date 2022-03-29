@@ -17,10 +17,10 @@ export class ApiEndpointService {
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-         // LOCAL_DEV: 'localhost:8007'
+         LOCAL_DEV: 'localhost:8007'
         // LOCAL_DEV: 'kimsfluxint.kebs.org:8005'
         // LOCAL_DEV: '41.72.209.58:8006'
-        LOCAL_DEV: 'kimsint.kebs.org:8007'
+        // LOCAL_DEV: 'kimsint.kebs.org:8007'
         // LOCAL_DEV: `kimsint.skebs.org:8006`
         // LOCAL_DEV: `kimsint.kebs.org:8005`,
         // LOCAL_DEV: `kims.kebs.org:8006`
@@ -55,8 +55,8 @@ export class ApiEndpointService {
 
     public static MS_APPLICATION_MAP_PROPERTIES = {
         epraRoles: ['EPRA'],
-        msManagerRoles: ['MS_MP_MODIFY','MS_MP_READ'],
-        msOfficerRoles: ['MS_IO_MODIFY','MS_IO_READ']
+        msManagerRoles: ['MS_MP_MODIFY', 'MS_MP_READ'],
+        msOfficerRoles: ['MS_IO_MODIFY', 'MS_IO_READ']
     };
 
     /**
@@ -454,7 +454,7 @@ export class ApiEndpointService {
         END_INSPECTION: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/end-inspection`,
         // COUNTRY_DASHBOARD_DETAILS: `${ApiEndpointService.VERSION_THREE_CONTEXT}/country-dashboard-details`,
         // CLIENT_LIST: `${ApiEndpointService.VERSION_THREE_CONTEXT}/client-list`,
-    }
+    };
     /**
      * Constructor.
      */
@@ -473,7 +473,7 @@ export class ApiEndpointService {
   public static getEndpoint(endpoint: string): string {
     const protocol: string = ApiEndpointService.PROTOCOL.HTTPS;
     const domain: string = ApiEndpointService.DOMAIN.LOCAL_DEV;
-    const context: string = ApiEndpointService.CONTEXT
+    const context: string = ApiEndpointService.CONTEXT;
     return `${protocol}${domain}${context}${endpoint}`;
   }
 

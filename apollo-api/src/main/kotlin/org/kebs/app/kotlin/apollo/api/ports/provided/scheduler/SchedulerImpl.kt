@@ -96,7 +96,7 @@ class SchedulerImpl(
                 var schedDate = DateTime.now().toDate()
                 while (i < count) {
                     schedDate = DateTime(schedDate).plusDays(interval).toDate()
-                    val sched = SchedulerEntity()
+                     val sched = SchedulerEntity()
                     sched.taskType = defaultTaskType
                     taskType?.let {
                         sched.taskType = taskType

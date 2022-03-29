@@ -406,9 +406,9 @@ export class MsService {
         return this.http.post<FuelInspectionScheduleListDetailsDto>(url, data).pipe(
             map(function (response: FuelInspectionScheduleListDetailsDto) {
                 return response;
-            }),
-            catchError((fault: HttpErrorResponse) => {
-                // console.warn(`getAllFault( ${fault.message} )`);
+            })
+            , catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.error} )`);
                 return throwError(fault);
             })
         );

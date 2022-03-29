@@ -911,7 +911,7 @@ export const routes: Routes = [
     {
         path: 'epra',
         component: AdminLayoutComponent,
-        // canActivate: [RouteGuard],
+        canActivate: [RouteGuard],
         children: [
             {
                 path: '',

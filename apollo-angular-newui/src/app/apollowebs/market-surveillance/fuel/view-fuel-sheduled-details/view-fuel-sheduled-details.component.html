@@ -383,30 +383,32 @@
                                                     <ng2-smart-table [settings]="settingsLabResultsParam" [source]="fuelInspection?.sampleLabResults?.parametersListTested"></ng2-smart-table>
                                                 </div>
                                             </div>
-                                            <div *ngFor="let role of roles">
-                                                <div  *ngIf="role == 'MS_IOP_MODIFY'" class="form-row">
-                                                <div class="col-md-12 mb-3">
-                                                    <label style="color: #0082f3">Lab Results PDF Found</label>
+                                            <div *ngIf="fuelInspection?.sampleLabResults?.parametersListTested!=null">
+                                                <div *ngFor="let role of roles">
+                                                    <div  *ngIf="role == 'MS_IOP_MODIFY'" class="form-row">
+                                                    <div class="col-md-12 mb-3">
+                                                        <label style="color: #0082f3">Lab Results PDF Found</label>
+                                                    </div>
+                                                    <div class="table-striped table-condensed table-responsive">
+                                                        <ng2-smart-table [settings]="settingsLIMSPDFFiles"
+                                                                         [source]="fuelInspection?.sampleLabResults?.limsPDFFiles"
+                                                                         (userRowSelect)="viewLIMSPDFRecord($event.data,fuelInspection?.sampleLabResults?.ssfResultsList.bsNumber)"
+                                                                         (custom)="onCustomLIMSPDFAction($event,fuelInspection?.sampleLabResults?.ssfResultsList.bsNumber)"
+                                                        ></ng2-smart-table>
+                                                    </div>
                                                 </div>
-                                                <div class="table-striped table-condensed table-responsive">
-                                                    <ng2-smart-table [settings]="settingsLIMSPDFFiles"
-                                                                     [source]="fuelInspection?.sampleLabResults?.limsPDFFiles"
-                                                                     (userRowSelect)="viewLIMSPDFRecord($event.data,fuelInspection?.sampleLabResults?.ssfResultsList.bsNumber)"
-                                                                     (custom)="onCustomLIMSPDFAction($event,fuelInspection?.sampleLabResults?.ssfResultsList.bsNumber)"
-                                                    ></ng2-smart-table>
                                                 </div>
-                                            </div>
-                                            </div>
-                                            <div class="form-row">
-                                                <div class="col-md-12 mb-3">
-                                                    <label style="color: #0082f3">Lab Results PDF SAVED</label>
-                                                </div>
-                                                <div class="table-striped table-condensed table-responsive">
-                                                    <ng2-smart-table [settings]="settingsSavedPDFFiles"
-                                                                     [source]="fuelInspection?.sampleLabResults?.savedPDFFiles"
-                                                                     (userRowSelect)="viewLIMSPDFSaved($event.data)"
-                                                                     (custom)="onCustomLIMSPDFViewAction($event)"
-                                                    ></ng2-smart-table>
+                                                <div class="form-row">
+                                                    <div class="col-md-12 mb-3">
+                                                        <label style="color: #0082f3">Lab Results PDF SAVED</label>
+                                                    </div>
+                                                    <div class="table-striped table-condensed table-responsive">
+                                                        <ng2-smart-table [settings]="settingsSavedPDFFiles"
+                                                                         [source]="fuelInspection?.sampleLabResults?.savedPDFFiles"
+                                                                         (userRowSelect)="viewLIMSPDFSaved($event.data)"
+                                                                         (custom)="onCustomLIMSPDFViewAction($event)"
+                                                        ></ng2-smart-table>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <br>
@@ -506,15 +508,22 @@
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
                                     </div>
-                                    <div *ngIf="role == 'MS_IOP_MODIFY' && fuelInspection.assignedOfficerStatus && fuelInspection.officersAssigned.id == userLoggedInID">
-                                        <button *ngIf="fuelInspection.rapidTestDone == false" (click)="openModalAddDetails('rapidTest')" mat-raised-button="" data-toggle="modal"
+                                    <div *ngIf="role == 'MS_IOP_MODIFY' && fuelInspection?.assignedOfficerStatus && fuelInspection?.officersAssigned?.id == userLoggedInID">
+                                        <button *ngIf="fuelInspection?.rapidTestDone == false" (click)="openModalAddDetails('rapidTest')" mat-raised-button="" data-toggle="modal"
                                                 data-target="#myModal1"
                                                 class="btn btn-sm btn-primary mr-2"><span
                                                 class="mat-button-wrapper">RAPID TEST</span>
                                             <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
-                                        <div *ngIf="fuelInspection.rapidTestDone == true && fuelInspection.rapidTest.rapidTestStatus==false">
+                                        <button *ngIf="fuelInspection?.rapidTest?.rapidTestStatus == true && fuelInspection?.rapidTestDone == true && fuelInspection?.endInspectionStatus == false"
+                                                (click)="onClickSaveEndRemediation()" mat-raised-button="" data-toggle="modal"
+                                                class="btn btn-sm btn-primary mr-2"><span
+                                                class="mat-button-wrapper">END FUEL</span>
+                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                            <div class="mat-button-focus-overlay"></div>
+                                        </button>
+                                        <div *ngIf="fuelInspection?.rapidTestDone == true && fuelInspection.rapidTest.rapidTestStatus==false">
                                             <button *ngIf="fuelInspection.sampleCollectionStatus == false"  mat-raised-button="" data-toggle="modal"
                                                      data-target="#sampleCollectModal"
                                                      class="btn btn-sm btn-primary mr-2"><span
@@ -1074,9 +1083,9 @@
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
-                                        <label><b>NAME OFFICER COLLECTING SAMPLE</b></label>
+                                        <label><b>NAME OF OFFICER COLLECTING SAMPLE</b></label>
                                         <input type="text" class="form-control two-column-input"
-                                               formControlName="nameOfficerCollectingSample" name="nameOfficerCollectingSample" required
+                                               formControlName="nameOfficerCollectingSample" name="nameOfficerCollectingSample" required ngModel="{{userProfile.fullName}}" disabled
                                                [class.is-invalid]="formSampleCollectForm.nameOfficerCollectingSample.invalid && formSampleCollectForm.nameOfficerCollectingSample.touched">
                                     </div>
                                 </div>
@@ -1195,7 +1204,7 @@
     </div>
     <!-- End Sample Collect Modal -->
 
-    <!-- Sample collect Modal -->
+    <!-- Sample Submit Modal -->
     <div class="modal fade" id="sampleSubmitModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
          aria-hidden="true">
         <div class="modal-dialog modal-xl">
@@ -1215,7 +1224,7 @@
                                     <div class="form-group">
                                         <label><b>NAME PRODUCT</b></label>
                                         <input [class.is-invalid]="formSampleSubmitForm.nameProduct.invalid && formSampleSubmitForm.nameProduct.touched"
-                                               class="form-control two-column-input"
+                                               class="form-control two-column-input" ngModel="{{fuelInspection?.sampleCollected?.productsList[0]?.productBrandName}}" disabled
                                                formControlName="nameProduct" name="nameProduct" required type="text">
                                     </div>
                                 </div>
@@ -1305,7 +1314,7 @@
                                 <div class="col">
                                     <div class="form-group">
                                                     <label><b>SENDERS NAME</b> </label>
-                                                    <input type="text" class="form-control two-column-input"
+                                                    <input type="text" class="form-control two-column-input" ngModel="{{userProfile.fullName}}" disabled
                                                            formControlName="sendersName" name="sendersName" required
                                                            [class.is-invalid]="formSampleSubmitForm.sendersName.invalid && formSampleSubmitForm.sendersName.touched">
                                     </div>
@@ -1405,7 +1414,7 @@
                                 <div class="col">
                                     <div class="form-group">
                                                     <label><b>SAMPLE COLLECTION NUMBER</b> </label>
-                                                    <input type="number" class="form-control two-column-input"
+                                                    <input type="number" class="form-control two-column-input" ngModel="{{fuelInspection?.sampleCollected?.id}}" disabled
                                                            formControlName="sampleCollectionNumber" name="sampleCollectionNumber" required
                                                            [class.is-invalid]="formSampleSubmitForm.sampleCollectionNumber.invalid && formSampleSubmitForm.sampleCollectionNumber.touched">
                                     </div>

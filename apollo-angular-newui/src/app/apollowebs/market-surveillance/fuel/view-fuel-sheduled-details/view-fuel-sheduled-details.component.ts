@@ -17,7 +17,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Store} from '@ngrx/store';
-import {selectUserInfo} from '../../../../core/store';
+import {LoggedInUser, selectUserInfo} from '../../../../core/store';
 declare global {
   interface Window {
     $: any;
@@ -65,6 +65,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
   labList: LaboratoryDto[];
   roles: string[];
   userLoggedInID: number;
+  userProfile: LoggedInUser;
   blob: Blob;
 
   attachments: any[];
@@ -99,26 +100,30 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     },
     noDataMessage: 'No data found',
     columns: {
-      id: {
-        title: '#',
+      // id: {
+      //   title: '#',
+      //   type: 'string',
+      //   filter: false
+      // },
+      productBrandName: {
+        title: 'PRODUCT BRAND NAME',
         type: 'string',
         filter: false
       },
-      productBrandName: {
-        title: 'PRODUCT BRAND NAME',
-        type: 'string'
-      },
       batchNo: {
         title: 'BATCH NO',
-        type: 'string'
+        type: 'string',
+        filter: false
       },
       batchSize: {
         title: 'BATCH SIZE',
-        type: 'string'
+        type: 'string',
+        filter: false
       },
       sampleSize: {
         title: 'SAMPLE SIZE',
-        type: 'string'
+        type: 'string',
+        filter: false
       },
       // sampled: {
       //   title: 'Sampled',
@@ -160,18 +165,20 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     },
     noDataMessage: 'No data found',
     columns: {
-      id: {
-        title: '#',
+      // id: {
+      //   title: '#',
+      //   type: 'string',
+      //   filter: false
+      // },
+      parameters: {
+        title: 'PARAMETERS',
         type: 'string',
         filter: false
       },
-      parameters: {
-        title: 'PARAMETERS',
-        type: 'string'
-      },
       laboratoryName: {
         title: 'LABORATORY NAME',
-        type: 'string'
+        type: 'string',
+        filter: false
       },
       // batchSize: {
       //   title: 'BATCH SIZE',
@@ -398,6 +405,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
 
     this.store$.select(selectUserInfo).pipe().subscribe((u) => {
       this.userLoggedInID = u.id;
+      this.userProfile = u;
       return this.roles = u.roles;
     });
 
@@ -620,8 +628,8 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
   }
 
   openModalAddDetails(divVal: string): void {
-    const arrHead = ['scheduleRemediationInvoicePaid', 
-      'assignOfficer', 'rapidTest', 'addBsNumber', 
+    const arrHead = ['scheduleRemediationInvoicePaid',
+      'assignOfficer', 'rapidTest', 'addBsNumber',
       'ssfAddComplianceStatus', 'scheduleRemediation',
       'addRemediationDetails'];
     const arrHeadSave = ['SCHEDULE REMEDIATION DATE INVOICE PAID',
@@ -715,9 +723,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
             this.fuelInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('OFFICER ASSIGNED SUCCESSFULLY', () => {
-              this.msService.reloadCurrentRoute();
-            });
+            this.msService.showSuccess('OFFICER ASSIGNED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -737,9 +743,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
             this.fuelInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('RAPID TEST RESULTS SAVED SUCCESSFULLY', () => {
-              this.msService.reloadCurrentRoute();
-            });
+            this.msService.showSuccess('RAPID TEST RESULTS SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -765,9 +769,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
             this.fuelInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('SAMPLE COLLECTION SAVED SUCCESSFULLY', () => {
-              this.msService.reloadCurrentRoute();
-            });
+            this.msService.showSuccess('SAMPLE COLLECTION SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -793,9 +795,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
             this.fuelInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('SAMPLE SUBMISSION SAVED SUCCESSFULLY', () => {
-              this.msService.reloadCurrentRoute();
-            });
+            this.msService.showSuccess('SAMPLE SUBMISSION SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -815,9 +815,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
             this.fuelInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('BS NUMBER ADDED SUCCESSFULLYLY', () => {
-              this.msService.reloadCurrentRoute();
-            });
+            this.msService.showSuccess('BS NUMBER ADDED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -840,9 +838,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
             this.fuelInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('PDF LIMS SAVED SUCCESSFULLY', () => {
-              this.msService.reloadCurrentRoute();
-            });
+            this.msService.showSuccess('PDF LIMS SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -865,9 +861,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
             this.fuelInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('LAB RESULTS COMPLIANCE STATUS SAVED SUCCESSFULLY', () => {
-              this.msService.reloadCurrentRoute();
-            });
+            this.msService.showSuccess('LAB RESULTS COMPLIANCE STATUS SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -887,9 +881,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
             this.fuelInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('REMEDIATION SCHEDULE SAVED SUCCESSFULLY', () => {
-              this.msService.reloadCurrentRoute();
-            });
+            this.msService.showSuccess('REMEDIATION SCHEDULE SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -909,9 +901,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
             this.fuelInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('REMEDIATION INVOICE GENERATED SUCCESSFULLY', () => {
-              this.msService.reloadCurrentRoute();
-            });
+            this.msService.showSuccess('REMEDIATION INVOICE GENERATED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -931,9 +921,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
             this.fuelInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('REMEDIATION DETAILS SAVED SUCCESSFULLY', () => {
-              this.msService.reloadCurrentRoute();
-            });
+            this.msService.showSuccess('REMEDIATION DETAILS SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -953,9 +941,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
             this.fuelInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('FUEL INSPECTION ENDED SUCCESSFULLY', () => {
-              this.msService.reloadCurrentRoute();
-            });
+            this.msService.showSuccess('FUEL INSPECTION ENDED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();

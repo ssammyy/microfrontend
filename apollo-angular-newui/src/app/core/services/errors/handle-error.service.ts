@@ -26,7 +26,7 @@ export class HandleErrorService {
       // errorMessage = `Error Code: ${err.status},  Message: ${err.error}`;
       errorMessage = `Message: ${err.error}`;
 
-      console.log(`Message: ${err.error}`)
+      console.log(`Message: ${err.error}`);
     }
     this.toastrService.warning(errorMessage);
   }
@@ -40,7 +40,7 @@ export class HandleErrorService {
         message.trim().length < 1 ||
         message === ''
       ) {
-        console.warn('No toastr for empty messages');
+        console.warn('No toaster for empty messages');
       } else {
         if (code === 200) {
           this.toastrService.info(message);
@@ -51,7 +51,7 @@ export class HandleErrorService {
       }
 
     } else {
-      console.warn('No toastr for null messages');
+      console.warn('No toaster for null messages');
     }
   }
 }

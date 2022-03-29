@@ -1,12 +1,13 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {MsService} from "../../../../../core/store/data/ms/ms.service";
-import {County, CountyService, loadCountyId, selectCountyIdData, Town, TownService} from "../../../../../core/store";
-import {Store} from "@ngrx/store";
-import {Observable, throwError} from "rxjs";
-import {NgxSpinnerService} from "ngx-spinner";
-import {BatchFileFuelSaveDto} from "../../../../../core/store/data/ms/ms.model";
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {MsService} from '../../../../../core/store/data/ms/ms.service';
+import {County, CountyService, loadCountyId, selectCountyIdData, Town, TownService} from '../../../../../core/store';
+import {Store} from '@ngrx/store';
+import {Observable, throwError} from 'rxjs';
+import {NgxSpinnerService} from 'ngx-spinner';
+import {BatchFileFuelSaveDto} from '../../../../../core/store/data/ms/ms.model';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
   selector: 'app-epra-batch-new',
@@ -81,10 +82,13 @@ export class EpraBatchNewComponent implements OnInit {
           (data: any) => {
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess("NEW FUEL BATCH CREATED SUCCESSFUL",()=>{
-              this.dialogRef.close(true)
-            })
+            this.msService.showSuccess('NEW FUEL BATCH CREATED SUCCESSFUL');
           },
+          (err: HttpErrorResponse) => {
+            console.warn(err.error);
+            this.SpinnerService.hide();
+            this.msService.showError(err.error);
+          }
       );
     }
   }

@@ -69,3 +69,31 @@ class ComplaintAssignedDTO {
     var dateSubmitted: Date? = null
 }
 
+
+class FuelScheduledDTO {
+
+    var baseUrl: String? = null
+
+    var fullName: String? = null
+
+    var refNumber: String? = null
+
+    var yearCodeName: String? = null
+
+    var dateSubmitted: Date? = null
+}
+
+class FuelScheduledAssignedDTO {
+
+    var baseUrl: String? = null
+
+    var fullName: String? = null
+
+    var refNumber: String? = null
+
+    var yearCodeName: String? = null
+
+    var commentRemarks: String? = null
+
+    var dateSubmitted: Date? = null
+}

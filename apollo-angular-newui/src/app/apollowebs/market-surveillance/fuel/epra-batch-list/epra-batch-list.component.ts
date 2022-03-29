@@ -1,14 +1,14 @@
 import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {Store} from "@ngrx/store";
-import {MatDialog} from "@angular/material/dialog";
-import {Observable, Subject, throwError} from "rxjs";
-import {Router} from "@angular/router";
-import {MsService} from "../../../../core/store/data/ms/ms.service";
-import {LocalDataSource} from "ng2-smart-table";
-import {NgxSpinnerService} from "ngx-spinner";
-import {BatchFileFuelSaveDto, FuelBatchDetailsDto} from "../../../../core/store/data/ms/ms.model";
-import {EpraBatchNewComponent} from "./epra-batch-new/epra-batch-new.component";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {Store} from '@ngrx/store';
+import {MatDialog} from '@angular/material/dialog';
+import {Observable, Subject, throwError} from 'rxjs';
+import {Router} from '@angular/router';
+import {MsService} from '../../../../core/store/data/ms/ms.service';
+import {LocalDataSource} from 'ng2-smart-table';
+import {NgxSpinnerService} from 'ngx-spinner';
+import {BatchFileFuelSaveDto, FuelBatchDetailsDto} from '../../../../core/store/data/ms/ms.model';
+import {EpraBatchNewComponent} from './epra-batch-new/epra-batch-new.component';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {
   County,
   CountyService,
@@ -17,7 +17,8 @@ import {
   selectUserInfo,
   Town,
   TownService
-} from "../../../../core/store";
+} from '../../../../core/store';
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-epra-batch-list',
@@ -39,15 +40,15 @@ export class EpraBatchListComponent implements OnInit {
 
   roles: string[];
 
-  activeStatus: string = 'my-tasks';
-  previousStatus: string = 'my-tasks';
+  activeStatus = 'my-tasks';
+  previousStatus = 'my-tasks';
   searchStatus: any;
-  personalTasks = "false";
-  defaultPageSize: number = 20;
-  defaultPage: number = 0;
-  currentPage: number = 0;
-  currentPageInternal: number = 0;
-  totalCount: number = 12;
+  personalTasks = 'false';
+  defaultPageSize = 20;
+  defaultPage = 0;
+  currentPage = 0;
+  currentPageInternal = 0;
+  totalCount = 12;
   public settings = {
     selectMode: 'single',  // single|multi
     hideHeader: false,
@@ -68,7 +69,7 @@ export class EpraBatchListComponent implements OnInit {
       if (row.data.isNcrDocument) {
         return 'risky';
       } else {
-        return ''
+        return '';
       }
 
     },
@@ -78,11 +79,11 @@ export class EpraBatchListComponent implements OnInit {
     },
     noDataMessage: 'No data found',
     columns: {
-      id: {
-        title: 'ID',
-        type: 'string',
-        filter: false
-      },
+      // id: {
+      //   title: 'ID',
+      //   type: 'string',
+      //   filter: false
+      // },
       referenceNumber: {
         title: 'REFERENCE NUMBER',
         type: 'string',
@@ -125,9 +126,9 @@ export class EpraBatchListComponent implements OnInit {
   keywords: any;
   private documentTypeUuid: string;
   private documentTypeId: any;
-  epraUser: boolean=false;
-  managerPetroleumUser: boolean=false;
-  ioUser: boolean=false;
+  epraUser = false;
+  managerPetroleumUser = false;
+  ioUser = false;
   search: Subject<string>;
   loadedData: FuelBatchDetailsDto[] = this.msService.fuelBatchDetailsListExamples();
 
@@ -161,9 +162,9 @@ export class EpraBatchListComponent implements OnInit {
   }
 
   private loadData(page: number, records: number): any {
-    this.SpinnerService.show()
-    let params = {'personal': this.personalTasks}
-    this.msService.loadMSFuelBatchList(String(page),String(records)).subscribe(
+    this.SpinnerService.show();
+    const params = {'personal': this.personalTasks};
+    this.msService.loadMSFuelBatchList(String(page), String(records)).subscribe(
         (data) => {
           console.log(`TEST DATA===${data}`);
           this.loadedData = data;
@@ -174,8 +175,8 @@ export class EpraBatchListComponent implements OnInit {
         },
         error => {
           this.SpinnerService.hide();
-          console.log(error)
-          this.msService.showError("AN ERROR OCCURRED")
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
         }
     );
 
@@ -206,19 +207,19 @@ export class EpraBatchListComponent implements OnInit {
 
 
   onManagerPetroleumChange(event: any) {
-    if(this.managerPetroleumUser) {
+    if (this.managerPetroleumUser) {
       this.personalTasks = event.target.value;
-      this.loadData(this.defaultPage, this.defaultPageSize)
+      this.loadData(this.defaultPage, this.defaultPageSize);
     }
   }
 
   toggleStatus(status: string): void {
-    console.log(status)
-    this.message = null
-    this.searchStatus = null
+    console.log(status);
+    this.message = null;
+    this.searchStatus = null;
     if (status !== this.activeStatus) {
       this.activeStatus = status;
-      this.loadData(this.defaultPage, this.defaultPageSize)
+      this.loadData(this.defaultPage, this.defaultPageSize);
     }
   }
 
@@ -231,8 +232,8 @@ export class EpraBatchListComponent implements OnInit {
   }
 
   viewRecord(data: FuelBatchDetailsDto) {
-    console.log("TEST 101"+data.id)
-    this.router.navigate([`/epra`,data.referenceNumber]);
+    console.log('TEST 101' + data.id);
+    this.router.navigate([`/epra`, data.referenceNumber]);
   }
 
   get formNewBatchForm(): any {
@@ -270,15 +271,14 @@ export class EpraBatchListComponent implements OnInit {
           (data: any) => {
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess("NEW FUEL BATCH CREATED SUCCESSFUL", ()=>{
-              this.msService.reloadCurrentRoute()
-            })
-          },
-          error => {
-            this.SpinnerService.hide();
-            console.log(error)
-            this.msService.showError("AN ERROR OCCURRED")
+            this.msService.showSuccess('NEW FUEL BATCH CREATED SUCCESSFUL');
           }
+          // ,
+          // (err: HttpErrorResponse) => {
+          //   console.warn(err.error);
+          //   this.SpinnerService.hide();
+          //   this.msService.showError(err.message);
+          // }
       );
     }
   }
@@ -314,9 +314,9 @@ export class EpraBatchListComponent implements OnInit {
 
   pageChange(pageIndex?: any) {
     if (pageIndex) {
-      this.currentPageInternal = pageIndex - 1
-      this.currentPage = pageIndex
-      this.loadData(this.currentPageInternal, this.defaultPageSize)
+      this.currentPageInternal = pageIndex - 1;
+      this.currentPage = pageIndex;
+      this.loadData(this.currentPageInternal, this.defaultPageSize);
     }
   }
 }

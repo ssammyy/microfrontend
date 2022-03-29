@@ -1,4 +1,4 @@
-import {County} from "../county";
+import {County} from '../county';
 
 export class Ms {
 }
@@ -76,12 +76,12 @@ export class FuelInspectionScheduleListDetailsDto {
 
 export class FuelInspectionDto {
     id: number;
-    referenceNumber : string;
-    company : string;
-    petroleumProduct : string;
-    physicalLocation : string;
-    inspectionDateFrom : Date;
-    inspectionDateTo : Date;
+    referenceNumber: string;
+    company: string;
+    petroleumProduct: string;
+    physicalLocation: string;
+    inspectionDateFrom: Date;
+    inspectionDateTo: Date;
     processStage: string;
     assignedOfficerStatus: boolean;
     rapidTestDone: boolean;
@@ -94,12 +94,12 @@ export class FuelInspectionDto {
     proFormaInvoiceStatus: boolean;
     endInspectionStatus: boolean;
     batchDetails: FuelBatchDetailsDto;
-    officersList : MsUsersDto[];
-    officersAssigned : MsUsersDto;
+    officersList: MsUsersDto[];
+    officersAssigned: MsUsersDto;
     rapidTest: FuelEntityRapidTestDto;
-    sampleCollected : SampleCollectionDto;
-    sampleSubmitted : SampleSubmissionDto;
-    sampleLabResults : MSSSFLabResultsDto;
+    sampleCollected: SampleCollectionDto;
+    sampleSubmitted: SampleSubmissionDto;
+    sampleLabResults: MSSSFLabResultsDto;
     fuelRemediation: FuelRemediationDto;
 }
 
@@ -170,33 +170,33 @@ export class LabResultsParamDto {
 
 export class SampleSubmissionDto {
     id: number;
-    nameProduct : string;
-    packaging : string;
-    labellingIdentification : string;
-    fileRefNumber : string;
-    referencesStandards : string;
-    sizeTestSample : number;
-    sizeRefSample : number;
-    condition : string;
-    sampleReferences : string;
-    sendersName : string;
-    designation : string;
-    address : string;
-    sendersDate : Date;
-    receiversName : string;
-    testChargesKsh : number;
-    receiptLpoNumber : string;
-    invoiceNumber : string;
-    disposal : string;
-    remarks : string;
-    sampleCollectionNumber : number;
-    bsNumber : string;
+    nameProduct: string;
+    packaging: string;
+    labellingIdentification: string;
+    fileRefNumber: string;
+    referencesStandards: string;
+    sizeTestSample: number;
+    sizeRefSample: number;
+    condition: string;
+    sampleReferences: string;
+    sendersName: string;
+    designation: string;
+    address: string;
+    sendersDate: Date;
+    receiversName: string;
+    testChargesKsh: number;
+    receiptLpoNumber: string;
+    invoiceNumber: string;
+    disposal: string;
+    remarks: string;
+    sampleCollectionNumber: number;
+    bsNumber: string;
     parametersList: SampleSubmissionItemsDto[];
 }
 
 export class SampleSubmissionItemsDto {
-    parameters : string;
-    laboratoryName : string;
+    parameters: string;
+    laboratoryName: string;
 }
 
 export class BSNumberSaveDto {
