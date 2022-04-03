@@ -64,11 +64,11 @@ class CdInspectionMotorVehicleChecklist : Serializable {
     @Basic
     var overallAppearance: String? = ""
 
-    @Column(name = "REMARKS")
+    @Column(name = "REMARKS", length = 512)
     @Basic
     var remarks: String? = ""
 
-    @Column(name = "DESCRIPTION")
+    @Column(name = "DESCRIPTION", length = 512)
     @Basic
     var description: String? = null
 
@@ -143,6 +143,7 @@ class CdInspectionMotorVehicleChecklist : Serializable {
     @JoinColumn(name = "INSPECTION_GENERAL_ID", referencedColumnName = "ID")
     @ManyToOne
     var inspectionGeneral: CdInspectionGeneralEntity? = null
+
     @JoinColumn(name = "INSPECTION_CHECKLIST_ID", referencedColumnName = "ID")
     @ManyToOne
     var inspectionChecklistType: CdChecklistTypesEntity? = null

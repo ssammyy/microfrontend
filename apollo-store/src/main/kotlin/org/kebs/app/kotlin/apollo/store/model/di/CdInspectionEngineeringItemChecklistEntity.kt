@@ -18,7 +18,7 @@ class CdInspectionEngineeringItemChecklistEntity : Serializable {
     @Transient
     var itemIdTmp: Long? = null
 
-    @JoinColumn(name = "ITEM_ID",referencedColumnName = "ID")
+    @JoinColumn(name = "ITEM_ID", referencedColumnName = "ID")
     @ManyToOne
     var itemId: CdItemDetailsEntity? = null
 
@@ -49,6 +49,10 @@ class CdInspectionEngineeringItemChecklistEntity : Serializable {
     @Column(name = "QUANTITY_VERIFIED")
     @Basic
     var quantityVerified: String? = null
+
+    @Column(name = "QUANTITY_VERIFIED_UNIT")
+    @Basic
+    var quantityVerifiedUnit: String? = null
 
     @Column(name = "MFG_NAME_ADDRESS")
     @Basic

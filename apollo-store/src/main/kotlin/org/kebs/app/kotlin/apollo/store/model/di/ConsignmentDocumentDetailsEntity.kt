@@ -74,6 +74,11 @@ class ConsignmentDocumentDetailsEntity : Serializable {
     @Field(index = Index.YES, analyze = Analyze.NO, store = Store.YES)
     var cocNumber: String? = null
 
+    @Column(name = "COR_NUMBER")
+    @Basic
+    @Field(index = Index.YES, analyze = Analyze.NO, store = Store.YES)
+    var corNumber: String? = null
+
     @Column(name = "NCR_NUMBER")
     @Basic
     @Field(index = Index.YES, analyze = Analyze.NO, store = Store.YES)

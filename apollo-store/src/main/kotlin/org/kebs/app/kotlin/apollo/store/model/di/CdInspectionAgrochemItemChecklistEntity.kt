@@ -52,6 +52,10 @@ class CdInspectionAgrochemItemChecklistEntity : Serializable {
     @Basic
     var quantityVerified: String? = null
 
+    @Column(name = "QUANTITY_VERIFIED_UNIT")
+    @Basic
+    var quantityVerifiedUnit: String? = null
+
     @Column(name = "DATE_MFG_PACKAGING")
     @Basic
     var dateMfgPackaging: Date? = null

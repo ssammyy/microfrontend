@@ -28,6 +28,7 @@ export class ItemChecklistComponent implements OnInit {
             ksEasApplicable: [formData ? formData.ksEasApplicable : '', Validators.maxLength(256)],
             quantityVerified: [formData ? formData.quantityVerified : '', Validators.maxLength(256)],
             dateMfgPackaging: [formData ? formData.dateMfgPackaging : '', Validators.maxLength(256)],
+            quantityVerifiedUnit: [formData ? formData.quantityVerifiedUnit : '', Validators.maxLength(25)],
             dateExpiry: [formData ? formData.dateExpiry : '', Validators.maxLength(256)],
             mfgName: [formData ? formData.mfgName : '', Validators.maxLength(256)],
             mfgAddress: [formData ? formData.mfgAddress : '', Validators.maxLength(256)],

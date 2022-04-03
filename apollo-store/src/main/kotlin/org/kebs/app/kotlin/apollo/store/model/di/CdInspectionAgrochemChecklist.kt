@@ -80,11 +80,11 @@ class CdInspectionAgrochemChecklist : Serializable {
     @Basic
     var sampled: String? = null
 
-    @Column(name = "REMARKS")
+    @Column(name = "REMARKS", length = 512)
     @Basic
     var remarks: String? = null
 
-    @Column(name = "DESCRIPTION")
+    @Column(name = "DESCRIPTION", length = 512)
     @Basic
     var description: String? = null
 

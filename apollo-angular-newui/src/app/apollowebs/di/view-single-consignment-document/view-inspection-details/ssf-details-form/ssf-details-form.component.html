@@ -1,10 +1,10 @@
 <h2 mat-dialog-title>SSF Details (Sample Submission Form)</h2>
 <mat-dialog-content>
     <div class="row no_margin" [formGroup]="form">
-<!--        <div class="col-sm-12 col-md-6">-->
-<!--            <label for="permitNumber" class="waiver-form-label">Permit No:</label>-->
-<!--            <input class="waiver-form-input-master" type="text" id="permitNumber" name="permitNumber" formControlName="permitNumber">-->
-<!--        </div>-->
+        <!--        <div class="col-sm-12 col-md-6">-->
+        <!--            <label for="permitNumber" class="waiver-form-label">Permit No:</label>-->
+        <!--            <input class="waiver-form-input-master" type="text" id="permitNumber" name="permitNumber" formControlName="permitNumber">-->
+        <!--        </div>-->
         <div class="col-sm-7 col-md-6">
             <label for="ssfSubmissionDate" class="waiver-form-label">SSF Submission Date:</label>
             <input class="waiver-form-input-master" type="date" id="ssfSubmissionDate" name="ssfSubmissionDate"
@@ -22,8 +22,12 @@
         </div>
         <div class="col-sm-7 col-md-6">
             <label for="laboratoryName" class="waiver-form-label">Laboratory Name</label>
-            <input class="waiver-form-input-master" type="text" id="laboratoryName" name="laboratoryName"
-                   formControlName="laboratoryName">
+            <select id="laboratoryName" name="laboratoryName" class="waiver-form-input-master"
+                    formControlName="laboratoryName">
+                <option value="" disabled selected>Select Laboratory</option>
+                <option *ngFor="let lab of laboratories" [value]="lab.labName">{{lab.labName}}
+                    -{{lab.description}}</option>
+            </select>
         </div>
         <div class="col-sm-12 col-md-6">
             <label for="returnOrDispose" class="waiver-form-label">Disposal Method</label>
@@ -36,7 +40,8 @@
         </div>
         <div class="col-sm-12 col-md-12">
             <label for="description" class="waiver-form-label">Remarks</label>
-            <textarea class="waiver-form-input-master" id="description" name="description" formControlName="description" rows="4">
+            <textarea class="waiver-form-input-master" id="description" name="description" formControlName="description"
+                      rows="4">
             </textarea>
         </div>
         <mat-error *ngIf="message">{{message}}</mat-error>

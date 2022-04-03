@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.store.model
 
+import org.kebs.app.kotlin.apollo.store.model.di.CdDemandNotePaymentEntity
 import java.io.Serializable
 import java.math.BigDecimal
 import java.sql.Date
@@ -76,13 +77,21 @@ class CdDemandNoteEntity : Serializable {
     @Basic
     var currency: String? = null
 
-    @Column(name = "TOTAL_AMOUNT")
+    @Column(name = "TOTAL_AMOUNT", precision = 17, scale = 2)
     @Basic
     var totalAmount: BigDecimal? = null
 
-    @Column(name = "AMOUNT_PAYABLE")
+    @Column(name = "AMOUNT_PAYABLE", precision = 17, scale = 2)
     @Basic
     var amountPayable: BigDecimal? = null
+
+    @Column(name = "AMOUNT_PAID", precision = 17, scale = 2)
+    @Basic
+    var amountPaid: BigDecimal? = null
+
+    @Column(name = "CURRENT_BALANCE", precision = 17, scale = 2)
+    @Basic
+    var currentBalance: BigDecimal? = null
 
     @Column(name = "ENTRY_ABL_NUMBER")
     @Basic
@@ -224,6 +233,10 @@ class CdDemandNoteEntity : Serializable {
     @Column(name = "DELETED_ON")
     @Basic
     var deletedOn: Timestamp? = null
+
+    @OneToMany(mappedBy = "demandNoteId", fetch = FetchType.LAZY)
+    @OrderBy("id")
+    var payments: List<CdDemandNotePaymentEntity>? = null
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

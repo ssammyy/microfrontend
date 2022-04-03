@@ -4,7 +4,7 @@
         <div class="col-sm-12 col-md-12">
             <label class="waiver-form-label">Upload your report</label>
             <input #ministryReport type="file" name="file" class="waiver-form-input-master"
-                   (change)="onFileSelected($event)"  accept="application/pdf">
+                   (change)="onFileSelected($event)" accept="application/pdf">
         </div>
         <div class="col-sm-12 col-md-12">
             <label class="waiver-form-label">Remarks</label>
@@ -12,8 +12,14 @@
                    placeholder=""
                    formControlName="comment">
         </div>
+        <div class="col-sm-12 col-md-12">
+            <label class="waiver-form-label" for="referenceNumber">Inspection Report Number</label>
+            <input id="referenceNumber" type="text" name="file" class="waiver-form-input-master"
+                   placeholder=""
+                   formControlName="referenceNumber">
+        </div>
         <label *ngIf="selectedFile" class="col-6 waiver-form-label">NAME: {{selectedFile.name}}</label>
-        <label *ngIf="selectedFile" class="col-6 waiver-form-label">NAME: {{selectedFile.size/1000}}KB</label>
+        <label *ngIf="selectedFile" class="col-6 waiver-form-label">NAME: {{selectedFile.size / 1000}}KB</label>
         <mat-error *ngIf="message">{{message}}</mat-error>
     </div>
 </mat-dialog-content>

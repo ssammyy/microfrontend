@@ -9,6 +9,7 @@ import org.json.XML
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.SftpServiceImpl
+import org.kebs.app.kotlin.apollo.api.service.ConsignmentCertificatesIssues
 import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentStatus
 import org.kebs.app.kotlin.apollo.common.dto.MinistryInspectionListResponseDto
 import org.kebs.app.kotlin.apollo.common.dto.kesws.receive.DeclarationVerificationMessage
@@ -428,7 +429,7 @@ class DestinationInspectionDaoServices(
             }
         }
         // Add inspection details
-        iCdInspectionGeneralRepo.findFirstByCdDetails(consignmentDocumentDetailsEntity)?.let { cdItemDetailsList ->
+        iCdInspectionGeneralRepo.findFirstByCdDetailsAndCurrentChecklist(consignmentDocumentDetailsEntity, 1)?.let { cdItemDetailsList ->
             localCoc.customsEntryNumber = cdItemDetailsList.customsEntryNumber
             localCoc.clearingAgent = cdItemDetailsList.clearingAgent
             localCoc
@@ -684,7 +685,7 @@ class DestinationInspectionDaoServices(
         var localCor = CorsBakEntity()
         //Get CD Item by cd doc id
         var mvirFound = false
-        iCdInspectionGeneralRepo.findFirstByCdDetails(cdEntity)?.let { cdItemDetailsList ->
+        iCdInspectionGeneralRepo.findFirstByCdDetailsAndCurrentChecklist(cdEntity, 1)?.let { cdItemDetailsList ->
             this.cdMotorVehicleInspectionChecklistRepo.findByInspectionGeneral(cdItemDetailsList)?.let { mvInspectionEntity ->
                 this.iCdInspectionMotorVehicleItemChecklistRepo.findFirstByInspection(mvInspectionEntity)?.let { cdMvInspectionEntity ->
                     // Add item details
@@ -894,12 +895,8 @@ class DestinationInspectionDaoServices(
                 ?: throw Exception("COC ITEM(s) Details with COC ID = ${cocId}, do not Exist")
     }
 
-    fun findDemandNoteWithCDID(cdId: Long): CdDemandNoteEntity {
-        iDemandNoteRepo.findByCdId(cdId)
-                ?.let { demandNote ->
-                    return demandNote
-                }
-                ?: throw Exception("Demand Note Details with CD ID = ${cdId}, do not Exist")
+    fun findDemandNoteWithCDID(cdId: Long): CdDemandNoteEntity? {
+        return iDemandNoteRepo.findFirstByCdId(cdId)
     }
 
     fun findIdfItemList(idf: IDFDetailsEntity): List<IDFItemDetailsEntity>? {
@@ -967,9 +964,10 @@ class DestinationInspectionDaoServices(
     }
 
 
-    fun sendDemandNotePayedStatusToKWIS(demandNote: CdDemandNoteEntity) {
+    fun sendDemandNotePayedStatusToKWIS(demandNote: CdDemandNoteEntity, amount: BigDecimal?) {
         val customDemandNotePay = CustomDemandNotePayXmlDto(demandNote)
         val demandNotePay = DemandNotePayXmlDTO()
+        customDemandNotePay.amountPaid = amount
         demandNotePay.customDemandNotePay = customDemandNotePay
 
         val fileName = customDemandNotePay.demandNoteNumber?.let {
@@ -1679,20 +1677,24 @@ class DestinationInspectionDaoServices(
             inspectionGeneralEntity: CdInspectionGeneralEntity, cDetails: ConsignmentDocumentDetailsEntity,
             user: UsersEntity, map: ServiceMapsEntity
     ): CdInspectionGeneralEntity {
+        // Detach previous checklist on new checklist filled
+        iCdInspectionGeneralRepo.findFirstByCdDetailsAndCurrentChecklist(cDetails, 1)?.let { prevChecklist ->
+            prevChecklist.currentChecklist = 0
+            prevChecklist.varField4 = commonDaoServices.getTimestamp().toString()
+            iCdInspectionGeneralRepo.save(prevChecklist)
+        }
         // Get existing one or create a new one
-        var inspectionGeneralChecklist = iCdInspectionGeneralRepo.findFirstByCdDetails(cDetails)
-                ?: inspectionGeneralEntity
-        with(inspectionGeneralChecklist) {
+        with(inspectionGeneralEntity) {
             cdDetails = cDetails
             status = map.activeStatus
             createdBy = commonDaoServices.getUserName(user)
             createdOn = commonDaoServices.getTimestamp()
         }
-        inspectionGeneralChecklist = iCdInspectionGeneralRepo.save(inspectionGeneralChecklist)
+        val updatedInspectionGeneralEntity = iCdInspectionGeneralRepo.save(inspectionGeneralEntity)
 
         KotlinLogging.logger { }
-                .info { "Inspection General CheckList Details saved ID = ${inspectionGeneralChecklist.id}" }
-        return inspectionGeneralChecklist
+                .info { "Inspection General CheckList Details saved ID = ${updatedInspectionGeneralEntity.id}" }
+        return updatedInspectionGeneralEntity
     }
 
     fun saveInspectionAgrochemItemChecklist(
@@ -2345,6 +2347,37 @@ class DestinationInspectionDaoServices(
                 }
         }
         return iConsignmentDocumentDetailsRepo.save(cdDetailsEntity)
+    }
+
+    fun updateCDDetailsWithForeignDocuments(cdDetailsEntity: ConsignmentDocumentDetailsEntity): ConsignmentDocumentDetailsEntity {
+        // Attch COC
+        this.cocRepo.findByUcrNumberAndCocType(cdDetailsEntity.ucrNumber
+                ?: "", ConsignmentCertificatesIssues.COC.nameDesc)?.let {
+            cdDetailsEntity.cocNumber = it.cocNumber
+            cdDetailsEntity.localCocOrCorStatus = 1
+        }
+        // Attach NCR
+        this.cocRepo.findByUcrNumberAndCocType(cdDetailsEntity.ucrNumber
+                ?: "", ConsignmentCertificatesIssues.NCR.nameDesc)?.let {
+            cdDetailsEntity.ncrNumber = it.cocNumber
+            cdDetailsEntity.localCocOrCorStatus = 1
+        }
+        // Attach COI
+        this.cocRepo.findByUcrNumberAndCocType(cdDetailsEntity.ucrNumber
+                ?: "", ConsignmentCertificatesIssues.COI.nameDesc)?.let {
+            cdDetailsEntity.localCoi = 1
+        }
+        // Attach COR
+        findVehicleFromCd(cdDetailsEntity)?.let { vehicle ->
+            this.corsBakRepository.findByChasisNumber(vehicle.chassisNumber ?: "")?.let { cor ->
+                cdDetailsEntity.localCocOrCorStatus = 1
+                cdDetailsEntity.corNumber = cor.corNumber
+                // Update COR link
+                cor.consignmentDocId = cdDetailsEntity
+                corsBakRepository.save(cor)
+            }
+        }
+        return iConsignmentDocumentDetailsRepo.save(cdDetailsEntity)
 
     }
 
@@ -2622,6 +2655,10 @@ class DestinationInspectionDaoServices(
 
     fun findAllCFSUserCodes(userProfileID: Long): List<String> {
         return usersCfsRepo.findAllUserCfsCodes(userProfileID)
+    }
+
+    fun countCFSUserCodes(userProfileID: Long, cfsId: Long): Long {
+        return usersCfsRepo.countUserCfsCodes(userProfileID, cfsId)
     }
 
     fun findAllCFSUserList(userProfileID: Long): List<UsersCfsAssignmentsEntity> {

@@ -5,12 +5,11 @@ import java.sql.Date
 import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*
-import kotlin.jvm.Transient
 
 @Entity
 @Table(name = "DAT_KEBS_CD_INSPECTION_GENERAL")
 class CdInspectionGeneralEntity : Serializable {
-    
+
     @Column(name = "ID")
     @SequenceGenerator(name = "DAT_KEBS_CD_INSPECTION_GENERAL_SEQ_GEN", sequenceName = "DAT_KEBS_CD_INSPECTION_GENERAL_SEQ", allocationSize = 1)
     @GeneratedValue(generator = "DAT_KEBS_CD_INSPECTION_GENERAL_SEQ_GEN", strategy = GenerationType.SEQUENCE)
@@ -40,6 +39,14 @@ class CdInspectionGeneralEntity : Serializable {
     @Basic
     var inspectionDate: Date? = null
 
+    @Column(name = "INSPECTION_OFFICER")
+    @Basic
+    var inspectionOfficer: String? = null
+
+    @Column(name = "SUPERVISOR_OFFICER")
+    @Basic
+    var supervisorName: String? = null
+
     @Column(name = "IMPORTERS_NAME")
     @Basic
     var importersName: String? = null
@@ -55,6 +62,14 @@ class CdInspectionGeneralEntity : Serializable {
     @Column(name = "UCR_NUMBER")
     @Basic
     var ucrNumber: String? = null
+
+    @Column(name = "DECLARATION_NUMBER")
+    @Basic
+    var declarationNumber: String? = null
+
+    @Column(name = "DECLARATION_REPRESENTATIVE")
+    @Basic
+    var declarationRepresentative: String? = null
 
     @Column(name = "OVERALL_REMARKS")
     @Basic
@@ -92,13 +107,17 @@ class CdInspectionGeneralEntity : Serializable {
     @Basic
     var inspectionReportApprovalDate: Date? = null
 
-    @Column(name = "DESCRIPTION")
+    @Column(name = "DESCRIPTION", length = 512)
     @Basic
     var description: String? = null
 
     @Column(name = "INSPECTION_REPORT_REF_NUMBER")
     @Basic
     var inspectionReportRefNumber: String? = null
+
+    @Column(name = "CURRENT_CHECKLIST")
+    @Basic
+    var currentChecklist: Int = 1
 
     @Column(name = "STATUS")
     @Basic
@@ -217,6 +236,6 @@ class CdInspectionGeneralEntity : Serializable {
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(id,inspectionReportRefNumber, confirmItemType, inspection, category, entryPoint, cfs, inspectionDate, importersName, clearingAgent, customsEntryNumber, ucrNumber, complianceStatus, complianceRecommendations, inspectionReportFile, inspectionReportApprovalStatus, inspectionReportDisapprovalComments, inspectionReportDisapprovalDate, inspectionReportApprovalComments, inspectionReportApprovalDate, description, status, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn)
+        return Objects.hash(id, inspectionReportRefNumber, confirmItemType, inspection, category, entryPoint, cfs, inspectionDate, importersName, clearingAgent, customsEntryNumber, ucrNumber, complianceStatus, complianceRecommendations, inspectionReportFile, inspectionReportApprovalStatus, inspectionReportDisapprovalComments, inspectionReportDisapprovalDate, inspectionReportApprovalComments, inspectionReportApprovalDate, description, status, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn)
     }
 }

@@ -49,6 +49,10 @@ export class DestinationInspectionService {
         })
     }
 
+    loadLaboratories(): Observable<any> {
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/laboratory/list"))
+    }
+
     loadExchangeMessageFile(messageId): Observable<any> {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/files/get/" + messageId), {
             params: {}
@@ -210,9 +214,10 @@ export class DestinationInspectionService {
         })
     }
 
-    uploadMinistryChecklist(file: File, comment: string, id: any): Observable<any> {
+    uploadMinistryChecklist(file: File, comment: string, referenceNumber: string, id: any): Observable<any> {
         let fd = new FormData()
         fd.append("file", file)
+        fd.append("referenceNumber", referenceNumber)
         fd.append("comment", comment)
         return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/ministry/inspection/checklist/" + id), fd)
     }

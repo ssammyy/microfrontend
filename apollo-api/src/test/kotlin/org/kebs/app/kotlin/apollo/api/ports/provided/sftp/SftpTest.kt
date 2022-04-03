@@ -14,17 +14,16 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.customdto.*
+import org.kebs.app.kotlin.apollo.store.model.CocsEntity
 import org.kebs.app.kotlin.apollo.store.model.CorsBakEntity
+import org.kebs.app.kotlin.apollo.store.repo.ICocItemRepository
+import org.kebs.app.kotlin.apollo.store.repo.ICocsRepository
 import org.kebs.app.kotlin.apollo.store.repo.ICorsBakRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit4.SpringRunner
 import java.io.File
-import org.kebs.app.kotlin.apollo.store.model.CocsEntity
-import org.kebs.app.kotlin.apollo.store.repo.ICocsRepository
-import org.kebs.app.kotlin.apollo.store.repo.ICocItemRepository
-import org.kebs.app.kotlin.apollo.store.repo.ICoisRepository
-import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteRepository
+import java.math.BigDecimal
 
 @SpringBootTest
 @RunWith(SpringRunner::class)
@@ -160,7 +159,7 @@ class SftpTest {
     fun whenDemandNotePaypojoSerializedToXmlFile_thenCorrect() {
         val coiId: Long = 641
         destinationInspectionDaoServices.findDemandNoteWithID(coiId)?.let {
-            destinationInspectionDaoServices.sendDemandNotePayedStatusToKWIS(it)
+            destinationInspectionDaoServices.sendDemandNotePayedStatusToKWIS(it, BigDecimal.valueOf(290))
         }
     }
 

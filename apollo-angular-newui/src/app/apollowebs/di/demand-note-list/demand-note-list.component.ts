@@ -51,6 +51,10 @@ export class DemandNoteListComponent implements OnInit {
                 type: 'custom',
                 renderComponent: CurrencyFormatterComponent,
             },
+            paymentStatus: {
+                title: 'PAYMENT STATUS',
+                type: 'custom'
+            },
             varField10: {
                 title: 'Status',
                 type: 'string'
@@ -68,6 +72,17 @@ export class DemandNoteListComponent implements OnInit {
     }
 
     ngOnInit(): void {
+    }
+
+    paymentStatus(status: number): String {
+        switch (status) {
+            case 1:
+                return "PAYMENT_COMPLETED"
+            case 5:
+                return "PARTIAL PAYMENT"
+            default:
+                return "NOT PAID"
+        }
     }
 
     viewDemandNote(demandNoteId: any) {

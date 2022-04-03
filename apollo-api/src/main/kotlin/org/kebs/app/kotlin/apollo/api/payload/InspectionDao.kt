@@ -3,8 +3,6 @@ package org.kebs.app.kotlin.apollo.api.payload;
 import org.kebs.app.kotlin.apollo.store.model.di.*
 import java.sql.Timestamp
 import java.util.*
-import kotlin.random.Random
-import kotlin.random.nextULong
 
 
 class InspectionGeneralDetailsDto {
@@ -44,7 +42,7 @@ class InspectionGeneralDetailsDto {
                 overallRemarks = entity.overallRemarks
                 complianceRecommendations = entity.complianceRecommendations
                 category = entity.category
-                inspectionOfficer = entity.createdBy
+                inspectionOfficer = entity.inspectionOfficer
                 inspectionDate = entity.inspectionDate
                 complianceStatus = entity.complianceStatus
                 description = entity.description

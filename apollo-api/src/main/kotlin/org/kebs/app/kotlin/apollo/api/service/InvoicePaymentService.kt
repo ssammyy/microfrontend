@@ -9,6 +9,7 @@ import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.request.DemandNoteRequestForm
 import org.kebs.app.kotlin.apollo.api.payload.request.DemandNoteRequestItem
+import org.kebs.app.kotlin.apollo.api.payload.response.CallbackResponses
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.response.PaymentStatusResult
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
@@ -17,16 +18,10 @@ import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapPrope
 import org.kebs.app.kotlin.apollo.store.model.CdDemandNoteEntity
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
-import org.kebs.app.kotlin.apollo.store.model.di.CdDemandNoteItemsDetailsEntity
-import org.kebs.app.kotlin.apollo.store.model.di.CurrencyExchangeRates
-import org.kebs.app.kotlin.apollo.store.model.di.DestinationInspectionFeeEntity
-import org.kebs.app.kotlin.apollo.store.model.di.InspectionFeeRanges
+import org.kebs.app.kotlin.apollo.store.model.di.*
 import org.kebs.app.kotlin.apollo.store.repo.InvoiceBatchDetailsRepo
 import org.kebs.app.kotlin.apollo.store.repo.auction.IAuctionRequestsRepository
-import org.kebs.app.kotlin.apollo.store.repo.di.ICfgCurrencyExchangeRateRepository
-import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteItemsDetailsRepository
-import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteRepository
-import org.kebs.app.kotlin.apollo.store.repo.di.InspectionFeeRangesRepository
+import org.kebs.app.kotlin.apollo.store.repo.di.*
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
@@ -56,6 +51,7 @@ class InvoicePaymentService(
         private val invoiceBatchDetailsRepo: InvoiceBatchDetailsRepo,
         // Demand notes
         private val currencyExchangeRateRepository: ICfgCurrencyExchangeRateRepository,
+        private val paymentRepository: CdDemandNotePaymentRepository,
         private val feeRangesRepository: InspectionFeeRangesRepository,
         private val daoServices: DestinationInspectionDaoServices,
         private val invoiceDaoService: InvoiceDaoService,
@@ -303,13 +299,14 @@ class InvoicePaymentService(
         return true
     }
 
-    fun invoicePaymentCompleted(cdId: Long, demandNoteId: Long): Boolean {
+    fun invoicePaymentCompleted(cdId: Long, demandNoteId: Long, amount: BigDecimal?): Boolean {
         try {
             var consignmentDocument = this.daoServices.findCD(cdId)
             // 1. Send demand payment status to SW
             daoServices.findDemandNoteWithID(demandNoteId)?.let { demandNote ->
-                daoServices.sendDemandNotePayedStatusToKWIS(demandNote)
+                daoServices.sendDemandNotePayedStatusToKWIS(demandNote, amount)
             } ?: throw ExpectedDataNotFound("Demand note with $demandNoteId was not found")
+
             // 2. Update application status
             consignmentDocument.varField10 = "DEMAND NOTE PAID,AWAITING INSPECTION"
             // 3. Clear Payment process completed
@@ -373,7 +370,7 @@ class InvoicePaymentService(
         when {
             transactionNo.isPresent -> {
                 KotlinLogging.logger { }.info("Search by transaction NO")
-                demandNotes = iDemandNoteRepo.findByDemandNoteNumberContainingAndStatusOrderByIdAsc(transactionNo.get(), map.activeStatus, page)
+                demandNotes = iDemandNoteRepo.findByDemandNoteNumberContainingOrPostingReferenceContainingAndPaymentStatusInOrderByIdAsc(transactionNo.get(), transactionNo.get(), listOf(map.activeStatus, 0), page)
             }
             date.isPresent -> {
                 val searchDate = LocalDate.parse(date.get(), dateTimeFormat)
@@ -381,7 +378,7 @@ class InvoicePaymentService(
                 val endDate = searchDate.plusDays(1).atStartOfDay()
                 KotlinLogging.logger { }.info("Start Date: ${startDate}, End Date: $endDate")
                 demandNotes = when (status) {
-                    null -> iDemandNoteRepo.findByModifiedOnAndModifiedOnLessThanAndStatusOrderByIdAsc(dateTimeFormat.format(startDate), listOf(map.activeStatus, map.initStatus, map.workingStatus), page)
+                    null -> iDemandNoteRepo.findByModifiedOnAndModifiedOnLessThanAndPaymentStatusOrderByIdAsc(dateTimeFormat.format(startDate), listOf(map.activeStatus, map.initStatus, map.workingStatus), page)
                     else -> iDemandNoteRepo.findByModifiedOnAndModifiedOnLessThanAndPaymentStatusAndStatusOrderByIdAsc(dateTimeFormat.format(startDate), status, listOf(map.activeStatus, map.initStatus, map.workingStatus), page)
                 }
             }
@@ -402,62 +399,108 @@ class InvoicePaymentService(
         return iDemandNoteRepo.transactionStats(currentDate)
     }
 
-    fun paymentReceived(responseStatus: PaymentStatusResult): Boolean {
+    fun receivePayment(demandNote: CdDemandNoteEntity, responseStatus: PaymentStatusResult): CdDemandNoteEntity {
+        var payment = this.paymentRepository.findByReceiptNumber(responseStatus.response?.paymentReferenceNo ?: "")
+        if (payment != null) {
+            throw ExpectedDataNotFound("Payment with receipt number already exists, duplicate receipt number")
+        }
+        payment = CdDemandNotePaymentEntity()
+        payment.demandNoteId = demandNote
+        payment.previousBalance = demandNote.currentBalance ?: demandNote.totalAmount ?: BigDecimal.ZERO
+        payment.amount = responseStatus.response?.paymentAmount ?: BigDecimal.ZERO
+        payment.balanceAfter = demandNote.currentBalance?.minus(payment.amount ?: BigDecimal.ZERO)
+        payment.referenceNumber = responseStatus.response?.additionalInfo
+        payment.paymentSource = responseStatus.response?.paymentCode
+        payment.receiptNumber = responseStatus.response?.paymentReferenceNo
+        payment.receiptDate = responseStatus.response?.paymentDate
+        payment.varField5 = responseStatus.response?.additionalInfo
+        payment.varField6 = responseStatus.response?.currencyCode
+        payment.varField7 = responseStatus.response?.paymentDescription
+        commonDaoServices.loggedInUserAuthentication().let {
+            payment.modifiedBy = it.name
+            payment.createdBy = it.name
+        }
+        payment.status = 0
+        if ("00" == responseStatus.header?.statusCode) {
+            payment.status = 1
+        }
+        payment.createdOn = commonDaoServices.getTimestamp()
+        payment.modifiedOn = commonDaoServices.getTimestamp()
+        val updatedPayment = paymentRepository.save(payment)
+        // Last payment reference
+        demandNote.paymentSource = responseStatus.response?.paymentCode
+        demandNote.receiptDate = responseStatus.response?.paymentDate
+        demandNote.varField5 = responseStatus.response?.additionalInfo
+        demandNote.varField6 = responseStatus.response?.currencyCode
+        demandNote.varField7 = responseStatus.response?.paymentDescription
+        demandNote.receiptNo = responseStatus.response?.paymentReferenceNo
+        // Update demand note
+        paymentRepository.sumByDemandNoteIdAndStatus(demandNote.id!!, 1)?.let {
+            demandNote.amountPaid = it
+            demandNote.currentBalance = demandNote.totalAmount?.minus(demandNote.amountPaid ?: BigDecimal.ZERO)
+            updatedPayment.balanceAfter = demandNote.currentBalance
+            paymentRepository.save(updatedPayment)
+        } ?: throw ExpectedDataNotFound("Could not calculate the total")
+        // Payment
+        return iDemandNoteRepo.save(demandNote)
+    }
+
+    fun paymentReceived(responseStatus: PaymentStatusResult): CallbackResponses {
+        val response = CallbackResponses()
         iDemandNoteRepo.findByPostingReference(responseStatus.response?.demandNoteNo?.toUpperCase()
                 ?: "")?.let { demandNote ->
             if (demandNote.paymentStatus == 1) {
                 throw ExpectedDataNotFound("Payment has already been made, duplicate callback")
             }
             // Check duplicate receipts
-            if (iDemandNoteRepo.findByReceiptNo(responseStatus.response?.paymentReferenceNo ?: "").isPresent) {
-                throw ExpectedDataNotFound("Payment with receipt number already exists, duplicate receipt number")
-            }
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-            demandNote.paymentSource = responseStatus.response?.paymentCode
-            demandNote.receiptDate = responseStatus.response?.paymentDate
-            demandNote.varField5 = responseStatus.response?.additionalInfo
-            demandNote.varField6 = responseStatus.response?.currencyCode
-            demandNote.varField7 = responseStatus.response?.paymentDescription
-            demandNote.receiptNo = responseStatus.response?.paymentReferenceNo
-            if ("00" == responseStatus.header?.statusCode) {
-                demandNote.paymentStatus = map.activeStatus
-                demandNote.paymentDate = Timestamp.from(Instant.now())
-                demandNote.receiptDate = responseStatus.response?.paymentDate
+            val demandNoteUpdated = receivePayment(demandNote, responseStatus)
+            if (demandNote.currentBalance!! <= BigDecimal.ZERO) {
+                demandNoteUpdated.paymentStatus = map.activeStatus
+            } else {
+                demandNoteUpdated.paymentStatus = 5
+            }
+            // Check for payment completed status
+            if (demandNoteUpdated.paymentStatus == map.activeStatus) {
+                demandNoteUpdated.paymentDate = Timestamp.from(Instant.now())
+                demandNoteUpdated.receiptDate = responseStatus.response?.paymentDate
                 invoiceBatchDetailsRepo.findByBatchNumber(demandNote.demandNoteNumber!!)?.let { batch ->
                     batch.receiptNumber = responseStatus.response?.paymentReferenceNo
                     batch.paymentStarted = map.activeStatus
                     batch.receiptDate = responseStatus.response?.paymentDate?.time?.let { java.sql.Date(it) }
                     invoiceBatchDetailsRepo.save(batch)
                 }
+                response.status = ResponseCodes.SUCCESS_CODE
+                response.message = "Full Payment received"
             } else {
-                demandNote.paymentStatus = map.invalidStatus
-                invoiceBatchDetailsRepo.findByBatchNumber(demandNote.demandNoteNumber!!)?.let { batch ->
-                    batch.receiptNumber = responseStatus.response?.paymentReferenceNo
-                    batch.paymentStarted = map.invalidStatus
-                    batch.receiptDate = responseStatus.response?.paymentDate?.time?.let { java.sql.Date(it) }
-                    invoiceBatchDetailsRepo.save(batch)
-                }
+                response.data = mutableMapOf(
+                        Pair("amountPaid", demandNote.amountPaid),
+                        Pair("totalAmount", demandNote.totalAmount))
+                response.status = ResponseCodes.SUCCESS_CODE
+                response.message = "Partial Payment received"
             }
-            iDemandNoteRepo.save(demandNote)
+            iDemandNoteRepo.save(demandNoteUpdated)
             // Completion event
             GlobalScope.launch(Dispatchers.IO) {
                 delay(100L)
                 when (demandNote.paymentPurpose) {
                     PaymentPurpose.CONSIGNMENT.code -> {
-                        invoicePaymentCompleted(demandNote.cdId!!, demandNote.id!!)
+                        invoicePaymentCompleted(demandNoteUpdated.cdId!!, demandNoteUpdated.id!!, responseStatus.response?.paymentAmount)
                     }
                     PaymentPurpose.AUDIT.code -> {
-                        paymentCompleted(demandNote.cdId!!, demandNote.id!!)
+                        if (demandNoteUpdated.paymentStatus == map.activeStatus) {
+                            paymentCompleted(demandNoteUpdated.cdId!!, demandNoteUpdated.id!!)
+                        }
                     }
                     else -> {
-                        KotlinLogging.logger { }.info("Unhandled payment completion ${demandNote.id}-${demandNote.paymentPurpose}")
+                        KotlinLogging.logger { }.info("Unhandled payment completion ${demandNoteUpdated.id}-${demandNoteUpdated.paymentPurpose}")
                     }
                 }
             }
         }
                 ?: throw ExpectedDataNotFound("Invalid transaction reference number: ${responseStatus.response?.demandNoteNo}")
 
-        return true
+        return response
     }
 
     fun paymentCompleted(auctionId: Long, demandNoteId: Long) {
