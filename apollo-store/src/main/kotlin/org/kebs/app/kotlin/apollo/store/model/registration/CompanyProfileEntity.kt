@@ -234,6 +234,10 @@ class CompanyProfileEntity : Serializable {
     @Basic
     var closureOfOperations: Int? = null
 
+    @Column(name = "TYPE_OF_MANUFACTURE")
+    @Basic
+    var typeOfManufacture: Int? = null
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
@@ -287,8 +291,9 @@ class CompanyProfileEntity : Serializable {
                 modifiedBy == that.modifiedBy &&
                 modifiedOn == that.modifiedOn &&
                 deleteBy == that.deleteBy &&
-                deletedOn == that.deletedOn
-                branchName == that.branchName
+                deletedOn == that.deletedOn &&
+                branchName == that.branchName &&
+                typeOfManufacture == that.typeOfManufacture
     }
 
     override fun hashCode(): Int {
@@ -343,7 +348,8 @@ class CompanyProfileEntity : Serializable {
             modifiedOn,
             deleteBy,
             deletedOn,
-            branchName
+            branchName,
+            typeOfManufacture
         )
     }
 }

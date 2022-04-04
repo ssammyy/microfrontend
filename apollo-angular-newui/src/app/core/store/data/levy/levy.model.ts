@@ -31,6 +31,7 @@ export class SLevySL1{
     nameOfBranch :String;
     location: String;
     entryNumber: string;
+    manufacture_status: number;
 }
 export class ManufacturingInfo{
     NameAndBusinessOfProprietors: string;
@@ -319,6 +320,7 @@ export interface ManufactureDetailList {
     assignedTo: number;
     userId: number;
     ownership: string;
+    typeOfManufacture: number;
 
 }
 export interface ManufacturePendingTask {
@@ -376,6 +378,7 @@ export interface ManufacturePendingTaskData{
     manufactureId: string;
     approvalStatus: string;
     approvalStatusId: number;
+    typeOfManufacture: number;
     rejectStatus: string;
     approvalStatusLevelTwo: string;
     rejectStatusLevelTwo: string;

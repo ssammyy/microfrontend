@@ -54,6 +54,9 @@ class StandardLevyService(
     private val standardLevySiteVisitRemarksRepository: StandardLevySiteVisitRemarksRepository,
     private val applicationMapProperties: ApplicationMapProperties,
     private val daoService: DaoService,
+    private val iRegionsRepository: IRegionsRepository,
+    private val iTownsRepository: ITownsRepository,
+    private val iCountiesRepository: ICountiesRepository
 
 
     ) {
@@ -115,6 +118,7 @@ class StandardLevyService(
         companyProfileEditEntity.createdBy?.let{variables.put("originator", it)}
         companyProfileEditEntity.createdOn = commonDaoServices.getTimestamp()
         companyProfileEditEntity.createdOn?.let{variables.put("createdOn", it)}
+        companyProfileEditEntity.typeOfManufacture?.let{variables.put("typeOfManufacture", it)}
 
         companyProfileEditEntity.status=1
         val userIntType = companyProfileEditEntity.userType
@@ -505,15 +509,16 @@ return getUserTasks();
                     companyProfileEntity.businessNatures?.let { variables["businessNatures"] = it }
                     companyProfileEntity.buildingName?.let { variables["buildingName"] = it }
                     companyProfileEntity.directorIdNumber?.let { variables["directorIdNumber"] = it }
-                    companyProfileEntity.region?.let { variables["region"] = it }
-                    companyProfileEntity.county?.let { variables["county"] = it }
-                    companyProfileEntity.town?.let { variables["town"] = it }
+                    variables["region"] = iRegionsRepository.findNameById(companyProfileEntity.region)
+                    variables["county"] = iCountiesRepository.findNameById(companyProfileEntity.county)
+                    variables["town"] = iTownsRepository.findNameById(companyProfileEntity.town)
                     companyProfileEntity.manufactureStatus?.let { variables["manufactureStatus"] = it }
                     companyProfileEntity.entryNumber?.let { variables["entryNumber"] = it }
                     companyProfileEntity.id?.let { variables["manufacturerEntity"] = it }
                         ?: throw Exception("COMPANY NOT FOUND")
                     companyProfileEntity.userId?.let { variables["contactId"] = it }
                     companyProfileEntity.taskType?.let { variables["taskType"] = it }
+                    companyProfileEntity.typeOfManufacture?.let { variables["typeOfManufacture"] = it }
 
                     companyProfileEntity.assignedTo = companyProfileEntity.assignedTo
                     companyProfileEntity.assignStatus = 1
@@ -1200,7 +1205,7 @@ return getUserTasks();
 
         val recipient = standardLevyFactoryVisitReportEntity.assigneeId?.let { commonDaoServices.getUserEmail(it) };
         val subject = "Site Visit Report"
-        val messageBody= "Site visit report has been prepared and uploaded. Kindly login to the KIMS Portal to view"
+        val messageBody= "Dear Customer, The site visit report has been prepared and uploaded. Kindly login to the KIMS portal to view. Regards,"
         if (recipient != null) {
             notifications.sendEmail(recipient, subject, messageBody)
         }
@@ -1400,6 +1405,15 @@ return getUserTasks();
         val businessNature = companyProfileRepo.getBusinessNature(userID)
         return iBusinessNatureRepository.getManufacturerStatus(businessNature)
     }
+
+    fun getSlNotificationFormDetails(manufactureId: Long): NotificationFormDetailsHolder {
+        stdLevyNotificationFormRepository.findTopByManufactureIdOrderByIdDesc(manufactureId)
+            ?.let {
+                return stdLevyNotificationFormRepository.getSlNotificationFormDetails(it)
+            }
+            ?: throw ExpectedDataNotFound("No Data Found")
+    }
+
 
     fun getCompanyEditedDetails(manufactureId: Long): CompanyProfileEditEntity {
         return companyProfileEditEntityRepository.findFirstByManufactureIdOrderByIdDesc(manufactureId)

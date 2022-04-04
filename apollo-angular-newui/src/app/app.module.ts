@@ -307,6 +307,7 @@ import {UploadSacSummaryComponent} from './apollowebs/standards-development/adop
 import {ViewSacSummaryComponent} from './apollowebs/standards-development/adoptionOfEaStds/view-sac-summary/view-sac-summary.component';
 import {ViewSacSummaryApprovedComponent} from './apollowebs/standards-development/adoptionOfEaStds/view-sac-summary-approved/view-sac-summary-approved.component';
 import {AddAttachmentComponent} from './apollowebs/di/auction/add-attachment/add-attachment.component';
+import { NwaTasksComponent } from './apollowebs/standards-development/workshop-agreement/nwa-tasks/nwa-tasks.component';
 
 
 @NgModule({
@@ -645,7 +646,8 @@ import {AddAttachmentComponent} from './apollowebs/di/auction/add-attachment/add
         ViewSacSummaryComponent,
         ViewSacSummaryApprovedComponent,
         AddApiClientComponent,
-        AddAttachmentComponent
+        AddAttachmentComponent,
+        NwaTasksComponent
     ],
     entryComponents: [],
     providers: [DatePipe,

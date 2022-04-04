@@ -151,6 +151,10 @@ class CompanyProfileEditEntity : Serializable {
     @Basic
     var status: Long? = null
 
+    @Column(name = "TYPE_OF_MANUFACTURE")
+    @Basic
+    var typeOfManufacture: Int? = null
+
 
 
 
@@ -191,7 +195,8 @@ class CompanyProfileEditEntity : Serializable {
                 version == that.version &&
                 updateBy == that.updateBy &&
                 ownership == that.ownership &&
-                updatedOn == that.updatedOn
+                updatedOn == that.updatedOn &&
+                typeOfManufacture == that.typeOfManufacture
     }
     override fun hashCode(): Int {
         return Objects.hash(
@@ -228,9 +233,8 @@ class CompanyProfileEditEntity : Serializable {
             version,
             updateBy,
             ownership,
-            updatedOn
-
-
+            updatedOn,
+            typeOfManufacture
         )
     }
 }

@@ -178,12 +178,12 @@ class NWAController(val nwaService: NWAService,
 //    commonDaoServices.downloadFile(response, mappedFileClass)
 //}
 //********************************************************** get KNW Tasks **********************************************************
-    @PreAuthorize("hasAuthority('KNW_SEC_READ')")
-    @GetMapping("/knwtasks")
-    fun getKNWTask():List<TaskDetails>
-    {
-        return nwaService.getKNWTasks()
-    }
+//    @PreAuthorize("hasAuthority('KNW_SEC_READ')")
+//    @GetMapping("/knwtasks")
+//    fun getKNWTask():List<TaskDetails>
+//    {
+//        return nwaService.getKNWTasks()
+//    }
 
     @GetMapping("/view/justification")
     fun viewJustificationFile(
@@ -208,26 +208,28 @@ class NWAController(val nwaService: NWAService,
     //KNW decision on Justification
     @PreAuthorize("hasAuthority('KNW_SEC_MODIFY')")
     @PostMapping("/decisionOnJustificationKNW")
-    fun decisionOnJustificationKNW(@RequestBody nwaJustificationDecision: NWAJustificationDecision) : List<TaskDetails>
+    fun decisionOnJustificationKNW(@RequestBody nwaJustificationDecision: NWAJustificationDecision,
+                                   standardNwaRemarks: StandardNwaRemarks) : List<WorkShopAgreementTasks>
     {
-        return nwaService.decisionOnJustificationKNW(nwaJustificationDecision)
+        return nwaService.decisionOnJustificationKNW(nwaJustificationDecision,standardNwaRemarks)
     }
 
     //********************************************************** get spc_sec Tasks **********************************************************
-    @PreAuthorize("hasAuthority('SPC_SEC_SD_READ')")
-    @GetMapping("/getSpcSecTasks")
-    fun getSPCSECTasks():List<TaskDetails>
-    {
-        return nwaService.getSPCSECTasks()
-    }
+//    @PreAuthorize("hasAuthority('SPC_SEC_SD_READ')")
+//    @GetMapping("/getSpcSecTasks")
+//    fun getSPCSECTasks():List<TaskDetails>
+//    {
+//        return nwaService.getSPCSECTasks()
+//    }
 
 
     //SPC decision on Justification
     @PreAuthorize("hasAuthority('SPC_SEC_SD_MODIFY')")
     @PostMapping("/decisionOnJustification")
-    fun decisionOnJustification(@RequestBody nwaJustificationDecision: NWAJustificationDecision) : List<TaskDetails>
+    fun decisionOnJustification(@RequestBody nwaJustificationDecision: NWAJustificationDecision,
+                                standardNwaRemarks: StandardNwaRemarks) : List<WorkShopAgreementTasks>
     {
-        return nwaService.decisionOnJustification(nwaJustificationDecision)
+        return nwaService.decisionOnJustification(nwaJustificationDecision,standardNwaRemarks)
     }
 
 
@@ -278,11 +280,11 @@ class NWAController(val nwaService: NWAService,
 
     //********************************************************** get di-sdt Tasks **********************************************************
     //@PreAuthorize("hasAuthority('DI_SDT_SD_READ')")
-    @GetMapping("/getDiSdtTasks")
-    fun getDISDTTasks():List<TaskDetails>
-    {
-        return nwaService.getDISDTTasks()
-    }
+//    @GetMapping("/getDiSdtTasks")
+//    fun getDISDTTasks():List<TaskDetails>
+//    {
+//        return nwaService.getDISDTTasks()
+//    }
 
     // View DI SDT Uploaded document
     @GetMapping("/view/di-justification")
@@ -306,19 +308,20 @@ class NWAController(val nwaService: NWAService,
     }
 
     //********************************************************** get Tc Sec Tasks **********************************************************
-    @PreAuthorize("hasAuthority('TC_SEC_SD_READ')")
-    @GetMapping("/getTCSeCTasks")
-    fun getTCSeCTasks():List<TaskDetails>
-    {
-        return nwaService.getTCSeCTasks()
-    }
+//    @PreAuthorize("hasAuthority('TC_SEC_SD_READ')")
+//    @GetMapping("/getTCSeCTasks")
+//    fun getTCSeCTasks():List<TaskDetails>
+//    {
+//        return nwaService.getTCSeCTasks()
+//    }
 
 
     //********************************************************** Decision  on DI-SDT Approval **********************************************************
     //@PreAuthorize("hasAuthority('DI_SDT_SD_MODIFY')")
     @PostMapping("/decisionOnDiSdtJustification")
-    fun decisionOnDiSdtJustification(@RequestBody workshopAgreement: WorkshopAgreement): List<TaskDetails> {
-        return nwaService.decisionOnDiSdtJustification(workshopAgreement)
+    fun decisionOnDiSdtJustification(@RequestBody workshopAgreement: WorkshopAgreement,
+                                     standardNwaRemarks: StandardNwaRemarks): List<WorkShopAgreementTasks> {
+        return nwaService.decisionOnDiSdtJustification(workshopAgreement,standardNwaRemarks)
     }
 
     //********************************************************** process prepare Preliminary Draft **********************************************************
@@ -388,18 +391,19 @@ class NWAController(val nwaService: NWAService,
     //********************************************************** Decision  on Preliminary Draft **********************************************************
     @PreAuthorize("hasAuthority('KNW_SEC_MODIFY')")
     @PostMapping("/decisionOnPd")
-    fun decisionOnPD(@RequestBody nwaPreliminaryDraftDecision: NWAPreliminaryDraftDecision) : List<TaskDetails>
+    fun decisionOnPD(@RequestBody nwaPreliminaryDraftDecision: NWAPreliminaryDraftDecision,
+                     standardNwaRemarks: StandardNwaRemarks) : List<WorkShopAgreementTasks>
     {
-        return nwaService.decisionOnPD(nwaPreliminaryDraftDecision)
+        return nwaService.decisionOnPD(nwaPreliminaryDraftDecision,standardNwaRemarks)
     }
 
     //********************************************************** get Head of Publishing Tasks **********************************************************
-    @PreAuthorize("hasAuthority('HOP_SD_READ')")
-    @GetMapping("/getHOPTasks")
-    fun getHOPTasks():List<TaskDetails>
-    {
-        return nwaService.getHOPTasks()
-    }
+//    @PreAuthorize("hasAuthority('HOP_SD_READ')")
+//    @GetMapping("/getHOPTasks")
+//    fun getHOPTasks():List<TaskDetails>
+//    {
+//        return nwaService.getHOPTasks()
+//    }
 
     //********************************************************** process prepare Workshop Draft **********************************************************
     @PreAuthorize("hasAuthority('HOP_SD_MODIFY')")
@@ -446,12 +450,12 @@ class NWAController(val nwaService: NWAService,
 
 
     //********************************************************** get Head of SAC SEC Tasks **********************************************************
-    @PreAuthorize("hasAuthority('SAC_SEC_SD_READ')")
-    @GetMapping("/getSacSecTasks")
-    fun getSacSecTasks():List<TaskDetails>
-    {
-        return nwaService.getSacSecTasks()
-    }
+//    @PreAuthorize("hasAuthority('SAC_SEC_SD_READ')")
+//    @GetMapping("/getSacSecTasks")
+//    fun getSacSecTasks():List<TaskDetails>
+//    {
+//        return nwaService.getSacSecTasks()
+//    }
 
     // View WD Uploaded document
     @GetMapping("/view/workShopDraft")
@@ -477,11 +481,12 @@ class NWAController(val nwaService: NWAService,
     //********************************************************** Decision  on Workshop Draft Approval **********************************************************
     @PreAuthorize("hasAuthority('SAC_SEC_SD_MODIFY')")
     @PostMapping("/decisionOnWd")
-    fun decisionOnWd(@RequestBody nwaWorkshopDraftDecision: NWAWorkshopDraftDecision) : List<TaskDetails>
+    fun decisionOnWd(@RequestBody nwaWorkshopDraftDecision: NWAWorkshopDraftDecision,
+                     standardNwaRemarks: StandardNwaRemarks) : List<WorkShopAgreementTasks>
     {
         val gson = Gson()
         KotlinLogging.logger { }.info { "WORKSHOP DRAFT DECISION" + gson.toJson(nwaWorkshopDraftDecision) }
-        return nwaService.decisionOnWD(nwaWorkshopDraftDecision)
+        return nwaService.decisionOnWD(nwaWorkshopDraftDecision,standardNwaRemarks)
     }
 
 
@@ -529,12 +534,12 @@ class NWAController(val nwaService: NWAService,
 
 
     //********************************************************** get Head of HO SIC Tasks **********************************************************
-    @PreAuthorize("hasAuthority('HO_SIC_SD_READ')")
-    @GetMapping("/getHoSiCTasks")
-    fun getHoSiCTasks():List<TaskDetails>
-    {
-        return nwaService.getHoSiCTasks()
-    }
+//    @PreAuthorize("hasAuthority('HO_SIC_SD_READ')")
+//    @GetMapping("/getHoSiCTasks")
+//    fun getHoSiCTasks():List<TaskDetails>
+//    {
+//        return nwaService.getHoSiCTasks()
+//    }
 
     // View STD Uploaded document
     @GetMapping("/view/knwStandard")
@@ -657,6 +662,51 @@ class NWAController(val nwaService: NWAService,
         return ResponseEntity.ok()
             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDB!!.name + "\"")
             .body(fileDB.data)
+    }
+
+    @PreAuthorize("hasAuthority('KNW_SEC_READ') or hasAuthority('SPC_SEC_SD_READ')" +
+            " or hasAuthority('DI_SDT_SD_READ') or hasAuthority('HOP_SD_READ') or" +
+            " hasAuthority('SAC_SEC_SD_READ') or hasAuthority('HO_SIC_SD_READ')  ")
+    @GetMapping("/getUserTasks")
+    fun getUserTasks():List<WorkShopAgreementTasks>
+    {
+        return nwaService.getUserTasks()
+    }
+
+    @GetMapping("/getKnwSecretary")
+    @ResponseBody
+    fun getKnwSecretary(): List<UserDetailHolder> {
+        return nwaService.getKnwSecretary()
+    }
+
+    @GetMapping("/getDirector")
+    @ResponseBody
+    fun getDirector(): List<UserDetailHolder> {
+        return nwaService.getDirector()
+    }
+
+    @GetMapping("/getHeadOfPublishing")
+    @ResponseBody
+    fun getHeadOfPublishing(): List<UserDetailHolder> {
+        return nwaService.getHeadOfPublishing()
+    }
+
+    @GetMapping("/getSacSecretary")
+    @ResponseBody
+    fun getSacSecretary(): List<UserDetailHolder> {
+        return nwaService.getSacSecretary()
+    }
+
+    @GetMapping("/getHeadOfSic")
+    @ResponseBody
+    fun getHeadOfSic(): List<UserDetailHolder> {
+        return nwaService.getHeadOfSic()
+    }
+
+    @GetMapping("/getSpcSecretary")
+    @ResponseBody
+    fun getSpcSecretary(): List<UserDetailHolder> {
+        return nwaService.getSpcSecretary()
     }
 
 

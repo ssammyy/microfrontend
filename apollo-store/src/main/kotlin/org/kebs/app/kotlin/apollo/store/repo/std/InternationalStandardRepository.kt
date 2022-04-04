@@ -190,6 +190,31 @@ interface UserListRepository : JpaRepository<UsersEntity, Long> {
     @Query(value = "SELECT * FROM DAT_KEBS_USERS  WHERE USER_TYPE IN ('61','62') ", nativeQuery = true)
     fun getSlLvTwoListv(): List<UsersEntity>
 
+    @Query(value = "SELECT u.FIRST_NAME AS FIRSTNAME,u.LAST_NAME AS LASTNAME,u.ID AS ID FROM DAT_KEBS_USERS u JOIN CFG_USER_ROLES_ASSIGNMENTS c ON u.ID=c.USER_ID " +
+            "JOIN CFG_USER_ROLES r ON c.ROLE_ID=r.ID WHERE r.ROLE_NAME IN ('KNW_SEC_SD') ", nativeQuery = true)
+    fun getKnwSecretary(): List<UserDetailHolder>
+
+    @Query(value = "SELECT u.FIRST_NAME AS FIRSTNAME,u.LAST_NAME AS LASTNAME,u.ID AS ID FROM DAT_KEBS_USERS u JOIN CFG_USER_ROLES_ASSIGNMENTS c ON u.ID=c.USER_ID " +
+            "JOIN CFG_USER_ROLES r ON c.ROLE_ID=r.ID WHERE r.ROLE_NAME IN ('SPC_SEC_SD') ", nativeQuery = true)
+    fun getSpcSecretary(): List<UserDetailHolder>
+
+    @Query(value = "SELECT u.FIRST_NAME AS FIRSTNAME,u.LAST_NAME AS LASTNAME,u.ID AS ID FROM DAT_KEBS_USERS u JOIN CFG_USER_ROLES_ASSIGNMENTS c ON u.ID=c.USER_ID " +
+            "JOIN CFG_USER_ROLES r ON c.ROLE_ID=r.ID WHERE r.ROLE_NAME IN ('DI_SDT_SD') ", nativeQuery = true)
+    fun getDirector(): List<UserDetailHolder>
+
+    @Query(value = "SELECT u.FIRST_NAME AS FIRSTNAME,u.LAST_NAME AS LASTNAME,u.ID AS ID FROM DAT_KEBS_USERS u JOIN CFG_USER_ROLES_ASSIGNMENTS c ON u.ID=c.USER_ID " +
+            "JOIN CFG_USER_ROLES r ON c.ROLE_ID=r.ID WHERE r.ROLE_NAME IN ('HOP_SD') ", nativeQuery = true)
+    fun getHeadOfPublishing(): List<UserDetailHolder>
+
+    @Query(value = "SELECT u.FIRST_NAME AS FIRSTNAME,u.LAST_NAME AS LASTNAME,u.ID AS ID FROM DAT_KEBS_USERS u JOIN CFG_USER_ROLES_ASSIGNMENTS c ON u.ID=c.USER_ID " +
+            "JOIN CFG_USER_ROLES r ON c.ROLE_ID=r.ID WHERE r.ROLE_NAME IN ('SAC_SEC_SD') ", nativeQuery = true)
+    fun getSacSecretary(): List<UserDetailHolder>
+
+    @Query(value = "SELECT u.FIRST_NAME AS FIRSTNAME,u.LAST_NAME AS LASTNAME,u.ID AS ID FROM DAT_KEBS_USERS u JOIN CFG_USER_ROLES_ASSIGNMENTS c ON u.ID=c.USER_ID " +
+            "JOIN CFG_USER_ROLES r ON c.ROLE_ID=r.ID WHERE r.ROLE_NAME IN ('HO_SIC_SD') ", nativeQuery = true)
+    fun getHeadOfSic(): List<UserDetailHolder>
+
+
 
 
 }
@@ -234,6 +259,9 @@ interface TechnicalComListRepository : JpaRepository<TechnicalCommittee, Long> {
 }
 
 interface ComStandardJCRepository : JpaRepository<ComStandardJC, Long> {
+
+}
+interface StandardNwaRemarksRepository : JpaRepository<StandardNwaRemarks, Long> {
 
 }
 //interface UserNameRepository : JpaRepository<UsersEntity,Long>{

@@ -75,7 +75,6 @@ export interface StdTCTask {
 
 }
 
-
 export interface NWAJustification {
     id: number;
     meetingDate: string;
@@ -95,6 +94,7 @@ export interface NWAJustification {
     knwCommittee: string;
     departmentName: string;
     comments: string;
+    assignedTo: number;
 
 
 }
@@ -108,6 +108,53 @@ export interface KNWDepartment {
 export interface KNWCommittee {
     id: number;
     technical_committee_no: string;
+
+}
+
+export interface NwaTasks{
+    taskId: string;
+    name: string;
+    processId: string;
+    taskData: NwaTaskData;
+}
+
+export interface NwaTaskData{
+    ID: number;
+    requestedBy: string;
+    requestNumber: string;
+    referenceMaterial: string;
+    knw: string;
+    knwSecretary: string;
+    meetingDate: string;
+    Yes: string;
+    sl: string;
+    department: string;
+    issuesAddressed: string;
+    knwAcceptanceDate: string;
+    title: string;
+    scope: string;
+    normativeReference: string;
+    symbolsAbbreviatedTerms: string;
+    clause: string;
+    special: string;
+    diJNumber: bigint;
+    submissionDate: string;
+    knwCommittee: string;
+    departmentName: string;
+    jsUploadDocId: number;
+    comments: string;
+    cost: number;
+    numberOfMeetings: number;
+    identifiedNeed: string;
+    dateOfApproval: string;
+    taskId: string;
+    jstNumber: number;
+    ksNumber: string;
+    description: string;
+    dateUploaded: string;
+    originator: number;
+    diOriginator:number;
+    vpdOriginator: number;
 
 }
 

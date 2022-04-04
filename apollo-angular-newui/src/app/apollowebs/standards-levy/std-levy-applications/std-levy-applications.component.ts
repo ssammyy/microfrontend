@@ -1,6 +1,6 @@
 import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {UsersEntity} from "../../../core/store/data/std/std.model";
-import {ConfirmEditCompanyDTO, ManufactureDetailList} from "../../../core/store/data/levy/levy.model";
+import {ConfirmEditCompanyDTO, ManufactureDetailList, SlModel} from "../../../core/store/data/levy/levy.model";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {Router} from "@angular/router";
 import {Store} from "@ngrx/store";
@@ -29,6 +29,7 @@ export class StdLevyApplicationsComponent implements OnInit {
   taskTypeOne: number;
   taskTypeTwo: number;
 
+  slFormDetails !: SlModel;
   public users !: UsersEntity[];
   public approveUsersOne !: UsersEntity[];
   public approveUsersTwo !: UsersEntity[];
@@ -58,24 +59,28 @@ export class StdLevyApplicationsComponent implements OnInit {
   isShowAssign2Form=true;
   isShowEditForm=true;
   isShowEditedForm=true;
+  isShowSLForm=true;
 
   toggleDisplayAssignForm() {
     this.isShowAssignForm = !this.isShowAssignForm;
     this.isShowAssign1Form= true;
     this.isShowAssign2Form= true;
     this.isShowEditForm=true;
+    this.isShowSLForm=true;
   }
   toggleDisplayAssignTo1Form() {
     this.isShowAssign1Form = !this.isShowAssign1Form;
     this.isShowAssignForm=true;
     this.isShowAssign2Form= true;
     this.isShowEditForm=true;
+    this.isShowSLForm=true;
   }
   toggleDisplayAssignTo2Form() {
     this.isShowAssign2Form = !this.isShowAssign2Form;
     this.isShowAssignForm=true;
     this.isShowAssign1Form= true;
     this.isShowEditForm=true;
+    this.isShowSLForm=true;
 
   }
   toggleDisplayEditForm() {
@@ -84,6 +89,7 @@ export class StdLevyApplicationsComponent implements OnInit {
     this.isShowEditedForm = true;
     this.isShowAssign1Form= true;
     this.isShowAssign2Form= true;
+    this.isShowSLForm= true;
   }
 
   toggleDisplayEditedForm(manufactureId: number) {
@@ -105,6 +111,31 @@ export class StdLevyApplicationsComponent implements OnInit {
     this.isShowAssignForm = true;
     this.isShowAssign1Form = true;
     this.isShowAssign2Form = true;
+    this.isShowSLForm = true;
+  }
+  toggleDisplaySLForm(manufactureId: number) {
+    this.loadingText = "Loading ...."
+      this.SpinnerService.show();
+      this.levyService.getCompanySLForms(manufactureId).subscribe(
+          (response: SlModel)=> {
+            this.slFormDetails = response;
+            //console.log(this.slFormDetails);
+            this.SpinnerService.hide();
+          },
+          (error: HttpErrorResponse)=>{
+            this.SpinnerService.hide();
+            console.log(error.message)
+            //alert(error.message);
+          }
+      );
+
+    this.isShowSLForm = !this.isShowSLForm;
+    this.isShowEditForm = true;
+    this.isShowAssignForm = true;
+    this.isShowAssign1Form = true;
+    this.isShowAssign2Form = true;
+    this.isShowEditedForm = true;
+
   }
 
   @ViewChild(DataTableDirective, {static: false})
@@ -163,7 +194,8 @@ export class StdLevyApplicationsComponent implements OnInit {
       companyName: [],
       kraPin: [],
       registrationNumber: [],
-      entryNumber: []
+      entryNumber: [],
+      typeOfManufacture:[]
 
     });
 
@@ -173,7 +205,8 @@ export class StdLevyApplicationsComponent implements OnInit {
       companyId: [],
       ownership: [],
       userType:[],
-      taskType:[]
+      taskType:[],
+      typeOfManufacture:[]
 
     });
     this.assignCompanyTaskFormGroup = this.formBuilder.group({
@@ -202,7 +235,8 @@ export class StdLevyApplicationsComponent implements OnInit {
       entryNumber: [],
       contactId: [],
       userType:[],
-      taskType:[]
+      taskType:[],
+      typeOfManufacture:[]
 
     });
     this.assignCompanyTask1FormGroup = this.formBuilder.group({
@@ -231,7 +265,8 @@ export class StdLevyApplicationsComponent implements OnInit {
       entryNumber: [],
       contactId: [],
       userType:[],
-      taskType:[]
+      taskType:[],
+      typeOfManufacture:[]
 
     });
     this.assignCompanyTask2FormGroup = this.formBuilder.group({
@@ -260,7 +295,8 @@ export class StdLevyApplicationsComponent implements OnInit {
       entryNumber: [],
       contactId: [],
       userType:[],
-      taskType:[]
+      taskType:[],
+      typeOfManufacture:[]
 
     });
 
