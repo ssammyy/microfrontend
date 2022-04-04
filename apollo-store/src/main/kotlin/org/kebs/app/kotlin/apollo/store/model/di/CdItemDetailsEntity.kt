@@ -120,7 +120,7 @@ class CdItemDetailsEntity : Serializable {
     @Basic
     var packageQuantity: BigDecimal? = null
 
-    @Column(name = "UNIT_PRICE_NCY")
+    @Column(name = "UNIT_PRICE_NCY", precision = 17, scale = 2)
     @Basic
     var unitPriceNcy: BigDecimal? = null
 
@@ -144,7 +144,7 @@ class CdItemDetailsEntity : Serializable {
     @Basic
     var foreignCurrencyCode: String? = null
 
-    @Column(name = "TOTAL_PRICE_NCY")
+    @Column(name = "TOTAL_PRICE_NCY", precision = 17, scale = 2)
     @Basic
     var totalPriceNcy: BigDecimal? = null
 
@@ -156,7 +156,7 @@ class CdItemDetailsEntity : Serializable {
     @Basic
     var supplimentaryQuantity: String? = null
 
-    @Column(name = "UNIT_PRICE_FCY")
+    @Column(name = "UNIT_PRICE_FCY", precision = 17, scale = 2)
     @Basic
     var unitPriceFcy: BigDecimal? = null
 

@@ -140,7 +140,7 @@
                                             <td *ngIf="manufacturePendingTask.name==='Approve Edited Company Details'"><span class="badge badge-primary" style="width: 160px;">{{manufacturePendingTask.name}}</span></td>
                                             <td *ngIf="manufacturePendingTask.name==='Edit Approved'"><span class="badge badge-info" style="width: 160px;">{{manufacturePendingTask.name}}</span></td>
                                             <td *ngIf="manufacturePendingTask.name==='Edit Not Approved'"><span class="badge badge-info" style="width: 160px;">{{manufacturePendingTask.name}}</span></td>
-                                            <td><span class="badge badge-warning">Assigned</span></td>
+                                            <td *ngIf="manufacturePendingTask.taskData.typeOfManufacture==1"><span class="badge badge-warning">Assigned</span></td>
                                             <td *ngIf="manufacturePendingTask.name==='Schedule Site Visit'"><button (click)="onOpenModalPending(manufacturePendingTask,'viewPending')" type="submit" class="btn btn-success btn-sm"  style="border-radius: 40px;"> More</button></td>
                                             <td *ngIf="manufacturePendingTask.name==='Prepare Report on Visit'"><button (click)="onOpenModalPending(manufacturePendingTask,'prepareSiteVisitReport')" type="submit" class="btn btn-success btn-sm"  style="border-radius: 40px;"> More</button></td>
                                             <td *ngIf="manufacturePendingTask.name==='Notification of Report'"><button (click)="onOpenModalPending(manufacturePendingTask,'reportNotification1')" type="submit" class="btn btn-success btn-sm"  style="border-radius: 40px;"> More</button></td>
@@ -570,12 +570,15 @@
                                 </div>
                                 <form #approveForm="ngForm" >
                                     <div class="modal-body">
-                                        <div>
+
+                                        <div  class="row">
                                             <button (click)=toggleDisplayScheduleForm()  class="btn btn-primary btn-sm">Schedule</button>
                                             <button type="button" class="btn btn-success btn-sm">Add Remarks</button>
                                             <button type="button" class="btn btn-danger btn-sm">View Remarks</button>
                                             <button type="button" class="btn btn-warning btn-sm">Close Account</button>
+
                                         </div>
+
 
                                         <div class="container col-md-12" [hidden]="isShowScheduleForm">
 
@@ -888,11 +891,11 @@
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    <div>
+                                    <div class="row">
                                         <button (click)=toggleDisplayReportForm()  class="btn btn-primary btn-sm">Prepare Report</button>
                                         <button type="button" (click)=toggleDisplayRemarksTab(actionRequestPending?.taskData?.visitID) class="btn btn-danger btn-sm">View Remarks</button>
-
                                     </div>
+
                                     <div class="col-12 row">
 
                                         <div class="container col-md-12" [hidden]="isShowRemarksTab">
@@ -961,6 +964,7 @@
                                                                       class="form-control one-column-input" formControlName="actionTaken" name="actionTaken"
                                                                       placeholder="Name" type="text"></textarea>
                                                         </div>
+
                                                         <div *ngIf="roles?.includes('SL_IS_PL_OFFICER')" class="form-group col-12">
                                                             <input type="hidden" formControlName="userType"  name="userType" class="form-control" value="{{userType}}" >
                                                             <label>Send Report To</label>
@@ -1303,7 +1307,7 @@
                                 </div>
                                 <div class="modal-body">
                                     <nav>
-                                        <div class="nav nav-tabs nav-fill" id="nav-tabs" role="tablist">
+                                        <div  class="nav nav-tabs nav-fill" id="nav-tabs" role="tablist">
                                             <a class="nav-item nav-link active" id="nav-com-tab" data-toggle="tab" href="#nav-comData" role="tab" aria-controls="nav-com" aria-selected="true">Company Details</a>
                                             <a class="nav-item nav-link" id="nav-report-tab" data-toggle="tab" href="#nav-comReport" role="tab" aria-controls="nav-report" aria-selected="false">View Report</a>
                                         </div>

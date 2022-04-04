@@ -61,15 +61,15 @@ class PvocInvoicingEntity:Serializable {
     @Basic
     var discountDate: Date? = null
 
-    @Column(name = "AMOUNT_DUE", nullable = false, precision = 2)
+    @Column(name = "AMOUNT_DUE", nullable = false, precision = 17, scale = 2)
     @Basic
     var amountDue: Long = 0
 
-    @Column(name = "DISCOUNT_AMOUNT", nullable = false, precision = 2)
+    @Column(name = "DISCOUNT_AMOUNT", nullable = false, precision = 17, scale = 2)
     @Basic
     var discountAmount: Long = 0
 
-    @Column(name = "UNIT_PRICE", nullable = false, precision = 2)
+    @Column(name = "UNIT_PRICE", nullable = false, precision = 17, scale = 2)
     @Basic
     var unitPrice: Long = 0
 
@@ -81,19 +81,19 @@ class PvocInvoicingEntity:Serializable {
     @Basic
     var currency: String? = null
 
-    @Column(name = "SUBTOTAL_BEFORE_TAXES", nullable = true, precision = 2)
+    @Column(name = "SUBTOTAL_BEFORE_TAXES", nullable = true, precision = 17, scale = 2)
     @Basic
     var subtotalBeforeTaxes: Long? = null
 
-    @Column(name = "TOTAL_TAXES", nullable = false, precision = 2)
+    @Column(name = "TOTAL_TAXES", nullable = false, precision = 17, scale = 2)
     @Basic
     var totalTaxes: Long = 0
 
-    @Column(name = "TOTAL_AMOUNT", nullable = false, precision = 2)
+    @Column(name = "TOTAL_AMOUNT", nullable = false, precision = 17, scale = 2)
     @Basic
     var totalAmount: Long = 0
 
-    @Column(name = "AMOUNT_PAID", nullable = false, precision = 2)
+    @Column(name = "AMOUNT_PAID", nullable = false, precision = 17, scale = 2)
     @Basic
     var amountPaid: Long? = null
 
@@ -117,7 +117,7 @@ class PvocInvoicingEntity:Serializable {
     @Basic
     var usdAccountNumber: String? = null
 
-    @Column(name = "BANK_CODE", nullable = false, precision = 0)
+    @Column(name = "BANK_CODE", nullable = false, precision = 17, scale = 2)
     @Basic
     var bankCode: Long = 0
 
@@ -133,7 +133,7 @@ class PvocInvoicingEntity:Serializable {
     @Basic
     var pinNumber: String? = null
 
-    @Column(name = "STATUS", nullable = true, precision = 0)
+    @Column(name = "STATUS", nullable = true, precision = 17, scale = 2)
     @Basic
     var status: Long? = null
 
@@ -213,11 +213,11 @@ class PvocInvoicingEntity:Serializable {
     @Basic
     var reconcialitionId: Long? = null
 
-    @Column(name = "PARTNER", nullable = true, precision = 0)
+    @Column(name = "PARTNER", nullable = true)
     @Basic
     var partner: Long? = null
 
-    @Column(name = "REASON", nullable = true, precision = 0)
+    @Column(name = "REASON", nullable = true)
     @Basic
     var reason: String? = null
 

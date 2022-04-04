@@ -21,6 +21,7 @@ import org.springframework.web.servlet.function.ServerResponse
 import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
+import javax.transaction.Transactional
 
 @Component
 class ChecklistHandler(
@@ -80,8 +81,9 @@ class ChecklistHandler(
         if (multipartRequest != null) {
             multipartRequest.getFile("file")?.let { multipartFile ->
                 val comment = multipartRequest.getParameter("comment")
+                val referenceNumber = multipartRequest.getParameter("referenceNumber")
                 val itemId = req.pathVariable("inspectionId")
-                response = checlistService.ministryInspectionList(itemId.toLongOrDefault(0L), comment.toString(), multipartFile)
+                response = checlistService.ministryInspectionList(itemId.toLongOrDefault(0L), comment.toString(), referenceNumber.toString(), multipartFile)
                 response
             } ?: run {
                 response.responseCode = ResponseCodes.FAILED_CODE
@@ -264,6 +266,7 @@ class ChecklistHandler(
         return ServerResponse.ok().body(response)
     }
 
+    @Transactional
     fun saveChecklist(req: ServerRequest): ServerResponse {
         val response = ApiResponseModel()
         try {
@@ -275,12 +278,22 @@ class ChecklistHandler(
                     var cdItem = daoServices.findCDWithUuid(cdUuid)
                     //Save the general checklist
                     val generalCheckList = form.generalChecklist()
-
+                    generalCheckList.ucrNumber = cdItem.ucrNumber
                     generalCheckList.description = cdItem.description
                     daoServices.findCDImporterDetails(cdItem.cdImporter ?: 0).let { importer ->
                         generalCheckList.importersName = importer.name
                     }
+                    // Manifest details
+                    cdItem.manifestNumber?.let { man ->
+                        daoServices.findManifest(man)?.let {
+                            generalCheckList.declarationNumber = it.manifestNumber
+                            generalCheckList.declarationRepresentative = it.receiver?.orEmpty()
+                        }
+                    }
+                    generalCheckList.currentChecklist = 1
                     generalCheckList.inspectionDate = Date(java.util.Date().time)
+                    generalCheckList.inspectionOfficer = "${loggedInUser.firstName} ${loggedInUser.lastName}".trim()
+                    generalCheckList.supervisorName = "${cdItem.assigner?.firstName} ${cdItem.assigner?.lastName}".trim()
                     generalCheckList.cfs = cdItem.freightStation?.cfsName
                     val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
                     val inspectionGeneral = daoServices.saveInspectionGeneralDetails(generalCheckList, cdItem, loggedInUser, map)

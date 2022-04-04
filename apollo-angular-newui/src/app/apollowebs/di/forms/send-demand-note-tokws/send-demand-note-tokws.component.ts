@@ -146,7 +146,7 @@ export class SendDemandNoteTokwsComponent implements OnInit {
                             this.itemPricingDataSource.connect().next(items)
                         } else {
                             this.diService.showSuccess(res.message, () => {
-                                this.dialogRef.close(true)
+                                this.dialogRef.close(res.data)
                             })
                         }
                     } else {

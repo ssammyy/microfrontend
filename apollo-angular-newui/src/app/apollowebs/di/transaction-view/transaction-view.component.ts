@@ -41,7 +41,7 @@ export class TransactionViewComponent implements OnInit {
         noDataMessage: 'No data found',
         columns: {
             demandNoteNumber: {
-                title: 'Demand Note No.',
+                title: 'Ref. No.',
                 type: 'string'
             },
             dateGenerated: {
@@ -57,8 +57,8 @@ export class TransactionViewComponent implements OnInit {
                 type: 'custom',
                 renderComponent: CurrencyFormatterComponent,
             },
-            receiptNo: {
-                title: 'Receipt No.',
+            postingReference: {
+                title: 'Demand Note No.',
                 type: 'string'
             },
             swStatus: {

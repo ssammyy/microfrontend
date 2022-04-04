@@ -6,9 +6,11 @@ import java.util.*
 import javax.persistence.*
 
 @Entity
-@Table(name = "DAT_KEBS_CD_LABORATORY")
+@Table(name = "CFG_KEBS_CD_LABORATORY")
 class CdLaboratoryEntity: Serializable {
     @Column(name = "ID")
+    @SequenceGenerator(name = "CFG_KEBS_CD_LABORATORY_SEQ_GEN", sequenceName = "CFG_KEBS_CD_LABORATORY_SEQ", allocationSize = 1)
+    @GeneratedValue(generator = "CFG_KEBS_CD_LABORATORY_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Id
     var id: Long = 0
 

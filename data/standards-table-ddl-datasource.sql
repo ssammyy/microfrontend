@@ -648,3 +648,38 @@ end;
 
 create index sd_is_gazette_notice_uploads_idx on sd_is_gazette_notice_uploads (IS_GN_DOCUMENT_ID, status) TABLESPACE qaimssdb_idx;
 /
+alter table SD_NWA_JUSTIFICATION
+    add ASSIGNED_TO NUMBER ;
+/
+alter table SD_NWA_DISDT_JUSTIFICATION
+    add ASSIGNED_TO NUMBER ;
+/
+alter table SD_NWA_DISDT_JUSTIFICATION
+    add PROCESS_ID VARCHAR(350 char) ;
+/
+alter table SD_NWA_PRELIMINARY_DRAFT
+    add ASSIGNED_TO NUMBER ;
+/
+alter table SD_NWA_PRELIMINARY_DRAFT
+    add PROCESS_ID VARCHAR(350 char) ;
+/
+
+alter table SD_NWA_WORKSHOP_DRAFT
+    add ASSIGNED_TO NUMBER ;
+/
+alter table SD_NWA_WORKSHOP_DRAFT
+    add PROCESS_ID VARCHAR(350 char) ;
+/
+alter table SD_NWA_STANDARD_TB
+    add ASSIGNED_TO NUMBER ;
+/
+alter table SD_NWA_STANDARD_TB
+    add PROCESS_ID VARCHAR(350 char) ;
+/
+
+alter table SD_NWA_GAZETTE_NOTICE
+    add ASSIGNED_TO NUMBER ;
+/
+alter table SD_NWA_GAZETTE_NOTICE
+    add PROCESS_ID VARCHAR(350 char) ;
+/

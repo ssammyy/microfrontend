@@ -131,12 +131,20 @@ interface StdLevyNotificationFormRepository : HazelcastRepository<StdLevyNotific
     fun findTopByManufactureIdOrderByIdDesc(@Param("id") id: Long?): Long?
   //  fun findFirstByManufactureIdOrderByIdDesc(manufactureId: Long): StdLevyNotificationForm
 
+
     @Query(
         value = "SELECT COMMODITIES_MANUFACTURED as commodity,DATE_MANUFACTURE_COMMENCED as dateOfManufacture,TOTAL_VALUE_OF_MANUFACTURE as totalValue,MANUFACTURER_ID as id  FROM  DAT_KEBS_STD_LEVY_NOTIFICATION_FORM_TBL  WHERE ID= :id",
         nativeQuery = true
     )
 
     fun getNotificationFormDetails(@Param("id") id: Long?): NotificationFormDetailsHolder
+
+    @Query(
+        value = "SELECT COMMODITIES_MANUFACTURED as commodity,DATE_MANUFACTURE_COMMENCED as dateOfManufacture,TOTAL_VALUE_OF_MANUFACTURE as totalValue,MANUFACTURER_ID as id  FROM  DAT_KEBS_STD_LEVY_NOTIFICATION_FORM_TBL  WHERE ID= :id",
+        nativeQuery = true
+    )
+
+    fun getSlNotificationFormDetails(@Param("id") id: Long?): NotificationFormDetailsHolder
 }
 
 @Repository

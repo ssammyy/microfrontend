@@ -14,8 +14,16 @@ export class ScfDetailsFormComponent implements OnInit {
     loading=false
     modesOfRelease=[
         {
-            name: "RRE",
-            description: "Test"
+            name: "NORMAL",
+            description: "Normal Release"
+        },
+        {
+            name: "CONDITIONAL",
+            description: "Conditional Release"
+        },
+        {
+            name: "HELD",
+            description: "Held at the port"
         }
     ]
     samplingMethods=[

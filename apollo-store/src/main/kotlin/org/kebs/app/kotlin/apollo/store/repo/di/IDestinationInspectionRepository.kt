@@ -302,18 +302,19 @@ interface IDemandNoteRepository : HazelcastRepository<CdDemandNoteEntity, Long> 
     fun findAllByCdIdAndStatusIn(cdId: Long, statuses: List<Int>): List<CdDemandNoteEntity>
     fun findFirstByCdIdAndStatusIn(cdId: Long, statuses: List<Int>): CdDemandNoteEntity?
     fun findByCdId(cdId: Long): CdDemandNoteEntity?
+    fun findFirstByCdId(cdId: Long): CdDemandNoteEntity?
     fun findByPostingReference(demandNoteNumber: String): CdDemandNoteEntity?
     fun findByReceiptNo(receiptNumber: String): Optional<CdDemandNoteEntity>
     fun findByDemandNoteNumber(demandNoteNumber: String): CdDemandNoteEntity?
 
     @Query("select * from DAT_KEBS_CD_DEMAND_NOTE where  to_char(DATE_GENERATED,'DD-MM-YYYY')=:date and STATUS in(:status)", nativeQuery = true)
-    fun findByModifiedOnAndModifiedOnLessThanAndStatusOrderByIdAsc(@Param("date") dateGenerated: String, @Param("status") status: List<Int>, pageable: Pageable): Page<CdDemandNoteEntity>
+    fun findByModifiedOnAndModifiedOnLessThanAndPaymentStatusOrderByIdAsc(@Param("date") dateGenerated: String, @Param("status") status: List<Int>, pageable: Pageable): Page<CdDemandNoteEntity>
 
     @Query("select * from DAT_KEBS_CD_DEMAND_NOTE where  to_char(DATE_GENERATED,'DD-MM-YYYY')=:date and PAYMENT_STATUS=:paymentStatus and STATUS in(:status)", nativeQuery = true)
     fun findByModifiedOnAndModifiedOnLessThanAndPaymentStatusAndStatusOrderByIdAsc(@Param("date") dateGenerated: String, @Param("paymentStatus") paymentStatus: Int, @Param("status") status: List<Int>, page: Pageable): Page<CdDemandNoteEntity>
     fun findByPaymentStatusAndStatusOrderByIdAsc(paymentStatus: Int, status: Int, page: Pageable): Page<CdDemandNoteEntity>
     fun findByStatusOrderByIdAsc(status: Int, page: Pageable): Page<CdDemandNoteEntity>
-    fun findByDemandNoteNumberContainingAndStatusOrderByIdAsc(demandNoteNumber: String, status: Int, page: Pageable): Page<CdDemandNoteEntity>
+    fun findByDemandNoteNumberContainingOrPostingReferenceContainingAndPaymentStatusInOrderByIdAsc(demandNoteNumber: String, referenceNumber: String, status: List<Int>, page: Pageable): Page<CdDemandNoteEntity>
     fun findByInvoiceBatchNumberId(invoiceBatchNumberId: Long): List<CdDemandNoteEntity>?
     fun findByCdIdAndPaymentStatus(cdId: Long, paymentStatus: Int): CdDemandNoteEntity?
     fun findFirstByUcrNumberAndPaymentStatusIn(refNum: String, paymentStatuses: List<Int>): CdDemandNoteEntity?
@@ -335,6 +336,14 @@ interface IDemandNoteItemsDetailsRepository : HazelcastRepository<CdDemandNoteIt
     fun findByItemIdAndDemandNoteId(itemId: Long?, demandNoteId: Long?): CdDemandNoteItemsDetailsEntity?
 }
 
+@Repository
+interface CdDemandNotePaymentRepository : HazelcastRepository<CdDemandNotePaymentEntity, Long> {
+    fun findByDemandNoteId(demandNoteId: Long): List<CdDemandNotePaymentEntity>
+
+    @Query(value = "SELECT sum(AMOUNT) from DAT_KEBS_CD_DEMAND_NOTE_PAYMENTS where DEMAND_NOTE_ID=:demandNoteId and STATUS=:status", nativeQuery = true)
+    fun sumByDemandNoteIdAndStatus(demandNoteId: Long, status: Int): BigDecimal?
+    fun findByReceiptNumber(demandNoteNumber: String): CdDemandNotePaymentEntity?
+}
 
 @Repository
 interface IChecklistCategoryRepository : HazelcastRepository<CdChecklistCategoryEntity, Long> {
@@ -371,7 +380,7 @@ interface ICdInspectionChecklistRepository : HazelcastRepository<CdInspectionChe
 
 @Repository
 interface ICdInspectionGeneralRepository : HazelcastRepository<CdInspectionGeneralEntity, Long> {
-    fun findFirstByCdDetails(cdItemDetails: ConsignmentDocumentDetailsEntity): CdInspectionGeneralEntity?
+    fun findFirstByCdDetailsAndCurrentChecklist(cdItemDetails: ConsignmentDocumentDetailsEntity, current: Int): CdInspectionGeneralEntity?
     fun findAllByCdDetails(cdItemDetails: ConsignmentDocumentDetailsEntity): List<CdInspectionGeneralEntity>
     fun findFirstByCdDetails_Uuid(docId: String): CdInspectionGeneralEntity?
 }
@@ -488,6 +497,9 @@ interface IUsersCfsAssignmentsRepository : HazelcastRepository<UsersCfsAssignmen
 
     @Query("select CKCTC.CFS_CODE from CFG_USERS_CFS_ASSIGNMENTS CCA left join CFG_KEBS_CFS_TYPE_CODES CKCTC on CCA.CFS_ID = CKCTC.ID where CCA.STATUS=1 and CCA.USER_PROFILE_ID=:profileId", nativeQuery = true)
     fun findAllUserCfsCodes(@Param("profileId") Id: Long): List<String>
+
+    @Query("select count(CKCTC.CFS_CODE) from CFG_USERS_CFS_ASSIGNMENTS CCA left join CFG_KEBS_CFS_TYPE_CODES CKCTC on CCA.CFS_ID = CKCTC.ID where CCA.STATUS=1 and CCA.USER_PROFILE_ID=:profileId and CCA.CFS_ID=:cfsId", nativeQuery = true)
+    fun countUserCfsCodes(@Param("profileId") Id: Long, @Param("cfsId") cfsId: Long): Long
     fun findByUserProfileId(userProfileId: Long): List<UsersCfsAssignmentsEntity>?
     fun findByUserProfileIdAndCfsId(userProfileId: Long, cfsId: Long): UsersCfsAssignmentsEntity?
     fun findByUserProfileIdAndCfsIdAndStatus(userProfileId: Long, cfsId: Long, status: Int): UsersCfsAssignmentsEntity?
@@ -644,7 +656,7 @@ interface IDeclarationDetailsEntityRepository : HazelcastRepository<DeclarationD
 @Repository
 interface ICdDocumentModificationHistoryRepository : HazelcastRepository<CdDocumentModificationHistory, Long> {
     fun findAllByCdId(cdId: Long): List<CdDocumentModificationHistory>
-    fun findAllByUcrNumberOrCdId(ucrNumber: String, cdId: Long): List<CdDocumentModificationHistory>
+    fun findAllByUcrNumberOrCdIdOrderByIdDesc(ucrNumber: String, cdId: Long): List<CdDocumentModificationHistory>
 }
 
 @Repository

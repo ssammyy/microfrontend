@@ -71,7 +71,7 @@ class ConsignmentEnableUI {
                 manifestDocument = StringUtils.hasLength(cd.manifestNumber) && !"NONE".equals(cd.manifestNumber, true) // Default value for manifest is NONE
                 declarationDocument = StringUtils.hasLength(cd.manifestNumber) && !"NONE".equals(cd.manifestNumber, true) // Default value for manifest is NONE
                 demandNoteRejected = cd.sendDemandNote == map.invalidStatus
-                demandNoteDisabled = (cd.sendDemandNote == map.initStatus || cd.sendDemandNote == map.activeStatus || cd.inspectionChecklist == map.activeStatus)
+                demandNoteDisabled = cd.sendDemandNote == map.initStatus
                 owner = cd.assignedInspectionOfficer?.userName == authentication.name
                 demandNote = cd.sendDemandNote == map.activeStatus
                 sendCoi = modify && cd.localCoi == map.activeStatus

@@ -30,6 +30,7 @@ export class OtherItemChecklistComponent implements OnInit {
             sampled: [formData ? formData.sampled : '', Validators.required],
             ksEasApplicable: [formData ? formData.ksEasApplicable : '', Validators.maxLength(256)],
             quantityVerified: [formData ? formData.quantityVerified : '', Validators.maxLength(256)],
+            quantityVerifiedUnit: [formData ? formData.quantityVerifiedUnit : '', Validators.maxLength(25)],
             packagingLabelling: [formData ? formData.packagingLabelling : '', Validators.maxLength(256)],
             physicalCondition: [formData ? formData.physicalCondition : '', Validators.maxLength(256)],
             defects: [formData ? formData.defects : '', Validators.maxLength(256)],

@@ -164,8 +164,12 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
             .subscribe(
                 res => {
                     if (res) {
-                        this.loadDemandNotes(true, 'generated')
                         this.active = 13
+                        this.loadDemandNotes(true, 'generated')
+                        // Open preview page
+                        if (res.id) {
+                            this.viewDemandNote(res.id)
+                        }
                     }
                 }
             );

@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.routes
 
 import org.kebs.app.kotlin.apollo.api.handlers.*
+import org.kebs.app.kotlin.apollo.api.handlers.di.LabManagerHandler
 import org.kebs.app.kotlin.apollo.api.handlers.invoice.InvoiceHandlers
 import org.kebs.app.kotlin.apollo.api.handlers.ism.ISMHandler
 import org.springframework.context.annotation.Bean
@@ -26,6 +27,17 @@ class DestinationInspectionRoutes {
             POST("/approve-reject", handler::approveRejectISMApplication)
             GET("/list/{requestStatus}", handler::listIsmRequests)
             GET("/details/{requestId}", handler::getIsmRequests)
+        }
+    }
+
+    @Bean
+    @CrossOrigin
+    fun laboratoryManager(handler: LabManagerHandler) = router {
+        "/api/v1/laboratory".nest {
+            POST("/add", handler::addLaboratory)
+            GET("/list", handler::listLaboratories)
+            PUT("/{labId}", handler::updateLaboratory)
+            DELETE("/{labId}", handler::deleteLaboratory)
         }
     }
 

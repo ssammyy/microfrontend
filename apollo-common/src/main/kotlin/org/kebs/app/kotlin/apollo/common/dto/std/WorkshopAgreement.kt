@@ -7,9 +7,11 @@ import java.sql.Timestamp
 class WorkshopAgreement(
     @JsonProperty("taskId") val taskId: String,
     @JsonProperty("accentTo") val accentTo: Boolean,
+    @JsonProperty("processId") val processId: String,
     @JsonProperty("approvalID")  val approvalID: Long,
     @JsonProperty("comments") val comments: String,
-    @JsonProperty("jstNumber")  val jstNumber: Long
+    @JsonProperty("jstNumber")  val jstNumber: Long,
+    @JsonProperty("assignedTo") val assignedTo: Long
     ) {
 }
 data class JustificationNwa(
@@ -71,9 +73,11 @@ data class FilesListDto(
 }
 class NWAJustificationDecision(
     @JsonProperty("taskId") val taskId: String,
+    @JsonProperty("processId") val processId: String,
     @JsonProperty("accentTo") val accentTo: Boolean,
     @JsonProperty("approvalID")  val approvalID: Long,
-    @JsonProperty("comments") val comments: String
+    @JsonProperty("comments") val comments: String,
+    @JsonProperty("assignedTo") val assignedTo: Long
     ) {
 }
 
@@ -82,14 +86,18 @@ class NWAPreliminaryDraftDecision(
     @JsonProperty("accentTo") val accentTo: Boolean,
     @JsonProperty("approvalID")  val approvalID: Long,
     @JsonProperty("comments") val comments: String,
-    @JsonProperty("diJNumber")  val diJNumber: Long
+    @JsonProperty("diJNumber")  val diJNumber: Long,
+    @JsonProperty("assignedTo")  val assignedTo: Long,
+    @JsonProperty("processId")  val processId: String
     ) {
 }
 class NWAWorkshopDraftDecision(
     @JsonProperty("taskId") val taskId: String,
     @JsonProperty("accentTo") val accentTo: Boolean,
     @JsonProperty("approvalID")  val approvalID: Long,
-    @JsonProperty("comments") val comments: String
+    @JsonProperty("comments") val comments: String,
+    @JsonProperty("assignedTo")  val assignedTo: Long,
+    @JsonProperty("processId")  val processId: String
     ) {
 }
 class NWADiJustification(

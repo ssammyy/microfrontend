@@ -100,8 +100,14 @@ placeholder="Date" type="date">
 </div>
 
 </div>
-
-
+    <div class="row col-12">
+        <div class="form-group col-12">
+    <label>Select User To Assign To</label>
+    <ng-select  formControlName="assignedTo"  class="form-control"  name="assignedTo" >
+        <ng-option *ngFor="let user of knwSecretary" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
+    </ng-select>
+        </div>
+    </div>
 
 <div class="row col-12">
 <div class="form-group col-12">

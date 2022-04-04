@@ -4,14 +4,14 @@
         <div class="col-sm-4 col-md-3">
             <label for="category" class="waiver-form-label">Item Category</label>
             <select id="category" class="waiver-form-input-master" formControlName="category">
-                <option value="" disabled selected>Select Category</option>
+                <option value="" disabled>Select Category</option>
                 <option *ngFor="let d of categories" [value]="d.typeName">{{d.typeName}}</option>
             </select>
         </div>
         <div class="col-sm-4 col-md-3">
             <label for="compliant" class="waiver-form-label">Select Compliance</label>
             <select id="compliant" class="waiver-form-input-master" formControlName="compliant">
-                <option value="" disabled selected>Assign Compliance</option>
+                <option value="" disabled>Assign Compliance</option>
                 <option *ngFor="let d of complianceStatus" [value]="d.name">{{d.description}}</option>
             </select>
         </div>
@@ -26,7 +26,7 @@
         <div class="col-sm-4 col-md-3" [hidden]="form.value.submitToMinistry!=='YES'">
             <label for="stationId" class="waiver-form-label">Select Station</label>
             <select id="stationId" class="waiver-form-input-master" formControlName="stationId">
-                <option value="" disabled selected>Select Station</option>
+                <option value="" disabled>Select Station</option>
                 <option *ngFor="let station of stations" [value]="station.id">{{station.stationName}}-{{station.description}}</option>
             </select>
         </div>
@@ -37,11 +37,13 @@
         </div>
         <div class="col-sm-4 col-md-3">
             <label for="ksEasApplicable" class="waiver-form-label">KS/EAS Applicable</label>
-            <select id="ksEasApplicable" class="waiver-form-input-master" formControlName="ksEasApplicable">
-                <option [value]="">None</option>
-                <option value="YES">Yes</option>
-                <option value="NO">No</option>
-            </select>
+            <input type="text" class="waiver-form-input-master" name="brand"
+                   data-name="ksEasApplicable" id="ksEasApplicable" formControlName="ksEasApplicable">
+            <!--            <select id="ksEasApplicable" class="waiver-form-input-master" formControlName="ksEasApplicable">-->
+            <!--                <option [value]="">None</option>-->
+            <!--                <option value="YES">Yes</option>-->
+            <!--                <option value="NO">No</option>-->
+            <!--            </select>-->
         </div>
 
         <div class="col-sm-4 col-md-3">
