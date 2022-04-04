@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {SACSummaryTask, StandardDraft} from "../../../../core/store/data/std/request_std.model";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
@@ -28,6 +28,8 @@ export class UploadSacSummaryComponent implements OnInit {
   public stdDraft !: StandardDraft | undefined;
   public prepareSacSummaryFormGroup!: FormGroup;
   public uploadedFiles: FileList;
+  public uploadedFilesB: FileList;
+
   fullname = '';
   title = 'toaster-not';
   dtOptions: DataTables.Settings = {};
@@ -60,8 +62,8 @@ export class UploadSacSummaryComponent implements OnInit {
       ks: ['', Validators.required],
       title: ['', Validators.required],
       edition: ['', Validators.required],
-      departmentId: ['', Validators.required],
-      technicalCommitteeId: ['', Validators.required],
+      department: ['', Validators.required],
+      technicalCommittee: ['', Validators.required],
       issuesAddressed: ['', Validators.required],
       backgroundInformation: ['', Validators.required],
       feedback: ['', Validators.required],
@@ -134,8 +136,8 @@ export class UploadSacSummaryComponent implements OnInit {
 
   saveSacSummary(): void {
     console.log(this.uploadedFiles.length)
-    if (this.uploadedFiles != null) {
-      if (this.uploadedFiles.length > 0 || this.uploadedFiles.length != 2) {
+    if (this.uploadedFiles != null || this.uploadedFilesB != null) {
+      if (this.uploadedFiles.length > 0 || this.uploadedFiles.length != 1 || this.uploadedFilesB.length > 0 || this.uploadedFilesB.length != 1) {
         this.SpinnerService.show();
         this.adoptionOfEaStdsService.uploadSACSummary(this.prepareSacSummaryFormGroup.value).subscribe(
             (response) => {
@@ -159,7 +161,7 @@ export class UploadSacSummaryComponent implements OnInit {
   }
 
   onClickSaveUploads(draftStandardID: string) {
-    if (this.uploadedFiles.length > 0) {
+    if (this.uploadedFiles.length > 0 && this.uploadedFilesB.length > 0) {
       const file = this.uploadedFiles;
       const formData = new FormData();
       for (let i = 0; i < file.length; i++) {
@@ -169,21 +171,40 @@ export class UploadSacSummaryComponent implements OnInit {
       this.SpinnerService.show();
       this.adoptionOfEaStdsService.uploadFileDetails(draftStandardID, formData, "EAC Gazette", "EAC Gazette").subscribe(
           (data: any) => {
-            this.SpinnerService.hide();
-            this.uploadedFiles = null;
-            console.log(data);
-            swal.fire({
-              title: 'SAC Summary Submitted To SPC For Approval.',
-              buttonsStyling: false,
-              customClass: {
-                confirmButton: 'btn btn-success form-wizard-next-btn ',
-              },
-              icon: 'success'
-            });
-            // this.router.navigate(['/draftStandard']);
+            this.onClickSaveUploadsB(draftStandardID)
           },
       );
     }
+
+  }
+
+  onClickSaveUploadsB(draftStandardID: string) {
+    const file = this.uploadedFilesB;
+    const formData = new FormData();
+    for (let i = 0; i < file.length; i++) {
+      console.log(file[i]);
+      formData.append('docFile', file[i], file[i].name);
+    }
+    this.SpinnerService.show();
+    this.adoptionOfEaStdsService.uploadFileDetails(draftStandardID, formData, "Authentic Text", "Authentic Text").subscribe(
+        (data: any) => {
+          this.SpinnerService.hide();
+          this.uploadedFiles = null;
+          console.log(data);
+          swal.fire({
+            title: 'SAC Summary Submitted To SPC For Approval.',
+            buttonsStyling: false,
+            customClass: {
+              confirmButton: 'btn btn-success form-wizard-next-btn ',
+            },
+            icon: 'success'
+          });
+          // this.router.navigate(['/draftStandard']);
+          this.getSACTasks();
+
+        },
+    );
+
 
   }
 
@@ -213,6 +234,45 @@ export class UploadSacSummaryComponent implements OnInit {
           '<a href="{3}" target="{4}" data-notify="url"></a>' +
           '</div>'
     });
+  }
+
+  public onOpenModal(task: SACSummaryTask): void {
+    const container = document.getElementById('main-container');
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.style.display = 'none';
+    button.setAttribute('data-toggle', 'modal');
+    console.log(task.taskId);
+    this.actionRequest = task;
+    button.setAttribute('data-target', '#uploadSPCJustification');
+
+    // @ts-ignore
+    container.appendChild(button);
+    button.click();
+  }
+
+  viewPdfFile(pdfId: number, fileName: string, applicationType: string, doctype: string): void {
+    this.SpinnerService.show();
+    this.adoptionOfEaStdsService.viewDocs(pdfId, doctype).subscribe(
+        (dataPdf: any) => {
+          this.SpinnerService.hide();
+          this.blob = new Blob([dataPdf], {type: applicationType});
+
+          // tslint:disable-next-line:prefer-const
+          let downloadURL = window.URL.createObjectURL(this.blob);
+          const link = document.createElement('a');
+          link.href = downloadURL;
+          link.download = fileName;
+          link.click();
+          // this.pdfUploadsView = dataPdf;
+        },
+    );
+  }
+
+  @ViewChild('closeModal') private closeModal: ElementRef | undefined;
+
+  public hideModel() {
+    this.closeModal?.nativeElement.click();
   }
 }
 
