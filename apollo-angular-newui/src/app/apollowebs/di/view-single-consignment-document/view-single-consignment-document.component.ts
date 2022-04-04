@@ -137,9 +137,11 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
     }
 
 
-    loadDemandNotes(reload: Boolean = true) {
-        if (!reload) {
-            return
+    loadDemandNotes(reload: any = null, etype: String = 'others') {
+        // Reload consignment
+        if (reload) {
+            console.log("Demand note: " + reload + " -> " + etype)
+            this.loadConsignmentDetails(true);
         }
         this.diService.listDemandNotes(this.consignment.cd_details.id)
             .subscribe(
@@ -149,7 +151,6 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
                     }
                 }
             );
-
     }
 
     generateDemandNote() {
@@ -163,8 +164,12 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
             .subscribe(
                 res => {
                     if (res) {
-                        this.loadDemandNotes()
                         this.active = 13
+                        this.loadDemandNotes(true, 'generated')
+                        // Open preview page
+                        if (res.id) {
+                            this.viewDemandNote(res.id)
+                        }
                     }
                 }
             );
@@ -288,7 +293,7 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
         this.router.navigate(['/di']);
     }
 
-    loadConsignmentDetails() {
+    loadConsignmentDetails(demandNoteReload: Boolean = false) {
         this.diService.getConsignmentDetails(this.consignmentId)
             .subscribe(
                 response => {
@@ -304,12 +309,14 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
                         }
                         this.listConsignmentAttachments();
                         this.loadComments();
-                        this.loadDemandNotes();
+                        if (!demandNoteReload) {
+                            this.loadDemandNotes(false, 'consignment');
+                        }
                     } else if (response.responseCode === "000") {
                         // Reload consignment details
-                        this.loadConsignmentDetails()
+                        this.loadConsignmentDetails(demandNoteReload)
                     } else {
-                        this.diService.showError(response.message,this.goBackHome)
+                        this.diService.showError(response.message, this.goBackHome)
                     }
                 }
             );

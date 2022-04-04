@@ -14,18 +14,23 @@ class CdInspectionEngineeringChecklist : Serializable {
     @GeneratedValue(generator = "DAT_KEBS_CD_INSPECTION_ENGINEERING_CHECKLIST_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Id
     var id: Long? = null
+
     @Column(name = "ITEM_COUNT")
     @Basic
     var itemCount: Int? = null
+
     @Column(name = "SERIAL_NUMBER")
     @Basic
     var serialNumber: String? = null
+
     @Column(name = "QUANTITY_DECLARED")
     @Basic
     var quantityDeclared: String? = null
+
     @Column(name = "QUANTITY_VERIFIED")
     @Basic
     var quantityVerified: String? = null
+
     @Column(name = "WARRANTY_PERIOD_DOCUMENTATION")
     @Basic
     var warrantyPeriodDocumentation: String? = null
@@ -46,11 +51,11 @@ class CdInspectionEngineeringChecklist : Serializable {
     @Basic
     var certMarksPvocDoc: String? = null
 
-    @Column(name = "REMARKS")
+    @Column(name = "REMARKS", length = 512)
     @Basic
     var remarks: String? = null
 
-    @Column(name = "DESCRIPTION")
+    @Column(name = "DESCRIPTION", length = 512)
     @Basic
     var description: String? = null
 
@@ -165,6 +170,6 @@ class CdInspectionEngineeringChecklist : Serializable {
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(id, serialNumber, quantityDeclared, quantityVerified,  warrantyPeriodDocumentation, safetyCautionaryRemarks, disposalInstruction, sizeClassCapacity, certMarksPvocDoc, remarks, description, status, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn)
+        return Objects.hash(id, serialNumber, quantityDeclared, quantityVerified, warrantyPeriodDocumentation, safetyCautionaryRemarks, disposalInstruction, sizeClassCapacity, certMarksPvocDoc, remarks, description, status, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn)
     }
 }

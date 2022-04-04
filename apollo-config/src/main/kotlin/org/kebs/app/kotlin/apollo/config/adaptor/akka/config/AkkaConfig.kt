@@ -15,32 +15,28 @@
 
 package org.kebs.app.kotlin.apollo.config.adaptor.akka.config
 
-import akka.actor.ActorSystem
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 import org.kebs.app.kotlin.apollo.config.properties.akka.AkkaProperties
-import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
 class AkkaConfig(
     private val akkaProperties: AkkaProperties,
 ) {
-    @Bean
-    fun actorSystem(): ActorSystem? {
-        return ActorSystem.create(akkaProperties.actorSystem)
+//    @Bean
+//    fun actorSystem(): ActorSystem? {
+//        return ActorSystem.create(akkaProperties.actorSystem)
 //        try {
 //             ActorSystem.create(akkaProperties.actorSystem)
 //        }catch (e:Exception){
 //            KotlinLogging.logger {  }.error(e.message,e)
 //            null
 //        }
-        //        springExtension.initialize(applicationContext)
+    //        springExtension.initialize(applicationContext)
 
-    }
+//    }
 
-    @Bean
-    fun akkaConfiguration(): Config {
-        return ConfigFactory.load()
-    }
+//    @Bean
+//    fun akkaConfiguration(): Config {
+//        return ConfigFactory.load()
+//    }
 }

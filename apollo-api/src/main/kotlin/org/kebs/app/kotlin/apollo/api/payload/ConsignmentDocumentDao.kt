@@ -71,7 +71,7 @@ class ConsignmentEnableUI {
                 manifestDocument = StringUtils.hasLength(cd.manifestNumber) && !"NONE".equals(cd.manifestNumber, true) // Default value for manifest is NONE
                 declarationDocument = StringUtils.hasLength(cd.manifestNumber) && !"NONE".equals(cd.manifestNumber, true) // Default value for manifest is NONE
                 demandNoteRejected = cd.sendDemandNote == map.invalidStatus
-                demandNoteDisabled = (cd.sendDemandNote == map.initStatus || cd.sendDemandNote == map.activeStatus || cd.inspectionChecklist == map.activeStatus)
+                demandNoteDisabled = cd.sendDemandNote == map.initStatus
                 owner = cd.assignedInspectionOfficer?.userName == authentication.name
                 demandNote = cd.sendDemandNote == map.activeStatus
                 sendCoi = modify && cd.localCoi == map.activeStatus
@@ -149,6 +149,7 @@ class ConsignmentDocumentDao {
     var lastModifiedOn: Timestamp? = null
     var lastModifiedBy: String? = null
     var isNcrDocument: Boolean = false
+    var current: String? = null
     var taskDetails: DiTaskDetails? = null
 
     companion object {
@@ -159,6 +160,10 @@ class ConsignmentDocumentDao {
             dt.uuid = doc.uuid
             dt.lastModifiedOn = doc.modifiedOn
             dt.lastModifiedBy = doc.modifiedBy
+            dt.current = when {
+                doc.oldCdStatus == 1 -> "OLD"
+                else -> "CURRENT"
+            }
             doc.cdType?.let {
                 dt.cdType = it.id
                 dt.docType = it.documentType

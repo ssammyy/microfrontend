@@ -30,12 +30,14 @@ export class AssignAuctionItemComponent implements OnInit {
 
     // Assign inspection officer to this consignment
     assignOfficer() {
+        this.loading = true
         let data = this.form.value
         data["officerId"] = parseInt(this.form.value.officerId)
         data['reassign'] = this.data.reassign
         this.diService.assignAuctionInspectionOfficer(data, this.data.auctionId)
             .subscribe(
                 res => {
+                    this.loading = false
                     if (res.responseCode === "00") {
                         this.diService.showSuccess(res.message, () => {
                             this.dialogRef.close(true)
@@ -43,6 +45,9 @@ export class AssignAuctionItemComponent implements OnInit {
                     } else {
                         this.message = res.message
                     }
+                },
+                error => {
+                    this.loading = false
                 }
             )
     }

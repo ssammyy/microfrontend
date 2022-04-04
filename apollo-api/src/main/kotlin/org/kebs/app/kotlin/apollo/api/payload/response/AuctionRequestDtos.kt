@@ -31,6 +31,7 @@ class AuctionRequestDto {
     var completed: String? = null
     var assigned: Boolean? = null
     var myTask: Boolean? = null
+    var editable: Boolean = false
     var isSupervisor: Boolean? = null
     var isInspector: Boolean? = null
     var serialNumber: String? = null
@@ -61,8 +62,8 @@ class AuctionRequestDto {
                 cfsCode = auction.cfsId?.cfsCode
                 cfsName = auction.cfsId?.cfsName
                 manifestNo = "NA"
-                blNo = "NA"
-                goodsDesc = ""
+                location = auction.location ?: "N/A"
+                goodsDesc = auction.remarks
                 containerDets = auction.location ?: ""
                 approvalStatus = auction.approvalStatus
                 approvedRejectedOn = auction.approvedRejectedOn
@@ -82,8 +83,11 @@ class AuctionRequestDto {
                 AuctionGoodStatus.APPROVED.status -> "APPROVED"
                 AuctionGoodStatus.REJECTED.status -> "REJECTED"
                 AuctionGoodStatus.PAYMENT_PENDING.status -> "PENDING PAYMENT"
+                AuctionGoodStatus.PAYMENT_COMPLETED.status -> "PAYMENT COMPLETED"
                 else -> "OTHER"
             }
+            dto.editable = (auction.approvalStatus == AuctionGoodStatus.NEW.status || auction.approvalStatus == AuctionGoodStatus.PAYMENT_COMPLETED.status)
+            dto.categoryName = "N/A"
             auction.category?.let {
                 dto.categoryName = it.categoryName
                 dto.categoryId = it.id

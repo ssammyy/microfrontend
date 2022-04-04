@@ -5,6 +5,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 import org.kebs.app.kotlin.apollo.store.model.CocItemsEntity
 import org.kebs.app.kotlin.apollo.store.model.CocsEntity
+import java.math.BigDecimal
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 
@@ -183,7 +184,7 @@ class CustomCocXmlDto(
     }
 }
 
-class CocDetails(shipmentLineNumber: Long, shipmentLineHscode: String, shipmentLineQuantity: Long, shipmentLineUnitofMeasure: String,
+class CocDetails(shipmentLineNumber: Long, shipmentLineHscode: String, shipmentLineQuantity: BigDecimal?, shipmentLineUnitofMeasure: String,
                  shipmentLineDescription: String, shipmentLineVin: String, shipmentLineStickerNumber: String, shipmentLineIcs: String,
                  shipmentLineStandardsReference: String, shipmentLineLicenceReference: String, shipmentLineRegistration: String,
                  cocNumber: String, shipmentLineBrandName: String) {
@@ -195,7 +196,7 @@ class CocDetails(shipmentLineNumber: Long, shipmentLineHscode: String, shipmentL
     var shipmentLineHscode: String? = shipmentLineHscode
 
     @JacksonXmlProperty(localName = "SHIPMENT_LINE_QUANTITY")
-    var shipmentLineQuantity: Long? = shipmentLineQuantity
+    var shipmentLineQuantity: String? = shipmentLineQuantity?.toString() ?: "0.00"
 
     @JacksonXmlProperty(localName = "SHIPMENT_LINE_UNITOF_MEASURE")
     var shipmentLineUnitofMeasure: String? = shipmentLineUnitofMeasure
@@ -253,7 +254,7 @@ fun CocsEntity.toCocXmlRecordRefl() = CustomCocXmlDto(
 )
 
 fun CocItemsEntity.toCocItemDetailsXmlRecordRefl(cocNumber: String) = CocDetails(
-        this.shipmentLineNumber, this.shipmentLineHscode ?: "NA", this.shipmentLineQuantity.toLong(),
+        this.shipmentLineNumber, this.shipmentLineHscode ?: "NA", this.shipmentLineQuantity,
         this.shipmentLineUnitofMeasure ?: "NA",
         this.shipmentLineDescription ?: "NA", this.shipmentLineVin ?: "NA",
         this.shipmentLineStickerNumber ?: "NA", this.shipmentLineIcs ?: "NA",

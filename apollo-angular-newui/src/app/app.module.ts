@@ -308,6 +308,7 @@ import {ViewSacSummaryComponent} from './apollowebs/standards-development/adopti
 import {ViewSacSummaryApprovedComponent} from './apollowebs/standards-development/adoptionOfEaStds/view-sac-summary-approved/view-sac-summary-approved.component';
 import {AddAttachmentComponent} from './apollowebs/di/auction/add-attachment/add-attachment.component';
 import { NwaTasksComponent } from './apollowebs/standards-development/workshop-agreement/nwa-tasks/nwa-tasks.component';
+import {GenerateAuctionKraReportComponent} from "./apollowebs/di/auction/generate-auction-kra-report/generate-auction-kra-report.component";
 
 
 @NgModule({
@@ -402,7 +403,7 @@ import { NwaTasksComponent } from './apollowebs/standards-development/workshop-a
         ApproveRejectItemComponent,
         ViewDemandNoteComponent,
         ItemSelectionComponent,
-
+        GenerateAuctionKraReportComponent,
         ViewInspectionDetailsComponent,
         ItemChecklistComponent,
         EngineeringItemChecklistComponent,

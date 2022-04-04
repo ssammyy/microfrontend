@@ -13,7 +13,6 @@ import org.kebs.app.kotlin.apollo.api.service.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.di.DiUploadsEntity
-import org.kebs.app.kotlin.apollo.store.model.pvc.PvocWaiversApplicationDocumentsEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
@@ -159,7 +158,7 @@ class GeneralController(
     fun downloadCertificateOfConformance(@PathVariable("cocCoiId") cocCoiId: Long, httResponse: HttpServletResponse) {
         try {
             val data = diServices.createLocalCocReportMap(cocCoiId)
-            data["imagePath"] = kebsLogoPath ?: ""
+            data["imagePath"] = kebsLogoPath
 
             val items = data["dataSources"] as HashMap<String, List<Any>>
 
@@ -175,14 +174,14 @@ class GeneralController(
                     pdfStream = reportsDaoService.extractReportMapDataSource(data, "classpath:reports/NcrReport.jrxml", items)
                 }
                 else -> {
-                    pdfStream = reportsDaoService.extractReportMapDataSource(data, applicationMapProperties.mapReportLocalCocPath, items)
+                    pdfStream = reportsDaoService.extractReportMapDataSource(data, "classpath:reports/LocalCoCReport.jrxml", items)
                 }
             }
             download(pdfStream, fileName, httResponse)
         } catch (ex: Exception) {
-            KotlinLogging.logger { }.error("FAILED TO DOWNLOAD COD", ex)
+            KotlinLogging.logger { }.error("FAILED TO DOWNLOAD COC/COI/NCR", ex)
             httResponse.status = 500
-            httResponse.writer.println("Invalid COC identifier")
+            httResponse.writer.println("Invalid COC/COI/NCR identifier")
         }
 
     }

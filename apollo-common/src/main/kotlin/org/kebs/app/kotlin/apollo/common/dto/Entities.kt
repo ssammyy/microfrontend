@@ -1169,4 +1169,7 @@ class AuditItemEntityDto {
 
     @JsonProperty("B/L NO")
     var blNo: String? = null
+
+    @JsonProperty("COUNTRY")
+    var country: String? = null
 }

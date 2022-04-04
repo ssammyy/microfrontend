@@ -1,5 +1,5 @@
-import org.springframework.boot.gradle.tasks.bundling.BootJar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
     war
@@ -13,7 +13,7 @@ dependencies {
     api(project(":apollo-config"))
 //    implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
     api("org.springframework.boot:spring-boot-starter-data-jpa")
-
+    implementation("org.flywaydb:flyway-core:8.5.4")
 //    implementation("hikari-cp:hikari-cp:2.12.0")
     /**
      * Validation

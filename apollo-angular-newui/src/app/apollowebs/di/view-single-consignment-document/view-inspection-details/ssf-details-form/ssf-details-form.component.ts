@@ -12,6 +12,7 @@ export class SsfDetailsFormComponent implements OnInit {
     message: any
     loading = false
     form: FormGroup
+    laboratories: any
 
     constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialogRef: MatDialogRef<any>, private fb: FormBuilder, private diService: DestinationInspectionService) {
     }
@@ -26,6 +27,25 @@ export class SsfDetailsFormComponent implements OnInit {
             conditionOfSample: ['', [Validators.required, Validators.maxLength(100)]],
             description: ['', Validators.maxLength(256)],
         })
+        // Load labs
+        this.loadLaboratories()
+
+    }
+
+    loadLaboratories() {
+        this.loading = true
+        this.diService.loadLaboratories()
+            .subscribe(
+                res => {
+                    this.loading = false
+                    if (res.responseCode == '00') {
+                        this.laboratories = res.data
+                    }
+                },
+                error => {
+                    this.loading = false
+                }
+            )
     }
 
     saveSsfRecord() {

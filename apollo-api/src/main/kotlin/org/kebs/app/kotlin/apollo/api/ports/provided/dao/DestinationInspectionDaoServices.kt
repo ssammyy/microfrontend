@@ -9,6 +9,7 @@ import org.json.XML
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.SftpServiceImpl
+import org.kebs.app.kotlin.apollo.api.service.ConsignmentCertificatesIssues
 import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentStatus
 import org.kebs.app.kotlin.apollo.common.dto.MinistryInspectionListResponseDto
 import org.kebs.app.kotlin.apollo.common.dto.kesws.receive.DeclarationVerificationMessage
@@ -410,6 +411,7 @@ class DestinationInspectionDaoServices(
             shipmentContainerNumber = "UNKNOWN"
             shipmentGrossWeight = "UNKNOWN"
             route = routValue
+            status = 1
             version = consignmentDocumentDetailsEntity.version ?: 1
             consignmentDocId = consignmentDocumentDetailsEntity
             productCategory = "UNKNOWN"
@@ -420,13 +422,14 @@ class DestinationInspectionDaoServices(
         consignmentDocumentDetailsEntity.id?.let { cdId ->
             this.invoiceDaoService.findDemandNoteCdId(cdId)?.let { itemNote ->
                 localCoc.finalInvoiceCurrency = "KES"
-                localCoc.finalInvoiceExchangeRate = 0.0
+                localCoc.finalInvoiceExchangeRate = itemNote.rate?.toDouble() ?: 0.0
+                localCoc.finalInvoiceNumber = itemNote.receiptNo
                 localCoc.finalInvoiceDate = itemNote.createdOn
                 localCoc.finalInvoiceFobValue = itemNote.cfvalue?.toDouble() ?: 0.0
             }
         }
         // Add inspection details
-        iCdInspectionGeneralRepo.findFirstByCdDetails(consignmentDocumentDetailsEntity)?.let { cdItemDetailsList ->
+        iCdInspectionGeneralRepo.findFirstByCdDetailsAndCurrentChecklist(consignmentDocumentDetailsEntity, 1)?.let { cdItemDetailsList ->
             localCoc.customsEntryNumber = cdItemDetailsList.customsEntryNumber
             localCoc.clearingAgent = cdItemDetailsList.clearingAgent
             localCoc
@@ -471,6 +474,7 @@ class DestinationInspectionDaoServices(
                             idfNumber = consignmentDocumentDetailsEntity.ucrNumber?.let { findIdf(it)?.baseDocRefNo }
                                     ?: "UNKNOWN"
                             rfiNumber = "UNKNOWN"
+                            cocType = "NCR"
                             clean = "N"
                             createdBy = commonDaoServices.concatenateName(user)
                             createdOn = commonDaoServices.getTimestamp()
@@ -681,7 +685,7 @@ class DestinationInspectionDaoServices(
         var localCor = CorsBakEntity()
         //Get CD Item by cd doc id
         var mvirFound = false
-        iCdInspectionGeneralRepo.findFirstByCdDetails(cdEntity)?.let { cdItemDetailsList ->
+        iCdInspectionGeneralRepo.findFirstByCdDetailsAndCurrentChecklist(cdEntity, 1)?.let { cdItemDetailsList ->
             this.cdMotorVehicleInspectionChecklistRepo.findByInspectionGeneral(cdItemDetailsList)?.let { mvInspectionEntity ->
                 this.iCdInspectionMotorVehicleItemChecklistRepo.findFirstByInspection(mvInspectionEntity)?.let { cdMvInspectionEntity ->
                     // Add item details
@@ -689,17 +693,23 @@ class DestinationInspectionDaoServices(
                         localCor.varField1 = item.id?.toString()
                         findCdItemNonStandardByItemID(item)?.let { nonStandard ->
                             localCor.chasisNumber = nonStandard.chassisNo.toString()
-                        }
-                    }
+                            localCor.model = nonStandard.vehicleModel ?: "UNKNOWN"
+                            localCor.make = nonStandard.vehicleMake ?: "UNKNOWN"
+                            localCor.yearOfFirstRegistration = nonStandard.vehicleYear ?: "UNKNOWN"
+                            localCor.fuelType = "UNKNOWN"
+                            localCor.bodyColor = "UNKNOWN"
+                        } ?: throw ExpectedDataNotFound("No Item Non standard details found, chassis number not found")
+                    } ?: throw ExpectedDataNotFound("No Item attached to this MVIR")
                     mvirFound = true
                     with(localCor) {
                         inspectionCenter = cdItemDetailsList.cdDetails?.freightStation?.cfsName ?: "UNKNOWN"
-                        make = cdMvInspectionEntity.makeVehicle
                         engineNumber = "UNKNOWN"
+                        typeOfBody = "UNKNOWN"
                         engineCapacity = cdMvInspectionEntity.engineNoCapacity
                         yearOfManufacture = cdMvInspectionEntity.manufactureDate.toString()
                         inspectionMileage = cdMvInspectionEntity.odemetreReading ?: "UNKNOWN"
                         inspectionRemarks = cdMvInspectionEntity.remarks
+                        previousCountryOfRegistration = "UNKNOWN"
                         tareWeight = (cdMvInspectionEntity.itemId?.itemNetWeight?.toBigDecimal()
                                 ?: BigDecimal.ZERO).toDouble()
                         grossWeight = (cdMvInspectionEntity.itemId?.itemGrossWeight?.toBigDecimal()
@@ -727,12 +737,7 @@ class DestinationInspectionDaoServices(
                     localCor.yearOfManufacture = nonStandardEntity.vehicleYear ?: "UNKNOWN"
                     localCor.chasisNumber = nonStandardEntity.chassisNo ?: "UNKNOWN"
                     localCor
-                } ?: run {
-                    localCor.typeOfVehicle = "UNKNOWN"
-                    localCor.make = "UNKNOWN"
-                    localCor.model = "UNKNOWN"
-                    localCor
-                }
+                } ?: throw ExpectedDataNotFound("No Item Non standard details found, chassis number not found")
                 with(localCor) {
                     inspectionCenter = cdEntity.freightStation?.cfsName ?: "UNKNOWN"
                     inspectionMileage = "UNKNOWN"
@@ -753,7 +758,7 @@ class DestinationInspectionDaoServices(
                     inspectionOfficer = "${user.firstName} ${user.lastName}"
                     inspectionRemarks = "NA"
                 }
-            }
+            } ?: throw ExpectedDataNotFound("No vehicle found in this consignment, chassis number not found")
         }
         // Fill checklist details
         with(localCor) {
@@ -890,12 +895,8 @@ class DestinationInspectionDaoServices(
                 ?: throw Exception("COC ITEM(s) Details with COC ID = ${cocId}, do not Exist")
     }
 
-    fun findDemandNoteWithCDID(cdId: Long): CdDemandNoteEntity {
-        iDemandNoteRepo.findByCdId(cdId)
-                ?.let { demandNote ->
-                    return demandNote
-                }
-                ?: throw Exception("Demand Note Details with CD ID = ${cdId}, do not Exist")
+    fun findDemandNoteWithCDID(cdId: Long): CdDemandNoteEntity? {
+        return iDemandNoteRepo.findFirstByCdId(cdId)
     }
 
     fun findIdfItemList(idf: IDFDetailsEntity): List<IDFItemDetailsEntity>? {
@@ -928,7 +929,7 @@ class DestinationInspectionDaoServices(
             demandNote.address = it.address
             demandNote.currency = it.currency ?: "KES"
             demandNote.telephone = it.telephone
-            demandNote.amountPayable = it.amountPayable ?: BigDecimal.ZERO
+            demandNote.amountPayable = it.totalAmount ?: BigDecimal.ZERO
             demandNote.cfvalue = it.cfvalue ?: BigDecimal.ZERO
             demandNote.id = it.id
             demandNote.receiptNo = it.receiptNo ?: "UNKNOWN"
@@ -943,7 +944,7 @@ class DestinationInspectionDaoServices(
             demandNote.paymentInstruction1 = PaymenInstruction1(bank1Details)
             demandNote.paymentInstruction2 = PaymenInstruction2(bank2Details)
             demandNote.paymentInstruction3 = PaymenInstruction3(bank3Details)
-            mpesaDetails.bankAccountNumber = demandNoteEntity.postingReference
+            mpesaDetails.mpesaAccNo = demandNoteEntity.postingReference
             demandNote.paymentInstructionMpesa = PaymenInstructionMpesa(mpesaDetails)
             demandNote.paymentInstructionOther = PaymenInstructionOther(mpesaDetails)
             demandNote.version = demandNote.version ?: 1
@@ -963,9 +964,10 @@ class DestinationInspectionDaoServices(
     }
 
 
-    fun sendDemandNotePayedStatusToKWIS(demandNote: CdDemandNoteEntity) {
+    fun sendDemandNotePayedStatusToKWIS(demandNote: CdDemandNoteEntity, amount: BigDecimal?) {
         val customDemandNotePay = CustomDemandNotePayXmlDto(demandNote)
         val demandNotePay = DemandNotePayXmlDTO()
+        customDemandNotePay.amountPaid = amount
         demandNotePay.customDemandNotePay = customDemandNotePay
 
         val fileName = customDemandNotePay.demandNoteNumber?.let {
@@ -1675,20 +1677,24 @@ class DestinationInspectionDaoServices(
             inspectionGeneralEntity: CdInspectionGeneralEntity, cDetails: ConsignmentDocumentDetailsEntity,
             user: UsersEntity, map: ServiceMapsEntity
     ): CdInspectionGeneralEntity {
+        // Detach previous checklist on new checklist filled
+        iCdInspectionGeneralRepo.findFirstByCdDetailsAndCurrentChecklist(cDetails, 1)?.let { prevChecklist ->
+            prevChecklist.currentChecklist = 0
+            prevChecklist.varField4 = commonDaoServices.getTimestamp().toString()
+            iCdInspectionGeneralRepo.save(prevChecklist)
+        }
         // Get existing one or create a new one
-        var inspectionGeneralChecklist = iCdInspectionGeneralRepo.findFirstByCdDetails(cDetails)
-                ?: inspectionGeneralEntity
-        with(inspectionGeneralChecklist) {
+        with(inspectionGeneralEntity) {
             cdDetails = cDetails
             status = map.activeStatus
             createdBy = commonDaoServices.getUserName(user)
             createdOn = commonDaoServices.getTimestamp()
         }
-        inspectionGeneralChecklist = iCdInspectionGeneralRepo.save(inspectionGeneralChecklist)
+        val updatedInspectionGeneralEntity = iCdInspectionGeneralRepo.save(inspectionGeneralEntity)
 
         KotlinLogging.logger { }
-                .info { "Inspection General CheckList Details saved ID = ${inspectionGeneralChecklist.id}" }
-        return inspectionGeneralChecklist
+                .info { "Inspection General CheckList Details saved ID = ${updatedInspectionGeneralEntity.id}" }
+        return updatedInspectionGeneralEntity
     }
 
     fun saveInspectionAgrochemItemChecklist(
@@ -1885,6 +1891,9 @@ class DestinationInspectionDaoServices(
                     ?.let {
                         return it
                     }
+
+    fun findCdWithUcrNumberExcept(ucrNumber: String, id: Long?) = iConsignmentDocumentDetailsRepo.findByUcrNumberAndIdNot(ucrNumber, id)
+
 
     fun countCdWithUcrNumberAndVersion(ucrNumber: String, version: Long): Long = iConsignmentDocumentDetailsRepo.countByUcrNumberAndVersion(ucrNumber, version)
 
@@ -2338,6 +2347,37 @@ class DestinationInspectionDaoServices(
                 }
         }
         return iConsignmentDocumentDetailsRepo.save(cdDetailsEntity)
+    }
+
+    fun updateCDDetailsWithForeignDocuments(cdDetailsEntity: ConsignmentDocumentDetailsEntity): ConsignmentDocumentDetailsEntity {
+        // Attch COC
+        this.cocRepo.findByUcrNumberAndCocType(cdDetailsEntity.ucrNumber
+                ?: "", ConsignmentCertificatesIssues.COC.nameDesc)?.let {
+            cdDetailsEntity.cocNumber = it.cocNumber
+            cdDetailsEntity.localCocOrCorStatus = 1
+        }
+        // Attach NCR
+        this.cocRepo.findByUcrNumberAndCocType(cdDetailsEntity.ucrNumber
+                ?: "", ConsignmentCertificatesIssues.NCR.nameDesc)?.let {
+            cdDetailsEntity.ncrNumber = it.cocNumber
+            cdDetailsEntity.localCocOrCorStatus = 1
+        }
+        // Attach COI
+        this.cocRepo.findByUcrNumberAndCocType(cdDetailsEntity.ucrNumber
+                ?: "", ConsignmentCertificatesIssues.COI.nameDesc)?.let {
+            cdDetailsEntity.localCoi = 1
+        }
+        // Attach COR
+        findVehicleFromCd(cdDetailsEntity)?.let { vehicle ->
+            this.corsBakRepository.findByChasisNumber(vehicle.chassisNumber ?: "")?.let { cor ->
+                cdDetailsEntity.localCocOrCorStatus = 1
+                cdDetailsEntity.corNumber = cor.corNumber
+                // Update COR link
+                cor.consignmentDocId = cdDetailsEntity
+                corsBakRepository.save(cor)
+            }
+        }
+        return iConsignmentDocumentDetailsRepo.save(cdDetailsEntity)
 
     }
 
@@ -2346,7 +2386,7 @@ class DestinationInspectionDaoServices(
                 ?.let { cocEntity ->
                     return cocEntity
                 }
-                ?: throw Exception(docType + " Details with the following UCR NUMBER = ${ucrNumber}, does not Exist")
+                ?: throw Exception(docType.toUpperCase() + " Details with the following UCR NUMBER = ${ucrNumber}, does not Exist")
     }
 
     fun findCOCById(cocId: Long): CocsEntity? {
@@ -2615,6 +2655,10 @@ class DestinationInspectionDaoServices(
 
     fun findAllCFSUserCodes(userProfileID: Long): List<String> {
         return usersCfsRepo.findAllUserCfsCodes(userProfileID)
+    }
+
+    fun countCFSUserCodes(userProfileID: Long, cfsId: Long): Long {
+        return usersCfsRepo.countUserCfsCodes(userProfileID, cfsId)
     }
 
     fun findAllCFSUserList(userProfileID: Long): List<UsersCfsAssignmentsEntity> {
@@ -3124,7 +3168,7 @@ class DestinationInspectionDaoServices(
 
 
     fun findAllDemandNotesWithSwPending(paymentStatus: Int): List<CdDemandNoteEntity> {
-        return iDemandNoteRepo.findAllByPaymentStatusAndSwStatusIn(paymentStatus, listOf(0, null))
+        return iDemandNoteRepo.findAllByPaymentStatusAndSwStatusInAndPaymentPurpose(paymentStatus, listOf(0, null), PaymentPurpose.CONSIGNMENT.code)
     }
 
     //Send CD status to KeSWS
@@ -3258,10 +3302,10 @@ class DestinationInspectionDaoServices(
         ministryInspectionItem.cdItemDetailsId = cdItemDetails.id
         this.findCdItemNonStandardByItemID(cdItemDetails)?.let { cdItemNonStandard ->
             ministryInspectionItem.chassis = cdItemNonStandard.chassisNo
-            ministryInspectionItem.used = cdItemNonStandard.usedIndicator
-            ministryInspectionItem.year = cdItemNonStandard.vehicleYear
-            ministryInspectionItem.model = cdItemNonStandard.vehicleModel
-            ministryInspectionItem.make = cdItemNonStandard.vehicleMake
+            ministryInspectionItem.used = cdItemNonStandard.usedIndicator ?: "N/A"
+            ministryInspectionItem.year = cdItemNonStandard.vehicleYear ?: "N/A"
+            ministryInspectionItem.model = cdItemNonStandard.vehicleModel ?: "N/A"
+            ministryInspectionItem.make = cdItemNonStandard.vehicleMake ?: "N/A"
         }
         return ministryInspectionItem
     }

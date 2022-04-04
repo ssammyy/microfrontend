@@ -43,6 +43,10 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.*
 
+enum class ConsignmentCertificatesIssues(val nameDesc: String) {
+    COC("COC"), NCR("NCR"), COI("COI"), COR("COR"), OTHERS("OTHER");
+}
+
 enum class ConsignmentDocumentStatus(val code: String) {
     NEW_CD("NEW_CD"), REVISED_CD("REVISED_CD"), OLD_CD("OLD_CD"), ON_HOLD("ONHOLD"),
     IO_ASSIGNED("IO_ASSIGNED"), IO_REASSIGNED("IO_REASSIGNED"), IO_SELF_ASSIGN("IO_SELF_ASSIGNED"),
@@ -54,7 +58,7 @@ enum class ConsignmentDocumentStatus(val code: String) {
     COMPLIANCE_REQUEST("COMPLIANCE_REQ"), COMPLIANCE_APPROVED("COMPLIANCE_APPROVE"), COMPLIANCE_REJECTED("COMPLIANCE_REJECTED"),
     BLACKLIST_REQUEST("BLACKLIST_REQUEST"), BLACKLIST_APPROVED("BLACKLIST_APPROVED"), BLACKLIST_REJECTED("BLACKLIST_REJECTED"),
     COC_ISSUED("COC_ISSUED"), COR_ISSUED("COR_ISSUED"), COI_ISSUED("COU_ISSUED"), NCR_ISSUED("NCR_ISSUED"),
-    REJ_AMEND_REQUEST("AMEND_REQUEST"), REJ_AMEND_APPROVED("AMENDMENT"), REJ_AMEND_REJECTED("AMEND_REJECTED"),
+    REJ_AMEND_REQUEST("AMENDMENT"), REJ_AMEND_APPROVED("AMENDMENT_APPROVE"), REJ_AMEND_REJECTED("AMEND_REJECTED"),
     QUERY_REQUEST("QUERY_REQUEST"), AMEND_APPROVED("QUERY"), QUERY_REJECTED("QUERY_REJECTED"),
     APPROVE_REQUEST("APPROVE_REQUEST"), APPROVE_APPROVED("APPROVE"), APPROVE_REJECTED("APPROVE_REJECTED"),
     REJECT_REQUEST("REJECT_REQUEST"), REJECT_APPROVED("REJECT"), REJECT_REJECTED("REJECT_REJECTED"),
@@ -113,7 +117,7 @@ class DestinationInspectionService(
         val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
         // Move back to officer tasks
         consignmentDocument.status = ConsignmentApprovalStatus.UNDER_INSPECTION.code
-        consignmentDocument.compliantStatus = map.initStatus
+        consignmentDocument.compliantStatus = map.inactiveStatus
         consignmentDocument.approveRejectCdStatus = map.initStatus
         consignmentDocument.varField10 = "COMPLIANCE REJECTED"
         // Update and add comments
@@ -291,7 +295,7 @@ class DestinationInspectionService(
             consignmentDocument = this.daoServices.updateCdDetailsInDB(consignmentDocument, supervisorDetails)
             // Update CD status
             daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.IO_REASSIGNED)
-            cdAuditService.addHistoryRecord(consignmentDocument.id, remarks, "KEBS_REASSIGN_IO", "Re-Assign inspection officer : " + officer.get().userName, supervisor)
+            cdAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, remarks, "KEBS_REASSIGN_IO", "Re-Assign inspection officer : " + officer.get().userName, supervisor)
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("FAILED TO REASSIGN", ex)
         }
@@ -373,6 +377,7 @@ class DestinationInspectionService(
                 // Send to KENTRADE
                 daoServices.submitCoRToKesWS(corDetails)
                 //Send Cor to importer
+                consignmentDocument.corNumber = corDetails.corNumber
                 consignmentDocument.compliantStatus = map.activeStatus
                 consignmentDocument.localCocOrCorStatus = map.activeStatus
                 consignmentDocument.status = ConsignmentApprovalStatus.APPROVED.code
@@ -617,7 +622,7 @@ class DestinationInspectionService(
                 this.daoServices.updateCdDetailsInDB(consignmentDocument, this.commonDaoServices.findUserByUserName(supervisor))
             }
             daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.TARGET_APPROVED)
-            this.cdAuditService.addHistoryRecord(consignmentDocument.id!!, consignmentDocument.ucrNumber, remarks, "APPROVE TARGETING", "Targeting of ${cdUuid} has been rejected by ${supervisor}", supervisor)
+            this.cdAuditService.addHistoryRecord(consignmentDocument.id!!, consignmentDocument.ucrNumber, remarks, "APPROVE TARGETING", "Targeting of ${consignmentDocument.ucrNumber} has been approved by ${supervisor}", supervisor)
             // Submit consignment to Single/Window
             KotlinLogging.logger { }.info("REQUESTED TARGETING SCHEDULE: ${cdUuid}")
             daoServices.submitCDStatusToKesWS("OH", "OH", consignmentDocument.version.toString(), consignmentDocument)
@@ -893,7 +898,11 @@ class DestinationInspectionService(
                         if (coc == null) {
                             return
                         }
-                        cocsRepository.findByUcrNumberAndCocType(coc.ucrNumber ?: "NA", "COC")
+                        val documentType = when {
+                            coc.clean.equals("Y", true) -> "NCR"
+                            else -> "COC"
+                        }
+                        cocsRepository.findByUcrNumberAndCocType(coc.ucrNumber ?: "NA", documentType)
                                 ?.let {
                                     KotlinLogging.logger {}.warn("CoC with UCR number already exists: ${coc.ucrNumber}")
                                 }
@@ -947,6 +956,7 @@ class DestinationInspectionService(
                                         shipmentPartialNumber = coc.shipmentPartialNumber
                                         shipmentSealNumbers = coc.shipmentSealNumbers ?: "UNDEFINED"
                                         route = coc.route ?: "UNDEFINED"
+                                        cocType = documentType
                                         productCategory = coc.productCategory ?: "UNDEFINED"
                                         status = 1L
                                         createdBy = loggedInUser.userName
@@ -962,6 +972,7 @@ class DestinationInspectionService(
                                     if (entity.cocRemarks.isNullOrEmpty()) {
                                         entity.cocRemarks = "NA"
                                     }
+
                                     entity = cocsRepository.save(entity)
                                     cocs.filter { dto -> dto.cocNumber == u }.forEach { cocItems ->
                                         val itemEntity = CocItemsEntity().apply {
@@ -989,9 +1000,8 @@ class DestinationInspectionService(
                                     }
                                     // Send to KENTRADE
                                     KotlinLogging.logger { }.info("SEND FOREIGN COC: ${entity.cocNumber}")
+                                    // Check if NCR before sending
                                     daoServices.sendLocalCoc(entity)
-
-
                                 }
 
                     }
@@ -1309,8 +1319,13 @@ class DestinationInspectionService(
             dataMap.put("cd_service_provider", it)
         }
         cdDetails.ucrNumber?.let {
-            daoServices.findAllOlderVersionCDsWithSameUcrNumber(it, map)?.let { it1 ->
-                dataMap.put("old_versions", ConsignmentDocumentDao.fromList(it1))
+            if (cdDetails.oldCdStatus == map.activeStatus) {
+                val otherCds = daoServices.findCdWithUcrNumberExcept(it, cdDetails.id)
+                dataMap.put("old_versions", ConsignmentDocumentDao.fromList(otherCds))
+            } else {
+                daoServices.findAllOlderVersionCDsWithSameUcrNumber(it, map)?.let { it1 ->
+                    dataMap.put("old_versions", ConsignmentDocumentDao.fromList(it1))
+                }
             }
         }
         dataMap.put("cd_details", ConsignmentDocumentDao.fromEntity(cdDetails))
@@ -1508,9 +1523,9 @@ class DestinationInspectionService(
     fun getSupervisor(cdDetails: ConsignmentDocumentDetailsEntity): UsersEntity? {
         cdDetails.freightStation?.let {
             val supervisorRoles = this.privilegesRepository.findRoleIdsByRoleName("DI_OFFICER_CHARGE_READ")
-            KotlinLogging.logger { }.info("ROLE IDS: ${supervisorRoles}")
+            KotlinLogging.logger { }.info("ROLE IDS: $supervisorRoles")
             val userIds = cfsTypesEntity.findCfsUserIds(it.id, 1)
-            KotlinLogging.logger { }.info("USR IDS: ${userIds}")
+            KotlinLogging.logger { }.info("USR IDS: $userIds")
             val supervisors = this.userEntityRepository.findUsersInCfsAndProfiles(supervisorRoles, userIds)
             KotlinLogging.logger { }.info("USR COUNT: ${supervisors.size}")
             var usersEntity: UsersEntity? = null
@@ -1560,8 +1575,8 @@ class DestinationInspectionService(
             map["CorSerialNo"] = ""
             corDetails.createdOn?.let {
                 val issuedOn = LocalDateTime.ofInstant(it.toInstant(), ZoneId.systemDefault())
-                map["CorIssueDate"] = commonDaoServices.convertDateToString(issuedOn, "mm/dd/yyyy")
-                map["CorExpiryDate"] = commonDaoServices.convertDateToString(issuedOn.plusMonths(3), "mm/dd/yyyy")
+                map["CorIssueDate"] = commonDaoServices.convertDateToString(issuedOn, "dd/MM/yyyy")
+                map["CorExpiryDate"] = commonDaoServices.convertDateToString(issuedOn.plusMonths(3), "dd/MM/yyyy")
             }
             //Vehicle Details
             map["ChassisNumber"] = corDetails.chasisNumber.orEmpty()
@@ -1617,9 +1632,12 @@ class DestinationInspectionService(
             map["ClearingAgent"] = localCocEntity.clearingAgent ?: "N/A"
             map["PortOfEntry"] = localCocEntity.portOfDestination.orEmpty()
             map["UcrNo"] = localCocEntity.ucrNumber.orEmpty()
-            map["Status"] = localCocEntity.status.toString()
-            map["Remarks"] = localCocEntity.cocRemarks.toString()
-            map["CoCType"] = localCocEntity.cocType.toString()
+            map["Status"] = when {
+                localCocEntity.status?.toInt() == 1 || localCocEntity.status == null -> "APPROVED"
+                else -> "REJECTED"
+            }
+            map["Remarks"] = localCocEntity.cocRemarks.orEmpty()
+            map["CoCType"] = localCocEntity.cocType.orEmpty()
             val cocItems = daoServices.findCocItemList(cocId)
             map["dataSources"] = hashMapOf(Pair("itemDataSource", cocItems))
         } ?: throw ExpectedDataNotFound("Invalid local CocNumber")

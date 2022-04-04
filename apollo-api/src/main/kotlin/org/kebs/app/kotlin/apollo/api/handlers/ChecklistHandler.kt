@@ -9,6 +9,7 @@ import org.kebs.app.kotlin.apollo.api.payload.request.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.service.ChecklistService
+import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentAuditService
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.repo.di.IChecklistCategoryRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IChecklistInspectionTypesRepository
@@ -20,6 +21,7 @@ import org.springframework.web.servlet.function.ServerResponse
 import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
+import javax.transaction.Transactional
 
 @Component
 class ChecklistHandler(
@@ -29,13 +31,15 @@ class ChecklistHandler(
         private val iChecklistInspectionTypesRepo: IChecklistInspectionTypesRepository,
         private val iLaboratoryRepo: ILaboratoryRepository,
         private val commonDaoServices: CommonDaoServices,
+        private val cdAuditService: ConsignmentDocumentAuditService,
         private val applicationMapProperties: ApplicationMapProperties
 ) {
     fun ssfPdfFilesResults(req: ServerRequest): ServerResponse {
         val ssfId = req.pathVariable("ssfId")
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        return ServerResponse.ok().body(checlistService.listLabPdfFiles(ssfId.toLongOrDefault(0L),loggedInUser))
+        return ServerResponse.ok().body(checlistService.listLabPdfFiles(ssfId.toLongOrDefault(0L), loggedInUser))
     }
+
     fun approveRejectSampledItem(req: ServerRequest): ServerResponse {
         var response = ApiResponseModel()
         try {
@@ -76,10 +80,10 @@ class ChecklistHandler(
         val multipartRequest = (req.servletRequest() as? MultipartHttpServletRequest)
         if (multipartRequest != null) {
             multipartRequest.getFile("file")?.let { multipartFile ->
-                val comment = req.attribute("comment")
-                        .orElse("")
+                val comment = multipartRequest.getParameter("comment")
+                val referenceNumber = multipartRequest.getParameter("referenceNumber")
                 val itemId = req.pathVariable("inspectionId")
-                response = checlistService.ministryInspectionList(itemId.toLongOrDefault(0L), comment.toString(), multipartFile)
+                response = checlistService.ministryInspectionList(itemId.toLongOrDefault(0L), comment.toString(), referenceNumber.toString(), multipartFile)
                 response
             } ?: run {
                 response.responseCode = ResponseCodes.FAILED_CODE
@@ -262,6 +266,7 @@ class ChecklistHandler(
         return ServerResponse.ok().body(response)
     }
 
+    @Transactional
     fun saveChecklist(req: ServerRequest): ServerResponse {
         val response = ApiResponseModel()
         try {
@@ -270,14 +275,25 @@ class ChecklistHandler(
             //Get CD item
             req.pathVariable("cdUuid").let { cdUuid ->
                 commonDaoServices.getLoggedInUser()?.let { loggedInUser ->
-                    val cdItem = daoServices.findCDWithUuid(cdUuid)
+                    var cdItem = daoServices.findCDWithUuid(cdUuid)
                     //Save the general checklist
                     val generalCheckList = form.generalChecklist()
+                    generalCheckList.ucrNumber = cdItem.ucrNumber
                     generalCheckList.description = cdItem.description
-                    daoServices.findCDImporterDetails(cdItem?.id ?: 0).let { importer ->
+                    daoServices.findCDImporterDetails(cdItem.cdImporter ?: 0).let { importer ->
                         generalCheckList.importersName = importer.name
                     }
+                    // Manifest details
+                    cdItem.manifestNumber?.let { man ->
+                        daoServices.findManifest(man)?.let {
+                            generalCheckList.declarationNumber = it.manifestNumber
+                            generalCheckList.declarationRepresentative = it.receiver?.orEmpty()
+                        }
+                    }
+                    generalCheckList.currentChecklist = 1
                     generalCheckList.inspectionDate = Date(java.util.Date().time)
+                    generalCheckList.inspectionOfficer = "${loggedInUser.firstName} ${loggedInUser.lastName}".trim()
+                    generalCheckList.supervisorName = "${cdItem.assigner?.firstName} ${cdItem.assigner?.lastName}".trim()
                     generalCheckList.cfs = cdItem.freightStation?.cfsName
                     val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
                     val inspectionGeneral = daoServices.saveInspectionGeneralDetails(generalCheckList, cdItem, loggedInUser, map)
@@ -307,13 +323,12 @@ class ChecklistHandler(
                         val otherItemInspectionChecklist = form.otherChecklist()
                         checlistService.addOtherChecklist(map, inspectionGeneral, form.otherChecklistItems(), otherItemInspectionChecklist, loggedInUser)
                     }
+                    // Update ministry and lab result status of a consignment
+                    cdItem = daoServices.findCDWithUuid(cdUuid)
                     cdItem.inspectionChecklist = map.activeStatus
-                    cdItem.varField10 = "CHECKLIST FILLED, AWAITING COMPLIANCE STATUS"
-                    val cdDetails = daoServices.updateCdDetailsInDB(cdItem, loggedInUser)
-                    // Update lab status if vehicle was not in consignment
-                    if (form.vehicle == null) {
-                        checlistService.updateConsignmentSampledStatus(cdDetails, false)
-                    }
+                    checlistService.updateConsignmentSampledStatus(cdItem, false, form.vehicle != null)
+                    // Add inspection remarks
+                    this.cdAuditService.addHistoryRecord(cdItem.id!!, cdItem.ucrNumber, form.overallRemarks, "ADD_CHECKLIST", "Filled consignment checklist", loggedInUser.userName)
                 }
                 response.message = "Checklist submitted successfully"
                 response.responseCode = ResponseCodes.SUCCESS_CODE

@@ -59,6 +59,7 @@ class HibernateJpaConfiguration(private val jcp: JpaConnectionProperties) {
         results.setProperty("hibernate.dialect", jcp.dialect)
         results.setProperty("hibernate.hbm2ddl.auto", jcp.hbm2ddlAuto)
         results.setProperty("hibernate.show_sql", jcp.showSql)
+        results.setProperty("hibernate.enable_lazy_load_no_trans", "true")
         results.setProperty("hibernate.format_sql", jcp.showSql)
         results.setProperty("hibernate.use_sql_comments", jcp.showSql)
         results.setProperty("hibernate.generate_statistics", jcp.generateStatistics)

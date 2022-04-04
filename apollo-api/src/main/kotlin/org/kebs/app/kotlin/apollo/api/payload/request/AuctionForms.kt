@@ -80,6 +80,8 @@ class AuctionForm {
     @NotEmpty(message = "Importer name is required")
     var cfsCode: String? = null
 
+    var country: String? = null
+
     @NotEmpty(message = "Auction item location is required")
     var itemLocation: String? = null
     var importerPhone: String? = null

@@ -131,8 +131,29 @@ class ConsignmentDocumentDaoService(
                                 cdCreated.diProcessStatus = 0
                                 cdCreated.diProcessStartedOn = null
                                 cdCreated.diProcessCompletedOn = null
-                                daoServices.updateCDStatus(cdCreated, ConsignmentDocumentStatus.REVISED_CD)
+                                // Return consignment to original supervisor
+                                // Check if inspection officer is in the CFS did not change
+                                try {
+                                    CDDocumentDetails.assignedInspectionOfficer?.let {
+                                        val profile = commonDaoServices.findUserProfileByUserID(it, 1)
+                                        val cnt = daoServices.countCFSUserCodes(profile.id!!, cdCreated.freightStation?.id
+                                                ?: 0)
+                                        if (cnt > 0) {
+                                            cdCreated.assignedStatus = map.activeStatus
+                                            cdCreated.assigner = CDDocumentDetails.assigner
+                                            cdCreated.assignedRemarks = "Auto Re-assigned on amendment"
+                                            cdCreated.assignedInspectionOfficer = CDDocumentDetails.assignedInspectionOfficer
+                                        } else {
+                                            KotlinLogging.logger { }.info("Could not assign consignment to current officer, officer ${CDDocumentDetails.assignedInspectionOfficer?.userName} not in CFS ${CDDocumentDetails.freightStation?.cfsName}")
+                                        }
+                                    }
+                                } catch (ex: Exception) {
+                                    KotlinLogging.logger { }.info("Could not reasign consignment after amendment", ex)
+                                }
+
+
                                 // Update details
+                                daoServices.updateCDStatus(cdCreated, ConsignmentDocumentStatus.REVISED_CD)
                             }
                         }
                     }
@@ -470,6 +491,12 @@ class ConsignmentDocumentDaoService(
         consignmentDocumentDetails?.let {
             daoServices.updateCDDetailsWithCdType(consignmentDocDetails.cdStandardTwo?.localCocType ?: "L", it)
         }
+        // Update consignment with foreign document reports or certificates
+        if ("F".equals(consignmentDocDetails.cdStandardTwo?.localCocType ?: "L", true)) {
+            consignmentDocumentDetails?.let { cd ->
+                consignmentDocumentDetails = daoServices.updateCDDetailsWithForeignDocuments(cd)
+            }
+        }
 
         //Add CD APPROVAL HISTORY DETAILS DETAILS
         consignmentDocDetails.approvalDetails?.approvalHistory
@@ -515,9 +542,9 @@ class ConsignmentDocumentDaoService(
                             issuedDateTime = documentSummary.issuedDateTime
                             summaryPageURL = documentSummary.summaryPageURL
 
-                            val transportDetails =
-                                    fetchedCdDetails.cdTransport?.let { daoServices.findCdTransportDetails(it) }
+                            val transportDetails = fetchedCdDetails.cdTransport?.let { daoServices.findCdTransportDetails(it) }
                             val cdCfsEntity = transportDetails?.freightStation?.let { daoServices.findCfsCd(it) }
+                                    ?: throw ExpectedDataNotFound("Invalid CFS code found on the consignment: ${transportDetails?.freightStation}")
 //                        val cdCfsAndUserCfs = cdCfsEntity?.id?.let { daoServices.findCfsUserFromCdCfs(it) }
 //            val sectionL3 = cdCfsAndUserCfs?.userCfs?.let { daoServices.findFreightStation(it) }
 //                        freightStation = cdCfsAndUserCfs?.userCfs

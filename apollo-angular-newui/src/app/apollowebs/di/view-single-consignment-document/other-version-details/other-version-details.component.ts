@@ -42,6 +42,10 @@ export class OtherVersionDetailsComponent implements OnInit {
                 title: "Last Modified By",
                 type: 'string'
             },
+            current: {
+                title: "Status",
+                type: 'string'
+            },
             version: {
                 title: 'Version Number',
                 type: 'string'

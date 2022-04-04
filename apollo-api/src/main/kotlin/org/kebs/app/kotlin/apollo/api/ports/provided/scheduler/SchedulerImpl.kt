@@ -7,6 +7,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.BpmnCommonFunctions
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.PaymentPurpose
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
@@ -221,7 +222,9 @@ class SchedulerImpl(
         KotlinLogging.logger { }.info("Found ${paidDemandNotesList.size} demand notes with paid status")
         //If list is not empty
         for (demandNote in paidDemandNotesList) {
-            diBpmn.triggerDemandNotePaidBpmTask(demandNote)
+            if (demandNote.paymentPurpose == PaymentPurpose.CONSIGNMENT.code) {
+                diBpmn.triggerDemandNotePaidBpmTask(demandNote)
+            }
         }
         return true
     }

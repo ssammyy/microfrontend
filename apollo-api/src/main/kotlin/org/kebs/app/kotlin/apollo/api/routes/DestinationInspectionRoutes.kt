@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.routes
 
 import org.kebs.app.kotlin.apollo.api.handlers.*
+import org.kebs.app.kotlin.apollo.api.handlers.di.LabManagerHandler
 import org.kebs.app.kotlin.apollo.api.handlers.invoice.InvoiceHandlers
 import org.kebs.app.kotlin.apollo.api.handlers.ism.ISMHandler
 import org.springframework.context.annotation.Bean
@@ -26,6 +27,17 @@ class DestinationInspectionRoutes {
             POST("/approve-reject", handler::approveRejectISMApplication)
             GET("/list/{requestStatus}", handler::listIsmRequests)
             GET("/details/{requestId}", handler::getIsmRequests)
+        }
+    }
+
+    @Bean
+    @CrossOrigin
+    fun laboratoryManager(handler: LabManagerHandler) = router {
+        "/api/v1/laboratory".nest {
+            POST("/add", handler::addLaboratory)
+            GET("/list", handler::listLaboratories)
+            PUT("/{labId}", handler::updateLaboratory)
+            DELETE("/{labId}", handler::deleteLaboratory)
         }
     }
 
@@ -72,7 +84,7 @@ class DestinationInspectionRoutes {
             POST("/consignment/document/item-ssf/{cdItemID}", handler::addSsfDetails) // Per inspection item
             POST("/consignment/document/item-ssf-result/{cdItemID}", handler::updateSsfResults) // Per inspection item
             GET("/lab-result/ssf-files/{ssfId}", handler::ssfPdfFilesResults) // Per inspection item
-            GET("/consignment/document/lab-results/{cdItemID}", handler::loadLabResult) // Lab Reult Per item
+            GET("/consignment/document/lab-results/{cdItemID}", handler::loadLabResult) // Lab Result Per item
             GET("/check-list/configurations", handler::checklistConfigurations)
             GET("/consignment/document/checklist/{cdUuid}", handler::consignmentDocumentChecklist)
             GET("/consignment/document/sampled-items/{cdUuid}", handler::consignmentDocumentChecklistSampled)
@@ -121,6 +133,7 @@ class DestinationInspectionRoutes {
             GET("/cd/inspection/configuration", handler::loadCommonUIComponents)
             GET("/ports", handler::loadPortOfArrival)
             GET("/port/freight/stations/{portId}", handler::listPortFreightStations)
+            GET("/port/freight/user-stations", handler::listUserFreightStations)
             GET("/blacklist/users", handler::listBlackListedUser)
             // OTHERS
             GET("/consignment/document/details/{coUuid}", handler::consignmentDocumentDetails)

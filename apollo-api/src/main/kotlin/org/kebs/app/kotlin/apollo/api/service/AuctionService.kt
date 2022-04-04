@@ -44,7 +44,7 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 enum class AuctionGoodStatus(val status: Int) {
-    NEW(0), APPROVED(1), REJECTED(2), OTHER(3), PAYMENT_PENDING(7);
+    NEW(0), APPROVED(1), REJECTED(2), OTHER(3), PAYMENT_COMPLETED(5), PAYMENT_PENDING(7);
 }
 
 @Service
@@ -138,11 +138,17 @@ class AuctionService(
         demandNoteReq.amount = BigDecimal.ZERO.toDouble()
         demandNoteReq.entryNo = request.auctionLotNo ?: ""
         // Entry point
+        demandNoteReq.customsOffice = request.location
         request.cfsId?.let {
             demandNoteReq.entryPoint = it.altCfsCode ?: it.cfsCode ?: ""
-            demandNoteReq.courier = ""
-            demandNoteReq.customsOffice = request.shipmentPort ?: "NRB"
+            if ("JKIA".equals(request.location, true)) {
+                demandNoteReq.courier = it.cfsCode
+                demandNoteReq.customsOffice = "JKA"
+            } else {
+                demandNoteReq.courier = ""
+            }
         }
+
         demandNoteReq.ablNumber = request.serialNumber
         demandNoteReq.invoicePrefix = "AG"
         demandNoteReq.presentment = false
@@ -265,7 +271,7 @@ class AuctionService(
                         "rejected" -> this.auctionRequestsRepository.findByApprovalStatus(AuctionGoodStatus.REJECTED.status, page)
                         "approved" -> this.auctionRequestsRepository.findByApprovalStatus(AuctionGoodStatus.APPROVED.status, page)
                         "new" -> this.auctionRequestsRepository.findByApprovalStatusInAndAssignedOfficerIsNull(listOf(AuctionGoodStatus.NEW.status), page)
-                        "assigned" -> this.auctionRequestsRepository.findByApprovalStatusInAndAssignedOfficer(listOf(AuctionGoodStatus.NEW.status, AuctionGoodStatus.PAYMENT_PENDING.status), this.commonDaoServices.loggedInUserDetails(), page)
+                        "assigned" -> this.auctionRequestsRepository.findByApprovalStatusInAndAssignedOfficer(listOf(AuctionGoodStatus.NEW.status, AuctionGoodStatus.PAYMENT_PENDING.status, AuctionGoodStatus.PAYMENT_COMPLETED.status), this.commonDaoServices.loggedInUserDetails(), page)
                         else -> null
                     }
                 }
@@ -368,7 +374,6 @@ class AuctionService(
             response.message = "Auction with lot no exists: " + form.auctionLotNo
             return response
         }
-
         val cfsCode = this.destinationInspectionDaoServices.findCfsCd((form.cfsCode ?: "").trim().toUpperCase())
         if (cfsCode == null) {
             response.responseCode = ResponseCodes.FAILED_CODE
@@ -427,16 +432,24 @@ class AuctionService(
         request.auctionDate = auctionDate
         request.shipmentPort = item.shipName
         request.arrivalDate = item.dateOfArrival
-        request.categoryCode = categoryCode
         request.cfsCode = item.cfsCode
+        request.country = item.country
+        // Check chassis number for category
+        if (StringUtils.hasLength(item.containerChassisNumber)) {
+            request.categoryCode = "VEHICLE"
+        } else {
+            request.categoryCode = "GOODS"
+        }
         request.importerName = item.consignee
         request.importerPhone = item.consignee
         request.containerSize = item.containerSize
         val tmpItem = AuctionItem()
+
         tmpItem.chassisNo = item.containerChassisNumber
         tmpItem.itemName = item.description
         tmpItem.itemType = item.manifestNo
         tmpItem.serialNo = item.blNo
+        tmpItem.itemType = request.categoryCode
         tmpItem.unitPrice = BigDecimal.ZERO
         tmpItem.quantity = BigDecimal.valueOf(1)
         request.items = arrayListOf(tmpItem)
@@ -462,7 +475,7 @@ class AuctionService(
         return response
     }
 
-    fun uploadAuctionGoods(multipartFile: MultipartFile, fileType: String?, categoryCode: String?, listingDate: Date): ApiResponseModel {
+    fun uploadAuctionGoods(multipartFile: MultipartFile, fileType: String?, categoryCode: String?, listingDate: Date, cfsCode: String?): ApiResponseModel {
         val response = ApiResponseModel()
         val endsWith = multipartFile.originalFilename?.endsWith(".txt")
         if (!(multipartFile.contentType == "text/csv" || endsWith == true)) {
@@ -479,6 +492,9 @@ class AuctionService(
         val audits = this.daoService.readAuditCsvFile(separator, targetReader)
         val errors = mutableListOf<Any>()
         for (a in audits) {
+            if (!StringUtils.hasLength(a.cfsCode)) {
+                a.cfsCode = cfsCode
+            }
             validatorService.validateInputWithInjectedValidator(a)?.let {
                 errors.add(it)
             } ?: run {

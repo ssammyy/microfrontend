@@ -35,27 +35,27 @@
 		</queryString>
 		<field name="shipmentLineHscode" class="java.lang.String"/>
 		<field name="shipmentLineDescription" class="java.lang.String"/>
-		<field name="shipmentLineQuantity" class="java.math.BigDecimal"/>
-	</subDataset>
-	<parameter name="CocType" class="java.lang.String"/>
-	<parameter name="CocNo" class="java.lang.String"/>
-	<parameter name="IssueDate" class="java.lang.String"/>
-	<parameter name="EntryNo" class="java.lang.String"/>
-	<parameter name="IdfNo" class="java.lang.String"/>
-	<parameter name="ImporterName" class="java.lang.String"/>
-	<parameter name="ImporterAddress" class="java.lang.String"/>
-	<parameter name="ImporterPin" class="java.lang.String"/>
-		<parameter name="`ClearingAgent`" class="java.lang.String"/>
-	<parameter name="PortOfEntry" class="java.lang.String"/>
-	<parameter name="UcrNo" class="java.lang.String"/>
-	<parameter name="Status" class="java.lang.String"/>
-	<parameter name="Remarks" class="java.lang.String"/>
-	<parameter name="CoCType" class="java.lang.String"/>
-	<parameter name="imagePath" class="java.lang.String"/>
-	<queryString>
-		<![CDATA[]]>
-	</queryString>
-	<field name="itemDataSource" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+        <field name="shipmentLineQuantity" class="java.math.BigDecimal"/>
+    </subDataset>
+    <parameter name="CocType" class="java.lang.String"/>
+    <parameter name="CocNo" class="java.lang.String"/>
+    <parameter name="IssueDate" class="java.lang.String"/>
+    <parameter name="EntryNo" class="java.lang.String"/>
+    <parameter name="IdfNo" class="java.lang.String"/>
+    <parameter name="ImporterName" class="java.lang.String"/>
+    <parameter name="ImporterAddress" class="java.lang.String"/>
+    <parameter name="ImporterPin" class="java.lang.String"/>
+    <parameter name="ClearingAgent" class="java.lang.String"/>
+    <parameter name="PortOfEntry" class="java.lang.String"/>
+    <parameter name="UcrNo" class="java.lang.String"/>
+    <parameter name="Status" class="java.lang.String"/>
+    <parameter name="Remarks" class="java.lang.String"/>
+    <parameter name="CoCType" class="java.lang.String"/>
+    <parameter name="imagePath" class="java.lang.String"/>
+    <queryString>
+        <![CDATA[]]>
+    </queryString>
+    <field name="itemDataSource" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>

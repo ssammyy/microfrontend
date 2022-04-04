@@ -1,15 +1,10 @@
 package org.kebs.app.kotlin.apollo.api.payload.request
 
-import org.kebs.app.kotlin.apollo.store.model.SampleSubmissionDocumentsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.*
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleCollectionEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmissionEntity
 import java.sql.Date
-import java.time.Instant
-import javax.persistence.Basic
-import javax.persistence.Column
 import kotlin.random.Random
-import kotlin.random.nextUInt
 import kotlin.random.nextULong
 
 class AgrochemCheckListItems {
@@ -21,6 +16,7 @@ class AgrochemCheckListItems {
     var brand: String? = null
     var ksEasApplicable: String? = null
     var quantityVerified: String? = null
+    var quantityVerifiedUnit: String? = null
     var dateMfgPackaging: String? = null
     var dateExpiry: String? = null
     var mfgName: String? = null
@@ -46,6 +42,7 @@ class EngineeringCheckListItems {
     var brand: String? = null
     var ksEasApplicable: String? = null
     var quantityVerified: String? = null
+    var quantityVerifiedUnit: String? = null
     var instructionsUseManual: String? = null
     var warrantyPeriodDocumentation: String? = null
     var safetyCautionaryRemarks: String? = null
@@ -98,6 +95,7 @@ class OtherCheckListItems {
     var brand: String? = null
     var ksEasApplicable: String? = null
     var quantityVerified: String? = null
+    var quantityVerifiedUnit: String? = null
     var packagingLabelling: String? = null
     var physicalCondition: String? = null
     var defects: String? = null
@@ -140,6 +138,7 @@ class CheckListForm {
             dt.sampled = item.sampled
             dt.serialNumber = "EG${item.itemId}${Random(12).nextULong()}"
             dt.quantityVerified = item.quantityVerified
+            dt.quantityVerifiedUnit = item.quantityVerifiedUnit
             dt.warrantyPeriodDocumentation = item.warrantyPeriodDocumentation
             dt.safetyCautionaryRemarks = item.safetyCautionaryRemarks
             dt.sizeClassCapacity = item.sizeClassCapacity
@@ -180,6 +179,7 @@ class CheckListForm {
             dt.certMarksPvocDoc = item.certMarksPvocDoc
             dt.ksEasApplicable = item.ksEasApplicable
             dt.quantityVerified = item.quantityVerified
+            dt.quantityVerifiedUnit = item.quantityVerifiedUnit.orEmpty()
             dt.dateMfgPackaging = Date.valueOf(item.dateMfgPackaging)
             dt.dateExpiry = Date.valueOf(item.dateExpiry)
             dt.mfgName = item.mfgName
@@ -214,6 +214,7 @@ class CheckListForm {
             dt.brand = item.brand
             dt.ksEasApplicable = item.ksEasApplicable
             dt.quantityVerified = item.quantityVerified
+            dt.quantityVerifiedUnit = item.quantityVerifiedUnit.orEmpty()
             dt.packagingLabelling = item.packagingLabelling
             dt.physicalCondition = item.physicalCondition
             dt.defects = item.defects
@@ -278,17 +279,17 @@ class SsfForm {
     var permitNumber: String? = null
     var description: String? = null
     var ssfSubmissionDate: String? = null
-    val returnOrDispose: String?=null
-    val conditionOfSample:String?=null
-    val testParameters: String?=null
-    val laboratoryName: String?=null
+    val returnOrDispose: String? = null
+    val conditionOfSample: String? = null
+    val testParameters: String? = null
+    val laboratoryName: String? = null
     fun ssf(): QaSampleSubmissionEntity {
         val df = QaSampleSubmissionEntity()
         df.description = description
-        df.laboratoryName=laboratoryName
-        df.testParameters=testParameters
-        df.conditionOfSample=conditionOfSample
-        df.returnOrDispose=returnOrDispose
+        df.laboratoryName = laboratoryName
+        df.testParameters = testParameters
+        df.conditionOfSample = conditionOfSample
+        df.returnOrDispose = returnOrDispose
         df.permitRefNumber = permitNumber
         df.ssfSubmissionDate = Date(java.util.Date().time)
         return df
@@ -312,19 +313,19 @@ class ScfForm {
     var labelDetails: String? = null
     var expiryDate: String? = null
     var reasonsForCollectingSamples: String? = null
-    var referenceStandard: String?=null
+    var referenceStandard: String? = null
     var witnessName: String? = null
     var witnessDesignation: String? = null
     var remarks: String? = null
     fun scf(): QaSampleCollectionEntity {
         val df = QaSampleCollectionEntity()
         df.anyRemarks = remarks
-        df.expiryDate=expiryDate
-        df.labelDetails=labelDetails
-        df.modeOfRelease=modeOfRelease
+        df.expiryDate = expiryDate
+        df.labelDetails = labelDetails
+        df.modeOfRelease = modeOfRelease
         df.batchNo = batchNumber
         df.batchSize = batchSize
-        df.referenceStandard=referenceStandard
+        df.referenceStandard = referenceStandard
         df.sampleSize = sampleSize
         df.samplingMethod = samplingMethod
         df.reasonForCollectingSample = reasonsForCollectingSamples

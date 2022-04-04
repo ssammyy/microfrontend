@@ -77,7 +77,7 @@
                                                 Approval Status
                                             </th>
                                             <tr>
-                                                <td>{{auctionDetails.approvalStatusDesc}}</td>
+                                                <td>{{auctionDetails.auction_details.approvalStatusDesc}}</td>
                                             </tr>
                                         </table>
                                     </div>
@@ -112,9 +112,16 @@
                                                 <div class="list-text-accordion">{{auctionDetails.payment.receiptNo}}</div>
                                             </li>
                                         </ul>
-                                        <button (click)="viewDemandNote(auctionDetails.payment.id)">View
-                                            Details
-                                        </button>
+                                        <div class="btn-group">
+                                            <button class="btn btn-primary btn-sm"
+                                                    (click)="viewDemandNote(auctionDetails.payment.id)">View
+                                                Details
+                                            </button>
+                                            <button class="btn btn-primary btn-sm ml-2"
+                                                    (click)="downloadDemandNote(auctionDetails.payment.id)">Download
+                                                Demand note
+                                            </button>
+                                        </div>
                                     </mat-tab>
                                     <mat-tab tabindex="3" label="Attachments">
                                         <div class="table-striped table-condensed table-responsive">
@@ -146,7 +153,7 @@
                                     </button>
                                 </div>
                                 <div *ngIf="auctionDetails.auction_details.isInspector && auctionDetails.auction_details.myTask">
-                                    <button *ngIf="auctionDetails.auction_details.approvalStatus===0"
+                                    <button *ngIf="auctionDetails.auction_details.editable"
                                             class="btn btn-sm btn-primary" (click)="uploadAuctionAttachment($event)">
                                         <i class="fa fa-attachment"></i>Upload Attachment
                                     </button>
@@ -154,20 +161,24 @@
                                             class="btn btn-sm btn-primary" (click)="viewConsignmentDocument()">View
                                         Consignment
                                     </button>
-                                    <button *ngIf="!auctionDetails.payment && auctionDetails.auction_details.approvalStatus===0"
+                                    <button *ngIf="!auctionDetails.payment && auctionDetails.auction_details.approvalStatus!=5 && auctionDetails.auction_details.editable"
                                             class="btn btn-sm btn-primary"
                                             (click)="generateInvoice()">
                                         Generate Demand Note
                                     </button>
-                                    <button *ngIf="auctionDetails.auction_details.approvalStatus===0"
+                                    <button *ngIf="auctionDetails.auction_details.editable"
                                             class="btn btn-sm btn-primary" (click)="approveRejectConsignment()">
                                         Approve/Reject Application
                                     </button>
-                                    <h5>Documents:</h5>
-                                    <button *ngIf="auctionDetails.auction_details.reportId"
-                                            class="btn btn-sm btn-primary" (click)="downloadISMReport()">Download Report
-                                    </button>
                                 </div>
+                                <h5>Documents:</h5>
+                                <button *ngIf="auctionDetails.auction_details.reportId"
+                                        class="btn btn-sm btn-primary" (click)="downloadISMReport()">Download Report
+                                </button>
+                                <button *ngIf="auctionDetails.payment"
+                                        class="btn btn-sm btn-primary"
+                                        (click)="downloadDemandNote(auctionDetails.payment.id)">Download Demand Note
+                                </button>
                             </div>
                         </div>
                         <!-- end content-->

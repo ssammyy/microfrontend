@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.handlers.invoice
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import mu.KotlinLogging
 import okhttp3.internal.toLongOrDefault
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
@@ -9,6 +10,7 @@ import org.kebs.app.kotlin.apollo.api.payload.request.DemandNoteForm
 import org.kebs.app.kotlin.apollo.api.payload.request.DemandNoteRequestForm
 import org.kebs.app.kotlin.apollo.api.payload.request.DemandNoteRequestItem
 import org.kebs.app.kotlin.apollo.api.payload.response.CallbackResponses
+import org.kebs.app.kotlin.apollo.api.payload.response.DemandNoteDto
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
@@ -39,6 +41,7 @@ class InvoiceHandlers(
         private val applicationMapProperties: ApplicationMapProperties,
         private val daoServices: DestinationInspectionDaoServices,
         private val diBpmn: DestinationInspectionBpmn,
+        private val objectMapper: ObjectMapper,
         private val invoicePaymentService: InvoicePaymentService,
         private val daoValidatorService: DaoValidatorService,
 ) {
@@ -120,15 +123,16 @@ class InvoiceHandlers(
                 val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
                 KotlinLogging.logger { }.info("TTT: ${map.workingStatus}")
                 response.data = mapOf(
-                        Pair("deleteSubmitEnabled", noteWithID.status == map.workingStatus),
+                        Pair("deleteSubmitEnabled", (noteWithID.status == map.workingStatus && noteWithID.postingStatus != map.activeStatus)),
                         Pair("items", noteItems),
-                        Pair("note", noteWithID)
+                        Pair("note", DemandNoteDto.fromEntity(noteWithID, true))
                 )
                 response.message = "Invoice details"
                 response.responseCode = ResponseCodes.SUCCESS_CODE
                 response
             }
         } catch (e: Exception) {
+            KotlinLogging.logger { }.error("Failed to get demand note details", e)
             response.message = e.localizedMessage
             response.responseCode = ResponseCodes.FAILED_CODE
         }
@@ -293,7 +297,7 @@ class InvoiceHandlers(
                 val demandNote = daoServices.findDemandNoteWithID(invoiceId.toLongOrDefault(0L))
                 if (demandNote != null) {
                     val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-                    if (demandNote.status == map.workingStatus) {
+                    if (demandNote.status == map.workingStatus && demandNote.postingStatus != map.activeStatus) {
                         val loggedInUser = commonDaoServices.loggedInUserDetails()
                         demandNote.status = 50
                         demandNote.varField3 = "DELETED"
@@ -382,7 +386,9 @@ class InvoiceHandlers(
                 if (demandNote.paymentStatus == map.activeStatus) {
                     response.responseCode = ResponseCodes.SUCCESS_CODE
                     response.message = "Demand note payment status submitted to KenTrade"
-                    diBpmn.triggerDemandNotePaidBpmTask(demandNote)
+                    if (demandNote.paymentPurpose == PaymentPurpose.CONSIGNMENT.code) {
+                        diBpmn.triggerDemandNotePaidBpmTask(demandNote)
+                    }
                 } else {
                     response.responseCode = ResponseCodes.FAILED_CODE
                     response.message = "Demand note payment is not paid"
@@ -407,7 +413,7 @@ class InvoiceHandlers(
 
         req.pathVariable("cdId").let {
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-            response.data = demandNoteRepository.findAllByCdIdAndStatusIn(it.toLongOrDefault(0L), listOf(-1, 0, map.activeStatus, map.workingStatus, map.initStatus, map.invalidStatus))
+            response.data = DemandNoteDto.fromList(demandNoteRepository.findAllByCdIdAndStatusIn(it.toLongOrDefault(0L), listOf(-1, 0, map.activeStatus, map.workingStatus, map.initStatus, map.invalidStatus)))
             response.message = "Success"
             response.responseCode = ResponseCodes.SUCCESS_CODE
             return ServerResponse.ok().body(response)
@@ -427,7 +433,7 @@ class InvoiceHandlers(
             val page = extractPage(req)
 
             val documents = this.invoicePaymentService.listTransactions(transactionStatus, date, transactionNo, page)
-            response.data = documents.toList()
+            response.data = DemandNoteDto.fromList(documents.toList())
             response.pageNo = documents.number
             response.totalPages = documents.totalPages
             response.totalCount = documents.totalElements
@@ -465,23 +471,17 @@ class InvoiceHandlers(
 
     @PreAuthorize("hasAuthority('PAYMENT')")
     fun paymentCallback(req: ServerRequest): ServerResponse {
-        val result = CallbackResponses()
+        var result = CallbackResponses()
         try {
             val responseStatus = req.body(PaymentStatusResult::class.java)
-            KotlinLogging.logger { }.info("Payment result: $responseStatus")
+            KotlinLogging.logger { }.info("Payment result: ${objectMapper.writeValueAsString(responseStatus)}")
             this.daoValidatorService.validateInputWithInjectedValidator(responseStatus)?.let {
                 result.message = "Failed to process request"
                 result.errors = it
                 result.status = ResponseCodes.INVALID_CODE
                 result
             } ?: run {
-                if (this.invoicePaymentService.paymentReceived(responseStatus)) {
-                    result.message = "Success"
-                    result.status = ResponseCodes.SUCCESS_CODE
-                } else {
-                    result.message = "Failed"
-                    result.status = ResponseCodes.FAILED_CODE
-                }
+                result = this.invoicePaymentService.paymentReceived(responseStatus)
                 result
             }
         } catch (ex: ExpectedDataNotFound) {

@@ -23,8 +23,8 @@
                             <mat-step label="General Checklist">
                                 <div class="row no_margin" [formGroup]="generalCheckList">
                                     <div class="col-md-4 mb-3">
-                                        <label for="inspection">Inspection</label>
-                                        <select id="inspection" name="inspection" class="form-control"
+                                        <label for="inspection" class="waiver-form-label">Inspection</label>
+                                        <select id="inspection" name="inspection" class="waiver-form-input-master"
                                                 formControlName="inspection">
                                             <option value="not selected">Select one.....</option>
                                             <option value="PARTIAL">Partial Inspection</option>
@@ -32,13 +32,14 @@
                                         </select>
                                     </div>
                                     <div class="col-md-4 mb-3">
-                                        <label for="clearingAgent">Clearing agent</label>
-                                        <input type="text" class="form-control" name="clearingAgent"
+                                        <label for="clearingAgent" class="waiver-form-label">Clearing agent</label>
+                                        <input type="text" class="waiver-form-input-master" name="clearingAgent"
                                                id="clearingAgent" formControlName="clearingAgent">
                                     </div>
                                     <div class="col-md-4 mb-3">
-                                        <label for="customsEntryNumber">Customs entry no</label>
-                                        <input type="text" class="form-control" name="customsEntryNumber"
+                                        <label for="customsEntryNumber" class="waiver-form-label">Customs entry
+                                            no</label>
+                                        <input type="text" class="waiver-form-input-master" name="customsEntryNumber"
                                                data-name="clearing Agent" id="customsEntryNumber"
                                                formControlName="customsEntryNumber">
                                     </div>
@@ -113,7 +114,8 @@
                             </mat-step>
                         </mat-horizontal-stepper>
                         <div class="row no_margin master-list-new-btn">
-                            <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
+                            <button (click)="goBack()" class="btn btn-warning" mat-button mat-dialog-close>Cancel
+                            </button>
                             <button [disabled]="generalCheckList.invalid || invalidSelection || loading"
                                     class="next-btn btn-gen new-btn"
                                     (click)="saveRecord()">SAVE
