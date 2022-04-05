@@ -685,9 +685,15 @@ class DestinationInspectionDaoServices(
         var localCor = CorsBakEntity()
         //Get CD Item by cd doc id
         var mvirFound = false
+        var ministryReportRef: String? = "NEW"
+        var ministryName: String? = "NAIROBI"
+        var ministryReporDate: Timestamp? = null
         iCdInspectionGeneralRepo.findFirstByCdDetailsAndCurrentChecklist(cdEntity, 1)?.let { cdItemDetailsList ->
             this.cdMotorVehicleInspectionChecklistRepo.findByInspectionGeneral(cdItemDetailsList)?.let { mvInspectionEntity ->
                 this.iCdInspectionMotorVehicleItemChecklistRepo.findFirstByInspection(mvInspectionEntity)?.let { cdMvInspectionEntity ->
+                    ministryReportRef = cdMvInspectionEntity.ministryReportReference
+                    ministryReporDate = cdMvInspectionEntity.ministryReportDate
+                    ministryName = cdMvInspectionEntity.ministryStationId?.stationName
                     // Add item details
                     cdMvInspectionEntity.itemId?.let { item ->
                         localCor.varField1 = item.id?.toString()
@@ -760,6 +766,11 @@ class DestinationInspectionDaoServices(
                 }
             } ?: throw ExpectedDataNotFound("No vehicle found in this consignment, chassis number not found")
         }
+        val ministryReporDateStr = commonDaoServices.convertDateToString(ministryReporDate?.toLocalDateTime()
+                ?: LocalDateTime.now(), "dd-MMMM-YYY")
+        // TODO: For new vehicles or vehicles withought ministry inspection
+        val overallRemarks = "The Motor Vehicle was presented for inspection at MINISTRY OF TRANSPORT INSPECTION CENTER ($ministryName) and an inspection report No. $ministryReportRef dated $ministryReporDateStr was issued by CHIEF MECHANICAL ENGINEER.\n\n" +
+                "The above Motor Vehicle is therefore found to comply with the requirements of KS 1515:2000."
         // Fill checklist details
         with(localCor) {
             corNumber = "COR${generateRandomText(5, s.secureRandom, s.messageDigestAlgorithm, true)}"
@@ -776,6 +787,7 @@ class DestinationInspectionDaoServices(
             inspectionDate = commonDaoServices.getTimestamp()
             inspectionFee = 0.0
             unitsOfMileage = "KM"
+            inspectionStatement = overallRemarks
             previousRegistrationNumber = "UNKNOWN"
             approvalStatus = cdEntity.compliantStatus.toString()
             ucrNumber = cdEntity.ucrNumber

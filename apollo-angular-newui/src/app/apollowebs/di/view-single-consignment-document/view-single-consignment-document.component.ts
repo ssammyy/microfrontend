@@ -170,6 +170,8 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
                         if (res.id) {
                             this.viewDemandNote(res.id)
                         }
+                    } else {
+                        console.log("Response data:" + res)
                     }
                 }
             );

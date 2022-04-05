@@ -37,7 +37,6 @@ import java.sql.Date
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.time.Instant
-import java.time.LocalDateTime
 import java.util.*
 
 enum class ChecklistType {
@@ -698,6 +697,7 @@ class ChecklistService(
                 data["customsIeNo"] = "NA"
                 data["clearingAgent"] = "NA"
                 data["officerName"] = "NA"
+                data["declarationRepresentative"] = "N/A"
                 data["declarationNumber"] = "N/A"
             }
 
@@ -1208,11 +1208,7 @@ class ChecklistService(
             map["OverallAppearance"] = mvInspectionChecklist.overallAppearance.toString()
             map["OverallAppearance"] = mvInspectionChecklist.overallAppearance.toString()
             map["Remarks"] = mvInspectionChecklist.remarks.toString()
-            map["Remarks"] = mvInspectionChecklist.remarks.toString()
-            val ministryReporDate = commonDaoServices.convertDateToString(mvInspectionChecklist.ministryReportDate?.toLocalDateTime()
-                    ?: LocalDateTime.now(), "dd-MMMM-YYY")
-            map["OverallRemarks"] = "The Motor Vehicle was presented for inspection at MINISTRY OF TRANSPORT INSPECTION CENTER (${mvInspectionChecklist.ministryStationId?.stationName}) and an inspection report No. ${mvInspectionChecklist.ministryReportReference} dated ${ministryReporDate} was issued by CHIEF MECHANICAL ENGINEER.\n\n" +
-                    "The above Motor Vehicle is therefore found to comply with the requirements of KS 1515:2000."
+            map["OverallRemarks"] = inspectionGeneral?.overallRemarks.orEmpty()
 
         } ?: throw ExpectedDataNotFound("Motor Vehicle Inspection Checklist does not exist")
         return map
@@ -1258,6 +1254,7 @@ class ChecklistService(
 
         map["oicDate"] = ""
         map["oicName"] = ""
+        map["overallRemarks"] = inspectionGeneral?.overallRemarks ?: ""
         map["inspectionDate"] = inspectionGeneral?.inspectionDate.toString()
         map["importersName"] = inspectionGeneral?.importersName.toString()
         map["clearingAgent"] = inspectionGeneral?.clearingAgent.toString()

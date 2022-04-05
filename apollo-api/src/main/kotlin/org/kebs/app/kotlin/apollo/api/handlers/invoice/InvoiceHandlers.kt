@@ -271,6 +271,8 @@ class InvoiceHandlers(
                 response.responseCode = ResponseCodes.SUCCESS_CODE
                 response.message = "Success"
             } else {
+                val dt = mutableMapOf<String, Any>()
+                dt["id"] = demandNote.id ?: 0
                 demandNote.status = map.workingStatus
                 demandNote.varField1 = invoiceForm.remarks
                 demandNote.varField2 = (demandRequest.items?.size == totalItems).toString()
@@ -278,6 +280,7 @@ class InvoiceHandlers(
                 daoServices.upDateDemandNote(demandNote)
                 cdDetails.varField10 = "DEMAND NOTE GENERATED AWAITING SUBMISSION"
                 daoServices.updateCdDetailsInDB(cdDetails, loggedInUser)
+                response.data = dt
                 response.responseCode = ResponseCodes.SUCCESS_CODE
                 response.message = "Demand note generated, review under demand note tab and submit for approval"
             }

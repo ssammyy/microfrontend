@@ -105,6 +105,7 @@ class CorsBakEntity : Serializable {
     @Column(name = "INSPECTION_MILEAGE")
     @Basic
     var inspectionMileage: String? = null
+
     @Column(name = "CUSTOMS_IE_NO")
     @Basic
     var customsIeNo: String? = null
@@ -116,6 +117,10 @@ class CorsBakEntity : Serializable {
     @Column(name = "INSPECTION_REMARKS")
     @Basic
     var inspectionRemarks: String? = null
+
+    @Column(name = "INSPECTION_STATEMENT", length = 4000)
+    @Basic
+    var inspectionStatement: String? = null
 
     @Column(name = "PREVIOUS_REGISTRATION_NUMBER")
     @Basic

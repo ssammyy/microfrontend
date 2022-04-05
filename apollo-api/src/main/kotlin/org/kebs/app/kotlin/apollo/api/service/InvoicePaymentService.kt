@@ -291,10 +291,17 @@ class InvoicePaymentService(
             val demandNoteDetails = daoServices.upDateDemandNote(demandNote)
             val consignmentDocument = daoServices.findCD(demandNoteDetails.cdId!!)
             // 2. Update CD status
-            daoServices.updateCDStatus(
-                    consignmentDocument,
-                    ConsignmentDocumentStatus.PAYMENT_MADE
-            )
+            if (demandNote.paymentStatus == map.activeStatus) {
+                daoServices.updateCDStatus(
+                        consignmentDocument,
+                        ConsignmentDocumentStatus.PAYMENT_MADE
+                )
+            } else {
+                daoServices.updateCDStatus(
+                        consignmentDocument,
+                        ConsignmentDocumentStatus.PARTIAL_PAYMENT_MADE
+                )
+            }
         }
         return true
     }
@@ -303,8 +310,9 @@ class InvoicePaymentService(
         try {
             var consignmentDocument = this.daoServices.findCD(cdId)
             // 1. Send demand payment status to SW
-            daoServices.findDemandNoteWithID(demandNoteId)?.let { demandNote ->
+            val demandNote = daoServices.findDemandNoteWithID(demandNoteId)?.let { demandNote ->
                 daoServices.sendDemandNotePayedStatusToKWIS(demandNote, amount)
+                demandNote
             } ?: throw ExpectedDataNotFound("Demand note with $demandNoteId was not found")
 
             // 2. Update application status
@@ -315,7 +323,11 @@ class InvoicePaymentService(
             consignmentDocument.status = ConsignmentApprovalStatus.UNDER_INSPECTION.code
             consignmentDocument = this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
             // 4. Update payment status for invoice
-            this.daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.PAYMENT_MADE)
+            if (demandNote.paymentStatus == 1) {
+                this.daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.PAYMENT_MADE)
+            } else {
+                this.daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.PARTIAL_PAYMENT_MADE)
+            }
             return true
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("INVOICE UPDATE FAILED", ex)
@@ -400,7 +412,8 @@ class InvoicePaymentService(
     }
 
     fun receivePayment(demandNote: CdDemandNoteEntity, responseStatus: PaymentStatusResult): CdDemandNoteEntity {
-        var payment = this.paymentRepository.findByReceiptNumber(responseStatus.response?.paymentReferenceNo ?: "")
+        val paymentRef = responseStatus.response?.paymentReferenceNo?.trim()?.toUpperCase() ?: ""
+        var payment = this.paymentRepository.findByReceiptNumber(paymentRef)
         if (payment != null) {
             throw ExpectedDataNotFound("Payment with receipt number already exists, duplicate receipt number")
         }
@@ -411,7 +424,7 @@ class InvoicePaymentService(
         payment.balanceAfter = demandNote.currentBalance?.minus(payment.amount ?: BigDecimal.ZERO)
         payment.referenceNumber = responseStatus.response?.additionalInfo
         payment.paymentSource = responseStatus.response?.paymentCode
-        payment.receiptNumber = responseStatus.response?.paymentReferenceNo
+        payment.receiptNumber = paymentRef
         payment.receiptDate = responseStatus.response?.paymentDate
         payment.varField5 = responseStatus.response?.additionalInfo
         payment.varField6 = responseStatus.response?.currencyCode
@@ -447,8 +460,9 @@ class InvoicePaymentService(
 
     fun paymentReceived(responseStatus: PaymentStatusResult): CallbackResponses {
         val response = CallbackResponses()
-        iDemandNoteRepo.findByPostingReference(responseStatus.response?.demandNoteNo?.toUpperCase()
-                ?: "")?.let { demandNote ->
+        val paymentRef = responseStatus.response?.demandNoteNo?.trim()?.toUpperCase()
+                ?: ""
+        iDemandNoteRepo.findByPostingReference(paymentRef)?.let { demandNote ->
             if (demandNote.paymentStatus == 1) {
                 throw ExpectedDataNotFound("Payment has already been made, duplicate callback")
             }
@@ -465,7 +479,7 @@ class InvoicePaymentService(
                 demandNoteUpdated.paymentDate = Timestamp.from(Instant.now())
                 demandNoteUpdated.receiptDate = responseStatus.response?.paymentDate
                 invoiceBatchDetailsRepo.findByBatchNumber(demandNote.demandNoteNumber!!)?.let { batch ->
-                    batch.receiptNumber = responseStatus.response?.paymentReferenceNo
+                    batch.receiptNumber = responseStatus.response?.paymentReferenceNo?.trim()?.toUpperCase() ?: ""
                     batch.paymentStarted = map.activeStatus
                     batch.receiptDate = responseStatus.response?.paymentDate?.time?.let { java.sql.Date(it) }
                     invoiceBatchDetailsRepo.save(batch)

@@ -287,7 +287,7 @@ class ChecklistHandler(
                     cdItem.manifestNumber?.let { man ->
                         daoServices.findManifest(man)?.let {
                             generalCheckList.declarationNumber = it.manifestNumber
-                            generalCheckList.declarationRepresentative = it.receiver?.orEmpty()
+                            generalCheckList.declarationRepresentative = it.receiver.orEmpty()
                         }
                     }
                     generalCheckList.currentChecklist = 1
