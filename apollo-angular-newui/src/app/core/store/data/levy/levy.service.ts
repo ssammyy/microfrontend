@@ -69,6 +69,13 @@ export class LevyService {
         return this.http.get<SlModel>(url, {params}).pipe();
     }
 
+    public getCompanySLForms(manufactureId: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_SL_NT_FORM);
+        const params = new HttpParams().set('manufactureId', manufactureId);
+        return this.http.get<SlModel>(url, {params}).pipe();
+    }
+
+
 
     public getManufacturerStatus(): any {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_MANUFACTURE_STATUS);

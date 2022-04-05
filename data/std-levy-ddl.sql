@@ -1828,6 +1828,24 @@ begin
     end if;
 end;
 /
+create  table DAT_KEBS_NWA_REMARKS
+(
+    id                   number   not null primary key,
+    PROCESS_ID            VARCHAR2(350 CHAR),
+    REMARKS           varchar(350 char),
+    STATUS           varchar(350 char),
+    REMARK_BY            varchar(350),
+    ROLE          VARCHAR2(350 CHAR),
+    DESCRIPTION          VARCHAR2(350 CHAR),
+    DATE_OF_REMARK          VARCHAR2(350 CHAR)
+)
+/
+alter table DAT_KEBS_COMPANY_PROFILE
+    add TYPE_OF_MANUFACTURE int default 0
+/
+alter table DAT_KEBS_COMPANY_PROFILE_EDIT
+    add TYPE_OF_MANUFACTURE int default 0
+/
 
 
 

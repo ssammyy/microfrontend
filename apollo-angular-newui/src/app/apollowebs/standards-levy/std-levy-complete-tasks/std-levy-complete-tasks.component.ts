@@ -1,7 +1,7 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
-import {ManufactureCompletedTask} from "../../../core/store/data/levy/levy.model";
+import {ManufactureCompletedTask, SiteVisitRemarks} from "../../../core/store/data/levy/levy.model";
 import {Router} from "@angular/router";
 import {Store} from "@ngrx/store";
 import {FormBuilder} from "@angular/forms";
@@ -25,6 +25,8 @@ export class StdLevyCompleteTasksComponent implements OnInit {
     dtTrigger: Subject<any> = new Subject<any>();
     isDtInitialized: boolean = false
     loadingText: string;
+    siteVisitRemarks: SiteVisitRemarks[] = [];
+    isShowRemarksTab= true;
   blob: Blob;
 
   manufactureCompleteTasks: ManufactureCompletedTask[] = [];
@@ -84,6 +86,24 @@ export class StdLevyCompleteTasksComponent implements OnInit {
         },
     );
   }
+
+    toggleDisplayRemarksTab(siteVisitId: number){
+        this.loadingText = "Loading ...."
+        this.SpinnerService.show();
+        this.levyService.getSiteVisitRemarks(siteVisitId).subscribe(
+            (response: SiteVisitRemarks[]) => {
+                this.siteVisitRemarks = response;
+                this.SpinnerService.hide();
+                console.log(this.siteVisitRemarks)
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                console.log(error.message);
+            }
+        );
+        this.isShowRemarksTab = !this.isShowRemarksTab;
+
+    }
 
   public onOpenModalComplete(manufactureCompleteTask: ManufactureCompletedTask,mode:string): void{
     const container = document.getElementById('main-container');

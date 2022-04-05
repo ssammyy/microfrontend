@@ -79,7 +79,8 @@ export class CustomerRegistrationComponent implements OnInit {
       nameOfBranch: ['', Validators.required],
       companyProfileID: [],
       registrationNumber: [],
-      kraPin: []
+      kraPin: [],
+      manufacture_status: []
 
 
 
@@ -100,7 +101,8 @@ export class CustomerRegistrationComponent implements OnInit {
       nameOfBranch: ['', Validators.required],
       companyProfileID: [],
       registrationNumber: [],
-      kraPin: []
+      kraPin: [],
+      manufacture_status: []
 
     });
 

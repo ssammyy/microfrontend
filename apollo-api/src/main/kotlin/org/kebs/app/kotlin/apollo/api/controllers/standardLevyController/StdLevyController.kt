@@ -604,6 +604,7 @@ class StdLevyController(
             kraPin=editCompanyDTO.kraPin
             registrationNumber=editCompanyDTO.registrationNumber
             entryNumber=editCompanyDTO.entryNumber
+            typeOfManufacture=editCompanyDTO.typeOfManufacture
 
 
 
@@ -721,6 +722,7 @@ class StdLevyController(
             entryNumber = assignToDTO.entryNumber
             userId= assignToDTO.contactId
             taskType= assignToDTO.taskType
+            typeOfManufacture= assignToDTO.typeOfManufacture
         }
 //        val gson = Gson()
 //        KotlinLogging.logger { }.info { "Assigned Variables" + gson.toJson(assignToDTO) }
@@ -1133,6 +1135,14 @@ class StdLevyController(
     @ResponseBody
     fun getUserEmail(): String {
         return commonDaoServices.getUserEmail(3082)
+    }
+
+    @GetMapping("/getSlNotificationFormDetails")
+    fun getSlNotificationFormDetails(
+        response: HttpServletResponse,
+        @RequestParam("manufactureId") manufactureId: Long
+    ): NotificationFormDetailsHolder {
+        return standardLevyService.getSlNotificationFormDetails(manufactureId)
     }
 
     @GetMapping("/getNotificationFormDetails")

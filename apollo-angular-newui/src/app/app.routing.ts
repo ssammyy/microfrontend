@@ -175,6 +175,7 @@ import {StdLevyApplicationsComponent} from "./apollowebs/standards-levy/std-levy
 import {UploadSacSummaryComponent} from "./apollowebs/standards-development/adoptionOfEaStds/upload-sac-summary/upload-sac-summary.component";
 import {ViewSacSummaryComponent} from "./apollowebs/standards-development/adoptionOfEaStds/view-sac-summary/view-sac-summary.component";
 import {ViewSacSummaryApprovedComponent} from "./apollowebs/standards-development/adoptionOfEaStds/view-sac-summary-approved/view-sac-summary-approved.component";
+import {NwaTasksComponent} from "./apollowebs/standards-development/workshop-agreement/nwa-tasks/nwa-tasks.component";
 
 export const routes: Routes = [
     {
@@ -767,6 +768,11 @@ export const routes: Routes = [
         path: 'nwaPreparePD', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [{path: '', component: NwaPreliminaryDraftComponent}]
+    },
+    {
+        path: 'nwaTasks', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: NwaTasksComponent}]
     },
 
     // SD International Standards

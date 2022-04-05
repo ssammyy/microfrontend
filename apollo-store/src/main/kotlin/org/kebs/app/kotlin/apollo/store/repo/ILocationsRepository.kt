@@ -37,6 +37,8 @@ interface ICountiesRepository : HazelcastRepository<CountiesEntity, Long> {
     fun findByStatusOrderByCounty(status: Int): List<CountiesEntity>?
     fun findByRegionIdAndStatus(regionId: Long, status: Int): List<CountiesEntity>?
     fun findByIdAndStatus(id: Long, status: Int): CountiesEntity?
+    @Query("SELECT COUNTY FROM CFG_KEBS_COUNTIES  WHERE id=:id", nativeQuery = true)
+    fun findNameById(@Param("id") id: Long?): String
 }
 
 @Repository
@@ -49,6 +51,8 @@ interface ISubRegionsRepository : HazelcastRepository<SubRegionsEntity, Long> {
 interface IRegionsRepository : HazelcastRepository<RegionsEntity, Long> {
     fun findByStatusOrderByRegion(status: Int): List<RegionsEntity>?
     fun findByIdAndStatus(id: Long, status: Int): RegionsEntity?
+    @Query("SELECT REGION FROM CFG_KEBS_REGIONS  WHERE id=:id", nativeQuery = true)
+    fun findNameById(@Param("id") id: Long?): String
 
 }
 
@@ -60,5 +64,7 @@ interface ITownsRepository : HazelcastRepository<TownsEntity, Long> {
     @Query("select * from CFG_KEBS_TOWNS where COUNTY_ID = :countyId and status = :status", nativeQuery = true)
     fun findByCountyIdAndStatus(@Param("countyId") countyId: Long, @Param("status") status: Int): List<TownsEntity>?
     fun findByIdAndStatus(id: Long, status: Int): TownsEntity?
+    @Query("SELECT TOWN FROM CFG_KEBS_TOWNS  WHERE id=:id", nativeQuery = true)
+    fun findNameById(@Param("id") id: Long?): String
 }
 

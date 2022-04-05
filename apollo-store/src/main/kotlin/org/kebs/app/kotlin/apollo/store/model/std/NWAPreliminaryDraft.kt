@@ -55,6 +55,14 @@ class NWAPreliminaryDraft : Serializable {
     @Basic
     var cdAppNumber: String? = null
 
+    @Column(name = "ASSIGNED_TO")
+    @Basic
+    var assignedTo: Long? = null
+
+    @Column(name = "PROCESS_ID")
+    @Basic
+    var processId: String? = null
+
     @Transient
     @Column(name = "ACCENT_TO")
     @Basic

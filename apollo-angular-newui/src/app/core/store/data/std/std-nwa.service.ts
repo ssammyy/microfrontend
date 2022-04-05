@@ -10,8 +10,8 @@ import {
     KNWCommittee, KNWDepartment,
     KnwSecTasks, NWADiSdtJustification,
     NWAJustification, NWAJustificationDecision, NWAPDDecision, NWAPreliminaryDraft,
-    NWAStandard, NWAWDDecision, NWAWorkShopDraft, PreliminaryDraftTasks, SacSecTasks, SPCSECTasks,
-    UpdateNwaGazette, UploadNwaGazette
+    NWAStandard, NwaTasks, NWAWDDecision, NWAWorkShopDraft, PreliminaryDraftTasks, SacSecTasks, SPCSECTasks,
+    UpdateNwaGazette, UploadNwaGazette, UsersEntity
 } from "./std.model";
 
 @Injectable({
@@ -41,6 +41,12 @@ export class StdNwaService {
     const params = new HttpParams();
     return this.http.get<KnwSecTasks[]>(url, {params}).pipe();
   }
+
+    public getNwaTasks(): Observable<NwaTasks[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_TASKS);
+        const params = new HttpParams();
+        return this.http.get<NwaTasks[]>(url, {params}).pipe();
+    }
 
   public prepareJustification(nwaJustification: NWAJustification): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_PREPARE_JUSTIFICATION);
@@ -416,6 +422,41 @@ export class StdNwaService {
                 return throwError(fault);
             })
         );
+    }
+    public getKnwSecretary(): Observable<UsersEntity[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_KNW_SECRETARY);
+        const params = new HttpParams();
+        return this.http.get<UsersEntity[]>(url, {params}).pipe();
+    }
+
+    public getDirector(): Observable<UsersEntity[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_DI_DIRECTOR);
+        const params = new HttpParams();
+        return this.http.get<UsersEntity[]>(url, {params}).pipe();
+    }
+
+    public getHeadOfPublishing(): Observable<UsersEntity[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_HEAD_OF_PUBLISHING);
+        const params = new HttpParams();
+        return this.http.get<UsersEntity[]>(url, {params}).pipe();
+    }
+
+    public getSacSecretary(): Observable<UsersEntity[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_SAC_SECRETARY);
+        const params = new HttpParams();
+        return this.http.get<UsersEntity[]>(url, {params}).pipe();
+    }
+
+    public getHeadOfSic(): Observable<UsersEntity[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_HEAD_OF_SIC);
+        const params = new HttpParams();
+        return this.http.get<UsersEntity[]>(url, {params}).pipe();
+    }
+
+    public getSpcSecretary(): Observable<UsersEntity[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_SPC_SECRETARY);
+        const params = new HttpParams();
+        return this.http.get<UsersEntity[]>(url, {params}).pipe();
     }
 
 

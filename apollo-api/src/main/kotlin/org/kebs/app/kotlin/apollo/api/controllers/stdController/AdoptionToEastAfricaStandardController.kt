@@ -46,11 +46,34 @@ class AdoptionToEastAfricaStandardController(
         return ServerResponse(HttpStatus.OK,"Successfully submitted SAC Summary",adoptionOfEastAfricaStandardService.submitSACSummary(sacSummary))
     }
 
+    @GetMapping("/getTcSecSummaryTask")
+    fun getTcSecSummaryTasks():List<TaskDetails>
+    {
+        return adoptionOfEastAfricaStandardService.getTcSecSummaryTask()
+    }
+
+    @PostMapping("/decisionByTCSecOnSACSummary")
+    @ResponseBody
+    fun decisionByTcSecOnSACSummary(
+        @RequestBody decisionFeedback: DecisionFeedback,
+        @RequestParam("decisionId") decisionId: Long
+    ): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Decision By TC SEC on SAC Summary",
+            adoptionOfEastAfricaStandardService.approveSACSummary(decisionFeedback, decisionId)
+        )
+    }
+
+
    @GetMapping("/getSACSummaryTask")
     fun getSACSummaryTask():List<TaskDetails>
     {
         return adoptionOfEastAfricaStandardService.getSACSummaryTask()
     }
+
+
+
 
     @PostMapping("/process")
     @ResponseBody

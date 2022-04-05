@@ -18,7 +18,8 @@ data class StdLevyNotificationFormDTO(
     var status: Long? = null,
     var entryNumber: String? = null,
     var companyProfileID: Long? = null,
-    var nameOfBranch: String? = null
+    var nameOfBranch: String? = null,
+    var manufacture_status: Int? = null
 
 )
 
@@ -71,7 +72,8 @@ data class EditCompanyTaskToDTO(
     var companyName: String? = null,
     var kraPin: String? = null,
     var registrationNumber: String? = null,
-    var entryNumber: String? = null
+    var entryNumber: String? = null,
+    var typeOfManufacture: Int? = null
 )
 data class AssignCompanyTaskToDTO(
     var manufacturerEntity: Long? = null,
@@ -98,7 +100,8 @@ data class AssignCompanyTaskToDTO(
     var manufactureStatus: Int? = null,
     var entryNumber: String? = null,
     var contactId: Long? = null,
-    var taskType: Long? = null
+    var taskType: Long? = null,
+    var typeOfManufacture: Int? = null
 )
 class ProcessInstanceSiteResponse(val processId: String, val isEnded: Boolean) {
 }

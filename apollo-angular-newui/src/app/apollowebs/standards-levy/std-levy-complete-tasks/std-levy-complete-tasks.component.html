@@ -151,6 +151,7 @@
                                                     <div class="nav nav-tabs nav-fill" id="nav-tabs-complete" role="tablist">
                                                         <a class="nav-item nav-link active" id="nav-complete-tab" data-toggle="tab" href="#nav-comData-complete" role="tab" aria-controls="nav-com" aria-selected="true">Company Details</a>
                                                         <a class="nav-item nav-link" id="nav-report-tab-complete" data-toggle="tab" href="#nav-comReport-complete" role="tab" aria-controls="nav-report" aria-selected="false">Site Visit Report</a>
+                                                        <a class="nav-item nav-link" id="nav-remarks-tab-complete" data-toggle="tab" href="#nav-comRemarks-complete" (click)=toggleDisplayRemarksTab(actionRequestComplete?.visitId) role="tab" aria-controls="nav-remarks" aria-selected="false">Remarks</a>
                                                     </div>
                                                 </nav>
                                                 <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContents-complete">
@@ -431,32 +432,32 @@
 
                                                                     <p class="text-sm mb-0">{{actionRequestComplete?.reportRemarks}}.</p>
                                                                 </a>
-                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                    <div class="d-flex w-100 justify-content-between">
-                                                                        <div>
-                                                                            <div class="d-flex w-100 align-items-center">
-                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Assistant Manager Comments</b></h5>
-                                                                            </div>
-                                                                        </div>
+<!--                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">-->
+<!--                                                                    <div class="d-flex w-100 justify-content-between">-->
+<!--                                                                        <div>-->
+<!--                                                                            <div class="d-flex w-100 align-items-center">-->
+<!--                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Assistant Manager Comments</b></h5>-->
+<!--                                                                            </div>-->
+<!--                                                                        </div>-->
 
-                                                                    </div>
-
-
-                                                                    <p class="text-sm mb-0">{{actionRequestComplete?.asstManagerRemarks}}.</p>
-                                                                </a>
-                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                    <div class="d-flex w-100 justify-content-between">
-                                                                        <div>
-                                                                            <div class="d-flex w-100 align-items-center">
-                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Manager Comments</b></h5>
-                                                                            </div>
-                                                                        </div>
-
-                                                                    </div>
+<!--                                                                    </div>-->
 
 
-                                                                    <p class="text-sm mb-0">{{actionRequestComplete?.chiefManagerRemarks}}.</p>
-                                                                </a>
+<!--                                                                    <p class="text-sm mb-0">{{actionRequestComplete?.asstManagerRemarks}}.</p>-->
+<!--                                                                </a>-->
+<!--                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">-->
+<!--                                                                    <div class="d-flex w-100 justify-content-between">-->
+<!--                                                                        <div>-->
+<!--                                                                            <div class="d-flex w-100 align-items-center">-->
+<!--                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Manager Comments</b></h5>-->
+<!--                                                                            </div>-->
+<!--                                                                        </div>-->
+
+<!--                                                                    </div>-->
+
+
+<!--                                                                    <p class="text-sm mb-0">{{actionRequestComplete?.chiefManagerRemarks}}.</p>-->
+<!--                                                                </a>-->
                                                                 <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                                     <div class="d-flex w-100 justify-content-between">
                                                                         <div>
@@ -477,7 +478,24 @@
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    <div class="tab-pane fade" id="nav-comRemarks-complete" role="tabpanel" aria-labelledby="nav-remarks-tab-complete">
+                                                        <div class="container col-md-12" [hidden]="isShowRemarksTab">
+                                                            <div class="col-12">
+                                                                <div class="card" *ngFor="let siteVisitRemark of siteVisitRemarks">
+                                                                    <div class="card-header">
+                                                                        <span class="badge badge-info">{{siteVisitRemark.status}}</span> By {{siteVisitRemark.remarkBy}} On {{siteVisitRemark.dateOfRemark | date: 'dd/MM/yyyy hh:mm:ss'}}
+                                                                    </div>
+                                                                    <div class="card-body">
+                                                                        <blockquote class="blockquote mb-0">
+                                                                            <p>Remark: {{siteVisitRemark.remarks}}.</p>
+                                                                            <footer class="blockquote-footer">Role: <cite title="Source Title">{{siteVisitRemark.role}}</cite></footer>
+                                                                        </blockquote>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
 
+                                                        </div>
+                                                    </div>
 
 
                                                 </div>

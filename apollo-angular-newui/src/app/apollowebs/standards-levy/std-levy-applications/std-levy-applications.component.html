@@ -146,10 +146,9 @@
 
                 <div class="modal fade" id="viewList" tabindex="-1" role="dialog"
                      aria-labelledby="viewListExampleModalLabel" aria-hidden="true">a
-                    <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-dialog modal-lg modal-xl" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="viewListExampleModalLabel">Manufacturer Details</h5>
                                 <button type="button" #closeModal class="close" data-dismiss="modal"
                                         aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
@@ -157,63 +156,140 @@
                             </div>
                             <form #approveForm="ngForm">
                                 <div class="modal-body">
+                                    <div *ngIf="actionRequestList?.typeOfManufacture==1" class="row">
+                                        <div *ngIf="roles?.includes('SL_IS_PL_OFFICER')">
+                                            <button (click)=toggleDisplayAssignForm() type="button"
+                                                    class="btn btn-primary btn-sm">Assign To Self
+                                            </button>
+                                            <button (click)=toggleDisplayEditForm() type="button"
+                                                    class="btn btn-success btn-sm">Edit Company Details
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-sm">View Remarks</button>
+                                            <button type="button" class="btn btn-warning btn-sm">Close Account</button>
+                                            <button  (click)=toggleDisplaySLForm(actionRequestList?.id) type="button"
+                                                    class="btn btn-info btn-sm">View SL1 Form
+                                            </button>
+                                        </div>
 
-                                    <div *ngIf="roles?.includes('SL_IS_PL_OFFICER')">
-                                        <button (click)=toggleDisplayAssignForm() type="button"
-                                                class="btn btn-primary btn-sm">Assign To Self
-                                        </button>
-                                        <button (click)=toggleDisplayEditForm() type="button"
-                                                class="btn btn-success btn-sm">Edit Company Details
-                                        </button>
-                                        <button type="button" class="btn btn-danger btn-sm">View Remarks</button>
-                                        <button type="button" class="btn btn-warning btn-sm">Close Account</button>
 
+                                        <div *ngIf="roles?.includes('SL_IS_ASST_MANAGER')">
+                                            <button (click)=toggleDisplayAssignForm() type="button"
+                                                    class="btn btn-primary btn-sm">Assign To Self
+                                            </button>
+                                            <button (click)=toggleDisplayAssignTo1Form() type="button"
+                                                    class="btn btn-success btn-sm">Assign To Other
+                                            </button>
+                                            <button (click)=toggleDisplayEditForm() type="button"
+                                                    class="btn btn-info btn-sm">Edit Company Details
+                                            </button>
+                                            <button  (click)=toggleDisplaySLForm(actionRequestList?.id) type="button"
+                                                    class="btn btn-info btn-sm">View SL1 Form
+                                            </button>
+                                            //Changes for code test-->
+
+                                        </div>
+
+                                        <div *ngIf="roles?.includes('SL_IS_MANAGER')">
+                                            <button (click)=toggleDisplayAssignForm() type="button"
+                                                    class="btn btn-primary btn-sm">Assign To Self
+                                            </button>
+                                            <button (click)=toggleDisplayAssignTo2Form() type="button"
+                                                    class="btn btn-success btn-sm">Assign To Other
+                                            </button>
+                                            <button (click)=toggleDisplayEditForm() type="button"
+                                                    class="btn btn-info btn-sm">Edit Company Details
+                                            </button>
+                                            <button  (click)=toggleDisplaySLForm(actionRequestList?.id) type="button"
+                                                    class="btn btn-info btn-sm">View SL1 Form
+                                            </button>
+                                            <!--                                        <button (click)=toggleDisplayEditedForm(actionRequestList.id) type="button"-->
+                                            <!--                                                class="btn btn-warning btn-sm">Approve Edited Company-->
+                                            <!--                                        </button>-->
+
+                                        </div>
+                                        <div *ngIf="roles?.includes('SL_IS_CHIEF_MANAGER')">
+                                            <button (click)=toggleDisplayAssignTo2Form() type="button"
+                                                    class="btn btn-success btn-sm">Assign To Other
+                                            </button>
+                                            <button (click)=toggleDisplayEditForm() type="button"
+                                                    class="btn btn-info btn-sm">Edit Company Details
+                                            </button>
+                                            <button  (click)=toggleDisplaySLForm(actionRequestList?.id) type="button"
+                                                    class="btn btn-info btn-sm">View SL1 Form
+                                            </button>
+                                            <!--                                        <button (click)=toggleDisplayEditedForm(actionRequestList.id) type="button"-->
+                                            <!--                                                class="btn btn-warning btn-sm">Approve Edited Company-->
+                                            <!--                                        </button>-->
+
+                                        </div>
                                     </div>
+                                    <div *ngIf="actionRequestList?.typeOfManufacture==2" class="row">
+                                        <div *ngIf="roles?.includes('SL_IS_PL_OFFICER')">
+                                            <button (click)=toggleDisplayAssignForm() type="button"
+                                                    class="btn btn-primary btn-sm">Assign To Self
+                                            </button>
+                                            <button (click)=toggleDisplayEditForm() type="button"
+                                                    class="btn btn-success btn-sm">Edit Company Details
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-sm">View Remarks</button>
+                                            <button type="button" class="btn btn-warning btn-sm">Close Account</button>
+                                            <button  (click)=toggleDisplaySLForm(actionRequestList?.id) type="button"
+                                                    class="btn btn-info btn-sm">View SL1-C Form
+                                            </button>
+                                        </div>
 
 
-                                    <div *ngIf="roles?.includes('SL_IS_ASST_MANAGER')">
-                                        <button (click)=toggleDisplayAssignForm() type="button"
-                                                class="btn btn-primary btn-sm">Assign To Self
-                                        </button>
-                                        <button (click)=toggleDisplayAssignTo1Form() type="button"
-                                                class="btn btn-success btn-sm">Assign To Other
-                                        </button>
-                                        <button (click)=toggleDisplayEditForm() type="button"
-                                                class="btn btn-info btn-sm">Edit Company Details
-                                        </button>
-                                                                                                                                  //Changes for code test-->
+                                        <div *ngIf="roles?.includes('SL_IS_ASST_MANAGER')">
+                                            <button (click)=toggleDisplayAssignForm() type="button"
+                                                    class="btn btn-primary btn-sm">Assign To Self
+                                            </button>
+                                            <button (click)=toggleDisplayAssignTo1Form() type="button"
+                                                    class="btn btn-success btn-sm">Assign To Other
+                                            </button>
+                                            <button (click)=toggleDisplayEditForm() type="button"
+                                                    class="btn btn-info btn-sm">Edit Company Details
+                                            </button>
+                                            <button  (click)=toggleDisplaySLForm(actionRequestList?.id) type="button"
+                                                    class="btn btn-info btn-sm">View SL1-C Form
+                                            </button>
+                                            //Changes for code test-->
 
+                                        </div>
+
+                                        <div *ngIf="roles?.includes('SL_IS_MANAGER')">
+                                            <button (click)=toggleDisplayAssignForm() type="button"
+                                                    class="btn btn-primary btn-sm">Assign To Self
+                                            </button>
+                                            <button (click)=toggleDisplayAssignTo2Form() type="button"
+                                                    class="btn btn-success btn-sm">Assign To Other
+                                            </button>
+                                            <button (click)=toggleDisplayEditForm() type="button"
+                                                    class="btn btn-info btn-sm">Edit Company Details
+                                            </button>
+                                            <button  (click)=toggleDisplaySLForm(actionRequestList?.id) type="button"
+                                                    class="btn btn-info btn-sm">View SL1-C Form
+                                            </button>
+                                            <!--                                        <button (click)=toggleDisplayEditedForm(actionRequestList.id) type="button"-->
+                                            <!--                                                class="btn btn-warning btn-sm">Approve Edited Company-->
+                                            <!--                                        </button>-->
+
+                                        </div>
+                                        <div *ngIf="roles?.includes('SL_IS_CHIEF_MANAGER')">
+                                            <button (click)=toggleDisplayAssignTo2Form() type="button"
+                                                    class="btn btn-success btn-sm">Assign To Other
+                                            </button>
+                                            <button (click)=toggleDisplayEditForm() type="button"
+                                                    class="btn btn-info btn-sm">Edit Company Details
+                                            </button>
+                                            <button  (click)=toggleDisplaySLForm(actionRequestList?.id) type="button"
+                                                    class="btn btn-info btn-sm">View SL1-C Form
+                                            </button>
+                                            <!--                                        <button (click)=toggleDisplayEditedForm(actionRequestList.id) type="button"-->
+                                            <!--                                                class="btn btn-warning btn-sm">Approve Edited Company-->
+                                            <!--                                        </button>-->
+
+                                        </div>
                                     </div>
-
-                                    <div *ngIf="roles?.includes('SL_IS_MANAGER')">
-                                        <button (click)=toggleDisplayAssignForm() type="button"
-                                                class="btn btn-primary btn-sm">Assign To Self
-                                        </button>
-                                        <button (click)=toggleDisplayAssignTo2Form() type="button"
-                                                class="btn btn-success btn-sm">Assign To Other
-                                        </button>
-                                        <button (click)=toggleDisplayEditForm() type="button"
-                                                class="btn btn-info btn-sm">Edit Company Details
-                                        </button>
-<!--                                        <button (click)=toggleDisplayEditedForm(actionRequestList.id) type="button"-->
-<!--                                                class="btn btn-warning btn-sm">Approve Edited Company-->
-<!--                                        </button>-->
-
-                                    </div>
-                                    <div *ngIf="roles?.includes('SL_IS_CHIEF_MANAGER')">
-                                        <button (click)=toggleDisplayAssignTo2Form() type="button"
-                                                class="btn btn-success btn-sm">Assign To Other
-                                        </button>
-                                        <button (click)=toggleDisplayEditForm() type="button"
-                                                class="btn btn-info btn-sm">Edit Company Details
-                                        </button>
-<!--                                        <button (click)=toggleDisplayEditedForm(actionRequestList.id) type="button"-->
-<!--                                                class="btn btn-warning btn-sm">Approve Edited Company-->
-<!--                                        </button>-->
-
-                                    </div>
-
-
                                     <div class="container col-md-12" [hidden]="isShowAssignForm">
                                         <form (ngSubmit)="assignCompanyTask()" [formGroup]="assignCompanyTaskFormGroup"
                                               class="form">
@@ -300,6 +376,9 @@
                                             <input type="hidden" ngModel="{{actionRequestList?.userId}}"
                                                    formControlName="contactId" name="contactId"
                                                    value="{{actionRequestList?.userId}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.typeOfManufacture}}"
+                                                   formControlName="typeOfManufacture" name="typeOfManufacture"
+                                                   value="{{actionRequestList?.typeOfManufacture}}">
                                             <button class="btn btn-sm btn-primary float-right" type="submit">Assign
                                             </button>
                                         </form>
@@ -412,6 +491,9 @@
                                             <input type="hidden" ngModel="{{actionRequestList?.userId}}"
                                                    formControlName="contactId" name="contactId"
                                                    value="{{actionRequestList?.userId}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.typeOfManufacture}}"
+                                                   formControlName="typeOfManufacture" name="typeOfManufacture"
+                                                   value="{{actionRequestList?.typeOfManufacture}}">
                                             <button class="btn btn-sm btn-primary float-right" type="submit">Assign
                                             </button>
                                         </form>
@@ -524,6 +606,9 @@
                                             <input type="hidden" ngModel="{{actionRequestList?.userId}}"
                                                    formControlName="contactId" name="contactId"
                                                    value="{{actionRequestList?.userId}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.typeOfManufacture}}"
+                                                   formControlName="typeOfManufacture" name="typeOfManufacture"
+                                                   value="{{actionRequestList?.typeOfManufacture}}">
                                             <button class="btn btn-sm btn-primary float-right" type="submit">Assign
                                             </button>
                                         </form>
@@ -594,6 +679,9 @@
                                                         <input type="hidden"
                                                                formControlName="userType" name="userType"
                                                                value="{{userType}}">
+                                                        <input type="hidden" ngModel="{{actionRequestList?.typeOfManufacture}}"
+                                                               formControlName="typeOfManufacture" name="typeOfManufacture"
+                                                               value="{{actionRequestList?.typeOfManufacture}}">
                                                     </div>
                                                     <div *ngIf="roles?.includes('SL_IS_PL_OFFICER')" class="form-group col-12">
                                                         <label>Forward To</label>
@@ -678,6 +766,165 @@
                                             <button class="btn btn-sm btn-primary float-right" type="submit">Save
                                             </button>
                                         </form>
+                                    </div>
+                                    <div class="container col-md-12" [hidden]="isShowSLForm">
+                                        <div *ngIf="actionRequestList?.typeOfManufacture==1" class="row col-12">
+                                            <div class="col-12" >
+                                                <div class="card col-12">
+                                                    <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
+                                                    <div class="card-body">{{actionRequestList?.name}}</div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Plot Number</div>
+                                                        <div class="card-body">{{actionRequestList?.plotNumber}}</div>
+                                                    </div>
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Road / Street</div>
+                                                        <div class="card-body">{{actionRequestList?.streetName}}</div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Address</div>
+                                                        <div class="card-body">{{actionRequestList?.postalAddress}}</div>
+                                                    </div>
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Telephone Number</div>
+                                                        <div class="card-body">{{actionRequestList?.companyTelephone}}</div>
+                                                    </div>
+                                                </div>
+                                                <div class="card col-12">
+                                                    <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name and Business of Proprietors or
+                                                        Partners; and In the case of Companies, the Chief Executive and Directors</div>
+                                                    <div class="card-body">{{actionRequestList?.directorIdNumber}}</div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Admin Location</div>
+                                                        <div class="card-body">{{actionRequestList?.physicalAddress}}</div>
+                                                    </div>
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Registration Number</div>
+                                                        <div class="card-body">{{actionRequestList?.registrationNumber}}</div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">KRA Pin</div>
+                                                        <div class="card-body">{{actionRequestList?.kraPin}}</div>
+                                                    </div>
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Branch</div>
+                                                        <div class="card-body">{{actionRequestList?.branchName}}</div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="card col-12">
+                                                    <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Location</div>
+                                                    <div class="card-body">{{actionRequestList?.physicalAddress}}</div>
+                                                </div>
+                                                <div class="card col-12">
+                                                    <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">All Commodities Manufactured or to be
+                                                        Manufactured(Commodities are comma separated)</div>
+                                                    <div class="card-body">{{slFormDetails?.commodity}}</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Date upon which Contracting Commenced or will Commence</div>
+                                                        <div class="card-body">{{slFormDetails?.dateOfManufacture | date:'dd/MM/yyyy '}}</div>
+                                                    </div>
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Total value of Manufacture in last Calender Year
+                                                            KSH</div>
+                                                        <div class="card-body">{{slFormDetails?.totalValue}}</div>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div *ngIf="actionRequestList?.typeOfManufacture==2" class="row col-12">
+                                            <div class="col-12" >
+                                                <div class="card col-12">
+                                                    <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
+                                                    <div class="card-body">{{actionRequestList?.name}}</div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Plot Number</div>
+                                                        <div class="card-body">{{actionRequestList?.plotNumber}}</div>
+                                                    </div>
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Road / Street</div>
+                                                        <div class="card-body">{{actionRequestList?.streetName}}</div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Address</div>
+                                                        <div class="card-body">{{actionRequestList?.postalAddress}}</div>
+                                                    </div>
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Telephone Number</div>
+                                                        <div class="card-body">{{actionRequestList?.companyTelephone}}</div>
+                                                    </div>
+                                                </div>
+                                                <div class="card col-12">
+                                                    <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name and Business of Proprietors or
+                                                        Partners; and In the case of Companies, the Chief Executive and Directors</div>
+                                                    <div class="card-body">{{actionRequestList?.directorIdNumber}}</div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Admin Location</div>
+                                                        <div class="card-body">{{actionRequestList?.physicalAddress}}</div>
+                                                    </div>
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Registration Number</div>
+                                                        <div class="card-body">{{actionRequestList?.registrationNumber}}</div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">KRA Pin</div>
+                                                        <div class="card-body">{{actionRequestList?.kraPin}}</div>
+                                                    </div>
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Branch</div>
+                                                        <div class="card-body">{{actionRequestList?.branchName}}</div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="card col-12">
+                                                    <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Location</div>
+                                                    <div class="card-body">{{actionRequestList?.physicalAddress}}</div>
+                                                </div>
+                                                <div class="card col-12">
+                                                    <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Indicate which contracts were or undertaken (Electrical,Mechanical or Construction E/M/C)</div>
+                                                    <div class="card-body">{{slFormDetails?.commodity}}</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Date upon which Contracting Commenced or will Commence</div>
+                                                        <div class="card-body">{{slFormDetails?.dateOfManufacture | date:'dd/MM/yyyy '}}</div>
+                                                    </div>
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Total value of Manufacture in last Calender Year
+                                                            KSH</div>
+                                                        <div class="card-body">{{slFormDetails?.totalValue}}</div>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <div class="list-group list-group-flush">

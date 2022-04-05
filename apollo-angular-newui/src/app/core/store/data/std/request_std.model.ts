@@ -401,7 +401,10 @@ export interface SACSummary
     approvalStatus: string,
     feedback: string,
     eacGazette: string,
-    authenticText: string
+    authenticText: string,
+    technicalCommitteeName: string,
+    departmentName: string
+
 }
 
 export interface HOFRecommendation

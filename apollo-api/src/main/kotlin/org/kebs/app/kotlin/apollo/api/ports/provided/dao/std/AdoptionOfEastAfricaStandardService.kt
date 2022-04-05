@@ -42,8 +42,8 @@ class AdoptionOfEastAfricaStandardService(
 
     val PROCESS_DEFINITION_KEY = "adoption_of_east_africa_standard"
     val SPC_SEC = "SPC-SEC"
-    val SAC_SEC = "SAC-SEC"
-    val TC_sec = "TC-sec"
+    val SAC_SEC = "SAC-sec"
+    val TC_sec = "tc-secretary"
 
     fun deployProcessDefinition(): Deployment = repositoryService
         .createDeployment()
@@ -78,6 +78,9 @@ class AdoptionOfEastAfricaStandardService(
         val technicalCommittee = technicalCommitteeRepository.findNameById(sacSummary.technicalCommittee?.toLong())
         technicalCommittee.let { variable.put("technicalCommitteeName", it) }
 
+        val requestedByName = loggedInUser.firstName +loggedInUser.lastName;
+        requestedByName.let { variable.put("requestedByName", it) }
+
 
 //
 //        variable["technicalCommitteeId"] =
@@ -94,9 +97,29 @@ class AdoptionOfEastAfricaStandardService(
             sacSummary.sl ?: throw NullValueNotAllowedException("ID is required")
         )
     }
+    fun getTcSecSummaryTask(): List<TaskDetails> {
+        val tasks = taskService.createTaskQuery().taskAssignee(TC_sec).list()
+        return getTaskDetails(tasks)
+    }
+
+    fun approveSACSummary(decisionFeedback: DecisionFeedback, applicationID: Long) {
+        val variables: MutableMap<String, Any> = java.util.HashMap()
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val u: SACSummary = sacSummaryRepository.findById(applicationID).orElse(null);
+        u.varField1 = "Approved"
+        sacSummaryRepository.save(u)
+        decisionFeedback.user_id = loggedInUser.id!!
+        decisionFeedback.user_id.let { variables.put("user_id", it) }
+
+        variables["approved"] = "approved"
+        taskService.complete(decisionFeedback.taskId, variables)
+
+        decisionFeedbackRepository.save(decisionFeedback)
+    }
+
 
     fun getSACSummaryTask(): List<TaskDetails> {
-        val tasks = taskService.createTaskQuery().taskCandidateGroup(SPC_SEC).list()
+        val tasks = taskService.createTaskQuery().taskAssignee(SPC_SEC).list()
         return getTaskDetails(tasks)
     }
 
