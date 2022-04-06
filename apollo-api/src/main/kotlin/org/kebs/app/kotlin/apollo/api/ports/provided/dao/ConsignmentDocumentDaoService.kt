@@ -134,6 +134,11 @@ class ConsignmentDocumentDaoService(
                                 // Return consignment to original supervisor
                                 // Check if inspection officer is in the CFS did not change
                                 try {
+                                    cdCreated.assignedStatus = map.inactiveStatus
+                                    cdCreated.assigner = null
+                                    cdCreated.assignedRemarks = null
+                                    cdCreated.assignedInspectionOfficer = null
+                                    // Try reassign
                                     CDDocumentDetails.assignedInspectionOfficer?.let {
                                         val profile = commonDaoServices.findUserProfileByUserID(it, 1)
                                         val cnt = daoServices.countCFSUserCodes(profile.id!!, cdCreated.freightStation?.id
@@ -150,8 +155,6 @@ class ConsignmentDocumentDaoService(
                                 } catch (ex: Exception) {
                                     KotlinLogging.logger { }.info("Could not reasign consignment after amendment", ex)
                                 }
-
-
                                 // Update details
                                 daoServices.updateCDStatus(cdCreated, ConsignmentDocumentStatus.REVISED_CD)
                             }
