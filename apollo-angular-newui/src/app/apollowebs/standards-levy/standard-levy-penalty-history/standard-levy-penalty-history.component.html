@@ -69,7 +69,8 @@
                                                     <button class="btn btn-sm btn-primary" style="width: 126px">Assign</button>
                                                 </div>
                                                 <div class="col-md-12">
-                                                    <button (click)="onOpenModal(task,'schedule')" style="width: 126px;" class="btn btn-primary btn-sm">Schedule</button>
+
+                                                    <button *ngFor="let task of tasks" (click)="onOpenModal(task,'schedule')" style="width: 126px;" class="btn btn-primary btn-sm">Schedule</button>
                                                 </div>
                                                 <div class="col-md-12">
                                                     <button class="btn btn-sm btn-primary" style="width: 126px">Add Remarks</button>

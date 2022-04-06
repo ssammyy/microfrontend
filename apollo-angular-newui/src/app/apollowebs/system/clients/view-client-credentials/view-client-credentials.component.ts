@@ -10,7 +10,7 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 export class ViewClientCredentialsComponent implements OnInit {
   message: any
   form: FormGroup
-  constructor(private fb: FormBuilder,@Inject(MAT_DIALOG_DATA)private data: any, private dialogRef: MatDialogRef<any>) { }
+  constructor(private fb: FormBuilder, @Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<any>) { }
 
   ngOnInit(): void {
     this.form=this.fb.group({

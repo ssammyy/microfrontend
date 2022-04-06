@@ -118,9 +118,9 @@ class AdoptionOfEastAfricaStandardService(
     }
 
 
-    fun getSACSummaryTask(): List<TaskDetails> {
-        val tasks = taskService.createTaskQuery().taskAssignee(SPC_SEC).list()
-        return getTaskDetails(tasks)
+    fun getSACSummaryTask(): List<SACSummary> {
+        return sacSummaryRepository.findByVarField1("Approved")
+
     }
 
     private fun getTaskDetails(tasks: List<Task>): List<TaskDetails> {
@@ -136,7 +136,7 @@ class AdoptionOfEastAfricaStandardService(
         val variables: MutableMap<String, Any> = java.util.HashMap()
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val u: SACSummary = sacSummaryRepository.findById(applicationID).orElse(null);
-        u.varField1 = decisionFeedback.status.toString()
+        u.varField2 = decisionFeedback.status.toString()
         sacSummaryRepository.save(u)
         decisionFeedback.user_id = loggedInUser.id!!
         decisionFeedback.user_id.let { variables.put("user_id", it) }
@@ -150,17 +150,24 @@ class AdoptionOfEastAfricaStandardService(
         decisionFeedbackRepository.save(decisionFeedback)
     }
 
-    fun getSACSECTask():List<TaskDetails>
+    fun getSACSECTask():List<SACSummary>
     {
-        val tasks = taskService.createTaskQuery().taskCandidateGroup(SAC_SEC).list()
-        return getTaskDetails(tasks)
+        return sacSummaryRepository.findByVarField2("1")
+
+    }
+
+
+    fun getRejectedSACSummariesBySPC():List<SACSummary>
+    {
+        return sacSummaryRepository.findByVarField2("0")
+
     }
 
     fun decisionOnSACSEC(decisionFeedback: DecisionFeedback, applicationID: Long) {
         val variables: MutableMap<String, Any> = java.util.HashMap()
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val u: SACSummary = sacSummaryRepository.findById(applicationID).orElse(null);
-        u.varField2 = decisionFeedback.status.toString()
+        u.varField8 = decisionFeedback.status.toString()
         sacSummaryRepository.save(u)
         decisionFeedback.user_id = loggedInUser.id!!
         decisionFeedback.user_id?.let { variables.put("user_id", it) }
@@ -172,6 +179,16 @@ class AdoptionOfEastAfricaStandardService(
         taskService.complete(decisionFeedback.taskId, variables)
 
         decisionFeedbackRepository.save(decisionFeedback)
+    }
+    fun getRejectedSACSummariesBySAC():List<SACSummary>
+    {
+        return sacSummaryRepository.findByVarField8("0")
+
+    }
+
+    fun getAllSacSummarries():List<SACSummary>
+    {
+        return sacSummaryRepository.findAll()
     }
 
     fun checkProcessHistory(id: ID): List<HistoricActivityInstance> {

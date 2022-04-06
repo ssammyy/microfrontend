@@ -337,3 +337,7 @@ class SendManufacturerEntryNumbersToKraActor(
 
     }
 }
+
+private fun <E> MutableList<E>.add(element: String?) {
+
+}

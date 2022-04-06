@@ -67,7 +67,7 @@ class AdoptionToEastAfricaStandardController(
 
 
    @GetMapping("/getSACSummaryTask")
-    fun getSACSummaryTask():List<TaskDetails>
+    fun getSACSummaryTask():List<SACSummary>
     {
         return adoptionOfEastAfricaStandardService.getSACSummaryTask()
     }
@@ -96,9 +96,15 @@ class AdoptionToEastAfricaStandardController(
 
 
     @GetMapping("/getSACSECTask")
-    fun getSACSECTask():List<TaskDetails>
+    fun getSACSECTask():List<SACSummary>
     {
         return adoptionOfEastAfricaStandardService.getSACSECTask()
+    }
+
+    @GetMapping("/getSACSECTaskRejected")
+    fun getSACSECTaskRejected():List<SACSummary>
+    {
+        return adoptionOfEastAfricaStandardService.getRejectedSACSummariesBySPC()
     }
 
 

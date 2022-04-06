@@ -413,8 +413,8 @@ type="ball-scale-multiple"
     </div>
 </div>
 </div>
- <div class="card-body" *ngIf="notificationFormStatus==true">
-        <div *ngIf="manufacturingStatus==1" class="row col-12">
+ <div class="card-body" *ngIf="notificationFormStatus.name==true">
+        <div *ngIf="manufacturingStatus.name=='1'" class="row col-12">
          <div class="card-body text-center">
              <h2 style="color: red; font-weight: bold; font-size: medium">Form Has already been filled</h2>
              <h3 style="color: #0d0505; font-weight: bold">SL1 Form</h3>
@@ -498,7 +498,7 @@ type="ball-scale-multiple"
             </div>
 
         </div>
-        <div *ngIf="manufacturingStatus==2" class="row col-12">
+        <div *ngIf="manufacturingStatus.name=='2'" class="row col-12">
             <div class="card-body text-center">
                 <h2 style="color: red; font-weight: bold; font-size: medium">Form Has already been filled</h2>
                 <h3 style="color: #0d0505; font-weight: bold">SL1-C Form</h3>
