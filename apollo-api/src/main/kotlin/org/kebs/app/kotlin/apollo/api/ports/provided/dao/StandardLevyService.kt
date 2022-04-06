@@ -15,6 +15,7 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileDirectorsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEditEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
@@ -27,6 +28,10 @@ import org.springframework.web.multipart.MultipartFile
 import java.sql.Timestamp
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.util.stream.Collectors
+
+
+
 
 @Service
 class StandardLevyService(
@@ -56,7 +61,10 @@ class StandardLevyService(
     private val daoService: DaoService,
     private val iRegionsRepository: IRegionsRepository,
     private val iTownsRepository: ITownsRepository,
-    private val iCountiesRepository: ICountiesRepository
+    private val iCountiesRepository: ICountiesRepository,
+    private val businessLinesRepo: IBusinessLinesRepository,
+    private val businessNatureRepo: IBusinessNatureRepository,
+    private val iCompanyProfileDirectorsRepository: ICompanyProfileDirectorsRepository
 
 
     ) {
@@ -80,9 +88,9 @@ class StandardLevyService(
     }
 
     //List Manufactures
-    fun getManufactureList(): MutableIterable<CompanyProfileEntity> {
-        return companyProfileRepo.findAll()
-    }
+//    fun getManufactureList(): MutableIterable<CompanyProfileEntity> {
+//        return companyProfileRepo.findAll()
+//    }
 
 
     fun getManufacturerPenaltyHistory(): MutableIterable<StagingStandardsLevyManufacturerPenalty> {
@@ -505,13 +513,20 @@ return getUserTasks();
                     companyProfileEntity.companyEmail?.let { variables["companyEmail"] = it }
                     companyProfileEntity.companyTelephone?.let { variables["companyTelephone"] = it }
                     companyProfileEntity.yearlyTurnover?.let { variables["yearlyTurnover"] = it }
-                    companyProfileEntity.businessLines?.let { variables["businessLines"] = it }
-                    companyProfileEntity.businessNatures?.let { variables["businessNatures"] = it }
                     companyProfileEntity.buildingName?.let { variables["buildingName"] = it }
                     companyProfileEntity.directorIdNumber?.let { variables["directorIdNumber"] = it }
-                    variables["region"] = iRegionsRepository.findNameById(companyProfileEntity.region)
-                    variables["county"] = iCountiesRepository.findNameById(companyProfileEntity.county)
-                    variables["town"] = iTownsRepository.findNameById(companyProfileEntity.town)
+                    companyProfileEntity.businessLineName?.let { variables["businessLineName"] = it }
+                    companyProfileEntity.businessLines?.let { variables["businessLines"] = it }
+                    companyProfileEntity.businessNatureName?.let { variables["businessNatureName"] = it }
+                    companyProfileEntity.businessNatures?.let { variables["businessNatures"] = it }
+                    companyProfileEntity.regionName?.let { variables["regionName"] = it }
+                    companyProfileEntity.region?.let { variables["region"] = it }
+                    companyProfileEntity.countyName?.let { variables["countyName"] = it }
+                    companyProfileEntity.county?.let { variables["county"] = it }
+                    companyProfileEntity.townName?.let { variables["townName"] = it }
+                    companyProfileEntity.town?.let { variables["town"] = it }
+                    companyProfileEntity.branchName?.let { variables["branchName"] = it }
+                    companyProfileEntity.streetName?.let { variables["streetName"] = it }
                     companyProfileEntity.manufactureStatus?.let { variables["manufactureStatus"] = it }
                     companyProfileEntity.entryNumber?.let { variables["entryNumber"] = it }
                     companyProfileEntity.id?.let { variables["manufacturerEntity"] = it }
@@ -552,11 +567,6 @@ return getUserTasks();
                             ?: throw NullValueNotAllowedException("invalid user id provided")
                     )
                     return ProcessInstanceSiteResponse(processInstance.id, processInstance.isEnded)
-
-
-
-
-
     }
 
     fun scheduleSiteVisit(
@@ -1268,7 +1278,7 @@ return getUserTasks();
         return getTaskDetails(tasks)
     }
 
-    fun getManufacturerList(): MutableList<CompanyProfileEntity> {
+    fun getManufacturerList(): MutableList<ManufactureListHolder> {
         return companyProfileRepo.getManufacturerList()
     }
 
@@ -1401,9 +1411,21 @@ return getUserTasks();
 
     }
 
-    fun getManufacturerStatus(userID:Long): Long {
-        val businessNature = companyProfileRepo.getBusinessNature(userID)
-        return iBusinessNatureRepository.getManufacturerStatus(businessNature)
+//    fun getManufacturerStatuss(userID:Long): BusinessTypeHolder {
+//        val businessNature = companyProfileRepo.getBusinessNature(userID)
+//        return iBusinessNatureRepository.getManufacturerStatus(businessNature)
+//    }
+
+    fun getManufacturerStatus(): BusinessTypeHolder{
+        commonDaoServices.loggedInUserDetails().id
+            ?.let { id ->
+                companyProfileRepo.getBusinessNature(id)
+                    .let {
+                    return  iBusinessNatureRepository.getManufacturerStatus(it)
+
+                    }
+            } ?: throw NullValueNotAllowedException("User Not Found")
+
     }
 
     fun getSlNotificationFormDetails(manufactureId: Long): NotificationFormDetailsHolder {
@@ -1420,6 +1442,22 @@ return getUserTasks();
             ?: throw ExpectedDataNotFound("No Data Found")
     }
 
+    fun getCompanyDirectors(): List<DirectorListHolder>? {
+        commonDaoServices.loggedInUserDetails().id
+            ?.let { id ->
+                companyProfileRepo.getManufactureId(id)
+                    .let {
+
+                        return iCompanyProfileDirectorsRepository.getCompanyDirectors(it)
+
+
+                    }
+
+            }?: throw ExpectedDataNotFound("No Data Found")
+
+    }
+
+
     fun getSiteVisitRemarks(siteVisitId: Long): List<StandardLevySiteVisitRemarks> {
         standardLevySiteVisitRemarksRepository.findAllBySiteVisitIdOrderByIdDesc(siteVisitId)?.let {
           return it
@@ -1431,6 +1469,7 @@ return getUserTasks();
         return companyProfileEditEntityRepository.findStatusByManufactureId(manufactureId)
             ?: throw ExpectedDataNotFound("No Data Found")
     }
+
 
 
     fun getCompleteTasks(): List<CompleteTasksDetailHolder> {
@@ -1448,6 +1487,8 @@ return getUserTasks();
     fun closeProcess(taskId: String) {
         runtimeService.deleteProcessInstance(taskId, "cleaning")
     }
+
+
 
 
 }

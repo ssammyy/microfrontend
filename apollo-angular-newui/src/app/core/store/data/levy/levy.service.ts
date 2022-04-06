@@ -7,7 +7,7 @@ import {
     ApproveVisitTask,
     AssignCompanyTaskDTO, Branch,
     CompanyModel,
-    ConfirmEditCompanyDTO,
+    ConfirmEditCompanyDTO, DirectorsList,
     EditCompanyDTO,
     ManufactureCompletedTask,
     ManufactureCompleteTask,
@@ -235,6 +235,13 @@ export class LevyService {
         const params = new HttpParams();
         return this.http.get<ManufactureDetailList>(url, {params}).pipe();
     }
+
+    public getCompanyDirectors(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_DIRECTORS_LIST);
+        const params = new HttpParams();
+        return this.http.get<DirectorsList>(url, {params}).pipe();
+    }
+
 
     public getMnPendingTask(): any {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_MANUFACTURE_TASKS);

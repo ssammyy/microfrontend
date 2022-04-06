@@ -118,7 +118,6 @@
                                             <th class="sl">Registration Number</th>
                                             <th class="sl">Task Name</th>
                                             <th class="requestNumber">Status</th>
-                                            <th class="requestNumber">Action</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -140,7 +139,7 @@
                                             <td *ngIf="manufacturePendingTask.name==='Approve Edited Company Details'"><span class="badge badge-primary" style="width: 160px;">{{manufacturePendingTask.name}}</span></td>
                                             <td *ngIf="manufacturePendingTask.name==='Edit Approved'"><span class="badge badge-info" style="width: 160px;">{{manufacturePendingTask.name}}</span></td>
                                             <td *ngIf="manufacturePendingTask.name==='Edit Not Approved'"><span class="badge badge-info" style="width: 160px;">{{manufacturePendingTask.name}}</span></td>
-                                            <td *ngIf="manufacturePendingTask.taskData.typeOfManufacture==1"><span class="badge badge-warning">Assigned</span></td>
+<!--                                            <td *ngIf="manufacturePendingTask.taskData.typeOfManufacture==1"><span class="badge badge-warning">Assigned</span></td>-->
                                             <td *ngIf="manufacturePendingTask.name==='Schedule Site Visit'"><button (click)="onOpenModalPending(manufacturePendingTask,'viewPending')" type="submit" class="btn btn-success btn-sm"  style="border-radius: 40px;"> More</button></td>
                                             <td *ngIf="manufacturePendingTask.name==='Prepare Report on Visit'"><button (click)="onOpenModalPending(manufacturePendingTask,'prepareSiteVisitReport')" type="submit" class="btn btn-success btn-sm"  style="border-radius: 40px;"> More</button></td>
                                             <td *ngIf="manufacturePendingTask.name==='Notification of Report'"><button (click)="onOpenModalPending(manufacturePendingTask,'reportNotification1')" type="submit" class="btn btn-success btn-sm"  style="border-radius: 40px;"> More</button></td>
@@ -753,7 +752,7 @@
                                                             </div>
                                                         </div>
 
-                                                        <p class="text-sm mb-0">{{actionRequestPending?.taskData?.businessLines}}.</p>
+                                                        <p class="text-sm mb-0">{{actionRequestPending?.taskData?.businessLineName}}.</p>
                                                     </a>
                                                 </div>
                                             </div>
@@ -768,7 +767,7 @@
                                                             </div>
                                                         </div>
 
-                                                        <p class="text-sm mb-0">{{actionRequestPending?.taskData?.businessNatures}}.</p>
+                                                        <p class="text-sm mb-0">{{actionRequestPending?.taskData?.businessNatureName}}.</p>
                                                     </a>
                                                 </div>
 
@@ -838,7 +837,7 @@
                                                             </div>
                                                         </div>
 
-                                                        <p class="text-sm mb-0">{{actionRequestPending?.taskData?.region}}.</p>
+                                                        <p class="text-sm mb-0">{{actionRequestPending?.taskData?.regionName}}.</p>
                                                     </a>
                                                 </div>
                                             </div>
@@ -853,7 +852,7 @@
                                                             </div>
                                                         </div>
 
-                                                        <p class="text-sm mb-0">{{actionRequestPending?.taskData?.county}}.</p>
+                                                        <p class="text-sm mb-0">{{actionRequestPending?.taskData?.countyName}}.</p>
                                                     </a>
                                                 </div>
                                                 <div class="form-group col-6">
@@ -866,7 +865,7 @@
                                                             </div>
                                                         </div>
 
-                                                        <p class="text-sm mb-0">{{actionRequestPending?.taskData?.town}}.</p>
+                                                        <p class="text-sm mb-0">{{actionRequestPending?.taskData?.townName}}.</p>
                                                     </a>
                                                 </div>
                                             </div>
@@ -1458,7 +1457,7 @@
                                                                 </div>
                                                             </div>
 
-                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.businessLines}}.</p>
+                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.businessLineName}}.</p>
                                                         </a>
                                                     </div>
                                                 </div>
@@ -1473,7 +1472,7 @@
                                                                 </div>
                                                             </div>
 
-                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.businessNatures}}.</p>
+                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.businessNatureName}}.</p>
                                                         </a>
                                                     </div>
 
@@ -1543,7 +1542,7 @@
                                                                 </div>
                                                             </div>
 
-                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.region}}.</p>
+                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.regionName}}.</p>
                                                         </a>
                                                     </div>
                                                 </div>
@@ -1558,7 +1557,7 @@
                                                                 </div>
                                                             </div>
 
-                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.county}}.</p>
+                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.countyName}}.</p>
                                                         </a>
                                                     </div>
                                                     <div class="form-group col-6">
@@ -1571,7 +1570,7 @@
                                                                 </div>
                                                             </div>
 
-                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.town}}.</p>
+                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.townName}}.</p>
                                                         </a>
                                                     </div>
                                                 </div>
@@ -1944,7 +1943,7 @@
                                                                 </div>
                                                             </div>
 
-                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.businessLines}}.</p>
+                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.businessLineName}}.</p>
                                                         </a>
                                                     </div>
                                                 </div>
@@ -1959,7 +1958,7 @@
                                                                 </div>
                                                             </div>
 
-                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.businessNatures}}.</p>
+                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.businessNatureName}}.</p>
                                                         </a>
                                                     </div>
 
@@ -2029,7 +2028,7 @@
                                                                 </div>
                                                             </div>
 
-                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.region}}.</p>
+                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.regionName}}.</p>
                                                         </a>
                                                     </div>
                                                 </div>
@@ -2044,7 +2043,7 @@
                                                                 </div>
                                                             </div>
 
-                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.county}}.</p>
+                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.countyName}}.</p>
                                                         </a>
                                                     </div>
                                                     <div class="form-group col-6">
@@ -2057,7 +2056,7 @@
                                                                 </div>
                                                             </div>
 
-                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.town}}.</p>
+                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.townName}}.</p>
                                                         </a>
                                                     </div>
                                                 </div>
@@ -2408,7 +2407,7 @@
                                                                 </div>
                                                             </div>
 
-                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.businessLines}}.</p>
+                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.businessLineName}}.</p>
                                                         </a>
                                                     </div>
                                                 </div>
@@ -2423,7 +2422,7 @@
                                                                 </div>
                                                             </div>
 
-                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.businessNatures}}.</p>
+                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.businessNatureName}}.</p>
                                                         </a>
                                                     </div>
 
@@ -2493,7 +2492,7 @@
                                                                 </div>
                                                             </div>
 
-                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.region}}.</p>
+                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.regionName}}.</p>
                                                         </a>
                                                     </div>
                                                 </div>
@@ -2508,7 +2507,7 @@
                                                                 </div>
                                                             </div>
 
-                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.county}}.</p>
+                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.countyName}}.</p>
                                                         </a>
                                                     </div>
                                                     <div class="form-group col-6">
@@ -2521,7 +2520,7 @@
                                                                 </div>
                                                             </div>
 
-                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.town}}.</p>
+                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.townName}}.</p>
                                                         </a>
                                                     </div>
                                                 </div>
@@ -2878,7 +2877,7 @@
                                                                 </div>
                                                             </div>
 
-                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.businessLines}}.</p>
+                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.businessLineName}}.</p>
                                                         </a>
                                                     </div>
                                                 </div>
@@ -2893,7 +2892,7 @@
                                                                 </div>
                                                             </div>
 
-                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.businessNatures}}.</p>
+                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.businessNatureName}}.</p>
                                                         </a>
                                                     </div>
 
@@ -2963,7 +2962,7 @@
                                                                 </div>
                                                             </div>
 
-                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.region}}.</p>
+                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.regionName}}.</p>
                                                         </a>
                                                     </div>
                                                 </div>
@@ -2978,7 +2977,7 @@
                                                                 </div>
                                                             </div>
 
-                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.county}}.</p>
+                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.countyName}}.</p>
                                                         </a>
                                                     </div>
                                                     <div class="form-group col-6">
@@ -2991,7 +2990,7 @@
                                                                 </div>
                                                             </div>
 
-                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.town}}.</p>
+                                                            <p class="text-sm mb-0">{{actionRequestPending?.taskData?.townName}}.</p>
                                                         </a>
                                                     </div>
                                                 </div>

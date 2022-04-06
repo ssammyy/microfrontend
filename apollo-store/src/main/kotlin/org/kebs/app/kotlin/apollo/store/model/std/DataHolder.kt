@@ -71,6 +71,44 @@ interface UserDetailHolder {
     fun getFirstName(): String?
     fun getLastName(): String?
 }
+interface ManufactureListHolder {
+    fun getId(): Long?
+    fun getName(): String?
+    fun getPhysicalAddress(): String?
+    fun getKraPin(): String?
+    fun getManufactureStatus(): Long?
+    fun getRegistrationNumber(): String?
+    fun getPostalAddress(): String?
+    fun getPlotNumber(): String?
+    fun getCompanyEmail(): String?
+    fun getCompanyTelephone(): String?
+    fun getYearlyTurnover(): Long?
+    fun getBusinessLines(): Long?
+    fun getBusinessLineName(): String?
+    fun getBusinessNatures(): Long?
+    fun getBusinessNatureName(): String?
+    fun getBuildingName(): String?
+    fun getStreetName(): String?
+    fun getRegion(): Long?
+    fun getRegionName(): String?
+    fun getCounty(): Long?
+    fun getCountyName(): String?
+    fun getFirmCategory(): String?
+    fun getTown(): Long?
+    fun getTownName(): String?
+    fun getUserId(): Long?
+    fun getDirectorIdNumber(): String?
+    fun getEntryNumber(): String?
+    fun getStatus(): Long?
+    fun getClosedCommodityManufactured(): String?
+    fun getClosedContractsUndertaken(): String?
+    fun getTaskType(): Long?
+    fun getTaskId(): String?
+    fun getOwnership(): String?
+    fun getBranchName(): String?
+    fun getClosureOfOperations(): String?
+    fun getTypeOfManufacture(): Long?
+}
 
 interface CompleteTasksDetailHolder {
     fun getPurpose(): String?
@@ -105,6 +143,9 @@ interface BranchNameHolder{
     fun getBranchName(): String?
 
 }
+interface BusinessTypeHolder{
+    fun getBusinessType(): Long?
+}
 interface NotificationFormDetailsHolder{
 //    fun getCompanyName(): String?
 //    fun getPlotNumber(): String?
@@ -119,7 +160,12 @@ interface NotificationFormDetailsHolder{
     fun getDateOfManufacture(): Date?
     fun getTotalValue(): Long?
     fun getId(): Long?
+    fun getNameOfBusinessProprietor(): String?
 
+}
+
+interface DirectorListHolder {
+    fun getDirectorName(): String?
 }
 
 

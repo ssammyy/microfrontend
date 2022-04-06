@@ -185,7 +185,7 @@
                                             <button  (click)=toggleDisplaySLForm(actionRequestList?.id) type="button"
                                                     class="btn btn-info btn-sm">View SL1 Form
                                             </button>
-                                            //Changes for code test-->
+
 
                                         </div>
 
@@ -252,7 +252,7 @@
                                             <button  (click)=toggleDisplaySLForm(actionRequestList?.id) type="button"
                                                     class="btn btn-info btn-sm">View SL1-C Form
                                             </button>
-                                            //Changes for code test-->
+
 
                                         </div>
 
@@ -339,12 +339,36 @@
                                             <input type="hidden" ngModel="{{actionRequestList?.yearlyTurnover}}"
                                                    formControlName="yearlyTurnover" name="yearlyTurnover"
                                                    value="{{actionRequestList?.yearlyTurnover}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.businessLineName}}"
+                                                   formControlName="businessLineName" name="businessLineName"
+                                                   value="{{actionRequestList?.businessLineName}}">
                                             <input type="hidden" ngModel="{{actionRequestList?.businessLines}}"
                                                    formControlName="businessLines" name="businessLines"
                                                    value="{{actionRequestList?.businessLines}}">
                                             <input type="hidden" ngModel="{{actionRequestList?.businessNatures}}"
                                                    formControlName="businessNatures" name="businessNatures"
                                                    value="{{actionRequestList?.businessNatures}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.businessNatureName}}"
+                                                   formControlName="businessNatureName" name="businessNatureName"
+                                                   value="{{actionRequestList?.businessNatureName}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.regionName}}"
+                                                   formControlName="regionName" name="regionName"
+                                                   value="{{actionRequestList?.regionName}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.region}}"
+                                                   formControlName="region" name="region"
+                                                   value="{{actionRequestList?.region}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.countyName}}"
+                                                   formControlName="countyName" name="countyName"
+                                                   value="{{actionRequestList?.countyName}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.county}}"
+                                                   formControlName="county" name="county"
+                                                   value="{{actionRequestList?.county}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.town}}"
+                                                   formControlName="town" name="town"
+                                                   value="{{actionRequestList?.town}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.townName}}"
+                                                   formControlName="townName" name="townName"
+                                                   value="{{actionRequestList?.townName}}">
                                             <input type="hidden" ngModel="{{actionRequestList?.buildingName}}"
                                                    formControlName="buildingName" name="buildingName"
                                                    value="{{actionRequestList?.buildingName}}">
@@ -357,15 +381,6 @@
                                             <input type="hidden" ngModel="{{actionRequestList?.directorIdNumber}}"
                                                    formControlName="directorIdNumber" name="directorIdNumber"
                                                    value="{{actionRequestList?.directorIdNumber}}">
-                                            <input type="hidden" ngModel="{{actionRequestList?.region}}"
-                                                   formControlName="region" name="region"
-                                                   value="{{actionRequestList?.region}}">
-                                            <input type="hidden" ngModel="{{actionRequestList?.county}}"
-                                                   formControlName="county" name="county"
-                                                   value="{{actionRequestList?.county}}">
-                                            <input type="hidden" ngModel="{{actionRequestList?.town}}"
-                                                   formControlName="town" name="town"
-                                                   value="{{actionRequestList?.town}}">
                                             <input type="hidden" ngModel="{{actionRequestList?.manufactureStatus}}"
                                                    formControlName="manufactureStatus" name="manufactureStatus"
                                                    value="{{actionRequestList?.manufactureStatus}}">
@@ -452,12 +467,36 @@
                                             <input type="hidden" ngModel="{{actionRequestList?.yearlyTurnover}}"
                                                    formControlName="yearlyTurnover" name="yearlyTurnover"
                                                    value="{{actionRequestList?.yearlyTurnover}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.businessLineName}}"
+                                                   formControlName="businessLineName" name="businessLineName"
+                                                   value="{{actionRequestList?.businessLineName}}">
                                             <input type="hidden" ngModel="{{actionRequestList?.businessLines}}"
                                                    formControlName="businessLines" name="businessLines"
                                                    value="{{actionRequestList?.businessLines}}">
                                             <input type="hidden" ngModel="{{actionRequestList?.businessNatures}}"
                                                    formControlName="businessNatures" name="businessNatures"
                                                    value="{{actionRequestList?.businessNatures}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.businessNatureName}}"
+                                                   formControlName="businessNatureName" name="businessNatureName"
+                                                   value="{{actionRequestList?.businessNatureName}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.regionName}}"
+                                                   formControlName="regionName" name="regionName"
+                                                   value="{{actionRequestList?.regionName}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.region}}"
+                                                   formControlName="region" name="region"
+                                                   value="{{actionRequestList?.region}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.countyName}}"
+                                                   formControlName="countyName" name="countyName"
+                                                   value="{{actionRequestList?.countyName}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.county}}"
+                                                   formControlName="county" name="county"
+                                                   value="{{actionRequestList?.county}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.town}}"
+                                                   formControlName="town" name="town"
+                                                   value="{{actionRequestList?.town}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.townName}}"
+                                                   formControlName="townName" name="townName"
+                                                   value="{{actionRequestList?.townName}}">
                                             <input type="hidden" ngModel="{{actionRequestList?.buildingName}}"
                                                    formControlName="buildingName" name="buildingName"
                                                    value="{{actionRequestList?.buildingName}}">
@@ -470,15 +509,6 @@
                                             <input type="hidden" ngModel="{{actionRequestList?.directorIdNumber}}"
                                                    formControlName="directorIdNumber" name="directorIdNumber"
                                                    value="{{actionRequestList?.directorIdNumber}}">
-                                            <input type="hidden" ngModel="{{actionRequestList?.region}}"
-                                                   formControlName="region" name="region"
-                                                   value="{{actionRequestList?.region}}">
-                                            <input type="hidden" ngModel="{{actionRequestList?.county}}"
-                                                   formControlName="county" name="county"
-                                                   value="{{actionRequestList?.county}}">
-                                            <input type="hidden" ngModel="{{actionRequestList?.town}}"
-                                                   formControlName="town" name="town"
-                                                   value="{{actionRequestList?.town}}">
                                             <input type="hidden" ngModel="{{actionRequestList?.manufactureStatus}}"
                                                    formControlName="manufactureStatus" name="manufactureStatus"
                                                    value="{{actionRequestList?.manufactureStatus}}">
@@ -567,12 +597,36 @@
                                             <input type="hidden" ngModel="{{actionRequestList?.yearlyTurnover}}"
                                                    formControlName="yearlyTurnover" name="yearlyTurnover"
                                                    value="{{actionRequestList?.yearlyTurnover}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.businessLineName}}"
+                                                   formControlName="businessLineName" name="businessLineName"
+                                                   value="{{actionRequestList?.businessLineName}}">
                                             <input type="hidden" ngModel="{{actionRequestList?.businessLines}}"
                                                    formControlName="businessLines" name="businessLines"
                                                    value="{{actionRequestList?.businessLines}}">
                                             <input type="hidden" ngModel="{{actionRequestList?.businessNatures}}"
                                                    formControlName="businessNatures" name="businessNatures"
                                                    value="{{actionRequestList?.businessNatures}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.businessNatureName}}"
+                                                   formControlName="businessNatureName" name="businessNatureName"
+                                                   value="{{actionRequestList?.businessNatureName}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.regionName}}"
+                                                   formControlName="regionName" name="regionName"
+                                                   value="{{actionRequestList?.regionName}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.region}}"
+                                                   formControlName="region" name="region"
+                                                   value="{{actionRequestList?.region}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.countyName}}"
+                                                   formControlName="countyName" name="countyName"
+                                                   value="{{actionRequestList?.countyName}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.county}}"
+                                                   formControlName="county" name="county"
+                                                   value="{{actionRequestList?.county}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.town}}"
+                                                   formControlName="town" name="town"
+                                                   value="{{actionRequestList?.town}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.townName}}"
+                                                   formControlName="townName" name="townName"
+                                                   value="{{actionRequestList?.townName}}">
                                             <input type="hidden" ngModel="{{actionRequestList?.buildingName}}"
                                                    formControlName="buildingName" name="buildingName"
                                                    value="{{actionRequestList?.buildingName}}">
@@ -585,15 +639,6 @@
                                             <input type="hidden" ngModel="{{actionRequestList?.directorIdNumber}}"
                                                    formControlName="directorIdNumber" name="directorIdNumber"
                                                    value="{{actionRequestList?.directorIdNumber}}">
-                                            <input type="hidden" ngModel="{{actionRequestList?.region}}"
-                                                   formControlName="region" name="region"
-                                                   value="{{actionRequestList?.region}}">
-                                            <input type="hidden" ngModel="{{actionRequestList?.county}}"
-                                                   formControlName="county" name="county"
-                                                   value="{{actionRequestList?.county}}">
-                                            <input type="hidden" ngModel="{{actionRequestList?.town}}"
-                                                   formControlName="town" name="town"
-                                                   value="{{actionRequestList?.town}}">
                                             <input type="hidden" ngModel="{{actionRequestList?.manufactureStatus}}"
                                                    formControlName="manufactureStatus" name="manufactureStatus"
                                                    value="{{actionRequestList?.manufactureStatus}}">
@@ -798,7 +843,7 @@
                                                 <div class="card col-12">
                                                     <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name and Business of Proprietors or
                                                         Partners; and In the case of Companies, the Chief Executive and Directors</div>
-                                                    <div class="card-body">{{actionRequestList?.directorIdNumber}}</div>
+                                                    <div class="card-body">{{slFormDetails?.nameOfBusinessProprietor}}</div>
                                                 </div>
 
                                                 <div class="row">
@@ -877,7 +922,7 @@
                                                 <div class="card col-12">
                                                     <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name and Business of Proprietors or
                                                         Partners; and In the case of Companies, the Chief Executive and Directors</div>
-                                                    <div class="card-body">{{actionRequestList?.directorIdNumber}}</div>
+                                                    <div class="card-body">{{slFormDetails?.nameOfBusinessProprietor}}</div>
                                                 </div>
 
                                                 <div class="row">
@@ -1082,7 +1127,7 @@
                                                         </div>
                                                     </div>
 
-                                                    <p class="text-sm mb-0">{{actionRequestList?.businessLines}}.</p>
+                                                    <p class="text-sm mb-0">{{actionRequestList?.businessLineName}}.</p>
                                                 </a>
                                             </div>
                                         </div>
@@ -1098,7 +1143,7 @@
                                                         </div>
                                                     </div>
 
-                                                    <p class="text-sm mb-0">{{actionRequestList?.businessNatures}}.</p>
+                                                    <p class="text-sm mb-0">{{actionRequestList?.businessNatureName}}.</p>
                                                 </a>
                                             </div>
 
@@ -1173,7 +1218,7 @@
                                                         </div>
                                                     </div>
 
-                                                    <p class="text-sm mb-0">{{actionRequestList?.region}}.</p>
+                                                    <p class="text-sm mb-0">{{actionRequestList?.regionName}}.</p>
                                                 </a>
                                             </div>
                                         </div>
@@ -1189,7 +1234,7 @@
                                                         </div>
                                                     </div>
 
-                                                    <p class="text-sm mb-0">{{actionRequestList?.county}}.</p>
+                                                    <p class="text-sm mb-0">{{actionRequestList?.countyName}}.</p>
                                                 </a>
                                             </div>
                                             <div class="form-group col-6">
@@ -1202,7 +1247,7 @@
                                                         </div>
                                                     </div>
 
-                                                    <p class="text-sm mb-0">{{actionRequestList?.town}}.</p>
+                                                    <p class="text-sm mb-0">{{actionRequestList?.townName}}.</p>
                                                 </a>
                                             </div>
                                         </div>

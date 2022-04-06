@@ -1,6 +1,8 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.kra
 
+import com.google.gson.Gson
 import kotlinx.coroutines.runBlocking
+import mu.KotlinLogging
 import org.jasypt.encryption.StringEncryptor
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DaoService
@@ -72,6 +74,9 @@ class SendEntryNumberToKraServices(
                 createdBy = user
                 createdOn = commonDaoServices.getTimestamp()
             }
+
+            val gson = Gson()
+       KotlinLogging.logger { }.info { "EDITED" + gson.toJson(transactionsRequest) }
 
             transactionsRequest = iKraEntryNumberRequestLogEntityRepository.save(transactionsRequest)
 

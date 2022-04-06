@@ -238,6 +238,26 @@ class CompanyProfileEntity : Serializable {
     @Basic
     var typeOfManufacture: Int? = null
 
+    @Column(name = "BUSINESS_LINE_NAME")
+    @Basic
+    var businessLineName: String? = null
+
+    @Column(name = "BUSINESS_NATURE_NAME")
+    @Basic
+    var businessNatureName: String? = null
+
+    @Column(name = "REGION_NAME")
+    @Basic
+    var regionName: String? = null
+
+    @Column(name = "COUNTY_NAME")
+    @Basic
+    var countyName: String? = null
+
+    @Column(name = "TOWN_NAME")
+    @Basic
+    var townName: String? = null
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
@@ -293,7 +313,12 @@ class CompanyProfileEntity : Serializable {
                 deleteBy == that.deleteBy &&
                 deletedOn == that.deletedOn &&
                 branchName == that.branchName &&
-                typeOfManufacture == that.typeOfManufacture
+                typeOfManufacture == that.typeOfManufacture &&
+                businessLineName == that.businessLineName &&
+                businessNatureName == that.businessNatureName &&
+                regionName == that.regionName &&
+                countyName == that.countyName &&
+                townName == that.townName
     }
 
     override fun hashCode(): Int {
@@ -349,7 +374,12 @@ class CompanyProfileEntity : Serializable {
             deleteBy,
             deletedOn,
             branchName,
-            typeOfManufacture
+            typeOfManufacture,
+            businessLineName,
+            businessNatureName,
+            regionName,
+            countyName,
+            townName
         )
     }
 }

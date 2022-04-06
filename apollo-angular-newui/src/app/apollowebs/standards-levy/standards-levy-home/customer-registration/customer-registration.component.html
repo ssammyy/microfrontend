@@ -26,7 +26,7 @@ type="ball-scale-multiple"
     </div>
     <div class="form-wizard">
         <div  class="row col-12">
-            <div *ngIf="manufacturingStatus==1" class="row col-12">
+            <div *ngIf="manufacturingStatus?.businessType==1" class="row col-12">
 
                 <form (ngSubmit)="onClickSaveSL1(manufacturerInfoForm.valid)" [formGroup]="manufacturerInfoForm"
                       class="form col-12"
@@ -92,13 +92,13 @@ type="ball-scale-multiple"
 
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" >
                             <div class="form-group col-12">
                                 <label for="NameAndBusinessOfProprietors1">Name and Business of Proprietors and
                                     Partners; and In the
                                     case of Companies, the Chief Executive and Directors</label>
                                 <textarea type="text" id="NameAndBusinessOfProprietors1"
-                                          ngModel="{{companyDetail.directorIdNumber}}"
+                                          ngModel="{{directors}}"
                                           name="NameAndBusinessOfProprietors"
                                           formControlName="NameAndBusinessOfProprietors" class="form-control"
                                           placeholder="" ></textarea>
@@ -225,7 +225,7 @@ type="ball-scale-multiple"
                     </div>
                 </form>
             </div>
-            <div *ngIf="manufacturingStatus==2" class="row col-12">
+            <div *ngIf="manufacturingStatus?.businessType==2" class="row col-12">
                 <form (ngSubmit)="onClickSaveManufacturing(manufacturingInfoForm.valid)"
                       [formGroup]="manufacturingInfoForm"
                       class="form col-12"
@@ -286,7 +286,7 @@ type="ball-scale-multiple"
                                 <textarea type="text" id="NameAndBusinessOfProprietors2"
                                           name="NameAndBusinessOfProprietors"
                                           formControlName="NameAndBusinessOfProprietors"
-                                          ngModel="{{companyDetail.directorIdNumber}}" class="form-control"
+                                          ngModel="{{directors}}" class="form-control"
                                           placeholder="" ></textarea>
                             </div>
                         </div>
@@ -414,11 +414,13 @@ type="ball-scale-multiple"
 </div>
 </div>
  <div class="card-body" *ngIf="notificationFormStatus==true">
-        <div *ngIf="manufacturingStatus==1" class="row col-12">
+        <div *ngIf="manufacturingStatus?.businessType==1" class="row col-12">
          <div class="card-body text-center">
              <h2 style="color: red; font-weight: bold; font-size: medium">Form Has already been filled</h2>
              <h3 style="color: #0d0505; font-weight: bold">SL1 Form</h3>
          </div>
+
+
             <div class="col-12" *ngFor="let companyDetail of companyDetails">
                 <div class="card col-12">
                     <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
@@ -445,11 +447,7 @@ type="ball-scale-multiple"
                         <div class="card-body">{{companyDetail.companyTelephone}}</div>
                     </div>
                 </div>
-                <div class="card col-12">
-                    <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name and Business of Proprietors or
-                        Partners; and In the case of Companies, the Chief Executive and Directors</div>
-                    <div class="card-body">{{companyDetail.directorIdNumber}}</div>
-                </div>
+
 
                 <div class="row">
                     <div class="card col-6">
@@ -461,6 +459,13 @@ type="ball-scale-multiple"
                         <div class="card-body">{{companyDetail.registrationNumber}}</div>
                     </div>
 
+                </div>
+                <div class="col-12" >
+                    <div class="card col-12">
+                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name and Business of Proprietors or
+                            Partners; and In the case of Companies, the Chief Executive and Directors</div>
+                        <div class="card-body">{{slFormDetails?.nameOfBusinessProprietor}}</div>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="card col-6">
@@ -477,6 +482,9 @@ type="ball-scale-multiple"
                     <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Location</div>
                     <div class="card-body">{{companyDetail.physicalAddress}}</div>
                 </div>
+
+
+
                 <div class="card col-12">
                     <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">All Commodities Manufactured or to be
                         Manufactured(Commodities are comma separated)</div>
@@ -498,7 +506,7 @@ type="ball-scale-multiple"
             </div>
 
         </div>
-        <div *ngIf="manufacturingStatus==2" class="row col-12">
+        <div *ngIf="manufacturingStatus?.businessType==2" class="row col-12">
             <div class="card-body text-center">
                 <h2 style="color: red; font-weight: bold; font-size: medium">Form Has already been filled</h2>
                 <h3 style="color: #0d0505; font-weight: bold">SL1-C Form</h3>
@@ -532,7 +540,7 @@ type="ball-scale-multiple"
                         <div class="card col-12">
                             <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name and Business of Proprietors or
                                 Partners; and In the case of Companies, the Chief Executive and Directors</div>
-                            <div class="card-body">{{companyDetail.directorIdNumber}}</div>
+                            <div class="card-body">{{slFormDetails?.nameOfBusinessProprietor}}</div>
                         </div>
 
                     <div class="row">

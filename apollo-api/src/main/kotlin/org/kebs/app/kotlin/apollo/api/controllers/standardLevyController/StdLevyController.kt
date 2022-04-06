@@ -17,6 +17,7 @@ import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileDirectorsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEditEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
@@ -71,12 +72,12 @@ class StdLevyController(
         return ServerResponse(HttpStatus.OK,"Successfully deployed server", HttpStatus.OK)
     }
 
-    @GetMapping("/getManufactureList")
-    @ResponseBody
-    fun getManufactureList(): MutableIterable<CompanyProfileEntity>
-    {
-        return standardLevyService.getManufactureList()
-    }
+//    @GetMapping("/getManufactureList")
+//    @ResponseBody
+//    fun getManufactureList(): MutableIterable<CompanyProfileEntity>
+//    {
+//        return standardLevyService.getManufactureList()
+//    }
 
 
 
@@ -711,13 +712,20 @@ class StdLevyController(
             companyEmail = assignToDTO.companyEmail
             companyTelephone = assignToDTO.companyTelephone
             yearlyTurnover = assignToDTO.yearlyTurnover
+            businessLineName = assignToDTO.businessLineName
             businessLines = assignToDTO.businessLines
+            businessNatureName = assignToDTO.businessNatureName
             businessNatures = assignToDTO.businessNatures
             buildingName = assignToDTO.buildingName
             directorIdNumber = assignToDTO.directorIdNumber
+            regionName = assignToDTO.regionName
             region = assignToDTO.region
+            countyName = assignToDTO.countyName
             county = assignToDTO.county
+            townName = assignToDTO.townName
             town = assignToDTO.town
+            branchName = assignToDTO.branchName
+            streetName = assignToDTO.streetName
             manufactureStatus = assignToDTO.manufactureStatus
             entryNumber = assignToDTO.entryNumber
             userId= assignToDTO.contactId
@@ -971,7 +979,7 @@ class StdLevyController(
     @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
     @GetMapping("/getManufacturerList")
     @ResponseBody
-    fun getManufacturerList(): MutableList<CompanyProfileEntity>
+    fun getManufacturerList(): MutableList<ManufactureListHolder>
     {
         return standardLevyService.getManufacturerList()
     }
@@ -1044,12 +1052,11 @@ class StdLevyController(
 
     @GetMapping("/getManufacturerStatus")
     @ResponseBody
-    fun getManufacturerStatus(): Long
-    {
-        val userLoggedIn = commonDaoServices.loggedInUserDetails()
-        return standardLevyService.getManufacturerStatus(userLoggedIn.id  ?: throw ExpectedDataNotFound("Missing user ID"))
-
+    fun getManufacturerStatus(): BusinessTypeHolder {
+        return standardLevyService.getManufacturerStatus()
     }
+
+
     @GetMapping("/getCompanyEditedDetails")
     fun getCompanyEditedDetails(
         response: HttpServletResponse,
@@ -1151,11 +1158,18 @@ class StdLevyController(
         return standardLevyService.getNotificationFormDetails()
     }
 
+    @GetMapping("/getCompanyDirectors")
+    @ResponseBody
+    fun getCompanyDirectors():List<DirectorListHolder>? {
+        return standardLevyService.getCompanyDirectors()
+    }
+
     @GetMapping("/getBranchName")
     @ResponseBody
     fun getBranchName(): BranchNameHolder {
         return standardLevyService.getBranchName()
     }
+
     @PostMapping("/sendEntryNumber")
     @ResponseBody
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)

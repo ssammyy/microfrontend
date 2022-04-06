@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {
   Branch,
-  CompanyModel,
-  ManufactureBranchDto,
+  CompanyModel, DirectorsList,
+  ManufactureBranchDto, ManufactureDetailList,
   ManufactureInfo,
   ManufacturingBranchDto,
   ManufacturingInfo, ManufacturingStatus, NotificationStatus, SlModel
@@ -26,9 +26,11 @@ declare const $: any;
 })
 export class CustomerRegistrationComponent implements OnInit {
   roles: string[];
+  directors: string;
   companySoFar: Partial<CompanyModel> | undefined;
   //company: CompanyModel;
   companyDetails !: CompanyModel[];
+  directorsLists !: DirectorsList[];
   manufacturingStatus !: ManufacturingStatus;
   slFormDetails !: SlModel;
   slBranchName !: Branch;
@@ -43,6 +45,7 @@ export class CustomerRegistrationComponent implements OnInit {
   manufacturerBranchDetail: ManufactureBranchDto;
   manufacturingBranchDetails: ManufacturingBranchDto[] = [];
   manufacturingBranchDetail: ManufacturingBranchDto;
+  loadingText: string;
   stepSoFar: | undefined;
   step = 1;
   constructor(
@@ -62,6 +65,7 @@ export class CustomerRegistrationComponent implements OnInit {
       this.getSLNotificationStatus();
       this.getCompanySLForm();
       this.getBranchName();
+      this.getCompanyDirectors();
 
     this.manufacturerInfoForm = this.formBuilder.group({
       businessCompanyName: [],
@@ -146,7 +150,7 @@ export class CustomerRegistrationComponent implements OnInit {
         },
         (error: HttpErrorResponse)=>{
           this.SpinnerService.hide();
-          console.log(error.message)
+          //console.log(error.message)
           //alert(error.message);
         }
     );
@@ -240,6 +244,25 @@ export class CustomerRegistrationComponent implements OnInit {
 
 
   }
+
+  public getCompanyDirectors(): void{
+    this.loadingText = "Retrieving Directors ...."
+    this.SpinnerService.show();
+    this.levyService.getCompanyDirectors().subscribe(
+        (response: DirectorsList[]) => {
+          this.directors= Array.prototype.map.call(response, function(item) { return item.directorName; }).join(",");
+          this.directors=this.directors.split(',').join(' , ')
+          this.SpinnerService.hide();
+
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          console.log(error.message);
+
+        }
+    );
+  }
+
   onClickSaveManufacturing(valid: boolean): void {
     if (valid) {
       this.SpinnerService.show();

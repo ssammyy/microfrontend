@@ -305,8 +305,13 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     fun findCompanyByUserId(userId: Long): MutableList<CompanyProfileEntity>
     fun findAllByFirmCategoryAndStatus(firmCategory: Long, status: Int): List<CompanyProfileEntity>?
 
-    @Query(value = "SELECT * FROM DAT_KEBS_COMPANY_PROFILE  WHERE ASSIGN_STATUS='0'", nativeQuery = true)
-    fun getManufacturerList(): MutableList<CompanyProfileEntity>
+    @Query(value = "SELECT c.ID as id,c.NAME as name,c.PHYSICAL_ADDRESS as physicalAddress,c.KRA_PIN as kraPin,c.MANUFACTURE_STATUS as manufactureStatus,c.REGISTRATION_NUMBER as registrationNumber,c.POSTAL_ADDRESS as postalAddress,c.PLOT_NUMBER as plotNumber,c.COMPANY_EMAIL as companyEmail," +
+            "c.COMPANY_TELEPHONE as companyTelephone,c.YEARLY_TURNOVER as yearlyTurnover,l.NAME as businessLineName,n.NAME as businessNatureName,c.BUILDING_NAME as buildingName,c.STREET_NAME as streetName,r.REGION as regionName,s.COUNTY as countyName,c.FIRM_CATEGORY as firmCategory,t.TOWN as townName," +
+            "c.BUSINESS_LINES as businessLines,c.BUSINESS_NATURES as businessNatures,c.REGION as region,c.TOWN as town,c.COUNTY as county,c.USER_ID as userId," +
+            "c.DIRECTOR_ID_NUMBER as directorIdNumber,c.ENTRY_NUMBER as entryNumber,c.STATUS as status,c.CLOSED_COMMODITY_MANUFACTURED as closedCommodityManufactured,c.CLOSED_CONTRACTS_UNDERTAKEN as closedContractsUndertaken,c.TASK_TYPE as taskType,c.TASK_ID as taskId,c.OWNERSHIP as ownership,c.BRANCH_NAME as branchName," +
+            "c.CLOSURE_OF_OPERATIONS as closureOfOperations,c.TYPE_OF_MANUFACTURE as typeOfManufacture" +
+            " FROM DAT_KEBS_COMPANY_PROFILE c Join CFG_KEBS_BUSINESS_NATURE n ON c.BUSINESS_NATURES = n.ID JOIN CFG_KEBS_BUSINESS_LINES l ON c.BUSINESS_LINES = l.ID JOIN CFG_KEBS_REGIONS r ON c.REGION = r.ID JOIN CFG_KEBS_TOWNS t ON c.TOWN = t.ID JOIN CFG_KEBS_COUNTIES s ON c.COUNTY = s.ID   WHERE c.ASSIGN_STATUS='0'", nativeQuery = true)
+    fun getManufacturerList(): MutableList<ManufactureListHolder>
 
     @Query(
         value = "SELECT ID  FROM DAT_KEBS_COMPANY_PROFILE WHERE USER_ID= :id AND ASSIGN_STATUS='0'",
@@ -373,6 +378,10 @@ interface ICompanyProfileContractsUndertakenRepository :
 @Repository
 interface ICompanyProfileDirectorsRepository : HazelcastRepository<CompanyProfileDirectorsEntity, Long> {
     fun findByCompanyProfileId(companyProfileId: Long): List<CompanyProfileDirectorsEntity>?
+
+    @Query(value = "SELECT DIRECTOR_NAME as directorName FROM DAT_KEBS_COMPANY_PROFILE_DIRECTORS WHERE COMPANY_PROFILE_ID = :id", nativeQuery = true)
+    fun getCompanyDirectors(@Param("id") id: Long?): List<DirectorListHolder>?
+
 }
 
 @Repository

@@ -740,6 +740,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
         console.log(file[i]);
         formData.append('docFile', file[i], file[i].name);
       }
+        this.loadingText = "Saving Report...";
       this.SpinnerService.show();
       this.levyService.uploadFileDetails(reportFileID, formData).subscribe(
           (data: any) => {
@@ -826,6 +827,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
 
 
   viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
+      this.loadingText = "Loading...";
     this.SpinnerService.show();
     this.levyService.viewReportDoc(pdfId).subscribe(
         (dataPdf: any) => {

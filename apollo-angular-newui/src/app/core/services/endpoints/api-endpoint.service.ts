@@ -17,10 +17,10 @@ export class ApiEndpointService {
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-         LOCAL_DEV: 'localhost:8006'
+        // LOCAL_DEV: 'localhost:8006'
         // LOCAL_DEV: '12:8006'
         // LOCAL_DEV: '41.72.209.58:8006'
-        // LOCAL_DEV: `kimsint.kebs.org:8006`
+         LOCAL_DEV: `kimsint.kebs.org:8006`
         // LOCAL_DEV: `kims.kebs.org`
         // LOCAL_DEV: '10.10.0.149:8007'
     };
@@ -455,6 +455,7 @@ export class ApiEndpointService {
         STD_LEVY_SAVE_VISIT_REPORT_FEEDBACK: `${ApiEndpointService.STL_CONTEXT}/siteVisitReportFeedback`,
         STD_LEVY_SAVE_VISIT_REPORT_VIEW_FEEDBACK: `${ApiEndpointService.STL_CONTEXT}/getSiteFeedback`,
         STD_LEVY_MANUFACTURE_LIST: `${ApiEndpointService.STL_CONTEXT}/getManufacturerList`,
+        STD_LEVY_DIRECTORS_LIST: `${ApiEndpointService.STL_CONTEXT}/getCompanyDirectors`,
         STD_LEVY_MANUFACTURE_TASKS: `${ApiEndpointService.STL_CONTEXT}/getUserTasks`,
         STD_LEVY_VIEW_VISIT_REPORT_FEEDBACK: `${ApiEndpointService.STL_CONTEXT}/viewFeedBack`,
         STD_LEVY_MANUFACTURE_COMPLETE_TASKS: `${ApiEndpointService.STL_CONTEXT}/getCompleteTasks`,

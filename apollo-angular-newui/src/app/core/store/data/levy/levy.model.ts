@@ -86,6 +86,7 @@ export interface SlModel{
     commodity: string;
     dateOfManufacture: string;
     totalValue: number;
+    nameOfBusinessProprietor: string;
 }
 
 export interface CompanyModel {
@@ -197,15 +198,20 @@ export interface AssignCompanyTaskDTO {
     companyEmail: string;
     companyTelephone: string;
     yearlyTurnover: number;
+    businessLineName: string;
     businessLines: number;
+    businessNatureName: string;
     businessNatures: number;
+    regionName: string;
+    region: number;
+    countyName: string;
+    county: number;
+    townName: string;
+    town: number;
     buildingName: string;
     branchName: string;
     streetName: string;
     directorIdNumber: string;
-    region: number;
-    county: number;
-    town: number;
     manufactureStatus: number;
     entryNumber: number;
     contactId: number;
@@ -293,6 +299,9 @@ export interface SiteVisitFeedBack {
     manufacturerEntity: number;
 
 }
+export interface DirectorsList {
+    directorName: string;
+}
 export interface ManufactureDetailList {
     id: number;
     name: string;
@@ -306,14 +315,19 @@ export interface ManufactureDetailList {
     companyTelephone: string;
     yearlyTurnover: number;
     businessLines: number;
+    businessLineName: string;
     businessNatures: number;
+    businessNatureName: string;
     buildingName: string;
     branchName: string;
     streetName: string;
     directorIdNumber: string;
     region: number;
+    regionName: string;
     county: number;
+    countyName: string;
     town: number;
+    townName: string;
     manufactureStatus: number;
     entryNumber: number;
     assignStatus: number;
@@ -343,14 +357,19 @@ export interface ManufacturePendingTaskData{
     yearlyTurnover: number;
     businessLines: number;
     businessNatures: number;
+    businessLineName: string;
     buildingName: string;
+    businessNatureName: string;
     branchName: string;
     streetName: string;
     directorIdNumber: string;
     region: number;
     county: number;
+    regionName: string;
     town: number;
+    countyName: string;
     manufactureStatus: number;
+    townName: string;
     entryNumber: number;
     assignStatus: number;
     assignedTo: number;
@@ -442,6 +461,11 @@ export interface ManufactureCompletedTask {
     yearlyTurnOver: number;
     asstManagerRemarks: number;
     chiefManagerRemarks: string;
+    businessLineName: string;
+    businessNatureName: string;
+    regionName: string;
+    countyName: string;
+    townName: string;
 
 }
 export interface UsersEntityList {
@@ -455,7 +479,7 @@ export interface UserEntityRoles {
 }
 
 export interface ManufacturingStatus {
-    name: number;
+    businessType: number;
 }
 export interface NotificationStatus {
     name: boolean;
