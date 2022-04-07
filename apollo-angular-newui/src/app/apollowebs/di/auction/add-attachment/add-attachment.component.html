@@ -25,7 +25,7 @@
     <div class="btn-group btn-group pull-right" role="group" aria-label="Foreign COC/COR Buttons">
         <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
         <button [disabled]="!isValid() || loading" name="submit" type="button" class="btn btn-primary"
-                (click)="saveAuctionDocumentDocument()">SAVE
+                (click)="saveAuctionDocumentDocument($event)">SAVE
             <mat-spinner [diameter]="20" color="warn" *ngIf="loading"></mat-spinner>
         </button>
     </div>

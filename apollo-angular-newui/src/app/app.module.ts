@@ -307,8 +307,10 @@ import {UploadSacSummaryComponent} from './apollowebs/standards-development/adop
 import {ViewSacSummaryComponent} from './apollowebs/standards-development/adoptionOfEaStds/view-sac-summary/view-sac-summary.component';
 import {ViewSacSummaryApprovedComponent} from './apollowebs/standards-development/adoptionOfEaStds/view-sac-summary-approved/view-sac-summary-approved.component';
 import {AddAttachmentComponent} from './apollowebs/di/auction/add-attachment/add-attachment.component';
-import { NwaTasksComponent } from './apollowebs/standards-development/workshop-agreement/nwa-tasks/nwa-tasks.component';
+import {NwaTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-tasks/nwa-tasks.component';
 import {GenerateAuctionKraReportComponent} from "./apollowebs/di/auction/generate-auction-kra-report/generate-auction-kra-report.component";
+import {UpdateComplaintTaskComponent} from "./apollowebs/pvoc/complaints/update-complaint-task/update-complaint-task.component";
+import {UpdateExemptionTaskComponent} from "./apollowebs/pvoc/exemptions/update-exemption-task/update-exemption-task.component";
 
 
 @NgModule({
@@ -648,7 +650,9 @@ import {GenerateAuctionKraReportComponent} from "./apollowebs/di/auction/generat
         ViewSacSummaryApprovedComponent,
         AddApiClientComponent,
         AddAttachmentComponent,
-        NwaTasksComponent
+        NwaTasksComponent,
+        UpdateComplaintTaskComponent,
+        UpdateExemptionTaskComponent
     ],
     entryComponents: [],
     providers: [DatePipe,
