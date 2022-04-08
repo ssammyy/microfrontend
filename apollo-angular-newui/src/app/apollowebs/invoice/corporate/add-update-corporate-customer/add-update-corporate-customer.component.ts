@@ -1,7 +1,6 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {PVOCService} from "../../../../core/store/data/pvoc/pvoc.service";
 import {FinanceInvoiceService} from "../../../../core/store/data/invoice/finance-invoice.service";
 
 @Component({
@@ -43,6 +42,7 @@ export class AddUpdateCorporateCustomerComponent implements OnInit {
         this.form = this.fb.group({
             corporateIdentifier: [this.data ? this.data.corporateIdentifier : null, [Validators.required, Validators.minLength(2)]],
             corporateName: [this.data ? this.data.corporateName : null, [Validators.required, Validators.minLength(2)]],
+            corporateCode: [this.data ? this.data.corporateCode : null, [Validators.required, Validators.minLength(2)]],
             corporateType: [this.data ? this.data.corporateType : null, [Validators.required]],
             corporateEmail: [this.data ? this.data.corporateEmail : null, [Validators.required, Validators.email]],
             corporatePhone: [this.data ? this.data.corporatePhone : null, Validators.required],

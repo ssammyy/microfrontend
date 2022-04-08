@@ -21,6 +21,9 @@ class CorporateCustomerAccounts : Serializable {
     @Column(name = "CORPORATE_NAME", nullable = false)
     var corporateName: String? = null
 
+    @Column(name = "CORPORATE_CODE", nullable = false)
+    var corporateCode: String? = null
+
     @Column(name = "CORPORATE_TYPE", nullable = false)
     var corporateType: String? = null // COURIER
 

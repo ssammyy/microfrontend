@@ -40,3 +40,25 @@ class SagePostingResponseResult {
     @NotNull(message = "Request details are required")
     val response: SageResponse? = null
 }
+
+class SageInvoiceResponse {
+    @JsonProperty("DocumentNo")
+    @NotNull(message = "Bill reference No is required")
+    val demandNoteNo: String? = null
+
+    @JsonProperty("ResponseDate")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, lenient = OptBoolean.TRUE)
+    val responseDate: Timestamp? = null
+}
+
+class SageInvoicePostingResponseResult {
+    @JsonProperty("header")
+    @Valid
+    @NotNull(message = "Header details are required")
+    var header: SageHeader? = null
+
+    @Valid
+    @JsonProperty("response")
+    @NotNull(message = "Request details are required")
+    val response: SageInvoiceResponse? = null
+}

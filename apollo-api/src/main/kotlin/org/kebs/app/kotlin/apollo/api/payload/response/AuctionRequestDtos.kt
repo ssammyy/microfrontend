@@ -82,6 +82,8 @@ class AuctionRequestDto {
                 AuctionGoodStatus.NEW.status -> "NEW"
                 AuctionGoodStatus.APPROVED.status -> "APPROVED"
                 AuctionGoodStatus.REJECTED.status -> "REJECTED"
+                AuctionGoodStatus.CONDITIONAL_APPROVAL.status -> "CONDITIONAL APPROVAL"
+                AuctionGoodStatus.HOLD.status -> "ON HOLD"
                 AuctionGoodStatus.PAYMENT_PENDING.status -> "PENDING PAYMENT"
                 AuctionGoodStatus.PAYMENT_COMPLETED.status -> "PAYMENT COMPLETED"
                 else -> "OTHER"

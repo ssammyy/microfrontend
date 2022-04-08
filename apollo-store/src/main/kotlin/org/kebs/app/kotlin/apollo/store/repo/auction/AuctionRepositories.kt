@@ -15,7 +15,7 @@ interface IAuctionCategoryRepository : HazelcastRepository<AuctionCategory, Long
 }
 
 interface IAuctionRequestsRepository : HazelcastRepository<AuctionRequests, Long> {
-    fun findByApprovalStatus(status: Int, page: Pageable): Page<AuctionRequests>
+    fun findByApprovalStatusIn(status: List<Int>, page: Pageable): Page<AuctionRequests>
     fun findByApprovalStatusInAndAssignedOfficerIsNull(status: List<Int>, page: Pageable): Page<AuctionRequests>
     fun findByApprovalStatusInAndAssignedOfficer(status: List<Int>, officer: UsersEntity?, page: Pageable): Page<AuctionRequests>
     fun findByApprovalStatusInAndApprovedRejectedOnBetween(status: List<Int>, startDate: Timestamp, endDate: Timestamp): List<AuctionRequests>

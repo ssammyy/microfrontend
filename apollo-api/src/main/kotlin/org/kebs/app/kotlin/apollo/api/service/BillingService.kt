@@ -60,6 +60,7 @@ class BillingService(
                 if (BigDecimal.ZERO <= it.maxBillAmount) {
                     if (bill.billAmount?.compareTo(it.maxBillAmount) ?: 0 >= 0) {
                         bill.billStatus = BillStatus.CLOSED.status
+                        bill.billDate = commonDaoServices.getTimestamp()
                     }
                 }
             }
@@ -70,6 +71,10 @@ class BillingService(
             bill.billNumberSequence = this.billPaymentRepository.countByCorporateIdAndBillNumber(corporate.id, billNumber) + 1
             bill.billNumber = billNumber
             bill.paymentStatus = 0
+            bill.customerName = corporate.corporateName
+            bill.customerCode = corporate.corporateCode
+            bill.customerCode = "KES"
+            bill.billType = 1
             bill.billStatusDesc = BillStatus.OPEN.name
             bill.billStatus = BillStatus.OPEN.status
             bill.penaltyAmount = BigDecimal.ZERO
@@ -83,6 +88,7 @@ class BillingService(
             }
             bill.paymentDate = Date.valueOf(paymentDate)
             bill.createOn = Timestamp.from(Instant.now())
+            bill.billDescription = "Bill payment for the month of " + commonDaoServices.convertDateToString(bill.paymentDate, "MMMM")
             val saved = this.billPaymentRepository.save(bill)
             transaction.billId = saved.id
             this.billTransactionRepo.save(transaction)
@@ -291,6 +297,7 @@ class BillingService(
             val bills = this.billPaymentRepository.findAllByBillNumberPrefixAndPaymentStatus(billPrefix, BillStatus.CLOSED.status)
             bills.forEach { bill ->
                 bill.billStatus = BillStatus.CLOSED.status
+                bill.billDate = commonDaoServices.getTimestamp()
                 bill.billStatusDesc = BillStatus.CLOSED.name
                 bill.paymentRequestDate = Timestamp.from(Instant.now())
                 bill.nextNoticeDate = Date.valueOf(date.plusDays(2))

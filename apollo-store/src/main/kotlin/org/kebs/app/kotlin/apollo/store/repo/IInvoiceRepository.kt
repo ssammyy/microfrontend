@@ -1,8 +1,6 @@
 package org.kebs.app.kotlin.apollo.store.repo
 
 import org.kebs.app.kotlin.apollo.store.model.InvoiceEntity
-import org.kebs.app.kotlin.apollo.store.model.ManufacturersEntity
-import org.kebs.app.kotlin.apollo.store.model.PermitApplicationEntity
 import org.kebs.app.kotlin.apollo.store.model.PetroleumInstallationInspectionEntity
 import org.kebs.app.kotlin.apollo.store.model.invoice.BillPayments
 import org.kebs.app.kotlin.apollo.store.model.invoice.BillTransactionsEntity
@@ -60,6 +58,7 @@ interface ICorporateCustomerRepository : HazelcastRepository<CorporateCustomerAc
 @Repository
 interface IBillTransactionsEntityRepository : HazelcastRepository<BillTransactionsEntity, Long> {
     fun findAllByCorporateIdAndBillId(corporateId: Long, billId: Long): List<BillTransactionsEntity>
+    fun findByBillId(billId: Long): List<BillTransactionsEntity>
 }
 
 
@@ -75,4 +74,5 @@ interface IBillPaymentsRepository : HazelcastRepository<BillPayments, Long> {
     @Query(value = "select sum(CASE WHEN bt.AMOUNT>0 then bt.AMOUNT else 0.0 END) TOTAL_AMOUNT from DAT_KEBS_BILL_TRANSACTIONS bt  where CORPORATE_ID=:corporateId and BILL_ID=:billId", nativeQuery = true)
     fun sumTotalAmountByCorporateIdAndBillId(@Param("corporateId") corporateId: Long?, @Param("billId") billId: Long): BigDecimal?
     fun findAllByCorporateIdAndPaymentStatusIn(corporateId: Long?, status: List<Int>): List<BillPayments>
+    fun findFirstByBillStatusAndPaymentStatusAndPostingStatusOrderByCreateOnDesc(billStatus: Int, paymentStatus: Int, postingStatus: Int): BillPayments?
 }
