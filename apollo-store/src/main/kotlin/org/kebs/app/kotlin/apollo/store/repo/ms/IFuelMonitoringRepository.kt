@@ -135,3 +135,9 @@ interface ISampleCollectParameterRepository : HazelcastRepository<MsCollectionPa
 //    fun findByUserId(userId: UsersEntity): List<WorkplanEntity>?
 //    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?
 }
+
+@Repository
+interface IMsUploadsRepository : HazelcastRepository<MsUploadsEntity, Long> {
+    override fun findAll( pageable: Pageable): Page<MsUploadsEntity>
+
+}

@@ -10,6 +10,7 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.*
+import org.kebs.app.kotlin.apollo.store.repo.ms.IFuelRemediationInvoiceRepository
 import org.kebs.app.kotlin.apollo.store.repo.ms.ISampleCollectionViewRepository
 import org.springframework.core.io.ResourceLoader
 import org.springframework.http.MediaType
@@ -25,6 +26,7 @@ class MSJSONControllers(
     private val applicationMapProperties: ApplicationMapProperties,
     private val marketSurveillanceDaoServices: NewMarketSurveillanceDaoServices,
     private val iSampleCollectViewRepo: ISampleCollectionViewRepository,
+    private val fuelRemediationInvoiceRepo: IFuelRemediationInvoiceRepository,
     private val commonDaoServices: CommonDaoServices,
     private val reportsDaoService: ReportsDaoService,
     private val limsServices: LimsServices,
@@ -58,9 +60,9 @@ class MSJSONControllers(
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun downloadFileDocument(
         response: HttpServletResponse,
-        @RequestParam("fileID") fileID: Long
+        @RequestParam("fileID") fileID: String
     ) {
-        val fileUploaded = marketSurveillanceDaoServices.findUploadedFileBYId(fileID)
+        val fileUploaded = marketSurveillanceDaoServices.findUploadedFileBYId(fileID.toLong())
         val mappedFileClass = commonDaoServices.mapClass(fileUploaded)
         commonDaoServices.downloadFile(response, mappedFileClass)
     }
@@ -92,6 +94,35 @@ class MSJSONControllers(
             pdfReportStream.close()
         }
     }
+
+    @RequestMapping(value = ["/report/remediation-invoice"], method = [RequestMethod.GET])
+    @Throws(Exception::class)
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msRemediationInvoicePDF(
+        response: HttpServletResponse,
+        @RequestParam(value = "fuelInspectionId") fuelInspectionId: Long
+    ) {
+        val map = hashMapOf<String, Any>()
+        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
+
+        val invoiceRemediationDetails = fuelRemediationInvoiceRepo.findFirstByFuelInspectionId(fuelInspectionId)
+
+        val pdfReportStream = reportsDaoService.extractReport(
+            map,
+            applicationMapProperties.mapMSFuelInvoiceRemediationPath,
+            invoiceRemediationDetails
+        )
+        response.contentType = "text/html"
+        response.contentType = "application/pdf"
+        response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Dispostion", "inline; Remediation-Invoice-${invoiceRemediationDetails[0].fuelInspectionId}.pdf;")
+        response.outputStream.let { responseOutputStream ->
+            responseOutputStream.write(pdfReportStream.toByteArray())
+            responseOutputStream.close()
+            pdfReportStream.close()
+        }
+    }
+
 
 
 //    @GetMapping("populate-all-labs",  produces = [MediaType.APPLICATION_JSON_VALUE])

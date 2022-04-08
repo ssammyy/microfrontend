@@ -13,7 +13,7 @@ class MsOnSiteUploadsEntity :Serializable {
     @SequenceGenerator(name = "DAT_KEBS_MS_ONSITE_UPLOADS_SEQ_GEN", allocationSize = 1, sequenceName = "DAT_KEBS_MS_ONSITE_UPLOADS_SEQ")
     @GeneratedValue(generator = "DAT_KEBS_MS_ONSITE_UPLOADS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Id
-    var id: Long = 0
+    var id: Long? = 0
 
     @Transient
     var saveType: String? = null
@@ -52,7 +52,7 @@ class MsOnSiteUploadsEntity :Serializable {
 
     @Column(name = "VERSION_NUMBER")
     @Basic
-    var versionNumber: Long? = null
+    var versionNumber: Int? = null
 
     @Column(name = "TRANSACTION_DATE")
     @Basic

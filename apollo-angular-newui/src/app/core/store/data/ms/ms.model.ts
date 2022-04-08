@@ -132,6 +132,7 @@ export class FuelRemediationDto {
     feePaidReceiptNo: string;
     dateOfRemediation: Date;
     dateOfPayment: Date;
+    invoiceCreated: boolean;
 }
 
 export class MSSSFPDFListDetailsDto {

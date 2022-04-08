@@ -25,6 +25,10 @@ class QaSampleSubmittedPdfListDetailsEntity : Serializable {
     @Basic
     var pdfSavedId: Long? = null
 
+    @Column(name = "MS_PDF_SAVED_ID")
+    @Basic
+    var msPdfSavedId: Long? = null
+
     @Column(name = "PDF_NAME")
     @Basic
     var pdfName: String? = null

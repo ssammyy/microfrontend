@@ -382,6 +382,22 @@ export class MsService {
         );
     }
 
+    public loadRemediationInvoiceDetailsPDF(fuelInspectionId: string): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.VIEW_PDF_REMEDIATION_INVOICE);
+        const params = new HttpParams()
+            .set('fuelInspectionId', fuelInspectionId);
+        // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
+        return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
     public loadSampleCollectionDetailsPDF(sampleCollectionID: string): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.VIEW_PDF_SAMPLE_COLLECTION);
         const params = new HttpParams()
@@ -397,6 +413,7 @@ export class MsService {
             })
         );
     }
+
 
 
 
@@ -625,7 +642,7 @@ export class MsService {
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
             .set('referenceNo', referenceNo);
-        return this.http.put<FuelInspectionDto>(url, data, {params}).pipe(
+        return this.http.post<FuelInspectionDto>(url, data, {params}).pipe(
             map(function (response: FuelInspectionDto) {
                 return response;
             }),

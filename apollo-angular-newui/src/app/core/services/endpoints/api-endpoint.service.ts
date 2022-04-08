@@ -17,10 +17,10 @@ export class ApiEndpointService {
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-         LOCAL_DEV: 'localhost:8007'
+         // LOCAL_DEV: 'localhost:8007'
         // LOCAL_DEV: 'kimsfluxint.kebs.org:8005'
         // LOCAL_DEV: '41.72.209.58:8006'
-        // LOCAL_DEV: 'kimsint.kebs.org:8007'
+        LOCAL_DEV: 'kimsint.kebs.org:8007'
         // LOCAL_DEV: `kimsint.skebs.org:8006`
         // LOCAL_DEV: `kimsint.kebs.org:8005`,
         // LOCAL_DEV: `kims.kebs.org:8006`
@@ -434,6 +434,7 @@ export class ApiEndpointService {
         VIEW_PDF_LAB_RESULT: `${ApiEndpointService.MS_CONTEXT}/view/attached-lab-pdf`,
         VIEW_PDF_SAVED: `${ApiEndpointService.MS_CONTEXT}/view/attached`,
         VIEW_PDF_SAMPLE_COLLECTION: `${ApiEndpointService.MS_CONTEXT}/report/sample-collection`,
+        VIEW_PDF_REMEDIATION_INVOICE: `${ApiEndpointService.MS_CONTEXT}/report/remediation-invoice`,
         LAB_LIST: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/fetch/laboratory-list`,
         ALL_BATCH_LIST: `${ApiEndpointService.MS_FUEL_CONTEXT}/all-batch-list`,
         ADD_BATCH: `${ApiEndpointService.MS_FUEL_CONTEXT}/add`,

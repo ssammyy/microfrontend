@@ -111,3 +111,61 @@ alter table DAT_KEBS_MS_ONSITE_UPLOADS add ORDINARY_STATUS NUMBER(2,0);
 alter table DAT_KEBS_MS_ONSITE_UPLOADS add SSF_UPLOADS NUMBER(2,0);
 alter table DAT_KEBS_MS_FUEL_INSPECTION add INSPECTION_COMPLETE_STATUS NUMBER(2,0);
 alter table DAT_KEBS_MS_ONSITE_UPLOADS add VERSION_NUMBER NUMBER
+
+
+create table DAT_KEBS_MS_UPLOADS
+(
+    ID                       NUMBER PRIMARY KEY,
+    FILEPATH                 VARCHAR2(200),
+    DESCRIPTION              VARCHAR2(200),
+    NAME                     VARCHAR2(200),
+    FILE_TYPE                VARCHAR2(200),
+    DOCUMENT_TYPE            VARCHAR2(200),
+    DOCUMENT                 BLOB,
+    TRANSACTION_DATE         DATE,
+    MS_WORKPLAN_GENERATED_ID NUMBER references DAT_KEBS_MS_WORKPLAN_GENARATED (ID),
+    MS_FUEL_INSPECTION_ID    NUMBER references DAT_KEBS_MS_FUEL_INSPECTION (ID),
+    VERSION_NUMBER           NUMBER,
+    ORDINARY_STATUS          NUMBER(2, 0),
+    SSF_UPLOADS              NUMBER(2, 0),
+    STATUS                   NUMBER(2, 0),
+    VAR_FIELD_1              VARCHAR2(350 char),
+    VAR_FIELD_2              VARCHAR2(350 char),
+    VAR_FIELD_3              VARCHAR2(350 char),
+    VAR_FIELD_4              VARCHAR2(350 char),
+    VAR_FIELD_5              VARCHAR2(350 char),
+    VAR_FIELD_6              VARCHAR2(350 char),
+    VAR_FIELD_7              VARCHAR2(350 char),
+    VAR_FIELD_8              VARCHAR2(350 char),
+    VAR_FIELD_9              VARCHAR2(350 char),
+    VAR_FIELD_10             VARCHAR2(350 char),
+    CREATED_BY               VARCHAR2(100 char)          default 'admin' not null,
+    CREATED_ON               TIMESTAMP(6) WITH TIME ZONE default sysdate not null,
+    MODIFIED_BY              VARCHAR2(100 char)          default 'admin',
+    MODIFIED_ON              TIMESTAMP(6) WITH TIME ZONE default sysdate,
+    DELETE_BY                VARCHAR2(100 char)          default 'admin',
+    DELETED_ON               TIMESTAMP(6) WITH TIME ZONE
+) TABLESPACE qaimssdb_data;
+
+create sequence DAT_KEBS_MS_UPLOADS_SEQ minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+
+create trigger DAT_KEBS_MS_UPLOADS_SEQ_trg
+    before
+        insert
+    on DAT_KEBS_MS_UPLOADS
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select DAT_KEBS_MS_UPLOADS_SEQ.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+
+create index DAT_KEBS_MS_UPLOADS_seq_idx on DAT_KEBS_MS_UPLOADS (MS_WORKPLAN_GENERATED_ID,MS_FUEL_INSPECTION_ID,
+ORDINARY_STATUS,SSF_UPLOADS,STATUS) TABLESPACE qaimssdb_idx;
+/

@@ -345,7 +345,8 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       delete: false,
       custom: [
         // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
-        {name: 'viewPDFRecord', title: '<i class="btn btn-sm btn-primary">View PDF</i>'},
+        {name: 'viewPDFRemarks', title: '<i class="btn btn-sm btn-primary">View Remarks</i>'},
+        {name: 'viewPDFRecord', title: '<i class="btn btn-sm btn-primary">View PDF</i>'}
       ],
       position: 'right' // left|right
     },
@@ -360,11 +361,11 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
         type: 'string',
         filter: false
       },
-      complianceRemarks: {
-        title: 'COMPLIANCE REMARKS',
-        type: 'string',
-        filter: false
-      },
+      // complianceRemarks: {
+      //   title: 'COMPLIANCE REMARKS',
+      //   type: 'string',
+      //   filter: false
+      // },
       complianceStatus: {
         title: 'COMPLIANCE STATUS',
         type: 'boolean',
@@ -631,11 +632,11 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     const arrHead = ['scheduleRemediationInvoicePaid',
       'assignOfficer', 'rapidTest', 'addBsNumber',
       'ssfAddComplianceStatus', 'scheduleRemediation',
-      'addRemediationDetails'];
+      'addRemediationDetails', 'notCompliantInvoice'];
     const arrHeadSave = ['SCHEDULE REMEDIATION DATE INVOICE PAID',
       'SELECT OFFICER TO ASSIGN', 'RAPID TEST RESULTS', 'ADD BS NUMBER',
       'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'SCHEDULE REMEDIATION DATE',
-      'ADD REMEDIATION INVOICE DETAILS'];
+      'ADD REMEDIATION INVOICE DETAILS', 'ADD REMEDIATION INVOICE DETAILS TO BE GENERATED'];
 
     for (let h = 0; h < arrHead.length; h++) {
       if (divVal === arrHead[h]) {
@@ -713,6 +714,30 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
         }
     );
   }
+
+  viewRemediationInvoicePdfFile(fuelInspectionId: string, fileName: string, applicationType: string): void {
+    this.SpinnerService.show();
+    this.msService.loadRemediationInvoiceDetailsPDF(fuelInspectionId).subscribe(
+        (dataPdf: any) => {
+          this.SpinnerService.hide();
+          this.blob = new Blob([dataPdf], {type: applicationType});
+
+          // tslint:disable-next-line:prefer-const
+          let downloadURL = window.URL.createObjectURL(this.blob);
+          const link = document.createElement('a');
+          link.href = downloadURL;
+          link.download = fileName;
+          link.click();
+          // this.pdfUploadsView = dataPdf;
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        }
+    );
+  }
+
 
   onClickSaveAssignOfficerBatch(valid: boolean) {
     if (valid) {
@@ -833,19 +858,44 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       this.dataPDFSaveComplianceStatus.ssfID = this.fuelInspection.sampleLabResults.ssfResultsList.sffId;
       this.dataPDFSaveComplianceStatus.bsNumber = this.fuelInspection.sampleLabResults.ssfResultsList.bsNumber;
       this.dataPDFSaveComplianceStatus.PDFFileName = this.selectedPDFFileName;
-      this.msService.msFuelInspectionScheduledSavePDFLIMS(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber, this.dataPDFSaveComplianceStatus).subscribe(
-          (data: any) => {
-            this.fuelInspection = data;
-            console.log(data);
+      if (this.fuelInspection.sampleLabResults.savedPDFFiles.length === 0) {
+        this.msService.msFuelInspectionScheduledSavePDFLIMS(this.fuelInspection.batchDetails.referenceNumber,
+            this.fuelInspection.referenceNumber, this.dataPDFSaveComplianceStatus).subscribe(
+            (data: any) => {
+              this.fuelInspection = data;
+              console.log(data);
+              this.SpinnerService.hide();
+              this.msService.showSuccess('PDF LIMS SAVED SUCCESSFULLY');
+            },
+            error => {
+              this.SpinnerService.hide();
+              console.log(error);
+              this.msService.showError('AN ERROR OCCURRED');
+            }
+        );
+      } else {
+        for (const savedPdf of this.fuelInspection.sampleLabResults.savedPDFFiles) {
+          if (savedPdf.pdfName !== this.selectedPDFFileName) {
+            this.msService.msFuelInspectionScheduledSavePDFLIMS(this.fuelInspection.batchDetails.referenceNumber,
+                this.fuelInspection.referenceNumber, this.dataPDFSaveComplianceStatus).subscribe(
+                (data: any) => {
+                  this.fuelInspection = data;
+                  console.log(data);
+                  this.SpinnerService.hide();
+                  this.msService.showSuccess('PDF LIMS SAVED SUCCESSFULLY');
+                },
+                error => {
+                  this.SpinnerService.hide();
+                  console.log(error);
+                  this.msService.showError('AN ERROR OCCURRED');
+                }
+            );
+          } else {
             this.SpinnerService.hide();
-            this.msService.showSuccess('PDF LIMS SAVED SUCCESSFULLY');
-          },
-          error => {
-            this.SpinnerService.hide();
-            console.log(error);
-            this.msService.showError('AN ERROR OCCURRED');
+            this.msService.showError('The Pdf selected With Name ' + this.selectedPDFFileName + ' Already Saved');
           }
-      );
+        }
+      }
     }
   }
 
@@ -965,7 +1015,20 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
 
   viewLIMSPDFSaved(data: MSSSFPDFListDetailsDto) {
     console.log('TEST 101 REF NO VIEW FILE: ' + data.pdfSavedId);
+
     this.viewPdfFile(String(data.pdfSavedId), data.pdfName, 'application/pdf');
+    // this.router.navigate([`/epra/fuelInspection/details/`,data.referenceNumber]);
+  }
+
+  viewLIMSPDFSavedRemarks(data: MSSSFPDFListDetailsDto) {
+    console.log('TEST 101 REF NO VIEW FILE: ' + data.pdfSavedId);
+    this.selectedPDFFileName = data.pdfName;
+    this.currDivLabel = `COMPLIANCE STATUS AND REMARKS FOR PDF # ${this.selectedPDFFileName}`;
+    this.currDiv = 'viewPdfSaveCompliance';
+    this.pdfSaveComplianceStatusForm.patchValue(data);
+
+    window.$('#myModal1').modal('show');
+    // this.viewPdfFile(String(data.pdfSavedId), data.pdfName, 'application/pdf');
     // this.router.navigate([`/epra/fuelInspection/details/`,data.referenceNumber]);
   }
 
@@ -996,6 +1059,9 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     switch (event.action) {
       case 'viewPDFRecord':
         this.viewLIMSPDFSaved(event.data);
+        break;
+      case 'viewPDFRemarks':
+        this.viewLIMSPDFSavedRemarks(event.data);
         break;
     }
   }

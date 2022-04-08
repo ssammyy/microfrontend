@@ -139,12 +139,12 @@ export class EpraListComponent implements OnInit {
         },
         filter: false
       },
-      processStage: {
-        title: 'PROCESS STAGE',
-        type: 'string',
-        filter: false
-      },
-      closedStatus: {
+      // processStage: {
+      //   title: 'PROCESS STAGE',
+      //   type: 'string',
+      //   filter: false
+      // },
+      endInspectionStatus: {
         title: 'CLOSED STATUS',
         type: 'boolean',
         filter: false

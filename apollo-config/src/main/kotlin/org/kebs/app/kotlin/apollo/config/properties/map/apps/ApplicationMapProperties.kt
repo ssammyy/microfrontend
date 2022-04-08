@@ -715,6 +715,12 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.remediation.invoice.notification}")
     val mapMsFuelInspectionRemediationInvoiceNotification: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.remediation.schedule.notification}")
+    val mapMsFuelInspectionRemediationScheduleNotification: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.schedule.end.notification}")
+    val mapMsFuelInspectionScheduleEndedNotification: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.lab.results.notification}")
     val mapMsFuelInspectionLabResultsNotification: String = ""
 

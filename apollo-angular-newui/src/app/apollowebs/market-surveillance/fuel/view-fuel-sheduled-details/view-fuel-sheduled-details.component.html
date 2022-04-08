@@ -348,9 +348,9 @@
                                         <label style="color: #0082f3">Lab Results Details</label>
                                         <div class="panel" style="max-height: 388px;">
                                             <div *ngFor="let role of roles">
-                                                <button  *ngIf="role == 'MS_IOP_MODIFY' && fuelInspection?.bsNumberStatus && fuelInspection?.compliantStatusAdded==false" (click)="openModalAddDetails('ssfAddComplianceStatus')" mat-raised-button="" data-toggle="modal"
+                                                <button  *ngIf="role == 'MS_IOP_MODIFY' && fuelInspection?.bsNumberStatus && fuelInspection?.compliantStatusAdded==false && fuelInspection.sampleLabResults.savedPDFFiles.length != 0" (click)="openModalAddDetails('ssfAddComplianceStatus')" mat-raised-button="" data-toggle="modal"
                                                         data-target="#myModal1"
-                                                        class="btn btn-sm btn-primary mr-2"><span
+                                                        class="btn btn-sm btn-primary mr-3"><span
                                                         class="mat-button-wrapper">ADD COMPLIANCE STATUS</span>
                                                     <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                     <div class="mat-button-focus-overlay"></div>
@@ -392,7 +392,6 @@
                                                     <div class="table-striped table-condensed table-responsive">
                                                         <ng2-smart-table [settings]="settingsLIMSPDFFiles"
                                                                          [source]="fuelInspection?.sampleLabResults?.limsPDFFiles"
-                                                                         (userRowSelect)="viewLIMSPDFRecord($event.data,fuelInspection?.sampleLabResults?.ssfResultsList.bsNumber)"
                                                                          (custom)="onCustomLIMSPDFAction($event,fuelInspection?.sampleLabResults?.ssfResultsList.bsNumber)"
                                                         ></ng2-smart-table>
                                                     </div>
@@ -405,7 +404,6 @@
                                                     <div class="table-striped table-condensed table-responsive">
                                                         <ng2-smart-table [settings]="settingsSavedPDFFiles"
                                                                          [source]="fuelInspection?.sampleLabResults?.savedPDFFiles"
-                                                                         (userRowSelect)="viewLIMSPDFSaved($event.data)"
                                                                          (custom)="onCustomLIMSPDFViewAction($event)"
                                                         ></ng2-smart-table>
                                                     </div>
@@ -429,26 +427,28 @@
                                                     <div class="list-text-accordion">
                                                         {{fuelInspection?.fuelRemediation?.dateOfRemediation| date}}</div>
                                                 </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Pro Forma Invoice No</div>
-                                                    <div class="list-text-accordion">
-                                                        {{fuelInspection?.fuelRemediation?.proFormaInvoiceNo}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Receipt No</div>
-                                                    <div class="list-text-accordion">
-                                                        {{fuelInspection?.fuelRemediation?.feePaidReceiptNo}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Invoice Amount</div>
-                                                    <div class="list-text-accordion">
-                                                        {{fuelInspection?.fuelRemediation?.invoiceAmount}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Date Of Payment</div>
-                                                    <div class="list-text-accordion">
-                                                        {{fuelInspection?.fuelRemediation?.dateOfPayment| date}}</div>
-                                                </li>
+                                                <div *ngIf="fuelInspection?.fuelRemediation?.invoiceCreated">
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Pro Forma Invoice No</div>
+                                                        <div class="list-text-accordion">
+                                                            {{fuelInspection?.fuelRemediation?.proFormaInvoiceNo}}</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Receipt No</div>
+                                                        <div class="list-text-accordion">
+                                                            {{fuelInspection?.fuelRemediation?.feePaidReceiptNo}}</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Invoice Amount</div>
+                                                        <div class="list-text-accordion">
+                                                            {{fuelInspection?.fuelRemediation?.invoiceAmount}}</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Date Of Payment</div>
+                                                        <div class="list-text-accordion">
+                                                            {{fuelInspection?.fuelRemediation?.dateOfPayment| date}}</div>
+                                                    </li>
+                                                </div>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Product Type</div>
                                                     <div class="list-text-accordion">
@@ -491,7 +491,9 @@
                                                 </li>
                                             </ul>
                                             <br>
-                                            <button class="btn-sm btn-primary" >Download Invoice</button>
+                                            <div *ngIf="fuelInspection?.fuelRemediation.invoiceCreated">
+                                                <button class="btn-sm btn-primary" >Download Invoice</button>
+                                            </div>
                                         </div>
                                     </mat-tab>
                                 </mat-tab-group>
@@ -587,7 +589,7 @@
                                                 <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button *ngIf="fuelInspection.remendiationCompleteStatus"
+                                            <button *ngIf="fuelInspection.remendiationCompleteStatus && fuelInspection?.endInspectionStatus == false"
                                                     (click)="onClickSaveEndRemediation()" mat-raised-button="" data-toggle="modal"
                                                     class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">END FUEL</span>
@@ -742,6 +744,33 @@
                             </div>
                         </form>
                     </div>
+                    <div *ngIf="(currDiv == 'viewPdfSaveCompliance')">
+                        <form [formGroup]="pdfSaveComplianceStatusForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="complianceStatusPdf"><b>Select Compliance Status</b></label>
+                                        <mat-form-field id="complianceStatusPdft">
+                                            <mat-select disabled placeholder="Please Select an option"
+                                                        formControlName="complianceStatus"
+                                                        [class.is-invalid]="formPdfSaveComplianceStatusForm.complianceStatus.invalid && formPdfSaveComplianceStatusForm.complianceStatus.touched"
+                                                        name="complianceStatus">
+                                                <mat-option [value]="true">Compliant</mat-option>
+                                                <mat-option [value]="false">Non-Compliant</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <label for="complianceRemarksPDF"><b>Please write, in detail, your feedback for Selecting the PDF:</b></label>
+                                        <mat-form-field disabled class="example-full-width">
+                                            <textarea id="complianceRemarksPDFt" matInput type="text"
+                                                      formControlName="complianceRemarks"
+                                                      name="complianceRemarks">
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                     <div *ngIf="(currDiv == 'ssfAddComplianceStatus')">
                         <form [formGroup]="ssfSaveComplianceStatusForm" class="form">
                             <div class="form-body">
@@ -853,7 +882,7 @@
                                             <input id="quantityOfFuel" matInput type="text"  placeholder="Please Enter Quantity Of Fuel" formControlName="quantityOfFuel" name="quantityOfFuel"
                                                    [class.is-invalid]="formRemediationForm.quantityOfFuel.invalid && formRemediationForm.quantityOfFuel.touched">
                                         </mat-form-field>
-                                        <label for="contaminatedFuelType"><b>contaminatedFuelType</b></label>
+                                        <label for="contaminatedFuelType"><b>Contaminated Fuel Type</b></label>
                                         <mat-form-field class="example-full-width">
                                             <input id="contaminatedFuelType" matInput type="text"  placeholder="Please Enter Contaminated Fuel Type" formControlName="contaminatedFuelType" name="contaminatedFuelType"
                                                    [class.is-invalid]="formRemediationForm.contaminatedFuelType.invalid && formRemediationForm.contaminatedFuelType.touched">
@@ -870,17 +899,17 @@
                                         </mat-form-field>
                                         <label for="volumeOfProductContaminated"><b>Volume Of Product Contaminated</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <input id="volumeOfProductContaminated" matInput type="text"  placeholder="Please Enter Volume Of Product Contaminated" formControlName="volumeOfProductContaminated" name="volumeOfProductContaminated"
+                                            <input id="volumeOfProductContaminated" matInput type="number"  placeholder="Please Enter Volume Of Product Contaminated" formControlName="volumeOfProductContaminated" name="volumeOfProductContaminated"
                                                    [class.is-invalid]="formRemediationForm.volumeOfProductContaminated.invalid && formRemediationForm.volumeOfProductContaminated.touched">
                                         </mat-form-field>
                                         <label for="volumeAdded"><b>Volume Added</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <input id="volumeAdded" matInput type="text"  placeholder="Please Enter Volume Added" formControlName="volumeAdded" name="volumeAdded"
+                                            <input id="volumeAdded" matInput type="number"  placeholder="Please Enter Volume Added" formControlName="volumeAdded" name="volumeAdded"
                                                    [class.is-invalid]="formRemediationForm.volumeAdded.invalid && formRemediationForm.volumeAdded.touched">
                                         </mat-form-field>
                                         <label for="totalVolume"><b>Total Volume</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <input id="totalVolume" matInput type="text"  placeholder="Please Enter Total Volume" formControlName="totalVolume" name="totalVolume"
+                                            <input id="totalVolume" matInput type="number" placeholder="Please Enter Total Volume" formControlName="totalVolume" name="totalVolume"
                                                    [class.is-invalid]="formRemediationForm.totalVolume.invalid && formRemediationForm.totalVolume.touched">
                                         </mat-form-field>
 <!--                                        <label for="submittedDate"><b>Received Date</b></label>-->
@@ -910,7 +939,7 @@
                                             <input id="dateOfRemediation" matInput type="date" placeholder="Please Enter Remediation date" formControlName="dateOfRemediation" name="dateOfRemediation"
                                                    [class.is-invalid]="formScheduleRemediationForm.dateOfRemediation.invalid && formScheduleRemediationForm.dateOfRemediation.touched">
                                         </mat-form-field>
-                                        <label for="remarks"><b>Please write, in detail, your feedback for Attached BS Number:</b></label>
+                                        <label for="remarks"><b>Please write, in detail, your feedback for Remediation:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea id="remarksRemed" matInput type="text"
                                                       formControlName="remarks"
@@ -986,7 +1015,7 @@
                     >SUBMIT
                     </button>
                     <button *ngIf="(currDiv == 'scheduleRemediationInvoicePaid')" mat-raised-button type="button" class="btn btn-success"
-                            (click)="onClickSaveNotCompliantInvoice(scheduleRemediationForm.valid);"
+                            (click)="onClickSaveScheduleRemediation(scheduleRemediationForm.valid);"
                             [disabled]="!scheduleRemediationForm.valid"
                             data-dismiss="modal"
                     >SUBMIT
@@ -994,6 +1023,12 @@
                     <button *ngIf="(currDiv == 'addRemediationDetails')" mat-raised-button type="button" class="btn btn-success"
                             (click)="onClickSaveRemediationForm(remediationForm.valid);"
                             [disabled]="!remediationForm.valid"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'notCompliantInvoice')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveNotCompliantInvoice(notCompliantInvoiceForm.valid);"
+                            [disabled]="!notCompliantInvoiceForm.valid"
                             data-dismiss="modal"
                     >SUBMIT
                     </button>

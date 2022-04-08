@@ -4,6 +4,7 @@ import org.kebs.app.kotlin.apollo.common.dto.qa.SSFComplianceStatusDetailsDto
 import org.kebs.app.kotlin.apollo.common.dto.qa.SSFPDFListDetailsDto
 import java.math.BigDecimal
 import java.sql.Date
+import java.sql.Timestamp
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
 
@@ -43,6 +44,7 @@ data class FuelInspectionDto(
         var inspectionDateTo: Date? = null,
         var processStage: String? = null,
         var assignedOfficerStatus: Boolean? = null,
+        var endInspectionStatus: Boolean? = null,
         var rapidTestDone: Boolean? = null,
         var sampleCollectionStatus: Boolean? = null,
         var sampleSubmittedStatus: Boolean? = null,
@@ -51,7 +53,6 @@ data class FuelInspectionDto(
         var remediationScheduledStatus: Boolean? = null,
         var remendiationCompleteStatus: Boolean? = null,
         var proFormaInvoiceStatus: Boolean? = null,
-        var endInspectionStatus: Boolean? = null,
         var batchDetails: FuelBatchDetailsDto?= null,
         var officersList: List<MsUsersDto>? = null,
         var officersAssigned: MsUsersDto? = null,
@@ -202,6 +203,7 @@ data class FuelRemediationDto(
         var feePaidReceiptNo: String? = null,
         var dateOfRemediation: Date? = null,
         var dateOfPayment: Date? = null,
+        var invoiceCreated: Boolean? = null,
 )
 
 data class MSSSFLabResultsDto(
@@ -476,5 +478,57 @@ data class MSTypeDto(
 
 data class MSComplaintSubmittedSuccessful(
         var message: String? = null
+)
+
+
+data class FuelRemediationDetailsDTO(
+        var id: String? = null,
+        var invoiceNumber: String? = null,
+        var receiptNo: String? = null,
+        var invoiceBatchNumberId: String? = null,
+        var paymentStatus: String? = null,
+        var amount: String? = null,
+        var invoiceDate: String? = null,
+        var paymentDate: String? = null,
+        var transactionDate: String? = null,
+        var status: String? = null,
+        var remarks: String? = null,
+        var varField1: String? = null,
+        var varField2: String? = null,
+        var varField3: String? = null,
+        var varField4: String? = null,
+        var varField5: String? = null,
+        var varField6: String? = null,
+        var varField7: String? = null,
+        var varField8: String? = null,
+        var varField9: String? = null,
+        var varField10: String? = null,
+        var createdBy: String? = null,
+        var createdOn: String? = null,
+        var lastModifiedBy: String? = null,
+        var lastModifiedOn: String? = null,
+        var updateBy: String? = null,
+        var updatedOn: String? = null,
+        var deleteBy: String? = null,
+        var deletedOn: String? = null,
+        var version: String? = null,
+        var remunerationRateLiter: String? = null,
+        var remunerationSubTotal: String? = null,
+        var remunerationVat: String? = null,
+        var remunerationTotal: String? = null,
+        var volumeFuelRemediated: String? = null,
+        var subsistenceTotalNights: String? = null,
+        var subsistenceRate: String? = null,
+        var subsistenceRateNightTotal: String? = null,
+        var subsistenceVat: String? = null,
+        var subsistenceTotal: String? = null,
+        var transportAirTicket: String? = null,
+        var transportInkm: String? = null,
+        var transportRate: String? = null,
+        var transportTotalKmrate: String? = null,
+        var transportVat: String? = null,
+        var transportTotal: String? = null,
+        var transportGrandTotal: String? = null,
+        var fuelInspectionId: String? = null,
 )
 
