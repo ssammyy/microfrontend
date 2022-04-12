@@ -89,11 +89,11 @@ class AuctionService(
     fun downloadAuctionReport(stardDate: String, endDate: String): List<AuctionRequestDto> {
         val startTimestamp = getReportTimestamp(stardDate, true)
         val endTimestamp = getReportTimestamp(endDate, false)
-
-        val auctionReportDetails = this.auctionRequestsRepository.findByApprovalStatusInAndApprovedRejectedOnBetween(
+        // Get individual items instead
+        val auctionReportDetails = this.auctionItemsRepo.findByAuctionId_ApprovalStatusInAndAuctionId_ApprovedRejectedOnBetween(
                 arrayListOf(AuctionGoodStatus.APPROVED.status, AuctionGoodStatus.REJECTED.status, AuctionGoodStatus.OTHER.status),
                 startTimestamp, endTimestamp)
-        return AuctionRequestDto.fromList(auctionReportDetails)
+        return AuctionRequestDto.fromItemList(auctionReportDetails)
     }
 
     fun addReport(multipartFile: MultipartFile?, auction: AuctionRequests, description: String, fileRequired: Boolean): Long? {
@@ -159,7 +159,7 @@ class AuctionService(
         demandNoteReq.referenceNumber = request.auctionLotNo
         demandNoteReq.referenceId = request.id
         val itemDetailsList = mutableListOf<DemandNoteRequestItem>()
-        val items = this.auctionItemsRepo.findByAuctionId(request.id!!)
+        val items = this.auctionItemsRepo.findByAuctionId_Id(request.id!!)
         for (element in items) {
             val itm = DemandNoteRequestItem()
             itm.route = "D"
@@ -366,7 +366,7 @@ class AuctionService(
             auctionDto.isInspector = this.commonDaoServices.currentUserDiOfficer()
             dataMap["auction_details"] = auctionDto
             dataMap["attachments"] = AuctionUploadDao.fromList(auctionUploadRepo.findByAuctionId(auction))
-            dataMap["items"] = auctionItemsRepo.findByAuctionId(auctionId)
+            dataMap["items"] = auctionItemsRepo.findByAuctionId_Id(auctionId)
             dataMap["history"] = auctionRequestHistoryRepo.findByAuctionIdAndStatusOrderByCreatedOnDesc(auctionId, 1)
             auction.demandNoteId?.let { demandNoteId ->
                 this.destinationInspectionDaoServices.findDemandNoteWithID(demandNoteId)?.let { demandNote ->
@@ -428,7 +428,7 @@ class AuctionService(
                     }
                 }
             }
-            item.auctionId = saved.id
+            item.auctionId = saved
             this.auctionItemsRepo.save(item)
         }
         try {

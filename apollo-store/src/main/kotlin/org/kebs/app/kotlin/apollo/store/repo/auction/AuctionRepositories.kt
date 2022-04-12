@@ -26,7 +26,8 @@ interface IAuctionRequestsRepository : HazelcastRepository<AuctionRequests, Long
 
 
 interface IAuctionItemDetailsRepository : HazelcastRepository<AuctionItemDetails, Long> {
-    fun findByAuctionId(auctionId: Long): List<AuctionItemDetails>
+    fun findByAuctionId_Id(auctionId: Long): List<AuctionItemDetails>
+    fun findByAuctionId_ApprovalStatusInAndAuctionId_ApprovedRejectedOnBetween(status: List<Int>, startDate: Timestamp, endDate: Timestamp): List<AuctionItemDetails>
 }
 
 interface IAuctionRequestHistoryRepository : HazelcastRepository<AuctionRequestHistory, Long> {

@@ -17,6 +17,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import java.io.ByteArrayOutputStream
+import java.time.format.DateTimeFormatter
 import javax.servlet.http.HttpServletResponse
 import kotlin.random.Random
 
@@ -34,6 +35,8 @@ class GeneralController(
         private val auctionService: AuctionService,
         private val pvocService: PvocService,
 ) {
+    val monthFormatter = DateTimeFormatter.ofPattern("MMMM")
+    val dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
     val checkMark = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapCheckmarkImagePath)
     val smarkImage = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapSmarkImagePath)
     val kebsLogoPath = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
@@ -344,8 +347,8 @@ class GeneralController(
             data["imagePath"] = kebsLogoPath ?: ""
             val startTimestamp = auctionService.getReportTimestamp(startDate, true)
             val endTimestamp = auctionService.getReportTimestamp(startDate, false)
-            data["aucMonth"] = "${startTimestamp.month} ${endTimestamp.month}"
-            data["reportDate"] = "${startTimestamp.toLocalDateTime().toLocalDate()}-${endTimestamp.toLocalDateTime().toLocalDate()}"
+            data["aucMonth"] = monthFormatter.format(startTimestamp.toLocalDateTime()) + " to " + monthFormatter.format(endTimestamp.toLocalDateTime())
+            data["reportDate"] = dateFormatter.format(startTimestamp.toLocalDateTime()) + "-" + dateFormatter.format(endTimestamp.toLocalDateTime())
             // Create datasource report
             val dataSource = HashMap<String, List<Any>>()
             dataSource["itemDataSource"] = records

@@ -96,7 +96,7 @@
                 <text><![CDATA[KENYA BUREAU OF STANDARDS]]></text>
             </staticText>
             <textField>
-                <reportElement x="454" y="49" width="104" height="20" uuid="e9866666-ed5d-4ad4-a169-843c97814fe8"/>
+                <reportElement x="414" y="49" width="104" height="20" uuid="e9866666-ed5d-4ad4-a169-843c97814fe8"/>
                 <textElement>
                     <font fontName="Arial" size="12" isBold="true"/>
                 </textElement>
@@ -139,7 +139,7 @@
                 <text><![CDATA[Tel : 020 6948000]]></text>
             </staticText>
             <staticText>
-                <reportElement x="561" y="49" width="91" height="19" uuid="a2e65f71-302a-4a01-840f-a87b531c111f">
+                <reportElement x="524" y="49" width="91" height="19" uuid="a2e65f71-302a-4a01-840f-a87b531c111f">
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
                 </reportElement>
                 <textElement textAlignment="Left">
@@ -148,7 +148,7 @@
                 <text><![CDATA[AUCTION ON]]></text>
             </staticText>
             <textField>
-                <reportElement x="650" y="48" width="90" height="20" uuid="19eda423-7d26-4b95-a8f0-b227deadecf9"/>
+                <reportElement x="621" y="48" width="179" height="20" uuid="19eda423-7d26-4b95-a8f0-b227deadecf9"/>
                 <textElement>
                     <font fontName="Arial" size="12" isBold="true"/>
                 </textElement>

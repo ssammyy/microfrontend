@@ -49,7 +49,6 @@ export class ViewAuctionItemsComponent implements OnInit {
             } else {
                 return ''
             }
-
         },
         noDataMessage: 'No data found',
         columns: {
