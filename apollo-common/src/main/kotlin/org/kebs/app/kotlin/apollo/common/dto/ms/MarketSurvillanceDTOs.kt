@@ -34,6 +34,7 @@ data class FuelInspectionScheduleListDetailsDto(
 )
 
 
+
 data class FuelInspectionDto(
         var id: Long? = null,
         var referenceNumber: String? = null,

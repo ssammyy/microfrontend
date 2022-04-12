@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 import mu.KotlinLogging
+import org.json.simple.JSONArray
 import org.kebs.app.kotlin.apollo.api.controllers.qaControllers.ReportsController
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
@@ -1911,6 +1912,7 @@ class NewMarketSurveillanceDaoServices(
         val fuelInspectionScheduledList = mutableListOf<FuelInspectionDto>()
         fuelInspectionList?.map {fuelInspectionScheduledList.add(FuelInspectionDto(it.id, it.referenceNumber, it.company, it.petroleumProduct, it.physicalLocation, it.inspectionDateFrom, it.inspectionDateTo, it.processStage, it.assignedOfficerStatus==1, it.inspectionCompleteStatus==1))}
 
+
         return FuelInspectionScheduleListDetailsDto(
             fuelInspectionScheduledList,
             batchDetails
@@ -2071,6 +2073,9 @@ class NewMarketSurveillanceDaoServices(
     ): List<FuelBatchDetailsDto> {
         val fuelBatchListDto = mutableListOf<FuelBatchDetailsDto>()
         if (fuelBatchList!=null){
+
+//            val array =  JSONArray()
+//            array.add()
             return fuelBatchList.map {
                 FuelBatchDetailsDto(
                     it.id,

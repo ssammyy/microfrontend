@@ -494,6 +494,7 @@
                                             <div *ngIf="fuelInspection?.fuelRemediation.invoiceCreated">
                                                 <button class="btn-sm btn-primary" >Download Invoice</button>
                                             </div>
+                                            <button class="btn-sm btn-primary" (click)="viewRemediationInvoicePdfFile(fuelInspection?.id, fuelInspection?.referenceNumber,'application/pdf')">VIEW </button>
                                         </div>
                                     </mat-tab>
                                 </mat-tab-group>

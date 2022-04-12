@@ -715,9 +715,9 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     );
   }
 
-  viewRemediationInvoicePdfFile(fuelInspectionId: string, fileName: string, applicationType: string): void {
+  viewRemediationInvoicePdfFile(fuelInspectionId: number, fileName: string, applicationType: string): void {
     this.SpinnerService.show();
-    this.msService.loadRemediationInvoiceDetailsPDF(fuelInspectionId).subscribe(
+    this.msService.loadRemediationInvoiceDetailsPDF(String(fuelInspectionId)).subscribe(
         (dataPdf: any) => {
           this.SpinnerService.hide();
           this.blob = new Blob([dataPdf], {type: applicationType});
