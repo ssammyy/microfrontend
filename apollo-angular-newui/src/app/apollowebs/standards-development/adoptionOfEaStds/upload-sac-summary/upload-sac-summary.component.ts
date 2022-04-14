@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {SACSummaryTask, StandardDraft} from "../../../../core/store/data/std/request_std.model";
+import {DecisionFeedback, SACSummaryTask, StandardDraft} from "../../../../core/store/data/std/request_std.model";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {NgxSpinnerService} from "ngx-spinner";
@@ -135,7 +135,6 @@ export class UploadSacSummaryComponent implements OnInit {
   }
 
   saveSacSummary(): void {
-    console.log(this.uploadedFiles.length)
     if (this.uploadedFiles != null || this.uploadedFilesB != null) {
       if (this.uploadedFiles.length > 0 || this.uploadedFiles.length != 1 || this.uploadedFilesB.length > 0 || this.uploadedFilesB.length != 1) {
         this.SpinnerService.show();
@@ -264,15 +263,40 @@ export class UploadSacSummaryComponent implements OnInit {
           link.href = downloadURL;
           link.download = fileName;
           link.click();
-          // this.pdfUploadsView = dataPdf;
+            // this.pdfUploadsView = dataPdf;
         },
     );
   }
 
-  @ViewChild('closeModal') private closeModal: ElementRef | undefined;
+    @ViewChild('closeModal') private closeModal: ElementRef | undefined;
 
-  public hideModel() {
-    this.closeModal?.nativeElement.click();
-  }
+    public hideModel() {
+        this.closeModal?.nativeElement.click();
+    }
+
+
+    public approveSACSummary(decisionFeedback: DecisionFeedback, decision: boolean, sacSummaryId: number): void {
+        this.loadingText = "Submitting SAC Summary For Approval ...."
+
+        this.SpinnerService.show();
+        decisionFeedback.status = decision;
+        this.adoptionOfEaStdsService.decisionByTCSecOnSACSummary(decisionFeedback, sacSummaryId).subscribe(
+            (response) => {
+                console.log(response);
+                console.log(sacSummaryId);
+
+                this.SpinnerService.hide()
+                this.showToasterSuccess(response.httpStatus, `SAC Summary Has Been Submitted.`);
+                this.hideModel();
+                this.getSACTasks();
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+                this.SpinnerService.hide()
+
+            }
+        )
+
+    }
 }
 

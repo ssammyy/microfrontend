@@ -11,6 +11,7 @@ import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
 import org.kebs.app.kotlin.apollo.store.model.std.DatKebsSdStandardsEntity
 import org.kebs.app.kotlin.apollo.store.model.std.DecisionFeedback
 import org.kebs.app.kotlin.apollo.store.model.std.SACSummary
+import org.kebs.app.kotlin.apollo.store.model.std.SACSummaryHolder
 import org.kebs.app.kotlin.apollo.store.repo.std.SACSummaryRepository
 import org.springframework.http.HttpStatus
 import org.springframework.transaction.annotation.Propagation
@@ -67,7 +68,7 @@ class AdoptionToEastAfricaStandardController(
 
 
    @GetMapping("/getSACSummaryTask")
-    fun getSACSummaryTask():List<SACSummary>
+    fun getSACSummaryTask():List<SACSummaryHolder>
     {
         return adoptionOfEastAfricaStandardService.getSACSummaryTask()
     }

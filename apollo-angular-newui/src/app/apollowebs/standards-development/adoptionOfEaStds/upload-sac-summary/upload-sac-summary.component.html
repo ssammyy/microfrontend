@@ -236,7 +236,7 @@
                             <div class="card-icon">
                                 <i class="material-icons">assignment</i>
                             </div>
-                            <h4 class="card-title"> All SAC Summaries
+                            <h4 class="card-title">SAC Summaries For Approval
                             </h4>
 
                         </div>
@@ -271,7 +271,7 @@
                                         <td>{{sacSummaryTask.taskData.ks}}</td>
                                         <td>{{sacSummaryTask.taskData.title}}</td>
                                         <td>{{sacSummaryTask.taskData.edition}}</td>
-                                        <td>{{sacSummaryTask.taskData.requestedBy}}</td>
+                                        <td>{{sacSummaryTask.taskData.requestedByName}}</td>
                                         <td>{{sacSummaryTask.taskData.issuesAddressed}}</td>
 
 
@@ -417,15 +417,20 @@
                                 </div>
 
                             </div>
+                            <input hidden ngModel="{{actionRequest?.taskId}}" name="taskId" id="taskId">
+                            <input hidden ngModel name="status" id="status">
+                            <input hidden ngModel name="user_id" id="user_id">
+                            <input hidden ngModel name="item_id" id="item_id">
 
 
                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-secondary" #closeModal
                                                                         (click)="hideModel()" data-dismiss="modal">Close
                                                                 </button>
-<!--                                                                <button class="btn btn-info"-->
-<!--                                                                        (click)="uploadJustification(editForm.value)">Submit-->
-<!--                                                                </button>-->
+                                                                <button class="btn btn-info"
+                                                                        (click)=" approveSACSummary(editForm.value,true,actionRequest?.taskData?.id)">
+                                                                    Submit For Approval
+                                                                </button>
 
                             </div>
                         </form>
