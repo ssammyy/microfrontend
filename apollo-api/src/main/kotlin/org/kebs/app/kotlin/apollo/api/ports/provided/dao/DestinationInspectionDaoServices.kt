@@ -326,31 +326,25 @@ class DestinationInspectionDaoServices(
                 ?: kotlin.run {
                     KotlinLogging.logger { }.debug("Starting background task")
                     try {
-                        this.fillCocDetails(localCoc, consignmentDocumentDetailsEntity, user, routValue)
-                        // Add more details
-                        with(localCoc) {
-                            coiNumber = "UNKNOWN"
-                            cocNumber =
-                                    "KEBSCOC${
-                                        generateRandomText(
-                                                5,
-                                                map.secureRandom,
-                                                map.messageDigestAlgorithm,
-                                                true
-                                        )
-                                    }".toUpperCase()
-                            idfNumber = consignmentDocumentDetailsEntity.ucrNumber?.let { findIdf(it)?.baseDocRefNo }
-                                    ?: "UNKOWN"
-                            clean = "Y"
-                            version = consignmentDocumentDetailsEntity.version ?: 1
-                            consignmentDocId = consignmentDocumentDetailsEntity
-                            cocType = "COC"
-                            documentsType = "L"
-                            productCategory = "UNKNOWN"
-                            createdBy = commonDaoServices.concatenateName(user)
-                            createdOn = commonDaoServices.getTimestamp()
+                        localCoc.cocType = "COC"
+                        synchronized(this) {
+                            localCoc.cocNumber = this.fillCocDetails(localCoc, consignmentDocumentDetailsEntity, user, routValue)
+                            // Add more details
+                            with(localCoc) {
+                                coiNumber = "UNKNOWN"
+                                idfNumber = consignmentDocumentDetailsEntity.ucrNumber?.let { findIdf(it)?.baseDocRefNo }
+                                        ?: "UNKOWN"
+                                clean = "Y"
+                                version = consignmentDocumentDetailsEntity.version ?: 1
+                                consignmentDocId = consignmentDocumentDetailsEntity
+                                cocType = "COC"
+                                documentsType = "L"
+                                productCategory = "UNKNOWN"
+                                createdBy = commonDaoServices.concatenateName(user)
+                                createdOn = commonDaoServices.getTimestamp()
+                            }
+                            localCoc = cocRepo.save(localCoc)
                         }
-                        localCoc = cocRepo.save(localCoc)
                         KotlinLogging.logger { }.info { "localCoc = ${localCoc.id}" }
                         localCocCoiItems(consignmentDocumentDetailsEntity, localCoc, user, map)
                     } catch (e: Exception) {
@@ -363,7 +357,7 @@ class DestinationInspectionDaoServices(
 
     }
 
-    fun fillCocDetails(localCoc: CocsEntity, consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity, user: UsersEntity, routValue: String) {
+    fun fillCocDetails(localCoc: CocsEntity, consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity, user: UsersEntity, routValue: String): String {
         with(localCoc) {
             ucrNumber = consignmentDocumentDetailsEntity.ucrNumber
             rfcDate = commonDaoServices.getTimestamp()
@@ -437,6 +431,12 @@ class DestinationInspectionDaoServices(
             localCoc.customsEntryNumber = "UNKNOWN"
             localCoc.clearingAgent = "UNKNOWN"
         }
+        val generateDate = commonDaoServices.getTimestamp()
+        localCoc.cocIssueDate = generateDate
+        localCoc.coiIssueDate = generateDate
+        val countDoc = countCocs(generateDate, localCoc.cocType ?: "")
+        val dataMonth = commonDaoServices.convertDateToString(generateDate.toLocalDateTime(), "yyyyMMdd")
+        return "KEBS${localCoc.cocType}\\$dataMonth\\$countDoc"
     }
 
     fun createLocalNcr(
@@ -461,28 +461,22 @@ class DestinationInspectionDaoServices(
                 ?: kotlin.run {
                     KotlinLogging.logger { }.debug("Starting background task")
                     try {
-                        with(localNcr) {
-                            coiNumber = "UNKNOWN"
-                            cocNumber = "KEBSNCR${
-                                generateRandomText(
-                                        5,
-                                        map.secureRandom,
-                                        map.messageDigestAlgorithm,
-                                        true
-                                )
-                            }".toUpperCase()
-                            idfNumber = consignmentDocumentDetailsEntity.ucrNumber?.let { findIdf(it)?.baseDocRefNo }
-                                    ?: "UNKNOWN"
-                            rfiNumber = "UNKNOWN"
-                            cocType = "NCR"
-                            clean = "N"
-                            createdBy = commonDaoServices.concatenateName(user)
-                            createdOn = commonDaoServices.getTimestamp()
+                        synchronized(this) {
+                            with(localNcr) {
+                                coiNumber = "UNKNOWN"
+                                idfNumber = consignmentDocumentDetailsEntity.ucrNumber?.let { findIdf(it)?.baseDocRefNo }
+                                        ?: "UNKNOWN"
+                                rfiNumber = "UNKNOWN"
+                                cocType = "NCR"
+                                clean = "N"
+                                createdBy = commonDaoServices.concatenateName(user)
+                                createdOn = commonDaoServices.getTimestamp()
+                            }
+                            // Fill details
+                            localNcr.cocNumber = this.fillCocDetails(localNcr, consignmentDocumentDetailsEntity, user, routValue)
+                            // Save NCR
+                            localNcr = cocRepo.save(localNcr)
                         }
-                        // Fill details
-                        this.fillCocDetails(localNcr, consignmentDocumentDetailsEntity, user, routValue)
-                        // Save NCR
-                        localNcr = cocRepo.save(localNcr)
                         KotlinLogging.logger { }.info { "localNcr = ${localNcr.id}" }
                         for (item in ncrItems) {
                             generateLocalCocItem(item, localNcr, user, map, item.ownerPin
@@ -506,7 +500,7 @@ class DestinationInspectionDaoServices(
             remarks: String,
             routValue: String
     ): CocsEntity {
-        val coc = CocsEntity()
+        var localCoi = CocsEntity()
         consignmentDocumentDetailsEntity.ucrNumber?.let {
             cocRepo.findByUcrNumberAndCocType(it, "COI")
                     ?.let { coc ->
@@ -514,28 +508,23 @@ class DestinationInspectionDaoServices(
                     }
         }
                 ?: kotlin.run {
-                    this.fillCocDetails(coc, consignmentDocumentDetailsEntity, user, routValue)
-                    // Add COI details
-                    with(coc) {
-                        cocNumber = "UNKNOWN"
-                        coiNumber =
-                                "KEBSCOI${
-                                    generateRandomText(
-                                            5,
-                                            map.secureRandom,
-                                            map.messageDigestAlgorithm,
-                                            true
-                                    )
-                                }".toUpperCase()
-                        idfNumber = consignmentDocumentDetailsEntity.ucrNumber?.let { findIdf(it)?.baseDocRefNo }
-                        productCategory = "UNKNOWN"
-                        clean = "Y"
-                        cocType = "COI"
-                        documentsType = "L"
-                        createdBy = commonDaoServices.concatenateName(user)
-                        createdOn = commonDaoServices.getTimestamp()
+                    synchronized(this) {
+                        localCoi.cocType = "COI"
+                        localCoi.coiNumber = this.fillCocDetails(localCoi, consignmentDocumentDetailsEntity, user, routValue)
+                        // Add COI details
+
+                        with(localCoi) {
+                            cocNumber = "UNKNOWN"
+                            idfNumber = consignmentDocumentDetailsEntity.ucrNumber?.let { findIdf(it)?.baseDocRefNo }
+                            productCategory = "UNKNOWN"
+                            clean = "Y"
+                            cocType = "COI"
+                            documentsType = "L"
+                            createdBy = commonDaoServices.concatenateName(user)
+                            createdOn = commonDaoServices.getTimestamp()
+                        }
+                        localCoi = cocRepo.save(localCoi)
                     }
-                    val localCoi = cocRepo.save(coc)
                     localCocCoiItems(consignmentDocumentDetailsEntity, localCoi, user, map)
                     return localCoi
                 }
@@ -677,6 +666,14 @@ class DestinationInspectionDaoServices(
         sftpService.uploadFile(xmlFile, "COI")
     }
 
+    fun countCor(date: Timestamp): Long {
+        return corsBakRepository.countAllByYearGenerate(date.year)
+    }
+
+    fun countCocs(date: Timestamp, documentType: String): Long {
+        return cocRepo.countAllByYearGenerate(date.year, documentType)
+    }
+
     fun generateCor(
             cdEntity: ConsignmentDocumentDetailsEntity,
             s: ServiceMapsEntity,
@@ -772,45 +769,50 @@ class DestinationInspectionDaoServices(
         val overallRemarks = "The Motor Vehicle was presented for inspection at MINISTRY OF TRANSPORT INSPECTION CENTER ($ministryName) and an inspection report No. $ministryReportRef dated $ministryReporDateStr was issued by CHIEF MECHANICAL ENGINEER.\n\n" +
                 "The above Motor Vehicle is therefore found to comply with the requirements of KS 1515:2000."
         // Fill checklist details
-        with(localCor) {
-            corNumber = "COR${generateRandomText(5, s.secureRandom, s.messageDigestAlgorithm, true)}"
-            corIssueDate = commonDaoServices.getTimestamp()
-            val cdHeaderOne = cdEntity.cdHeaderOne?.let { findCdHeaderOneDetails(it) }
-            countryOfSupply = cdHeaderOne?.countryOfSupply
-            val cdExporter = cdEntity.cdExporter?.let { findCdExporterDetails(it) }
-            exporterName = cdExporter?.name
-            exporterAddress1 = cdExporter?.physicalAddress
-            exporterAddress2 = cdExporter?.postalAddress
-            exporterEmail = cdExporter?.email
-            applicationBookingDate = Timestamp.valueOf(cdEntity.inspectionDate?.toLocalDate()?.atStartOfDay()
-                    ?: LocalDateTime.now())
-            inspectionDate = commonDaoServices.getTimestamp()
-            inspectionFee = 0.0
-            unitsOfMileage = "KM"
-            inspectionStatement = overallRemarks
-            previousRegistrationNumber = "UNKNOWN"
-            approvalStatus = cdEntity.compliantStatus.toString()
-            ucrNumber = cdEntity.ucrNumber
-            inspectionFeeCurrency = "KES"
-            inspectionFeeExchangeRate = 0.0
-            inspectionFeePaymentDate = commonDaoServices.getTimestamp()
-            consignmentDocId = cdEntity
-            status = s.activeStatus
-            createdBy = commonDaoServices.getUserName(user)
-            createdOn = commonDaoServices.getTimestamp()
-        }
-        // Add invoice details
-        cdEntity.id?.let { cdId ->
-            this.invoiceDaoService.findDemandNoteCdId(cdId)?.let { itemNote ->
-                localCor.inspectionFeeCurrency = "KES"
-                localCor.inspectionFee = itemNote.totalAmount?.toDouble() ?: 0.0
-                localCor.inspectionFeePaymentDate = itemNote.createdOn
-                localCor.inspectionFeeExchangeRate = itemNote.rate?.toDouble() ?: 0.0
+        val issueDate = commonDaoServices.getTimestamp()
+        synchronized(this) {
+            val corCount = countCor(issueDate)
+            val corDateMonth = commonDaoServices.convertDateToString(issueDate.toLocalDateTime(), "yyyyMMdd")
+            with(localCor) {
+                corNumber = "KEBSCOR\\$corDateMonth\\$corCount"
+                corIssueDate = issueDate
+                val cdHeaderOne = cdEntity.cdHeaderOne?.let { findCdHeaderOneDetails(it) }
+                countryOfSupply = cdHeaderOne?.countryOfSupply
+                val cdExporter = cdEntity.cdExporter?.let { findCdExporterDetails(it) }
+                exporterName = cdExporter?.name
+                exporterAddress1 = cdExporter?.physicalAddress
+                exporterAddress2 = cdExporter?.postalAddress
+                exporterEmail = cdExporter?.email
+                applicationBookingDate = Timestamp.valueOf(cdEntity.inspectionDate?.toLocalDate()?.atStartOfDay()
+                        ?: LocalDateTime.now())
+                inspectionDate = commonDaoServices.getTimestamp()
+                inspectionFee = 0.0
+                unitsOfMileage = "KM"
+                inspectionStatement = overallRemarks
+                previousRegistrationNumber = "UNKNOWN"
+                approvalStatus = cdEntity.compliantStatus.toString()
+                ucrNumber = cdEntity.ucrNumber
+                inspectionFeeCurrency = "KES"
+                inspectionFeeExchangeRate = 0.0
+                inspectionFeePaymentDate = commonDaoServices.getTimestamp()
+                consignmentDocId = cdEntity
+                status = s.activeStatus
+                createdBy = commonDaoServices.getUserName(user)
+                createdOn = commonDaoServices.getTimestamp()
             }
+            // Add invoice details
+            cdEntity.id?.let { cdId ->
+                this.invoiceDaoService.findDemandNoteCdId(cdId)?.let { itemNote ->
+                    localCor.inspectionFeeCurrency = "KES"
+                    localCor.inspectionFee = itemNote.totalAmount?.toDouble() ?: 0.0
+                    localCor.inspectionFeePaymentDate = itemNote.createdOn
+                    localCor.inspectionFeeExchangeRate = itemNote.rate?.toDouble() ?: 0.0
+                }
+            }
+            // Save local COR
+            KotlinLogging.logger { }.info("COR: $localCor")
+            localCor = corsBakRepository.save(localCor)
         }
-        // Save local COR
-        KotlinLogging.logger { }.info("COR: $localCor")
-        localCor = corsBakRepository.save(localCor)
         KotlinLogging.logger { }.info { "Generated Local CoR WITH id = ${localCor.id}" }
         return localCor
     }
@@ -1627,7 +1629,7 @@ class DestinationInspectionDaoServices(
     }
 
     fun findDemandNoteWithPaymentStatus(cdId: Long, status: Int): CdDemandNoteEntity? {
-        return iDemandNoteRepo.findByCdIdAndPaymentStatus(cdId, status)
+        return iDemandNoteRepo.findFirstByCdIdAndPaymentStatusAndPaymentPurpose(cdId, status, PaymentPurpose.CONSIGNMENT.code)
     }
 
     fun findDemandNoteByBatchID(invoiceBatchId: Long): List<CdDemandNoteEntity> {

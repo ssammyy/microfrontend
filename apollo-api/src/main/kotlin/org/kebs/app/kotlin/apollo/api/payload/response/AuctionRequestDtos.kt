@@ -92,7 +92,7 @@ class AuctionRequestDto {
                 AuctionGoodStatus.PAYMENT_COMPLETED.status -> "PAYMENT COMPLETED"
                 else -> "OTHER"
             }
-            dto.editable = (auction.approvalStatus == AuctionGoodStatus.NEW.status || auction.approvalStatus == AuctionGoodStatus.PAYMENT_COMPLETED.status)
+            dto.editable = (auction.approvalStatus == AuctionGoodStatus.NEW.status || auction.approvalStatus == AuctionGoodStatus.HOLD.status || auction.approvalStatus == AuctionGoodStatus.PAYMENT_COMPLETED.status)
             dto.categoryName = "N/A"
             auction.category?.let {
                 dto.categoryName = it.categoryName
@@ -120,7 +120,7 @@ class AuctionRequestDto {
             val dtos = mutableListOf<AuctionRequestDto>()
             for ((idx, itm) in auctions.withIndex()) {
                 val dd = itm.auctionId?.let { fromEntity(it) } ?: AuctionRequestDto()
-                dd.serialNumber = idx.toString()
+                dd.serialNumber = (idx + 1).toString()
                 dd.blNo = itm.serialNo
                 dd.goodsDesc = itm.itemName
                 dd.categoryName = itm.itemType

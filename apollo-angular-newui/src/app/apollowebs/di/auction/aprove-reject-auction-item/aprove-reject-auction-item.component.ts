@@ -14,6 +14,7 @@ export class AproveRejectAuctionItemComponent implements OnInit {
     message: String
     form: FormGroup
     loading = false
+    approvalMessage: any = ""
 
     constructor(private fb: FormBuilder, @Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<any>, private diService: DestinationInspectionService) {
     }
@@ -23,6 +24,28 @@ export class AproveRejectAuctionItemComponent implements OnInit {
             approve: ["", Validators.required],
             remarks: ["", Validators.required]
         })
+    }
+
+    formatApprovalStatus(event) {
+        this.approvalMessage = this.formatApprovalValue(event.target.value)
+    }
+
+    formatApprovalValue(v): String {
+        switch (v) {
+            case "APPROVE": {
+                return "approval"
+            }
+            case "REJECT": {
+                return "rejection"
+            }
+            case "HOLD": {
+                return "holding"
+            }
+            case "CONDITIONAL": {
+                return "conditional approval"
+            }
+        }
+        return ""
     }
 
     uploadAuctionItems(event: any) {

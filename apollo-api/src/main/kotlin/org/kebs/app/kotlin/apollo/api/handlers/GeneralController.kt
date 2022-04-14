@@ -36,7 +36,7 @@ class GeneralController(
         private val pvocService: PvocService,
 ) {
     val monthFormatter = DateTimeFormatter.ofPattern("MMMM")
-    val dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+    val dateFormatter = DateTimeFormatter.ofPattern("dd/MMMM/yyyy")
     val checkMark = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapCheckmarkImagePath)
     val smarkImage = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapSmarkImagePath)
     val kebsLogoPath = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
@@ -128,7 +128,9 @@ class GeneralController(
             val designPath = "classpath:reports/$docType.jrxml"
             KotlinLogging.logger { }.info("Print report: $designPath: $map")
             val stream = sampleCollect?.let {
-                reportsDaoService.extractReport(map, designPath, it)
+                val items = hashMapOf<String, List<Any>>()
+                items["itemDatasource"] = sampleCollect
+                reportsDaoService.extractReportMapDataSource(map, designPath, items)
             } ?: run {
                 reportsDaoService.extractReportEmptyDataSource(map, designPath)
             }
@@ -212,6 +214,7 @@ class GeneralController(
         try {
             val data = checklistService.mvirRportData(inspectionId)
             data["imagePath"] = kebsLogoPath ?: ""
+//            data["bgImagePath"] = ""
             val pdfStream = reportsDaoService.extractReportEmptyDataSource(data, "classpath:reports/motorVehicleInspectionReport.jrxml")
             val serialNumber = data["mvirNum"] as String
             val fileName = "MVIR-${serialNumber}.pdf"
@@ -346,9 +349,13 @@ class GeneralController(
             val data = HashMap<String, Any>()
             data["imagePath"] = kebsLogoPath ?: ""
             val startTimestamp = auctionService.getReportTimestamp(startDate, true)
-            val endTimestamp = auctionService.getReportTimestamp(startDate, false)
-            data["aucMonth"] = monthFormatter.format(startTimestamp.toLocalDateTime()) + " to " + monthFormatter.format(endTimestamp.toLocalDateTime())
-            data["reportDate"] = dateFormatter.format(startTimestamp.toLocalDateTime()) + "-" + dateFormatter.format(endTimestamp.toLocalDateTime())
+            val endTimestamp = auctionService.getReportTimestamp(endDate, false)
+            if (endTimestamp.year == startTimestamp.year && endTimestamp.month == startTimestamp.month) {
+                data["aucMonth"] = monthFormatter.format(startTimestamp.toLocalDateTime())
+            } else {
+                data["aucMonth"] = monthFormatter.format(startTimestamp.toLocalDateTime()) + " to " + monthFormatter.format(endTimestamp.toLocalDateTime())
+            }
+            data["reportDate"] = dateFormatter.format(startTimestamp.toLocalDateTime()) + " - " + dateFormatter.format(endTimestamp.toLocalDateTime())
             // Create datasource report
             val dataSource = HashMap<String, List<Any>>()
             dataSource["itemDataSource"] = records
