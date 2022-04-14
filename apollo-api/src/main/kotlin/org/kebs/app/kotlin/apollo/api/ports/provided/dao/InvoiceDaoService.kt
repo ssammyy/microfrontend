@@ -9,8 +9,10 @@ import org.kebs.app.kotlin.apollo.store.model.PaymentMethodsEntity
 import org.kebs.app.kotlin.apollo.store.model.StagingPaymentReconciliation
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.di.CdDemandNoteItemsDetailsEntity
+import org.kebs.app.kotlin.apollo.store.model.invoice.BillTransactionsEntity
 import org.kebs.app.kotlin.apollo.store.model.invoice.InvoiceBatchDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaBatchInvoiceEntity
+import org.kebs.app.kotlin.apollo.store.repo.IBillTransactionsEntityRepository
 import org.kebs.app.kotlin.apollo.store.repo.IPaymentMethodsRepository
 import org.kebs.app.kotlin.apollo.store.repo.IStagingPaymentReconciliationRepo
 import org.kebs.app.kotlin.apollo.store.repo.InvoiceBatchDetailsRepo
@@ -27,8 +29,7 @@ import java.math.BigDecimal
 @Service
 class InvoiceDaoService(
         private val invoiceBatchDetailsRepo: InvoiceBatchDetailsRepo,
-//        private val diDaoServices: DestinationInspectionDaoServices,
-//    private val postInvoiceToSageServices: PostInvoiceToSageServices,
+        private val billTransactionRepo: IBillTransactionsEntityRepository,
         private val invoicePaymentRepo: IStagingPaymentReconciliationRepo,
         private val iPaymentMethodsRepo: IPaymentMethodsRepository,
         private val applicationMapProperties: ApplicationMapProperties,
@@ -270,6 +271,10 @@ class InvoiceDaoService(
                     val updatedBatchInvoiceDetail = batchInvoiceDetail?.let { updateInvoiceBatchDetailsAfterPaymentDone(it) }
                     updatedBatchInvoiceDetail?.let { updatePaymentDetailsToSpecificTable(it, invoice) }
                 }
+    }
+
+    fun findBillTransactions(billId: Long): List<BillTransactionsEntity> {
+        return this.billTransactionRepo.findByBillId(billId)
     }
 
     class InvoiceAccountDetails {

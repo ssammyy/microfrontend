@@ -44,7 +44,7 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 enum class AuctionGoodStatus(val status: Int) {
-    NEW(0), APPROVED(1), REJECTED(2), OTHER(3), PAYMENT_COMPLETED(5), PAYMENT_PENDING(7);
+    NEW(0), APPROVED(1), REJECTED(2), OTHER(3), HOLD(4), PAYMENT_COMPLETED(5), PAYMENT_PENDING(7), CONDITIONAL_APPROVAL(8);
 }
 
 @Service
@@ -89,11 +89,11 @@ class AuctionService(
     fun downloadAuctionReport(stardDate: String, endDate: String): List<AuctionRequestDto> {
         val startTimestamp = getReportTimestamp(stardDate, true)
         val endTimestamp = getReportTimestamp(endDate, false)
-
-        val auctionReportDetails = this.auctionRequestsRepository.findByApprovalStatusInAndApprovedRejectedOnBetween(
+        // Get individual items instead
+        val auctionReportDetails = this.auctionItemsRepo.findByAuctionId_ApprovalStatusInAndAuctionId_ApprovedRejectedOnBetween(
                 arrayListOf(AuctionGoodStatus.APPROVED.status, AuctionGoodStatus.REJECTED.status, AuctionGoodStatus.OTHER.status),
                 startTimestamp, endTimestamp)
-        return AuctionRequestDto.fromList(auctionReportDetails)
+        return AuctionRequestDto.fromItemList(auctionReportDetails)
     }
 
     fun addReport(multipartFile: MultipartFile?, auction: AuctionRequests, description: String, fileRequired: Boolean): Long? {
@@ -159,7 +159,7 @@ class AuctionService(
         demandNoteReq.referenceNumber = request.auctionLotNo
         demandNoteReq.referenceId = request.id
         val itemDetailsList = mutableListOf<DemandNoteRequestItem>()
-        val items = this.auctionItemsRepo.findByAuctionId(request.id!!)
+        val items = this.auctionItemsRepo.findByAuctionId_Id(request.id!!)
         for (element in items) {
             val itm = DemandNoteRequestItem()
             itm.route = "D"
@@ -229,22 +229,38 @@ class AuctionService(
         }
     }
 
-    fun approveRejectAuctionGood(auctionId: Long, multipartFile: MultipartFile?, approved: Boolean, remarks: String, witnessName: String, witnessDesc: String, witnessEmail: String): ApiResponseModel {
+    fun approveRejectAuctionGood(auctionId: Long, multipartFile: MultipartFile?, approved: String, remarks: String, witnessName: String, witnessDesc: String, witnessEmail: String): ApiResponseModel {
         val response = ApiResponseModel()
         val opttional = this.auctionRequestsRepository.findById(auctionId)
         if (opttional.isPresent) {
             val auction = opttional.get()
             val reportRequired = "VEHICLE".equals(auction.category?.categoryCode)
-            if (approved) {
-                auction.reportId = this.addReport(multipartFile, auction, "Approval Report", reportRequired)
-                auction.approvalStatus = AuctionGoodStatus.APPROVED.status
-                addAuctionHistory(auctionId, "APPROVE-REQUEST", remarks, commonDaoServices.loggedInUserAuthentication().name)
-                this.processCallback(auction.createdBy, ResponseCodes.SUCCESS_CODE, "Auction Request approved", auction.auctionLotNo, "APPROVED")
-            } else {
-                auction.reportId = this.addReport(multipartFile, auction, "Rejection Report", reportRequired)
-                auction.approvalStatus = AuctionGoodStatus.REJECTED.status
-                addAuctionHistory(auctionId, "REJECT-REQUEST", remarks, commonDaoServices.loggedInUserAuthentication().name)
-                this.processCallback(auction.createdBy, ResponseCodes.SUCCESS_CODE, "Auction Request approved", auction.auctionLotNo, "REJECTED")
+            when (approved) {
+                "APPROVE" -> {
+                    auction.reportId = this.addReport(multipartFile, auction, "Approval Report", reportRequired)
+                    auction.approvalStatus = AuctionGoodStatus.APPROVED.status
+                    addAuctionHistory(auctionId, "APPROVE-REQUEST", remarks, commonDaoServices.loggedInUserAuthentication().name)
+                    this.processCallback(auction.createdBy, ResponseCodes.SUCCESS_CODE, "Auction Request approved", auction.auctionLotNo, approved)
+                }
+                "CONDITIONAL" -> {
+                    auction.reportId = this.addReport(multipartFile, auction, "Rejection Report", reportRequired)
+                    auction.approvalStatus = AuctionGoodStatus.CONDITIONAL_APPROVAL.status
+                    addAuctionHistory(auctionId, "CONDITION-APPROVAL-REQUEST", remarks, commonDaoServices.loggedInUserAuthentication().name)
+                    this.processCallback(auction.createdBy, ResponseCodes.SUCCESS_CODE, "Auction Request conditionally approved", auction.auctionLotNo, approved)
+                }
+                "REJECT" -> {
+                    auction.reportId = this.addReport(multipartFile, auction, "Rejection Report", reportRequired)
+                    auction.approvalStatus = AuctionGoodStatus.REJECTED.status
+                    addAuctionHistory(auctionId, "REJECT-REQUEST", remarks, commonDaoServices.loggedInUserAuthentication().name)
+                    this.processCallback(auction.createdBy, ResponseCodes.SUCCESS_CODE, "Auction Request approved", auction.auctionLotNo, approved)
+                }
+                "HOLD" -> {
+                    auction.reportId = this.addReport(multipartFile, auction, "Rejection Report", reportRequired)
+                    auction.approvalStatus = AuctionGoodStatus.HOLD.status
+                    addAuctionHistory(auctionId, "HOLD-REQUEST", remarks, commonDaoServices.loggedInUserAuthentication().name)
+                    this.processCallback(auction.createdBy, ResponseCodes.SUCCESS_CODE, "Auction Request approval held", auction.auctionLotNo, approved)
+                }
+                else -> throw ExpectedDataNotFound("Invalid approval status selected: $approved")
             }
             auction.witnessDesignation = witnessDesc
             auction.witnessName = witnessName
@@ -268,10 +284,11 @@ class AuctionService(
                 StringUtils.hasLength(keywords) -> this.auctionRequestsRepository.findByAuctionLotNoContains(keywords!!, page)
                 else -> {
                     when (status.toLowerCase()) {
-                        "rejected" -> this.auctionRequestsRepository.findByApprovalStatus(AuctionGoodStatus.REJECTED.status, page)
-                        "approved" -> this.auctionRequestsRepository.findByApprovalStatus(AuctionGoodStatus.APPROVED.status, page)
+                        "rejected" -> this.auctionRequestsRepository.findByApprovalStatusIn(listOf(AuctionGoodStatus.REJECTED.status), page)
+                        "hold" -> this.auctionRequestsRepository.findByApprovalStatusIn(listOf(AuctionGoodStatus.HOLD.status, AuctionGoodStatus.PAYMENT_PENDING.status), page)
+                        "approved" -> this.auctionRequestsRepository.findByApprovalStatusIn(listOf(AuctionGoodStatus.APPROVED.status, AuctionGoodStatus.CONDITIONAL_APPROVAL.status), page)
                         "new" -> this.auctionRequestsRepository.findByApprovalStatusInAndAssignedOfficerIsNull(listOf(AuctionGoodStatus.NEW.status), page)
-                        "assigned" -> this.auctionRequestsRepository.findByApprovalStatusInAndAssignedOfficer(listOf(AuctionGoodStatus.NEW.status, AuctionGoodStatus.PAYMENT_PENDING.status, AuctionGoodStatus.PAYMENT_COMPLETED.status), this.commonDaoServices.loggedInUserDetails(), page)
+                        "assigned" -> this.auctionRequestsRepository.findByApprovalStatusInAndAssignedOfficer(listOf(AuctionGoodStatus.NEW.status, AuctionGoodStatus.PAYMENT_COMPLETED.status), this.commonDaoServices.loggedInUserDetails(), page)
                         else -> null
                     }
                 }
@@ -349,7 +366,7 @@ class AuctionService(
             auctionDto.isInspector = this.commonDaoServices.currentUserDiOfficer()
             dataMap["auction_details"] = auctionDto
             dataMap["attachments"] = AuctionUploadDao.fromList(auctionUploadRepo.findByAuctionId(auction))
-            dataMap["items"] = auctionItemsRepo.findByAuctionId(auctionId)
+            dataMap["items"] = auctionItemsRepo.findByAuctionId_Id(auctionId)
             dataMap["history"] = auctionRequestHistoryRepo.findByAuctionIdAndStatusOrderByCreatedOnDesc(auctionId, 1)
             auction.demandNoteId?.let { demandNoteId ->
                 this.destinationInspectionDaoServices.findDemandNoteWithID(demandNoteId)?.let { demandNote ->
@@ -411,7 +428,7 @@ class AuctionService(
                     }
                 }
             }
-            item.auctionId = saved.id
+            item.auctionId = saved
             this.auctionItemsRepo.save(item)
         }
         try {

@@ -8,6 +8,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.requests.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.response.PaymentStatusResult
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.response.RootResponse
+import org.kebs.app.kotlin.apollo.api.ports.provided.sage.response.SageInvoicePostingResponseResult
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.response.SagePostingResponseResult
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
@@ -15,6 +16,7 @@ import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapPrope
 import org.kebs.app.kotlin.apollo.store.model.CdDemandNoteEntity
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.WorkflowTransactionsEntity
+import org.kebs.app.kotlin.apollo.store.model.invoice.BillPayments
 import org.kebs.app.kotlin.apollo.store.model.invoice.InvoiceBatchDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.invoice.LogStgPaymentReconciliationDetailsToSageEntity
 import org.kebs.app.kotlin.apollo.store.repo.ILogStgPaymentReconciliationDetailsToSageRepo
@@ -148,7 +150,7 @@ class PostInvoiceToSageServices(
             val log = daoService.createTransactionLog(0, "${demandNote.demandNoteNumber}_1")
             val resp = daoService.getHttpResponseFromPostCall(
                     false,
-                    configUrl + "urls/inspectionfee.php ",
+                    "$configUrl/urls/inspectionfee.php ",
                     null,
                     requestBody,
                     config,
@@ -176,6 +178,59 @@ class PostInvoiceToSageServices(
                 }
                 modifiedBy = user
                 modifiedOn = commonDaoServices.getTimestamp()
+            }
+        }
+    }
+
+    fun postInvoiceTransactionToSage(billPayment: BillPayments, user: String, map: ServiceMapsEntity) {
+        val config = commonDaoServices.findIntegrationConfiguration("SAGE_API_CLIENT")
+        val configUrl = config.url ?: throw Exception("URL CANNOT BE NULL")
+        runBlocking {
+
+            val headerBody = Header().apply {
+                serviceName = config.account
+                messageID = "SAGEREF${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
+                connectionID = jasyptStringEncryptor.decrypt(config.username)
+                connectionPassword = jasyptStringEncryptor.decrypt(config.password)
+
+            }
+
+            val requestBody = mutableMapOf<String, Any>()
+            val tmpRequest = SageInvoiceRequest.fromEntity(billPayment)
+            requestBody["header"] = headerBody
+            requestBody["request"] = tmpRequest
+            requestBody["details"] = InvoiceRequestItems.fromList(invoiceDaoService.findBillTransactions(billPayment.id), "", "")
+            // Send and log request
+            val log = daoService.createTransactionLog(0, "${billPayment.billNumber}_1")
+            val resp = daoService.getHttpResponseFromPostCall(
+                    false,
+                    "$configUrl/urls/sageinvoice.php",
+                    null,
+                    requestBody,
+                    config,
+                    null,
+                    null
+            )
+            // Check response code
+            if (resp == null || resp.status.value != 200) {
+                throw ExpectedDataNotFound("Received invalid response[${resp?.status?.value}]:${resp?.status?.description}")
+            }
+            val response: Triple<WorkflowTransactionsEntity, SageInvoicePostingResponseResult?, io.ktor.client.statement.HttpResponse?> =
+                    daoService.processResponses(resp, log, configUrl, config)
+            billPayment.varField2 = response.second?.response?.demandNoteNo
+            billPayment.varField3 = response.second?.response?.responseDate?.toString()
+            // update response
+            with(billPayment) {
+                varField1 = response.second?.header?.messageID
+                varField2 = response.second?.header?.statusCode?.toString()
+                varField3 = response.second?.header?.statusDescription
+                paymentRequestReference = response.second?.response?.demandNoteNo?.toUpperCase()
+                paymentRequestDate = response.second?.response?.responseDate
+                varField4 = response.second?.response?.responseDate?.toString()
+                postingStatus = when (response.second?.header?.statusCode) {
+                    200 -> map.activeStatus
+                    else -> map.invalidStatus
+                }
             }
         }
     }

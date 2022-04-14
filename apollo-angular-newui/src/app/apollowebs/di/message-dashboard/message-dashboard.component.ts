@@ -10,11 +10,11 @@ import {DatePipe} from "@angular/common";
     styleUrls: ['./message-dashboard.component.css']
 })
 export class MessageDashboardComponent implements OnInit {
-    activeStatus = 'incoming'
+    activeStatus = 'in'
     chartType: string = 'bar';
     requestStatus = ""
     exchangeDate: any = null
-    exchangeFile:any=null
+    exchangeFile: any = null
     documentData: any[]
     exchangeStats: any[]
     chartDatasets: any[] = []
@@ -132,7 +132,7 @@ export class MessageDashboardComponent implements OnInit {
                 type: 'string',
                 valuePrepareFunction: (date) => {
                     if (date) {
-                        return new DatePipe("En-Us").transform(date,'dd-MM-yyyy HH:mm')
+                        return new DatePipe("En-Us").transform(date, 'dd-MM-yyyy HH:mm')
                     }
                     return "01-01-1970 00:00"
                 },
@@ -169,8 +169,9 @@ export class MessageDashboardComponent implements OnInit {
             this.loadData()
         }
     }
+
     searchMessages() {
-        this.currentPage=0
+        this.currentPage = 0
         this.loadData()
     }
 
@@ -244,12 +245,8 @@ export class MessageDashboardComponent implements OnInit {
     }
 
     loadData() {
-        let direction = "IN"
-        if (this.activeStatus == "outgoing") {
-            direction = "OUT"
-        } else if(this.activeStatus=="other"){
-            direction="UNPROCESSABLE"
-        }
+        // console.log(this.activeStatus)
+        let direction = this.activeStatus.toUpperCase()
         this.documentData = []
         // Load data
         this.diService.loadExchangeMessages(this.requestStatus, direction, this.exchangeFile, this.exchangeDate, this.currentPage, this.defaultPageSize)
@@ -257,10 +254,10 @@ export class MessageDashboardComponent implements OnInit {
                 res => {
                     if (res.responseCode === "00") {
                         this.documentData = res.data
-                        if(res.totalCount>1000) {
+                        if (res.totalCount > 1000) {
                             this.totalCount = 1000
-                        }else {
-                            this.totalCount=res.totalCount
+                        } else {
+                            this.totalCount = res.totalCount
                         }
                     } else {
                         this.diService.showError(res.message, null)
@@ -273,8 +270,10 @@ export class MessageDashboardComponent implements OnInit {
     }
 
     pageChange(pageIndex?: number) {
-        if (pageIndex && pageIndex != this.currentPage) {
+        console.log(pageIndex)
+        if (pageIndex && pageIndex != (this.currentPage + 1)) {
             this.currentPage = pageIndex - 1;
+            // console.log(pageIndex)
             this.loadData()
         }
     }

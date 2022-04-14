@@ -7,6 +7,7 @@ import org.kebs.app.kotlin.apollo.api.payload.extractPage
 import org.kebs.app.kotlin.apollo.api.payload.request.AuctionAssignForm
 import org.kebs.app.kotlin.apollo.api.payload.request.AuctionDemandNoteForm
 import org.kebs.app.kotlin.apollo.api.payload.request.AuctionForm
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.service.AuctionService
 import org.kebs.app.kotlin.apollo.api.service.DaoValidatorService
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
@@ -25,7 +26,8 @@ import java.time.format.DateTimeFormatter
 @Component
 class AuctionHandler(
         private val validationService: DaoValidatorService,
-        private val auctionService: AuctionService
+        private val auctionService: AuctionService,
+        private val commonDaoServices: CommonDaoServices
 ) {
     val dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
     fun listAuctionCategory(req: ServerRequest): ServerResponse {
@@ -191,6 +193,7 @@ class AuctionHandler(
         }
         return ServerResponse.ok().body(response)
     }
+
     fun generateDemandNoteRequest(req: ServerRequest): ServerResponse {
         var response = ApiResponseModel()
         try {
@@ -225,10 +228,13 @@ class AuctionHandler(
                     )
             val multipartFile = multipartRequest.getFile("file")
             val remarks = multipartRequest.getParameter("remarks")
-            val witnessName = multipartRequest.getParameter("witnessName")
-            val witnessEmail = multipartRequest.getParameter("witnessEmail")
-            val witnessDesignation = multipartRequest.getParameter("witnessDesignation")
-            val approval = multipartRequest.getParameter("approve").toBoolean()
+            val user = commonDaoServices.getLoggedInUser()
+            // Add inspector details
+            val witnessName = "${user?.firstName} ${user?.lastName}"
+            val witnessEmail = user?.email ?: "UNKNOWN"
+            val witnessDesignation = "Inspection officer"
+            // Approval status
+            val approval = multipartRequest.getParameter("approve")
             response = auctionService.approveRejectAuctionGood(auctionId, multipartFile, approval, remarks, witnessName, witnessDesignation, witnessEmail)
         } catch (ex: ResponseStatusException) {
             response.responseCode = ResponseCodes.FAILED_CODE

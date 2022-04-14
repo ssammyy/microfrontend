@@ -33,6 +33,10 @@
                     </xsd:element>
                     <xsd:element name="PAYMENT_DATE" type="xsd:date" minOccurs="0" xdb:SQLName="PAYMENT_DATE"
                                  xdb:SQLTYPE="DATE"></xsd:element>
+                    <!--                    <xsd:element name="DOCUMENT_TYPE" type="xsd:string" minOccurs="0" xdb:SQLName="DOCUMENT_TYPE"-->
+                    <!--                                 xdb:SQLTYPE="VARCHAR2"></xsd:element>-->
+                    <!--                    <xsd:element name="CONTENT_ID" type="xsd:string" minOccurs="0" xdb:SQLName="CONTENT_ID"-->
+                    <!--                                 xdb:SQLTYPE="VARCHAR2"></xsd:element>-->
                 </xsd:sequence>
             </xsd:extension>
         </xsd:complexContent>

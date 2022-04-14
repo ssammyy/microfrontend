@@ -13,7 +13,7 @@ export class AddEditAuctionItemComponent implements OnInit {
     loading = false
     categories: any
 
-    constructor(private fb: FormBuilder, private dialodRef: MatDialogRef<any>,@Inject(MAT_DIALOG_DATA) public data: any) {
+    constructor(private fb: FormBuilder, private dialodRef: MatDialogRef<any>, @Inject(MAT_DIALOG_DATA) public data: any) {
     }
 
     ngOnInit(): void {
@@ -22,7 +22,7 @@ export class AddEditAuctionItemComponent implements OnInit {
             itemName: [null, Validators.required],
             itemType: [this.data.categoryCode],
             quantity: [null, Validators.required],
-            tareWeight: [null],
+            tareWeight: [0],
             chassisNo: [null],
             bodyType: [null],
             transmission: [null],
@@ -39,7 +39,7 @@ export class AddEditAuctionItemComponent implements OnInit {
         //     )
     }
 
-    saveRecord(){
+    saveRecord() {
         this.dialodRef.close(this.form.value)
     }
 

@@ -42,6 +42,14 @@ export class ViewAuctionItemsComponent implements OnInit {
             deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
             confirmDelete: true
         },
+        rowClassFunction: (row) => {
+            // console.log(row)
+            if (row.data.auctionLotNo === row.data.chassisNo && row.data.blNumber === row.data.chassisNo && row.data.containerNumber === row.data.chassisNo) {
+                return 'risky';
+            } else {
+                return ''
+            }
+        },
         noDataMessage: 'No data found',
         columns: {
             auctionLotNo: {
@@ -228,10 +236,14 @@ export class ViewAuctionItemsComponent implements OnInit {
 
     }
 
+    viewAuctionRecord(recordId: any) {
+        this.router.navigate(["/di/auction/details/", recordId])
+    }
+
     auctionEvent(action: any) {
         switch (action.action) {
             case "viewRecord": {
-                this.router.navigate(["/di/auction/details/", action.data.requestId])
+                this.viewAuctionRecord(action.data.requestId)
                 break
             }
             case "editRecord": {

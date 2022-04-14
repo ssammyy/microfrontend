@@ -139,7 +139,7 @@ export class AddAuctionRecordComponent implements OnInit {
 
     auctionItemActions(event) {
         switch (event.action) {
-            case "editItem":
+            case "editRecord":
                 this.addItem(event.data)
                 break
             case "deleteItem":
