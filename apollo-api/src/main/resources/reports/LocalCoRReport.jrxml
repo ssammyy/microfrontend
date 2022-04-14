@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
+<!-- Created with Jaspersoft Studio version 6.17.0.final using JasperReports Library version 6.17.0-6d93193241dd8cc42629e188b94f9e0bc5722efd  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="LocalCoRReport" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="89447e76-99cd-4199-841e-b6c59e054c09">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter "/>
 	<parameter name="imagePath" class="java.lang.String"/>
@@ -43,581 +43,751 @@
 	<background>
 		<band splitType="Stretch"/>
 	</background>
-	<title>
-		<band height="80" splitType="Stretch">
-			<image>
-				<reportElement x="19" y="-5" width="80" height="83" uuid="874285be-91bd-4076-905d-4c49b401e1ce"/>
-				<imageExpression><![CDATA[$P{imagePath}]]></imageExpression>
-			</image>
-			<rectangle>
-				<reportElement x="110" y="6" width="200" height="53" forecolor="#FFFFFF" backcolor="#1D68B2" uuid="86745a90-1567-40fd-97c1-d48bf358b90d"/>
-			</rectangle>
-			<staticText>
-				<reportElement x="120" y="11" width="180" height="45" forecolor="#FFFFFF" uuid="99aee567-910a-45cf-905a-d749caf8a5dd"/>
-				<textElement textAlignment="Center">
-					<font fontName="SansSerif" size="17" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Kenya Bureau of
-Standards]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="400" y="0" width="154" height="60" uuid="abf23cdc-bf6d-409a-971d-2a9313a3c9d2"/>
-				<textElement textAlignment="Right">
-					<font size="9"/>
-				</textElement>
-				<text><![CDATA[STA/19
-Popo Road, off Mombasa Road
+    <title>
+        <band height="85" splitType="Stretch">
+            <image>
+                <reportElement x="100" y="-1" width="80" height="83" uuid="874285be-91bd-4076-905d-4c49b401e1ce"/>
+                <imageExpression><![CDATA[$P{imagePath}]]></imageExpression>
+            </image>
+            <staticText>
+                <reportElement x="182" y="0" width="303" height="26" forecolor="#000000"
+                               uuid="99aee567-910a-45cf-905a-d749caf8a5dd"/>
+                <textElement textAlignment="Center">
+                    <font fontName="SansSerif" size="19" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Kenya Bureau of Standards]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="180" y="26" width="200" height="50" uuid="abf23cdc-bf6d-409a-971d-2a9313a3c9d2"/>
+                <textElement textAlignment="Left">
+                    <font size="9"/>
+                </textElement>
+                <text><![CDATA[Popo Road, off Mombasa Road
 P.O. Box 54974 - 00200, Nairobi
 Tel: (+254 20) 6948000
 Email:info@kebs.org
 ]]></text>
-			</staticText>
-		</band>
-	</title>
-	<pageHeader>
-		<band height="158" splitType="Stretch">
-			<rectangle>
-				<reportElement mode="Opaque" x="10" y="10" width="530" height="40" backcolor="#CAE3FA" uuid="ec41436e-a029-4ab9-9f7e-78f2c4bcd3f9"/>
-			</rectangle>
-			<staticText>
-				<reportElement x="69" y="14" width="400" height="36" uuid="46dcdf05-d345-41a7-9cfd-d5c6c2518238"/>
-				<textElement textAlignment="Center">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[MOTOR VEHICLE CERTIFICATE OF ROADWORTHINESS (COR)
+            </staticText>
+        </band>
+    </title>
+    <detail>
+        <band height="140" splitType="Stretch">
+            <staticText>
+                <reportElement mode="Opaque" x="1" y="1" width="553" height="36" backcolor="#CAE3FA"
+                               uuid="46dcdf05-d345-41a7-9cfd-d5c6c2518238"/>
+                <textElement textAlignment="Center">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[MOTOR VEHICLE CERTIFICATE OF ROADWORTHINESS (COR)
 (KS 1515:2000)]]></text>
-			</staticText>
-			<rectangle>
-				<reportElement x="10" y="70" width="529" height="79" uuid="74653597-2063-4fbb-aa5f-1a5aed18395c"/>
-			</rectangle>
-			<staticText>
-				<reportElement x="12" y="70" width="178" height="20" uuid="bb6e53c5-c188-48ab-88ac-2002012304ea"/>
-				<textElement>
-					<font size="11" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Name  and Address of Importer:
+            </staticText>
+            <staticText>
+                <reportElement x="1" y="38" width="238" height="20" uuid="bb6e53c5-c188-48ab-88ac-2002012304ea"/>
+                <textElement>
+                    <font size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Name  and Address of Importer:
 ]]></text>
-			</staticText>
-			<line>
-				<reportElement x="306" y="70" width="1" height="79" uuid="84e81d24-b507-4331-84d8-02cc882eda16"/>
-			</line>
-			<textField>
-				<reportElement x="12" y="86" width="178" height="22" uuid="20d96a40-6e69-42c1-b3d4-b548d14e3d5b"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{ImporterName}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="12" y="105" width="178" height="20" uuid="cc568076-9a2e-4283-92b3-2b559493b51c"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{ImporterAddress}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="12" y="126" width="178" height="20" uuid="d6a8c6c1-8bb5-43ac-a245-5ea930dcb74d"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{ImporterPhone}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="310" y="75" width="100" height="14" uuid="a57de7e3-4e6d-4e15-8bbb-06502cfa1cbe"/>
-				<textElement>
-					<font size="11" isBold="true"/>
-				</textElement>
-				<text><![CDATA[COR Serial No.:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="310" y="99" width="100" height="14" uuid="2afff86e-f34f-409e-b971-b458e716edfc"/>
-				<textElement>
-					<font size="11" isBold="true"/>
-				</textElement>
-				<text><![CDATA[COR Issue Date:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="310" y="120" width="100" height="14" uuid="f2b41e30-eb1f-4182-b536-10251569d37a"/>
-				<textElement>
-					<font size="11" isBold="true"/>
-				</textElement>
-				<text><![CDATA[COR Expiry Date:]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="428" y="75" width="110" height="22" uuid="3f3fa5fa-7fd8-4248-89e1-5c37263ac5ee"/>
-				<textElement>
-					<font size="10"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{corNumber}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="428" y="97" width="100" height="18" uuid="860bf5a3-81a1-4f86-85b6-9fd9b340e75a"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{CorIssueDate}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="427" y="119" width="100" height="18" uuid="71c4d082-070b-42dd-a443-99c1f4386db5"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{CorExpiryDate}]]></textFieldExpression>
-			</textField>
-		</band>
-	</pageHeader>
-	<detail>
-		<band height="356" splitType="Stretch">
-			<rectangle>
-				<reportElement mode="Opaque" x="9" y="2" width="530" height="22" backcolor="#CAE3FA" uuid="46dfba41-743f-44ec-a2a6-39a30547dfb0"/>
-			</rectangle>
-			<staticText>
-				<reportElement x="11" y="5" width="400" height="19" uuid="ead64cb6-5bac-41a7-ae81-c774d0c0af8d"/>
-				<textElement textAlignment="Left">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[MOTOR VEHICLE DETAILS]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="11" y="34" width="138" height="14" uuid="859a937c-375f-4ecc-a44d-1ff66859047d"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<text><![CDATA[Chassis/VIN Number :]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="11" y="52" width="138" height="14" uuid="21edb870-781c-4a76-875d-4b9680f346b8"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<text><![CDATA[Engine Number/Model :]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="10" y="69" width="140" height="14" uuid="99c2b7a1-1363-4d60-b962-b5a2d2161f54"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<text><![CDATA[Engine capacity (cc Rating):]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="10" y="86" width="138" height="14" uuid="646726dc-e189-45ed-9f9c-89b891f888b6"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<text><![CDATA[Year of Manufacture:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="10" y="103" width="138" height="14" uuid="83aff086-f871-4923-a669-c67ec9f37372"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<text><![CDATA[Year of First Registration:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="11" y="120" width="138" height="14" uuid="10efe09a-307b-4e79-8242-b491dc986891"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<text><![CDATA[Customs I.E No.:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="10" y="137" width="138" height="14" uuid="962b43f0-eecd-41d9-9098-927b1ac07208"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<text><![CDATA[Country of Supply:]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="170" y="33" width="100" height="14" uuid="fce03b4c-3ebd-40df-ab1f-ce4b1ecb7b0f"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{ChassisNumber}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="170" y="51" width="100" height="14" uuid="44c2d19b-ec9e-4b47-afa9-a6da3f8c9ca0"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{EngineNo}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="170" y="68" width="100" height="16" uuid="60194a77-d46b-4605-949e-ed0e50627b40"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{EngineCap}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="170" y="85" width="100" height="16" uuid="786b4370-0886-4346-bd95-ca061da7eb28"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{Yom}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="170" y="100" width="100" height="14" uuid="1cd09a03-34e0-46b9-a1b4-ed014f1f3f8a"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{Yor}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="170" y="118" width="100" height="16" uuid="05df82b1-d861-455e-8684-1373787942da"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{CustomsIeNo}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="170" y="136" width="100" height="16" uuid="557e89d8-9512-4fcd-8da1-6fc0e6d8b1b0"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{Cos}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="298" y="35" width="102" height="14" uuid="8bedd52d-d64e-41f5-b47e-5146b5c83722"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<text><![CDATA[IDF No.:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="298" y="53" width="102" height="14" uuid="08f2da3c-33f4-4eb7-bd1a-d71a6e878d6b"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<text><![CDATA[UCR No.:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="297" y="70" width="102" height="14" uuid="3f2db2d5-ba1a-4ac5-9b2c-befdc903111e"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<text><![CDATA[Make:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="297" y="87" width="102" height="14" uuid="1d6ba9bf-e28c-4208-baeb-bd70a788730e"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<text><![CDATA[Model:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="297" y="104" width="102" height="14" uuid="dfb8fbce-8f64-4a5e-a09c-f4651872da06"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<text><![CDATA[Inspected Mileage:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="297" y="121" width="102" height="14" uuid="47bc82b3-ac9b-4dd7-b6da-cd6f22128eb1"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<text><![CDATA[Units of Mileage:]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="420" y="34" width="100" height="14" uuid="ac727f7a-9aaf-4b6e-a5fc-f6b1b02b5f13"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{IdfNumber}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="420" y="52" width="100" height="14" uuid="fe1088f6-bcc1-4b18-92c2-d5949d70e53c"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{UcrNumber}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="420" y="70" width="100" height="18" uuid="c824f51d-d3c9-4a86-bbb4-b1aefd82f56d"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{Make}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="420" y="86" width="100" height="18" uuid="31d2ef6d-2149-45e1-867e-5b6eff4dfc7b"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{Model}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="421" y="105" width="118" height="16" uuid="ad792380-3ea8-4850-8947-e3b1ea946a7d"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{InspectedMileage}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="421" y="121" width="116" height="20" uuid="b55cd7b4-e5ae-4215-aee9-5351936745bf"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{UnitsOfMileage}]]></textFieldExpression>
-			</textField>
-			<rectangle>
-				<reportElement mode="Opaque" x="8" y="279" width="530" height="22" backcolor="#CAE3FA" uuid="72ad1217-d0c7-4a02-85f4-0c4b50030fa6"/>
-			</rectangle>
-			<staticText>
-				<reportElement x="10" y="282" width="400" height="19" uuid="311b9f8b-97d7-4ff7-8e60-5b6ced409baf"/>
-				<textElement textAlignment="Left">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Inspection Details and Findings]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="8" y="313" width="530" height="40" uuid="81fdb00a-ade3-4595-b14d-84c2b6d7798c"/>
-				<textFieldExpression><![CDATA[$P{InspectionDetails}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="297" y="138" width="102" height="14" uuid="693ced34-f6fa-4708-8ea0-ccaf6dd192cc"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<text><![CDATA[Color:]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="421" y="138" width="100" height="16" uuid="152027dc-b080-4441-a858-d9e23ffdddb0"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{Color}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="10" y="153" width="138" height="14" uuid="4aa1cc0b-90f4-4aed-9347-9cfebe14fcd9"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<text><![CDATA[Body Type:]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="169" y="153" width="100" height="14" uuid="2699177c-6e9b-4562-8171-9ae9f0e40815"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{BodyType}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="298" y="153" width="102" height="14" uuid="24f1251a-3766-4693-ba26-63faa8e0459b"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<text><![CDATA[Axle No.:]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="420" y="153" width="100" height="20" uuid="b1cfc850-b271-471a-a823-38de62ffb7f1"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{AxleNo}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="10" y="168" width="138" height="14" uuid="56755976-a206-4c29-8031-8b3bcd74d3dc"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<text><![CDATA[Fuel:]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="169" y="168" width="100" height="16" uuid="6dc05113-5bf0-422e-8a93-7f959ce59f42"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{Fuel}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="298" y="168" width="102" height="14" uuid="95ea9dd5-34c6-4387-babe-469cd11cc880"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<text><![CDATA[Transmission:]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="420" y="169" width="100" height="16" uuid="76f465e2-6b82-4b78-8dfb-ba7c945d7c93"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{Transmision}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="10" y="184" width="138" height="14" uuid="72fb7286-45fd-41e1-9c2e-fa37dd2e6f60"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<text><![CDATA[Tare Weight:]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="169" y="184" width="100" height="18" uuid="a2febdaa-a393-48f4-ac61-4033270863a2"/>
-				<textFieldExpression><![CDATA[$P{TareWeight}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="299" y="185" width="102" height="14" uuid="3f88e52e-6fd3-4555-ba85-0dd5e553d20a"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<text><![CDATA[No. of Passengers:]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="420" y="185" width="118" height="14" uuid="70f5da20-c143-4c75-a98d-a560bbb28906"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{NoOfPassengers}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="10" y="200" width="138" height="14" uuid="8d44c1bd-a308-41d9-a858-ecd0ca57592a"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<text><![CDATA[Type of Vehicle:]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="169" y="201" width="100" height="18" uuid="ed91a11c-3c52-4dea-9035-8663fb7601ae"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{VehicleType}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="299" y="201" width="102" height="14" uuid="bb474234-172f-4cc3-9c59-2e1c475bed79"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<text><![CDATA[Previous Reg. No:]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="421" y="201" width="100" height="16" uuid="fb05532d-6c5f-4b0e-ace6-d88d06d6dee4"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{PrevRegNo}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="10" y="217" width="138" height="14" uuid="3414a64b-5b12-4bfb-8917-1e4f87ecd0ea"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<text><![CDATA[Exporter Name:]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="169" y="217" width="100" height="16" uuid="c14cb1f9-ad37-4221-8b1f-d39051d6b825"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{ExporterName}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="10" y="233" width="138" height="14" uuid="cba31fa8-f856-447f-938b-2a131ac0ac27"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<text><![CDATA[Exporter Address:]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="169" y="234" width="122" height="16" uuid="0e9cbdd2-dbc4-4e85-8bfd-6cb49381c0dd"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{ExporterAddress}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="10" y="249" width="138" height="14" uuid="1deffd3b-6d1a-4fee-89c4-9019d223e168"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<text><![CDATA[Exporter Email:]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="170" y="250" width="100" height="20" uuid="7925834b-a02f-4027-a067-fbc7623d2c6f"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{ExporterEmail}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="298" y="218" width="128" height="14" uuid="3be4fdee-3c61-4b97-bb5b-30bcdecb79e9"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<text><![CDATA[Previous Country of Reg:]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="425" y="218" width="128" height="18" uuid="6c08742f-72a8-40ab-94b4-86062770236b"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{PrevCountryOfReg}]]></textFieldExpression>
-			</textField>
-		</band>
-	</detail>
-	<pageFooter>
-		<band height="173" splitType="Stretch">
-			<rectangle>
-				<reportElement mode="Opaque" x="8" y="2" width="530" height="22" backcolor="#CAE3FA" uuid="4e2a9798-28dd-4ea7-b66b-2fac2a5b27ed"/>
-			</rectangle>
-			<staticText>
-				<reportElement x="10" y="5" width="400" height="19" uuid="32f813c9-9e48-4a16-a78b-d67e6e12bd03"/>
-				<textElement textAlignment="Left">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Endorsement]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="7" y="39" width="546" height="20" uuid="f3a8d7f4-c05f-494b-a394-2957a7481e79"/>
-				<textElement>
-					<font size="11" isBold="true" isItalic="true"/>
-				</textElement>
-				<text><![CDATA[I certify that the vehicle whose details are given above is roadworthy and safe to run on Kenyan roads]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="7" y="72" width="546" height="20" uuid="43927f95-0be6-48f4-86b7-73dbc4b88c79"/>
-				<textElement textAlignment="Left">
-					<font size="11" isBold="false" isItalic="false"/>
-				</textElement>
-				<text><![CDATA[NOTE: This certificate is valid for three (3) months from the date of issue]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="28" y="112" width="142" height="14" uuid="451d55e7-95f2-4fe8-b3d3-1f250da0f7dc"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<text><![CDATA[Name of Authorized Officer:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="28" y="133" width="142" height="14" uuid="21f95725-6876-42a9-a45c-4db93922ab96"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<text><![CDATA[Signature:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="28" y="155" width="142" height="14" uuid="998173a6-a071-4c46-b889-9a27ace2b841"/>
-				<textElement>
-					<font size="11"/>
-				</textElement>
-				<text><![CDATA[Date and Stamp:]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="192" y="113" width="100" height="14" uuid="127e8c46-8c07-4a4c-a23e-be9629d63d18"/>
-				<textFieldExpression><![CDATA[$P{OfficerName}]]></textFieldExpression>
-			</textField>
-			<line>
-				<reportElement x="190" y="143" width="150" height="1" uuid="fa0e5f9c-bd94-4360-bb82-5446e511cb37"/>
-				<graphicElement>
-					<pen lineStyle="Dotted"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement x="192" y="167" width="150" height="1" uuid="94f1e2c9-d55c-4355-bb7a-4f8ed9d45b8f"/>
-				<graphicElement>
-					<pen lineStyle="Dotted"/>
-				</graphicElement>
-			</line>
-		</band>
-	</pageFooter>
+            </staticText>
+            <frame>
+                <reportElement x="0" y="60" width="553" height="80" uuid="1cdfd09e-da9a-4745-8bc4-3ac516c4cda2">
+                    <property name="com.jaspersoft.studio.layout"
+                              value="com.jaspersoft.studio.editor.layout.grid.JSSGridBagLayout"/>
+                </reportElement>
+                <box padding="8"/>
+                <textField>
+                    <reportElement x="0" y="0" width="231" height="22" uuid="20d96a40-6e69-42c1-b3d4-b548d14e3d5b">
+                        <property name="com.jaspersoft.layout.grid.x" value="-1"/>
+                        <property name="com.jaspersoft.layout.grid.y" value="-1"/>
+                        <property name="com.jaspersoft.layout.grid.weight.x" value="1.5"/>
+                        <property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.colspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
+                    </reportElement>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{ImporterName}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="231" y="0" width="153" height="22" uuid="a57de7e3-4e6d-4e15-8bbb-06502cfa1cbe"/>
+                    <box topPadding="0" leftPadding="10" bottomPadding="0" rightPadding="0">
+                        <leftPen lineWidth="1.0"/>
+                    </box>
+                    <textElement>
+                        <font size="11" isBold="true"/>
+                    </textElement>
+                    <text><![CDATA[COR Serial No.:]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="384" y="0" width="153" height="22" uuid="3f3fa5fa-7fd8-4248-89e1-5c37263ac5ee"/>
+                    <textElement>
+                        <font size="10"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{corNumber}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="0" y="22" width="231" height="21" uuid="cc568076-9a2e-4283-92b3-2b559493b51c">
+                        <property name="com.jaspersoft.layout.grid.x" value="-1"/>
+                        <property name="com.jaspersoft.layout.grid.y" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.colspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
+                    </reportElement>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{ImporterAddress}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="231" y="22" width="153" height="21" uuid="2afff86e-f34f-409e-b971-b458e716edfc"/>
+                    <box topPadding="0" leftPadding="10" bottomPadding="0" rightPadding="0">
+                        <leftPen lineWidth="1.0"/>
+                    </box>
+                    <textElement>
+                        <font size="11" isBold="true"/>
+                    </textElement>
+                    <text><![CDATA[COR Issue Date:]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="384" y="22" width="153" height="21" uuid="860bf5a3-81a1-4f86-85b6-9fd9b340e75a"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{CorIssueDate}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="0" y="43" width="231" height="21" uuid="d6a8c6c1-8bb5-43ac-a245-5ea930dcb74d">
+                        <property name="com.jaspersoft.layout.grid.x" value="-1"/>
+                        <property name="com.jaspersoft.layout.grid.y" value="2"/>
+                        <property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.colspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
+                    </reportElement>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{ImporterPhone}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="231" y="43" width="153" height="21" uuid="f2b41e30-eb1f-4182-b536-10251569d37a"/>
+                    <box topPadding="0" leftPadding="10" bottomPadding="0" rightPadding="0">
+                        <leftPen lineWidth="1.0"/>
+                    </box>
+                    <textElement>
+                        <font size="11" isBold="true"/>
+                    </textElement>
+                    <text><![CDATA[COR Expiry Date:]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="384" y="43" width="153" height="21" uuid="71c4d082-070b-42dd-a443-99c1f4386db5"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{CorExpiryDate}]]></textFieldExpression>
+                </textField>
+            </frame>
+        </band>
+        <band height="286">
+            <staticText>
+                <reportElement mode="Opaque" x="-1" y="4" width="552" height="19" backcolor="#CAE3FA"
+                               uuid="ead64cb6-5bac-41a7-ae81-c774d0c0af8d"/>
+                <textElement textAlignment="Left">
+                    <font size="16" isBold="true"/>
+                </textElement>
+                <text><![CDATA[MOTOR VEHICLE DETAILS]]></text>
+            </staticText>
+            <frame>
+                <reportElement x="-2" y="26" width="553" height="259" uuid="6fd5c8d6-99cf-4756-9b7f-c8d01c8b0f5b">
+                    <property name="com.jaspersoft.studio.layout"
+                              value="com.jaspersoft.studio.editor.layout.grid.JSSGridBagLayout"/>
+                </reportElement>
+                <box padding="8"/>
+                <staticText>
+                    <reportElement x="0" y="0" width="135" height="19" uuid="859a937c-375f-4ecc-a44d-1ff66859047d"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <text><![CDATA[Chassis/VIN Number :]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="135" y="0" width="134" height="19" uuid="fce03b4c-3ebd-40df-ab1f-ce4b1ecb7b0f"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{ChassisNumber}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="269" y="0" width="134" height="19" uuid="8bedd52d-d64e-41f5-b47e-5146b5c83722"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <text><![CDATA[IDF No.:]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="403" y="0" width="134" height="19" uuid="ac727f7a-9aaf-4b6e-a5fc-f6b1b02b5f13"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{IdfNumber}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="0" y="19" width="135" height="19" uuid="21edb870-781c-4a76-875d-4b9680f346b8">
+                        <property name="com.jaspersoft.layout.grid.x" value="-1"/>
+                        <property name="com.jaspersoft.layout.grid.y" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.colspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
+                    </reportElement>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <text><![CDATA[Engine Number/Model :]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="135" y="19" width="134" height="19" uuid="44c2d19b-ec9e-4b47-afa9-a6da3f8c9ca0"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{EngineNo}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="269" y="19" width="134" height="19" uuid="08f2da3c-33f4-4eb7-bd1a-d71a6e878d6b"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <text><![CDATA[UCR No.:]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="403" y="19" width="134" height="19" uuid="fe1088f6-bcc1-4b18-92c2-d5949d70e53c"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{UcrNumber}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="0" y="38" width="135" height="19" uuid="99c2b7a1-1363-4d60-b962-b5a2d2161f54">
+                        <property name="com.jaspersoft.layout.grid.x" value="-1"/>
+                        <property name="com.jaspersoft.layout.grid.y" value="2"/>
+                        <property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.colspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
+                    </reportElement>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <text><![CDATA[Engine capacity (cc Rating):]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="135" y="38" width="134" height="19" uuid="60194a77-d46b-4605-949e-ed0e50627b40"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{EngineCap}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="269" y="38" width="134" height="19" uuid="3f2db2d5-ba1a-4ac5-9b2c-befdc903111e"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <text><![CDATA[Make:]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="403" y="38" width="134" height="19" uuid="c824f51d-d3c9-4a86-bbb4-b1aefd82f56d"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{Make}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="0" y="57" width="135" height="19" uuid="646726dc-e189-45ed-9f9c-89b891f888b6">
+                        <property name="com.jaspersoft.layout.grid.x" value="-1"/>
+                        <property name="com.jaspersoft.layout.grid.y" value="3"/>
+                        <property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.colspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
+                    </reportElement>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <text><![CDATA[Year of Manufacture:]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="135" y="57" width="134" height="19" uuid="786b4370-0886-4346-bd95-ca061da7eb28"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{Yom}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="269" y="57" width="134" height="19" uuid="1d6ba9bf-e28c-4208-baeb-bd70a788730e"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <text><![CDATA[Model:]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="403" y="57" width="134" height="19" uuid="31d2ef6d-2149-45e1-867e-5b6eff4dfc7b"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{Model}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="0" y="76" width="135" height="19" uuid="83aff086-f871-4923-a669-c67ec9f37372">
+                        <property name="com.jaspersoft.layout.grid.x" value="-1"/>
+                        <property name="com.jaspersoft.layout.grid.y" value="4"/>
+                        <property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.colspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
+                    </reportElement>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <text><![CDATA[Year of First Registration:]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="135" y="76" width="134" height="19" uuid="1cd09a03-34e0-46b9-a1b4-ed014f1f3f8a"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{Yor}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="269" y="76" width="134" height="19" uuid="dfb8fbce-8f64-4a5e-a09c-f4651872da06"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <text><![CDATA[Inspected Mileage:]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="403" y="76" width="134" height="19" uuid="ad792380-3ea8-4850-8947-e3b1ea946a7d"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{InspectedMileage}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="0" y="95" width="135" height="19" uuid="10efe09a-307b-4e79-8242-b491dc986891">
+                        <property name="com.jaspersoft.layout.grid.x" value="-1"/>
+                        <property name="com.jaspersoft.layout.grid.y" value="5"/>
+                        <property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.colspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
+                    </reportElement>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <text><![CDATA[Customs I.E No.:]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="135" y="95" width="134" height="19" uuid="05df82b1-d861-455e-8684-1373787942da"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{CustomsIeNo}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="269" y="95" width="134" height="19" uuid="47bc82b3-ac9b-4dd7-b6da-cd6f22128eb1"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <text><![CDATA[Units of Mileage:]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="403" y="95" width="134" height="19" uuid="b55cd7b4-e5ae-4215-aee9-5351936745bf"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{UnitsOfMileage}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="0" y="114" width="135" height="19" uuid="962b43f0-eecd-41d9-9098-927b1ac07208">
+                        <property name="com.jaspersoft.layout.grid.x" value="-1"/>
+                        <property name="com.jaspersoft.layout.grid.y" value="6"/>
+                        <property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.colspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
+                    </reportElement>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <text><![CDATA[Country of Supply:]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="135" y="114" width="134" height="19" uuid="557e89d8-9512-4fcd-8da1-6fc0e6d8b1b0"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{Cos}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="269" y="114" width="134" height="19" uuid="693ced34-f6fa-4708-8ea0-ccaf6dd192cc"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <text><![CDATA[Color:]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="403" y="114" width="134" height="19" uuid="152027dc-b080-4441-a858-d9e23ffdddb0"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{Color}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="0" y="133" width="135" height="19" uuid="4aa1cc0b-90f4-4aed-9347-9cfebe14fcd9">
+                        <property name="com.jaspersoft.layout.grid.x" value="-1"/>
+                        <property name="com.jaspersoft.layout.grid.y" value="7"/>
+                        <property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.colspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
+                    </reportElement>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <text><![CDATA[Body Type:]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="135" y="133" width="134" height="19" uuid="2699177c-6e9b-4562-8171-9ae9f0e40815"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{BodyType}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="269" y="133" width="134" height="19" uuid="24f1251a-3766-4693-ba26-63faa8e0459b"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <text><![CDATA[Axle No.:]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="403" y="133" width="134" height="19" uuid="b1cfc850-b271-471a-a823-38de62ffb7f1"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{AxleNo}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="0" y="152" width="135" height="19" uuid="56755976-a206-4c29-8031-8b3bcd74d3dc">
+                        <property name="com.jaspersoft.layout.grid.x" value="-1"/>
+                        <property name="com.jaspersoft.layout.grid.y" value="8"/>
+                        <property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.colspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
+                    </reportElement>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <text><![CDATA[Fuel:]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="135" y="152" width="134" height="19" uuid="6dc05113-5bf0-422e-8a93-7f959ce59f42"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{Fuel}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="269" y="152" width="134" height="19" uuid="95ea9dd5-34c6-4387-babe-469cd11cc880"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <text><![CDATA[Transmission:]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="403" y="152" width="134" height="19" uuid="76f465e2-6b82-4b78-8dfb-ba7c945d7c93"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{Transmision}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="0" y="171" width="135" height="18" uuid="72fb7286-45fd-41e1-9c2e-fa37dd2e6f60">
+                        <property name="com.jaspersoft.layout.grid.x" value="-1"/>
+                        <property name="com.jaspersoft.layout.grid.y" value="9"/>
+                        <property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.colspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
+                    </reportElement>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <text><![CDATA[Tare Weight:]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="135" y="171" width="134" height="18" uuid="a2febdaa-a393-48f4-ac61-4033270863a2"/>
+                    <textFieldExpression><![CDATA[$P{TareWeight}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="269" y="171" width="134" height="18" uuid="3f88e52e-6fd3-4555-ba85-0dd5e553d20a"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <text><![CDATA[No. of Passengers:]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="403" y="171" width="134" height="18" uuid="70f5da20-c143-4c75-a98d-a560bbb28906"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{NoOfPassengers}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="0" y="189" width="135" height="18" uuid="8d44c1bd-a308-41d9-a858-ecd0ca57592a">
+                        <property name="com.jaspersoft.layout.grid.x" value="-1"/>
+                        <property name="com.jaspersoft.layout.grid.y" value="10"/>
+                        <property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.colspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
+                    </reportElement>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <text><![CDATA[Type of Vehicle:]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="135" y="189" width="134" height="18" uuid="ed91a11c-3c52-4dea-9035-8663fb7601ae"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{VehicleType}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="269" y="189" width="134" height="18" uuid="bb474234-172f-4cc3-9c59-2e1c475bed79"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <text><![CDATA[Previous Reg. No:]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="403" y="189" width="134" height="18" uuid="fb05532d-6c5f-4b0e-ace6-d88d06d6dee4"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{PrevRegNo}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="0" y="207" width="135" height="18" uuid="3414a64b-5b12-4bfb-8917-1e4f87ecd0ea">
+                        <property name="com.jaspersoft.layout.grid.x" value="-1"/>
+                        <property name="com.jaspersoft.layout.grid.y" value="11"/>
+                        <property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.colspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
+                    </reportElement>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <text><![CDATA[Exporter Name:]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="135" y="207" width="134" height="18" uuid="c14cb1f9-ad37-4221-8b1f-d39051d6b825"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{ExporterName}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="269" y="207" width="134" height="18" uuid="3be4fdee-3c61-4b97-bb5b-30bcdecb79e9"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <text><![CDATA[Previous Country of Reg:]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="403" y="207" width="134" height="18" uuid="6c08742f-72a8-40ab-94b4-86062770236b"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{PrevCountryOfReg}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="0" y="225" width="135" height="18" uuid="cba31fa8-f856-447f-938b-2a131ac0ac27">
+                        <property name="com.jaspersoft.layout.grid.x" value="-1"/>
+                        <property name="com.jaspersoft.layout.grid.y" value="12"/>
+                        <property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.colspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
+                    </reportElement>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <text><![CDATA[Exporter Address:]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="135" y="225" width="134" height="18" uuid="0e9cbdd2-dbc4-4e85-8bfd-6cb49381c0dd"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{ExporterAddress}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="269" y="225" width="134" height="18" uuid="1deffd3b-6d1a-4fee-89c4-9019d223e168"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <text><![CDATA[Exporter Email:]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="403" y="225" width="134" height="18" uuid="7925834b-a02f-4027-a067-fbc7623d2c6f"/>
+                    <textElement>
+                        <font size="11"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{ExporterEmail}]]></textFieldExpression>
+                </textField>
+            </frame>
+        </band>
+        <band height="90">
+            <staticText>
+                <reportElement mode="Opaque" x="1" y="3" width="552" height="20" backcolor="#CAE3FA"
+                               uuid="311b9f8b-97d7-4ff7-8e60-5b6ced409baf"/>
+                <textElement textAlignment="Left">
+                    <font size="17" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Inspection Details and Findings]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="1" y="25" width="553" height="61" uuid="81fdb00a-ade3-4595-b14d-84c2b6d7798c"/>
+                <textFieldExpression><![CDATA[$P{InspectionDetails}]]></textFieldExpression>
+            </textField>
+        </band>
+        <band height="168">
+            <staticText>
+                <reportElement mode="Opaque" x="0" y="0" width="554" height="24" backcolor="#CAE3FA"
+                               uuid="32f813c9-9e48-4a16-a78b-d67e6e12bd03"/>
+                <textElement textAlignment="Left">
+                    <font size="20" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Endorsement]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="1" y="25" width="546" height="21" uuid="f3a8d7f4-c05f-494b-a394-2957a7481e79"/>
+                <textElement>
+                    <font size="9" isBold="true" isItalic="true"/>
+                </textElement>
+                <text>
+                    <![CDATA[I certify that the vehicle whose details are given above is roadworthy and safe to run on Kenyan roads]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="-1" y="45" width="546" height="20" uuid="43927f95-0be6-48f4-86b7-73dbc4b88c79"/>
+                <textElement textAlignment="Left">
+                    <font size="14" isBold="false" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[NOTE: This certificate is valid for three (3) months from the date of issue]]></text>
+            </staticText>
+            <frame>
+                <reportElement x="0" y="65" width="450" height="95" uuid="6673da6a-e309-419a-a785-4496a69bcf1b">
+                    <property name="com.jaspersoft.studio.layout"
+                              value="com.jaspersoft.studio.editor.layout.grid.JSSGridBagLayout"/>
+                </reportElement>
+                <box padding="8"/>
+                <staticText>
+                    <reportElement x="0" y="0" width="174" height="27" uuid="451d55e7-95f2-4fe8-b3d3-1f250da0f7dc"/>
+                    <textElement verticalAlignment="Bottom">
+                        <font size="11"/>
+                    </textElement>
+                    <text><![CDATA[Name of Authorized Officer:]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="174" y="0" width="260" height="27" uuid="127e8c46-8c07-4a4c-a23e-be9629d63d18">
+                        <property name="com.jaspersoft.layout.grid.x" value="-1"/>
+                        <property name="com.jaspersoft.layout.grid.y" value="-1"/>
+                        <property name="com.jaspersoft.layout.grid.weight.x" value="1.5"/>
+                        <property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.colspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
+                    </reportElement>
+                    <box>
+                        <bottomPen lineWidth="1.0"/>
+                    </box>
+                    <textElement verticalAlignment="Bottom"/>
+                    <textFieldExpression><![CDATA[$P{OfficerName}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="0" y="27" width="174" height="26" uuid="21f95725-6876-42a9-a45c-4db93922ab96">
+                        <property name="com.jaspersoft.layout.grid.x" value="-1"/>
+                        <property name="com.jaspersoft.layout.grid.y" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.colspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
+                    </reportElement>
+                    <textElement verticalAlignment="Bottom">
+                        <font size="11"/>
+                    </textElement>
+                    <text><![CDATA[Signature:]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="174" y="27" width="260" height="26" uuid="da260328-1712-488c-b5fa-6c76038147df"/>
+                    <box>
+                        <bottomPen lineWidth="1.0"/>
+                    </box>
+                    <textElement>
+                        <font size="11" isBold="true" isItalic="true"/>
+                    </textElement>
+                    <text><![CDATA[]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="0" y="53" width="174" height="26" uuid="998173a6-a071-4c46-b889-9a27ace2b841">
+                        <property name="com.jaspersoft.layout.grid.x" value="-1"/>
+                        <property name="com.jaspersoft.layout.grid.y" value="2"/>
+                        <property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.colspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
+                    </reportElement>
+                    <textElement verticalAlignment="Bottom">
+                        <font size="11"/>
+                    </textElement>
+                    <text><![CDATA[Date and Stamp:]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="174" y="53" width="260" height="26" uuid="d0569725-92bb-4227-a918-46e911eaf1e5"/>
+                    <box>
+                        <bottomPen lineWidth="1.0"/>
+                    </box>
+                    <textElement>
+                        <font size="11" isBold="true" isItalic="true"/>
+                    </textElement>
+                    <text><![CDATA[]]></text>
+                </staticText>
+            </frame>
+        </band>
+    </detail>
+    <pageFooter>
+        <band splitType="Stretch"/>
+    </pageFooter>
 </jasperReport>
