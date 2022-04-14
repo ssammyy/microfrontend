@@ -403,7 +403,9 @@ export interface SACSummary
     eacGazette: string,
     authenticText: string,
     technicalCommitteeName: string,
-    departmentName: string
+    departmentName: string,
+    requestedByName: string
+
 
 }
 

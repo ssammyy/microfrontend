@@ -16,6 +16,7 @@ import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.std.DatKebsSdStandardsEntity
 import org.kebs.app.kotlin.apollo.store.model.std.DecisionFeedback
 import org.kebs.app.kotlin.apollo.store.model.std.SACSummary
+import org.kebs.app.kotlin.apollo.store.model.std.SACSummaryHolder
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.repository.findByIdOrNull
@@ -78,7 +79,7 @@ class AdoptionOfEastAfricaStandardService(
         val technicalCommittee = technicalCommitteeRepository.findNameById(sacSummary.technicalCommittee?.toLong())
         technicalCommittee.let { variable.put("technicalCommitteeName", it) }
 
-        val requestedByName = loggedInUser.firstName +loggedInUser.lastName;
+        val requestedByName = loggedInUser.firstName+" "+loggedInUser.lastName;
         requestedByName.let { variable.put("requestedByName", it) }
 
 
@@ -118,8 +119,11 @@ class AdoptionOfEastAfricaStandardService(
     }
 
 
-    fun getSACSummaryTask(): List<SACSummary> {
-        return sacSummaryRepository.findByVarField1("Approved")
+    fun getSACSummaryTask(): List<SACSummaryHolder> {
+
+
+
+        return sacSummaryRepository.findAllWithDescriptionQuery()
 
     }
 

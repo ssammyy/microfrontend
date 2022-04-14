@@ -33,8 +33,8 @@
                                     <thead>
                                     <tr>
                                         <th class="id">ID</th>
-                                        <th class="task">Task</th>
-                                        <th class="task">Title</th>
+                                        <th class="task">Department</th>
+                                        <th class="task">Technical Committee</th>
                                         <th class="task">SL</th>
                                         <th class="task">KS NO</th>
                                         <th class="task">Edition</th>
@@ -44,11 +44,11 @@
                                     <tbody>
                                     <tr *ngFor="let task of tasks  let i= index;">
                                         <td>{{i + 1}}</td>
-                                        <td>{{task.name}}</td>
-                                        <td>{{task.taskData.title}}</td>
-                                        <td>{{task.taskData.sl}}</td>
-                                        <td>{{task.taskData.ks}}</td>
-                                        <td>{{task.taskData.edition}}</td>
+                                        <td>{{task.departmentName}}</td>
+                                        <td>{{task.technicalCommittee}}</td>
+                                        <td>{{task.sl}}</td>
+                                        <td>{{task.ks}}</td>
+                                        <td>{{task.edition}}</td>
 
                                         <td><a (click)="onOpenModal(task,'edit')" type="button"
                                                class="btn btn-info tooltips"
@@ -74,143 +74,143 @@
                                         <form #editForm="ngForm">
                                             <div class="modal-body">
 
-                                                <div class="row">
-                                                    <div class="col-12">
-                                                        <h5>Please provide reason for your decision.</h5>
+                                                <div class="row col-12">
+
+                                                    <div class="form-group col-6">
+                                                        <label><b>Technical Committee Name</b><span
+                                                                style="font-size: xx-small; color: red;"> (*)Required</span></label>
+                                                        <input class="form-control one-column-input"
+                                                               value="{{actionRequest?.technicalCommittee}}"
+                                                               disabled>
                                                     </div>
 
-                                                    <div class="form-group col-12">
 
-                                                        <textarea aria-describedby="inputGroup-sizing-sm"
-                                                                  aria-label="Small"
-                                                                  class="form-control one-column-input" name="reason"
-                                                                  ngModel="{{formActionRequest?.reason}}"
-                                                                  placeholder="Reasons for the decision"
-                                                                  type="text"></textarea>
-                                                        <input hidden ngModel="{{actionRequest?.taskId}}" name="taskId"
-                                                               id="taskId">
+                                                    <div class="form-group col-6">
+                                                        <label><b> Department</b><span
+                                                                style="font-size: xx-small; color: red;"> (*)Required</span></label>
+                                                        <mat-form-field class="example-full-width">
+                                                            <input matInput
+                                                                   value="{{actionRequest?.departmentName}}"
+                                                                   disabled>
+                                                        </mat-form-field>
+                                                    </div>
+                                                </div>
+                                                <div class="row col-12">
+                                                    <div class="form-group col-6">
+                                                        <label><b>SL Number</b></label>
+                                                        <input class="form-control one-column-input"
+                                                               value="{{actionRequest?.sl}}"
+                                                               disabled>
+                                                    </div>
+                                                    <div class="form-group col-6">
+                                                        <label><b>KS Number</b></label>
+                                                        <input class="form-control one-column-input"
+                                                               value="{{actionRequest?.ks}}"
+                                                               disabled>
+                                                    </div>
+
+
+                                                </div>
+                                                <div class="row col-12">
+                                                    <div class="form-group col-6">
+                                                        <label><b>Title</b></label>
+                                                        <input class="form-control one-column-input"
+                                                               value="{{actionRequest?.title}}"
+                                                               disabled>
+                                                    </div>
+                                                    <div class="form-group col-6">
+                                                        <label><b>Edition</b></label>
+                                                        <input class="form-control one-column-input"
+                                                               value="{{actionRequest?.edition}}"
+                                                               disabled>
+                                                    </div>
+
+
+                                                </div>
+
+                                                <div class="row col-12">
+                                                    <div class="form-group col-12">
+                                                        <label><b>Issues Addressed</b></label>
+                                                        <input class="form-control one-column-input"
+                                                               value="{{actionRequest?.issuesAddressed}}"
+                                                               disabled>
                                                     </div>
 
                                                 </div>
 
-                                                <div class="card-body">
-                                                    <form>
-                                                        <div class="row">
+                                                <div class="row col-12">
+                                                    <div class="form-group col-12">
+                                                        <label><b>Background Information</b></label>
+                                                        <input class="form-control one-column-input"
+                                                               value="{{actionRequest?.backgroundInformation}}"
+                                                               disabled>
+                                                    </div>
 
-                                                            <div class="col-md-10">
-                                                                <mat-form-field class="example-full-width">
-                                                                    <input matInput placeholder="Department"
-                                                                           value="{{actionRequest?.taskData.department}}"
-                                                                           disabled>
-                                                                </mat-form-field>
-                                                            </div>
+                                                </div>
 
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-md-10">
-                                                                <mat-form-field class="example-full-width">
-                                                                    <input matInput placeholder="Technical Committee"
-                                                                           value="{{actionRequest?.taskData.technicalCommittee}}"
-                                                                           disabled>
-                                                                </mat-form-field>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-md-10">
-                                                                <mat-form-field class="example-full-width">
-                                                                    <input matInput placeholder="SL Number"
-                                                                           value="{{actionRequest?.taskData.sl}}"
-                                                                           disabled>
-                                                                </mat-form-field>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-md-10">
-                                                                <mat-form-field class="example-full-width">
-                                                                    <input matInput placeholder="KS Number"
-                                                                           value="{{actionRequest?.taskData.ks}}"
-                                                                           disabled>
-                                                                </mat-form-field>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-md-10">
-                                                                <mat-form-field class="example-full-width">
-                                                                    <input matInput placeholder="Title"
-                                                                           value="{{actionRequest?.taskData.title}}"
-                                                                           disabled>
-                                                                </mat-form-field>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-md-10">
-                                                                <mat-form-field class="example-full-width">
-                                                                    <input matInput placeholder="Edition"
-                                                                           value="{{actionRequest?.taskData.edition}}"
-                                                                           disabled>
-                                                                </mat-form-field>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-md-10">
-                                                                <mat-form-field class="example-full-width">
-                                                                    <input matInput placeholder="Issues Addressed"
-                                                                           value="{{actionRequest?.taskData.issuesAddressed}}"
-                                                                           disabled>
-                                                                </mat-form-field>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-md-10">
-                                                                <mat-form-field class="example-full-width">
-                                                                    <input matInput placeholder="Background Information"
-                                                                           value="{{actionRequest?.taskData.backgroundInformation}}"
-                                                                           disabled>
-                                                                </mat-form-field>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-md-10">
-                                                                <mat-form-field class="example-full-width">
-                                                                    <input matInput placeholder="Feedback"
-                                                                           value="{{actionRequest?.taskData.feedback}}"
-                                                                           disabled>
-                                                                </mat-form-field>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-md-10">
-                                                                <mat-form-field class="example-full-width">
-                                                                    <input matInput placeholder="Reference Material"
-                                                                           value="{{actionRequest?.taskData.referenceMaterial}}"
-                                                                           disabled>
-                                                                </mat-form-field>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-md-10">
-                                                                <li><a
-                                                                        (click)="viewPdfFile( actionRequest?.taskData.id,'CV'+actionRequest?.taskData.id, 'application/pdf')"
-                                                                        target="_blank">View Files</a>
-                                                                </li>
-                                                            </div>
-                                                        </div>
+                                                <div class="row col-12">
+                                                    <div class="form-group col-12">
+                                                        <label><b>Feedback</b></label>
+                                                        <input class="form-control one-column-input"
+                                                               value="{{actionRequest?.feedback}}"
+                                                               disabled>
+                                                    </div>
 
-                                                        <div class="clearfix"></div>
-                                                    </form>
+                                                </div>
+                                                <div class="row col-12">
+                                                    <div class="form-group col-12">
+                                                        <label><b>Reference Material</b></label>
+                                                        <input class="form-control one-column-input"
+                                                               value="{{actionRequest?.referenceMaterial}}"
+                                                               disabled>
+                                                    </div>
+
+                                                </div>
+                                                <div class="row col-12">
+                                                    <div class="form-group col-6">
+
+                                                        <li>
+                                                            <a (click)="viewPdfFile( actionRequest?.id,'EACGazette'+actionRequest?.id, 'application/pdf','EAC Gazette')"
+                                                            >View EAC Gazzette</a>
+                                                        </li>
+                                                    </div>
+                                                    <div class="form-group col-6">
+                                                        <li><a
+                                                                (click)="viewPdfFile( actionRequest?.id,'AuthenticText'+actionRequest?.id, 'application/pdf','Authentic Text')"
+                                                        >View Authentic Text</a>
+                                                        </li>
+                                                    </div>
                                                 </div>
 
                                             </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-danger" #closeModal
-                                                        data-dismiss="modal"
-                                                        (click)=" decisionOnSACSummary(editForm.value,false,actionRequest?.taskData?.id)">
-                                                    Reject
+                                            <input hidden ngModel="{{actionRequest?.id}}" name="taskId" id="taskId">
+                                            <div class="form-group col-12">
+                                                <label><b>Please Upload The Minutes</b></label>
+                                                <form #authenticTextForm="ngForm">
+                                                    <file-upload [(ngModel)]="uploadedFiles"
+                                                                 name="uploadedFiles" fileslimit="1"
+                                                                 required
+                                                                 accept=".pdf"></file-upload>
+                                                    <input class="form-control one-column-input"
+                                                           ngModel="Minutes"
+                                                           name="DocDescription" type="hidden">
+                                                </form>
+                                            </div>
+
+                                            <div class="modal-footer justify-content-between">
+                                                <button type="button" class="btn btn-secondary" #closeModal
+                                                        (click)="hideModel()" data-dismiss="modal">Close
                                                 </button>
-                                                <button class="btn btn-info" data-dismiss="modal" #closeModal
-                                                        (click)=" decisionOnSACSummary(editForm.value,true,actionRequest?.taskData?.id)">
+
+                                                <button class="btn btn-success"
+                                                        (click)=" decisionOnSACSummary(editForm.value,true,actionRequest?.id)">
                                                     Approve
                                                 </button>
+                                                <button class="btn btn-danger"
+                                                        (click)=" decisionOnSACSummary(editForm.value,false,actionRequest?.id)">
+                                                    Reject
+                                                </button>
+
                                             </div>
                                         </form>
                                     </div>
