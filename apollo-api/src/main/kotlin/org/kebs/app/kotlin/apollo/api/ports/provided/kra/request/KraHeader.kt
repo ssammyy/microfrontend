@@ -27,17 +27,56 @@ class KraHeader {
     var noOfRecords: String? = null
 }
 
+data class KraDataRequest(
+    @JsonProperty("REQUEST")
+    @NotNull(message = "Required field")
+    @Valid
+    var request : List<Any>? = null
+    //var request: KraRequests? = null
+
+
+)
+
 class KraRequest {
+
     @JsonProperty("HEADER")
     @NotNull(message = "Required field")
     @Valid
     var header: KraHeader? = null
+
 
     @JsonProperty("DETAILS")
     @Valid
     @NotNull(message = "Required field")
     var details: KraDetails? = null
 }
+
+class KraRequestHeader{
+    @JsonProperty("HEADER")
+    @NotNull(message = "Required field")
+    @Valid
+    var header: KraHeader? = null
+}
+
+class KraRequestDetails{
+    @JsonProperty("DETAILS")
+    @Valid
+    @NotNull(message = "Required field")
+    var details: KraDetails? = null
+}
+
+
+
+//class KraRequest {
+//
+//    @JsonProperty("REQUEST")
+//    @NotNull(message = "Required field")
+//    @Valid
+//    var request : List<Any>? = null
+//}
+
+
+
 
 
 class KraDetails{
@@ -58,3 +97,6 @@ class KraDetails{
     var status: String? = null
 
 }
+
+
+
