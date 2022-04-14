@@ -59,9 +59,37 @@ class BillPayments : Serializable {
     @Basic
     var paymentRequestReference: String? = null
 
+    @Column(name = "POSTING_STATUS")
+    @Basic
+    var postingStatus: Int? = null
+
+    @Column(name = "BILL_CURRENCY_CODE")
+    @Basic
+    var currencyCode: String? = null
+
+    @Column(name = "CUSTOMER_CODE")
+    @Basic
+    var customerCode: String? = null
+
+    @Column(name = "CUSTOMER_NAME")
+    @Basic
+    var customerName: String? = null
+
+    @Column(name = "BILL_DESCRIPTION")
+    @Basic
+    var billDescription: String? = null
+
+    @Column(name = "BILL_TYPE")
+    @Basic
+    var billType: Int? = null
+
     @Column(name = "BILL_STATUS")
     @Basic
     var billStatus: Int? = null
+
+    @Column(name = "BILL_DATE")
+    @Basic
+    var billDate: Timestamp? = null
 
     @Column(name = "BILL_STATUS_DESC")
     @Basic

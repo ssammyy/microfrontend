@@ -10,9 +10,6 @@
         <label for="quantity" class="waiver-form-label">Quantity</label>
         <input id="quantity" name="quantity" class="waiver-form-input-master"
                formControlName="quantity" type="number"/>
-        <label for="tareWeight" class="waiver-form-label">Tare Weight</label>
-        <input id="tareWeight" name="tareWeight" class="waiver-form-input-master"
-               formControlName="tareWeight" type="number"/>
         <div *ngIf="form.value.itemType=='VEHICLE'">
             <label for="chassisNo" class="waiver-form-label">Chassis Number</label>
             <input id="chassisNo" name="chassisNo" class="waiver-form-input-master"

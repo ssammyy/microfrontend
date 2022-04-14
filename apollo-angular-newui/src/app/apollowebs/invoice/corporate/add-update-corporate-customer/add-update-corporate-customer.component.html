@@ -5,25 +5,36 @@
             <label for="corporateIdentifier" class="waiver-form-label">Company PIN</label>
             <input type="text" class="waiver-form-input-master" name="corporateIdentifier"
                    data-name="corporateIdentifier" id="corporateIdentifier" formControlName="corporateIdentifier">
-            <span class="error" *ngIf="(form.get('corporateIdentifier').touched && !form.get('corporateIdentifier').value) ||  form.get('corporateIdentifier').invalid">Company should be at least 2 characters</span>
+            <span class="error"
+                  *ngIf="(form.get('corporateIdentifier').touched && !form.get('corporateIdentifier').value) ||  form.get('corporateIdentifier').invalid">Company should be at least 2 characters</span>
         </div>
         <div class="col-sm-12 col-md-6">
             <label for="corporateName" class="waiver-form-label">Corporate Name</label>
             <input type="text" class="waiver-form-input-master" name="corporateName"
                    data-name="corporateName" id="corporateName" formControlName="corporateName">
-            <span class="error" *ngIf="(form.get('corporateName').touched && !form.get('corporateName').value) ||  form.get('corporateName').invalid">Corporate name should be at least 2 characters</span>
+            <span class="error"
+                  *ngIf="(form.get('corporateName').touched && !form.get('corporateName').value) ||  form.get('corporateName').invalid">Corporate name should be at least 2 characters</span>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="corporateCode" class="waiver-form-label">Corporate Code</label>
+            <input type="text" class="waiver-form-input-master" name="corporateCode"
+                   data-name="corporateCode" id="corporateCode" formControlName="corporateCode">
+            <span class="error"
+                  *ngIf="(form.get('corporateCode').touched && !form.get('corporateCode').value) ||  form.get('corporateCode').invalid">Corporate code should be at least 2 characters</span>
         </div>
         <div class="col-sm-12 col-md-6">
             <label for="corporatePhone" class="waiver-form-label">Corporate Phone number</label>
             <input type="text" class="waiver-form-input-master" name="corporatePhone"
                    data-name="corporatePhone" id="corporatePhone" formControlName="corporatePhone">
-            <span class="error" *ngIf="(form.get('corporatePhone').touched && !form.get('corporatePhone').value) ||  form.get('corporatePhone').invalid">Phone number is required</span>
+            <span class="error"
+                  *ngIf="(form.get('corporatePhone').touched && !form.get('corporatePhone').value) ||  form.get('corporatePhone').invalid">Phone number is required</span>
         </div>
         <div class="col-sm-12 col-md-6">
             <label for="corporateEmail" class="waiver-form-label">Corporate Email</label>
             <input type="text" class="waiver-form-input-master" name="corporateEmail"
                    data-name="corporateEmail" id="corporateEmail" formControlName="corporateEmail">
-            <span class="error" *ngIf="(form.get('corporateEmail').touched && !form.get('corporateEmail').value) ||  form.get('corporateEmail').invalid">A Valid email is required</span>
+            <span class="error"
+                  *ngIf="(form.get('corporateEmail').touched && !form.get('corporateEmail').value) ||  form.get('corporateEmail').invalid">A Valid email is required</span>
         </div>
         <div class="col-sm-12 col-md-6">
             <label for="corporateType" class="waiver-form-label">Corporate Type</label>

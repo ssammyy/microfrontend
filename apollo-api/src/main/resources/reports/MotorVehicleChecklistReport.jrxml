@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.17.0.final using JasperReports Library version 6.17.0-6d93193241dd8cc42629e188b94f9e0bc5722efd  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
-			  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-			  xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
-			  name="MotorVehicleChecklistReport" pageWidth="842" pageHeight="595" orientation="Landscape"
-			  whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20"
-			  bottomMargin="20" uuid="b4e75b94-4b79-464d-8e19-63fce4f5adb9">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter "/>
-	<parameter name="imagePath" class="java.lang.String"/>
-	<parameter name="EntryPoint" class="java.lang.String"/>
-	<parameter name="Cfs" class="java.lang.String"/>
-	<parameter name="ministryStation" class="java.lang.String"/>
-	<parameter name="ministryRepresentative" class="java.lang.String"/>
-	<parameter name="issuedOn" class="java.lang.String"/>
-	<parameter name="inspectionOfficer" class="java.lang.String"/>
-	<parameter name="inspectionType" class="java.lang.String"/>
-	<parameter name="supervisorName" class="java.lang.String"/>
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="MotorVehicleChecklistReport" pageWidth="842" pageHeight="595" orientation="Landscape"
+              whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20"
+              bottomMargin="20" uuid="b4e75b94-4b79-464d-8e19-63fce4f5adb9">
+    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter "/>
+    <parameter name="imagePath" class="java.lang.String"/>
+    <parameter name="EntryPoint" class="java.lang.String"/>
+    <parameter name="Cfs" class="java.lang.String"/>
+    <parameter name="ministryStation" class="java.lang.String"/>
+    <parameter name="ministryRepresentative" class="java.lang.String"/>
+    <parameter name="issuedOn" class="java.lang.String"/>
+    <parameter name="inspectionOfficer" class="java.lang.String"/>
+    <parameter name="inspectionType" class="java.lang.String"/>
+    <parameter name="supervisorName" class="java.lang.String"/>
 	<parameter name="reportReference" class="java.lang.String"/>
 	<parameter name="Date" class="java.lang.String"/>
 	<parameter name="ImportersName" class="java.lang.String"/>
@@ -676,10 +676,13 @@ VEHICLE]]></text>
 					<pen lineStyle="Dotted"/>
 				</graphicElement>
 			</line>
-			<textField>
-				<reportElement x="0" y="27" width="799" height="83" uuid="aceca268-8aab-49ed-b0cb-ad2a2efe9c8f"/>
-				<textFieldExpression><![CDATA[$P{OverallRemarks}]]></textFieldExpression>
-			</textField>
+            <textField>
+                <reportElement x="0" y="27" width="799" height="83" uuid="aceca268-8aab-49ed-b0cb-ad2a2efe9c8f"/>
+                <textElement markup="styled">
+                    <font size="12" isUnderline="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{OverallRemarks}]]></textFieldExpression>
+            </textField>
 			<textField>
 				<reportElement x="97" y="250" width="174" height="17" uuid="821415c2-18cb-4865-b996-0b365232e924"/>
 				<textElement>

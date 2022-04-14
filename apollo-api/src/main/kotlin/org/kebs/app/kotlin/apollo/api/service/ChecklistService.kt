@@ -1391,23 +1391,36 @@ class ChecklistService(
             KotlinLogging.logger { }.info("All checklist details Found")
             map.putAll(loadGeneralInspection(inspectionGeneral))
             map["documentCategory"] = "All Checklists"
+            map["hasOthers"] = false
+            map["hasAgrochemical"] = false
+            map["hasVehicles"] = false
+            map["hasEngineering"] = false
             val dataSources = hashMapOf<String, List<Any>>()
             // AgroChecmical
             agrochemChecklistRepository.findByInspectionGeneral(inspectionGeneral)?.let {
-                dataSources["agrochemicalItemsDatasource"] = InspectionAgrochemItemDto.fromList(agrochemItemChecklistRepository.findByInspection(it))
+                val items = InspectionAgrochemItemDto.fromList(agrochemItemChecklistRepository.findByInspection(it))
+                dataSources["agrochemicalItemsDatasource"] = items
+                map["hasAgrochemical"] = items.isNotEmpty()
             }
             //Engineering
             engineeringChecklistRepository.findByInspectionGeneral(inspectionGeneral)?.let {
-                dataSources["engineeringItemsDatasource"] = InspectionEngineeringItemDto.fromList(engineeringItemChecklistRepository.findByInspection(it))
+                val items = InspectionEngineeringItemDto.fromList(engineeringItemChecklistRepository.findByInspection(it))
+                dataSources["engineeringItemsDatasource"] = items
+                map["hasEngineering"] = items.isNotEmpty()
             }
             // Vehicle
             motorVehicleChecklistRepository.findByInspectionGeneral(inspectionGeneral)?.let {
-                dataSources["motorVehicleItemsDatasource"] = InspectionMotorVehicleItemDto.fromList(motorVehicleItemChecklistRepository.findByInspection(it))
+                val items = InspectionMotorVehicleItemDto.fromList(motorVehicleItemChecklistRepository.findByInspection(it))
+                dataSources["motorVehicleItemsDatasource"] = items
+                map["hasVehicles"] = items.isNotEmpty()
             }
             // Other
             otherChecklistRepository.findByInspectionGeneral(inspectionGeneral)?.let {
-                dataSources["otherItemsDatasource"] = InspectionOtherItemDto.fromList(otherItemChecklistRepository.findByInspection(it))
+                val items = InspectionOtherItemDto.fromList(otherItemChecklistRepository.findByInspection(it))
+                dataSources["otherItemsDatasource"] = items
+                map["hasOthers"] = items.isNotEmpty()
             }
+            KotlinLogging.logger { }.info("Date: $map")
             map["dataSources"] = dataSources
             map
         } ?: throw ExpectedDataNotFound("Other Inspection Checklist does not exist")

@@ -21,9 +21,6 @@ export class AproveRejectAuctionItemComponent implements OnInit {
     ngOnInit(): void {
         this.form = this.fb.group({
             approve: ["", Validators.required],
-            witnessDesignation: ["", Validators.required],
-            witnessName: ["", Validators.required],
-            witnessEmail: ["", [Validators.required, Validators.email]],
             remarks: ["", Validators.required]
         })
     }
