@@ -37,6 +37,7 @@ import java.sql.Date
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.time.Instant
+import java.time.LocalDateTime
 import java.util.*
 
 enum class ChecklistType {
@@ -702,23 +703,25 @@ class ChecklistService(
             }
 
             data["mvirNum"] = mvInspection.serialNumber.toString()
-            data["inspectionRegion"] = mvInspection.ministryStationId?.stationName.toString()
+            data["inspectionRegion"] = mvInspection.ministryStationId?.stationName.orEmpty()
             data["reportReference"] = mvInspection.ministryReportReference.orEmpty()
             data["makeVehicle"] = mvInspection.makeVehicle ?: ""
             data["engineNumber"] = mvInspection.engineNoCapacity ?: ""
             data["modeOfRelease"] = ""
+            data["signedBy"] = ""
             data["chassisNo"] = mvInspection.chassisNo ?: ""
             data["yearOfManufacture"] = "${mvInspection.manufactureDate?.year}"
             data["remarks"] = mvInspection.remarks ?: ""
             data["genDate"] = SimpleDateFormat("dd/MM/yyyy HH:mm").format(mvInspection.createdOn)
-            data["dutyStation"] = mvInspection.ministryStationId?.stationName.toString()
+            data["dutyStation"] = mvInspection.ministryStationId?.stationName ?: "N/A"
 
             mvInspection.itemId?.cdDocId?.let { cdDetaisl ->
+                data["trackingNum"] = cdDetaisl.ucrNumber.orEmpty()
+                data["entryPoint"] = cdDetaisl.freightStation?.cfsName.orEmpty()
                 cdDetaisl.cdImporter?.let { importerId ->
                     val cdImporterDetails = daoServices.findCDImporterDetails(importerId)
                     data["emailAddress"] = cdImporterDetails.email.orEmpty()
                     data["idfNumber"] = cdDetaisl.idfNumber.orEmpty()
-
                     data["name"] = cdImporterDetails.name.orEmpty()
                     data["importerAddress"] = cdImporterDetails.email.orEmpty()
                     data.put("importerName", cdImporterDetails.name.orEmpty())
@@ -1163,8 +1166,6 @@ class ChecklistService(
         val map = hashMapOf<String, Any>()
         motorVehicleItemChecklistRepository.findByIdOrNull(mvInspectionId)?.let { mvInspectionChecklist ->
             val inspectionGeneral = mvInspectionChecklist.inspection?.inspectionGeneral
-            map["EntryPoint"] = inspectionGeneral?.entryPoint.orEmpty()
-            map["Cfs"] = inspectionGeneral?.cfs.orEmpty()
             map["inspectionType"] = inspectionGeneral?.inspection.orEmpty()
             map["productCategory"] = "Motor Vehicle inspection"
             map["Date"] = inspectionGeneral?.inspectionDate?.toString() ?: ""
@@ -1174,18 +1175,21 @@ class ChecklistService(
             map["CustomsEntryNo"] = inspectionGeneral?.customsEntryNumber.orEmpty()
             map["inspectionOfficer"] = inspectionGeneral?.inspectionOfficer.orEmpty()
             map["supervisorName"] = inspectionGeneral?.supervisorName.orEmpty()
+            map["FeePaid"] = "No"
+            map["ReceiptNo"] = ""
             inspectionGeneral?.cdDetails?.let {
+                map["EntryPoint"] = it.freightStation?.cfsName.orEmpty()
+                map["Cfs"] = it.freightStation?.cfsCode.orEmpty()
                 map["IdfNo"] = it.idfNumber.orEmpty()
                 map["CocNo"] = it.corNumber.orEmpty()
-                daoServices.findDemandNoteWithCDID(it.id!!)?.let { demandNote ->
+                daoServices.findDemandNoteWithPaymentStatus(it.id!!, 1)?.let { demandNote ->
                     map["FeePaid"] = "Yes"
                     map["ReceiptNo"] = demandNote.demandNoteNumber.orEmpty()
-                } ?: {
-                    map["FeePaid"] = "No"
-                    map["ReceiptNo"] = ""
+                    map
                 }
             }
-
+            map["ministryRepresentative"] = ""
+            map["signatures"] = ""
             mvInspectionChecklist.assignedUser?.let { user ->
                 map["ministryRepresentative"] = "${user.firstName} ${user.lastName}".trim()
             }
@@ -1248,12 +1252,13 @@ class ChecklistService(
     fun loadGeneralInspection(inspectionGeneral: CdInspectionGeneralEntity?): Map<out String, Any> {
         val map = hashMapOf<String, Any>()
         map["inspection"] = inspectionGeneral?.inspection.toString()
-        map["cfs"] = inspectionGeneral?.cfs.toString()
+        val date = commonDaoServices.convertDateToString(inspectionGeneral?.createdOn?.toLocalDateTime()
+                ?: LocalDateTime.now(), "dd-MMMM-yyyy")
         map["csName"] = ""
-        map["csDate"] = ""
-
-        map["oicDate"] = ""
+        map["csDate"] = date
+        map["oicDate"] = date
         map["oicName"] = ""
+        map["createdOn"] = date
         map["overallRemarks"] = inspectionGeneral?.overallRemarks ?: ""
         map["inspectionDate"] = inspectionGeneral?.inspectionDate.toString()
         map["importersName"] = inspectionGeneral?.importersName.toString()
@@ -1264,9 +1269,11 @@ class ChecklistService(
             map["idfNumber"] = it.idfNumber ?: ""
             map["cocNumber"] = it.cocNumber ?: ""
             map["ucrNumber"] = it.ucrNumber ?: ""
+            map["inspectionOfficer"] = "${it.assignedInspectionOfficer?.firstName.orEmpty()} ${it.assignedInspectionOfficer?.lastName.orEmpty()}".trim()
+            map["supervisor"] = "${it.assigner?.firstName.orEmpty()} ${it.assigner?.lastName.orEmpty()}".trim()
             map["receiptNumber"] = "NA"
             map["feePaid"] = "NO"
-            map["createdOn"] = it.createdOn.toString()
+
             daoServices.findDemandNoteWithPaymentStatus(it.id!!, 1)?.let {
                 map["receiptNumber"] = it.demandNoteNumber.toString()
                 map["feePaid"] = "YES"
@@ -1292,6 +1299,7 @@ class ChecklistService(
             map["inspection"] = inspectionGeneral?.inspection.toString()
             map["documentCategory"] = mvInspectionChecklist.inspectionChecklistType?.typeName
                     ?: "Agrochemical checklist"
+            map["itemType"] = "AGROCHEMICAL"
             map["cfs"] = inspectionGeneral?.cfs.toString()
             map["inspectionDate"] = inspectionGeneral?.inspectionDate.toString()
             map["inspectionOfficer"] = inspectionGeneral?.inspectionOfficer.orEmpty()
@@ -1323,7 +1331,7 @@ class ChecklistService(
             map["serialNumber"] = mvInspectionChecklist.serialNumber.toString()
             map["items"] = InspectionAgrochemItemDto.fromList(agrochemItemChecklistRepository.findByInspection(mvInspectionChecklist))
             map["remarks"] = mvInspectionChecklist.remarks.orEmpty()
-            map["overallRemarks"] = mvInspectionChecklist.remarks.orEmpty()
+            map["overallRemarks"] = inspectionGeneral?.overallRemarks.orEmpty()
             map
         } ?: throw ExpectedDataNotFound("Agrochemical Inspection Checklist does not exist")
         return map
@@ -1338,6 +1346,7 @@ class ChecklistService(
             map.putAll(loadGeneralInspection(inspectionGeneral))
             map["documentCategory"] = mvInspectionChecklist.inspectionChecklistType?.typeName
                     ?: "Engineering checklist"
+            map["itemType"] = "ENGINEERING"
             map["id"] = mvInspectionChecklist.id ?: 0L
             map["serialNumber"] = mvInspectionChecklist.serialNumber.toString()
             map["items"] = InspectionEngineeringItemDto.fromList(engineeringItemChecklistRepository.findByInspection(mvInspectionChecklist))
@@ -1355,6 +1364,7 @@ class ChecklistService(
             KotlinLogging.logger { }.info("Other checklist details Found")
             map.putAll(loadGeneralInspection(mvInspectionChecklist.inspectionGeneral))
             map["documentCategory"] = mvInspectionChecklist.inspectionChecklistType?.typeName ?: "Other Checklist"
+            map["itemType"] = "OTHER ITEMS"
             map["id"] = mvInspectionChecklist.id ?: 0L
             map["serialNumber"] = mvInspectionChecklist.serialNumber.toString()
             map["items"] = InspectionOtherItemDto.fromList(otherItemChecklistRepository.findByInspection(mvInspectionChecklist))
@@ -1373,10 +1383,12 @@ class ChecklistService(
             map.putAll(loadGeneralInspection(mvInspectionChecklist.inspectionGeneral))
             map["documentCategory"] = mvInspectionChecklist.inspectionChecklistType?.typeName ?: "Vehicle Checklist"
             map["id"] = mvInspectionChecklist.id ?: 0L
-            map["serialNumber"] = mvInspectionChecklist.serialNumber.toString()
+            map["itemType"] = "VEHICLE"
+            map["ministryRepresentative"] = ""
+            map["serialNumber"] = mvInspectionChecklist.serialNumber.orEmpty()
             map["items"] = InspectionMotorVehicleItemDto.fromList(motorVehicleItemChecklistRepository.findByInspection(mvInspectionChecklist))
-            map["remarks"] = mvInspectionChecklist.remarks.toString()
-            map["overallRemarks"] = mvInspectionChecklist.remarks.toString()
+            map["remarks"] = mvInspectionChecklist.remarks.orEmpty()
+            map["overallRemarks"] = mvInspectionChecklist.remarks.orEmpty()
             map
         } ?: throw ExpectedDataNotFound("Other Inspection Checklist does not exist")
         return map

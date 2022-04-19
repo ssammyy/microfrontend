@@ -87,39 +87,23 @@
     <title>
         <band height="90" splitType="Stretch">
             <staticText>
-                <reportElement x="307" y="-4" width="199" height="18" uuid="58f6c5f3-4942-452e-942a-3fc8f540c755">
+                <reportElement x="280" y="0" width="400" height="20" uuid="58f6c5f3-4942-452e-942a-3fc8f540c755">
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
                 </reportElement>
                 <textElement verticalAlignment="Middle">
-                    <font size="10" isBold="true"/>
+                    <font size="17" isBold="true"/>
                 </textElement>
                 <text><![CDATA[KENYA BUREAU OF STANDARDS]]></text>
             </staticText>
-            <textField>
-                <reportElement x="414" y="49" width="104" height="20" uuid="e9866666-ed5d-4ad4-a169-843c97814fe8"/>
-                <textElement>
-                    <font fontName="Arial" size="12" isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA[$P{aucMonth}]]></textFieldExpression>
-            </textField>
             <staticText>
-                <reportElement x="45" y="50" width="410" height="19" uuid="121c1db3-c7f4-4211-9d6f-3ea055e58102">
-                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
-                </reportElement>
-                <textElement textAlignment="Left">
-                    <font fontName="Arial" size="12" isBold="true" isItalic="false" isUnderline="false"/>
-                </textElement>
-                <text><![CDATA[PROSOPED  LIST FOR PUBLICATION IN KENYA GAZETTE FOR ]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="307" y="11" width="199" height="18" uuid="8d8fbdd9-2162-4fab-8564-58dee1876fca"/>
+                <reportElement x="280" y="38" width="199" height="18" uuid="8d8fbdd9-2162-4fab-8564-58dee1876fca"/>
                 <textElement verticalAlignment="Middle">
                     <font size="10" isBold="false"/>
                 </textElement>
                 <text><![CDATA[P.O. Box 54974 00200 NAIROBI]]></text>
             </staticText>
             <image>
-                <reportElement style="TextField" x="255" y="-4" width="50" height="45"
+                <reportElement style="TextField" x="190" y="1" width="84" height="72"
                                uuid="961d0ba6-c775-4b80-b144-7df76fff0ef0"/>
                 <box>
                     <topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -130,7 +114,7 @@
                 <imageExpression><![CDATA[$P{imagePath}]]></imageExpression>
             </image>
             <staticText>
-                <reportElement x="307" y="27" width="199" height="15" uuid="6a4e2e1d-2ec2-4856-9226-3a854968fb6f">
+                <reportElement x="280" y="58" width="199" height="15" uuid="6a4e2e1d-2ec2-4856-9226-3a854968fb6f">
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
                 </reportElement>
                 <textElement verticalAlignment="Middle">
@@ -138,8 +122,15 @@
                 </textElement>
                 <text><![CDATA[Tel : 020 6948000]]></text>
             </staticText>
+            <textField>
+                <reportElement x="621" y="59" width="179" height="20" uuid="19eda423-7d26-4b95-a8f0-b227deadecf9"/>
+                <textElement>
+                    <font fontName="Arial" size="12" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{reportDate}]]></textFieldExpression>
+            </textField>
             <staticText>
-                <reportElement x="524" y="49" width="91" height="19" uuid="a2e65f71-302a-4a01-840f-a87b531c111f">
+                <reportElement x="525" y="60" width="91" height="19" uuid="a2e65f71-302a-4a01-840f-a87b531c111f">
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
                 </reportElement>
                 <textElement textAlignment="Left">
@@ -147,19 +138,19 @@
                 </textElement>
                 <text><![CDATA[AUCTION ON]]></text>
             </staticText>
-            <textField>
-                <reportElement x="621" y="48" width="179" height="20" uuid="19eda423-7d26-4b95-a8f0-b227deadecf9"/>
+            <staticText>
+                <reportElement x="281" y="22" width="300" height="13" uuid="86a407c9-7238-4e4a-939b-9146a28e75e6"/>
                 <textElement>
-                    <font fontName="Arial" size="12" isBold="true"/>
+                    <font size="8"/>
                 </textElement>
-                <textFieldExpression><![CDATA[$P{reportDate}]]></textFieldExpression>
-            </textField>
+                <text><![CDATA[Standards for Quality life]]></text>
+            </staticText>
         </band>
     </title>
     <detail>
-        <band height="326" splitType="Stretch">
+        <band height="263" splitType="Stretch">
             <componentElement>
-                <reportElement x="0" y="0" width="800" height="170" uuid="5d90f423-0c0e-4e67-acee-6c08884c6b99">
+                <reportElement x="0" y="28" width="800" height="170" uuid="5d90f423-0c0e-4e67-acee-6c08884c6b99">
                     <property name="com.jaspersoft.studio.layout"
                               value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
                     <property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
@@ -427,6 +418,22 @@
                     </jr:column>
                 </jr:table>
             </componentElement>
+            <staticText>
+                <reportElement x="94" y="0" width="410" height="19" uuid="121c1db3-c7f4-4211-9d6f-3ea055e58102">
+                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                </reportElement>
+                <textElement textAlignment="Left">
+                    <font fontName="Arial" size="12" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[PROSOPED  LIST FOR PUBLICATION IN KENYA GAZETTE FOR ]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="508" y="0" width="104" height="20" uuid="e9866666-ed5d-4ad4-a169-843c97814fe8"/>
+                <textElement>
+                    <font fontName="Arial" size="12" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{aucMonth}]]></textFieldExpression>
+            </textField>
         </band>
     </detail>
 </jasperReport>

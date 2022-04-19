@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {DecisionFeedback, SACSummaryTask, StdTCDecision} from "../../../../core/store/data/std/request_std.model";
+import {DecisionFeedback, SACSummary, StdTCDecision} from "../../../../core/store/data/std/request_std.model";
 import {Subject} from "rxjs";
 import {DataTableDirective} from "angular-datatables";
 import {PublishingService} from "../../../../core/store/data/std/publishing.service";
@@ -17,8 +17,8 @@ export class ViewSacSummaryComponent implements OnInit {
 
     p = 1;
     p2 = 1;
-    tasks: SACSummaryTask[] = [];
-    public actionRequest: SACSummaryTask | undefined;
+    tasks: SACSummary[] = [];
+    public actionRequest: SACSummary | undefined;
     public formActionRequest: StdTCDecision | undefined;
     fullname = '';
     title = 'toaster-not';
@@ -30,6 +30,7 @@ export class ViewSacSummaryComponent implements OnInit {
     public itemId: number;
     loadingText: string;
     blob: Blob;
+    public uploadedFiles: FileList;
 
 
     constructor(private publishingService: PublishingService, private notifyService: NotificationService,
@@ -43,8 +44,8 @@ export class ViewSacSummaryComponent implements OnInit {
     public getSPCTasks(): void {
         this.loadingText = "Retrieving Data Please Wait ...."
         this.SpinnerService.show();
-        this.adoptionOfEaStdsService.getSACSummaryTask().subscribe(
-            (response: SACSummaryTask[]) => {
+        this.adoptionOfEaStdsService.getSACSECTask().subscribe(
+            (response: SACSummary[]) => {
                 this.tasks = response;
                 console.log(response)
                 this.SpinnerService.hide();
@@ -71,13 +72,13 @@ export class ViewSacSummaryComponent implements OnInit {
 
     }
 
-    public onOpenModal(task: SACSummaryTask, mode: string): void {
+    public onOpenModal(task: SACSummary, mode: string): void {
         const container = document.getElementById('main-container');
         const button = document.createElement('button');
         button.type = 'button';
         button.style.display = 'none';
         button.setAttribute('data-toggle', 'modal');
-        console.log(task.taskId);
+        console.log(task.id);
         if (mode === 'edit') {
             this.actionRequest = task;
             button.setAttribute('data-target', '#decisionModal');
@@ -90,23 +91,53 @@ export class ViewSacSummaryComponent implements OnInit {
     }
 
     public decisionOnSACSummary(decisionFeedback: DecisionFeedback, decision: boolean, sacSummaryId: number): void {
-        this.loadingText = "Submitting Decision On SAC Summary ...."
+        if (this.uploadedFiles != null) {
+            if (this.uploadedFiles.length > 0 || this.uploadedFiles.length != 1) {
 
-        this.SpinnerService.show();
-        decisionFeedback.status = decision;
-        this.adoptionOfEaStdsService.decisionOnSACSummary(decisionFeedback, sacSummaryId).subscribe(
-            (response) => {
-                console.log(response);
-                this.SpinnerService.hide()
-                this.showToasterSuccess(response.httpStatus, `Your Decision Has Been Submitted.`);
-                this.getSPCTasks();
-            },
-            (error: HttpErrorResponse) => {
-                alert(error.message);
-                this.SpinnerService.hide()
+                this.loadingText = "Submitting Decision On SAC Summary ...."
 
+                this.SpinnerService.show();
+                decisionFeedback.status = decision;
+                this.adoptionOfEaStdsService.decisionOnSACSummary(decisionFeedback, sacSummaryId).subscribe(
+                    (response) => {
+                        console.log(response);
+                        this.SpinnerService.hide()
+                        this.showToasterSuccess(response.httpStatus, `Your Decision Has Been Submitted.`);
+                        this.onClickSaveUploads(String(sacSummaryId))
+                    },
+                    (error: HttpErrorResponse) => {
+                        alert(error.message);
+                        this.SpinnerService.hide()
+
+                    }
+                )
+            } else {
+                this.showToasterError("Error", `Please Upload the minutes.`);
             }
-        )
+        } else {
+            this.showToasterError("Error", `Please Upload the minutes.`);
+        }
+
+    }
+
+    onClickSaveUploads(sacSummaryID: string) {
+        if (this.uploadedFiles.length > 0) {
+            const file = this.uploadedFiles;
+            const formData = new FormData();
+            for (let i = 0; i < file.length; i++) {
+                console.log(file[i]);
+                formData.append('docFile', file[i], file[i].name);
+            }
+            this.SpinnerService.show();
+            this.adoptionOfEaStdsService.uploadFileDetails(sacSummaryID, formData, "Minutes", "Minutes").subscribe(
+                (data: any) => {
+                    this.getSPCTasks();
+                    this.hideModel();
+                },
+            );
+        } else {
+            this.showToasterError("Error", `Please Upload the minutes.`);
+        }
 
     }
 
@@ -117,9 +148,9 @@ export class ViewSacSummaryComponent implements OnInit {
         this.closeModal?.nativeElement.click();
     }
 
-    viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
+    viewPdfFile(pdfId: number, fileName: string, applicationType: string, doctype: string): void {
         this.SpinnerService.show();
-        this.publishingService.viewDEditedApplicationPDF(pdfId, "DraftStandard").subscribe(
+        this.adoptionOfEaStdsService.viewDocs(pdfId, doctype).subscribe(
             (dataPdf: any) => {
                 this.SpinnerService.hide();
                 this.blob = new Blob([dataPdf], {type: applicationType});
@@ -134,4 +165,12 @@ export class ViewSacSummaryComponent implements OnInit {
             },
         );
     }
+
+
+    showToasterError(title: string, message: string) {
+        this.notifyService.showError(message, title)
+
+    }
+
+
 }

@@ -91,7 +91,7 @@ class AuctionService(
         val endTimestamp = getReportTimestamp(endDate, false)
         // Get individual items instead
         val auctionReportDetails = this.auctionItemsRepo.findByAuctionId_ApprovalStatusInAndAuctionId_ApprovedRejectedOnBetween(
-                arrayListOf(AuctionGoodStatus.APPROVED.status, AuctionGoodStatus.REJECTED.status, AuctionGoodStatus.OTHER.status),
+                arrayListOf(AuctionGoodStatus.CONDITIONAL_APPROVAL.status, AuctionGoodStatus.APPROVED.status, AuctionGoodStatus.REJECTED.status, AuctionGoodStatus.HOLD.status),
                 startTimestamp, endTimestamp)
         return AuctionRequestDto.fromItemList(auctionReportDetails)
     }

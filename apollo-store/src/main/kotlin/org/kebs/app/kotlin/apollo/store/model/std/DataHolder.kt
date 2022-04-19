@@ -1,6 +1,5 @@
 package org.kebs.app.kotlin.apollo.store.model.std
 
-import oracle.sql.TIMESTAMP
 import java.util.*
 
 
@@ -166,6 +165,27 @@ interface NotificationFormDetailsHolder{
 
 interface DirectorListHolder {
     fun getDirectorName(): String?
+}
+
+interface SACSummaryHolder {
+
+    fun getId(): Long?
+    fun getDepartmentName(): String?
+    fun getTechnicalCommittee(): String?
+    fun getBackgroundInformation(): String?
+    fun getDateOfApproval(): String?
+    fun getKs(): String?
+    fun getEdition(): String?
+    fun getTitle(): String?
+    fun getIssuesAddressed(): String?
+    fun getFeedback(): String?
+    fun getRequestedBy(): String?
+    fun getVarField1(): String?
+    fun getReferenceMaterial(): String?
+    fun getSl(): String?
+    fun getRequestedByName(): String?
+
+
 }
 
 

@@ -22,14 +22,13 @@ export class AdoptionOfEaStdsService {
   }
 
   public getSACSummaryTask(): Observable<SACSummaryTask[]> {
-    return this.http.get<SACSummaryTask[]>(`${this.apiAdoptionToEAStandardUrl}` + 'getSACSummaryTask')
+    return this.http.get<SACSummaryTask[]>(`${this.apiAdoptionToEAStandardUrl}` + 'getTcSecSummaryTask')
   }
 
-
-  public decisionOnSACSummary(decisionFeedback: DecisionFeedback, decisionId): Observable<any> {
+  public decisionByTCSecOnSACSummary(decisionFeedback: DecisionFeedback, sacSummaryId): Observable<any> {
     const params = new HttpParams()
-        .set('decisionId', decisionId)
-    return this.http.post<DecisionFeedback>(`${this.apiAdoptionToEAStandardUrl}` + 'decisionOnSACSummary', decisionFeedback, {
+        .set('decisionId', sacSummaryId)
+    return this.http.post<DecisionFeedback>(`${this.apiAdoptionToEAStandardUrl}` + 'decisionByTCSecOnSACSummary', decisionFeedback, {
       params,
       responseType: 'arraybuffer' as 'json'
     }).pipe(
@@ -43,9 +42,24 @@ export class AdoptionOfEaStdsService {
   }
 
 
-  public getSACSECTask(): Observable<SACSummaryTask[]> {
-    return this.http.get<SACSummaryTask[]>(`${this.apiAdoptionToEAStandardUrl}` + 'getSACSECTask')
+  public getSACSECTask(): Observable<SACSummary[]> {
+    return this.http.get<SACSummary[]>(`${this.apiAdoptionToEAStandardUrl}` + 'getSACSummaryTask')
   }
+    public decisionOnSACSummary(decisionFeedback: DecisionFeedback, decisionId): Observable<any> {
+        const params = new HttpParams()
+            .set('decisionId', decisionId)
+        return this.http.post<DecisionFeedback>(`${this.apiAdoptionToEAStandardUrl}` + 'decisionOnSACSummary', decisionFeedback, {
+            params,
+            responseType: 'arraybuffer' as 'json'
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
 
 
   public decisionOnSACSEC(decisionFeedback: DecisionFeedback, decisionId): Observable<DecisionFeedback> {

@@ -366,7 +366,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                         <a href="#" class="btn btn-header-link" data-toggle="collapse"
                                                            data-target="#faq1"
                                                            aria-expanded="true" aria-controls="faq1"
-                                                           style="width: 623px; background-color: #3a75bc;">STA 1
+                                                           style="width: -webkit-fill-available; background-color: #3a75bc;">STA 1
                                                             Form</a>
                                                     </div>
 
@@ -463,7 +463,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                         <a href="#" class="btn btn-header-link collapsed"
                                                            data-toggle="collapse" data-target="#faq2"
                                                            aria-expanded="true" aria-controls="faq2"
-                                                           style="width: 623px; background-color: #3a75bc;">STA3 Form :
+                                                           style="width: -webkit-fill-available; background-color: #3a75bc;">STA3 Form :
                                                             1.Factory Organization</a>
                                                     </div>
 
@@ -557,7 +557,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                         <a href="#" class="btn btn-header-link collapsed"
                                                            data-toggle="collapse" data-target="#faq3"
                                                            aria-expanded="true" aria-controls="faq3"
-                                                           style="width: 623px; background-color: #3a75bc;">QUALITY
+                                                           style="width: -webkit-fill-available; background-color: #3a75bc;">QUALITY
                                                             CONTROL/INSPECTION STAFF</a>
                                                     </div>
 
@@ -709,7 +709,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                         <a href="#" class="btn btn-header-link collapsed"
                                                            data-toggle="collapse" data-target="#faq4"
                                                            aria-expanded="true" aria-controls="faq4"
-                                                           style="width: 623px; background-color: #3a75bc;">MATERIALS OR
+                                                           style="width: -webkit-fill-available; background-color: #3a75bc;">MATERIALS OR
                                                             COMPONENTS: PURCHASE SPECIFICATION/MATERIALS QUALITY
                                                             ASSURANCE</a>
                                                     </div>
@@ -775,7 +775,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                         <a href="#" class="btn btn-header-link collapsed"
                                                            data-toggle="collapse" data-target="#faq5"
                                                            aria-expanded="true" aria-controls="faq5"
-                                                           style="width: 623px; background-color: #3a75bc;">MANUFACTURE
+                                                           style="width: -webkit-fill-available; background-color: #3a75bc;">MANUFACTURE
                                                             : SYSTEM</a>
                                                     </div>
 
@@ -1295,8 +1295,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                     </h4>
                 </div>
                 <div class="card-body ">
-                    <button *ngIf="allPermitDetails?.permitDetails?.invoiceGenerated == true && allPermitDetails.batchID != null"
-                            mat-raised-button=""
+                    <button style="width: auto;" *ngIf="allPermitDetails?.permitDetails?.invoiceGenerated == true && allPermitDetails.batchID != null"
                             (click)="goToInvoiceGenerated()"
                             class="btn btn-kebs mat-raised-button mat-button-base"><span
                             class="mat-button-wrapper">View Generated Invoice</span>

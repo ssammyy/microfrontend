@@ -85,23 +85,13 @@ export class ViewAuctionItemsComponent implements OnInit {
                 title: 'Current Location',
                 type: 'string'
             },
-            importerPhone: {
-                title: 'Importer Phone',
-                type: 'string'
-            },
             cfsCode: {
                 title: 'CFS Station',
                 type: 'string'
             },
-            category: {
+            categoryName: {
                 title: 'Category',
-                type: 'any',
-                valuePrepareFunction: (category) => {
-                    if (category) {
-                        return category.categoryCode
-                    }
-                    return "NA"
-                },
+                type: 'string',
             },
             auctionDate: {
                 title: 'Auction Date',
@@ -117,10 +107,24 @@ export class ViewAuctionItemsComponent implements OnInit {
                     return ""
                 },
             },
+            approvedRejectedOn: {
+                title: 'Approval/Rejection Date',
+                type: 'date',
+                valuePrepareFunction: (date) => {
+                    if (date) {
+                        try {
+                            return new DatePipe('en-US').transform(date, 'dd/MM/yyyy');
+                        } catch (e) {
+                            return date
+                        }
+                    }
+                    return "N/A"
+                },
+            },
             approvalStatusDesc: {
                 title: 'Status',
                 type: 'string'
-            }
+            },
         },
         pager: {
             display: true,

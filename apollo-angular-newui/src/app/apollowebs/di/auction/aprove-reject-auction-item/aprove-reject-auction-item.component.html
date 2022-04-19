@@ -3,7 +3,7 @@
     <div class="form-group row" [formGroup]="form">
         <label for="approve" class="waiver-form-label">Select Approval Status</label>
         <select id="approve" name="approve" class="waiver-form-input-master"
-                formControlName="approve">
+                formControlName="approve" (change)="formatApprovalStatus($event)">
             <option value="" disabled selected>Select One</option>
             <option value="APPROVE">Approve Auction Item</option>
             <option value="CONDITIONAL">Conditional Aprove</option>
@@ -11,7 +11,7 @@
             <option value="REJECT">Reject Auction Item</option>
         </select>
         <label for="remarks" class="waiver-form-label">Enter details remarks for
-            <b>{{form.value.approve == 'true' ? 'Approval' : "Rejection"}}</b></label>
+            <b>{{approvalMessage}}</b></label>
         <input id="remarks" name="remarks" class="waiver-form-input-master"
                formControlName="remarks" type="text"/>
         <label for="select-file" class="col-5 col-form-label">SELECT REPORT DOCUMENT(Required)</label>
@@ -34,7 +34,7 @@
         <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
         <button [disabled]="!isValid() || loading" name="submit" type="button" class="btn btn-primary"
                 (click)="saveAuctionStatus()">
-            {{form.value.approve==='true'?'APPROVE':"REJECT"}}
+            {{approvalMessage.toUpperCase()}}
             <mat-spinner [diameter]="20" color="warn" *ngIf="loading"></mat-spinner>
         </button>
     </div>
