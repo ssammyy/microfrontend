@@ -3,47 +3,25 @@
     {
       "verified": true,
       "status": "registered",
-      "share_capital": [
-        {
-          "number_of_shares": 100,
-          "nominal_value": 1.0e3,
-          "name": "ORDINARY"
-        }
-      ],
-      "registration_number": "CPR/2013/117374",
-      "registration_date": "29 November 2018",
-      "postal_address": "14193-00800",
-      "physical_address": "LR NO. 209/8526/2, HOUSE NO. 14, MUTHAIGA COURT 6TH PARKLANDS AVENUE OFF LIMURU ROAD NAIROBI",
-      "phone_number": "120832",
+      "share_capital": [],
+      "registration_number": "BN-JRCGZ8VJ",
+      "registration_date": "18 December 2020",
+      "postal_address": "666 - 00232",
+      "physical_address": "membley, acacia drive, membley, acacia drive",
+      "phone_number": "+254718377676",
       "partners": [
         {
-          "shares": [
-            {
-              "number_of_shares": 15,
-              "name": "ORDINARY"
-            }
-          ],
-          "name": "LILIAN NZULA MUTUNGA",
+          "shares": [],
+          "name": "RUTH WANJIKU NGWIRI",
           "id_type": "citizen",
-          "id_number": "23694775"
-        },
-        {
-          "shares": [
-            {
-              "number_of_shares": 47,
-              "name": "ORDINARY"
-            }
-          ],
-          "name": "MESHACK MBUGUA MUHOHO",
-          "id_type": "citizen",
-          "id_number": "22703309"
+          "id_number": "34260818"
         }
       ],
       "kra_pin": null,
-      "id": 1264567,
+      "id": 1836299,
       "encumberances": [],
-      "email": "100 SHARES OF KSHS.1000",
-      "business_name": "BSK GLOBAL TECHNOLOGIES LIMITED",
+      "email": "kivuorganics@gmail.com",
+      "business_name": "KIVU ORGANICS",
       "branches": null
     }
   ],

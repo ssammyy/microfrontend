@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class ApiFluxApplication
 
 fun main(args: Array<String>) {
-  //  runApplication<ApiFluxApplication>(*args)
+    runApplication<ApiFluxApplication>(*args)
 }

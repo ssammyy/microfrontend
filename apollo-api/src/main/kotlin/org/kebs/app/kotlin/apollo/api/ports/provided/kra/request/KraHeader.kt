@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.kra.request
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonProperty
+import org.json.simple.JSONArray
 import java.sql.Timestamp
 import java.time.Instant
 import javax.validation.Valid
@@ -9,6 +10,7 @@ import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
 
 class KraHeader {
+
     @NotNull(message = "Required field")
     var loginId: String? = null
 
@@ -29,7 +31,7 @@ class KraHeader {
 
 data class KraDataRequest(
     @JsonProperty("REQUEST")
-    @NotNull(message = "Required field")
+   @NotNull(message = "Required field")
     @Valid
     var request : List<Any>? = null
     //var request: KraRequests? = null
@@ -48,7 +50,7 @@ class KraRequest {
     @JsonProperty("DETAILS")
     @Valid
     @NotNull(message = "Required field")
-    var details: KraDetails? = null
+    var details: MutableList<KraDetails>? = null
 }
 
 class KraRequestHeader{
@@ -63,6 +65,7 @@ class KraRequestDetails{
     @Valid
     @NotNull(message = "Required field")
     var details: KraDetails? = null
+   // var details: List<KraDetails>? = null
 }
 
 
@@ -79,7 +82,8 @@ class KraRequestDetails{
 
 
 
-class KraDetails{
+class KraDetails {
+
     @NotEmpty(message = "Required field")
     var entryNumber: String? = null
 
