@@ -58,6 +58,7 @@ import org.kebs.app.kotlin.apollo.common.dto.stdLevy.NotificationForm
 import org.kebs.app.kotlin.apollo.common.dto.stdLevy.StdLevyNotificationFormDTO
 import org.kebs.app.kotlin.apollo.common.exceptions.*
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
+import org.kebs.app.kotlin.apollo.common.utils.getRandomNumberString
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileCommoditiesManufactureEntity
@@ -794,7 +795,8 @@ class RegistrationDaoServices(
             var cp = commonDaoServices.findCompanyProfile(u.id ?: throw ExpectedDataNotFound("MISSING USER ID"))
 
             with(cp) {
-                entryNumber = generateRandomText(5, s.secureRandom, s.messageDigestAlgorithm, true).toUpperCase()
+                entryNumber = getRandomNumberString()
+                //entryNumber = generateRandomText(5, s.secureRandom, s.messageDigestAlgorithm, true).toUpperCase()
                 modifiedBy = commonDaoServices.concatenateName(u)
                 modifiedOn = commonDaoServices.getTimestamp()
             }

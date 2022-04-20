@@ -2,20 +2,53 @@
 curl -k --location --request POST 'https://196.61.52.30/KEBS/kebs/sendEntryDetails' \
 --header 'Content-Type: application/json' \
 --data-raw '{
+"REQUEST":{
+"HEADER":{
+"loginId":"KEBSUSER",
+"password":"password@1",
+"hash":"7c2c80cd5729b93e93552f2eebb485dd42738973afb2eb1ee022d8fa18329cef",
+"noOfRecords":"1",
+"transmissionDate":"21-04-2022T00:39:12"
+},
+"DETAILS":[
+{
+"entryNumber":"20226789029",
+"kraPin":"A010228668A",
+"manufacturerName":"QUENCH UP PURE DRINKING WATER",
+"registrationDate":"21-04-2022T00:36:56",
+"status":"Active"
+}
+]
+}
+}'
+
+
+
+
+curl -k --location --request POST 'https://196.61.52.30/KEBS/kebs/sendEntryDetails' \
+--header 'Content-Type: application/json' \
+--data-raw '{
 "REQUEST": {
 "HEADER": {
 "loginId": "KEBSUSER",
 "password": "password@1",
-"hash": "bf28a596549ca6f3591cac662fef09f72d5566a0dbec133f90e41c0fe841cc62",
-"transmissionDate": "20-04-2022T14:14:43",
-"noOfRecords": "1"
+"hash": "469aa954139c9b78dde7488c3f9fb823d865d480c7c14337c15b3512dfa802d5",
+"noOfRecords": "2",
+"transmissionDate": "21-04-2022T00:39:12"
 },
 "DETAILS": [
 {
-"entryNumber": "2022042034861",
-"kraPin": "1248GHYRTCDGT",
-"manufacturerName": "KIVU ORGANICS",
-"registrationDate": "07-04-2022T17:11:25",
+"entryNumber": "20220421ABF8F",
+"kraPin": "A006834506V",
+"manufacturerName": "ALL PACK INDUSTRIES",
+"registrationDate": "21-04-2022T00:36:56",
+"status": "Active"
+},
+{
+"entryNumber": "20220421ABF9F",
+"kraPin": "A001100157V",
+"manufacturerName": "QUENCH UP PURE DRINKING WATER",
+"registrationDate": "21-04-2022T00:36:56",
 "status": "Active"
 }
 ]

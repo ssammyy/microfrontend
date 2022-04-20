@@ -70,6 +70,16 @@ fun generateRandomText(length: Int = 12,
     return "${prefixText}${generator.generateTransactionReference()}"
 }
 
+fun getRandomNumberString(): String? {
+    val rnd = Random()
+    val number = rnd.nextInt(999999)
+    val genNumber= String.format("%06d", number)
+    var prefixText = DateTimeFormatter.ofPattern("yyyyMMdd").withLocale(Locale.getDefault()).withZone(ZoneId.systemDefault()).format(Instant.now())
+
+    // this will convert any number sequence into 6 character.
+    return "${prefixText}${genNumber}"
+}
+
 fun rand(start: Long, end: Long): Long {
     require(start <= end) { "Illegal Argument" }
     return (start..end).random()

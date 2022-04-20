@@ -10,6 +10,7 @@ import org.json.simple.JSONObject
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.kra.request.*
+import org.kebs.app.kotlin.apollo.api.ports.provided.kra.request.KraHeader.Companion.globalVar
 import org.kebs.app.kotlin.apollo.api.ports.provided.kra.response.KraResponse
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.IntegrationConfigurationEntity
@@ -20,8 +21,13 @@ import org.kebs.app.kotlin.apollo.store.repo.IKraEntryNumberRequestLogEntityRepo
 import org.kebs.app.kotlin.apollo.store.repo.ILogKraEntryNumberRequestEntityRepository
 import org.springframework.stereotype.Service
 import java.math.BigInteger
+import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
+import java.sql.Date
+import java.sql.Timestamp
+import java.text.SimpleDateFormat
+import java.time.Instant
 import kotlin.collections.set
 
 
@@ -42,13 +48,17 @@ class SendEntryNumberToKraServices(
 
             val numberRecords = "1"
             val recordNumber= 1
+
+            var transDate = commonDaoServices.getTimestamp()
             val headerBody = KraHeader().apply {
-                transmissionDate = commonDaoServices.getTimestamp()
+                globalVar = SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss").format(transDate)
+                transmissionDate = globalVar
                 loginId = jasyptStringEncryptor.decrypt(config.username)
                 password = jasyptStringEncryptor.decrypt(config.password)
                 noOfRecords = numberRecords
-                hash = kraDataEncryption("$recordNumber$transmissionDate")
-               // hash = hashingMechanisms(config, "$numberRecords$transmissionDate")
+                val join = numberRecords+globalVar
+                hash = kraDataEncryption(join)
+             //   KotlinLogging.logger { }.info { "Input :  = $join" }
             }
             val detailBody = KraDetails().apply {
                 entryNumber = companyProfile.entryNumber
@@ -76,8 +86,7 @@ class SendEntryNumberToKraServices(
 
             var transactionsRequest = KraEntryNumberRequestLogEntity().apply  {
                 requestHash = headerBody.hash
-                requestTransmissionDate =
-                    headerBody.transmissionDate?.let { commonDaoServices.convertTimestampToKraValidDate(it) }
+                requestTransmissionDate = globalVar
                 requestNoOfRecords = headerBody.noOfRecords
                 requestEntryNumber = detailBody.entryNumber
                 requestKraPin = detailBody.kraPin
@@ -147,7 +156,8 @@ class SendEntryNumberToKraServices(
         fun encryptThisString(input: String): String {
             return try {
                 val md = MessageDigest.getInstance("SHA-256")
-                val messageDigest = md.digest(input.toByteArray())
+                val  messageDigest = md.digest(input.toByteArray(StandardCharsets.UTF_8))
+                //val messageDigest = md.digest(input.toByteArray())
                 val no = BigInteger(1, messageDigest)
                 var hashtext = no.toString(16)
                 while (hashtext.length < 32) {

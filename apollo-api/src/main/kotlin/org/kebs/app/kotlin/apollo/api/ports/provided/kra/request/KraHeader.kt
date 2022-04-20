@@ -9,7 +9,13 @@ import javax.validation.Valid
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
 
+
+
 class KraHeader {
+
+    companion object {
+        var globalVar = ""
+    }
 
     @NotNull(message = "Required field")
     var loginId: String? = null
@@ -25,8 +31,8 @@ class KraHeader {
 
     @NotNull(message = "Required field")
 //    DD-MM-YYYY’T’HH:MM:SS
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy'T'HH:mm:ss")
-    var transmissionDate: Timestamp? = Timestamp.from(Instant.now())
+  //  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy'T'HH:mm:ss")
+    var transmissionDate: String? = globalVar
 
 
 }

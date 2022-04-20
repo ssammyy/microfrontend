@@ -410,7 +410,7 @@ POST https://localhost:8006/api/v1/login
 Content-Type: application/json
 
 {
-  "username": "stephenmuganda@gmail.com",
+  "username": "steve.muganda@gmail.com",
   "password": "password"}
 
 > {%
@@ -552,7 +552,7 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0b25lQGtlYnMuY29tIiwia
 
 ###
 POST https://localhost:8006/api/v1/migration/stdLevy/save-sl-notification-form
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdGVwaGVubXVnYW5kYUBnbWFpbC5jb20iLCJpc3MiOiJraW1zLmtlYnMub3JnIiwiaWF0IjoxNjUwNDUxNDEwLCJleHAiOjE2NTA0NTc0MTAsImFkZHJlc3MiOiIxMjcuMC4wLjEiLCJ1c2VyQWdlbnQiOiJbQXBhY2hlLUh0dHBDbGllbnQvNC41LjEzIChKYXZhLzExLjAuMTIpXSIsImZ1bGxOYW1lIjoiU3RldmUgTXVnYW5kYSIsInJvbGVzIjoiVVNFUixQRVJNSVRfQVBQTElDQVRJT04sUEVSTUlUX1JFTkVXQUwsUFZPQ19BUFBMSUNBVElPTl9SRUFELExJU1RfQ09NUEFOWSxNT0RJRllfQ09NUEFOWSxTTF9TSVRFX1ZJU0lUX0ZFRURCQUNLX1ZJRVcsU0xfU0xJX0ZPUk1fQ1JFQVRFLFNMX1NMSV9DX0ZPUk1fQ1JFQVRFLFNMX1NMSV9DX0ZPUk1fVklFVyxTTF9TTElfRk9STV9WSUVXIn0.wLGj1AoR7lutH72KGDeQ9Wiu4Nhd3JM7l5NbI_ri4GuOgzD8JFMb6h6P5GLLjqxt6cOl5GvPbuidSOV8Vm7bHg
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdGV2ZS5tdWdhbmRhQGdtYWlsLmNvbSIsImlzcyI6ImtpbXMua2Vicy5vcmciLCJpYXQiOjE2NTA0OTA2ODksImV4cCI6MTY1MDQ5NjY4OSwiYWRkcmVzcyI6IjEyNy4wLjAuMSIsInVzZXJBZ2VudCI6IltBcGFjaGUtSHR0cENsaWVudC80LjUuMTMgKEphdmEvMTEuMC4xMildIiwiZnVsbE5hbWUiOiJDYWxlYiBNd2VsaSIsInJvbGVzIjoiVVNFUixQRVJNSVRfQVBQTElDQVRJT04sUEVSTUlUX1JFTkVXQUwsUFZPQ19BUFBMSUNBVElPTl9SRUFELExJU1RfQ09NUEFOWSxNT0RJRllfQ09NUEFOWSxTTF9TSVRFX1ZJU0lUX0ZFRURCQUNLX1ZJRVcsU0xfU0xJX0ZPUk1fQ1JFQVRFLFNMX1NMSV9DX0ZPUk1fQ1JFQVRFLFNMX1NMSV9DX0ZPUk1fVklFVyxTTF9TTElfRk9STV9WSUVXIn0.JMLgDRaJj7jMEJhBAezFvZj4sLYjOWPyrzlY2QJw-zlnak7noUOedgtp7x-Rk4up_fS_Jfl0hNeKGKLoCvyUiQ
 Content-Type: application/json
 
 {
@@ -563,7 +563,7 @@ Content-Type: application/json
   "DateOfManufacture": "2022-04-04",
   "totalValueOfManufacture": "80000",
   "description": "alot",
-  "companyProfileID": "1408"
+  "companyProfileID": "1461"
 }
 ###
 GET https://localhost:8006/api/v1/migration/stdLevy/getManufacturerList
