@@ -17,10 +17,10 @@ export class ApiEndpointService {
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-         // LOCAL_DEV: 'localhost:8007'
+         LOCAL_DEV: 'localhost:8007'
         // LOCAL_DEV: 'kimsfluxint.kebs.org:8005'
         // LOCAL_DEV: '41.72.209.58:8006'
-        LOCAL_DEV: 'kimsint.kebs.org:8007'
+        // LOCAL_DEV: 'kimsint.kebs.org:8007'
         // LOCAL_DEV: `kimsint.skebs.org:8006`
         // LOCAL_DEV: `kimsint.kebs.org:8005`,
         // LOCAL_DEV: `kims.kebs.org:8006`
@@ -90,6 +90,7 @@ export class ApiEndpointService {
     public static REQUEST_STANDARD = `${ApiEndpointService.ANONYMOUS_CONTEXT}/standard/dropdown`;
     public static MS_CONTEXT = '/api/v1/migration/ms';
     public static MS_FUEL_CONTEXT = `${ApiEndpointService.MS_CONTEXT}/fuel`;
+    public static MS_COMPLAINT_CONTEXT = `${ApiEndpointService.MS_CONTEXT}/complaint`;
 
     /**
      * Map of API endpoints.
@@ -456,6 +457,11 @@ export class ApiEndpointService {
         // COUNTRY_DASHBOARD_DETAILS: `${ApiEndpointService.VERSION_THREE_CONTEXT}/country-dashboard-details`,
         // CLIENT_LIST: `${ApiEndpointService.VERSION_THREE_CONTEXT}/client-list`,
     };
+
+    public static MARKET_SURVEILLANCE_COMPLAINT = {
+        CREATE_NEW_COMPLAINT: `${ApiEndpointService.ANONYMOUS_CONTEXT}/complaint/new`,
+        CLOSE_BATCH: `${ApiEndpointService.MS_FUEL_CONTEXT}/close`,
+      };
     /**
      * Constructor.
      */

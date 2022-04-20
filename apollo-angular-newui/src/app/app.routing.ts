@@ -131,6 +131,7 @@ import {AuctionItemDetailsComponent} from "./apollowebs/di/auction/auction-item-
 import {EpraBatchListComponent} from "./apollowebs/market-surveillance/fuel/epra-batch-list/epra-batch-list.component";
 import {EpraListComponent} from "./apollowebs/market-surveillance/fuel/epra-list/epra-list.component";
 import {ViewFuelSheduledDetailsComponent} from "./apollowebs/market-surveillance/fuel/view-fuel-sheduled-details/view-fuel-sheduled-details.component";
+import {ComplaintNewComponent} from './apollowebs/market-surveillance/complaint/complaint-new/complaint-new.component';
 // import {HoSicTasksComponent} from "./apollowebs/standards-development/ho-sic-tasks/ho-sic-tasks.component";
 // export const AppRoutes: Routes = [
 //     {
@@ -925,6 +926,24 @@ export const routes: Routes = [
                 component: ViewFuelSheduledDetailsComponent
             }
         ]
+    },
+    {
+        path: 'complain',
+        component: RegistrationComponent,
+        children: [
+            {
+                path: '',
+                component: ComplaintNewComponent
+            },
+            {
+                path: 'complain',
+                component: ComplaintNewComponent
+            }
+
+        ],
+        data: {
+            title: 'KEBS'
+        }
     },
     {
         path: 'stdLevyPenalties', component: AdminLayoutComponent,

@@ -777,6 +777,22 @@ class CommonDaoServices(
             ?: throw ExpectedDataNotFound("No user Profile Matched the following details [designation id = ${designationsEntity.id}] and [region id = ${regionsEntity.id}]and [department id = ${departmentsEntity.id}] and [status = $status]")
     }
 
+    fun findUserProfileWithDesignationRegionDepartmentAndStatus(
+        designationsEntity: DesignationsEntity,
+        regionsEntity: RegionsEntity,
+        status: Int
+    ): UserProfilesEntity {
+        iUserProfilesRepo.findByDesignationIdAndRegionIdAndStatus(
+            designationsEntity,
+            regionsEntity,
+            status
+        )
+            ?.let { userProfile ->
+                return userProfile
+            }
+            ?: throw ExpectedDataNotFound("No user Profile Matched the following details [designation id = ${designationsEntity.id}] and [region id = ${regionsEntity.id}] and [status = $status]")
+    }
+
     fun findUserProfileWithDesignationRegionDepartmentAndStatusAndSection(
         designationsEntity: DesignationsEntity,
         sectionsEntity: SectionsEntity,

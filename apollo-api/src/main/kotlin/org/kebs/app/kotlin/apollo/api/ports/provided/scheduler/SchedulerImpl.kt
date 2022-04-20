@@ -5,13 +5,11 @@ import org.joda.time.DateTime
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.BpmnCommonFunctions
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
-import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.QualityAssuranceBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.NewMarketSurveillanceDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.MarketSurveillanceFuelDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
-import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.SchedulerEntity
@@ -57,7 +55,7 @@ class SchedulerImpl(
     lateinit var qaDaoServices: QADaoServices
 
     @Autowired
-    lateinit var marketSurveillanceDaoServices: NewMarketSurveillanceDaoServices
+    lateinit var marketSurveillanceDaoServices: MarketSurveillanceFuelDaoServices
 
     @Autowired
     lateinit var permitRepo: IPermitApplicationsRepository

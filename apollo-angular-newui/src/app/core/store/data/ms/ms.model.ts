@@ -3,6 +3,49 @@ import {County} from '../county';
 export class Ms {
 }
 
+export class MSComplaintSubmittedSuccessful {
+    refNumber: string;
+    savedStatus: boolean;
+    successMessage: string;
+    errorMessage: string;
+}
+
+export class NewComplaintDto {
+    complaintDetails: ComplaintDto;
+    customerDetails: ComplaintCustomersDto;
+    locationDetails: ComplaintLocationDto;
+}
+
+
+
+export class ComplaintDto {
+    // complaintCategory: number;
+    complaintTitle: string;
+    // productClassification: number;
+    // broadProductCategory: number;
+    // productCategory: number;
+    // myProduct: number;
+    // productSubcategory: number;
+    productBrand: string;
+    complaintDescription: string;
+}
+
+export class ComplaintCustomersDto {
+    firstName: string;
+    lastName: string;
+    phoneNumber: string;
+    emailAddress: string;
+    postalAddress: string;
+}
+
+export class ComplaintLocationDto {
+    county: number;
+    town: number;
+    marketCenter: string;
+    buildingName: string;
+}
+
+
 export class FuelBatchDetailsDto {
     id: number;
     region: string;

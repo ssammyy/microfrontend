@@ -1,19 +1,14 @@
 package org.kebs.app.kotlin.apollo.api.controllers.msControllers
 
-import com.google.gson.Gson
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.NewMarketSurveillanceDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.MarketSurveillanceFuelDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
-import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
-import org.kebs.app.kotlin.apollo.store.repo.*
-import org.kebs.app.kotlin.apollo.store.repo.di.*
 import org.kebs.app.kotlin.apollo.store.repo.ms.IFuelRemediationInvoiceRepository
 import org.kebs.app.kotlin.apollo.store.repo.ms.ISampleCollectionViewRepository
 import org.springframework.core.io.ResourceLoader
-import org.springframework.http.MediaType
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
@@ -24,10 +19,11 @@ import javax.servlet.http.HttpServletResponse
 @RequestMapping("/api/v1/migration/ms")
 class MSJSONControllers(
     private val applicationMapProperties: ApplicationMapProperties,
-    private val marketSurveillanceDaoServices: NewMarketSurveillanceDaoServices,
+    private val marketSurveillanceDaoServices: MarketSurveillanceFuelDaoServices,
     private val iSampleCollectViewRepo: ISampleCollectionViewRepository,
     private val fuelRemediationInvoiceRepo: IFuelRemediationInvoiceRepository,
     private val commonDaoServices: CommonDaoServices,
+    private val msDaoService: MarketSurveillanceFuelDaoServices,
     private val reportsDaoService: ReportsDaoService,
     private val limsServices: LimsServices,
     private val resourceLoader: ResourceLoader,
@@ -106,11 +102,11 @@ class MSJSONControllers(
         map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
 
         val invoiceRemediationDetails = fuelRemediationInvoiceRepo.findFirstByFuelInspectionId(fuelInspectionId)
-
+        val fuelRemediationDetailsDto = msDaoService.mapFuelRemediationDetails(invoiceRemediationDetails)
         val pdfReportStream = reportsDaoService.extractReport(
             map,
             applicationMapProperties.mapMSFuelInvoiceRemediationPath,
-            invoiceRemediationDetails
+            fuelRemediationDetailsDto
         )
         response.contentType = "text/html"
         response.contentType = "application/pdf"

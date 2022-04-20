@@ -5,7 +5,6 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.sage.PostInvoiceToSageServi
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
-import org.kebs.app.kotlin.apollo.store.model.di.CdDemandNoteItemsDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.invoice.InvoiceBatchDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaBatchInvoiceEntity
 import org.kebs.app.kotlin.apollo.store.repo.IPaymentMethodsRepository
@@ -42,7 +41,7 @@ class InvoiceDaoService(
 
     @Lazy
     @Autowired
-    lateinit var msDaoServices: NewMarketSurveillanceDaoServices
+    lateinit var msDaoServices: MarketSurveillanceFuelDaoServices
 
     @Lazy
     @Autowired

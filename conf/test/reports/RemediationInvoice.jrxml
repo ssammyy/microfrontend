@@ -46,7 +46,7 @@
 	<field name="id" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="id"/>
 	</field>
-	<field name="amount" class="java.lang.Long">
+	<field name="amount" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="amount"/>
 	</field>
 	<field name="invoiceDate" class="java.sql.Timestamp">
@@ -118,59 +118,62 @@
 	<field name="deletedOn" class="java.sql.Timestamp">
 		<property name="com.jaspersoft.studio.field.label" value="deletedOn"/>
 	</field>
-	<field name="version" class="java.lang.Long">
+	<field name="version" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="version"/>
 	</field>
-	<field name="remunerationRateLiter" class="java.lang.Long">
+	<field name="remunerationRateLiter" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="remunerationRateLiter"/>
 	</field>
-	<field name="remunerationSubTotal" class="java.lang.Long">
+	<field name="remunerationSubTotal" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="remunerationSubTotal"/>
 	</field>
-	<field name="remunerationVat" class="java.lang.Long">
+	<field name="remunerationVat" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="remunerationVat"/>
 	</field>
-	<field name="remunerationTotal" class="java.lang.Long">
+	<field name="remunerationTotal" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="remunerationTotal"/>
 	</field>
-	<field name="volumeFuelRemediated" class="java.lang.Long">
+	<field name="volumeFuelRemediated" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="volumeFuelRemediated"/>
 	</field>
-	<field name="subsistenceTotalNights" class="java.lang.Long">
+	<field name="subsistenceTotalNights" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="subsistenceTotalNights"/>
 	</field>
-	<field name="subsistenceRate" class="java.lang.Long">
+	<field name="subsistenceRate" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="subsistenceRate"/>
 	</field>
-	<field name="subsistenceRateNightTotal" class="java.lang.Long">
+	<field name="subsistenceRateNightTotal" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="subsistenceRateNightTotal"/>
 	</field>
-	<field name="subsistenceVat" class="java.lang.Long">
+	<field name="subsistenceVat" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="subsistenceVat"/>
 	</field>
-	<field name="subsistenceTotal" class="java.lang.Long">
+	<field name="subsistenceTotal" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="subsistenceTotal"/>
 	</field>
-	<field name="transportAirTicket" class="java.lang.Long">
+	<field name="transportAirTicket" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="transportAirTicket"/>
 	</field>
-	<field name="transportInkm" class="java.lang.Long">
+	<field name="transportInkm" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="transportInkm"/>
 	</field>
-	<field name="transportRate" class="java.lang.Long">
+	<field name="transportRate" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="transportRate"/>
 	</field>
-	<field name="transportTotalKmrate" class="java.lang.Long">
+	<field name="transportTotalKmrate" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="transportTotalKmrate"/>
 	</field>
-	<field name="transportVat" class="java.lang.Long">
+	<field name="transportVat" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="transportVat"/>
 	</field>
-	<field name="transportTotal" class="java.lang.Long">
+	<field name="transportTotal" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="transportTotal"/>
 	</field>
-	<field name="transportGrandTotal" class="java.lang.Long">
+	<field name="transportGrandTotal" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="transportGrandTotal"/>
+	</field>
+	<field name="invoiceNumber" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="invoiceNumber"/>
 	</field>
 	<background>
 		<band splitType="Stretch"/>
@@ -215,6 +218,20 @@
 				<reportElement x="240" y="0" width="64" height="53" uuid="9396d22b-93ff-47e1-ac1c-d5b3b8219781"/>
 				<imageExpression><![CDATA[$P{imagePath}]]></imageExpression>
 			</image>
+			<staticText>
+				<reportElement x="540" y="30" width="80" height="17" uuid="cae90df0-fe87-4400-8ef5-550d0055fe6b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[INVOICE NO:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="620" y="30" width="180" height="17" uuid="4c9e68ec-603a-46cf-8745-7207da949187"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{invoiceNumber}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<columnHeader>

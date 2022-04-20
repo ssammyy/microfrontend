@@ -5,7 +5,7 @@ import {ApiEndpointService} from '../../../services/endpoints/api-endpoint.servi
 import {catchError, map} from 'rxjs/operators';
 import {
     BatchFileFuelSaveDto,
-    BSNumberSaveDto, CompliantRemediationDto,
+    BSNumberSaveDto, ComplaintCustomersDto, ComplaintDto, ComplaintLocationDto, CompliantRemediationDto,
     FuelBatchDetailsDto,
     FuelEntityAssignOfficerDto,
     FuelEntityDto,
@@ -13,9 +13,9 @@ import {
     FuelInspectionDto,
     FuelInspectionScheduleListDetailsDto, LaboratoryDto,
     LabResultsParamDto,
-    LIMSFilesFoundDto, MSSSFComplianceStatusDetailsDto, MSSSFLabResultsDto,
+    LIMSFilesFoundDto, MSComplaintSubmittedSuccessful, MSSSFComplianceStatusDetailsDto, MSSSFLabResultsDto,
     MSSSFPDFListDetailsDto,
-    MsUsersDto, PDFSaveComplianceStatusDto, RemediationDto,
+    MsUsersDto, NewComplaintDto, PDFSaveComplianceStatusDto, RemediationDto,
     SampleCollectionDto,
     SampleCollectionItemsDto,
     SampleSubmissionDto,
@@ -317,6 +317,28 @@ export class MsService {
             }
         });
     }
+
+    // tslint:disable-next-line:max-line-length
+    public createNewComplaint(customerDetails: ComplaintCustomersDto, complaintDetails: ComplaintDto, locationDetails: ComplaintLocationDto): Observable<MSComplaintSubmittedSuccessful> {
+        const newComplaintDto = new NewComplaintDto();
+        newComplaintDto.customerDetails = customerDetails;
+        newComplaintDto.complaintDetails = complaintDetails;
+        newComplaintDto.locationDetails = locationDetails;
+        console.log(newComplaintDto);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.CREATE_NEW_COMPLAINT);
+        return this.http.post<MSComplaintSubmittedSuccessful>(url, newComplaintDto).pipe(
+            map(function (response: MSComplaintSubmittedSuccessful) {
+                return response;
+            })
+            , catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.error} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    // tslint:disable-next-line:max-line-length
+    /*******************************************************************START OF FUEL SURVEILLANCE*****************************************************************************/
 
     public loadMSFuelBatchList(page: string, records: string): Observable<FuelBatchDetailsDto[]> {
         // console.log(data);

@@ -492,9 +492,9 @@
                                             </ul>
                                             <br>
                                             <div *ngIf="fuelInspection?.fuelRemediation.invoiceCreated">
-                                                <button class="btn-sm btn-primary" >Download Invoice</button>
+                                                <button class="btn-sm btn-primary" (click)="viewRemediationInvoicePdfFile(fuelInspection?.id, fuelInspection?.referenceNumber,'application/pdf')">VIEW INVOICE</button>
                                             </div>
-                                            <button class="btn-sm btn-primary" (click)="viewRemediationInvoicePdfFile(fuelInspection?.id, fuelInspection?.referenceNumber,'application/pdf')">VIEW </button>
+
                                         </div>
                                     </mat-tab>
                                 </mat-tab-group>
@@ -564,7 +564,8 @@
                                                 <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button  *ngIf="fuelInspection.bsNumberStatus && fuelInspection.compliantStatusAdded && fuelInspection.sampleLabResults.ssfResultsList.complianceStatus == false"
+                                            <button  *ngIf="fuelInspection.bsNumberStatus && fuelInspection.compliantStatusAdded &&
+                                            fuelInspection.sampleLabResults.ssfResultsList.complianceStatus == false && fuelInspection?.fuelRemediation.invoiceCreated == false"
                                                      (click)="openModalAddDetails('notCompliantInvoice')" mat-raised-button="" data-toggle="modal"
                                                     data-target="#myModal1"
                                                     class="btn btn-sm btn-primary mr-2"><span

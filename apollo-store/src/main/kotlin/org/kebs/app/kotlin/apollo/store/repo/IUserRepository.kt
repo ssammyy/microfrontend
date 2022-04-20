@@ -371,6 +371,12 @@ interface IUserProfilesRepository : HazelcastRepository<UserProfilesEntity, Long
         status: Int
     ): UserProfilesEntity?
 
+    fun findByDesignationIdAndRegionIdAndStatus(
+        designationId: DesignationsEntity,
+        regionId: RegionsEntity,
+        status: Int
+    ): UserProfilesEntity?
+
     fun findByRegionIdAndDepartmentIdAndStatusAndSectionIdAndDesignationId(
         regionId: RegionsEntity,
         departmentId: DepartmentsEntity,

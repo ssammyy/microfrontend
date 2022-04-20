@@ -478,7 +478,10 @@ data class MSTypeDto(
 )
 
 data class MSComplaintSubmittedSuccessful(
-        var message: String? = null
+        var refNumber: String? = null,
+        var savedStatus: Boolean? = null,
+        var successMessage: String? = null,
+        var errorMessage: String? = null
 )
 
 

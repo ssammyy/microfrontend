@@ -312,7 +312,7 @@ class AngularRoutes {
     }
 
     @Bean
-    fun migrationRegistrationRoutes(handler: RegistrationHandler, otherHandler: MasterDataHandler) = router {
+    fun migrationRegistrationRoutes(handler: RegistrationHandler, otherHandler: MasterDataHandler,msHandler: NewMarketSurveillanceHandler) = router {
         "/api/v1/migration/".nest {
             "anonymous".nest {
                 "/validateBrs".nest {
@@ -350,6 +350,10 @@ class AngularRoutes {
                         PUT("", otherHandler::notSupported)
                     }
 
+                }
+                "/complaint".nest {
+//                    GET("/list", handler::getAllFuelInspectionList)
+                    POST("/new", msHandler::saveNewComplaint)
                 }
             }
         }
@@ -537,9 +541,10 @@ class AngularRoutes {
     @Bean
     fun migrationMarketSurveillanceRoutes(handler: NewMarketSurveillanceHandler) = router {
         "/api/v1/migration/ms".nest {
-//            "/complaint".nest {
-//
-//            }
+            "/complaint".nest {
+                GET("/list", handler::getAllFuelInspectionList)
+                POST("/new", handler::saveNewComplaint)
+            }
 //            "/workPlan".nest {
 //
 //            }

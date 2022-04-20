@@ -1,7 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 import mu.KotlinLogging
-import org.json.simple.JSONArray
 import org.kebs.app.kotlin.apollo.api.controllers.qaControllers.ReportsController
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
@@ -40,7 +39,7 @@ import java.time.Instant
 
 
 @Service
-class NewMarketSurveillanceDaoServices(
+class MarketSurveillanceFuelDaoServices(
     private val applicationMapProperties: ApplicationMapProperties,
     private val fuelBatchRepo: IFuelBatchRepository,
     private val limsServices: LimsServices,
@@ -617,13 +616,13 @@ class NewMarketSurveillanceDaoServices(
                 }
                 fileInspectionDetail= updateFuelInspectionDetails(fileInspectionDetail, map, loggedInUser).second
 
-//                commonDaoServices.sendEmailWithUserEmail(
-//                    fileInspectionDetail.stationOwnerEmail ?: throw ExpectedDataNotFound("MISSING USER ID"),
-//                    applicationMapProperties.mapMsFuelInspectionRemediationInvoiceNotification,
-//                    fileInspectionDetail, map,
-//                    savedRemediationInvoice.first,
-//                    invoiceRemediationPDF(fileInspectionDetail.id).path
-//                )
+                commonDaoServices.sendEmailWithUserEmail(
+                    fileInspectionDetail.stationOwnerEmail ?: throw ExpectedDataNotFound("MISSING USER ID"),
+                    applicationMapProperties.mapMsFuelInspectionRemediationInvoiceNotification,
+                    fileInspectionDetail, map,
+                    savedRemediationInvoice.first,
+                    invoiceRemediationPDF(fileInspectionDetail.id).path
+                )
 
                 return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
             }
@@ -837,8 +836,9 @@ class NewMarketSurveillanceDaoServices(
         val limsPDFFiles = ssfDetailsLab?.bsNumber?.let { mapLIMSSavedFilesDto(it,savedPDFFilesLims)}
         val labResultsDto = mapLabResultsDetailsDto(ssfResultsListCompliance,savedPDFFilesLims,limsPDFFiles,labResultsParameters?.let { mapLabResultsParamListDto(it) })
         val remediationDetails = findFuelScheduledRemediationDetails(fileInspectionDetail.id)
+        val invoiceRemediationDetails = fuelRemediationInvoiceRepo.findFirstByFuelInspectionId(fileInspectionDetail.id)
         var invoiceCreatedStatus = false
-        if (remediationDetails?.invoiceAmount!=null){
+        if (invoiceRemediationDetails.isNotEmpty()){
             invoiceCreatedStatus = true
         }
         val fuelRemediationDto = remediationDetails?.let { mapFuelRemediationDto(it,invoiceCreatedStatus) }
