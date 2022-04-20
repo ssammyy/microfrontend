@@ -43,7 +43,7 @@ class SendEntryNumberToKraServices(
                 transmissionDate = commonDaoServices.getTimestamp()
                 loginId = jasyptStringEncryptor.decrypt(config.username)
                 password = jasyptStringEncryptor.decrypt(config.password)
-                hash = kraDataEncryption("$numberRecords$password$loginId")
+                hash = kraDataEncryption("$numberRecords$transmissionDate")
                 noOfRecords = numberRecords
             }
             val detailBody = KraDetails().apply {
@@ -55,7 +55,7 @@ class SendEntryNumberToKraServices(
                 status = if (companyProfile.manufactureStatus == 1) "Active" else "Inactive"
             }
 
-            var list= mutableListOf<KraDetails>()
+            val list= mutableListOf<KraDetails>()
             list.add(detailBody)
 
 
