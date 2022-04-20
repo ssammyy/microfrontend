@@ -99,6 +99,11 @@ export class MPesaPushDto {
     phoneNumber: string;
 }
 
+export class PermitDto {
+    permitId: string;
+    permitIdBeingMigrated: string;
+}
+
 
 export class STA1 {
     id: bigint;

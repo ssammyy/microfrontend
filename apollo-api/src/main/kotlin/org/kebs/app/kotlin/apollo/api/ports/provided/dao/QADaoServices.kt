@@ -374,21 +374,43 @@ class QADaoServices(
     }
 
     fun findAllUserPermitWithPermitTypeAwardedStatus(
-            user: UsersEntity,
-            permitType: Long,
-            status: Int
+        user: UsersEntity,
+        permitType: Long,
+        status: Int
     ): List<PermitApplicationsEntity> {
         val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
         permitRepo.findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatus(userId, permitType, status)
-                ?.let { permitList ->
-                    return permitList
-                }
+            ?.let { permitList ->
+                return permitList
+            }
 
-                ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+    fun findAllUserCompletelyPermitWithPermitTypeAwardedStatus(
+        user: UsersEntity,
+        permitType: Long,
+        status: Int
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusAndVersionNumberIsNotNull(
+            userId,
+            permitType,
+            status
+        )
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
     }
 
     // load all migrated permits to user
-    fun findAllLoadedPermitList(user: UsersEntity, permitNumber: String, attachedPlant: UsersEntity): List<PermitApplicationsEntity> {
+    fun findAllLoadedPermitList(
+        user: UsersEntity,
+        permitNumber: String,
+        attachedPlant: UsersEntity
+    ): List<PermitApplicationsEntity> {
         val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
         val attachedPlantId = attachedPlant.plantId ?: throw ExpectedDataNotFound("No PLANT ID Found")
         KotlinLogging.logger { }.info { userId }
@@ -6213,25 +6235,104 @@ class QADaoServices(
     ): List<PlantsDetailsDto> {
         return plants.map { p ->
             PlantsDetailsDto(
-                    p.id,
-                    p.companyProfileId,
-                    commonDaoServices.findCountiesEntityByCountyId(p.county ?: -1L, map.activeStatus).county,
-                    commonDaoServices.findTownEntityByTownId(p.town ?: -1L).town,
-                    p.location,
-                    p.street,
-                    p.buildingName,
-                    p.branchName,
-                    p.nearestLandMark,
-                    p.postalAddress,
-                    p.telephone,
-                    p.emailAddress,
-                    p.physicalAddress,
-                    p.faxNo,
-                    p.plotNo,
-                    p.designation,
-                    p.contactPerson,
+                p.id,
+                p.companyProfileId,
+                commonDaoServices.findCountiesEntityByCountyId(p.county ?: -1L, map.activeStatus).county,
+                commonDaoServices.findTownEntityByTownId(p.town ?: -1L).town,
+                p.location,
+                p.street,
+                p.buildingName,
+                p.branchName,
+                p.nearestLandMark,
+                p.postalAddress,
+                p.telephone,
+                p.emailAddress,
+                p.physicalAddress,
+                p.faxNo,
+                p.plotNo,
+                p.designation,
+                p.contactPerson,
             )
         }
+    }
+
+    fun updatePermitWithSelectedPermit(permit: Long?, permitBeingUpdated: Long?) {
+
+
+
+        try {
+            val response = permit?.let { permitBeingUpdated?.let { it1 -> permitRepo.updatePermitToNew(it, it1) } }
+            KotlinLogging.logger { }.info("The response is $response")
+//            if(response)
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+
+        }
+
+        val sta10Id = permit?.let { sta10Repo.findByPermitId(it)?.id }
+            ?: throw ExpectedDataNotFound("No STA10 found with the following [ID=$permit]")
+        val sta10IdToBeUpdated = permitBeingUpdated?.let { sta10Repo.findByPermitId(it)?.id }
+            ?: throw ExpectedDataNotFound("No STA10 found with the following [ID=$permit]")
+        try {
+            val updateSta10 = permit.let {
+                permitBeingUpdated.let { it1 ->
+                    sta10Repo.updatePermitWithSta10Data(
+                        it,
+                        it1
+                    )
+                }.toString()
+            }
+            KotlinLogging.logger { }.info("The response is $updateSta10")
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+
+        }
+
+        try {
+            val updateMachinery = machinePlantsSTA10Repo.updateMachinery(sta10Id, sta10IdToBeUpdated)
+            KotlinLogging.logger { }.info("The response is $updateMachinery")
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+
+        }
+
+        try {
+            println(sta10Id)
+            println(sta10IdToBeUpdated)
+            val updateRawMaterials = rawMaterialsSTA10Repo.updateRawMaterials(sta10Id, sta10IdToBeUpdated)
+            KotlinLogging.logger { }.info("The response is $updateRawMaterials")
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+
+        }
+
+        try {
+            println(sta10Id)
+            println(sta10IdToBeUpdated)
+            val manufacturingProcessSTA10Repo =
+                manufacturingProcessSTA10Repo.updateManufacturing(sta10Id, sta10IdToBeUpdated)
+            KotlinLogging.logger { }.info("The response is $manufacturingProcessSTA10Repo")
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+
+        }
+        try {
+            println(sta10Id)
+            println(sta10IdToBeUpdated)
+            val productsManufactureSTA10Repo = productsManufactureSTA10Repo.updateProduct(sta10Id, sta10IdToBeUpdated)
+            KotlinLogging.logger { }.info("The response is $productsManufactureSTA10Repo")
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+
+        }
+
+
     }
 
 }

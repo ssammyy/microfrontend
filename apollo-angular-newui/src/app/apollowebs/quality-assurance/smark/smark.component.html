@@ -1,5 +1,5 @@
-<div class="container-fluid" style="margin-top: 5%">
-    <div  class="loading-spinner ">
+<div class="container-fluid" style="margin-top: 5%" id="main-container">
+    <div class="loading-spinner ">
         <ngx-spinner
                 bdColor="rgba(51,51,51,0.8)"
                 size="medium"
@@ -1577,7 +1577,8 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                         </h4>
                     </div>
                     <div class="card-body ">
-                        <button *ngIf="allPermitDetails?.permitDetails?.invoiceGenerated == true && allPermitDetails?.batchID != null"
+                        <button style="width: -webkit-fill-available"
+                                *ngIf="allPermitDetails?.permitDetails?.invoiceGenerated == true && allPermitDetails?.batchID != null"
                                 mat-raised-button=""
                                 (click)="goToInvoiceGenerated()" class="btn btn-kebs mat-raised-button mat-button-base"><span
                                 class="mat-button-wrapper">View Generated Invoice</span>
@@ -1585,27 +1586,33 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                             <div class="mat-button-focus-overlay"></div>
                         </button>
 
-                        <a *ngIf="allPermitDetails?.permitDetails?.fmarkGenerated == true && allPermitDetails?.permitDetails?.fmarkGeneratedID != null"
-                           href="/smark/newSmarkPermit#{{allPermitDetails?.permitDetails?.fmarkGeneratedID}}" mat-raised-button=""
+                        <a style="width: -webkit-fill-available"
+                           *ngIf="allPermitDetails?.permitDetails?.fmarkGenerated == true && allPermitDetails?.permitDetails?.fmarkGeneratedID != null"
+                           href="/smark/newSmarkPermit#{{allPermitDetails?.permitDetails?.fmarkGeneratedID}}"
+                           mat-raised-button=""
                            class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">FMARK APPLICATION DETAILS</span>
                             <div matripple="" class="mat-ripple mat-button-ripple"></div>
                             <div class="mat-button-focus-overlay"></div>
                         </a>
 
                         <div *ngIf="allPermitDetails?.permitDetails?.hofQamCompletenessStatus == false && allPermitDetails?.permitDetails?.resubmitApplicationStatus == true">
-                            <a href="/smark/newSmarkPermit#{{sta1?.id}}" mat-raised-button=""
+                            <a style="width: -webkit-fill-available" href="/smark/newSmarkPermit#{{sta1?.id}}"
+                               mat-raised-button=""
                                class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">UPDATE APPLICATION DETAILS</span>
                                 <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                 <div class="mat-button-focus-overlay"></div>
                             </a>
-                            <button (click)="openModalUpload('uploadModal', 'uploadModal')" mat-raised-button="" data-toggle="modal"
+                            <button style="width: -webkit-fill-available"
+                                    (click)="openModalUpload('uploadModal', 'uploadModal')" mat-raised-button=""
+                                    data-toggle="modal"
                                     data-target="#myModal1"
                                     class="btn btn-kebs mat-raised-button mat-button-base"><span
                                     class="mat-button-wrapper">UPLOAD DOCUMENTS</span>
                                 <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                 <div class="mat-button-focus-overlay"></div>
                             </button>
-                            <button (click)="openModalUpload('resubmitDetails', 'resubmitHofQamCompletenessResults')"
+                            <button style="width: -webkit-fill-available"
+                                    (click)="openModalUpload('resubmitDetails', 'resubmitHofQamCompletenessResults')"
                                     mat-raised-button="" data-toggle="modal"
                                     data-target="#myModal1"
                                     class="btn btn-kebs mat-raised-button mat-button-base"><span
@@ -1628,15 +1635,18 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                         </div>
 
 
-                        <button *ngIf="allPermitDetails?.permitDetails?.permitAwardStatus == true && allPermitDetails?.permitDetails?.oldPermitStatus == false"
+                        <button style="width: -webkit-fill-available"
+                                *ngIf="allPermitDetails?.permitDetails?.permitAwardStatus == true && allPermitDetails?.permitDetails?.oldPermitStatus == false"
                                 mat-raised-button=""
-                                (click)="submitRenewalApplication()" class="btn btn-kebs mat-raised-button mat-button-base"><span
+                                (click)="submitRenewalApplication()"
+                                class="btn btn-kebs mat-raised-button mat-button-base"><span
                                 class="mat-button-wrapper">RE-NEW</span>
                             <div matripple="" class="mat-ripple mat-button-ripple"></div>
                             <div class="mat-button-focus-overlay"></div>
                         </button>
 
-                        <button *ngIf="allPermitDetails?.remarksDetails?.labResultsCompleteness?.remarksStatus == false && allPermitDetails?.permitDetails?.resubmitApplicationStatus == true"
+                        <button style="width: -webkit-fill-available"
+                                *ngIf="allPermitDetails?.remarksDetails?.labResultsCompleteness?.remarksStatus == false && allPermitDetails?.permitDetails?.resubmitApplicationStatus == true"
                                 (click)="openModalUpload('resubmitDetails', 'resubmitLabNonComplianceResults')"
                                 mat-raised-button="" data-toggle="modal"
                                 data-target="#myModal1"
@@ -1647,13 +1657,15 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                         </button>
 
                         <div *ngIf="allPermitDetails?.permitDetails?.sendApplication == false ">
-                            <a href="/smark/newSmarkPermit#{{sta1?.id}}" mat-raised-button=""
+                            <a style="width: -webkit-fill-available" href="/smark/newSmarkPermit#{{sta1?.id}}"
+                               mat-raised-button=""
                                class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">UPDATE APPLICATION DETAILS</span>
                                 <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                 <div class="mat-button-focus-overlay"></div>
                             </a>
 
-                            <button (click)="submitApplication()" mat-raised-button=""
+                            <button style="width: -webkit-fill-available" (click)="submitApplication()"
+                                    mat-raised-button=""
                                     class="btn btn-kebs mat-raised-button mat-button-base"><span
                                     class="mat-button-wrapper">SUBMIT APPLICATION</span>
                                 <div matripple="" class="mat-ripple mat-button-ripple"></div>
@@ -2024,13 +2036,63 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                             <div class="modal-footer">
 
 
-                                <button mat-raised-button type="button" class="btn btn-danger" data-dismiss="modal">Close
+                                <button mat-raised-button type="button" class="btn btn-danger" data-dismiss="modal">
+                                    Close
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
                 <!--  End Modal -->
+
+                <div class="modal fade" id="renewMigratedPermitModal" tabindex="-1" role="dialog"
+                     aria-labelledby="updateExampleModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">{{actionRequest?.invoiceDetails}}Update Permit Data</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form [formGroup]="form">
+                                <div class="modal-body">
+
+                                    <p>
+                                        This Is A Migrated Permit. Please Select A Similar Permit To Fill In The Missing
+                                        Details.
+                                    </p>
+                                    <div class="form-group bmd-form-group is-filled">
+                                        <p>
+                                            <ng-multiselect-dropdown
+                                                    formControlName="permits"
+                                                    [placeholder]="'Enter Permit Number'"
+                                                    [settings]="dropdownSettings"
+                                                    [data]="dropdownList"
+                                            >
+                                            </ng-multiselect-dropdown>
+                                        </p>
+
+                                    </div>
+
+                                </div>
+                                <input hidden name="id" id="id">
+                                <div class="modal-footer justify-content-between">
+
+                                    <button class="btn btn-danger" data-dismiss="modal" #closeModal
+                                    >Close
+                                    </button>
+                                    <button class="btn btn-info" data-dismiss="modal" #closeModal
+                                            (click)="updatePermitWithData(actionRequest?.id)">Update Permit Data
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+        </div>
         </div>
     </div>

@@ -458,6 +458,7 @@ class AngularRoutes {
                 GET("/awarded-list", handler::permitListAwardedMigration)
                 GET("/my-permits-loaded", handler::permitListAwardedMigrationb)
                 GET("/all-my-permits-loaded", handler::loadAllMyPermits)
+                GET("/awarded-list-completely", handler::permitCompletelyListAwardedMigration)
 
                 GET("/awarded-list-fmark-generate", handler::permitListAwardedGenerateFmarkMigration)
                 GET("/firm-list", handler::firmPermitListMigration)
@@ -473,7 +474,10 @@ class AngularRoutes {
                     POST("/submit-application-ssc-approval-rejection", handler::permitApproveRejectSSCMigration)
                     POST("/re-submit-application", handler::permitResubmitMigration)
                     POST("/sta3", handler::permitApplySTA3Migration)
+                    POST("/updateMigratedPermit", handler::updatePermitMigrated)
                     PUT("/sta3-update", handler::permitUpdateSTA3Migration)
+
+
 //                    POST(
 //                        "/sta3-update-upload".and(contentType(MediaType.MULTIPART_FORM_DATA)),
 //                        handler::permitUploadSTA3Migration
