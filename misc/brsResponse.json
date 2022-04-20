@@ -1,29 +1,23 @@
+
+curl -k --location --request POST 'https://196.61.52.30/KEBS/kebs/sendEntryDetails' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+"REQUEST": {
+"HEADER": {
+"loginId": "KEBSUSER",
+"password": "password@1",
+"hash": "bf28a596549ca6f3591cac662fef09f72d5566a0dbec133f90e41c0fe841cc62",
+"transmissionDate": "20-04-2022T14:14:43",
+"noOfRecords": "1"
+},
+"DETAILS": [
 {
-  "records": [
-    {
-      "verified": true,
-      "status": "registered",
-      "share_capital": [],
-      "registration_number": "BN-JRCGZ8VJ",
-      "registration_date": "18 December 2020",
-      "postal_address": "666 - 00232",
-      "physical_address": "membley, acacia drive, membley, acacia drive",
-      "phone_number": "+254718377676",
-      "partners": [
-        {
-          "shares": [],
-          "name": "RUTH WANJIKU NGWIRI",
-          "id_type": "citizen",
-          "id_number": "34260818"
-        }
-      ],
-      "kra_pin": null,
-      "id": 1836299,
-      "encumberances": [],
-      "email": "kivuorganics@gmail.com",
-      "business_name": "KIVU ORGANICS",
-      "branches": null
-    }
-  ],
-  "count": 1
+"entryNumber": "2022042034861",
+"kraPin": "1248GHYRTCDGT",
+"manufacturerName": "KIVU ORGANICS",
+"registrationDate": "07-04-2022T17:11:25",
+"status": "Active"
 }
+]
+}
+}'

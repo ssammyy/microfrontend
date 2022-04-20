@@ -21,12 +21,14 @@ class KraHeader {
     var hash: String? = null
 
     @NotNull(message = "Required field")
+    var noOfRecords: String? = null
+
+    @NotNull(message = "Required field")
 //    DD-MM-YYYY’T’HH:MM:SS
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy'T'HH:mm:ss")
     var transmissionDate: Timestamp? = Timestamp.from(Instant.now())
 
-    @NotNull(message = "Required field")
-    var noOfRecords: String? = null
+
 }
 
 data class KraDataRequest(

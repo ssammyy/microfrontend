@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.kra
 
+import com.hazelcast.internal.util.QuickMath.bytesToHex
 import io.ktor.client.statement.*
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
@@ -11,6 +12,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.kra.request.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.kra.response.KraResponse
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.kebs.app.kotlin.apollo.store.model.IntegrationConfigurationEntity
 import org.kebs.app.kotlin.apollo.store.model.KraEntryNumberRequestLogEntity
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.WorkflowTransactionsEntity
@@ -39,12 +41,14 @@ class SendEntryNumberToKraServices(
         runBlocking {
 
             val numberRecords = "1"
+            val recordNumber= 1
             val headerBody = KraHeader().apply {
                 transmissionDate = commonDaoServices.getTimestamp()
                 loginId = jasyptStringEncryptor.decrypt(config.username)
                 password = jasyptStringEncryptor.decrypt(config.password)
-                hash = kraDataEncryption("$numberRecords$transmissionDate")
                 noOfRecords = numberRecords
+                hash = kraDataEncryption("$recordNumber$transmissionDate")
+               // hash = hashingMechanisms(config, "$numberRecords$transmissionDate")
             }
             val detailBody = KraDetails().apply {
                 entryNumber = companyProfile.entryNumber
@@ -134,6 +138,10 @@ class SendEntryNumberToKraServices(
             // KotlinLogging.logger {  }.info { "Response received: $response" }
         }
     }
+
+
+
+
 
     fun kraDataEncryption(hashedData: String): String {
         fun encryptThisString(input: String): String {
