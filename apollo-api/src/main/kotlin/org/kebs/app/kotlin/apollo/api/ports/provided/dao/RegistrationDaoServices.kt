@@ -1555,7 +1555,7 @@ class RegistrationDaoServices(
         configurationRepository.findByIdOrNull(3L)
             ?.let { config ->
                 runBlocking {
-                    val log = daoService.createTransactionLog(0, "integ")
+                    val log = daoService.createTransactionLog(0, daoService.generateTransactionReference())
                     val params = mapOf(Pair("registration_number", companyRegistrationNumber))
                     log.integrationRequest = "$params"
                     val resp = daoService.getHttpResponseFromGetCall(

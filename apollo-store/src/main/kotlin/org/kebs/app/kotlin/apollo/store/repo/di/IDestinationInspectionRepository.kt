@@ -316,7 +316,7 @@ interface IDemandNoteRepository : HazelcastRepository<CdDemandNoteEntity, Long> 
     fun findByStatusOrderByIdAsc(status: Int, page: Pageable): Page<CdDemandNoteEntity>
     fun findByDemandNoteNumberContainingOrPostingReferenceContainingAndPaymentStatusInOrderByIdAsc(demandNoteNumber: String, referenceNumber: String, status: List<Int>, page: Pageable): Page<CdDemandNoteEntity>
     fun findByInvoiceBatchNumberId(invoiceBatchNumberId: Long): List<CdDemandNoteEntity>?
-    fun findByCdIdAndPaymentStatus(cdId: Long, paymentStatus: Int): CdDemandNoteEntity?
+    fun findFirstByCdIdAndPaymentStatusAndPaymentPurpose(cdId: Long, paymentStatus: Int, purpose: String): CdDemandNoteEntity?
     fun findFirstByUcrNumberAndPaymentStatusIn(refNum: String, paymentStatuses: List<Int>): CdDemandNoteEntity?
     fun findByCdIdAndPaymentStatusIn(cdId: Long, paymentStatuses: List<Int>): List<CdDemandNoteEntity>
     fun findAllByPaymentStatusAndSwStatusInAndPaymentPurpose(paymentStatus: Int, swStatus: List<Int?>, paymentPurpose: String): List<CdDemandNoteEntity>
