@@ -102,7 +102,7 @@ class SendEntryNumberToKraServices(
             val response: Triple<WorkflowTransactionsEntity, KraResponse?, HttpResponse?> =
                 daoService.processResponses(resp, log, configUrl, config)
 
-            if (response.second?.responseCode=="90000"){
+           // if (response.second?.responseCode=="90000"){
 
                 transactionsRequest.apply {
                     responseStatus = response.second?.status
@@ -113,18 +113,20 @@ class SendEntryNumberToKraServices(
                     updatedOn = commonDaoServices.getTimestamp()
                 }
                 iKraEntryNumberRequestLogEntityRepository.save(transactionsRequest)
-           }else{
-                transactionsRequest.apply {
-                    responseStatus = response.second?.status
-                    responseResponseCode = response.second?.responseCode
-                    responseMessage = response.second?.message
-                    updateBy = user
-                    updatedOn = commonDaoServices.getTimestamp()
-                }
-                iKraEntryNumberRequestLogEntityRepository.save(transactionsRequest)
 
-                KotlinLogging.logger { }.trace { "Response ${response.second?.message}" }
-            }
+            KotlinLogging.logger { }.trace { "Response ${response.second?.message}" }
+        //           }else{
+//                transactionsRequest.apply {
+//                    responseStatus = response.second?.status
+//                    responseResponseCode = response.second?.responseCode
+//                    responseMessage = response.second?.message
+//                    updateBy = user
+//                    updatedOn = commonDaoServices.getTimestamp()
+//                }
+//                iKraEntryNumberRequestLogEntityRepository.save(transactionsRequest)
+//
+//                KotlinLogging.logger { }.trace { "Response ${response.second?.message}" }
+//            }
 
 
 
