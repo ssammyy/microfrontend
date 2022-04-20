@@ -46,6 +46,24 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         @Param("VAR_ATTACHED_PLANT_ID") plantId: Long
     ): String
 
+
+    @Query(
+        value = "UPDATE APOLLO.DAT_KEBS_PERMIT_TRANSACTION  t1\n" +
+                "SET(t1.ENABLED,t1.PRODUCT_STANDARD, t1.STA10_FILLED_STATUS,t1.VERSION_NUMBER)=\n" +
+                "    (\n" +
+                "        SELECT t2.ENABLED,t2.PRODUCT_STANDARD, t2.STA10_FILLED_STATUS,t2.VERSION_NUMBER\n" +
+                "        FROM APOLLO.DAT_KEBS_PERMIT_TRANSACTION  t2\n" +
+                "        WHERE  t2.ID=:permit\n" +
+                "\n" +
+                "        )\n" +
+                "WHERE t1.ID=:permitBeingUpdated",
+        nativeQuery = true
+    )
+    fun updatePermitToNew(
+        @Param("permit") permit: Long,
+        @Param("permitBeingUpdated") permitBeingUpdated: Long
+    ): String
+
     @Query(
         "SELECT pr.* FROM DAT_KEBS_PERMIT_TRANSACTION pr, DAT_KEBS_MANUFACTURE_PLANT_DETAILS B WHERE pr.ATTACHED_PLANT_ID = B.ID AND pr.PAID_STATUS = :paidStatus AND B.REGION = :region order by pr.ID",
         nativeQuery = true
@@ -206,6 +224,12 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     ): List<PermitApplicationsEntity>?
 
     fun findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatus(
+        userId: Long,
+        permitType: Long,
+        permitAwardStatus: Int
+    ): List<PermitApplicationsEntity>?
+
+    fun findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusAndVersionNumberIsNotNull(
         userId: Long,
         permitType: Long,
         permitAwardStatus: Int
@@ -587,6 +611,63 @@ interface IQaSta10EntityRepository : HazelcastRepository<QaSta10Entity, Long> {
     fun findByPermitId(permitId: Long): QaSta10Entity?
     fun findTopByPermitRefNumberOrderByIdDesc(permitRefNumber: String): QaSta10Entity?
     fun findByPermitRefNumberAndPermitId(permitRefNumber: String, permitId: Long): QaSta10Entity?
+
+    @Query(
+        value = "UPDATE APOLLO.DAT_KEBS_QA_STA10  t1\n" +
+                "SET(t1.TOTAL_NUMBER_PERSONNEL,\n" +
+                "    t1.TOTAL_NUMBER_FEMALE,\n" +
+                "    t1.TOTAL_NUMBER_MALE,\n" +
+                "    t1.TOTAL_NUMBER_PERMANENT_EMPLOYEES,\n" +
+                "   t1.TOTAL_NUMBER_CASUAL_EMPLOYEES,\n" +
+                "   t1.AVERAGE_VOLUME_PRODUCTION_MONTH,\n" +
+                "   t1.HANDLED_MANUFACTURING_PROCESS_RAW_MATERIALS,\n" +
+                "   t1.HANDLED_MANUFACTURING_PROCESS_INPROCESS_PRODUCTS,\n" +
+                "   t1.HANDLED_MANUFACTURING_PROCESS_FINAL_PRODUCT,\n" +
+                "   t1.STRATEGY_INPLACE_RECALLING_PRODUCTS,\n" +
+                "   t1.STATE_FACILITY_CONDITIONS_RAW_MATERIALS,\n" +
+                "   t1.STATE_FACILITY_CONDITIONS_END_PRODUCT,\n" +
+                "   t1.TESTING_FACILITIES_EXIST_SPECIFY_EQUIPMENT,\n" +
+                "   t1.TESTING_FACILITIES_EXIST_STATE_PARAMETERS_TESTED,\n" +
+                "   t1.TESTING_FACILITIES_SPECIFY_PARAMETERS_TESTED,\n" +
+                "   t1.CALIBRATION_EQUIPMENT_LAST_CALIBRATED,\n" +
+                "   t1.HANDLING_CONSUMER_COMPLAINTS,\n" +
+                "   t1.COMPANY_REPRESENTATIVE,\n" +
+                "   t1.STATUS)=\n" +
+                "       (\n" +
+                "           SELECT\n" +
+                "               t2.TOTAL_NUMBER_PERSONNEL,\n" +
+                "               t2.TOTAL_NUMBER_FEMALE,\n" +
+                "               t2.TOTAL_NUMBER_MALE,\n" +
+                "               t2.TOTAL_NUMBER_PERMANENT_EMPLOYEES,\n" +
+                "               t2.TOTAL_NUMBER_CASUAL_EMPLOYEES,\n" +
+                "               t2.AVERAGE_VOLUME_PRODUCTION_MONTH,\n" +
+                "               t2.HANDLED_MANUFACTURING_PROCESS_RAW_MATERIALS,\n" +
+                "               t2.HANDLED_MANUFACTURING_PROCESS_INPROCESS_PRODUCTS,\n" +
+                "               t2.HANDLED_MANUFACTURING_PROCESS_FINAL_PRODUCT,\n" +
+                "               t2.STRATEGY_INPLACE_RECALLING_PRODUCTS,\n" +
+                "               t2.STATE_FACILITY_CONDITIONS_RAW_MATERIALS,\n" +
+                "               t2.STATE_FACILITY_CONDITIONS_END_PRODUCT,\n" +
+                "               t2.TESTING_FACILITIES_EXIST_SPECIFY_EQUIPMENT,\n" +
+                "               t2.TESTING_FACILITIES_EXIST_STATE_PARAMETERS_TESTED,\n" +
+                "               t2.TESTING_FACILITIES_SPECIFY_PARAMETERS_TESTED,\n" +
+                "               t2.CALIBRATION_EQUIPMENT_LAST_CALIBRATED,\n" +
+                "               t2.HANDLING_CONSUMER_COMPLAINTS,\n" +
+                "               t2.COMPANY_REPRESENTATIVE,\n" +
+                "               t2.STATUS\n" +
+                "           FROM APOLLO.DAT_KEBS_QA_STA10  t2\n" +
+                "           WHERE  t2.PERMIT_ID=:permit\n" +
+                "\n" +
+                "       )\n" +
+                "WHERE t1.PERMIT_ID=:permitBeingUpdated",
+        nativeQuery = true
+    )
+
+    fun updatePermitWithSta10Data(
+        @Param("permit") permit: Long,
+        @Param("permitBeingUpdated") permitBeingUpdated: Long
+    ): String
+
+
 }
 
 @Repository
@@ -604,22 +685,65 @@ interface IQaSampleLabTestParametersRepository : HazelcastRepository<QaSampleLab
 @Repository
 interface IQaMachineryRepository : HazelcastRepository<QaMachineryEntity, Long> {
     fun findBySta10Id(sta10Id: Long): List<QaMachineryEntity>?
+    @Query(value="INSERT INTO DAT_KEBS_QA_MACHINE t1\n" +
+            "(\n" +
+            " t1.COUNTRY_OF_ORIGIN,t1.MACHINE_NAME,t1.TYPE_MODEL,t1.STATUS,t1.STA10_ID\n" +
+            ")\n" +
+            "SELECT   t2.COUNTRY_OF_ORIGIN,t2.MACHINE_NAME,t2.TYPE_MODEL,t2.STATUS,:sta10IdToBeUpdated\n" +
+            "FROM DAT_KEBS_QA_MACHINE t2 WHERE t2.STA10_ID =:sta10Id", nativeQuery = true)
+    fun updateMachinery(
+        @Param("sta10Id") sta10Id: Long,
+    @Param("sta10IdToBeUpdated") sta10IdToBeUpdated: Long
+    ): String
+
 }
 
 
 @Repository
 interface IQaRawMaterialRepository : HazelcastRepository<QaRawMaterialEntity, Long> {
     fun findBySta10Id(sta10Id: Long): List<QaRawMaterialEntity>?
+    @Query(value="INSERT INTO DAT_KEBS_QA_RAW_MATERIAL t1\n" +
+            "(\n" +
+            "    t1.NAME,t1.ORIGIN,t1.STATUS,t1.SPECIFICATIONS,t1.QUALITY_CHECKS_TESTING_RECORDS,t1.STA10_ID\n" +
+            ")\n" +
+            "SELECT   t2.NAME,t2.ORIGIN,t2.STATUS,t2.SPECIFICATIONS,t2.QUALITY_CHECKS_TESTING_RECORDS,:sta10IdToBeUpdated\n" +
+            "FROM DAT_KEBS_QA_RAW_MATERIAL t2 WHERE t2.STA10_ID =:sta10Id;", nativeQuery = true)
+    fun updateRawMaterials(
+        @Param("sta10Id") sta10Id: Long,
+        @Param("sta10IdToBeUpdated") sta10IdToBeUpdated: Long
+    ): String
 }
 
 @Repository
 interface IQaManufactureProcessRepository : HazelcastRepository<QaManufacturingProcessEntity, Long> {
     fun findBySta10Id(sta10Id: Long): List<QaManufacturingProcessEntity>?
+    @Query(value="INSERT INTO DAT_KEBS_QA_MANUFACTURING_PROCESS t1\n" +
+            "(\n" +
+            "    t1.PROCESS_FLOW_OF_PRODUCTION,t1.OPERATIONS,t1.CRITICAL_PROCESS_PARAMETERS_MONITORED,t1.FREQUENCY,t1.PROCESS_MONITORING_RECORDS,t1.STATUS,t1.STA10_ID\n" +
+            ")\n" +
+            "SELECT\n" +
+            "    t2.PROCESS_FLOW_OF_PRODUCTION,t2.OPERATIONS,t2.CRITICAL_PROCESS_PARAMETERS_MONITORED,t2.FREQUENCY,t2.PROCESS_MONITORING_RECORDS,t2.STATUS,:sta10IdToBeUpdated,\n" +
+            "FROM DAT_KEBS_QA_MANUFACTURING_PROCESS t2 WHERE t2.STA10_ID =:sta10Id;\n", nativeQuery = true)
+    fun updateManufacturing(
+        @Param("sta10Id") sta10Id: Long,
+        @Param("sta10IdToBeUpdated") sta10IdToBeUpdated: Long
+    ): String
 }
 
 @Repository
 interface IQaProductBrandEntityRepository : HazelcastRepository<QaProductManufacturedEntity, Long> {
     fun findBySta10Id(sta10Id: Long): List<QaProductManufacturedEntity>?
+    @Query(value="INSERT INTO DAT_KEBS_QA_PRODUCT t1\n" +
+            "(\n" +
+            "    t1.AVAILABLE,t1.PRODUCT_BRAND,t1.PRODUCT_NAME,t1.STATUS,t1.STA10_ID,\n" +
+            ")\n" +
+            "SELECT\n" +
+            "   t2.AVAILABLE,t2.PRODUCT_BRAND,t2.PRODUCT_NAME,t2.STATUS,:sta10IdToBeUpdated,\n" +
+            "FROM DAT_KEBS_QA_PRODUCT t2 WHERE t2.STA10_ID =:sta10Id", nativeQuery = true)
+    fun updateProduct(
+        @Param("sta10Id") sta10Id: Long,
+        @Param("sta10IdToBeUpdated") sta10IdToBeUpdated: Long
+    ): String
 }
 
 

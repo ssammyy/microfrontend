@@ -360,6 +360,12 @@ data class MPesaPushDto(
         @NotEmpty(message = "is required")
         var phoneNumber: String
 )
+data class MigratedPermitDto(
+        @NotEmpty(message = "is required")
+        var id: Long,
+        @NotEmpty(message = "is required")
+        var name: String
+)
 
 data class MPesaMessageDto(
         var message: String? = null,
