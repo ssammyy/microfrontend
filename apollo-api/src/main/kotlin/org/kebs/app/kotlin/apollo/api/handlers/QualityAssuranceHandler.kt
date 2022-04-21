@@ -2457,7 +2457,7 @@ class QualityAssuranceHandler(
 //            val messageDto = MigratedPermitDto(
 //                invoiceEntity
 //            )
-            ok().body(permitID)
+            ok().body("Successful Migration")
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
