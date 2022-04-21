@@ -37,7 +37,9 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
-
+enum class PaymentStatus(val code: Int) {
+    NEW(0), PAID(1), BILLED(4), PARTIAL_PAYMENT(5);
+}
 
 @Service("invoiceService")
 class InvoicePaymentService(
@@ -170,17 +172,25 @@ class InvoicePaymentService(
             val demandNote = daoServices.findDemandNoteWithID(demandNoteId)!!
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             // Try to add transaction to current bill or generate batch payment
-            val transportDetails = daoServices.findCdTransportDetails(consignmentDocument.cdTransport ?: 0)
-            this.billingService.registerBillTransaction(demandNote, transportDetails.blawb, map)?.let { billTrx ->
-                demandNote.paymentStatus = 1
+            val loggedInUser = commonDaoServices.findUserByUserName(demandNote.createdBy ?: "NA")
+            val transportDetails = consignmentDocument.cdStandard
+            this.billingService.registerBillTransaction(demandNote, transportDetails?.courierPin, consignmentDocument.cdType?.varField1
+                    ?: "", map)?.let { billTrx ->
+                demandNote.paymentStatus = PaymentStatus.BILLED.code
+                demandNote.courierPin = transportDetails?.courierPin
                 demandNote.receiptNo = billTrx.tempReceiptNumber
                 demandNote.billId = billTrx.id
-                this.iDemandNoteRepo.save(demandNote)
+                val dn = this.iDemandNoteRepo.save(demandNote)
                 KotlinLogging.logger { }.info("Added demand note to bill transaction:${demandNote.demandNoteNumber} <=> ${billTrx.tempReceiptNumber}")
+                // Create bill payment on SAGE
+                invoiceDaoService.postRequestToSage(
+                        loggedInUser.userName!!,
+                        dn
+                )
+                KotlinLogging.logger { }.info("Posted demand note to SAGE:${demandNote.demandNoteNumber} <=> ${billTrx.tempReceiptNumber}")
             } ?: run {
                 demandNote.demandNoteNumber?.let {
                     KotlinLogging.logger { }.info("Generate demand note Sage:${demandNote.demandNoteNumber}")
-                    val loggedInUser = commonDaoServices.findUserByUserName(demandNote.createdBy ?: "NA")
                     // Create payment batch
                     val batchInvoiceDetail = invoiceDaoService.createBatchInvoiceDetails(loggedInUser.userName!!, it)
                     // Add demand note details to batch
@@ -223,7 +233,6 @@ class InvoicePaymentService(
                 response.responseCode = "Demand note is already posted"
                 return response
             }
-            val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             // Try to add transaction to current bill or generate batch payment
             demandNote.demandNoteNumber?.let {
                 KotlinLogging.logger { }.info("Generate demand note Sage:${demandNote.demandNoteNumber}")
@@ -494,12 +503,18 @@ class InvoicePaymentService(
                 response.message = "Partial Payment received"
             }
             iDemandNoteRepo.save(demandNoteUpdated)
+            if (demandNote.billId != null) {
+                billingService.demandNoteTransactionPaid(demandNote.demandNoteNumber ?: "", demandNote.receiptNo
+                        ?: "", demandNote.billId!!)
+            }
             // Completion event
             GlobalScope.launch(Dispatchers.IO) {
                 delay(100L)
                 when (demandNote.paymentPurpose) {
                     PaymentPurpose.CONSIGNMENT.code -> {
-                        invoicePaymentCompleted(demandNoteUpdated.cdId!!, demandNoteUpdated.id!!, responseStatus.response?.paymentAmount)
+                        if (demandNote.billId == null) {
+                            invoicePaymentCompleted(demandNoteUpdated.cdId!!, demandNoteUpdated.id!!, responseStatus.response?.paymentAmount)
+                        }
                     }
                     PaymentPurpose.AUDIT.code -> {
                         if (demandNoteUpdated.paymentStatus == map.activeStatus) {
@@ -577,6 +592,7 @@ class InvoicePaymentService(
                         entryAblNumber = form.ablNumber
                         totalAmount = BigDecimal.ZERO
                         amountPayable = BigDecimal.ZERO
+                        revenueLine = form.revenueLineNumber
                         receiptNo = "NOT PAID"
                         product = form.product ?: "UNKNOWN"
                         rate = "UNKNOWN"

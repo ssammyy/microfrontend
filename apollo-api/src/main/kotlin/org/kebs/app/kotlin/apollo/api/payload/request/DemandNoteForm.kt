@@ -42,9 +42,10 @@ class DemandNoteRequestForm {
     var customsOffice: String? = null
     var entryPoint: String? = null
     var entryNo: String? = null
-    var remarks: String? = null
+    var revenueLineNumber: String? = null
     var presentment: Boolean = false
     var amount: Double = 0.0 // For Foreign COC/COR
+    var remarks: String? = null
     fun addItem(itm: DemandNoteRequestItem) {
         if (this.items == null) {
             this.items = mutableListOf()

@@ -410,6 +410,7 @@ class ChecklistService(
                     // Add chassis number
                     daoServices.findCdItemNonStandardByItemID(detail)?.let {
                         checklistItem.chassisNo = it.chassisNo
+                        checklistItem.yearOfManufacture = it.vehicleYear
                     }
                     // Update details
                     checklistItem.sampled = itm.sampled
@@ -430,14 +431,12 @@ class ChecklistService(
                     if (checklistItem.ministryReportSubmitStatus == map.activeStatus) {
                         val ministryStation = this.ministryStationRepository.findById(checklistItem.stationId)
                         if (ministryStation.isPresent) {
-                            val saved = this.motorVehicleItemChecklistRepository.save(checklistItem)
                             checklistItem.ministryStationId = ministryStation.get()
-                            this.motorVehicleItemChecklistRepository.save(checklistItem)
+                            val saved = this.motorVehicleItemChecklistRepository.save(checklistItem)
                             //Submit ministry inspection
                             this.bpmn.startMinistryInspection(saved, detail)
-                        } else {
-                            // FIXME: Handle invalid selection here
                         }
+                        // FIXME: Handle invalid selection here
                     } else {
                         this.motorVehicleItemChecklistRepository.save(checklistItem)
                     }
@@ -710,7 +709,7 @@ class ChecklistService(
             data["modeOfRelease"] = ""
             data["signedBy"] = ""
             data["chassisNo"] = mvInspection.chassisNo ?: ""
-            data["yearOfManufacture"] = "${mvInspection.manufactureDate?.year}"
+            data["yearOfManufacture"] = mvInspection.yearOfManufacture ?: "N/A"
             data["remarks"] = mvInspection.remarks ?: ""
             data["genDate"] = SimpleDateFormat("dd/MM/yyyy HH:mm").format(mvInspection.createdOn)
             data["dutyStation"] = mvInspection.ministryStationId?.stationName ?: "N/A"

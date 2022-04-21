@@ -23,6 +23,10 @@ class BillPayments : Serializable {
     @Basic
     var billNumber: String? = null
 
+    @Column(name = "BILL_REF_NUMBER")
+    @Basic
+    var billRefNumber: String? = null
+
     @Column(name = "BILL_NUMBER_PREFIX")
     @Basic
     var billNumberPrefix: String? = null

@@ -2346,6 +2346,9 @@ class DestinationInspectionDaoServices(
                     cdDetailsEntity.cdType = findCdTypeDetailsWithName(CdTypeCodes.EXEMPTED_GOODS.code)
                 }
             }
+            "CGD" -> {
+                cdDetailsEntity.cdType = findCdTypeDetailsWithName(CdTypeCodes.COURIER_GOODS.code)
+            }
             else ->
                 when {
                     StringUtils.hasLength(chassisNumber) -> {

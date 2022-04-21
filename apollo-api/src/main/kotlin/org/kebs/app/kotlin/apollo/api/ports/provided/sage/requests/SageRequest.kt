@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import org.kebs.app.kotlin.apollo.store.model.CdDemandNoteEntity
 import org.kebs.app.kotlin.apollo.store.model.di.CdDemandNoteItemsDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.invoice.BillPayments
-import org.kebs.app.kotlin.apollo.store.model.invoice.BillTransactionsEntity
+import org.kebs.app.kotlin.apollo.store.repo.BillSummary
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
@@ -71,6 +71,9 @@ class SageRequest {
     @JsonProperty("Courier")
     var courier: String? = null
 
+    @JsonProperty("BatchNo")
+    var billRefNumber: String? = null
+
     @JsonProperty("OtherInfo")
     var otherInfo: String? = null
 
@@ -117,23 +120,23 @@ class InvoiceRequestItems {
     var taxAmount: BigDecimal? = null
 
     companion object {
-        fun fromEntity(item: BillTransactionsEntity, accountNumber: String, accountDescription: String): InvoiceRequestItems {
+        fun fromEntity(item: BillSummary, accountDescription: String): InvoiceRequestItems {
             val itm = InvoiceRequestItems().apply {
-                amount = item.amount
-                taxAmount = BigDecimal.ZERO
-                taxable = 0
+                amount = item.getTotalAmount()
+                taxAmount = item.getTotalTax()
+                taxable = when {
+                    item.getTotalTax() > BigDecimal.ZERO -> 1
+                    else -> 0
+                }
             }
-            itm.revenueAcc = accountNumber
+            itm.revenueAcc = item.getRevenueLine()
             itm.revenueAccDesc = accountDescription
-            if ((item.description?.length ?: 0) > 50) {
-                itm.revenueAcc = item.description?.substring(0, 49)
-            }
             return itm
         }
 
-        fun fromList(items: List<BillTransactionsEntity>, accountNumber: String, accountDescription: String): List<InvoiceRequestItems> {
+        fun fromList(items: List<BillSummary>, accountDescription: String): List<InvoiceRequestItems> {
             val dtos = mutableListOf<InvoiceRequestItems>()
-            items.forEach { dtos.add(fromEntity(it, accountNumber, accountDescription)) }
+            items.forEach { dtos.add(fromEntity(it, accountDescription)) }
             return dtos
         }
     }

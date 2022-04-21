@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.api.service
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CdTypeCodes
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
@@ -87,7 +88,10 @@ class BillingService(
                         ?: LocalDate.now().withDayOfMonth(15)
             }
             bill.paymentDate = Date.valueOf(paymentDate)
-            bill.createOn = Timestamp.from(Instant.now())
+            val dt = Timestamp.from(Instant.now())
+            bill.createOn = dt
+            bill.billNumberPrefix = "BN-${commonDaoServices.convertDateToString(dt.toLocalDateTime(), "yyMM-")}${this.billPaymentRepository.countByCorporateId(corporate.id) + 1}"
+            bill.billRefNumber = "${bill.billNumberPrefix}-${bill.billNumber}"
             bill.billDescription = "Bill payment for the month of " + commonDaoServices.convertDateToString(bill.paymentDate, "MMMM")
             val saved = this.billPaymentRepository.save(bill)
             transaction.billId = saved.id
@@ -105,8 +109,14 @@ class BillingService(
      * @param demandNote demand node to add for billing
      * @param map application properties
      */
-    fun registerBillTransaction(demandNote: CdDemandNoteEntity, identifier: String?, map: ServiceMapsEntity): BillTransactionsEntity? {
+    fun registerBillTransaction(demandNote: CdDemandNoteEntity, identifier: String?, cdType: String?, map: ServiceMapsEntity): BillTransactionsEntity? {
         // Find corporate by supplied indentifier(Courier Good) or importer Pin
+        KotlinLogging.logger { }.info("Importer: ${demandNote.importerPin}, Courier: $identifier, CdType: $cdType")
+        if (!CdTypeCodes.COURIER_GOODS.code.equals(cdType, true)) { // Only courier documents allowed
+            KotlinLogging.logger { }.info("Found document of type, bill not applicable: $cdType")
+            return null
+        }
+
         val corporate = identifier?.let {
             corporateCustomerRepository.findAllByCorporateIdentifier(it)
         } ?: corporateCustomerRepository.findAllByCorporateIdentifier(demandNote.importerPin)
@@ -117,12 +127,14 @@ class BillingService(
 
                 val transactionEntity = BillTransactionsEntity()
                 transactionEntity.amount = demandNote.totalAmount
+                transactionEntity.taxAmount = demandNote.totalAmount?.times(BigDecimal(0.16))
                 transactionEntity.corporateId = corporate.get().id
                 transactionEntity.description = demandNote.descriptionGoods
                 transactionEntity.invoiceNumber = demandNote.demandNoteNumber
                 transactionEntity.transactionType = "DEMAND_NOTE"
                 transactionEntity.paidStatus = 0
                 transactionEntity.tempReceiptNumber = generateRefNoteNumber(corporate.get().accountLimits, map)
+                transactionEntity.revenueLine = demandNote.revenueLine
                 transactionEntity.status = 1
                 transactionEntity.transactionDate = Timestamp.from(Instant.now())
                 transactionEntity.transactionId = demandNote.id.toString()
@@ -137,11 +149,21 @@ class BillingService(
 
     }
 
+    fun demandNoteTransactionPaid(demandNoteNumber: String, receiptNumber: String, billId: Long) {
+        this.billTransactionRepo.findByInvoiceNumberAndBillId(demandNoteNumber, billId)?.let { transactionEntity ->
+            transactionEntity.receiptNumber = receiptNumber
+            transactionEntity.paidStatus = 1
+            transactionEntity.receiptDate = Timestamp.from(Instant.now())
+            this.billTransactionRepo.save(transactionEntity)
+        }
+
+    }
+
     /**
      * Registers transaction for billing and send assigns a temporally transaction reference/receipt
      *
-     * @param demandNote demand node to add for billing
-     * @param map application properties
+     * @param transactionEntity demand node to add for billing
+     * @param partner application properties
      */
     fun registerPvocTransaction(transactionEntity: BillTransactionsEntity, partner: PvocPartnersEntity): BillTransactionsEntity? {
         // Find corporate by supplied indentifier(Courier Good) or importer Pin

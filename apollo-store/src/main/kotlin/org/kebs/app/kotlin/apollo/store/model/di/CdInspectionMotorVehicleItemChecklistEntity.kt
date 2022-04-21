@@ -43,6 +43,10 @@ class CdInspectionMotorVehicleItemChecklistEntity : Serializable {
     @Basic
     var chassisNo: String? = ""
 
+    @Column(name = "YEAR_OF_MANUFACTURE")
+    @Basic
+    var yearOfManufacture: String? = null
+
     @Column(name = "ENGINE_NO_CAPACITY")
     @Basic
     var engineNoCapacity: String? = ""
@@ -120,7 +124,7 @@ class CdInspectionMotorVehicleItemChecklistEntity : Serializable {
     var ministryReportDate: Timestamp? = null
 
     @JoinColumn(name = "MINISTRY_STATION_ID", referencedColumnName = "ID")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     var ministryStationId: MinistryStationEntity? = null
 
     @Column(name = "DESCRIPTION")

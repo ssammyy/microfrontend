@@ -38,7 +38,7 @@ class CorporateCustomerService(
         val startOfDay: LocalDateTime = localDateTime.with(LocalTime.MIN)
         val endOfDay: LocalDateTime = localDateTime.with(LocalTime.MAX)
         val cc = corporateCustomersRepository.countByCreatedOnBetween(Timestamp.valueOf(startOfDay), Timestamp.valueOf(endOfDay))
-        return "%05x".format(cc)
+        return "%05x".format(cc + 1)
     }
 
     fun addCorporateCustomer(form: CorporateForm): ApiResponseModel {

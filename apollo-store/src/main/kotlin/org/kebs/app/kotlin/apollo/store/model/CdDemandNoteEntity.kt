@@ -25,6 +25,10 @@ class CdDemandNoteEntity : Serializable {
     @Basic
     var importerPin: String? = null
 
+    @Column(name = "COURIER_PIN")
+    @Basic
+    var courierPin: String? = null
+
     @Column(name = "SHIPPING_AGENT")
     @Basic
     var shippingAgent: String? = null
@@ -149,6 +153,10 @@ class CdDemandNoteEntity : Serializable {
     @Column(name = "PAYMENT_PURPOSE")
     @Basic
     var paymentPurpose: String? = null
+
+    @Column(name = "REVENUE_LINE")
+    @Basic
+    var revenueLine: String? = null
 
     @Column(name = "BILL_ID")
     @Basic

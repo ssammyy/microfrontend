@@ -143,6 +143,13 @@ class PostInvoiceToSageServices(
 
             val requestBody = mutableMapOf<String, Any>()
             val tmpRequest = SageRequest.fromEntity(demandNote)
+            // Add bill reference number if applicable
+            tmpRequest.billRefNumber = ""
+            if (demandNote.billId != null) {
+                invoiceDaoService.findBillDetails(demandNote.billId!!)?.let {
+                    tmpRequest.billRefNumber = it.billRefNumber
+                }
+            }
             requestBody["header"] = headerBody
             requestBody["request"] = tmpRequest
             requestBody["details"] = RequestItems.fromList(invoiceDaoService.findDemandNoteItemsCdId(demandNote.id!!))
@@ -199,7 +206,7 @@ class PostInvoiceToSageServices(
             val tmpRequest = SageInvoiceRequest.fromEntity(billPayment)
             requestBody["header"] = headerBody
             requestBody["request"] = tmpRequest
-            requestBody["details"] = InvoiceRequestItems.fromList(invoiceDaoService.findBillTransactions(billPayment.id), "", "")
+            requestBody["details"] = InvoiceRequestItems.fromList(invoiceDaoService.findBillTransactions(billPayment.id), "Account Line")
             // Send and log request
             val log = daoService.createTransactionLog(0, "${billPayment.billNumber}_1")
             val resp = daoService.getHttpResponseFromPostCall(
