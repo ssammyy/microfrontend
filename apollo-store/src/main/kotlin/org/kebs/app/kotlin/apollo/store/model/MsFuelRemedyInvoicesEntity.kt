@@ -205,4 +205,8 @@ class MsFuelRemedyInvoicesEntity : Serializable {
     @Basic
     var fuelInspectionId: Long? = null
 
+    @Column(name = "FUEL_INSPECTION_REF_NUMBER")
+    @Basic
+    var fuelInspectionRefNumber: String? = null
+
 }

@@ -52,6 +52,10 @@ class MsUploadsEntity : Serializable {
     var msFuelInspectionId: Long? = null
 
     @Basic
+    @Column(name = "MS_COMPLAINT_ID")
+    var msComplaintId: Long? = null
+
+    @Basic
     @Column(name = "VERSION_NUMBER")
     var versionNumber: Long? = null
 
@@ -62,6 +66,10 @@ class MsUploadsEntity : Serializable {
     @Basic
     @Column(name = "SSF_UPLOADS")
     var ssfUploads: Int? = null
+
+    @Basic
+    @Column(name = "COMPLAINT_UPLOADS")
+    var complaintUploads: Int? = null
 
     @Basic
     @Column(name = "STATUS")

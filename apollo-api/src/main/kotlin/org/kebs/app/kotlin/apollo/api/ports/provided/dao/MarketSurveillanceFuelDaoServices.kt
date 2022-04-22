@@ -591,6 +591,7 @@ class MarketSurveillanceFuelDaoServices(
         val batchDetails = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
 //        val savedSSfComplianceStatus = ssfLabUpdateDetails(body,loggedInUser,map)
         val fuelRemediationInvoice = MsFuelRemedyInvoicesEntity().apply {
+            fuelInspectionRefNumber = fileInspectionDetail.referenceNumber
             volumeFuelRemediated = body.volumeFuelRemediated
             subsistenceTotalNights = body.subsistenceTotalNights
             transportAirTicket = body.transportAirTicket
@@ -2243,6 +2244,7 @@ class MarketSurveillanceFuelDaoServices(
                         it.transportTotal.toString(),
                         it.transportGrandTotal.toString(),
                         it.fuelInspectionId.toString(),
+                        it.fuelInspectionRefNumber.toString(),
             )
         }
     }

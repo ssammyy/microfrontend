@@ -534,5 +534,6 @@ data class FuelRemediationDetailsDTO(
         var transportTotal: String? = null,
         var transportGrandTotal: String? = null,
         var fuelInspectionId: String? = null,
+        var fuelInspectionRefNumber: String? = null,
 )
 

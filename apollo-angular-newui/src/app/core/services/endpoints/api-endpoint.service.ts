@@ -64,6 +64,7 @@ export class ApiEndpointService {
      */
     public static AUTH_CONTEXT = '/api/v1/login';
     public static ANONYMOUS_CONTEXT = '/api/v1/migration/anonymous';
+    public static ANONYMOUS_CONTEXT_MS = '/api/v1/migration/ms/anonymous';
     public static ANONYMOUS_CONTEXT_NEP = '/api/v1/migration/anonymous/National_enquiry_point';
 
 
@@ -460,6 +461,7 @@ export class ApiEndpointService {
 
     public static MARKET_SURVEILLANCE_COMPLAINT = {
         CREATE_NEW_COMPLAINT: `${ApiEndpointService.ANONYMOUS_CONTEXT}/complaint/new`,
+        UPLOAD_COMPLIANT_FILE: `${ApiEndpointService.ANONYMOUS_CONTEXT_MS}/complaint/file/save`,
         CLOSE_BATCH: `${ApiEndpointService.MS_FUEL_CONTEXT}/close`,
       };
     /**

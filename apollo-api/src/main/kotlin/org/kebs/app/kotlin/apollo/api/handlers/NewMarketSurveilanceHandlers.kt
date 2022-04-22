@@ -50,6 +50,7 @@ import org.springframework.stereotype.Component
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.Errors
 import org.springframework.validation.Validator
+import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.function.body
@@ -468,6 +469,7 @@ class NewMarketSurveillanceHandler(
     fun saveNewComplaint(req: ServerRequest): ServerResponse {
         return try {
             val body = req.body<NewComplaintDto>()
+//            val referenceNo = req.headers().contentType().MultipartFile("docFile") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
             val errors: Errors = BeanPropertyBindingResult(body, NewComplaintDto::class.java.name)
             validator.validate(body, errors)
             when {

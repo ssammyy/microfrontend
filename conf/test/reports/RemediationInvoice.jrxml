@@ -172,6 +172,9 @@
 	<field name="transportGrandTotal" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="transportGrandTotal"/>
 	</field>
+	<field name="fuelInspectionRefNumber" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="fuelInspectionRefNumber"/>
+	</field>
 	<field name="invoiceNumber" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="invoiceNumber"/>
 	</field>
@@ -179,13 +182,13 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="79" splitType="Stretch">
+		<band height="95" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="53" width="760" height="25" uuid="d7b26d11-81f9-4944-ab28-350e0ceb8743">
+				<reportElement x="127" y="53" width="439" height="25" uuid="d7b26d11-81f9-4944-ab28-350e0ceb8743">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Algerian" size="12" isBold="true" isItalic="false" isUnderline="true"/>
+					<font fontName="SansSerif" size="12" isBold="true" isItalic="false" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[SAMPLE OF A QUOTATION FOR REMEDIATIO OF ADULTERATED FUEL – ]]></text>
 			</staticText>
@@ -231,6 +234,13 @@
 					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{invoiceNumber}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="566" y="53" width="197" height="25" uuid="8698d375-be9b-4a2f-a301-5731508a5145">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{fuelInspectionRefNumber}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>

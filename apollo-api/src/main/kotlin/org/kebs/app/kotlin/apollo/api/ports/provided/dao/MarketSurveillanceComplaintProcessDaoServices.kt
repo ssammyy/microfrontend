@@ -82,21 +82,21 @@ class MarketSurveillanceComplaintProcessDaoServices(
 
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun saveNewComplaint(body: NewComplaintDto, page: PageRequest) {
+    fun saveNewComplaint(body: NewComplaintDto, page: PageRequest): MSComplaintSubmittedSuccessful {
         try {
             val map = commonDaoServices.serviceMapDetails(appId)
             val msType = findMsTypeDetailsWithUuid(applicationMapProperties.mapMsComplaintTypeUuid)
             val sr: ServiceRequestsEntity
             var payload: String
 
-            var complaint = saveNewComplaint(body.complaintDetails, map, msType, body.customerDetails)
+            val complaint = saveNewComplaint(body.complaintDetails, map, msType, body.customerDetails)
             payload = "${commonDaoServices.createJsonBodyFromEntity(complaint)}"
 
             val complaintCustomers = saveNewComplaintCustomers(body.customerDetails, map, complaint.second)
-            payload = "${commonDaoServices.createJsonBodyFromEntity(complaintCustomers)}"
+            payload += "${commonDaoServices.createJsonBodyFromEntity(complaintCustomers)}"
 //
             val complaintLocation = saveNewComplaintLocation(body.locationDetails, body.complaintDetails, map, complaint.second)
-            payload = "${commonDaoServices.createJsonBodyFromEntity(complaintLocation)}"
+            payload += "${commonDaoServices.createJsonBodyFromEntity(complaintLocation)}"
 
 
             val designationsEntity = commonDaoServices.findDesignationByID(applicationMapProperties.mapMsComplaintAndWorkPlanDesignationHOD)
@@ -129,41 +129,41 @@ class MarketSurveillanceComplaintProcessDaoServices(
             }
             val updatedComplaint = complaintsRepo.save(complaint.second)
 //            complaint = commonDaoServices.updateDetails(updatedComplaint, complaint) as ComplaintEntity
-//            complaint.second =
+//            complaint.second =updatedComplaint
 
-//            sr = commonDaoServices.mapServiceRequestForSuccessUserNotRegistered(
-//                map,
-//                payload,
-//                "${body.customerDetails.firstName} ${body.customerDetails.lastName}"
-//            )
-//            val complainantEmailComposed = complaintSubmittedDTOEmailCompose(complaint)
-//            val complaintReceivedEmailComposed = complaintReceivedDTOEmailCompose(complaint, hod)
-//            commonDaoServices.sendEmailWithUserEmail(
-//                customerEmail,
-//                applicationMapProperties.mapMsComplaintAcknowledgementNotification,
-//                complainantEmailComposed,
-//                map,
-//                sr
-//            )
-//            commonDaoServices.sendEmailWithUserEntity(
-//                hod,
-//                applicationMapProperties.mapMsComplaintSubmittedHodNotification,
-//                complaintReceivedEmailComposed,
-//                map,
-//                sr
-//            )
+            sr = commonDaoServices.mapServiceRequestForSuccessUserNotRegistered(
+                map,
+                payload,
+                "${body.customerDetails.firstName} ${body.customerDetails.lastName}"
+            )
+            val complainantEmailComposed = complaintSubmittedDTOEmailCompose(updatedComplaint)
+            val complaintReceivedEmailComposed = complaintReceivedDTOEmailCompose(updatedComplaint, hod)
+            commonDaoServices.sendEmailWithUserEmail(
+                customerEmail,
+                applicationMapProperties.mapMsComplaintAcknowledgementNotification,
+                complainantEmailComposed,
+                map,
+                sr
+            )
+            commonDaoServices.sendEmailWithUserEntity(
+                hod,
+                applicationMapProperties.mapMsComplaintSubmittedHodNotification,
+                complaintReceivedEmailComposed,
+                map,
+                sr
+            )
             /**
              * TODO: Lets discuss to understand better how to keep track of schedules
              */
 
-//            updatedComplaint.let {
-//                return MSComplaintSubmittedSuccessful(it.referenceNumber,true,"Complaint submitted successful with ref number ${it.referenceNumber}", null)
-//            }
+            updatedComplaint.let {
+                return MSComplaintSubmittedSuccessful(it.referenceNumber,true,"Complaint submitted successful with ref number ${it.referenceNumber}", null)
+            }
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)
             KotlinLogging.logger { }.debug(e.message, e)
-//            return MSComplaintSubmittedSuccessful(null,false,null, e.message ?: "Unknown Error")
+            return MSComplaintSubmittedSuccessful(null,false,null, e.message ?: "Unknown Error")
         }
     }
 
@@ -304,6 +304,13 @@ class MarketSurveillanceComplaintProcessDaoServices(
         return dataValue
     }
 
+    fun findComplaintByRefNumber(refNumber: String): ComplaintEntity {
+        complaintsRepo.findByReferenceNumber(refNumber)
+            ?.let { complaint ->
+                return complaint
+            }
+            ?: throw ExpectedDataNotFound("Complaint with [refNumber = ${refNumber}], does not Exist")
+    }
 
 }
 

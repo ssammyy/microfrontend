@@ -1053,7 +1053,7 @@
     </div>
 
     <div *ngSwitchCase="3">
-        <form (ngSubmit)="onSubmitComplaint()" [formGroup]="stepThreeForm" action="" class="form"
+        <form (ngSubmit)="onClickNext(stepThreeForm.valid)" [formGroup]="stepThreeForm" action="" class="form"
               enctype="multipart/form-data" method="post">
             <div class="container">
                 <div class="row">
@@ -1161,193 +1161,50 @@
                         <button (click)="onClickPrevious()" class="login-button" type="button">PREV</button>
                     </div>
                     <div class="col">
-                        <button (click)="onSubmitComplaint()" class="login-button mt-2" type="button">
-                            SUBMIT COMPLAINT
-                        </button>
-<!--                        <button [disabled]="!stepThreeForm.valid" class="login-button" type="submit">NEXT</button>-->
+                        <button [disabled]="!stepThreeForm.valid" class="login-button" type="submit">NEXT</button>
                     </div>
                 </div>
-
-
             </div>
-
-
         </form>
 
     </div>
 
-<!--    <div *ngSwitchCase="4">-->
-<!--        <form (ngSubmit)="onClickNext(stepFourForm.valid)" [formGroup]="stepFourForm" action="" class="form"-->
-<!--              enctype="multipart/form-data" method="post">-->
-<!--            <div class="container">-->
-<!--                <div class="row">-->
-<!--                    <h2 class="welcome">-->
-<!--                        Contact Person Information-->
-<!--                    </h2>-->
-<!--                </div>-->
+    <div *ngSwitchCase="4">
+        <form (ngSubmit)="onSubmitComplaint()" [formGroup]="stepFourForm" action="" class="form"
+              enctype="multipart/form-data" method="post">
+            <div class="container">
+                <div class="row">
+                    <h2 class="welcome">Let's ensure the safety of products </h2>
+                    <p class="welcome">Please fill in the details to report potentially harmful products in our markets</p>
+                    <hr>
+                    <h3 class="welcome">Step 4/4: Upload Documents Here</h3>
+                </div>
 
 <!--                <div class="row input-row">-->
-<!--                    <div class="col">-->
-<!--                        <label class="input-placeholder" for="firstName">-->
-<!--                            First Name-->
-<!--                        </label>-->
-<!--                        <br>-->
-<!--                        <input style="color: white;font-size: 14px;"-->
-<!--                               [ngClass]="{ 'is-invalid': submitted && formStepFourForm.firstName.errors }"-->
-<!--                               class="form-control two-column-input" formControlName="firstName" id="firstName"-->
-<!--                               name="firstName"-->
-<!--                               placeholder="" required="required" type="text">-->
-<!--                        <div *ngIf="submitted && formStepFourForm.firstName.errors" class="invalid-feedback">-->
-<!--                            <div *ngIf="formStepFourForm.firstName.errors.required">The First name is required</div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div class="col">-->
-<!--                        <label class="input-placeholder" for="lastName">-->
-<!--                            Last Name-->
-<!--                        </label>-->
-<!--                        <br>-->
-<!--                        <input style="color: white;font-size: 14px;"-->
-<!--                               [ngClass]="{ 'is-invalid': submitted && formStepFourForm.lastName.errors }"-->
-<!--                               class="form-control two-column-input" formControlName="lastName" id="lastName"-->
-<!--                               name="lastName"-->
-<!--                               placeholder="" required="required" type="text">-->
-<!--                        <div *ngIf="submitted && formStepFourForm.lastName.errors" class="invalid-feedback">-->
-<!--                            <div *ngIf="formStepFourForm.lastName.errors.required">The last name is required</div>-->
-<!--                        </div>-->
-<!--                    </div>-->
+                    <form #demoForm="ngForm">
+                        <file-upload [(ngModel)]="uploadedFiles" name="files"
+                                     fileslimit="5" accept=".pdf, .doc, .docx , .png, .jpg"></file-upload>
+                    </form>
 <!--                </div>-->
 
-<!--                <div class="row input-row">-->
-
-<!--                    <div class="col">-->
-<!--                        <label class="input-placeholder" for="userName">-->
-<!--                            User Name-->
-<!--                        </label>-->
-<!--                        <br>-->
-<!--                        <input style="color: white;font-size: 14px;"-->
-<!--                               [ngClass]="{ 'is-invalid': submitted && formStepFourForm.userName.errors }"-->
-<!--                               class="form-control two-column-input" formControlName="userName" id="userName"-->
-<!--                               name="userName"-->
-<!--                               placeholder="" required="required" type="text">-->
-<!--                        <div *ngIf="submitted && formStepFourForm.userName.errors" class="invalid-feedback">-->
-<!--                            <div *ngIf="formStepFourForm.userName.errors.required">The userName is required</div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div class="col">-->
-<!--                        <label class="input-placeholder" for="email">-->
-<!--                            Email address-->
-<!--                        </label>-->
-<!--                        <br>-->
-<!--                        <input style="color: white;font-size: 14px;"-->
-<!--                               [ngClass]="{ 'is-invalid': submitted && formStepFourForm.email.errors }"-->
-<!--                               class="form-control two-column-input" formControlName="email" id="email"-->
-<!--                               name="email"-->
-<!--                               placeholder="" required="required" type="email">-->
-<!--                        <div *ngIf="submitted && formStepFourForm.email.errors" class="invalid-feedback">-->
-<!--                            <div *ngIf="formStepFourForm.email.errors.required">The email is required</div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-
-<!--                <div class="row input-row">-->
-<!--                    <div class="col">-->
-<!--                        <label class="input-placeholder" for="credentials">-->
-<!--                            Password-->
-<!--                        </label>-->
-<!--                        <br>-->
-<!--                        <input style="color: white;font-size: 14px;"-->
-<!--                               [ngClass]="{ 'is-invalid': submitted && formStepFourForm.credentials.errors }"-->
-<!--                               class="form-control two-column-input" formControlName="credentials" id="credentials"-->
-<!--                               name="credentials"-->
-<!--                               placeholder="enter password" required="required" type="password">-->
-<!--                        <div *ngIf="submitted && formStepFourForm.credentials.errors" class="invalid-feedback">-->
-<!--                            <div *ngIf="formStepFourForm.credentials.errors.required">The credentials is required</div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div class="col">-->
-<!--                        <label class="input-placeholder" for="confirmCredentials">-->
-<!--                            Confirm Password-->
-<!--                        </label>-->
-<!--                        <br>-->
-<!--                        <input style="color: white;font-size: 14px;"-->
-<!--                               [ngClass]="{ 'is-invalid': submitted && formStepFourForm.confirmCredentials.errors }"-->
-<!--                               class="form-control two-column-input" formControlName="confirmCredentials"-->
-<!--                               id="confirmCredentials"-->
-<!--                               name="confirmCredentials"-->
-<!--                               placeholder="password confirmation" required="required" type="password">-->
-<!--                        <div *ngIf="submitted && formStepFourForm.confirmCredentials.errors" class="invalid-feedback">-->
-<!--                            <div *ngIf="formStepFourForm.confirmCredentials.errors.required">The confirm Credentials is-->
-<!--                                required-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-
-<!--                &lt;!&ndash;                <div class="row input-row">&ndash;&gt;-->
-
-<!--                &lt;!&ndash;                    <div class="col">&ndash;&gt;-->
-<!--                &lt;!&ndash;                        <label class="input-placeholder" for="cellphone">&ndash;&gt;-->
-<!--                &lt;!&ndash;                            Cellphone&ndash;&gt;-->
-<!--                &lt;!&ndash;                        </label>&ndash;&gt;-->
-<!--                &lt;!&ndash;                        <br>&ndash;&gt;-->
-<!--                &lt;!&ndash;                        <input [ngClass]="{ 'is-invalid': submitted && formStepFourForm.cellphone.errors }"&ndash;&gt;-->
-<!--                &lt;!&ndash;                               class="form-control two-column-input" formControlName="cellphone" id="cellphone"&ndash;&gt;-->
-<!--                &lt;!&ndash;                               name="cellphone"&ndash;&gt;-->
-<!--                &lt;!&ndash;                               placeholder="e.g 254xxxxxx" required="required" type="tel">&ndash;&gt;-->
-<!--                &lt;!&ndash;                        <div *ngIf="submitted && formStepFourForm.cellphone.errors" class="invalid-feedback">&ndash;&gt;-->
-<!--                &lt;!&ndash;                            <div *ngIf="formStepFourForm.cellphone.errors.required">The cell phone is required</div>&ndash;&gt;-->
-<!--                &lt;!&ndash;                        </div>&ndash;&gt;-->
-<!--                &lt;!&ndash;                        <br>&ndash;&gt;-->
-<!--                &lt;!&ndash;                    </div>&ndash;&gt;-->
-<!--                &lt;!&ndash;                    <div class="col">&ndash;&gt;-->
-<!--                &lt;!&ndash;                        <button (throttledClick)="onClickSendOtp()" [disabled]="otpSent"&ndash;&gt;-->
-<!--                &lt;!&ndash;                                [hidden]="stepFourForm.get('cellphone')?.invalid"&ndash;&gt;-->
-<!--                &lt;!&ndash;                                [throttleTime]="5000" appPreventDoubleClick&ndash;&gt;-->
-<!--                &lt;!&ndash;                                class="login-button mt-2"&ndash;&gt;-->
-<!--                &lt;!&ndash;                                type="button"&ndash;&gt;-->
-
-<!--                &lt;!&ndash;                        >Send OTP {{secondsToHms(time)}}&ndash;&gt;-->
-<!--                &lt;!&ndash;                        </button>&ndash;&gt;-->
-<!--                &lt;!&ndash;                    </div>&ndash;&gt;-->
-<!--                &lt;!&ndash;                </div>&ndash;&gt;-->
-<!--                &lt;!&ndash;                <div class="row input-row">&ndash;&gt;-->
-
-<!--                &lt;!&ndash;                    <div class="col">&ndash;&gt;-->
-<!--                &lt;!&ndash;                        <label class="input-placeholder" for="otp">&ndash;&gt;-->
-<!--                &lt;!&ndash;                            OTP&ndash;&gt;-->
-<!--                &lt;!&ndash;                        </label>&ndash;&gt;-->
-<!--                &lt;!&ndash;                        <br>&ndash;&gt;-->
-<!--                &lt;!&ndash;                        <input class="form-control two-column-input" formControlName="otp" id="otp"&ndash;&gt;-->
-<!--                &lt;!&ndash;                               name="otp"&ndash;&gt;-->
-<!--                &lt;!&ndash;                               placeholder="The OTP" required="required" type="text">&ndash;&gt;-->
-<!--                &lt;!&ndash;                        <br>&ndash;&gt;-->
-<!--                &lt;!&ndash;                    </div>&ndash;&gt;-->
-<!--                &lt;!&ndash;                    <div class="col">&ndash;&gt;-->
-<!--                &lt;!&ndash;                        <button (click)="onClickValidateOtp()" [hidden]="stepFourForm.get('otp')?.invalid"&ndash;&gt;-->
-<!--                &lt;!&ndash;                                class="login-button mt-2"&ndash;&gt;-->
-<!--                &lt;!&ndash;                                type="button"&ndash;&gt;-->
-<!--                &lt;!&ndash;                        >Validate OTP&ndash;&gt;-->
-<!--                &lt;!&ndash;                        </button>&ndash;&gt;-->
-<!--                &lt;!&ndash;                    </div>&ndash;&gt;-->
-
-<!--                &lt;!&ndash;                </div>&ndash;&gt;-->
-
-<!--                <br>-->
-<!--                <div class="row">-->
-<!--                    <div class="col">-->
-<!--                        <button (click)="onClickPrevious()" class="login-button" type="button">PREV</button>-->
-<!--                    </div>-->
-<!--                    <div class="col">-->
+                <div class="row">
+                    <div class="col">
+                        <button (click)="onClickPrevious()" class="login-button" type="button">PREV</button>
+                    </div>
+                    <div class="col">
+                        <button (click)="onSubmitComplaint()" class="login-button mt-2" type="button">
+                            SUBMIT COMPLAINT
+                        </button>
 <!--                        <button [disabled]="!stepFourForm.valid" class="login-button" type="submit">NEXT</button>-->
-<!--                    </div>-->
+                    </div>
 
-<!--                </div>-->
+                </div>
 
-<!--            </div>-->
-<!--        </form>-->
+            </div>
+        </form>
 
 
-<!--    </div>-->
+    </div>
 
 
 <!--    <div *ngSwitchCase="5">-->
