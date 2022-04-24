@@ -678,7 +678,7 @@ export const routes: Routes = [
                 component: CurrencyExchangeRatesComponent
             },
             {
-                path: 'bill/:id/:cid',
+                path: 'bill/:cid/:id',
                 component: ViewTransactionsComponent
             },
             {

@@ -17,6 +17,7 @@ import org.kebs.app.kotlin.apollo.store.model.CdDemandNoteEntity
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.WorkflowTransactionsEntity
 import org.kebs.app.kotlin.apollo.store.model.invoice.BillPayments
+import org.kebs.app.kotlin.apollo.store.model.invoice.CorporateCustomerAccounts
 import org.kebs.app.kotlin.apollo.store.model.invoice.InvoiceBatchDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.invoice.LogStgPaymentReconciliationDetailsToSageEntity
 import org.kebs.app.kotlin.apollo.store.repo.ILogStgPaymentReconciliationDetailsToSageRepo
@@ -157,7 +158,7 @@ class PostInvoiceToSageServices(
             val log = daoService.createTransactionLog(0, "${demandNote.demandNoteNumber}_1")
             val resp = daoService.getHttpResponseFromPostCall(
                     false,
-                    "$configUrl/urls/inspectionfee.php ",
+                    "$configUrl/bsk/urls/inspectionfee.php ",
                     null,
                     requestBody,
                     config,
@@ -189,7 +190,7 @@ class PostInvoiceToSageServices(
         }
     }
 
-    fun postInvoiceTransactionToSage(billPayment: BillPayments, user: String, map: ServiceMapsEntity) {
+    fun postInvoiceTransactionToSage(billPayment: BillPayments, user: String, corporate: CorporateCustomerAccounts, map: ServiceMapsEntity) {
         val config = commonDaoServices.findIntegrationConfiguration("SAGE_API_CLIENT")
         val configUrl = config.url ?: throw Exception("URL CANNOT BE NULL")
         runBlocking {
@@ -203,7 +204,7 @@ class PostInvoiceToSageServices(
             }
 
             val requestBody = mutableMapOf<String, Any>()
-            val tmpRequest = SageInvoiceRequest.fromEntity(billPayment)
+            val tmpRequest = SageInvoiceRequest.fromEntity(billPayment, corporate)
             requestBody["header"] = headerBody
             requestBody["request"] = tmpRequest
             requestBody["details"] = InvoiceRequestItems.fromList(invoiceDaoService.findBillTransactions(billPayment.id), "Account Line")
@@ -211,7 +212,7 @@ class PostInvoiceToSageServices(
             val log = daoService.createTransactionLog(0, "${billPayment.billNumber}_1")
             val resp = daoService.getHttpResponseFromPostCall(
                     false,
-                    "$configUrl/urls/sageinvoice.php",
+                    "$configUrl/m-api/urls/sageinvoice.php",
                     null,
                     requestBody,
                     config,

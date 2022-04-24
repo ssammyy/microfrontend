@@ -32,6 +32,10 @@ enum class BillStatus(val status: Int) {
     OPEN(1), CLOSED(2), PENDING_PAYMENT(3), PAID(4);
 }
 
+enum class BillingPurpose(val code: String) {
+    DESTINATION_INSPECTION("DI"), QUALITY_ASSUARANCE("QA"), MARKET_SURVEILANCE("MS"), STANDARDS_DEVELOPMENT("SD");
+}
+
 @Component
 class BillingService(
         private val corporateCustomerRepository: ICorporateCustomerRepository,
@@ -71,10 +75,11 @@ class BillingService(
             bill.corporateId = corporate.id
             bill.billNumberSequence = this.billPaymentRepository.countByCorporateIdAndBillNumber(corporate.id, billNumber) + 1
             bill.billNumber = billNumber
-            bill.paymentStatus = 0
+            bill.paymentStatus = BillStatus.OPEN.status
             bill.customerName = corporate.corporateName
             bill.customerCode = corporate.corporateCode
-            bill.customerCode = "KES"
+            bill.currencyCode = "KES"
+            bill.billServiceType = BillingPurpose.DESTINATION_INSPECTION.code
             bill.billType = 1
             bill.billStatusDesc = BillStatus.OPEN.name
             bill.billStatus = BillStatus.OPEN.status
@@ -90,8 +95,8 @@ class BillingService(
             bill.paymentDate = Date.valueOf(paymentDate)
             val dt = Timestamp.from(Instant.now())
             bill.createOn = dt
-            bill.billNumberPrefix = "BN-${commonDaoServices.convertDateToString(dt.toLocalDateTime(), "yyMM-")}${this.billPaymentRepository.countByCorporateId(corporate.id) + 1}"
-            bill.billRefNumber = "${bill.billNumberPrefix}-${bill.billNumber}"
+            bill.billNumberPrefix = "BN${commonDaoServices.convertDateToString(dt.toLocalDateTime(), "yyMM")}${this.billPaymentRepository.countByCorporateId(corporate.id) + 1}"
+            bill.billRefNumber = "${bill.billNumberPrefix}${bill.billNumber}"
             bill.billDescription = "Bill payment for the month of " + commonDaoServices.convertDateToString(bill.paymentDate, "MMMM")
             val saved = this.billPaymentRepository.save(bill)
             transaction.billId = saved.id
@@ -199,7 +204,7 @@ class BillingService(
             val bill = this.billPaymentRepository.findById(billId)
             if (bill.isPresent) {
                 val map = mutableMapOf<String, Any>()
-                map["transactions"] = billTransactionRepo.findAllByCorporateIdAndBillId(billId, corporateId)
+                map["transactions"] = billTransactionRepo.findAllByCorporateIdAndBillId(corporateId, billId)
                 map["bill"] = bill.get()
                 response.data = map
                 response.responseCode = ResponseCodes.SUCCESS_CODE
@@ -329,6 +334,27 @@ class BillingService(
         }
     }
 
+    fun closeAndGenerateBill(billId: Long, remarks: String): ApiResponseModel {
+        val response = ApiResponseModel()
+        val optionalBill = this.billPaymentRepository.findById(billId)
+        if (optionalBill.isPresent) {
+            val bill = optionalBill.get()
+            bill.remarks = remarks
+            if (this.generateBatchInvoice(bill)) {
+                response.message = "Bill sent"
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+            } else {
+                response.message = "Bill invoice not generated"
+                response.responseCode = ResponseCodes.FAILED_CODE
+            }
+        } else {
+            response.message = "Bill not found"
+            response.responseCode = ResponseCodes.NOT_FOUND
+        }
+
+        return response
+    }
+
     /**
      * Run once every 3 minutes
      */
@@ -363,6 +389,10 @@ class BillingService(
         }".toUpperCase()
         batch.status = map.inactiveStatus
         batch.paymentStarted = map.inactiveStatus
+        batch.createdBy = "Billing"
+        batch.createdOn = commonDaoServices.getTimestamp()
+        batch.modifiedBy = "Billing"
+        batch.modifiedOn = commonDaoServices.getTimestamp()
         val bsaved = this.batchInvoiceRepository.save(batch)
         bill.paymentRequestReference = bsaved.id.toString()
         val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
@@ -373,12 +403,8 @@ class BillingService(
                 accountNumber = corporate.get().corporateIdentifier
                 currency = properties.mapInvoiceTransactionsLocalCurrencyPrefix
             }
-            invoiceDaoService.createPaymentDetailsOnStgReconciliationTable(
-                    "billing",
-                    bsaved,
-                    myAccountDetails
-            )
             this.billPaymentRepository.save(bill)
+            this.invoiceDaoService.postBillToSage(bill, "system", map, corporate.get())
         }
         return true
     }

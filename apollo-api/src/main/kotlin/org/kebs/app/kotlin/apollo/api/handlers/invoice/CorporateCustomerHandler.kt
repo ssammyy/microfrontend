@@ -1,16 +1,16 @@
 package org.kebs.app.kotlin.apollo.api.handlers.invoice;
 
 import mu.KotlinLogging
-import org.kebs.app.kotlin.apollo.api.payload.ApiClientForm
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.extractPage
 import org.kebs.app.kotlin.apollo.api.payload.request.CorporateForm
 import org.kebs.app.kotlin.apollo.api.payload.request.CorporateStatusUpdateForm
+import org.kebs.app.kotlin.apollo.api.service.BillStatus
 import org.kebs.app.kotlin.apollo.api.service.BillingService
-import org.kebs.app.kotlin.apollo.api.service.CorporateCustomerService;
+import org.kebs.app.kotlin.apollo.api.service.CorporateCustomerService
 import org.kebs.app.kotlin.apollo.api.service.DaoValidatorService
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Component
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
 
@@ -42,16 +42,16 @@ class CorporateCustomerHandler(
         val statues = mutableListOf<Int>()
         when (billStatus) {
             "paid" -> {
-                statues.add(1)
+                statues.add(BillStatus.PAID.status)
             }
             "pending" -> {
-                statues.add(0)
-                statues.add(10)
-                statues.add(15)
+                statues.add(BillStatus.OPEN.status)
+                statues.add(BillStatus.PENDING_PAYMENT.status)
+                statues.add(BillStatus.CLOSED.status)
             }
             else -> {
                 val res = ApiResponseModel()
-                res.message = "Invalid bill statue: ${billStatus}"
+                res.message = "Invalid bill statue: $billStatus"
                 res.responseCode = ResponseCodes.INVALID_CODE
                 return ServerResponse.ok().body(res)
             }
@@ -126,6 +126,21 @@ class CorporateCustomerHandler(
         } catch (ex: Exception) {
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
             response.message = "Failed to update corporate account"
+            response.errors = ex.toString()
+        }
+        return ServerResponse.ok().body(response)
+    }
+
+    fun closeBillPayment(req: ServerRequest): ServerResponse {
+        var response = ApiResponseModel()
+        try {
+            val billId = req.pathVariable("billId").toLong()
+            val form = req.body(CorporateStatusUpdateForm::class.java)
+            response = this.billService.closeAndGenerateBill(billId, form.remarks ?: "")
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to close bill", ex)
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.message = "Failed to update bill status"
             response.errors = ex.toString()
         }
         return ServerResponse.ok().body(response)

@@ -72,6 +72,11 @@
                                                 <mat-header-cell *matHeaderCellDef>Bill No.</mat-header-cell>
                                                 <mat-cell *matCellDef="let element"> {{element.billNumber}} </mat-cell>
                                             </ng-container>
+                                            <ng-container matColumnDef="billReference">
+                                                <mat-header-cell *matHeaderCellDef>Bill Reference</mat-header-cell>
+                                                <mat-cell
+                                                        *matCellDef="let element"> {{element.billRefNumber}} </mat-cell>
+                                            </ng-container>
                                             <ng-container matColumnDef="invoiceNumber">
                                                 <mat-header-cell *matHeaderCellDef>Invoice Number</mat-header-cell>
                                                 <mat-cell
@@ -123,6 +128,11 @@
                                             <ng-container matColumnDef="billNumber">
                                                 <mat-header-cell *matHeaderCellDef>Bill No.</mat-header-cell>
                                                 <mat-cell *matCellDef="let element"> {{element.billNumber}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="billReference">
+                                                <mat-header-cell *matHeaderCellDef>Bill Reference</mat-header-cell>
+                                                <mat-cell
+                                                        *matCellDef="let element"> {{element.billRefNumber}} </mat-cell>
                                             </ng-container>
                                             <ng-container matColumnDef="invoiceNumber">
                                                 <mat-header-cell *matHeaderCellDef>Invoice Number</mat-header-cell>

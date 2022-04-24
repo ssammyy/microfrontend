@@ -40,6 +40,7 @@ class InvoiceBatchDetailsEntity : Serializable {
     @Basic
     var receiptDate: Date? = null
 
+
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null

@@ -56,8 +56,8 @@ interface ICorporateCustomerRepository : HazelcastRepository<CorporateCustomerAc
 }
 
 interface BillSummary {
-    fun getTotalAmount(): BigDecimal
-    fun getTotalTax(): BigDecimal
+    fun getTotalAmount(): BigDecimal?
+    fun getTotalTax(): BigDecimal?
     fun getRevenueLine(): String
 }
 
