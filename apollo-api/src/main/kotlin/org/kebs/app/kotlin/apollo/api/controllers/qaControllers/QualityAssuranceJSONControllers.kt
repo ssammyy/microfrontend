@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.controllers.qaControllers
 
+import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
@@ -9,11 +10,13 @@ import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapPrope
 import org.kebs.app.kotlin.apollo.store.model.ServiceRequestsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaUploadsEntity
 import org.springframework.core.io.ResourceLoader
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.servlet.function.ServerResponse
 import javax.servlet.http.HttpServletResponse
 
 
@@ -334,6 +337,47 @@ class QualityAssuranceJSONControllers(
             }
         }
     }
+//    @PostMapping("/permit/apply/updateMigratedPermit")
+////    https://localhost:8006/api/v1/migration/qa/permit/apply/updateMigratedPermit
+//    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+//    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+//    fun updatePermitMigrated(
+//        @RequestParam("permitId") permitId: String,
+//        @RequestParam("permitIdBeingMigrated") permitIdBeingMigrated: String
+//    ): CommonDaoServices.MessageSuccessFailDTO {
+//
+//        val map = commonDaoServices.serviceMapDetails(appId)
+//        val loggedInUser = commonDaoServices.loggedInUserDetails()
+//        println(permitId)
+//       // var permitDetails = qaDaoServices.findPermitBYID(permitId)
+////        return try {
+////            val map = commonDaoServices.serviceMapDetails(appId)
+////            val loggedInUser = commonDaoServices.loggedInUserDetails()
+////
+////
+////            println(permitId)
+////            println(permitIdBeingMigrated)
+////
+//////            qaDaoServices.permitInvoiceSTKPush(map, loggedInUser, dto.phoneNumber, invoiceEntity)
+////
+//////            val messageDto = MigratedPermitDto(
+//////                invoiceEntity
+//////            )
+////            ServerResponse.ok().body(permitId)
+////
+////        } catch (e: Exception) {
+////            KotlinLogging.logger { }.error(e.message)
+////            KotlinLogging.logger { }.debug(e.message, e)
+////            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+////        }
+//
+//        val sm = CommonDaoServices.MessageSuccessFailDTO()
+////        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}"
+//        sm.message = "Document Uploaded successful"
+//
+//        return sm
+////        return commonDaoServices.returnValues(result
+//    }
 
 
     @PostMapping("/kebs/add/new-upload")

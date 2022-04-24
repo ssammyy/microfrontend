@@ -1,28 +1,34 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.kra
 
-import com.beust.klaxon.Klaxon
+import com.hazelcast.internal.util.QuickMath.bytesToHex
 import io.ktor.client.statement.*
 import kotlinx.coroutines.runBlocking
-import org.flowable.engine.impl.migration.ProcessInstanceMigrationDocumentImpl.fromJson
+import mu.KotlinLogging
 import org.jasypt.encryption.StringEncryptor
 import org.json.simple.JSONArray
 import org.json.simple.JSONObject
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.kra.request.*
+import org.kebs.app.kotlin.apollo.api.ports.provided.kra.request.KraHeader.Companion.globalVar
 import org.kebs.app.kotlin.apollo.api.ports.provided.kra.response.KraResponse
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.kebs.app.kotlin.apollo.store.model.IntegrationConfigurationEntity
 import org.kebs.app.kotlin.apollo.store.model.KraEntryNumberRequestLogEntity
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.WorkflowTransactionsEntity
 import org.kebs.app.kotlin.apollo.store.repo.IKraEntryNumberRequestLogEntityRepository
 import org.kebs.app.kotlin.apollo.store.repo.ILogKraEntryNumberRequestEntityRepository
-import org.springframework.integration.dsl.Transformers.fromJson
-import org.springframework.integration.json.SimpleJsonSerializer.toJson
 import org.springframework.stereotype.Service
 import java.math.BigInteger
+import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
+import java.sql.Date
+import java.sql.Timestamp
+import java.text.SimpleDateFormat
+import java.time.Instant
+import kotlin.collections.set
 
 
 @Service
@@ -41,12 +47,18 @@ class SendEntryNumberToKraServices(
         runBlocking {
 
             val numberRecords = "1"
+            val recordNumber= 1
+
+            var transDate = commonDaoServices.getTimestamp()
             val headerBody = KraHeader().apply {
-                transmissionDate = commonDaoServices.getTimestamp()
+                globalVar = SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss").format(transDate)
+                transmissionDate = globalVar
                 loginId = jasyptStringEncryptor.decrypt(config.username)
                 password = jasyptStringEncryptor.decrypt(config.password)
-                hash = kraDataEncryption(numberRecords + password + loginId)
                 noOfRecords = numberRecords
+                val join = numberRecords+globalVar
+                hash = kraDataEncryption(join)
+             //   KotlinLogging.logger { }.info { "Input :  = $join" }
             }
             val detailBody = KraDetails().apply {
                 entryNumber = companyProfile.entryNumber
@@ -57,19 +69,13 @@ class SendEntryNumberToKraServices(
                 status = if (companyProfile.manufactureStatus == 1) "Active" else "Inactive"
             }
 
-
-            val headerRequest = KraRequestHeader().apply {
-                header = headerBody
-            }
-
-            val detailsRequest = KraRequestDetails().apply {
-                details = detailBody
-            }
+            val list= mutableListOf<KraDetails>()
+            list.add(detailBody)
 
 
             val rootRequest = KraRequest().apply {
                 header = headerBody
-                details = detailBody
+                details = list
             }
 
             val requestBody = JSONObject()
@@ -77,11 +83,10 @@ class SendEntryNumberToKraServices(
 
 
 
-            var transactionsRequest = KraEntryNumberRequestLogEntity()
-            with(transactionsRequest) {
+
+            var transactionsRequest = KraEntryNumberRequestLogEntity().apply  {
                 requestHash = headerBody.hash
-                requestTransmissionDate =
-                    headerBody.transmissionDate?.let { commonDaoServices.convertTimestampToKraValidDate(it) }
+                requestTransmissionDate = globalVar
                 requestNoOfRecords = headerBody.noOfRecords
                 requestEntryNumber = detailBody.entryNumber
                 requestKraPin = detailBody.kraPin
@@ -110,16 +115,34 @@ class SendEntryNumberToKraServices(
             val response: Triple<WorkflowTransactionsEntity, KraResponse?, HttpResponse?> =
                 daoService.processResponses(resp, log, configUrl, config)
 
-            with(transactionsRequest) {
-                responseStatus = response.second?.status
-                responseResponseCode = response.second?.responseCode
-                responseMessage = response.second?.message
-                status = 1
-                updateBy = user
-                updatedOn = commonDaoServices.getTimestamp()
-            }
+           // if (response.second?.responseCode=="90000"){
 
-            iKraEntryNumberRequestLogEntityRepository.save(transactionsRequest)
+                transactionsRequest.apply {
+                    responseStatus = response.second?.status
+                    responseResponseCode = response.second?.responseCode
+                    responseMessage = response.second?.message
+                    status = 1
+                    updateBy = user
+                    updatedOn = commonDaoServices.getTimestamp()
+                }
+                iKraEntryNumberRequestLogEntityRepository.save(transactionsRequest)
+
+            KotlinLogging.logger { }.trace { "Response ${response.second?.message}" }
+        //           }else{
+//                transactionsRequest.apply {
+//                    responseStatus = response.second?.status
+//                    responseResponseCode = response.second?.responseCode
+//                    responseMessage = response.second?.message
+//                    updateBy = user
+//                    updatedOn = commonDaoServices.getTimestamp()
+//                }
+//                iKraEntryNumberRequestLogEntityRepository.save(transactionsRequest)
+//
+//                KotlinLogging.logger { }.trace { "Response ${response.second?.message}" }
+//            }
+
+
+
 
             // KotlinLogging.logger {  }.info { "Response received: $response" }
         }
@@ -128,11 +151,13 @@ class SendEntryNumberToKraServices(
 
 
 
+
     fun kraDataEncryption(hashedData: String): String {
         fun encryptThisString(input: String): String {
             return try {
                 val md = MessageDigest.getInstance("SHA-256")
-                val messageDigest = md.digest(input.toByteArray())
+                val  messageDigest = md.digest(input.toByteArray(StandardCharsets.UTF_8))
+                //val messageDigest = md.digest(input.toByteArray())
                 val no = BigInteger(1, messageDigest)
                 var hashtext = no.toString(16)
                 while (hashtext.length < 32) {
@@ -148,30 +173,9 @@ class SendEntryNumberToKraServices(
     }
 }
 
-private fun JSONObject.put(key: JSONArray) {
 
-}
 
-private fun JSONObject.putAll(from: JSONArray) {
 
-}
 
-private operator fun JSONArray.set(s: String, value: KraRequestDetails) {
 
-}
 
-//private fun JSONObject.put(key: KraRequestHeader) {
-//    @JsonProperty("HEADER")
-//    @NotNull(message = "Required field")
-//    @Valid
-//    var header: KraHeader? = null
-//
-//}
-//
-//private fun JSONObject.put(key: KraRequestDetails) {
-//    @JsonProperty("DETAILS")
-//    @Valid
-//    @NotNull(message = "Required field")
-//    var details: KraDetails? = null
-//
-//}

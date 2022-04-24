@@ -24,7 +24,7 @@ class DaoServiceTest {
 
     @Test
     fun base256EncodeTest() {
-        val input = "KEBSUSERpassword@13"
+        val input = "120-04-2022T12:45:18"
         integRepo.findByIdOrNull(26L)
             ?.let {
                 KotlinLogging.logger { }.info(base256Encode(input, it))

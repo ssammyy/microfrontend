@@ -10,6 +10,7 @@ import {
     FmarkEntityDto,
     GenerateInvoiceDto,
     MPesaPushDto,
+    PermitDto,
     PermitEntityDetails,
     PermitEntityDto,
     PermitProcessStepDto,
@@ -167,6 +168,22 @@ export class QaService {
             })
         );
     }
+
+    public loadCompletelyPermitAwardedList(permitTypeID: string): Observable<PermitEntityDto[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_COMPLETELY_LIST_AWARDED);
+        const params = new HttpParams()
+            .set('permitTypeID', permitTypeID);
+        return this.http.get<PermitEntityDto[]>(url, {params}).pipe(
+            map(function (response: PermitEntityDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
     public loadPermitMigratededList(permitTypeID: string): Observable<PermitEntityDto[]> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_LIST_MIGRATION);
         const params = new HttpParams()
@@ -611,6 +628,27 @@ export class QaService {
             })
         );
     }
+
+    public updateMigratedPermit(permitId: string, permitIdBeingMigrated: string, permitDto: PermitDto): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.UPDATE_PERMIT_MIGRATED);
+        // const params = new HttpParams()
+        //     .set('permitID', permitID);
+
+        const params = new HttpParams()
+            .set('permitID', permitId)
+            .set('permitIdBeingMigrated', permitIdBeingMigrated)
+        // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
+        return this.http.post<PermitDto>(url, permitDto, {params, responseType: 'arraybuffer' as 'json'}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
 
     public savePermitSTA3(permitID: string, data: STA3): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_APPLY_STA3);

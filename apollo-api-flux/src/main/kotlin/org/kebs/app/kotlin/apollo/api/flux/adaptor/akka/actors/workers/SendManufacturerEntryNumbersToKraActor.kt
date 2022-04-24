@@ -241,7 +241,8 @@ class SendManufacturerEntryNumbersToKraActor(
 
             val transmissionDate = SimpleDateFormat(config.gsonDateFormt ?: "dd-MM-yyyy'T'HH:mm:ss").format(timeNow)
             /* DateTimeFormatter.ofPattern(config.gsonDateFormt).withLocale(Locale.getDefault()).withZone(ZoneId.systemDefault()).format(timeNow)*/
-            val hash = hashingMechanisms(config, "$recordCount$transmissionDate")
+            //val hash = hashingMechanisms(config, "$recordCount$transmissionDate")
+            val hash = hashingMechanisms(config, "$recordCount${jasyptStringEncryptor.decrypt(config.password)}${jasyptStringEncryptor.decrypt(config.username)}")
             val header = RequestHeader(
                 jasyptStringEncryptor.decrypt(config.username),
                 jasyptStringEncryptor.decrypt(config.password),

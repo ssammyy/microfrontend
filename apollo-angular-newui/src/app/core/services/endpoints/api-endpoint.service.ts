@@ -20,7 +20,7 @@ export class ApiEndpointService {
         // LOCAL_DEV: 'localhost:8006'
         // LOCAL_DEV: '12:8006'
         // LOCAL_DEV: '41.72.209.58:8006'
-        LOCAL_DEV: `kimsint.kebs.org:8006`
+         LOCAL_DEV: `kimsint.kebs.org:8006`
         // LOCAL_DEV: `kims.kebs.org`
         // LOCAL_DEV: '10.10.0.149:8007'
     };
@@ -232,6 +232,7 @@ export class ApiEndpointService {
         PERMIT_LIST_AWARDED: `${ApiEndpointService.QA_CONTEXT}/permit/awarded-list`,
         PERMIT_LIST_MIGRATION: `${ApiEndpointService.QA_CONTEXT}/permit/my-permits-loaded`,
         PERMIT_LIST_ALL: `${ApiEndpointService.QA_CONTEXT}/permit/all-my-permits-loaded`,
+        PERMIT_COMPLETELY_LIST_AWARDED: `${ApiEndpointService.QA_CONTEXT}/permit/awarded-list-completely`,
 
         PERMIT_LIST_TO_GENERATE_FMRK: `${ApiEndpointService.QA_CONTEXT}/permit/awarded-list-fmark-generate`,
         PERMIT_VIEW_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/details`,
@@ -257,6 +258,7 @@ export class ApiEndpointService {
         UPLOAD_FILE: `${ApiEndpointService.QA_CONTEXT_APPLY}/ordinary-upload`,
         UPLOAD_FILE_STA3: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta3-update-upload`,
         UPLOAD_FILE_STA10: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10-update-upload`,
+        UPDATE_PERMIT_MIGRATED: `${ApiEndpointService.QA_CONTEXT_APPLY}/updateMigratedPermit`,
 
 
         INVOICE_CONSOLIDATE_SUBMIT: `${ApiEndpointService.QA_CONTEXT_APPLY}/invoice/batch-invoice-submit`,

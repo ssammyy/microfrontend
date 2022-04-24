@@ -2,10 +2,15 @@ import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {
     AllPermitDetailsDto,
-    AllSTA10DetailsDto, FilesListDto,
-    PermitEntityDetails, PermitEntityDto,
+    AllSTA10DetailsDto,
+    FilesListDto,
+    PermitDto,
+    PermitEntityDetails,
+    PermitEntityDto,
     PlantDetailsDto,
-    SectionDto, SSFComplianceStatusDetailsDto, SSFPDFListDetailsDto,
+    SectionDto,
+    SSFComplianceStatusDetailsDto,
+    SSFPDFListDetailsDto,
     STA1,
     Sta10Dto,
     STA10MachineryAndPlantDto,
@@ -17,12 +22,18 @@ import {
 import {QaService} from '../../../core/store/data/qa/qa.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import swal from 'sweetalert2';
+import Swal from 'sweetalert2';
 import {ApiEndpointService} from '../../../core/services/endpoints/api-endpoint.service';
 import {LoadingService} from '../../../core/services/loader/loadingservice.service';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {FileUploadValidators} from '@iplab/ngx-file-upload';
 import {TableData} from '../../../md/md-table/md-table.component';
-import Swal from 'sweetalert2';
+import {HttpErrorResponse} from "@angular/common/http";
+
+interface Permit {
+    id: string;
+    name: string;
+}
 
 @Component({
     selector: 'app-smark',
@@ -42,6 +53,11 @@ export class SmarkComponent implements OnInit {
     uploadedFile: File;
     uploadedFiles: FileList;
     upLoadDescription: string;
+    public allPermitData: PermitEntityDto[];
+    form: FormGroup;
+    memberReturnArray: any[] = [];
+    public actionRequest: PermitEntityDetails | undefined;
+
 
     pdfSources: any;
     SelectedSectionId;
@@ -105,6 +121,13 @@ export class SmarkComponent implements OnInit {
     public tableData5: TableData;
     public tableData12: TableData;
     blob: Blob;
+
+
+    dropdownList = [];
+    selectedItems = [];
+    dropdownSettings = {};
+    smarkID = String(ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.SMARK_TYPE_ID);
+    private permit_id: string;
 
 
     constructor(
@@ -229,14 +252,14 @@ export class SmarkComponent implements OnInit {
         this.qaService.loadSectionList().subscribe(
             (data: any) => {
                 this.sections = data;
-                console.log(data);
+                // console.log(data);
             }
         );
 
         this.qaService.loadPlantList().subscribe(
             (data: any) => {
                 this.plants = data;
-                console.log(data);
+                // console.log(data);
             }
         );
 
@@ -249,6 +272,39 @@ export class SmarkComponent implements OnInit {
         // );
         // }
 
+        this.qaService.loadCompletelyPermitAwardedList(this.smarkID).subscribe(
+            (data: any) => {
+                this.allPermitData = data;
+                for (let i = 0; i < data.length; i++) {
+                    const obj = data[i];
+                    let mem_id = obj.id
+                    let names = obj.permitRefNumber;
+
+                    let newArray = {'id': mem_id, 'name': names};
+                    this.memberReturnArray.push(newArray)
+                }
+                this.dropdownList = this.memberReturnArray;
+
+
+            })
+
+        this.initForm();
+
+        this.dropdownSettings = {
+            singleSelection: true,
+            idField: 'id',
+            textField: 'name',
+            selectAllText: 'Select All',
+            unSelectAllText: 'UnSelect All',
+            itemsShowLimit: 3,
+            allowSearchFilter: true
+        };
+    }
+
+    initForm() {
+        this.form = this.formBuilder.group({
+            permits: ['', [Validators.required]]
+        })
     }
 
     remarksDetails() {
@@ -689,35 +745,45 @@ export class SmarkComponent implements OnInit {
 
     submitRenewalApplication() {
         this.SpinnerService.show();
-        this.qaService.submitPermitRenewApplication(String(this.allPermitDetails.permitDetails.id)).subscribe(
-            (data: AllPermitDetailsDto) => {
-                this.allPermitDetails = data;
-                this.SpinnerService.hide();
-                // this.reloadCurrentRoute();
-                console.log(AllPermitDetailsDto);
-                if (this.allPermitDetails.permitDetails.permitTypeID === this.FMarkTypeID) {
-                    swal.fire({
-                        title: 'FMARK Renewed Successfully! Proceed to submit application.',
-                        buttonsStyling: false,
-                        customClass: {
-                            confirmButton: 'btn btn-success form-wizard-next-btn ',
-                        },
-                        icon: 'success'
-                    });
-                } else {
-                    swal.fire({
-                        title: 'SMARK Renewed Successfully! Proceed to submit application.',
-                        buttonsStyling: false,
-                        customClass: {
-                            confirmButton: 'btn btn-success form-wizard-next-btn ',
-                        },
-                        icon: 'success'
-                    });
-                }
 
-                this.router.navigate(['/smarkpermitdetails'], {fragment: String(this.allPermitDetails.permitDetails.id)});
-            },
-        );
+
+        if (this.allPermitDetails.permitDetails.versionNumber == null) {
+            this.SpinnerService.hide();
+
+            this.showModal(this.allPermitDetails.permitDetails);
+
+        } else {
+
+            this.qaService.submitPermitRenewApplication(String(this.allPermitDetails.permitDetails.id)).subscribe(
+                (data: AllPermitDetailsDto) => {
+                    this.allPermitDetails = data;
+                    this.SpinnerService.hide();
+                    // this.reloadCurrentRoute();
+                    console.log(AllPermitDetailsDto);
+                    if (this.allPermitDetails.permitDetails.permitTypeID === this.FMarkTypeID) {
+                        swal.fire({
+                            title: 'FMARK Renewed Successfully! Proceed to submit application.',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+                    } else {
+                        swal.fire({
+                            title: 'SMARK Renewed Successfully! Proceed to submit application.',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+                    }
+
+                    this.router.navigate(['/smarkpermitdetails'], {fragment: String(this.allPermitDetails.permitDetails.id)});
+                },
+            );
+        }
     }
 
     submitApplicationForReviewHOD(): void {
@@ -855,4 +921,83 @@ export class SmarkComponent implements OnInit {
     goToInvoiceGenerated() {
         this.router.navigate(['/invoiceDetails'], {fragment: String(this.allPermitDetails.batchID)});
     }
+
+    showModal(allPermitDetails: PermitEntityDetails) {
+
+        const container = document.getElementById('main-container');
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.style.display = 'none';
+        button.setAttribute('data-toggle', 'modal');
+        // console.log(task.taskId);
+        // if (mode === 'edit') {
+        this.actionRequest = allPermitDetails;
+        button.setAttribute('data-target', '#renewMigratedPermitModal');
+        // }
+
+        // @ts-ignore
+        container.appendChild(button);
+        button.click();
+    }
+
+    getObjectListFromData(ids) {
+        return this.memberReturnArray.filter(item => ids.includes(item.id))
+    }
+
+
+    updatePermitWithData(id: any) {
+        if (this.form.value.permits === '') {
+            swal.fire({
+                title: 'Please Select A Permit',
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: 'btn btn-danger form-wizard-next-btn ',
+                },
+                icon: 'error'
+            });
+        } else {
+            this.SpinnerService.show();
+
+            let data = this.form.value.permits;
+            for (let i = 0; i < data.length; i++) {
+                const obj = data[i];
+                this.permit_id = obj.id
+            }
+
+            const bar: PermitDto = {permitId: this.permit_id, permitIdBeingMigrated: id};
+
+
+
+
+            this.qaService.updateMigratedPermit(this.permit_id, id, bar).subscribe(
+                (response) => {
+                    console.log(response);
+                    this.SpinnerService.hide();
+
+                    swal.fire({
+                        title: 'Permit Updated Successfully! Proceed to renew permit.',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    }).then(function() {
+                        location.reload(); // this is your location reload.
+                    });
+                    this.router.navigate(['/smarkpermitdetails'], {fragment: String(this.allPermitDetails.permitDetails.id)});
+
+                    // this.onClickSaveUploads(response.body.savedRowID)
+                    // this.prepareSacSummaryFormGroup.reset();
+                },
+                (error: HttpErrorResponse) => {
+                    this.SpinnerService.hide();
+                    console.log(error.message);
+                }
+            );
+
+
+        }
+    }
+
+
 }

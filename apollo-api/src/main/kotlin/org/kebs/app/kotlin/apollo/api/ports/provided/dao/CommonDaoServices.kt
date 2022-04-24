@@ -95,6 +95,7 @@ import org.springframework.web.servlet.function.ServerRequest
 import java.io.*
 import java.math.BigDecimal
 import java.net.URLConnection
+import java.security.MessageDigest
 import java.security.SecureRandom
 import java.sql.Date
 import java.sql.Timestamp
@@ -2081,5 +2082,7 @@ class CommonDaoServices(
 
         return usersEntityRepository.getUserEmailById(userId) ?: throw ExpectedDataNotFound("No Email Address Found")
     }
+
+
 
 }

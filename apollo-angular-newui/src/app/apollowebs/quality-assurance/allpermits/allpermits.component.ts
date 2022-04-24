@@ -88,7 +88,7 @@ export class AllpermitsComponent implements OnInit {
                     (response: PermitEntityDto[]) => {
                         console.log(response);
                         this.tcTasks = response;
-                        this.dtTrigger.next();
+                        this.getAllPermits();
                     },
                     (error: HttpErrorResponse) => {
                         swal.fire({
